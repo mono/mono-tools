@@ -1,0 +1,50 @@
+AC_INIT(Makefile.in)
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE(mono-tools, 0.1)
+AM_MAINTAINER_MODE
+
+AC_PROG_INSTALL
+
+AC_ARG_WITH(csc, [  --with-csc=CSC          Specify the C# compiler to use], , with_csc="$CSC")
+AC_CHECK_PROG(HAVE_CSC, csc.exe, yes, no)
+AC_CHECK_PROG(HAVE_MCS, mcs, yes, no)
+
+# Prefer CSC.EXE over MCS for now.  This may be bad; but if wrong, using
+# --with-csc will always work, as it's evaluated last.
+if test x"$HAVE_MCS" = xyes ; then
+  CSC=mcs
+fi
+
+if test x"$HAVE_CSC" = xyes ; then
+  CSC=csc.exe
+fi
+
+if test x"$with_csc" = x -o x"$with_csc" = xno ; then
+  # Only give an error message if we don't already have a compiler specified
+  if test x"$CSC" = x ; then
+    echo "A C# compiler MUST be available.  Use --with-csc=CSC to specify it."
+  fi
+else
+  CSC="$with_csc"
+fi
+
+AC_SUBST(CSC)
+
+# Configure sub-packages
+AC_CONFIG_SUBDIRS("debugger")
+
+
+AC_OUTPUT([
+  Makefile
+])
+
+## Output Results
+
+echo
+echo
+echo "Mono Tools has been configured to be built using the following settings:"
+echo
+echo "  C# Compiler: $CSC"
+echo
+echo
+
