@@ -17,12 +17,31 @@ Building should be as simple as:
 Notes:
 -----
 
-To ensure that a directory is actually configured and built, add the directory
-to the file "subdirs".  This file contains the names of directories that
-should be configured and built as part of normal "make" handling.
+  * Subdirectories:
 
-If the subdirectory has an "autogen.sh" file, it will be executed when the
-top-level "autogen.sh" file is executed.
+    To ensure that a directory is actually configured and built, add the 
+    directory to the file "subdirs".  This file contains the names of 
+    directories that should be configured and built as part of normal "make" 
+    handling.
+
+    If the subdirectory has an "autogen.sh" file, it will be executed when the
+    top-level "autogen.sh" file is executed.
+
+  * VPATH and "make distcheck"
+
+    VPATH and "make distcheck" are not likely to be supported.  They make the
+    assumption that the files produced by the build process (such as
+    Makefiles, object files, binaries, etc.) can be separate from the source
+    tree.
+
+    While ideal, this effectively requires the use of Automake/Autoconf
+    by all sub-projects; maintaining this by hand is an odious requirement.
+
+    It is fairly probable that many, if not most, programs included in
+    mono-tools WILL NOT be using Automake or Autoconf, but normal Makefiles
+    (or even NAnt build scripts).
+
+    Thus, VPATH will not be supported at this time.
 
 
 Building an RPM:
