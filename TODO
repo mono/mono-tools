@@ -1,0 +1,20 @@
+mono-tools TODO list:
+--------------------
+
+Write a .spec file to generate mono-tools.rpm.
+
+Write a configure script.  It should:
+  - Invoke the debugger's `autogen.sh' file
+  - Check for a C# compiler
+  - Check for `jay'
+  - Handle the installation prefix
+
+The configure script should hand all of the above info the the debugger's
+autogen.sh (which may require mangling of some form).
+
+It should also generate top-level makefiles which record the prefix.
+
+This should allow makefile-based projects (like type-reflector) to be
+installed without always specifying the prefix, as that would be maintained by
+the mono-tools makefiles.
+
