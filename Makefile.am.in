@@ -4,7 +4,7 @@ AM_MAKEFLAGS = CSC=$(CSC) prefix=$(prefix)
 
 SUBDIRS = @subdirs@
 
-EXTRA_DIST = mono-tools.spec.in LICENSE MIT.X11
+EXTRA_DIST = mono-tools.spec.in subdirs LICENSE MIT.X11
 
 MT_RPM_BUILD_DIR = `rpmbuild --nobuild --eval "%{_topdir}" mono-tools.spec`
 MT_HOSTTYPE = $(shell echo $$HOSTTYPE)
