@@ -4,6 +4,12 @@
 
 DIE=0
 
+# This is a horrible hack, but allows us to keep Makefile.am and autogen.sh in
+# sync (regarding which directories we actually care about for building).
+
+subdirs=`cat subdirs`
+cat Makefile.am.in | sed "s/@subdirs@/$subdirs/" > Makefile.am
+
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
@@ -96,7 +102,7 @@ conf_flags="--enable-maintainer-mode --enable-compile-warnings" #--enable-iso-c
 
 # Let subdirs also run autogen.sh
 echo "Processing autogen.sh in subdirectories..."
-for d in ./* ; do
+for d in $subdirs ; do
   if [ -d "$d" -a -x "$d/autogen.sh" ]; then
     ( cd $d ; ./autogen.sh "$@" )
   fi

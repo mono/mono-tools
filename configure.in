@@ -36,6 +36,7 @@ AC_CONFIG_SUBDIRS("debugger")
 
 AC_OUTPUT([
   Makefile
+  mono-tools.spec
 ])
 
 ## Output Results

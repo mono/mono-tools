@@ -1,0 +1,44 @@
+Summary: Tools for use with the Mono Runtime
+Name: mono-tools
+Version: @VERSION@
+Release: 1
+License: Various (X11, GPL)
+Group: Development/Tools
+Source: http://www.go-mono.com/archive/mono-tools-0.1.tar.gz
+URL: http://www.go-mono.com/
+BuildRoot: %{_tmppath}/%{name}-root
+Requires: mono, gtk-sharp
+BuildRequires: mono-devel
+Packager: Jonathan Pryor <jonpryor@vt.edu>
+
+%description
+A collection of tools and utilities for use with the Mono runtime environment.
+
+%prep
+%setup -q
+
+%build
+./configure
+make
+
+%install
+rm -rf %{buildroot}
+%makeinstall
+
+%clean
+rm -rf %{buildroot}
+
+%post 
+
+%postun 
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS LICENSE MIT.X11 COPYING COPYING.LIB ChangeLog NEWS README
+%{_bindir}/type-reflector
+%{_bindir}/type-reflector.exe
+%{_bindir}/type-reflector.exe.config
+
+%changelog
+* Mon Oct 06 2003 Jonathan Pryor <jonpryor@vt.edu>
+- Initial RPM release.

@@ -1,0 +1,17 @@
+AUTOMAKE_OPTIONS = foreign
+
+AM_MAKEFLAGS = CSC=$(CSC) prefix=$(prefix)
+
+SUBDIRS = @subdirs@
+
+EXTRA_DIST = mono-tools.spec.in LICENSE MIT.X11
+
+MT_RPM_BUILD_DIR = `rpmbuild --nobuild --eval "%{_topdir}" mono-tools.spec`
+MT_HOSTTYPE = $(shell echo $$HOSTTYPE)
+
+dist-rpm: dist
+	cp $(distdir).tar.gz $(MT_RPM_BUILD_DIR)/SOURCES
+	rpmbuild -ba mono-tools.spec
+	cp $(MT_RPM_BUILD_DIR)/RPMS/$(MT_HOSTTYPE)/mono-tools*.rpm .
+	cp $(MT_RPM_BUILD_DIR)/SRPMS/mono-tools*.rpm .
+

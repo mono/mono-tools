@@ -1,0 +1,38 @@
+Mono Tools:
+----------
+
+Mono Tools is a collection of programs and utilities for use with Mono.
+
+
+Building:
+--------
+
+Building should be as simple as:
+
+    ./autogen.sh [typical configure flags, such as --prefix=PREFIX]
+    make
+    make install
+
+
+Notes:
+-----
+
+To ensure that a directory is actually configured and built, add the directory
+to the file "subdirs".  This file contains the names of directories that
+should be configured and built as part of normal "make" handling.
+
+If the subdirectory has an "autogen.sh" file, it will be executed when the
+top-level "autogen.sh" file is executed.
+
+
+Building an RPM:
+---------------
+
+1.  Run "autogen.sh", which creates and runs "configure", etc.
+
+    ./autogen.sh
+
+2.  Make the RPM:
+
+    sudo make dist-rpm
+
