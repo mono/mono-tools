@@ -1,0 +1,241 @@
+# GNUnit.
+# Copyright (C) 2003, 2004 Sebastien Pouliot
+# This file is distributed under the same license as the GNUnit package.
+# Sebastien Pouliot <spouliot@videotron.ca>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNUnit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-05 11:15+0200\n"
+"PO-Revision-Date: 2004-08-05 11:14+0200\n"
+"Last-Translator: Sebastien Pouliot <spouliot@videotron.ca>\n"
+"Language-Team: Sebastien Pouliot <spouliot@videotron.ca>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnunit/src/AssemblyStore.cs:279
+msgid "Already running some test(s)."
+msgstr "Test(s) en cours d'exécution."
+
+#: gnunit/src/AssemblyStore.cs:556
+msgid "Warning: unexpected combination."
+msgstr "Avertissement: combinaison innattendue."
+
+#: gnunit/src/AssemblyStore.cs:565
+#, csharp-format
+msgid "Don't know anything about {0}"
+msgstr "Aucune information n'est disponible sur {0}"
+
+#: gnunit/src/FileDialog.cs:26
+msgid "Select an assembly to load"
+msgstr "Choisir un assembly à charger"
+
+#: gnunit/src/nunit-gtk.glade.h:1
+msgid "Cancel"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:2
+msgid "Don't save results"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:3 gnunit/src/main.cs:505
+msgid "Error"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:4
+msgid "Error details"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:5
+msgid "Errors and failures"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:6
+msgid "Exit program"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:7
+msgid "File exists. Overwrite?"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:8
+msgid "Mono NUnit2 GUI"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:9
+msgid "Open"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:10
+msgid "Open assembly"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:11
+msgid "Quit"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:12
+msgid "Run"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:13
+msgid "Run selected test fixture(s)"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:14
+msgid "Save As"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:15
+msgid "Save results"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:16
+msgid "Save results to a XML file"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:17 gnunit/src/main.cs:102
+msgid "Show details >>"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:18
+msgid "Standard error"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:19
+msgid "Standard out"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:20
+msgid "Stop"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:21
+msgid "Test: "
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:22
+msgid "Tests not run"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:23
+msgid "_Clear recent"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:24
+msgid "_Recent assemblies"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:25
+msgid "label"
+msgstr ""
+
+#: gnunit/src/main.cs:35
+#, csharp-format
+msgid "<b>File {0} exists.</b>"
+msgstr "<b>Le fichier {0} existe.</b>"
+
+#: gnunit/src/main.cs:36
+msgid "Do you want to overwrite it?"
+msgstr "Voulez-vous le ré-écrire?"
+
+#: gnunit/src/main.cs:105
+msgid "Hide details <<"
+msgstr "Moins de détails <<"
+
+#: gnunit/src/main.cs:232
+msgid "No assembly loaded."
+msgstr "Aucun assembly n'est chargé."
+
+#: gnunit/src/main.cs:258
+#, csharp-format
+msgid "Loading {0}..."
+msgstr "Chargement de {0}..."
+
+#: gnunit/src/main.cs:366
+#, csharp-format
+msgid "Loading test {0} of {1}"
+msgstr "Chargement du test {0} de {1}"
+
+#: gnunit/src/main.cs:377
+msgid "Error loading assembly"
+msgstr "Erreur lors du chargement de l'assembly"
+
+#: gnunit/src/main.cs:378
+#, csharp-format
+msgid "Error loading '{0}'"
+msgstr "Erreur lors du chargement de '{0}'"
+
+#: gnunit/src/main.cs:428
+msgid "translator_credits"
+msgstr "Sebastien Pouliot <spouliot@videotron.ca>"
+
+#: gnunit/src/main.cs:450
+msgid "You have to select a test to run."
+msgstr "Un test doit être choisi pour s'exécuter."
+
+#: gnunit/src/main.cs:479
+msgid "No test results available"
+msgstr "Aucun résultat des tests n'est disponible"
+
+#: gnunit/src/main.cs:480
+msgid "You must run some tests in order to get results to save."
+msgstr "Des tests doivent être exécutés avant de conserver les résultats."
+
+#: gnunit/src/main.cs:486
+msgid "Save results to..."
+msgstr "Résultats conservés dans..."
+
+#: gnunit/src/main.cs:495
+msgid "Results not saved."
+msgstr "Résultats non conservés."
+
+#: gnunit/src/main.cs:506
+msgid "There has been an error saving the results.\n"
+msgstr "Une erreur est survenue lors de la conservation des résultats.\n"
+
+#: gnunit/src/main.cs:507
+msgid "Do you have correct permissions to write to that file?"
+msgstr "Avez-vous les permissions requises pour écrire dans ce fichier?"
+
+#: gnunit/src/main.cs:515
+#, csharp-format
+msgid "Results saved to {0}"
+msgstr "Résultats conservés dans {0}"
+
+#: gnunit/src/main.cs:592
+#, csharp-format
+msgid "Tests: {0} Ignored: {1} Failures: {2}"
+msgstr "Testés: {0} Ignorés: {1} Echecs: {2}"
+
+#: gnunit/src/main.cs:766
+msgid "Running tests..."
+msgstr "Tests en cours d'exécution..."
+
+#: gnunit/src/main.cs:808
+msgid "Cancelled on user request."
+msgstr "Opération interrompue sur demande de l'utilisateur."
+
+#: gnunit/src/main.cs:819
+#, csharp-format
+msgid "{0} tests loaded."
+msgstr "{0} tests chargés."
+
+#: gnunit/src/main.cs:837
+#, csharp-format
+msgid "Elapsed time: {0}"
+msgstr "Temps d'éxécution: {0}"
+
+#: gnunit/src/main.cs:847
+msgid "Unhandled Exception"
+msgstr "Exception non traitée"
+
+#: gnunit/src/main.cs:847
+msgid "There has been an unhandled exception.\n"
+msgstr ""
+
+#: gnunit/src/main.cs:848
+msgid "The program will terminate now."
+msgstr "Le logiciel va se terminer maintenant."

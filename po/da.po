@@ -1,0 +1,241 @@
+# Dansk oversættelse af GNUnit.
+# Copyright (C) 2003 2004 Martin Willemoes Hansen
+# This file is distributed under the same license as the GNUnit package.
+# Martin Willemoes Hansen <mwh@sysrq.dk>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNUnit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-05 11:15+0200\n"
+"PO-Revision-Date: 2004-08-05 11:11+0200\n"
+"Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
+"Language-Team: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnunit/src/AssemblyStore.cs:279
+msgid "Already running some test(s)."
+msgstr "Udfører allerede nogle test(s)."
+
+#: gnunit/src/AssemblyStore.cs:556
+msgid "Warning: unexpected combination."
+msgstr "Advarsel: uventet kombination."
+
+#: gnunit/src/AssemblyStore.cs:565
+#, csharp-format
+msgid "Don't know anything about {0}"
+msgstr "Ved intet om {0}"
+
+#: gnunit/src/FileDialog.cs:26
+msgid "Select an assembly to load"
+msgstr "Vælg en assembly til indlæsning"
+
+#: gnunit/src/nunit-gtk.glade.h:1
+msgid "Cancel"
+msgstr "Afbryd"
+
+#: gnunit/src/nunit-gtk.glade.h:2
+msgid "Don't save results"
+msgstr "Gem ikke resultater"
+
+#: gnunit/src/nunit-gtk.glade.h:3 gnunit/src/main.cs:505
+msgid "Error"
+msgstr "Fejl"
+
+#: gnunit/src/nunit-gtk.glade.h:4
+msgid "Error details"
+msgstr "Fejl deltaljer"
+
+#: gnunit/src/nunit-gtk.glade.h:5
+msgid "Errors and failures"
+msgstr "Fejl og mislykninger"
+
+#: gnunit/src/nunit-gtk.glade.h:6
+msgid "Exit program"
+msgstr "Afslut program"
+
+#: gnunit/src/nunit-gtk.glade.h:7
+msgid "File exists. Overwrite?"
+msgstr "Fil eksistere. Overskriv?"
+
+#: gnunit/src/nunit-gtk.glade.h:8
+msgid "Mono NUnit2 GUI"
+msgstr "Mono grafiskbrugerflade for NUnit2"
+
+#: gnunit/src/nunit-gtk.glade.h:9
+msgid "Open"
+msgstr "Åbn"
+
+#: gnunit/src/nunit-gtk.glade.h:10
+msgid "Open assembly"
+msgstr "Åbn assembly"
+
+#: gnunit/src/nunit-gtk.glade.h:11
+msgid "Quit"
+msgstr "Afslut"
+
+#: gnunit/src/nunit-gtk.glade.h:12
+msgid "Run"
+msgstr "Kør"
+
+#: gnunit/src/nunit-gtk.glade.h:13
+msgid "Run selected test fixture(s)"
+msgstr "Kør udvalgte testfiksering(er)"
+
+#: gnunit/src/nunit-gtk.glade.h:14
+msgid "Save As"
+msgstr "Gem som"
+
+#: gnunit/src/nunit-gtk.glade.h:15
+msgid "Save results"
+msgstr "Gem resultater"
+
+#: gnunit/src/nunit-gtk.glade.h:16
+msgid "Save results to a XML file"
+msgstr "Gem resultater til en XML fil"
+
+#: gnunit/src/nunit-gtk.glade.h:17 gnunit/src/main.cs:102
+msgid "Show details >>"
+msgstr "Vis detaljer >>"
+
+#: gnunit/src/nunit-gtk.glade.h:18
+msgid "Standard error"
+msgstr "Standard fejl"
+
+#: gnunit/src/nunit-gtk.glade.h:19
+msgid "Standard out"
+msgstr "Standard ud"
+
+#: gnunit/src/nunit-gtk.glade.h:20
+msgid "Stop"
+msgstr "Stop"
+
+#: gnunit/src/nunit-gtk.glade.h:21
+msgid "Test: "
+msgstr "Test: "
+
+#: gnunit/src/nunit-gtk.glade.h:22
+msgid "Tests not run"
+msgstr "Ikke kørte tests"
+
+#: gnunit/src/nunit-gtk.glade.h:23
+msgid "_Clear recent"
+msgstr "_Ryd seneste"
+
+#: gnunit/src/nunit-gtk.glade.h:24
+msgid "_Recent assemblies"
+msgstr "_Seneste assemblies"
+
+#: gnunit/src/nunit-gtk.glade.h:25
+msgid "label"
+msgstr "etiket"
+
+#: gnunit/src/main.cs:35
+#, csharp-format
+msgid "<b>File {0} exists.</b>"
+msgstr "<b>Fil {0} eksistere.</b>"
+
+#: gnunit/src/main.cs:36
+msgid "Do you want to overwrite it?"
+msgstr "Vil du overskrive den?"
+
+#: gnunit/src/main.cs:105
+msgid "Hide details <<"
+msgstr "Skjul detaljer"
+
+#: gnunit/src/main.cs:232
+msgid "No assembly loaded."
+msgstr "Ingen assembly indlæst."
+
+#: gnunit/src/main.cs:258
+#, csharp-format
+msgid "Loading {0}..."
+msgstr "Indlæser {0}..."
+
+#: gnunit/src/main.cs:366
+#, csharp-format
+msgid "Loading test {0} of {1}"
+msgstr "Indlæser test {0} af {1}"
+
+#: gnunit/src/main.cs:377
+msgid "Error loading assembly"
+msgstr "Fejl ved indlæsning af assembly"
+
+#: gnunit/src/main.cs:378
+#, csharp-format
+msgid "Error loading '{0}'"
+msgstr "Fejl ved indlæsning af '{0}'"
+
+#: gnunit/src/main.cs:428
+msgid "translator_credits"
+msgstr "Martin Willemoes Hansen <mwh@sysrq.dk>"
+
+#: gnunit/src/main.cs:450
+msgid "You have to select a test to run."
+msgstr "Du mangler at vælge en test til udførsel"
+
+#: gnunit/src/main.cs:479
+msgid "No test results available"
+msgstr "Ingen test resultater tilgængelig"
+
+#: gnunit/src/main.cs:480
+msgid "You must run some tests in order to get results to save."
+msgstr "Du mangler at udfører nogle tests, for at kunne gemme resultatet."
+
+#: gnunit/src/main.cs:486
+msgid "Save results to..."
+msgstr "Gem resultatet i..."
+
+#: gnunit/src/main.cs:495
+msgid "Results not saved."
+msgstr "Resultatet ikke gemt."
+
+#: gnunit/src/main.cs:506
+msgid "There has been an error saving the results.\n"
+msgstr "Der opstod en fejl, med at gemme resultatet.\n"
+
+#: gnunit/src/main.cs:507
+msgid "Do you have correct permissions to write to that file?"
+msgstr "Har du skrive rettigheder til filen?"
+
+#: gnunit/src/main.cs:515
+#, csharp-format
+msgid "Results saved to {0}"
+msgstr "Resultat gemt til {0}"
+
+#: gnunit/src/main.cs:592
+#, csharp-format
+msgid "Tests: {0} Ignored: {1} Failures: {2}"
+msgstr "Tests: {0} Ignorerede: {1} Mislykket: {2}"
+
+#: gnunit/src/main.cs:766
+msgid "Running tests..."
+msgstr "Udfører tests..."
+
+#: gnunit/src/main.cs:808
+msgid "Cancelled on user request."
+msgstr "Brugeren valgte at afbryde."
+
+#: gnunit/src/main.cs:819
+#, csharp-format
+msgid "{0} tests loaded."
+msgstr "{0} tests indlæst."
+
+#: gnunit/src/main.cs:837
+#, csharp-format
+msgid "Elapsed time: {0}"
+msgstr "Tid gået: {0}"
+
+#: gnunit/src/main.cs:847
+msgid "Unhandled Exception"
+msgstr "Uhåndteret undtagelse"
+
+#: gnunit/src/main.cs:847
+msgid "There has been an unhandled exception.\n"
+msgstr "Der har været en uhåndteret undtagelse.\n"
+
+#: gnunit/src/main.cs:848
+msgid "The program will terminate now."
+msgstr "Programmet afslutter nu."

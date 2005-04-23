@@ -1,0 +1,31 @@
+2004-08-05  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* ca.po: Updated to use msg_id: translator_credits
+	* da.po: Ditto
+	* es.po: Ditto
+	* fr.po: Ditto
+
+2004-05-30  Jordi Mas <jordi@ximian.com>
+	* po/ca.po. Catalan localisation
+
+2004-05-29  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* po/da.po:
+	* po/es.po:
+	* po/fr.po: updated.
+
+2004-05-28  Martin Willemoes Hansen  <mwh@sysrq.dk>
+
+	* da.po: Converted from strings.da.txt 
+	* es.po: Converted from strings.es.txt
+	* fr.po: Converted from strings.fr.txt
+
+2004-01-31  Sebastien Pouliot  <spouliot@videotron.ca>
+
+        * strings.fr.txt: Updated with new strings.
+
+2003-05-04  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+        * ChangeLog: added.
+        * README: some notes on translations.
+        * strings.da.txt: Danish strings from Martin Willemoes Hansen.

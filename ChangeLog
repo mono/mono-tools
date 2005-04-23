@@ -1,5 +1,8 @@
+2005-04-23  Mike Kestner  <mkestner@novell.com>
+
+	* gnunit : moved the nunit-gtk project here.
+	* monodoc-browser : moved the gui browser here from monodoc.
+
 2003-10-11	Jonathan Pryor	<jonpryor@vt.edu>
 	* Started ChangeLog
-
-# vim: noexpandtab
 

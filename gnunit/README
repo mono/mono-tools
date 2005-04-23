@@ -1,0 +1,24 @@
+* gnunit (formerly nunit-gtk)
+------------
+
+gnunit is a frontend for running NUnit 2 test suites.
+
+* Directory layout
+-------------------
+
+	AUTHORS
+	NEWS
+	README
+	ChangeLog
+	configure.in
+	autogen.sh
+	Makefile.am
+
+	src/
+		Source files for nunit-gtk.
+	art/
+		Actually this directory should be called pseudo-random-art.
+		It contains a few PNG images used in nunit-gtk.
+
+-Gonzalo
+

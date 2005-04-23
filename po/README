@@ -1,0 +1,21 @@
+Notes on how to do a localization (l10n) for GNunit
+========================================================
+
+Creating a l10n:
+        First of all you create a template to base your translation on:
+                intltool-update --pot
+
+        Then copy it to your translation
+                cp gnunit.pot da_DK.po
+        Do your translation, with some kind of editor
+                emacs da_DK.po
+		it has to be UTF-8 encoded.
+
+        Add your l10n to configure.in, find the ALL_LINGUAS variable and add your
+        l10n to it.
+
+
+Updating your l10n:
+------------------
+        To update an existing po fx da_DK.po:
+                intltool-update da_DK

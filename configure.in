@@ -1,51 +1,60 @@
-AC_INIT(Makefile.in)
+AC_INIT(README)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(mono-tools, 0.1)
+AM_INIT_AUTOMAKE(mono-tools, 0.99)
 AM_MAINTAINER_MODE
 
 AC_PROG_INSTALL
 
-AC_ARG_WITH(csc, [  --with-csc=CSC          Specify the C# compiler to use], , with_csc="$CSC")
-AC_CHECK_PROG(HAVE_CSC, csc.exe, yes, no)
-AC_CHECK_PROG(HAVE_MCS, mcs, yes, no)
+dnl C# compiler
+AC_PATH_PROG(MCS, mcs, no)
 
-# Prefer CSC.EXE over MCS for now.  This may be bad; but if wrong, using
-# --with-csc will always work, as it's evaluated last.
-if test x"$HAVE_MCS" = xyes ; then
-  CSC=mcs
+CS="C#"
+if test "x$MCS" = "xno"  ; then
+	dnl AC_MSG_ERROR([You need to install a C# compiler])
+	AC_MSG_ERROR([No $CS compiler found])
 fi
 
-if test x"$HAVE_CSC" = xyes ; then
-  CSC=csc.exe
+dnl monoresgen
+AC_PATH_PROG(MONORESGEN, monoresgen, no)
+if test "x$MONORESGEN" = "xno"  ; then
+	AC_MSG_ERROR([monoresgen not found in $PATH])
 fi
 
-if test x"$with_csc" = x -o x"$with_csc" = xno ; then
-  # Only give an error message if we don't already have a compiler specified
-  if test x"$CSC" = x ; then
-    echo "A C# compiler MUST be available.  Use --with-csc=CSC to specify it."
-  fi
-else
-  CSC="$with_csc"
+AC_SUBST(MCS)
+AC_SUBST(MONORESGEN)
+
+PKG_CHECK_MODULES(NUNIT, mono-nunit)
+AC_SUBST(NUNIT_LIBS)
+
+PKG_CHECK_MODULES(GTK_SHARP, glade-sharp-2.0 gnome-sharp-2.0 gconf-sharp-2.0 gtkhtml-sharp-2.0, enable_gtks=yes, enable_gtks=no)
+if test "x$enable_gtks" = "xno" ; then
+	PKG_CHECK_MODULES(GTK_SHARP, glade-sharp gnome-sharp gconf-sharp gtkhtml-sharp, enable_gtks=yes, enable_gtks=no)
+	if test "x$enable_gtks" = "xno" ; then
+		AC_MSG_ERROR([gtk-sharp not found])
+	fi
 fi
+AC_SUBST(GTK_SHARP_LIBS)
 
-AC_SUBST(CSC)
-
-# Configure sub-packages
-AC_CONFIG_SUBDIRS("debugger")
-
+dnl Intl
+GETTEXT_PACKAGE=mono-tools
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package])
+ALL_LINGUAS="da es fr ca pt_BR"
+AM_GLIB_GNU_GETTEXT
 
 AC_OUTPUT([
-  Makefile
-  mono-tools.spec
+Makefile
+gnunit/Makefile
+gnunit/art/Makefile
+gnunit/src/Makefile
+gnunit/src/AssemblyInfo.cs
+gnunit/src/catalog.cs
+monodoc-browser/Makefile
+po/Makefile.in
 ])
 
-## Output Results
-
-echo
-echo
-echo "Mono Tools has been configured to be built using the following settings:"
-echo
-echo "  C# Compiler: $CSC"
-echo
-echo
-
+echo "---"
+echo "Configuration summary"
+echo ""
+echo "   * Installation prefix = $prefix"
+echo ""

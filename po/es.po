@@ -1,0 +1,241 @@
+# GNUnit
+# Copyright (C) 2003, 2004 Gonzalo Paniagua Javier
+# This file is distributed under the same license as the GNUnit package.
+# Gonzalo Paniagua Javier <gonzalo@ximian.com>, 2003, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNUnit\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-05 11:15+0200\n"
+"PO-Revision-Date: 2004-08-05 11:14+0200\n"
+"Last-Translator: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
+"Language-Team: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnunit/src/AssemblyStore.cs:279
+msgid "Already running some test(s)."
+msgstr "Ya se están ejecutando tests."
+
+#: gnunit/src/AssemblyStore.cs:556
+msgid "Warning: unexpected combination."
+msgstr "Aviso: combinación no esperada."
+
+#: gnunit/src/AssemblyStore.cs:565
+#, csharp-format
+msgid "Don't know anything about {0}"
+msgstr ""
+
+#: gnunit/src/FileDialog.cs:26
+msgid "Select an assembly to load"
+msgstr "Elija un assembly para cargar"
+
+#: gnunit/src/nunit-gtk.glade.h:1
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: gnunit/src/nunit-gtk.glade.h:2
+msgid "Don't save results"
+msgstr "No guardar resultados"
+
+#: gnunit/src/nunit-gtk.glade.h:3 gnunit/src/main.cs:505
+msgid "Error"
+msgstr "Error"
+
+#: gnunit/src/nunit-gtk.glade.h:4
+msgid "Error details"
+msgstr "Detalles del error"
+
+#: gnunit/src/nunit-gtk.glade.h:5
+msgid "Errors and failures"
+msgstr "Errores y fallos"
+
+#: gnunit/src/nunit-gtk.glade.h:6
+msgid "Exit program"
+msgstr "Salir del programa"
+
+#: gnunit/src/nunit-gtk.glade.h:7
+msgid "File exists. Overwrite?"
+msgstr "El fichero existe. ¿Sobreescribir?"
+
+#: gnunit/src/nunit-gtk.glade.h:8
+msgid "Mono NUnit2 GUI"
+msgstr ""
+
+#: gnunit/src/nunit-gtk.glade.h:9
+msgid "Open"
+msgstr "Abrir"
+
+#: gnunit/src/nunit-gtk.glade.h:10
+msgid "Open assembly"
+msgstr "Carga un ensamblado"
+
+#: gnunit/src/nunit-gtk.glade.h:11
+msgid "Quit"
+msgstr "Salir"
+
+#: gnunit/src/nunit-gtk.glade.h:12
+msgid "Run"
+msgstr "Ejecutar"
+
+#: gnunit/src/nunit-gtk.glade.h:13
+msgid "Run selected test fixture(s)"
+msgstr "Ejecutar los tests seleccionados"
+
+#: gnunit/src/nunit-gtk.glade.h:14
+msgid "Save As"
+msgstr "Guardar como"
+
+#: gnunit/src/nunit-gtk.glade.h:15
+msgid "Save results"
+msgstr "Guardar resultados"
+
+#: gnunit/src/nunit-gtk.glade.h:16
+msgid "Save results to a XML file"
+msgstr "Guardar resultados a un fichero XML"
+
+#: gnunit/src/nunit-gtk.glade.h:17 gnunit/src/main.cs:102
+msgid "Show details >>"
+msgstr "Mostrar detalles >>"
+
+#: gnunit/src/nunit-gtk.glade.h:18
+msgid "Standard error"
+msgstr "Salida de error"
+
+#: gnunit/src/nunit-gtk.glade.h:19
+msgid "Standard out"
+msgstr "Salida estándar"
+
+#: gnunit/src/nunit-gtk.glade.h:20
+msgid "Stop"
+msgstr "Detener"
+
+#: gnunit/src/nunit-gtk.glade.h:21
+msgid "Test: "
+msgstr "Test: "
+
+#: gnunit/src/nunit-gtk.glade.h:22
+msgid "Tests not run"
+msgstr "Tests no ejecutados"
+
+#: gnunit/src/nunit-gtk.glade.h:23
+msgid "_Clear recent"
+msgstr "_Borra recientes"
+
+#: gnunit/src/nunit-gtk.glade.h:24
+msgid "_Recent assemblies"
+msgstr "Ficheros _recientes"
+
+#: gnunit/src/nunit-gtk.glade.h:25
+msgid "label"
+msgstr "etiqueta"
+
+#: gnunit/src/main.cs:35
+#, csharp-format
+msgid "<b>File {0} exists.</b>"
+msgstr "<b>El fichero {0} existe.</b>"
+
+#: gnunit/src/main.cs:36
+msgid "Do you want to overwrite it?"
+msgstr "¿Lo quiere sobreescribir?"
+
+#: gnunit/src/main.cs:105
+msgid "Hide details <<"
+msgstr "Ocultar detalles <<"
+
+#: gnunit/src/main.cs:232
+msgid "No assembly loaded."
+msgstr "No hay ningún assembly cargado."
+
+#: gnunit/src/main.cs:258
+#, csharp-format
+msgid "Loading {0}..."
+msgstr "Cargando {0}..."
+
+#: gnunit/src/main.cs:366
+#, csharp-format
+msgid "Loading test {0} of {1}"
+msgstr "Cargando test {0} de {1}"
+
+#: gnunit/src/main.cs:377
+msgid "Error loading assembly"
+msgstr "Error cargando assembly"
+
+#: gnunit/src/main.cs:378
+#, csharp-format
+msgid "Error loading '{0}'"
+msgstr "Error cargando '{0}'"
+
+#: gnunit/src/main.cs:428
+msgid "translator_credits"
+msgstr "Gonzalo Paniagua Javier <gonzalo@ximian.com>"
+
+#: gnunit/src/main.cs:450
+msgid "You have to select a test to run."
+msgstr "Debe seleccionar un test para ejecutar"
+
+#: gnunit/src/main.cs:479
+msgid "No test results available"
+msgstr "No hay resultados de tests disponibles"
+
+#: gnunit/src/main.cs:480
+msgid "You must run some tests in order to get results to save."
+msgstr "Debe ejecutar algún test para tener resultados que guardar."
+
+#: gnunit/src/main.cs:486
+msgid "Save results to..."
+msgstr "Guardar resultados como..."
+
+#: gnunit/src/main.cs:495
+msgid "Results not saved."
+msgstr "No se han guardado los resultados."
+
+#: gnunit/src/main.cs:506
+msgid "There has been an error saving the results.\n"
+msgstr "Ocurrió un error guardando los resultados.\n"
+
+#: gnunit/src/main.cs:507
+msgid "Do you have correct permissions to write to that file?"
+msgstr "¿Tiene permiso de escritura sobre ese fichero?"
+
+#: gnunit/src/main.cs:515
+#, csharp-format
+msgid "Results saved to {0}"
+msgstr "Resultados guardados en {0}"
+
+#: gnunit/src/main.cs:592
+#, csharp-format
+msgid "Tests: {0} Ignored: {1} Failures: {2}"
+msgstr "Tests: {0} Ignorados: {1} Fallos: {2}"
+
+#: gnunit/src/main.cs:766
+msgid "Running tests..."
+msgstr "Ejecutando tests..."
+
+#: gnunit/src/main.cs:808
+msgid "Cancelled on user request."
+msgstr "Cancelado a petición del usuario"
+
+#: gnunit/src/main.cs:819
+#, csharp-format
+msgid "{0} tests loaded."
+msgstr "{0} tests cargados."
+
+#: gnunit/src/main.cs:837
+#, csharp-format
+msgid "Elapsed time: {0}"
+msgstr "Tiempo transcurrido: {0}"
+
+#: gnunit/src/main.cs:847
+msgid "Unhandled Exception"
+msgstr "Excepción no controlada"
+
+#: gnunit/src/main.cs:847
+msgid "There has been an unhandled exception.\n"
+msgstr "Ha ocurrido una excepción no controlada\n"
+
+#: gnunit/src/main.cs:848
+msgid "The program will terminate now."
+msgstr "El programa terminará ahora."

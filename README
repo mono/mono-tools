@@ -1,7 +1,8 @@
 Mono Tools:
 ----------
 
-Mono Tools is a collection of programs and utilities for use with Mono.
+Mono Tools is a collection of development and testing programs and 
+utilities for use with Mono.
 
 
 Building:
@@ -9,49 +10,8 @@ Building:
 
 Building should be as simple as:
 
-    ./autogen.sh [typical configure flags, such as --prefix=PREFIX]
+    ./configure [typical configure flags, such as --prefix=PREFIX]
     make
     make install
 
-
-Notes:
------
-
-  * Subdirectories:
-
-    To ensure that a directory is actually configured and built, add the 
-    directory to the file "subdirs".  This file contains the names of 
-    directories that should be configured and built as part of normal "make" 
-    handling.
-
-    If the subdirectory has an "autogen.sh" file, it will be executed when the
-    top-level "autogen.sh" file is executed.
-
-  * VPATH and "make distcheck"
-
-    VPATH and "make distcheck" are not likely to be supported.  They make the
-    assumption that the files produced by the build process (such as
-    Makefiles, object files, binaries, etc.) can be separate from the source
-    tree.
-
-    While ideal, this effectively requires the use of Automake/Autoconf
-    by all sub-projects; maintaining this by hand is an odious requirement.
-
-    It is fairly probable that many, if not most, programs included in
-    mono-tools WILL NOT be using Automake or Autoconf, but normal Makefiles
-    (or even NAnt build scripts).
-
-    Thus, VPATH will not be supported at this time.
-
-
-Building an RPM:
----------------
-
-1.  Run "autogen.sh", which creates and runs "configure", etc.
-
-    ./autogen.sh
-
-2.  Make the RPM:
-
-    sudo make dist-rpm
 

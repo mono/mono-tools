@@ -1,0 +1,454 @@
+# Mono Tools Portuguese (Brazilian) translation
+# Copyright (C) 2004, Maurício de Lemos Rodrigues Collares Neto <mauricioc@gmail.com>
+#
+# This file is distributed under the same license as the MonoDoc package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Mono Tools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-07-01 20:59-0300\n"
+"PO-Revision-Date: 2004-07-06 00:13-0300\n"
+"Last-Translator: Maurício de Lemos Rodrigues Collares Neto <mauricioc@gmail."
+"com>\n"
+"Language-Team: Maurício de Lemos Rodrigues Collares Neto <mauricioc@gmail."
+"com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: monodoc-browser/browser.glade:8
+msgid "Mono Documentation Library"
+msgstr "Biblioteca de documentação do Mono"
+
+#: monodoc-browser/browser.glade:30
+msgid "_File"
+msgstr "_Arquivo"
+
+#: monodoc-browser/browser.glade:39
+msgid "_Lookup URL"
+msgstr "_Procurar URL"
+
+#: monodoc-browser/browser.glade:61
+msgid "_Upload Contributions"
+msgstr "_Enviar contribuições"
+
+#: monodoc-browser/browser.glade:71
+msgid "Quit"
+msgstr "Sair"
+
+#: monodoc-browser/browser.glade:97
+msgid "_Edit"
+msgstr "_Editar"
+
+#: monodoc-browser/browser.glade:106
+msgid "_Copy"
+msgstr "_Copiar"
+
+#: monodoc-browser/browser.glade:128
+msgid "Select All"
+msgstr "Selecionar tudo"
+
+#: monodoc-browser/browser.glade:144
+msgid "Editing"
+msgstr "Edição"
+
+#: monodoc-browser/browser.glade:158
+msgid "_View"
+msgstr "E_xibir"
+
+#: monodoc-browser/browser.glade:167
+msgid "Collapse All"
+msgstr "Contrair todos"
+
+#: monodoc-browser/browser.glade:176
+msgid "Show Inherited Members"
+msgstr "Exibir membros herdados"
+
+#: monodoc-browser/browser.glade:185
+msgid "Show Comments"
+msgstr "Exibir comentários"
+
+#: monodoc-browser/browser.glade:199
+msgid "_Bookmarks"
+msgstr "_Marcadores"
+
+#: monodoc-browser/browser.glade:208
+msgid "_Add bookmark"
+msgstr "_Adicionar marcador"
+
+#: monodoc-browser/browser.glade:217
+msgid "_Edit bookmarks..."
+msgstr "_Editar marcadores..."
+
+#: monodoc-browser/browser.glade:230
+msgid "_Help"
+msgstr "A_juda"
+
+#: monodoc-browser/browser.glade:239
+msgid "Abou"
+msgstr "Sobre"
+
+#: monodoc-browser/browser.glade:388 monodoc-browser/browser.glade:748
+msgid "n/a"
+msgstr "n/d"
+
+#: monodoc-browser/browser.glade:497
+msgid "_Contents"
+msgstr "_Conteúdo"
+
+#: monodoc-browser/browser.glade:571
+msgid "_Look for:"
+msgstr "_Procurar por:"
+
+#: monodoc-browser/browser.glade:619 monodoc-browser/browser.glade:1445
+#: monodoc-browser/browser.glade:1666 monodoc-browser/browser.glade:2049
+#: monodoc-browser/browser.glade:3010 monodoc-browser/browser.glade:3033
+#: monodoc-browser/browser.glade:3082
+msgid "*"
+msgstr "*"
+
+#: monodoc-browser/browser.glade:721
+msgid "_Index"
+msgstr "_Índice"
+
+#: monodoc-browser/browser.glade:791
+msgid "_Search"
+msgstr "_Busca"
+
+#: monodoc-browser/browser.glade:858
+msgid "label16"
+msgstr "label16"
+
+#: monodoc-browser/browser.glade:930
+msgid "<e_xample>"
+msgstr "<e_xample>"
+
+#: monodoc-browser/browser.glade:946
+msgid "<list>"
+msgstr "<list>"
+
+#: monodoc-browser/browser.glade:962
+msgid "<_table>"
+msgstr "<_table>"
+
+#: monodoc-browser/browser.glade:978
+msgid "<_see...>"
+msgstr "<_see...>"
+
+#: monodoc-browser/browser.glade:994
+msgid "<_para>"
+msgstr "<_para>"
+
+#: monodoc-browser/browser.glade:1010
+msgid "Add Note\t"
+msgstr "Adicionar nota\t"
+
+#: monodoc-browser/browser.glade:1054
+msgid "Preview"
+msgstr "Pré-visualizar"
+
+#: monodoc-browser/browser.glade:1112
+msgid "C_lose"
+msgstr "_Fechar"
+
+#: monodoc-browser/browser.glade:1129
+msgid "S_ave"
+msgstr "_Salvar"
+
+#: monodoc-browser/browser.glade:1157
+msgid "label17"
+msgstr "label17"
+
+#: monodoc-browser/browser.glade:1217
+msgid "About monodoc"
+msgstr "Sobre o monodoc"
+
+#: monodoc-browser/browser.glade:1257
+msgid ""
+"<span size=\"larger\"><b>monodoc:</b> The Mono Documentation Library viewer</"
+"span>"
+msgstr "<span size=\"larger\"><b>monodoc:</b> O visualizador da Bibiloteca de Documentação do Mono</span>"
+
+#: monodoc-browser/browser.glade:1292
+msgid ""
+"<b>Authors:</b>\n"
+"   Miguel de Icaza (miguel@ximian.com)\n"
+"   Duncan Mak (duncan@ximian.com)\n"
+"   Joshua Tauberer (tauberer@for.net)\n"
+"   Lee Malabone\n"
+"   Philip Van Hoof\n"
+"   Johannes Roith (johannes@jroith.de)\n"
+"   Alp Toker (alp@atoker.com)\n"
+"   Piers Haken\n"
+"   John Luke (jluke@cfl.rr.com)\n"
+"   Ben Maurer"
+msgstr ""
+"<b>Autores:</b>\n"
+"   Miguel de Icaza (miguel@ximian.com)\n"
+"   Duncan Mak (duncan@ximian.com)\n"
+"   Joshua Tauberer (tauberer@for.net)\n"
+"   Lee Malabone\n"
+"   Philip Van Hoof\n"
+"   Johannes Roith (johannes@jroith.de)\n"
+"   Alp Toker (alp@atoker.com)\n"
+"   Piers Haken\n"
+"   John Luke (jluke@cfl.rr.com)\n"
+"   Ben Maurer"
+
+
+#: monodoc-browser/browser.glade:1324
+msgid ""
+"<b>Plugins:</b>\n"
+"  ECMA Documentation.\n"
+"  Mono XML Documentation.\n"
+"  Mono Handbook.\n"
+"  Manual Pages.\n"
+"  Compiler Errors.\n"
+"  ECMA C# Specification."
+msgstr ""
+"<b>Plugins:</b>\n"
+"  ECMA Documentation.\n"
+"  Mono XML Documentation.\n"
+"  Mono Handbook.\n"
+"  Manual Pages.\n"
+"  Compiler Errors.\n"
+"  ECMA C# Specification."
+
+
+#: monodoc-browser/browser.glade:1398
+msgid "Lookup"
+msgstr "Procurar"
+
+#: monodoc-browser/browser.glade:1416
+msgid "_Url to lookup:"
+msgstr "_URL a procurar:"
+
+#: monodoc-browser/browser.glade:1448
+msgid "lookup_entry"
+msgstr "lookup_entry"
+
+#: monodoc-browser/browser.glade:1495
+msgid "Login configuration"
+msgstr "Configuração de login"
+
+#: monodoc-browser/browser.glade:1522
+msgid ""
+"You can edit the contents of the API documentation in MonoDoc and "
+"contribute\n"
+"those back.  To do this you must agree to relicense your updates under the "
+"terms\n"
+"of the MIT X11 Open Source License and register your email address with the\n"
+"documentation service.\n"
+"\n"
+"If you agree, click Continue"
+msgstr "Você pode editar o conteúdo da documentação da API no MonoDoc e contribuir\n este de volta. Para fazer isto, você tem que concordar em re-licenciar suas atualizações sob os termos da licença Open Source MIT X11 e registrar seu endereço de email com o\n serviço de documentação.\n\nSe você concorda, clique em Continuar"
+
+#: monodoc-browser/browser.glade:1578 monodoc-browser/browser.glade:1738
+#: monodoc-browser/browser.glade:2110
+msgid "Continue"
+msgstr "Continuar"
+
+#: monodoc-browser/browser.glade:1606
+msgid "0"
+msgstr "0"
+
+#: monodoc-browser/browser.glade:1637
+msgid "_Email:"
+msgstr "_Email:"
+
+#: monodoc-browser/browser.glade:1680
+msgid "xx"
+msgstr "xx"
+
+#: monodoc-browser/browser.glade:1766
+msgid "1"
+msgstr "1"
+
+#: monodoc-browser/browser.glade:1791
+msgid "Monodoc is requesting an account for you."
+msgstr "O Monodoc está requisitando uma conta para você."
+
+#: monodoc-browser/browser.glade:1843 monodoc-browser/browser.glade:2219
+#: monodoc-browser/browser.glade:2507 monodoc-browser/browser.glade:2847
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: monodoc-browser/browser.glade:1871
+msgid "2"
+msgstr "2"
+
+#: monodoc-browser/browser.glade:1896
+msgid ""
+"<b>Error:</b> Monodoc encountered a failure when requesting\n"
+"a password for your e-mail address.  Try again later."
+msgstr ""
+"<b>Erro:</b> O Monodoc encontrou um erro ao requisitar\n"
+"uma senha pro seu endereço de email. Tente de novo mais tarde."
+
+#: monodoc-browser/browser.glade:1932 monodoc-browser/browser.glade:2314
+#: monodoc-browser/browser.glade:2402 monodoc-browser/browser.glade:2595
+#: monodoc-browser/browser.glade:2684 monodoc-browser/browser.glade:2773
+msgid "Ok"
+msgstr "Ok"
+
+#: monodoc-browser/browser.glade:1961
+msgid "3"
+msgstr "3"
+
+#: monodoc-browser/browser.glade:1992
+msgid ""
+"Once you receive your password on the mail, please enter it\n"
+"here:\n"
+msgstr ""
+"Quando você receber a sua senha no email, favor digitá-la\n"
+"aqui:\n"
+
+#: monodoc-browser/browser.glade:2021
+msgid "Password:"
+msgstr "Senha:"
+
+#: monodoc-browser/browser.glade:2139
+msgid "4"
+msgstr "4"
+
+#: monodoc-browser/browser.glade:2164
+msgid "MonoDoc is logging into the server."
+msgstr "O MonoDoc está autenticando-se no servidor."
+
+#: monodoc-browser/browser.glade:2254
+msgid "5"
+msgstr "5"
+
+#: monodoc-browser/browser.glade:2279
+msgid ""
+"<b>Congratulations!</b> \n"
+"\n"
+"You can now contribute your changes to MonoDoc by using \n"
+"the File/Upload menu option."
+msgstr ""
+"<b>Parabéns!</b> \n"
+"\n"
+"Agora você pode contribuir suas mudanças para o MonoDoc usando \n"
+"a opção de menu Arquivo/Enviar contribuição."
+
+#: monodoc-browser/browser.glade:2343
+msgid "6"
+msgstr "6"
+
+#: monodoc-browser/browser.glade:2368
+msgid ""
+"<b>Terminated</b> \n"
+"\n"
+"The request to the Monodoc server has been cancelled."
+msgstr ""
+"<b>Terminado</b> \n"
+"\n"
+"A requisição ao servidor do Monodoc foi cancelada."
+
+#: monodoc-browser/browser.glade:2431
+msgid "7"
+msgstr "7"
+
+#: monodoc-browser/browser.glade:2456
+msgid ""
+"<b>Please wait</b>\n"
+"\n"
+"MonoDoc is checking the server version."
+msgstr ""
+"<b>Favor esperar</b>\n"
+"\n"
+"O MonoDoc está verificando a versão do servidor."
+
+#: monodoc-browser/browser.glade:2535
+msgid "8"
+msgstr "8"
+
+#: monodoc-browser/browser.glade:2560
+msgid ""
+"<b>Communications Problem</b> \n"
+"\n"
+"There was a communications problem when communicating\n"
+"with the Mono Documentation Server."
+msgstr ""
+"<b>Problema na comunicação</b> \n"
+"\n"
+"Houve um problema de comunicação ao tentar se comunicar\n"
+"com o Servidor de Documentação do Mono."
+
+#: monodoc-browser/browser.glade:2624
+msgid "9"
+msgstr "9"
+
+#: monodoc-browser/browser.glade:2649
+msgid ""
+"<b>Version missmatch</b> \n"
+"\n"
+"This version of MonoDoc is not compatible with the current Monodoc\n"
+"server, please upgrade your MonoDoc installation."
+msgstr ""
+"<b>Incompatibilidade de versões</b> \n"
+"\n"
+"Esta versão do MonoDoc não é compatível com o servidor atual do\n"
+"Monodoc, favor atualizar a sua instalação do MonoDoc."
+
+#: monodoc-browser/browser.glade:2713
+msgid "10"
+msgstr "10"
+
+#: monodoc-browser/browser.glade:2738
+msgid ""
+"<b>Password Problem</b> \n"
+"\n"
+"The passkey entered is incorrect. \n"
+"Please try again."
+msgstr ""
+"<b>Problema com a senha</b> \n"
+"\n"
+"A senha digitada está incorreta. \n"
+"Favor tentar novamente."
+
+#: monodoc-browser/browser.glade:2802
+msgid "11"
+msgstr "11"
+
+#: monodoc-browser/browser.glade:2823
+msgid "Uploading Documentation Updates - MonoDoc"
+msgstr "Enviando atualizações de documentação - MonoDoc"
+
+#: monodoc-browser/browser.glade:2872
+msgid "Monodoc Documentation Updates Uploader. "
+msgstr "Enviador de atualizações para a documentação do MonoDoc. "
+
+#: monodoc-browser/browser.glade:2899
+msgid "<b>Status:</b> "
+msgstr "<b>Status:</b> "
+
+#: monodoc-browser/browser.glade:2957
+msgid "New Comment"
+msgstr "Novo comentário"
+
+#: monodoc-browser/browser.glade:2974
+msgid "TODO: Some advise on posting here."
+msgstr "TODO: Alguns conselhos sobre envio aqui."
+
+#: monodoc-browser/browser.glade:3050
+msgid "Title:"
+msgstr "Título:"
+
+#: monodoc-browser/browser.glade:3099
+msgid "Comment"
+msgstr "Comentário"
+
+#: monodoc-browser/browser.glade:3125
+msgid "E-Mail:"
+msgstr "E-Mail:"
+
+#: monodoc-browser/browser.glade:3151
+msgid "Name:"
+msgstr "Nome:"
+
+#: monodoc-browser/browser.glade:3267
+msgid "Edit bookmarks"
+msgstr "Editar marcadores:"
