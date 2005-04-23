@@ -1,0 +1,939 @@
+2005-04-23 Mike Kestner <mkestner@novell.com>
+
+	* Makefile.am : distcheck fixes.
+
+2005-04-23 Mike Kestner <mkestner@novell.com>
+
+	* Makefile.am : removed the browser.exe targets. Use /package monodoc.
+	* browser.glade : moved to mono-tools.
+	* browser.cs : moved to mono-tools.
+	* list.cs : moved to mono-tools.
+	* elabel.cs : moved to mono-tools.
+	* history.cs : moved to mono-tools.
+
+2005-04-22 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* monodoc.xml: removed the monkeyguide.
+
+2005-02-03  Atsushi Enomoto  <atsushi@ximian.com>
+
+	* xhtml-provider.cs : added more URI scheme. Without them monkeyguide
+	  fails to build.
+	* ecma-provider.cs : MS.NET will complain about access to nonpublic 
+	  class on XSL extension object (which mono currently does
+	  not check. see bug #70841). So make the class public for now.
+
+2005-01-20 Mario Sopena novales <masono1@teleco.upv.es>
+
+	* browser/browser.cs: Add support for Tabs: 
+		* add new Tab class that manages everything inside a Tab
+		* move the necesary code from Browser class to Tab class
+		* add two new methods in Browser: AddTab and ChangeTab
+		* handle ctrl-pageup and pagedown to change tab
+		* handle ctrl-click for new tabs
+		* add CurrentTab to let reference the current tab from within 
+		  Browser class
+
+	* browser/browser.glade: Add support for Tabs:
+		* remove all the code to generate what goes inside the tab
+		* added a new menu entry: New Tab
+
+	* browser/history.cs: added a new property Active (which let only the 
+		history object of the active tab to react to the button pressed
+		event).
+ 
+2005-01-24  Chris Toshok  <toshok@ximian.com>
+
+	* monodoc.xml: add Mono Development Tools node, with a spot under
+	it to hang debugger info.
+
+2005-01-24  Joshua Tauberer  <tauberer@for.net>
+	
+	* mono-ecma.xsl: Indent the namespace summaries with blockquote.
+	  Show namespace-relative type names in the namespace remarks
+	  sections.
+	* ecma-provider.cs: Since there are namespace Xml files repeated
+	  in the different assembly directories, Monodoc would use the
+	  last one, whereas only one would have the real namespace
+	  summary/remarks.  Now it ignores an Xml file if it contains
+	  an empty or "To be added." namespace summary.
+
+2005-01-22  Joshua Tauberer  <tauberer@for.net>
+
+	* ecma-provider.cs: For editing, generating XPath locations
+	of the edited node was different for properties than methods/
+	constructors, but it should have been the same since properties
+	can have parameters too.  It made some indexers uneditable.
+	(I meant to commit this at least a month ago.)
+	* browser.cs: Renamed the local XML docs editing feature to
+	  simply '--edit'
+	* mono-ecma.xsl: Cosmetic change to [Edit] links.
+
+2004-12-07  Atsushi Enomoto  <atsushi@ximian.com>
+
+	* cs2ecma.cs : added.
+	  It converts C# xml documentation file to ECMA format.
+	* Makefile.am : added cs2ecma.cs.
+
+2004-12-04  Joshua Tauberer <tauberer@for.net>
+
+	* ecmaspec-provider.cs: For sections that have subsections,
+	display links to the subsections in the HTML.  This also
+	makes a simple table of contents for the root page.
+
+2004-12-01  Raja R Harinath  <rharinath@novell.com>
+
+	* Makefile.am (monodoc_gtk_data): Rename from monodoc_gtk_DATA to
+	prevent an automake error.
+
+2004-11-30  Miguel de Icaza  <miguel@ximian.com>
+
+	* xhtml-provider.cs (GetAbsoluteLink): Avoid munging urls that
+	start with our "magic" prefixes, keep them as they are.
+
+2004-11-30  Atsushi Enomoto  <atsushi@ximian.com>
+
+	* configure.in,
+	  browser/monodoc.dll.config.in,
+	  browser/Makefile.am : Windows build is now available.
+	  - Skip browser.exe and dependency check on Windows.
+	  - Fixed gacutil installation location.
+	  - Rewrite document location in config (it just contains '.')
+
+2004-11-04  Jonathan Pryor <jonpryor@vt.edu>
+
+	* colorizer.cs: If a language is unrecognized, escape the XML so that it
+	  will be properly rendered within monodoc; 
+		- Fix ColorizeXml.  Due to an ordering dependency, the regex to colorize
+		  double-quoted strings was also replacing the attributes used in a prior
+		  substitution (to colorize XML tags).  This garbled the XML, making it
+		  unreadable.  Handling double-quoted strings earlier fixes this.
+		- Cleanup braces to follow code conventions.
+
+2004-11-01  Richard Torkar <richard.torkar@htu.se>
+
+	* index.cs: Make sure we catch the System.UnauthorizedAccessException 
+	that is thrown when the user has no write permissions to store the 
+	index file when using "monodoc --make-index".
+
+2004-09-06  Joshua Tauberer  <tauberer@for.net>
+
+	Editing of ECMA-style documentation directly off of the
+	"uncompiled" source XML documents.  Invoked with the
+	"--local-edit path-to-doc-sources" command line argument, e.g.:
+	--local-edit ../class/corlib/en
+	
+	Some improvements to the way type names and member signatures
+	are displayed in links in the ECMA pages.
+	
+	Some fixes to the way URLs are parsed by the ECMA provider.
+
+2004-08-25  Peter Williams  <peter@newton.cx>
+
+	* provider.cs: Allow a .source file to add nodes to the tree
+	with <node> elements. They will automatically be placed below
+	the "Various" node. Something of a hack, but needed for more
+	complicated third-party docs.
+
+2004-07-31  Peter Williams  <peter@newton.cx>
+
+	* xhtml-provider.cs: Keep a list of the temporary files we
+	create, and delete them after we're done creating the zip file.
+
+2004-07-31  Peter Williams  <peter@newton.cx>
+
+	* browser.cs (OnCopyActivate): If in editing mode, copy from
+	the text editor's selection, not the HTML view.
+
+2004-07-28  Peter Williams  <peter@newton.cx>
+
+	* browser.cs: Add support for pasting from the clipboard.
+
+	* browser.glade: Add a Paste menu item.
+
+2004-07-26  Ben Maurer  <bmaurer@ximian.com>
+
+	* mono-ecma.xsl: rendering editing urls is fairly slow, so limit
+	it in large enums.
+
+2004-07-16  Peter Williams  <peter@newton.cx>
+
+	* xhtml-provider.cs: Take a tocFile parameter telling us which file to load.
+	(XhtmlProvider): Pass the tocFile parameter.
+	
+2004-07-19  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Index enumeration values and delegates as
+	well.  The table of context index on my system is now half the
+	size of the actual data.  We need a mechanism to compress data. 
+
+2004-07-15  Peter Williams  <peter@newton.cx>
+
+	* ecmaspec-html.xsl: There are nested lists in the ECMA spec: see ecma334/10.8.xml.
+	Support them by iterating on <list>s as well as <list_item>s.
+
+2004-06-30  Ben Maurer  <bmaurer@ximian.com>
+
+	* mono-ecma.xsl: you can put an element <since version="blah" />
+	below the Docs element of a type or member and it will give
+	a notice for what versions it is available in.
+
+2004-06-25  Mike Kestner  <mkestner@ximian.com>
+
+	* monodoc.xml : s/gtkmozembed/gecko
+
+2004-06-23  Miguel de Icaza  <miguel@ximian.com>
+
+	* web/monodoc.ashx: Make the code cope with nulls in content by
+	rendering some help instead of crashing;   Throw exceptions on failure.
+
+2004-06-23  Ben Maurer  <bmaurer@ximian.com>
+	
+	* ecma-provider.cs: use fully qualified type names.
+
+2004-06-22  Fernando Herrera  <fherrera@onirica.com>
+
+       * browser/browser.cs: Expand/Collapse tree on double click.
+
+2004-06-21  Ben Maurer  <bmaurer@ximian.com>
+	
+	* admin.cs: give a warning if the change is from an old version
+	* browser.cs: Add hook to check for upgrade
+	* editing.cs: Add version to each Change. Do not display a change
+	if it is from a previous version. Close files when done.
+	* provider.cs: add monodoc version # field
+	* settings.cs (CheckUpgrade): New func to check if th user has
+	upgraded monodoc. LastSeenVersion is a new settign for the last
+	version of monodoc to launch (so we can check for fist launch
+	of a new version). Close files.
+
+2004-06-19  John Luke  <jluke@cfl.rr.com>
+
+	* browser.glade: stockify the Close and Save buttons while editing
+
+2004-06-17  Ben Maurer  <bmaurer@ximian.com>
+	
+	* error-provider.cs: Use XmlWriter correctly. Fixes bug #60307.
+
+2004-06-12  Radek Polak <psonek2@seznam.cz>
+
+	* editing.cs: Creating backup file of your changes.
+
+2004-06-04  Miguel de Icaza  <miguel@ximian.com>
+
+	* editing.cs: Use the `using' statement to properly close the
+	file. 
+
+2004-06-03  Raja R Harinath  <rharinath@novell.com>
+
+	* list.cs (ButtonPressEventHandler): Use Settings.DoubleClickTime.
+	See bug #50820.
+
+2004-06-03  Raja R Harinath  <rharinath@novell.com>
+
+	* Makefile.am (monodoc.dll.config): Create here instead of from
+	config.status.
+	(install-data-local, uninstall-data-local): Simplify.
+
+2004-05-13  Joshua Tauberer <tauberer@for.net>
+
+	* Better sort order for types in namespace type list
+
+2004-05-11  Joshua Tauberer <tauberer@for.net>
+
+	* ecma-provider.cs: Recognize MulticastDelegate as also the base type of delegates.
+
+2004-05-10  Joshua Tauberer <tauberer@for.net>
+
+	* browser.cs/glade: New browser menu item View-->Show Inherited Members for the member listing page.
+	* ecma-provider.cs:
+		Nested types are shown in the type tree as OuterType+InnerType, and lookups were fixed to handle that.
+		Namespace nodes now have all of the types within them sorted.
+		At run time, the type hierarchy information is inserted into the type XML data based on
+		the XML content, so the type hierarchy can be shown without using reflection.
+		At the same time, inherited members are dynamically copied into the XML data, if the setting is on.
+	* mono-ecma.xsl: The type hierarchy, inherited members support,
+	* settings.cs: A setting for showing inherited members in the member listing.	
+
+2004-05-03  Todd Berman  <tberman@sevenl.net>
+
+	* Makefile.am: modifying gacutil to add gtk-sharp package.
+	* provider.cs: oops, removing C.WL
+
+2004-05-01  Todd Berman  <tberman@sevenl.net>
+
+	* AssemblyInfo.cs.in: New file, for signing monodoc.dll.
+	* monodoc.dll.config: renamed from monodoc.config.
+	* Makefile.am: install using the gac.
+	* provider.cs: reflect the namechange.
+
+2004-04-25  Joshua Tauberer <tauberer@for.net>
+
+	* Moved operators out of the Methods listing into their own group,
+		and list them with nice names and proper C# declarations.
+	* Fixed some stylesheet spacing issues.
+
+2004-03-25  Joshua Tauberer <tauberer@for.net>
+
+	* ecma-provider.cs: Fixed member resolution problems,
+		removed really old code
+
+2004-03-25  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs: Use Markup.
+
+2004-03-13  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* elabel.cs: make it compile with CVS gtk#.
+
+2004-02-10  Todd Berman <tberman@sevenl.net>
+
+	* browser.cs:
+	* list.cs:
+	* elabel.cs: Update to cvs gtk-sharp.
+
+2004-01-22  Lluis Sanchez Gual  <lluis@ximian.com>
+	
+	* browser.cs: In ConfigWizard constructor, check for the MONODOCTESTING
+	env var, like in Upload. Also Check for version 1, not 0.
+	* server.cs: In Submit, on error do not close and null the connection,
+	the finally block does it.
+	
+2004-01-18  John Luke  <jluke@cfl.rr.com>
+	
+	* error-provider.cs: draw the root heading like the other providers
+
+2004-01-09 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* ecma-provider.cs, editing.cs, provider.cs: Add sane
+	urls. The ones we had before were *sickening*.
+
+2003-12-22  John Luke  <jluke@cfl.rr.com>
+
+	* browser.glade: fix typo in "Add bokmark"
+
+2003-12-15  Duncan Mak  <duncan@ximian.com>
+
+	* browser.cs: Reformatted the code to make coding style more
+	consistent.
+	(BookmarkEdit): Renamed for Bookmark_edit to be consistent with
+	naming conventions.
+	(BookLink): Rename the public fields text and url to
+	Text and Url to confirm with the .NET naming conventions.
+	(BookmarkEdit.AppendItem): Renamed from addList to be more
+	descriptive.
+	(BookmarkEdit.Load): Renamed from loadList.
+	
+2003-12-15  Duncan Mak  <duncan@ximian.com>
+
+	* browser.cs:
+	* browser.glade: Commit bookmarks support code from Borja Sánchez
+	Zamorano <borsanza@terra.es>.
+
+2003-12-04  John Luke  <jluke@cfl.rr.com>
+
+	* mono-ecma.xsl: insert <br /> when remarks is empty to prevent
+	extra indentation, fixes bug #46692
+
+2003-12-02  Peter Williams  <peter@newton.cx>
+
+	* browser.glade: Add some quick keybindings.
+
+2003-11-16 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* mono-ecma.xsl: make enum values editable
+
+2003-10-22  Duncan Mak  <duncan@ximian.com>
+
+	* browser.glade: Don't show the tabs in the submission dialog.
+
+2003-10-14  John Luke  <jluke@cfl.rr.com>
+
+	* ecma-provider.cs: fix http://bugzilla.ximian.com/show_bug.cgi?id=47729
+
+2003-10-14  Richard Torkar  <richard.torkar@htu.se>
+
+	* browser.cs: KeyPressEventHandler and keypress_event_cb
+	added for taking care of Alt_L+Right|Left for navigation.
+	* history.cs: Changed access modifiers for BackClicked and
+	ForwardClicked to "internal" thus reusing these methods.
+
+2003-10-13  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* provider.cs: the ToUpper () fix by Fawad Halim <fawad@fawad.net>.
+
+	* browser.cs: use threadnotify when we're not in the main thread, fixed
+	condition in RegisterDone.
+
+	* server.cs: a bunch of small fixes.
+
+2003-10-11  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs: Added new class to handle the account configuration
+	wizard for the edit changes.
+
+	* settings.cs: Modify setup slightly, use separate class to
+	load/save than class for settings.
+
+	Warning: to run this you need my soap client patch.
+
+2003-10-08  Miguel de Icaza  <miguel@ximian.com>
+
+	* settings.cs: Split settings class into Settings and
+	SettingsHandler and make fields public.
+	
+2003-10-01  John Luke  <jluke@cfl.rr.com>
+
+	* mono-ecma.xsl: use cellpadding in example, and top table
+	* ecmaspec-html.xsl: use cellpadding, render examples like ecma-docs
+	* provider.cs: make /root: look more like other pages (table w/ bgcolor)
+	* error-provider.cs: make /root: node look like other headings
+	* ecma-spec-provider.cs: make /root: render and look like other headings
+	* xhtml-provider.cs: make /root: node look like other headings
+
+2003-09-23  Miguel de Icaza  <miguel@ximian.com>
+
+	* list.cs: Replace massive ellipsises array with hashtable, which
+	loads data on demand, rather than the 152k array (in my case).
+
+2003-09-29 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* Settings.cs: use freedesktop.org standard here untill we get
+	this in sys.env
+
+2003-09-28 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* settings.cs, Makefile.am, browser.cs, ecma-provider.cs: Editing
+	on/off via gui. (most of the credit goes to jluke).
+	* browser.cs, editing.cs: merge changes to multiple dirs.
+
+2003-09-12  John Luke  <jluke@cfl.rr.com>
+	
+	* browser.cs: add IsEditable property, OnEditingActivated and
+	OnCollapseActivated events
+	* browser.glade: add Collapse All, Settings, Editing menu items
+
+2003-09-08  Alp Toker <alp@atoker.com>
+
+	* Makefile.am: csc fixes
+	* list.cs: eliminate redraw artifacts
+	* elabel.cs: csc fix: use double-quote for strings
+
+2003-09-04 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* browser.cs, ecma-provider.cs, editing.cs, provider.cs: Add real
+	support for editing. We still need a UI though...
+
+2003-09-03  Alp Toker <alp@atoker.com>
+
+	* list.cs: Complete keynav (pgup, pgdown, home, end) and implement
+	ItemActivated event for enter keystrokes, double-clicks on a single
+	item
+	* browser.cs: Activation, not selection now triggers page loads during
+	ordinary and synoptic keynav. Updated variable names to reflect this.
+	* list.cs: Initial stab at accessibility with Atk, move the
+	ellipsizing code into...
+	* elabel.cs: A a new ellipsizing label widget. Ellipsizing
+	optimisation -- apply a guess metric based on the font's en width
+	* browser.cs: Use elabel for title_label
+	* Makefile.am: add elabel.cs, remove obsolete System.Web reference
+
+2003-09-01  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs (ShowNode): Update to 2.2 API, and also fix the bug
+	where items were not getting selected.
+
+2003-08-31  John Luke  <jluke@cfl.rr.com>
+
+	* ecmaspec-provider.cs: return the match_node
+	* browser.glade: update about info (new providers)
+
+2003-09-01  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* provider.cs:
+	* web/monodoc.ashx: added Last-Modified and IF-Modified-Since support.
+
+2003-08-31  Alp Toker  <alp@atoker.com>
+
+	* list.cs: Implemented an ellipsis cache and eliminated unnecessary
+	page reloads
+	* list.cs: Interactive list item selection by dragging
+	
+2003-08-30 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* ecma-provider.cs: remove bug that method grouping introduced
+	when going to url of overloaded methods where you specified the
+	params. Also, #if'd out the section where we do a recursive search
+	of the tree. I cant seem to tell where this is used, and it is
+	*very* buggy right now, mostly because it has suffered bitrot.
+
+2003-08-30  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* provider.cs: don't create the zipentry twice. If you've used this
+	version to build yor docs, rebuild them.
+
+2003-08-28 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* Makefile.am, TODO, assembler.cs, error-provider.cs, monodoc.xml,
+	provider.cs: Added new error provider.
+
+
+2003-08-28  Alp Toker  <alp@atoker.com>
+
+	* list.cs: Make BigList focusable and give it its own keynav ability
+	* list.cs: Update colour according to focus state
+	* list.cs: Support dynamic style changes
+
+2003-08-27  Alp Toker  <alp@atoker.com>
+
+	* list.cs, browser.cs: Synoptic keynav for the index view
+	* list.cs: Bounds checking fixes
+	* list.cs: Ellipsizing for long list items
+	* list.cs: Fix adjustment bounds following changes to the list
+
+2003-08-25  Alp Toker  <alp@atoker.com>
+
+	* browser.cs: Change bar colour dynamically to match style, remove URL
+	display
+
+2003-08-25  Alp Toker  <alp@atoker.com>
+
+	* browser.cs: New compact toolbar with information about present page
+	About box tweaks and modality, Alt-I focuses index search entry, error
+	messages reworded
+	* browser.glade: UI tweaks to eliminate wasted screen real-estate, tab
+	icons, lookup dialog fixes
+	* list.cs: Set background to base colour
+	* Makefile.am: Add reference to System.Web (for the html escape method)
+
+2003-08-25 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* REMOVED website-handler.cs
+
+	All this functionality has been moved to the web folder already.
+
+2003-08-25 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* mono-ecma.xsl: fix issue that adds extra spaces and italics in
+	monodoc gui.
+
+2003-08-24 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* mono-ecma.xsl: dont display the inheritance for strucs, enums,
+	delegates, and objects that simply inherit from System.Object.
+
+2003-08-24 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* ecma-provider.cs: Group overloads together when the tree is
+	built. Requires a vew changes to the internal ecma: url style.
+	* mono-ecma.xml: Render overload pages.
+	* TODO: make list shorter ;-).
+
+2003-08-24  John Luke  <jluke@cfl.rr.com>
+
+	* Makefile.am: build mod.exe
+	* mod.cs: add
+	
+2003-08-24 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* browser.cs (MatchModel.GetValue) For ECMA docs, give full type
+	information to disambiguate index.
+
+2003-08-07 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* ecma-provider.cs: Use XPathDocument, not XmlDocument when doing
+	transforms. Improves speed of managed xslt. Include the <summary>
+	and <remarks> elements in the generated namespace summaries, so
+	that we do not have to merge the documents at runtime.
+
+2003-08-06 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* provider.cs: set matched node when rendering root:, and root:/xxx
+	* browser.cs: root: is the homepage.
+
+2003-08-05  John Luke  <jluke@cfl.rr.com>
+
+	* Makefile.am: add assemblies to CLEANFILES, build normalize.exe
+	* *: rename validate.cs to normalize.cs
+
+2003-07-30 Ben Maurer  <bmaurer@users.sourceforge.net>
+
+	* Makefile.am: monodoc.dll depends on mono-ecma.xsl, browser.exe
+	does not.
+
+2003-07-24  Ben Maurer <bmaurer@users.sourceforge.net>
+
+	* provider.cs: Dont crash when the helpsource is on the tree but
+	does not exist.
+	
+	* mono-ecma.xsl: Render namespace summary
+	
+	* ecma-provider.cs: Compile an mastersummary.xml file that holds
+	a summary for all the namespaces.
+	
+2003-07-14  Ben Maurer <bmaurer@users.sourceforge.net>
+	* browser.cs: Added support for visiting nodes from the root tree.
+	ie, the root: urls.
+	* ecma-provider.cs: Render the root: url with a list of namespaces
+	* provider.cs: Send the root:/xxx to the help sources. Handle
+	root:
+	* xhtml-provider.cs: handle root:. Returns the inner html of <body> like
+	other providers
+	* monohb-provider.cs: Fix typo that makes header purple in moz.
+	
+2003-07-23  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs (RowActivated): Bug fix: Use LinkPageVisit instead of
+	NodePageVisit here. xo
+
+	(Browser): do not call into the index browser if the index failed
+	to load.
+
+	(IndexBrowser.MakeIndexBrowser): If there is no index, visually
+	tell the user what to do.
+
+2003-07-22  Duncan Mak  <duncan@ximian.com>
+
+        * validate.cs: New file to run modified XML file(s) thru the
+        System.Xml plumbing to normalize all changes. This should help
+        minimize the amount of whitespace related changes we send to the
+        mailing list.
+
+2003-07-16  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs (PopulateIndex): Add more interesting things to
+	the toc.
+
+	* list.cs (SizeAllocatedHandler): Track size, use the computed
+	rows size;  Also set the adjustment so its nicer to use
+
+	* browser.cs (Render): Call End method
+
+	* ecma-provider.cs: Replace wrong name: Struct to Structure.
+
+2003-07-15  Duncan Mak  <duncan@ximian.com>
+
+	* browser.cs (Render): BeginContent is now just Begin.
+
+2003-07-15  Miguel de Icaza  <miguel@ximian.com>
+
+	* list.cs (ScrollHandler): Add scrolling wheel support.
+	(ButtonHandler): Add the line number.
+
+	* ecma-provider.cs: Add methods, properties, events and fields to
+	the index list.
+	
+2003-07-10  Ben Maurer <bmaurer@users.sourceforge.net>
+
+	* mono-ecma.xsl: Don't generate the excess monodoc namespaces.
+
+2003-07-10  Miguel de Icaza  <miguel@ximian.com>
+
+	* list.cs: Add suppot for selecting a particular line visually.
+	Needs some loving to get a better "feel" to it.
+
+	* mono-ecma.xsl: Add small tiny, tiny experimental feature.
+
+	* index.cs: Change sorting criteria (explicitly pass true to
+	Strng.Compare)
+
+	* ecma-provider.cs: Add a small extension method to test doing
+	in-line editing.
+
+	* browser.cs: Refactor code, move all the index tab code into
+	IndexBrowser, and add incremental search feature.
+	
+2003-07-08  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs (RowActivated): Small adjustment: if the provider
+	does not return a matching node, use the node from the clicked
+	event.
+
+2003-07-02  Martin Willemoes Hansen <mwh@sysrq.dk>
+
+	* monodoc.xml: add DiaCanvas
+
+2003-07-01  John Luke <jluke@cfl.rr.com>
+
+	* monodoc.xml: add GtkMozEmbed
+
+2003-06-26  Ben Maurer <bmaurer@users.sourceforge.net>
+
+	* xhtml-provider.cs 
+	(GetTextFromUrl): Now we generate a stack
+	trace when we get an exception. Removed encoding
+	stuff, as it was causing bugs with linux.html
+	(.ctor) removed enc var, as we do not use it
+	any more due to the first change.
+	
+2003-06-25  Ben Maurer <bmaurer@users.sourceforge.net>
+
+	* xhtml-provider.cs (IncludeAttribLinks): Fixed case where
+	referenced attribute is not present. Now we do not get a
+	nullref. This was showing up in anchor <a> tags
+
+2003-06-25  Duncan Mak  <duncan@ximian.com>
+
+	* Makefile.am: Add 'monodoc.png' to EXTRA_DIST and also as
+	dependency to the browser.exe rule.
+
+	* browser.cs: Set the window icon of MainWindow to 'monodoc.png'.
+
+2003-06-23  John Luke  <jluke@cfl.rr.com>
+
+	* browser.cs: switch to new treeview style
+
+2003-06-23  Miguel de Icaza  <miguel@ximian.com>
+
+	* index.cs: Load IndexEntries from disk.
+
+	* browser.cs: Show a new list if there are multiple matches for
+	the same term.
+	
+	* list.cs: Add support for highlighting the selection, emitting an
+	event when an item is selected; 
+
+	* monodoc.xml: New layout.
+
+2003-06-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* provider.cs (LoadTree): Provide better description error.
+
+	* monodoc.xml: Add Handbook to the root map.
+
+2003-06-05  Miguel de Icaza  <miguel@ximian.com>
+
+	* assembler.cs: Add sorting for the ecma provider.
+
+2003-06-02  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs (PopulateIndex): Add full type names.
+
+	* index.cs (SaveIndexEntries): Sort the keys before saving them.
+
+2003-06-01 Lee Mallabone <gnome@fonicmonkey.net>
+
+	* xhtml-provider.cs, monohb-provider.cs: New files for dealing with XHTML.
+	* browser.cs: Handle jumping to anchors in the same file. 
+	* browser.cs, assembler.cs: Hook in the XHTML provider.
+
+2003-05-27  Miguel de Icaza  <miguel@ximian.com>
+
+	* index.cs: Use factory method to load the file;  Abort
+	gracefully. 
+
+2003-05-26 Joshua Tauberer <tauberer@for.net>
+
+        * provider.cs: Dots in method signature, the dot in .ctor confused method lookups
+		P: E: and C: member lookups are handled
+	* mono-ecma.xsl: New stylesheet is in.
+
+2003-05-18  Rachel Hestilow  <rachel@nullenvoid.com>
+
+	* mono-ecma.xsl: Add support for rendering bulleted lists.
+
+2003-05-11 Ben Maurer <bmaurer@users.sourceforge.net>
+	* ecma-provider.cs (Htmlize)
+	Removed line that saved stuff to /tmp/blah.xml. Increases
+	speed and will prepare for yoros's ASP.NET version which
+	will need to handle multiple requests at one time.
+
+2003-04-17  Miguel de Icaza  <miguel@ximian.com>
+
+	* simple-provider.cs: Add new sample reference provider.
+
+	* assembler.cs: Hook up simple provider.
+
+	* provider.cs: Remove IPopulate interface, add all the code to
+	Provider;  Make the HelpSource instantiatable.  Hook up Simple
+	Provider.
+
+	* monodoc.xml: Add new "Various" node for testing.
+	
+2003-04-15  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs (CleanSignature): Also add `protected' to the list.
+
+	Factor some code out for rendering.  Need to
+	factor out Summary rendering next.
+
+	* history.cs (BackClicked): Set back.sensitive accordingly;  Fix
+	the handling of history as well.
+
+	* browser.cs (RowActivated): Use a different node to track the
+	match state, because it might be null.
+
+2003-04-14  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: For fields, use the field name rather than the
+	signature. 
+
+	* browser.cs (ShowNode, OpenTree): Add support for opening the
+	tree and selecting a node.
+
+	* provider.cs, ecma-provider.cs, browser.cs: Keep track of the
+	node rendered, so we can automatically select it on the tree
+	representation. 
+
+2003-04-12  Miguel de Icaza  <miguel@ximian.com>
+
+	* mono-ecma.xsl, html-helper.cs: Add a border for our embeded
+	tables to make the output nicer.  
+
+	Update TODO.
+
+2003-04-03  Miguel de Icaza  <miguel@ximian.com>
+
+	* provider.cs (GetHelpStream): use more efficient mechanism.
+	(RootTree): Load help layout file.  Load providers.
+
+2003-04-01  Miguel de Icaza  <miguel@ximian.com>
+
+	* history.cs: History manager.  Uses a PageVisit class to
+	implement page visits, will probably gone later when we track
+	Nodes. 
+
+2003-03-31  Lee Mallabone  <mono-docs@fonicmonkey.net>
+
+	* html-helper.cs: Lighten the method signature color: consistent
+	with Gtk+ API docs now.
+
+	* mono-ecma.xsl: Put a very light blue background on examples.
+
+2003-03-31  Miguel de Icaza  <miguel@ximian.com>
+
+	* browser.cs: Show the url to be rendered on a status bar.
+
+	* browser.glade: Add forward/back buttons.  They are not yet
+	hooked up.
+
+	* provider.cs: Track the help source, so we can encode this in a
+	url later to fetch information.
+	
+	* ecma-provider.cs: Big reorganization: move helper routines to
+	EcmaDoc.  Move all the rendering to EcmaHelpSource and keep the
+	compilation code in EcmaProvider.
+
+	Render a `source-id:' on the summary pages where needed so we can
+	find the proper HelpSource from it later.
+
+2003-03-25  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Small fix to add the proper prefixes.
+
+2003-03-10  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs (CloseTree): Put all the children inside a
+	top-level container.
+
+	(RenderNamespaceLookup): use /elements as the root
+
+2003-03-06  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Small one line fixer, a face saver in the
+	presence of multiple sources.
+
+2003-03-05  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Encode namespace summaries, compute namespace
+	members.
+
+	* provider.cs: A couple new utility methods.
+
+2003-02-19  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Sort members.
+
+	* mono-ecma.xsl: Updated stylesheet from Peter Williams to render
+	a few more tags.
+
+2003-02-11  Duncan Mak  <duncan@ximian.com>
+
+	* ecma-provider.cs (RenderProperty): Make it look for the same
+	node as RenderMethod.
+
+2003-01-29  Duncan Mak  <duncan@ximian.com>
+
+	* ecma-provider.cs (PopulateClass): 
+	(GetTypeKind): Special case for delegates.
+
+	* makefile (alltree): Split them up so that I won't run out of
+	handles all the time.
+
+2003-01-28  Duncan Mak  <duncan@ximian.com>
+
+	* ecma-provider.cs (GetTypeKind): It should say 'Structure'
+	instead of just 'Struct'.
+
+	* all.xml: 
+	* makefile: New targets for generating docs for gtk-sharp.
+
+2003-01-27  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs, provider.cs: Provide support to compress the
+	source files and render from a compressed source.  Can be
+	optimized, currently we have no cache for loaded documents.
+
+	Note: This will not work with the Gtk# docs right now, as they are
+	too large, and that exposes a finalization leak in the runtime.
+
+2003-01-19  Duncan Mak  <duncan@ximian.com>
+
+	* ecma-provider.cs (RenderEvent): Implemented.
+
+2003-01-16  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Render summaries for everything.
+
+2003-01-16  Rodrigo Moya <rodrigo@ximian.com>
+
+	* browser.glade: added title to window.
+
+2003-01-16  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* browser.cs: use glade Autoconnect instead of setting the variables
+	'by hand'.
+
+2003-01-16  Miguel de Icaza  <miguel@ximian.com>
+
+	* ecma-provider.cs: Added support for Method summary;  Render a
+	few more links too.
+
+	(RenderClassSumary): Fix Xpath, we were not pulling the remarks.
+
+2003-01-15  Duncan Mak  <duncan@ximian.com>
+
+	* html-helper.cs (RenderException): New method for rendering an
+	exception to a table.
+
+	* ecma-provider.cs (RenderProperty):
+	(RenderField):
+	(RenderConstructor): Implemented.
+	(RenderExceptionsList): New method, renders a table of the
+	exceptions thrown and the conditions that trigger them.
+	(GetArguments): New method, returns the arguments of a node as a
+	string.
+	(ConvertCTSName): New method, copied from monodoc editor to
+	convert CTS names to C# equivalents.
+	
+2003-01-12  Miguel de Icaza  <miguel@ximian.com>
+
+	* provider.cs (Node.LookupNode): New function used when we want to
+	merge nodes instead of creating a new node.
+
+	* browser.cs, browser.glade: Add help browser.  Currently it only
+	displays the compressed tree
+
+	* ecma-provider.cs: Merge nodes at the namespace level.
+	
+2003-01-10  Miguel de Icaza  <miguel@ximian.com>
+
+	* provider.cs: Add nice and cozy tree binary file format, with
+	delayed loading.
+
+	This is helpful because we never load the entire tree in advance,
+	the tree is delayed-loaded.  I love my clever file format.
+
+	* dump.cs: new tool to dump the tree.  Not many options right now.
+	
+

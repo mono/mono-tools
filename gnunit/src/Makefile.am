@@ -14,8 +14,8 @@ gnunit2_SCRIPTS = gnunit2.exe
 gnunit2dir = $(prefix)/lib/mono/2.0
 gnunitdir = $(prefix)/lib/mono/1.0
 
-CLEANFILES = gnunit.exe gnunit2.exe gnunit gnunit2
-EXTRA_DIST = $(gnunit_sources_dist) nunit-gtk.glade
+CLEANFILES = gnunit.exe gnunit.exe.mdb gnunit2.exe gnunit2.exe.mdb gnunit gnunit2
+EXTRA_DIST = $(gnunit_sources_dist) nunit-gtk.glade script.in script2.in
 
 resources = $(srcdir)/nunit-gtk.glade \
 	   $(srcdir)/../art/nunit-gui.png \

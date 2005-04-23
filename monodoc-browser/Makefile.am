@@ -1,9 +1,7 @@
 monodocdir=$(prefix)/lib/monodoc
 monodoc_DATA = browser.exe 
-pixmapdir=$(sharedir)/pixmaps
-pixmap_DATA = monodoc.png
 
-CLEANFILES = browser.exe 
+CLEANFILES = browser.exe browser.exe.mdb
 DISTCLEANFILES = AssemblyInfo.cs
 
 browser_sources   = \
