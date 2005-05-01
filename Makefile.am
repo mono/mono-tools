@@ -1,2 +1,2 @@
-SUBDIRS= po gnunit monodoc-browser
+SUBDIRS= po gnunit docbrowser
 

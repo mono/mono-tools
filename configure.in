@@ -49,7 +49,7 @@ gnunit/art/Makefile
 gnunit/src/Makefile
 gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
-monodoc-browser/Makefile
+docbrowser/Makefile
 po/Makefile.in
 ])
 
