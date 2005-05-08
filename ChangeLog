@@ -1,3 +1,9 @@
+2005-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Added lines to generate asn1view Makefiles;
+	* LICENSE: Added license informations for asn1view tool(s);
+	* Makefile.am: Added asn1view subdirectory;
+
 2005-04-23  Mike Kestner  <mkestner@novell.com>
 
 	* gnunit : moved the nunit-gtk project here.

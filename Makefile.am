@@ -1,2 +1,2 @@
-SUBDIRS= po gnunit docbrowser
+SUBDIRS= po gnunit docbrowser asn1view
 

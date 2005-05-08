@@ -51,6 +51,10 @@ gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
 docbrowser/Makefile
 po/Makefile.in
+asn1view/Makefile
+asn1view/art/Makefile
+asn1view/gtk/Makefile
+asn1view/common/Makefile
 ])
 
 echo "---"
