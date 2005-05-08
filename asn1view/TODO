@@ -1,0 +1,24 @@
+MISSING
+
+General features
+- Support for base64 encoded structures (e.g. PEM);
+- Use Mono.Security.dll for ASN.1 support [1];
+
+GNOME version
+- MRU (Most Recently Used) files in File menu;
+- Update UI while downloading OID informations;
+- (Optional) Syntax highlighting (reserved words);
+- Separate strings from code for easier translation;
+
+Other versions
+- Command-line tool (with scripts for easier diffs);
+- SWF (System.Windows.Forms) port for Win32;
+- Cocoa# port for Mac OS X ? (that would require a Mac user of the tool ;-)
+
+
+Notes:
+
+[1] The current ASN.1 decoder class is included in the main assembly. This 
+will change later when an "enhanced" version of the class will be included
+in Mono.Security.dll (in a future version of Mono::). Until then the ASN.1
+viewer doesn't requires a dependency on Mono.Security.dll.

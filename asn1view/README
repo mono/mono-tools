@@ -1,0 +1,24 @@
+FEATURES
+
+General
+- Decode ASN.1 structures;
+- Support undefined length elements;
+- Support encapsulated ASN.1 elements;
+- Export textual representation of structures (great for diffs);
+- Download and cache OID definitions from the web, either from:
+	- Alvestrand (www.alvestrand.no); or
+	- Elibel (asn1.elibel.tm.fr).
+
+Gnome specific
+- Find bar (a la FireFox) with highlight (yellow);
+- Encapsulated ASN.1 in alternate color (blue);
+
+
+
+HISTORY
+
+2004-12-05  Version 0.1.0.0
+	- Initial (un)release with Gnome support (Gtk#);
+
+2005-05-08  Version 0.1.1.0
+	- First public version (restructured for SVN);

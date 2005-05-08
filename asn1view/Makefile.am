@@ -1,0 +1,2 @@
+SUBDIRS= art gtk common
+
