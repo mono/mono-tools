@@ -55,11 +55,10 @@ script_SCRIPTS = \
 	gnunit2
 
 REWRITE = sed \
-	-e 's,@''bindir@,$(bindir),g'				\
 	-e 's,@''mono_one_instdir@,$(gnunitdir),g'	\
 	-e 's,@''mono_two_instdir@,$(gnunit2dir),g'	\
 	-e 's,@''exe_file@,$@.exe,g'				\
-	-e 's,@''mono_interp@,mono --debug,g'
+	-e 's,@''RUNTIME@,@RUNTIME@ --debug,g'
 
 gnunit :
 	$(REWRITE) $(srcdir)/script.in > $@.tmp

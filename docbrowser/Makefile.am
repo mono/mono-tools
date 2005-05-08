@@ -33,8 +33,8 @@ browser.exe: $(browser_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png
 	$(MCS) -debug -out:browser.exe $(browser_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies)
 
 b: browser.exe
-	MONO_PATH=. mono --debug browser.exe
+	MONO_PATH=. $(RUNTIME) --debug browser.exe
 
 c: admin.exe
-	MONO_PATH=. mono --debug admin.exe
+	MONO_PATH=. $(RUNTIME) --debug admin.exe
 

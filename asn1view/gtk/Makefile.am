@@ -46,7 +46,7 @@ REWRITE = sed \
 	-e 's,@''bindir@,$(bindir),g'				\
 	-e 's,@''mono_one_instdir@,$(gasnviewdir),g'	\
 	-e 's,@''exe_file@,$@.exe,g'				\
-	-e 's,@''mono_interp@,mono --debug,g'
+	-e 's,@''RUNTIME@,@RUNTIME@,g'
 
 gasnview :
 	$(REWRITE) $(srcdir)/script.in > $@.tmp

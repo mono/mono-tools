@@ -1,3 +1,7 @@
+2005-05-08  Ben Maurer  <bmaurer@ximian.com>
+
+	* Makefile.am: use $(RUNTIME) rather than `mono'
+
 2005-04-27 Mike Kestner <mkestner@novell.com>
 
 	* Makefile.am : build admin.exe.

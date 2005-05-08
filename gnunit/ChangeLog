@@ -1,3 +1,10 @@
+2005-05-08  Ben Maurer  <bmaurer@ximian.com>
+
+	* src/Makefile.am, script*.in: use @RUNTIME@ rather than
+        @bin_dir@/mono. This is a problem for people who have mono-tools
+        and mono in a different prefix (say you install mono from rpm but
+        want to hack on monodoc).
+
 2005-04-23  Mike Kestner  <mkestner@novell.com>
 
 	* src/Makefile.am : distcheck fixes.

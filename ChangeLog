@@ -1,3 +1,10 @@
+2005-05-08  Ben Maurer  <bmaurer@ximian.com>
+
+	* configure.in:
+	   - Check for mono and put it in RUNTIME
+	   - Don't check for monoresgen, as we don't ship that any more
+	     the correct name is `resgen'
+
 2005-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Added lines to generate asn1view Makefiles;

@@ -7,6 +7,7 @@ AC_PROG_INSTALL
 
 dnl C# compiler
 AC_PATH_PROG(MCS, mcs, no)
+AC_PATH_PROG(RUNTIME, mono, no)
 
 CS="C#"
 if test "x$MCS" = "xno"  ; then
@@ -14,14 +15,19 @@ if test "x$MCS" = "xno"  ; then
 	AC_MSG_ERROR([No $CS compiler found])
 fi
 
-dnl monoresgen
-AC_PATH_PROG(MONORESGEN, monoresgen, no)
-if test "x$MONORESGEN" = "xno"  ; then
-	AC_MSG_ERROR([monoresgen not found in $PATH])
+if test "x$RUNTIME" = xno" ; then
+	AC_MSG_ERROR([No runtime found])
+fi
+
+dnl resgen
+AC_PATH_PROG(RESGEN, resgen, no)
+if test "x$RESGEN" = "xno"  ; then
+	AC_MSG_ERROR([resgen not found in $PATH])
 fi
 
 AC_SUBST(MCS)
-AC_SUBST(MONORESGEN)
+AC_SUBST(RUNTIME)
+AC_SUBST(RESGEN)
 
 PKG_CHECK_MODULES(NUNIT, mono-nunit)
 AC_SUBST(NUNIT_LIBS)
