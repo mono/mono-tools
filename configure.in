@@ -15,7 +15,7 @@ if test "x$MCS" = "xno"  ; then
 	AC_MSG_ERROR([No $CS compiler found])
 fi
 
-if test "x$RUNTIME" = xno" ; then
+if test "x$RUNTIME" = "xno" ; then
 	AC_MSG_ERROR([No runtime found])
 fi
 
