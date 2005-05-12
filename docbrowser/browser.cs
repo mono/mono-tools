@@ -1543,7 +1543,7 @@ class IndexBrowser {
 		IndexReader ir = browser.help_tree.GetIndex ();
 		if (ir == null){
 			Gtk.Label l = new Gtk.Label ("<b>No index found</b>\n\n" +
-					     "run:\n\n    monodoc --make-index\n\nto create the index");
+					     "as root, run:\n\n    monodoc --make-index\n\nto create the index");
 			l.UseMarkup = true;
 			l.Show ();
 			browser.search_box.PackStart (l);
