@@ -7,6 +7,7 @@ AC_PROG_INSTALL
 
 dnl C# compiler
 AC_PATH_PROG(MCS, mcs, no)
+AC_PATH_PROG(GMCS, gmcs, no)
 AC_PATH_PROG(RUNTIME, mono, no)
 
 CS="C#"

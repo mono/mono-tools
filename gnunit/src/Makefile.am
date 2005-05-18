@@ -43,8 +43,8 @@ gnunit.exe: $(gnunit_sources_build) $(resources)
 	$(MCS) $(MCSFLAGS) $(local_flags) $(ress) -out:$@ $(gnunit_sources_build)
 
 gnunit2.exe: gnunit.exe
-	cp $^ $@
-	
+	$(GMCS) $(MCSFLAGS) $(local_flags) $(ress) -out:$@ $(gnunit_sources_build)
+
 installschema:
 	GCONF_CONFIG_SOURCE="" gconftool-2 --makefile-install-rule $(schema)
 
