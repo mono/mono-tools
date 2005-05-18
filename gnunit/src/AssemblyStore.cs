@@ -427,7 +427,7 @@ namespace Mono.NUnit.GUI
 			Clear ();
 			iters = new Hashtable ();
 			TreeIter first;
-			Append (out first);
+			first = AppendNode ();
 			SetValue (first, 0, (int) CircleColor.None);
 			SetValue (first, 1, assemblyName);
 			iters [assemblyName] = first;

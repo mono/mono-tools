@@ -5,7 +5,7 @@
 #   Gonzalo Paniagua Javier (gonzalo@ximian.com)
 #   Martin Willemoes Hansen (mwh@sysrq.dk>
 #
-local_flags = -debug+ -debug:full -nologo $(NUNIT_LIBS)
+local_flags = -debug+ -debug:full -nologo $(NUNIT_LIBS) -nowarn:169
 
 local_flags += $(MCSFLAGS) $(GTK_SHARP_LIBS)
 
