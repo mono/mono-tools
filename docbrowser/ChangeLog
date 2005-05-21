@@ -1,3 +1,15 @@
+2005-05-21 Joshua Tauberer <tauberer@for.net>
+
+	When loading EcmaUncompiledHelpSources, don't
+	created the help source in browser.cs because it
+	needs to be created and added to help_sources at the
+	same time, because of the static id variable being
+	incremented in the HelpSource constructor. The
+	DLL is affected too.
+	  
+	* browser.cs: Send the paths to uncompiled
+	  help, rather than the help sources.
+
 2005-05-08  Ben Maurer  <bmaurer@ximian.com>
 
 	* Makefile.am: use $(RUNTIME) rather than `mono'

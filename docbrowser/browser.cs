@@ -76,8 +76,7 @@ class Driver {
 					Console.WriteLine ("Usage: --edit path, where path is to the location of Monodoc-format XML documentation files.");
 					return 1; 
 				}
-				EcmaUncompiledHelpSource hs = new EcmaUncompiledHelpSource(args[i+1]);
-				RootTree.ExtraHelpSources.Add(hs.Name, hs);
+				RootTree.UncompiledHelpSources.Add(args[i+1]);
 				i++;
 				break;
 				
@@ -341,10 +340,10 @@ class Browser {
 		if (url.StartsWith ("edit:"))
 		{
 			Console.WriteLine ("Node is: " + url);
-                        CurrentTab.edit_node = EditingUtils.GetNodeFromUrl (url, help_tree);
-                        CurrentTab.edit_url = url;
+			CurrentTab.edit_node = EditingUtils.GetNodeFromUrl (url, help_tree);
+			CurrentTab.edit_url = url;
 			CurrentTab.SetMode (Mode.Editor);
-                        CurrentTab.text_editor.Buffer.Text = CurrentTab.edit_node.InnerXml;
+			CurrentTab.text_editor.Buffer.Text = CurrentTab.edit_node.InnerXml;
 			return;
 		}
 		
