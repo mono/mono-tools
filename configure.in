@@ -57,6 +57,8 @@ gnunit/src/Makefile
 gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
 docbrowser/Makefile
+docbrowser/monodoc.desktop
+docbrowser/monodoc
 po/Makefile.in
 asn1view/Makefile
 asn1view/art/Makefile

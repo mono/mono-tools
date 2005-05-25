@@ -1,0 +1,57 @@
+#!/bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+monodocdir=@monodocdir@
+
+case x$1 in
+    x--assemble)
+	shift;
+	echo "--assemble is depreciated. Use mdassembler."
+	exec mdassembler "$@"
+	;;
+    x--get-sourcesdir)
+	echo "--get-sourcesdir is depreciated. Use pkg-config monodoc --variable=sourcesdir."
+	pkg-config monodoc --variable=sourcesdir
+	exit 0
+	;;
+    x--normalize)
+	shift;
+	echo "--assemble is depreciated. Use mdassembler."
+	exec mdassembler "$@"
+	;;
+    x--update)
+	echo '--update deprecated;  Please use "monodocer" instead.'
+	exit 0
+	;;
+    x--cs-to-ecma)
+	shift;
+	echo "--cs-to-ecma is depreciated. Use mdcs2ecma."
+	exec mdcs2ecma "$@"
+	exit 0
+	;;
+    x--validate)
+	shift;
+	echo "--cs-to-ecma is depreciated. Use mdvalidater."
+	exec mdvalidater "$@"
+	;;
+    x--help)
+	echo "Usage is:"
+	echo "monodoc [options]"
+	echo ""
+	echo "where [options] is one of the following:"
+	echo "  TOPIC              Start the browser at TOPIC"
+	echo "      (ex. N:System, T:System.Object, M:System.Object.Equals,"
+	echo "      and P: for properties, F: for fields, E: for events, etc.)"
+	echo "  --help             Print this message"
+	echo "  --html TOPIC       Print the HTML contents of TOPIC"
+	echo "  --make-index       Create the documentation index"
+	echo
+	echo "The following options are available for authoring documentation:"
+	echo "  --edit path        Edit (unassembled) documentation at path"
+	echo "  --merge-changes CHANGE_FILE [TARGET_DIR]"
+	exit 0
+	;;
+esac
+
+exec @RUNTIME@ $monodocdir/browser.exe $OPTIONS "$@" $REST

@@ -3,7 +3,9 @@ monodoc_DATA = browser.exe
 noinst_DATA = admin.exe
 
 CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb
-DISTCLEANFILES = AssemblyInfo.cs
+DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc.in
+
+bin_SCRIPTS = monodoc
 
 browser_sources   = \
 	$(srcdir)/browser.cs		\
@@ -38,3 +40,8 @@ b: browser.exe
 c: admin.exe
 	MONO_PATH=. $(RUNTIME) --debug admin.exe
 
+desktopdir = $(datadir)/applications
+desktop_DATA = monodoc.desktop
+
+pixmapdir = $(datadir)/pixmaps
+pixmap_DATA = monodoc.png

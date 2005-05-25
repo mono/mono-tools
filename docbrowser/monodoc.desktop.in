@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Monodoc
+GenericName=Documentation Browser
+Comment=Monodoc Documentation Browser
+Exec=@bindir@/monodoc
+Icon=monodoc.png
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=Application;Development;

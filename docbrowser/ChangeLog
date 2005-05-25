@@ -1,3 +1,8 @@
+2005-05-25  Ben Maurer  <bmaurer@ximian.com>
+
+	* monodoc.desktop.in: Desktop file
+	* monodoc.in: execution script.
+
 2005-05-21 Joshua Tauberer <tauberer@for.net>
 
 	When loading EcmaUncompiledHelpSources, don't
