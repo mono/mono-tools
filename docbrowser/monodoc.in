@@ -14,27 +14,25 @@ case x$1 in
 	;;
     x--get-sourcesdir)
 	echo "--get-sourcesdir is depreciated. Use pkg-config monodoc --variable=sourcesdir." 1>&2
-	pkg-config monodoc --variable=sourcesdir
-	exit 0
+	exec pkg-config monodoc --variable=sourcesdir
 	;;
     x--normalize)
 	shift;
-	echo "--assemble is depreciated. Use mdassembler." 1>&2
-	exec mdassembler "$@"
+	echo "--normalize is depreciated. Use mdnormalizer." 1>&2
+	exec mdnormalizer "$@"
 	;;
     x--update)
-	echo '--update deprecated;  Please use "monodocer" instead.' 1>&2
-	exit 0
+	echo "$0 --update does not work.  Use 'monodocer' instead." 1>&2
+	exit 1
 	;;
     x--cs-to-ecma)
 	shift;
 	echo "--cs-to-ecma is depreciated. Use mdcs2ecma." 1>&2
 	exec mdcs2ecma "$@"
-	exit 0
 	;;
     x--validate)
 	shift;
-	echo "--cs-to-ecma is depreciated. Use mdvalidater." 1>&2
+	echo "--validator is depreciated. Use mdvalidater." 1>&2
 	exec mdvalidater "$@"
 	;;
     x--help)

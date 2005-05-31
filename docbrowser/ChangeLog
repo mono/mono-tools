@@ -1,6 +1,7 @@
 2005-05-31  Raja R Harinath  <rharinath@novell.com>
 
-	* monodoc.in: Emit warnings to stderr.
+	* monodoc.in: Emit warnings to stderr.  Fix fallbacks.
+	(--updater): Since it has no fallback, exit with failure.
 	(monodocdir): Set to match Makefile.am.
 
 2005-05-25  Ben Maurer  <bmaurer@ximian.com>
