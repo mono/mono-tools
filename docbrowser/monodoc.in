@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -7,32 +7,32 @@ monodocdir=@monodocdir@
 case x$1 in
     x--assemble)
 	shift;
-	echo "--assemble is depreciated. Use mdassembler."
+	echo "--assemble is depreciated. Use mdassembler." 1>&2
 	exec mdassembler "$@"
 	;;
     x--get-sourcesdir)
-	echo "--get-sourcesdir is depreciated. Use pkg-config monodoc --variable=sourcesdir."
+	echo "--get-sourcesdir is depreciated. Use pkg-config monodoc --variable=sourcesdir." 1>&2
 	pkg-config monodoc --variable=sourcesdir
 	exit 0
 	;;
     x--normalize)
 	shift;
-	echo "--assemble is depreciated. Use mdassembler."
+	echo "--assemble is depreciated. Use mdassembler." 1>&2
 	exec mdassembler "$@"
 	;;
     x--update)
-	echo '--update deprecated;  Please use "monodocer" instead.'
+	echo '--update deprecated;  Please use "monodocer" instead.' 1>&2
 	exit 0
 	;;
     x--cs-to-ecma)
 	shift;
-	echo "--cs-to-ecma is depreciated. Use mdcs2ecma."
+	echo "--cs-to-ecma is depreciated. Use mdcs2ecma." 1>&2
 	exec mdcs2ecma "$@"
 	exit 0
 	;;
     x--validate)
 	shift;
-	echo "--cs-to-ecma is depreciated. Use mdvalidater."
+	echo "--cs-to-ecma is depreciated. Use mdvalidater." 1>&2
 	exec mdvalidater "$@"
 	;;
     x--help)
