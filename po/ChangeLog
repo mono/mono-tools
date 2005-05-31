@@ -1,3 +1,7 @@
+2005-05-31  Raja R Harinath  <rharinath@novell.com>
+
+	* POTFILES.in: Replace 'monodoc-browser/' with 'docbrowser/'.
+
 2004-08-05  Martin Willemoes Hansen  <mwh@sysrq.dk>
 
 	* ca.po: Updated to use msg_id: translator_credits

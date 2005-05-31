@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mono Tools\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-05 11:15+0200\n"
+"POT-Creation-Date: 2005-05-31 11:41+0530\n"
 "PO-Revision-Date: 2004-05-28 19:18+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jordi@ximian.com>\n"
 "Language-Team: Jordi Mas i Hernàndez <jordi@ximian.com>\n"
@@ -33,108 +33,107 @@ msgstr "No sé res de {0}"
 msgid "Select an assembly to load"
 msgstr "Seleccioneu un assembly per carregar"
 
-#: gnunit/src/nunit-gtk.glade.h:1
-#: monodoc-browser/browser.glade:1843 monodoc-browser/browser.glade:2219
-#: monodoc-browser/browser.glade:2507 monodoc-browser/browser.glade:2847
-msgid "Cancel"
-msgstr "Cancel·la"
-
-#: gnunit/src/nunit-gtk.glade.h:2
-msgid "Don't save results"
-msgstr "No desis els resultats"
-
-#: gnunit/src/nunit-gtk.glade.h:3 gnunit/src/main.cs:505
-msgid "Error"
-msgstr "Error"
-
-#: gnunit/src/nunit-gtk.glade.h:4
-msgid "Error details"
-msgstr "Detalls de l'error"
-
-#: gnunit/src/nunit-gtk.glade.h:5
-msgid "Errors and failures"
-msgstr "Errors i fallides"
-
-#: gnunit/src/nunit-gtk.glade.h:6
-msgid "Exit program"
-msgstr "Surt del programa"
-
-#: gnunit/src/nunit-gtk.glade.h:7
-msgid "File exists. Overwrite?"
-msgstr "El fitxer ja existeix. Voleu sobreescriure'l?"
-
-#: gnunit/src/nunit-gtk.glade.h:8
+#: gnunit/src/nunit-gtk.glade:10
 msgid "Mono NUnit2 GUI"
 msgstr "Mono NUnit2 GUI"
 
-#: gnunit/src/nunit-gtk.glade.h:9
-msgid "Open"
-msgstr "Obre"
-
-#: gnunit/src/nunit-gtk.glade.h:10
-msgid "Open assembly"
-msgstr "Obre un assembly"
-
-#: gnunit/src/nunit-gtk.glade.h:11
-#: monodoc-browser/browser.glade:71
-msgid "Quit"
-msgstr "Surt"
-
-#: gnunit/src/nunit-gtk.glade.h:12
-msgid "Run"
-msgstr "Executa"
-
-#: gnunit/src/nunit-gtk.glade.h:13
-msgid "Run selected test fixture(s)"
-msgstr "Executa els tests seleccionats"
-
-#: gnunit/src/nunit-gtk.glade.h:14
-msgid "Save As"
-msgstr "Anomena i desa"
-
-#: gnunit/src/nunit-gtk.glade.h:15
-msgid "Save results"
-msgstr "Desa els resultats"
-
-#: gnunit/src/nunit-gtk.glade.h:16
-msgid "Save results to a XML file"
-msgstr "Desa els resultats a un fitxer XML"
-
-#: gnunit/src/nunit-gtk.glade.h:17 gnunit/src/main.cs:102
-msgid "Show details >>"
-msgstr "Mostra els detalls >>"
-
-#: gnunit/src/nunit-gtk.glade.h:18
-msgid "Standard error"
-msgstr "Sortida d'error"
-
-#: gnunit/src/nunit-gtk.glade.h:19
-msgid "Standard out"
-msgstr "Sortida estàndard"
-
-#: gnunit/src/nunit-gtk.glade.h:20
-msgid "Stop"
-msgstr "Atura"
-
-#: gnunit/src/nunit-gtk.glade.h:21
-msgid "Test: "
-msgstr "Test: "
-
-#: gnunit/src/nunit-gtk.glade.h:22
-msgid "Tests not run"
-msgstr "Tests no executats"
-
-#: gnunit/src/nunit-gtk.glade.h:23
-msgid "_Clear recent"
-msgstr "_Buida recents"
-
-#: gnunit/src/nunit-gtk.glade.h:24
+#: gnunit/src/nunit-gtk.glade:66
 msgid "_Recent assemblies"
 msgstr "Fitxers _recents"
 
-#: gnunit/src/nunit-gtk.glade.h:25
+#: gnunit/src/nunit-gtk.glade:86
+msgid "_Clear recent"
+msgstr "_Buida recents"
+
+#: gnunit/src/nunit-gtk.glade:203
+msgid "Open assembly"
+msgstr "Obre un assembly"
+
+#: gnunit/src/nunit-gtk.glade:204
+msgid "Open"
+msgstr "Obre"
+
+#: gnunit/src/nunit-gtk.glade:214
+msgid "Save results to a XML file"
+msgstr "Desa els resultats a un fitxer XML"
+
+#: gnunit/src/nunit-gtk.glade:215
+msgid "Save As"
+msgstr "Anomena i desa"
+
+#: gnunit/src/nunit-gtk.glade:225
+msgid "Run selected test fixture(s)"
+msgstr "Executa els tests seleccionats"
+
+#: gnunit/src/nunit-gtk.glade:226 gnunit/src/nunit-gtk.glade:466
+msgid "Run"
+msgstr "Executa"
+
+#: gnunit/src/nunit-gtk.glade:240 docbrowser/browser.glade:1565
+#: docbrowser/browser.glade:1944 docbrowser/browser.glade:2235
+#: docbrowser/browser.glade:2584
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: gnunit/src/nunit-gtk.glade:241
+msgid "Stop"
+msgstr "Atura"
+
+#: gnunit/src/nunit-gtk.glade:251
+msgid "Exit program"
+msgstr "Surt del programa"
+
+#: gnunit/src/nunit-gtk.glade:252 docbrowser/browser.glade:98
+msgid "Quit"
+msgstr "Surt"
+
+#: gnunit/src/nunit-gtk.glade:357
+msgid "Test: "
+msgstr "Test: "
+
+#: gnunit/src/nunit-gtk.glade:531
+msgid "Errors and failures"
+msgstr "Errors i fallides"
+
+#: gnunit/src/nunit-gtk.glade:577
+msgid "Tests not run"
+msgstr "Tests no executats"
+
+#: gnunit/src/nunit-gtk.glade:629
+msgid "Standard error"
+msgstr "Sortida d'error"
+
+#: gnunit/src/nunit-gtk.glade:681
+msgid "Standard out"
+msgstr "Sortida estàndard"
+
+#: gnunit/src/nunit-gtk.glade:735 gnunit/src/main.cs:505
+msgid "Error"
+msgstr "Error"
+
+#: gnunit/src/nunit-gtk.glade:818
 msgid "label"
 msgstr "etiqueta"
+
+#: gnunit/src/nunit-gtk.glade:846 gnunit/src/main.cs:102
+msgid "Show details >>"
+msgstr "Mostra els detalls >>"
+
+#: gnunit/src/nunit-gtk.glade:917
+msgid "Error details"
+msgstr "Detalls de l'error"
+
+#: gnunit/src/nunit-gtk.glade:960
+msgid "File exists. Overwrite?"
+msgstr "El fitxer ja existeix. Voleu sobreescriure'l?"
+
+#: gnunit/src/nunit-gtk.glade:982
+msgid "Don't save results"
+msgstr "No desis els resultats"
+
+#: gnunit/src/nunit-gtk.glade:996
+msgid "Save results"
+msgstr "Desa els resultats"
 
 #: gnunit/src/main.cs:35
 #, csharp-format
@@ -244,157 +243,122 @@ msgstr "Ha succeït una excepció no gestionada.\n"
 msgid "The program will terminate now."
 msgstr "El programa es finalitzarà ara."
 
-#: monodoc-browser/browser.glade:8
+#: docbrowser/browser.glade:8
 msgid "Mono Documentation Library"
 msgstr "Documentació de les biblioteques del Mono"
 
-#: monodoc-browser/browser.glade:30
+#: docbrowser/browser.glade:35
 msgid "_File"
 msgstr "_Fitxer"
 
-#: monodoc-browser/browser.glade:39
+#: docbrowser/browser.glade:44
+msgid "New _Tab"
+msgstr ""
+
+#: docbrowser/browser.glade:66
 msgid "_Lookup URL"
 msgstr "_Cerca URL"
 
-#: monodoc-browser/browser.glade:61
+#: docbrowser/browser.glade:88
 msgid "_Upload Contributions"
 msgstr "_Puja les contribucions"
 
-#: monodoc-browser/browser.glade:97
+#: docbrowser/browser.glade:124
 msgid "_Edit"
 msgstr "_Edita"
 
-#: monodoc-browser/browser.glade:106
+#: docbrowser/browser.glade:133
 msgid "_Copy"
 msgstr "_Còpia"
 
-#: monodoc-browser/browser.glade:128
+#: docbrowser/browser.glade:155
+msgid "_Paste"
+msgstr ""
+
+#: docbrowser/browser.glade:177
 msgid "Select All"
 msgstr "Selecciona-ho tot"
 
-#: monodoc-browser/browser.glade:144
+#: docbrowser/browser.glade:193
 msgid "Editing"
 msgstr "Editant"
 
-#: monodoc-browser/browser.glade:158
+#: docbrowser/browser.glade:207
 msgid "_View"
 msgstr "_Visualització"
 
-#: monodoc-browser/browser.glade:167
+#: docbrowser/browser.glade:216
 msgid "Collapse All"
 msgstr "Contrau tots"
 
-#: monodoc-browser/browser.glade:176
+#: docbrowser/browser.glade:225
 msgid "Show Inherited Members"
 msgstr "Mostra els membres heredats"
 
-#: monodoc-browser/browser.glade:185
+#: docbrowser/browser.glade:235
 msgid "Show Comments"
 msgstr "Mostra comentaris"
 
-#: monodoc-browser/browser.glade:199
+#: docbrowser/browser.glade:249
 msgid "_Bookmarks"
 msgstr "_Adreçes d'interès"
 
-#: monodoc-browser/browser.glade:208
+#: docbrowser/browser.glade:258
 msgid "_Add bookmark"
 msgstr "_Afegeix adreçes d'interès"
 
-#: monodoc-browser/browser.glade:217
+#: docbrowser/browser.glade:267
 msgid "_Edit bookmarks..."
 msgstr "_Edita adreçes d'interès "
 
-#: monodoc-browser/browser.glade:230
+#: docbrowser/browser.glade:280
 msgid "_Help"
 msgstr "Aj_uda"
 
-#: monodoc-browser/browser.glade:239
+#: docbrowser/browser.glade:289
 msgid "About"
 msgstr "Quant a "
 
-#: monodoc-browser/browser.glade:388 monodoc-browser/browser.glade:748
+#: docbrowser/browser.glade:442 docbrowser/browser.glade:804
 msgid "n/a"
 msgstr "n/d"
 
-#: monodoc-browser/browser.glade:497
+#: docbrowser/browser.glade:551
 msgid "_Contents"
 msgstr "_Continguts"
 
-#: monodoc-browser/browser.glade:571
+#: docbrowser/browser.glade:627
 msgid "_Look for:"
 msgstr "C_erca:"
 
-#: monodoc-browser/browser.glade:619 monodoc-browser/browser.glade:1445
-#: monodoc-browser/browser.glade:1666 monodoc-browser/browser.glade:2049
-#: monodoc-browser/browser.glade:3010 monodoc-browser/browser.glade:3033
-#: monodoc-browser/browser.glade:3082
+#: docbrowser/browser.glade:675 docbrowser/browser.glade:1159
+#: docbrowser/browser.glade:1387 docbrowser/browser.glade:1773
+#: docbrowser/browser.glade:2753 docbrowser/browser.glade:2776
+#: docbrowser/browser.glade:2825
 msgid "*"
 msgstr "*"
 
-#: monodoc-browser/browser.glade:721
+#: docbrowser/browser.glade:777
 msgid "_Index"
 msgstr "_Índex"
 
-#: monodoc-browser/browser.glade:791
+#: docbrowser/browser.glade:847
 msgid "_Search"
 msgstr "_Cerca"
 
-#: monodoc-browser/browser.glade:858
-msgid "label16"
-msgstr ""
-
-#: monodoc-browser/browser.glade:930
-msgid "<e_xample>"
-msgstr ""
-
-#: monodoc-browser/browser.glade:946
-msgid "<list>"
-msgstr ""
-
-#: monodoc-browser/browser.glade:962
-msgid "<_table>"
-msgstr ""
-
-#: monodoc-browser/browser.glade:978
-msgid "<_see...>"
-msgstr ""
-
-#: monodoc-browser/browser.glade:994
-msgid "<_para>"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1010
-msgid "Add Note\t"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1054
-msgid "Preview"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1112
-msgid "C_lose"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1129
-msgid "S_ave"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1157
-msgid "label17"
-msgstr ""
-
-#: monodoc-browser/browser.glade:1217
+#: docbrowser/browser.glade:919
 msgid "About monodoc"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1257
+#: docbrowser/browser.glade:964
 msgid ""
 "<span size=\"larger\"><b>monodoc:</b> The Mono Documentation Library viewer</"
 "span>"
-msgstr "<span size=\"larger\"><b>monodoc:</b> Visualitzador de la documentació de les biblioteques del Mono</"
-"span>"
+msgstr ""
+"<span size=\"larger\"><b>monodoc:</b> Visualitzador de la documentació de "
+"les biblioteques del Mono</span>"
 
-#: monodoc-browser/browser.glade:1292
+#: docbrowser/browser.glade:999
 msgid ""
 "<b>Authors:</b>\n"
 "   Miguel de Icaza (miguel@ximian.com)\n"
@@ -406,10 +370,11 @@ msgid ""
 "   Alp Toker (alp@atoker.com)\n"
 "   Piers Haken\n"
 "   John Luke (jluke@cfl.rr.com)\n"
-"   Ben Maurer"
+"   Ben Maurer\n"
+"Mario Sopena novales"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1324
+#: docbrowser/browser.glade:1032
 msgid ""
 "<b>Plugins:</b>\n"
 "  ECMA Documentation.\n"
@@ -420,23 +385,23 @@ msgid ""
 "  ECMA C# Specification."
 msgstr ""
 
-#: monodoc-browser/browser.glade:1398
+#: docbrowser/browser.glade:1107
 msgid "Lookup"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1416
+#: docbrowser/browser.glade:1130
 msgid "_Url to lookup:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1448
+#: docbrowser/browser.glade:1162
 msgid "lookup_entry"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1495
+#: docbrowser/browser.glade:1210
 msgid "Login configuration"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1522
+#: docbrowser/browser.glade:1242
 msgid ""
 "You can edit the contents of the API documentation in MonoDoc and "
 "contribute\n"
@@ -448,74 +413,74 @@ msgid ""
 "If you agree, click Continue"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1578 monodoc-browser/browser.glade:1738
-#: monodoc-browser/browser.glade:2110
+#: docbrowser/browser.glade:1298 docbrowser/browser.glade:1459
+#: docbrowser/browser.glade:1834
 msgid "Continue"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1606
+#: docbrowser/browser.glade:1327
 msgid "0"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1637
+#: docbrowser/browser.glade:1358
 msgid "_Email:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1680
+#: docbrowser/browser.glade:1401
 msgid "xx"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1766
+#: docbrowser/browser.glade:1488
 msgid "1"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1791
+#: docbrowser/browser.glade:1513
 msgid "Monodoc is requesting an account for you."
 msgstr ""
 
-#: monodoc-browser/browser.glade:1871
+#: docbrowser/browser.glade:1594
 msgid "2"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1896
+#: docbrowser/browser.glade:1619
 msgid ""
 "<b>Error:</b> Monodoc encountered a failure when requesting\n"
 "a password for your e-mail address.  Try again later."
 msgstr ""
 
-#: monodoc-browser/browser.glade:1932 monodoc-browser/browser.glade:2314
-#: monodoc-browser/browser.glade:2402 monodoc-browser/browser.glade:2595
-#: monodoc-browser/browser.glade:2684 monodoc-browser/browser.glade:2773
+#: docbrowser/browser.glade:1655 docbrowser/browser.glade:2040
+#: docbrowser/browser.glade:2129 docbrowser/browser.glade:2324
+#: docbrowser/browser.glade:2414 docbrowser/browser.glade:2504
 msgid "Ok"
 msgstr "D'acord"
 
-#: monodoc-browser/browser.glade:1961
+#: docbrowser/browser.glade:1685
 msgid "3"
 msgstr ""
 
-#: monodoc-browser/browser.glade:1992
+#: docbrowser/browser.glade:1716
 msgid ""
 "Once you receive your password on the mail, please enter it\n"
 "here:\n"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2021
+#: docbrowser/browser.glade:1745
 msgid "Password:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2139
+#: docbrowser/browser.glade:1864
 msgid "4"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2164
+#: docbrowser/browser.glade:1889
 msgid "MonoDoc is logging into the server."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2254
+#: docbrowser/browser.glade:1980
 msgid "5"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2279
+#: docbrowser/browser.glade:2005
 msgid ""
 "<b>Congratulations!</b> \n"
 "\n"
@@ -523,33 +488,33 @@ msgid ""
 "the File/Upload menu option."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2343
+#: docbrowser/browser.glade:2070
 msgid "6"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2368
+#: docbrowser/browser.glade:2095
 msgid ""
 "<b>Terminated</b> \n"
 "\n"
 "The request to the Monodoc server has been cancelled."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2431
+#: docbrowser/browser.glade:2159
 msgid "7"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2456
+#: docbrowser/browser.glade:2184
 msgid ""
 "<b>Please wait</b>\n"
 "\n"
 "MonoDoc is checking the server version."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2535
+#: docbrowser/browser.glade:2264
 msgid "8"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2560
+#: docbrowser/browser.glade:2289
 msgid ""
 "<b>Communications Problem</b> \n"
 "\n"
@@ -557,11 +522,11 @@ msgid ""
 "with the Mono Documentation Server."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2624
+#: docbrowser/browser.glade:2354
 msgid "9"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2649
+#: docbrowser/browser.glade:2379
 msgid ""
 "<b>Version missmatch</b> \n"
 "\n"
@@ -569,11 +534,11 @@ msgid ""
 "server, please upgrade your MonoDoc installation."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2713
+#: docbrowser/browser.glade:2444
 msgid "10"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2738
+#: docbrowser/browser.glade:2469
 msgid ""
 "<b>Password Problem</b> \n"
 "\n"
@@ -581,46 +546,46 @@ msgid ""
 "Please try again."
 msgstr ""
 
-#: monodoc-browser/browser.glade:2802
+#: docbrowser/browser.glade:2534
 msgid "11"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2823
+#: docbrowser/browser.glade:2555
 msgid "Uploading Documentation Updates - MonoDoc"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2872
+#: docbrowser/browser.glade:2610
 msgid "Monodoc Documentation Updates Uploader. "
 msgstr ""
 
-#: monodoc-browser/browser.glade:2899
+#: docbrowser/browser.glade:2637
 msgid "<b>Status:</b> "
 msgstr ""
 
-#: monodoc-browser/browser.glade:2957
+#: docbrowser/browser.glade:2695
 msgid "New Comment"
 msgstr ""
 
-#: monodoc-browser/browser.glade:2974
+#: docbrowser/browser.glade:2717
 msgid "TODO: Some advise on posting here."
 msgstr ""
 
-#: monodoc-browser/browser.glade:3050
+#: docbrowser/browser.glade:2793
 msgid "Title:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:3099
+#: docbrowser/browser.glade:2842
 msgid "Comment"
 msgstr ""
 
-#: monodoc-browser/browser.glade:3125
+#: docbrowser/browser.glade:2868
 msgid "E-Mail:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:3151
+#: docbrowser/browser.glade:2894
 msgid "Name:"
 msgstr ""
 
-#: monodoc-browser/browser.glade:3267
+#: docbrowser/browser.glade:3014
 msgid "Edit bookmarks"
 msgstr ""

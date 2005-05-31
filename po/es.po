@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNUnit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-05 11:15+0200\n"
+"POT-Creation-Date: 2005-05-31 11:41+0530\n"
 "PO-Revision-Date: 2004-08-05 11:14+0200\n"
 "Last-Translator: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
 "Language-Team: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
@@ -32,105 +32,107 @@ msgstr ""
 msgid "Select an assembly to load"
 msgstr "Elija un assembly para cargar"
 
-#: gnunit/src/nunit-gtk.glade.h:1
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: gnunit/src/nunit-gtk.glade.h:2
-msgid "Don't save results"
-msgstr "No guardar resultados"
-
-#: gnunit/src/nunit-gtk.glade.h:3 gnunit/src/main.cs:505
-msgid "Error"
-msgstr "Error"
-
-#: gnunit/src/nunit-gtk.glade.h:4
-msgid "Error details"
-msgstr "Detalles del error"
-
-#: gnunit/src/nunit-gtk.glade.h:5
-msgid "Errors and failures"
-msgstr "Errores y fallos"
-
-#: gnunit/src/nunit-gtk.glade.h:6
-msgid "Exit program"
-msgstr "Salir del programa"
-
-#: gnunit/src/nunit-gtk.glade.h:7
-msgid "File exists. Overwrite?"
-msgstr "El fichero existe. ¿Sobreescribir?"
-
-#: gnunit/src/nunit-gtk.glade.h:8
+#: gnunit/src/nunit-gtk.glade:10
 msgid "Mono NUnit2 GUI"
 msgstr ""
 
-#: gnunit/src/nunit-gtk.glade.h:9
-msgid "Open"
-msgstr "Abrir"
-
-#: gnunit/src/nunit-gtk.glade.h:10
-msgid "Open assembly"
-msgstr "Carga un ensamblado"
-
-#: gnunit/src/nunit-gtk.glade.h:11
-msgid "Quit"
-msgstr "Salir"
-
-#: gnunit/src/nunit-gtk.glade.h:12
-msgid "Run"
-msgstr "Ejecutar"
-
-#: gnunit/src/nunit-gtk.glade.h:13
-msgid "Run selected test fixture(s)"
-msgstr "Ejecutar los tests seleccionados"
-
-#: gnunit/src/nunit-gtk.glade.h:14
-msgid "Save As"
-msgstr "Guardar como"
-
-#: gnunit/src/nunit-gtk.glade.h:15
-msgid "Save results"
-msgstr "Guardar resultados"
-
-#: gnunit/src/nunit-gtk.glade.h:16
-msgid "Save results to a XML file"
-msgstr "Guardar resultados a un fichero XML"
-
-#: gnunit/src/nunit-gtk.glade.h:17 gnunit/src/main.cs:102
-msgid "Show details >>"
-msgstr "Mostrar detalles >>"
-
-#: gnunit/src/nunit-gtk.glade.h:18
-msgid "Standard error"
-msgstr "Salida de error"
-
-#: gnunit/src/nunit-gtk.glade.h:19
-msgid "Standard out"
-msgstr "Salida estándar"
-
-#: gnunit/src/nunit-gtk.glade.h:20
-msgid "Stop"
-msgstr "Detener"
-
-#: gnunit/src/nunit-gtk.glade.h:21
-msgid "Test: "
-msgstr "Test: "
-
-#: gnunit/src/nunit-gtk.glade.h:22
-msgid "Tests not run"
-msgstr "Tests no ejecutados"
-
-#: gnunit/src/nunit-gtk.glade.h:23
-msgid "_Clear recent"
-msgstr "_Borra recientes"
-
-#: gnunit/src/nunit-gtk.glade.h:24
+#: gnunit/src/nunit-gtk.glade:66
 msgid "_Recent assemblies"
 msgstr "Ficheros _recientes"
 
-#: gnunit/src/nunit-gtk.glade.h:25
+#: gnunit/src/nunit-gtk.glade:86
+msgid "_Clear recent"
+msgstr "_Borra recientes"
+
+#: gnunit/src/nunit-gtk.glade:203
+msgid "Open assembly"
+msgstr "Carga un ensamblado"
+
+#: gnunit/src/nunit-gtk.glade:204
+msgid "Open"
+msgstr "Abrir"
+
+#: gnunit/src/nunit-gtk.glade:214
+msgid "Save results to a XML file"
+msgstr "Guardar resultados a un fichero XML"
+
+#: gnunit/src/nunit-gtk.glade:215
+msgid "Save As"
+msgstr "Guardar como"
+
+#: gnunit/src/nunit-gtk.glade:225
+msgid "Run selected test fixture(s)"
+msgstr "Ejecutar los tests seleccionados"
+
+#: gnunit/src/nunit-gtk.glade:226 gnunit/src/nunit-gtk.glade:466
+msgid "Run"
+msgstr "Ejecutar"
+
+#: gnunit/src/nunit-gtk.glade:240 docbrowser/browser.glade:1565
+#: docbrowser/browser.glade:1944 docbrowser/browser.glade:2235
+#: docbrowser/browser.glade:2584
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: gnunit/src/nunit-gtk.glade:241
+msgid "Stop"
+msgstr "Detener"
+
+#: gnunit/src/nunit-gtk.glade:251
+msgid "Exit program"
+msgstr "Salir del programa"
+
+#: gnunit/src/nunit-gtk.glade:252 docbrowser/browser.glade:98
+msgid "Quit"
+msgstr "Salir"
+
+#: gnunit/src/nunit-gtk.glade:357
+msgid "Test: "
+msgstr "Test: "
+
+#: gnunit/src/nunit-gtk.glade:531
+msgid "Errors and failures"
+msgstr "Errores y fallos"
+
+#: gnunit/src/nunit-gtk.glade:577
+msgid "Tests not run"
+msgstr "Tests no ejecutados"
+
+#: gnunit/src/nunit-gtk.glade:629
+msgid "Standard error"
+msgstr "Salida de error"
+
+#: gnunit/src/nunit-gtk.glade:681
+msgid "Standard out"
+msgstr "Salida estándar"
+
+#: gnunit/src/nunit-gtk.glade:735 gnunit/src/main.cs:505
+msgid "Error"
+msgstr "Error"
+
+#: gnunit/src/nunit-gtk.glade:818
 msgid "label"
 msgstr "etiqueta"
+
+#: gnunit/src/nunit-gtk.glade:846 gnunit/src/main.cs:102
+msgid "Show details >>"
+msgstr "Mostrar detalles >>"
+
+#: gnunit/src/nunit-gtk.glade:917
+msgid "Error details"
+msgstr "Detalles del error"
+
+#: gnunit/src/nunit-gtk.glade:960
+msgid "File exists. Overwrite?"
+msgstr "El fichero existe. ¿Sobreescribir?"
+
+#: gnunit/src/nunit-gtk.glade:982
+msgid "Don't save results"
+msgstr "No guardar resultados"
+
+#: gnunit/src/nunit-gtk.glade:996
+msgid "Save results"
+msgstr "Guardar resultados"
 
 #: gnunit/src/main.cs:35
 #, csharp-format
@@ -239,3 +241,348 @@ msgstr "Ha ocurrido una excepción no controlada\n"
 #: gnunit/src/main.cs:848
 msgid "The program will terminate now."
 msgstr "El programa terminará ahora."
+
+#: docbrowser/browser.glade:8
+msgid "Mono Documentation Library"
+msgstr ""
+
+#: docbrowser/browser.glade:35
+msgid "_File"
+msgstr ""
+
+#: docbrowser/browser.glade:44
+msgid "New _Tab"
+msgstr ""
+
+#: docbrowser/browser.glade:66
+msgid "_Lookup URL"
+msgstr ""
+
+#: docbrowser/browser.glade:88
+msgid "_Upload Contributions"
+msgstr ""
+
+#: docbrowser/browser.glade:124
+msgid "_Edit"
+msgstr ""
+
+#: docbrowser/browser.glade:133
+msgid "_Copy"
+msgstr ""
+
+#: docbrowser/browser.glade:155
+msgid "_Paste"
+msgstr ""
+
+#: docbrowser/browser.glade:177
+msgid "Select All"
+msgstr ""
+
+#: docbrowser/browser.glade:193
+msgid "Editing"
+msgstr ""
+
+#: docbrowser/browser.glade:207
+msgid "_View"
+msgstr ""
+
+#: docbrowser/browser.glade:216
+msgid "Collapse All"
+msgstr ""
+
+#: docbrowser/browser.glade:225
+msgid "Show Inherited Members"
+msgstr ""
+
+#: docbrowser/browser.glade:235
+msgid "Show Comments"
+msgstr ""
+
+#: docbrowser/browser.glade:249
+msgid "_Bookmarks"
+msgstr ""
+
+#: docbrowser/browser.glade:258
+msgid "_Add bookmark"
+msgstr ""
+
+#: docbrowser/browser.glade:267
+msgid "_Edit bookmarks..."
+msgstr ""
+
+#: docbrowser/browser.glade:280
+msgid "_Help"
+msgstr ""
+
+#: docbrowser/browser.glade:289
+msgid "About"
+msgstr ""
+
+#: docbrowser/browser.glade:442 docbrowser/browser.glade:804
+msgid "n/a"
+msgstr ""
+
+#: docbrowser/browser.glade:551
+msgid "_Contents"
+msgstr ""
+
+#: docbrowser/browser.glade:627
+msgid "_Look for:"
+msgstr ""
+
+#: docbrowser/browser.glade:675 docbrowser/browser.glade:1159
+#: docbrowser/browser.glade:1387 docbrowser/browser.glade:1773
+#: docbrowser/browser.glade:2753 docbrowser/browser.glade:2776
+#: docbrowser/browser.glade:2825
+msgid "*"
+msgstr ""
+
+#: docbrowser/browser.glade:777
+msgid "_Index"
+msgstr ""
+
+#: docbrowser/browser.glade:847
+msgid "_Search"
+msgstr ""
+
+#: docbrowser/browser.glade:919
+msgid "About monodoc"
+msgstr ""
+
+#: docbrowser/browser.glade:964
+msgid ""
+"<span size=\"larger\"><b>monodoc:</b> The Mono Documentation Library viewer</"
+"span>"
+msgstr ""
+
+#: docbrowser/browser.glade:999
+msgid ""
+"<b>Authors:</b>\n"
+"   Miguel de Icaza (miguel@ximian.com)\n"
+"   Duncan Mak (duncan@ximian.com)\n"
+"   Joshua Tauberer (tauberer@for.net)\n"
+"   Lee Malabone\n"
+"   Philip Van Hoof\n"
+"   Johannes Roith (johannes@jroith.de)\n"
+"   Alp Toker (alp@atoker.com)\n"
+"   Piers Haken\n"
+"   John Luke (jluke@cfl.rr.com)\n"
+"   Ben Maurer\n"
+"Mario Sopena novales"
+msgstr ""
+
+#: docbrowser/browser.glade:1032
+msgid ""
+"<b>Plugins:</b>\n"
+"  ECMA Documentation.\n"
+"  Mono XML Documentation.\n"
+"  Mono Handbook.\n"
+"  Manual Pages.\n"
+"  Compiler Errors.\n"
+"  ECMA C# Specification."
+msgstr ""
+
+#: docbrowser/browser.glade:1107
+msgid "Lookup"
+msgstr ""
+
+#: docbrowser/browser.glade:1130
+msgid "_Url to lookup:"
+msgstr ""
+
+#: docbrowser/browser.glade:1162
+msgid "lookup_entry"
+msgstr ""
+
+#: docbrowser/browser.glade:1210
+msgid "Login configuration"
+msgstr ""
+
+#: docbrowser/browser.glade:1242
+msgid ""
+"You can edit the contents of the API documentation in MonoDoc and "
+"contribute\n"
+"those back.  To do this you must agree to relicense your updates under the "
+"terms\n"
+"of the MIT X11 Open Source License and register your email address with the\n"
+"documentation service.\n"
+"\n"
+"If you agree, click Continue"
+msgstr ""
+
+#: docbrowser/browser.glade:1298 docbrowser/browser.glade:1459
+#: docbrowser/browser.glade:1834
+msgid "Continue"
+msgstr ""
+
+#: docbrowser/browser.glade:1327
+msgid "0"
+msgstr ""
+
+#: docbrowser/browser.glade:1358
+msgid "_Email:"
+msgstr ""
+
+#: docbrowser/browser.glade:1401
+msgid "xx"
+msgstr ""
+
+#: docbrowser/browser.glade:1488
+msgid "1"
+msgstr ""
+
+#: docbrowser/browser.glade:1513
+msgid "Monodoc is requesting an account for you."
+msgstr ""
+
+#: docbrowser/browser.glade:1594
+msgid "2"
+msgstr ""
+
+#: docbrowser/browser.glade:1619
+msgid ""
+"<b>Error:</b> Monodoc encountered a failure when requesting\n"
+"a password for your e-mail address.  Try again later."
+msgstr ""
+
+#: docbrowser/browser.glade:1655 docbrowser/browser.glade:2040
+#: docbrowser/browser.glade:2129 docbrowser/browser.glade:2324
+#: docbrowser/browser.glade:2414 docbrowser/browser.glade:2504
+msgid "Ok"
+msgstr ""
+
+#: docbrowser/browser.glade:1685
+msgid "3"
+msgstr ""
+
+#: docbrowser/browser.glade:1716
+msgid ""
+"Once you receive your password on the mail, please enter it\n"
+"here:\n"
+msgstr ""
+
+#: docbrowser/browser.glade:1745
+msgid "Password:"
+msgstr ""
+
+#: docbrowser/browser.glade:1864
+msgid "4"
+msgstr ""
+
+#: docbrowser/browser.glade:1889
+msgid "MonoDoc is logging into the server."
+msgstr ""
+
+#: docbrowser/browser.glade:1980
+msgid "5"
+msgstr ""
+
+#: docbrowser/browser.glade:2005
+msgid ""
+"<b>Congratulations!</b> \n"
+"\n"
+"You can now contribute your changes to MonoDoc by using \n"
+"the File/Upload menu option."
+msgstr ""
+
+#: docbrowser/browser.glade:2070
+msgid "6"
+msgstr ""
+
+#: docbrowser/browser.glade:2095
+msgid ""
+"<b>Terminated</b> \n"
+"\n"
+"The request to the Monodoc server has been cancelled."
+msgstr ""
+
+#: docbrowser/browser.glade:2159
+msgid "7"
+msgstr ""
+
+#: docbrowser/browser.glade:2184
+msgid ""
+"<b>Please wait</b>\n"
+"\n"
+"MonoDoc is checking the server version."
+msgstr ""
+
+#: docbrowser/browser.glade:2264
+msgid "8"
+msgstr ""
+
+#: docbrowser/browser.glade:2289
+msgid ""
+"<b>Communications Problem</b> \n"
+"\n"
+"There was a communications problem when communicating\n"
+"with the Mono Documentation Server."
+msgstr ""
+
+#: docbrowser/browser.glade:2354
+msgid "9"
+msgstr ""
+
+#: docbrowser/browser.glade:2379
+msgid ""
+"<b>Version missmatch</b> \n"
+"\n"
+"This version of MonoDoc is not compatible with the current Monodoc\n"
+"server, please upgrade your MonoDoc installation."
+msgstr ""
+
+#: docbrowser/browser.glade:2444
+msgid "10"
+msgstr ""
+
+#: docbrowser/browser.glade:2469
+msgid ""
+"<b>Password Problem</b> \n"
+"\n"
+"The passkey entered is incorrect. \n"
+"Please try again."
+msgstr ""
+
+#: docbrowser/browser.glade:2534
+msgid "11"
+msgstr ""
+
+#: docbrowser/browser.glade:2555
+msgid "Uploading Documentation Updates - MonoDoc"
+msgstr ""
+
+#: docbrowser/browser.glade:2610
+msgid "Monodoc Documentation Updates Uploader. "
+msgstr ""
+
+#: docbrowser/browser.glade:2637
+msgid "<b>Status:</b> "
+msgstr ""
+
+#: docbrowser/browser.glade:2695
+msgid "New Comment"
+msgstr ""
+
+#: docbrowser/browser.glade:2717
+msgid "TODO: Some advise on posting here."
+msgstr ""
+
+#: docbrowser/browser.glade:2793
+msgid "Title:"
+msgstr ""
+
+#: docbrowser/browser.glade:2842
+msgid "Comment"
+msgstr ""
+
+#: docbrowser/browser.glade:2868
+msgid "E-Mail:"
+msgstr ""
+
+#: docbrowser/browser.glade:2894
+msgid "Name:"
+msgstr ""
+
+#: docbrowser/browser.glade:3014
+msgid "Edit bookmarks"
+msgstr ""
