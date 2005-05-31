@@ -1,3 +1,11 @@
+2005-05-31  Raja R Harinath  <rharinath@novell.com>
+
+	* gtk/Makefile.am (gasnview): Depend on script.in.  Depend on
+	Makefile to pick up any change in $(prefix).
+	(gasnview_sources): Prefix Main.cs with $(srcdir) like the rest.
+	(gasnview_sources_build): Don't add $(srcdir) prefix to
+	$(gasnview_source), they already have it.
+
 2005-05-08  Ben Maurer  <bmaurer@ximian.com>
 
 	* gtk/Makefile.am, gtk/script.in: use @RUNTIME@ rather than

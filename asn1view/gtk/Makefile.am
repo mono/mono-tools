@@ -21,7 +21,7 @@ resources = $(srcdir)/gui.glade \
 	$(srcdir)/../art/text_hilight-16.png \
 	$(srcdir)/../art/text_lolight-16.png
 
-gasnview_sources = Main.cs \
+gasnview_sources = $(srcdir)/Main.cs \
 	$(srcdir)/../common/ASN1Decoder.cs \
 	$(srcdir)/../common/PrettyPrinter.cs \
 	$(srcdir)/../common/OidCache.cs \
@@ -29,15 +29,14 @@ gasnview_sources = Main.cs \
 
 gasnview_sources_in = 
 gasnview_sources_dist = $(gasnview_sources) $(gasnview_sources_in)
-gasnview_sources_build = $(addprefix $(srcdir)/, $(gasnview_sources))
-gasnview_sources_build += $(gasnview_sources_in:.in=)
+gasnview_sources_build = $(gasnview_sources) $(gasnview_sources_in:.in=)
 
 ###
 ress= $(foreach res,$(resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 gasnview.exe: $(gasnview_sources_build) $(resources)
 	$(MCS) $(MCSFLAGS) $(local_flags) $(ress) -out:$@ $(gasnview_sources_build)
-	
+
 scriptdir = $(bindir)
 
 script_SCRIPTS = gasnview
@@ -48,6 +47,6 @@ REWRITE = sed \
 	-e 's,@''exe_file@,$@.exe,g'				\
 	-e 's,@''RUNTIME@,@RUNTIME@,g'
 
-gasnview :
+gasnview: $(srcdir)/script.in Makefile
 	$(REWRITE) $(srcdir)/script.in > $@.tmp
 	mv $@.tmp $@
