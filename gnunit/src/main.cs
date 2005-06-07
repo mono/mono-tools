@@ -389,7 +389,7 @@ namespace Mono.NUnit.GUI
 			tr = new CellRendererText ();
 			nameCol = new TreeViewColumn ();
 			nameCol.PackStart (pr, false);
-			nameCol.SetCellDataFunc (pr, CircleRenderer.CellDataFunc, IntPtr.Zero, null);
+			nameCol.SetCellDataFunc (pr, CircleRenderer.CellDataFunc);
 			nameCol.PackStart (tr, false);
 			nameCol.AddAttribute (tr, "text", 1);
 			assemblyView.AppendColumn (nameCol);
@@ -629,10 +629,9 @@ namespace Mono.NUnit.GUI
 			store.RunTestAtIter (iter, this, ref ntests);
 		}
 
-		void LoadRecent (object sender, EventArgs args)
+		void OnLoadRecent (object sender, EventArgs args)
 		{
-			MenuItem item = (MenuItem) sender;
-			string assembly = (string) item.Data ["assemblyName"];
+			string assembly = (string) recent_items [sender];
 			LoadAssembly (assembly);
 		}
 
@@ -886,6 +885,7 @@ namespace Mono.NUnit.GUI
 			ed.Run ();
 		}
 
+		Hashtable recent_items = new Hashtable ();
 		void SetupRecentAssembliesMenu (object sender, GConf.NotifyEventArgs args)
 		{
 			string [] recent;
@@ -900,16 +900,18 @@ namespace Mono.NUnit.GUI
 				return;
 			}
 
-			EventHandler cb = new EventHandler (LoadRecent);
+			EventHandler cb = new EventHandler (OnLoadRecent);
+			recent_items.Clear ();
 			Menu menu = new Menu ();
 			int index = 1;
 			foreach (string s in recent) {
 				if (s == "")
 					continue;
+
 				MenuItem item = new MenuItem (String.Format ("_{0}. {1}",
 									     index++,
 									     s.Replace ("_", "__")));
-				item.Data ["assemblyName"] = s;
+				recent_items [item] = s;
 				item.Activated += cb;
 				menu.Append (item);
 			}

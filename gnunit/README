@@ -15,10 +15,10 @@ gnunit is a frontend for running NUnit 2 test suites.
 	Makefile.am
 
 	src/
-		Source files for nunit-gtk.
+		Source files for gnunit.
 	art/
 		Actually this directory should be called pseudo-random-art.
-		It contains a few PNG images used in nunit-gtk.
+		It contains a few PNG images used in gnunit.
 
 -Gonzalo
 

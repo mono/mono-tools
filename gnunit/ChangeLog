@@ -1,5 +1,10 @@
 2005-06-07 Gonzalo Paniagua Javier <gonzalo@ximian.com>
 
+	* src/main.cs: no more obsolete gtk# stuff used.
+	* README: nunit-gtk => gnunit
+
+2005-06-07 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
 	* src/nunit-gtk.schema:
 	* src/main.cs:
 	* src/nunit-gtk.glade:
