@@ -65,6 +65,26 @@ namespace Mono.NUnit.GUI
 			}
 		}
 
+		public static string KnownCategories
+		{
+			get {
+				return (string) client.Get ("/apps/nunitgtk/knowncategories");
+			}
+			set {
+				client.Set ("/apps/nunitgtk/knowncategories", value);
+			}
+		}
+
+		public static event GConf.NotifyEventHandler KnownCategoriesChanged
+		{
+			add {
+				client.AddNotify ("/apps/nunitgtk/knowncategories", value);
+			}
+			remove{
+				client.RemoveNotify ("/apps/nunitgtk/knowncategories", value);
+			}
+		}
+
 		public static int Width
 		{
 			get {
@@ -118,6 +138,12 @@ namespace Mono.NUnit.GUI
 		{
 			get {
 				 return "/apps/nunitgtk/recentassemblies";
+			}
+		}
+		public static string KnownCategories
+		{
+			get {
+				 return "/apps/nunitgtk/knowncategories";
 			}
 		}
 		public static string Width

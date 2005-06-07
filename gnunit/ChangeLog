@@ -1,9 +1,19 @@
+2005-06-07 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* src/nunit-gtk.schema:
+	* src/main.cs:
+	* src/nunit-gtk.glade:
+	* src/AssemblyStore.cs:
+	* src/Settings.cs: added support for categories, display the number of
+	assertions made, workaround 'Stop' as thread.Abort wasn't doing very
+	well.
+
 2005-05-08  Ben Maurer  <bmaurer@ximian.com>
 
 	* src/Makefile.am, script*.in: use @RUNTIME@ rather than
-        @bin_dir@/mono. This is a problem for people who have mono-tools
-        and mono in a different prefix (say you install mono from rpm but
-        want to hack on monodoc).
+	@bin_dir@/mono. This is a problem for people who have mono-tools
+	and mono in a different prefix (say you install mono from rpm but
+	want to hack on monodoc).
 
 2005-04-23  Mike Kestner  <mkestner@novell.com>
 

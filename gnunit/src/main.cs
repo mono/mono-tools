@@ -1,10 +1,11 @@
 //
-// main.cs: nunit-gtk.exe - a frontend for running NUnit2 test cases.
+// main.cs: gnunit.exe - a frontend for running NUnit2 test cases.
 //
 // Authors:
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)
 //
 // (C) 2003 Ximian, Inc (http://www.ximian.com)
+// Copyright (c) 2005 Novell, Inc (http://www.novell.com)
 //
 using System;
 using System.Collections;
@@ -17,12 +18,13 @@ using Gnome;
 using Gtk;
 using NUnit.Core;
 using NUnit.Util;
+using Dialog = Gtk.Dialog;
 
 namespace Mono.NUnit.GUI
 {
 	class OverWriteDialog
 	{
-		[Glade.Widget] Gtk.Dialog overwriteDialog;
+		[Glade.Widget] Dialog overwriteDialog;
 		[Glade.Widget] Label header;
 		[Glade.Widget] Label message;
 		bool yes;
@@ -60,7 +62,7 @@ namespace Mono.NUnit.GUI
 
 	class ErrorDialog
 	{
-		[Glade.Widget] Gtk.Dialog errorDialog;
+		[Glade.Widget] Dialog errorDialog;
 		[Glade.Widget] Label message;
 		[Glade.Widget] HBox detailBox;
 		[Glade.Widget] Button btnDetails;
@@ -123,7 +125,172 @@ namespace Mono.NUnit.GUI
 		}
 	}
 
-	public class NUnitGUI : Program, EventListener
+	class CategoryMaster : IFilter {
+		static Hashtable known_categories;
+		string [] categories;
+		bool [] states;
+		object [] menues;
+		EventHandler cb;
+		string [] exclude;
+		bool uncategorized;
+		bool all;
+		IFilter inner_filter;
+
+		static CategoryMaster ()
+		{
+			known_categories = new Hashtable (CaseInsensitiveHashCodeProvider.DefaultInvariant,
+							 CaseInsensitiveComparer.DefaultInvariant);
+
+			RetrieveKnownCategories (null, null);
+			Settings.KnownCategoriesChanged += new GConf.NotifyEventHandler (RetrieveKnownCategories);
+		}
+
+		static void RetrieveKnownCategories (object sender, GConf.NotifyEventArgs args)
+		{
+			lock (known_categories) {
+				string [] known;
+				try {
+					known = Settings.KnownCategories.Split (':');
+				} catch {
+					known_categories.Clear ();
+					return;
+				}
+
+				foreach (string k in known) {
+					int n = k.IndexOf ('=');
+					if (n == -1)
+						continue;
+
+					known_categories [k.Substring (n)] = (k [n + 1] == '1');
+				}
+			}
+		}
+
+		public CategoryMaster ()
+		{
+			cb = new EventHandler (ToggleState);
+		}
+
+		public CategoryMaster (ICollection categories) : this ()
+		{
+			SetCategories (categories);
+		}
+
+		public void SetMenuItemForIndex (MenuItem item, int idx)
+		{
+			menues [idx] = item;
+		}
+
+		public void SetCategories (ICollection categories)
+		{
+			Cancel = false;
+			int n = (categories != null) ? categories.Count + 1 : 1;
+			this.categories = new string [n];
+			states = new bool [n];
+			menues = new object [n];
+			int idx = 0;
+			if (n > 1) {
+				foreach (string s in categories) {
+					this.categories [idx] = s;
+					states [idx] = true; //TODO: Default from known_categories
+					idx++;
+				}
+			}
+
+			this.categories [idx] = _("Uncategorized");
+			states [idx] = true;
+			exclude = null;
+			uncategorized = false;
+			all = false;
+		}
+
+		public string [] Categories {
+			get { return categories; }
+		}
+
+		public bool [] States {
+			get { return states; }
+		}
+
+		public EventHandler Callback {
+			get { return cb; }
+		}
+
+		void ToggleState (object sender, EventArgs args)
+		{
+			CheckMenuItem item = (CheckMenuItem) sender;
+			int idx = Array.IndexOf (menues, sender);
+			if (idx == -1) {
+				return;
+			}
+
+			states [idx] = item.Active;
+		}
+
+		public void PrepareFilters ()
+		{
+			int length = states.Length;
+			uncategorized = states [length - 1];
+			int nexcludes = 0;
+			for (int i = 0; i < length - 1; i++) {
+				if ((uncategorized && !states [i]) || (!uncategorized && states [i]))
+					nexcludes++;
+			}
+
+			if (uncategorized && nexcludes == 0) {
+				all = true;
+				exclude = null;
+				return;
+			}
+
+			if (nexcludes > 0) {
+				exclude = new string [nexcludes];
+				int idx = 0;
+				for (int i = 0; i < length - 1; i++) {
+					if (uncategorized && !states [i]) {
+						exclude [idx] = categories [i];
+						idx++;
+					} else if (!uncategorized && states [i]) {
+						exclude [idx] = categories [i];
+						idx++;
+					}
+				}
+				inner_filter = new CategoryFilter (exclude, uncategorized);
+			} else {
+				inner_filter = new CategoryFilter (categories, uncategorized);
+			}
+		}
+
+		public bool Cancel;
+		bool IFilter.Pass (TestSuite suite)
+		{
+			if (Cancel)
+				return false;
+
+			if (all)
+				return true;
+
+			return inner_filter.Pass (suite);
+		}
+		
+		bool IFilter.Pass (TestCase test)
+		{
+			if (Cancel)
+				return false;
+
+			if (all)
+				return true;
+
+			return inner_filter.Pass (test);
+		}
+
+		static string _ (string key)
+		{
+			return Catalog.GetString (key);
+		}
+	}
+
+	class NUnitGUI : Program, EventListener
 	{
 		static string version;
 		static string title;
@@ -143,11 +310,12 @@ namespace Mono.NUnit.GUI
 		[Glade.Widget] ImageMenuItem menuRecent;
 		[Glade.Widget] MenuBar menubar;
 		[Glade.Widget] MenuItem menuSaveAs;
-		[Glade.Widget] Button btnOpen;
-		[Glade.Widget] Button btnSaveAs;
-		[Glade.Widget] Button btnRun;
-		[Glade.Widget] Button btnExit;
-		[Glade.Widget] Button btnStop;
+		[Glade.Widget] ToolButton btnOpen;
+		[Glade.Widget] ToolButton btnSaveAs;
+		[Glade.Widget] ToolButton btnRun;
+		[Glade.Widget] ToolButton btnExit;
+		[Glade.Widget] ToolButton btnStop;
+		[Glade.Widget] MenuItem categories_menu;
 
 		// Notebook
 		[Glade.Widget] TreeView failures;
@@ -176,6 +344,7 @@ namespace Mono.NUnit.GUI
 		int finishedTests;
 		int ignoredTests;
 		int errorTests;
+		int assertions;
 		TextWriter origStdout = Console.Out;
 		TextWriter origStderr = Console.Error;
 		StringWriter stdout = new StringWriter ();
@@ -184,9 +353,10 @@ namespace Mono.NUnit.GUI
 		TreeViewColumn nameCol;
 		CellRendererPixbuf pr;
 		CellRendererText tr;
-		Gtk.Dialog about;
+		Dialog about;
 		bool quitting;
 		long startTime;
+		CategoryMaster catman = new CategoryMaster ();
 
 		static string _ (string key)
 		{
@@ -278,12 +448,16 @@ namespace Mono.NUnit.GUI
 				store.Dispose ();
 			}
 
+			if (catman != null)
+				catman.SetCategories (null);
+
 			stdoutTV.Buffer.Clear ();
 			stderrTV.Buffer.Clear ();
 			foreach (Label l in nbLabels)
 				SetColorLabel (l, false);
 
 			store = new AssemblyStore (name);
+			store.Filter = catman;
 			ntests = 0;
 			store.FixtureLoadError += new FixtureLoadErrorHandler (OnFixtureLoadError);
 			store.FixtureAdded += new FixtureAddedEventHandler (OnFixtureAdded);
@@ -392,7 +566,7 @@ namespace Mono.NUnit.GUI
 		void OnQuitActivate (object sender, EventArgs args)
 		{
 			if (store != null)
-				store.CancelRequest = true;
+				store.CancelRequest ();
 
 			quitting = true;
 			Settings.Width = window.Allocation.Width;
@@ -469,8 +643,10 @@ namespace Mono.NUnit.GUI
 
 		void OnStopActivate (object sender, EventArgs args)
 		{
-			if (store != null && store.Running)
-				store.CancelRequest = true;
+			if (store != null) {
+				store.CancelRequest ();
+				catman.Cancel = true;
+			}
 		}
 
 		void OnSaveAs (object sender, EventArgs args)
@@ -564,6 +740,7 @@ namespace Mono.NUnit.GUI
 			frameProgress.Fraction = ++finishedTests / (double) ntests;
 			frameProgress.Text = String.Format ("{0}/{1}", finishedTests, ntests);
 
+			assertions += result.AssertCount;
 			if (result.Executed == false) {
 				AddIgnored (result.Test.FullName, result.Test.IgnoreReason);
 			} else if (result.IsFailure) {
@@ -589,8 +766,8 @@ namespace Mono.NUnit.GUI
 
 		void UpdateRunStatus ()
 		{
-			runStatus.Markup = String.Format (_("Tests: {0} Ignored: {1} Failures: {2}"),
-							  finishedTests, ignoredTests, errorTests);
+			runStatus.Markup = String.Format (_("Tests (assertions): {0} ({3}) Ignored: {1} Failures: {2}"),
+							  finishedTests, ignoredTests, errorTests, assertions);
 		}
 		
 		void AddIgnored (string name, string reason)
@@ -758,6 +935,7 @@ namespace Mono.NUnit.GUI
 
 			errorTests = 0;
 			ignoredTests = 0;
+			assertions = 0;
 
 			ntests = -1;
 			finishedTests = 0;
@@ -765,6 +943,7 @@ namespace Mono.NUnit.GUI
 
 			appbar.SetStatus (_("Running tests..."));
 			SetStringWriters ();
+			catman.PrepareFilters ();
 			ToggleMenues (false);
 			startTime = DateTime.Now.Ticks;
 			ClockUpdater (this, EventArgs.Empty);
@@ -796,18 +975,43 @@ namespace Mono.NUnit.GUI
 			if (quitting)
 				return;
 
+			catman.Cancel = false;
+			ClockUpdater (this, EventArgs.Empty);
 			ToggleMenues (store.LastResult != null);
 			SetOriginalWriters ();
-			if (!store.Cancelled) {
+			UpdateRunStatus ();
+			frameProgress.Fraction = 1.0;
+			frameProgress.Text = String.Format ("{0}/{0}", finishedTests);
+			finishedTests = ntests;
+			if (store.Cancelled) {
+				appbar.SetStatus (_("Cancelled on user request."));
+				frameLabel.Markup = String.Format ("<span foreground=\"red\">Cancelled: {0}</span>",
+								   frameLabel.Text);
+			} else {
 				appbar.SetStatus ("");
-				stdout.GetStringBuilder ().Length = 0;
-				stderr.GetStringBuilder ().Length = 0;
-				return;
+			}
+			stdout.GetStringBuilder ().Length = 0;
+			stderr.GetStringBuilder ().Length = 0;
+		}
+
+		void BuildCategoriesMenu ()
+		{
+			string [] categories = catman.Categories;
+			bool [] states = catman.States;
+			Menu menu = new Menu ();
+			CheckMenuItem item;
+			int idx = 0;
+			foreach (string s in categories) {
+				item = new CheckMenuItem (s);
+				catman.SetMenuItemForIndex (item, idx);
+				item.Toggled += catman.Callback;
+				item.Active = states [idx];
+				menu.Append (item);
+				idx++;
 			}
 
-			appbar.SetStatus (_("Cancelled on user request."));
-			frameLabel.Markup = String.Format ("<span foreground=\"red\">Cancelled: {0}</span>",
-							   frameLabel.Text);
+			menu.ShowAll ();
+			categories_menu.Submenu = menu;
 		}
 
 		void OnFinishedLoad (object sender, EventArgs args)
@@ -815,6 +1019,8 @@ namespace Mono.NUnit.GUI
 			if (store.Cancelled) // Application finished while loading
 				return;
 
+			catman.SetCategories (((CategoriesEventArgs) args).Categories);
+			BuildCategoriesMenu ();
 			appbar.Progress.Fraction = 0.0;
 			appbar.SetStatus (String.Format (_("{0} tests loaded."), ntests));
 			btnOpen.Sensitive = true;
@@ -841,11 +1047,11 @@ namespace Mono.NUnit.GUI
 		public void UnhandledException (object sender, UnhandledExceptionEventArgs args)
 		{
 			if (store != null)
-				store.CancelRequest = true;
+				store.CancelRequest ();
 
 			try {
-			Error (_("Unhandled Exception"), _("There has been an unhandled exception.\n") +
-			       _("The program will terminate now."), args.ExceptionObject.ToString (), true);
+				Error (_("Unhandled Exception"), _("There has been an unhandled exception.\n") +
+				       _("The program will terminate now."), args.ExceptionObject.ToString (), true);
 			} catch (Exception e) {
 				Console.WriteLine (e);
 			}
@@ -857,9 +1063,6 @@ namespace Mono.NUnit.GUI
 		static void Main (string [] args)
 		{
 			Catalog.InitCatalog ();
-//		 	LogFunc logFunc = new LogFunc (Log.PrintTraceLogFunction);
-//		 	Log.SetLogHandler ("GLib-GObject", LogLevelFlags.All, logFunc);
-//		 	Log.SetLogHandler ("Gtk", LogLevelFlags.All, logFunc);
 			NUnitGUI gui = new NUnitGUI (args);
 			AppDomain current = AppDomain.CurrentDomain;
 			current.UnhandledException += new UnhandledExceptionEventHandler (gui.UnhandledException);

@@ -32,5 +32,13 @@
 	<locale name="C"></locale>
 	<default/>
       </schema>
+      <schema>
+        <key>/schemas/apps/nunitgtk/knowncategories</key>
+        <applyto>/apps/nunitgtk/knowncategories</applyto>
+        <owner>nunitgtk</owner>
+        <type>string</type>
+	<locale name="C"></locale>
+	<default/>
+      </schema>
     </schemalist>
 </gconfschemafile>  

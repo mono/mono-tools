@@ -155,7 +155,20 @@ namespace Mono.NUnit.GUI
 			get { return message; }
 		}
 	}
-	
+
+	class CategoriesEventArgs : EventArgs {
+		ICollection categories;
+
+		public CategoriesEventArgs (ICollection categories)
+		{
+			this.categories = categories;
+		}
+
+		public ICollection Categories {
+			get { return categories; }
+		}
+	}
+
 	class AssemblyStore : TreeStore, EventListener
 	{
 		string assemblyName;
@@ -173,6 +186,7 @@ namespace Mono.NUnit.GUI
 		Queue pending;
 		System.Threading.Thread th;
 		string location;
+		IFilter filter;
 
 		Exception exception;
 		static GLib.GType gtype = GLib.GType.Invalid;
@@ -205,6 +219,12 @@ namespace Mono.NUnit.GUI
 				return gtype;
 			}
 		}
+
+		public IFilter Filter {
+			get { return filter; }
+			set { filter = value; }
+		}
+		
 		public string Location {
 			get { return location; }
 		}
@@ -213,12 +233,18 @@ namespace Mono.NUnit.GUI
 			get { return runningTest; }
 		}
 		
-		public bool CancelRequest {
-			set {
-				if (runningTest) {
-					th.Abort ();
-				}
+		public bool CancelRequest ()
+		{
+			if (runningTest) {
+				// TODO: why the heck does this wreak havoc in the runtime?
+				// by now, we use the filter to stop running tests, which,
+				// btw, works perfectly well.
+				// th.Abort ();
+				cancelled = true;
+				return true;
 			}
+
+			return false;
 		}
 		
 		public bool Cancelled {
@@ -241,7 +267,6 @@ namespace Mono.NUnit.GUI
 				a = Assembly.Load (assemblyName);
 				location = a.Location;
 			} catch (Exception e) {
-				Console.WriteLine (e);
 				try {
 					a = Assembly.LoadFrom (assemblyName);
 					location = a.Location;
@@ -299,7 +324,7 @@ namespace Mono.NUnit.GUI
 			if (test == null)
 				return;
 
-			ntests = test.CountTestCases ();
+			ntests = test.CountTestCases (filter);
 			runningTest = true;
 			this.listener = listener;
 			th = new System.Threading.Thread (new ThreadStart (InternalRunTest));
@@ -351,7 +376,7 @@ namespace Mono.NUnit.GUI
 		{
 			lastResult = null;
 			try {
-				lastResult = test.Run (this);
+				lastResult = test.Run (this, filter);
 			} catch (ThreadAbortException) {
 				Thread.ResetAbort ();
 				cancelled = true;
@@ -408,14 +433,18 @@ namespace Mono.NUnit.GUI
 			return parent;
 		}
 
-		void AddSuite (TreeIter parent, TestSuite suite)
+		void AddSuite (TreeIter parent, TestSuite suite, int n)
 		{
 			TreeIter next;
 			foreach (Test t in suite.Tests) {
 				next = AddFixture (parent, t.FullName);
-				while (GLib.MainContext.Iteration ());
+				if ((n % 5) == 0) {
+					while (GLib.MainContext.Iteration ());
+				}
+
+				n++;
 				if (t.IsSuite)
-					AddSuite (next, (TestSuite) t);
+					AddSuite (next, (TestSuite) t, n);
 				else if (FixtureAdded != null)
 					FixtureAdded (this, new FixtureAddedEventArgs (++currentTest, totalTests));
 
@@ -448,16 +477,16 @@ namespace Mono.NUnit.GUI
 
 			currentTest = 0;
 			totalTests = rootTS.CountTestCases ();
-			AddSuite (first, rootTS);
-			OnFinishedLoad ();
+			AddSuite (first, rootTS, 0);
+			OnFinishedLoad (CategoryManager.Categories);
 
 			return false;
 		}
 
-		void OnFinishedLoad ()
+		void OnFinishedLoad (ICollection categories)
 		{
 			if (FinishedLoad != null)
-				FinishedLoad (this, EventArgs.Empty);
+				FinishedLoad (this, new CategoriesEventArgs (categories));
 		}
 		
 		void OnFinishedRunning ()
