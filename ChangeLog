@@ -1,3 +1,8 @@
+2005-06-08  Ben Maurer  <bmaurer@ximian.com>
+
+	* configure.in: Use gtk-sharp 1.0. Ensures that people won't use
+	new features.
+
 2005-05-25  Ben Maurer  <bmaurer@ximian.com>
 
 	* configure.in: New .in files
