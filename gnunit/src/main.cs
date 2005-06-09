@@ -310,11 +310,17 @@ namespace Mono.NUnit.GUI
 		[Glade.Widget] ImageMenuItem menuRecent;
 		[Glade.Widget] MenuBar menubar;
 		[Glade.Widget] MenuItem menuSaveAs;
-		[Glade.Widget] ToolButton btnOpen;
-		[Glade.Widget] ToolButton btnSaveAs;
-		[Glade.Widget] ToolButton btnRun;
-		[Glade.Widget] ToolButton btnExit;
-		[Glade.Widget] ToolButton btnStop;
+		// gtk-sharp 2.0
+		//[Glade.Widget] ToolButton btnOpen;
+		//[Glade.Widget] ToolButton btnSaveAs;
+		//[Glade.Widget] ToolButton btnRun;
+		//[Glade.Widget] ToolButton btnExit;
+		//[Glade.Widget] ToolButton btnStop;
+		[Glade.Widget] Button btnOpen;
+		[Glade.Widget] Button btnSaveAs;
+		[Glade.Widget] Button btnRun;
+		[Glade.Widget] Button btnExit;
+		[Glade.Widget] Button btnStop;
 		[Glade.Widget] MenuItem categories_menu;
 
 		// Notebook

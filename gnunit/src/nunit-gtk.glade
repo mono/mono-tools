@@ -61,7 +61,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkSeparatorMenuItem" id="separator1">
+			<widget class="GtkMenuItem" id="separator1">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -108,7 +108,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkSeparatorMenuItem" id="separator4">
+			<widget class="GtkMenuItem" id="separator4">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -142,7 +142,7 @@
 		      </child>
 
 		      <child>
-			<widget class="GtkSeparatorMenuItem" id="separator3">
+			<widget class="GtkMenuItem" id="separator3">
 			  <property name="visible">True</property>
 			</widget>
 		      </child>
@@ -214,15 +214,12 @@
 	      <property name="show_arrow">True</property>
 
 	      <child>
-		<widget class="GtkToolButton" id="btnOpen">
+		<widget class="button" id="btnOpen">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Open assembly</property>
 		  <property name="label" translatable="yes">Open</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_id">gtk-open</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		  <property name="is_important">False</property>
+		  <property name="stock_pixmap">gtk-open</property>
 		  <signal name="clicked" handler="OnOpenActivate" last_modification_time="Mon, 31 Mar 2003 04:08:27 GMT"/>
 		</widget>
 		<packing>
@@ -232,15 +229,12 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkToolButton" id="btnSaveAs">
+		<widget class="button" id="btnSaveAs">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Save results to a XML file</property>
 		  <property name="label" translatable="yes">Save As</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_id">gtk-save-as</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		  <property name="is_important">False</property>
+		  <property name="stock_pixmap">gtk-save-as</property>
 		  <signal name="clicked" handler="OnSaveAs" last_modification_time="Tue, 15 Apr 2003 14:59:35 GMT"/>
 		</widget>
 		<packing>
@@ -250,28 +244,13 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkSeparatorToolItem" id="separatortoolitem1">
-		  <property name="visible">True</property>
-		  <property name="draw">True</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		</widget>
-		<packing>
-		  <property name="expand">False</property>
-		  <property name="homogeneous">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkToolButton" id="btnRun">
+		<widget class="button" id="btnRun">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Run selected test fixture(s)</property>
 		  <property name="label" translatable="yes">Run</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_id">gtk-execute</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		  <property name="is_important">False</property>
+		  <property name="stock_pixmap">gtk-execute</property>
+		  <property name="new_group">True</property>
 		  <signal name="clicked" handler="OnRunActivate" last_modification_time="Mon, 31 Mar 2003 04:08:40 GMT"/>
 		</widget>
 		<packing>
@@ -281,15 +260,12 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkToolButton" id="btnStop">
+		<widget class="button" id="btnStop">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Cancel</property>
 		  <property name="label" translatable="yes">Stop</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_id">gtk-stop</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		  <property name="is_important">False</property>
+		  <property name="stock_pixmap">gtk-stop</property>
 		  <signal name="clicked" handler="OnStopActivate" last_modification_time="Thu, 03 Apr 2003 03:38:43 GMT"/>
 		</widget>
 		<packing>
@@ -299,28 +275,13 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkSeparatorToolItem" id="separatortoolitem2">
-		  <property name="visible">True</property>
-		  <property name="draw">True</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		</widget>
-		<packing>
-		  <property name="expand">False</property>
-		  <property name="homogeneous">False</property>
-		</packing>
-	      </child>
-
-	      <child>
-		<widget class="GtkToolButton" id="btnExit">
+		<widget class="button" id="btnExit">
 		  <property name="visible">True</property>
 		  <property name="tooltip" translatable="yes">Exit program</property>
 		  <property name="label" translatable="yes">Quit</property>
 		  <property name="use_underline">True</property>
-		  <property name="stock_id">gtk-quit</property>
-		  <property name="visible_horizontal">True</property>
-		  <property name="visible_vertical">True</property>
-		  <property name="is_important">False</property>
+		  <property name="stock_pixmap">gtk-quit</property>
+		  <property name="new_group">True</property>
 		  <signal name="clicked" handler="OnExitActivate" last_modification_time="Mon, 31 Mar 2003 04:08:49 GMT"/>
 		</widget>
 		<packing>
@@ -877,7 +838,7 @@
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkButton" id="btnOK">
+	    <widget class="button" id="btnOK">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -890,7 +851,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="btnExit">
+	    <widget class="button" id="btnExit">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
@@ -971,7 +932,7 @@
 		  <property name="spacing">0</property>
 
 		  <child>
-		    <widget class="GtkButton" id="btnDetails">
+		    <widget class="button" id="btnDetails">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
 		      <property name="label" translatable="yes">Show details &gt;&gt;</property>
@@ -1121,7 +1082,7 @@
 	  <property name="layout_style">GTK_BUTTONBOX_END</property>
 
 	  <child>
-	    <widget class="GtkButton" id="button1">
+	    <widget class="button" id="button1">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Don't save results</property>
 	      <property name="can_default">True</property>
@@ -1136,7 +1097,7 @@
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button2">
+	    <widget class="button" id="button2">
 	      <property name="visible">True</property>
 	      <property name="tooltip" translatable="yes">Save results</property>
 	      <property name="can_default">True</property>

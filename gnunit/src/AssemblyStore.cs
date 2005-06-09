@@ -456,7 +456,9 @@ namespace Mono.NUnit.GUI
 			Clear ();
 			iters = new Hashtable ();
 			TreeIter first;
-			first = AppendNode ();
+			// gtk-sharp 2.0
+			// first = AppendNode ();
+			Append (out first);
 			SetValue (first, 0, (int) CircleColor.None);
 			SetValue (first, 1, assemblyName);
 			iters [assemblyName] = first;
