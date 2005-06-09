@@ -1,3 +1,7 @@
+2005-06-09 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* configure.in: added GNUNIT_VERSION.
+
 2005-06-08  Ben Maurer  <bmaurer@ximian.com>
 
 	* configure.in: Use gtk-sharp 1.0. Ensures that people won't use

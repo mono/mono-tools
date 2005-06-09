@@ -7,11 +7,8 @@ gnunit is a frontend for running NUnit 2 test suites.
 -------------------
 
 	AUTHORS
-	NEWS
 	README
 	ChangeLog
-	configure.in
-	autogen.sh
 	Makefile.am
 
 	src/

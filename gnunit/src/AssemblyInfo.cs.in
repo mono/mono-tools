@@ -9,9 +9,9 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyVersion("@GNUNIT_VERSION@")]
 [assembly: AssemblyTitle ("Mono NUnit2 GUI")]
 [assembly: AssemblyDescription ("A graphical frontend for NUnit2 framework using Gtk#.")]
-[assembly: AssemblyCopyright ("Copyright (c) 2003 Ximian, Inc.")]
-[assembly: AssemblyCompany ("Ximian, Inc.")]
+[assembly: AssemblyCopyright ("Copyright (c) 2003-2005 Novell, Inc.")]
+[assembly: AssemblyCompany ("Novell, Inc.")]
 

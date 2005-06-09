@@ -1,5 +1,13 @@
 2005-06-09 Gonzalo Paniagua Javier <gonzalo@ximian.com>
 
+	* configure.in: added GNUNIT_VERSION.
+	* gnunit/src/AssemblyInfo.cs.in: use GNUNIT_VERSION instead.
+	* gnunit/NEWS: Removed.
+	* gnunit/README: updated.
+
+
+2005-06-09 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
 	* src/main.cs:
 	* src/nunit-gtk.glade:
 	* src/AssemblyStore.cs: make it compile/run using gtk-sharp 1.
