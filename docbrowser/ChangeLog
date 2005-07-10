@@ -1,3 +1,15 @@
+2005-07-07 Mario Sopena Novales <mario.sopena@gmail.com>
+
+	Move the rendering logic to an interface IHtmlRender and write 
+	two implementatios of it, one uses gtkhtml and the other gecko.
+
+	* configure.in: Add gecko-sharp dependency
+	* docbrowser/monodoc.in: Add "--gecko" parameter
+	* docbrowser/Makefile.am: Add HtmlRender to sources and gecko libs references for compiling
+	* docbrowser/HtmlRender.cs: New file with the interface IHtmlRender and the two 
+				implementations: GeckoHtmlRender, GtkHtmlHtmlRender
+	* docbrowser/browser.cs: Use the new HtmlRender for rendering
+
 2005-05-31  Raja R Harinath  <rharinath@novell.com>
 
 	* monodoc.in: Emit warnings to stderr.  Fix fallbacks.
