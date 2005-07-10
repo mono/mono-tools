@@ -13,13 +13,14 @@ browser_sources   = \
 	$(srcdir)/elabel.cs 		\
 	$(srcdir)/history.cs 		\
 	$(srcdir)/Contributions.cs	\
-	$(srcdir)/XmlNodeWriter.cs	
+	$(srcdir)/XmlNodeWriter.cs	\
+	$(srcdir)/HtmlRender.cs	
 
 admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) -pkg:monodoc -r:System.Web.Services
+browser_assemblies = $(GTK_SHARP_LIBS) $(GECKO_SHARP_LIBS) -pkg:monodoc -r:System.Web.Services 
 
 EXTRA_DIST = \
 	$(browser_sources) 	\

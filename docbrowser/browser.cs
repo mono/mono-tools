@@ -24,6 +24,7 @@ class Driver {
 	static int Main (string [] args)
 	{
 		string topic = null;
+		bool useGecko = false;
 		
 		for (int i = 0; i < args.Length; i++){
 			switch (args [i]){
@@ -80,6 +81,9 @@ class Driver {
 				i++;
 				break;
 				
+			case "--gecko":
+				useGecko = true;
+				break;
 			default:
 				topic = args [i];
 				break;
@@ -91,7 +95,7 @@ class Driver {
 		
 		Settings.RunningGUI = true;
 		Application.Init ();
-		Browser browser = new Browser ();
+		Browser browser = new Browser (useGecko);
 		
 		if (topic != null)
 			browser.LoadUrl (topic);
@@ -119,6 +123,7 @@ class Browser {
 	public Notebook tabs_nb;
 	public Tab CurrentTab;
 	bool HoldCtrl;
+	public bool UseGecko;
 
 	[Glade.Widget] MenuItem bookmarksMenu;
 
@@ -165,8 +170,9 @@ class Browser {
 
 	public ArrayList bookList;
 
-	public Browser ()
+	public Browser (bool UseGecko)
 	{
+		this.UseGecko = UseGecko;
 		ui = new Glade.XML (null, "browser.glade", "window1", null);
 		ui.Autoconnect (this);
 
@@ -274,7 +280,7 @@ class Browser {
 		bar_style.SetBackgroundGC (StateType.Normal, MainWindow.Style.BackgroundGCs[1]);
 	}
 
-	Stream GetResourceImage (string name)
+	public Stream GetResourceImage (string name)
 	{
 		Assembly assembly = System.Reflection.Assembly.GetCallingAssembly ();
 		System.IO.Stream s = assembly.GetManifestResourceStream (name);
@@ -317,12 +323,12 @@ class Browser {
 		}
 	}
 	
-	public void LinkClicked (object o, LinkClickedArgs args)
+	public void LinkClicked (object o, EventArgs args)
 	{
 		if (HoldCtrl)
 			AddTab();
 
-		LoadUrl (args.Url);
+		LoadUrl (CurrentTab.html.Url);
 	}
 
 	private System.Xml.XmlNode edit_node;
@@ -376,12 +382,7 @@ class Browser {
 	{
 		CurrentUrl = url;
 
-		Gtk.HTMLStream stream = CurrentTab.html.Begin ("text/html");
-
-		stream.Write ("<html><body>");
-		stream.Write (text);
-		stream.Write ("</body></html>");
-		CurrentTab.html.End (stream, HTMLStreamStatus.Ok);
+		CurrentTab.html.Render("<html><body>" + text + "</body></html>");
 		if (matched_node != null) {
 			if (tree_browser.SelectedNode != matched_node)
 				tree_browser.ShowNode (matched_node);
@@ -431,9 +432,9 @@ class Browser {
 	// Invoked when the mouse is over a link
 	//
 	string last_url = "";
-	public void OnUrlMouseOver (object o, OnUrlArgs args)
+	public void OnUrlMouseOver (object o, EventArgs args)
 	{
-		string new_url = args.Url;
+		string new_url = CurrentTab.html.Url;
 
 		if (new_url == null)
 			new_url = "";
@@ -1808,10 +1809,10 @@ public enum Mode {
 class Tab : Notebook {
 	
 	// Our HTML preview during editing.
-	public HTML html_preview;
+	public IHtmlRender html_preview;
 	
 	// Where we render the contents
-	public HTML html;
+	public IHtmlRender html;
 	
 	public TextView text_editor;
 	public Mode Tab_mode;
@@ -1843,16 +1844,18 @@ class Tab : Notebook {
 		// First Page
 		//
 		ScrolledWindow html_container = new ScrolledWindow();
+		html_container.Show();
 		
 		//
 		// Setup the HTML rendering area
 		//
-		html = new HTML ();
-		html.Show ();
-		html_container.Add (html);
-		html.LinkClicked += new LinkClickedHandler (browser.LinkClicked);
-		html.OnUrl += new OnUrlHandler (browser.OnUrlMouseOver);
-		html.UrlRequested += new UrlRequestedHandler (browser.UrlRequested);
+		if (browser.UseGecko) 
+			html = new GeckoHtmlRender (browser);
+		else 
+			html = new GtkHtmlHtmlRender (browser);
+		html_container.Add (html.HtmlPanel);
+		html.UrlClicked += new EventHandler (browser.LinkClicked);
+		html.OnUrl += new EventHandler (browser.OnUrlMouseOver);
 		browser.context_id = browser.statusbar.GetContextId ("");
 		
 		AppendPage(html_container, new Label("Html"));
@@ -1902,10 +1905,11 @@ class Tab : Notebook {
 		//
 		// code preview panel
 		//
-		html_preview = new HTML ();
-		html_preview.Show ();
-		html_preview_container.Add (html_preview);
-		
+		if (browser.UseGecko) 
+			html_preview = new GeckoHtmlRender (browser);
+		else 
+			html_preview = new GtkHtmlHtmlRender (browser);
+		html_preview_container.Add (html_preview.HtmlPanel);
 		html_preview_frame.Add(html_preview_container);
 		
 		MainPart.PackStart(sw);
@@ -2066,9 +2070,7 @@ class Tab : Notebook {
 		}
 		browser.statusbar.Pop (browser.context_id);
 		browser.statusbar.Push (browser.context_id, "XML OK");
-		Gtk.HTMLStream s = html_preview.Begin ("text/html");
-		s.Write (sw.ToString ());
-		html_preview.End (s, HTMLStreamStatus.Ok);
+		html_preview.Render(sw.ToString());
 	}
 	void OnTabClose (object sender, EventArgs a)
 	{

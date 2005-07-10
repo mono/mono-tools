@@ -46,6 +46,7 @@ case x$1 in
 	echo "  --help             Print this message"
 	echo "  --html TOPIC       Print the HTML contents of TOPIC"
 	echo "  --make-index       Create the documentation index"
+	echo "  --gecko            Use Mozilla to render the contents"
 	echo
 	echo "The following options are available for authoring documentation:"
 	echo "  --edit path        Edit (unassembled) documentation at path"
