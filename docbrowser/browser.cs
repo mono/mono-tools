@@ -24,7 +24,7 @@ class Driver {
 	static int Main (string [] args)
 	{
 		string topic = null;
-		bool useGecko = false;
+		bool useGecko = true;
 		
 		for (int i = 0; i < args.Length; i++){
 			switch (args [i]){
@@ -81,8 +81,8 @@ class Driver {
 				i++;
 				break;
 				
-			case "--gecko":
-				useGecko = true;
+			case "--no-gecko":
+				useGecko = false;
 				break;
 			default:
 				topic = args [i];
@@ -1847,12 +1847,28 @@ class Tab : Notebook {
 		html_container.Show();
 		
 		//
-		// Setup the HTML rendering area
+		// Setup the HTML rendering and preview area
 		//
-		if (browser.UseGecko) 
-			html = new GeckoHtmlRender (browser);
-		else 
+		if (browser.UseGecko) {
+			try {
+				string exeAssembly = Assembly.GetExecutingAssembly ().Location;
+				string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
+				Assembly gecko_dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, "GeckoHtmlRender.dll"));
+				Type gecko_render_type = gecko_dll.GetType ("Monodoc.GeckoHtmlRender", true);
+
+				object[] args = new object [1];
+				args [0] = browser.help_tree;
+				html = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
+				html_preview = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
+			} catch (Exception exc) {
+				html = new GtkHtmlHtmlRender (browser);
+				html_preview = new GtkHtmlHtmlRender (browser);
+			}
+		// if the user explicitally state that doesnt want gecko
+		} else {
 			html = new GtkHtmlHtmlRender (browser);
+			html_preview = new GtkHtmlHtmlRender (browser);
+		}
 		html_container.Add (html.HtmlPanel);
 		html.UrlClicked += new EventHandler (browser.LinkClicked);
 		html.OnUrl += new EventHandler (browser.OnUrlMouseOver);
@@ -1905,10 +1921,6 @@ class Tab : Notebook {
 		//
 		// code preview panel
 		//
-		if (browser.UseGecko) 
-			html_preview = new GeckoHtmlRender (browser);
-		else 
-			html_preview = new GtkHtmlHtmlRender (browser);
 		html_preview_container.Add (html_preview.HtmlPanel);
 		html_preview_frame.Add(html_preview_container);
 		

@@ -42,8 +42,9 @@ AC_SUBST(NUNIT_LIBS)
 #fi
 AC_SUBST(GTK_SHARP_LIBS)
 
-PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp = 0.6)
+PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp = 0.6, enable_gecko=yes, enable_gecko=no)
 AC_SUBST(GECKO_SHARP_LIBS)
+AM_CONDITIONAL(ENABLE_GECKO, test "x$enable_gecko" = "xyes")
 
 dnl Intl
 GETTEXT_PACKAGE=mono-tools
@@ -54,6 +55,7 @@ AM_GLIB_GNU_GETTEXT
 
 GNUNIT_VERSION=0.5
 AC_SUBST(GNUNIT_VERSION)
+
 
 AC_OUTPUT([
 Makefile
@@ -76,4 +78,9 @@ echo "---"
 echo "Configuration summary"
 echo ""
 echo "   * Installation prefix = $prefix"
+echo "   * gecko-sharp.dll = $enable_gecko"
+echo ""
+echo "      NOTE: if any of the above say 'no' you may install the"
+echo "            corresponding development packages for them, rerun"
+echo "            autogen.sh to include them in the build."
 echo ""

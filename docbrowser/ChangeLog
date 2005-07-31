@@ -1,3 +1,11 @@
+2005-07-30 Mario Sopena Novales <mario.sopena@gmail.com>
+	* Makefile.am: build gecko support in a separate dll: GeckoHtmlRender.dll
+	* monodoc.in: Change "--gecko" parameter to "--no-gecko"
+	* HtmlRender.cs: splitted in 3 files (deleted):
+		* IHtmlRender.cs: interface
+		* GtkHtmlHtmlRender.cs: GtkHtml based renderer
+		* GeckoHtmlRender.cs: Gecko-sharp based renderer
+
 2005-07-07 Mario Sopena Novales <mario.sopena@gmail.com>
 
 	Move the rendering logic to an interface IHtmlRender and write 
