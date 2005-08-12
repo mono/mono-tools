@@ -381,8 +381,7 @@ class Browser {
 	public void Render (string text, Node matched_node, string url)
 	{
 		CurrentUrl = url;
-
-		CurrentTab.html.Render("<html><body>" + text + "</body></html>");
+		CurrentTab.html.Render(text);
 		if (matched_node != null) {
 			if (tree_browser.SelectedNode != matched_node)
 				tree_browser.ShowNode (matched_node);
@@ -1860,9 +1859,16 @@ class Tab : Notebook {
 				args [0] = browser.help_tree;
 				html = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
 				html_preview = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
+
+				//Prepare Font for css (TODO: use GConf?)
+				Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
+				HelpSource.preferred_font_family = font_desc.Family;
+				HelpSource.preferred_font_size = font_desc.Size / Pango.Scale.PangoScale;
+				HelpSource.use_css = true;
 			} catch (Exception exc) {
 				html = new GtkHtmlHtmlRender (browser);
 				html_preview = new GtkHtmlHtmlRender (browser);
+				browser.UseGecko = false;
 			}
 		// if the user explicitally state that doesnt want gecko
 		} else {
@@ -2065,15 +2071,8 @@ class Tab : Notebook {
 		XmlWriter w = new XmlTextWriter (sw);
 		
 		try {
-			w.WriteStartElement ("html");
-			w.WriteStartElement ("body");
-			
 			edit_node.InnerXml = text_editor.Buffer.Text;
 			EditingUtils.RenderEditPreview (edit_url, browser.help_tree, edit_node, w);
-			
-			w.WriteEndElement ();
-			w.WriteEndElement ();
-			
 			w.Flush ();
 		} catch (Exception e) {
 			browser.statusbar.Pop (browser.context_id);
@@ -2082,7 +2081,8 @@ class Tab : Notebook {
 		}
 		browser.statusbar.Pop (browser.context_id);
 		browser.statusbar.Push (browser.context_id, "XML OK");
-		html_preview.Render(sw.ToString());
+		string s = HelpSource.BuildHtml (EcmaHelpSource.css_ecma_code, sw.ToString ());
+		html_preview.Render(s);
 	}
 	void OnTabClose (object sender, EventArgs a)
 	{

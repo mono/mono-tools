@@ -1,3 +1,7 @@
+2005-08-09 Mario Sopena Novales <mario.sopena@gmail.com>
+	* browser.cs: 
+		- Allow render with CSS
+		- Detect fonts for CSS rendering
 2005-07-30 Mario Sopena Novales <mario.sopena@gmail.com>
 	* Makefile.am: build gecko support in a separate dll: GeckoHtmlRender.dll
 	* monodoc.in: Change "--gecko" parameter to "--no-gecko"
