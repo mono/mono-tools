@@ -126,6 +126,10 @@ class Browser {
 	public bool UseGecko;
 
 	[Glade.Widget] MenuItem bookmarksMenu;
+	[Glade.Widget] MenuItem view1;
+	MenuItem textLarger;
+	MenuItem textSmaller;
+	MenuItem textNormal;
 
 	[Glade.Widget] VBox help_container;
 	
@@ -216,7 +220,37 @@ class Browser {
 		tabs_nb.SwitchPage += new SwitchPageHandler(ChangeTab);
 		help_container.Add(tabs_nb);
 
+		if (UseGecko) {
+			// Add Menu entries for changing the font
+			Menu aux = (Menu) view1.Submenu;
+			MenuItem sep = new SeparatorMenuItem ();
+			sep.Show ();
+			aux.Append (sep);
+			AccelGroup accel = new AccelGroup ();
+			MainWindow.AddAccelGroup (accel);
+
+			textLarger = new MenuItem ("_Larger text");
+			textLarger.Activated += new EventHandler (TextLarger);
+			textLarger.Show ();
+			aux.Append (textLarger);
+			AccelKey ak = new AccelKey (Gdk.Key.plus, Gdk.ModifierType.ControlMask, AccelFlags.Visible);
+			textLarger.AddAccelerator ("activate", accel, ak);
 		
+			textSmaller = new MenuItem ("_Smaller text");
+			textSmaller.Activated += new EventHandler (TextSmaller);
+			textSmaller.Show ();
+			aux.Append (textSmaller);
+			ak = new AccelKey (Gdk.Key.minus, Gdk.ModifierType.ControlMask, AccelFlags.Visible);
+			textSmaller.AddAccelerator ("activate", accel, ak);
+	
+			textNormal = new MenuItem ("_Original size");
+			textNormal.Activated += new EventHandler (TextNormal);
+			textNormal.Show ();
+			aux.Append (textNormal);
+			ak = new AccelKey (Gdk.Key.Key_0, Gdk.ModifierType.ControlMask, AccelFlags.Visible);
+			textNormal.AddAccelerator ("activate", accel, ak);
+		}
+
 		// restore the editing setting
 		editing1.Active = SettingsHandler.Settings.EnableEditing;
 
@@ -273,6 +307,42 @@ class Browser {
 		} else {
 			paste1.Sensitive = true;
 		}
+	}
+	//
+	// Reload current page
+	//
+	void Reload ()
+	{
+		if (CurrentTab.history == null) // catch the case when we are currently loading
+			return;
+		if (CurrentTab.history.Count == 0)
+			LoadUrl ("root:");
+		else
+			CurrentTab.history.ActivateCurrent ();
+	}
+	//
+	// Changing font size menu entries
+	// 
+	void TextLarger (object obj, EventArgs args)
+	{
+		SettingsHandler.Settings.preferred_font_size += 10;
+		HelpSource.CssCode = null;
+		Reload ();
+		SettingsHandler.Save ();
+	}
+	void TextSmaller (object obj, EventArgs args)
+	{
+		SettingsHandler.Settings.preferred_font_size -= 10;
+		HelpSource.CssCode = null;
+		Reload ();
+		SettingsHandler.Save ();
+	}
+	void TextNormal (object obj, EventArgs args)
+	{
+		SettingsHandler.Settings.preferred_font_size = 100;
+		HelpSource.CssCode = null;
+		Reload ();
+		SettingsHandler.Save ();
 	}
 
 	void BarStyleSet (object obj, StyleSetArgs args)
@@ -1861,9 +1931,11 @@ class Tab : Notebook {
 				html_preview = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
 
 				//Prepare Font for css (TODO: use GConf?)
-				Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
-				HelpSource.preferred_font_family = font_desc.Family;
-				HelpSource.preferred_font_size = font_desc.Size / Pango.Scale.PangoScale;
+				if (SettingsHandler.Settings.preferred_font_size == 0) { 
+					Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
+					SettingsHandler.Settings.preferred_font_family = font_desc.Family;
+					SettingsHandler.Settings.preferred_font_size = 100; //size: 100%
+				}
 				HelpSource.use_css = true;
 			} catch (Exception exc) {
 				html = new GtkHtmlHtmlRender (browser);

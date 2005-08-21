@@ -16,6 +16,9 @@ public class History {
 
 	int pos = -1;
 	ArrayList history;
+	public int Count {
+		get { return history.Count; }
+	}
 	
 	public bool Active {
 		get 
