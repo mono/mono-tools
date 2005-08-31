@@ -307,6 +307,9 @@ class Browser {
 		} else {
 			paste1.Sensitive = true;
 		}
+		
+		if (tree_browser.SelectedNode != CurrentTab.CurrentNode)
+			tree_browser.ShowNode (CurrentTab.CurrentNode);
 	}
 	//
 	// Reload current page
@@ -451,6 +454,7 @@ class Browser {
 	public void Render (string text, Node matched_node, string url)
 	{
 		CurrentUrl = url;
+		CurrentTab.CurrentNode = matched_node;
 		CurrentTab.html.Render(text);
 		if (matched_node != null) {
 			if (tree_browser.SelectedNode != matched_node)
@@ -1550,7 +1554,7 @@ class TreeBrowser {
 	void RowActivated  (object sender, EventArgs a)
 	{
 
-		browser.CurrentTab.SetMode (Mode.Viewer);
+		//browser.CurrentTab.SetMode (Mode.Viewer);
 
 		if (IgnoreRowActivated)
 			return;
@@ -1896,6 +1900,7 @@ class Tab : Notebook {
 		set { titleLabel.Text = value; }
 	}
 	
+	public Node CurrentNode;
 	public System.Xml.XmlNode edit_node;
 	public string edit_url;
 	
@@ -1903,6 +1908,7 @@ class Tab : Notebook {
 	{
 
 		browser = br;
+		CurrentNode = br.help_tree;
 		ShowTabs = false;
 		ShowBorder = false;
 		TabBorder = 0;
@@ -2009,17 +2015,20 @@ class Tab : Notebook {
 		//
 		// Close and Save buttons
 		//
-		HBox MainBots = new HBox(false, 2);
+		HBox MainBots = new HBox(false, 3);
 		HBox Filling = new HBox(false, 0);
 		Button close = new Button("C_lose");
 		Button save = new Button("S_ave");
+		Button restore = new Button("_Restore");
 		
 		close.Clicked += new EventHandler (OnCancelEdits);
 		save.Clicked += new EventHandler (OnSaveEdits);
+		restore.Clicked += new EventHandler (OnRestoreEdits);
 		
 		MainBots.PackStart(Filling);
 		MainBots.PackStart(close, false, false, 0);
 		MainBots.PackStart(save, false, false, 0);
+		MainBots.PackStart(restore, false, false, 0);
 		
 		vbox1.PackStart(MainPart);
 		vbox1.PackStart(MainBots, false, false, 0);
@@ -2127,7 +2136,7 @@ class Tab : Notebook {
 			browser.statusbar.Push (browser.context_id, e.Message);
 			return;
 		}
-		EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node);
+		EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, EcmaHelpSource.GetNiceUrl (browser.CurrentTab.CurrentNode));
 		SetMode (Mode.Viewer);
 		history.ActivateCurrent ();
 	}
@@ -2137,6 +2146,14 @@ class Tab : Notebook {
 		SetMode (Mode.Viewer);
 		history.ActivateCurrent ();
 	}
+
+	void OnRestoreEdits (object sender, EventArgs a)
+	{
+		EditingUtils.RemoveChange (edit_url, browser.help_tree);
+		SetMode (Mode.Viewer);
+		history.ActivateCurrent ();
+	}
+		
 	void EditedTextChanged (object sender, EventArgs args)
 	{
 		StringWriter sw = new StringWriter ();

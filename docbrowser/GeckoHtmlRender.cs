@@ -48,7 +48,6 @@ public class GeckoHtmlRender : IHtmlRender {
 	protected void OnOpenUri (object o, OpenUriArgs args)
 	{
 		url = CheckUrl (args.AURI);
-		System.Console.WriteLine ("Abriendo:{0}:{1}:", url, args.AURI);
 		if (UrlClicked != null)
 			UrlClicked (this, new EventArgs());
 		args.RetVal = true; //this prevents Gecko to continue processing

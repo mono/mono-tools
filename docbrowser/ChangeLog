@@ -1,3 +1,12 @@
+2005-08-22 Mario Sopena Novales <mario.sopena@gmail.com>
+	* browser.cs:
+		- Update the treeview everytime we change the tab
+		- Added a new CurrentNode property to Tabs
+		- update the save process to include the new NodeUrl property
+		- dont set the browser mode to viewer every time a row is activated
+		- added a new button Restore to delete contributions
+	* GeckoHtmlRender.cs: cleaned
+	
 2005-08-17 Mario Sopena Novales <mario.sopena@gmail.com>
 	* browser.cs: Added Menu Items for changing the font size when using 
 	gecko. Also added a Reload function.
