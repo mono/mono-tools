@@ -47,6 +47,10 @@ class Driver {
 				RootTree.MakeIndex ();
 				return 0;
 				
+			case "--make-search-index":
+				RootTree.MakeSearchIndex ();
+				return 0;
+				
 			case "--help":
 				Console.WriteLine ("Options are:\n"+
 						   "browser [--html TOPIC] [--make-index] [TOPIC] [--merge-changes CHANGE_FILE TARGET_DIR+]");
@@ -148,6 +152,16 @@ class Browser {
 	
 	Gdk.Pixbuf monodoc_pixbuf;
 
+	//
+	// Used for searching
+	//
+	[Glade.Widget] Entry search_term;
+	[Glade.Widget] TreeView search_tree;
+	[Glade.Widget] ScrolledWindow scrolledwindow_search;
+	TreeStore search_store;
+	SearchableIndex search_index;
+	string highlight_text;
+	
         //
 	// Left-hand side Browsers
 	//
@@ -261,6 +275,21 @@ class Browser {
 		//
 		// Other bits
 		//
+		search_index = help_tree.GetSearchIndex();
+		if (search_index == null) {
+			search_term.Editable = false;
+			Gtk.Label l = new Gtk.Label ("<b>No search index found</b>\n\n" +
+					     "as root, run:\n\n    monodoc --make-search-index\n\nto create the index");
+			l.UseMarkup = true;
+			l.Show ();
+			scrolledwindow_search.Remove (search_tree);
+			scrolledwindow_search.Add (l);
+		} else {
+			search_store = new TreeStore (typeof (string));
+			search_tree.Model = search_store;
+			search_tree.AppendColumn ("Searches", new CellRendererText(), "text", 0);
+			search_tree.Selection.Changed += new EventHandler (ShowSearchResult);
+		}
 		bookList = new ArrayList ();
 
 		index_browser = IndexBrowser.MakeIndexBrowser (this);
@@ -311,6 +340,62 @@ class Browser {
 		if (tree_browser.SelectedNode != CurrentTab.CurrentNode)
 			tree_browser.ShowNode (CurrentTab.CurrentNode);
 	}
+	
+	//
+	// Invoked when the user presses enter on the search_entry
+	// 
+	void OnSearchActivated (object sender, EventArgs a)
+	{
+		search_tree.Model = null;
+		search_term.Editable = false;
+		string term = search_term.Text;
+		//search in the index
+		Result r = search_index.Search (term);
+		if (r == null)
+			return; //There was a problem with the index
+		//insert the results in the tree
+		TreeIter iter;
+					
+		int max = r.Count > 500? 500:r.Count;
+		iter = search_store.AppendValues (r.Term + " (" + max + " hits)");
+		for (int i = 0; i < max; i++) 
+			search_store.AppendValues (iter, r.GetTitle(i));
+
+		// Show the results
+		search_tree.Model = search_store;
+		search_tree.CollapseAll();
+		TreePath p = search_store.GetPath (iter);
+		search_tree.ExpandToPath (p);
+		search_tree.Selection.SelectPath (p);
+		search_term.Editable = true;	
+	}
+	//
+	// Invoked when the user click on one of the search results
+	//
+	void ShowSearchResult (object sender, EventArgs a)
+	{
+		CurrentTab.SetMode (Mode.Viewer);
+		
+		Gtk.TreeIter iter;
+		Gtk.TreeModel model;
+
+		bool selected = search_tree.Selection.GetSelected (out model, out iter);
+		if (!selected)
+			return;
+
+		TreePath p = model.GetPath (iter);
+		if (p.Depth < 2)
+			return;
+		int i_0 = p.Indices [0];
+		int i_1 = p.Indices [1];
+		Result res = (Result) search_index.Results [i_0];
+		TreeIter parent;
+		model.IterParent (out parent, iter);
+		string term = (string) search_store.GetValue (parent, 0);
+		highlight_text = term.Substring (0, term.IndexOf ("(")-1);
+		LoadUrl (res.GetUrl (i_1));
+	}
+
 	//
 	// Reload current page
 	//
@@ -455,6 +540,9 @@ class Browser {
 	{
 		CurrentUrl = url;
 		CurrentTab.CurrentNode = matched_node;
+		if (highlight_text != null)
+			text = DoHighlightText (text);
+
 		CurrentTab.html.Render(text);
 		if (matched_node != null) {
 			if (tree_browser.SelectedNode != matched_node)
@@ -501,6 +589,62 @@ class Browser {
 		}
 	}
 	
+	//
+	// Highlights the text of the search
+	//
+	// we have to highligh everything that is not inside < and >
+	string DoHighlightText (string text) {
+		System.Text.StringBuilder sb = new System.Text.StringBuilder (text);
+		
+		//search for the term to highlight in a lower case version of the text
+		string text_low = text.ToLower();
+		string term_low = highlight_text.ToLower();
+		
+		//search for < and > so we dont substitute text of html tags
+		ArrayList lt = new ArrayList();
+		ArrayList gt = new ArrayList();
+		int ini = 0;
+		ini = text_low.IndexOf ('<', ini, text_low.Length);
+		while (ini != -1) {
+			lt.Add (ini);
+			ini = text_low.IndexOf ('<', ini+1, text_low.Length-ini-1);
+		}
+		ini = 0;
+		ini = text_low.IndexOf ('>', ini, text_low.Length);
+		while (ini != -1) {
+			gt.Add (ini);
+			ini = text_low.IndexOf ('>', ini+1, text_low.Length-ini-1);
+		}
+		//start searching for the term
+		int offset = 0; 
+		int p = 0;
+		ini = 0;
+		ini = text_low.IndexOf (term_low, ini, text_low.Length);
+		while (ini != -1) {
+			bool beforeLt = ini < (int) lt [p];
+			//look if term is inside any html tag
+			while (!beforeLt) {
+				bool afterGt = ini > (int) gt [p];
+				if (afterGt) {
+					p++;
+					beforeLt = ini < (int) lt [p];
+					continue;
+				} else {
+				    goto ExtLoop;
+				}
+			}
+			string t = sb.ToString (ini + offset, term_low.Length);
+			sb.Remove (ini + offset, term_low.Length);
+			sb.Insert (ini + offset, "<span style=\"background: yellow\">" + t + "</span>");
+			offset += 40; //due to the <span> tag inserted
+			
+ExtLoop:
+			ini = text_low.IndexOf (term_low, ini+1, text_low.Length-ini-1);
+		}
+
+		highlight_text = null; //only highlight when a search result is clicked
+		return sb.ToString();
+	}
 	//
 	// Invoked when the mouse is over a link
 	//

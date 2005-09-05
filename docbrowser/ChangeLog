@@ -1,3 +1,15 @@
+2005-09-05 Mario Sopena Novales <mario.sopena@gmail.com>
+	Implement basic searching capabilities
+	* browser.cs:
+		- Added a new "--make-search-index" parameter
+		- Added a TreeView to show the search results
+		- Added a function to Highlight the search result
+	* browser.glade:
+		- Repair index and search icons
+		- Added a TreeView to show the search results
+	* monodoc.in:
+		- Added a new "--make-search-index" parameter
+		
 2005-08-22 Mario Sopena Novales <mario.sopena@gmail.com>
 	* browser.cs:
 		- Update the treeview everytime we change the tab
