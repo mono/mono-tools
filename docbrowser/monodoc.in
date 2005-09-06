@@ -50,8 +50,14 @@ case x$1 in
 	echo "  --no-gecko         	Don't use Mozilla to render the contents"
 	echo
 	echo "The following options are available for authoring documentation:"
+	echo "  --assemble         Runs the doc assembler"
+	echo "  --cs-to-ecma DOCFILE ASSEMBLY OUTPUT LIBRARY-NAME"
+	echo "                     Converts C# documentation to Monodoc format"
 	echo "  --edit path        Edit (unassembled) documentation at path"
+	echo "  --get-sourcesdir   Prints the location of monodoc sources"
 	echo "  --merge-changes CHANGE_FILE [TARGET_DIR]"
+	echo "  --normalize        Format a documentation file consistently"
+	echo "  --validate         Validate the XML files"
 	exit 0
 	;;
 esac
