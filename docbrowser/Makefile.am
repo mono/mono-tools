@@ -38,6 +38,7 @@ geckorender_assemblies = $(GTK_SHARP_LIBS) $(GECKO_SHARP_LIBS) -pkg:monodoc -r:b
 
 EXTRA_DIST = \
 	$(browser_sources) 	\
+	$(geckorender_sources)	\
 	admin.cs		\
 	admin.glade 		\
 	browser.glade 		\
