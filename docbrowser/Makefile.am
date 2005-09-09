@@ -16,6 +16,7 @@ DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc.in
 bin_SCRIPTS = monodoc
 
 browser_sources   = \
+	$(srcdir)/AssemblyInfo.cs	\
 	$(srcdir)/browser.cs		\
 	$(srcdir)/list.cs 		\
 	$(srcdir)/elabel.cs 		\
@@ -42,7 +43,8 @@ EXTRA_DIST = \
 	admin.cs		\
 	admin.glade 		\
 	browser.glade 		\
-	monodoc.png
+	monodoc.png		\
+	AssemblyInfo.cs
 
 admin.exe: $(admin_sources) $(srcdir)/admin.glade
 	$(MCS) -debug -out:admin.exe $(admin_sources) -resource:$(srcdir)/admin.glade,admin.glade $(browser_assemblies) -r:System.Drawing

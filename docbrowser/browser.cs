@@ -844,6 +844,7 @@ ExtLoop:
 	class About {
 		[Glade.Widget] Window about;
 		[Glade.Widget] Image logo_image;
+		[Glade.Widget] Label label_version;
 
 		static About AboutBox;
 		Browser parent;
@@ -857,6 +858,8 @@ ExtLoop:
 			about.TransientFor = parent.window1;
 
 			logo_image.Pixbuf = new Gdk.Pixbuf (null, "monodoc.png");
+			Assembly assembly = Assembly.GetExecutingAssembly ();
+			label_version.Markup = String.Format ("<b>Version:</b> {0}", assembly.GetName ().Version.ToString ());
 		}
 
 		void OnOkClicked (object sender, EventArgs a)

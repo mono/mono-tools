@@ -1,0 +1,17 @@
+//
+// AssemblyInfo.cs for gnunit
+//
+// Authors:
+//	Miguel de Icaza (miguel@novell.com)
+//
+// (C) 2005 Novell, Inc (http://www.novell.com)
+//
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
+[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyTitle ("Mono Documentation Browser")]
+[assembly: AssemblyDescription ("A documentation browser.")]
+[assembly: AssemblyCopyright ("Copyright (c) 2003-2005 Novell, Inc.")]
+[assembly: AssemblyCompany ("Novell, Inc.")]
+
