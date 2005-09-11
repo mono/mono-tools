@@ -3,7 +3,7 @@ noinst_DATA = admin.exe
 
 
 if ENABLE_GECKO
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb GeckoHtmlRender.dll 
+CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb GeckoHtmlRender.dll GeckoHtmlRender.dll.mdb
 monodoc_DATA = browser.exe GeckoHtmlRender.dll 
 else
 CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb 

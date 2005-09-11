@@ -124,6 +124,7 @@ class Browser {
 	[Glade.Widget] CheckMenuItem comments1;
 	[Glade.Widget] MenuItem postcomment;
 	[Glade.Widget] public MenuItem paste1;
+	[Glade.Widget] public MenuItem print;
 	public Notebook tabs_nb;
 	public Tab CurrentTab;
 	bool HoldCtrl;
@@ -333,8 +334,10 @@ class Browser {
 		if (CurrentTab.Tab_mode == Mode.Viewer) {
 			CurrentTab.history.ActivateCurrent();
 			paste1.Sensitive = false;
+			print.Sensitive = true;
 		} else {
 			paste1.Sensitive = true;
+			print.Sensitive = false;
 		}
 		
 		if (tree_browser.SelectedNode != CurrentTab.CurrentNode)
@@ -706,6 +709,33 @@ ExtLoop:
 	void delete_event_cb (object o, DeleteEventArgs args)
 	{
 		Application.Quit ();
+	}
+	void on_print_activate (object sender, EventArgs e) 
+	{
+		 // desactivate css temporary
+		 if (UseGecko)
+		 	HelpSource.use_css = false;
+		 
+		string url = CurrentUrl;
+		string html;
+		Node cur = CurrentTab.CurrentNode;
+		Node n; 
+
+		// deal with the two types of urls
+		if (cur.tree.HelpSource != null) {
+			html = cur.tree.HelpSource.GetText (url, out n);
+			if (html == null)
+				html = help_tree.RenderUrl (url, out n);
+		} else {
+			html = help_tree.RenderUrl (url, out n);
+		}
+
+		// sending Html to be printed. 
+		if (html != null)
+			CurrentTab.html.Print (html);
+
+		if (UseGecko)
+			HelpSource.use_css = true;
 	}
 
 	void OnCommentsActivate (object o, EventArgs args)
@@ -2225,10 +2255,12 @@ class Tab : Notebook {
 		if (m == Mode.Viewer) {
 			this.Page = 0;
 			browser.paste1.Sensitive = false;
+			browser.print.Sensitive = true;
 			EditImg.Visible = false;
 		} else {
 			this.Page = 1;
 			browser.paste1.Sensitive = true;
+			browser.print.Sensitive = false;
 			EditImg.Visible = true;
 		}
 

@@ -3,9 +3,11 @@
 // GtkHtmlHtmlRender.cs: Implementation of IHtmlRender that uses Gtk.HTML
 //
 // Author: Mario Sopena
+// Author:	Rafael Ferreira <raf@ophion.org>
 //
 using System;
 using Gtk;
+using Gnome;
 using System.IO;
 
 namespace Monodoc {
@@ -88,5 +90,43 @@ class GtkHtmlHtmlRender : IHtmlRender {
 		args.Handle.Close (HTMLStreamStatus.Ok);
 	}
 	
+	public void Print (string Html) {
+		
+		if (Html == null) {
+			Console.WriteLine ("empty print");
+			return;
+		}
+
+		string Caption = "Monodoc Printing";
+
+		PrintJob pj = new PrintJob (PrintConfig.Default ());
+		PrintDialog dialog = new PrintDialog (pj, Caption, 0);
+
+		Gtk.HTML gtk_html = new Gtk.HTML (Html);
+		gtk_html.PrintSetMaster (pj);
+			
+		PrintContext ctx = pj.Context;
+		gtk_html.Print (ctx);
+
+		pj.Close ();
+
+		// hello user
+		int response = dialog.Run ();
+		
+		if (response == (int) PrintButtons.Cancel) {
+			dialog.Hide ();
+			dialog.Dispose ();
+			return;
+		} else if (response == (int) PrintButtons.Print) {
+			pj.Print ();
+		} else if (response == (int) PrintButtons.Preview) {
+			new PrintJobPreview (pj, Caption).Show ();
+		}
+		
+		ctx.Close ();
+		dialog.Hide ();
+		dialog.Dispose ();
+		return;
+	}
 }
 }

@@ -1,3 +1,19 @@
+2005-09-08 Rafael Ferreira <raf@ophion.org>, Mario Sopena <mario.sopena@gmail.com>
+
+	Landed monodoc's simple printing subsystem
+	
+	* IHtmlRender.cs: new Print method 
+	* GeckoHtmlRender.cs: implemented new Print method with GtkHtml widget
+	* GtkHtmlHtmlRender.cs: implemented Print method
+	* browser.cs: 
+		- add printing support
+		- activate/deactivate print menu item when in view/edit mode
+	* browser.glade: 
+		- Added print menu option 
+		- Update Contributors list
+	* Makefile.am:
+		- Fixed GeckoHtmlRender.dl.mdb clean up
+
 2005-09-05 Mario Sopena Novales <mario.sopena@gmail.com>
 	Implement basic searching capabilities
 	* browser.cs:

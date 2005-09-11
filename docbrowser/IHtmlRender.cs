@@ -32,6 +32,8 @@ public interface IHtmlRender {
 	string Url { get; }
 
 	Widget HtmlPanel { get; }
+
+	void Print (string Html);
 }
 
 
