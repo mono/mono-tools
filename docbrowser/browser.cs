@@ -547,6 +547,7 @@ class Browser {
 			text = DoHighlightText (text);
 
 		CurrentTab.html.Render(text);
+
 		if (matched_node != null) {
 			if (tree_browser.SelectedNode != matched_node)
 				tree_browser.ShowNode (matched_node);
@@ -2332,25 +2333,38 @@ class Tab : Notebook {
 		SetMode (Mode.Viewer);
 		history.ActivateCurrent ();
 	}
-		
+	
+	bool queued = false;
+
 	void EditedTextChanged (object sender, EventArgs args)
 	{
-		StringWriter sw = new StringWriter ();
-		XmlWriter w = new XmlTextWriter (sw);
-		
-		try {
-			edit_node.InnerXml = text_editor.Buffer.Text;
-			EditingUtils.RenderEditPreview (edit_url, browser.help_tree, edit_node, w);
-			w.Flush ();
-		} catch (Exception e) {
-			browser.statusbar.Pop (browser.context_id);
-			browser.statusbar.Push (browser.context_id, e.Message);
+		if (queued)
 			return;
-		}
-		browser.statusbar.Pop (browser.context_id);
-		browser.statusbar.Push (browser.context_id, "XML OK");
-		string s = HelpSource.BuildHtml (EcmaHelpSource.css_ecma_code, sw.ToString ());
-		html_preview.Render(s);
+
+		queued = true;
+		GLib.Timeout.Add (500, delegate {
+			queued = false;
+			
+			StringWriter sw = new StringWriter ();
+			XmlWriter w = new XmlTextWriter (sw);
+			
+			try {
+				edit_node.InnerXml = text_editor.Buffer.Text;
+				EditingUtils.RenderEditPreview (edit_url, browser.help_tree, edit_node, w);
+				w.Flush ();
+			} catch (Exception e) {
+				browser.statusbar.Pop (browser.context_id);
+				browser.statusbar.Push (browser.context_id, e.Message);
+
+				return false;
+			}
+			browser.statusbar.Pop (browser.context_id);
+			browser.statusbar.Push (browser.context_id, "XML OK");
+			string s = HelpSource.BuildHtml (EcmaHelpSource.css_ecma_code, sw.ToString ());
+			html_preview.Render(s);
+
+			return false;
+		});
 	}
 	void OnTabClose (object sender, EventArgs a)
 	{
