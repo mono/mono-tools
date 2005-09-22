@@ -628,7 +628,7 @@ namespace Mono.Tools {
 		private void PrintBMPString (StringBuilder sb, int level, ASN1Element asn)
 		{
 			sb.Append ("BMPString");	// Unicode
-			PrintString (sb, level, Encoding.Unicode.GetString (asn.Value));
+			PrintString (sb, level, Encoding.BigEndianUnicode.GetString (asn.Value));
 		}
 
 		// Print non universal data (application, context, private)
