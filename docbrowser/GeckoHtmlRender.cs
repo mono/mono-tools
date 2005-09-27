@@ -37,19 +37,23 @@ public class GeckoHtmlRender : IHtmlRender {
 	public GeckoHtmlRender (RootTree help_tree) 
 	{
 		this.help_tree = help_tree;
-		html_panel = new WebControl("/tmp/monodoc", "MonodocGecko"); //FIXME
+		tmpPath = Path.Combine (Path.GetTempPath(), "monodoc");
+		html_panel = new WebControl (tmpPath, "MonodocGecko"); 
 		html_panel.Show(); //due to Gecko bug
 		html_panel.OpenUri += OnOpenUri;
 		html_panel.LinkMsg += OnLinkMsg;
 		panel = new Viewport();
 		panel.Add (html_panel);
 		cache_imgs = new Hashtable();
-		tmpPath = Path.Combine (Path.GetTempPath(), "monodoc");
 	}
 
 	protected void OnOpenUri (object o, OpenUriArgs args)
 	{
 		url = CheckUrl (args.AURI);
+		// if the file is cached on disk, return
+		if (url.StartsWith ("file:///")) 
+			return;
+		
 		if (UrlClicked != null)
 			UrlClicked (this, new EventArgs());
 		args.RetVal = true; //this prevents Gecko to continue processing
@@ -82,12 +86,26 @@ public class GeckoHtmlRender : IHtmlRender {
 	/* NOT ALREADY IMPLEMENTED */
 	public void SelectAll() {}
 
+	static int tmp_file = 0;
 	public void Render (string html_code) 
 	{
 		string r = ProcessImages (html_code);
-		html_panel.OpenStream ("file:///", "text/html");
-		html_panel.AppendData (r);
-		html_panel.CloseStream ();
+		// if the html code is too big, write it down to a tmp file
+		if (((uint) r.Length) > 50000) {
+			string filename = (tmp_file++) + ".html";
+			string filepath = Path.Combine (tmpPath, filename);
+			using (FileStream file = new FileStream (filepath, FileMode.Create)) {
+				StreamWriter sw = new StreamWriter (file);
+				sw.Write (r);
+				sw.Close ();
+			}
+			html_panel.LoadUrl (filepath);
+		} else {
+			html_panel.OpenStream ("file:///", "text/html");
+			html_panel.AppendData (r);
+			html_panel.CloseStream ();
+		}
+
 	}
 
 	// Substitute the src of the images with the appropriate path

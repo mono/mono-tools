@@ -118,7 +118,7 @@ class Browser {
 	[Glade.Widget] TreeView bookmark_tree;
 	[Glade.Widget] public Statusbar statusbar;
 	[Glade.Widget] public Button back_button, forward_button;
-	[Glade.Widget] Entry index_entry;
+	public Entry index_entry;
 	[Glade.Widget] CheckMenuItem editing1;
 	[Glade.Widget] CheckMenuItem showinheritedmembers;
 	[Glade.Widget] CheckMenuItem comments1;
@@ -148,20 +148,22 @@ class Browser {
 	//
 	// Accessed from the IndexBrowser class
 	//
-	[Glade.Widget] internal Box search_box;
-	[Glade.Widget] internal Frame matches;
+	internal VBox search_box;
+	internal Frame matches;
+	[Glade.Widget] internal VBox index_vbox;
 	
 	Gdk.Pixbuf monodoc_pixbuf;
 
 	//
 	// Used for searching
 	//
-	[Glade.Widget] Entry search_term;
-	[Glade.Widget] TreeView search_tree;
-	[Glade.Widget] ScrolledWindow scrolledwindow_search;
+	Entry search_term;
+	TreeView search_tree;
 	TreeStore search_store;
 	SearchableIndex search_index;
 	string highlight_text;
+	[Glade.Widget] VBox search_vbox;
+	ProgressPanel ppanel;
 	
         //
 	// Left-hand side Browsers
@@ -278,18 +280,11 @@ class Browser {
 		//
 		search_index = help_tree.GetSearchIndex();
 		if (search_index == null) {
-			search_term.Editable = false;
-			Gtk.Label l = new Gtk.Label ("<b>No search index found</b>\n\n" +
-					     "as root, run:\n\n    monodoc --make-search-index\n\nto create the index");
-			l.UseMarkup = true;
-			l.Show ();
-			scrolledwindow_search.Remove (search_tree);
-			scrolledwindow_search.Add (l);
+			ppanel = new ProgressPanel ("<b>No Search index found</b>", "Generate", RootTree.MakeSearchIndex, CreateSearchPanel); 
+			search_vbox.Add (ppanel);
+			search_vbox.Show ();
 		} else {
-			search_store = new TreeStore (typeof (string));
-			search_tree.Model = search_store;
-			search_tree.AppendColumn ("Searches", new CellRendererText(), "text", 0);
-			search_tree.Selection.Changed += new EventHandler (ShowSearchResult);
+			CreateSearchPanel ();
 		}
 		bookList = new ArrayList ();
 
@@ -299,6 +294,57 @@ class Browser {
 		MainWindow.ShowAll();
 	}
 
+	// Initianlizes the search index
+	void CreateSearchPanel ()
+	{
+		//get the search index
+		if (search_index == null) {
+			search_index = help_tree.GetSearchIndex();
+			//restore widgets
+			search_vbox.Remove (ppanel);
+		}
+		//
+		// Create the search panel
+		//
+		VBox vbox1 = new VBox (false, 0);
+		search_vbox.PackStart (vbox1);
+		
+		// title
+		HBox hbox1 = new HBox (false, 3);
+		hbox1.BorderWidth = 3;
+		Image icon = new Image (Stock.Find, IconSize.Menu);
+		Label look_for_label = new Label ("Search for:");
+		look_for_label.Justify = Justification.Left;
+		look_for_label.Xalign = 0;
+		hbox1.PackEnd (look_for_label, true, true, 0);
+		hbox1.PackEnd (icon, false, true, 0);
+		hbox1.ShowAll ();
+		vbox1.PackStart (hbox1, false, true, 0);
+
+		// entry
+		search_term = new Entry ();
+		search_term.Activated += OnSearchActivated;
+		vbox1.PackStart (search_term, false, true, 0);
+		
+		// treeview
+		ScrolledWindow scrolledwindow_search = new ScrolledWindow ();
+		scrolledwindow_search.HscrollbarPolicy = PolicyType.Automatic;
+		scrolledwindow_search.VscrollbarPolicy = PolicyType.Always;
+		vbox1.PackStart (scrolledwindow_search, true, true, 0);
+		search_tree = new TreeView ();
+		search_tree.HeadersVisible = false;
+		scrolledwindow_search.AddWithViewport (search_tree);
+		
+		//prepare the treeview
+		search_store = new TreeStore (typeof (string));
+		search_tree.Model = search_store;
+		search_tree.AppendColumn ("Searches", new CellRendererText(), "text", 0);
+		search_tree.Selection.Changed += new EventHandler (ShowSearchResult);
+
+		vbox1.ShowAll ();
+		search_vbox.ShowAll ();
+	}	
+			
 	// Adds a Tab and Activates it
 	void AddTab() 
 	{
@@ -775,7 +821,7 @@ ExtLoop:
 	//
 	// Invoked when the index_entry Entry line content changes
 	//
-	void OnIndexEntryChanged (object sender, EventArgs a)
+	public void OnIndexEntryChanged (object sender, EventArgs a)
 	{
 		if (index_browser != null)
 			index_browser.SearchClosest (index_entry.Text);
@@ -784,7 +830,7 @@ ExtLoop:
 	//
 	// Invoked when the user presses enter on the index_entry
 	//
-	void OnIndexEntryActivated (object sender, EventArgs a)
+	public void OnIndexEntryActivated (object sender, EventArgs a)
 	{
 		if (index_browser != null)
 			index_browser.LoadSelected ();
@@ -794,7 +840,7 @@ ExtLoop:
 	// Invoked when the user presses a key on the index_entry
 	//
 
-	void OnIndexEntryKeyPress (object o, KeyPressEventArgs args)
+	public void OnIndexEntryKeyPress (object o, KeyPressEventArgs args)
 	{
 		args.RetVal = true;
 
@@ -831,7 +877,7 @@ ExtLoop:
 	//
 	// For the accel keystroke
 	//
-	void OnIndexEntryFocused (object sender, EventArgs a)
+	public void OnIndexEntryFocused (object sender, EventArgs a)
 	{
 		nb.Page = 1;
 	}
@@ -1792,28 +1838,80 @@ class IndexBrowser {
 	public static IndexBrowser MakeIndexBrowser (Browser browser)
 	{
 		IndexReader ir = browser.help_tree.GetIndex ();
-		if (ir == null){
-			Gtk.Label l = new Gtk.Label ("<b>No index found</b>\n\n" +
-					     "as root, run:\n\n    monodoc --make-index\n\nto create the index");
-			l.UseMarkup = true;
-			l.Show ();
-			browser.search_box.PackStart (l);
-			return null;
+		if (ir == null) {
+			return new IndexBrowser (browser);
 		}
 
 		return new IndexBrowser (browser, ir);
 	}
 
+	ProgressPanel ppanel;
+	IndexBrowser (Browser parent)
+	{
+			browser = parent;
+			ppanel = new ProgressPanel ("<b>No index found</b>", "Generate", RootTree.MakeIndex, NewIndexCreated); 
+			browser.index_vbox.Add (ppanel);
+			browser.index_vbox.Show ();
+	}
+
+	void NewIndexCreated ()
+	{
+		index_reader = browser.help_tree.GetIndex ();
+		//restore widgets
+		browser.index_vbox.Remove (ppanel);
+		CreateWidget ();
+		browser.index_vbox.ShowAll ();
+	}
+	
 	IndexBrowser (Browser parent, IndexReader ir)
 	{
 		browser = parent;
 		index_reader = ir;
 
+		CreateWidget ();
+	}
+
+	void CreateWidget () {
+		//
+		// Create the widget
+		//
+		Frame frame1 = new Frame ();
+		VBox vbox1 = new VBox (false, 0);
+		frame1.Add (vbox1);
+
+		// title
+		HBox hbox1 = new HBox (false, 3);
+		hbox1.BorderWidth = 3;
+		Image icon = new Image (Stock.Index, IconSize.Menu);
+		Label look_for_label = new Label ("Look for:");
+		look_for_label.Justify = Justification.Left;
+		look_for_label.Xalign = 0;
+		hbox1.PackEnd (look_for_label, true, true, 0);
+		hbox1.PackEnd (icon, false, true, 0);
+		hbox1.ShowAll ();
+		vbox1.PackStart (hbox1, false, true, 0);
+
+		// entry
+		vbox1.PackStart (new HSeparator (), false, true, 0);
+		browser.index_entry = new Entry ();
+		browser.index_entry.Activated += browser.OnIndexEntryActivated;
+		browser.index_entry.Changed += browser.OnIndexEntryChanged;
+		browser.index_entry.FocusInEvent += browser.OnIndexEntryFocused;
+		browser.index_entry.KeyPressEvent += browser.OnIndexEntryKeyPress;
+		vbox1.PackStart (browser.index_entry, false, true, 0);
+		vbox1.PackStart (new HSeparator (), false, true, 0);
+
+		//search results
+		browser.search_box = new VBox ();
+		vbox1.PackStart (browser.search_box, true, true, 0);
+		vbox1.ShowAll ();
+
+		
 		//
 		// Setup the widget
 		//
 		index_list = new BigList (index_reader);
-		index_list.SetSizeRequest (100, 400);
+		//index_list.SetSizeRequest (100, 400);
 
 		index_list.ItemSelected += new ItemSelected (OnIndexSelected);
 		index_list.ItemActivated += new ItemActivated (OnIndexActivated);
@@ -1828,6 +1926,7 @@ class IndexBrowser {
 		//
 		// Setup the matches.
 		//
+		browser.matches = new Frame ();
 		match_model = new MatchModel (this);
 		browser.matches.Hide ();
 		match_list = new BigList (match_model);
@@ -1841,6 +1940,9 @@ class IndexBrowser {
 		
 		browser.matches.Add (box2);
 		index_list.SetSizeRequest (100, 200);
+
+		browser.index_vbox.PackStart (frame1);
+		browser.index_vbox.PackEnd (browser.matches);
 	}
 
 	//

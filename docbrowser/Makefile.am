@@ -24,7 +24,8 @@ browser_sources   = \
 	$(srcdir)/Contributions.cs	\
 	$(srcdir)/XmlNodeWriter.cs	\
 	$(srcdir)/GtkHtmlHtmlRender.cs	\
-	$(srcdir)/IHtmlRender.cs	
+	$(srcdir)/IHtmlRender.cs	\
+	$(srcdir)/ProgressPanel.cs
 
 
 geckorender_sources = \

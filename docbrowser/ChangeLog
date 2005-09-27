@@ -1,17 +1,17 @@
+2005-09-16 Mario Sopena <mario.sopena@gmail.com>
+	* GeckoHtmlRender.cs: add a woraround for the bug 245960 of gtkmozembed
+	* browser.cs: search panels are created programatically. A new panel
+	appears when the index are not found that let build new index
+	* ProgressPanel.cs: added. New panel widget that allow perform a
+	programable task (used for building the index)
+	* browser.glade: remove the search panels
+	* Makefile.am: add the new ProgressPanel.cs
+
 2005-09-12  Miguel de Icaza  <miguel@novell.com>
 
 	* browser.cs (EditedTextChanged): Only update the preview every
 	second, otherwise its too slow to type with Mozilla.
 
-2005-08-22 Mario Sopena Novales <mario.sopena@gmail.com>
-	* browser.cs:
-		- Update the treeview everytime we change the tab
-		- Added a new CurrentNode property to Tabs
-		- update the save process to include the new NodeUrl property
-		- dont set the browser mode to viewer every time a row is activated
-		- added a new button Restore to delete contributions
-	* GeckoHtmlRender.cs: cleaned
-	
 2005-09-08 Rafael Ferreira <raf@ophion.org>, Mario Sopena <mario.sopena@gmail.com>
 
 	Landed monodoc's simple printing subsystem
