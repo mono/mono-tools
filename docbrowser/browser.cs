@@ -2418,7 +2418,14 @@ class Tab : Notebook {
 			browser.statusbar.Push (browser.context_id, e.Message);
 			return;
 		}
-		EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, EcmaHelpSource.GetNiceUrl (browser.CurrentTab.CurrentNode));
+		string [] uSplit = EditingUtils.ParseEditUrl (edit_url);
+		
+		if (uSplit[0].StartsWith ("monodoc:"))
+			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, EcmaHelpSource.GetNiceUrl (browser.CurrentTab.CurrentNode));
+		else if (uSplit[0].StartsWith ("file:"))
+			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, String.Empty);
+		else
+			Console.WriteLine ("Edit url wrong: {0}", edit_url);
 		SetMode (Mode.Viewer);
 		history.ActivateCurrent ();
 	}

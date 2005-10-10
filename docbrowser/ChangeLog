@@ -1,3 +1,7 @@
+2005-10-10 Mario Sopena <mario.sopena@gmail.com>
+	* browser.cs: when saving edit changes, take into account that uncompiled
+	sources are handled differently
+	
 2005-09-16 Mario Sopena <mario.sopena@gmail.com>
 	* GeckoHtmlRender.cs: add a woraround for the bug 245960 of gtkmozembed
 	* browser.cs: search panels are created programatically. A new panel
