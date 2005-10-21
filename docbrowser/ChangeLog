@@ -1,3 +1,6 @@
+2005-10-21 Mario Sopena <mario.sopena@gmail.com>
+	* browser.cs: Workaround to fix the stealing focus bug #76346
+
 2005-10-10 Mario Sopena <mario.sopena@gmail.com>
 	* browser.cs: when saving edit changes, take into account that uncompiled
 	sources are handled differently

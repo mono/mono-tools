@@ -2184,6 +2184,12 @@ class Tab : Notebook {
 	public System.Xml.XmlNode edit_node;
 	public string edit_url;
 	
+	void FocusOut (object sender, FocusOutEventArgs args)
+	{
+		if (TabMode == Mode.Editor)
+			text_editor.GrabFocus ();	
+	}
+
 	public Tab(Browser br) 
 	{
 
@@ -2255,6 +2261,7 @@ class Tab : Notebook {
 		text_editor.Buffer.Changed += new EventHandler (EditedTextChanged);
 		text_editor.WrapMode = WrapMode.Word;
 		sw.Add(text_editor);
+		text_editor.FocusOutEvent += new FocusOutEventHandler (FocusOut);
 		
 		//
 		// XML editing buttons
