@@ -180,8 +180,16 @@ public class GeckoHtmlRender : IHtmlRender {
 			Console.WriteLine ("empty print");
 			return;
 		}
+		Console.WriteLine ("XXXX");
+		
 #if !USE_GTKHTML_PRINT
-		throw new Exception ("Printing not suported");
+		MessageDialog md = new MessageDialog (null, 
+				DialogFlags.DestroyWithParent,
+				MessageType.Error, 
+				ButtonsType.Close, "Printing not supported without gtkhtml");
+     
+		int result = md.Run ();
+		md.Destroy();
 #else
 		string Caption = "Monodoc Printing";
 

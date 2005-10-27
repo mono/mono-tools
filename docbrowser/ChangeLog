@@ -1,5 +1,7 @@
 2005-10-27  Ben Maurer  <bmaurer@ximian.com>
 
+	* GeckoHtmlRender.cs: Use an error dialog.
+
 	This removes the dependency on gtkhtml.
 	
 	* Makefile.am: GtkHtml is put in its own assembly
