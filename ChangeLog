@@ -1,5 +1,12 @@
 2005-10-27  Ben Maurer  <bmaurer@ximian.com>
 
+	* configure.in (GTK_SHARP): simplify this check, since we are not
+	doing the dual 2.0/1.0 thing.
+	(MOZILLA_HOME): get the mozilla home dir from pkgconfig.
+	(MONODOC): Require monodoc in configure.in
+
+2005-10-27  Ben Maurer  <bmaurer@ximian.com>
+
 	* configure.in: Make gtkhtml an optional dependency
 
 2005-07-30 Mario Sopena Novales <mario.sopena@gmail.com>

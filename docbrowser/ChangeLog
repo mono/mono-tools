@@ -1,5 +1,11 @@
 2005-10-27  Ben Maurer  <bmaurer@ximian.com>
 
+	* Makefile.am (monodocdir): Don't use -pkg, but rely on the stuff
+	from configure.in.
+
+	* monodoc.in: Set LD_LIBRARY_PATH to include gecko, borrowed from
+	Monodevelop.
+
 	* GeckoHtmlRender.cs: Use an error dialog.
 
 	This removes the dependency on gtkhtml.

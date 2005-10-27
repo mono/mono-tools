@@ -40,10 +40,10 @@ admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) -pkg:monodoc -r:System.Web.Services
+browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:System.Web.Services
 # we insert gtkhtml libs if we have them for printing 
-geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) -pkg:monodoc -r:browser.exe
-gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) -pkg:monodoc -r:browser.exe
+geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 EXTRA_DIST = \
 	$(browser_sources) 	\
