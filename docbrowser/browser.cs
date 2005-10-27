@@ -495,22 +495,6 @@ class Browser {
 		return s;
 	}
 
-	public void UrlRequested (object sender, UrlRequestedArgs args)
-	{
-		Console.WriteLine ("Image requested: " + args.Url);
-		Stream s = help_tree.GetImage (args.Url);
-		
-		if (s == null)
-			s = GetResourceImage ("monodoc.png");
-		byte [] buffer = new byte [8192];
-		int n;
-		
-		while ((n = s.Read (buffer, 0, 8192)) != 0) {
-			args.Handle.Write (buffer, n);
-		}
-		args.Handle.Close (HTMLStreamStatus.Ok);
-	}
-	
 	public class LinkPageVisit : PageVisit {
 		Browser browser;
 		string url;
@@ -2190,6 +2174,22 @@ class Tab : Notebook {
 			text_editor.GrabFocus ();	
 	}
 
+	static IHtmlRender GetRenderer (string file, string type, Browser browser)
+	{
+		try {
+			
+			string exeAssembly = Assembly.GetExecutingAssembly ().Location;
+			string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
+			Assembly dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, file));
+			Type t = dll.GetType (type, true);
+		
+			return (IHtmlRender) Activator.CreateInstance (t, new object [1] { browser.help_tree });
+		} catch {
+			return null;
+		}
+	}
+	
+
 	public Tab(Browser br) 
 	{
 
@@ -2211,34 +2211,26 @@ class Tab : Notebook {
 		// Setup the HTML rendering and preview area
 		//
 		if (browser.UseGecko) {
-			try {
-				string exeAssembly = Assembly.GetExecutingAssembly ().Location;
-				string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
-				Assembly gecko_dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, "GeckoHtmlRender.dll"));
-				Type gecko_render_type = gecko_dll.GetType ("Monodoc.GeckoHtmlRender", true);
-
-				object[] args = new object [1];
-				args [0] = browser.help_tree;
-				html = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
-				html_preview = (IHtmlRender) Activator.CreateInstance (gecko_render_type, args);
-
-				//Prepare Font for css (TODO: use GConf?)
-				if (SettingsHandler.Settings.preferred_font_size == 0) { 
-					Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
-					SettingsHandler.Settings.preferred_font_family = font_desc.Family;
-					SettingsHandler.Settings.preferred_font_size = 100; //size: 100%
-				}
-				HelpSource.use_css = true;
-			} catch (Exception exc) {
-				html = new GtkHtmlHtmlRender (browser);
-				html_preview = new GtkHtmlHtmlRender (browser);
-				browser.UseGecko = false;
-			}
-		// if the user explicitally state that doesnt want gecko
-		} else {
-			html = new GtkHtmlHtmlRender (browser);
-			html_preview = new GtkHtmlHtmlRender (browser);
+			html = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
+			html_preview = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
 		}
+		
+		if (html == null || html_preview == null) {
+			html = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
+			html_preview = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
+			browser.UseGecko = false;
+		}
+
+		if (html == null || html_preview == null)
+			throw new Exception ("Couldn't find html renderer!");
+				
+		//Prepare Font for css (TODO: use GConf?)
+		if (browser.UseGecko && SettingsHandler.Settings.preferred_font_size == 0) { 
+			Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
+			SettingsHandler.Settings.preferred_font_family = font_desc.Family;
+			SettingsHandler.Settings.preferred_font_size = 100; //size: 100%
+		}
+		
 		html_container.Add (html.HtmlPanel);
 		html.UrlClicked += new EventHandler (browser.LinkClicked);
 		html.OnUrl += new EventHandler (browser.OnUrlMouseOver);

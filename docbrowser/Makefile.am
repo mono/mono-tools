@@ -3,13 +3,16 @@ noinst_DATA = admin.exe
 
 
 if ENABLE_GECKO
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb GeckoHtmlRender.dll GeckoHtmlRender.dll.mdb
-monodoc_DATA = browser.exe GeckoHtmlRender.dll 
-else
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb 
-monodoc_DATA = browser.exe 
+GECKO_TARGET=GeckoHtmlRender.dll
+endif
+if ENABLE_GTKHTML
+GECKO_PRINTING_DEF="-d:USE_GTKHTML_PRINT"
+
+GTKHTML_TARGET=GtkHtmlHtmlRender.dll
 endif
 
+CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb
+monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc.in
 
@@ -23,7 +26,6 @@ browser_sources   = \
 	$(srcdir)/history.cs 		\
 	$(srcdir)/Contributions.cs	\
 	$(srcdir)/XmlNodeWriter.cs	\
-	$(srcdir)/GtkHtmlHtmlRender.cs	\
 	$(srcdir)/IHtmlRender.cs	\
 	$(srcdir)/ProgressPanel.cs
 
@@ -31,12 +33,17 @@ browser_sources   = \
 geckorender_sources = \
 	$(srcdir)/GeckoHtmlRender.cs
 
+gtkhtmlrender_sources = \
+	$(srcdir)/GtkHtmlHtmlRender.cs
+
 admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) -pkg:monodoc -r:System.Web.Services 
-geckorender_assemblies = $(GTK_SHARP_LIBS) $(GECKO_SHARP_LIBS) -pkg:monodoc -r:browser.exe
+browser_assemblies = $(GTK_SHARP_LIBS) -pkg:monodoc -r:System.Web.Services
+# we insert gtkhtml libs if we have them for printing 
+geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) -pkg:monodoc -r:browser.exe
+gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) -pkg:monodoc -r:browser.exe
 
 EXTRA_DIST = \
 	$(browser_sources) 	\
@@ -47,16 +54,20 @@ EXTRA_DIST = \
 	monodoc.png		\
 	AssemblyInfo.cs
 
+# admin hardcodes GTKHTML for now.
+if ENABLE_GTKHTML
 admin.exe: $(admin_sources) $(srcdir)/admin.glade
-	$(MCS) -debug -out:admin.exe $(admin_sources) -resource:$(srcdir)/admin.glade,admin.glade $(browser_assemblies) -r:System.Drawing
+	$(MCS) -debug -out:admin.exe $(admin_sources) -resource:$(srcdir)/admin.glade,admin.glade $(browser_assemblies) $(GTKHTML_SHARP_LIBS) -r:System.Drawing
+endif
 
 browser.exe: $(browser_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
 	$(MCS) -debug -out:browser.exe $(browser_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
 
 GeckoHtmlRender.dll : $(geckorender_sources) browser.exe
-	$(MCS) -debug -target:library -out:GeckoHtmlRender.dll $(geckorender_sources) $(geckorender_assemblies)
+	$(MCS) -debug -target:library -out:$@ $(geckorender_sources) $(geckorender_assemblies)  $(GECKO_PRINTING_DEF)
 
-
+GtkHtmlHtmlRender.dll : $(gtkhtmlrender_sources) browser.exe
+	$(MCS) -debug -target:library -out:$@ $(gtkhtmlrender_sources) $(gtkhtmlrender_assemblies)
 
 b: browser.exe
 	MONO_PATH=. $(RUNTIME) --debug browser.exe

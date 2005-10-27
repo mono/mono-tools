@@ -1,3 +1,7 @@
+2005-10-27  Ben Maurer  <bmaurer@ximian.com>
+
+	* configure.in: Make gtkhtml an optional dependency
+
 2005-07-30 Mario Sopena Novales <mario.sopena@gmail.com>
 	* configure.in: make gecko-sharp dependency conditional
 

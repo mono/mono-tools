@@ -1,3 +1,16 @@
+2005-10-27  Ben Maurer  <bmaurer@ximian.com>
+
+	This removes the dependency on gtkhtml.
+	
+	* Makefile.am: GtkHtml is put in its own assembly
+
+	* GtkHtmlHtmlRender.cs: Don't use a private api, so that we can
+	put this in another assembly
+
+	* browser.cs: gtkhtml rendering is now loaded dynamically
+
+	* GeckoHtmlRender.cs: Make printing optional
+
 2005-10-21 Mario Sopena <mario.sopena@gmail.com>
 	* browser.cs: Workaround to fix the stealing focus bug #76346
 

@@ -9,6 +9,7 @@ using System;
 using Gtk;
 using Gnome;
 using System.IO;
+using System.Reflection;
 
 namespace Monodoc {
 class GtkHtmlHtmlRender : IHtmlRender {
@@ -23,19 +24,19 @@ class GtkHtmlHtmlRender : IHtmlRender {
 		get { return url; }
 	}
 
-	Browser browser;
+	RootTree help_tree;
 	public event EventHandler OnUrl;
 	public event EventHandler UrlClicked;
 
 	
-	public GtkHtmlHtmlRender (Browser browser) 
+	public GtkHtmlHtmlRender (RootTree help_tree) 
 	{
 		html_panel = new HTML();
 		html_panel.Show(); 
 		html_panel.LinkClicked += new LinkClickedHandler (LinkClicked);
 		html_panel.OnUrl += new OnUrlHandler (OnUrlMouseOver);
 		html_panel.UrlRequested += new UrlRequestedHandler (UrlRequested);
-		this.browser = browser;
+		this.help_tree = help_tree;
 	}
 	
 	protected void LinkClicked (object o, LinkClickedArgs args)
@@ -74,12 +75,20 @@ class GtkHtmlHtmlRender : IHtmlRender {
 		html_panel.End (stream, HTMLStreamStatus.Ok);
 	}
 
+	static Stream GetBrowserResourceImage (string name)
+	{
+		Assembly assembly = typeof (RootTree).Assembly;
+		System.IO.Stream s = assembly.GetManifestResourceStream (name);
+		
+		return s;
+	}
+
 	protected void UrlRequested (object sender, UrlRequestedArgs args)
 	{
-		Stream s = browser.help_tree.GetImage (args.Url);
+		Stream s = help_tree.GetImage (args.Url);
 		
 		if (s == null)
-			s = browser.GetResourceImage ("monodoc.png");
+			s = GetBrowserResourceImage ("monodoc.png");
 		byte [] buffer = new byte [8192];
 		int n, m;
 		m=0;

@@ -10,7 +10,9 @@ using System.IO;
 using System.Collections;
 using Gecko;
 using Gtk;
+#if USE_GTKHTML_PRINT
 using Gnome;
+#endif
 
 namespace Monodoc {
 public class GeckoHtmlRender : IHtmlRender {
@@ -178,7 +180,9 @@ public class GeckoHtmlRender : IHtmlRender {
 			Console.WriteLine ("empty print");
 			return;
 		}
-
+#if !USE_GTKHTML_PRINT
+		throw new Exception ("Printing not suported");
+#else
 		string Caption = "Monodoc Printing";
 
 		PrintJob pj = new PrintJob (PrintConfig.Default ());
@@ -209,6 +213,7 @@ public class GeckoHtmlRender : IHtmlRender {
 		dialog.Hide ();
 		dialog.Dispose ();
 		return;
+#endif
 	}
 }
 }

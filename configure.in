@@ -33,18 +33,28 @@ AC_SUBST(RESGEN)
 PKG_CHECK_MODULES(NUNIT, mono-nunit)
 AC_SUBST(NUNIT_LIBS)
 
-#PKG_CHECK_MODULES(GTK_SHARP, glade-sharp-2.0 gnome-sharp-2.0 gconf-sharp-2.0 gtkhtml-sharp-2.0, enable_gtks=yes, enable_gtks=no)
+#PKG_CHECK_MODULES(GTK_SHARP, glade-sharp-2.0 gconf-sharp-2.0, enable_gtks=yes, enable_gtks=no)
 #if test "x$enable_gtks" = "xno" ; then
-	PKG_CHECK_MODULES(GTK_SHARP, glade-sharp gnome-sharp gconf-sharp gtkhtml-sharp, enable_gtks=yes, enable_gtks=no)
+	PKG_CHECK_MODULES(GTK_SHARP, glade-sharp gconf-sharp, enable_gtks=yes, enable_gtks=no)
 	if test "x$enable_gtks" = "xno" ; then
 		AC_MSG_ERROR([gtk-sharp not found])
 	fi
 #fi
 AC_SUBST(GTK_SHARP_LIBS)
 
+
+PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp, enable_gtkhtml=yes, enable_gtkhtml=no)
+AC_SUBST(GTKHTML_SHARP_LIBS)
+AM_CONDITIONAL(ENABLE_GTKHTML, test "x$enable_gtkhtml" = "xyes")
+
+
 PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp = 0.6, enable_gecko=yes, enable_gecko=no)
 AC_SUBST(GECKO_SHARP_LIBS)
 AM_CONDITIONAL(ENABLE_GECKO, test "x$enable_gecko" = "xyes")
+
+if test "x$enable_gtkhtml$enable_gecko" = "xnono" ; then
+   AC_MSG_ERROR([no HTML display found. You need either gtkhtml or gecko])
+fi
 
 dnl Intl
 GETTEXT_PACKAGE=mono-tools
