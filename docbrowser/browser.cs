@@ -7,8 +7,6 @@
 // (C) 2003 Ximian, Inc.
 //
 // TODO:
-//   Add support for printing.
-//   Add search facility
 //
 using Gtk;
 using Glade;
@@ -108,7 +106,7 @@ class Driver {
 	}
 }
 
-class Browser {
+public class Browser {
 	Glade.XML ui;
 	Gtk.Window MainWindow;
 	Style bar_style;
@@ -130,7 +128,7 @@ class Browser {
 	bool HoldCtrl;
 	public bool UseGecko;
 
-	[Glade.Widget] MenuItem bookmarksMenu;
+	[Glade.Widget] public MenuItem bookmarksMenu;
 	[Glade.Widget] MenuItem view1;
 	MenuItem textLarger;
 	MenuItem textSmaller;
@@ -144,6 +142,9 @@ class Browser {
 
 	[Glade.Widget] Box title_label_box;
 	ELabel title_label;
+
+	// Bookmark Manager
+	BookmarkManager bookmark_manager;
 
 	//
 	// Accessed from the IndexBrowser class
@@ -168,9 +169,9 @@ class Browser {
         //
 	// Left-hand side Browsers
 	//
-	TreeBrowser tree_browser;
+	public TreeBrowser tree_browser;
 	IndexBrowser index_browser;
-	string CurrentUrl;
+	public string CurrentUrl;
 	
 	internal RootTree help_tree;
 
@@ -228,6 +229,9 @@ class Browser {
 
 		help_tree = RootTree.LoadTree ();
 		tree_browser = new TreeBrowser (help_tree, reference_tree, this);
+		
+		// Bookmark Manager init;
+		bookmark_manager = new BookmarkManager(this);
 		
 		//
 		// Tab Notebook and first tab
@@ -588,7 +592,7 @@ class Browser {
 			//
 			string tabTitle;
 			tabTitle = matched_node.Caption; //Normal title
-			string[] parts = matched_node.URL.Split('/', '#');			
+			string[] parts = matched_node.URL.Split('/', '#');
 			if(matched_node.URL != null && matched_node.URL.StartsWith("ecma:")) {
 				if(parts.Length == 3 && parts[2] != String.Empty) { //List of Members, properties, events, ...
 					tabTitle = parts[1] + ": " + matched_node.Caption;
@@ -1429,132 +1433,13 @@ ExtLoop:
 	{
 		AddTab();
 	}
-
-	void BookmarkHandle (object obj, EventArgs args)
-	{
-		Menu aux = (Menu) bookmarksMenu.Submenu;
-		Gtk.Widget [] a = aux.Children;
-		for (int i = 3; i < aux.Children.Length; i++) {
-			if (aux.Children [i] == obj)
-				LoadUrl (((BookLink) bookList [i - 3]).Url);
-		}
-	}
-
-	void refreshBookmarkMenu ()
-	{
-		Menu aux = (Menu) bookmarksMenu.Submenu;
-		
-		foreach (Widget w in aux.Children)
-			aux.Remove (w);
-
-
-		if (bookList.Count > 0) {
-			MenuItem aux2 = new SeparatorMenuItem ();
-			aux2.Show ();
-			aux.Append (aux2);
-
-			for (int i = 0; i < bookList.Count; i++) {
-				aux2 = new MenuItem (((BookLink) bookList [i]).Text);
-				aux2.Activated += new EventHandler (BookmarkHandle);
-				aux2.Show ();
-				aux.Append (aux2);
-			}
-		}
-	}
-
-	void OnAddBookmark (object sender, EventArgs a)
-	{
-//		This url is not secure to 100 percent -> tree_browser.SelectedNode.Element
-//		Console.WriteLine("Example: {0} {1}", CurrentUrl, tree_browser.SelectedNode.Caption);
-		bookList.Add (new BookLink (tree_browser.SelectedNode.Caption, CurrentUrl));
-		refreshBookmarkMenu();
-	}
-
-	void OnEditBookmarks (object sender, EventArgs a)
-	{
-		BookmarkEdit.Show(this);
-	}
-
-	class BookmarkEdit {
-		[Glade.Widget] Window bookmarks_edit;
-		[Glade.Widget] Button bookmarks_delete;
-		[Glade.Widget] TreeView bookmarks_treeview;
-		TreeStore store;
-
-		static BookmarkEdit BookmarkEditBox;
-		Browser parent;
-
-		BookmarkEdit (Browser browser)
-                {
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "bookmarks_edit", null);
-			ui.Autoconnect (this);
-			parent = browser;
-			bookmarks_edit.TransientFor = parent.window1;
-			bookmarks_delete.Sensitive = false;
-
-			store = new TreeStore (typeof (string), typeof (int));
-			bookmarks_treeview.AppendColumn ("name_col", new CellRendererText (), "text", 0);
-			bookmarks_treeview.Model = store;
-
-			Load ();
-		}
-
-		static public void Show (Browser browser)
-		{
-			if (BookmarkEditBox == null)
-				BookmarkEditBox = new BookmarkEdit (browser);
-
-			BookmarkEditBox.Load ();
-			BookmarkEditBox.bookmarks_edit.Show ();
-		}
-
-		void OnCancelClicked (object sender, EventArgs a)
-		{
-			bookmarks_edit.Hide ();
-		}
-
-		void OnDeleteClicked (object sender, EventArgs a)
-		{
-			Gtk.TreeIter iter;
-			Gtk.TreeModel model;
-
-			if (bookmarks_treeview.Selection.GetSelected (out model, out iter))
-				parent.bookList.RemoveAt((int)model.GetValue(iter,1));
-
-			if (parent.bookList.Count==0)
-				bookmarks_delete.Sensitive = false;
-
-			Load ();
-			parent.refreshBookmarkMenu();
-		}
-
-		public void AppendItem (string text, int num)
-		{
-			store.AppendValues (text, num);
-			bookmarks_delete.Sensitive = true;
-		}
-
-		public void Load ()
-		{
-			store.Clear ();
-			for (int i = 0; i < parent.bookList.Count; i++)
-				AppendItem (((BookLink) parent.bookList[i]).Text, i);
-		}
-
-		//
-		// Called on the Window delete icon clicked
-		//
-		void OnDelete (object sender, EventArgs a)
-		{
-			BookmarkEditBox = null;
-		}
-	}
+	
 }
 
 //
 // This class implements the tree browser
 //
-class TreeBrowser {
+public class TreeBrowser {
 	Browser browser;
 
 	TreeView tree_view;
@@ -2143,7 +2028,7 @@ public enum Mode {
 //
 // A Tab is a Notebok with two pages, one for editing and one for visualizing
 //
-class Tab : Notebook {
+public class Tab : Notebook {
 	
 	// Our HTML preview during editing.
 	public IHtmlRender html_preview;
