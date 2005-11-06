@@ -1,3 +1,15 @@
+2005-11-05  Rafael Ferreira <raf@ophion.org>
+	* browser.cs:
+		- Changes to make the browser a public object,
+		removed old bookmark logic
+	* BookmarkManager.cs:
+		- Manages all of the bookmark logic (new)
+	* browser.glade:
+		- removed edit_bookmark, added manage_bookmarks_dialog
+		and add_bookmark_dialog
+	* Makefile.am:
+		- added BookmarkManager.cs
+
 2005-10-27  Ben Maurer  <bmaurer@ximian.com>
 
 	* Makefile.am (monodocdir): Don't use -pkg, but rely on the stuff
