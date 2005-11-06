@@ -27,6 +27,7 @@ browser_sources   = \
 	$(srcdir)/Contributions.cs	\
 	$(srcdir)/XmlNodeWriter.cs	\
 	$(srcdir)/IHtmlRender.cs	\
+	$(srcdir)/BookmarkManager.cs	\
 	$(srcdir)/ProgressPanel.cs
 
 
