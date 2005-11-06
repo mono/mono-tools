@@ -261,23 +261,7 @@
 	      <child>
 		<widget class="GtkMenu" id="bookmarksMenu_menu">
 
-		  <child>
-		    <widget class="GtkMenuItem" id="add_bookmark1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Add bookmark</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnAddBookmark" last_modification_time="Sat, 13 Dec 2003 16:35:00 GMT"/>
-		    </widget>
-		  </child>
 
-		  <child>
-		    <widget class="GtkMenuItem" id="edit_bookmarks1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Edit bookmarks...</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnEditBookmarks" last_modification_time="Sun, 14 Dec 2003 16:48:05 GMT"/>
-		    </widget>
-		  </child>
 		</widget>
 	      </child>
 	    </widget>
@@ -2885,11 +2869,11 @@ Please try again.</property>
   </child>
 </widget>
 
-<widget class="GtkWindow" id="bookmarks_edit">
+<widget class="GtkWindow" id="manage_bookmarks_dialog">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Edit bookmarks</property>
+  <property name="title" translatable="yes">Manage Bookmarks</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
-  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
   <property name="modal">True</property>
   <property name="default_width">375</property>
   <property name="default_height">275</property>
@@ -2898,8 +2882,9 @@ Please try again.</property>
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
   <signal name="delete_event" handler="OnDelete" last_modification_time="Sun, 14 Dec 2003 16:36:48 GMT"/>
 
   <child>
@@ -2932,6 +2917,9 @@ Please try again.</property>
 		  <property name="rules_hint">False</property>
 		  <property name="reorderable">False</property>
 		  <property name="enable_search">True</property>
+		  <property name="fixed_height_mode">False</property>
+		  <property name="hover_selection">False</property>
+		  <property name="hover_expand">False</property>
 		</widget>
 	      </child>
 	    </widget>
@@ -2947,10 +2935,10 @@ Please try again.</property>
 	      <property name="border_width">9</property>
 	      <property name="visible">True</property>
 	      <property name="layout_style">GTK_BUTTONBOX_START</property>
-	      <property name="spacing">0</property>
+	      <property name="spacing">4</property>
 
 	      <child>
-		<widget class="GtkButton" id="bookmarks_delete">
+		<widget class="GtkButton" id="DeleteButton">
 		  <property name="visible">True</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
@@ -2959,6 +2947,19 @@ Please try again.</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
 		  <signal name="clicked" handler="OnDeleteClicked" last_modification_time="Sun, 14 Dec 2003 17:13:00 GMT"/>
+		</widget>
+	      </child>
+
+	      <child>
+		<widget class="GtkButton" id="NewFolderButton">
+		  <property name="visible">True</property>
+		  <property name="can_default">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">New Folder</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="on_NewFolderButton_clicked" last_modification_time="Mon, 31 Oct 2005 03:48:31 GMT"/>
 		</widget>
 	      </child>
 	    </widget>
@@ -3010,6 +3011,182 @@ Please try again.</property>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+    </widget>
+  </child>
+</widget>
+<widget class="GtkWindow" id="add_bookmark_dialog">
+  <property name="visible">True</property>
+  <property name="title" translatable="yes">Add Bookmark</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_CENTER</property>
+  <property name="modal">True</property>
+  <property name="default_width">60</property>
+  <property name="default_height">115</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <signal name="delete_event" handler="on_AddBookmark_delete_event" last_modification_time="Mon, 26 Sep 2005 04:54:22 GMT"/>
+
+  <child>
+    <widget class="GtkVBox" id="vbox32">
+      <property name="border_width">23</property>
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child>
+	<widget class="GtkHBox" id="hbox36">
+	  <property name="border_width">2</property>
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">22</property>
+
+	  <child>
+	    <widget class="GtkLabel" id="Label67">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Name:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkEntry" id="name_entry">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="editable">True</property>
+	      <property name="visibility">True</property>
+	      <property name="max_length">0</property>
+	      <property name="text" translatable="yes"></property>
+	      <property name="has_frame">True</property>
+	      <property name="invisible_char">*</property>
+	      <property name="activates_default">False</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHBox" id="hbox37">
+	  <property name="border_width">2</property>
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">5</property>
+
+	  <child>
+	    <widget class="GtkLabel" id="label68">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Create in:</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <placeholder/>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">False</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHBox" id="hbox38">
+	  <property name="border_width">5</property>
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">199</property>
+
+	  <child>
+	    <widget class="GtkButton" id="CancelButton">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_CancelButton_clicked" last_modification_time="Mon, 26 Sep 2005 04:36:50 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="AddButton">
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-add</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_AddButton_clicked" last_modification_time="Mon, 26 Sep 2005 04:36:30 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">4</property>
 	  <property name="expand">False</property>
 	  <property name="fill">True</property>
 	</packing>
