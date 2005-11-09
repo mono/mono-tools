@@ -47,12 +47,13 @@ geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_L
 gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 EXTRA_DIST = \
-	$(browser_sources) 	\
-	$(geckorender_sources)	\
-	admin.cs		\
-	admin.glade 		\
-	browser.glade 		\
-	monodoc.png		\
+	$(browser_sources) 		\
+	$(geckorender_sources)		\
+	$(gtkhtmlrender_sources)	\
+	admin.cs			\
+	admin.glade 			\
+	browser.glade 			\
+	monodoc.png			\
 	AssemblyInfo.cs
 
 # admin hardcodes GTKHTML for now.
