@@ -551,11 +551,18 @@ public class Browser {
 		Node node;
 		
 		Console.Error.WriteLine ("Trying: {0}", url);
-		string res = help_tree.RenderUrl (url, out node);
-		if (res != null){
-			Render (res, node, url);
-			CurrentTab.history.AppendHistory (new LinkPageVisit (this, url));
-			return;
+		try {
+			string res = help_tree.RenderUrl (url, out node);
+			if (res != null){
+				Render (res, node, url);
+				CurrentTab.history.AppendHistory (new LinkPageVisit (this, url));
+				return;
+			}
+		} catch (Exception e){
+			Console.WriteLine("#########");
+			Console.WriteLine("Error loading url {0} - excpetion below:",url);
+			Console.WriteLine("#########");
+			Console.WriteLine(e);
 		}
 		
 		Console.Error.WriteLine ("+----------------------------------------------+");

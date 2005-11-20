@@ -426,14 +426,7 @@ namespace Monodoc {
 	
 			if (bk != null) {
 				if (bk is  Bookmark)
-					try {
 						_Browser.LoadUrl( ((Bookmark)bk).Url);
-					} catch (Exception ex) {
-						Console.WriteLine("##########################");
-						Console.WriteLine("Exception loading bookmark:[{0}],",((Bookmark)bk).Url);
-						Console.WriteLine("##########################");
-						Console.WriteLine(ex);
-					}
 			}
 			else {
 				Console.WriteLine("Bookmark error -> could not load bookmark");

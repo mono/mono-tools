@@ -1,3 +1,11 @@
+2005-11-20  Rafael Ferreira <raf@ophion.org>
+	* browser.cs:
+		- Added try/catch just in case the provider 
+		throws an exception
+	* BookmarkManager.cs:
+		- Removed try/catch logic since it will be
+		handled by the browser
+
 2005-11-05  Rafael Ferreira <raf@ophion.org>
 	* browser.cs:
 		- Changes to make the browser a public object,
