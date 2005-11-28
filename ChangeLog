@@ -1,3 +1,15 @@
+2005-11-27  C.J. Collier <cjcollier@colliertech.org>
+	* docbrowser/monodoc.desktop.in: Added patch from compnerd@compnerd.org
+
+	The desktop entry for the monodoc browser is not created properly
+	with the build system.  The desktop entry's Exec line contains
+	${exec_prefix} which is not resolved from the @bindir@ entry.
+
+	This issue would be masked when the exec-prefix is explicitly
+	passed to the configure script.  Otherwise, the configure script
+	internally sets $exec_prefix to $prefix.  But this is not
+	evaluated when substituting.
+
 2005-10-27  Ben Maurer  <bmaurer@ximian.com>
 
 	* configure.in (GTK_SHARP): simplify this check, since we are not

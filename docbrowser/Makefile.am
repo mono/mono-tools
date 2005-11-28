@@ -11,7 +11,7 @@ GECKO_PRINTING_DEF="-d:USE_GTKHTML_PRINT"
 GTKHTML_TARGET=GtkHtmlHtmlRender.dll
 endif
 
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb
+CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb monodoc.desktop
 monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc.in
@@ -79,6 +79,9 @@ c: admin.exe
 
 desktopdir = $(datadir)/applications
 desktop_DATA = monodoc.desktop
+
+monodoc.desktop: monodoc.desktop.in
+	sed -e "s|\@bindir\@|$(bindir)|" $< > $@
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = monodoc.png

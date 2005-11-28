@@ -81,7 +81,6 @@ gnunit/src/Makefile
 gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
 docbrowser/Makefile
-docbrowser/monodoc.desktop
 docbrowser/monodoc
 docbrowser/AssemblyInfo.cs
 po/Makefile.in
