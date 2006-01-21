@@ -1,3 +1,7 @@
+2006-01-16 Rafael Ferreira <raf@ophion.org>
+	* configure.in: updated to use gtk-sharp-2.0/gecko-sharp-2.0
+	this fixes bugs# 76054 & 76544 related to Pango bugs.
+
 2005-11-27  C.J. Collier <cjcollier@colliertech.org>
 	* docbrowser/monodoc.desktop.in: Added patch from compnerd@compnerd.org
 

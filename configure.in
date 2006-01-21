@@ -37,17 +37,17 @@ PKG_CHECK_MODULES(MONODOC, monodoc)
 AC_SUBST(MONODOC_LIBS)
 
 
-#PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gconf-sharp-2.0)
-PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp glade-sharp gconf-sharp)
+PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gconf-sharp-2.0)
+#PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp glade-sharp gconf-sharp)
 AC_SUBST(GTK_SHARP_LIBS)
 
 
-PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp, enable_gtkhtml=yes, enable_gtkhtml=no)
+PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-2.0, enable_gtkhtml=yes, enable_gtkhtml=no)
 AC_SUBST(GTKHTML_SHARP_LIBS)
 AM_CONDITIONAL(ENABLE_GTKHTML, test "x$enable_gtkhtml" = "xyes")
 
 
-PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp = 0.6, enable_gecko=yes, enable_gecko=no)
+PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp-2.0, enable_gecko=yes, enable_gecko=no)
 AC_SUBST(GECKO_SHARP_LIBS)
 AM_CONDITIONAL(ENABLE_GECKO, test "x$enable_gecko" = "xyes")
 
