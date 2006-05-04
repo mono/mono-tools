@@ -1,3 +1,10 @@
+2006-05-04  Alp Toker  <alp@atoker.com>
+
+	* monodoc.desktop.in: Fix #77012
+	- Gtk+ automatically supports StartupNotify, so enable it
+	- Make Comment imperative as suggested by spec
+	- Version is the version of the spec -- 1.0 seems acceptable
+
 2006-02-21  Hector E. Gomez Morales  <hectorgm@ciencias.unam.mx>
 
 	* Makefile.am:
