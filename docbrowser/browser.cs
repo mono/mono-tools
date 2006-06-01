@@ -399,9 +399,11 @@ public class Browser {
 	// 
 	void OnSearchActivated (object sender, EventArgs a)
 	{
+		string term = search_term.Text;
+		if (term == "")
+			return; //Search cannot handle empty string
 		search_tree.Model = null;
 		search_term.Editable = false;
-		string term = search_term.Text;
 		//search in the index
 		Result r = search_index.Search (term);
 		if (r == null)

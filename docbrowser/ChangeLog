@@ -1,3 +1,7 @@
+2006-06-01  Alp Toker  <alp@atoker.com>
+
+	* browser.cs: Fix a crash when search field is empty
+
 2006-05-04  Alp Toker  <alp@atoker.com>
 
 	* monodoc.desktop.in: Fix #77012
