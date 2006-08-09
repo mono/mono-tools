@@ -193,13 +193,13 @@ public class GeckoHtmlRender : IHtmlRender {
 #else
 		string Caption = "Monodoc Printing";
 
-		PrintJob pj = new PrintJob (PrintConfig.Default ());
+		Gnome.PrintJob pj = new Gnome.PrintJob (PrintConfig.Default ());
 		PrintDialog dialog = new PrintDialog (pj, Caption, 0);
 
 		Gtk.HTML gtk_html = new Gtk.HTML (Html);
 		gtk_html.PrintSetMaster (pj);
 			
-		PrintContext ctx = pj.Context;
+		Gnome.PrintContext ctx = pj.Context;
 		gtk_html.Print (ctx);
 
 		pj.Close ();

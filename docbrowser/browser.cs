@@ -944,7 +944,7 @@ ExtLoop:
                 //
 		// Called on the Window delete icon clicked
 		//
-		void OnDelete (object sender, EventArgs a)
+		void OnDelete (object sender, DeleteEventArgs a)
 		{
                         AboutBox = null;
 		}
@@ -1204,7 +1204,7 @@ ExtLoop:
 		//
 		// Called on the Window delete icon clicked
 		//
-		void OnDelete (object sender, EventArgs a)
+		void OnDelete (object sender, DeleteEventArgs a)
 		{
 			config_wizard = null;
 		}
@@ -1361,7 +1361,7 @@ ExtLoop:
                 //
 		// Called on the Window delete icon clicked
 		//
-		void OnDelete (object sender, EventArgs a)
+		void OnDelete (object sender, DeleteEventArgs a)
 		{
                         NewCommentBox = null;
 		}
@@ -1406,7 +1406,7 @@ ExtLoop:
                 //
 		// Called on the Window delete icon clicked
 		//
-		void OnDelete(object sender, EventArgs a)
+		void OnDelete(object sender, DeleteEventArgs a)
 		{
                         LookupBox = null;
 		}
