@@ -1,0 +1,46 @@
+2006-10-24  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* Makefile.am, lib/Makefile.am: Added; build subdirectories.
+	* bin/create-native-map: Script to startup 
+	  `dirname`/../lib/create-native-map/create-native-map.exe.
+	* bin/Makefile.am: Added; install $bindir/create-native-map.
+	* lib/create-native-map/Makefile.am: Added; present to make sure
+	  $top_builddir/lib/create-native-map is created.
+	* lib/pkgconfig/create-native-map.pc.in: Aded; pkgconfig file to copy an
+	  installed version of create-native-map.exe & MapAttribute.cs.
+	* lib/pkgconfig/Makfile.am: Added; install the create-native-map.pc file.
+	* man/create-native-map.1: Man page for create-native-map.
+	* man/Makefile.am: Added; install the man page.
+	* src/create-native-map.cs:
+	  - Moved from mcs/class/Mono.Posix/Mono.Unix.Native/make-map.cs
+	  - check for t.Namespace==null before looking using
+	    Configuration.NamespaceRenames (Dictionary`2 doesn't like null keys);
+	  - HeaderFileGenerator needs to know about member renames (so it uses the
+	    renamed member in conversion code);
+	  - Clean up enumeration generation for readablility.
+	  - Generate structure declarations for [Map]-decorated types and types used
+	    within a [DllImport]-marked method.
+	  - Warnings should be prefixed with "warning: ".
+		- Don't generate function prototypes for already-generated functions (e.g.
+	    if we emit a prototype for Mono_Posix_ToFilePermissions, don't
+	    re-declare that function later because we found a DllImport for it).
+	  - Add new arguments: --autoconf-member, --exclude-native-symbol, 
+	    --library, --rename-member, --rename-namespace.
+	    These are to:
+	    - Allow native structure members to only be accessed if an Autoconf
+	      macro is defined (--autoconf-member)
+	    - Modify the C "namespace" of types/functions (--rename-namespace)
+	    - Specify the DllImport library that prototypes should be generated for
+	      (--library)
+	    - Exclude symbols from the function declaration system
+	      (--exclude-native-symbol)
+	    - Member renaming (--rename-member).  
+	      (Curse you glibc making st_atime a macro!)
+	* src/Makefile.am: Added; build create-native-map.exe; test cases.
+	* src/MapAttribute.cs: Added; the attribute that create-native-map looks
+	  for, and should be copied into projects using create-native-map.
+	* src/TestMap.cs: Added; test case for create-native-map.exe
+	* src/test.c.ref, src/test.cs.ref, src/test.h.ref, src/test.xml.ref: Added; 
+	  expected create-native-map.exe output for TestMap.cs.
+	* ChangeLog: Started.
+

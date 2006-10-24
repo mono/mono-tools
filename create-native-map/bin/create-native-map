@@ -1,0 +1,7 @@
+#!/bin/sh
+
+bindir=`dirname "$0"`
+libdir="$bindir/../lib/create-native-map"
+
+exec mono "$libdir/create-native-map.exe" "$@"
+

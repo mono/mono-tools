@@ -88,6 +88,14 @@ asn1view/Makefile
 asn1view/art/Makefile
 asn1view/gtk/Makefile
 asn1view/common/Makefile
+create-native-map/Makefile
+create-native-map/bin/Makefile
+create-native-map/lib/Makefile
+create-native-map/lib/create-native-map/Makefile
+create-native-map/lib/pkgconfig/Makefile
+create-native-map/lib/pkgconfig/create-native-map.pc
+create-native-map/man/Makefile
+create-native-map/src/Makefile
 ])
 
 echo "---"

@@ -1,3 +1,8 @@
+2006-10-24  Jonathan Pryor <jonpryor@vt.edu>
+
+	* configure.in: Add create-native-map program.
+	* Makefile.am: Build create-native-map.
+
 2006-01-16 Rafael Ferreira <raf@ophion.org>
 	* configure.in: updated to use gtk-sharp-2.0/gecko-sharp-2.0
 	this fixes bugs# 76054 & 76544 related to Pango bugs.

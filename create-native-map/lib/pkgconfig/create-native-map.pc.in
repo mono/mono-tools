@@ -1,0 +1,13 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${pcfiledir}/../..
+libdir=@libdir@
+includedir=${prefix}/include
+assemblies_dir=${libdir}/create-native-map
+Sources=${assemblies_dir}/MapAttribute.cs
+Programs=${assemblies_dir}/create-native-map.exe
+ 
+Name: create-native-map
+Description: C/C# Mapping Generator
+Version: @VERSION@
+Requires: 
+Libs: 
