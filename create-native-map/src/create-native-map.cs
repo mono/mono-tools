@@ -1069,18 +1069,18 @@ class SourceFileGenerator : FileGenerator {
 #include <inttypes.h>
 #endif /* ndef HAVE_INTTYPES_H */");
 
-		WriteFallbackMacro ("CNM_MININT8", "G_MININT8", "INT8_MIN", sbyte.MinValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXINT8", "G_MAXINT8", "INT8_MAX", sbyte.MaxValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXUINT8", "G_MAXUINT8", "UINT8_MAX", byte.MaxValue.ToString ());
-		WriteFallbackMacro ("CNM_MININT16", "G_MININT16", "INT16_MIN", short.MinValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXINT16", "G_MAXINT16", "INT16_MAX", short.MaxValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXUINT16", "G_MAXUINT16", "UINT16_MAX", ushort.MaxValue.ToString ());
-		WriteFallbackMacro ("CNM_MININT32", "G_MININT32", "INT32_MIN", int.MinValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXINT32", "G_MAXINT32", "INT32_MAX", int.MaxValue.ToString ());
-		WriteFallbackMacro ("CNM_MAXUINT32", "G_MAXUINT32", "UINT32_MAX", uint.MaxValue.ToString () + "U");
-		WriteFallbackMacro ("CNM_MININT64", "G_MININT64", "INT64_MIN", long.MinValue.ToString () + "LL");
-		WriteFallbackMacro ("CNM_MAXINT64", "G_MAXINT64", "INT64_MAX", long.MaxValue.ToString () + "LL");
-		WriteFallbackMacro ("CNM_MAXUINT64", "G_MAXUINT64", "UINT64_MAX", ulong.MaxValue.ToString () + "ULL");
+		WriteFallbackMacro ("CNM_MININT8", "G_MININT8", sbyte.MinValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXINT8", "G_MAXINT8", sbyte.MaxValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXUINT8", "G_MAXUINT8", byte.MaxValue.ToString ());
+		WriteFallbackMacro ("CNM_MININT16", "G_MININT16", short.MinValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXINT16", "G_MAXINT16", short.MaxValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXUINT16", "G_MAXUINT16", ushort.MaxValue.ToString ());
+		WriteFallbackMacro ("CNM_MININT32", "G_MININT32", int.MinValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXINT32", "G_MAXINT32", int.MaxValue.ToString ());
+		WriteFallbackMacro ("CNM_MAXUINT32", "G_MAXUINT32", uint.MaxValue.ToString () + "U");
+		WriteFallbackMacro ("CNM_MININT64", "G_MININT64", long.MinValue.ToString () + "LL");
+		WriteFallbackMacro ("CNM_MAXINT64", "G_MAXINT64", long.MaxValue.ToString () + "LL");
+		WriteFallbackMacro ("CNM_MAXUINT64", "G_MAXUINT64", ulong.MaxValue.ToString () + "ULL");
 
 		sc.WriteLine (@"
 
@@ -1161,16 +1161,14 @@ class SourceFileGenerator : FileGenerator {
 ");
 	}
 
-	private void WriteFallbackMacro (string target, string glib, string inttype, string def)
+	private void WriteFallbackMacro (string target, string glib, string def)
 	{
 		sc.WriteLine (@"
 #if defined ({1})
 #define {0} {1}
-#elif defined ({2})
-#define {0} {2}
 #else
-#define {0} ({3})
-#endif", target, glib, inttype, def);
+#define {0} ({2})
+#endif", target, glib, def);
 	}
 
 	public override void WriteType (Type t, string ns, string fn)
