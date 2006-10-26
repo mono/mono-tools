@@ -1,3 +1,10 @@
+2006-10-26  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: Add support for limits fallbacks -- if G_MAXINT8
+	  isn't defined, fallback to INT8_MAX (from <inttypes.h>), and if that
+	  doesn't exist use a hard-coded (possibly wrong) implementation.
+	* src/test.c.ref: Flush.
+
 2006-10-24  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* Makefile.am, lib/Makefile.am: Added; build subdirectories.
