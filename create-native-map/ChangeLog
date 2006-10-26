@@ -1,5 +1,14 @@
 2006-10-26  Jonathan Pryor  <jonpryor@vt.edu>
 
+	* src/create-native-map.cs: Enclose structure conversion functions with
+	  `#ifdef HAVE_<<native type name>>', as not all platforms will have the
+	  required types.  For example, only *nix platforms have `struct stat', so
+	  having a function which uses `struct stat' on Win32 will break (w/o the
+	  use of Cygwin).
+	* src/test.c.ref: Flush.
+
+2006-10-26  Jonathan Pryor  <jonpryor@vt.edu>
+
 	* src/create-native-map.cs: Remove the <inttypes.h> fallback, and just
 	  fallback to the appropriate System.Int??.MinValue/MaxValue values.
 	* src/test.c.ref: Flush.

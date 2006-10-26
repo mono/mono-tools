@@ -32,10 +32,6 @@
 #include <errno.h>    /* errno, EOVERFLOW */
 #include <glib.h>     /* g* types, g_assert_not_reached() */
 
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif /* ndef HAVE_INTTYPES_H */
-
 #if defined (G_MININT8)
 #define CNM_MININT8 G_MININT8
 #else
@@ -184,6 +180,7 @@
     }                                                                \
   } G_STMT_END
 
+#ifdef HAVE_STRUCT_FOO
 int
 MakeMap_Test_FromFoo (struct MakeMap_Test_Foo *from, struct foo *to)
 {
@@ -202,8 +199,10 @@ MakeMap_Test_FromFoo (struct MakeMap_Test_Foo *from, struct foo *to)
 
 	return 0;
 }
+#endif /* ndef HAVE_STRUCT_FOO */
 
 
+#ifdef HAVE_STRUCT_FOO
 int
 MakeMap_Test_ToFoo (struct foo *from, struct MakeMap_Test_Foo *to)
 {
@@ -222,8 +221,10 @@ MakeMap_Test_ToFoo (struct foo *from, struct MakeMap_Test_Foo *to)
 
 	return 0;
 }
+#endif /* ndef HAVE_STRUCT_FOO */
 
 
+#ifdef HAVE_STRUCT_FOO_HOLDER
 int
 MakeMap_Test_FromFooHolder (struct MakeMap_Test_FooHolder *from, struct foo_holder *to)
 {
@@ -239,8 +240,10 @@ MakeMap_Test_FromFooHolder (struct MakeMap_Test_FooHolder *from, struct foo_hold
 
 	return 0;
 }
+#endif /* ndef HAVE_STRUCT_FOO_HOLDER */
 
 
+#ifdef HAVE_STRUCT_FOO_HOLDER
 int
 MakeMap_Test_ToFooHolder (struct foo_holder *from, struct MakeMap_Test_FooHolder *to)
 {
@@ -256,6 +259,7 @@ MakeMap_Test_ToFooHolder (struct foo_holder *from, struct MakeMap_Test_FooHolder
 
 	return 0;
 }
+#endif /* ndef HAVE_STRUCT_FOO_HOLDER */
 
 
 int MakeMap_Test_FromTestEnum (int x, int *r)

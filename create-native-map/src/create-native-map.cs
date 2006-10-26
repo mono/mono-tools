@@ -1063,11 +1063,7 @@ class SourceFileGenerator : FileGenerator {
 
 		sc.WriteLine (@"
 #include <errno.h>    /* errno, EOVERFLOW */
-#include <glib.h>     /* g* types, g_assert_not_reached() */
-
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif /* ndef HAVE_INTTYPES_H */");
+#include <glib.h>     /* g* types, g_assert_not_reached() */");
 
 		WriteFallbackMacro ("CNM_MININT8", "G_MININT8", sbyte.MinValue.ToString ());
 		WriteFallbackMacro ("CNM_MAXINT8", "G_MAXINT8", sbyte.MaxValue.ToString ());
@@ -1264,6 +1260,8 @@ class SourceFileGenerator : FileGenerator {
 		MapAttribute map = MapUtils.GetMapAttribute (t);
 		if (map == null || map.NativeType == null || map.NativeType.Length == 0)
 			return;
+		string nativeMacro = GetAutoconfDefine (map.NativeType);
+		sc.WriteLine ("#ifdef {0}", nativeMacro);
 		sc.WriteLine ("int\n{0}_From{1} (struct {0}_{1} *from, {2} *to)",
 				MapUtils.GetNamespace (t), t.Name, map.NativeType);
 		WriteManagedClassConversion (t, delegate (FieldInfo field) {
@@ -1284,6 +1282,13 @@ class SourceFileGenerator : FileGenerator {
 					field.FieldType.Name);
 			}
 		);
+		sc.WriteLine ("#endif /* ndef {0} */\n\n", nativeMacro);
+	}
+
+	private static string GetAutoconfDefine (string nativeType)
+	{
+		return string.Format ("HAVE_{0}",
+				nativeType.ToUpperInvariant ().Replace (" ", "_"));
 	}
 
 	private delegate string GetFromType (FieldInfo field);
@@ -1337,8 +1342,7 @@ class SourceFileGenerator : FileGenerator {
 		}
 		sc.WriteLine ();
 		sc.WriteLine ("\treturn 0;");
-		sc.WriteLine ("}\n");
-		sc.WriteLine ();
+		sc.WriteLine ("}");
 	}
 
 	private void WriteToManagedClass (Type t, string ns, string fn, string etype)
@@ -1346,6 +1350,8 @@ class SourceFileGenerator : FileGenerator {
 		MapAttribute map = MapUtils.GetMapAttribute (t);
 		if (map == null || map.NativeType == null || map.NativeType.Length == 0)
 			return;
+		string nativeMacro = GetAutoconfDefine (map.NativeType);
+		sc.WriteLine ("#ifdef {0}", nativeMacro);
 		sc.WriteLine ("int\n{0}_To{1} ({2} *from, struct {0}_{1} *to)", 
 				MapUtils.GetNamespace (t), t.Name, map.NativeType);
 		WriteManagedClassConversion (t, delegate (FieldInfo field) {
@@ -1363,6 +1369,7 @@ class SourceFileGenerator : FileGenerator {
 					field.FieldType.Name);
 			}
 		);
+		sc.WriteLine ("#endif /* ndef {0} */\n\n", nativeMacro);
 	}
 
 	private static FieldInfo[] GetFieldsToCopy (Type t)
