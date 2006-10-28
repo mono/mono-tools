@@ -1,3 +1,12 @@
+2006-10-27  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* man/create-native-map.1: Add documentation for MapAttribute.SuppressFlags;
+	  remove documentation for MapAttribute.NativeSymbolPrefix.
+	* src/create-native-map.cs: Add support for MapAttribute.SuppressFlags.
+	* src/MapAttribute.cs: Add SuppressFlags property (default is false).
+	* src/TestMap.cs: Add [Flags] enums, and tests for [Map(SuppressFlags=true)].
+	* src/test.c.ref, src/test.cs.ref, src/test.h.ref, src/test.xml.ref: Flush.
+
 2006-10-26  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* src/create-native-map.cs: Enclose structure conversion functions with

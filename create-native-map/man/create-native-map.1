@@ -24,7 +24,7 @@ statement, e.g.
 .I "#include <stdio.h>"
 or 
 .I "#include ""local.h"""
-\.
+\&.
 .Sp
 An Autoconf-formatted macro is generated from the include name, and a
 .I #include
@@ -56,7 +56,7 @@ can be either a
 .I field-name
 or a 
 .I class-name
-\.
+\&.
 .I field-name
 combination.
 .Sp
@@ -99,7 +99,7 @@ statement within the generated
 .I .c
 file for 
 .I HEADER
-\.
+\&.
 .Sp
 For example, 
 .I "--impl-header=<stdlib.h>"
@@ -146,7 +146,7 @@ statement within the generated
 .I .h
 file for 
 .I HEADER
-\.
+\&.
 .Sp
 For example, 
 .I "--public-header=<stdlib.h>"
@@ -185,7 +185,7 @@ generated references to the managed representation will use
 .I TO 
 instead of
 .I FROM
-\.
+\&.
 .Sp
 For example, given the C# declaration:
 .nf
@@ -226,23 +226,12 @@ within the C# namespace
 .I Mono.Unix.Native
 would be in the C "namespace"
 .I Mono_Unix_Native
-\.
+\&.
 Use 
 .I "--rename-namespace"
 to modify the default, e.g.
 .I "--rename-namespace=Mono.Unix.Native=Mono_Posix"
-\.
-This should be avoided if possible.  You should instead use the
-.I Mono.Unix.Native.MapAttribute.NativeSymbolPrefix 
-property instead, e.g.
-.nf
-
-	[Mono.Unix.Native.Map (NativeSymbolPrefix="Mono_Posix")]
-	struct Stat {
-		public long st_atime;
-	}
-
-.fi
+\&.
 .PP
 .SH DESCRIPTION
 .I create-native-map
@@ -294,7 +283,7 @@ delegate declarations, and
 .I \--library
 ) within the assembly
 .I ASSEMBLY-FILE-NAME
-\.
+\&.
 .TP
 .I OUTPUT-PREFIX.c
 Contains the implementation of enumeration and structure conversion functions.
@@ -307,13 +296,13 @@ containing enumeration translation methods.
 .I OUTPUT-PREFIX.xml
 Generates ECMA XML documentation stubs for the enumeration translation methods in
 .I OUTPUT-PREFIX.cs
-\.
+\&.
 .ne
 .RE
 .PP
 .I create-native-map
 primarily looks for 
-.I Mono.Unix.Native.MapAttribute
+.I MapAttribute
 -decorated types, and makes use of two 
 .I MapAttribute
 properties:
@@ -324,12 +313,24 @@ properties:
 Contains the corresponding C type.  Only useful if applied to classes, structures,
 and fields.
 .TP
-.I NativeSymbolPrefix
-Contains the C "namespace" for generated enumerations, structures, and functions.
-If this is not specified, the C "namespace" defaults to the managed namespace
-or the appropriate namespace rename provided by
-.I "--rename-namespace"
-..
+.I SuppressFlags
+When specified on an enumeration member of a
+.I [Flags]
+-decorated enumeration type, 
+.I disables
+the normal code generator support for bit-masking enumeration types.
+.Sp
+This is useful when bitmask and non-bitmask information is stored within the
+same type, and bitmask checking shouldn't be used for the non-bitmask values.
+Example: 
+.I Mono.Unix.Native.FilePermissions.S_IFREG
+, which is not a bitmask value, while most of 
+.I FilePermissions
+consists of bitmask values (
+.I FilePermissions.S_IRUSR
+, 
+.I FilePermissions.S_IWUSR
+, etc.).
 .ne
 .RE
 .PP
@@ -350,8 +351,10 @@ file.
 For example,
 .nf
 
-	[Map (NativeSymbolPrefix="Foo")]
-	delegate string MyCallback (string s);
+	namespace Foo {
+		[Map]
+		delegate string MyCallback (string s);
+	}
 
 .fi
 generates the 
@@ -394,9 +397,11 @@ file and created within the
 file:
 .nf
 
-	[Map ("struct stat", NativeSymbolPrefix="Foo")]
-	struct Stat {
-		public uint st_uid;
+	namespace Foo {
+		[Map ("struct stat")]
+		struct Stat {
+			public uint st_uid;
+		}
 	}
 
 .fi
@@ -440,9 +445,11 @@ property set, then the specified native type will be used for overflow
 checking.  For example:
 .nf
 
-	[Map ("struct stat", NativeSymbolPrefix="Foo")]
-	struct Stat {
-		[Map ("off_t")] public long st_size;
+	namespace Foo {
+		[Map ("struct stat")]
+		struct Stat {
+			[Map ("off_t")] public long st_size;
+		}
 	}
 
 .fi
@@ -499,9 +506,11 @@ file.
 For example,
 .nf
 
-	[Map (NativeSymbolPrefix="Foo")]
-	enum Errno {
-		EINVAL
+	namespace Foo {
+		[Map]
+		enum Errno {
+			EINVAL
+		}
 	}
 
 .fi

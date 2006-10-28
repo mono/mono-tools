@@ -7,6 +7,246 @@
 
       -->
 
+    <Member MemberName="TryFromFlagsEnum">
+      <MemberSignature Language="C#" Value="public static bool TryFromFlagsEnum (MakeMap.Test.FlagsEnum value, out int rval);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="MakeMap.Test.FlagsEnum" />
+        <Parameter Name="rval" Type="System.Int32&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="value">The managed value to convert.</param>
+        <param name="rval">The OS-specific equivalent value.</param>
+        <summary>Converts a <see cref="T:MakeMap.Test.FlagsEnum" /> 
+          enumeration value to an OS-specific value.</summary>
+        <returns><see langword="true" /> if the conversion was successful; 
+        otherwise, <see langword="false" />.</returns>
+        <remarks><para>This is an exception-safe alternative to 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />.</para>
+        <para>If successful, this method stores the OS-specific equivalent
+        value of <paramref name="value" /> into <paramref name="rval" />.
+        Otherwise, <paramref name="rval" /> will contain <c>0</c>.</para>
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="FromFlagsEnum">
+      <MemberSignature Language="C#" Value="public static int FromFlagsEnum (MakeMap.Test.FlagsEnum value);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Int32</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="MakeMap.Test.FlagsEnum" />
+      </Parameters>
+      <Docs>
+        <param name="value">The managed value to convert.</param>
+        <summary>Converts a <see cref="T:MakeMap.Test.FlagsEnum" /> 
+          to an OS-specific value.</summary>
+        <returns>The equivalent OS-specific value.</returns>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+          <paramref name="value" /> has no equivalent OS-specific value.
+        </exception>
+        <remarks></remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="TryToFlagsEnum">
+      <MemberSignature Language="C#" Value="public static bool TryToFlagsEnum (int value, out MakeMap.Test.FlagsEnum rval);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.Int32" />
+        <Parameter Name="rval" Type="MakeMap.Test.FlagsEnum&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="value">The OS-specific value to convert.</param>
+        <param name="rval">The managed equivalent value</param>
+        <summary>Converts an OS-specific value to a 
+          <see cref="T:MakeMap.Test.FlagsEnum" />.</summary>
+        <returns><see langword="true" /> if the conversion was successful; 
+        otherwise, <see langword="false" />.</returns>
+        <remarks><para>This is an exception-safe alternative to 
+        <see cref="M:Mono.Unix.Native.NativeConvert.ToFlagsEnum" />.</para>
+        <para>If successful, this method stores the managed equivalent
+        value of <paramref name="value" /> into <paramref name="rval" />.
+        Otherwise, <paramref name="rval" /> will contain a <c>0</c>
+        cast to a <see cref="T:MakeMap.Test.FlagsEnum" />.</para>
+        <para>The current conversion functions are unable to determine
+        if a value in a <c>[Flags]</c>-marked enumeration <i>does not</i> 
+        exist on the current platform.  As such, if <paramref name="value" /> 
+        contains a flag value which the current platform doesn't support, it 
+        will not be present in the managed value returned.</para>
+        <para>This should only be a problem if <paramref name="value" /> 
+        <i>was not</i> previously returned by 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />.</para>
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="ToFlagsEnum">
+      <MemberSignature Language="C#" Value="public static MakeMap.Test.FlagsEnum ToFlagsEnum (int value);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>MakeMap.Test.FlagsEnum</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="value">The OS-specific value to convert.</param>
+        <summary>Converts an OS-specific value to a 
+          <see cref="T:MakeMap.Test.FlagsEnum" />.</summary>
+					<returns>An approximation of the equivalent managed value.</returns>
+        <remarks>
+        <para>The current conversion functions are unable to determine
+        if a value in a <c>[Flags]</c>-marked enumeration <i>does not</i> 
+        exist on the current platform.  As such, if <paramref name="value" /> 
+        contains a flag value which the current platform doesn't support, it 
+        will not be present in the managed value returned.</para>
+        <para>This should only be a problem if <paramref name="value" /> 
+        <i>was not</i> previously returned by 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />.</para>
+
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToFlagsEnum" />
+      </Docs>
+    </Member>
+
+
+    <Member MemberName="TryFromSimpleFlagsEnum">
+      <MemberSignature Language="C#" Value="public static bool TryFromSimpleFlagsEnum (MakeMap.Test.SimpleFlagsEnum value, out int rval);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="MakeMap.Test.SimpleFlagsEnum" />
+        <Parameter Name="rval" Type="System.Int32&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="value">The managed value to convert.</param>
+        <param name="rval">The OS-specific equivalent value.</param>
+        <summary>Converts a <see cref="T:MakeMap.Test.SimpleFlagsEnum" /> 
+          enumeration value to an OS-specific value.</summary>
+        <returns><see langword="true" /> if the conversion was successful; 
+        otherwise, <see langword="false" />.</returns>
+        <remarks><para>This is an exception-safe alternative to 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />.</para>
+        <para>If successful, this method stores the OS-specific equivalent
+        value of <paramref name="value" /> into <paramref name="rval" />.
+        Otherwise, <paramref name="rval" /> will contain <c>0</c>.</para>
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToSimpleFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="FromSimpleFlagsEnum">
+      <MemberSignature Language="C#" Value="public static int FromSimpleFlagsEnum (MakeMap.Test.SimpleFlagsEnum value);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Int32</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="MakeMap.Test.SimpleFlagsEnum" />
+      </Parameters>
+      <Docs>
+        <param name="value">The managed value to convert.</param>
+        <summary>Converts a <see cref="T:MakeMap.Test.SimpleFlagsEnum" /> 
+          to an OS-specific value.</summary>
+        <returns>The equivalent OS-specific value.</returns>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+          <paramref name="value" /> has no equivalent OS-specific value.
+        </exception>
+        <remarks></remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToSimpleFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="TryToSimpleFlagsEnum">
+      <MemberSignature Language="C#" Value="public static bool TryToSimpleFlagsEnum (int value, out MakeMap.Test.SimpleFlagsEnum rval);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.Int32" />
+        <Parameter Name="rval" Type="MakeMap.Test.SimpleFlagsEnum&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="value">The OS-specific value to convert.</param>
+        <param name="rval">The managed equivalent value</param>
+        <summary>Converts an OS-specific value to a 
+          <see cref="T:MakeMap.Test.SimpleFlagsEnum" />.</summary>
+        <returns><see langword="true" /> if the conversion was successful; 
+        otherwise, <see langword="false" />.</returns>
+        <remarks><para>This is an exception-safe alternative to 
+        <see cref="M:Mono.Unix.Native.NativeConvert.ToSimpleFlagsEnum" />.</para>
+        <para>If successful, this method stores the managed equivalent
+        value of <paramref name="value" /> into <paramref name="rval" />.
+        Otherwise, <paramref name="rval" /> will contain a <c>0</c>
+        cast to a <see cref="T:MakeMap.Test.SimpleFlagsEnum" />.</para>
+        <para>The current conversion functions are unable to determine
+        if a value in a <c>[Flags]</c>-marked enumeration <i>does not</i> 
+        exist on the current platform.  As such, if <paramref name="value" /> 
+        contains a flag value which the current platform doesn't support, it 
+        will not be present in the managed value returned.</para>
+        <para>This should only be a problem if <paramref name="value" /> 
+        <i>was not</i> previously returned by 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />.</para>
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.ToSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromSimpleFlagsEnum" />
+      </Docs>
+    </Member>
+    <Member MemberName="ToSimpleFlagsEnum">
+      <MemberSignature Language="C#" Value="public static MakeMap.Test.SimpleFlagsEnum ToSimpleFlagsEnum (int value);" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>MakeMap.Test.SimpleFlagsEnum</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="value">The OS-specific value to convert.</param>
+        <summary>Converts an OS-specific value to a 
+          <see cref="T:MakeMap.Test.SimpleFlagsEnum" />.</summary>
+					<returns>An approximation of the equivalent managed value.</returns>
+        <remarks>
+        <para>The current conversion functions are unable to determine
+        if a value in a <c>[Flags]</c>-marked enumeration <i>does not</i> 
+        exist on the current platform.  As such, if <paramref name="value" /> 
+        contains a flag value which the current platform doesn't support, it 
+        will not be present in the managed value returned.</para>
+        <para>This should only be a problem if <paramref name="value" /> 
+        <i>was not</i> previously returned by 
+        <see cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />.</para>
+
+        </remarks>
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.FromSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryFromSimpleFlagsEnum" />
+        <altmember cref="M:Mono.Unix.Native.NativeConvert.TryToSimpleFlagsEnum" />
+      </Docs>
+    </Member>
+
+
     <Member MemberName="TryFromTestEnum">
       <MemberSignature Language="C#" Value="public static bool TryFromTestEnum (MakeMap.Test.TestEnum value, out int rval);" />
       <MemberType>Method</MemberType>

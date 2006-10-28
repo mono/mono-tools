@@ -343,10 +343,11 @@ static class MapUtils {
 		foreach (object o in element.GetCustomAttributes (true)) {
 			if (!IsMapAttribute (o))
 				continue;
-			string nativeType   = GetPropertyValue (o, "NativeType");
+			string nativeType   = GetPropertyValueAsString (o, "NativeType");
 			MapAttribute map = nativeType == null 
 				? new MapAttribute () 
 				: new MapAttribute (nativeType);
+			map.SuppressFlags   = GetPropertyValueAsBool (o, "SuppressFlags");
 			return map;
 		}
 		return null;
@@ -364,18 +365,36 @@ static class MapUtils {
 		return false;
 	}
 
-	private static string GetPropertyValue (object o, string property)
+	private static string GetPropertyValueAsString (object o, string property)
+	{
+		object v = GetPropertyValue (o, property);
+		string s = v == null ? null : v.ToString ();
+		if (s != null)
+			return s.Length == 0 ? null : s;
+		return null;
+	}
+
+	private static object GetPropertyValue (object o, string property)
 	{
 		PropertyInfo p = o.GetType().GetProperty (property);
 		if (p == null)
 			return null;
 		if (!p.CanRead)
 			return null;
-		object v = p.GetValue (o, new object[0]);
-		string s = v == null ? null : v.ToString ();
-		if (s != null)
-			return s.Length == 0 ? null : s;
-		return null;
+		return p.GetValue (o, new object[0]);
+	}
+
+	private static bool GetPropertyValueAsBool (object o, string property)
+	{
+		object v = GetPropertyValue (o, property);
+		if (v == null)
+			return false;
+		try {
+			return (bool) v;
+		}
+		catch {
+			return false;
+		}
 	}
 
 	public static bool IsIntegralType (Type t)
@@ -1193,6 +1212,7 @@ class SourceFileGenerator : FileGenerator {
 		sc.WriteLine ("\t*r = 0;");
 		FieldInfo[] fields = t.GetFields ();
 		Array.Sort<FieldInfo> (fields, MapUtils.MemberNameComparer);
+		Array values = Enum.GetValues (t);
 		foreach (FieldInfo fi in fields) {
 			if (!fi.IsLiteral)
 				continue;
@@ -1200,18 +1220,27 @@ class SourceFileGenerator : FileGenerator {
 				sc.WriteLine ("\t/* {0}_{1} is obsolete or optional; ignoring */", fn, fi.Name);
 				continue;
 			}
-			if (bits)
+			MapAttribute map = MapUtils.GetMapAttribute (fi);
+			bool is_bits = bits && (map != null ? !map.SuppressFlags : true);
+			if (is_bits)
 				// properly handle case where [Flags] enumeration has helper
 				// synonyms.  e.g. DEFFILEMODE and ACCESSPERMS for mode_t.
 				sc.WriteLine ("\tif ((x & {0}_{1}) == {0}_{1})", fn, fi.Name);
 			else
 				sc.WriteLine ("\tif (x == {0}_{1})", fn, fi.Name);
 			sc.WriteLine ("#ifdef {0}", fi.Name);
-			if (bits)
+			if (is_bits)
 				sc.WriteLine ("\t\t*r |= {1};", fn, fi.Name);
 			else
 				sc.WriteLine ("\t\t{{*r = {1}; return 0;}}", fn, fi.Name);
-			sc.WriteLine ("#else /* def {0} */\n\t\t{{errno = EINVAL; return -1;}}", fi.Name);
+			sc.WriteLine ("#else /* def {0} */", fi.Name);
+			if (is_bits && IsRedundant (t, fi, values)) {
+				sc.WriteLine ("\t\t{{/* Ignoring {0}_{1}, as it is constructed from other values */}}",
+						fn, fi.Name);
+			}
+			else {
+				sc.WriteLine ("\t\t{errno = EINVAL; return -1;}");
+			}
 			sc.WriteLine ("#endif /* ndef {0} */", fi.Name);
 		}
 		// For many values, 0 is a valid value, but doesn't have it's own symbol.
@@ -1223,6 +1252,24 @@ class SourceFileGenerator : FileGenerator {
 		else
 			sc.WriteLine ("\terrno = EINVAL; return -1;"); // return error if not matched
 		sc.WriteLine ("}\n");
+	}
+
+	private static bool IsRedundant (Type t, FieldInfo fi, Array values)
+	{
+		long v = Convert.ToInt64 (fi.GetValue (null));
+		long d = v;
+		if (v == 0)
+			return false;
+		foreach (object o in values) {
+			long e = Convert.ToInt64 (o);
+			if (((d & e) != 0) && (e < d)) {
+				v &= ~e;
+			}
+		}
+		if (v == 0) {
+			return true;
+		}
+		return false;
 	}
 
 	private void WriteToManagedEnum (Type t, string ns, string fn, string etype, bool bits)
@@ -1239,8 +1286,10 @@ class SourceFileGenerator : FileGenerator {
 		foreach (FieldInfo fi in fields) {
 			if (!fi.IsLiteral)
 				continue;
+			MapAttribute map = MapUtils.GetMapAttribute (fi);
+			bool is_bits = bits && (map != null ? !map.SuppressFlags : true);
 			sc.WriteLine ("#ifdef {0}", fi.Name);
-			if (bits)
+			if (is_bits)
 				// properly handle case where [Flags] enumeration has helper
 				// synonyms.  e.g. DEFFILEMODE and ACCESSPERMS for mode_t.
 				sc.WriteLine ("\tif ((x & {1}) == {1})\n\t\t*r |= {0}_{1};", fn, fi.Name);

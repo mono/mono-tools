@@ -22,6 +22,38 @@ namespace Mono.Unix.Native {
 				Locale.GetText ("Current platform doesn't support this value."));
 		}
 
+		[DllImport (LIB, EntryPoint="MakeMap_Test_FromFlagsEnum")]
+		private static extern int FromFlagsEnum (FlagsEnum value, out Int32 rval);
+
+		public static bool TryFromFlagsEnum (FlagsEnum value, out Int32 rval)
+		{
+			return FromFlagsEnum (value, out rval) == 0;
+		}
+
+		public static Int32 FromFlagsEnum (FlagsEnum value)
+		{
+			Int32 rval;
+			if (FromFlagsEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_ToFlagsEnum")]
+		private static extern int ToFlagsEnum (Int32 value, out FlagsEnum rval);
+
+		public static bool TryToFlagsEnum (Int32 value, out FlagsEnum rval)
+		{
+			return ToFlagsEnum (value, out rval) == 0;
+		}
+
+		public static FlagsEnum ToFlagsEnum (Int32 value)
+		{
+			FlagsEnum rval;
+			if (ToFlagsEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
+		}
+
 		[DllImport (LIB, EntryPoint="MakeMap_Test_FromFoo")]
 		private static extern int FromFoo (ref Foo source, IntPtr destination);
 
@@ -52,6 +84,38 @@ namespace Mono.Unix.Native {
 		public static bool TryCopy (IntPtr source, out FooHolder destination)
 		{
 			return ToFooHolder (source, out destination) == 0;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_FromSimpleFlagsEnum")]
+		private static extern int FromSimpleFlagsEnum (SimpleFlagsEnum value, out Int32 rval);
+
+		public static bool TryFromSimpleFlagsEnum (SimpleFlagsEnum value, out Int32 rval)
+		{
+			return FromSimpleFlagsEnum (value, out rval) == 0;
+		}
+
+		public static Int32 FromSimpleFlagsEnum (SimpleFlagsEnum value)
+		{
+			Int32 rval;
+			if (FromSimpleFlagsEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_ToSimpleFlagsEnum")]
+		private static extern int ToSimpleFlagsEnum (Int32 value, out SimpleFlagsEnum rval);
+
+		public static bool TryToSimpleFlagsEnum (Int32 value, out SimpleFlagsEnum rval)
+		{
+			return ToSimpleFlagsEnum (value, out rval) == 0;
+		}
+
+		public static SimpleFlagsEnum ToSimpleFlagsEnum (Int32 value)
+		{
+			SimpleFlagsEnum rval;
+			if (ToSimpleFlagsEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
 		}
 
 		[DllImport (LIB, EntryPoint="MakeMap_Test_FromTestEnum")]

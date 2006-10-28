@@ -23,6 +23,42 @@ namespace MakeMap.Test {
 		Qux,
 	}
 
+	[Map, Flags]
+	enum SimpleFlagsEnum {
+		None  = 0,
+		A     = 1,
+		B     = 2,
+		C     = 4,
+		D     = 8,
+	}
+
+	[Map, Flags]
+	enum FlagsEnum {
+		None  = 0,
+		A     = 1,
+		B     = 2,
+		C     = 4,
+		D     = 8,
+		All   = A | B | C | D,
+		// Device types
+		[Map(SuppressFlags=true)]
+		S_IFMT      = 0xF000, // Bits which determine file type
+		[Map(SuppressFlags=true)]
+		S_IFDIR     = 0x4000, // Directory
+		[Map(SuppressFlags=true)]
+		S_IFCHR     = 0x2000, // Character device
+		[Map(SuppressFlags=true)]
+		S_IFBLK     = 0x6000, // Block device
+		[Map(SuppressFlags=true)]
+		S_IFREG     = 0x8000, // Regular file
+		[Map(SuppressFlags=true)]
+		S_IFIFO     = 0x1000, // FIFO
+		[Map(SuppressFlags=true)]
+		S_IFLNK     = 0xA000, // Symbolic link
+		[Map(SuppressFlags=true)]
+		S_IFSOCK    = 0xC000, // Socket
+	}
+
 	[Map ("struct foo")]
 	struct Foo {
 		public int foo;

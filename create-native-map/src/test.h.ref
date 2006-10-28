@@ -27,6 +27,54 @@ G_BEGIN_DECLS
 /*
  * Enumerations
  */
+enum MakeMap_Test_FlagsEnum {
+	MakeMap_Test_FlagsEnum_A              = 0x00000001,
+	#define MakeMap_Test_FlagsEnum_A        MakeMap_Test_FlagsEnum_A
+	MakeMap_Test_FlagsEnum_All            = 0x0000000f,
+	#define MakeMap_Test_FlagsEnum_All      MakeMap_Test_FlagsEnum_All
+	MakeMap_Test_FlagsEnum_B              = 0x00000002,
+	#define MakeMap_Test_FlagsEnum_B        MakeMap_Test_FlagsEnum_B
+	MakeMap_Test_FlagsEnum_C              = 0x00000004,
+	#define MakeMap_Test_FlagsEnum_C        MakeMap_Test_FlagsEnum_C
+	MakeMap_Test_FlagsEnum_D              = 0x00000008,
+	#define MakeMap_Test_FlagsEnum_D        MakeMap_Test_FlagsEnum_D
+	MakeMap_Test_FlagsEnum_None           = 0x00000000,
+	#define MakeMap_Test_FlagsEnum_None     MakeMap_Test_FlagsEnum_None
+	MakeMap_Test_FlagsEnum_S_IFBLK        = 0x00006000,
+	#define MakeMap_Test_FlagsEnum_S_IFBLK  MakeMap_Test_FlagsEnum_S_IFBLK
+	MakeMap_Test_FlagsEnum_S_IFCHR        = 0x00002000,
+	#define MakeMap_Test_FlagsEnum_S_IFCHR  MakeMap_Test_FlagsEnum_S_IFCHR
+	MakeMap_Test_FlagsEnum_S_IFDIR        = 0x00004000,
+	#define MakeMap_Test_FlagsEnum_S_IFDIR  MakeMap_Test_FlagsEnum_S_IFDIR
+	MakeMap_Test_FlagsEnum_S_IFIFO        = 0x00001000,
+	#define MakeMap_Test_FlagsEnum_S_IFIFO  MakeMap_Test_FlagsEnum_S_IFIFO
+	MakeMap_Test_FlagsEnum_S_IFLNK        = 0x0000a000,
+	#define MakeMap_Test_FlagsEnum_S_IFLNK  MakeMap_Test_FlagsEnum_S_IFLNK
+	MakeMap_Test_FlagsEnum_S_IFMT         = 0x0000f000,
+	#define MakeMap_Test_FlagsEnum_S_IFMT   MakeMap_Test_FlagsEnum_S_IFMT
+	MakeMap_Test_FlagsEnum_S_IFREG        = 0x00008000,
+	#define MakeMap_Test_FlagsEnum_S_IFREG  MakeMap_Test_FlagsEnum_S_IFREG
+	MakeMap_Test_FlagsEnum_S_IFSOCK       = 0x0000c000,
+	#define MakeMap_Test_FlagsEnum_S_IFSOCK MakeMap_Test_FlagsEnum_S_IFSOCK
+};
+int MakeMap_Test_FromFlagsEnum (int x, int *r);
+int MakeMap_Test_ToFlagsEnum (int x, int *r);
+
+enum MakeMap_Test_SimpleFlagsEnum {
+	MakeMap_Test_SimpleFlagsEnum_A             = 0x00000001,
+	#define MakeMap_Test_SimpleFlagsEnum_A       MakeMap_Test_SimpleFlagsEnum_A
+	MakeMap_Test_SimpleFlagsEnum_B             = 0x00000002,
+	#define MakeMap_Test_SimpleFlagsEnum_B       MakeMap_Test_SimpleFlagsEnum_B
+	MakeMap_Test_SimpleFlagsEnum_C             = 0x00000004,
+	#define MakeMap_Test_SimpleFlagsEnum_C       MakeMap_Test_SimpleFlagsEnum_C
+	MakeMap_Test_SimpleFlagsEnum_D             = 0x00000008,
+	#define MakeMap_Test_SimpleFlagsEnum_D       MakeMap_Test_SimpleFlagsEnum_D
+	MakeMap_Test_SimpleFlagsEnum_None          = 0x00000000,
+	#define MakeMap_Test_SimpleFlagsEnum_None    MakeMap_Test_SimpleFlagsEnum_None
+};
+int MakeMap_Test_FromSimpleFlagsEnum (int x, int *r);
+int MakeMap_Test_ToSimpleFlagsEnum (int x, int *r);
+
 enum MakeMap_Test_TestEnum {
 	MakeMap_Test_TestEnum_Bar           = 0x00000001,
 	#define MakeMap_Test_TestEnum_Bar     MakeMap_Test_TestEnum_Bar
