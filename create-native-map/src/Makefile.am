@@ -59,3 +59,5 @@ libtest.so: test.c
 
 CLEANFILES = $(EXE) $(EXE).mdb TestMap.dll TestMap.dll.mdb libtest.so
 
+EXTRA_DIST = $(CNM_FILES) TestMap.cs
+
