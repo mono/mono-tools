@@ -347,7 +347,7 @@ static class MapUtils {
 			MapAttribute map = nativeType == null 
 				? new MapAttribute () 
 				: new MapAttribute (nativeType);
-			map.SuppressFlags   = GetPropertyValueAsBool (o, "SuppressFlags");
+			map.SuppressFlags   = GetPropertyValueAsString (o, "SuppressFlags");
 			return map;
 		}
 		return null;
@@ -1166,8 +1166,10 @@ class SourceFileGenerator : FileGenerator {
 #endif
 
 #define _cnm_return_val_if_overflow(to_t,from,val)  G_STMT_START {   \
-    if (!(_cnm_integral_type_min(to_t) <= from &&                    \
-          ((from < 0) || (from <= _cnm_integral_type_max(to_t))))) { \
+    gint64  sf = (gint64) from;                                      \
+    guint64 uf = (guint64) from;                                     \
+    if (!(_cnm_integral_type_min(to_t) <= sf &&                      \
+          ((from < 0) || (uf <= _cnm_integral_type_max(to_t))))) {   \
       _cnm_dump_(to_t, from);                                        \
       errno = EOVERFLOW;                                             \
       return (val);                                                  \
@@ -1221,13 +1223,15 @@ class SourceFileGenerator : FileGenerator {
 				continue;
 			}
 			MapAttribute map = MapUtils.GetMapAttribute (fi);
-			bool is_bits = bits && (map != null ? !map.SuppressFlags : true);
+			bool is_bits = bits && (map != null ? map.SuppressFlags == null : true);
 			if (is_bits)
 				// properly handle case where [Flags] enumeration has helper
 				// synonyms.  e.g. DEFFILEMODE and ACCESSPERMS for mode_t.
 				sc.WriteLine ("\tif ((x & {0}_{1}) == {0}_{1})", fn, fi.Name);
-			else
+			else if (GetSuppressFlags (map) == null)
 				sc.WriteLine ("\tif (x == {0}_{1})", fn, fi.Name);
+			else
+				sc.WriteLine ("\tif ((x & {0}_{1}) == {0}_{2})", fn, map.SuppressFlags, fi.Name);
 			sc.WriteLine ("#ifdef {0}", fi.Name);
 			if (is_bits)
 				sc.WriteLine ("\t\t*r |= {1};", fn, fi.Name);
@@ -1252,6 +1256,18 @@ class SourceFileGenerator : FileGenerator {
 		else
 			sc.WriteLine ("\terrno = EINVAL; return -1;"); // return error if not matched
 		sc.WriteLine ("}\n");
+	}
+
+	private static string GetSuppressFlags (MapAttribute map)
+	{
+		if (map != null) {
+			return map.SuppressFlags == null
+				? null
+				: map.SuppressFlags.Length == 0
+					? null
+					: map.SuppressFlags;
+		}
+		return null;
 	}
 
 	private static bool IsRedundant (Type t, FieldInfo fi, Array values)
@@ -1287,14 +1303,16 @@ class SourceFileGenerator : FileGenerator {
 			if (!fi.IsLiteral)
 				continue;
 			MapAttribute map = MapUtils.GetMapAttribute (fi);
-			bool is_bits = bits && (map != null ? !map.SuppressFlags : true);
+			bool is_bits = bits && (map != null ? map.SuppressFlags == null: true);
 			sc.WriteLine ("#ifdef {0}", fi.Name);
 			if (is_bits)
 				// properly handle case where [Flags] enumeration has helper
 				// synonyms.  e.g. DEFFILEMODE and ACCESSPERMS for mode_t.
 				sc.WriteLine ("\tif ((x & {1}) == {1})\n\t\t*r |= {0}_{1};", fn, fi.Name);
-			else
+			else if (GetSuppressFlags (map) == null)
 				sc.WriteLine ("\tif (x == {1})\n\t\t{{*r = {0}_{1}; return 0;}}", fn, fi.Name);
+			else
+				sc.WriteLine ("\tif ((x & {2}) == {1})\n\t\t*r |= {0}_{1};", fn, fi.Name, map.SuppressFlags);
 			sc.WriteLine ("#endif /* ndef {0} */", fi.Name);
 		}
 		if (bits)

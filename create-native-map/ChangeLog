@@ -1,3 +1,18 @@
+2006-11-15  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: 
+	  - Mask against SuppressFlags if SuppressFlags is non-null, as if you have 
+	    bitmask & non-bitmask values in the same enum, it's fairly certain that 
+	    the non-bitmask values won't start at 0.  This fixes FilePermissions 
+	    mapping in MonoPosixHelper.
+	  - Fix _cnm_return_val_if_overflow() macro so that it doesn't generate 
+	    warnings about value overflows.
+	* src/MapAttribute.cs: Change SuppressFlags to be a string, not a bool.
+	  This contains the value to mask against.
+	* src/TestMap.cs: Test new SuppressFlags semantics.
+	* src/test.c.ref: Flush (updated _cnm_return_val_if_overflow() value;
+	  addition of bitmask semantics).
+
 2006-10-30  Wade Berrier  <wberrier@novell.com>
 
 	* src/Makefile.am bin/Makefile.am: add source files to EXTRA_DIST to fix building from
