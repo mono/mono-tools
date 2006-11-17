@@ -1233,7 +1233,7 @@ class SourceFileGenerator : FileGenerator {
 			else
 				sc.WriteLine ("\tif ((x & {0}_{1}) == {0}_{2})", fn, map.SuppressFlags, fi.Name);
 			sc.WriteLine ("#ifdef {0}", fi.Name);
-			if (is_bits)
+			if (is_bits || GetSuppressFlags (map) != null)
 				sc.WriteLine ("\t\t*r |= {1};", fn, fi.Name);
 			else
 				sc.WriteLine ("\t\t{{*r = {1}; return 0;}}", fn, fi.Name);

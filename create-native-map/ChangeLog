@@ -1,3 +1,10 @@
+2006-11-17  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: SupressFlags values should still be bitwise OR'd
+	  with the value returned from the FromManagedType() functions, just like
+	  they are in the ToManagedType() functions.
+	* src/test.c.ref: Flush (SuppressFlags fix)
+
 2006-11-15  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* src/create-native-map.cs: 
