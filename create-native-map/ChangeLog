@@ -1,3 +1,10 @@
+2006-11-30  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: _cnm_return_val_if_overflow() shouldn't check
+	  for overflow if DEBUG isn't defined.  It's causing too many false
+	  positives in MonoPosixHelper.
+	* src/test.c.ref: Flush (_cnm_return_val_if_overflow() change).
+
 2006-11-17  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* src/create-native-map.cs: SupressFlags values should still be bitwise OR'd

@@ -171,6 +171,7 @@
 #define _cnm_dump_(to_t, from) do {} while (0)
 #endif
 
+#ifdef DEBUG
 #define _cnm_return_val_if_overflow(to_t,from,val)  G_STMT_START {   \
     gint64  sf = (gint64) from;                                      \
     guint64 uf = (guint64) from;                                     \
@@ -181,6 +182,11 @@
       return (val);                                                  \
     }                                                                \
   } G_STMT_END
+#else /* !def DEBUG */
+/* don't do an overflow checking */
+#define _cnm_return_val_if_overflow(to_t,from,val)  G_STMT_START {   \
+  } G_STMT_END
+#endif /* def DEBUG */
 
 int MakeMap_Test_FromFlagsEnum (int x, int *r)
 {
@@ -223,31 +229,31 @@ int MakeMap_Test_FromFlagsEnum (int x, int *r)
 #endif /* ndef None */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFBLK)
 #ifdef S_IFBLK
-		{*r = S_IFBLK; return 0;}
+		*r |= S_IFBLK;
 #else /* def S_IFBLK */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFBLK */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFCHR)
 #ifdef S_IFCHR
-		{*r = S_IFCHR; return 0;}
+		*r |= S_IFCHR;
 #else /* def S_IFCHR */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFCHR */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFDIR)
 #ifdef S_IFDIR
-		{*r = S_IFDIR; return 0;}
+		*r |= S_IFDIR;
 #else /* def S_IFDIR */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFDIR */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFIFO)
 #ifdef S_IFIFO
-		{*r = S_IFIFO; return 0;}
+		*r |= S_IFIFO;
 #else /* def S_IFIFO */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFIFO */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFLNK)
 #ifdef S_IFLNK
-		{*r = S_IFLNK; return 0;}
+		*r |= S_IFLNK;
 #else /* def S_IFLNK */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFLNK */
@@ -259,13 +265,13 @@ int MakeMap_Test_FromFlagsEnum (int x, int *r)
 #endif /* ndef S_IFMT */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFREG)
 #ifdef S_IFREG
-		{*r = S_IFREG; return 0;}
+		*r |= S_IFREG;
 #else /* def S_IFREG */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFREG */
 	if ((x & MakeMap_Test_FlagsEnum_S_IFMT) == MakeMap_Test_FlagsEnum_S_IFSOCK)
 #ifdef S_IFSOCK
-		{*r = S_IFSOCK; return 0;}
+		*r |= S_IFSOCK;
 #else /* def S_IFSOCK */
 		{errno = EINVAL; return -1;}
 #endif /* ndef S_IFSOCK */
