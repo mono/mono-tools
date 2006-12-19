@@ -1,3 +1,11 @@
+2006-12-19  Ankit Jain  <jankit@novell.com>
+
+	* browser.cs (Main): Add a "--remote-mode" option and implement. With 
+	this we accept urls on standard input. This is used by monodevelop.
+	Add a "--about" option.
+	(Browser): Make MainWindow public.
+	* monodoc.in: Add "--about" to "--help" output.
+
 2006-11-19  Miguel de Icaza  <miguel@novell.com>
 
 	* mondoc.in: Make this work with XulRunner, otherwise this crashes

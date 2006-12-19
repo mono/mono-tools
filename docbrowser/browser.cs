@@ -13,6 +13,7 @@ using Glade;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Collections;
 using System.Web.Services.Protocols;
 using System.Xml;
@@ -23,6 +24,7 @@ class Driver {
 	{
 		string topic = null;
 		bool useGecko = true;
+		bool remote_mode = false;
 		
 		for (int i = 0; i < args.Length; i++){
 			switch (args [i]){
@@ -49,9 +51,16 @@ class Driver {
 				RootTree.MakeSearchIndex ();
 				return 0;
 				
+			case "--about":
+				Console.WriteLine ("Mono Documentation Browser");
+				Version ver = Assembly.GetExecutingAssembly ().GetName ().Version;
+				if (ver != null)
+					Console.WriteLine (ver.ToString ());
+				return 0;
+
 			case "--help":
 				Console.WriteLine ("Options are:\n"+
-						   "browser [--html TOPIC] [--make-index] [TOPIC] [--merge-changes CHANGE_FILE TARGET_DIR+]");
+						   "browser [--html TOPIC] [--make-index] [TOPIC] [--merge-changes CHANGE_FILE TARGET_DIR+] [--about]");
 				return 0;
 			
 			case "--merge-changes":
@@ -82,6 +91,12 @@ class Driver {
 				RootTree.UncompiledHelpSources.Add(args[i+1]);
 				i++;
 				break;
+
+			case "--remote-mode":
+				//In this mode, monodoc will accept urls on stdin
+				//Used for integeration with monodevelop
+				remote_mode = true;
+				break;
 				
 			case "--no-gecko":
 				useGecko = false;
@@ -101,14 +116,36 @@ class Driver {
 		
 		if (topic != null)
 			browser.LoadUrl (topic);
+
+		Thread in_thread = null;
+		if (remote_mode) {
+			in_thread = new Thread (delegate () {
+						while (true) {
+							string url = Console.ReadLine ();
+							if (url == null)
+								return;
+
+							Gtk.Application.Invoke (delegate {
+								browser.LoadUrl (url);
+								browser.MainWindow.Present ();
+							});
+						}
+					});
+
+			in_thread.Start ();
+		}
+
 		Application.Run ();
+		if (in_thread != null)
+			in_thread.Abort ();						
+
 		return 0;
 	}
 }
 
 public class Browser {
 	Glade.XML ui;
-	Gtk.Window MainWindow;
+	public Gtk.Window MainWindow;
 	Style bar_style;
 
 	[Glade.Widget] public Window window1;

@@ -44,6 +44,7 @@ case x$1 in
 	echo "      (ex. N:System, T:System.Object, M:System.Object.Equals,"
 	echo "      and P: for properties, F: for fields, E: for events, etc.)"
 	echo "  --help             	Print this message"
+	echo "  --about            	About the monodoc browser"
 	echo "  --html TOPIC       	Print the HTML contents of TOPIC"
 	echo "  --make-index       	Create the documentation index"
  	echo "  --make-search-index	Create the searchable documentation index"
