@@ -1,3 +1,9 @@
+2006-11-30  Mike Kestner  <mkestner@novell.com>
+
+	* bin/Makefile.am: distcheck fixes
+	* bin/create-native-map.in: renamed for distcheck friendliness
+	* src/Makefile.am: distcheck fixes
+	
 2006-11-30  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* src/create-native-map.cs: _cnm_return_val_if_overflow() shouldn't check

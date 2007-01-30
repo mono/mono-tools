@@ -30,7 +30,7 @@ TestMap.dll: $(tm_build_sources) $(PROGRAM)
 test_output = test.c test.h test.cs test.xml
 
 $(test_output): TestMap.dll $(EXE)
-	../bin/create-native-map                                \
+	../bin/create-native-map                                      \
 		--autoconf-member autoconf_me                         \
 		--autoconf-header='<unistd.h>'                        \
 		--public-header='<stdlib.h>'                          \
@@ -46,7 +46,7 @@ $(test_output): TestMap.dll $(EXE)
 
 check: $(test_output)
 	for f in test.c test.h test.cs test.xml ; do \
-		diff -rup $$f.ref $$f ; \
+		diff -rup $(srcdir)/$$f.ref $$f ; \
 	done
 
 check-update:
@@ -57,7 +57,7 @@ check-update:
 libtest.so: test.c
 	gcc -shared -o $@ $^ -I.. `pkg-config --libs --cflags glib-2.0`
 
-CLEANFILES = $(EXE) $(EXE).mdb TestMap.dll TestMap.dll.mdb libtest.so
+CLEANFILES = $(EXE) $(EXE).mdb $(test_output) TestMap.dll TestMap.dll.mdb libtest.so
 
-EXTRA_DIST = $(CNM_FILES) TestMap.cs
+EXTRA_DIST = $(CNM_FILES) TestMap.cs test.c.ref test.cs.ref test.h.ref test.xml.ref
 

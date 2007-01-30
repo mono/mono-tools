@@ -1,9 +1,10 @@
 
 bin_SCRIPTS = create-native-map
 
-EXTRA_DIST = $(bin_SCRIPTS)
+EXTRA_DIST = create-native-map.in
+CLEANFILES = create-native-map
 
-create-native-map:
-	cp $(srcdir)/create-native-map .
+create-native-map: create-native-map.in
+	cp $(srcdir)/$@.in $@
 	chmod +x $@
 
