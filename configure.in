@@ -88,6 +88,8 @@ asn1view/Makefile
 asn1view/art/Makefile
 asn1view/gtk/Makefile
 asn1view/common/Makefile
+ilcontrast/Makefile
+ilcontrast/ilcontrast
 create-native-map/Makefile
 create-native-map/bin/Makefile
 create-native-map/lib/Makefile

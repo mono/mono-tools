@@ -1,0 +1,41 @@
+#! /bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+ilcontrastdir=$prefix/lib/ilcontrast
+
+getdirectory () {
+    w=`which $1`
+    if test -h $w; then
+	(cd `dirname $w`/`dirname \`readlink $w\``; pwd)
+    else
+	dirname $w
+    fi
+}
+
+if test -n "$MOZILLA_FIVE_HOME"; then
+	MOZILLA_HOME=$MOZILLA_FIVE_HOME
+elif test x@MOZILLA_HOME@ != x; then
+    if [ -f @MOZILLA_HOME@/chrome/comm.jar ]; then
+        MOZILLA_HOME=@MOZILLA_HOME@
+    fi 
+elif [ $(which xulrunner 2> /dev/null) ] > /dev/null ; then
+    MOZILLA_FIVE_HOME=`getdirectory xulrunner`
+    MOZILLA_HOME=$MOZILLA_FIVE_HOME
+elif [ $(which mozilla 2> /dev/null) ] && grep MOZILLA_FIVE_HOME= "$(which mozilla)" > /dev/null ; then
+	MOZILLA_HOME=$(grep MOZILLA_FIVE_HOME= $(which mozilla) | cut -d '"' -f 2)
+elif [ $(which firefox 2> /dev/null) ] && grep MOZILLA_FIVE_HOME= "$(which firefox)" > /dev/null ; then
+	MOZILLA_HOME=$(grep MOZILLA_FIVE_HOME= $(which firefox) | cut -d '"' -f 2)
+fi
+
+if [ -n $LD_LIBRARY_PATH ]; then
+	export LD_LIBRARY_PATH=$MOZILLA_HOME:$LD_LIBRARY_PATH
+else
+	export LD_LIBRARY_PATH=$MOZILLA_HOME
+fi
+export MOZILLA_FIVE_HOME 
+export MOZILLA_HOME 
+export LD_LIBRARY_PATH
+
+exec @RUNTIME@ $ilcontrastdir/ilcontrast.exe "$@"

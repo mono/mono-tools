@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Name=ilContrast
+GenericName=Assembly Comparison Tool
+Comment=Identify differences in the API exposed by mono library assemblies.
+Exec=@bindir@/ilcontrast
+Icon=monodoc.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Application;Development;
