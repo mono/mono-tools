@@ -1,3 +1,4 @@
+if ENABLE_GECKO
 TARGET = ilcontrast.exe
 CLEANFILES = $(TARGET) $(TARGET).mdb
 DISTCLEANFILES = Global.cs ilcontrast ilcontrast.desktop
@@ -40,3 +41,7 @@ ilcontrast.desktop: ilcontrast.desktop.in
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = ilcontrast.png
+else
+all:
+	echo "Install gecko-sharp to build ilContrast"
+endif
