@@ -199,13 +199,14 @@ namespace IlContrast {
 		
 		void AboutActivated (object o, EventArgs args)
 		{
-			AboutDialog about = new AboutDialog ();
-			about.Name = "ilContrast";
-			about.Version = Global.VersionNumber;
-			about.Copyright = "Copyright (c) 2007 Novell, Inc.";
-			about.Comments = "Assembly Comparison Tool";
-			about.TransientFor = this;
-			about.Logo = new Gdk.Pixbuf (null, "ilcontrast.png", 64, 64);
+			Dialog about = new Dialog ("About ilContrast", this, DialogFlags.DestroyWithParent, Stock.Close, ResponseType.Accept);
+			about.VBox.PackStart (new Gtk.Image (new Gdk.Pixbuf (null, "ilcontrast.png", 64, 64)), false, false, 6);
+			Label label = new Label ("");
+			label.Markup = "<b>ilContrast " + Global.VersionNumber + "</b>";
+			about.VBox.PackStart (label, false, false, 6);
+			about.VBox.PackStart (new Label ("Assembly Comparison Tool"), false, false, 6);
+			about.VBox.PackStart (new Label ("Copyright (c) 2007 Novell, Inc."), false, false, 6);
+			about.VBox.ShowAll ();
 			about.Run ();
 			about.Destroy ();
 		}

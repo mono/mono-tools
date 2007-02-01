@@ -1,5 +1,9 @@
 2007-01-31  Mike Kestner  <mkestner@novell.com>
 
+	* Window.cs: break a 2.6 dep by removing AboutDialog usage.
+
+2007-01-31  Mike Kestner  <mkestner@novell.com>
+
 	* Makefile.am: make conditional on ENABLE_GECKO.
 
 2007-01-31  Mike Kestner  <mkestner@novell.com>
