@@ -28,7 +28,7 @@ sources =				\
 build_sources = $(addprefix $(srcdir)/, $(sources))
 
 ilcontrast.exe: $(build_sources)
-	$(MCS) -out:ilcontrast.exe $(references) $(resources) $(build_sources)
+	$(GMCS) -out:ilcontrast.exe $(references) $(resources) $(build_sources)
 
 desktopdir = $(datadir)/applications
 desktop_DATA = ilcontrast.desktop
