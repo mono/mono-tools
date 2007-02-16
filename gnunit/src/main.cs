@@ -563,7 +563,7 @@ namespace Mono.NUnit.GUI
 		}
 
 		// Window event handlers
-		void OnWindowDelete (object sender, EventArgs args)
+		void OnWindowDelete (object sender, DeleteEventArgs args)
 		{
 			OnQuitActivate (sender, args);
 		}
