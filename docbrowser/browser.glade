@@ -83,16 +83,6 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkMenuItem" id="contributor_settings1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Upload Contributions</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnUpload" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
-		      <accelerator key="U" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
 		    <widget class="GtkImageMenuItem" id="print">
 		      <property name="visible">True</property>
 		      <property name="label">gtk-print</property>
@@ -189,22 +179,6 @@
 		      <accelerator key="A" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 		    </widget>
 		  </child>
-
-		  <child>
-		    <widget class="GtkMenuItem" id="separator1">
-		      <property name="visible">True</property>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkCheckMenuItem" id="editing1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Editing</property>
-		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <signal name="activate" handler="OnEditingActivate" last_modification_time="Fri, 03 Oct 2003 22:44:59 GMT"/>
-		    </widget>
-		  </child>
 		</widget>
 	      </child>
 	    </widget>
@@ -262,6 +236,53 @@
 		<widget class="GtkMenu" id="bookmarksMenu_menu">
 
 
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="contributingMenu">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Contributing</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="contributingMenu_menu">
+		  <child>
+		    <widget class="GtkCheckMenuItem" id="editing1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Edit Mode</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="OnEditingActivate" last_modification_time="Fri, 03 Oct 2003 22:44:59 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="separator1">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="contributor_settings1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Upload Contributions</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="OnUpload" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
+		      <accelerator key="U" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="contributor_statistics1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_View Contribution Statistics</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="OnContributionStatistics" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
+		    </widget>
+		  </child>
 		</widget>
 	      </child>
 	    </widget>

@@ -826,14 +826,14 @@ ExtLoop:
 		// postcomment.Sensitive = comments1.Active;
 
 		// refresh, so we can see the comments
-		if (CurrentTab.history != null) // catch the case when we are currently loading
+		if (CurrentTab != null && CurrentTab.history != null) // catch the case when we are currently loading
 			CurrentTab.history.ActivateCurrent ();
 	}
 	
 	void OnInheritedMembersActivate (object o, EventArgs args)
 	{
 		SettingsHandler.Settings.ShowInheritedMembers = showinheritedmembers.Active;
-		if (CurrentTab.history != null) // catch the case when we are currently loading
+		if (CurrentTab != null && CurrentTab.history != null) // catch the case when we are currently loading
 			CurrentTab.history.ActivateCurrent ();
 	}
 
@@ -842,7 +842,7 @@ ExtLoop:
 		SettingsHandler.Settings.EnableEditing = editing1.Active;
 
 		// refresh, so we can see the [edit] things
-		if (CurrentTab != null) // catch the case when we are currently loading
+		if (CurrentTab != null && CurrentTab.history != null) // catch the case when we are currently loading
 			CurrentTab.history.ActivateCurrent ();
 	}
 	
@@ -873,7 +873,6 @@ ExtLoop:
 	//
 	// Invoked when the user presses a key on the index_entry
 	//
-
 	public void OnIndexEntryKeyPress (object o, KeyPressEventArgs args)
 	{
 		args.RetVal = true;
@@ -1368,6 +1367,112 @@ ExtLoop:
 		}
 	}
 
+	void OnContributionStatistics (object sender, EventArgs a)
+	{
+		string email = SettingsHandler.Settings.Email;
+		string key = SettingsHandler.Settings.Key;
+		
+		if (key == null || key == "") {
+			MessageDialog md = new MessageDialog (null, 
+							      DialogFlags.DestroyWithParent,
+							      MessageType.Info, 
+							      ButtonsType.Close, 
+				                  "You have not obtained or used a contribution key yet.");
+			md.Title = "No contribution key";
+			
+			md.Run();
+			md.Destroy();
+		}
+		else
+			ContributionStatus.GetStatus (email, key);
+	}
+	
+	class ContributionStatus {
+		enum State {
+			GetStatusError,
+			NetworkError,
+			Done
+		}
+
+		State state;
+		Status status;
+		string contributoremail;
+		
+		ThreadNotify tn;
+		WebClientAsyncResult war;
+		ContributionsSoap d;
+		
+		public static void GetStatus (string email, string key)
+		{
+			new ContributionStatus(email, key);
+		}
+		
+		ContributionStatus (string email, string key)
+		{
+			tn = new ThreadNotify (new ReadyEvent (Update));
+			
+			d = new ContributionsSoap ();
+			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
+				d.Url = "http://www.go-mono.com/docs/server.asmx";
+				
+			war = (WebClientAsyncResult) d.BeginGetStatus (email, key, new AsyncCallback (GetStatusDone), null);
+			contributoremail = email;
+		}
+		
+		void Update ()
+		{
+			MessageDialog md = null;
+			
+			switch (state) {
+			case State.GetStatusError:
+				md = new MessageDialog (null, 
+					              DialogFlags.DestroyWithParent,
+							      MessageType.Error, ButtonsType.Close, 
+				                  "Server returned error while requesting contributor statistics");
+				md.Title = "Contribution Statistics Error Occurred";
+				break;
+			case State.NetworkError:
+				md = new MessageDialog (null, 
+					              DialogFlags.DestroyWithParent,
+							      MessageType.Error, ButtonsType.Close, 
+				                  "Network error occurred while requesting contributor statistics");
+				md.Title = "Contribution Statistics Error Occurred";
+				break;
+			case State.Done:
+				md = new MessageDialog (null, 
+					              DialogFlags.DestroyWithParent,
+							      MessageType.Info, ButtonsType.Close, 
+				                  "Contribution statistics for " + contributoremail +
+					              "\n\nTotal contributions: " + status.Contributions +
+					              "\nContributions committed: " + status.Commited +
+					              "\nContributions pending: " + status.Pending);
+				md.Title = "Contribution Statistics";
+				break;
+			}
+
+			md.Run();
+			md.Destroy();
+		}
+				
+		void GetStatusDone (IAsyncResult iar)
+		{
+			try {
+				status = d.EndGetStatus (iar);
+				war = null;
+
+				if (status == null)
+					state = State.GetStatusError;
+				else
+					state = State.Done;
+
+			} catch (Exception e) {
+				state = State.NetworkError;
+				Console.WriteLine ("Error getting status: " + e);
+			}
+			if (tn != null)
+				tn.WakeupMain ();
+		}	
+	}
 
 	class NewComment {
 		[Glade.Widget] Window newcomment;

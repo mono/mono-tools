@@ -1,3 +1,9 @@
+2007-03-15  Kevin Reay  <kevintreay@gmail.com>
+
+	* browser.cs: Fix #80575. Add missing check for null CurrentTab.
+	* browser.glade: Added Contributing menu. Reordered some menu items.
+	* browser.cs: Added contributor statistics feature.
+
 2006-12-19  Ankit Jain  <jankit@novell.com>
 
 	* browser.cs (Main): Add a "--remote-mode" option and implement. With 

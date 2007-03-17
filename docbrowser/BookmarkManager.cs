@@ -324,10 +324,11 @@ namespace Monodoc {
 		public BookmarkManager (Browser browser){
 			_Browser = browser;
 			
-			
+			#if DEBUG
 			Console.WriteLine ("Bookmark Manager init");
+			#endif
 
-			//discoverig bookmark file
+			// discovering bookmark file
 			bookmark_file = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
 			bookmark_file = System.IO.Path.Combine (bookmark_file, "monodoc");
 			bookmark_file = System.IO.Path.Combine (bookmark_file, "bookmarks.xml");
