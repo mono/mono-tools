@@ -55,7 +55,8 @@ EXTRA_DIST = \
 	admin.glade 			\
 	browser.glade 			\
 	monodoc.png			\
-	AssemblyInfo.cs
+	AssemblyInfo.cs			\
+	README.ADMIN
 
 # admin hardcodes GTKHTML for now.
 if ENABLE_GTKHTML
