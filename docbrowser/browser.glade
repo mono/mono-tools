@@ -63,7 +63,7 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="lookup_url1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Lookup URL</property>
+		      <property name="label" translatable="yes">_Lookup URL...</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnLookupURL" last_modification_time="Tue, 08 Jul 2003 23:25:06 GMT"/>
 		      <accelerator key="L" modifiers="GDK_CONTROL_MASK" signal="activate"/>
@@ -85,9 +85,28 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="print">
 		      <property name="visible">True</property>
-		      <property name="label">gtk-print</property>
-		      <property name="use_stock">True</property>
+		      <property name="label" translatable="yes">_Print...</property>
+		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_print_activate" last_modification_time="Tue, 30 Aug 2005 05:02:29 GMT"/>
+		      <accelerator key="P" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image119">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-print</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="separator2">
+		      <property name="visible">True</property>
 		    </widget>
 		  </child>
 
@@ -125,6 +144,27 @@
 
 	      <child>
 		<widget class="GtkMenu" id="menuitem5_menu">
+		  <child>
+		    <widget class="GtkImageMenuItem" id="cut1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Cut</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="OnCutActivate" last_modification_time="Tue, 08 Jul 2003 22:53:59 GMT"/>
+		      <accelerator key="X" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image120">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-cut</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
 
 		  <child>
 		    <widget class="GtkImageMenuItem" id="copy1">
@@ -167,6 +207,12 @@
 			  <property name="ypad">0</property>
 			</widget>
 		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="separator7">
+		      <property name="visible">True</property>
 		    </widget>
 		  </child>
 
@@ -250,12 +296,45 @@
 	      <child>
 		<widget class="GtkMenu" id="contributingMenu_menu">
 		  <child>
-		    <widget class="GtkCheckMenuItem" id="editing1">
+		    <widget class="GtkImageMenuItem" id="contributor_settings1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">Edit Mode</property>
+		      <property name="label" translatable="yes">_Upload Contributions...</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
-		      <signal name="activate" handler="OnEditingActivate" last_modification_time="Fri, 03 Oct 2003 22:44:59 GMT"/>
+		      <signal name="activate" handler="OnUpload" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
+		      <accelerator key="U" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image133">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-network</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkImageMenuItem" id="contributor_statistics1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_View Contribution Statistics...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="OnContributionStatistics" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
+
+		      <child internal-child="image">
+			<widget class="GtkImage" id="image133">
+			  <property name="visible">True</property>
+			  <property name="stock">gtk-find-and-replace</property>
+			  <property name="icon_size">1</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			</widget>
+		      </child>
 		    </widget>
 		  </child>
 
@@ -266,21 +345,12 @@
 		  </child>
 
 		  <child>
-		    <widget class="GtkMenuItem" id="contributor_settings1">
+		    <widget class="GtkCheckMenuItem" id="editing1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_Upload Contributions</property>
+		      <property name="label" translatable="yes">Edit Mode</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnUpload" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
-		      <accelerator key="U" modifiers="GDK_CONTROL_MASK" signal="activate"/>
-		    </widget>
-		  </child>
-
-		  <child>
-		    <widget class="GtkMenuItem" id="contributor_statistics1">
-		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">_View Contribution Statistics</property>
-		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="OnContributionStatistics" last_modification_time="Wed, 08 Oct 2003 02:53:43 GMT"/>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="OnEditingActivate" last_modification_time="Fri, 03 Oct 2003 22:44:59 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
@@ -300,14 +370,14 @@
 		  <child>
 		    <widget class="GtkImageMenuItem" id="about1">
 		      <property name="visible">True</property>
-		      <property name="label" translatable="yes">About</property>
+		      <property name="label" translatable="yes">About...</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="OnAboutActivate" last_modification_time="Tue, 08 Jul 2003 22:54:49 GMT"/>
 
 		      <child internal-child="image">
 			<widget class="GtkImage" id="image121">
 			  <property name="visible">True</property>
-			  <property name="stock">gnome-stock-about</property>
+			  <property name="stock">gtk-about</property>
 			  <property name="icon_size">1</property>
 			  <property name="xalign">0.5</property>
 			  <property name="yalign">0.5</property>
@@ -985,7 +1055,7 @@
 
 <widget class="GtkWindow" id="lookup">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">Lookup</property>
+  <property name="title" translatable="yes">Lookup URL</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -1008,7 +1078,7 @@
       <child>
 	<widget class="GtkLabel" id="label8">
 	  <property name="visible">True</property>
-	  <property name="label" translatable="yes">_Url to lookup:</property>
+	  <property name="label" translatable="yes">_URL to lookup:</property>
 	  <property name="use_underline">True</property>
 	  <property name="use_markup">True</property>
 	  <property name="justify">GTK_JUSTIFY_LEFT</property>

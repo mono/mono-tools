@@ -1,3 +1,12 @@
+2007-03-17  Kevin Reay  <kevintreay@gmail.com>
+
+	* browser.cs: Fixed bug where ctrl-clicking link a would cause crash
+	due to AddTab() affecting the current CurrentTab.html.Url variable.
+	* browser.glade: Make browser more gnome HIG compliant; added 
+	common HIG-related features.
+	* browser.cs: Fixed paste bug that would cause selected text to
+	not be overridden (in editing mode).
+
 2007-03-15  Kevin Reay  <kevintreay@gmail.com>
 
 	* browser.cs: Fix #80575. Add missing check for null CurrentTab.

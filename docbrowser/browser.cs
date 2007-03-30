@@ -158,6 +158,7 @@ public class Browser {
 	[Glade.Widget] CheckMenuItem showinheritedmembers;
 	[Glade.Widget] CheckMenuItem comments1;
 	[Glade.Widget] MenuItem postcomment;
+	[Glade.Widget] public MenuItem cut1;
 	[Glade.Widget] public MenuItem paste1;
 	[Glade.Widget] public MenuItem print;
 	public Notebook tabs_nb;
@@ -243,9 +244,9 @@ public class Browser {
                 
 		Stream icon = GetResourceImage ("monodoc.png");
 
-                if (icon != null){
+		if (icon != null) {
 			monodoc_pixbuf = new Gdk.Pixbuf (icon);
-                        MainWindow.Icon = monodoc_pixbuf;
+			MainWindow.Icon = monodoc_pixbuf;
 		}
 
 		//ellipsizing label for the title
@@ -314,6 +315,7 @@ public class Browser {
 
 		comments1.Active = SettingsHandler.Settings.ShowComments;
 
+		cut1.Sensitive = false;
 		paste1.Sensitive = false;
 
 		//
@@ -559,10 +561,12 @@ public class Browser {
 	
 	public void LinkClicked (object o, EventArgs args)
 	{
+		string url = CurrentTab.html.Url;
+			
 		if (HoldCtrl)
-			AddTab();
+			AddTab ();
 
-		LoadUrl (CurrentTab.html.Url);
+		LoadUrl (url);
 	}
 
 	private System.Xml.XmlNode edit_node;
@@ -924,6 +928,17 @@ ExtLoop:
 	}
 
 	//
+	// Invoked by Edit/Cut menu entry.
+	//
+	void OnCutActivate (object sender, EventArgs a)
+	{
+		if (CurrentTab.Tab_mode == Mode.Editor) {
+			Clipboard cb = Clipboard.Get (Gdk.Selection.Clipboard);
+			CurrentTab.text_editor.Buffer.CutClipboard (cb, true);
+		}
+	}
+
+	//
 	// Invoked by Edit/Copy menu entry.
 	//
 	void OnCopyActivate (object sender, EventArgs a)
@@ -946,9 +961,11 @@ ExtLoop:
 		if (!cb.WaitIsTextAvailable ())
 			return;
 
-		string text = cb.WaitForText ();
+		//string text = cb.WaitForText ();
 
-		CurrentTab.text_editor.Buffer.InsertAtCursor (text);
+		//CurrentTab.text_editor.Buffer.InsertAtCursor (text);
+
+		CurrentTab.text_editor.Buffer.PasteClipboard (cb);
 	}
 
 	class About {
@@ -967,7 +984,13 @@ ExtLoop:
 
 			about.TransientFor = parent.window1;
 
-			logo_image.Pixbuf = new Gdk.Pixbuf (null, "monodoc.png");
+			Gdk.Pixbuf icon = new Gdk.Pixbuf (null, "monodoc.png");
+
+			if (icon != null) {
+				about.Icon = icon;
+				logo_image.Pixbuf = icon;
+			}
+
 			Assembly assembly = Assembly.GetExecutingAssembly ();
 			label_version.Markup = String.Format ("<b>Version:</b> {0}", assembly.GetName ().Version.ToString ());
 		}
@@ -2392,11 +2415,13 @@ public class Tab : Notebook {
 		
 		if (m == Mode.Viewer) {
 			this.Page = 0;
+			browser.cut1.Sensitive = false;
 			browser.paste1.Sensitive = false;
 			browser.print.Sensitive = true;
 			EditImg.Visible = false;
 		} else {
 			this.Page = 1;
+			browser.cut1.Sensitive = true;
 			browser.paste1.Sensitive = true;
 			browser.print.Sensitive = false;
 			EditImg.Visible = true;
