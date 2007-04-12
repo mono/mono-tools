@@ -384,19 +384,6 @@ static class MapUtils {
 		return p.GetValue (o, new object[0]);
 	}
 
-	private static bool GetPropertyValueAsBool (object o, string property)
-	{
-		object v = GetPropertyValue (o, property);
-		if (v == null)
-			return false;
-		try {
-			return (bool) v;
-		}
-		catch {
-			return false;
-		}
-	}
-
 	public static bool IsIntegralType (Type t)
 	{
 		return t == typeof(byte) || t == typeof(sbyte) || t == typeof(char) ||
@@ -475,12 +462,6 @@ static class MapUtils {
 			return "";
 		if (config.NamespaceRenames.ContainsKey (t.Namespace))
 			return config.NamespaceRenames [t.Namespace];
-#if false
-		/* this is legacy behavior; Mono.Posix.dll should be fixed to use
-		 * MapAttribute.ExportPrefix so we don't need this hack anymore */
-		if (t.Namespace == "Mono.Unix.Native" || t.Namespace == "Mono.Unix")
-			return "Mono_Posix";
-#endif
 		return t.Namespace.Replace ('.', '_');
 	}
 
@@ -976,27 +957,6 @@ class HeaderFileGenerator : FileGenerator {
 		}
 		sh.Write (MapUtils.GetFunctionDeclaration (entryPoint, method));
 		sh.WriteLine (";");
-
-#if false
-		sh.WriteLine ("{0} ", method.ReturnType == typeof(string) 
-				? "char*" 
-				: MapUtils.GetNativeType (method.ReturnType));
-		sh.Write ("{0} ", entryPoint);
-		ParameterInfo[] parameters = method.GetParameters();
-		if (parameters.Length == 0) {
-			sh.WriteLine ("(void);");
-			return;
-		}
-		if (parameters.Length > 0) {
-			sh.Write ("(");
-			WriteParameterDeclaration (parameters [0]);
-		}
-		for (int i = 1; i < parameters.Length; ++i) {
-			sh.Write (", ");
-			WriteParameterDeclaration (parameters [i]);
-		}
-		sh.WriteLine (");");
-#endif
 	}
 
 	private void DumpTypeInfo (Type t)
@@ -1014,36 +974,29 @@ class HeaderFileGenerator : FileGenerator {
 	private static string GetMemberValue (MemberInfo mi, Type t)
 	{
 		try {
-		switch (mi.MemberType) {
-			case MemberTypes.Constructor:
-			case MemberTypes.Method: {
-				MethodBase b = (MethodBase) mi;
-				if (b.GetParameters().Length == 0)
-					return b.Invoke (t, new object[]{}).ToString();
-				return "<<cannot invoke>>";
+			switch (mi.MemberType) {
+				case MemberTypes.Constructor:
+				case MemberTypes.Method: {
+					MethodBase b = (MethodBase) mi;
+					if (b.GetParameters().Length == 0)
+						return b.Invoke (t, new object[]{}).ToString();
+					return "<<cannot invoke>>";
+				}
+				case MemberTypes.Field:
+					return ((FieldInfo) mi).GetValue (t).ToString ();
+				case MemberTypes.Property: {
+					PropertyInfo pi = (PropertyInfo) mi;
+					if (!pi.CanRead)
+						return "<<cannot read>>";
+					return pi.GetValue (t, null).ToString ();
+				}
+				default:
+					return "<<unknown value>>";
 			}
-			case MemberTypes.Field:
-				return ((FieldInfo) mi).GetValue (t).ToString ();
-			case MemberTypes.Property: {
-				PropertyInfo pi = (PropertyInfo) mi;
-				if (!pi.CanRead)
-					return "<<cannot read>>";
-				return pi.GetValue (t, null).ToString ();
-			}
-			default:
-				return "<<unknown value>>";
-		}
 		}
 		catch (Exception e) {
 			return "<<exception reading member: " + e.Message + ">>";
 		}
-	}
-
-	private void WriteParameterDeclaration (ParameterInfo pi)
-	{
-		// DumpTypeInfo (pi.ParameterType);
-		string nt = MapUtils.GetNativeType (pi.ParameterType);
-		sh.Write ("{0} {1}", nt, pi.Name);
 	}
 }
 
@@ -1147,37 +1100,43 @@ class SourceFileGenerator : FileGenerator {
                 ? CNM_MAXINT64                    \
                 : (g_assert_not_reached (), 0))
 
-#ifdef DEBUG
-#define _cnm_dump_(to_t,from)                                            \
-  printf (""# %s -> %s: min=%llx; max=%llx; value=%llx; lt=%i; l0=%i; gt=%i; e=%i\n"", \
+#ifdef _CNM_DUMP
+#define _cnm_dump(to_t,from)                                             \
+  printf (""# %s -> %s: uns=%i; min=%llx; max=%llx; value=%llx; lt=%i; l0=%i; gt=%i; e=%i\n"", \
     #from, #to_t,                                                        \
-    (gint64) (_cnm_integral_type_min(to_t)),                             \
+    (int) _cnm_integral_type_is_unsigned (to_t),                         \
+    (gint64) (_cnm_integral_type_min (to_t)),                            \
     (gint64) (_cnm_integral_type_max (to_t)),                            \
     (gint64) (from),                                                     \
-    (_cnm_integral_type_min (to_t) <= from),                             \
+    (((gint64) _cnm_integral_type_min (to_t)) <= (gint64) from),         \
     (from < 0),                                                          \
-    /* (_cnm_integral_type_max (to_t) >= from) */                        \
-    (from <= _cnm_integral_type_max (to_t)),                             \
-    ((_cnm_integral_type_min(to_t) >= from) &&                           \
-          ((from < 0) ? 1 : (from <= _cnm_integral_type_max(to_t))))     \
+    (((guint64) from) <= (guint64) _cnm_integral_type_max (to_t)),       \
+    !((int) _cnm_integral_type_is_unsigned (to_t)                        \
+      ? ((0 <= from) &&                                                  \
+         ((guint64) from <= (guint64) _cnm_integral_type_max (to_t)))    \
+      : ((gint64) _cnm_integral_type_min(to_t) <= (gint64) from &&       \
+         (guint64) from <= (guint64) _cnm_integral_type_max (to_t)))     \
   )
-#else
-#define _cnm_dump_(to_t, from) do {} while (0)
-#endif
+#else /* ndef _CNM_DUMP */
+#define _cnm_dump(to_t, from) do {} while (0)
+#endif /* def _CNM_DUMP */
 
 #ifdef DEBUG
 #define _cnm_return_val_if_overflow(to_t,from,val)  G_STMT_START {   \
-    gint64  sf = (gint64) from;                                      \
-    guint64 uf = (guint64) from;                                     \
-    if (!(_cnm_integral_type_min(to_t) <= sf &&                      \
-          ((from < 0) || (uf <= _cnm_integral_type_max(to_t))))) {   \
-      _cnm_dump_(to_t, from);                                        \
+    int     uns = _cnm_integral_type_is_unsigned (to_t);             \
+    gint64  min = (gint64)  _cnm_integral_type_min (to_t);           \
+    guint64 max = (guint64) _cnm_integral_type_max (to_t);           \
+    gint64  sf  = (gint64)  from;                                    \
+    guint64 uf  = (guint64) from;                                    \
+    if (!(uns ? ((0 <= from) && (uf <= max))                         \
+              : (min <= sf && (from < 0 || uf <= max)))) {           \
+      _cnm_dump(to_t, from);                                         \
       errno = EOVERFLOW;                                             \
       return (val);                                                  \
     }                                                                \
   } G_STMT_END
 #else /* !def DEBUG */
-/* don't do an overflow checking */
+/* don't do any overflow checking */
 #define _cnm_return_val_if_overflow(to_t,from,val)  G_STMT_START {   \
   } G_STMT_END
 #endif /* def DEBUG */

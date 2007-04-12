@@ -36,7 +36,7 @@ $(test_output): TestMap.dll $(EXE)
 		--public-header='<stdlib.h>'                          \
 		--public-macro=DefineMe=42                            \
 		--impl-header='<stdio.h>'                             \
-		--impl-header='"foo.h"'                               \
+		--impl-header='"test.h"'                              \
 		--impl-macro='FOO="foo"'                              \
 		--exclude-native-symbol=exclude_native_symbol         \
 		--library=NativeLib                                   \
@@ -56,6 +56,9 @@ check-update:
 
 libtest.so: test.c
 	gcc -shared -o $@ $^ -I.. `pkg-config --libs --cflags glib-2.0`
+
+test-overflow: test-overflow.c test-overflow.h test.c
+	gcc -o $@ $< `pkg-config --libs --cflags glib-2.0`
 
 CLEANFILES = $(EXE) $(EXE).mdb $(test_output) TestMap.dll TestMap.dll.mdb libtest.so
 

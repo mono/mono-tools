@@ -1,3 +1,17 @@
+2007-04-12  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: Remove unused methods; fix indenting; fix
+	  _cnm_return_val_if_overflow() so that it doesn't trigger false positives
+	  on Linux and Intel Mac OS X
+	* src/Makefile.am: Test --impl-header with a header that actually exists --
+	  allows the libtest.so target to actually work.  (Granted, now "test.h" has
+	  *two* includes in test.c, but that's not a problem.)  
+	  Add a test-overflow target to create test-overflow program from
+	  test-overflow.c, test-overflow.h.
+	* src/test-overflow.c, src/test-overflow.h: Tests for
+	  _cnm_return_val_if_overflow().
+	* src/test.c.ref: Flush.
+
 2006-11-30  Mike Kestner  <mkestner@novell.com>
 
 	* bin/Makefile.am: distcheck fixes
