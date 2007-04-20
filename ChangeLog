@@ -1,3 +1,7 @@
+2007-04-19  Wade Berrier  <wberrier@novell.com>
+
+	* configure.in: version bump -> 1.2.4
+
 2007-01-31  Mike Kestner  <mkestner@novell.com>
 
 	* configure.in: add ilcontrast tool.
