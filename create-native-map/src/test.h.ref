@@ -76,17 +76,17 @@ int MakeMap_Test_FromSimpleFlagsEnum (int x, int *r);
 int MakeMap_Test_ToSimpleFlagsEnum (int x, int *r);
 
 enum MakeMap_Test_TestEnum {
-	MakeMap_Test_TestEnum_Bar           = 0x00000001,
+	MakeMap_Test_TestEnum_Bar           = 0x0000000000000001,
 	#define MakeMap_Test_TestEnum_Bar     MakeMap_Test_TestEnum_Bar
-	MakeMap_Test_TestEnum_Baz           = 0x00000002,
+	MakeMap_Test_TestEnum_Baz           = 0x0000000000000002,
 	#define MakeMap_Test_TestEnum_Baz     MakeMap_Test_TestEnum_Baz
-	MakeMap_Test_TestEnum_Foo           = 0x00000000,
+	MakeMap_Test_TestEnum_Foo           = 0x0000000000000000,
 	#define MakeMap_Test_TestEnum_Foo     MakeMap_Test_TestEnum_Foo
-	MakeMap_Test_TestEnum_Qux           = 0x00000003,
+	MakeMap_Test_TestEnum_Qux           = 0x0000000000000003,
 	#define MakeMap_Test_TestEnum_Qux     MakeMap_Test_TestEnum_Qux
 };
-int MakeMap_Test_FromTestEnum (int x, int *r);
-int MakeMap_Test_ToTestEnum (int x, int *r);
+int MakeMap_Test_FromTestEnum (gint64 x, gint64 *r);
+int MakeMap_Test_ToTestEnum (gint64 x, gint64 *r);
 
 enum MakeMap_Rename_Colors {
 	MakeMap_Rename_Colors_Blue          = 0x00000001,
@@ -161,7 +161,7 @@ MakeMap_Test_ToFoo (struct foo *from, struct MakeMap_Test_Foo* to);
 
 struct MakeMap_Test_FooHolder {
 	struct MakeMap_Test_Foo foo;   /* struct foo */
-	int                     mode;
+	gint64                  mode;
 };
 
 int

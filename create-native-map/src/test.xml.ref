@@ -248,14 +248,14 @@
 
 
     <Member MemberName="TryFromTestEnum">
-      <MemberSignature Language="C#" Value="public static bool TryFromTestEnum (MakeMap.Test.TestEnum value, out int rval);" />
+      <MemberSignature Language="C#" Value="public static bool TryFromTestEnum (MakeMap.Test.TestEnum value, out long rval);" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Parameters>
         <Parameter Name="value" Type="MakeMap.Test.TestEnum" />
-        <Parameter Name="rval" Type="System.Int32&amp;" RefType="out" />
+        <Parameter Name="rval" Type="System.Int64&amp;" RefType="out" />
       </Parameters>
       <Docs>
         <param name="value">The managed value to convert.</param>
@@ -276,10 +276,10 @@
       </Docs>
     </Member>
     <Member MemberName="FromTestEnum">
-      <MemberSignature Language="C#" Value="public static int FromTestEnum (MakeMap.Test.TestEnum value);" />
+      <MemberSignature Language="C#" Value="public static long FromTestEnum (MakeMap.Test.TestEnum value);" />
       <MemberType>Method</MemberType>
       <ReturnValue>
-        <ReturnType>System.Int32</ReturnType>
+        <ReturnType>System.Int64</ReturnType>
       </ReturnValue>
       <Parameters>
         <Parameter Name="value" Type="MakeMap.Test.TestEnum" />
@@ -299,13 +299,13 @@
       </Docs>
     </Member>
     <Member MemberName="TryToTestEnum">
-      <MemberSignature Language="C#" Value="public static bool TryToTestEnum (int value, out MakeMap.Test.TestEnum rval);" />
+      <MemberSignature Language="C#" Value="public static bool TryToTestEnum (long value, out MakeMap.Test.TestEnum rval);" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="value" Type="System.Int32" />
+        <Parameter Name="value" Type="System.Int64" />
         <Parameter Name="rval" Type="MakeMap.Test.TestEnum&amp;" RefType="out" />
       </Parameters>
       <Docs>
@@ -328,13 +328,13 @@
       </Docs>
     </Member>
     <Member MemberName="ToTestEnum">
-      <MemberSignature Language="C#" Value="public static MakeMap.Test.TestEnum ToTestEnum (int value);" />
+      <MemberSignature Language="C#" Value="public static MakeMap.Test.TestEnum ToTestEnum (long value);" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>MakeMap.Test.TestEnum</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="value" Type="System.Int32" />
+        <Parameter Name="value" Type="System.Int64" />
       </Parameters>
       <Docs>
         <param name="value">The OS-specific value to convert.</param>

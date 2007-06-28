@@ -1,3 +1,13 @@
+2007-06-28  Jonathan Pryor  <jonpryor@vt.edu>
+
+	* src/create-native-map.cs: Sort members by Ordinal|IgnoreCase; sort types
+	  by their .FullName property, so that namespace is taken into account when
+	  sorting them and emitting their declarations.
+	* src/TestMap.cs: Make one of the enum's a `long' type, to see how the
+	  constants change in the generated .h file.
+	* src/test.h.ref, src/test.xml.ref, src/test.c.ref, src/test.cs.ref: 
+	  Flush (due to TestEnum type change in TestMap.cs).
+
 2007-04-12  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* src/create-native-map.cs: Remove unused methods; fix indenting; fix

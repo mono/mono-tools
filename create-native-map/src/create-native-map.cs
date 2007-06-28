@@ -551,7 +551,7 @@ static class MapUtils {
 			if (s2 == null)
 				return -1;
 			return CultureInfo.InvariantCulture.CompareInfo.Compare (s1, s2, 
-					CompareOptions.Ordinal);
+					CompareOptions.Ordinal | CompareOptions.IgnoreCase);
 		}
 	}
 
@@ -833,8 +833,8 @@ class HeaderFileGenerator : FileGenerator {
 		}
 		Type et = MapUtils.GetElementType (st);
 		string s = MapUtils.GetNativeType (et);
-		if (s.StartsWith ("struct ") && !structs.ContainsKey (et.Name)) {
-			structs [et.Name] = et;
+		if (s.StartsWith ("struct ") && !structs.ContainsKey (et.FullName)) {
+			structs [et.FullName] = et;
 			foreach (FieldInfo fi in et.GetFields (BindingFlags.Instance | 
 					BindingFlags.Public | BindingFlags.NonPublic)) {
 				RecordTypes (fi.FieldType);

@@ -16,7 +16,7 @@ namespace MakeMap.Test {
 			HandleRef h, ForDelegate fd);
 
 	[Map]
-	enum TestEnum {
+	enum TestEnum : long {
 		Foo,
 		Bar,
 		Baz,

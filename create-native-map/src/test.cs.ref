@@ -119,30 +119,30 @@ namespace Mono.Unix.Native {
 		}
 
 		[DllImport (LIB, EntryPoint="MakeMap_Test_FromTestEnum")]
-		private static extern int FromTestEnum (TestEnum value, out Int32 rval);
+		private static extern int FromTestEnum (TestEnum value, out Int64 rval);
 
-		public static bool TryFromTestEnum (TestEnum value, out Int32 rval)
+		public static bool TryFromTestEnum (TestEnum value, out Int64 rval)
 		{
 			return FromTestEnum (value, out rval) == 0;
 		}
 
-		public static Int32 FromTestEnum (TestEnum value)
+		public static Int64 FromTestEnum (TestEnum value)
 		{
-			Int32 rval;
+			Int64 rval;
 			if (FromTestEnum (value, out rval) == -1)
 				ThrowArgumentException (value);
 			return rval;
 		}
 
 		[DllImport (LIB, EntryPoint="MakeMap_Test_ToTestEnum")]
-		private static extern int ToTestEnum (Int32 value, out TestEnum rval);
+		private static extern int ToTestEnum (Int64 value, out TestEnum rval);
 
-		public static bool TryToTestEnum (Int32 value, out TestEnum rval)
+		public static bool TryToTestEnum (Int64 value, out TestEnum rval)
 		{
 			return ToTestEnum (value, out rval) == 0;
 		}
 
-		public static TestEnum ToTestEnum (Int32 value)
+		public static TestEnum ToTestEnum (Int64 value)
 		{
 			TestEnum rval;
 			if (ToTestEnum (value, out rval) == -1)

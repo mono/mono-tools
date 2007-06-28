@@ -498,7 +498,7 @@ int MakeMap_Test_ToSimpleFlagsEnum (int x, int *r)
 	return 0;
 }
 
-int MakeMap_Test_FromTestEnum (int x, int *r)
+int MakeMap_Test_FromTestEnum (gint64 x, gint64 *r)
 {
 	*r = 0;
 	if (x == MakeMap_Test_TestEnum_Bar)
@@ -530,7 +530,7 @@ int MakeMap_Test_FromTestEnum (int x, int *r)
 	errno = EINVAL; return -1;
 }
 
-int MakeMap_Test_ToTestEnum (int x, int *r)
+int MakeMap_Test_ToTestEnum (gint64 x, gint64 *r)
 {
 	*r = 0;
 	if (x == 0)
