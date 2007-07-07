@@ -20,6 +20,8 @@ elif test x@MOZILLA_HOME@ != x; then
     if [ -f @MOZILLA_HOME@/chrome/comm.jar ]; then
         MOZILLA_HOME=@MOZILLA_HOME@
     fi 
+elif grep GRE_PATH /etc/gre.d/*.conf > /dev/null ; then
+        MOZILLA_HOME=$(grep -h GRE_PATH= /etc/gre.d/*.conf | cut -d '"' -f 2 -d = | head -n 1)
 elif [ $(which xulrunner 2> /dev/null) ] > /dev/null ; then
     MOZILLA_FIVE_HOME=`getdirectory xulrunner`
     MOZILLA_HOME=$MOZILLA_FIVE_HOME

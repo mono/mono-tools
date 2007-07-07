@@ -1,3 +1,8 @@
+2007-07-06  Wade Berrier  <wberrier@novell.com>
+
+	* monodoc.in: search gre.d to aid in finding libgtkembedmoz
+	(Stolen from monodevelop wrapper)
+
 2007-03-17  Kevin Reay  <kevintreay@gmail.com>
 
 	* browser.cs: Fixed bug where ctrl-clicking link a would cause crash
