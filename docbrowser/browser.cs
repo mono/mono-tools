@@ -627,8 +627,11 @@ public class Browser {
 	{
 		CurrentUrl = url;
 		CurrentTab.CurrentNode = matched_node;
-		if (highlight_text != null)
-			text = DoHighlightText (text);
+
+		// Comment out, thta routine is completely broken, someone needs to redo it
+		// it crashes randomly
+		//if (highlight_text != null)
+		//text = DoHighlightText (text);
 
 		CurrentTab.html.Render(text);
 
