@@ -1,3 +1,8 @@
+2007-10-01  Raja R Harinath  <rharinath@novell.com>
+
+	* Makefile.am (sources): Move Global.cs ...
+	(build_source): ... here.
+
 2007-07-06  Wade Berrier  <wberrier@novell.com>
 
 	* ilcontrast.in: search gre.d to aid in finding libgtkembedmoz
