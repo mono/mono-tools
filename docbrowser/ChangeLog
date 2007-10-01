@@ -1,3 +1,8 @@
+2007-10-01  Raja R Harinath  <rharinath@novell.com>
+
+	* Makefile.am (browser_sources): Move AssemblyInfo.cs ...
+	(browser_built_sources): ... here.
+
 2007-07-06  Wade Berrier  <wberrier@novell.com>
 
 	* monodoc.in: search gre.d to aid in finding libgtkembedmoz

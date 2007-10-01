@@ -19,7 +19,6 @@ DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc
 bin_SCRIPTS = monodoc
 
 browser_sources   = \
-	$(srcdir)/AssemblyInfo.cs	\
 	$(srcdir)/browser.cs		\
 	$(srcdir)/list.cs 		\
 	$(srcdir)/elabel.cs 		\
@@ -30,6 +29,7 @@ browser_sources   = \
 	$(srcdir)/BookmarkManager.cs	\
 	$(srcdir)/ProgressPanel.cs
 
+browser_built_sources = AssemblyInfo.cs
 
 geckorender_sources = \
 	$(srcdir)/GeckoHtmlRender.cs
@@ -55,7 +55,7 @@ EXTRA_DIST = \
 	admin.glade 			\
 	browser.glade 			\
 	monodoc.png			\
-	AssemblyInfo.cs			\
+	AssemblyInfo.cs.in		\
 	README.ADMIN
 
 # admin hardcodes GTKHTML for now.
@@ -64,8 +64,8 @@ admin.exe: $(admin_sources) $(srcdir)/admin.glade
 	$(MCS) -debug -out:admin.exe $(admin_sources) -resource:$(srcdir)/admin.glade,admin.glade $(browser_assemblies) $(GTKHTML_SHARP_LIBS) -r:System.Drawing
 endif
 
-browser.exe: $(browser_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
-	$(MCS) -debug -out:browser.exe $(browser_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
+browser.exe: $(browser_sources) $(browser_built_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
+	$(MCS) -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
 
 GeckoHtmlRender.dll : $(geckorender_sources) browser.exe
 	$(MCS) -debug -target:library -out:$@ $(geckorender_sources) $(geckorender_assemblies)  $(GECKO_PRINTING_DEF)
