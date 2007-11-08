@@ -1,3 +1,13 @@
+2007-11-08  Mike Kestner  <mkestner@novell.com>
+
+	* PrintManager.cs: extracted existing duplicated print
+	code from the two renderers and put it here, along with a
+	new Gtk.Print based implementation for gtkhtml-sharp 3.14
+	and beyond.
+	* GeckoHtmlRender.cs: refactor to use PrintManager.
+	* GtkHtmlHtmlRender.cs : ditto.
+	* Makefile.am : add some gtkhtml library install magic.
+
 2007-10-01  Raja R Harinath  <rharinath@novell.com>
 
 	* Makefile.am (browser_sources): Move AssemblyInfo.cs ...

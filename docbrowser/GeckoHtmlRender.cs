@@ -182,7 +182,9 @@ public class GeckoHtmlRender : IHtmlRender {
 		}
 		Console.WriteLine ("XXXX");
 		
-#if !USE_GTKHTML_PRINT
+#if USE_GTKHTML_PRINT
+		PrintManager.Print (Html);
+#else
 		MessageDialog md = new MessageDialog (null, 
 				DialogFlags.DestroyWithParent,
 				MessageType.Error, 
@@ -190,37 +192,6 @@ public class GeckoHtmlRender : IHtmlRender {
      
 		int result = md.Run ();
 		md.Destroy();
-#else
-		string Caption = "Monodoc Printing";
-
-		Gnome.PrintJob pj = new Gnome.PrintJob (PrintConfig.Default ());
-		PrintDialog dialog = new PrintDialog (pj, Caption, 0);
-
-		Gtk.HTML gtk_html = new Gtk.HTML (Html);
-		gtk_html.PrintSetMaster (pj);
-			
-		Gnome.PrintContext ctx = pj.Context;
-		gtk_html.Print (ctx);
-
-		pj.Close ();
-
-		// hello user
-		int response = dialog.Run ();
-		
-		if (response == (int) PrintButtons.Cancel) {
-			dialog.Hide ();
-			dialog.Dispose ();
-			return;
-		} else if (response == (int) PrintButtons.Print) {
-			pj.Print ();
-		} else if (response == (int) PrintButtons.Preview) {
-			new PrintJobPreview (pj, Caption).Show ();
-		}
-		
-		ctx.Close ();
-		dialog.Hide ();
-		dialog.Dispose ();
-		return;
 #endif
 	}
 }

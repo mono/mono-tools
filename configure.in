@@ -42,10 +42,19 @@ PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gconf-sharp-2.0)
 AC_SUBST(GTK_SHARP_LIBS)
 
 
+PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-3.14, enable_gtkhtml=yes, enable_gtkhtml=no)
+if test "x$enable_gtkhtml" = "xyes"; then
+GTKHTMLDLLCOPY=`pkg-config --variable=Libraries gtkhtml-sharp-3.14`
+CSHARP_FLAGS="-d:GTKHTML_SHARP_3_14"
+else
 PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-2.0, enable_gtkhtml=yes, enable_gtkhtml=no)
+CSHARP_FLAGS=
+GTKHTMLDLLCOPY=
+fi
 AC_SUBST(GTKHTML_SHARP_LIBS)
+AC_SUBST(GTKHTMLDLLCOPY)
+AC_SUBST(CSHARP_FLAGS)
 AM_CONDITIONAL(ENABLE_GTKHTML, test "x$enable_gtkhtml" = "xyes")
-
 
 PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp-2.0, enable_gecko=yes, enable_gecko=no)
 AC_SUBST(GECKO_SHARP_LIBS)
