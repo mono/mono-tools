@@ -9,7 +9,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyVersion("@VERSION@")]
+[assembly: AssemblyVersion("@TOOLS_VERSION@")]
 [assembly: AssemblyTitle ("Mono Documentation Browser")]
 [assembly: AssemblyDescription ("A documentation browser.")]
 [assembly: AssemblyCopyright ("Copyright (c) 2003-2005 Novell, Inc.")]
