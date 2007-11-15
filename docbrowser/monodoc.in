@@ -98,4 +98,5 @@ export MOZILLA_FIVE_HOME
 export MOZILLA_HOME 
 export LD_LIBRARY_PATH
 
-exec @RUNTIME@ $monodocdir/browser.exe $OPTIONS "$@" $REST
+# force '--no-gecko' because xulrunner is crashing on some browsers (bug #341815)
+exec @RUNTIME@ $monodocdir/browser.exe --no-gecko $OPTIONS "$@" $REST
