@@ -161,6 +161,7 @@ public class Browser {
 	[Glade.Widget] public MenuItem cut1;
 	[Glade.Widget] public MenuItem paste1;
 	[Glade.Widget] public MenuItem print;
+	[Glade.Widget] public MenuItem close_tab;
 	public Notebook tabs_nb;
 	public Tab CurrentTab;
 	bool HoldCtrl;
@@ -383,6 +384,7 @@ public class Browser {
 		search_tree.Model = search_store;
 		search_tree.AppendColumn ("Searches", new CellRendererText(), "text", 0);
 		search_tree.Selection.Changed += new EventHandler (ShowSearchResult);
+		search_tree.FocusOutEvent += new FocusOutEventHandler(LostFocus);
 
 		vbox1.ShowAll ();
 		search_vbox.ShowAll ();
@@ -394,6 +396,7 @@ public class Browser {
 		CurrentTab = new Tab (this);
 		tabs_nb.AppendPage (CurrentTab, CurrentTab.TabLabel);
 		tabs_nb.ShowTabs = (tabs_nb.NPages > 1);
+		close_tab.Sensitive = (tabs_nb.NPages > 1);
 		tabs_nb.ShowAll (); //Needed to show the new tab
 		tabs_nb.CurrentPage = tabs_nb.PageNum (CurrentTab);
 		//Show root node
@@ -404,6 +407,14 @@ public class Browser {
 			CurrentTab.history.AppendHistory (new Browser.LinkPageVisit (this, "root:"));
 		}
 		
+	}
+
+	void CloseTab ()
+	{
+		tabs_nb.RemovePage(tabs_nb.CurrentPage);
+		bool multiple_tabs = (tabs_nb.NPages > 1);
+		tabs_nb.ShowTabs = multiple_tabs;
+		close_tab.Sensitive = multiple_tabs;
 	}
 	
 	//Called when the user changes the active Tab
@@ -463,6 +474,15 @@ public class Browser {
 		search_tree.Selection.SelectPath (p);
 		search_term.Editable = true;	
 	}
+
+	//
+	// Invoked when the search results panel losts focus
+	//
+	void LostFocus(object sender, FocusOutEventArgs a)
+	{
+		search_tree.Selection.UnselectAll();
+	}
+
 	//
 	// Invoked when the user click on one of the search results
 	//
@@ -1610,6 +1630,14 @@ ExtLoop:
 	{
 		AddTab();
 	}
+
+	//
+	// Invoked by Close Tab menu entry.
+	//
+	public void OnCloseTab (object sender, EventArgs a)
+	{
+		CloseTab();
+	}
 	
 }
 
@@ -2275,12 +2303,14 @@ public class Tab : Notebook {
 		if (browser.UseGecko) {
 			html = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
 			html_preview = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
+			HelpSource.use_css = true;
 		}
 		
 		if (html == null || html_preview == null) {
 			html = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
 			html_preview = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
 			browser.UseGecko = false;
+			HelpSource.use_css = false;
 		}
 
 		if (html == null || html_preview == null)
@@ -2389,7 +2419,7 @@ public class Tab : Notebook {
 		tabClose.Add(img);
 		tabClose.Relief = Gtk.ReliefStyle.None;
 		tabClose.SetSizeRequest (18, 18);
-		tabClose.Clicked += new EventHandler (OnTabClose);
+		tabClose.Clicked += new EventHandler (browser.OnCloseTab);
 		
 		//Icon showed when the Tab is in Edit Mode
 		EditImg = new Image (Stock.Convert, IconSize.SmallToolbar);
@@ -2537,11 +2567,6 @@ public class Tab : Notebook {
 
 			return false;
 		});
-	}
-	void OnTabClose (object sender, EventArgs a)
-	{
-		browser.tabs_nb.RemovePage(browser.tabs_nb.PageNum(this));
-		browser.tabs_nb.ShowTabs = (browser.tabs_nb.NPages > 1);
 	}
 	
 }

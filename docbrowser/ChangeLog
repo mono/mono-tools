@@ -1,3 +1,13 @@
+2007-11-23  Mario Sopena <mario.sopena@gmail.com>
+
+	* browser.cs: 
+	  - fix #324305. Now, when search results panel lost focus,
+	    unselects the selected search result
+	  - fix #322097. Solution based on the patch provided 
+	    by gabriel.burt@gmail.com
+	  - Use CSS when gecko is used as renderer
+	
+
 2007-11-15  Wade Berrier  <wberrier@novell.com>
 
 	* monodoc.in: force --no-gecko because xulrunner crashes on some distros
