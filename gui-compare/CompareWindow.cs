@@ -1,32 +1,50 @@
-
+//
+//
+// Authors:
+//   Chris Toshok
+//
 using Gtk;
 using System;
 using System.IO;
+using System.Reflection;
 
 using IOPath = System.IO.Path;
 
 namespace GuiCompare {
 	public class CompareWindow : Window
 	{
-		static Gdk.Pixbuf classPixbuf = new Gdk.Pixbuf ("cm/c.gif");
-		static Gdk.Pixbuf delegatePixbuf = new Gdk.Pixbuf ("cm/d.gif");
-		static Gdk.Pixbuf enumPixbuf = new Gdk.Pixbuf ("cm/en.gif");
-		static Gdk.Pixbuf eventPixbuf = new Gdk.Pixbuf ("cm/e.gif");
-		static Gdk.Pixbuf fieldPixbuf = new Gdk.Pixbuf ("cm/f.gif");
-		static Gdk.Pixbuf interfacePixbuf = new Gdk.Pixbuf ("cm/i.gif");
-		static Gdk.Pixbuf methodPixbuf = new Gdk.Pixbuf ("cm/m.gif");
-		static Gdk.Pixbuf namespacePixbuf = new Gdk.Pixbuf ("cm/n.gif");
-		static Gdk.Pixbuf propertyPixbuf = new Gdk.Pixbuf ("cm/p.gif");
-		static Gdk.Pixbuf attributePixbuf = new Gdk.Pixbuf ("cm/r.gif");
-		static Gdk.Pixbuf structPixbuf = new Gdk.Pixbuf ("cm/s.gif");
-		static Gdk.Pixbuf assemblyPixbuf = new Gdk.Pixbuf ("cm/y.gif");
+		static Gdk.Pixbuf classPixbuf, delegatePixbuf, enumPixbuf;
+		static Gdk.Pixbuf eventPixbuf, fieldPixbuf, interfacePixbuf;
+		static Gdk.Pixbuf methodPixbuf, namespacePixbuf, propertyPixbuf;
+		static Gdk.Pixbuf attributePixbuf, structPixbuf, assemblyPixbuf;
 
-		static Gdk.Pixbuf okPixbuf = new Gdk.Pixbuf ("cm/sc.gif");
-		static Gdk.Pixbuf errorPixbuf = new Gdk.Pixbuf ("cm/se.gif");
-		static Gdk.Pixbuf missingPixbuf = new Gdk.Pixbuf ("cm/sm.gif");
-		static Gdk.Pixbuf todoPixbuf = new Gdk.Pixbuf ("cm/st.gif");
-		static Gdk.Pixbuf extraPixbuf = new Gdk.Pixbuf ("cm/sx.gif");
+		static Gdk.Pixbuf okPixbuf, errorPixbuf;
+		static Gdk.Pixbuf missingPixbuf, todoPixbuf, extraPixbuf;
 
+		static CompareWindow ()
+		{
+			Assembly ta = typeof (CompareWindow).Assembly;
+
+			classPixbuf = new Gdk.Pixbuf (ta, "c.gif");
+			delegatePixbuf = new Gdk.Pixbuf (ta, "d.gif");
+			enumPixbuf = new Gdk.Pixbuf (ta, "en.gif");
+			eventPixbuf = new Gdk.Pixbuf (ta, "e.gif");
+			fieldPixbuf = new Gdk.Pixbuf (ta, "f.gif");
+			interfacePixbuf = new Gdk.Pixbuf (ta, "i.gif");
+			methodPixbuf = new Gdk.Pixbuf (ta, "m.gif");
+			namespacePixbuf = new Gdk.Pixbuf (ta, "n.gif");
+			propertyPixbuf = new Gdk.Pixbuf (ta, "p.gif");
+			attributePixbuf = new Gdk.Pixbuf (ta, "r.gif");
+			structPixbuf = new Gdk.Pixbuf (ta, "s.gif");
+			assemblyPixbuf = new Gdk.Pixbuf (ta, "y.gif");
+	
+			okPixbuf = new Gdk.Pixbuf (ta, "sc.gif");
+			errorPixbuf = new Gdk.Pixbuf (ta, "se.gif");
+			missingPixbuf = new Gdk.Pixbuf (ta, "sm.gif");
+			todoPixbuf = new Gdk.Pixbuf (ta, "st.gif");
+			extraPixbuf = new Gdk.Pixbuf (ta, "sx.gif");
+		}
+		
 		public CompareWindow ()
 			: base ("Mono GuiCompare")
 		{

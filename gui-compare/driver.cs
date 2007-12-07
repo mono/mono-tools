@@ -17,9 +17,7 @@ namespace GuiCompare {
 				foreach (string a in args) {
 					string ext = Path.GetExtension (a);
 
-					if (!(ext == ".dll"
-					      || ext == ".exe")
-					    || !File.Exists (a))
+					if (!(ext == ".dll" || ext == ".exe") || !File.Exists (a))
 						continue;
 
 					CompareWindow mw = new CompareWindow ();
