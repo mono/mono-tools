@@ -53,16 +53,32 @@ namespace GuiCompare {
 		public MasterClass (XMLClass cls)
 			: base (cls.name)
 		{
+			xml_cls = cls;
 		}
 
 		public override List<CompMethod> GetMethods()
 		{
-			throw new NotImplementedException ();
+			return new List<CompMethod>();
 		}
 
 		public override List<CompMethod> GetConstructors()
 		{
-			throw new NotImplementedException ();
+			return new List<CompMethod>();
 		}
+
+		public override List<CompClass> GetNestedClasses()
+		{
+			List<CompClass> rv = new List<CompClass>();
+			if (xml_cls.nested != null) {
+				foreach (XMLClass nested in xml_cls.nested)
+					rv.Add (new MasterClass (nested));
+
+				rv.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
+			}
+
+			return rv;
+		}
+
+		XMLClass xml_cls;
 	}
 }

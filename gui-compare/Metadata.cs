@@ -61,6 +61,8 @@ namespace GuiCompare {
 // 		public abstract List<CompProperty> GetProperties();
 // 		public abstract List<CompField>    GetFields();
 // 		public abstract List<CompEvent>    GetEvents();
+
+		public abstract List<CompClass>  GetNestedClasses();
 	}
 
 	public abstract class CompMethod : CompAttributeContainer {

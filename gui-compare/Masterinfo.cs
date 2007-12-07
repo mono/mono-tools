@@ -643,7 +643,7 @@ using System.Xml;
 		XMLProperties properties;
 		XMLEvents events;
 		public XMLMethods methods;
-		XMLClass [] nested;
+		public XMLClass [] nested;
 		
 		public override void LoadData (XmlNode node)
 		{

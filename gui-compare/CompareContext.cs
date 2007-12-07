@@ -64,7 +64,7 @@ namespace GuiCompare {
 
 			FinishedOnGuiThread ();
 
-			DumpComparison (comparison, 0);
+			//			DumpComparison (comparison, 0);
 		}
 
 		char StatusToChar (ComparisonStatus r)
@@ -97,7 +97,7 @@ namespace GuiCompare {
 
 			int m = 0, a = 0;
 
-			while (m < master_namespaces.Count && a < assembly_namespaces.Count) {
+			while (m < master_namespaces.Count || a < assembly_namespaces.Count) {
 				if (m == master_namespaces.Count) {
 					AddExtraNamespace (parent, assembly_namespaces[a]);
 					a++;
@@ -135,20 +135,17 @@ namespace GuiCompare {
 			}
 		}
 
-		void CompareTypes (NamespaceComparison parent,
-				   CompNamespace master_namespace, CompNamespace assembly_namespace)
+		void CompareClassLists (ComparisonNode parent,
+					List<CompClass> master_types, List<CompClass> assembly_types)
 		{
-			List<CompClass> assembly_types = assembly_namespace.GetClasses();
-			List<CompClass> master_types = master_namespace.GetClasses();
-
 			int m = 0, a = 0;
-			while (m < master_types.Count && a < assembly_types.Count) {
-				if (m == master_types.Count) {
+			while (m < master_types.Count || a < assembly_types.Count) {
+				if (master_types == null || m == master_types.Count) {
 					AddExtraClass (parent, assembly_types[a]);
 					a++;
 					continue;
 				}
-				else if (a == assembly_types.Count) {
+				else if (assembly_types == null || a == assembly_types.Count) {
 					AddMissingClass (parent, master_types[m]);
 					m++;
 					continue;
@@ -162,7 +159,10 @@ namespace GuiCompare {
 					ClassComparison comparison = new ClassComparison (master_types[m].Name);
 					parent.AddChild (comparison);
 					CompareMethods (comparison, master_types[m], assembly_types[a]);
-					//CompareMembers (comparison, master_types[m], assembly_namespace [assembly_types[a]]);
+					// XXX more comparison stuff here
+					CompareClassLists (comparison,
+							   master_types[m].GetNestedClasses(),
+							   assembly_types[a].GetNestedClasses());
 					m++;
 					a++;
 				}
@@ -179,41 +179,40 @@ namespace GuiCompare {
 			}
 		}
 
+		void CompareTypes (NamespaceComparison parent,
+				   CompNamespace master_namespace, CompNamespace assembly_namespace)
+		{
+			CompareClassLists (parent,
+					   master_namespace.GetClasses(), assembly_namespace.GetClasses());
+		}
+
 		void CompareMethods (ComparisonNode parent,
 				     CompClass master_class, CompClass assembly_class)
 		{
-#if false
-			MethodDefinition[] assembly_methods = new MethodDefinition [assembly_class.Methods.Count];
-			((ICollection)assembly_class.Methods).CopyTo (assembly_methods, 0);
-			Array.Sort (assembly_methods, new MethodDefinitionComparer());
-
-			XMLMethods [] master_methods = new XMLMethods [master_class.methods.Length];
-			master_class.methods.CopyTo (master_methods, 0);
-			Array.Sort (master_methods, new XMLMethodComparer());
+			List<CompMethod> assembly_methods = assembly_class.GetMethods();
+			List<CompMethod> master_methods = master_class.GetMethods();
 
 			int m = 0, a = 0;
-			while (m < master_methods.Length && a < assembly_methods.Length) {
-				if (m == master_methods.Length) {
+			while (m < master_methods.Count || a < assembly_methods.Count) {
+				if (m == master_methods.Count) {
 					AddExtraMethod (parent, assembly_methods[a]);
 					a++;
 					continue;
 				}
-				else if (a == assembly_methods.Length) {
+				else if (a == assembly_methods.Count) {
 					AddMissingMethod (parent, master_methods[m]);
 					m++;
 					continue;
 				}
 
-				int c = String.Compare (master_methods[m].name, assembly_methods[a].Name);
+				int c = String.Compare (master_methods[m].Name, assembly_methods[a].Name);
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-					Console.WriteLine ("method {0} is in both, doing more comparisons", master_methods[m].name);
-					MethodComparison comparison = new MethodComparison (master_methods[m].name);
+					Console.WriteLine ("method {0} is in both, doing more comparisons", master_methods[m].Name);
+					MethodComparison comparison = new MethodComparison (master_methods[m].Name);
 					parent.AddChild (comparison);
-
-					// XXX compare attributes
-
+					//CompareParameters (comparison, master_methods[m], assembly_namespace [assembly_methods[a]]);
 					m++;
 					a++;
 				}
@@ -228,7 +227,6 @@ namespace GuiCompare {
 					a++;
 				}
 			}
-#endif
 		}
 
 		void AddExtraNamespace (ComparisonNode parent, CompNamespace ns)
@@ -237,7 +235,6 @@ namespace GuiCompare {
 			parent.AddChild (namespace_node);
 			namespace_node.status = ComparisonStatus.Extra;
 
-			Console.WriteLine ("extra namespace: {0}", ns.Name);
 			List<CompClass> classes = ns.GetClasses();
 			foreach (CompClass cls in classes)
 				AddExtraClass (namespace_node, cls);
@@ -248,8 +245,6 @@ namespace GuiCompare {
 			ComparisonNode namespace_node = new NamespaceComparison (ns.Name);
 			parent.AddChild (namespace_node);
 			namespace_node.status = ComparisonStatus.Missing;
-
-			Console.WriteLine ("missing namespace: {0}", ns.Name);
 
 			List<CompClass> classes = ns.GetClasses();
 			foreach (CompClass cls in classes)
@@ -270,14 +265,18 @@ namespace GuiCompare {
 			comparison.status = ComparisonStatus.Missing;
 		}
 
-		void AddExtraMethod (ComparisonNode parent, MethodDefinition assembly_method)
+		void AddExtraMethod (ComparisonNode parent, CompMethod extra)
 		{
-// 			Console.WriteLine ("extra method: {0}", assembly_method.Name);
+			ComparisonNode method_node = new MethodComparison (extra.Name);
+			parent.AddChild (method_node);
+			method_node.status = ComparisonStatus.Extra;
 		}
 
-		void AddMissingMethod (ComparisonNode parent, XMLMethods master_method)
+		void AddMissingMethod (ComparisonNode parent, CompMethod missing)
 		{
-// 			Console.WriteLine ("missing method: {0}", master_method.name);
+			ComparisonNode method_node = new MethodComparison (missing.Name);
+			parent.AddChild (method_node);
+			method_node.status = ComparisonStatus.Missing;
 		}
 
 		void LoadMasterinfo ()

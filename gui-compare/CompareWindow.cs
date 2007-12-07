@@ -97,14 +97,20 @@ namespace GuiCompare {
 
 		public void SetAssemblyPath (string path)
 		{
-			string masterinfoPath = IOPath.Combine (masterinfoDirectory, IOPath.GetFileName (IOPath.ChangeExtension (path, "xml")));
+			assemblyPath = path;
+			PerformCompare ();
+		}
+
+		public void PerformCompare ()
+		{
+			string masterinfoPath = IOPath.Combine (masterinfoDirectory, IOPath.GetFileName (IOPath.ChangeExtension (assemblyPath, "xml")));
 
 			// clear our existing content
 			if (context != null)
 				context.StopCompare ();
 
 			// now generate new content asynchronously
-			context = new CompareContext (masterinfoPath, path);
+			context = new CompareContext (masterinfoPath, assemblyPath);
 			context.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs e) {
 				/* update our progress bar */
 				status.Pop (0);
@@ -126,7 +132,7 @@ namespace GuiCompare {
 			context.Finished += delegate (object sender, EventArgs e) {
 				status.Pop (0);
 				status.Push (0, String.Format ("Comparison completed at {0}", DateTime.Now));
-				Title = IOPath.GetFileName (path);
+				Title = IOPath.GetFileName (assemblyPath);
 				PopulateTreeFromComparison (context.Comparison);
 				progressbar.Fraction = 0.0;
 			};
@@ -184,6 +190,7 @@ namespace GuiCompare {
 				PopulateTreeFromComparison (citer, n);
 		}
 
+		string assemblyPath;
 		CompareContext context;
 		Gtk.VBox vbox;
 		Gtk.TreeView tree;

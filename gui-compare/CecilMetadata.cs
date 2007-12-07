@@ -105,7 +105,19 @@ namespace GuiCompare {
 
 		public override List<CompMethod> GetConstructors ()
 		{
-			return null;
+			return new List<CompMethod>();
+		}
+
+		public override List<CompClass> GetNestedClasses()
+		{
+			List<CompClass> rv = new List<CompClass>();
+			foreach (TypeDefinition td in type_def.NestedTypes) {
+				rv.Add (new CecilClass (td));
+			}
+
+			rv.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
+
+			return rv;
 		}
 
 		TypeDefinition type_def;

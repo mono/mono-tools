@@ -1,0 +1,30 @@
+2007-12-07  Chris Toshok  <toshok@ximian.com>
+
+	* Metadata.cs (CompClass): add GetNestedClass() method.
+
+	* Masterinfo.cs (XMLClass): make nested public.
+
+	* CompareWindow.cs (PerformCompare): abstract out what was in the
+	body of SetAssemblyPath, so we can restart a comparison whenever
+	we want -- when a new masterinfo is available, when the .dll has
+	changed, etc.
+
+	* CompareContext.cs (CompareThread): comment out call to
+	DumpComparison.
+	(CompareClassLists): abstract out the body of CompareClasses so it
+	can be reused for nested classes as well as toplevel.  Call
+	CompareClassLists recursively to handle nested classes.  Also, fix
+	an &&/|| thinko.
+	(CompareTypes): just call CompareClassLists.
+	(CompareMethods): start implementation.
+	(AddExtraMethod, AddMissingMethod): implement.
+
+	* MasterMetadata.cs (MasterClass.GetMethods,
+	MasterClass.GetConstructors): don't throw NIE.  instead return an
+	empty list.  this causes all methods to show up as extra, but it
+	keeps us from crashing.
+	(MasterClass.GetNestedClasses): implement.
+
+	* CecilMetadata.cs (CecilClass.GetConstructors): return empty
+	list, don't throw NIE.
+	(CecilClass.GetNestedClasses): implement.
