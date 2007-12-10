@@ -46,7 +46,24 @@ namespace GuiCompare {
 			return classes;
 		}
 
+		public override List<CompInterface> GetInterfaces ()
+		{
+			return new List<CompInterface>();
+		}
+
+		public override List<CompClass> GetStructs ()
+		{
+			return new List<CompClass>();
+		}
+
 		XMLNamespace ns;
+	}
+
+	public class MasterInterface : CompInterface {
+		public MasterInterface (string name)
+			: base (name)
+		{
+		}
 	}
 
 	public class MasterClass : CompClass {
@@ -56,9 +73,32 @@ namespace GuiCompare {
 			xml_cls = cls;
 		}
 
+		public override List<CompInterface> GetInterfaces ()
+		{
+			List<CompInterface> rv = new List<CompInterface>();
+
+			if (xml_cls.interfaces != null) {
+				foreach (object i in xml_cls.interfaces.keys.Keys) {
+					rv.Add (new MasterInterface ((string)xml_cls.interfaces.keys[i]));
+				}
+			}
+					
+
+			return rv;
+		}
+
 		public override List<CompMethod> GetMethods()
 		{
-			return new List<CompMethod>();
+			List<CompMethod> rv = new List<CompMethod>();
+			if (xml_cls.methods != null) {
+				foreach (object key in xml_cls.methods.keys.Keys) {
+					rv.Add (new MasterMethod ((string)xml_cls.methods.keys[key]));
+				}
+			}
+
+			rv.Sort (delegate (CompMethod x, CompMethod y) { return String.Compare (x.Name, y.Name); });
+
+			return rv;
 		}
 
 		public override List<CompMethod> GetConstructors()
@@ -80,5 +120,13 @@ namespace GuiCompare {
 		}
 
 		XMLClass xml_cls;
+	}
+
+	// XXX more stuff is needed here besides the name
+	public class MasterMethod : CompMethod {
+		public MasterMethod (string name)
+			: base (name)
+		{
+		}
 	}
 }

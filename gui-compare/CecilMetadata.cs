@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Xml;
 using Mono.Cecil;
@@ -68,8 +69,29 @@ namespace GuiCompare {
 			: base (name)
 		{
 			class_list = new List<CompClass>();
+// 			enum_list = new List<CompEnum>();
+// 			delegate_list = new List<CompDelegate>();
+			interface_list = new List<CompInterface>();
+			struct_list = new List<CompClass>();
+
 			foreach (string cls_name in class_mapping.Keys) {
-				class_list.Add (new CecilClass (class_mapping[cls_name]));
+				TypeDefinition type_def = class_mapping[cls_name];
+				if (type_def.IsNotPublic)
+					continue;
+				if (type_def.IsValueType) {
+					if (type_def.IsEnum) {
+						Console.WriteLine ("enum -> {0}", type_def.FullName);
+					}
+					else {
+						struct_list.Add (new CecilClass (class_mapping[cls_name]));
+					}
+				}
+				else if (type_def.IsInterface) {
+					interface_list.Add (new CecilInterface (class_mapping[cls_name]));
+				}
+				else {
+					class_list.Add (new CecilClass (class_mapping[cls_name]));
+				}
 			}
 
 			class_list.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
@@ -80,7 +102,29 @@ namespace GuiCompare {
 			return class_list;
 		}
 
+		public override List<CompInterface> GetInterfaces ()
+		{
+			return interface_list;
+		}
+
+		public override List<CompClass> GetStructs ()
+		{
+			return struct_list;
+		}
+
 		List<CompClass> class_list;
+		List<CompInterface> interface_list;
+		List<CompClass> struct_list;
+	}
+
+	public class CecilInterface : CompInterface {
+		public CecilInterface (TypeReference type_ref)
+			: base (type_ref.FullName)
+		{
+			this.type_ref = type_ref;
+		}
+
+		TypeReference type_ref;
 	}
 
 	public class CecilClass : CompClass {
@@ -90,11 +134,26 @@ namespace GuiCompare {
 			this.type_def = type_def;
 		}
 
+		public override List<CompInterface> GetInterfaces ()
+		{
+			List<CompInterface> rv = new List<CompInterface>();
+
+			foreach (TypeReference md in type_def.Interfaces) {
+				rv.Add (new CecilInterface (md));
+			}
+
+			rv.Sort (delegate (CompInterface x, CompInterface y) { return String.Compare (x.Name, y.Name); });
+
+			return rv;
+		}
+
 		public override List<CompMethod> GetMethods ()
 		{
 			List<CompMethod> rv = new List<CompMethod>();
 
 			foreach (MethodDefinition md in type_def.Methods) {
+				if (md.IsSpecialName)
+					continue;
 				rv.Add (new CecilMethod (md));
 			}
 
@@ -125,9 +184,26 @@ namespace GuiCompare {
 
 	public class CecilMethod : CompMethod {
 		public CecilMethod (MethodDefinition method_def)
-			: base (method_def.Name)
+			: base (MasterinfoFormattedName (method_def))
 		{
 			this.method_def = method_def;
+		}
+
+		static string MasterinfoFormattedName (MethodDefinition method_def)
+		{
+			StringBuilder sb = new StringBuilder ();
+			sb.Append (method_def.Name);
+			sb.Append ('(');
+			bool comma = false;
+			foreach (ParameterDefinition p in method_def.Parameters) {
+				if (comma)
+					sb.Append (", ");
+				sb.Append (p.ParameterType.FullName);
+				comma = true;
+			}
+			sb.Append (')');
+
+			return sb.ToString();
 		}
 
 		MethodDefinition method_def;

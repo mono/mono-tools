@@ -53,14 +53,17 @@ namespace GuiCompare {
 			vbox = new Gtk.VBox ();
 			tree = new Gtk.TreeView ();
 
-			treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf));
+			treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf),
+						       typeof (Gdk.Pixbuf), typeof (string),
+						       typeof (Gdk.Pixbuf), typeof (string),
+						       typeof (Gdk.Pixbuf), typeof (string));
 
 			tree.Model = treeStore;
 
 			// Create a column for the node name
 			Gtk.TreeViewColumn nameColumn = new Gtk.TreeViewColumn ();
 			nameColumn.Title = "Name";
- 
+
 			Gtk.CellRendererText nameCell = new Gtk.CellRendererText ();
 			Gtk.CellRendererPixbuf typeCell = new Gtk.CellRendererPixbuf ();
 			Gtk.CellRendererPixbuf statusCell = new Gtk.CellRendererPixbuf ();
@@ -75,6 +78,34 @@ namespace GuiCompare {
 			nameColumn.AddAttribute (typeCell, "pixbuf", 1);
 			nameColumn.AddAttribute (statusCell, "pixbuf", 2);
 
+			// Create a column for the status counts
+			Gtk.TreeViewColumn countsColumn = new Gtk.TreeViewColumn ();
+			countsColumn.Title = "Counts";
+
+			Gtk.CellRendererPixbuf missingPixbufCell = new Gtk.CellRendererPixbuf ();
+			Gtk.CellRendererText missingTextCell = new Gtk.CellRendererText ();
+			Gtk.CellRendererPixbuf extraPixbufCell = new Gtk.CellRendererPixbuf ();
+			Gtk.CellRendererText extraTextCell = new Gtk.CellRendererText ();
+			Gtk.CellRendererPixbuf errorPixbufCell = new Gtk.CellRendererPixbuf ();
+			Gtk.CellRendererText errorTextCell = new Gtk.CellRendererText ();
+
+			countsColumn.PackStart (missingPixbufCell, false);
+			countsColumn.PackStart (missingTextCell, false);
+			countsColumn.PackStart (extraPixbufCell, false);
+			countsColumn.PackStart (extraTextCell, false);
+			countsColumn.PackStart (errorPixbufCell, false);
+			countsColumn.PackStart (errorTextCell, false);
+
+			tree.AppendColumn (countsColumn);
+
+			countsColumn.AddAttribute (missingPixbufCell, "pixbuf", 3);
+			countsColumn.AddAttribute (missingTextCell, "text", 4);
+			countsColumn.AddAttribute (extraPixbufCell, "pixbuf", 5);
+			countsColumn.AddAttribute (extraTextCell, "text", 6);
+			countsColumn.AddAttribute (errorPixbufCell, "pixbuf", 7);
+			countsColumn.AddAttribute (errorTextCell, "text", 8);
+
+			
 			scroll = new Gtk.ScrolledWindow ();
 
 			scroll.HscrollbarPolicy = scroll.VscrollbarPolicy = PolicyType.Automatic;
@@ -133,6 +164,7 @@ namespace GuiCompare {
 				status.Pop (0);
 				status.Push (0, String.Format ("Comparison completed at {0}", DateTime.Now));
 				Title = IOPath.GetFileName (assemblyPath);
+				context.Comparison.PropagateCounts ();
 				PopulateTreeFromComparison (context.Comparison);
 				progressbar.Fraction = 0.0;
 			};
@@ -145,6 +177,7 @@ namespace GuiCompare {
 			case ComparisonNodeType.Assembly: return assemblyPixbuf;
 			case ComparisonNodeType.Namespace: return namespacePixbuf;
 			case ComparisonNodeType.Attribute: return attributePixbuf;
+			case ComparisonNodeType.Interface: return interfacePixbuf;
 			case ComparisonNodeType.Class: return classPixbuf;
 			case ComparisonNodeType.Struct: return structPixbuf;
 			case ComparisonNodeType.Enum: return enumPixbuf;
@@ -169,9 +202,17 @@ namespace GuiCompare {
 
 		void PopulateTreeFromComparison (ComparisonNode root)
 		{
-			Gtk.TreeIter iter = treeStore.AppendValues (root.name,
-								    TypePixbufFromComparisonNode (root),
-								    StatusPixbufFromComparisonNode (root));
+			Gtk.TreeIter iter =
+				treeStore.AppendValues (root.name,
+							TypePixbufFromComparisonNode (root),
+							StatusPixbufFromComparisonNode (root),
+							root.Missing == 0 ? null : missingPixbuf,
+							root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
+							root.Extra == 0 ? null : extraPixbuf,
+							root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
+							root.Warning == 0 ? null : errorPixbuf,
+							root.Warning == 0 ? null : String.Format (": {0}", root.Warning));
+
 			Gtk.TreePath path = treeStore.GetPath (iter);
 
 			foreach (ComparisonNode n in root.children)
@@ -182,10 +223,18 @@ namespace GuiCompare {
 
 		void PopulateTreeFromComparison (Gtk.TreeIter iter, ComparisonNode node)
 		{
-			Gtk.TreeIter citer = treeStore.AppendValues (iter,
-								     node.name,
-								     TypePixbufFromComparisonNode (node),
-								     StatusPixbufFromComparisonNode (node));
+			Gtk.TreeIter citer = 
+				treeStore.AppendValues (iter,
+							node.name,
+							TypePixbufFromComparisonNode (node),
+							StatusPixbufFromComparisonNode (node),
+							node.Missing == 0 ? null : missingPixbuf,
+							node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
+							node.Extra == 0 ? null : extraPixbuf,
+							node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
+							node.Warning == 0 ? null : errorPixbuf,
+							node.Warning == 0 ? null : String.Format (": {0}", node.Warning));
+
 			foreach (ComparisonNode n in node.children)
 				PopulateTreeFromComparison (citer, n);
 		}

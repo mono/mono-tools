@@ -273,7 +273,7 @@ using System.Xml;
 	public abstract class XMLNameGroup : XMLData
 	{
 		protected XmlNode group;
-		protected Hashtable keys;
+		public Hashtable keys;
 
 		public override void LoadData (XmlNode node)
 		{
@@ -636,7 +636,7 @@ using System.Xml;
 		string charSet;
 		string layout;
 		XMLAttributes attributes;
-		XMLInterfaces interfaces;
+		public XMLInterfaces interfaces;
 		XMLGenericTypeConstraints genericConstraints;
 		XMLFields fields;
 		XMLConstructors constructors;

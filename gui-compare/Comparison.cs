@@ -12,6 +12,7 @@ namespace GuiCompare {
 		Assembly,
 		Namespace,
 		Attribute,
+		Interface,
 		Class,
 		Struct,
 		Enum,
@@ -43,6 +44,19 @@ namespace GuiCompare {
 			node.parent = this;
 		}
 
+		public void PropagateCounts ()
+		{
+			foreach (ComparisonNode n in children) {
+				n.PropagateCounts ();
+				Extra += n.Extra + (n.status == ComparisonStatus.Extra ? 1 : 0);
+				Missing += n.Missing + (n.status == ComparisonStatus.Missing ? 1 : 0);
+				Present += n.Present; // XXX
+				Todo += n.Todo + (n.status == ComparisonStatus.Todo ? 1 : 0);
+				Warning += n.Warning; // XXX
+			}
+		}
+
+
 		public ComparisonStatus status;
 		public ComparisonNodeType type;
 
@@ -50,18 +64,11 @@ namespace GuiCompare {
 
 		public string name;
 
-		public int Present;
-		public int PresentTotal;
-		public int Missing;
-		public int MissingTotal;
-		public int Todo;
-		public int TodoTotal;
-
 		public int Extra;
-		public int ExtraTotal;
+		public int Missing;
+		public int Present;
+		public int Todo;
 		public int Warning;
-		public int WarningTotal;
-		public int ErrorTotal;
 
 		public List<ComparisonNode> children;
 	}
@@ -84,6 +91,13 @@ namespace GuiCompare {
 	public class ClassComparison : ComparisonNode {
 		public ClassComparison (string name)
 			: base (ComparisonNodeType.Class, name)
+		{
+		}
+	}
+
+	public class InterfaceComparison : ComparisonNode {
+		public InterfaceComparison (string name)
+			: base (ComparisonNodeType.Interface, name)
 		{
 		}
 	}

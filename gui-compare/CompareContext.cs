@@ -115,7 +115,7 @@ namespace GuiCompare {
 					ProgressOnGuiThread (0.0, String.Format ("Comparing namespace {0}", master_namespaces[m].Name));
 
 					/* the names match, further investigation is required */
-					Console.WriteLine ("namespace {0} is in both, doing more comparisons", master_namespaces[m].Name);
+// 					Console.WriteLine ("namespace {0} is in both, doing more comparisons", master_namespaces[m].Name);
 					NamespaceComparison comparison = new NamespaceComparison (master_namespaces[m].Name);
 					parent.AddChild (comparison);
 					CompareTypes (comparison, master_namespaces[m], assembly_namespaces[a]);
@@ -155,9 +155,9 @@ namespace GuiCompare {
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-					Console.WriteLine ("type {0} is in both, doing more comparisons", master_types[m].Name);
 					ClassComparison comparison = new ClassComparison (master_types[m].Name);
 					parent.AddChild (comparison);
+					CompareInterfaces (comparison, master_types[m], assembly_types[a]);
 					CompareMethods (comparison, master_types[m], assembly_types[a]);
 					// XXX more comparison stuff here
 					CompareClassLists (comparison,
@@ -184,6 +184,100 @@ namespace GuiCompare {
 		{
 			CompareClassLists (parent,
 					   master_namespace.GetClasses(), assembly_namespace.GetClasses());
+			CompareStructs (parent,
+					master_namespace, assembly_namespace);
+		}
+
+		void CompareStructs (ComparisonNode parent,
+				     CompNamespace master_namespace, CompNamespace assembly_namespace)
+		{
+			List<CompClass> assembly_structs = assembly_namespace.GetStructs();
+			List<CompClass> master_structs = master_namespace.GetStructs();
+
+			int m = 0, a = 0;
+			while (m < master_structs.Count || a < assembly_structs.Count) {
+				if (m == master_structs.Count) {
+					Console.WriteLine ("{0}", assembly_namespace.Name);
+					AddExtraStruct (parent, assembly_structs[a]);
+					a++;
+					continue;
+				}
+				else if (a == assembly_structs.Count) {
+					Console.WriteLine ("{0}", master_namespace.Name);
+					AddMissingStruct (parent, master_structs[m]);
+					m++;
+					continue;
+				}
+
+				int c = String.Compare (master_structs[m].Name, assembly_structs[a].Name);
+
+				if (c == 0) {
+					/* the names match, further investigation is required */
+ 					Console.WriteLine ("struct {0} is in both, doing more comparisons", master_structs[m].Name);
+					StructComparison comparison = new StructComparison (master_structs[m].Name);
+					parent.AddChild (comparison);
+					m++;
+					a++;
+				}
+				else if (c < 0) {
+					Console.WriteLine ("{0}", master_namespace.Name);
+					/* master name is before assembly name, master name is missing from assembly */
+					AddMissingStruct (parent, master_structs[m]);
+					m++;
+				}
+				else {
+					Console.WriteLine ("{0}", assembly_namespace.Name);
+					/* master name is after assembly name, assembly name is extra */
+					AddExtraStruct (parent, assembly_structs[a]);
+					a++;
+				}
+			}
+		}
+
+		void CompareInterfaces (ComparisonNode parent,
+					CompClass master_class, CompClass assembly_class)
+		{
+			List<CompInterface> assembly_interfaces = assembly_class.GetInterfaces();
+			List<CompInterface> master_interfaces = master_class.GetInterfaces();
+
+			int m = 0, a = 0;
+			while (m < master_interfaces.Count || a < assembly_interfaces.Count) {
+				if (m == master_interfaces.Count) {
+					Console.WriteLine ("{0}", assembly_class.Name);
+					AddExtraInterface (parent, assembly_interfaces[a]);
+					a++;
+					continue;
+				}
+				else if (a == assembly_interfaces.Count) {
+					Console.WriteLine ("{0}", master_class.Name);
+					AddMissingInterface (parent, master_interfaces[m]);
+					m++;
+					continue;
+				}
+
+				int c = String.Compare (master_interfaces[m].Name, assembly_interfaces[a].Name);
+
+				if (c == 0) {
+					/* the names match, further investigation is required */
+ 					Console.WriteLine ("interface {0} is in both, doing more comparisons", master_interfaces[m].Name);
+					InterfaceComparison comparison = new InterfaceComparison (master_interfaces[m].Name);
+					parent.AddChild (comparison);
+					m++;
+					a++;
+				}
+				else if (c < 0) {
+					Console.WriteLine ("{0}", master_class.Name);
+					/* master name is before assembly name, master name is missing from assembly */
+					AddMissingInterface (parent, master_interfaces[m]);
+					m++;
+				}
+				else {
+					Console.WriteLine ("{0}", assembly_class.Name);
+					/* master name is after assembly name, assembly name is extra */
+					AddExtraInterface (parent, assembly_interfaces[a]);
+					a++;
+				}
+			}
 		}
 
 		void CompareMethods (ComparisonNode parent,
@@ -209,7 +303,7 @@ namespace GuiCompare {
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-					Console.WriteLine ("method {0} is in both, doing more comparisons", master_methods[m].Name);
+// 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_methods[m].Name);
 					MethodComparison comparison = new MethodComparison (master_methods[m].Name);
 					parent.AddChild (comparison);
 					//CompareParameters (comparison, master_methods[m], assembly_namespace [assembly_methods[a]]);
@@ -261,6 +355,36 @@ namespace GuiCompare {
 		void AddMissingClass (ComparisonNode parent, CompClass cls)
 		{
 			ClassComparison comparison = new ClassComparison (cls.Name);
+			parent.AddChild (comparison);
+			comparison.status = ComparisonStatus.Missing;
+		}
+
+		void AddExtraStruct (ComparisonNode parent, CompClass cls)
+		{
+			StructComparison comparison = new StructComparison (cls.Name);
+			parent.AddChild (comparison);
+			comparison.status = ComparisonStatus.Extra;
+		}
+
+		void AddMissingStruct (ComparisonNode parent, CompClass cls)
+		{
+			StructComparison comparison = new StructComparison (cls.Name);
+			parent.AddChild (comparison);
+			comparison.status = ComparisonStatus.Missing;
+		}
+
+		void AddExtraInterface (ComparisonNode parent, CompInterface cls)
+		{
+			Console.WriteLine ("extra interface {0}", cls.Name);
+			InterfaceComparison comparison = new InterfaceComparison (cls.Name);
+			parent.AddChild (comparison);
+			comparison.status = ComparisonStatus.Extra;
+		}
+
+		void AddMissingInterface (ComparisonNode parent, CompInterface cls)
+		{
+			Console.WriteLine ("missing interface {0}", cls.Name);
+			InterfaceComparison comparison = new InterfaceComparison (cls.Name);
 			parent.AddChild (comparison);
 			comparison.status = ComparisonStatus.Missing;
 		}
