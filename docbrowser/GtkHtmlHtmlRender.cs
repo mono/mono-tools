@@ -41,14 +41,21 @@ class GtkHtmlHtmlRender : IHtmlRender {
 	
 	protected void LinkClicked (object o, LinkClickedArgs args)
 	{
-		url = args.Url;
+		url = FixUrl (args.Url);
 		if (UrlClicked != null)
 			UrlClicked (this, new EventArgs());
+	}
+
+	static string FixUrl (string url)
+	{
+		if (url == null)
+			return url;
+		return url.Replace ("&lt;", "<").Replace ("&gt;", ">");
 	}
 	
 	protected void OnUrlMouseOver (object o, OnUrlArgs args)
 	{
-		url = args.Url;
+		url = FixUrl (args.Url);
 		if (OnUrl != null)
 			OnUrl (this, args);
 	}
