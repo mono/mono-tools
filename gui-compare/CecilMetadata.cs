@@ -3,14 +3,102 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using System.IO;
 using Mono.Cecil;
 using Gtk;
 
 namespace GuiCompare {
 
+	static class Utils {
+		public static void PopulateMemberLists (TypeDefinition fromDef,
+							List<CompNamed> interface_list,
+							List<CompNamed> constructor_list,
+							List<CompNamed> method_list,
+							List<CompNamed> property_list,
+							List<CompNamed> field_list,
+							List<CompNamed> event_list)
+		{
+			if (interface_list != null) {
+				foreach (TypeReference ifc in fromDef.Interfaces) {
+					interface_list.Add (new CecilInterface (ifc, true));
+				}
+			}
+			if (constructor_list != null) {
+				foreach (MethodDefinition md in fromDef.Constructors) {
+					if (md.IsPrivate || md.IsAssembly)
+						continue;
+					constructor_list.Add (new CecilMethod (md));
+				}
+			}
+			if (method_list != null) {
+				foreach (MethodDefinition md in fromDef.Methods) {
+					if (md.IsSpecialName)
+						continue;
+					if (md.IsPrivate || md.IsAssembly)
+						continue;
+					method_list.Add (new CecilMethod (md));
+				}
+			}
+			if (property_list != null) {
+#if notyet
+				foreach (PropertyDefinition pd in fromDef.Properties) {
+					if (pd.IsPrivate || pd.IsAssembly)
+						property_list.Add (new CecilProperty (pd));
+				}
+#endif
+			}
+			if (field_list != null) {
+				foreach (FieldDefinition fd in fromDef.Fields) {
+					if (fd.IsPrivate || fd.IsAssembly)
+						continue;
+					field_list.Add (new CecilField (fd));
+				}
+			}
+			if (event_list != null) {
+#if notyet
+				foreach (EventDefinition ed in fromDef.Events) {
+					if (ed.IsPrivate || ed.IsAssembly)
+						event_list.Add (new CecilEvent (ed));
+				}
+#endif
+			}
+		}
+
+		public static void PopulateTypeLists (TypeDefinition fromDef,
+						      List<CompNamed> class_list,
+						      List<CompNamed> enum_list,
+						      List<CompNamed> delegate_list,
+						      List<CompNamed> interface_list,
+						      List<CompNamed> struct_list)
+		{
+			foreach (TypeDefinition type_def in fromDef.NestedTypes) {
+				if (type_def.IsNotPublic)
+					continue;
+				if (type_def.IsValueType) {
+					if (type_def.IsEnum) {
+						enum_list.Add (new CecilEnum (type_def));
+					}
+					else {
+						struct_list.Add (new CecilClass (type_def, CompType.Struct));
+					}
+				}
+				else if (type_def.IsInterface) {
+					interface_list.Add (new CecilInterface (type_def, false));
+				}
+				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
+					 || type_def.BaseType.FullName == "System.Delegate") {
+					delegate_list.Add (new CecilDelegate (type_def));
+				}
+				else {
+					class_list.Add (new CecilClass (type_def, CompType.Class));
+				}
+			}
+		}
+	}
+
 	public class CecilAssembly : CompAssembly {
 		public CecilAssembly (string path)
-			: base (path)
+			: base (Path.GetFileName (path))
 		{
 			Dictionary<string, Dictionary <string, TypeDefinition>> namespaces
 				= new Dictionary<string, Dictionary <string, TypeDefinition>> ();
@@ -37,15 +125,13 @@ namespace GuiCompare {
 				namespaces[t.Namespace][t.Name] = t;
 			}
 
-			namespace_list = new List<CompNamespace>();
+			namespace_list = new List<CompNamed>();
 			foreach (string ns_name in namespaces.Keys) {
 				namespace_list.Add (new CecilNamespace (ns_name, namespaces[ns_name]));
 			}
-
-			namespace_list.Sort (delegate (CompNamespace x, CompNamespace y) { return String.Compare (x.Name, y.Name); });
 		}
 
-		public override List<CompNamespace> GetNamespaces()
+		public override List<CompNamed> GetNamespaces()
 		{
 			return namespace_list;
 		}
@@ -61,125 +147,296 @@ namespace GuiCompare {
 				
 		}
 
-		List<CompNamespace> namespace_list;
+		List<CompNamed> namespace_list;
 	}
 
 	public class CecilNamespace : CompNamespace {
-		public CecilNamespace (string name, Dictionary<string, TypeDefinition> class_mapping)
+		public CecilNamespace (string name, Dictionary<string, TypeDefinition> type_mapping)
 			: base (name)
 		{
-			class_list = new List<CompClass>();
-// 			enum_list = new List<CompEnum>();
-// 			delegate_list = new List<CompDelegate>();
-			interface_list = new List<CompInterface>();
-			struct_list = new List<CompClass>();
+			class_list = new List<CompNamed>();
+			enum_list = new List<CompNamed>();
+ 			delegate_list = new List<CompNamed>();
+			interface_list = new List<CompNamed>();
+			struct_list = new List<CompNamed>();
 
-			foreach (string cls_name in class_mapping.Keys) {
-				TypeDefinition type_def = class_mapping[cls_name];
+			foreach (string type_name in type_mapping.Keys) {
+				TypeDefinition type_def = type_mapping[type_name];
 				if (type_def.IsNotPublic)
 					continue;
 				if (type_def.IsValueType) {
 					if (type_def.IsEnum) {
-						Console.WriteLine ("enum -> {0}", type_def.FullName);
+						enum_list.Add (new CecilEnum (type_def));
 					}
 					else {
-						struct_list.Add (new CecilClass (class_mapping[cls_name]));
+						struct_list.Add (new CecilClass (type_def, CompType.Struct));
 					}
 				}
 				else if (type_def.IsInterface) {
-					interface_list.Add (new CecilInterface (class_mapping[cls_name]));
+					interface_list.Add (new CecilInterface (type_def, false));
+				}
+				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
+					 || type_def.BaseType.FullName == "System.Delegate") {
+					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
-					class_list.Add (new CecilClass (class_mapping[cls_name]));
+					class_list.Add (new CecilClass (type_def, CompType.Class));
 				}
 			}
-
-			class_list.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
 		}
 
-		public override List<CompClass> GetClasses()
+		public override List<CompNamed> GetNestedClasses()
 		{
 			return class_list;
 		}
 
-		public override List<CompInterface> GetInterfaces ()
+		public override List<CompNamed> GetNestedInterfaces ()
 		{
 			return interface_list;
 		}
 
-		public override List<CompClass> GetStructs ()
+		public override List<CompNamed> GetNestedStructs ()
 		{
 			return struct_list;
 		}
 
-		List<CompClass> class_list;
-		List<CompInterface> interface_list;
-		List<CompClass> struct_list;
+		public override List<CompNamed> GetNestedEnums ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetNestedDelegates ()
+		{
+			return delegate_list;
+		}
+
+		List<CompNamed> class_list;
+		List<CompNamed> interface_list;
+		List<CompNamed> struct_list;
+		List<CompNamed> delegate_list;
+		List<CompNamed> enum_list;
 	}
 
 	public class CecilInterface : CompInterface {
-		public CecilInterface (TypeReference type_ref)
-			: base (type_ref.FullName)
+		public CecilInterface (TypeReference type_ref, bool full_name)
+			: base (full_name ? type_ref.FullName : type_ref.Name)
 		{
 			this.type_ref = type_ref;
+		}
+
+		public override List<CompNamed> GetInterfaces ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetMethods ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetConstructors ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetProperties()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetFields()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetEvents()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
 		}
 
 		TypeReference type_ref;
 	}
 
-	public class CecilClass : CompClass {
-		public CecilClass (TypeDefinition type_def)
+	public class CecilDelegate : CompDelegate {
+		public CecilDelegate (TypeDefinition type_def)
 			: base (type_def.Name)
 		{
 			this.type_def = type_def;
 		}
 
-		public override List<CompInterface> GetInterfaces ()
+		TypeDefinition type_def;
+	}
+
+	public class CecilEnum : CompEnum {
+		public CecilEnum (TypeDefinition type_def)
+			: base (type_def.Name)
 		{
-			List<CompInterface> rv = new List<CompInterface>();
+			this.type_def = type_def;
 
-			foreach (TypeReference md in type_def.Interfaces) {
-				rv.Add (new CecilInterface (md));
-			}
+			fields = new List<CompNamed>();
 
-			rv.Sort (delegate (CompInterface x, CompInterface y) { return String.Compare (x.Name, y.Name); });
-
-			return rv;
+			Utils.PopulateMemberLists (type_def,
+						   null,
+						   null,
+						   null,
+						   null,
+						   fields,
+						   null);
 		}
 
-		public override List<CompMethod> GetMethods ()
+ 		public override List<CompNamed> GetFields()
 		{
-			List<CompMethod> rv = new List<CompMethod>();
-
-			foreach (MethodDefinition md in type_def.Methods) {
-				if (md.IsSpecialName)
-					continue;
-				rv.Add (new CecilMethod (md));
-			}
-
-			rv.Sort (delegate (CompMethod x, CompMethod y) { return String.Compare (x.Name, y.Name); });
-
-			return rv;
+			return fields;
 		}
 
-		public override List<CompMethod> GetConstructors ()
+		public override List<CompNamed> GetAttributes ()
 		{
-			return new List<CompMethod>();
-		}
-
-		public override List<CompClass> GetNestedClasses()
-		{
-			List<CompClass> rv = new List<CompClass>();
-			foreach (TypeDefinition td in type_def.NestedTypes) {
-				rv.Add (new CecilClass (td));
-			}
-
-			rv.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
-
-			return rv;
+			// XXX
+			return new List<CompNamed>();
 		}
 
 		TypeDefinition type_def;
+		List<CompNamed> fields;
+	}
+
+	public class CecilClass : CompClass {
+		public CecilClass (TypeDefinition type_def, CompType type)
+			: base (type_def.Name, type)
+		{
+			this.type_def = type_def;
+
+			nested_classes = new List<CompNamed>();
+			nested_enums = new List<CompNamed>();
+ 			nested_delegates = new List<CompNamed>();
+			nested_interfaces = new List<CompNamed>();
+			nested_structs = new List<CompNamed>();
+
+			Utils.PopulateTypeLists (type_def,
+						 nested_classes,
+						 nested_enums,
+						 nested_delegates,
+						 nested_interfaces,
+						 nested_structs);
+
+			interfaces = new List<CompNamed>();
+			constructors = new List<CompNamed>();
+			methods = new List<CompNamed>();
+			properties = new List<CompNamed>();
+			fields = new List<CompNamed>();
+			events = new List<CompNamed>();
+
+			Utils.PopulateMemberLists (type_def,
+						   interfaces,
+						   constructors,
+						   methods,
+						   properties,
+						   fields,
+						   events);
+		}
+
+		public override List<CompNamed> GetInterfaces ()
+		{
+			return interfaces;
+		}
+
+		public override List<CompNamed> GetMethods ()
+		{
+			return methods;
+		}
+
+		public override List<CompNamed> GetConstructors ()
+		{
+			return constructors;
+		}
+
+ 		public override List<CompNamed> GetProperties()
+		{
+			return properties;
+		}
+
+ 		public override List<CompNamed> GetFields()
+		{
+			return fields;
+		}
+
+ 		public override List<CompNamed> GetEvents()
+		{
+			return events;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetNestedClasses()
+		{
+			return nested_classes;
+		}
+
+		public override List<CompNamed> GetNestedInterfaces ()
+		{
+			return nested_interfaces;
+		}
+
+		public override List<CompNamed> GetNestedStructs ()
+		{
+			return nested_structs;
+		}
+
+		public override List<CompNamed> GetNestedEnums ()
+		{
+			return nested_enums;
+		}
+
+		public override List<CompNamed> GetNestedDelegates ()
+		{
+			return nested_delegates;
+		}
+
+		TypeDefinition type_def;
+		List<CompNamed> nested_classes;
+		List<CompNamed> nested_interfaces;
+		List<CompNamed> nested_structs;
+		List<CompNamed> nested_delegates;
+		List<CompNamed> nested_enums;
+
+		List<CompNamed> interfaces;
+		List<CompNamed> constructors;
+		List<CompNamed> methods;
+		List<CompNamed> properties;
+		List<CompNamed> fields;
+		List<CompNamed> events;
+	}
+
+	public class CecilField : CompField {
+		public CecilField (FieldDefinition field_def)
+			: base (field_def.Name)
+		{
+			this.field_def = field_def;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		FieldDefinition field_def;
 	}
 
 	public class CecilMethod : CompMethod {
@@ -187,6 +444,12 @@ namespace GuiCompare {
 			: base (MasterinfoFormattedName (method_def))
 		{
 			this.method_def = method_def;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
 		}
 
 		static string MasterinfoFormattedName (MethodDefinition method_def)

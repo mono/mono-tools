@@ -63,6 +63,7 @@ namespace GuiCompare {
 			// Create a column for the node name
 			Gtk.TreeViewColumn nameColumn = new Gtk.TreeViewColumn ();
 			nameColumn.Title = "Name";
+			nameColumn.Resizable = true;
 
 			Gtk.CellRendererText nameCell = new Gtk.CellRendererText ();
 			Gtk.CellRendererPixbuf typeCell = new Gtk.CellRendererPixbuf ();
@@ -81,6 +82,7 @@ namespace GuiCompare {
 			// Create a column for the status counts
 			Gtk.TreeViewColumn countsColumn = new Gtk.TreeViewColumn ();
 			countsColumn.Title = "Counts";
+			countsColumn.Resizable = true;
 
 			Gtk.CellRendererPixbuf missingPixbufCell = new Gtk.CellRendererPixbuf ();
 			Gtk.CellRendererText missingTextCell = new Gtk.CellRendererText ();
@@ -174,16 +176,18 @@ namespace GuiCompare {
 		Gdk.Pixbuf TypePixbufFromComparisonNode (ComparisonNode node)
 		{
 			switch (node.type) {
-			case ComparisonNodeType.Assembly: return assemblyPixbuf;
-			case ComparisonNodeType.Namespace: return namespacePixbuf;
-			case ComparisonNodeType.Attribute: return attributePixbuf;
-			case ComparisonNodeType.Interface: return interfacePixbuf;
-			case ComparisonNodeType.Class: return classPixbuf;
-			case ComparisonNodeType.Struct: return structPixbuf;
-			case ComparisonNodeType.Enum: return enumPixbuf;
-			case ComparisonNodeType.Method: return methodPixbuf;
-			case ComparisonNodeType.Property: return propertyPixbuf;
-			case ComparisonNodeType.Field: return fieldPixbuf;
+			case CompType.Assembly: return assemblyPixbuf;
+			case CompType.Namespace: return namespacePixbuf;
+			case CompType.Attribute: return attributePixbuf;
+			case CompType.Interface: return interfacePixbuf;
+			case CompType.Class: return classPixbuf;
+			case CompType.Struct: return structPixbuf;
+			case CompType.Delegate: return delegatePixbuf;
+			case CompType.Enum: return enumPixbuf;
+			case CompType.Method: return methodPixbuf;
+			case CompType.Property: return propertyPixbuf;
+			case CompType.Field: return fieldPixbuf;
+			case CompType.Event: return eventPixbuf;
 			}
 			return null;
 		}

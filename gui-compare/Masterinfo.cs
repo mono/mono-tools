@@ -628,7 +628,7 @@ using System.Xml;
 	public class XMLClass : XMLData
 	{
 		public string name;
-		string type;
+		public string type;
 		string baseName;
 		bool isSealed;
 		bool isSerializable;

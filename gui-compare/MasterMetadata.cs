@@ -14,13 +14,11 @@ namespace GuiCompare {
 			masterinfo = XMLAssembly.CreateFromFile (path);
 		}
 
-		public override List<CompNamespace> GetNamespaces ()
+		public override List<CompNamed> GetNamespaces ()
 		{
-			List<CompNamespace> namespaces = new List<CompNamespace>();
+			List<CompNamed> namespaces = new List<CompNamed>();
 			foreach (XMLNamespace ns in masterinfo.namespaces)
 				namespaces.Add (new MasterNamespace (ns));
-
-			namespaces.Sort(delegate (CompNamespace x, CompNamespace y) { return String.Compare (x.Name, y.Name); });
 
 			return namespaces;
 		}
@@ -33,30 +31,59 @@ namespace GuiCompare {
 			: base (ns.name)
 		{
 			this.ns = ns;
+
+			delegate_list = new List<CompNamed>();
+			enum_list = new List<CompNamed>();
+			class_list = new List<CompNamed>();
+			struct_list = new List<CompNamed>();
+			interface_list = new List<CompNamed>();
+
+			foreach (XMLClass cls in ns.types) {
+				if (cls.type == "class")
+					class_list.Add (new MasterClass (cls, CompType.Class));
+				else if (cls.type == "enum")
+					enum_list.Add (new MasterEnum (cls));
+				else if (cls.type == "delegate")
+					delegate_list.Add (new MasterDelegate (cls));
+				else if (cls.type == "interface")
+					interface_list.Add (new MasterInterface (cls.name));
+				else if (cls.type == "struct")
+					struct_list.Add (new MasterClass (cls, CompType.Struct));
+			}
 		}
 
-		public override List<CompClass> GetClasses ()
+		public override List<CompNamed> GetNestedClasses ()
 		{
-			List<CompClass> classes = new List<CompClass>();
-			foreach (XMLClass cls in ns.types)
-				classes.Add (new MasterClass (cls));
-
-			classes.Sort(delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
-
-			return classes;
+			return class_list;
 		}
 
-		public override List<CompInterface> GetInterfaces ()
+		public override List<CompNamed> GetNestedInterfaces ()
 		{
-			return new List<CompInterface>();
+			return interface_list;
 		}
 
-		public override List<CompClass> GetStructs ()
+		public override List<CompNamed> GetNestedStructs ()
 		{
-			return new List<CompClass>();
+			return struct_list;
 		}
+
+		public override List<CompNamed> GetNestedEnums ()
+		{
+			return enum_list;
+		}
+
+		public override List<CompNamed> GetNestedDelegates ()
+		{
+			return delegate_list;
+		}
+
 
 		XMLNamespace ns;
+		List<CompNamed> delegate_list;
+		List<CompNamed> enum_list;
+		List<CompNamed> class_list;
+		List<CompNamed> struct_list;
+		List<CompNamed> interface_list;
 	}
 
 	public class MasterInterface : CompInterface {
@@ -64,18 +91,93 @@ namespace GuiCompare {
 			: base (name)
 		{
 		}
+
+		public override List<CompNamed> GetInterfaces ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetMethods ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetConstructors ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetProperties()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetFields()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetEvents()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
 	}
 
-	public class MasterClass : CompClass {
-		public MasterClass (XMLClass cls)
+	public class MasterDelegate : CompDelegate {
+		public MasterDelegate (XMLClass cls)
 			: base (cls.name)
 		{
 			xml_cls = cls;
 		}
 
-		public override List<CompInterface> GetInterfaces ()
+		XMLClass xml_cls;
+	}
+
+	public class MasterEnum : CompEnum {
+		public MasterEnum (XMLClass cls)
+			: base (cls.name)
 		{
-			List<CompInterface> rv = new List<CompInterface>();
+			xml_cls = cls;
+		}
+
+ 		public override List<CompNamed> GetFields()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+
+		XMLClass xml_cls;
+	}
+
+	public class MasterClass : CompClass {
+		public MasterClass (XMLClass cls, CompType type)
+			: base (cls.name, type)
+		{
+			xml_cls = cls;
+		}
+
+		public override List<CompNamed> GetInterfaces ()
+		{
+			List<CompNamed> rv = new List<CompNamed>();
 
 			if (xml_cls.interfaces != null) {
 				foreach (object i in xml_cls.interfaces.keys.Keys) {
@@ -87,36 +189,78 @@ namespace GuiCompare {
 			return rv;
 		}
 
-		public override List<CompMethod> GetMethods()
+		public override List<CompNamed> GetMethods()
 		{
-			List<CompMethod> rv = new List<CompMethod>();
+			List<CompNamed> rv = new List<CompNamed>();
 			if (xml_cls.methods != null) {
 				foreach (object key in xml_cls.methods.keys.Keys) {
 					rv.Add (new MasterMethod ((string)xml_cls.methods.keys[key]));
 				}
 			}
 
-			rv.Sort (delegate (CompMethod x, CompMethod y) { return String.Compare (x.Name, y.Name); });
-
 			return rv;
 		}
 
-		public override List<CompMethod> GetConstructors()
+		public override List<CompNamed> GetConstructors()
 		{
-			return new List<CompMethod>();
+			return new List<CompNamed>();
 		}
 
-		public override List<CompClass> GetNestedClasses()
+ 		public override List<CompNamed> GetProperties()
 		{
-			List<CompClass> rv = new List<CompClass>();
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetFields()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+ 		public override List<CompNamed> GetEvents()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetNestedClasses()
+		{
+			List<CompNamed> rv = new List<CompNamed>();
 			if (xml_cls.nested != null) {
 				foreach (XMLClass nested in xml_cls.nested)
-					rv.Add (new MasterClass (nested));
-
-				rv.Sort (delegate (CompClass x, CompClass y) { return String.Compare (x.Name, y.Name); });
+					rv.Add (new MasterClass (nested, CompType.Class));
 			}
 
 			return rv;
+		}
+
+		public override List<CompNamed> GetNestedInterfaces ()
+		{
+			return new List<CompNamed>();;
+		}
+
+		public override List<CompNamed> GetNestedStructs ()
+		{
+			return new List<CompNamed>();;
+		}
+
+		public override List<CompNamed> GetNestedEnums ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		public override List<CompNamed> GetNestedDelegates ()
+		{
+			// XXX
+			return new List<CompNamed>();
 		}
 
 		XMLClass xml_cls;
@@ -128,5 +272,12 @@ namespace GuiCompare {
 			: base (name)
 		{
 		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
 	}
 }
