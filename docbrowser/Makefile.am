@@ -12,7 +12,7 @@ GTKHTML_TARGET=GtkHtmlHtmlRender.dll
 endif
 
 CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb monodoc.desktop
-monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET) $(GTKHTMLDLLCOPY)
+monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc
 
