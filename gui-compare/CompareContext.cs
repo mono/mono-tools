@@ -9,12 +9,18 @@ using Mono.Cecil;
 using Gtk;
 
 namespace GuiCompare {
+	
+	// A delegate used to load a CompAssembly
+	public delegate CompAssembly LoadCompAssembly ();
+	
 	public class CompareContext
 	{
-		public CompareContext (string masterinfoPath, string assemblyPath)
+		LoadCompAssembly reference_loader, target_loader;
+		
+		public CompareContext (LoadCompAssembly reference, LoadCompAssembly target)
 		{
-			this.masterinfoPath = masterinfoPath;
-			this.assemblyPath = assemblyPath;
+			reference_loader = reference;
+			target_loader = target;
 		}
 
 		public ComparisonNode Comparison {
@@ -36,20 +42,20 @@ namespace GuiCompare {
 
 		void CompareThread ()
 		{
-			ProgressOnGuiThread (Double.NaN, "Loading masterinfo...");
+			ProgressOnGuiThread (Double.NaN, "Loading reference...");
 
 			try {
-				LoadMasterinfo ();
+				reference = reference_loader ();
 			}
 			catch (Exception e) {
 				ErrorOnGuiThread (e.ToString());
 				return;
 			}
 
-			ProgressOnGuiThread (Double.NaN, "Loading assembly...");
+			ProgressOnGuiThread (Double.NaN, "Loading target...");
 
 			try {
-				LoadAssembly ();
+				target = target_loader ();
 			}
 			catch (Exception e) {
 				ErrorOnGuiThread (e.ToString());
@@ -58,9 +64,9 @@ namespace GuiCompare {
 
 			ProgressOnGuiThread (0.0, "Comparing...");
 
-			comparison = assembly.GetComparisonNode ();
+			comparison = target.GetComparisonNode ();
 
-			CompareTypeLists (comparison, masterinfo.GetNamespaces(), assembly.GetNamespaces());
+			CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
 
 			FinishedOnGuiThread ();
 
@@ -261,18 +267,11 @@ namespace GuiCompare {
 			}
 		}
 
-		void LoadMasterinfo ()
-		{
-			masterinfo = new MasterAssembly (masterinfoPath);
-		}
-
-		void LoadAssembly ()
-		{
-			assembly = new CecilAssembly (assemblyPath);
-		}
-
-		CompAssembly masterinfo;
-		CompAssembly assembly;
+		// This is the reference assembly that we will be comparing to.
+		CompAssembly reference;
+		
+		// This is the new API.
+		CompAssembly target;
 
 		void ProgressOnGuiThread (double progress, string message)
 		{
