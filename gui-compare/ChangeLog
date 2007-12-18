@@ -1,3 +1,7 @@
+2007-12-18  Miguel de Icaza <miguel@novell.com>
+
+	* InfoManager.cs: 
+
 2007-12-18  Miguel de Icaza <miguel@novell.com> 
 
 	* MainWindow.cs: New file, from MonoDevelop, copy mot of the code from
