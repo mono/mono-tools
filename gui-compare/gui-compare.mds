@@ -2,11 +2,9 @@
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="gui-compare" configuration="Debug" />
-      <Entry build="True" name="gui-compareTranslation" configuration="" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="gui-compare" configuration="Release" />
-      <Entry build="True" name="gui-compareTranslation" configuration="" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="gui-compare" single="True">
@@ -15,6 +13,5 @@
   </StartMode>
   <Entries>
     <Entry filename="gui-compare.mdp" />
-    <Entry filename="gui-compareTranslation/gui-compareTranslation.mdse" />
   </Entries>
 </Combine>
