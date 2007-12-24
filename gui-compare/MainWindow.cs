@@ -73,7 +73,8 @@ public partial class MainWindow: Gtk.Window
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
-	
+		notebook1.Page = 1;
+		
 		progressbar1.Adjustment.Lower = 0;
 		progressbar1.Adjustment.Upper = 100;
 		info_manager = new InfoManager (this);
@@ -178,6 +179,9 @@ public partial class MainWindow: Gtk.Window
 		// clear our existing content
 		if (context != null)
 			context.StopCompare ();
+
+		// Go to the actual tree page.
+		notebook1.Page = 0;
 		
 		// now generate new content asynchronously
 		context = new CompareContext (reference_loader, target_loader);

@@ -345,6 +345,7 @@ namespace GuiCompare {
 						   properties,
 						   fields,
 						   events);
+
 		}
 
 		public override List<CompNamed> GetInterfaces ()

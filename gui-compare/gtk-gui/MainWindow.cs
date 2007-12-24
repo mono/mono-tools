@@ -28,9 +28,17 @@ public partial class MainWindow {
     
     private Gtk.MenuBar menubar1;
     
+    private Gtk.Notebook notebook1;
+    
     private Gtk.ScrolledWindow GtkScrolledWindow;
     
     private Gtk.TreeView tree;
+    
+    private Gtk.Label label1;
+    
+    private Gtk.Label label3;
+    
+    private Gtk.Label label2;
     
     private Gtk.Statusbar statusbar1;
     
@@ -78,6 +86,13 @@ public partial class MainWindow {
         w3.Expand = false;
         w3.Fill = false;
         // Container child vbox1.Gtk.Box+BoxChild
+        this.notebook1 = new Gtk.Notebook();
+        this.notebook1.CanFocus = true;
+        this.notebook1.Name = "notebook1";
+        this.notebook1.CurrentPage = 1;
+        this.notebook1.ShowBorder = false;
+        this.notebook1.ShowTabs = false;
+        // Container child notebook1.Gtk.Notebook+NotebookChild
         this.GtkScrolledWindow = new Gtk.ScrolledWindow();
         this.GtkScrolledWindow.Name = "GtkScrolledWindow";
         this.GtkScrolledWindow.ShadowType = ((Gtk.ShadowType)(1));
@@ -87,9 +102,32 @@ public partial class MainWindow {
         this.tree.Name = "tree";
         this.tree.HeadersClickable = true;
         this.GtkScrolledWindow.Add(this.tree);
-        this.vbox1.Add(this.GtkScrolledWindow);
-        Gtk.Box.BoxChild w5 = ((Gtk.Box.BoxChild)(this.vbox1[this.GtkScrolledWindow]));
-        w5.Position = 1;
+        this.notebook1.Add(this.GtkScrolledWindow);
+        // Notebook tab
+        this.label1 = new Gtk.Label();
+        this.label1.Name = "label1";
+        this.label1.LabelProp = Mono.Unix.Catalog.GetString("page1");
+        this.notebook1.SetTabLabel(this.GtkScrolledWindow, this.label1);
+        this.label1.ShowAll();
+        // Container child notebook1.Gtk.Notebook+NotebookChild
+        this.label3 = new Gtk.Label();
+        this.label3.Name = "label3";
+        this.label3.Xpad = 20;
+        this.label3.Ypad = 20;
+        this.label3.LabelProp = Mono.Unix.Catalog.GetString("This tool allows you to compare the API of assemblies.\n\nTo initiate a comparison, use the \"Compare\" menu and use one of the presets based on the assemblies you  have installed on your system and some popular profiles, or use \"Custom\" to define your own comparison");
+        this.label3.Wrap = true;
+        this.notebook1.Add(this.label3);
+        Gtk.Notebook.NotebookChild w6 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.label3]));
+        w6.Position = 1;
+        // Notebook tab
+        this.label2 = new Gtk.Label();
+        this.label2.Name = "label2";
+        this.label2.LabelProp = Mono.Unix.Catalog.GetString("page2");
+        this.notebook1.SetTabLabel(this.label3, this.label2);
+        this.label2.ShowAll();
+        this.vbox1.Add(this.notebook1);
+        Gtk.Box.BoxChild w7 = ((Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+        w7.Position = 1;
         // Container child vbox1.Gtk.Box+BoxChild
         this.statusbar1 = new Gtk.Statusbar();
         this.statusbar1.Name = "statusbar1";
@@ -98,19 +136,19 @@ public partial class MainWindow {
         this.progressbar1 = new Gtk.ProgressBar();
         this.progressbar1.Name = "progressbar1";
         this.statusbar1.Add(this.progressbar1);
-        Gtk.Box.BoxChild w6 = ((Gtk.Box.BoxChild)(this.statusbar1[this.progressbar1]));
-        w6.Position = 2;
+        Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.statusbar1[this.progressbar1]));
+        w8.Position = 2;
         this.vbox1.Add(this.statusbar1);
-        Gtk.Box.BoxChild w7 = ((Gtk.Box.BoxChild)(this.vbox1[this.statusbar1]));
-        w7.Position = 2;
-        w7.Expand = false;
-        w7.Fill = false;
+        Gtk.Box.BoxChild w9 = ((Gtk.Box.BoxChild)(this.vbox1[this.statusbar1]));
+        w9.Position = 2;
+        w9.Expand = false;
+        w9.Fill = false;
         this.Add(this.vbox1);
         if ((this.Child != null)) {
             this.Child.ShowAll();
         }
-        this.DefaultWidth = 484;
-        this.DefaultHeight = 300;
+        this.DefaultWidth = 499;
+        this.DefaultHeight = 310;
         this.Show();
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.quit.Activated += new System.EventHandler(this.OnQuitActivated);

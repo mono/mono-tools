@@ -4,7 +4,7 @@
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.10.2</target-gtk-version>
   </configuration>
-  <widget class="Gtk.Window" id="MainWindow" design-size="484 300">
+  <widget class="Gtk.Window" id="MainWindow" design-size="499 310">
     <action-group name="Default">
       <action id="File">
         <property name="Type">Action</property>
@@ -68,16 +68,57 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+          <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
-            <property name="ShadowType">In</property>
+            <property name="CanFocus">True</property>
+            <property name="CurrentPage">1</property>
+            <property name="ShowBorder">False</property>
+            <property name="ShowTabs">False</property>
             <child>
-              <widget class="Gtk.TreeView" id="tree">
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                 <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="ShowScrollbars">True</property>
-                <property name="HeadersClickable">True</property>
+                <property name="ShadowType">In</property>
+                <child>
+                  <widget class="Gtk.TreeView" id="tree">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="ShowScrollbars">True</property>
+                    <property name="HeadersClickable">True</property>
+                  </widget>
+                </child>
               </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page1</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label3">
+                <property name="MemberName" />
+                <property name="Xpad">20</property>
+                <property name="Ypad">20</property>
+                <property name="LabelProp" translatable="yes">This tool allows you to compare the API of assemblies.
+
+To initiate a comparison, use the "Compare" menu and use one of the presets based on the assemblies you  have installed on your system and some popular profiles, or use "Custom" to define your own comparison</property>
+                <property name="Wrap">True</property>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page2</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
             </child>
           </widget>
           <packing>
