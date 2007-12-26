@@ -49,8 +49,10 @@ namespace GuiCompare {
 			}
 			if (field_list != null) {
 				foreach (FieldDefinition fd in fromDef.Fields) {
-					if (fd.IsPrivate || fd.IsAssembly)
+					if (fd.IsPrivate || fd.IsAssembly){
+						Console.WriteLine ("Skipping over {0}.{1} {2}", fromDef.Namespace, fromDef.Name, fd.Name);
 						continue;
+					}
 					field_list.Add (new CecilField (fd));
 				}
 			}
@@ -72,8 +74,11 @@ namespace GuiCompare {
 						      List<CompNamed> struct_list)
 		{
 			foreach (TypeDefinition type_def in fromDef.NestedTypes) {
-				if (type_def.IsNotPublic)
+				//Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
+				if (type_def.IsNestedPrivate || type_def.IsNestedAssembly || type_def.IsNotPublic){
 					continue;
+				}
+				
 				if (type_def.IsValueType) {
 					if (type_def.IsEnum) {
 						enum_list.Add (new CecilEnum (type_def));
@@ -109,10 +114,12 @@ namespace GuiCompare {
 				if (t.Name == "<Module>")
 					continue;
 
-				// XXX do we really want this?
-				if (t.Namespace == "")
+				if (t.IsNotPublic)
 					continue;
-
+				
+				if (t.IsNested)
+					continue;
+				
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
 					continue;
 
@@ -175,8 +182,8 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def, false));
 				}
-				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
-					 || type_def.BaseType.FullName == "System.Delegate") {
+				else if (type_def.BaseType != null && (type_def.BaseType.FullName == "System.MulticastDelegate"
+				                              || type_def.BaseType.FullName == "System.Delegate")) {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {

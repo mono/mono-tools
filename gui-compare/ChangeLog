@@ -1,3 +1,14 @@
+2007-12-26  Miguel de Icaza <miguel@novell.com>
+
+	* CecilMetadata.cs: Do not crash on empty type_def.BaseType (happens 
+	for System.Object).
+	
+	(CecilAssembly): skip over nested types, and ignore NotPublic types 
+	as well.
+	
+	(PopulateTypeLists): Do not insert NestedPrivate and NestedAssembly as
+	public APIs either.
+
 2007-12-18  Miguel de Icaza <miguel@novell.com>
 
 	* InfoManager.cs: 

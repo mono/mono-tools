@@ -4,7 +4,7 @@
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.10.2</target-gtk-version>
   </configuration>
-  <widget class="Gtk.Window" id="MainWindow" design-size="499 310">
+  <widget class="Gtk.Window" id="MainWindow" design-size="648 577">
     <action-group name="Default">
       <action id="File">
         <property name="Type">Action</property>

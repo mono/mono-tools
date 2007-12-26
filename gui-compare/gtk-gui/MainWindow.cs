@@ -147,8 +147,8 @@ public partial class MainWindow {
         if ((this.Child != null)) {
             this.Child.ShowAll();
         }
-        this.DefaultWidth = 499;
-        this.DefaultHeight = 310;
+        this.DefaultWidth = 648;
+        this.DefaultHeight = 577;
         this.Show();
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.quit.Activated += new System.EventHandler(this.OnQuitActivated);
