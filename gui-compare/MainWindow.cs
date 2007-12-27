@@ -259,8 +259,15 @@ public partial class MainWindow: Gtk.Window
 		
 		Gtk.TreePath path = treeStore.GetPath (iter);
 		
-		foreach (ComparisonNode n in root.children)
-			PopulateTreeFromComparison (iter, n);
+		foreach (ComparisonNode n in root.children) {
+			if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
+			    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
+			    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
+			    ShowPresent.Active) {
+				
+				PopulateTreeFromComparison (iter, n);
+			}
+		}
 		
 		tree.ExpandRow (path, false);
 	}
@@ -279,8 +286,16 @@ public partial class MainWindow: Gtk.Window
 			                        node.Warning == 0 ? null : errorPixbuf,
 			                        node.Warning == 0 ? null : String.Format (": {0}", node.Warning));
 		
-		foreach (ComparisonNode n in node.children)
-			PopulateTreeFromComparison (citer, n);
+		foreach (ComparisonNode n in node.children) {
+
+			if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
+			    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
+			    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
+			    ShowPresent.Active) {
+			
+				PopulateTreeFromComparison (citer, n);
+			}
+		}
 	}
 	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -292,5 +307,37 @@ public partial class MainWindow: Gtk.Window
 	protected virtual void OnQuitActivated (object sender, System.EventArgs e)
 	{
 		Application.Quit ();
+	}
+
+	protected virtual void OnShowErrorsToggled (object sender, System.EventArgs e)
+	{
+		if (context != null && context.Comparison != null) {
+			treeStore.Clear();
+			PopulateTreeFromComparison (context.Comparison);
+		}
+	}
+
+	protected virtual void OnShowMissingToggled (object sender, System.EventArgs e)
+	{
+		if (context != null && context.Comparison != null) {
+			treeStore.Clear();
+			PopulateTreeFromComparison (context.Comparison);
+		}
+	}
+
+	protected virtual void OnShowPresentToggled (object sender, System.EventArgs e)
+	{
+		if (context != null && context.Comparison != null) {
+			treeStore.Clear();
+			PopulateTreeFromComparison (context.Comparison);
+		}
+	}
+	
+	protected virtual void OnShowExtraToggled (object sender, System.EventArgs e)
+	{
+		if (context != null && context.Comparison != null) {
+			treeStore.Clear();
+			PopulateTreeFromComparison (context.Comparison);
+		}
 	}
 }

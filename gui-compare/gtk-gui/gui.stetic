@@ -41,6 +41,43 @@
         <property name="Label" translatable="yes">b</property>
         <property name="ShortLabel" translatable="yes">b</property>
       </action>
+      <action id="View">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_View</property>
+        <property name="ShortLabel" translatable="yes">View</property>
+      </action>
+      <action id="ShowMissing">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show missing</property>
+        <property name="ShortLabel" translatable="yes">Show missing</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowMissingToggled" />
+      </action>
+      <action id="ShowExtra">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show extra</property>
+        <property name="ShortLabel" translatable="yes">Show extra</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowExtraToggled" />
+      </action>
+      <action id="ShowPresent">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show present</property>
+        <property name="ShortLabel" translatable="yes">Show present</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowPresentToggled" />
+      </action>
+      <action id="ShowErrors">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show errors</property>
+        <property name="ShortLabel" translatable="yes">Show errors</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowErrorsToggled" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -60,6 +97,12 @@
               <node type="Menu" action="Compare">
                 <node type="Menuitem" action="Custom" />
                 <node type="Separator" />
+              </node>
+              <node type="Menu" action="View">
+                <node type="Menuitem" action="ShowErrors" />
+                <node type="Menuitem" action="ShowMissing" />
+                <node type="Menuitem" action="ShowExtra" />
+                <node type="Menuitem" action="ShowPresent" />
               </node>
             </node>
           </widget>

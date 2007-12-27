@@ -24,6 +24,16 @@ public partial class MainWindow {
     
     private Gtk.Action b;
     
+    private Gtk.Action View;
+    
+    private Gtk.ToggleAction ShowMissing;
+    
+    private Gtk.ToggleAction ShowExtra;
+    
+    private Gtk.ToggleAction ShowPresent;
+    
+    private Gtk.ToggleAction ShowErrors;
+    
     private Gtk.VBox vbox1;
     
     private Gtk.MenuBar menubar1;
@@ -67,6 +77,25 @@ public partial class MainWindow {
         this.b = new Gtk.Action("b", Mono.Unix.Catalog.GetString("b"), null, null);
         this.b.ShortLabel = Mono.Unix.Catalog.GetString("b");
         w2.Add(this.b, null);
+        this.View = new Gtk.Action("View", Mono.Unix.Catalog.GetString("_View"), null, null);
+        this.View.ShortLabel = Mono.Unix.Catalog.GetString("View");
+        w2.Add(this.View, null);
+        this.ShowMissing = new Gtk.ToggleAction("ShowMissing", Mono.Unix.Catalog.GetString("Show missing"), null, null);
+        this.ShowMissing.Active = true;
+        this.ShowMissing.ShortLabel = Mono.Unix.Catalog.GetString("Show missing");
+        w2.Add(this.ShowMissing, null);
+        this.ShowExtra = new Gtk.ToggleAction("ShowExtra", Mono.Unix.Catalog.GetString("Show extra"), null, null);
+        this.ShowExtra.Active = true;
+        this.ShowExtra.ShortLabel = Mono.Unix.Catalog.GetString("Show extra");
+        w2.Add(this.ShowExtra, null);
+        this.ShowPresent = new Gtk.ToggleAction("ShowPresent", Mono.Unix.Catalog.GetString("Show present"), null, null);
+        this.ShowPresent.Active = true;
+        this.ShowPresent.ShortLabel = Mono.Unix.Catalog.GetString("Show present");
+        w2.Add(this.ShowPresent, null);
+        this.ShowErrors = new Gtk.ToggleAction("ShowErrors", Mono.Unix.Catalog.GetString("Show errors"), null, null);
+        this.ShowErrors.Active = true;
+        this.ShowErrors.ShortLabel = Mono.Unix.Catalog.GetString("Show errors");
+        w2.Add(this.ShowErrors, null);
         w1.InsertActionGroup(w2, 0);
         this.AddAccelGroup(w1.AccelGroup);
         this.Name = "MainWindow";
@@ -77,7 +106,7 @@ public partial class MainWindow {
         this.vbox1.Name = "vbox1";
         this.vbox1.Spacing = 6;
         // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu></menubar></ui>");
+        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(w1.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.vbox1.Add(this.menubar1);
@@ -152,5 +181,9 @@ public partial class MainWindow {
         this.Show();
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.quit.Activated += new System.EventHandler(this.OnQuitActivated);
+        this.ShowMissing.Toggled += new System.EventHandler(this.OnShowMissingToggled);
+        this.ShowExtra.Toggled += new System.EventHandler(this.OnShowExtraToggled);
+        this.ShowPresent.Toggled += new System.EventHandler(this.OnShowPresentToggled);
+        this.ShowErrors.Toggled += new System.EventHandler(this.OnShowErrorsToggled);
     }
 }

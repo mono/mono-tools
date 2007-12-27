@@ -1,5 +1,12 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: repopulate the model if any of the View actions change. 
+	  also, take into account the view actions when populating the tree model.
+	* gtk-gui/MainWindow.cs, gtk-gui/gui.stetic: add a View menu for showing
+	  errors/missing/extra/present items
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* CecilMetadata.cs: skip special named fields, and start dealing with
 	  attributes.
 	* Metadata.cs: kinda gross, but make CompProperty subclass from
