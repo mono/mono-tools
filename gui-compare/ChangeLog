@@ -1,5 +1,14 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: add handling for the refresh button.  also, remove the
+	  counts of various things if the View menu has them disabled.
+	* gtk-gui/MainWindow.cs, gtk-gui/gui.stetic: add a refresh button to re-run
+	  the current comparison.  this is a stopgap for the planned
+	  inotify/fam/whatever based code that will notice when the assembly
+	  changes and will automatically refresh.
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* MainWindow.cs: repopulate the model if any of the View actions change. 
 	  also, take into account the view actions when populating the tree model.
 	* gtk-gui/MainWindow.cs, gtk-gui/gui.stetic: add a View menu for showing

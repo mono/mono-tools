@@ -250,12 +250,12 @@ public partial class MainWindow: Gtk.Window
 			treeStore.AppendValues (root.name,
 			                        TypePixbufFromComparisonNode (root),
 			                        StatusPixbufFromComparisonNode (root),
-			                        root.Missing == 0 ? null : missingPixbuf,
-			                        root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
-			                        root.Extra == 0 ? null : extraPixbuf,
-			                        root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
-			                        root.Warning == 0 ? null : errorPixbuf,
-			                        root.Warning == 0 ? null : String.Format (": {0}", root.Warning));
+			                        !ShowMissing.Active || root.Missing == 0 ? null : missingPixbuf,
+			                        !ShowMissing.Active || root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
+			                        !ShowExtra.Active || root.Extra == 0 ? null : extraPixbuf,
+			                        !ShowExtra.Active || root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
+			                        !ShowErrors.Active || root.Warning == 0 ? null : errorPixbuf,
+			                        !ShowErrors.Active || root.Warning == 0 ? null : String.Format (": {0}", root.Warning));
 		
 		Gtk.TreePath path = treeStore.GetPath (iter);
 		
@@ -279,12 +279,12 @@ public partial class MainWindow: Gtk.Window
 			                        node.name,
 			                        TypePixbufFromComparisonNode (node),
 			                        StatusPixbufFromComparisonNode (node),
-			                        node.Missing == 0 ? null : missingPixbuf,
-			                        node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
-			                        node.Extra == 0 ? null : extraPixbuf,
-			                        node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
-			                        node.Warning == 0 ? null : errorPixbuf,
-			                        node.Warning == 0 ? null : String.Format (": {0}", node.Warning));
+			                        !ShowMissing.Active || node.Missing == 0 ? null : missingPixbuf,
+			                        !ShowMissing.Active || node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
+			                        !ShowExtra.Active || node.Extra == 0 ? null : extraPixbuf,
+			                        !ShowExtra.Active || node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
+			                        !ShowErrors.Active || node.Warning == 0 ? null : errorPixbuf,
+			                        !ShowErrors.Active || node.Warning == 0 ? null : String.Format (": {0}", node.Warning));
 		
 		foreach (ComparisonNode n in node.children) {
 
@@ -339,5 +339,10 @@ public partial class MainWindow: Gtk.Window
 			treeStore.Clear();
 			PopulateTreeFromComparison (context.Comparison);
 		}
+	}
+
+	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)
+	{
+		StartCompare (delegate {});
 	}
 }

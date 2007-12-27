@@ -78,6 +78,14 @@
         <property name="Active">True</property>
         <signal name="Toggled" handler="OnShowErrorsToggled" />
       </action>
+      <action id="Refresh">
+        <property name="Type">Action</property>
+        <property name="Accelerator">&lt;Control&gt;r</property>
+        <property name="Label" translatable="yes">Refresh</property>
+        <property name="ShortLabel" translatable="yes">Refresh</property>
+        <property name="StockId">gtk-refresh</property>
+        <signal name="Activated" handler="OnRefreshActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -108,6 +116,22 @@
           </widget>
           <packing>
             <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Toolbar" id="toolbar3">
+            <property name="MemberName" />
+            <property name="ShowArrow">False</property>
+            <property name="ButtonStyle">Icons</property>
+            <node name="toolbar3" type="Menubar">
+              <node type="Toolitem" action="Refresh" />
+            </node>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -168,7 +192,7 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
             </child>
           </widget>
           <packing>
-            <property name="Position">1</property>
+            <property name="Position">2</property>
             <property name="AutoSize">True</property>
           </packing>
         </child>
@@ -190,7 +214,7 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
             </child>
           </widget>
           <packing>
-            <property name="Position">2</property>
+            <property name="Position">3</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
