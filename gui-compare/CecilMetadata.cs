@@ -18,6 +18,7 @@ namespace GuiCompare {
 							List<CompNamed> field_list,
 							List<CompNamed> event_list)
 		{
+			Console.WriteLine ("21Populating {0}.{1}", fromDef.Namespace, fromDef.Name);
 			if (interface_list != null) {
 				foreach (TypeReference ifc in fromDef.Interfaces) {
 					interface_list.Add (new CecilInterface (ifc, true));
@@ -50,9 +51,10 @@ namespace GuiCompare {
 			if (field_list != null) {
 				foreach (FieldDefinition fd in fromDef.Fields) {
 					if (fd.IsPrivate || fd.IsAssembly){
-						Console.WriteLine ("Skipping over {0}.{1} {2}", fromDef.Namespace, fromDef.Name, fd.Name);
+						//Console.WriteLine ("    Skipping over {0}.{1} {2}", fromDef.Namespace, fromDef.Name, fd.Name);
 						continue;
 					}
+					//Console.WriteLine ("    Adding {0}.{1} {2}", fromDef.Namespace, fromDef.Name, fd.Name);
 					field_list.Add (new CecilField (fd));
 				}
 			}
@@ -74,7 +76,7 @@ namespace GuiCompare {
 						      List<CompNamed> struct_list)
 		{
 			foreach (TypeDefinition type_def in fromDef.NestedTypes) {
-				//Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
+				Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
 				if (type_def.IsNestedPrivate || type_def.IsNestedAssembly || type_def.IsNotPublic){
 					continue;
 				}

@@ -4,6 +4,9 @@
     <images-root-path>..</images-root-path>
     <target-gtk-version>2.10.2</target-gtk-version>
   </configuration>
+  <import>
+    <widget-library name="../bin/Debug/gui-compare.exe" internal="true" />
+  </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="648 577">
     <action-group name="Default">
       <action id="File">
@@ -151,6 +154,12 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
           </packing>
         </child>
       </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="guicompare.ProviderSelector" design-size="300 300">
+    <property name="MemberName" />
+    <child>
+      <placeholder />
     </child>
   </widget>
 </stetic-interface>

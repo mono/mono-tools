@@ -46,8 +46,6 @@ namespace GuiCompare
 		MainWindow main;
 		
 		string [] api_1_1 = {
-			"cscompmgd",
-			"Microsoft.VisualBasic",
 			"mscorlib",
 			"System",
 			"System.Data",
@@ -62,6 +60,8 @@ namespace GuiCompare
 			"System.Web.Services",
 			"System.Windows.Forms",
 			"System.Xml",
+			"cscompmgd",
+			"Microsoft.VisualBasic",
 			"",
 			"System.Configuration.Install",
 			"System.Design",
@@ -72,8 +72,6 @@ namespace GuiCompare
 		};
 		
 		string [] api_2_0 = {
-			"cscompmgd",
-			"Microsoft.VisualBasic",
 			"mscorlib",
 			"System",
 			"System.Configuration",
@@ -90,6 +88,8 @@ namespace GuiCompare
 			"System.Web.Services",
 			"System.Windows.Forms",
 			"System.Xml",
+			"cscompmgd",
+			"Microsoft.VisualBasic",
 			"",
 			"Microsoft.Build.Engine",
 			"Microsoft.Build.Framework",
