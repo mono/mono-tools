@@ -1,5 +1,13 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* CecilMetadata.cs: add a ctor for CecilMetadata that takes a TypeDefinition
+	  (along with one that takes a TypeReference).  in the type_def case, we
+	  populate the member lists just as we would for a class, so we can check
+	  them.  currently they all show up as extra, since the MasterMetadata
+	  doesn't populate its interfaces properly yet.
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* CecilMetadata.cs: factor out all the duplicate attribute list handling
 	  code.  also, make it deal with MonoTODO attributes.
 	* CompareContext.cs: fix progress message

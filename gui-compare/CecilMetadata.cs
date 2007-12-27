@@ -11,16 +11,16 @@ namespace GuiCompare {
 
 	static class Utils {
 		public static void PopulateMemberLists (TypeDefinition fromDef,
-							List<CompNamed> interface_list,
-							List<CompNamed> constructor_list,
-							List<CompNamed> method_list,
-							List<CompNamed> property_list,
-							List<CompNamed> field_list,
-							List<CompNamed> event_list)
+		                                        List<CompNamed> interface_list,
+		                                        List<CompNamed> constructor_list,
+		                                        List<CompNamed> method_list,
+		                                        List<CompNamed> property_list,
+		                                        List<CompNamed> field_list,
+		                                        List<CompNamed> event_list)
 		{
 			if (interface_list != null) {
 				foreach (TypeReference ifc in fromDef.Interfaces) {
-					interface_list.Add (new CecilInterface (ifc, true));
+					interface_list.Add (new CecilInterface (ifc));
 				}
 			}
 			if (constructor_list != null) {
@@ -66,11 +66,11 @@ namespace GuiCompare {
 		}
 
 		public static void PopulateTypeLists (TypeDefinition fromDef,
-						      List<CompNamed> class_list,
-						      List<CompNamed> enum_list,
-						      List<CompNamed> delegate_list,
-						      List<CompNamed> interface_list,
-						      List<CompNamed> struct_list)
+		                                      List<CompNamed> class_list,
+		                                      List<CompNamed> enum_list,
+		                                      List<CompNamed> delegate_list,
+		                                      List<CompNamed> interface_list,
+		                                      List<CompNamed> struct_list)
 		{
 			foreach (TypeDefinition type_def in fromDef.NestedTypes) {
 				Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
@@ -87,7 +87,7 @@ namespace GuiCompare {
 					}
 				}
 				else if (type_def.IsInterface) {
-					interface_list.Add (new CecilInterface (type_def, false));
+					interface_list.Add (new CecilInterface (type_def));
 				}
 				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
 					 || type_def.BaseType.FullName == "System.Delegate") {
@@ -187,10 +187,10 @@ namespace GuiCompare {
 					}
 				}
 				else if (type_def.IsInterface) {
-					interface_list.Add (new CecilInterface (type_def, false));
+					interface_list.Add (new CecilInterface (type_def));
 				}
 				else if (type_def.BaseType != null && (type_def.BaseType.FullName == "System.MulticastDelegate"
-				                              || type_def.BaseType.FullName == "System.Delegate")) {
+				                                       || type_def.BaseType.FullName == "System.Delegate")) {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -231,55 +231,83 @@ namespace GuiCompare {
 		List<CompNamed> enum_list;
 	}
 
-	public class CecilInterface : CompInterface {
-		public CecilInterface (TypeReference type_ref, bool full_name)
-			: base (full_name ? type_ref.FullName : type_ref.Name)
+	public class CecilInterface : CompInterface {		
+		public CecilInterface (TypeDefinition type_def)
+			: base (type_def.Name)
 		{
-			this.type_ref = type_ref;
+			interfaces = new List<CompNamed>();
+			constructors = new List<CompNamed>();
+			methods = new List<CompNamed>();
+			properties = new List<CompNamed>();
+			fields = new List<CompNamed>();
+			events = new List<CompNamed>();
+
+			Utils.PopulateMemberLists (type_def,
+			                           interfaces,
+			                           constructors,
+			                           methods,
+			                           properties,
+			                           fields,
+			                           events);
+			
+			attributes = Utils.GetCustomAttributes (type_def);
+		}
+		
+		public CecilInterface (TypeReference type_ref)
+			: base (type_ref.FullName)
+		{
+			interfaces = new List<CompNamed>();
+			constructors = new List<CompNamed>();
+			methods = new List<CompNamed>();
+			properties = new List<CompNamed>();
+			fields = new List<CompNamed>();
+			events = new List<CompNamed>();
+			
+			attributes = Utils.GetCustomAttributes (type_ref);
 		}
 
 		public override List<CompNamed> GetInterfaces ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return interfaces;
 		}
 
 		public override List<CompNamed> GetMethods ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return methods;
 		}
 
 		public override List<CompNamed> GetConstructors ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return constructors;
 		}
 
  		public override List<CompNamed> GetProperties()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return properties;
 		}
 
  		public override List<CompNamed> GetFields()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return fields;
 		}
 
  		public override List<CompNamed> GetEvents()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return events;
 		}
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (type_ref);
+			return attributes;
 		}
-
-		TypeReference type_ref;
+		
+		List<CompNamed> interfaces;
+		List<CompNamed> constructors;
+		List<CompNamed> methods;
+		List<CompNamed> properties;
+		List<CompNamed> fields;
+		List<CompNamed> events;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilDelegate : CompDelegate {
