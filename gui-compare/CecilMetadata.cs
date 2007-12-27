@@ -18,7 +18,6 @@ namespace GuiCompare {
 							List<CompNamed> field_list,
 							List<CompNamed> event_list)
 		{
-			Console.WriteLine ("21Populating {0}.{1}", fromDef.Namespace, fromDef.Name);
 			if (interface_list != null) {
 				foreach (TypeReference ifc in fromDef.Interfaces) {
 					interface_list.Add (new CecilInterface (ifc, true));
@@ -99,6 +98,25 @@ namespace GuiCompare {
 				}
 			}
 		}
+					
+		public static bool ShouldSkipAttribute (string name)
+		{
+			return (name == "MonoLimitationAttribute" ||
+			        name == "MonoDocumentationNoteAttribute" ||
+			        name == "MonoTODOAttribute" ||
+			        name == "MonoExtensionAttribute" ||
+			        name == "MonoNotSupportedAttribute" ||
+			        name == "MonoInternalNoteAttribute");
+		}
+			
+		public static List<CompNamed> GetCustomAttributes (ICustomAttributeProvider provider)
+		{
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in provider.CustomAttributes)
+				if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.Name))
+					rv.Add (new CecilAttribute (ca));
+			return rv;
+		}
 	}
 
 	public class CecilAssembly : CompAssembly {
@@ -123,7 +141,7 @@ namespace GuiCompare {
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
 					continue;
 
-				if (ShouldSkip (t.Name))
+				if (Utils.ShouldSkipAttribute (t.Name))
 					continue;
 
 				if (!namespaces.ContainsKey (t.Namespace))
@@ -141,17 +159,6 @@ namespace GuiCompare {
 		public override List<CompNamed> GetNamespaces()
 		{
 			return namespace_list;
-		}
-
-		bool ShouldSkip (string name)
-		{
-			return (name == "MonoLimitationAttribute" ||
-				name == "MonoDocumentationNoteAttribute" ||
-				name == "MonoTODOAttribute" ||
-				name == "MonoExtensionAttribute" ||
-				name == "MonoNotSupportedAttribute" ||
-				name == "MonoInternalNoteAttribute");
-				
 		}
 
 		List<CompNamed> namespace_list;
@@ -269,10 +276,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in type_ref.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (type_ref);
 		}
 
 		TypeReference type_ref;
@@ -312,10 +316,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in type_def.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (type_def);
 		}
 
 		TypeDefinition type_def;
@@ -390,10 +391,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in type_def.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (type_def);
 		}
 
 		public override List<CompNamed> GetNestedClasses()
@@ -445,10 +443,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in field_def.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (field_def);
 		}
 
 		FieldDefinition field_def;
@@ -463,10 +458,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in method_def.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (method_def);
 		}
 
 		static string MasterinfoFormattedName (MethodDefinition method_def)
@@ -499,10 +491,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in pd.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (pd);
 		}
 		
 		public override List<CompNamed> GetMethods()
@@ -530,10 +519,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in ed.CustomAttributes)
-				rv.Add (new CecilAttribute (ca));
-			return rv;
+			return Utils.GetCustomAttributes (ed);
 		}
 		
 		EventDefinition ed;

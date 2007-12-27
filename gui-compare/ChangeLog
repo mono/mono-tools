@@ -1,5 +1,11 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* CecilMetadata.cs: factor out all the duplicate attribute list handling
+	  code.  also, make it deal with MonoTODO attributes.
+	* CompareContext.cs: fix progress message
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* MainWindow.cs: add handling for the refresh button.  also, remove the
 	  counts of various things if the View menu has them disabled.
 	* gtk-gui/MainWindow.cs, gtk-gui/gui.stetic: add a refresh button to re-run

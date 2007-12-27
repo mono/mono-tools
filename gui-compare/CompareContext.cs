@@ -134,7 +134,7 @@ namespace GuiCompare {
 				int c = String.Compare (master_list[m].Name, assembly_list[a].Name);
 
 				if (c == 0) {
-					ProgressOnGuiThread (0.0, String.Format ("Comparing {0} {0}", master_list[m].Type, master_list[m].Name));
+					ProgressOnGuiThread (0.0, String.Format ("Comparing {0} {1}", master_list[m].Type, master_list[m].Name));
 
 					/* the names match, further investigation is required */
 //  					Console.WriteLine ("{0} {1} is in both, doing more comparisons", master_list[m].Type, master_list[m].Name);
