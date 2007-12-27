@@ -1,5 +1,13 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* CecilMetadata.cs: rename Utils to CecilUtils. Also, fix the broken logic
+	  that was resulting in private properties being included in the list of
+	  properties (and therefore showing up as extras).
+	* MasterMetadata.cs: abstract out a lot of the list creation stuff into a
+	  Utils class, like we do in CecilMetadata.cs  Call it MasterUtils.
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* CecilMetadata.cs: add a ctor for CecilMetadata that takes a TypeDefinition
 	  (along with one that takes a TypeReference).  in the type_def case, we
 	  populate the member lists just as we would for a class, so we can check

@@ -9,7 +9,7 @@ using Gtk;
 
 namespace GuiCompare {
 
-	static class Utils {
+	static class CecilUtils {
 		public static void PopulateMemberLists (TypeDefinition fromDef,
 		                                        List<CompNamed> interface_list,
 		                                        List<CompNamed> constructor_list,
@@ -41,7 +41,13 @@ namespace GuiCompare {
 			}
 			if (property_list != null) {
 				foreach (PropertyDefinition pd in fromDef.Properties) {
-					if (/*pd.IsPrivate || pd.IsAssembly*/true)
+					bool include_set = true;
+					bool include_get = true;
+					if (pd.SetMethod == null || (pd.SetMethod.IsPrivate || pd.SetMethod.IsAssembly))
+						include_set = false;
+					if (pd.GetMethod == null || (pd.GetMethod.IsPrivate || pd.GetMethod.IsAssembly))
+						include_get = false;
+					if (include_set || include_get)
 						property_list.Add (new CecilProperty (pd));
 				}
 			}
@@ -141,7 +147,7 @@ namespace GuiCompare {
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
 					continue;
 
-				if (Utils.ShouldSkipAttribute (t.Name))
+				if (CecilUtils.ShouldSkipAttribute (t.Name))
 					continue;
 
 				if (!namespaces.ContainsKey (t.Namespace))
@@ -242,7 +248,7 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 
-			Utils.PopulateMemberLists (type_def,
+			CecilUtils.PopulateMemberLists (type_def,
 			                           interfaces,
 			                           constructors,
 			                           methods,
@@ -250,7 +256,7 @@ namespace GuiCompare {
 			                           fields,
 			                           events);
 			
-			attributes = Utils.GetCustomAttributes (type_def);
+			attributes = CecilUtils.GetCustomAttributes (type_def);
 		}
 		
 		public CecilInterface (TypeReference type_ref)
@@ -263,7 +269,7 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 			
-			attributes = Utils.GetCustomAttributes (type_ref);
+			attributes = CecilUtils.GetCustomAttributes (type_ref);
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -328,7 +334,7 @@ namespace GuiCompare {
 
 			fields = new List<CompNamed>();
 
-			Utils.PopulateMemberLists (type_def,
+			CecilUtils.PopulateMemberLists (type_def,
 						   null,
 						   null,
 						   null,
@@ -344,7 +350,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (type_def);
+			return CecilUtils.GetCustomAttributes (type_def);
 		}
 
 		TypeDefinition type_def;
@@ -363,7 +369,7 @@ namespace GuiCompare {
 			nested_interfaces = new List<CompNamed>();
 			nested_structs = new List<CompNamed>();
 
-			Utils.PopulateTypeLists (type_def,
+			CecilUtils.PopulateTypeLists (type_def,
 						 nested_classes,
 						 nested_enums,
 						 nested_delegates,
@@ -377,7 +383,7 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 
-			Utils.PopulateMemberLists (type_def,
+			CecilUtils.PopulateMemberLists (type_def,
 			                           interfaces,
 			                           constructors,
 			                           methods,
@@ -419,7 +425,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (type_def);
+			return CecilUtils.GetCustomAttributes (type_def);
 		}
 
 		public override List<CompNamed> GetNestedClasses()
@@ -471,7 +477,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (field_def);
+			return CecilUtils.GetCustomAttributes (field_def);
 		}
 
 		FieldDefinition field_def;
@@ -486,7 +492,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (method_def);
+			return CecilUtils.GetCustomAttributes (method_def);
 		}
 
 		static string MasterinfoFormattedName (MethodDefinition method_def)
@@ -519,16 +525,16 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (pd);
+			return CecilUtils.GetCustomAttributes (pd);
 		}
 		
 		public override List<CompNamed> GetMethods()
 		{
 			List<CompNamed> rv = new List<CompNamed>();
 
-			if (pd.GetMethod != null)
+			if (pd.GetMethod != null && !pd.GetMethod.IsPrivate && !pd.GetMethod.IsAssembly)
 				rv.Add (new CecilMethod (pd.GetMethod));
-			if (pd.SetMethod != null)
+			if (pd.SetMethod != null && !pd.SetMethod.IsPrivate && !pd.SetMethod.IsAssembly)
 				rv.Add (new CecilMethod (pd.SetMethod));
 			
 			return rv;
@@ -547,7 +553,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return Utils.GetCustomAttributes (ed);
+			return CecilUtils.GetCustomAttributes (ed);
 		}
 		
 		EventDefinition ed;
