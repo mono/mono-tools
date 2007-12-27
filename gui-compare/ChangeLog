@@ -1,5 +1,10 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* cm/*.gif: make all these transparent as a
+	  first pass at making them not look like ass.
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* CecilMetadata.cs: rename Utils to CecilUtils. Also, fix the broken logic
 	  that was resulting in private properties being included in the list of
 	  properties (and therefore showing up as extras).
