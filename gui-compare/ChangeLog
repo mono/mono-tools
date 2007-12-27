@@ -1,5 +1,14 @@
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: rework the "Show {present, missing, extra, etc}" stuff
+	  using a gtk treemodelfilter.  It's slower than recreating the tree, but
+	  it maintains expanded state and selection across changes, which is nice.
+	* CompareContext.cs: add more missing elements to the tree, and also keep
+	  track of the counts from the reference assembly so we can give *some*
+	  indication of progress,
+
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
 	* cm/*.gif: make all these transparent as a
 	  first pass at making them not look like ass.
 

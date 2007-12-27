@@ -45,6 +45,7 @@ public partial class MainWindow: Gtk.Window
 	static Gdk.Pixbuf missingPixbuf, todoPixbuf, extraPixbuf;
 
 	Gtk.TreeStore treeStore;
+	Gtk.TreeModelFilter treeFilter;
 	
 	static MainWindow ()
 	{
@@ -82,9 +83,11 @@ public partial class MainWindow: Gtk.Window
 		treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf),
 		                               typeof (Gdk.Pixbuf), typeof (string),
 		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (Gdk.Pixbuf), typeof (string));
+		                               typeof (Gdk.Pixbuf), typeof (string), typeof (ComparisonNode));
 		
-		tree.Model = treeStore;
+		treeFilter = new Gtk.TreeModelFilter (treeStore, null);
+		treeFilter.VisibleFunc = FilterTree;
+		tree.Model = treeFilter;
 		
 		// Create a column for the node name
 		Gtk.TreeViewColumn nameColumn = new Gtk.TreeViewColumn ();
@@ -255,18 +258,13 @@ public partial class MainWindow: Gtk.Window
 			                        !ShowExtra.Active || root.Extra == 0 ? null : extraPixbuf,
 			                        !ShowExtra.Active || root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
 			                        !ShowErrors.Active || root.Warning == 0 ? null : errorPixbuf,
-			                        !ShowErrors.Active || root.Warning == 0 ? null : String.Format (": {0}", root.Warning));
+			                        !ShowErrors.Active || root.Warning == 0 ? null : String.Format (": {0}", root.Warning),
+			                        root);
 		
 		Gtk.TreePath path = treeStore.GetPath (iter);
 		
 		foreach (ComparisonNode n in root.children) {
-			if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
-			    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
-			    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
-			    ShowPresent.Active) {
-				
-				PopulateTreeFromComparison (iter, n);
-			}
+			PopulateTreeFromComparison (iter, n);
 		}
 		
 		tree.ExpandRow (path, false);
@@ -284,18 +282,30 @@ public partial class MainWindow: Gtk.Window
 			                        !ShowExtra.Active || node.Extra == 0 ? null : extraPixbuf,
 			                        !ShowExtra.Active || node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
 			                        !ShowErrors.Active || node.Warning == 0 ? null : errorPixbuf,
-			                        !ShowErrors.Active || node.Warning == 0 ? null : String.Format (": {0}", node.Warning));
+			                        !ShowErrors.Active || node.Warning == 0 ? null : String.Format (": {0}", node.Warning),
+			                        node);
 		
 		foreach (ComparisonNode n in node.children) {
-
-			if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
-			    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
-			    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
-			    ShowPresent.Active) {
-			
-				PopulateTreeFromComparison (citer, n);
-			}
+			PopulateTreeFromComparison (citer, n);
 		}
+	}
+	
+	private bool FilterTree (Gtk.TreeModel model, Gtk.TreeIter iter)
+	{
+		//string node_name = model.GetValue(iter, 0) as string;
+		//Console.WriteLine ("filtering {0}, node = {1}", node_name, model.GetValue(iter, 9) == null ? "null" : model.GetValue(iter,9).GetType().ToString());
+		ComparisonNode n = model.GetValue (iter, 9) as ComparisonNode;
+		if (n == null)
+			return false;
+		
+		if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
+		    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
+		    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
+		    ShowPresent.Active && n.status == ComparisonStatus.None)
+			
+			return true;
+		else
+			return false;
 	}
 	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -311,34 +321,22 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnShowErrorsToggled (object sender, System.EventArgs e)
 	{
-		if (context != null && context.Comparison != null) {
-			treeStore.Clear();
-			PopulateTreeFromComparison (context.Comparison);
-		}
+		treeFilter.Refilter();
 	}
 
 	protected virtual void OnShowMissingToggled (object sender, System.EventArgs e)
 	{
-		if (context != null && context.Comparison != null) {
-			treeStore.Clear();
-			PopulateTreeFromComparison (context.Comparison);
-		}
+		treeFilter.Refilter();
 	}
 
 	protected virtual void OnShowPresentToggled (object sender, System.EventArgs e)
 	{
-		if (context != null && context.Comparison != null) {
-			treeStore.Clear();
-			PopulateTreeFromComparison (context.Comparison);
-		}
+		treeFilter.Refilter();
 	}
 	
 	protected virtual void OnShowExtraToggled (object sender, System.EventArgs e)
 	{
-		if (context != null && context.Comparison != null) {
-			treeStore.Clear();
-			PopulateTreeFromComparison (context.Comparison);
-		}
+		treeFilter.Refilter();
 	}
 
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)

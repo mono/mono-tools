@@ -66,6 +66,11 @@ namespace GuiCompare {
 
 			comparison = target.GetComparisonNode ();
 
+			List<CompNamed> ref_namespaces = reference.GetNamespaces();
+			
+			total_comparisons = CountComparisons (ref_namespaces);
+			comparisons_performed = 0;
+			
 			CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
 
 			FinishedOnGuiThread ();
@@ -73,6 +78,42 @@ namespace GuiCompare {
 			//			DumpComparison (comparison, 0);
 		}
 
+		int total_comparisons;
+		int comparisons_performed;
+
+		int CountComparisons (List<CompNamed> list)
+		{
+			int rv = 0;
+			foreach (CompNamed l in list) {
+				rv += CountComparisons (l);
+			}
+			return rv;
+		}
+		
+		int CountComparisons (CompNamed named)
+		{
+			int rv = 1;
+			if (named is ICompMemberContainer) {
+				ICompMemberContainer container = (ICompMemberContainer)named;
+				rv += CountComparisons (container.GetInterfaces());
+				rv += CountComparisons (container.GetMethods());
+				rv += CountComparisons (container.GetProperties());
+				rv += CountComparisons (container.GetFields());
+			}
+			if (named is ICompTypeContainer) {
+				ICompTypeContainer container = (ICompTypeContainer)named;
+				rv += CountComparisons (container.GetNestedInterfaces());
+				rv += CountComparisons (container.GetNestedClasses());
+				rv += CountComparisons (container.GetNestedStructs());
+				rv += CountComparisons (container.GetNestedEnums());
+				rv += CountComparisons (container.GetNestedDelegates());
+			}
+			if (named is ICompAttributeContainer) {
+				rv += CountComparisons (((ICompAttributeContainer)named).GetAttributes());
+			}
+			return rv;
+		}
+		
 		char StatusToChar (ComparisonStatus r)
 		{
 			switch (r) {
@@ -99,20 +140,20 @@ namespace GuiCompare {
 		void CompareNestedTypes (ComparisonNode parent, ICompTypeContainer master_container, ICompTypeContainer assembly_container)
 		{
 			CompareTypeLists (parent,
-					  master_container.GetNestedInterfaces(), assembly_container.GetNestedInterfaces());
+			                  master_container.GetNestedInterfaces(), assembly_container.GetNestedInterfaces());
 			CompareTypeLists (parent,
-					  master_container.GetNestedClasses(), assembly_container.GetNestedClasses());
+			                  master_container.GetNestedClasses(), assembly_container.GetNestedClasses());
 			CompareTypeLists (parent,
-					  master_container.GetNestedStructs(), assembly_container.GetNestedStructs());
+			                  master_container.GetNestedStructs(), assembly_container.GetNestedStructs());
 			CompareTypeLists (parent,
-					  master_container.GetNestedEnums(), assembly_container.GetNestedEnums());
+			                  master_container.GetNestedEnums(), assembly_container.GetNestedEnums());
 			CompareTypeLists (parent,
-					  master_container.GetNestedDelegates(), assembly_container.GetNestedDelegates());
+			                  master_container.GetNestedDelegates(), assembly_container.GetNestedDelegates());
 		}
 
 		void CompareTypeLists (ComparisonNode parent,
-				       List<CompNamed> master_list,
-				       List<CompNamed> assembly_list)
+		                       List<CompNamed> master_list,
+		                       List<CompNamed> assembly_list)
 		{
 			int m = 0, a = 0;
 
@@ -132,9 +173,10 @@ namespace GuiCompare {
 				}
 
 				int c = String.Compare (master_list[m].Name, assembly_list[a].Name);
-
+				comparisons_performed ++;
+				
 				if (c == 0) {
-					ProgressOnGuiThread (0.0, String.Format ("Comparing {0} {1}", master_list[m].Type, master_list[m].Name));
+					ProgressOnGuiThread ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", master_list[m].Type, master_list[m].Name));
 
 					/* the names match, further investigation is required */
 //  					Console.WriteLine ("{0} {1} is in both, doing more comparisons", master_list[m].Type, master_list[m].Name);
@@ -144,16 +186,15 @@ namespace GuiCompare {
 					// compare nested types
 					if (master_list[m] is ICompTypeContainer && assembly_list[a] is ICompTypeContainer) {
 						CompareNestedTypes (comparison,
-								    (ICompTypeContainer)master_list[m],
-								    (ICompTypeContainer)assembly_list[a]);
+						                    (ICompTypeContainer)master_list[m],
+						                    (ICompTypeContainer)assembly_list[a]);
 					}
 					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
 						CompareMembers (comparison,
-								(ICompMemberContainer)master_list[m],
-								(ICompMemberContainer)assembly_list[a]);
+						                (ICompMemberContainer)master_list[m],
+						                (ICompMemberContainer)assembly_list[a]);
 					}
 
-					// XXX compare members
 					m++;
 					a++;
 				}
@@ -194,23 +235,13 @@ namespace GuiCompare {
 				}
 
 				int c = String.Compare (master_attrs[m].Name, assembly_attrs[a].Name);
+				comparisons_performed ++;
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
 // 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
 					ComparisonNode comparison = master_attrs[m].GetComparisonNode();
 					parent.AddChild (comparison);
-
-#if notyet
-					if (master_list[m] is ICompAttributeContainner && assembly_list[a] is ICompAttributeContainer)
-						CompareAttributes (master_list[m], assembly_list[a]);
-					
-					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
-						CompareMembers (comparison,
-								(ICompMemberContainer)master_list[m],
-								(ICompMemberContainer)assembly_list[a]);
-					}
-#endif
 					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
 					m++;
 					a++;
@@ -229,21 +260,23 @@ namespace GuiCompare {
 		}
 		
 		void CompareMembers (ComparisonNode parent,
-				     ICompMemberContainer master_container, ICompMemberContainer assembly_container)
+		                     ICompMemberContainer master_container, ICompMemberContainer assembly_container)
 		{
 			CompareMemberLists (parent,
-					    master_container.GetInterfaces(), assembly_container.GetInterfaces());
+			                    master_container.GetInterfaces(), assembly_container.GetInterfaces());
 			CompareMemberLists (parent,
-					    master_container.GetMethods(), assembly_container.GetMethods());
+			                    master_container.GetMethods(), assembly_container.GetMethods());
 			CompareMemberLists (parent,
-					    master_container.GetProperties(), assembly_container.GetProperties());
+			                    master_container.GetProperties(), assembly_container.GetProperties());
 			CompareMemberLists (parent,
-					    master_container.GetFields(), assembly_container.GetFields());
+			                    master_container.GetFields(), assembly_container.GetFields());
+			CompareMemberLists (parent,
+			                    master_container.GetEvents(), assembly_container.GetEvents());
 		}
 
 		void CompareMemberLists (ComparisonNode parent,
-					 List<CompNamed> master_list,
-					 List<CompNamed> assembly_list)
+		                         List<CompNamed> master_list,
+		                         List<CompNamed> assembly_list)
 		{
 			int m = 0, a = 0;
 
@@ -263,6 +296,7 @@ namespace GuiCompare {
 				}
 
 				int c = String.Compare (master_list[m].Name, assembly_list[a].Name);
+				comparisons_performed ++;
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
@@ -279,8 +313,8 @@ namespace GuiCompare {
 					
 					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
 						CompareMembers (comparison,
-								(ICompMemberContainer)master_list[m],
-								(ICompMemberContainer)assembly_list[a]);
+						                (ICompMemberContainer)master_list[m],
+						                (ICompMemberContainer)assembly_list[a]);
 					}
 
 					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
@@ -325,6 +359,8 @@ namespace GuiCompare {
 			parent.AddChild (node);
 			node.status = ComparisonStatus.Missing;
 
+			comparisons_performed ++;
+
 			if (item is ICompTypeContainer) {
 				ICompTypeContainer c = (ICompTypeContainer)item;
 
@@ -336,6 +372,19 @@ namespace GuiCompare {
 					AddMissing (node, cls);
 				foreach (CompNamed en in c.GetNestedEnums())
 					AddMissing (node, en);
+			}
+			if (item is ICompMemberContainer) {
+				ICompMemberContainer c = (ICompMemberContainer)item;
+				foreach (CompNamed ifc in c.GetInterfaces())
+					AddMissing (node, ifc);
+				foreach (CompNamed m in c.GetMethods())
+					AddMissing (node, m);
+				foreach (CompNamed p in c.GetProperties())
+					AddMissing (node, p);
+				foreach (CompNamed f in c.GetFields())
+					AddMissing (node, f);
+				foreach (CompNamed e in c.GetEvents())
+					AddMissing (node, e);
 			}
 		}
 
