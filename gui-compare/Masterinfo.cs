@@ -638,10 +638,10 @@ using System.Xml;
 		XMLAttributes attributes;
 		public XMLInterfaces interfaces;
 		XMLGenericTypeConstraints genericConstraints;
-		XMLFields fields;
-		XMLConstructors constructors;
-		XMLProperties properties;
-		XMLEvents events;
+		public XMLFields fields;
+		public XMLConstructors constructors;
+		public XMLProperties properties;
+		public XMLEvents events;
 		public XMLMethods methods;
 		public XMLClass [] nested;
 		
@@ -1557,7 +1557,7 @@ using System.Xml;
 
 	public class XMLEvents : XMLMember
 	{
-		Hashtable eventTypes;
+		public Hashtable eventTypes;
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
@@ -1615,13 +1615,13 @@ using System.Xml;
 
 	public class XMLMethods : XMLMember
 	{
-		Hashtable returnTypes;
-		Hashtable parameters;
-		Hashtable genericConstraints;
-		Hashtable signatureFlags;
+		public Hashtable returnTypes;
+		public Hashtable parameters;
+		public Hashtable genericConstraints;
+		public Hashtable signatureFlags;
 
 		[Flags]
-		enum SignatureFlags
+		public enum SignatureFlags
 		{
 			None = 0,
 			Abstract = 1,

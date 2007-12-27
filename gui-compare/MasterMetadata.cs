@@ -154,8 +154,14 @@ namespace GuiCompare {
 
  		public override List<CompNamed> GetFields()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (xml_cls.fields != null) {
+				foreach (object key in xml_cls.fields.keys.Keys) {
+					rv.Add (new MasterField ((string)xml_cls.fields.keys[key]));
+				}
+			}
+
+			return rv;
 		}
 
 		public override List<CompNamed> GetAttributes ()
@@ -194,7 +200,19 @@ namespace GuiCompare {
 			List<CompNamed> rv = new List<CompNamed>();
 			if (xml_cls.methods != null) {
 				foreach (object key in xml_cls.methods.keys.Keys) {
-					rv.Add (new MasterMethod ((string)xml_cls.methods.keys[key]));
+					XMLMethods.SignatureFlags signatureFlags = (xml_cls.methods.signatureFlags != null &&
+										    xml_cls.methods.signatureFlags.ContainsKey (key) ?
+										    (XMLMethods.SignatureFlags) xml_cls.methods.signatureFlags [key] :
+										     XMLMethods.SignatureFlags.None);
+
+					XMLParameters parameters = (xml_cls.methods.parameters == null ? null
+								    : (XMLParameters)xml_cls.methods.parameters[key]);
+					XMLGenericMethodConstraints genericConstraints = (xml_cls.methods.genericConstraints == null ? null
+											  : (XMLGenericMethodConstraints)xml_cls.methods.genericConstraints[key]);
+					rv.Add (new MasterMethod ((string)xml_cls.methods.keys[key],
+								  signatureFlags,
+								  parameters,
+								  genericConstraints));
 				}
 			}
 
@@ -203,25 +221,54 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetConstructors()
 		{
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (xml_cls.constructors != null) {
+				foreach (object key in xml_cls.constructors.keys.Keys) {
+					rv.Add (new MasterMethod ((string)xml_cls.constructors.keys[key],
+								  (XMLConstructors.SignatureFlags)xml_cls.constructors.signatureFlags[key],
+								  (XMLParameters)xml_cls.constructors.parameters[key],
+								  (XMLGenericMethodConstraints)xml_cls.constructors.genericConstraints[key]));
+				}
+			}
+
+			return rv;
 		}
 
  		public override List<CompNamed> GetProperties()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (xml_cls.properties != null) {
+				foreach (object key in xml_cls.properties.keys.Keys) {
+					rv.Add (new MasterProperty ((string)xml_cls.properties.keys[key]));
+				}
+			}
+
+			return rv;
 		}
 
  		public override List<CompNamed> GetFields()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (xml_cls.fields != null) {
+				foreach (object key in xml_cls.fields.keys.Keys) {
+					rv.Add (new MasterField ((string)xml_cls.fields.keys[key]));
+				}
+			}
+
+			return rv;
 		}
 
  		public override List<CompNamed> GetEvents()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (xml_cls.events != null) {
+				foreach (object key in xml_cls.events.keys.Keys) {
+					rv.Add (new MasterEvent ((string)xml_cls.events.keys[key],
+					                         (string)xml_cls.events.eventTypes[key]));
+				}
+			}
+
+			return rv;
 		}
 
 		public override List<CompNamed> GetAttributes ()
@@ -266,9 +313,9 @@ namespace GuiCompare {
 		XMLClass xml_cls;
 	}
 
-	// XXX more stuff is needed here besides the name
-	public class MasterMethod : CompMethod {
-		public MasterMethod (string name)
+	public class MasterEvent : CompEvent {
+		public MasterEvent (string name,
+		                    string eventType)
 			: base (name)
 		{
 		}
@@ -278,6 +325,56 @@ namespace GuiCompare {
 			// XXX
 			return new List<CompNamed>();
 		}
+	}
+	
 
+	public class MasterField : CompField {
+		public MasterField (string name)
+			: base (name)
+		{
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+	}
+	
+	public class MasterProperty : CompProperty {
+		public MasterProperty (string name)
+			: base (name)
+		{
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+	}
+	
+	// XXX more stuff is needed here besides the name
+	public class MasterMethod : CompMethod {
+		public MasterMethod (string name,
+				     XMLMethods.SignatureFlags signatureFlags,
+				     XMLParameters parameters,
+				     XMLGenericMethodConstraints genericConstraints)
+			: base (name)
+		{
+			this.signatureFlags = signatureFlags;
+			this.parameters = parameters;
+			this.genericConstraints = genericConstraints;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+
+		XMLMethods.SignatureFlags signatureFlags;
+		XMLParameters parameters;
+		XMLGenericMethodConstraints genericConstraints;
 	}
 }

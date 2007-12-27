@@ -41,12 +41,10 @@ namespace GuiCompare {
 				}
 			}
 			if (property_list != null) {
-#if notyet
 				foreach (PropertyDefinition pd in fromDef.Properties) {
-					if (pd.IsPrivate || pd.IsAssembly)
+					if (/*pd.IsPrivate || pd.IsAssembly*/true)
 						property_list.Add (new CecilProperty (pd));
 				}
-#endif
 			}
 			if (field_list != null) {
 				foreach (FieldDefinition fd in fromDef.Fields) {
@@ -59,12 +57,10 @@ namespace GuiCompare {
 				}
 			}
 			if (event_list != null) {
-#if notyet
 				foreach (EventDefinition ed in fromDef.Events) {
-					if (ed.IsPrivate || ed.IsAssembly)
+					if (/*ed.IsPrivate || ed.IsAssembly*/true)
 						event_list.Add (new CecilEvent (ed));
 				}
-#endif
 			}
 		}
 
@@ -211,8 +207,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetNestedEnums ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return enum_list;
 		}
 
 		public override List<CompNamed> GetNestedDelegates ()
@@ -480,5 +475,39 @@ namespace GuiCompare {
 		}
 
 		MethodDefinition method_def;
+	}
+
+	public class CecilProperty : CompProperty
+	{
+		public CecilProperty (PropertyDefinition pd)
+			: base (pd.Name)
+		{
+			this.pd = pd;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+		
+		PropertyDefinition pd;
+	}
+	
+	public class CecilEvent : CompEvent
+	{
+		public CecilEvent (EventDefinition ed)
+			: base (ed.Name)
+		{
+			this.ed = ed;
+		}
+
+		public override List<CompNamed> GetAttributes ()
+		{
+			// XXX
+			return new List<CompNamed>();
+		}
+		
+		EventDefinition ed;
 	}
 }

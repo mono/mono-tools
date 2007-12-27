@@ -1,3 +1,10 @@
+2007-12-26  Chris Toshok <toshok@ximian.com> 
+
+	* CecilMetadata.cs: populate the property/event lists, and add
+	  CecilProperty/CecilEvent.  return the enum list properly.
+	* MasterMetadata.cs: more stuff added
+	* Masterinfo.cs: make more things public
+
 2007-12-26  Miguel de Icaza <miguel@novell.com>
 
 	* CecilMetadata.cs: Do not crash on empty type_def.BaseType (happens 
