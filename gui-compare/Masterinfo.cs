@@ -635,7 +635,7 @@ using System.Xml;
 		bool isAbstract;
 		string charSet;
 		string layout;
-		XMLAttributes attributes;
+		public XMLAttributes attributes;
 		public XMLInterfaces interfaces;
 		XMLGenericTypeConstraints genericConstraints;
 		public XMLFields fields;
@@ -928,7 +928,7 @@ using System.Xml;
 		public bool isUnsafe;
 		public bool isOptional;
 		public string defaultValue;
-		XMLAttributes attributes;
+		public XMLAttributes attributes;
 
 		public override void LoadData (XmlNode node)
 		{
@@ -1260,7 +1260,7 @@ using System.Xml;
 
 	public abstract class XMLMember : XMLNameGroup
 	{
-		Hashtable attributeMap;
+		public Hashtable attributeMap;
 		Hashtable access = new Hashtable ();
 
 		protected override void LoadExtraData (string name, XmlNode node)
@@ -1492,7 +1492,7 @@ using System.Xml;
 
 	public class XMLProperties : XMLMember
 	{
-		Hashtable nameToMethod = new Hashtable ();
+		public Hashtable nameToMethod = new Hashtable ();
 
 		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
 		{

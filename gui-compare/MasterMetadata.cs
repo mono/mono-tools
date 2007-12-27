@@ -201,18 +201,21 @@ namespace GuiCompare {
 			if (xml_cls.methods != null) {
 				foreach (object key in xml_cls.methods.keys.Keys) {
 					XMLMethods.SignatureFlags signatureFlags = (xml_cls.methods.signatureFlags != null &&
-										    xml_cls.methods.signatureFlags.ContainsKey (key) ?
-										    (XMLMethods.SignatureFlags) xml_cls.methods.signatureFlags [key] :
-										     XMLMethods.SignatureFlags.None);
+					                                            xml_cls.methods.signatureFlags.ContainsKey (key) ?
+					                                            (XMLMethods.SignatureFlags) xml_cls.methods.signatureFlags [key] :
+					                                            XMLMethods.SignatureFlags.None);
 
 					XMLParameters parameters = (xml_cls.methods.parameters == null ? null
-								    : (XMLParameters)xml_cls.methods.parameters[key]);
+					                            : (XMLParameters)xml_cls.methods.parameters[key]);
 					XMLGenericMethodConstraints genericConstraints = (xml_cls.methods.genericConstraints == null ? null
-											  : (XMLGenericMethodConstraints)xml_cls.methods.genericConstraints[key]);
+					                                                  : (XMLGenericMethodConstraints)xml_cls.methods.genericConstraints[key]);
+					XMLAttributes attributes = (xml_cls.methods.attributeMap == null ? null
+					                            : (XMLAttributes)xml_cls.methods.attributeMap[key]);
 					rv.Add (new MasterMethod ((string)xml_cls.methods.keys[key],
-								  signatureFlags,
-								  parameters,
-								  genericConstraints));
+					                          signatureFlags,
+					                          parameters,
+					                          genericConstraints,
+					                          attributes));
 				}
 			}
 
@@ -225,9 +228,10 @@ namespace GuiCompare {
 			if (xml_cls.constructors != null) {
 				foreach (object key in xml_cls.constructors.keys.Keys) {
 					rv.Add (new MasterMethod ((string)xml_cls.constructors.keys[key],
-								  (XMLConstructors.SignatureFlags)xml_cls.constructors.signatureFlags[key],
-								  (XMLParameters)xml_cls.constructors.parameters[key],
-								  (XMLGenericMethodConstraints)xml_cls.constructors.genericConstraints[key]));
+					                          (XMLConstructors.SignatureFlags)xml_cls.constructors.signatureFlags[key],
+					                          (XMLParameters)xml_cls.constructors.parameters[key],
+					                          (XMLGenericMethodConstraints)xml_cls.constructors.genericConstraints[key],
+					                          (XMLAttributes)xml_cls.constructors.attributeMap[key]));
 				}
 			}
 
@@ -239,7 +243,8 @@ namespace GuiCompare {
 			List<CompNamed> rv = new List<CompNamed>();
 			if (xml_cls.properties != null) {
 				foreach (object key in xml_cls.properties.keys.Keys) {
-					rv.Add (new MasterProperty ((string)xml_cls.properties.keys[key]));
+					rv.Add (new MasterProperty ((string)xml_cls.properties.keys[key],
+					                            (XMLMethods)xml_cls.properties.nameToMethod[key]));
 				}
 			}
 
@@ -342,9 +347,10 @@ namespace GuiCompare {
 	}
 	
 	public class MasterProperty : CompProperty {
-		public MasterProperty (string name)
+		public MasterProperty (string name, XMLMethods methods)
 			: base (name)
 		{
+			this.methods = methods;
 		}
 
 		public override List<CompNamed> GetAttributes ()
@@ -352,29 +358,74 @@ namespace GuiCompare {
 			// XXX
 			return new List<CompNamed>();
 		}
+		
+		public override List<CompNamed> GetMethods()
+		{
+			List<CompNamed> method_list = new List<CompNamed>();
+			
+			if (methods != null) {
+				foreach (object key in methods.keys.Keys) {
+					XMLMethods.SignatureFlags signatureFlags = (methods.signatureFlags != null &&
+										    methods.signatureFlags.ContainsKey (key) ?
+										    (XMLMethods.SignatureFlags) methods.signatureFlags [key] :
+										     XMLMethods.SignatureFlags.None);
+
+					XMLParameters parameters = (methods.parameters == null ? null
+								    : (XMLParameters)methods.parameters[key]);
+					XMLGenericMethodConstraints genericConstraints = (methods.genericConstraints == null ? null
+											  : (XMLGenericMethodConstraints)methods.genericConstraints[key]);
+					XMLAttributes attributes = (methods.attributeMap == null ? null
+					                            : (XMLAttributes)methods.attributeMap[key]);
+					method_list.Add (new MasterMethod ((string)methods.keys[key],
+					                                   signatureFlags,
+					                                   parameters,
+					                                   genericConstraints,
+					                                   attributes));
+				}
+			}
+			
+			return method_list;
+		}
+		
+		XMLMethods methods;
 	}
 	
 	// XXX more stuff is needed here besides the name
 	public class MasterMethod : CompMethod {
 		public MasterMethod (string name,
-				     XMLMethods.SignatureFlags signatureFlags,
-				     XMLParameters parameters,
-				     XMLGenericMethodConstraints genericConstraints)
+		                     XMLMethods.SignatureFlags signatureFlags,
+		                     XMLParameters parameters,
+		                     XMLGenericMethodConstraints genericConstraints,
+		                     XMLAttributes attributes)
 			: base (name)
 		{
 			this.signatureFlags = signatureFlags;
 			this.parameters = parameters;
 			this.genericConstraints = genericConstraints;
+			this.attributes = attributes;
 		}
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			if (attributes != null) {
+				foreach (object key in attributes.keys.Keys) {
+					rv.Add (new MasterAttribute ((string)attributes.keys[key]));
+				}
+			}
+			return rv;
 		}
 
 		XMLMethods.SignatureFlags signatureFlags;
 		XMLParameters parameters;
 		XMLGenericMethodConstraints genericConstraints;
+		XMLAttributes attributes;
+	}
+			         
+	public class MasterAttribute : CompAttribute {
+		public MasterAttribute (string name)
+			: base (name)
+		{
+		}
 	}
 }

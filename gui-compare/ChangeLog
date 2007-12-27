@@ -1,3 +1,15 @@
+2007-12-27  Chris Toshok <toshok@ximian.com> 
+
+	* CecilMetadata.cs: skip special named fields, and start dealing with
+	  attributes.
+	* Metadata.cs: kinda gross, but make CompProperty subclass from
+	  ICompMemberContainer so that we can reuse all the code to check if the
+	  methods (set_*/get_*) match.  Also, add CompAttribute
+	* CompareContext.cs: duplicate some code to deal with attribute comparisons
+	  (need to factor this out somehow).
+	* MasterMetadata.cs: start dealing with attributes
+	* Masterinfo.cs: make more stuff public.
+
 2007-12-26  Chris Toshok <toshok@ximian.com> 
 
 	* CecilMetadata.cs: populate the property/event lists, and add

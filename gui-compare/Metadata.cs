@@ -181,11 +181,18 @@ namespace GuiCompare {
 		}
 	}
 
-	public abstract class CompProperty : CompMember {
+	public abstract class CompProperty : CompMember, ICompMemberContainer {
 		public CompProperty (string name)
 			: base (name, CompType.Property)
 		{
 		}
+		
+		public abstract List<CompNamed> GetMethods();
+		public List<CompNamed> GetInterfaces() { return new List<CompNamed>(); }
+		public List<CompNamed> GetConstructors() { return new List<CompNamed>(); }
+		public List<CompNamed> GetEvents() { return new List<CompNamed>(); }
+		public List<CompNamed> GetFields() { return new List<CompNamed>(); }
+		public List<CompNamed> GetProperties() { return new List<CompNamed>(); }
 	}
 
 	public abstract class CompField : CompMember {
@@ -198,6 +205,13 @@ namespace GuiCompare {
 	public abstract class CompEvent : CompMember {
 		public CompEvent (string name)
 			: base (name, CompType.Event)
+		{
+		}		
+	}
+	
+	public abstract class CompAttribute : CompNamed {
+		public CompAttribute (string typename)
+			: base (typename, CompType.Attribute)
 		{
 		}
 	}

@@ -48,6 +48,8 @@ namespace GuiCompare {
 			}
 			if (field_list != null) {
 				foreach (FieldDefinition fd in fromDef.Fields) {
+					if (fd.IsSpecialName)
+						continue;
 					if (fd.IsPrivate || fd.IsAssembly){
 						//Console.WriteLine ("    Skipping over {0}.{1} {2}", fromDef.Namespace, fromDef.Name, fd.Name);
 						continue;
@@ -267,8 +269,10 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in type_ref.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 
 		TypeReference type_ref;
@@ -308,8 +312,10 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in type_def.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 
 		TypeDefinition type_def;
@@ -343,12 +349,12 @@ namespace GuiCompare {
 			events = new List<CompNamed>();
 
 			Utils.PopulateMemberLists (type_def,
-						   interfaces,
-						   constructors,
-						   methods,
-						   properties,
-						   fields,
-						   events);
+			                           interfaces,
+			                           constructors,
+			                           methods,
+			                           properties,
+			                           fields,
+			                           events);
 
 		}
 
@@ -384,8 +390,10 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in type_def.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 
 		public override List<CompNamed> GetNestedClasses()
@@ -437,8 +445,10 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in field_def.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 
 		FieldDefinition field_def;
@@ -453,8 +463,10 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in method_def.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 
 		static string MasterinfoFormattedName (MethodDefinition method_def)
@@ -487,8 +499,22 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in pd.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
+		}
+		
+		public override List<CompNamed> GetMethods()
+		{
+			List<CompNamed> rv = new List<CompNamed>();
+
+			if (pd.GetMethod != null)
+				rv.Add (new CecilMethod (pd.GetMethod));
+			if (pd.SetMethod != null)
+				rv.Add (new CecilMethod (pd.SetMethod));
+			
+			return rv;
 		}
 		
 		PropertyDefinition pd;
@@ -504,10 +530,23 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in ed.CustomAttributes)
+				rv.Add (new CecilAttribute (ca));
+			return rv;
 		}
 		
 		EventDefinition ed;
+	}
+	
+	public class CecilAttribute : CompAttribute
+	{
+		public CecilAttribute (CustomAttribute ca)
+			: base (ca.Constructor.DeclaringType.FullName)
+		{
+			this.ca = ca;
+		}
+		
+		CustomAttribute ca;
 	}
 }

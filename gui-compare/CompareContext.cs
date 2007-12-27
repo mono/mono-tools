@@ -170,6 +170,64 @@ namespace GuiCompare {
 			}
 		}
 
+		void CompareAttributes (ComparisonNode parent,
+		                        ICompAttributeContainer master_container, ICompAttributeContainer assembly_container)
+		{
+			int m = 0, a = 0;
+			
+			List<CompNamed> master_attrs = master_container.GetAttributes ();
+			List<CompNamed> assembly_attrs = assembly_container.GetAttributes ();
+			
+			master_attrs.Sort (CompNamed.Compare);
+			assembly_attrs.Sort (CompNamed.Compare);
+			
+			while (m < master_attrs.Count || a < assembly_attrs.Count) {
+				if (m == master_attrs.Count) {
+					AddExtra (parent, assembly_attrs[a]);
+					a++;
+					continue;
+				}
+				else if (a == assembly_attrs.Count) {
+					AddMissing (parent, master_attrs[m]);
+					m++;
+					continue;
+				}
+
+				int c = String.Compare (master_attrs[m].Name, assembly_attrs[a].Name);
+
+				if (c == 0) {
+					/* the names match, further investigation is required */
+// 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
+					ComparisonNode comparison = master_attrs[m].GetComparisonNode();
+					parent.AddChild (comparison);
+
+#if notyet
+					if (master_list[m] is ICompAttributeContainner && assembly_list[a] is ICompAttributeContainer)
+						CompareAttributes (master_list[m], assembly_list[a]);
+					
+					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
+						CompareMembers (comparison,
+								(ICompMemberContainer)master_list[m],
+								(ICompMemberContainer)assembly_list[a]);
+					}
+#endif
+					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
+					m++;
+					a++;
+				}
+				else if (c < 0) {
+					/* master name is before assembly name, master name is missing from assembly */
+					AddMissing (parent, master_attrs[m]);
+					m++;
+				}
+				else {
+					/* master name is after assembly name, assembly name is extra */
+					AddExtra (parent, assembly_attrs[a]);
+					a++;
+				}
+			}
+		}
+		
 		void CompareMembers (ComparisonNode parent,
 				     ICompMemberContainer master_container, ICompMemberContainer assembly_container)
 		{
@@ -211,6 +269,20 @@ namespace GuiCompare {
 // 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
 					ComparisonNode comparison = master_list[m].GetComparisonNode();
 					parent.AddChild (comparison);
+
+					if (master_list[m] is ICompAttributeContainer && assembly_list[a] is ICompAttributeContainer) {
+						Console.WriteLine ("Comparing attributes for {0}", master_list[m].Name);
+						CompareAttributes (comparison,
+						                   (ICompAttributeContainer)master_list[m],
+						                   (ICompAttributeContainer)assembly_list[a]);
+					}
+					
+					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
+						CompareMembers (comparison,
+								(ICompMemberContainer)master_list[m],
+								(ICompMemberContainer)assembly_list[a]);
+					}
+
 					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
 					m++;
 					a++;
