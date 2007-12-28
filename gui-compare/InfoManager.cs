@@ -128,11 +128,11 @@ namespace GuiCompare
 			"PresentationFramework.Royale",
 			"ReachFramework",
 			"System.Printing",
-			"UIAutomationClient",
-			"UIAutomationClientsideProviders",
-			"UIAutomationProvider",
-			"UIAutomationTypes",
-			"WindowsFormsIntegration",	
+			//"UIAutomationClient",
+			//"UIAutomationClientsideProviders",
+			//"UIAutomationProvider",
+			//"UIAutomationTypes",
+			//"WindowsFormsIntegration",	
 		};
 		
 		string [] api_sl11 = {
@@ -140,6 +140,81 @@ namespace GuiCompare
 			"System",
 			"System.Core",
 			"System.Xml.Core",
+		};
+		
+		string [] api_3_5 = {
+			"mscorlib",
+			"System",
+			"System.AddIn",
+			"System.AddIn.Contract",
+			"System.Configuration",
+			"System.Core", 
+			// "System.Configuration.Install",
+			"System.Data",
+			"System.Data.Linq",
+			"System.Data.OracleClient",
+			"System.DirectoryServices",
+			// "System.DirectoryServices.AccountManagement",
+			// "System.DirectoryServices.Protocols",
+			"System.Drawing",
+			"System.Net",
+			"System.Runtime.Remoting",
+			"System.Security",
+			"System.ServiceProcess",
+			"System.Transactions",
+			"System.Web",
+			"System.Web.Extensions",
+			// "System.Web.Extensions.Design",
+			// "System.Web.Mobile",
+			// "System.Web.RegularExpressions",
+			//
+			"System.Web.Services",
+			"System.Windows.Forms",
+			"System.Xml",
+			"System.Xml.Linq",
+			"",
+			"System.Runtime.Serialization.Formatters.Soap",
+			"cscompmgd",
+			"Microsoft.VisualBasic",
+			"",
+			"Microsoft.Build.Engine",
+			"Microsoft.Build.Framework",
+			"Microsoft.Build.Tasks",
+			"Microsoft.Build.Utilities",
+			"",
+			"System.Configuration.Install",
+			"System.Design",
+			"System.Drawing.Design",
+			"System.EnterpriseServices",
+			"System.Management",
+			// "System.Management.Instrumentation",
+			"System.Messaging",
+		};
+		
+		string [] api_3_5_wxf = {			
+			"PresentationCore",
+			"PresentationFramework",
+			"System.Speech",
+			"WindowsBase",
+			"",
+			"System.IdentityModel",
+			"System.IdentityModel.Selectors",
+			"System.IO.Log",
+			"System.Runtime.Serialization",
+			"System.ServiceModel",
+			"",
+			"System.Workflow.Activities",
+			"System.Workflow.ComponentModel",
+			"System.Workflow.Runtime",
+			"",
+			"PresentationBuildTasks",
+			"",
+			"PresentationFramework.Aero",
+			"PresentationFramework.Classic",
+			"PresentationFramework.Luna",
+			"PresentationFramework.Royale",
+			"ReachFramework",
+			"System.Printing",
 		};
 		
 		public static void Init ()
@@ -192,6 +267,10 @@ namespace GuiCompare
 				
 			case "2.1":
 				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl11a-refresh.tar.gz");
+				break;
+				
+			case "3.5":
+				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-3.5.tar.gz");
 				break;
 				
 			default:
@@ -261,7 +340,7 @@ namespace GuiCompare
 			});
 		}
 		
-		void Populate (Menu container, string caption, string pdir, string [] elements)
+		void Populate (Menu container, string caption, string pdir, string collection, string [] elements)
 		{
 			string profiledir = System.IO.Path.Combine (monodir, pdir);
 			
@@ -269,12 +348,15 @@ namespace GuiCompare
 			Menu sub = new Menu ();
 			item.Submenu = sub;
 			
+			MenuItem child = null;
 			foreach (string e in elements){
-				MenuItem child;
 				
-				if (e == String.Empty)
+				if (e == String.Empty){
+					// Avoid inserting separators twice
+					if (child is SeparatorMenuItem)
+						continue;
 					child = new SeparatorMenuItem ();
-				else {
+				} else {
 					string assemblyfile = System.IO.Path.Combine (profiledir, e + ".dll");
 					string element = e;
 					if (!System.IO.File.Exists (assemblyfile)){
@@ -283,7 +365,7 @@ namespace GuiCompare
 					}
 					child = new MenuItem (e);
 					child.Activated += delegate {
-						StartPresetCompare (assemblyfile, pdir, element);
+						StartPresetCompare (assemblyfile, collection, element);
 					};
 				}
 				sub.Add (child);
@@ -324,10 +406,13 @@ namespace GuiCompare
 				return;
 			}
 			
-			Populate (sub, "API 1.1", "1.0", api_1_1);
-			Populate (sub, "API 2.0", "2.0", api_2_0);
-			Populate (sub, "API 3.0 (WxF)", "3.0", api_3_0);
-			Populate (sub, "Silverlight 1.1", "2.1", api_sl11);
+			Populate (sub, "API 1.1", "1.0", "1.0", api_1_1);
+			Populate (sub, "API 2.0", "2.0", "2.0", api_2_0);
+			Populate (sub, "API 3.0 (WxF)", "3.0", "3.0", api_3_0);
+			Populate (sub, "API 3.5 (2.0 SP1 + LINQ)", "2.0", "3.5", api_3_5);
+			Populate (sub, "API 3.5 (WxF SP1)", "3.0", "3.5", api_3_5_wxf);
+			
+			Populate (sub, "Silverlight 1.1", "2.1", "2.1", api_sl11);
 		}
 	}
 }

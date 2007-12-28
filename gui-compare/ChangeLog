@@ -1,3 +1,8 @@
+2007-12-28  Miguel de Icaza <miguel@novell.com> 
+
+	* CompareWindow.cs: Add the 3.5 assemblies to the list;   With 3.5 replacing
+	  2.0 assemblies to effectively be an SP1, should we deprecate 2.0?
+
 2007-12-27  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: rework the "Show {present, missing, extra, etc}" stuff
