@@ -86,6 +86,14 @@
         <property name="StockId">gtk-refresh</property>
         <signal name="Activated" handler="OnRefreshActivated" />
       </action>
+      <action id="ShowTodo">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show Todo</property>
+        <property name="ShortLabel" translatable="yes">Show Todo</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowTodoToggled" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -110,6 +118,7 @@
                 <node type="Menuitem" action="ShowErrors" />
                 <node type="Menuitem" action="ShowMissing" />
                 <node type="Menuitem" action="ShowExtra" />
+                <node type="Menuitem" action="ShowTodo" />
                 <node type="Menuitem" action="ShowPresent" />
               </node>
             </node>

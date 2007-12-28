@@ -44,6 +44,8 @@ public partial class MainWindow: Gtk.Window
 	static Gdk.Pixbuf okPixbuf, errorPixbuf;
 	static Gdk.Pixbuf missingPixbuf, todoPixbuf, extraPixbuf;
 
+	static Gdk.Color green, red, black;
+	
 	Gtk.TreeStore treeStore;
 	Gtk.TreeModelFilter treeFilter;
 	
@@ -69,6 +71,9 @@ public partial class MainWindow: Gtk.Window
 		missingPixbuf = new Gdk.Pixbuf (ta, "sm.gif");
 		todoPixbuf = new Gdk.Pixbuf (ta, "st.gif");
 		extraPixbuf = new Gdk.Pixbuf (ta, "sx.gif");
+		Gdk.Color.Parse ("#ff0000", ref red);
+		Gdk.Color.Parse ("#00ff00", ref green);
+		Gdk.Color.Parse ("#000000", ref black);
 	}	
 	
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
@@ -83,7 +88,9 @@ public partial class MainWindow: Gtk.Window
 		treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf),
 		                               typeof (Gdk.Pixbuf), typeof (string),
 		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (Gdk.Pixbuf), typeof (string), typeof (ComparisonNode));
+		                               typeof (Gdk.Pixbuf), typeof (string),
+		                               typeof (Gdk.Pixbuf), typeof (string),
+		                               typeof (ComparisonNode), typeof (string));
 		
 		treeFilter = new Gtk.TreeModelFilter (treeStore, null);
 		treeFilter.VisibleFunc = FilterTree;
@@ -105,6 +112,7 @@ public partial class MainWindow: Gtk.Window
 		tree.AppendColumn (nameColumn);
 		
 		nameColumn.AddAttribute (nameCell, "text", 0);
+		nameColumn.AddAttribute (nameCell, "foreground", 12);
 		nameColumn.AddAttribute (typeCell, "pixbuf", 1);
 		nameColumn.AddAttribute (statusCell, "pixbuf", 2);
 		
@@ -119,6 +127,8 @@ public partial class MainWindow: Gtk.Window
 		Gtk.CellRendererText extraTextCell = new Gtk.CellRendererText ();
 		Gtk.CellRendererPixbuf errorPixbufCell = new Gtk.CellRendererPixbuf ();
 		Gtk.CellRendererText errorTextCell = new Gtk.CellRendererText ();
+		Gtk.CellRendererPixbuf todoPixbufCell = new Gtk.CellRendererPixbuf ();
+		Gtk.CellRendererText todoTextCell = new Gtk.CellRendererText ();
 		
 		countsColumn.PackStart (missingPixbufCell, false);
 		countsColumn.PackStart (missingTextCell, false);
@@ -126,6 +136,8 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.PackStart (extraTextCell, false);
 		countsColumn.PackStart (errorPixbufCell, false);
 		countsColumn.PackStart (errorTextCell, false);
+		countsColumn.PackStart (todoPixbufCell, false);
+		countsColumn.PackStart (todoTextCell, false);
 		
 		tree.AppendColumn (countsColumn);
 		
@@ -135,6 +147,8 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.AddAttribute (extraTextCell, "text", 6);
 		countsColumn.AddAttribute (errorPixbufCell, "pixbuf", 7);
 		countsColumn.AddAttribute (errorTextCell, "text", 8);
+		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", 9);
+		countsColumn.AddAttribute (todoTextCell, "text", 10);
 		
 	}
 	
@@ -246,7 +260,19 @@ public partial class MainWindow: Gtk.Window
 		}
 		return null;
 	}
-	
+
+	string StatusForegroundFromComparisonNode (ComparisonNode node)
+	{
+		switch (node.status) {
+		case ComparisonStatus.Missing: return "darkred";
+		case ComparisonStatus.Extra: return "green";
+		case ComparisonStatus.Error: return "red";
+		case ComparisonStatus.Todo: return "blue";
+		case ComparisonStatus.None:
+		default:
+			return "black";
+		}
+	}
 	void PopulateTreeFromComparison (ComparisonNode root)
 	{
 		Gtk.TreeIter iter =
@@ -259,7 +285,10 @@ public partial class MainWindow: Gtk.Window
 			                        !ShowExtra.Active || root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
 			                        !ShowErrors.Active || root.Warning == 0 ? null : errorPixbuf,
 			                        !ShowErrors.Active || root.Warning == 0 ? null : String.Format (": {0}", root.Warning),
-			                        root);
+			                        !ShowTodo.Active || root.Todo == 0 ? null : todoPixbuf,
+			                        !ShowTodo.Active || root.Todo == 0 ? null : String.Format (": {0}", root.Todo),
+			                        root,
+			                        StatusForegroundFromComparisonNode (root));
 		
 		Gtk.TreePath path = treeStore.GetPath (iter);
 		
@@ -283,7 +312,11 @@ public partial class MainWindow: Gtk.Window
 			                        !ShowExtra.Active || node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
 			                        !ShowErrors.Active || node.Warning == 0 ? null : errorPixbuf,
 			                        !ShowErrors.Active || node.Warning == 0 ? null : String.Format (": {0}", node.Warning),
-			                        node);
+			                        !ShowTodo.Active || node.Todo == 0 ? null : todoPixbuf,
+			                        !ShowTodo.Active || node.Todo == 0 ? null : String.Format (": {0}", node.Todo),
+			                        node,
+			                        StatusForegroundFromComparisonNode (node));
+
 		
 		foreach (ComparisonNode n in node.children) {
 			PopulateTreeFromComparison (citer, n);
@@ -294,7 +327,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		//string node_name = model.GetValue(iter, 0) as string;
 		//Console.WriteLine ("filtering {0}, node = {1}", node_name, model.GetValue(iter, 9) == null ? "null" : model.GetValue(iter,9).GetType().ToString());
-		ComparisonNode n = model.GetValue (iter, 9) as ComparisonNode;
+		ComparisonNode n = model.GetValue (iter, 11) as ComparisonNode;
 		if (n == null)
 			return false;
 		
@@ -335,6 +368,12 @@ public partial class MainWindow: Gtk.Window
 	}
 	
 	protected virtual void OnShowExtraToggled (object sender, System.EventArgs e)
+	{
+		treeFilter.Refilter();
+	}
+
+
+	protected virtual void OnShowTodoToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
 	}

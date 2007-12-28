@@ -304,8 +304,15 @@ namespace GuiCompare {
 					ComparisonNode comparison = master_list[m].GetComparisonNode();
 					parent.AddChild (comparison);
 
+					if (master_list[m] is CompMember && assembly_list[a] is CompMember) {
+						if (((CompMember)master_list[m]).GetMemberType () != ((CompMember)assembly_list[a]).GetMemberType()) {
+							comparison.status = ComparisonStatus.Error;
+							// XXX set the error message
+						}
+					}
+					
 					if (master_list[m] is ICompAttributeContainer && assembly_list[a] is ICompAttributeContainer) {
-						Console.WriteLine ("Comparing attributes for {0}", master_list[m].Name);
+						//Console.WriteLine ("Comparing attributes for {0}", master_list[m].Name);
 						CompareAttributes (comparison,
 						                   (ICompAttributeContainer)master_list[m],
 						                   (ICompAttributeContainer)assembly_list[a]);
@@ -385,6 +392,11 @@ namespace GuiCompare {
 					AddMissing (node, f);
 				foreach (CompNamed e in c.GetEvents())
 					AddMissing (node, e);
+			}
+			if (item is ICompAttributeContainer) {
+				ICompAttributeContainer c = (ICompAttributeContainer)item;
+				foreach (CompNamed attr in c.GetAttributes())
+					AddMissing (node, attr);
 			}
 		}
 

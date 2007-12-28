@@ -171,6 +171,8 @@ namespace GuiCompare {
 		{
 		}
 
+		public abstract string GetMemberType();
+		
 		public abstract List<CompNamed> GetAttributes ();
 	}
 

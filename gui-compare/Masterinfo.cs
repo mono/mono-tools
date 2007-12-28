@@ -1341,8 +1341,8 @@ using System.Xml;
 	
 	public class XMLFields : XMLMember
 	{
-		Hashtable fieldTypes;
-		Hashtable fieldValues;
+		public Hashtable fieldTypes;
+		public Hashtable fieldValues;
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
@@ -1534,6 +1534,7 @@ using System.Xml;
 				}
 				node = node.NextSibling;
 			}
+
 
 			base.LoadExtraData (name, orig);
 		}

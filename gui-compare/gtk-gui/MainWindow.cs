@@ -36,6 +36,8 @@ public partial class MainWindow {
     
     private Gtk.Action Refresh;
     
+    private Gtk.ToggleAction ShowTodo;
+    
     private Gtk.VBox vbox1;
     
     private Gtk.MenuBar menubar1;
@@ -103,6 +105,10 @@ public partial class MainWindow {
         this.Refresh = new Gtk.Action("Refresh", Mono.Unix.Catalog.GetString("Refresh"), null, "gtk-refresh");
         this.Refresh.ShortLabel = Mono.Unix.Catalog.GetString("Refresh");
         w2.Add(this.Refresh, "<Control>r");
+        this.ShowTodo = new Gtk.ToggleAction("ShowTodo", Mono.Unix.Catalog.GetString("Show Todo"), null, null);
+        this.ShowTodo.Active = true;
+        this.ShowTodo.ShortLabel = Mono.Unix.Catalog.GetString("Show Todo");
+        w2.Add(this.ShowTodo, null);
         w1.InsertActionGroup(w2, 0);
         this.AddAccelGroup(w1.AccelGroup);
         this.Name = "MainWindow";
@@ -113,7 +119,7 @@ public partial class MainWindow {
         this.vbox1.Name = "vbox1";
         this.vbox1.Spacing = 6;
         // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
+        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(w1.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.vbox1.Add(this.menubar1);
@@ -204,5 +210,6 @@ public partial class MainWindow {
         this.ShowPresent.Toggled += new System.EventHandler(this.OnShowPresentToggled);
         this.ShowErrors.Toggled += new System.EventHandler(this.OnShowErrorsToggled);
         this.Refresh.Activated += new System.EventHandler(this.OnRefreshActivated);
+        this.ShowTodo.Toggled += new System.EventHandler(this.OnShowTodoToggled);
     }
 }

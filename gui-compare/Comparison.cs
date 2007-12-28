@@ -39,7 +39,7 @@ namespace GuiCompare {
 				Missing += n.Missing + (n.status == ComparisonStatus.Missing ? 1 : 0);
 				Present += n.Present; // XXX
 				Todo += n.Todo + (n.status == ComparisonStatus.Todo ? 1 : 0);
-				Warning += n.Warning; // XXX
+				Warning += n.Warning + (n.status == ComparisonStatus.Error ? 1 : 0);
 			}
 		}
 

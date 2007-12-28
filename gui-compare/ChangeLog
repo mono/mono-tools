@@ -1,3 +1,24 @@
+2007-12-28  Chris Toshok <toshok@ximian.com> 
+
+	* MainWindow.cs: change the line foreground based on the node's status. 
+	  also, add Todo stats.
+	* CecilMetadata.cs: lot of changes.  copy some code from the linker, and use
+	  it to walk up the hierarchy adding interfaces so we match corcompare. 
+	  Don't ignore the "op_" methods.  Also, make sure we flag System.Delegate
+	  and System.MulticastDelegate as delegates.  Do a similar fudging for
+	  System.Enum.  Also, if we initialize a CecilInterface from a
+	  TypeReference, don't include the attributes on it.  Lastly, include the
+	  return type of methods in their name so we can correctly sort them.
+	* Metadata.cs: add GetMemberType() to CompMember.
+	* CompareContext.cs: start listing errors.  if the types of the members
+	  differ, it's an error.  also, add missing attributes in AddMissing.
+	* MasterMetadata.cs: lot of changes. add return types to MasterMethod, and
+	  add that to the name.  handle nested types, and duplicate the
+	  CecilMetadata PopulateTypeLists.
+	* gtk-gui/MainWindow.cs, gtk-gui/gui.stetic: add "Show Todo" action
+	* Masterinfo.cs: make the field stuff public.
+	* Comparison.cs: tally up the errors properly.
+
 2007-12-28  Miguel de Icaza <miguel@novell.com> 
 
 	* CompareWindow.cs: Add the 3.5 assemblies to the list;   With 3.5 replacing

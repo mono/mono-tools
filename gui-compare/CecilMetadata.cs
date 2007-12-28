@@ -19,9 +19,17 @@ namespace GuiCompare {
 		                                        List<CompNamed> event_list)
 		{
 			if (interface_list != null) {
-				foreach (TypeReference ifc in fromDef.Interfaces) {
-					interface_list.Add (new CecilInterface (ifc));
-				}
+				TypeDefinition td = fromDef;
+				TypeReference fromRef;
+				
+				do {
+					foreach (TypeReference ifc in td.Interfaces) {
+						interface_list.Add (new CecilInterface (ifc));
+					}
+					fromRef = td.BaseType;
+					if (fromRef != null)
+						td = Resolve (fromRef);
+				} while (fromRef != null);
 			}
 			if (constructor_list != null) {
 				foreach (MethodDefinition md in fromDef.Constructors) {
@@ -32,8 +40,10 @@ namespace GuiCompare {
 			}
 			if (method_list != null) {
 				foreach (MethodDefinition md in fromDef.Methods) {
-					if (md.IsSpecialName)
-						continue;
+					if (md.IsSpecialName) {
+						if (!md.Name.StartsWith("op_"))
+							continue;
+					}
 					if (md.IsPrivate || md.IsAssembly)
 						continue;
 					method_list.Add (new CecilMethod (md));
@@ -79,7 +89,7 @@ namespace GuiCompare {
 		                                      List<CompNamed> struct_list)
 		{
 			foreach (TypeDefinition type_def in fromDef.NestedTypes) {
-				Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
+				//Console.WriteLine ("Got {0}.{1} => {2}", type_def.Namespace, type_def.Name, type_def.Attributes & TypeAttributes.VisibilityMask);
 				if (type_def.IsNestedPrivate || type_def.IsNestedAssembly || type_def.IsNotPublic){
 					continue;
 				}
@@ -95,8 +105,10 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
-					 || type_def.BaseType.FullName == "System.Delegate") {
+				else if ((type_def.FullName == "System.MulticastDelegate" ||
+				          type_def.BaseType.FullName == "System.MulticastDelegate")
+				         || (type_def.FullName == "System.Delegate" ||
+				             type_def.BaseType.FullName == "System.Delegate")) {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -123,6 +135,30 @@ namespace GuiCompare {
 					rv.Add (new CecilAttribute (ca));
 			return rv;
 		}
+		
+		// stolen from the linker
+		public static TypeDefinition Resolve (TypeReference type)
+		{
+			type = type.GetOriginalType ();
+
+			if (type is TypeDefinition)
+				return (TypeDefinition) type;
+
+#if notyet
+			AssemblyNameReference reference = type.Scope as AssemblyNameReference;
+			if (reference != null) {
+				AssemblyDefinition assembly = Resolve (reference);
+				return assembly.MainModule.Types [type.FullName];
+			}
+#endif
+
+			ModuleDefinition module = type.Scope as ModuleDefinition;
+			if (module != null)
+				return module.Types [type.FullName];
+
+			throw new NotImplementedException ();
+		}
+
 	}
 
 	public class CecilAssembly : CompAssembly {
@@ -189,14 +225,19 @@ namespace GuiCompare {
 						enum_list.Add (new CecilEnum (type_def));
 					}
 					else {
-						struct_list.Add (new CecilClass (type_def, CompType.Struct));
+						if (type_def.FullName == "System.Enum")
+							class_list.Add (new CecilClass (type_def, CompType.Class));
+						else
+							struct_list.Add (new CecilClass (type_def, CompType.Struct));
 					}
 				}
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if (type_def.BaseType != null && (type_def.BaseType.FullName == "System.MulticastDelegate"
-				                                       || type_def.BaseType.FullName == "System.Delegate")) {
+				else if ((type_def.FullName == "System.MulticastDelegate" ||
+				          (type_def.BaseType != null && type_def.BaseType.FullName == "System.MulticastDelegate"))
+				         || (type_def.FullName == "System.Delegate" ||
+				             (type_def.BaseType != null && type_def.BaseType.FullName == "System.Delegate"))) {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -269,7 +310,7 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 			
-			attributes = CecilUtils.GetCustomAttributes (type_ref);
+			attributes = new List<CompNamed>();
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -475,6 +516,11 @@ namespace GuiCompare {
 			this.field_def = field_def;
 		}
 
+		public override string GetMemberType ()
+		{
+			return field_def.FieldType.FullName;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
 			return CecilUtils.GetCustomAttributes (field_def);
@@ -490,6 +536,11 @@ namespace GuiCompare {
 			this.method_def = method_def;
 		}
 
+		public override string GetMemberType ()
+		{
+			return method_def.ReturnType.ReturnType.FullName;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
 			return CecilUtils.GetCustomAttributes (method_def);
@@ -498,12 +549,18 @@ namespace GuiCompare {
 		static string MasterinfoFormattedName (MethodDefinition method_def)
 		{
 			StringBuilder sb = new StringBuilder ();
+			sb.Append (method_def.ReturnType.ReturnType.FullName);
+			sb.Append (" ");
 			sb.Append (method_def.Name);
 			sb.Append ('(');
 			bool comma = false;
 			foreach (ParameterDefinition p in method_def.Parameters) {
 				if (comma)
 					sb.Append (", ");
+				if (p.IsIn)
+					sb.Append ("in ");
+				else if (p.IsOut)
+					sb.Append ("out ");
 				sb.Append (p.ParameterType.FullName);
 				comma = true;
 			}
@@ -523,6 +580,11 @@ namespace GuiCompare {
 			this.pd = pd;
 		}
 
+		public override string GetMemberType()
+		{
+			return pd.PropertyType.FullName;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
 			return CecilUtils.GetCustomAttributes (pd);
@@ -551,6 +613,11 @@ namespace GuiCompare {
 			this.ed = ed;
 		}
 
+		public override string GetMemberType()
+		{
+			return ed.EventType.FullName;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
 			return CecilUtils.GetCustomAttributes (ed);
