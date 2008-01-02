@@ -1,5 +1,9 @@
 2008-01-02  Miguel de Icaza <miguel@novell.com> 
 
+	* CompareContext.cs: Provide some hints, not a great way of doing it.
+
+2008-01-02  Miguel de Icaza <miguel@novell.com> 
+
 	
 
 2008-01-02  Chris Toshok <toshok@ximian.com> 
