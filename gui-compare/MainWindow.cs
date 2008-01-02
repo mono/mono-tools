@@ -51,6 +51,8 @@ public partial class MainWindow: Gtk.Window
 	Gtk.TreeStore treeStore;
 	Gtk.TreeModelFilter treeFilter;
 	
+	public GuiCompare.Config Config;
+	
 	static MainWindow ()
 	{
 		Assembly ta = typeof (MainWindow).Assembly;
@@ -75,7 +77,7 @@ public partial class MainWindow: Gtk.Window
 		extraPixbuf = new Gdk.Pixbuf (ta, "sx.gif");
 		Gdk.Color.Parse ("#ff0000", ref red);
 		Gdk.Color.Parse ("#00ff00", ref green);
-		Gdk.Color.Parse ("#000000", ref black);
+		Gdk.Color.Parse ("#000000", ref black);		
 	}	
 	
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
@@ -152,6 +154,16 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", 9);
 		countsColumn.AddAttribute (todoTextCell, "text", 10);
 
+		//
+		// Load configuration
+		//
+		Config = GuiCompare.Config.GetConfig ();
+		ShowMissing.Active = Config.ShowMissing;
+		ShowErrors.Active = Config.ShowErrors;
+		ShowExtra.Active = Config.ShowExtra;
+		ShowPresent.Active = Config.ShowPresent;
+		ShowTodo.Active = Config.ShowTodo;
+		
 		tree.Selection.Changed += delegate (object sender, EventArgs e) {
 			Gtk.TreeIter iter;
 			if (tree.Selection.GetSelected (out iter)) {
@@ -390,26 +402,36 @@ public partial class MainWindow: Gtk.Window
 	protected virtual void OnShowErrorsToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
+		Config.ShowErrors = ShowErrors.Active;
+		Config.Save ();
 	}
 
 	protected virtual void OnShowMissingToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
+		Config.ShowMissing = ShowMissing.Active;
+		Config.Save ();
 	}
 
 	protected virtual void OnShowPresentToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
+		Config.ShowPresent = ShowPresent.Active;
+		Config.Save ();
 	}
 	
 	protected virtual void OnShowExtraToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
+		Config.ShowPresent = ShowPresent.Active;
+		Config.Save ();
 	}
 
 	protected virtual void OnShowTodoToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
+		Config.ShowTodo = ShowTodo.Active;
+		Config.Save ();
 	}
 
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)

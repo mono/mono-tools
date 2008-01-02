@@ -94,6 +94,11 @@
         <property name="Active">True</property>
         <signal name="Toggled" handler="OnShowTodoToggled" />
       </action>
+      <action id="RecentComparisons">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Recent Comparisons</property>
+        <property name="ShortLabel" translatable="yes">Recent Comparisons</property>
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -108,6 +113,8 @@
             <property name="MemberName" />
             <node name="menubar1" type="Menubar">
               <node type="Menu" action="File">
+                <node type="Menu" action="RecentComparisons" />
+                <node type="Separator" />
                 <node type="Menuitem" action="Refresh" />
                 <node type="Separator" />
                 <node type="Menuitem" action="quit" />
