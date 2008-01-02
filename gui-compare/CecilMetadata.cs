@@ -10,6 +10,14 @@ using Gtk;
 namespace GuiCompare {
 
 	static class CecilUtils {
+		public static string FormatTypeLikeCorCompare (string type)
+		{
+			string rv = type.Replace ('/', '+');
+			rv = rv.Replace ('<', '[');
+			rv = rv.Replace ('>', ']');
+			return rv;
+		}
+		
 		public static void PopulateMemberLists (TypeDefinition fromDef,
 		                                        List<CompNamed> interface_list,
 		                                        List<CompNamed> constructor_list,
@@ -293,7 +301,7 @@ namespace GuiCompare {
 
 	public class CecilInterface : CompInterface {		
 		public CecilInterface (TypeDefinition type_def)
-			: base (type_def.Name)
+			: base (CecilUtils.FormatTypeLikeCorCompare (type_def.Name))
 		{
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
@@ -314,7 +322,7 @@ namespace GuiCompare {
 		}
 		
 		public CecilInterface (TypeReference type_ref)
-			: base (type_ref.FullName)
+			: base (CecilUtils.FormatTypeLikeCorCompare (type_ref.FullName))
 		{
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
@@ -537,7 +545,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType ()
 		{
-			return field_def.FieldType.FullName.Replace ('/','+');
+			return CecilUtils.FormatTypeLikeCorCompare (field_def.FieldType.FullName);
 		}
 		
 		const FieldAttributes masterInfoFieldMask = (FieldAttributes.FieldAccessMask | 
@@ -573,7 +581,7 @@ namespace GuiCompare {
 			if (method_def.IsConstructor)
 				return null;
 			
-			return method_def.ReturnType.ReturnType.FullName.Replace ('/','+');
+			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName);
 		}
 
 		const MethodAttributes masterInfoMethodMask = (MethodAttributes.MemberAccessMask |
@@ -597,20 +605,31 @@ namespace GuiCompare {
 		{
 			StringBuilder sb = new StringBuilder ();
 			if (!method_def.IsConstructor)
-				sb.Append (method_def.ReturnType.ReturnType.FullName.Replace('/','+'));
+				sb.Append (CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName));
 			sb.Append (" ");
 			sb.Append (method_def.Name);
+			if (method_def.GenericParameters.Count > 0) {
+				sb.Append ("<");
+				bool first_gp = true;
+				foreach (GenericParameter gp in method_def.GenericParameters) {
+					if (!first_gp)
+						sb.Append (',');
+					first_gp = false;
+					sb.Append (gp.Name);
+				}
+				sb.Append (">");
+			}
 			sb.Append ('(');
-			bool comma = false;
+			bool first_p = true;
 			foreach (ParameterDefinition p in method_def.Parameters) {
-				if (comma)
+				if (!first_p)
 					sb.Append (", ");
+				first_p = false;
 				if (p.IsIn)
 					sb.Append ("in ");
 				else if (p.IsOut)
 					sb.Append ("out ");
-				sb.Append (p.ParameterType.FullName.Replace('/','+'));
-				comma = true;
+				sb.Append (CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
 			}
 			sb.Append (')');
 

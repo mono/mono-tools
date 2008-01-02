@@ -406,7 +406,6 @@ public partial class MainWindow: Gtk.Window
 		treeFilter.Refilter();
 	}
 
-
 	protected virtual void OnShowTodoToggled (object sender, System.EventArgs e)
 	{
 		treeFilter.Refilter();
@@ -414,6 +413,7 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)
 	{
+		summary.Visible = false;
 		StartCompare (delegate {});
 	}
 }
