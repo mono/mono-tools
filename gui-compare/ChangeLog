@@ -1,3 +1,7 @@
+2008-01-02  Miguel de Icaza <miguel@novell.com> 
+
+	
+
 2008-01-02  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: hide the summary when we start refreshing

@@ -319,6 +319,8 @@ namespace GuiCompare {
 						string assembly_access = ((CompMember)assembly_list[a]).GetMemberAccess();
 						if (reference_access != assembly_access) {
 							comparison.status = ComparisonStatus.Error;
+							
+							// Try to give some hints to the developer
 							comparison.messages.Add (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'",
 							                                        reference_access, assembly_access));
 						}

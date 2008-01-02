@@ -651,7 +651,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType()
 		{
-			return pd.PropertyType.FullName.Replace ('/','+');
+			return CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName);
 		}
 		
 		public override string GetMemberAccess()
@@ -691,7 +691,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType()
 		{
-			return ed.EventType.FullName.Replace('/','+');
+			return CecilUtils.FormatTypeLikeCorCompare (ed.EventType.FullName);
 		}
 		
 		public override string GetMemberAccess()

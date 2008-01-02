@@ -162,6 +162,7 @@ public partial class MainWindow: Gtk.Window
 				if (n != null) msgs = n.messages;
 				if (msgs != null && msgs.Count > 0) {
 					sb.Append ("<b>Errors:</b>\n");
+
 					for (int i = 0; i < msgs.Count; i ++) {
 						sb.AppendFormat ("\t<b>{0}</b>: {1}\n", i + 1, msgs[i]);
 					}
