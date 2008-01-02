@@ -91,17 +91,35 @@ namespace GuiCompare
 			} catch {}
 			
 			try {
+				File.Delete (settings_file);
+			} catch {}
+			
+			try {
 				using (FileStream fs = File.Create (settings_file)){
 					serializer.Serialize (fs, this);
 				}
-			} catch {
+			} catch  (Exception e){
+				Console.WriteLine ("Saving {0}", e);
 			}
 		}
 		
+		public void MoveToTop (CompareDefinition cd)
+		{
+			CompareDefinition [] copy = new CompareDefinition [Recent.Length];
+			copy [0] = cd;
+			for (int i = 0, j = 0; j < Recent.Length; j++){
+				if (Recent [j] == cd)
+					continue;
+				i++;
+				copy [i] = Recent [j];
+			}
+			Recent = copy;
+		}
+			
 		public void AddRecent (CompareDefinition cd)
 		{
 			if (Recent == null || Recent.Length < 15){
-				CompareDefinition [] copy = new CompareDefinition [Recent.Length+1];
+				CompareDefinition [] copy = new CompareDefinition [Recent == null ? 1 : Recent.Length+1];
 				copy [0] = cd;
 				if (Recent != null)
 					Recent.CopyTo (copy, 1);

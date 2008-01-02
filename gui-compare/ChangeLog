@@ -1,5 +1,11 @@
 2008-01-02  Miguel de Icaza <miguel@novell.com> 
 
+	* MainWindow.cs: Load defauls from the configuration file
+	* InfoManager.cs: Track recently used comparisons
+	* Config.cs: Add new API to manage our recently used list
+
+2008-01-02  Miguel de Icaza <miguel@novell.com> 
+
 	
 
 2008-01-02  Miguel de Icaza <miguel@novell.com> 

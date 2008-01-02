@@ -45,6 +45,9 @@ namespace GuiCompare
 		// A handle to our container window
 		MainWindow main;
 		
+		// The handle to the Recent Comparisons Menu
+		Menu recentmenu;
+		
 		string [] api_1_1 = {
 			"mscorlib",
 			"System",
@@ -326,6 +329,10 @@ namespace GuiCompare
 		void StartPresetCompare (string assemblyfile, string profile, string assemblyname)
 		{
 			Ensure (profile, assemblyname, delegate (string masterinfo){
+				main.Config.AddRecent (new CompareDefinition (true, masterinfo, false, assemblyfile));
+				PopulateRecent ();
+				main.Config.Save ();
+				
 				main.SetReference (delegate {
 					Console.WriteLine ("Doing it for the {0}-{1}-{2}", assemblyfile, profile, assemblyname);
 						return new MasterAssembly (masterinfo);
@@ -375,6 +382,50 @@ namespace GuiCompare
 			container.Add (item);
 		}
 		
+		/// <summary>
+		///   Populates the "RecentComparison" sub menu from File
+		/// </summary>
+		public void PopulateRecent ()
+		{
+			foreach (MenuItem mi in recentmenu.AllChildren)
+				recentmenu.Remove (mi);
+			
+			if (main.Config.Recent == null || main.Config.Recent.Length == 0){
+				MenuItem empty = new MenuItem ("(Empty)");
+				empty.Sensitive = false;
+				recentmenu.Add (empty);				
+			} else {
+				foreach (CompareDefinition cdd in main.Config.Recent){
+					CompareDefinition cd = cdd;
+					if (cd == null)
+						throw new Exception ("FGGG");
+					string title = String.Format ("{0} -> {1}",
+					                              Path.GetFileName (cd.ReferencePath),
+					                              Path.GetFileName (cd.TargetPath));
+					MenuItem c = new MenuItem (title);
+					c.Activated += delegate {
+						if (cd.ReferenceIsInfo)
+							main.SetReference (delegate { return new MasterAssembly (cd.ReferencePath); });
+						else
+							main.SetReference (delegate { return new CecilAssembly (cd.ReferencePath); });
+						
+						if (cd.TargetIsInfo)
+							main.SetTarget (delegate { return new MasterAssembly (cd.TargetPath); });
+						else
+							main.SetTarget (delegate { return new CecilAssembly (cd.TargetPath); });
+						main.StartCompare (delegate {
+							main.Title = title; });
+						main.Config.MoveToTop (cd);
+						PopulateRecent ();
+						main.Config.Save ();
+					};
+					
+					recentmenu.Add (c);
+				}
+			}
+			recentmenu.ShowAll ();
+		}
+		
 		// 
 		// Constructor
 		//
@@ -388,15 +439,34 @@ namespace GuiCompare
 			// Work around limitation in Stetic, there is no way
 			// of getting a handle on the menu (!!!)
 			
+			// Populate File/Recent Comparisons, this would be so much
+			// easier if Stetic had any support for this.
+			recentmenu = new Menu ();
+			
+			MenuItem filemenuitem = (main.MenuBar.Children [0]) as MenuItem;
+			Menu filesub = (Menu) filemenuitem.Submenu;
+			MenuItem recentmenuitem = new MenuItem ("Recent Comparisons");
+			recentmenuitem.Submenu = recentmenu;
+			recentmenuitem.ShowAll ();
+			filesub.Insert (recentmenuitem, 0);
+			MenuItem sep = new MenuItem ();
+			sep.ShowAll ();
+			filesub.Insert (sep, 1);
+
+			PopulateRecent ();
+			
+			
+			// Populate the list of profile comparisons
 			Menu sub = null;
 			
 			foreach (MenuItem mi in main.MenuBar.AllChildren){
 				AccelLabel a = mi.Child as AccelLabel;
-				if (a != null)
-					Console.WriteLine (a.LabelProp);
+	
 				if (a == null || a.LabelProp != "_Compare")
 					continue;
 				
+				if (a.LabelProp == "Recent Comparisons"){
+				}
 				sub = (Menu) mi.Submenu;
 				break;
 			}

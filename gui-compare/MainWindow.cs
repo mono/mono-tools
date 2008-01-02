@@ -85,9 +85,24 @@ public partial class MainWindow: Gtk.Window
 		Build ();
 		notebook1.Page = 1;
 		
+		//
+		// Load configuration
+		//
+		Config = GuiCompare.Config.GetConfig ();
+		ShowMissing.Active = Config.ShowMissing;
+		ShowErrors.Active = Config.ShowErrors;
+		ShowExtra.Active = Config.ShowExtra;
+		ShowPresent.Active = Config.ShowPresent;
+		ShowTodo.Active = Config.ShowTodo;
+
+		//
+		// Configure the GUI
+		//
+		info_manager = new InfoManager (this);
+				
 		progressbar1.Adjustment.Lower = 0;
 		progressbar1.Adjustment.Upper = 100;
-		info_manager = new InfoManager (this);
+		
 		
 		treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf),
 		                               typeof (Gdk.Pixbuf), typeof (string),
@@ -153,16 +168,6 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.AddAttribute (errorTextCell, "text", 8);
 		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", 9);
 		countsColumn.AddAttribute (todoTextCell, "text", 10);
-
-		//
-		// Load configuration
-		//
-		Config = GuiCompare.Config.GetConfig ();
-		ShowMissing.Active = Config.ShowMissing;
-		ShowErrors.Active = Config.ShowErrors;
-		ShowExtra.Active = Config.ShowExtra;
-		ShowPresent.Active = Config.ShowPresent;
-		ShowTodo.Active = Config.ShowTodo;
 		
 		tree.Selection.Changed += delegate (object sender, EventArgs e) {
 			Gtk.TreeIter iter;
