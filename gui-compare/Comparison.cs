@@ -12,17 +12,18 @@ namespace GuiCompare {
 		None,
 		Missing,
 		Extra,
-		Todo,
 		Error
 	}
 
 	public class ComparisonNode {
 		public ComparisonNode (CompType type,
-				       string name)
+		                       string name)
 		{
 			this.type = type;
 			this.name = name;
 			this.children = new List<ComparisonNode>();
+			this.messages = new List<string>();
+			this.todos = new List<string>();
 		}
 
 		public void AddChild (ComparisonNode node)
@@ -33,12 +34,13 @@ namespace GuiCompare {
 
 		public void PropagateCounts ()
 		{
+			Todo = todos.Count;
 			foreach (ComparisonNode n in children) {
 				n.PropagateCounts ();
 				Extra += n.Extra + (n.status == ComparisonStatus.Extra ? 1 : 0);
 				Missing += n.Missing + (n.status == ComparisonStatus.Missing ? 1 : 0);
 				Present += n.Present; // XXX
-				Todo += n.Todo + (n.status == ComparisonStatus.Todo ? 1 : 0);
+				Todo += n.Todo;
 				Warning += n.Warning + (n.status == ComparisonStatus.Error ? 1 : 0);
 			}
 		}
@@ -50,12 +52,14 @@ namespace GuiCompare {
 		public ComparisonNode parent;
 
 		public string name;
-
+		public List<string> messages;
+		public List<string> todos;
+		
 		public int Extra;
 		public int Missing;
 		public int Present;
-		public int Todo;
 		public int Warning;
+		public int Todo;
 
 		public List<ComparisonNode> children;
 	}

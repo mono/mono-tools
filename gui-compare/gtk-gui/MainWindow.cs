@@ -42,8 +42,6 @@ public partial class MainWindow {
     
     private Gtk.MenuBar menubar1;
     
-    private Gtk.Toolbar toolbar3;
-    
     private Gtk.Notebook notebook1;
     
     private Gtk.ScrolledWindow GtkScrolledWindow;
@@ -55,6 +53,8 @@ public partial class MainWindow {
     private Gtk.Label label3;
     
     private Gtk.Label label2;
+    
+    private Gtk.Label summary;
     
     private Gtk.Statusbar statusbar1;
     
@@ -119,7 +119,7 @@ public partial class MainWindow {
         this.vbox1.Name = "vbox1";
         this.vbox1.Spacing = 6;
         // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
+        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menuitem action='Refresh'/><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(w1.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.vbox1.Add(this.menubar1);
@@ -127,17 +127,6 @@ public partial class MainWindow {
         w3.Position = 0;
         w3.Expand = false;
         w3.Fill = false;
-        // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><toolbar name='toolbar3'><toolitem action='Refresh'/></toolbar></ui>");
-        this.toolbar3 = ((Gtk.Toolbar)(w1.GetWidget("/toolbar3")));
-        this.toolbar3.Name = "toolbar3";
-        this.toolbar3.ShowArrow = false;
-        this.toolbar3.ToolbarStyle = ((Gtk.ToolbarStyle)(0));
-        this.vbox1.Add(this.toolbar3);
-        Gtk.Box.BoxChild w4 = ((Gtk.Box.BoxChild)(this.vbox1[this.toolbar3]));
-        w4.Position = 1;
-        w4.Expand = false;
-        w4.Fill = false;
         // Container child vbox1.Gtk.Box+BoxChild
         this.notebook1 = new Gtk.Notebook();
         this.notebook1.CanFocus = true;
@@ -170,8 +159,8 @@ public partial class MainWindow {
         this.label3.LabelProp = Mono.Unix.Catalog.GetString("This tool allows you to compare the API of assemblies.\n\nTo initiate a comparison, use the \"Compare\" menu and use one of the presets based on the assemblies you  have installed on your system and some popular profiles, or use \"Custom\" to define your own comparison");
         this.label3.Wrap = true;
         this.notebook1.Add(this.label3);
-        Gtk.Notebook.NotebookChild w7 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.label3]));
-        w7.Position = 1;
+        Gtk.Notebook.NotebookChild w6 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.label3]));
+        w6.Position = 1;
         // Notebook tab
         this.label2 = new Gtk.Label();
         this.label2.Name = "label2";
@@ -179,8 +168,21 @@ public partial class MainWindow {
         this.notebook1.SetTabLabel(this.label3, this.label2);
         this.label2.ShowAll();
         this.vbox1.Add(this.notebook1);
-        Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+        Gtk.Box.BoxChild w7 = ((Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+        w7.Position = 1;
+        // Container child vbox1.Gtk.Box+BoxChild
+        this.summary = new Gtk.Label();
+        this.summary.Name = "summary";
+        this.summary.Xpad = 6;
+        this.summary.Ypad = 6;
+        this.summary.Xalign = 0F;
+        this.summary.LabelProp = "";
+        this.summary.UseMarkup = true;
+        this.vbox1.Add(this.summary);
+        Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.vbox1[this.summary]));
         w8.Position = 2;
+        w8.Expand = false;
+        w8.Fill = false;
         // Container child vbox1.Gtk.Box+BoxChild
         this.statusbar1 = new Gtk.Statusbar();
         this.statusbar1.Name = "statusbar1";
@@ -202,6 +204,7 @@ public partial class MainWindow {
         }
         this.DefaultWidth = 648;
         this.DefaultHeight = 577;
+        this.summary.Hide();
         this.Show();
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.quit.Activated += new System.EventHandler(this.OnQuitActivated);

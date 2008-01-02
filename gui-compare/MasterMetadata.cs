@@ -29,6 +29,7 @@ namespace GuiCompare {
 				                                   returnType,
 				                                   parameters,
 				                                   genericConstraints,
+				                                   methods.ConvertToString (Int32.Parse ((string)methods.access[key])),
 				                                   attributes));
 			}
 		}
@@ -57,9 +58,14 @@ namespace GuiCompare {
 			
 			if (property_list != null && xml_cls.properties != null) {
 				foreach (object key in xml_cls.properties.keys.Keys) {
+					XMLAttributes attributes = (xml_cls.properties.attributeMap == null ? null
+					                            : (XMLAttributes)xml_cls.properties.attributeMap[key]);
+
 					property_list.Add (new MasterProperty ((string)key,
 					                                       (string)xml_cls.properties.keys[key],
-					                                       (XMLMethods)xml_cls.properties.nameToMethod[key]));
+					                                       xml_cls.properties.ConvertToString (Int32.Parse ((string)xml_cls.properties.access[key])),
+					                                       (XMLMethods)xml_cls.properties.nameToMethod[key],
+					                                       attributes));
 				}
 			}
 			
@@ -67,15 +73,24 @@ namespace GuiCompare {
 				foreach (object key in xml_cls.fields.keys.Keys) {
 					string type = (xml_cls.fields.fieldTypes == null || !xml_cls.fields.fieldTypes.ContainsKey(key)) ? null : (string)xml_cls.fields.fieldTypes[key];
 					string fvalue = (xml_cls.fields.fieldValues == null || !xml_cls.fields.fieldValues.ContainsKey(key)) ? null : (string)xml_cls.fields.fieldValues[key];
+					XMLAttributes attributes = (xml_cls.fields.attributeMap == null ? null
+					                            : (XMLAttributes)xml_cls.fields.attributeMap[key]);
+
 					field_list.Add (new MasterField ((string)xml_cls.fields.keys[key],
-					                                 type, fvalue));
+					                                 type, fvalue,
+					                                 xml_cls.fields.ConvertToString(Int32.Parse ((string)xml_cls.fields.access[key])),
+					                                 attributes));
 				}
 			}
 			
 			if (event_list != null && xml_cls.events != null) {
 				foreach (object key in xml_cls.events.keys.Keys) {
+					XMLAttributes attributes = (xml_cls.events.attributeMap == null ? null
+					                            : (XMLAttributes)xml_cls.events.attributeMap[key]);
 					event_list.Add (new MasterEvent ((string)xml_cls.events.keys[key],
-					                                 (string)xml_cls.events.eventTypes[key]));
+					                                 (string)xml_cls.events.eventTypes[key],
+					                                 xml_cls.events.ConvertToString (Int32.Parse ((string)xml_cls.events.access[key])),
+					                                 attributes));
 				}
 			}
 		}
@@ -104,6 +119,18 @@ namespace GuiCompare {
 					struct_list.Add (new MasterClass (cls, CompType.Struct));
 			}
 		}
+		
+		public static List<CompNamed> GetAttributes (XMLAttributes attributes)
+		{
+			List<CompNamed> rv = new List<CompNamed>();
+			if (attributes != null) {
+				foreach (object key in attributes.keys.Keys) {
+					rv.Add (new MasterAttribute ((string)attributes.keys[key]));
+				}
+			}
+			return rv;
+		}
+
 	}
 	
 	public class MasterAssembly : CompAssembly {
@@ -194,7 +221,7 @@ namespace GuiCompare {
 			properties = new List<CompNamed>();
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
-
+			
 			MasterUtils.PopulateMemberLists (xml_cls,
 			                                 interfaces,
 			                                 constructors,
@@ -202,6 +229,8 @@ namespace GuiCompare {
 			                                 properties,
 			                                 fields,
 			                                 events);
+			
+			attributes = MasterUtils.GetAttributes (xml_cls.attributes);
 		}
 		
 		public MasterInterface (string name)
@@ -213,6 +242,7 @@ namespace GuiCompare {
 			properties = new List<CompNamed>();
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
+			attributes = new List<CompNamed>();
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -247,8 +277,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return attributes;
 		}
 		
 		List<CompNamed> interfaces;
@@ -257,6 +286,7 @@ namespace GuiCompare {
 		List<CompNamed> properties;
 		List<CompNamed> fields;
 		List<CompNamed> events;
+		List<CompNamed> attributes;
 	}
 
 	public class MasterDelegate : CompDelegate {
@@ -294,8 +324,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return MasterUtils.GetAttributes (xml_cls.attributes);
 		}
 
 		List<CompNamed> fields;
@@ -369,8 +398,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return MasterUtils.GetAttributes (xml_cls.attributes);
 		}
 
 		public override List<CompNamed> GetNestedClasses()
@@ -416,35 +444,49 @@ namespace GuiCompare {
 
 	public class MasterEvent : CompEvent {
 		public MasterEvent (string name,
-		                    string eventType)
+		                    string eventType,
+		                    string eventAccess,
+		                    XMLAttributes attributes)
 			: base (name)
 		{
 			this.eventType = eventType;
+			this.eventAccess = eventAccess;
+			this.attributes = attributes;
 		}
 
 		public override string GetMemberType ()
 		{
 			return eventType;
 		}
-				
+
+		public override string GetMemberAccess ()
+		{
+			return eventAccess;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return MasterUtils.GetAttributes (attributes);
 		}
 		
 		string eventType;
+		string eventAccess;
+		XMLAttributes attributes;
 	}
 	
 
 	public class MasterField : CompField {
 		public MasterField (string name,
 		                    string fieldType,
-		                    string fieldValue)
+		                    string fieldValue,
+		                    string fieldAccess,
+		                    XMLAttributes attributes)
 			: base (name)
 		{
 			this.fieldType = fieldType;
 			this.fieldValue = fieldValue;
+			this.fieldAccess = fieldAccess;
+			this.attributes = attributes;
 		}
 
 		public override string GetMemberType ()
@@ -452,38 +494,50 @@ namespace GuiCompare {
 			return fieldType;
 		}
 		
+		public override string GetMemberAccess ()
+		{
+			return fieldAccess;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return MasterUtils.GetAttributes (attributes);
 		}
 		
 		string fieldType;
 		string fieldValue;
+		string fieldAccess;
+		XMLAttributes attributes;
 	}
 	
 	public class MasterProperty : CompProperty {
-		public MasterProperty (string key, string name, XMLMethods xml_methods)
+		public MasterProperty (string key, string name, string propertyAccess, XMLMethods xml_methods, XMLAttributes attributes)
 			: base (name)
 		{
 			string[] keyparts = key.Split(new char[] {':'}, 3);
 			
 			this.propertyType = keyparts[1];
+			this.propertyAccess = propertyAccess;
 			
-			methods = new List<CompNamed>();
+			methods = new List<CompNamed>();			
 			
 			MasterUtils.PopulateMethodList (xml_methods, methods);
+			this.attributes = attributes;
 		}
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			// XXX
-			return new List<CompNamed>();
+			return MasterUtils.GetAttributes (attributes);
 		}
 		
 		public override string GetMemberType()
 		{
 			return propertyType;
+		}
+		
+		public override string GetMemberAccess()
+		{
+			return propertyAccess;
 		}
 		
 		public override List<CompNamed> GetMethods()
@@ -492,7 +546,9 @@ namespace GuiCompare {
 		}
 
 		List<CompNamed> methods;
+		XMLAttributes attributes;
 		string propertyType;
+		string propertyAccess;
 	}
 	
 	public class MasterMethod : CompMethod {
@@ -501,6 +557,7 @@ namespace GuiCompare {
 		                     string returnType,
 		                     XMLParameters parameters,
 		                     XMLGenericMethodConstraints genericConstraints,
+		                     string methodAccess,
 		                     XMLAttributes attributes)
 			: base (String.Format ("{0} {1}", returnType, name))
 		{
@@ -508,6 +565,7 @@ namespace GuiCompare {
 			this.returnType = returnType;
 			this.parameters = parameters;
 			this.genericConstraints = genericConstraints;
+			this.methodAccess = methodAccess;
 			this.attributes = attributes;
 		}
 
@@ -516,21 +574,21 @@ namespace GuiCompare {
 			return returnType;
 		}
 		
+		public override string GetMemberAccess()
+		{
+			return methodAccess;
+		}
+		
 		public override List<CompNamed> GetAttributes ()
 		{
-			List<CompNamed> rv = new List<CompNamed>();
-			if (attributes != null) {
-				foreach (object key in attributes.keys.Keys) {
-					rv.Add (new MasterAttribute ((string)attributes.keys[key]));
-				}
-			}
-			return rv;
+			return MasterUtils.GetAttributes (attributes);
 		}
 
 		XMLMethods.SignatureFlags signatureFlags;
 		string returnType;
 		XMLParameters parameters;
 		XMLGenericMethodConstraints genericConstraints;
+		string methodAccess;
 		XMLAttributes attributes;
 	}
 			         

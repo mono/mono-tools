@@ -23,10 +23,12 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Net;
 using Gtk;
 using System.Threading;
+using System.Text;
 using GuiCompare;
 
 public partial class MainWindow: Gtk.Window
@@ -149,7 +151,39 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.AddAttribute (errorTextCell, "text", 8);
 		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", 9);
 		countsColumn.AddAttribute (todoTextCell, "text", 10);
-		
+
+		tree.Selection.Changed += delegate (object sender, EventArgs e) {
+			Gtk.TreeIter iter;
+			if (tree.Selection.GetSelected (out iter)) {
+				List<string> msgs = null;
+				ComparisonNode n = tree.Model.GetValue (iter, 11) as ComparisonNode;
+				StringBuilder sb = new StringBuilder();
+
+				if (n != null) msgs = n.messages;
+				if (msgs != null && msgs.Count > 0) {
+					sb.Append ("<b>Errors:</b>\n");
+					for (int i = 0; i < msgs.Count; i ++) {
+						sb.AppendFormat ("\t<b>{0}</b>: {1}\n", i + 1, msgs[i]);
+					}
+				}
+				
+				if (n != null) msgs = n.todos;
+				if (msgs != null && msgs.Count > 0) {
+					sb.Append ("<b>TODO:</b>\n");
+					for (int i = 0; i < msgs.Count; i ++) {
+						sb.AppendFormat ("\t<b>{0}</b>: {1}\n", i + 1, msgs[i]);
+					}
+				}
+				
+				if (sb.Length > 0) {
+					summary.Markup = sb.ToString();
+					summary.Visible = true;
+				}
+				else {
+					summary.Visible = false;
+				}
+			}
+		};
 	}
 	
 	// A handle to our menu bar
@@ -255,7 +289,6 @@ public partial class MainWindow: Gtk.Window
 		case ComparisonStatus.None: return okPixbuf;
 		case ComparisonStatus.Missing: return missingPixbuf;
 		case ComparisonStatus.Extra: return extraPixbuf;
-		case ComparisonStatus.Todo: return todoPixbuf;
 		case ComparisonStatus.Error: return errorPixbuf;
 		}
 		return null;
@@ -267,26 +300,26 @@ public partial class MainWindow: Gtk.Window
 		case ComparisonStatus.Missing: return "darkred";
 		case ComparisonStatus.Extra: return "green";
 		case ComparisonStatus.Error: return "red";
-		case ComparisonStatus.Todo: return "blue";
 		case ComparisonStatus.None:
 		default:
 			return "black";
 		}
 	}
+	
 	void PopulateTreeFromComparison (ComparisonNode root)
 	{
 		Gtk.TreeIter iter =
 			treeStore.AppendValues (root.name,
 			                        TypePixbufFromComparisonNode (root),
 			                        StatusPixbufFromComparisonNode (root),
-			                        !ShowMissing.Active || root.Missing == 0 ? null : missingPixbuf,
-			                        !ShowMissing.Active || root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
-			                        !ShowExtra.Active || root.Extra == 0 ? null : extraPixbuf,
-			                        !ShowExtra.Active || root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
-			                        !ShowErrors.Active || root.Warning == 0 ? null : errorPixbuf,
-			                        !ShowErrors.Active || root.Warning == 0 ? null : String.Format (": {0}", root.Warning),
-			                        !ShowTodo.Active || root.Todo == 0 ? null : todoPixbuf,
-			                        !ShowTodo.Active || root.Todo == 0 ? null : String.Format (": {0}", root.Todo),
+			                        root.Missing == 0 ? null : missingPixbuf,
+			                        root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
+			                        root.Extra == 0 ? null : extraPixbuf,
+			                        root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
+			                        root.Warning == 0 ? null : errorPixbuf,
+			                        root.Warning == 0 ? null : String.Format (": {0}", root.Warning),
+			                        root.Todo == 0 ? null : todoPixbuf,
+			                        root.Todo == 0 ? null : String.Format (": {0}", root.Todo),
 			                        root,
 			                        StatusForegroundFromComparisonNode (root));
 		
@@ -306,14 +339,14 @@ public partial class MainWindow: Gtk.Window
 			                        node.name,
 			                        TypePixbufFromComparisonNode (node),
 			                        StatusPixbufFromComparisonNode (node),
-			                        !ShowMissing.Active || node.Missing == 0 ? null : missingPixbuf,
-			                        !ShowMissing.Active || node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
-			                        !ShowExtra.Active || node.Extra == 0 ? null : extraPixbuf,
-			                        !ShowExtra.Active || node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
-			                        !ShowErrors.Active || node.Warning == 0 ? null : errorPixbuf,
-			                        !ShowErrors.Active || node.Warning == 0 ? null : String.Format (": {0}", node.Warning),
-			                        !ShowTodo.Active || node.Todo == 0 ? null : todoPixbuf,
-			                        !ShowTodo.Active || node.Todo == 0 ? null : String.Format (": {0}", node.Todo),
+			                        node.Missing == 0 ? null : missingPixbuf,
+			                        node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
+			                        node.Extra == 0 ? null : extraPixbuf,
+			                        node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
+			                        node.Warning == 0 ? null : errorPixbuf,
+			                        node.Warning == 0 ? null : String.Format (": {0}", node.Warning),
+			                        node.Todo == 0 ? null : todoPixbuf,
+			                        node.Todo == 0 ? null : String.Format (": {0}", node.Todo),
 			                        node,
 			                        StatusForegroundFromComparisonNode (node));
 
@@ -334,6 +367,7 @@ public partial class MainWindow: Gtk.Window
 		if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
 		    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
 		    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
+		    (ShowTodo.Active && (n.Todo > 0)) ||
 		    ShowPresent.Active && n.status == ComparisonStatus.None)
 			
 			return true;

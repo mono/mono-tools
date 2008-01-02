@@ -119,7 +119,6 @@ namespace GuiCompare {
 			switch (r) {
 			case ComparisonStatus.Missing: return '-';
 			case ComparisonStatus.Extra:   return '+';
-			case ComparisonStatus.Todo:    return 'o';
 			case ComparisonStatus.Error:   return '!';
 			default:
 			case ComparisonStatus.None:    return ' ';
@@ -180,7 +179,7 @@ namespace GuiCompare {
 
 					/* the names match, further investigation is required */
 //  					Console.WriteLine ("{0} {1} is in both, doing more comparisons", master_list[m].Type, master_list[m].Name);
-					ComparisonNode comparison = master_list[m].GetComparisonNode();
+					ComparisonNode comparison = assembly_list[a].GetComparisonNode();
 					parent.AddChild (comparison);
 
 					// compare nested types
@@ -240,7 +239,7 @@ namespace GuiCompare {
 				if (c == 0) {
 					/* the names match, further investigation is required */
 // 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
-					ComparisonNode comparison = master_attrs[m].GetComparisonNode();
+					ComparisonNode comparison = assembly_attrs[a].GetComparisonNode();
 					parent.AddChild (comparison);
 					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
 					m++;
@@ -264,6 +263,8 @@ namespace GuiCompare {
 		{
 			CompareMemberLists (parent,
 			                    master_container.GetInterfaces(), assembly_container.GetInterfaces());
+			CompareMemberLists (parent,
+			                    master_container.GetConstructors(), assembly_container.GetConstructors());
 			CompareMemberLists (parent,
 			                    master_container.GetMethods(), assembly_container.GetMethods());
 			CompareMemberLists (parent,
@@ -301,13 +302,25 @@ namespace GuiCompare {
 				if (c == 0) {
 					/* the names match, further investigation is required */
 // 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
-					ComparisonNode comparison = master_list[m].GetComparisonNode();
+					ComparisonNode comparison = assembly_list[a].GetComparisonNode();
 					parent.AddChild (comparison);
 
 					if (master_list[m] is CompMember && assembly_list[a] is CompMember) {
-						if (((CompMember)master_list[m]).GetMemberType () != ((CompMember)assembly_list[a]).GetMemberType()) {
+						string reference_type = ((CompMember)master_list[m]).GetMemberType();
+						string assembly_type = ((CompMember)assembly_list[a]).GetMemberType();
+						
+						if (reference_type != assembly_type) {
 							comparison.status = ComparisonStatus.Error;
-							// XXX set the error message
+							comparison.messages.Add (String.Format ("reference type is <i>{0}</i>, target type is <i>{1}</i>",
+							                                        reference_type, assembly_type));
+						}
+						
+						string reference_access = ((CompMember)master_list[m]).GetMemberAccess();
+						string assembly_access = ((CompMember)assembly_list[a]).GetMemberAccess();
+						if (reference_access != assembly_access) {
+							comparison.status = ComparisonStatus.Error;
+							comparison.messages.Add (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'",
+							                                        reference_access, assembly_access));
 						}
 					}
 					

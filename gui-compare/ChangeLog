@@ -1,3 +1,32 @@
+2008-01-01  Chris Toshok <toshok@ximian.com> 
+
+	* MainWindow.cs: Remove the checks of the Show* actions in our populate
+	  code.  limitting display is done via the filter logic, not when
+	  populating the tree.  Also, fill in and show/hide the summary label when
+	  we need to.
+	* CecilMetadata.cs: Fix the interface comparisons - walk the hierarchy,
+	  collecting a list.  just for kicks, due it in the least efficient way
+	  possible.  also find the TODO attributes and remember their messages. 
+	  Make sure to grab the list of attributes in the appropriate constructor,
+	  instead of in GetAttributes, because if we do it there, it's already too
+	  late to register the counts with the proper comparison nodes.  Also,
+	  only check certain field/property/method attributes.  mask them to what
+	  corcompare seems to generate.
+	* Metadata.cs: add a todo list that we can fill in via the CecilMetadata
+	  code.  also, add abstract GetMemberAccess method.
+	* CompareContext.cs: Make sure to GetComparisonNode from the assembly_list
+	  if we can help it, since that node will contain all the MonoTODO's. 
+	  Also, compare constructors.
+	* MasterMetadata.cs: fill in our attributes and method/field/property
+	  access.
+	* AssemblyResolver.cs: steal this code from the linker
+	* gtk-gui/gui.stetic: add in a summary label that we auto show/hide, and get
+	  rid of that toolbar.  move Refresh under the File menu.
+	* Masterinfo.cs: make the various ConvertToString methods public instead of
+	  protected.
+	* Comparison.cs: keep track of a list of error messages and todo's, and
+	  propagate the todo count properly.
+
 2007-12-28  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: change the line foreground based on the node's status. 

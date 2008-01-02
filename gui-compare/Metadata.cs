@@ -53,6 +53,7 @@ namespace GuiCompare {
 		{
 			this.name = name;
 			this.type = type;
+			this.todos = new List<string>();
 		}
 
 		public string Name {
@@ -67,7 +68,9 @@ namespace GuiCompare {
 
 		public ComparisonNode GetComparisonNode ()
 		{
-			return new ComparisonNode (type, name);
+			ComparisonNode node = new ComparisonNode (type, name);
+			node.todos.AddRange (todos);
+			return node;
 		}
 
 		public static int Compare (CompNamed x, CompNamed y)
@@ -77,6 +80,7 @@ namespace GuiCompare {
 
 		string name;
 		CompType type;
+		public List<string> todos;
 	}
 
 	public abstract class CompAssembly : CompNamed {
@@ -171,6 +175,7 @@ namespace GuiCompare {
 		{
 		}
 
+		public abstract string GetMemberAccess();
 		public abstract string GetMemberType();
 		
 		public abstract List<CompNamed> GetAttributes ();

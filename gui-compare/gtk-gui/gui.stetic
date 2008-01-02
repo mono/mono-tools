@@ -108,6 +108,8 @@
             <property name="MemberName" />
             <node name="menubar1" type="Menubar">
               <node type="Menu" action="File">
+                <node type="Menuitem" action="Refresh" />
+                <node type="Separator" />
                 <node type="Menuitem" action="quit" />
               </node>
               <node type="Menu" action="Compare">
@@ -125,22 +127,6 @@
           </widget>
           <packing>
             <property name="Position">0</property>
-            <property name="AutoSize">True</property>
-            <property name="Expand">False</property>
-            <property name="Fill">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.Toolbar" id="toolbar3">
-            <property name="MemberName" />
-            <property name="ShowArrow">False</property>
-            <property name="ButtonStyle">Icons</property>
-            <node name="toolbar3" type="Menubar">
-              <node type="Toolitem" action="Refresh" />
-            </node>
-          </widget>
-          <packing>
-            <property name="Position">1</property>
             <property name="AutoSize">True</property>
             <property name="Expand">False</property>
             <property name="Fill">False</property>
@@ -201,8 +187,25 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
             </child>
           </widget>
           <packing>
+            <property name="Position">1</property>
+            <property name="AutoSize">True</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="summary">
+            <property name="MemberName" />
+            <property name="Visible">False</property>
+            <property name="Xpad">6</property>
+            <property name="Ypad">6</property>
+            <property name="Xalign">0</property>
+            <property name="LabelProp" translatable="yes" />
+            <property name="UseMarkup">True</property>
+          </widget>
+          <packing>
             <property name="Position">2</property>
             <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
           </packing>
         </child>
         <child>

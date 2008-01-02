@@ -24,11 +24,24 @@ namespace GuiCompare {
 				
 				do {
 					foreach (TypeReference ifc in td.Interfaces) {
-						interface_list.Add (new CecilInterface (ifc));
+						TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
+						if (ifc_def.IsNotPublic)
+							continue;
+							
+						CecilInterface new_ifc = new CecilInterface (ifc);
+						bool found = false;
+						for (int i = 0; i < interface_list.Count; i ++) {
+							if (interface_list[i].Name == new_ifc.Name) {
+								found = true;
+								break;
+							}
+						}
+						if (!found)
+							interface_list.Add (new_ifc);
 					}
 					fromRef = td.BaseType;
 					if (fromRef != null)
-						td = Resolve (fromRef);
+						td = CecilUtils.Resolver.Resolve (fromRef);
 				} while (fromRef != null);
 			}
 			if (constructor_list != null) {
@@ -116,49 +129,49 @@ namespace GuiCompare {
 				}
 			}
 		}
-					
-		public static bool ShouldSkipAttribute (string name)
+
+		public static string GetTODOText (CustomAttribute ca)
 		{
-			return (name == "MonoLimitationAttribute" ||
-			        name == "MonoDocumentationNoteAttribute" ||
-			        name == "MonoTODOAttribute" ||
-			        name == "MonoExtensionAttribute" ||
-			        name == "MonoNotSupportedAttribute" ||
-			        name == "MonoInternalNoteAttribute");
-		}
+			StringBuilder sb = new StringBuilder();
+			bool first = true;
+			foreach (object o in ca.ConstructorParameters) {
+				if (!first)
+					sb.Append (", ");
+				first = false;
+				sb.Append (o.ToString());
+			}
 			
-		public static List<CompNamed> GetCustomAttributes (ICustomAttributeProvider provider)
-		{
-			List<CompNamed> rv = new List<CompNamed>();
-			foreach (CustomAttribute ca in provider.CustomAttributes)
-				if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.Name))
-					rv.Add (new CecilAttribute (ca));
-			return rv;
+			return sb.ToString();
 		}
 		
-		// stolen from the linker
-		public static TypeDefinition Resolve (TypeReference type)
+		public static bool IsTODOAttribute (TypeDefinition typedef)
 		{
-			type = type.GetOriginalType ();
-
-			if (type is TypeDefinition)
-				return (TypeDefinition) type;
-
-#if notyet
-			AssemblyNameReference reference = type.Scope as AssemblyNameReference;
-			if (reference != null) {
-				AssemblyDefinition assembly = Resolve (reference);
-				return assembly.MainModule.Types [type.FullName];
+			if (typedef == null)
+				return false;
+			
+			if (typedef.Name == "MonoTODOAttribute")
+				return true;
+			
+			if (typedef.BaseType == null)
+				return false;
+			
+			return IsTODOAttribute (CecilUtils.Resolver.Resolve (typedef.BaseType));
+		}
+			
+		public static List<CompNamed> GetCustomAttributes (ICustomAttributeProvider provider, List<string> todos)
+		{
+			List<CompNamed> rv = new List<CompNamed>();
+			foreach (CustomAttribute ca in provider.CustomAttributes) {
+				if (IsTODOAttribute (CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType)))
+					todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));
+				else
+					rv.Add (new CecilAttribute (ca));
 			}
-#endif
-
-			ModuleDefinition module = type.Scope as ModuleDefinition;
-			if (module != null)
-				return module.Types [type.FullName];
-
-			throw new NotImplementedException ();
+			return rv;
 		}
 
+		
+		public static readonly AssemblyResolver Resolver = new AssemblyResolver();
 	}
 
 	public class CecilAssembly : CompAssembly {
@@ -183,7 +196,7 @@ namespace GuiCompare {
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
 					continue;
 
-				if (CecilUtils.ShouldSkipAttribute (t.Name))
+				if (CecilUtils.IsTODOAttribute (t))
 					continue;
 
 				if (!namespaces.ContainsKey (t.Namespace))
@@ -290,14 +303,14 @@ namespace GuiCompare {
 			events = new List<CompNamed>();
 
 			CecilUtils.PopulateMemberLists (type_def,
-			                           interfaces,
-			                           constructors,
-			                           methods,
-			                           properties,
-			                           fields,
-			                           events);
+			                                interfaces,
+			                                constructors,
+			                                methods,
+			                                properties,
+			                                fields,
+			                                events);
 			
-			attributes = CecilUtils.GetCustomAttributes (type_def);
+			attributes = CecilUtils.GetCustomAttributes (type_def, todos);
 		}
 		
 		public CecilInterface (TypeReference type_ref)
@@ -382,6 +395,8 @@ namespace GuiCompare {
 						   null,
 						   fields,
 						   null);
+			
+			attributes = CecilUtils.GetCustomAttributes (type_def, todos); 
 		}
 
  		public override List<CompNamed> GetFields()
@@ -391,11 +406,12 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (type_def);
+			return attributes;
 		}
 
 		TypeDefinition type_def;
 		List<CompNamed> fields;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilClass : CompClass {
@@ -432,6 +448,7 @@ namespace GuiCompare {
 			                           fields,
 			                           events);
 
+			attributes = CecilUtils.GetCustomAttributes (type_def, todos);
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -466,7 +483,7 @@ namespace GuiCompare {
 
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (type_def);
+			return attributes;
 		}
 
 		public override List<CompNamed> GetNestedClasses()
@@ -507,6 +524,7 @@ namespace GuiCompare {
 		List<CompNamed> properties;
 		List<CompNamed> fields;
 		List<CompNamed> events;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilField : CompField {
@@ -514,19 +532,32 @@ namespace GuiCompare {
 			: base (field_def.Name)
 		{
 			this.field_def = field_def;
+			this.attributes = CecilUtils.GetCustomAttributes (field_def, todos);
 		}
 
 		public override string GetMemberType ()
 		{
-			return field_def.FieldType.FullName;
+			return field_def.FieldType.FullName.Replace ('/','+');
+		}
+		
+		const FieldAttributes masterInfoFieldMask = (FieldAttributes.FieldAccessMask | 
+		                                             FieldAttributes.Static | 
+		                                             FieldAttributes.InitOnly | 
+		                                             FieldAttributes.Literal | 
+		                                             FieldAttributes.HasDefault | 
+		                                             FieldAttributes.HasFieldMarshal);
+		public override string GetMemberAccess ()
+		{
+			return (field_def.Attributes & masterInfoFieldMask).ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (field_def);
+			return attributes;
 		}
 
 		FieldDefinition field_def;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilMethod : CompMethod {
@@ -534,22 +565,39 @@ namespace GuiCompare {
 			: base (MasterinfoFormattedName (method_def))
 		{
 			this.method_def = method_def;
+			this.attributes = CecilUtils.GetCustomAttributes (method_def, todos);
 		}
 
 		public override string GetMemberType ()
 		{
-			return method_def.ReturnType.ReturnType.FullName;
+			if (method_def.IsConstructor)
+				return null;
+			
+			return method_def.ReturnType.ReturnType.FullName.Replace ('/','+');
+		}
+
+		const MethodAttributes masterInfoMethodMask = (MethodAttributes.MemberAccessMask |
+		                                               MethodAttributes.Virtual |
+		                                               MethodAttributes.Final |
+		                                               MethodAttributes.Static |
+		                                               MethodAttributes.Abstract |
+		                                               MethodAttributes.HideBySig |
+		                                               MethodAttributes.SpecialName);
+		public override string GetMemberAccess ()
+		{
+			return (method_def.Attributes & masterInfoMethodMask).ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (method_def);
+			return attributes;
 		}
 
 		static string MasterinfoFormattedName (MethodDefinition method_def)
 		{
 			StringBuilder sb = new StringBuilder ();
-			sb.Append (method_def.ReturnType.ReturnType.FullName);
+			if (!method_def.IsConstructor)
+				sb.Append (method_def.ReturnType.ReturnType.FullName.Replace('/','+'));
 			sb.Append (" ");
 			sb.Append (method_def.Name);
 			sb.Append ('(');
@@ -561,7 +609,7 @@ namespace GuiCompare {
 					sb.Append ("in ");
 				else if (p.IsOut)
 					sb.Append ("out ");
-				sb.Append (p.ParameterType.FullName);
+				sb.Append (p.ParameterType.FullName.Replace('/','+'));
 				comma = true;
 			}
 			sb.Append (')');
@@ -570,6 +618,7 @@ namespace GuiCompare {
 		}
 
 		MethodDefinition method_def;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilProperty : CompProperty
@@ -578,16 +627,22 @@ namespace GuiCompare {
 			: base (pd.Name)
 		{
 			this.pd = pd;
+			this.attributes = CecilUtils.GetCustomAttributes (pd, todos);
 		}
 
 		public override string GetMemberType()
 		{
-			return pd.PropertyType.FullName;
+			return pd.PropertyType.FullName.Replace ('/','+');
+		}
+		
+		public override string GetMemberAccess()
+		{
+			return pd.Attributes == 0 ? null : pd.Attributes.ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (pd);
+			return attributes;
 		}
 		
 		public override List<CompNamed> GetMethods()
@@ -603,6 +658,7 @@ namespace GuiCompare {
 		}
 		
 		PropertyDefinition pd;
+		List<CompNamed> attributes;
 	}
 	
 	public class CecilEvent : CompEvent
@@ -611,19 +667,26 @@ namespace GuiCompare {
 			: base (ed.Name)
 		{
 			this.ed = ed;
+			this.attributes = CecilUtils.GetCustomAttributes (ed, todos);
 		}
 
 		public override string GetMemberType()
 		{
-			return ed.EventType.FullName;
+			return ed.EventType.FullName.Replace('/','+');
+		}
+		
+		public override string GetMemberAccess()
+		{
+			return ed.Attributes == 0 ? "None" : ed.Attributes.ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
 		{
-			return CecilUtils.GetCustomAttributes (ed);
+			return attributes;
 		}
 		
 		EventDefinition ed;
+		List<CompNamed> attributes;
 	}
 	
 	public class CecilAttribute : CompAttribute

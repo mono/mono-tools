@@ -1261,7 +1261,7 @@ using System.Xml;
 	public abstract class XMLMember : XMLNameGroup
 	{
 		public Hashtable attributeMap;
-		Hashtable access = new Hashtable ();
+		public Hashtable access = new Hashtable ();
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
@@ -1333,7 +1333,7 @@ using System.Xml;
 				AddWarning (parent, "Incorrect attributes: '{0}' != '{1}'", accName, oaccName);
 		}
 
-		protected virtual string ConvertToString (int att)
+		public virtual string ConvertToString (int att)
 		{
 			return null;
 		}
@@ -1389,7 +1389,7 @@ using System.Xml;
 			}
 		}
 
-		protected override string ConvertToString (int att)
+		public override string ConvertToString (int att)
 		{
 			FieldAttributes fa = (FieldAttributes) att;
 			return fa.ToString ();
@@ -1599,7 +1599,7 @@ using System.Xml;
 			}
 		}
 
-		protected override string ConvertToString (int att)
+		public override string ConvertToString (int att)
 		{
 			EventAttributes ea = (EventAttributes) att;
 			return ea.ToString ();
@@ -1751,7 +1751,7 @@ using System.Xml;
 			}
 		}
 
-		protected override string ConvertToString (int att)
+		public override string ConvertToString (int att)
 		{
 			MethodAttributes ma = (MethodAttributes) att;
 			// ignore ReservedMasks
