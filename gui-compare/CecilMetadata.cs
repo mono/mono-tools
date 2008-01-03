@@ -10,6 +10,51 @@ using Gtk;
 namespace GuiCompare {
 
 	static class CecilUtils {
+		public static string PrettyType (string type)
+		{
+			/* handle suffixes first, recursively */
+			if (type.EndsWith ("[]"))
+				return String.Concat (PrettyType (type.Substring (0, type.Length - 2)), "[]");
+			else if (type.EndsWith ("*"))
+				return String.Concat (PrettyType (type.Substring (0, type.Length - 1)), "*");
+			else if (type.EndsWith ("&"))
+				return String.Concat (PrettyType (type.Substring (0, type.Length - 1)), "&");
+
+			/* handle the system types we know about */
+			switch (type) {
+			case "System.Boolean": return "bool";
+			case "System.Byte": return "byte";
+			case "System.Char": return "char";
+			case "System.Decimal": return "decimal";
+			case "System.Double": return "double";
+			case "System.Int16": return "short";
+			case "System.Int32": return "int";
+			case "System.Int64": return "long";
+			case "System.Object": return "object";
+			case "System.SByte": return "sbyte";
+			case "System.Single": return "float";
+			case "System.String": return "string";
+			case "System.UInt16": return "ushort";
+			case "System.UInt32": return "uint";
+			case "System.UInt64": return "ulong";
+			case "System.Void": return "void";
+			}
+
+			/* for other types, just return the type name */
+			return type.Substring (type.LastIndexOf ('.')+1);
+		}
+		
+		// the corcompare xml output uses a different formatting than Cecil.
+		// Cecil uses / for nested classes, ala:
+		//  Namespace.Class/NestedClass
+		// while corcompare uses:
+		//  Namespace.Class+NestedClass
+		// also, generic methods are done differently as well.
+		// cecil:  Foo<T>
+		// corcompare: Foo[T]
+		//
+		// so let's just convert everything to corcompare's way of thinking for comparisons.
+		//
 		public static string FormatTypeLikeCorCompare (string type)
 		{
 			string rv = type.Replace ('/', '+');
@@ -186,8 +231,7 @@ namespace GuiCompare {
 		public CecilAssembly (string path)
 			: base (Path.GetFileName (path))
 		{
-			Dictionary<string, Dictionary <string, TypeDefinition>> namespaces
-				= new Dictionary<string, Dictionary <string, TypeDefinition>> ();
+			Dictionary<string, Dictionary <string, TypeDefinition>> namespaces = new Dictionary<string, Dictionary <string, TypeDefinition>> ();
 
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly(path);
 
@@ -303,6 +347,8 @@ namespace GuiCompare {
 		public CecilInterface (TypeDefinition type_def)
 			: base (CecilUtils.FormatTypeLikeCorCompare (type_def.Name))
 		{
+			this.type_def = type_def;
+			
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
 			methods = new List<CompNamed>();
@@ -334,6 +380,11 @@ namespace GuiCompare {
 			attributes = new List<CompNamed>();
 		}
 
+		public override string GetBaseType ()
+		{
+			return (type_def == null || type_def.BaseType == null) ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+		}
+		
 		public override List<CompNamed> GetInterfaces ()
 		{
 			return interfaces;
@@ -376,6 +427,7 @@ namespace GuiCompare {
 		List<CompNamed> fields;
 		List<CompNamed> events;
 		List<CompNamed> attributes;
+		TypeDefinition type_def;
 	}
 
 	public class CecilDelegate : CompDelegate {
@@ -385,6 +437,11 @@ namespace GuiCompare {
 			this.type_def = type_def;
 		}
 
+		public override string GetBaseType ()
+		{
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+		}
+		
 		TypeDefinition type_def;
 	}
 
@@ -405,6 +462,11 @@ namespace GuiCompare {
 						   null);
 			
 			attributes = CecilUtils.GetCustomAttributes (type_def, todos); 
+		}
+
+		public override string GetBaseType ()
+		{
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
 		}
 
  		public override List<CompNamed> GetFields()
@@ -457,6 +519,11 @@ namespace GuiCompare {
 			                           events);
 
 			attributes = CecilUtils.GetCustomAttributes (type_def, todos);
+		}
+
+		public override string GetBaseType ()
+		{
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -570,10 +637,11 @@ namespace GuiCompare {
 
 	public class CecilMethod : CompMethod {
 		public CecilMethod (MethodDefinition method_def)
-			: base (MasterinfoFormattedName (method_def))
+			: base (FormatName (method_def, false))
 		{
 			this.method_def = method_def;
 			this.attributes = CecilUtils.GetCustomAttributes (method_def, todos);
+			DisplayName = FormatName (method_def, true);
 		}
 
 		public override string GetMemberType ()
@@ -601,13 +669,49 @@ namespace GuiCompare {
 			return attributes;
 		}
 
-		static string MasterinfoFormattedName (MethodDefinition method_def)
+		void SetDisplayName ()
+		{
+
+		}
+		
+		static string FormatName (MethodDefinition method_def, bool beautify)
 		{
 			StringBuilder sb = new StringBuilder ();
 			if (!method_def.IsConstructor)
-				sb.Append (CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName));
+				sb.Append (beautify
+				           ? CecilUtils.PrettyType (method_def.ReturnType.ReturnType.FullName)
+				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName));
 			sb.Append (" ");
-			sb.Append (method_def.Name);
+			if (method_def.IsSpecialName && beautify) {
+				if (method_def.Name.StartsWith ("op_")) {
+					switch (method_def.Name) {
+					case "op_Explicit": sb.Append ("operator explicit"); break;
+					case "op_Implicit": sb.Append ("operator implicit"); break;
+					case "op_Equality":  sb.Append ("operator =="); break;
+					case "op_Inequality": sb.Append ("operator !="); break;
+					case "op_Addition": sb.Append ("operator +"); break;
+					case "op_Subtraction": sb.Append ("operator -"); break;
+					case "op_Division": sb.Append ("operator /"); break;
+					case "op_Multiply": sb.Append ("operator *"); break;
+					case "op_Modulus": sb.Append ("operator %"); break;
+					case "op_GreaterThan": sb.Append ("operator >"); break;
+					case "op_GreaterThanOrEqual": sb.Append ("operator >="); break;
+					case "op_LessThan": sb.Append ("operator <"); break;
+					case "op_LessThanOrEqual": sb.Append ("operator <="); break;
+					case "op_UnaryNegation": sb.Append ("operator -"); break;
+					case "op_UnaryPlus": sb.Append ("operator +"); break;
+					case "op_Decrement": sb.Append ("operator --"); break;
+					case "op_Increment": sb.Append ("operator ++"); break;
+					default: Console.WriteLine ("unhandled operator named {0}", method_def.Name); sb.Append (method_def.Name); break;
+					}
+				}
+				else {
+					sb.Append (method_def.Name);
+				}
+			}
+			else {
+				sb.Append (method_def.Name);
+			}
 			if (method_def.GenericParameters.Count > 0) {
 				sb.Append ("<");
 				bool first_gp = true;
@@ -629,7 +733,13 @@ namespace GuiCompare {
 					sb.Append ("in ");
 				else if (p.IsOut)
 					sb.Append ("out ");
-				sb.Append (CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
+				sb.Append (beautify
+				           ? CecilUtils.PrettyType (p.ParameterType.FullName)
+				           : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
+				if (beautify) {
+					sb.Append (" ");
+					sb.Append (p.Name);
+				}
 			}
 			sb.Append (')');
 

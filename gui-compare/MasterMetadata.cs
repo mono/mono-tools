@@ -215,6 +215,8 @@ namespace GuiCompare {
 		public MasterInterface (XMLClass xml_cls)
 			: base (xml_cls.name)
 		{
+			this.xml_cls = xml_cls;
+			
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
 			methods = new List<CompNamed>();
@@ -245,6 +247,11 @@ namespace GuiCompare {
 			attributes = new List<CompNamed>();
 		}
 
+		public override string GetBaseType()
+		{
+			return xml_cls == null ? null : xml_cls.baseName;
+		}
+		
 		public override List<CompNamed> GetInterfaces ()
 		{
 			return interfaces;
@@ -280,6 +287,7 @@ namespace GuiCompare {
 			return attributes;
 		}
 		
+		XMLClass xml_cls;
 		List<CompNamed> interfaces;
 		List<CompNamed> constructors;
 		List<CompNamed> methods;
@@ -296,6 +304,11 @@ namespace GuiCompare {
 			xml_cls = cls;
 		}
 
+		public override string GetBaseType ()
+		{
+			return xml_cls.baseName;
+		}
+		
 		XMLClass xml_cls;
 	}
 
@@ -317,6 +330,11 @@ namespace GuiCompare {
 
 		}
 
+		public override string GetBaseType()
+		{
+			return xml_cls.baseName;
+		}
+		
  		public override List<CompNamed> GetFields()
 		{
 			return fields;
@@ -366,6 +384,11 @@ namespace GuiCompare {
 			                               struct_list);
 		}
 
+		public override string GetBaseType ()
+		{
+			return xml_cls.baseName;
+		}
+		
 		public override List<CompNamed> GetInterfaces ()
 		{
 			return interfaces;

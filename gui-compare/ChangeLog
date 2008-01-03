@@ -1,3 +1,18 @@
+2008-01-02  Chris Toshok <toshok@ximian.com> 
+
+	* Metadata.cs: make the class, interface, delegate, and enum classes
+	  implement ICompHasBaseType, and add DisplayName to CompNamed, which
+	  we'll use instead of Name to populate the tree.
+	* CecilMetadata.cs: Add type prettification to set the DisplayName on the
+	  comparison nodes (show the actual operator, type name replacement for
+	  system types, etc).  Also, implement the GetBaseType stuff.
+	* CompareContext.cs: compare base types.  use ComparisonNode.AddError
+	* MasterMetadata.cs: implement all the GetBaseType methods.
+	* Masterinfo.cs: remove tons of stuff from corcompare that we no longer
+	  need.
+	* Comparison.cs: add ComparisonNode.AddError which sets the status and adds
+	  the message.
+
 2008-01-02  Miguel de Icaza <miguel@novell.com> 
 
 	* MainWindow.cs: Load defauls from the configuration file

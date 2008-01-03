@@ -179,95 +179,10 @@ using System.Xml;
 			attr.Value = value;
 			node.Attributes.Append (attr);
 		}
-
-		protected void AddExtra (XmlNode node)
-		{
-			//TODO: count all the subnodes?
-			AddAttribute (node, "presence", "extra");
-			AddAttribute (node, "ok", "1");
-			AddAttribute (node, "ok_total", "1");
-			AddAttribute (node, "extra", "1");
-			AddAttribute (node, "extra_total", "1");
-		}
-
-		public void AddCountersAttributes (XmlNode node)
-		{
-  			if (counters.Missing > 0)
-				AddAttribute (node, "missing", counters.Missing.ToString ());
-
-  			if (counters.Present > 0)
-				AddAttribute (node, "present", counters.Present.ToString ());
-
-  			if (counters.Extra > 0)
-				AddAttribute (node, "extra", counters.Extra.ToString ());
-
-  			if (counters.Ok > 0)
-				AddAttribute (node, "ok", counters.Ok.ToString ());
-
-  			if (counters.Total > 0) {
-				int percent = (100 * counters.Ok / counters.Total);
-				AddAttribute (node, "complete", percent.ToString ());
-			}
-
-  			if (counters.Todo > 0)
-				AddAttribute (node, "todo", counters.Todo.ToString ());
-
-  			if (counters.Warning > 0)
-				AddAttribute (node, "warning", counters.Warning.ToString ());
-
-  			if (counters.MissingTotal > 0)
-				AddAttribute (node, "missing_total", counters.MissingTotal.ToString ());
-
-  			if (counters.PresentTotal > 0)
-				AddAttribute (node, "present_total", counters.PresentTotal.ToString ());
-
-  			if (counters.ExtraTotal > 0)
-				AddAttribute (node, "extra_total", counters.ExtraTotal.ToString ());
-
-  			if (counters.OkTotal > 0)
-				AddAttribute (node, "ok_total", counters.OkTotal.ToString ());
-
-  			if (counters.AbsTotal > 0) {
-				int percent = (100 * counters.OkTotal / counters.AbsTotal);
-				AddAttribute (node, "complete_total", percent.ToString ());
-			}
-
-  			if (counters.TodoTotal > 0) {
-				AddAttribute (node, "todo_total", counters.TodoTotal.ToString ());
-				//TODO: should be different on error. check error cases in corcompare.
-				AddAttribute (node, "error_total", counters.Todo.ToString ());
-			}
-
-  			if (counters.WarningTotal > 0)
-				AddAttribute (node, "warning_total", counters.WarningTotal.ToString ());
-
-		}
-
-		protected void AddWarning (XmlNode parent, string fmt, params object [] args)
-		{
-			counters.Warning++;
-			haveWarnings = true;
-			XmlNode warnings = parent.SelectSingleNode ("warnings");
-			if (warnings == null) {
-				warnings = document.CreateElement ("warnings", null);
-				parent.AppendChild (warnings);
-			}
-
-			AddAttribute (parent, "error", "warning");
-			XmlNode warning = document.CreateElement ("warning", null);
-			AddAttribute (warning, "text", String.Format (fmt, args));
-			warnings.AppendChild (warning);
-		}
-
-		public bool HaveWarnings {
-			get { return haveWarnings; }
-		}
 		
 		public Counters Counters {
 			get { return counters; }
 		}
-		
-		public abstract void CompareTo (XmlDocument doc, XmlNode parent, object other);
 	}
 	
 	public abstract class XMLNameGroup : XMLData
@@ -301,56 +216,6 @@ using System.Xml;
 		}
 
 		protected virtual void LoadExtraData (string name, XmlNode node)
-		{
-		}
-
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-			if (group == null)
-				group = doc.CreateElement (GroupName, null);
-
-			Hashtable okeys = null;
-			if (other != null && ((XMLNameGroup) other).keys != null) {
-				okeys = ((XMLNameGroup) other).keys;
-			}
-
-			XmlNode node = null;
-			bool onull = (okeys == null);
-			if (keys != null) {
-				foreach (DictionaryEntry entry in keys) {
-					node = doc.CreateElement (Name, null);
-					group.AppendChild (node);
-					string key = (string) entry.Key;
-					string name = (string) entry.Value;
-					AddAttribute (node, "name", name);
-
-					if (!onull && HasKey (key, okeys)) {
-						CompareToInner (key, node, (XMLNameGroup) other);
-						okeys.Remove (key);
-						counters.Present++;
-					} else {
-						AddAttribute (node, "presence", "missing");
-						counters.Missing++;
-					}
-				}
-			}
-
-			if (!onull && okeys.Count != 0) {
-				foreach (string value in okeys.Values) {
-					node = doc.CreateElement (Name, null);
-					AddAttribute (node, "name", (string) value);
-					AddAttribute (node, "presence", "extra");
-					group.AppendChild (node);
-					counters.Extra++;
-				}
-			}
-
-			if (group.HasChildNodes)
-				parent.AppendChild (group);
-		}
-
-		protected virtual void CompareToInner (string name, XmlNode node, XMLNameGroup other)
 		{
 		}
 
@@ -414,87 +279,6 @@ using System.Xml;
 			namespaces = (XMLNamespace []) LoadRecursive (atts.ChildNodes, typeof (XMLNamespace));
 		}
 
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			XMLAssembly assembly = (XMLAssembly) other;
-
-			XmlNode childA = doc.CreateElement ("assembly", null);
-			AddAttribute (childA, "name", name);
-			AddAttribute (childA, "version", version);
-			if (name != assembly.name)
-				AddWarning (childA, "Assembly names not equal: {0}, {1}", name, assembly.name);
-
-			if (version != assembly.version)
-				AddWarning (childA, "Assembly version not equal: {0}, {1}", version, assembly.version);
-
-			parent.AppendChild (childA);
-
-			attributes.CompareTo (doc, childA, assembly.attributes);
-			counters.AddPartialToPartial (attributes.Counters);
-
-			CompareNamespaces (childA, assembly.namespaces);
-			if (assembly.attributes != null && assembly.attributes.IsTodo) {
-				counters.Todo++;
-				counters.TodoTotal++;
-				counters.ErrorTotal++;
-				AddAttribute (childA, "error", "todo");
-				if (assembly.attributes.Comment != null)
-					AddAttribute (childA, "comment", assembly.attributes.Comment);
-			}
-
-			AddCountersAttributes (childA);
-		}
-
-		void CompareNamespaces (XmlNode parent, XMLNamespace [] other)
-		{
-			ArrayList newNS = new ArrayList ();
-			XmlNode group = document.CreateElement ("namespaces", null);
-			parent.AppendChild (group);
-
-			Hashtable oh = CreateHash (other);
-			XmlNode node = null;
-			int count = (namespaces == null) ? 0 : namespaces.Length;
-			for (int i = 0; i < count; i++) {
-				XMLNamespace xns = namespaces [i];
-
-				node = document.CreateElement ("namespace", null);
-				newNS.Add (node);
-				AddAttribute (node, "name", xns.Name);
-
-				int idx = -1;
-				if (oh.ContainsKey (xns.Name))
-					idx = (int) oh [xns.Name];
-				XMLNamespace ons = idx >= 0 ? (XMLNamespace) other [idx] : null;
-				xns.CompareTo (document, node, ons);
-				if (idx >= 0)
-					other [idx] = null;
-				xns.AddCountersAttributes (node);
-				counters.Present++;
-				counters.PresentTotal++;
-				counters.AddPartialToTotal (xns.Counters);
-			}
-
-			if (other != null) {
-				count = other.Length;
-				for (int i = 0; i < count; i++) {
-					XMLNamespace n = other [i];
-					if (n == null)
-						continue;
-
-					node = document.CreateElement ("namespace", null);
-					newNS.Add (node);
-					AddAttribute (node, "name", n.Name);
-					AddExtra (node);
-					counters.ExtraTotal++;
-				}
-			}
-
-			XmlNode [] nodes = (XmlNode []) newNS.ToArray (typeof (XmlNode));
-			Array.Sort (nodes, XmlNodeComparer.Default);
-			foreach (XmlNode nn in nodes)
-				group.AppendChild (nn);
-		}
-
 		static Hashtable CreateHash (XMLNamespace [] other)
 		{
 			Hashtable result = new Hashtable ();
@@ -508,20 +292,6 @@ using System.Xml;
 			return result;
 		}
 
-		public XmlDocument CompareAndGetDocument (XMLAssembly other)
-		{
-			XmlDocument doc = new XmlDocument ();
-			this.document = doc;
-			XmlNode parent = doc.CreateElement ("assemblies", null);
-			doc.AppendChild (parent);
-			
-			CompareTo (doc, parent, other);
-
-			XmlNode decl = doc.CreateXmlDeclaration ("1.0", null, null);
-			doc.InsertBefore (decl, doc.DocumentElement);
-
-			return doc;
-		}
 	}
 
 	public class XMLNamespace : XMLData
@@ -550,63 +320,6 @@ using System.Xml;
 			types = (XMLClass []) LoadRecursive (classes.ChildNodes, typeof (XMLClass));
 		}
 
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-			XMLNamespace nspace = (XMLNamespace) other;
-
-			XmlNode childA = doc.CreateElement ("classes", null);
-			parent.AppendChild (childA);
-
-			CompareTypes (childA, nspace != null ? nspace.types : new XMLClass [0]);
-		}
-
-		void CompareTypes (XmlNode parent, XMLClass [] other)
-		{
-			ArrayList newNodes = new ArrayList ();
-			Hashtable oh = CreateHash (other);
-			XmlNode node = null;
-			int count = (types == null) ? 0 : types.Length;
-			for (int i = 0; i < count; i++) {
-				XMLClass xclass = types [i];
-
-				node = document.CreateElement ("class", null);
-				newNodes.Add (node);
-				AddAttribute (node, "name", xclass.Name);
-				AddAttribute (node, "type", xclass.Type);
-
-				int idx = -1;
-				if (oh.ContainsKey (xclass.Name))
-					idx = (int) oh [xclass.Name];
-				xclass.CompareTo (document, node, idx >= 0 ? other [idx] : new XMLClass ());
-				if (idx >= 0)
-					other [idx] = null;
-				counters.AddPartialToPartial (xclass.Counters);
-			}
-
-			if (other != null) {
-				count = other.Length;
-				for (int i = 0; i < count; i++) {
-					XMLClass c = other [i];
-					if (c == null || IsMonoTODOAttribute (c.Name))
-						continue;
-
-					node = document.CreateElement ("class", null);
-					newNodes.Add (node);
-					AddAttribute (node, "name", c.Name);
-					AddAttribute (node, "type", c.Type);
-					AddExtra (node);
-					counters.Extra++;
-					counters.ExtraTotal++;
-				}
-			}
-
-			XmlNode [] nodes = (XmlNode []) newNodes.ToArray (typeof (XmlNode));
-			Array.Sort (nodes, XmlNodeComparer.Default);
-			foreach (XmlNode nn in nodes)
-				parent.AppendChild (nn);
-		}
-
 		static Hashtable CreateHash (XMLClass [] other)
 		{
 			Hashtable result = new Hashtable ();
@@ -629,7 +342,7 @@ using System.Xml;
 	{
 		public string name;
 		public string type;
-		string baseName;
+		public string baseName;
 		bool isSealed;
 		bool isSerializable;
 		bool isAbstract;
@@ -738,165 +451,6 @@ using System.Xml;
 			nested = (XMLClass []) LoadRecursive (child.ChildNodes, typeof (XMLClass));
 		}
 
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-			XMLClass oclass = (XMLClass) other;
-
-			if (attributes != null || oclass.attributes != null) {
-				if (attributes == null)
-					attributes = new XMLAttributes ();
-
-				attributes.CompareTo (doc, parent, oclass.attributes);
-				counters.AddPartialToPartial (attributes.Counters);
-				if (oclass.attributes != null && oclass.attributes.IsTodo) {
-					counters.Todo++;
-					counters.TodoTotal++;
-					counters.ErrorTotal++;
-					AddAttribute (parent, "error", "todo");
-					if (oclass.attributes.Comment != null)
-						AddAttribute (parent, "comment", oclass.attributes.Comment);
-				}
-			}
-
-			if (type != oclass.type)
-				AddWarning (parent, "Class type is wrong: {0} != {1}", type, oclass.type);
-
-			if (baseName != oclass.baseName)
-				AddWarning (parent, "Base class is wrong: {0} != {1}", baseName, oclass.baseName);
-
-			if (isAbstract != oclass.isAbstract || isSealed != oclass.isSealed) {
-				if ((isAbstract && isSealed) || (oclass.isAbstract && oclass.isSealed))
-					AddWarning (parent, "Should {0}be static", (isAbstract && isSealed) ? "" : "not ");
-				else if (isAbstract != oclass.isAbstract)
-					AddWarning (parent, "Should {0}be abstract", isAbstract ? "" : "not ");
-				else if (isSealed != oclass.isSealed)
-					AddWarning (parent, "Should {0}be sealed", isSealed ? "" : "not ");
-			}
-
-			if (isSerializable != oclass.isSerializable)
-				AddWarning (parent, "Should {0}be serializable", isSerializable ? "" : "not ");
-
-			if (charSet != oclass.charSet)
-				AddWarning (parent, "CharSet is wrong: {0} != {1}", charSet, oclass.charSet);
-
-			if (layout != oclass.layout)
-				AddWarning (parent, "Layout is wrong: {0} != {1}", layout, oclass.layout);
-
-			if (interfaces != null || oclass.interfaces != null) {
-				if (interfaces == null)
-					interfaces = new XMLInterfaces ();
-
-				interfaces.CompareTo (doc, parent, oclass.interfaces);
-				counters.AddPartialToPartial (interfaces.Counters);
-			}
-
-			if (genericConstraints != null || oclass.genericConstraints != null) {
-				if (genericConstraints == null)
-					genericConstraints = new XMLGenericTypeConstraints ();
-
-				genericConstraints.CompareTo (doc, parent, oclass.genericConstraints);
-				counters.AddPartialToPartial (genericConstraints.Counters);
-			}
-
-			if (fields != null || oclass.fields != null) {
-				if (fields == null)
-					fields = new XMLFields ();
-
-				fields.CompareTo (doc, parent, oclass.fields);
-				counters.AddPartialToPartial (fields.Counters);
-			}
-
-			if (constructors != null || oclass.constructors != null) {
-				if (constructors == null)
-					constructors = new XMLConstructors ();
-
-				constructors.CompareTo (doc, parent, oclass.constructors);
-				counters.AddPartialToPartial (constructors.Counters);
-			}
-
-			if (properties != null || oclass.properties != null) {
-				if (properties == null)
-					properties = new XMLProperties ();
-
-				properties.CompareTo (doc, parent, oclass.properties);
-				counters.AddPartialToPartial (properties.Counters);
-			}
-
-			if (events != null || oclass.events != null) {
-				if (events == null)
-					events = new XMLEvents ();
-
-				events.CompareTo (doc, parent, oclass.events);
-				counters.AddPartialToPartial (events.Counters);
-			}
-
-			if (methods != null || oclass.methods != null) {
-				if (methods == null)
-					methods = new XMLMethods ();
-
-				methods.CompareTo (doc, parent, oclass.methods);
-				counters.AddPartialToPartial (methods.Counters);
-			}
-
-			if (nested != null || oclass.nested != null) {
-				XmlNode n = doc.CreateElement ("classes", null);
-				parent.AppendChild (n);
-				CompareTypes (n, oclass.nested);
-			}
-
-			AddCountersAttributes (parent);
-		}
-
-		void CompareTypes (XmlNode parent, XMLClass [] other)
-		{
-			ArrayList newNodes = new ArrayList ();
-			Hashtable oh = CreateHash (other);
-			XmlNode node = null;
-			int count = (nested == null) ? 0 : nested.Length;
-			for (int i = 0; i < count; i++) {
-				XMLClass xclass = nested [i];
-
-				node = document.CreateElement ("class", null);
-				newNodes.Add (node);
-				AddAttribute (node, "name", xclass.Name);
-				AddAttribute (node, "type", xclass.Type);
-
-				if (oh.ContainsKey (xclass.Name)) {
-					int idx = (int) oh [xclass.Name];
-					xclass.CompareTo (document, node, other [idx]);
-					other [idx] = null;
-					counters.AddPartialToPartial (xclass.Counters);
-				} else {
-					// TODO: Should I count here?
-					AddAttribute (node, "presence", "missing");
-					counters.Missing++;
-					counters.MissingTotal++;
-				}
-			}
-
-			if (other != null) {
-				count = other.Length;
-				for (int i = 0; i < count; i++) {
-					XMLClass c = other [i];
-					if (c == null || IsMonoTODOAttribute (c.Name))
-						continue;
-
-					node = document.CreateElement ("class", null);
-					newNodes.Add (node);
-					AddAttribute (node, "name", c.Name);
-					AddExtra (node);
-					counters.Extra++;
-					counters.ExtraTotal++;
-				}
-			}
-
-			XmlNode [] nodes = (XmlNode []) newNodes.ToArray (typeof (XmlNode));
-			Array.Sort (nodes, XmlNodeComparer.Default);
-			foreach (XmlNode nn in nodes)
-				parent.AppendChild (nn);
-		}
-
 		static Hashtable CreateHash (XMLClass [] other)
 		{
 			Hashtable result = new Hashtable ();
@@ -961,47 +515,6 @@ using System.Xml;
 			}
 		}
 
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-
-			XMLParameter oparm = (XMLParameter) other;
-
-			if (type != oparm.type)
-				AddWarning (parent, "Parameter type is wrong: {0} != {1}", type, oparm.type);
-			
-			if (attrib != oparm.attrib)
-				AddWarning (parent, "Parameter attributes wrong: {0} != {1}", attrib, oparm.attrib);
-
-			if (direction != oparm.direction)
-				AddWarning (parent, "Parameter direction wrong: {0} != {1}", direction, oparm.direction);
-
-			if (isUnsafe != oparm.isUnsafe)
-				AddWarning (parent, "Parameter unsafe wrong: {0} != {1}", isUnsafe, oparm.isUnsafe);
-
-			if (isOptional != oparm.isOptional)
-				AddWarning (parent, "Parameter optional wrong: {0} != {1}", isOptional, oparm.isOptional);
-
-			if (defaultValue != oparm.defaultValue)
-				AddWarning (parent, "Parameter default value wrong: {0} != {1}", (defaultValue == null) ? "(no default value)" : defaultValue, (oparm.defaultValue == null) ? "(no default value)" : oparm.defaultValue);
-
-			if (attributes != null || oparm.attributes != null) {
-				if (attributes == null)
-					attributes = new XMLAttributes ();
-
-				attributes.CompareTo (doc, parent, oparm.attributes);
-				counters.AddPartialToPartial (attributes.Counters);
-				if (oparm.attributes != null && oparm.attributes.IsTodo) {
-					counters.Todo++;
-					counters.TodoTotal++;
-					counters.ErrorTotal++;
-					AddAttribute (parent, "error", "todo");
-					if (oparm.attributes.Comment != null)
-						AddAttribute (parent, "comment", oparm.attributes.Comment);
-				}
-			}
-		}
-
 		public string Name {
 			get { return name; }
 		}
@@ -1058,28 +571,6 @@ using System.Xml;
 			}
 		}
 
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-
-			Hashtable other_properties = ((XMLAttributeProperties)other).properties;
-			foreach (DictionaryEntry de in other_properties) {
-				object other_value = properties [de.Key];
-
-				if (de.Value == null) {
-					if (other_value != null)
-						AddWarning (parent, "Property '{0}' is 'null' and should be '{1}'", de.Key, other_value);
-					continue;
-				}
-
-				if (de.Value.Equals (other_value))
-					continue;
-
-				AddWarning (parent, "Property '{0}' is '{1}' and should be '{2}'", 
-					de.Key, de.Value, other_value == null ? "null" : other_value);
-			}
-		}
-
 		public override string GroupName {
 			get {
 				return "properties";
@@ -1113,17 +604,6 @@ using System.Xml;
 			}
 
 			return true;
-		}
-
-		protected override void CompareToInner (string name, XmlNode node, XMLNameGroup other)
-		{
-			XMLAttributeProperties other_prop = ((XMLAttributes)other).properties [name] as XMLAttributeProperties;
-			XMLAttributeProperties this_prop = properties [name] as XMLAttributeProperties;
-			if (other_prop == null || this_prop == null)
-				return;
-
-			this_prop.CompareTo (document, node, other_prop);
-			counters.AddPartialToPartial (this_prop.Counters);
 		}
 
 		public override string GetNodeKey (string name, XmlNode node)
@@ -1225,15 +705,6 @@ using System.Xml;
 		{
 			attributes = ((XmlElement) node).GetAttribute ("generic-attribute");
 		}
-
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			base.CompareToInner (name, parent, other);
-
-			XMLGenericGroup g = (XMLGenericGroup) other;
-			if (attributes != g.attributes)
-				AddWarning (parent, "Incorrect generic attributes: '{0}' != '{1}'", attributes, g.attributes);
-		}
 	}
 
 	public class XMLGenericTypeConstraints : XMLGenericGroup
@@ -1288,51 +759,6 @@ using System.Xml;
 			base.LoadExtraData (name, orig);
 		}
 
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			base.CompareToInner (name, parent, other);
-			XMLMember mb = other as XMLMember;
-			XMLAttributes att = null;
-			XMLAttributes oatt = null;
-			if (attributeMap != null)
-				att = attributeMap [name] as XMLAttributes;
-
-			if (mb != null && mb.attributeMap != null)
-				oatt = mb.attributeMap [name] as XMLAttributes;
-
-			if (att != null || oatt != null) {
-				if (att == null)
-					att = new XMLAttributes ();
-
-				att.CompareTo (document, parent, oatt);
-				counters.AddPartialToPartial(att.Counters);
-				if (oatt != null && oatt.IsTodo) {
-					counters.Todo++;
-					counters.ErrorTotal++;
-					AddAttribute (parent, "error", "todo");
-					if (oatt.Comment != null)
-						AddAttribute (parent, "comment", oatt.Comment);
-				}
-			}
-
-			XMLMember member = (XMLMember) other;
-			string acc = access [name] as string;
-			if (acc == null)
-				return;
-
-			string oacc = null;
-			if (member.access != null)
-				oacc = member.access [name] as string;
-
-			string accName = ConvertToString (Int32.Parse (acc));
-			string oaccName = "";
-			if (oacc != null)
-				oaccName = ConvertToString (Int32.Parse (oacc));
-
-			if (accName != oaccName)
-				AddWarning (parent, "Incorrect attributes: '{0}' != '{1}'", accName, oaccName);
-		}
-
 		public virtual string ConvertToString (int att)
 		{
 			return null;
@@ -1363,30 +789,6 @@ using System.Xml;
 			}
 
 			base.LoadExtraData (name, node);
-		}
-
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			base.CompareToInner (name, parent, other);
-			XMLFields fields = (XMLFields) other;
-			if (fieldTypes != null) {
-				string ftype = fieldTypes [name] as string;
-				string oftype = null;
-				if (fields.fieldTypes != null)
-					oftype = fields.fieldTypes [name] as string;
-
-				if (ftype != oftype)
-					AddWarning (parent, "Field type is {0} and should be {1}", oftype, ftype);
-			}
-			if (fieldValues != null) {
-				string fvalue = fieldValues [name] as string;
-				string ofvalue = null;
-				if (fields.fieldValues != null)
-					ofvalue = fields.fieldValues [name] as string;
-
-				if (fvalue != ofvalue)
-					AddWarning (parent, "Field value is {0} and should be {1}", ofvalue, fvalue);
-			}
 		}
 
 		public override string ConvertToString (int att)
@@ -1441,83 +843,11 @@ using System.Xml;
 		{
 			return node.Attributes["position"].Value;
 		}
-
-		public override void CompareTo (XmlDocument doc, XmlNode parent, object other)
-		{
-			this.document = doc;
-			if (group == null)
-				group = doc.CreateElement (GroupName, null);
-
-			Hashtable okeys = null;
-			if (other != null && ((XMLParameters) other).keys != null) {
-				okeys = ((XMLParameters) other).keys;
-			}
-
-			XmlNode node = null;
-			bool onull = (okeys == null);
-			if (keys != null) {
-				foreach (DictionaryEntry entry in keys) {
-					node = doc.CreateElement (Name, null);
-					group.AppendChild (node);
-					string key = (string) entry.Key;
-					XMLParameter parm = (XMLParameter) entry.Value;
-					AddAttribute (node, "name", parm.Name);
-
-					if (!onull && HasKey (key, okeys)) {
-						parm.CompareTo (document, node, okeys[key]);
-						counters.AddPartialToPartial (parm.Counters);
-						okeys.Remove (key);
-						counters.Present++;
-					} else {
-						AddAttribute (node, "presence", "missing");
-						counters.Missing++;
-					}
-				}
-			}
-
-			if (!onull && okeys.Count != 0) {
-				foreach (XMLParameter value in okeys.Values) {
-					node = doc.CreateElement (Name, null);
-					AddAttribute (node, "name", value.Name);
-					AddAttribute (node, "presence", "extra");
-					group.AppendChild (node);
-					counters.Extra++;
-				}
-			}
-
-			if (group.HasChildNodes)
-				parent.AppendChild (group);
-		}
 	}
 
 	public class XMLProperties : XMLMember
 	{
 		public Hashtable nameToMethod = new Hashtable ();
-
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			Counters copy = counters;
-			counters = new Counters();
-
-			XMLProperties oprop = other as XMLProperties;
-			if (oprop != null) {
-				XMLMethods m = nameToMethod [name] as XMLMethods;
-				XMLMethods om = oprop.nameToMethod [name] as XMLMethods;
-				if (m != null || om != null) {
-					if (m == null)
-						m = new XMLMethods ();
-
-					m.CompareTo(document, parent, om);
-					counters.AddPartialToPartial(m.Counters);
-				}
-			}
-
-			base.CompareToInner (name, parent, other);
-			AddCountersAttributes(parent);
-
-			copy.AddPartialToPartial(counters);
-			counters = copy;
-		}
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
@@ -1571,32 +901,6 @@ using System.Xml;
 			}
 
 			base.LoadExtraData (name, node);
-		}
-
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			Counters copy = counters;
-			counters = new Counters ();
-
-			try {
-				base.CompareToInner (name, parent, other);
-				AddCountersAttributes (parent);
-				if (eventTypes == null)
-					return;
-
-				XMLEvents evt = (XMLEvents) other;
-				string etype = eventTypes [name] as string;
-				string oetype = null;
-				if (evt.eventTypes != null)
-					oetype = evt.eventTypes [name] as string;
-
-				if (etype != oetype)
-					AddWarning (parent, "Event type is {0} and should be {1}", oetype, etype);
-			} finally {
-				AddCountersAttributes (parent);
-				copy.AddPartialToPartial (counters);
-				counters = copy;
-			}
 		}
 
 		public override string ConvertToString (int att)
@@ -1694,61 +998,6 @@ using System.Xml;
 				return returnType + name;
 			}
 			return name;
-		}
-
-		protected override void CompareToInner (string name, XmlNode parent, XMLNameGroup other)
-		{
-			// create backup of actual counters
-			Counters copy = counters;
-			// initialize counters for current method
-			counters = new Counters();
-
-			try {
-				base.CompareToInner(name, parent, other);
-				XMLMethods methods = (XMLMethods) other;
-
-				SignatureFlags flags = signatureFlags != null &&
-					signatureFlags.ContainsKey (name) ?
-					(SignatureFlags) signatureFlags [name] :
-					SignatureFlags.None;
-				SignatureFlags oflags = methods.signatureFlags != null &&
-					methods.signatureFlags.ContainsKey (name) ?
-					(SignatureFlags) methods.signatureFlags [name] :
-					SignatureFlags.None;
-
-				if (flags!= oflags) {
-					if (flags == SignatureFlags.None)
-						AddWarning (parent, String.Format ("should not be {0}", oflags));
-					else if (oflags == SignatureFlags.None)
-						AddWarning (parent, String.Format ("should be {0}", flags));
-					else
-						AddWarning (parent, String.Format ("{0} and should be {1}", oflags, flags));
-				}
-
-				if (returnTypes != null) {
-					string rtype = returnTypes[name] as string;
-					string ortype = null;
-					if (methods.returnTypes != null)
-						ortype = methods.returnTypes[name] as string;
-
-					if (rtype != ortype)
-						AddWarning (parent, "Return type is {0} and should be {1}", ortype, rtype);
-				}
-
-				if (parameters != null) {
-					XMLParameters parms = parameters[name] as XMLParameters;
-					parms.CompareTo (document, parent, methods.parameters[name]);
-					counters.AddPartialToPartial (parms.Counters);
-				}
-			} finally {
-				// output counter attributes in result document
-				AddCountersAttributes(parent);
-
-				// add temporary counters to actual counters
-				copy.AddPartialToPartial(counters);
-				// restore backup of actual counters
-				counters = copy;
-			}
 		}
 
 		public override string ConvertToString (int att)

@@ -29,6 +29,11 @@ namespace GuiCompare {
 		List<CompNamed> GetAttributes ();
 	}
 
+	public interface ICompHasBaseType
+	{
+		string GetBaseType();
+	}
+	
 	public interface ICompTypeContainer
 	{
 		List<CompNamed> GetNestedClasses();
@@ -51,6 +56,7 @@ namespace GuiCompare {
 	public abstract class CompNamed {
 		public CompNamed (string name, CompType type)
 		{
+			this.DisplayName = null;
 			this.name = name;
 			this.type = type;
 			this.todos = new List<string>();
@@ -61,6 +67,11 @@ namespace GuiCompare {
 			get { return name; }
 		}
 
+		public string DisplayName {
+			set { displayName = value; }
+			get { return displayName == null ? name : displayName; }
+		}
+		
 		public CompType Type {
 			set { type = value; }
 			get { return type; }
@@ -68,7 +79,7 @@ namespace GuiCompare {
 
 		public ComparisonNode GetComparisonNode ()
 		{
-			ComparisonNode node = new ComparisonNode (type, name);
+			ComparisonNode node = new ComparisonNode (type, DisplayName);
 			node.todos.AddRange (todos);
 			return node;
 		}
@@ -78,6 +89,7 @@ namespace GuiCompare {
 			return String.Compare (x.Name, y.Name);
 		}
 
+		string displayName;
 		string name;
 		CompType type;
 		public List<string> todos;
@@ -106,7 +118,7 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetNestedDelegates ();
 	}
 
-	public abstract class CompInterface : CompNamed, ICompAttributeContainer, ICompMemberContainer {
+	public abstract class CompInterface : CompNamed, ICompAttributeContainer, ICompMemberContainer, ICompHasBaseType {
 		public CompInterface (string name)
 			: base (name, CompType.Interface)
 		{
@@ -120,9 +132,11 @@ namespace GuiCompare {
  		public abstract List<CompNamed> GetProperties();
  		public abstract List<CompNamed> GetFields();
  		public abstract List<CompNamed> GetEvents();
+		
+		public abstract string GetBaseType();
 	}
 
-	public abstract class CompEnum : CompNamed, ICompAttributeContainer, ICompMemberContainer {
+	public abstract class CompEnum : CompNamed, ICompAttributeContainer, ICompMemberContainer, ICompHasBaseType {
 		public CompEnum (string name)
 			: base (name, CompType.Enum)
 		{
@@ -137,17 +151,20 @@ namespace GuiCompare {
  		public abstract List<CompNamed> GetFields();
 
 		public abstract List<CompNamed> GetAttributes ();
+		
+		public abstract string GetBaseType();
 	}
 
-	public abstract class CompDelegate : CompNamed {
+	public abstract class CompDelegate : CompNamed, ICompHasBaseType {
 		public CompDelegate (string name)
 			: base (name, CompType.Delegate)
 		{
 		}
 
+		public abstract string GetBaseType();
 	}
 
-	public abstract class CompClass : CompNamed, ICompAttributeContainer, ICompTypeContainer, ICompMemberContainer {
+	public abstract class CompClass : CompNamed, ICompAttributeContainer, ICompTypeContainer, ICompMemberContainer, ICompHasBaseType {
 		public CompClass (string name, CompType type)
 			: base (name, type)
 		{
@@ -167,6 +184,8 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetNestedStructs ();
 		public abstract List<CompNamed> GetNestedEnums ();
 		public abstract List<CompNamed> GetNestedDelegates ();
+		
+		public abstract string GetBaseType();
 	}
 
 	public abstract class CompMember : CompNamed, ICompAttributeContainer {

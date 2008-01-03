@@ -96,6 +96,7 @@ namespace GuiCompare {
 			if (named is ICompMemberContainer) {
 				ICompMemberContainer container = (ICompMemberContainer)named;
 				rv += CountComparisons (container.GetInterfaces());
+				rv += CountComparisons (container.GetConstructors());
 				rv += CountComparisons (container.GetMethods());
 				rv += CountComparisons (container.GetProperties());
 				rv += CountComparisons (container.GetFields());
@@ -178,10 +179,20 @@ namespace GuiCompare {
 					ProgressOnGuiThread ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", master_list[m].Type, master_list[m].Name));
 
 					/* the names match, further investigation is required */
-//  					Console.WriteLine ("{0} {1} is in both, doing more comparisons", master_list[m].Type, master_list[m].Name);
 					ComparisonNode comparison = assembly_list[a].GetComparisonNode();
 					parent.AddChild (comparison);
 
+					// compare base types
+					if (master_list[m] is ICompHasBaseType && assembly_list[a] is ICompHasBaseType) {
+						if (((ICompHasBaseType)master_list[m]).GetBaseType() !=
+						    ((ICompHasBaseType)assembly_list[a]).GetBaseType()) {
+							comparison.AddError (String.Format ("reference type {0} has base class of {1}, assembly has base class of {2}",
+							                                    master_list[m].Name,
+							                                    ((ICompHasBaseType)master_list[m]).GetBaseType(),
+							                                    ((ICompHasBaseType)assembly_list[a]).GetBaseType()));
+						}
+					}
+					
 					// compare nested types
 					if (master_list[m] is ICompTypeContainer && assembly_list[a] is ICompTypeContainer) {
 						CompareNestedTypes (comparison,
@@ -310,26 +321,24 @@ namespace GuiCompare {
 						string assembly_type = ((CompMember)assembly_list[a]).GetMemberType();
 						
 						if (reference_type != assembly_type) {
-							comparison.status = ComparisonStatus.Error;
-							comparison.messages.Add (String.Format ("reference type is <i>{0}</i>, target type is <i>{1}</i>",
-							                                        reference_type, assembly_type));
+							comparison.AddError (String.Format ("reference type is <i>{0}</i>, target type is <i>{1}</i>",
+							                                    reference_type, assembly_type));
 						}
 						
 						string reference_access = ((CompMember)master_list[m]).GetMemberAccess();
 						string assembly_access = ((CompMember)assembly_list[a]).GetMemberAccess();
 						if (reference_access != assembly_access) {
-							comparison.status = ComparisonStatus.Error;
-							
 							// Try to give some hints to the developer, best we can do with
 							// strings.
 							string extra_msg = "";
 							if (reference_access.IndexOf ("Public, Final, Virtual, HideBySig") != -1 &&
-								assembly_access.IndexOf ("Public, HideBySig") != -1){
+							    assembly_access.IndexOf ("Public, HideBySig") != -1){
 								extra_msg = "\n\t\t<b>Hint:</b> reference uses an implicit interface implementation, target doesn't";
 							}
-								
-							comparison.messages.Add (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
-							                                        reference_access, assembly_access, extra_msg));
+
+							comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
+							                                    reference_access, assembly_access, extra_msg));
+							comparison.status = ComparisonStatus.Error;
 						}
 					}
 					

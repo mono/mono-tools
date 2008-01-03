@@ -45,7 +45,12 @@ namespace GuiCompare {
 			}
 		}
 
-
+		public void AddError (string msg)
+		{
+			status = ComparisonStatus.Error;
+			messages.Add (msg);
+		}
+		
 		public ComparisonStatus status;
 		public CompType type;
 
