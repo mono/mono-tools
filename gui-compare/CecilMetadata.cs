@@ -215,7 +215,12 @@ namespace GuiCompare {
 		{
 			List<CompNamed> rv = new List<CompNamed>();
 			foreach (CustomAttribute ca in provider.CustomAttributes) {
-				if (IsTODOAttribute (CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType)))
+				TypeDefinition resolved = CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType);
+				
+				if (resolved.IsNotPublic)
+					continue;
+				
+				if (IsTODOAttribute (resolved))
 					todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));
 				else
 					rv.Add (new CecilAttribute (ca));

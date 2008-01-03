@@ -1,5 +1,10 @@
 2008-01-03  Miguel de Icaza <miguel@novell.com> 
 
+	* CecilMetadata.cs: Ignore internal attributes applies to public classes;  
+	  Fixes the warnings in System.Drawing
+
+2008-01-03  Miguel de Icaza <miguel@novell.com> 
+
 	* MainWindow.cs: SetComparedefinition allow setting target/reference on a
 	  single call fro mthe CompareDefinition
 	* CustomCompare.cs: New dialog box for custom compares.
