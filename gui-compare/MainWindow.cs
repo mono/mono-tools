@@ -245,6 +245,8 @@ public partial class MainWindow: Gtk.Window
 	
 	public void StartCompare (WaitCallback done)
 	{		
+		summary.Visible = false;
+		
 		// clear our existing content
 		if (context != null)
 			context.StopCompare ();
@@ -441,7 +443,6 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)
 	{
-		summary.Visible = false;
 		StartCompare (delegate {});
 	}
 }

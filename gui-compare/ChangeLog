@@ -1,5 +1,11 @@
 2008-01-02  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: move the "summary.Visible = false" to StartCompare() so
+	  that regardless of how we start a new run, the summary goes away.
+	* CompareContext.cs: rename master -> reference and assembly -> target.
+
+2008-01-02  Chris Toshok <toshok@ximian.com> 
+
 	* Metadata.cs: make the class, interface, delegate, and enum classes
 	  implement ICompHasBaseType, and add DisplayName to CompNamed, which
 	  we'll use instead of Name to populate the tree.

@@ -74,8 +74,6 @@ namespace GuiCompare {
 			CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
 
 			FinishedOnGuiThread ();
-
-			//			DumpComparison (comparison, 0);
 		}
 
 		int total_comparisons;
@@ -115,258 +113,236 @@ namespace GuiCompare {
 			return rv;
 		}
 		
-		char StatusToChar (ComparisonStatus r)
-		{
-			switch (r) {
-			case ComparisonStatus.Missing: return '-';
-			case ComparisonStatus.Extra:   return '+';
-			case ComparisonStatus.Error:   return '!';
-			default:
-			case ComparisonStatus.None:    return ' ';
-			}
-		}
-
-
-		void DumpComparison (ComparisonNode c, int indent)
-		{
-			for (int i = 0; i < indent; i ++)
-				Console.Write (" ");
-			Console.WriteLine ("{0} {1} {2}", StatusToChar (c.status), c.type, c.name);
-			foreach (ComparisonNode child in c.children) {
-				DumpComparison (child, indent + 2);
-			}
-		}
-
-		void CompareNestedTypes (ComparisonNode parent, ICompTypeContainer master_container, ICompTypeContainer assembly_container)
+		void CompareNestedTypes (ComparisonNode parent, ICompTypeContainer reference_container, ICompTypeContainer target_container)
 		{
 			CompareTypeLists (parent,
-			                  master_container.GetNestedInterfaces(), assembly_container.GetNestedInterfaces());
+			                  reference_container.GetNestedInterfaces(), target_container.GetNestedInterfaces());
 			CompareTypeLists (parent,
-			                  master_container.GetNestedClasses(), assembly_container.GetNestedClasses());
+			                  reference_container.GetNestedClasses(), target_container.GetNestedClasses());
 			CompareTypeLists (parent,
-			                  master_container.GetNestedStructs(), assembly_container.GetNestedStructs());
+			                  reference_container.GetNestedStructs(), target_container.GetNestedStructs());
 			CompareTypeLists (parent,
-			                  master_container.GetNestedEnums(), assembly_container.GetNestedEnums());
+			                  reference_container.GetNestedEnums(), target_container.GetNestedEnums());
 			CompareTypeLists (parent,
-			                  master_container.GetNestedDelegates(), assembly_container.GetNestedDelegates());
+			                  reference_container.GetNestedDelegates(), target_container.GetNestedDelegates());
 		}
 
 		void CompareTypeLists (ComparisonNode parent,
-		                       List<CompNamed> master_list,
-		                       List<CompNamed> assembly_list)
+		                       List<CompNamed> reference_list,
+		                       List<CompNamed> target_list)
 		{
 			int m = 0, a = 0;
 
-			master_list.Sort (CompNamed.Compare);
-			assembly_list.Sort (CompNamed.Compare);
+			reference_list.Sort (CompNamed.Compare);
+			target_list.Sort (CompNamed.Compare);
 
-			while (m < master_list.Count || a < assembly_list.Count) {
-				if (m == master_list.Count) {
-					AddExtra (parent, assembly_list[a]);
+			while (m < reference_list.Count || a < target_list.Count) {
+				if (m == reference_list.Count) {
+					AddExtra (parent, target_list[a]);
 					a++;
 					continue;
 				}
-				else if (a == assembly_list.Count) {
-					AddMissing (parent, master_list[m]);
+				else if (a == target_list.Count) {
+					AddMissing (parent, reference_list[m]);
 					m++;
 					continue;
 				}
 
-				int c = String.Compare (master_list[m].Name, assembly_list[a].Name);
+				int c = String.Compare (reference_list[m].Name, target_list[a].Name);
 				comparisons_performed ++;
 				
 				if (c == 0) {
-					ProgressOnGuiThread ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", master_list[m].Type, master_list[m].Name));
+					ProgressOnGuiThread ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", reference_list[m].Type, reference_list[m].Name));
 
 					/* the names match, further investigation is required */
-					ComparisonNode comparison = assembly_list[a].GetComparisonNode();
+					ComparisonNode comparison = target_list[a].GetComparisonNode();
 					parent.AddChild (comparison);
 
 					// compare base types
-					if (master_list[m] is ICompHasBaseType && assembly_list[a] is ICompHasBaseType) {
-						if (((ICompHasBaseType)master_list[m]).GetBaseType() !=
-						    ((ICompHasBaseType)assembly_list[a]).GetBaseType()) {
-							comparison.AddError (String.Format ("reference type {0} has base class of {1}, assembly has base class of {2}",
-							                                    master_list[m].Name,
-							                                    ((ICompHasBaseType)master_list[m]).GetBaseType(),
-							                                    ((ICompHasBaseType)assembly_list[a]).GetBaseType()));
+					if (reference_list[m] is ICompHasBaseType && target_list[a] is ICompHasBaseType) {
+						if (((ICompHasBaseType)reference_list[m]).GetBaseType() !=
+						    ((ICompHasBaseType)target_list[a]).GetBaseType()) {
+							comparison.AddError (String.Format ("reference type {0} has base class of {1}, target has base class of {2}",
+							                                    reference_list[m].Name,
+							                                    ((ICompHasBaseType)reference_list[m]).GetBaseType(),
+							                                    ((ICompHasBaseType)target_list[a]).GetBaseType()));
 						}
 					}
 					
 					// compare nested types
-					if (master_list[m] is ICompTypeContainer && assembly_list[a] is ICompTypeContainer) {
+					if (reference_list[m] is ICompTypeContainer && target_list[a] is ICompTypeContainer) {
 						CompareNestedTypes (comparison,
-						                    (ICompTypeContainer)master_list[m],
-						                    (ICompTypeContainer)assembly_list[a]);
+						                    (ICompTypeContainer)reference_list[m],
+						                    (ICompTypeContainer)target_list[a]);
 					}
-					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
+					if (reference_list[m] is ICompMemberContainer && target_list[a] is ICompMemberContainer) {
 						CompareMembers (comparison,
-						                (ICompMemberContainer)master_list[m],
-						                (ICompMemberContainer)assembly_list[a]);
+						                (ICompMemberContainer)reference_list[m],
+						                (ICompMemberContainer)target_list[a]);
 					}
 
 					m++;
 					a++;
 				}
 				else if (c < 0) {
-					/* master name is before assembly name, master name is missing from assembly */
-					AddMissing (parent, master_list[m]);
+					/* reference name is before target name, reference name is missing from target */
+					AddMissing (parent, reference_list[m]);
 					m++;
 				}
 				else {
-					/* master name is after assembly name, assembly name is extra */
-					AddExtra (parent, assembly_list[a]);
+					/* reference name is after target name, target name is extra */
+					AddExtra (parent, target_list[a]);
 					a++;
 				}
 			}
 		}
 
 		void CompareAttributes (ComparisonNode parent,
-		                        ICompAttributeContainer master_container, ICompAttributeContainer assembly_container)
+		                        ICompAttributeContainer reference_container, ICompAttributeContainer target_container)
 		{
 			int m = 0, a = 0;
 			
-			List<CompNamed> master_attrs = master_container.GetAttributes ();
-			List<CompNamed> assembly_attrs = assembly_container.GetAttributes ();
+			List<CompNamed> reference_attrs = reference_container.GetAttributes ();
+			List<CompNamed> target_attrs = target_container.GetAttributes ();
 			
-			master_attrs.Sort (CompNamed.Compare);
-			assembly_attrs.Sort (CompNamed.Compare);
+			reference_attrs.Sort (CompNamed.Compare);
+			target_attrs.Sort (CompNamed.Compare);
 			
-			while (m < master_attrs.Count || a < assembly_attrs.Count) {
-				if (m == master_attrs.Count) {
-					AddExtra (parent, assembly_attrs[a]);
+			while (m < reference_attrs.Count || a < target_attrs.Count) {
+				if (m == reference_attrs.Count) {
+					AddExtra (parent, target_attrs[a]);
 					a++;
 					continue;
 				}
-				else if (a == assembly_attrs.Count) {
-					AddMissing (parent, master_attrs[m]);
+				else if (a == target_attrs.Count) {
+					AddMissing (parent, reference_attrs[m]);
 					m++;
 					continue;
 				}
 
-				int c = String.Compare (master_attrs[m].Name, assembly_attrs[a].Name);
+				int c = String.Compare (reference_attrs[m].Name, target_attrs[a].Name);
 				comparisons_performed ++;
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-// 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
-					ComparisonNode comparison = assembly_attrs[a].GetComparisonNode();
+// 					Console.WriteLine ("method {0} is in both, doing more comparisons", reference_list[m].Name);
+					ComparisonNode comparison = target_attrs[a].GetComparisonNode();
 					parent.AddChild (comparison);
-					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
+					//CompareParameters (comparison, reference_list[m], target_namespace [target_list[a]]);
 					m++;
 					a++;
 				}
 				else if (c < 0) {
-					/* master name is before assembly name, master name is missing from assembly */
-					AddMissing (parent, master_attrs[m]);
+					/* reference name is before target name, reference name is missing from target */
+					AddMissing (parent, reference_attrs[m]);
 					m++;
 				}
 				else {
-					/* master name is after assembly name, assembly name is extra */
-					AddExtra (parent, assembly_attrs[a]);
+					/* reference name is after target name, target name is extra */
+					AddExtra (parent, target_attrs[a]);
 					a++;
 				}
 			}
 		}
 		
 		void CompareMembers (ComparisonNode parent,
-		                     ICompMemberContainer master_container, ICompMemberContainer assembly_container)
+		                     ICompMemberContainer reference_container, ICompMemberContainer target_container)
 		{
 			CompareMemberLists (parent,
-			                    master_container.GetInterfaces(), assembly_container.GetInterfaces());
+			                    reference_container.GetInterfaces(), target_container.GetInterfaces());
 			CompareMemberLists (parent,
-			                    master_container.GetConstructors(), assembly_container.GetConstructors());
+			                    reference_container.GetConstructors(), target_container.GetConstructors());
 			CompareMemberLists (parent,
-			                    master_container.GetMethods(), assembly_container.GetMethods());
+			                    reference_container.GetMethods(), target_container.GetMethods());
 			CompareMemberLists (parent,
-			                    master_container.GetProperties(), assembly_container.GetProperties());
+			                    reference_container.GetProperties(), target_container.GetProperties());
 			CompareMemberLists (parent,
-			                    master_container.GetFields(), assembly_container.GetFields());
+			                    reference_container.GetFields(), target_container.GetFields());
 			CompareMemberLists (parent,
-			                    master_container.GetEvents(), assembly_container.GetEvents());
+			                    reference_container.GetEvents(), target_container.GetEvents());
 		}
 
 		void CompareMemberLists (ComparisonNode parent,
-		                         List<CompNamed> master_list,
-		                         List<CompNamed> assembly_list)
+		                         List<CompNamed> reference_list,
+		                         List<CompNamed> target_list)
 		{
 			int m = 0, a = 0;
 
-			master_list.Sort (CompNamed.Compare);
-			assembly_list.Sort (CompNamed.Compare);
+			reference_list.Sort (CompNamed.Compare);
+			target_list.Sort (CompNamed.Compare);
 
-			while (m < master_list.Count || a < assembly_list.Count) {
-				if (m == master_list.Count) {
-					AddExtra (parent, assembly_list[a]);
+			while (m < reference_list.Count || a < target_list.Count) {
+				if (m == reference_list.Count) {
+					AddExtra (parent, target_list[a]);
 					a++;
 					continue;
 				}
-				else if (a == assembly_list.Count) {
-					AddMissing (parent, master_list[m]);
+				else if (a == target_list.Count) {
+					AddMissing (parent, reference_list[m]);
 					m++;
 					continue;
 				}
 
-				int c = String.Compare (master_list[m].Name, assembly_list[a].Name);
+				int c = String.Compare (reference_list[m].Name, target_list[a].Name);
 				comparisons_performed ++;
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-// 					Console.WriteLine ("method {0} is in both, doing more comparisons", master_list[m].Name);
-					ComparisonNode comparison = assembly_list[a].GetComparisonNode();
+// 					Console.WriteLine ("method {0} is in both, doing more comparisons", reference_list[m].Name);
+					ComparisonNode comparison = target_list[a].GetComparisonNode();
 					parent.AddChild (comparison);
 
-					if (master_list[m] is CompMember && assembly_list[a] is CompMember) {
-						string reference_type = ((CompMember)master_list[m]).GetMemberType();
-						string assembly_type = ((CompMember)assembly_list[a]).GetMemberType();
+					if (reference_list[m] is CompMember && target_list[a] is CompMember) {
+						string reference_type = ((CompMember)reference_list[m]).GetMemberType();
+						string target_type = ((CompMember)target_list[a]).GetMemberType();
 						
-						if (reference_type != assembly_type) {
+						if (reference_type != target_type) {
 							comparison.AddError (String.Format ("reference type is <i>{0}</i>, target type is <i>{1}</i>",
-							                                    reference_type, assembly_type));
+							                                    reference_type, target_type));
 						}
 						
-						string reference_access = ((CompMember)master_list[m]).GetMemberAccess();
-						string assembly_access = ((CompMember)assembly_list[a]).GetMemberAccess();
-						if (reference_access != assembly_access) {
+						string reference_access = ((CompMember)reference_list[m]).GetMemberAccess();
+						string target_access = ((CompMember)target_list[a]).GetMemberAccess();
+						if (reference_access != target_access) {
 							// Try to give some hints to the developer, best we can do with
 							// strings.
 							string extra_msg = "";
 							if (reference_access.IndexOf ("Public, Final, Virtual, HideBySig") != -1 &&
-							    assembly_access.IndexOf ("Public, HideBySig") != -1){
+							    target_access.IndexOf ("Public, HideBySig") != -1){
 								extra_msg = "\n\t\t<b>Hint:</b> reference uses an implicit interface implementation, target doesn't";
 							}
 
 							comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
-							                                    reference_access, assembly_access, extra_msg));
+							                                    reference_access, target_access, extra_msg));
 							comparison.status = ComparisonStatus.Error;
 						}
 					}
 					
-					if (master_list[m] is ICompAttributeContainer && assembly_list[a] is ICompAttributeContainer) {
-						//Console.WriteLine ("Comparing attributes for {0}", master_list[m].Name);
+					if (reference_list[m] is ICompAttributeContainer && target_list[a] is ICompAttributeContainer) {
+						//Console.WriteLine ("Comparing attributes for {0}", reference_list[m].Name);
 						CompareAttributes (comparison,
-						                   (ICompAttributeContainer)master_list[m],
-						                   (ICompAttributeContainer)assembly_list[a]);
+						                   (ICompAttributeContainer)reference_list[m],
+						                   (ICompAttributeContainer)target_list[a]);
 					}
 					
-					if (master_list[m] is ICompMemberContainer && assembly_list[a] is ICompMemberContainer) {
+					if (reference_list[m] is ICompMemberContainer && target_list[a] is ICompMemberContainer) {
 						CompareMembers (comparison,
-						                (ICompMemberContainer)master_list[m],
-						                (ICompMemberContainer)assembly_list[a]);
+						                (ICompMemberContainer)reference_list[m],
+						                (ICompMemberContainer)target_list[a]);
 					}
 
-					//CompareParameters (comparison, master_list[m], assembly_namespace [assembly_list[a]]);
+					//CompareParameters (comparison, reference_list[m], target_namespace [target_list[a]]);
 					m++;
 					a++;
 				}
 				else if (c < 0) {
-					/* master name is before assembly name, master name is missing from assembly */
-					AddMissing (parent, master_list[m]);
+					/* reference name is before target name, reference name is missing from target */
+					AddMissing (parent, reference_list[m]);
 					m++;
 				}
 				else {
-					/* master name is after assembly name, assembly name is extra */
-					AddExtra (parent, assembly_list[a]);
+					/* reference name is after target name, target name is extra */
+					AddExtra (parent, target_list[a]);
 					a++;
 				}
 			}
