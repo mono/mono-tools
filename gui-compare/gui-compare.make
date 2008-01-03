@@ -63,7 +63,9 @@ FILES = \
 	ProviderSelector.cs \
 	gtk-gui/guicompare.ProviderSelector.cs \
 	AssemblyResolver.cs \
-	Config.cs 
+	Config.cs \
+	CustomCompare.cs \
+	gtk-gui/GuiCompare.CustomCompare.cs 
 
 DATA_FILES = 
 
