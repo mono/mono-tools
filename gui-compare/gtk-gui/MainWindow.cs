@@ -124,7 +124,7 @@ public partial class MainWindow {
         this.vbox1.Name = "vbox1";
         this.vbox1.Spacing = 6;
         // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menu action='RecentComparisons'/><separator/><menuitem action='Refresh'/><separator/><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/><separator/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
+        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menu action='RecentComparisons'/><separator/><menuitem action='Refresh'/><separator/><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(w1.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.vbox1.Add(this.menubar1);
@@ -213,6 +213,7 @@ public partial class MainWindow {
         this.Show();
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.quit.Activated += new System.EventHandler(this.OnQuitActivated);
+        this.Custom.Activated += new System.EventHandler(this.OnCustomActivated);
         this.ShowMissing.Toggled += new System.EventHandler(this.OnShowMissingToggled);
         this.ShowExtra.Toggled += new System.EventHandler(this.OnShowExtraToggled);
         this.ShowPresent.Toggled += new System.EventHandler(this.OnShowPresentToggled);

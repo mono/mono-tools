@@ -243,6 +243,19 @@ public partial class MainWindow: Gtk.Window
 		reference_loader = reference;
 	}
 	
+	public void SetCompareDefinition (CompareDefinition cd)
+	{
+		if (cd.ReferenceIsInfo)
+			SetReference (delegate { return new MasterAssembly (cd.ReferencePath); });
+		else
+			SetReference (delegate { return new CecilAssembly (cd.ReferencePath); });
+		
+		if (cd.TargetIsInfo)
+			SetTarget (delegate { return new MasterAssembly (cd.TargetPath); });
+		else
+			SetTarget (delegate { return new CecilAssembly (cd.TargetPath); });
+	}
+	
 	public void StartCompare (WaitCallback done)
 	{		
 		summary.Visible = false;
@@ -444,5 +457,27 @@ public partial class MainWindow: Gtk.Window
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)
 	{
 		StartCompare (delegate {});
+	}
+
+	protected virtual void OnCustomActivated (object sender, System.EventArgs e)
+	{
+		CustomCompare cc = new CustomCompare ();
+		ResponseType code = (ResponseType) cc.Run ();
+		
+		if (code == ResponseType.None)
+			return;
+		
+		if (code == ResponseType.Ok){
+			CompareDefinition cd = cc.GetCompare ();
+			if (cd != null){
+				SetCompareDefinition (cd);
+				StartCompare (delegate { Title = cd.ToString ();});
+				Config.AddRecent (cd);
+				Config.Save ();
+				info_manager.PopulateRecent ();
+			}
+		}
+				
+		cc.Destroy ();
 	}
 }

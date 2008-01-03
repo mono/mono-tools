@@ -34,6 +34,7 @@ namespace GuiCompare
 		public string ReferencePath = "";
 		public bool TargetIsInfo = true;
 		public string TargetPath = "";
+		public bool IsCustom = false;
 		
 		public CompareDefinition ()
 		{
@@ -45,6 +46,13 @@ namespace GuiCompare
 			ReferencePath = rpath;
 			TargetIsInfo = tmaster;
 			TargetPath = tpath;
+		}
+		
+		// Returns a suitable title
+		public override string ToString ()
+		{
+			return String.Format ("{2}{0} -> {1}", Path.GetFileName (ReferencePath), Path.GetFileName (TargetPath),
+			                      IsCustom ? "Custom: ": "");
 		}
 	}
 	

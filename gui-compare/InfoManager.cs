@@ -399,22 +399,12 @@ namespace GuiCompare
 					CompareDefinition cd = cdd;
 					if (cd == null)
 						throw new Exception ("FGGG");
-					string title = String.Format ("{0} -> {1}",
-					                              Path.GetFileName (cd.ReferencePath),
-					                              Path.GetFileName (cd.TargetPath));
-					MenuItem c = new MenuItem (title);
+				
+					MenuItem c = new MenuItem (cd.ToString ());
 					c.Activated += delegate {
-						if (cd.ReferenceIsInfo)
-							main.SetReference (delegate { return new MasterAssembly (cd.ReferencePath); });
-						else
-							main.SetReference (delegate { return new CecilAssembly (cd.ReferencePath); });
-						
-						if (cd.TargetIsInfo)
-							main.SetTarget (delegate { return new MasterAssembly (cd.TargetPath); });
-						else
-							main.SetTarget (delegate { return new CecilAssembly (cd.TargetPath); });
-						main.StartCompare (delegate {
-							main.Title = title; });
+						main.SetCompareDefinition (cd);
+
+						main.StartCompare (delegate { main.Title = cd.ToString ();});
 						main.Config.MoveToTop (cd);
 						PopulateRecent ();
 						main.Config.Save ();
@@ -475,6 +465,10 @@ namespace GuiCompare
 				Console.WriteLine ("Unable to found Compare submenu");
 				return;
 			}
+			
+			MenuItem separator = new SeparatorMenuItem ();
+			separator.ShowAll ();
+			sub.Add (separator);
 			
 			Populate (sub, "API 1.1", "1.0", "1.0", api_1_1);
 			Populate (sub, "API 2.0", "2.0", "2.0", api_2_0);

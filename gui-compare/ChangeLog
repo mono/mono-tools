@@ -1,3 +1,14 @@
+2008-01-03  Miguel de Icaza <miguel@novell.com> 
+
+	* MainWindow.cs: SetComparedefinition allow setting target/reference on a
+	  single call fro mthe CompareDefinition
+	* CustomCompare.cs: New dialog box for custom compares.
+	* InfoManager.cs: Refactor code, move body to MainWindow
+	* ProviderSelector.cs: Spice this up.
+	* gtk-gui/gui.stetic: Widget to pick XML files or assemblies.
+	* Config.cs: Add new ToString override that formats the comparison for
+	  consistent titles
+
 2008-01-02  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: move the "summary.Visible = false" to StartCompare() so
