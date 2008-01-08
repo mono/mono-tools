@@ -1078,7 +1078,7 @@ ExtLoop:
 		State state;
 		ThreadNotify tn;
 		WebClientAsyncResult war;
-		ContributionsSoap d;
+		Contributions d;
 		int serial;
 		
 		public static void Run (Browser browser)
@@ -1091,7 +1091,7 @@ ExtLoop:
 			tn = new ThreadNotify (new ReadyEvent (Update));
 			Glade.XML ui = new Glade.XML (null, "browser.glade", "upload_dialog", null);
 			ui.Autoconnect (this);
-			d = new ContributionsSoap ();
+			d = new Contributions ();
 			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
 				d.Url = "http://www.go-mono.com/docs/server.asmx";
 			
@@ -1228,7 +1228,7 @@ ExtLoop:
 		[Glade.Widget] Entry entry_password;
 		
 		Browser parent;
-		ContributionsSoap d;
+		Contributions d;
 		WebClientAsyncResult war;
 		ThreadNotify tn;
 		int new_page;
@@ -1249,7 +1249,7 @@ ExtLoop:
 			parent = browser;
 			window_config_wizard.TransientFor = browser.window1;
 
-			d = new ContributionsSoap ();
+			d = new Contributions ();
 			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
 				d.Url = "http://www.go-mono.com/docs/server.asmx";
 			notebook.Page = 8;
@@ -1446,7 +1446,7 @@ ExtLoop:
 		
 		ThreadNotify tn;
 		WebClientAsyncResult war;
-		ContributionsSoap d;
+		Contributions d;
 		
 		public static void GetStatus (string email, string key)
 		{
@@ -1457,7 +1457,7 @@ ExtLoop:
 		{
 			tn = new ThreadNotify (new ReadyEvent (Update));
 			
-			d = new ContributionsSoap ();
+			d = new Contributions ();
 			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
 				d.Url = "http://www.go-mono.com/docs/server.asmx";
 				

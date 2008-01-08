@@ -49,7 +49,7 @@ class Admin {
 	
 	HTML html, html_review;
 	
-	ContributionsSoap d;
+	Contributions d;
 	string login = SettingsHandler.Settings.Email;
 	string pass = SettingsHandler.Settings.Key;
 	PendingChange [] changes;
@@ -62,7 +62,7 @@ class Admin {
 		contextid = statusbar.GetContextId ("");
 		
 		main_window.DeleteEvent += new DeleteEventHandler (OnDeleteEvent);
-		d = new ContributionsSoap ();
+		d = new Contributions ();
 		if (real_server)
 			d.Url = "http://www.go-mono.com/docs/server.asmx";
 		
