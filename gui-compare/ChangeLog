@@ -1,3 +1,15 @@
+2008-01-09  Chris Toshok <toshok@ximian.com> 
+
+	* Metadata.cs: add abstract bool ThrowsNotImplementedException method to
+	  CompMethod.
+	* MasterMetadata.cs: always return false from ThrowsNotImplementedException,
+	  since we have no idea (but can assume it doesn't, since most of our
+	  masterinfos are generated from MS source).
+	* CecilMetadata.cs: Copy MoMA's implementation of
+	  ThrowsNotImplementedException
+	* CompareContext.cs: for two methods, check to see if the target throws
+	  NotImplementedException when the reference doesn't.
+
 2008-01-03  Miguel de Icaza <miguel@novell.com> 
 
 	* CecilMetadata.cs: Ignore internal attributes applies to public classes;  

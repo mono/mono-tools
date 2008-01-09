@@ -5,6 +5,7 @@ using System.Threading;
 using System.Xml;
 using System.IO;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Gtk;
 
 namespace GuiCompare {
@@ -655,6 +656,17 @@ namespace GuiCompare {
 				return null;
 			
 			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName);
+		}
+
+		public override bool ThrowsNotImplementedException ()
+		{
+                        if (method_def.Body != null)
+                                foreach (Instruction i in method_def.Body.Instructions)
+                                        if (i.OpCode == OpCodes.Throw)
+                                                if (i.Previous.Operand != null && i.Previous.Operand.ToString ().StartsWith ("System.Void System.NotImplementedException"))
+                                                        return true;
+
+                        return false;
 		}
 
 		const MethodAttributes masterInfoMethodMask = (MethodAttributes.MemberAccessMask |

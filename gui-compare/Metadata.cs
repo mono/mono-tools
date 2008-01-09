@@ -205,6 +205,8 @@ namespace GuiCompare {
 			: base (name, CompType.Method)
 		{
 		}
+
+		public abstract bool ThrowsNotImplementedException ();
 	}
 
 	public abstract class CompProperty : CompMember, ICompMemberContainer {

@@ -596,6 +596,11 @@ namespace GuiCompare {
 		{
 			return returnType;
 		}
+
+		public override bool ThrowsNotImplementedException ()
+		{
+			return false;
+		}
 		
 		public override string GetMemberAccess()
 		{

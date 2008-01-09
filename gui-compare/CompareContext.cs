@@ -317,7 +317,16 @@ namespace GuiCompare {
 							comparison.status = ComparisonStatus.Error;
 						}
 					}
-					
+
+					if (reference_list[m] is CompMethod && target_list[a] is CompMethod) {
+						if (((CompMethod)target_list[a]).ThrowsNotImplementedException ()
+						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
+							
+							comparison.AddError ("target method throws NotImplementedException");
+							comparison.status = ComparisonStatus.Error;
+						}
+					}
+
 					if (reference_list[m] is ICompAttributeContainer && target_list[a] is ICompAttributeContainer) {
 						//Console.WriteLine ("Comparing attributes for {0}", reference_list[m].Name);
 						CompareAttributes (comparison,
