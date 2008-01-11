@@ -1,3 +1,9 @@
+2008-01-11  Chris Toshok <toshok@ximian.com> 
+
+	* MasterMetadata.cs: deal with a null masterinfo.
+	* Masterinfo.cs: deal with empty masterinfo files (with no assemblies)
+	  correctly.
+
 2008-01-03  Miguel de Icaza  <miguel@novell.com>
 
 	* InfoManager.cs: For people that are abusing XDG_DATA_HOME,

@@ -143,8 +143,10 @@ namespace GuiCompare {
 		public override List<CompNamed> GetNamespaces ()
 		{
 			List<CompNamed> namespaces = new List<CompNamed>();
-			foreach (XMLNamespace ns in masterinfo.namespaces)
-				namespaces.Add (new MasterNamespace (ns));
+			if (masterinfo != null && masterinfo.namespaces != null) {
+				foreach (XMLNamespace ns in masterinfo.namespaces)
+					namespaces.Add (new MasterNamespace (ns));
+			}
 
 			return namespaces;
 		}

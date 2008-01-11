@@ -246,15 +246,18 @@ using System.Xml;
 			doc.Load (File.OpenRead (file));
 
 			XmlNode node = doc.SelectSingleNode ("/assemblies/assembly");
-			XMLAssembly result = new XMLAssembly ();
-			try {
-				result.LoadData (node);
-			} catch (Exception e) {
-				Console.Error.WriteLine ("Error loading {0}: {1}\n{2}", file, e.Message, e);
-				Environment.Exit (1);
+			if (node != null) {
+				XMLAssembly result = new XMLAssembly ();
+				try {
+					result.LoadData (node);
+				} catch (Exception e) {
+					Console.Error.WriteLine ("Error loading {0}: {1}\n{2}", file, e.Message, e);
+					return null;
+				}
+				return result;
 			}
 
-			return result;
+			return null;
 		}
 
 		public override void LoadData (XmlNode node)
