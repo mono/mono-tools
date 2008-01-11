@@ -1,3 +1,8 @@
+2008-01-03  Miguel de Icaza  <miguel@novell.com>
+
+	* InfoManager.cs: For people that are abusing XDG_DATA_HOME,
+	ignore their setting.
+
 2008-01-09  Chris Toshok <toshok@ximian.com> 
 
 	* Metadata.cs: add abstract bool ThrowsNotImplementedException method to

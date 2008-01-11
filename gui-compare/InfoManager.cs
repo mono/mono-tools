@@ -140,8 +140,25 @@ namespace GuiCompare
 		
 		string [] api_sl11 = {
 			"mscorlib",
+			"agclr.dll",
+			"Microsoft.VisualBasic",
 			"System",
 			"System.Core",
+			"System.Net",
+			"System.SilverLight",
+			"System.Xml.Core",
+		};
+
+		string [] api_sl2_alpha_alpha = {
+			"mscorlib",
+			"agclr",
+			"Microsoft.VisualBasic",
+			"System",
+			"System.Core",
+			"System.Net",
+			"System.Runtime.Serialization",
+			"System.ServiceModel",
+			"System.SilverLight",
 			"System.Xml.Core",
 		};
 		
@@ -224,7 +241,7 @@ namespace GuiCompare
 		{
 			
 			string xdg_data_home = Environment.GetEnvironmentVariable ("XDG_DATA_HOME");
-			if (xdg_data_home == null || xdg_data_home == String.Empty){
+			if (xdg_data_home == null || xdg_data_home == String.Empty || xdg_data_home.IndexOf (':') != -1){
 				xdg_data_home = Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData);
 			}
 			
@@ -270,6 +287,10 @@ namespace GuiCompare
 				
 			case "2.1":
 				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl11a-refresh.tar.gz");
+				break;
+
+			case "SL2":
+				u = new Uri ("http://build.mono.lab.novell.com/~wberrier/tmp/masterinfos/masterinfos-sl2-alpha-dec2007.tar.gz");
 				break;
 				
 			case "3.5":
@@ -477,6 +498,7 @@ namespace GuiCompare
 			Populate (sub, "API 3.5 (WxF SP1)", "3.0", "3.5", api_3_5_wxf);
 			
 			Populate (sub, "Silverlight 1.1", "2.1", "2.1", api_sl11);
+			Populate (sub, "Silverlight 2.0", "2.1", "SL2", api_sl2_alpha_alpha);
 		}
 	}
 }
