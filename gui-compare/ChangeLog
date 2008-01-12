@@ -1,5 +1,9 @@
 2008-01-11  Chris Toshok <toshok@ximian.com> 
 
+	* CecilMetadata.cs: Fix explicit interface definitions of events.
+
+2008-01-11  Chris Toshok <toshok@ximian.com> 
+
 	* InfoManager.cs: add support for IfModifiedSince to the download logic, so
 	  we'll redownload a masterinfo .tar.gz file automatically if there's a
 	  newer one on the server.

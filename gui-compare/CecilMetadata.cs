@@ -142,8 +142,13 @@ namespace GuiCompare {
 			}
 			if (event_list != null) {
 				foreach (EventDefinition ed in fromDef.Events) {
-					if (/*ed.IsPrivate || ed.IsAssembly*/true)
-						event_list.Add (new CecilEvent (ed));
+					if (ed.IsSpecialName)
+						continue;
+
+					if (ed.AddMethod == null || ed.AddMethod.IsPrivate || ed.AddMethod.IsAssembly)
+						continue;
+					
+					event_list.Add (new CecilEvent (ed));
 				}
 			}
 		}
