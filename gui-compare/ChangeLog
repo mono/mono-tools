@@ -1,5 +1,11 @@
 2008-01-11  Chris Toshok <toshok@ximian.com> 
 
+	* InfoManager.cs: add support for IfModifiedSince to the download logic, so
+	  we'll redownload a masterinfo .tar.gz file automatically if there's a
+	  newer one on the server.
+
+2008-01-11  Chris Toshok <toshok@ximian.com> 
+
 	* MasterMetadata.cs: deal with a null masterinfo.
 	* Masterinfo.cs: deal with empty masterinfo files (with no assemblies)
 	  correctly.

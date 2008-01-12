@@ -261,17 +261,11 @@ namespace GuiCompare
 			if (!Directory.Exists (pdir)){
 				Directory.CreateDirectory (pdir);
 			}
-			Console.WriteLine (pdir);
+
+			string target = Path.Combine (infos, "masterinfos-" + prof + ".tar.gz");
 			string masterinfo = Path.Combine (pdir, assemblyname) + ".xml";
-			if (File.Exists (masterinfo)){
-				done (masterinfo);
-				return;
-			}
-			
-			Console.WriteLine ("Starting download...");
-			WebClient w = new WebClient ();
 			Uri u = null;
-			
+
 			switch (prof){
 			case "1.0":
 				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-1.1.tar.gz");
@@ -299,40 +293,81 @@ namespace GuiCompare
 				
 			default:
 				main.Status = "Profile is unknown";
-				break;
+				return;
 			}
-			string target = Path.Combine (infos, "masterinfos-" + prof + ".tar.gz");
-			
-			w.DownloadFileCompleted += delegate {
-				string msg;
-				
-				if (File.Exists (target)){
-					ProcessStartInfo pi = new ProcessStartInfo();
-					pi.WorkingDirectory = pdir;
-					pi.UseShellExecute = true;
-					pi.FileName = "tar xzf " + target + " --strip-components=1";
-					Process p = Process.Start (pi);
-					p.WaitForExit ();
-					msg = "Download complete";
-				} else {
-					msg = "Download failed";
-					done = null;
+
+			//check to see if the online news file has been modified since it was last downloaded
+			Thread async_thread = new Thread (delegate (object state) {
+				HttpWebRequest request = (HttpWebRequest) WebRequest.Create (u);
+				FileInfo targetInfo = new FileInfo (target);
+				if (targetInfo.Exists)
+					request.IfModifiedSince = targetInfo.CreationTime;
+
+				try {
+					HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+					if (response.StatusCode == HttpStatusCode.OK) {
+						Console.WriteLine ("downloading remote file");
+						Stream responseStream = response.GetResponseStream ();
+						using (FileStream fs = File.Create (target)) {
+							int position = 0;
+							int readBytes = -1;
+							byte[] buffer = new byte[2048];
+							while (readBytes != 0) {
+								readBytes = responseStream.Read (buffer, position, 2048);
+								position += readBytes;
+								fs.Write (buffer, 0, readBytes);
+								if (response.ContentLength > 0) {
+									Application.Invoke (delegate {
+										main.Progress = (double)position / response.ContentLength;
+									});
+								}
+							}
+							
+							ProcessStartInfo pi = new ProcessStartInfo();
+							pi.WorkingDirectory = pdir;
+							pi.UseShellExecute = true;
+							pi.FileName = "tar xzf " + target + " --strip-components=1";
+							Process p = Process.Start (pi);
+							p.WaitForExit ();
+							
+							Application.Invoke (delegate {
+								main.Progress = 0;
+								main.Status = "Download complete";
+								if (done != null)
+									done (masterinfo);
+							});
+						}
+					}
 				}
-				
-				Application.Invoke (delegate {
-					main.Progress = 0;
-					main.Status = msg;
-					if (done != null)
-						done (masterinfo);
-				});				
-			};
-			w.DownloadProgressChanged += delegate (object sender, DownloadProgressChangedEventArgs args) {
-				Application.Invoke (delegate {
-					main.Progress = args.ProgressPercentage;
-				});
-			};
+				catch (System.Net.WebException wex) {
+					if (wex != null && ((HttpWebResponse)wex.Response).StatusCode == HttpStatusCode.NotModified) {
+						Console.WriteLine ("remote file not modified since we downloaded it");
+						Application.Invoke (delegate {
+							main.Progress = 0;
+							main.Status = "";
+							if (done != null)
+								done (masterinfo);
+						});
+					}
+					else {
+						Console.WriteLine ("web status code == {0}", ((HttpWebResponse)wex.Response).StatusCode);
+						Application.Invoke (delegate {
+							main.Progress = 0;
+							main.Status = "Download failed";
+						});
+					}
+				}
+				catch (Exception e) {
+					Console.WriteLine (e);
+					Application.Invoke (delegate {
+						main.Progress = 0;
+						main.Status = "Download failed";
+					});
+				}
+			});
+			
 			Console.WriteLine ("Downloading {0} to {1}", u, target);
-			w.DownloadFileAsync (u, target);
+			async_thread.Start ();
 		}
 
 		/// <summary>
