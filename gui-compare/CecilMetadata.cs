@@ -704,8 +704,8 @@ namespace GuiCompare {
 				           ? CecilUtils.PrettyType (method_def.ReturnType.ReturnType.FullName)
 				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName));
 			sb.Append (" ");
-			if (method_def.IsSpecialName && beautify) {
-				if (method_def.Name.StartsWith ("op_")) {
+			if (beautify) {
+				if (method_def.IsSpecialName && method_def.Name.StartsWith ("op_")) {
 					switch (method_def.Name) {
 					case "op_Explicit": sb.Append ("operator explicit"); break;
 					case "op_Implicit": sb.Append ("operator implicit"); break;
@@ -734,7 +734,7 @@ namespace GuiCompare {
 			else {
 				sb.Append (method_def.Name);
 			}
-			if (method_def.GenericParameters.Count > 0) {
+			if (beautify && method_def.GenericParameters.Count > 0) {
 				sb.Append ("<");
 				bool first_gp = true;
 				foreach (GenericParameter gp in method_def.GenericParameters) {
