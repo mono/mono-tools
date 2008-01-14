@@ -40,6 +40,8 @@ public partial class MainWindow {
     
     private Gtk.Action RecentComparisons;
     
+    private Gtk.ToggleAction ShowNotImplemented;
+    
     private Gtk.VBox vbox1;
     
     private Gtk.MenuBar menubar1;
@@ -114,6 +116,10 @@ public partial class MainWindow {
         this.RecentComparisons = new Gtk.Action("RecentComparisons", Mono.Unix.Catalog.GetString("Recent Comparisons"), null, null);
         this.RecentComparisons.ShortLabel = Mono.Unix.Catalog.GetString("Recent Comparisons");
         w2.Add(this.RecentComparisons, null);
+        this.ShowNotImplemented = new Gtk.ToggleAction("ShowNotImplemented", Mono.Unix.Catalog.GetString("Show NotImplemented"), null, null);
+        this.ShowNotImplemented.Active = true;
+        this.ShowNotImplemented.ShortLabel = Mono.Unix.Catalog.GetString("Show NotImplemented");
+        w2.Add(this.ShowNotImplemented, null);
         w1.InsertActionGroup(w2, 0);
         this.AddAccelGroup(w1.AccelGroup);
         this.Name = "MainWindow";

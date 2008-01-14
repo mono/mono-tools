@@ -322,8 +322,7 @@ namespace GuiCompare {
 						if (((CompMethod)target_list[a]).ThrowsNotImplementedException ()
 						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
 							
-							comparison.AddError ("target method throws NotImplementedException");
-							comparison.status = ComparisonStatus.Error;
+							comparison.throws_niex = true;
 						}
 					}
 

@@ -1,5 +1,14 @@
 2008-01-14  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: add the niex counts to the counts column
+	* gui-compare.mdp: add the mn.png resource
+	* cm/mn.png: steal jpobst's NIEX icon
+	* CompareContext.cs: set throws_niex instead of adding an error.
+	* gtk-gui/MainWindow.cs: add the ShowNotImplemented action
+	* Comparison.cs: count NIEX's
+
+2008-01-14  Chris Toshok <toshok@ximian.com> 
+
 	* Metadata.cs: add GetLiteralValue() abstract method to CompField.
 	* InfoManager.cs: wex might be null here since we're in the else branch, so
 	  don't look in it.

@@ -35,12 +35,14 @@ namespace GuiCompare {
 		public void PropagateCounts ()
 		{
 			Todo = todos.Count;
+			Niex = throws_niex ? 1 : 0;
 			foreach (ComparisonNode n in children) {
 				n.PropagateCounts ();
 				Extra += n.Extra + (n.status == ComparisonStatus.Extra ? 1 : 0);
 				Missing += n.Missing + (n.status == ComparisonStatus.Missing ? 1 : 0);
 				Present += n.Present; // XXX
 				Todo += n.Todo;
+				Niex += n.Niex;
 				Warning += n.Warning + (n.status == ComparisonStatus.Error ? 1 : 0);
 			}
 		}
@@ -59,12 +61,14 @@ namespace GuiCompare {
 		public string name;
 		public List<string> messages;
 		public List<string> todos;
+		public bool throws_niex;
 		
 		public int Extra;
 		public int Missing;
 		public int Present;
 		public int Warning;
 		public int Todo;
+		public int Niex;
 
 		public List<ComparisonNode> children;
 	}

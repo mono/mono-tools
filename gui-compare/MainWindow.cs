@@ -43,14 +43,34 @@ public partial class MainWindow: Gtk.Window
 	static Gdk.Pixbuf methodPixbuf, namespacePixbuf, propertyPixbuf;
 	static Gdk.Pixbuf attributePixbuf, structPixbuf, assemblyPixbuf;
 
-	static Gdk.Pixbuf okPixbuf, errorPixbuf;
+	static Gdk.Pixbuf okPixbuf, errorPixbuf, niexPixbuf;
 	static Gdk.Pixbuf missingPixbuf, todoPixbuf, extraPixbuf;
 
 	static Gdk.Color green, red, black;
 	
 	Gtk.TreeStore treeStore;
 	Gtk.TreeModelFilter treeFilter;
-	
+
+			
+	enum TreeCol : int {
+		Name,
+		TypeIcon,
+		StatusIcon,
+		MissingIcon,
+		MissingText,
+		ExtraIcon,
+		ExtraText,
+		ErrorIcon,
+		ErrorText,
+		TodoIcon,
+		TodoText,
+		NiexIcon,
+		NiexText,
+		Node,
+		Foreground
+	};
+
+
 	public GuiCompare.Config Config;
 	
 	static MainWindow ()
@@ -69,9 +89,10 @@ public partial class MainWindow: Gtk.Window
 		attributePixbuf = new Gdk.Pixbuf (ta, "r.gif");
 		structPixbuf = new Gdk.Pixbuf (ta, "s.gif");
 		assemblyPixbuf = new Gdk.Pixbuf (ta, "y.gif");
-	
+
 		okPixbuf = new Gdk.Pixbuf (ta, "sc.gif");
 		errorPixbuf = new Gdk.Pixbuf (ta, "se.gif");
+		niexPixbuf = new Gdk.Pixbuf (ta, "mn.png");
 		missingPixbuf = new Gdk.Pixbuf (ta, "sm.gif");
 		todoPixbuf = new Gdk.Pixbuf (ta, "st.gif");
 		extraPixbuf = new Gdk.Pixbuf (ta, "sx.gif");
@@ -103,13 +124,14 @@ public partial class MainWindow: Gtk.Window
 		progressbar1.Adjustment.Lower = 0;
 		progressbar1.Adjustment.Upper = 100;
 		
-		
-		treeStore = new Gtk.TreeStore (typeof (string), typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf),
-		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (Gdk.Pixbuf), typeof (string),
-		                               typeof (ComparisonNode), typeof (string));
+		treeStore = new Gtk.TreeStore (typeof (string), // Name
+		                               typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf), // TypeIcon, StatusIcon
+		                               typeof (Gdk.Pixbuf), typeof (string), // MissingIcon, MissingText
+		                               typeof (Gdk.Pixbuf), typeof (string), // ExtraIcon, ExtraText
+		                               typeof (Gdk.Pixbuf), typeof (string), // ErrorIcon, ErrorText
+		                               typeof (Gdk.Pixbuf), typeof (string), // TodoIcon, TodoText
+		                               typeof (Gdk.Pixbuf), typeof (string), // NiexIcon, NiexText
+		                               typeof (ComparisonNode), typeof (string)); // Node, Foreground
 		
 		treeFilter = new Gtk.TreeModelFilter (treeStore, null);
 		treeFilter.VisibleFunc = FilterTree;
@@ -130,10 +152,10 @@ public partial class MainWindow: Gtk.Window
 		
 		tree.AppendColumn (nameColumn);
 		
-		nameColumn.AddAttribute (nameCell, "text", 0);
-		nameColumn.AddAttribute (nameCell, "foreground", 12);
-		nameColumn.AddAttribute (typeCell, "pixbuf", 1);
-		nameColumn.AddAttribute (statusCell, "pixbuf", 2);
+		nameColumn.AddAttribute (nameCell, "text", (int)TreeCol.Name);
+		nameColumn.AddAttribute (nameCell, "foreground", (int)TreeCol.Foreground);
+		nameColumn.AddAttribute (typeCell, "pixbuf", (int)TreeCol.TypeIcon);
+		nameColumn.AddAttribute (statusCell, "pixbuf", (int)TreeCol.StatusIcon);
 		
 		// Create a column for the status counts
 		Gtk.TreeViewColumn countsColumn = new Gtk.TreeViewColumn ();
@@ -148,6 +170,8 @@ public partial class MainWindow: Gtk.Window
 		Gtk.CellRendererText errorTextCell = new Gtk.CellRendererText ();
 		Gtk.CellRendererPixbuf todoPixbufCell = new Gtk.CellRendererPixbuf ();
 		Gtk.CellRendererText todoTextCell = new Gtk.CellRendererText ();
+		Gtk.CellRendererPixbuf niexPixbufCell = new Gtk.CellRendererPixbuf ();
+		Gtk.CellRendererText niexTextCell = new Gtk.CellRendererText ();
 		
 		countsColumn.PackStart (missingPixbufCell, false);
 		countsColumn.PackStart (missingTextCell, false);
@@ -157,23 +181,27 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.PackStart (errorTextCell, false);
 		countsColumn.PackStart (todoPixbufCell, false);
 		countsColumn.PackStart (todoTextCell, false);
+		countsColumn.PackStart (niexPixbufCell, false);
+		countsColumn.PackStart (niexTextCell, false);
 		
 		tree.AppendColumn (countsColumn);
-		
-		countsColumn.AddAttribute (missingPixbufCell, "pixbuf", 3);
-		countsColumn.AddAttribute (missingTextCell, "text", 4);
-		countsColumn.AddAttribute (extraPixbufCell, "pixbuf", 5);
-		countsColumn.AddAttribute (extraTextCell, "text", 6);
-		countsColumn.AddAttribute (errorPixbufCell, "pixbuf", 7);
-		countsColumn.AddAttribute (errorTextCell, "text", 8);
-		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", 9);
-		countsColumn.AddAttribute (todoTextCell, "text", 10);
+
+		countsColumn.AddAttribute (missingPixbufCell, "pixbuf", (int)TreeCol.MissingIcon);
+		countsColumn.AddAttribute (missingTextCell, "text", (int)TreeCol.MissingText);
+		countsColumn.AddAttribute (extraPixbufCell, "pixbuf", (int)TreeCol.ExtraIcon);
+		countsColumn.AddAttribute (extraTextCell, "text", (int)TreeCol.ExtraText);
+		countsColumn.AddAttribute (errorPixbufCell, "pixbuf", (int)TreeCol.ErrorIcon);
+		countsColumn.AddAttribute (errorTextCell, "text", (int)TreeCol.ErrorText);
+		countsColumn.AddAttribute (todoPixbufCell, "pixbuf", (int)TreeCol.TodoIcon);
+		countsColumn.AddAttribute (todoTextCell, "text", (int)TreeCol.TodoText);
+		countsColumn.AddAttribute (niexPixbufCell, "pixbuf", (int)TreeCol.NiexIcon);
+		countsColumn.AddAttribute (niexTextCell, "text", (int)TreeCol.NiexText);
 		
 		tree.Selection.Changed += delegate (object sender, EventArgs e) {
 			Gtk.TreeIter iter;
 			if (tree.Selection.GetSelected (out iter)) {
 				List<string> msgs = null;
-				ComparisonNode n = tree.Model.GetValue (iter, 11) as ComparisonNode;
+				ComparisonNode n = tree.Model.GetValue (iter, (int)TreeCol.Node) as ComparisonNode;
 				StringBuilder sb = new StringBuilder();
 
 				if (n != null) msgs = n.messages;
@@ -346,13 +374,15 @@ public partial class MainWindow: Gtk.Window
 			                        TypePixbufFromComparisonNode (root),
 			                        StatusPixbufFromComparisonNode (root),
 			                        root.Missing == 0 ? null : missingPixbuf,
-			                        root.Missing == 0 ? null : String.Format (": {0}", root.Missing),
+			                        root.Missing == 0 ? null : String.Format (":{0}", root.Missing),
 			                        root.Extra == 0 ? null : extraPixbuf,
-			                        root.Extra == 0 ? null : String.Format (": {0}", root.Extra),
+			                        root.Extra == 0 ? null : String.Format (":{0}", root.Extra),
 			                        root.Warning == 0 ? null : errorPixbuf,
-			                        root.Warning == 0 ? null : String.Format (": {0}", root.Warning),
+			                        root.Warning == 0 ? null : String.Format (":{0}", root.Warning),
 			                        root.Todo == 0 ? null : todoPixbuf,
-			                        root.Todo == 0 ? null : String.Format (": {0}", root.Todo),
+			                        root.Todo == 0 ? null : String.Format (":{0}", root.Todo),
+			                        root.Niex == 0 ? null : niexPixbuf,
+			                        root.Niex == 0 ? null : String.Format (":{0}", root.Niex),
 			                        root,
 			                        StatusForegroundFromComparisonNode (root));
 		
@@ -373,13 +403,15 @@ public partial class MainWindow: Gtk.Window
 			                        TypePixbufFromComparisonNode (node),
 			                        StatusPixbufFromComparisonNode (node),
 			                        node.Missing == 0 ? null : missingPixbuf,
-			                        node.Missing == 0 ? null : String.Format (": {0}", node.Missing),
+			                        node.Missing == 0 ? null : String.Format (":{0}", node.Missing),
 			                        node.Extra == 0 ? null : extraPixbuf,
-			                        node.Extra == 0 ? null : String.Format (": {0}", node.Extra),
+			                        node.Extra == 0 ? null : String.Format (":{0}", node.Extra),
 			                        node.Warning == 0 ? null : errorPixbuf,
-			                        node.Warning == 0 ? null : String.Format (": {0}", node.Warning),
+			                        node.Warning == 0 ? null : String.Format (":{0}", node.Warning),
 			                        node.Todo == 0 ? null : todoPixbuf,
-			                        node.Todo == 0 ? null : String.Format (": {0}", node.Todo),
+			                        node.Todo == 0 ? null : String.Format (":{0}", node.Todo),
+			                        node.Niex == 0 ? null : niexPixbuf,
+			                        node.Niex == 0 ? null : ((node.Niex == 1 && node.throws_niex) ? null : String.Format (":{0}", node.Niex)),
 			                        node,
 			                        StatusForegroundFromComparisonNode (node));
 
@@ -393,7 +425,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		//string node_name = model.GetValue(iter, 0) as string;
 		//Console.WriteLine ("filtering {0}, node = {1}", node_name, model.GetValue(iter, 9) == null ? "null" : model.GetValue(iter,9).GetType().ToString());
-		ComparisonNode n = model.GetValue (iter, 11) as ComparisonNode;
+		ComparisonNode n = model.GetValue (iter, (int)TreeCol.Node) as ComparisonNode;
 		if (n == null)
 			return false;
 		
@@ -401,6 +433,7 @@ public partial class MainWindow: Gtk.Window
 		    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
 		    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
 		    (ShowTodo.Active && (n.Todo > 0)) ||
+		    (ShowNotImplemented.Active && (n.Niex > 0)) ||
 		    ShowPresent.Active && n.status == ComparisonStatus.None)
 			
 			return true;
