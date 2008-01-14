@@ -1,5 +1,9 @@
 2008-01-13  Chris Toshok <toshok@ximian.com> 
 
+	* InfoManager.cs: fix this obvious brokenness.
+
+2008-01-13  Chris Toshok <toshok@ximian.com> 
+
 	* CecilMetadata.cs: only include the generic parameters of the method in the
 	  beautified version of the method name.
 

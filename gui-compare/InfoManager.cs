@@ -313,7 +313,7 @@ namespace GuiCompare
 							int readBytes = -1;
 							byte[] buffer = new byte[2048];
 							while (readBytes != 0) {
-								readBytes = responseStream.Read (buffer, position, 2048);
+								readBytes = responseStream.Read (buffer, 0, 2048);
 								position += readBytes;
 								fs.Write (buffer, 0, readBytes);
 								if (response.ContentLength > 0) {
