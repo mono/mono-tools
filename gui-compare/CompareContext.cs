@@ -318,7 +318,7 @@ namespace GuiCompare {
 						}
 					}
 
-					if (reference_list[m] is CompMethod && target_list[a] is CompMethod) {
+					if (reference_list[m] is CompMethod) {
 						if (((CompMethod)target_list[a]).ThrowsNotImplementedException ()
 						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
 							
@@ -327,14 +327,24 @@ namespace GuiCompare {
 						}
 					}
 
-					if (reference_list[m] is ICompAttributeContainer && target_list[a] is ICompAttributeContainer) {
+					if (reference_list[m] is CompField) {
+						if (((CompField)reference_list[m]).GetLiteralValue() !=
+						    ((CompField)target_list[a]).GetLiteralValue()) {
+							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}",
+							                                    ((CompField)reference_list[m]).GetLiteralValue(),
+							                                    ((CompField)target_list[a]).GetLiteralValue()));
+							comparison.status = ComparisonStatus.Error;
+						}
+					}
+					
+					if (reference_list[m] is ICompAttributeContainer) {
 						//Console.WriteLine ("Comparing attributes for {0}", reference_list[m].Name);
 						CompareAttributes (comparison,
 						                   (ICompAttributeContainer)reference_list[m],
 						                   (ICompAttributeContainer)target_list[a]);
 					}
 					
-					if (reference_list[m] is ICompMemberContainer && target_list[a] is ICompMemberContainer) {
+					if (reference_list[m] is ICompMemberContainer) {
 						CompareMembers (comparison,
 						                (ICompMemberContainer)reference_list[m],
 						                (ICompMemberContainer)target_list[a]);

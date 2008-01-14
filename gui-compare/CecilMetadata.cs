@@ -642,6 +642,13 @@ namespace GuiCompare {
 			return attributes;
 		}
 
+		public override string GetLiteralValue ()
+		{
+			if (field_def.IsLiteral)
+				return field_def.Constant.ToString();
+			return null;
+		}
+		
 		FieldDefinition field_def;
 		List<CompNamed> attributes;
 	}

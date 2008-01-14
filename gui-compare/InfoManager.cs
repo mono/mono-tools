@@ -340,7 +340,7 @@ namespace GuiCompare
 					}
 				}
 				catch (System.Net.WebException wex) {
-					if (wex != null && ((HttpWebResponse)wex.Response).StatusCode == HttpStatusCode.NotModified) {
+					if (wex != null && wex.Response != null && ((HttpWebResponse)wex.Response).StatusCode == HttpStatusCode.NotModified) {
 						Console.WriteLine ("remote file not modified since we downloaded it");
 						Application.Invoke (delegate {
 							main.Progress = 0;
@@ -350,7 +350,6 @@ namespace GuiCompare
 						});
 					}
 					else {
-						Console.WriteLine ("web status code == {0}", ((HttpWebResponse)wex.Response).StatusCode);
 						Application.Invoke (delegate {
 							main.Progress = 0;
 							main.Status = "Download failed";

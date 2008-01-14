@@ -228,6 +228,7 @@ namespace GuiCompare {
 			: base (name, CompType.Field)
 		{
 		}
+		public abstract string GetLiteralValue ();
 	}
 
 	public abstract class CompEvent : CompMember {

@@ -529,6 +529,11 @@ namespace GuiCompare {
 			return MasterUtils.GetAttributes (attributes);
 		}
 		
+		public override string GetLiteralValue ()
+		{
+			return fieldValue;
+		}
+
 		string fieldType;
 		string fieldValue;
 		string fieldAccess;
