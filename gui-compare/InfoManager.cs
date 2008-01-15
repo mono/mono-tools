@@ -306,37 +306,45 @@ namespace GuiCompare
 				try {
 					HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
 					if (response.StatusCode == HttpStatusCode.OK) {
-						Console.WriteLine ("downloading remote file");
+						Application.Invoke (delegate {
+							main.Status = "Downloading masterinfo file...";
+						});
 						Stream responseStream = response.GetResponseStream ();
 						using (FileStream fs = File.Create (target)) {
 							int position = 0;
 							int readBytes = -1;
-							byte[] buffer = new byte[2048];
-							while (readBytes != 0) {
-								readBytes = responseStream.Read (buffer, 0, 2048);
-								position += readBytes;
-								fs.Write (buffer, 0, readBytes);
-								if (response.ContentLength > 0) {
-									Application.Invoke (delegate {
-										main.Progress = (double)position / response.ContentLength;
-									});
+							byte[] buffer = new byte[4096];
+							while (position < response.ContentLength) {
+								readBytes = responseStream.Read (buffer, 0, buffer.Length);
+								if (readBytes > 0) {
+									position += readBytes;
+									fs.Write (buffer, 0, readBytes);
+									if (response.ContentLength > 0) {
+										Application.Invoke (delegate {
+											main.Progress = ((double)position / response.ContentLength) * 100;
+										});
+									}
 								}
 							}
-							
-							ProcessStartInfo pi = new ProcessStartInfo();
-							pi.WorkingDirectory = pdir;
-							pi.UseShellExecute = true;
-							pi.FileName = "tar xzf " + target + " --strip-components=1";
-							Process p = Process.Start (pi);
-							p.WaitForExit ();
-							
-							Application.Invoke (delegate {
-								main.Progress = 0;
-								main.Status = "Download complete";
-								if (done != null)
-									done (masterinfo);
-							});
 						}
+						
+						Application.Invoke (delegate {
+							main.Status = "Unpacking masterinfo file...s";
+						});
+						
+						ProcessStartInfo pi = new ProcessStartInfo();
+						pi.WorkingDirectory = pdir;
+						pi.UseShellExecute = true;
+						pi.FileName = "tar xzf " + target + " --strip-components=1";
+						Process p = Process.Start (pi);
+						p.WaitForExit ();
+							
+						Application.Invoke (delegate {
+							main.Progress = 0;
+							main.Status = "Download complete";
+							if (done != null)
+								done (masterinfo);
+						});
 					}
 				}
 				catch (System.Net.WebException wex) {

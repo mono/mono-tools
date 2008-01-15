@@ -100,6 +100,14 @@
         <property name="Label" translatable="yes">Recent Comparisons</property>
         <property name="ShortLabel" translatable="yes">Recent Comparisons</property>
       </action>
+      <action id="ShowNotImplemented">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Show NotImplemented</property>
+        <property name="ShortLabel" translatable="yes">Show NotImplemented</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">True</property>
+        <signal name="Toggled" handler="OnShowNotImplementedToggled" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -126,6 +134,7 @@
               <node type="Menu" action="View">
                 <node type="Menuitem" action="ShowErrors" />
                 <node type="Menuitem" action="ShowMissing" />
+                <node type="Menuitem" action="ShowNotImplemented" />
                 <node type="Menuitem" action="ShowExtra" />
                 <node type="Menuitem" action="ShowTodo" />
                 <node type="Menuitem" action="ShowPresent" />
@@ -319,6 +328,7 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="Label" translatable="yes">API Description</property>
+            <property name="Active">True</property>
             <property name="DrawIndicator">True</property>
             <property name="HasLabel">True</property>
             <property name="UseUnderline">True</property>

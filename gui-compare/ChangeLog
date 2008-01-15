@@ -1,5 +1,16 @@
 2008-01-14  Chris Toshok <toshok@ximian.com> 
 
+	* MainWindow.cs: hide the progress bar when we're done, and implement the
+	  OnShowNotImplementedToggled method
+	* InfoManager.cs: fix the remote file downloading.  can't believe the bugs
+	  this thing has had...
+	* gtk-gui/MainWindow.cs: add Show Notimplemented menu item and signal
+	  handler
+	* gtk-gui/gui.stetic: add ShowNotImplemented action
+	* Config.cs: add ShowNotImplemented
+
+2008-01-14  Chris Toshok <toshok@ximian.com> 
+
 	* MainWindow.cs: add the niex counts to the counts column
 	* gui-compare.mdp: add the mn.png resource
 	* cm/mn.png: steal jpobst's NIEX icon

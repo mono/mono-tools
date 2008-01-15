@@ -120,9 +120,6 @@ public partial class MainWindow: Gtk.Window
 		// Configure the GUI
 		//
 		info_manager = new InfoManager (this);
-				
-		progressbar1.Adjustment.Lower = 0;
-		progressbar1.Adjustment.Upper = 100;
 		
 		treeStore = new Gtk.TreeStore (typeof (string), // Name
 		                               typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf), // TypeIcon, StatusIcon
@@ -288,6 +285,10 @@ public partial class MainWindow: Gtk.Window
 	{		
 		summary.Visible = false;
 		
+		progressbar1.Visible = true;						
+		progressbar1.Adjustment.Lower = 0;
+		progressbar1.Adjustment.Upper = 100;
+
 		// clear our existing content
 		if (context != null)
 			context.StopCompare ();
@@ -313,6 +314,7 @@ public partial class MainWindow: Gtk.Window
 			md.Show();
 			Status = String.Format ("Comparison failed at {0}", DateTime.Now);
 			Progress = 0.0;
+			progressbar1.Visible = false;
 		};
 		context.Finished += delegate (object sender, EventArgs e) {
 			Status = String.Format ("Comparison completed at {0}", DateTime.Now);
@@ -320,6 +322,7 @@ public partial class MainWindow: Gtk.Window
 			PopulateTreeFromComparison (context.Comparison);
 			Progress = 0.0;
 			done (this);
+			progressbar1.Visible = false;
 		};
 		treeStore.Clear ();
 		context.Compare ();
@@ -487,6 +490,13 @@ public partial class MainWindow: Gtk.Window
 		Config.Save ();
 	}
 
+	protected virtual void OnShowNotImplementedToggled (object sender, System.EventArgs e)
+	{
+		treeFilter.Refilter();
+		Config.ShowTodo = ShowTodo.Active;
+		Config.Save ();
+	}
+
 	protected virtual void OnRefreshActivated (object sender, System.EventArgs e)
 	{
 		StartCompare (delegate {});
@@ -504,6 +514,7 @@ public partial class MainWindow: Gtk.Window
 			CompareDefinition cd = cc.GetCompare ();
 			if (cd != null){
 				SetCompareDefinition (cd);
+		
 				StartCompare (delegate { Title = cd.ToString ();});
 				Config.AddRecent (cd);
 				Config.Save ();

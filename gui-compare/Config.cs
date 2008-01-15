@@ -63,6 +63,7 @@ namespace GuiCompare
 		public bool ShowExtra = true;
 		public bool ShowTodo = true;
 		public bool ShowPresent = true;
+		public bool ShowNotImplemented = true;
 		
 		[XmlElement ("Recent", typeof (CompareDefinition))]
 		public CompareDefinition [] Recent;
