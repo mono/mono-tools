@@ -148,6 +148,7 @@ namespace GuiCompare {
 			: base (path)
 		{
 			masterinfo = XMLAssembly.CreateFromFile (path);
+			attributes = MasterUtils.GetAttributes (masterinfo.attributes);
 		}
 
 		public override List<CompNamed> GetNamespaces ()
@@ -161,7 +162,13 @@ namespace GuiCompare {
 			return namespaces;
 		}
 
+		public override List<CompNamed> GetAttributes ()
+		{
+			return attributes;
+		}
+
 		XMLAssembly masterinfo;
+		List<CompNamed> attributes;
 	}
 
 	public class MasterNamespace : CompNamespace {

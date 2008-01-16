@@ -95,13 +95,14 @@ namespace GuiCompare {
 		public List<string> todos;
 	}
 
-	public abstract class CompAssembly : CompNamed {
+	public abstract class CompAssembly : CompNamed, ICompAttributeContainer {
 		public CompAssembly (string name)
 			: base (name, CompType.Assembly)
 		{
 		}
 
-		public abstract List<CompNamed> GetNamespaces();
+		public abstract List<CompNamed> GetNamespaces ();
+		public abstract List<CompNamed> GetAttributes ();
 	}
 
 	public abstract class CompNamespace : CompNamed, ICompTypeContainer {

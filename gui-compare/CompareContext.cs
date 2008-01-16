@@ -73,6 +73,8 @@ namespace GuiCompare {
 			
 			CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
 
+			CompareAttributes (comparison, reference, target);
+
 			FinishedOnGuiThread ();
 		}
 

@@ -236,7 +236,7 @@ namespace GuiCompare {
 				
 				if (IsTODOAttribute (resolved))
 					todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));
-				else if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName));
+				else if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName))
 					rv.Add (new CecilAttribute (ca));
 			}
 			return rv;
@@ -280,6 +280,8 @@ namespace GuiCompare {
 			foreach (string ns_name in namespaces.Keys) {
 				namespace_list.Add (new CecilNamespace (ns_name, namespaces[ns_name]));
 			}
+			
+			attributes = CecilUtils.GetCustomAttributes (assembly, todos);
 		}
 
 		public override List<CompNamed> GetNamespaces()
@@ -287,7 +289,13 @@ namespace GuiCompare {
 			return namespace_list;
 		}
 
+		public override List<CompNamed> GetAttributes ()
+		{
+			return attributes;
+		}
+		
 		List<CompNamed> namespace_list;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilNamespace : CompNamespace {

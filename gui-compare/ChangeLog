@@ -1,3 +1,12 @@
+2008-01-16  Chris Toshok <toshok@ximian.com> 
+
+	* configure: pointless update from generating makefiles...
+	* Metadata.cs: assemblies are attribute containers.
+	* MasterMetadata.cs: create the list of assembly attributes.
+	* CecilMetadata.cs: get the list of assembly attributes.
+	* CompareContext.cs: compare the attributes on reference/target assemblies.
+	* Masterinfo.cs: make attributes on assemblies public.
+
 2008-01-15  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: add a history entry for the current CompareDefinition, if

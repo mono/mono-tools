@@ -235,7 +235,7 @@ using System.Xml;
 
 	public class XMLAssembly : XMLData
 	{
-		XMLAttributes attributes;
+		public XMLAttributes attributes;
 		public XMLNamespace [] namespaces;
 		string name;
 		string version;
