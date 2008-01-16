@@ -317,12 +317,35 @@ public partial class MainWindow: Gtk.Window
 			progressbar1.Visible = false;
 		};
 		context.Finished += delegate (object sender, EventArgs e) {
-			Status = String.Format ("Comparison completed at {0}", DateTime.Now);
+			DateTime finish_time = DateTime.Now;
+			
+			Status = String.Format ("Comparison completed at {0}", finish_time);
+			
 			context.Comparison.PropagateCounts ();
 			PopulateTreeFromComparison (context.Comparison);
 			Progress = 0.0;
 			done (this);
 			progressbar1.Visible = false;
+
+			CompareHistory[] history = Config.Recent[0].History;
+			
+			if (history == null || history.Length == 0 ||
+			    (history[history.Length-1].Extras != context.Comparison.Extra ||
+			     history[history.Length-1].Errors != context.Comparison.Warning ||
+			     history[history.Length-1].Missing != context.Comparison.Missing ||
+			     history[history.Length-1].Niexs != context.Comparison.Niex ||
+			     history[history.Length-1].Todos != context.Comparison.Todo)) {
+
+				CompareHistory history_entry = new CompareHistory();
+				history_entry.CompareTime = finish_time;
+				history_entry.Extras = context.Comparison.Extra;
+				history_entry.Errors = context.Comparison.Warning;
+				history_entry.Missing = context.Comparison.Missing;
+				history_entry.Niexs = context.Comparison.Niex;
+				history_entry.Todos = context.Comparison.Todo;
+				Config.Recent[0].AddHistoryEntry (history_entry);
+				Config.Save ();
+			}
 		};
 		treeStore.Clear ();
 		context.Compare ();

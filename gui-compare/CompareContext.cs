@@ -409,6 +409,8 @@ namespace GuiCompare {
 				ICompMemberContainer c = (ICompMemberContainer)item;
 				foreach (CompNamed ifc in c.GetInterfaces())
 					AddMissing (node, ifc);
+				foreach (CompNamed m in c.GetConstructors())
+					AddMissing (node, m);
 				foreach (CompNamed m in c.GetMethods())
 					AddMissing (node, m);
 				foreach (CompNamed p in c.GetProperties())

@@ -392,12 +392,13 @@ namespace GuiCompare
 		void StartPresetCompare (string assemblyfile, string profile, string assemblyname)
 		{
 			Ensure (profile, assemblyname, delegate (string masterinfo){
-				main.Config.AddRecent (new CompareDefinition (true, masterinfo, false, assemblyfile));
+				CompareDefinition cd = new CompareDefinition (true, masterinfo, false, assemblyfile);
+				cd.Title = assemblyname;
+				main.Config.AddRecent (cd);
 				PopulateRecent ();
 				main.Config.Save ();
 				
 				main.SetReference (delegate {
-					Console.WriteLine ("Doing it for the {0}-{1}-{2}", assemblyfile, profile, assemblyname);
 						return new MasterAssembly (masterinfo);
 					});
 				main.SetTarget (delegate {

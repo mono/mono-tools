@@ -29,13 +29,26 @@ using System.Xml.Serialization;
 
 namespace GuiCompare
 {
-	public  class CompareDefinition {
+	public class CompareHistory {
+		public DateTime CompareTime;
+		public int Errors;
+		public int Missing;
+		public int Extras;
+		public int Todos;
+		public int Niexs;
+	}
+	
+	public class CompareDefinition {
 		public bool ReferenceIsInfo = true;
 		public string ReferencePath = "";
 		public bool TargetIsInfo = true;
 		public string TargetPath = "";
 		public bool IsCustom = false;
+		public string Title = "";
 		
+		[XmlElement ("History", typeof (CompareHistory))]
+		public CompareHistory [] History;
+
 		public CompareDefinition ()
 		{
 		}
@@ -46,13 +59,45 @@ namespace GuiCompare
 			ReferencePath = rpath;
 			TargetIsInfo = tmaster;
 			TargetPath = tpath;
+
+			History = new CompareHistory[0];
+		}
+		
+		public string GetKey ()
+		{
+			return String.Format ("{0}->{1}", ReferencePath, TargetPath);
 		}
 		
 		// Returns a suitable title
 		public override string ToString ()
 		{
-			return String.Format ("{2}{0} -> {1}", Path.GetFileName (ReferencePath), Path.GetFileName (TargetPath),
-			                      IsCustom ? "Custom: ": "");
+			return (Title == ""
+			        ? String.Format ("{2}{0} -> {1}", Path.GetFileName (ReferencePath), Path.GetFileName (TargetPath),
+			                         IsCustom ? "Custom: ": "")
+			        : Title);
+		}
+		
+		public override bool Equals (object o)
+		{
+			if (!(o is CompareDefinition))
+				return false;
+			CompareDefinition cd = (CompareDefinition)o;
+			return (ReferencePath == cd.ReferencePath && ReferenceIsInfo == cd.ReferenceIsInfo &&
+			        TargetPath == cd.TargetPath && TargetIsInfo == cd.TargetIsInfo);
+		}
+
+		public override int GetHashCode ()
+		{
+			return GetKey().GetHashCode();
+		}
+
+		public void AddHistoryEntry (CompareHistory history)
+		{
+			CompareHistory[] new_history = new CompareHistory[History == null ? 1 : History.Length + 1];
+			if (History != null)
+				History.CopyTo (new_history, 0);
+			new_history[new_history.Length - 1] = history;
+			History = new_history;
 		}
 	}
 	
@@ -127,6 +172,15 @@ namespace GuiCompare
 			
 		public void AddRecent (CompareDefinition cd)
 		{
+			if (Recent != null) {
+				for (int i = 0; i < Recent.Length; i ++) {
+					if (Recent[i].GetKey() == cd.GetKey()) {
+						MoveToTop (Recent[i]);
+						return;
+					}
+				}
+			}
+			
 			if (Recent == null || Recent.Length < 15){
 				CompareDefinition [] copy = new CompareDefinition [Recent == null ? 1 : Recent.Length+1];
 				copy [0] = cd;
@@ -135,6 +189,7 @@ namespace GuiCompare
 				Recent = copy;
 			} else {
 				Array.Copy (Recent, 0, Recent, 1, Recent.Length - 1);
+				Recent[0] = cd;
 			}
 		}
 	}

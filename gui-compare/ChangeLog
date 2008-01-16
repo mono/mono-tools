@@ -1,3 +1,23 @@
+2008-01-15  Chris Toshok <toshok@ximian.com> 
+
+	* MainWindow.cs: add a history entry for the current CompareDefinition, if
+	  the counts are different than the previous one.
+	* InfoManager.cs: when doing a preset compare, set the title to be the
+	  assemblyname.
+	* MasterMetadata.cs: Skip over MS's CodeAnalysis attributes.
+	* CecilMetadata.cs: skip over MS's CodeAnalysis attributes.
+	* CompareContext.cs: add Constructors as missing
+	* Config.cs: Add CompareHistory class, which is just a timestamped class
+	  containing all the counts from a comparison run.  Add an array of them
+	  to CompareDefinition.
+	
+	  
+	
+	  Also, fix AddRecent to look for an existing entry in the Recent array
+	  (by using the new CompareDefinition.GetKey), moving it to the top.  This
+	  pretty much removes the need for MoveToTop, as it could be folded in
+	  here, but leave it for now.
+
 2008-01-14  Chris Toshok <toshok@ximian.com> 
 
 	* MainWindow.cs: hide the progress bar when we're done, and implement the

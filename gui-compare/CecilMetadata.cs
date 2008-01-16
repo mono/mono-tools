@@ -216,7 +216,15 @@ namespace GuiCompare {
 			
 			return IsTODOAttribute (CecilUtils.Resolver.Resolve (typedef.BaseType));
 		}
+		
+		public static bool ShouldSkipAttribute (string name)
+		{
+			if (name == "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute")
+				return true;
 			
+			return false;
+		}
+		
 		public static List<CompNamed> GetCustomAttributes (ICustomAttributeProvider provider, List<string> todos)
 		{
 			List<CompNamed> rv = new List<CompNamed>();
@@ -228,7 +236,7 @@ namespace GuiCompare {
 				
 				if (IsTODOAttribute (resolved))
 					todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));
-				else
+				else if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName));
 					rv.Add (new CecilAttribute (ca));
 			}
 			return rv;

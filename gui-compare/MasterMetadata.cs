@@ -120,11 +120,21 @@ namespace GuiCompare {
 			}
 		}
 		
+		public static bool ShouldSkipAttribute (string name)
+		{
+			if (name.StartsWith ("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"))
+				return true;
+			
+			return false;
+		}
+		
 		public static List<CompNamed> GetAttributes (XMLAttributes attributes)
 		{
 			List<CompNamed> rv = new List<CompNamed>();
 			if (attributes != null) {
 				foreach (object key in attributes.keys.Keys) {
+					if (ShouldSkipAttribute ((string)key))
+						continue;
 					rv.Add (new MasterAttribute ((string)attributes.keys[key]));
 				}
 			}
