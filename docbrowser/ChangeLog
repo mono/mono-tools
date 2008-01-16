@@ -1,3 +1,8 @@
+2008-01-16  Wade Berrier  <wberrier@novell.com>
+
+	* monodoc.desktop.in: no extension on icon, remove
+	'Application' from Categories.  (standards enforced by rpmlint)
+
 2007-12-12  Jonathan Pryor  <jonpryor@vt.edu>
 
 	* GtkHtmlHtmlRender.cs: Hack: "fix" the URLs retrieved from GTKHTML --
