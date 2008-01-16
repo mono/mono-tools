@@ -92,7 +92,8 @@ RESOURCES = \
 	cm/tp.gif \
 	cm/w.gif \
 	cm/y.gif \
-	gtk-gui/objects.xml 
+	gtk-gui/objects.xml \
+	cm/mn.png 
 
 EXTRAS = \
 	gui-compare.in 
