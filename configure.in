@@ -96,6 +96,7 @@ gnunit/art/Makefile
 gnunit/src/Makefile
 gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
+gui-compare/Makefile
 docbrowser/Makefile
 docbrowser/monodoc
 docbrowser/AssemblyInfo.cs
