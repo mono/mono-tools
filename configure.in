@@ -36,7 +36,6 @@ AC_SUBST(NUNIT_LIBS)
 PKG_CHECK_MODULES(MONODOC, monodoc)
 AC_SUBST(MONODOC_LIBS)
 
-
 PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gnome-sharp-2.0 gconf-sharp-2.0)
 #PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp glade-sharp gconf-sharp)
 AC_SUBST(GTK_SHARP_LIBS)
@@ -65,6 +64,15 @@ fi
 
 if test "x$enable_gtkhtml$enable_gecko" = "xnono" ; then
    AC_MSG_ERROR([no HTML display found. You need either gtkhtml or gecko])
+fi
+
+dnl
+dnl I hate PKG_CONFIG_MODULES, that is for the weak
+dnl
+if pkg-config --modversion cecil>/dev/null; then
+AC_MSG_RESULT("Found cecil.pc")
+else
+AC_MSG_ERROR([You are missing Cecil (cecil.pc for packageconfig) required for gui-compare])
 fi
 
 dnl Intl
