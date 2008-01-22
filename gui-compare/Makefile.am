@@ -1,0 +1,61 @@
+guicomparedir=$(prefix)/lib/gui-compare
+guicompare_DATA = gui-compare.exe
+
+CLEANFILES = gui-compare.exe gui-compare.mdb
+
+bin_SCRIPTS = gui-compare
+
+gui_compare_sources = \
+	./gtk-gui/generated.cs 			\
+	./MainWindow.cs 			\
+	./gtk-gui/MainWindow.cs 		\
+	./Main.cs 				\
+	./AssemblyInfo.cs 			\
+	./InfoManager.cs 			\
+	./CompareContext.cs 			\
+	./Comparison.cs 			\
+	./Metadata.cs 				\
+	./MasterMetadata.cs 			\
+	./Masterinfo.cs 			\
+	./CecilMetadata.cs 			\
+	./ProviderSelector.cs 			\
+	./gtk-gui/guicompare.ProviderSelector.cs\
+	./AssemblyResolver.cs 			\
+	./Config.cs 				\
+	./CustomCompare.cs 			\
+	./gtk-gui/GuiCompare.CustomCompare.cs
+
+gui_compare_resources = 			\
+	$(srcdir)/gtk-gui/gui.stetic		\
+	$(srcdir)/cm/c.gif			\
+	$(srcdir)/cm/d.gif			\
+	$(srcdir)/cm/e.gif			\
+	$(srcdir)/cm/en.gif			\
+	$(srcdir)/cm/f.gif			\
+	$(srcdir)/cm/i.gif			\
+	$(srcdir)/cm/m.gif			\
+	$(srcdir)/cm/n.gif			\
+	$(srcdir)/cm/p.gif			\
+	$(srcdir)/cm/r.gif			\
+	$(srcdir)/cm/s.gif			\
+	$(srcdir)/cm/sc.gif			\
+	$(srcdir)/cm/se.gif			\
+	$(srcdir)/cm/sm.gif			\
+	$(srcdir)/cm/st.gif			\
+	$(srcdir)/cm/sx.gif			\
+	$(srcdir)/cm/tb.gif			\
+	$(srcdir)/cm/tm.gif			\
+	$(srcdir)/cm/tp.gif			\
+	$(srcdir)/cm/w.gif			\
+	$(srcdir)/cm/y.gif			\
+	$(srcdir)/gtk-gui/objects.xml		\
+	$(srcdir)/cm/mn.png
+
+EXTRA_DIST = $(gui_compare_sources) $(gui_compare_resources) gui-compare.mds gui-compare.mdp 
+
+packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0 -pkg:glade-sharp-2.0 -pkg:cecil
+assemblies = -r:System -r:Mono.Posix -r:System.Xml
+ress= $(foreach res,$(gui_compare_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
+
+gui-compare.exe: $(gui_compare_sources) $(gui_compare_resources)
+	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gui-compare.exe $(gui_compare_sources) $(ress) $(packages) $(assemblies)
