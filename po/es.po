@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNUnit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-08 15:26-0400\n"
+"POT-Creation-Date: 2008-01-22 17:13-0500\n"
 "PO-Revision-Date: 2004-08-05 11:14+0200\n"
 "Last-Translator: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
 "Language-Team: Gonzalo Paniagua Javier <gonzalo@ximian.com>\n"
@@ -76,9 +76,9 @@ msgstr "Ejecutar los tests seleccionados"
 msgid "Run"
 msgstr "Ejecutar"
 
-#: gnunit/src/nunit-gtk.glade:265 docbrowser/browser.glade:1666
-#: docbrowser/browser.glade:2045 docbrowser/browser.glade:2336
-#: docbrowser/browser.glade:2685
+#: gnunit/src/nunit-gtk.glade:265 docbrowser/browser.glade:1538
+#: docbrowser/browser.glade:1917 docbrowser/browser.glade:2208
+#: docbrowser/browser.glade:2557
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -90,7 +90,7 @@ msgstr "Detener"
 msgid "Exit program"
 msgstr "Salir del programa"
 
-#: gnunit/src/nunit-gtk.glade:281 docbrowser/browser.glade:98
+#: gnunit/src/nunit-gtk.glade:281 docbrowser/browser.glade:138
 msgid "Quit"
 msgstr "Salir"
 
@@ -267,111 +267,112 @@ msgid "New _Tab"
 msgstr ""
 
 #: docbrowser/browser.glade:66
-msgid "_Lookup URL"
+msgid "_Lookup URL..."
 msgstr ""
 
 #: docbrowser/browser.glade:88
-msgid "_Upload Contributions"
+msgid "_Print..."
 msgstr ""
 
-#: docbrowser/browser.glade:124
+#: docbrowser/browser.glade:116
+msgid "_Close Tab"
+msgstr ""
+
+#: docbrowser/browser.glade:164
 msgid "_Edit"
 msgstr ""
 
-#: docbrowser/browser.glade:133
+#: docbrowser/browser.glade:172
+msgid "_Cut"
+msgstr ""
+
+#: docbrowser/browser.glade:194
 msgid "_Copy"
 msgstr ""
 
-#: docbrowser/browser.glade:155
+#: docbrowser/browser.glade:216
 msgid "_Paste"
 msgstr ""
 
-#: docbrowser/browser.glade:177
+#: docbrowser/browser.glade:244
 msgid "Select All"
 msgstr ""
 
-#: docbrowser/browser.glade:193
-msgid "Editing"
-msgstr ""
-
-#: docbrowser/browser.glade:207
+#: docbrowser/browser.glade:258
 msgid "_View"
 msgstr ""
 
-#: docbrowser/browser.glade:216
+#: docbrowser/browser.glade:267
 msgid "Collapse All"
 msgstr ""
 
-#: docbrowser/browser.glade:225
+#: docbrowser/browser.glade:276
 msgid "Show Inherited Members"
 msgstr ""
 
-#: docbrowser/browser.glade:235
+#: docbrowser/browser.glade:286
 msgid "Show Comments"
 msgstr ""
 
-#: docbrowser/browser.glade:249
+#: docbrowser/browser.glade:300
 msgid "_Bookmarks"
 msgstr ""
 
-#: docbrowser/browser.glade:258
-msgid "_Add bookmark"
+#: docbrowser/browser.glade:315
+msgid "_Contributing"
 msgstr ""
 
-#: docbrowser/browser.glade:267
-msgid "_Edit bookmarks..."
+#: docbrowser/browser.glade:323
+msgid "_Upload Contributions..."
 msgstr ""
 
-#: docbrowser/browser.glade:280
+#: docbrowser/browser.glade:345
+msgid "_View Contribution Statistics..."
+msgstr ""
+
+#: docbrowser/browser.glade:372
+msgid "Edit Mode"
+msgstr ""
+
+#: docbrowser/browser.glade:386
 msgid "_Help"
 msgstr ""
 
-#: docbrowser/browser.glade:289
-msgid "About"
+#: docbrowser/browser.glade:395
+msgid "About..."
 msgstr ""
 
-#: docbrowser/browser.glade:442
+#: docbrowser/browser.glade:548
 msgid "n/a"
 msgstr ""
 
-#: docbrowser/browser.glade:551
+#: docbrowser/browser.glade:657
 msgid "_Contents"
 msgstr ""
 
-#: docbrowser/browser.glade:627
-msgid "_Look for:"
-msgstr ""
-
-#: docbrowser/browser.glade:675 docbrowser/browser.glade:1260
-#: docbrowser/browser.glade:1488 docbrowser/browser.glade:1874
-#: docbrowser/browser.glade:2854 docbrowser/browser.glade:2877
-#: docbrowser/browser.glade:2926
-msgid "*"
-msgstr ""
-
-#: docbrowser/browser.glade:777
+#: docbrowser/browser.glade:721
 msgid "_Index"
 msgstr ""
 
-#: docbrowser/browser.glade:835
-msgid "_Search for:"
-msgstr ""
-
-#: docbrowser/browser.glade:948
+#: docbrowser/browser.glade:784
 msgid "_Search"
 msgstr ""
 
-#: docbrowser/browser.glade:1020
+#: docbrowser/browser.glade:856
 msgid "About monodoc"
 msgstr ""
 
-#: docbrowser/browser.glade:1065
+#: docbrowser/browser.glade:907
 msgid ""
 "<span size=\"larger\"><b>monodoc:</b> The Mono Documentation Library viewer</"
 "span>"
 msgstr ""
 
-#: docbrowser/browser.glade:1100
+#: docbrowser/browser.glade:928
+msgid "<b>Version</b> "
+msgstr ""
+
+#: docbrowser/browser.glade:970
 msgid ""
 "<b>Authors:</b>\n"
 "   Miguel de Icaza (miguel@ximian.com)\n"
@@ -384,10 +385,12 @@ msgid ""
 "   Piers Haken\n"
 "   John Luke (jluke@cfl.rr.com)\n"
 "   Ben Maurer\n"
-"Mario Sopena novales"
+"   Mario Sopena Novales (mario.sopena@gmail.com)\n"
+"   Rafael Ferreira (raf@ophion.org)\n"
+"\t      "
 msgstr ""
 
-#: docbrowser/browser.glade:1133
+#: docbrowser/browser.glade:1005
 msgid ""
 "<b>Plugins:</b>\n"
 "  ECMA Documentation.\n"
@@ -398,23 +401,29 @@ msgid ""
 "  ECMA C# Specification."
 msgstr ""
 
-#: docbrowser/browser.glade:1208
-msgid "Lookup"
+#: docbrowser/browser.glade:1080
+msgid "Lookup URL"
 msgstr ""
 
-#: docbrowser/browser.glade:1231
-msgid "_Url to lookup:"
+#: docbrowser/browser.glade:1103
+msgid "_URL to lookup:"
 msgstr ""
 
-#: docbrowser/browser.glade:1263
+#: docbrowser/browser.glade:1132 docbrowser/browser.glade:1360
+#: docbrowser/browser.glade:1746 docbrowser/browser.glade:2726
+#: docbrowser/browser.glade:2749 docbrowser/browser.glade:2798
+msgid "*"
+msgstr ""
+
+#: docbrowser/browser.glade:1135
 msgid "lookup_entry"
 msgstr ""
 
-#: docbrowser/browser.glade:1311
+#: docbrowser/browser.glade:1183
 msgid "Login configuration"
 msgstr ""
 
-#: docbrowser/browser.glade:1343
+#: docbrowser/browser.glade:1215
 msgid ""
 "You can edit the contents of the API documentation in MonoDoc and "
 "contribute\n"
@@ -426,74 +435,74 @@ msgid ""
 "If you agree, click Continue"
 msgstr ""
 
-#: docbrowser/browser.glade:1399 docbrowser/browser.glade:1560
-#: docbrowser/browser.glade:1935
+#: docbrowser/browser.glade:1271 docbrowser/browser.glade:1432
+#: docbrowser/browser.glade:1807
 msgid "Continue"
 msgstr ""
 
-#: docbrowser/browser.glade:1428
+#: docbrowser/browser.glade:1300
 msgid "0"
 msgstr ""
 
-#: docbrowser/browser.glade:1459
+#: docbrowser/browser.glade:1331
 msgid "_Email:"
 msgstr ""
 
-#: docbrowser/browser.glade:1502
+#: docbrowser/browser.glade:1374
 msgid "xx"
 msgstr ""
 
-#: docbrowser/browser.glade:1589
+#: docbrowser/browser.glade:1461
 msgid "1"
 msgstr ""
 
-#: docbrowser/browser.glade:1614
+#: docbrowser/browser.glade:1486
 msgid "Monodoc is requesting an account for you."
 msgstr ""
 
-#: docbrowser/browser.glade:1695
+#: docbrowser/browser.glade:1567
 msgid "2"
 msgstr ""
 
-#: docbrowser/browser.glade:1720
+#: docbrowser/browser.glade:1592
 msgid ""
 "<b>Error:</b> Monodoc encountered a failure when requesting\n"
 "a password for your e-mail address.  Try again later."
 msgstr ""
 
-#: docbrowser/browser.glade:1756 docbrowser/browser.glade:2141
-#: docbrowser/browser.glade:2230 docbrowser/browser.glade:2425
-#: docbrowser/browser.glade:2515 docbrowser/browser.glade:2605
+#: docbrowser/browser.glade:1628 docbrowser/browser.glade:2013
+#: docbrowser/browser.glade:2102 docbrowser/browser.glade:2297
+#: docbrowser/browser.glade:2387 docbrowser/browser.glade:2477
 msgid "Ok"
 msgstr ""
 
-#: docbrowser/browser.glade:1786
+#: docbrowser/browser.glade:1658
 msgid "3"
 msgstr ""
 
-#: docbrowser/browser.glade:1817
+#: docbrowser/browser.glade:1689
 msgid ""
 "Once you receive your password on the mail, please enter it\n"
 "here:\n"
 msgstr ""
 
-#: docbrowser/browser.glade:1846
+#: docbrowser/browser.glade:1718
 msgid "Password:"
 msgstr ""
 
-#: docbrowser/browser.glade:1965
+#: docbrowser/browser.glade:1837
 msgid "4"
 msgstr ""
 
-#: docbrowser/browser.glade:1990
+#: docbrowser/browser.glade:1862
 msgid "MonoDoc is logging into the server."
 msgstr ""
 
-#: docbrowser/browser.glade:2081
+#: docbrowser/browser.glade:1953
 msgid "5"
 msgstr ""
 
-#: docbrowser/browser.glade:2106
+#: docbrowser/browser.glade:1978
 msgid ""
 "<b>Congratulations!</b> \n"
 "\n"
@@ -501,33 +510,33 @@ msgid ""
 "the File/Upload menu option."
 msgstr ""
 
-#: docbrowser/browser.glade:2171
+#: docbrowser/browser.glade:2043
 msgid "6"
 msgstr ""
 
-#: docbrowser/browser.glade:2196
+#: docbrowser/browser.glade:2068
 msgid ""
 "<b>Terminated</b> \n"
 "\n"
 "The request to the Monodoc server has been cancelled."
 msgstr ""
 
-#: docbrowser/browser.glade:2260
+#: docbrowser/browser.glade:2132
 msgid "7"
 msgstr ""
 
-#: docbrowser/browser.glade:2285
+#: docbrowser/browser.glade:2157
 msgid ""
 "<b>Please wait</b>\n"
 "\n"
 "MonoDoc is checking the server version."
 msgstr ""
 
-#: docbrowser/browser.glade:2365
+#: docbrowser/browser.glade:2237
 msgid "8"
 msgstr ""
 
-#: docbrowser/browser.glade:2390
+#: docbrowser/browser.glade:2262
 msgid ""
 "<b>Communications Problem</b> \n"
 "\n"
@@ -535,11 +544,11 @@ msgid ""
 "with the Mono Documentation Server."
 msgstr ""
 
-#: docbrowser/browser.glade:2455
+#: docbrowser/browser.glade:2327
 msgid "9"
 msgstr ""
 
-#: docbrowser/browser.glade:2480
+#: docbrowser/browser.glade:2352
 msgid ""
 "<b>Version missmatch</b> \n"
 "\n"
@@ -547,11 +556,11 @@ msgid ""
 "server, please upgrade your MonoDoc installation."
 msgstr ""
 
-#: docbrowser/browser.glade:2545
+#: docbrowser/browser.glade:2417
 msgid "10"
 msgstr ""
 
-#: docbrowser/browser.glade:2570
+#: docbrowser/browser.glade:2442
 msgid ""
 "<b>Password Problem</b> \n"
 "\n"
@@ -559,46 +568,58 @@ msgid ""
 "Please try again."
 msgstr ""
 
-#: docbrowser/browser.glade:2635
+#: docbrowser/browser.glade:2507
 msgid "11"
 msgstr ""
 
-#: docbrowser/browser.glade:2656
+#: docbrowser/browser.glade:2528
 msgid "Uploading Documentation Updates - MonoDoc"
 msgstr ""
 
-#: docbrowser/browser.glade:2711
+#: docbrowser/browser.glade:2583
 msgid "Monodoc Documentation Updates Uploader. "
 msgstr ""
 
-#: docbrowser/browser.glade:2738
+#: docbrowser/browser.glade:2610
 msgid "<b>Status:</b> "
 msgstr ""
 
-#: docbrowser/browser.glade:2796
+#: docbrowser/browser.glade:2668
 msgid "New Comment"
 msgstr ""
 
-#: docbrowser/browser.glade:2818
+#: docbrowser/browser.glade:2690
 msgid "TODO: Some advise on posting here."
 msgstr ""
 
-#: docbrowser/browser.glade:2894
+#: docbrowser/browser.glade:2766
 msgid "Title:"
 msgstr ""
 
-#: docbrowser/browser.glade:2943
+#: docbrowser/browser.glade:2815
 msgid "Comment"
 msgstr ""
 
-#: docbrowser/browser.glade:2969
+#: docbrowser/browser.glade:2841
 msgid "E-Mail:"
 msgstr ""
 
-#: docbrowser/browser.glade:2995
+#: docbrowser/browser.glade:2867 docbrowser/browser.glade:3169
 msgid "Name:"
 msgstr ""
 
-#: docbrowser/browser.glade:3115
-msgid "Edit bookmarks"
+#: docbrowser/browser.glade:2987
+msgid "Manage Bookmarks"
+msgstr ""
+
+#: docbrowser/browser.glade:3071
+msgid "New Folder"
+msgstr ""
+
+#: docbrowser/browser.glade:3136
+msgid "Add Bookmark"
+msgstr ""
+
+#: docbrowser/browser.glade:3227
+msgid "Create in:"
 msgstr ""
