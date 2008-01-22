@@ -1,9 +1,9 @@
 guicomparedir=$(prefix)/lib/gui-compare
+bin_SCRIPTS = gui-compare
 guicompare_DATA = gui-compare.exe Mono.Cecil.dll
 
-CLEANFILES = gui-compare.exe gui-compare.exe.mdb Mono.Cecil.dll 
+CLEANFILES = gui-compare.exe gui-compare.exe.mdb Mono.Cecil.dll  gui-compare
 
-bin_SCRIPTS = gui-compare
 
 gui_compare_sources = \
 	$(srcdir)/gtk-gui/generated.cs 			\
@@ -58,6 +58,7 @@ REWRITE = sed \
 	-e 's,@''RUNTIME@,@RUNTIME@ --debug,g'
 
 gui-compare: gui-compare.in
+	$(REWRITE) < $(srcdir)/gui-compare.in > gui-compare
 
 EXTRA_DIST = $(gui_compare_sources) $(gui_compare_resources) gui-compare.mds gui-compare.mdp  gui-compare.in
 
