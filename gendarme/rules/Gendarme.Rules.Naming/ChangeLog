@@ -1,0 +1,158 @@
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Add checks for generated
+	code (to eliminate a bunch of false-positives).
+	* NamingUtils.cs: Remove - replaced by rocks or changes in rules.
+	* UseCorrectCasingRule.cs: Avoid creating MessageCollection unless 
+	needed. Skip an intermediate string while reporting.
+	* UseCorrectSuffixRule.cs: Add checks for generated code (to 
+	eliminate a bunch of false-positives).
+	* Makefile.am: Remove NamingUtils.cs from build.
+
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: Change three
+	methods to static (for better self-test results :)
+
+2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotPrefixValuesWithEnumNameRule.cs: New. Rule that checks enums
+	to see if it prefix it's values with the it's own name [Andreas 
+	Noever]
+	* DoNotUseReservedInEnumValueNamesRule.cs: New. Rule that check 
+	enums to see if it has values containing the word "reserved" 
+	[Andreas Noever]
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: New. Rule that
+	check if overriden (or interface implementation) methods use the same
+	parameter names as the original. [Andreas Noever]
+	* Gendarme.Rules.Naming.mdp: Updated MonoDevelop project file.
+	* Gendarme.Rules.Naming.xml.in: Updated descriptions.
+	* Makefile.am: Updated Makefile for new rules/tests.
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Turn a method to static 
+	and use new Location ctors.
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Use new Location ctors.
+	* UseCorrectCasingRule.cs: Use new Location ctors.
+	* UseCorrectPrefixRule.cs: Use new Location ctors.
+	* UseCorrectSuffixRule.cs: Use new Location ctors.
+	* UsePreferredTermsRule.cs: Use new Location ctors.
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Use rocks to reduce code
+	duplication.
+	* UsePluralNameInEnumFlagsRule.cs: Use rocks to reduce code	
+	duplication.
+	* UseSingularNameInEnumsUnlessAreFlagsRule.cs: Use rocks to reduce 
+	code duplication.
+	* Makefile.am: Add linq to compiler options
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AttributeEndsWithAttributeSuffixRule.cs: Deleted. The new rule
+	UseCorrectSuffixTest is a superset of this rule.
+	* Gendarme.Rules.Naming.mdp: Updated MonoDevelop project file.
+	* Gendarme.Rules.Naming.xml.in: Updated descriptions.
+	* Makefile.am: Updated Makefile for new rules/tests.
+	* NamingUtils.cs: New. Common methods for naming rules.
+	* UseCorrectCasingRule.cs: New. Rule to check correct casing. 
+	From Daniel Abramov (GHOP).
+	* UseCorrectPrefixRule.cs:New. Rule to check correct prefixes. 
+	From Daniel Abramov (GHOP).
+	* UseCorrectSuffixRule.cs:New. Rule to check correct suffixes. 
+	From Daniel Abramov (GHOP).
+	* UsePreferredTermsRule.cs:New. Rule to check use of preferred terms. 
+	From Daniel Abramov (GHOP).
+
+2007-12-20  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs,
+	* DetectNonAlphaNumericsInTypeNamesRule.cs,
+	* UseSingularNameInEnumsUnlessAreFlagsRule.cs: Update message 
+	strings. Patch from Daniel Abramov <ex@vingrad.ru>
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Avoid code duplicated
+	violation when running self-test target.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: IsPrivate is different
+	than !IsPublic. Fix false positive reports about anonymous methods.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeEndsWithAttributeSuffixRule.cs: Don't create 
+	MessageCollection unless we need to report an error/warning.
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Don't create 
+	MessageCollection unless we need to report an error/warning.
+	* UsePluralNameInEnumFlagsRule.cs: Don't create MessageCollection
+	unless we need to report an error/warning.
+	* UseSingularNameInEnumsUnlessAreFlagsRule.cs: Don't create 
+	MessageCollection unless we need to report an error/warning.
+
+2007-11-03  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Naming.xml.in: Added the Uri for
+	DetectNonAlphaNumericsInTypeNamesRule.
+
+2007-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Rework rule to avoid 
+	strings, dependency on string/enum position and creating a 
+	MessageCollection unless we need one.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: New rule (Nidhi Rawal, GSoC 2007)
+	* Gendarme.Rules.Naming.mdp: Update project file.
+	* Gendarme.Rules.Naming.xml.in: Update rule descriptions.
+	* Makefile.am: Add new rules/tests to build.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Naming.mdp: New.  Created MonoDevelop project file for the
+	naming rules.
+
+2007-09-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Naming.xml.in: Added Uri for the rules.
+
+2007-09-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Naming.xml.in: Fixed error from copy and paste for the
+	performance xml file.  The correct namespace is Gendarme.Rules.Naming.
+
+2007-09-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* UsePluralNameInFlagEnumsRule.cs,
+	UsePluralNameInEnumFlagsRule.cs:  Rename 
+	UsePluralNameInFlagEnumsRule.cs to UsePluralNameInEnumFlagsRule.cs
+	because this file doesn't follow the coding guidelines.
+	* Makefile.am: Change files to build the renamed rule.
+
+2007-09-21  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeEndsWithAttributeSuffixRule.cs:  Change cast to as operator
+	for avoid two type tests in method body.
+
+2007-09-21  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeEndsWithAttributeSuffixRule.cs:  Fixed a
+	NullReferenceException when the current type is System.Object.  Change
+	cast to as operator for avoid two type tests.
+
+2007-09-13  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: New.  Build Gendarme.Rules.Naming rules and tests.
+	* Gendarme.Rules.Naming.xml.in: New.  Configuration for
+	Gendarme.Rules.Naming.
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs,
+	UsePluralNameInFlagEnumsRule.cs,
+	UseSingularNameInEnumsUnlessAreFlagsRule.cs,
+	AttributeEndsWithAttributeSuffixRule.cs:  New. Rules for check the
+	naming conventions.
+

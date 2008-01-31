@@ -1,0 +1,48 @@
+2008-01-28  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TypeRocksTest.cs: Adapt unit tests for API changes.
+
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* FieldRocksTest.cs: Add test cases for IsVisible [Andreas Noever]
+	* MethodRocksTest.cs: Add test cases for [Get|Has]Method and 
+	IsVisible [Andreas Noever]
+	* RocksTest.cs: Common definitions for IsVisible tests.
+	* TypeRocksTest.cs: Add test cases for IsVisible [Andreas Noever]
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodRocksTest.cs: Added test cases for IsFinalizer
+	* TypeRocksTest.cs: Added test cases for IsNative
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocksTest.cs: Added test cases for IsFloatingPoint
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CustomAttributeRocksTest.cs: Rename calls to Contains[Any] to
+	Contains[Any]Type.
+	* FieldRocksTests.cs: New. Test cases for HasAttribute and 
+	IsGeneratedCode methods.
+	* MethodRocksTest.cs: Fix HasAttribute tests
+
+2008-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyRocksTest.cs: New. Test cases for HasAttribute
+	* CustomAttributeRocksTest.cs: Added test cases for ContainsAny
+	* MethodRocksTest.cs: Added/converted test cases for IsGeneratedCode
+	* TypeRocksTest.cs: Added test cases for GetFinalizer and 
+	IsGeneratedCode
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodRocksTest.cs: Added test cases for IsProperty
+	* TypeRocksTest.cs: Added test cases for IsAttribute, IsArray and 
+	Inherits
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* CustomAttributeRocksTest.cs: New. Unit tests for CustomAttributeRocks
+	* MethodRocksTest.cs: New. Unit tests for MethodRocks
+	* TypeRocksTest.cs: New. Unit tests for TypeRocks

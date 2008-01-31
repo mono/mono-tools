@@ -1,0 +1,109 @@
+2008-01-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NEWS: Ready for 0.0.5
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Run framework tests on "make run-test" and ignore
+	non-Gendarme assemblies on "make self-test".
+
+2007-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.ac: Add Gendarme.Rules.Interoperability
+
+2007-12-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NEWS: Finally 0.0.4 :)
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Change self-test to use the self-test set of rules
+	instead of the default one.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AUTHORS: Add the GSoC 2007 crew!
+	* configure.ac: Add new assemblies. Bump version number for (soon to
+	be ready) next version.
+	* gendarme.mds: Update MonoDevelop solution.
+
+2007-09-14  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* configure.ad: Add Gendarme.Rules.Smells to the build.
+
+2007-09-13  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* configure.ac: Add Gendarme.Rules.Naming to the build.
+
+2007-08-31  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* configure.ac: Install Gendarme.Framework to be reusable (pkg-config)
+	with other runners.
+
+2006-11-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.sln: Update solution file for VS.NET
+
+2006-11-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* configure.ac: Add Gendarme.Rules.Ui to the build and bump version
+	number to 0.0.3.1 (just to avoid confusion with released 0.0.3).
+
+2006-10-16  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* configure.ac: Bump for 0.0.3 release.
+	* NEWS: Update for 0.0.3 release.
+	* README: Update for 0.0.3 release.
+	* TODO: New. Merge my own TODO file with Christian ideas.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.sln, *.csproj: New files. Added solution and project files
+	for VS.NET 2005. You can now build, test and debug under Windows too
+
+2006-09-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AUTHORS: Added Christian Birkl to the list.
+	* gendarme.in: Move MONO_EXTRA_ARGS after mono (and before 
+	gendarme.exe).
+	* Makefile.am: Remove duplicate DISTCLEANFILES.
+
+2006-09-05  Jb Evain  <jbevain@gmail.com>
+
+	* Update to latest Cecil API.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.mds: New. Solution file for MonoDevelop.
+
+2006-06-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AUTHORS: Added Russell Morris to the author's list.
+	* configure.ac: Updated version to 0.0.2.0.
+	* NEWS: Updated for second release.
+	* README: Updated for second release.
+
+2006-06-19  Russell Morris <russell@russellsprojects.com>
+
+	* configure.ac: Merged initial build of exception-usage checks rule(s)
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyInfo.cs.in: Updated copyright notice (as this is the string
+	that will be displayed by the Gendarme's console runner).
+	* Makefile.am: Added self-test target to run gendarme on itself (in
+	order to promote compliance ;-). Added an alias for dist to dist-zip
+	so all files can be added into the distribution (zip) archive.
+
+2005-12-09  Aaron Tomb  <atomb@soe.ucsc.edu>
+
+	* Merged rules for double-check locking and bad recursive
+	invocation checking.
+
+2005-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Initial import into SVN.

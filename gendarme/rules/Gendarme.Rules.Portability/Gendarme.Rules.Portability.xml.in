@@ -1,0 +1,26 @@
+<rules>
+	<rule	Name="ExitCodeIsLimitedOnUnixRule" 
+		Type="Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule, Gendarme.Rules.Portability, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#ExitCodeIsLimitedOnUnixRule" >
+		<problem>The rule detected a value outside the 0-255 range or couldn't be sure of the returned value.</problem>
+		<solution>Review that your return values are all between 0 and 255, this will ensure them to works under both Unix and Windows OS.</solution>
+	</rule>
+	<rule	Name="FeatureRequiresRootPrivilegeOnUnixRule" 
+		Type="Gendarme.Rules.Portability.FeatureRequiresRootPrivilegeOnUnixRule, Gendarme.Rules.Portability, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#FeatureRequiresRootPrivilegeOnUnixRule" >
+		<problem>The method '{0}' use some literal values for new lines (e.g. \r\n) which aren't portable across operating systems.</problem>
+		<solution>Replace literals with Environment.NewLine.</solution>
+	</rule>
+	<rule	Name="MonoCompatibilityReviewRule" 
+		Type="Gendarme.Rules.Portability.MonoCompatibilityReviewRule, Gendarme.Rules.Portability, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#MonoCompatibilityReviewRule" >
+		<problem>The method '{0}' has some known limitations with Mono.</problem>
+		<solution>Check if this code is critical to your application. Also make sure your definition files are up to date.</solution>
+	</rule>
+	<rule	Name="NewLineLiteralRule" 
+		Type="Gendarme.Rules.Portability.NewLineLiteralRule, Gendarme.Rules.Portability, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#NewLineLiteralRule" >
+		<problem>The method '{0}' use some literal values for new lines (e.g. \r\n) which aren't portable across operating systems.</problem>
+		<solution>Replace literals with Environment.NewLine.</solution>
+	</rule>
+</rules>

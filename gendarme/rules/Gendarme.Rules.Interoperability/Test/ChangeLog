@@ -1,0 +1,27 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeTest.cs: More unit 
+	tests by Andreas Noever to reduce false-positives.
+
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarshalStringsInPInvokeDeclarationsTest.cs: New. Unit tests
+	from Daniel Abramov.
+
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseManagedAlternativesToPInvokeTest.cs: New. Unit tests 
+	from Daniel Abramov (with a bit more coverage by myself).
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Include new file in dist
+	* Test.Rules.Interoperability.mdp: New. MonoDevelop project file.
+
+2007-12-30  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeTest.cs: New. Unit tests 
+	for GetLastErrorMustBeCalledRightAfterPInvokeRule by Andreas Noever
+	* PInvokeShouldNotBeVisibleTest.cs: New. Unit tests for 
+	PInvokeShouldNotBeVisibleRule by Andreas Noever
+	* Makefile.am: New. Makefile for tests

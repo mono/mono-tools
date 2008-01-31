@@ -1,0 +1,117 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* rules.xml: Order rules alphabetically. Update mono-bcl rule set 
+	with newer rules.
+
+2008-01-28  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* rules.xml: In default only exclude NullDerefRule from Correctness
+	and stop excluding ToStringReturnsNullRule from BadPractice. In 
+	mono-bcl include everything except MethodCanBeMadeStaticRule and 
+	NullDerefRule from Correctness and exclude MonoCompatibilityReviewRule
+	from Portability.
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* rules.mds, tests.mds: Add Gendarme.Rules.Interoperability to
+	MonoDevelop solution files.
+	* rules.xml: Add Gendarme.Rules.Interoperability rules
+
+2007-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Rules.Interoperability to the build.
+
+2007-12-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* rules.xml: Added Correctness rules (except NullDeRef) to 
+	"self-test". Renamed monoBCL to mono-bcl to avoid mixed cases.
+	Re-active AvoidUninstantiatedInternalClassesRule in default.
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* rules.xml: Add a new "self-test" set used for testing Gendarme 
+	itself
+
+2007-11-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* rules.xml: Added ToStringReturnsNullRule to the profiles, because the
+	bug has been fixed.
+
+2007-10-19  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* rules.xml: Update with the profiles page in the group.  There are 2
+	rules deactivated because I should deal with and fix some bugs.
+
+2007-10-15  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* rules.xml: Added the design and badpractice rulesets.
+
+2007-10-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* rules.md-nunit: Fix the path for Test.Rules.BadDesign.dll assembly in
+	the unit tests.
+
+2007-10-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* rules.md-nunit: Update unit tests to load assemblies in ../bin
+	directory.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Rules.BadPractice to the build
+
+2007-09-26  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* rules.xml: Added Naming rules to "all" and new "naming" ruleset.
+	Added new "smells" ruleset.  Added "monoBCL" ruleset as part of the
+	profiles task.
+
+2007-09-14  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Smells: Merging GSoC 2007 work.
+	* Makefile.am: Added Gendarme.Rules.Smells.
+
+2007-09-13  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Naming: Merging GSoC 2007 work.
+	* Makefile.am: Added Gendarme.Rules.Naming.
+
+2007-03-12  Jb Evain  <jbevain@gmail.com>
+
+	* Update to match the new rules interfaces.
+
+2006-11-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Rules.Ui to the build.
+	* rules.xml: Add UI rules to "all" and a new "ui" ruleset.
+	* rules.mds: Add UI rules project to the solution.
+	* tests.mds: Add UI unit tests project to the solution.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+	* rules.xml: Disabling Gendarme.Rules.Correctness.dll until bug #79486
+	is fixed.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* rules.mds: New. (Sub-)solution file for MonoDevelop.
+	* rules.md-unit: New. MonoDevelop NUnit project file.
+	* tests.mds: New. (Sub-)solution file for MonoDevelop.
+
+2006-06-19  Russell Morris  <russell@russellsprojects.com>
+
+	* Makefile.am: Added Gendarme.Rules.Exceptions
+	* rules.xml:  Added Gendarme.Rules.Exceptions entries
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Added self-test target to promote compliance ;-)
+
+2006-03-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Added Gendarme.Rules.Portability
+
+2006-03-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Added test and run-test targets.

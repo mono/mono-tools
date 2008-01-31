@@ -1,0 +1,8 @@
+prefix=@prefix@
+assemblies_dir=${prefix}/lib/gendarme
+Libraries=${assemblies_dir}/Gendarme.Framework.dll
+
+Name: Gendarme.Framework
+Description: Gendarme.Framework Library
+Version: @VERSION@
+Libs: -r:${Libraries}

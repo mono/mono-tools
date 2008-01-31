@@ -1,0 +1,20 @@
+<rules>
+	<rule	Name="DoubleCheckLockingRule" 
+		Type="Gendarme.Rules.Concurrency.DoubleCheckLockingRule, Gendarme.Rules.Concurrency, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#DoubleCheckLockingRule" >
+                <problem>Method '{0}' uses the unreliable double-check locking technique.</problem>
+		<solution>Remove the lock check that occurs outside of the protected region. Or see: http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html</solution>
+	</rule>
+	<rule	Name="NonConstantStaticFieldsShouldNotBeVisibleRule" 
+		Type="Gendarme.Rules.Concurrency.NonConstantStaticFieldsShouldNotBeVisibleRule, Gendarme.Rules.Concurrency, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="" >
+                <problem>Type '{0}' has some static fields that are not constant. They may represent problems in multithreaded applications.</problem>
+		<solution>Remove the lock check that occurs outside of the protected region. Or see: http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html</solution>
+	</rule>
+	<rule	Name="WriteStaticFieldFromInstanceMethodRule" 
+		Type="Gendarme.Rules.Concurrency.WriteStaticFieldFromInstanceMethodRule, Gendarme.Rules.Concurrency, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme#WriteStaticFieldFromInstanceMethodRule" >
+                <problem>Instance method '{0}' writes to static fields. This may cause problem with multiple instances and in multithreaded applications.</problem>
+		<solution>Move initialization to the static constructor or ensure appropriate locking.</solution>
+	</rule>
+</rules>

@@ -1,0 +1,57 @@
+2008-01-16  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLargeClassesTest.cs: Added tests for skip the enums.  This rule
+	shouldn't be applied to enums.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongParameterListsTest.cs: Don't report defects for p/invokes
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeClassesTest.cs: Added test cases for const and readonly 
+	fields. Added test case for auto-implemented properties (C# 3)
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidCodeDuplicatedInSameClassTest.cs: Added the test for avoid the
+	error if the code stores in a class field.
+
+2007-11-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidSpeculativeGeneralityTest.cs: Updated unit test for the new
+	behavior for unnecessary delegation.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Smells.mdp: Update project file.
+
+2007-10-05  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Smells.mdp:  Changed output directory, by convention
+	looking other Test.Rules.* projects.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Smells.mdp:  Removed empty directory entry in the
+	MonoDevelop project file.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Smells.mdp:  New.  Created MonoDevelop project file for the
+	unit tests for the smell rules.
+
+2007-09-14  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs,
+	AvoidCodeDuplicatedInSiblingClassesTest.cs, AvoidLargeClassesTest.cs,
+	AvoidLongMethodsTest.cs, AvoidLongParameterListsTest.cs,
+	AvoidSpeculativeGeneralityTest.cs: Added svn propset svn:eol-native.
+
+
+2007-09-14  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs,
+	AvoidCodeDuplicatedInSiblingClassesTest.cs, AvoidLargeClassesTest.cs,
+	AvoidLongMethodsTest.cs, AvoidLongParameterListsTest.cs,
+	AvoidSpeculativeGeneralityTest.cs:  New.  Unit tests for the rules.

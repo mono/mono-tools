@@ -1,0 +1,29 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Shared class to analyse the stack by 
+	Andreas Noever.
+
+2008-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs: Modify API to ensure objects are immutable 
+	once created since we expose them as read-only in MethodSignatures.
+	Note: we need to rule to automate this check!
+
+2008-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs: Override ToString as this can be useful when 
+	reporting errors/warning.
+	* MethodSignatures.cs: Add GetHashCode and ToString, remove virtual 
+	from Equals (since it should happen to any of them, even "new" ones).
+
+2008-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignatures.cs: Change [No|One|Two]Parameter[s] to private
+	to avoid ArrayFieldsShouldNotBeReadOnlyRule on self-test.
+
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs: Allow to find a method using a signature
+	[Andreas Noever]
+	* MethodSignatures.cs: Various method signature to be used, and 
+	shared, by rules [Andreas Noever]

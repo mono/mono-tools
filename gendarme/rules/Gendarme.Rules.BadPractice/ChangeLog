@@ -1,0 +1,110 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckNewExceptionWithoutThrowingRule.cs: New. Rule to check that
+	all exception we create are thrown (or returned) from all methods. 
+	[Andreas Noever]
+	* CheckNewThreadWithoutStartRule.cs: New. Rule to check that all
+	threads we create are started (or returned) from all methods.
+	[Andreas Noever]
+	* Gendarme.Rules.BadPractice.xml.in: Add rules descriptions.
+	* Makefile.am: Add rules/tests to the build.
+
+2008-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaRule.cs: Rule
+	moves (with tests) into Design since it affects the API.
+	* ToStringReturnsNullRule.cs: Simplification to avoid uncommon cases
+	that added *LOTS* of false positives while still missing some 
+	real defects. Now a rock-ified ITypeRule with much lower memory 
+	requirements.
+	* Gendarme.Rules.BadPractice.xml.in: Remove (moved) definition.
+	* Makefile.am: Remove (moved) rule and tests
+
+2008-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConstructorShouldNotCallVirtualMethodsRule.cs: Add recursive 
+	checks for non-virtual calls (as they can lead to virtual calls). Add
+	check for final methods. Add check for calling 'this' sub-classes 
+	(versus calling them on other instances, other types)
+	* EqualShouldHandleNullArgRule.cs: Change to ITypeRule (and locate
+	Equals) and to use rocks. Reimplemented HandlesNullArg based on more
+	extensive unit tests. False positives are mostly history :)
+
+2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConstructorShouldNotCallVirtualMethodsRule.cs: New. Rule to
+	find every virtual calls made inside constructor of unsealed types.
+	* GetEntryAssemblyMayReturnNullRule.cs: New. Rule to detect usage
+	of Assembly.GetEntryAssembly which returns null when called outside 
+	the root application domain [Daniel Abramov]
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Gendarme.Rules.BadPractice.xml.in: Add rules descriptions.
+	* Makefile.am: Add rules/tests to the build.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullRule.cs: Use new Location ctor.
+	* EqualShouldHandleNullArgRule.cs: Use new Location ctor.
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaRule.cs: Use new 
+	Location ctor.
+	* ToStringReturnsNullRule.cs: Use new Location ctor.
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullRule.cs: Use rocks and turn a method
+	to static.
+	* EqualShouldHandleNullArgRule.cs: Turn some methods to static.
+	* ToStringReturnsNullRule.cs: Turn some methods to static.
+
+2008-01-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ToStringReturnsNullRule.cs: Avoid creating MessageCollection 
+	until/unless it's needed.
+
+2007-11-23  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* EqualShouldHandleNullArgRule.cs: Don't create a MessageCollection
+	unless we return a message. Avoid NRE if Equals simply return a 
+	boolean. Add FIXME to rework logic for MS compilers in debug mode.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* CloneMethodShouldNotReturnNullRule.cs: Don't create a 
+	MessageCollection unless we return a message. IL check logic is too
+	simplistic, added a little more logic (but it's still needs to be 
+	fixed) so the test run correctly under Windows (VS in Debug mode 
+	really generates crap).
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaRule.cs: Avoid 
+	creating MessageCollection unless needed.
+
+2007-11-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ToStringReturnsNullRule.cs: Fixed NullReferenceException when doesn't
+	exist the key in the hash table.  Some internal refactoring (fix the
+	selection for the ToString () method).
+
+2007-10-24  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.BadPractice.xml.in: Put the version attribute with 
+	autotools helpers. Added documentation for these rules.
+
+2007-10-19  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* CloneMethodShouldNotReturnNullRule.cs: Fixed NullReferenceException
+	when try to inspect a method without body.
+
+2007-10-16  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* ToStringReturnsNullRule.cs: Fixed NullReferenceException when try
+	to inspect a method without instructions.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullRule.cs: New rule (Nidhi Rawal, GSoC 
+	2007)
+	* EqualShouldHandleNullArgRule.cs: New rule (Nidhi Rawal, GSoC 2007)
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaRule.cs: New rule
+	(Nidhi Rawal, GSoC 2007)
+	* ToStringReturnsNullRule.cs: New rule (Nidhi Rawal, GSoC 2007)
+	* Gendarme.Rules.BadPractice.mdp: Project file for MonoDevelop.
+	* Makefile.am: Build file.

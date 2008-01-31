@@ -1,0 +1,168 @@
+2008-01-31  Version 0.0.5
+
+	This time Google Highly Open Participation (GHOP) was the main 
+	source of new rules for Gendarme (Daniel Abramov, Andreas Noever,
+	Adrian Tsai) and even a Gendarme logo (Steve P). 
+	Many thanks to all of them and to Google!
+
+	Other news includes:
+
+	* More rules: while GHOP added 40 rules, other contributors added
+	7 more rules.
+	* Gendarme.Framework.Rocks: A new namespace, inside gendarme's
+	framework, introduce several extensions methods to ease rule 
+	creation and avoid code duplication.
+	* Updated rules to be more friendly toward C# 3 code (e.g. 
+	auto-implemented properties)
+	* Enhancements to existing rules to reduce false-positives. Even
+	with all the new rules the number of false-positives is lower
+	than before and Gendarme's self-test looks even better!
+
+	New rules by alphabetical order:
+
+	Gendarme.Rules.BadPractice
+	* CheckNewExceptionWithoutThrowingRule [Andreas Noever]
+	* CheckNewThreadWithoutStartRule [Andreas Noever]
+	* ConstructorShouldNotCallVirtualMethodsRule [Daniel Abramov]
+	* GetEntryAssemblyMayReturnNullRule [Daniel Abramov]
+
+	Gendarme.Rules.Concurrency
+	* NonConstantStaticFieldsShouldNotBeVisible [Andreas Noever]
+
+	Gendarme.Rules.Correctness
+	* DontCompareWithNaNRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Design
+	* AbstractTypesShouldNotHavePublicConstructorsRule [Sebastien Pouliot]
+	* AttributeArgumentsShouldHaveAccessors [Daniel Abramov]
+	* AvoidEmptyInterfaceRule [Sebastien Pouliot]
+	* AvoidPropertiesWithoutGetAccessorRule [Sebastien Pouliot]
+	* AvoidPublicInstanceFieldsRule [Adrian Tsai]
+	* ConsiderConvertingMethodToPropertyRule [Adrian Tsai]
+	* DisposableFieldsShouldBeDisposedRule [Andreas Noever]
+	* DisposableTypesShouldHaveFinalizerRule [Andreas Noever]
+	* EnsureSymmetryForOverloadedOperatorsRule [Andreas Noever]
+	* EnumsShouldDefineAZeroValueRule [Sebastien Pouliot]
+	* FinalizersShouldBeProtectedRule [Daniel Abramov]
+	* FinalizersShouldCallBaseClassFinalizerRule [Daniel Abramov]
+	* FlagsShouldNotDefineAZeroValueRule [Sebastien Pouliot]
+	* MainShouldNotBePublicRule [Daniel Abramov]
+	* MissingAttributeUsageOnCustomAttributeRule [Daniel Abramov]
+	* OperatorEqualsShouldBeOverloadedRule [Andreas Noever]
+	* OverrideEqualsMethodRule [Andreas Noever]
+	* ProvideAlternativeNamesForOperatorOverloadsRule [Andreas Noever]
+	* TypesShouldBeInsideNamespacesRule [Sebastien Pouliot]
+	* TypesWithDisposableFieldsShouldBeDisposableRule [Andreas Noever]
+	* TypesWithNativeFieldsShouldBeDisposableRule [Andreas Noever]
+
+	Gendarme.Rules.Interoperability (new)
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule [Andreas Noever]
+	* MarshalStringsInPInvokeDeclarationsRule [Daniel Abramov]
+	* PInvokeShouldNotBeVisibleRule [Andreas Noever]
+	* UseManagedAlternativesToPInvokeRule [Daniel Abramov]
+
+	Gendarme.Rules.Naming
+	* DoNotPrefixValuesWithEnumNameRule [Andreas Noever]
+	* DoNotUseReservedInEnumValueNamesRule [Andreas Noever]
+	* ParameterNamesShouldMatchOverridenMethodRule [Andreas Noever]
+	* UseCorrectCasing [Daniel Abramov]
+	* UseCorrectPrefixRule [Daniel Abramov]
+	* UseCorrectSuffixRule [Daniel Abramov]
+	* UsePreferredTermsRule [Daniel Abramov]
+
+	Gendarme.Rules.Performance
+	* AvoidReturningArraysOnPropertiesRule [Adrian Tsai]
+	* AvoidUnsealedConcreteAttributesRule [Daniel Abramov]
+
+	Gendarme.Rules.Portability
+	* ExitCodeIsLimitedOnUnixRule [Daniel Abramov]
+	* FeatureRequiresRootPrivilegeOnUnixRule [Andreas Noever]
+	* MonoCompatibilityReviewRule [Andreas Noever]
+
+	Gendarme.Rules.Security
+	* ArrayFieldsShouldNotBeReadOnlyRule [Andreas Noever]
+	* NativeFieldsShouldNotBeVisibleRule [Andreas Noever]
+	* StaticConstructorsShouldBePrivateRule [Daniel Abramov]
+
+	Gendarme.Rules.Ui
+	* UseSTAThreadAttributeOnSWFEntryPointsRule [Daniel Abramov]
+
+2007-12-20  Version 0.0.4
+
+	After a long time, many fixes, useful features (e.g. inclusion and 
+	exclusion) and hours trimming down false positives, we're proud to
+	announce Gendarme 0.0.4!
+
+	Many of the new rules were contributed during the Google Summer
+	of Code 2007.
+
+	Gendarme.Rules.BadPractice
+	* CloneMethodShouldNotReturnNullRule [Nidhi Rawal]
+	* EqualShouldHandleNullArgRule [Nidhi Rawal]
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaRule [Nidhi Rawal]
+	* ToStringReturnsNullRule [Nidhi Rawal]
+
+	Gendarme.Rules.Concurrency
+	* WriteStaticFieldFromInstanceMethodRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Correcness
+	* AvoidConstructorsInStaticTypesRule [Lukasz Knop]
+	* CallingEqualsWithNullArgRule [Nidhi Rawal]
+	* FloatComparisonRule [Lukasz Knop]
+	* MethodCanBeMadeStaticRule [JB Evain]
+	* UseValueInPropertySetterRule [Lukasz Knop]
+
+	Gendarme.Rules.Design (new)
+	* DontDeclareProtectedFieldsInSealedClassRule [Nidhi Rawal]
+	* UsingCloneWithoutImplementingICloneableRule [Nidhi Rawal]
+
+	Gendarme.Rules.Exceptions
+	* DontSwallowErrorsCatchingNonspecificExceptionRule [Nestor Salceda]
+
+	Gendarme.Rules.Naming (new)
+	* AttributesEndsWithAttributeSuffixRule [Nestor Salceda]
+	* DetectNonAlphaNumericsInTypeNamesRule [Nidhi Rawal]
+	* EnumsNotEndsWIthEnumOrFlagsSuffixRule [Nestor Salceda]
+	* UsePluralNameInEnumFlagsRule [Nestor Salceda]
+	* UseSingularNameInEnumsUnlessAreFlagsRule [Nestor Salceda]
+
+	Gendarme.Rules.Performance
+	* AvoidToStringOnStringRule [Lukasz Knop]
+	* AvoidUncalledPrivateCodeRule [Nidhi Rawal]
+	* AvoidUninstantiatedInternalClassesRule [Nidhi Rawal]
+	* AvoidUnusedParametersRule [Nestor Salceda]
+	* DontIgnoreMethodResultRule [Lukasz Knop]
+
+	Gendarme.Rules.Smells (new)
+	* AvoidCodeDuplicatedInSameClassRule [Nestor Salceda]
+	* AvoidCodeDuplicatedInSiblingClassesRule [Nestor Salceda]
+	* AvoidLargeClassRule [Nestor Salceda]
+	* AvoidLongMethodsRule [Nestor Salceda]
+	* AvoidLongParameterListsRule [Nestor Salceda]
+	* AvoidSpeculativeGeneralityRule [Nestor Salceda]
+
+	Gendarme.Rules.Ui (new)
+	* GtkSharpExecutableTargetRule [Sebastien Pouliot]
+	* SystemWindowsFormsExecutableTargetRule [Sebastien Pouliot]
+
+	A special thanks to Nestor Salceda for his continuing dedication 
+	to the project including a lot of "not so fun" (but so important)
+	tasks, like merging, rule documentation & bug hunting. You rock!
+
+2006-10-16  Version 0.0.3
+
+	* New rule for String.Empty [Sebastien Pouliot]
+	* New XML and HTML (via XSL transform) output [Christian Birkl, 
+	Sebastien Pouliot]
+	* Updated to latest Cecil API [JBEvain]
+
+2006-06-19  Version 0.0.2
+
+	* Aaron Tomb added new rules for Concurrency and Correctness (based 
+	on his works in Google's Summer of Code 2005) and updated the 
+	framework;
+	* Russell Morris added new rules for exceptions management.
+
+2005-11-03  Version 0.0.1
+
+	* Initial version. Expect everything to change before 0.0.2 ;-)

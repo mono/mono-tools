@@ -1,0 +1,36 @@
+<Project name="Gendarme.Rules.Performance" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../../bin" assemblyKeyFile="." assembly="Gendarme.Rules.Performance" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="-langversion:linq" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="bin/Release" assembly="Gendarme.Rules.Performance" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="-langversion:linq" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="EmptyDestructorRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="IDisposableWithDestructorWithoutSuppressFinalizeRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="UseStringEmptyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Rules.Performance.xml.in" subtype="Code" buildaction="Nothing" />
+    <File name="AvoidUnusedParametersRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidUncalledPrivateCodeRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidUninstantiatedInternalClassesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="UsingStringLengthInsteadOfCheckingEmptyStringRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidToStringOnStringsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DontIgnoreMethodResultRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidUnsealedConcreteAttributesRule.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Assembly" localcopy="True" refto="../../../lib/Mono.Cecil.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Project" localcopy="True" refto="framework" />
+  </References>
+  <Deployment.LinuxDeployData generatePcFile="False" />
+  <DeployTargets />
+</Project>

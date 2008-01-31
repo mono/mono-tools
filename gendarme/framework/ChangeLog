@@ -1,0 +1,172 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Makefile.am: Added CommonRocks and StackEntryAnalysis[Test] to 
+	the build.
+
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Makefile.am: Added new test file to the build.
+
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Makefile.am: Added new files and tests to the build.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Location.cs: Remove all string-based constructors.
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Location.cs: Add a ctor for FieldDefinition.
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Added FieldRocks to MD project file
+	* Makefile.am: Added FieldRocks class and tests to the build.
+
+2008-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Added AssemblyRocks to MD project file
+	* Makefile.am: Added AssemblyRocks class and tests to the build.
+
+2008-01-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Runner.cs: renamed Violation[s|Collection] and change some methods
+	to static (fix warnings)
+	* Violation.cs: Don't expose public fields (fix warning)
+	* Violations.cs: Rename class to ViolationCollection (fix warning)
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Location.cs: Store the offset (not a constant)
+
+2007-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Location.cs: Add new constructor that accept a MethodDefinition 
+	and an IL offset.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Makefile.am: Add rocks to the build, switch compiler to linq
+	* framework.mdp: Add rocks to the MonoDevelop project file, switch
+	compiler to linq.
+	* Location.cs: Add new constructors that accept a 
+	[Method|Type]Definition to simplify rules.
+
+2007-12-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyManager.cs: Make class static since we're now targetting
+	the 2.0 framework.
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Location.cs: Use StringBuilder in ToString. Add a new ctor that
+	doesn't requires an offset (as it doesn't apply to many rules).
+	Source now conforms to Mono source style.
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RuleInformation.cs: Remove ReadOnly property.
+	* RuleInformationManager.cs: Remove usage for ReadOnly.
+
+2007-10-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Put parenthesis and dollar in correct order for avoid the
+	make self-test fail.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Now built with 2.0 rutime.
+
+2007-09-25  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Runner.cs: Implemented the inclusion and exclusion of rules.
+
+2007-09-14  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* gendarme-framework.pc.in:  The framework will be installed in
+	${prefix}/lib/gendarme not in ${prefix}/lib/Gendarme.Framework.  It
+	works correctly now.
+
+2007-09-03  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* RuleCollection.cs: Removed the indexer with name as parameter.
+
+2007-08-31  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* gendarme-framework.pc.in, Makefile.am: Install Gendarme.Framework to
+	be reusable (pkg-config) with other runners.
+
+2007-03-12  Jb Evain  <jbevain@gmail.com>
+
+	* IRule.cs, Runner.cs: Simplify the rules interface.
+
+2007-03-01  Jb Evain  <jbevain@gmail.com>
+
+	* Runner.cs: Do some refactoring.
+
+2006-11-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: I forgot that constructors were kept apart from methods.
+	Rules will now be executed against all type's constructors as well.
+
+2006-11-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Update to add new file.
+	* Gendarme.Framework.csproj: Update to add new file.
+	* Makefile.am: Update to add new file.
+	* Message.cs: Reformat source to follow Mono source style. Ensure that
+	ToString works if a Location is null (e.g. rules on assemblies and 
+	modules may not have a location).
+	* MessageCollection.cs: Add new ctor that accept a Message. Easier to
+	use when returning a collection with a single message.
+	* MessageType.cs: New file. Moved enum from Message.cs.
+	* Runner.cs: Don't try to create abstract rules.
+
+2006-10-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Remove Violations.Reset(); from Process as it's reset the 
+	list and breaks the console runner when processing more than one
+	assembly (e.g. *.dll).
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+	Add new MessageCollection class to the build.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* Gendarme.Framework.csproj: Included ChangeLog
+	* MessageCollection.cs, Gendarme.Framework.csproj, framework.mdp:
+	Added new class to replace the untyped IList interface for 
+	holding Message objects.
+	* IRule.cs: Changed all interfaces to return the new
+	typed MessageCollection class instead of IList.
+
+2006-09-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Violation.cs: Added a new Assembly property deduced from the 
+	violator object.
+
+2006-09-17  Christian Birkl <christian.birkl@gmail.com>
+
+	* Runner.cs: Reset the violation list when processing a new assembly.
+	* Violations.cs: Implement IEnumerable.
+
+2006-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Rename the output assembly to Gendarme.Framework.dll
+	like it is built when using the Makefile (instead of framework.dll).
+	Found by Christian Birkl.
+
+2006-08-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Location.cs: Apply self compliance (UseStringEmptyRule).
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: New. Project file for MonoDevelop.
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Added self-test to promote compliance ;-)

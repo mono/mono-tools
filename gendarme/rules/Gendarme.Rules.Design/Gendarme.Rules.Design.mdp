@@ -1,0 +1,46 @@
+<Project name="Gendarme.Rules.Design" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../../bin" assemblyKeyFile="." assembly="Gendarme.Rules.Design" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="-langversion:linq" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="bin/Release" assembly="Gendarme.Rules.Design" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="-langversion:linq" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="DontDeclareProtectedFieldsInSealedClassRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Rules.Design.xml.in" subtype="Code" buildaction="Nothing" />
+    <File name="UsingCloneWithoutImplementingICloneableRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AbstractTypesShouldNotHavePublicConstructorsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidEmptyInterfaceRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidPropertiesWithoutGetAccessorRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DefineAZeroValueRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="EnumsShouldDefineAZeroValueRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="FlagsShouldNotDefineAZeroValueRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesShouldBeInsideNamespacesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MainShouldNotBePublicRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidPublicInstanceFieldsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderConvertingMethodToPropertyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MissingAttributeUsageOnCustomAttributeRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableFieldsShouldBeDisposedRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableHelper.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableTypesShouldHaveFinalizerRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesWithDisposableFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesWithNativeFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldBeProtectedRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldCallBaseClassFinalizerRule.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Project" localcopy="True" refto="framework" />
+    <ProjectReference type="Assembly" localcopy="True" refto="../../../lib/Mono.Cecil.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  </References>
+  <Deployment.LinuxDeployData generatePcFile="False" />
+</Project>

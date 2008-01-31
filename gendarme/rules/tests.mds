@@ -1,0 +1,65 @@
+<Combine name="tests" fileversion="2.0">
+  <Configurations>
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="Test.Rules.Security" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Portability" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Performance" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Exceptions" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Concurrency" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Correctness" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Ui" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Naming" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Design" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.BadPractice" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Smells" configuration="Debug" />
+      <Entry build="True" name="Test.Framework" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Interoperability" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="Test.Rules.Security" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Portability" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Performance" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Exceptions" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Concurrency" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Correctness" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Ui" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Naming" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Design" configuration="Release" />
+      <Entry build="True" name="Test.Rules.BadPractice" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Smells" configuration="Release" />
+      <Entry build="True" name="Test.Framework" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Interoperability" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="Test.Rules.Portability" single="True">
+    <Execute type="None" entry="Test.Rules.Security" />
+    <Execute type="None" entry="Test.Rules.Portability" />
+    <Execute type="None" entry="Test.Rules.Performance" />
+    <Execute type="None" entry="Test.Rules.Exceptions" />
+    <Execute type="None" entry="Test.Rules.Concurrency" />
+    <Execute type="None" entry="Test.Rules.Correctness" />
+    <Execute type="None" entry="Test.Rules.Ui" />
+    <Execute type="None" entry="Test.Rules.Naming" />
+    <Execute type="None" entry="Test.Rules.Design" />
+    <Execute type="None" entry="Test.Rules.BadPractice" />
+    <Execute type="None" entry="Test.Rules.Smells" />
+    <Execute type="None" entry="Test.Framework" />
+    <Execute type="None" entry="Test.Rules.Interoperability" />
+  </StartMode>
+  <DeployTargets />
+  <Entries>
+    <Entry filename="../framework/Test/Test.Framework.mdp" />
+    <Entry filename="Gendarme.Rules.Security/Test/Test.Rules.Security.mdp" />
+    <Entry filename="Gendarme.Rules.Portability/Test/Test.Rules.Portability.mdp" />
+    <Entry filename="Gendarme.Rules.Performance/Test/Test.Rules.Performance.mdp" />
+    <Entry filename="Gendarme.Rules.Exceptions/Test/Test.Rules.Exceptions.mdp" />
+    <Entry filename="Gendarme.Rules.Concurrency/Test/Test.Rules.Concurrency.mdp" />
+    <Entry filename="Gendarme.Rules.Correctness/Test/Test.Rules.Correctness.mdp" />
+    <Entry filename="Gendarme.Rules.Ui/Test/Test.Rules.Ui.mdp" />
+    <Entry filename="Gendarme.Rules.Naming/Test/Test.Rules.Naming.mdp" />
+    <Entry filename="Gendarme.Rules.Design/Test/Test.Rules.Design.mdp" />
+    <Entry filename="Gendarme.Rules.BadPractice/Test/Test.Rules.BadPractice.mdp" />
+    <Entry filename="Gendarme.Rules.Smells/Test/Test.Rules.Smells.mdp" />
+    <Entry filename="Gendarme.Rules.Interoperability/Test/Test.Rules.Interoperability.mdp" />
+  </Entries>
+</Combine>

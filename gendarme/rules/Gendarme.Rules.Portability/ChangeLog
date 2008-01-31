@@ -1,0 +1,87 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Don't report when 
+	analysis the Ping class itself (very special case but useful for 
+	Mono itself :)
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExitCodeIsLimitedOnUnixRule.cs: Use new Location ctors.
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Use new Location ctors.
+	* MonoCompatibilityReviewRule.cs: Use new Location ctors.
+	* NewLineLiteralRule.cs: Use new Location ctors.
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExitCodeIsLimitedOnUnixRule.cs: Rename InspectionResult[s]
+	* MonoCompatibilityReviewRule.cs: Change some methods to static.
+
+2007-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExitCodeIsLimitedOnUnixRule.cs: New. Rule to detect usage of 
+	ExitCode (from Main or Environment.ExitCode / Exit) with values too
+	big for Unix systems.
+	* Gendarme.Rules.Portability.xml.in: Add new rule definition.
+	* Makefile.am: Add new rule/tests to the build.
+
+2007-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewRule.cs: New. Rule that use MoMA definition
+	files to report possible incompatibilities with Mono (Andreas Noever)
+	* MoMAWebService.cs: New. Wrapper for MoMA web service.
+	* Gendarme.Rules.Portability.xml.in: Add new rule definition.
+	* Gendarme.Rules.Portability.mdp: Add new rule to the MonoDevelop 
+	project file.
+	* Makefile.am: Add new rule/tests to the build.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: New. Rule that check
+	for the use of features that requires to be root under Linux.
+	* NewLineLiteralRule.cs: Update to use latest best-practice since
+	it's a likely starting point for new rules.
+	* Gendarme.Rules.Portability.xml.in: Add new rule definition.
+	* Gendarme.Rules.Portability.mdp: Add new rule to the MonoDevelop 
+	project file.
+	* Makefile.am: Add new rule/tests to the build.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Portability.mdp: Update project file.
+
+2006-10-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Portability.xml.in: Update Uri for rules (to generate
+	more useful reports).	
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* Gendarme.Rules.Portability.csproj: Included ChangeLog
+	* NewLineLiteralRule.cs: Migrated untyped IList messages collection
+	to typed MessageCollection class.
+	
+2006-09-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NewLineLiteralRule.cs: Update rule to provide location (which 
+	results in better reports).
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Portability.mdp: New. Project file for MonoDevelop.
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Use -pkg:mono-nunit to reference nunit assemblies.
+	Added self-test target to promote compliance ;-)
+
+2006-03-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: New. Build Gendarme.Rules.Portability rules and tests.
+	* Gendarme.Rules.Portability.xml.in: New. Configuration for Gendarme.
+	Rules.Portability.
+	* NewLineLiteralRule.cs: New. Rule to check if a method is directly
+	using \r, \n or \r\n instead of Environment.NewLine.

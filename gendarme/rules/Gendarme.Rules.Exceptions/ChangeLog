@@ -1,0 +1,72 @@
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DontDestroyStackTrace.cs: Use new Location ctors. Change some 
+	methods to static.
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Don't 
+	create MessageCollection until needed. Use new Location ctors. Change
+	a method to static.
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDestroyStackTrace.cs: Don't use a static field (it fails a rule)
+	as the rules are reusable and created only a single time by runners.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Exceptions.mdp: Update project file.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Gendarme.Rules.Exceptions.mdp, Test.Rules.Exceptions.mdp:  Added
+	DontSwallowErrorsCatchingNonspecificExceptions rule, and the respective
+	unit test to the MonoDevelop project file.
+
+2007-09-29  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* Gendarme.Rules.Exceptions.xml.in:  Added Uri for
+	DontSwallowErrorsCatchingNonspecificExceptionsRule.
+
+2007-09-24  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Change rule
+	name for adhere to coding guidelines.  With this change, the rule
+	information in the xml file will be shown.
+
+2007-09-01  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* Gendarme.Rules.Exceptions.xml.in: Added the rule information for
+	DontSwallowErrorsCatchingNonSpecificExceptions rule in the xml file.
+
+2007-09-01  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Added the sources of new rule and unit tests.
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: New. Rule for
+	check error swallowing.
+
+2006-10-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Exceptions.xml.in: Update Uri for rules (to generate
+	more useful reports).	
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* Gendarme.Rules.Exceptions.csproj: Included ChangeLog
+	* DontDestroyStackTrace.cs: Migrated untyped IList messages collection
+	to typed MessageCollection class.
+	
+2006-08-15  Russell Morris  <russell@russellsprojects.com>
+
+	* DontDestroyStackTrace.cs: Fix possible NRE when processing invalid 
+	IL. http://blog.russellsprojects.com/?p=3
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Exceptions.mdp: New. Project file for MonoDevelop.
+
+2006-06-19  Russell Morris  <russell@russellsprojects.com>
+
+	* Initial import of exception-management rule assembly
