@@ -1,7 +1,8 @@
 SUBDIRS=Test
 
-design_rulesdir=$(pkglibdir)
+design_rulesdir=$(prefix)/lib/gendarme
 design_rules_SCRIPTS = ../../bin/Gendarme.Rules.Design.dll
+design_rules_DATA = Gendarme.Rules.Design.xml
 EXTRA_DIST = $(design_rules_sources) $(design_rules_sources_in) Gendarme.Rules.Design.xml \
 	Gendarme.Rules.Design.mdp 
 CLEANFILES = $(design_rules_SCRIPTS) $(design_rules_SCRIPTS).mdb Test.Rules.Design.dll
@@ -24,22 +25,8 @@ design_rules_build_sources = $(addprefix $(srcdir)/, $(design_rules_sources))
 design_rules_build_sources += $(design_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Design.dll: $(design_rules_build_sources)
-	$(MCS) -debug -target:library -langversion:linq -pkg:mono-cecil -r:System.Core.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(design_rules_build_sources)
+	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Core.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(design_rules_build_sources)
 	cp Gendarme.Rules.*.xml ../../bin/
-
-# Install Unstable Mono Libraries (see configure.ac)
-
-install-data-hook:
-	$(INSTALL) -c -m 0644 Gendarme.Rules.Design.xml $(DESTDIR)$(pkglibdir);
-	for ASM in $(INSTALLED_ASSEMBLIES); do \
-		$(INSTALL) -c -m 0755 $$ASM $(DESTDIR)$(pkglibdir); \
-	done;
-
-uninstall-hook:
-	rm -f $(DESTDIR)$(pkglibdir)/`basename Gendarme.Rules.Design.xml`;
-	for ASM in $(INSTALLED_ASSEMBLIES); do \
-		rm -f $(DESTDIR)$(pkglibdir)/`basename $$ASM`; \
-	done;
 
 design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneWithoutImplementingICloneableTest.cs \
 	EnumsShouldDefineAZeroValueTest.cs FlagsShouldNotDefineAZeroValueTest.cs \
@@ -55,13 +42,13 @@ design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneW
 design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 
 Test.Rules.Design.dll: $(design_rules_build_sources) $(design_rules_SCRIPTS)
-	$(MCS) -target:library -pkg:mono-cecil -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(design_rules_SCRIPTS) -out:$@ $(design_test_build_sources)
 
 test: Test.Rules.Design.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(CECIL_PATH):$(MONO_PATH) nunit-console2 Test.Rules.Design.dll
+	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Design.dll
 
 self-test: $(design_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(design_rules_SCRIPTS)

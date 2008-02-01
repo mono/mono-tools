@@ -1,5 +1,5 @@
-frameworkdir=$(pkglibdir)
-framework_SCRIPTS = ../bin/Gendarme.Framework.dll
+frameworkdir=$(prefix)/lib/gendarme
+framework_SCRIPTS = ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
 EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
 CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
@@ -32,9 +32,11 @@ framework_build_sources += $(framework_generated_sources)
 ../bin/:
 	mkdir ../bin
 
-../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources)
-	$(MCS) -debug -target:library -langversion:linq -pkg:mono-cecil -r:System.Xml.dll -out:$@ $(framework_build_sources)
+$(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
+	cp `pkg-config --variable=Libraries cecil` $(top_builddir)/gendarme/bin/
 
+../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
+	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Xml.dll -out:$@ $(framework_build_sources)
 
 framework_test_sources = \
 	Gendarme.Framework/MethodSignatureTest.cs \
@@ -47,27 +49,15 @@ framework_test_sources = \
 	Gendarme.Framework.Rocks/FieldRocksTest.cs
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
-Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll
-	$(MCS) -debug -target:library -langversion:linq -pkg:mono-cecil -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
+Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
+	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(framework_test_build_sources)
 
 test: Test.Framework.dll
 
 run-test: test
-	MONO_PATH=../bin/:$(CECIL_PATH):$(MONO_PATH) nunit-console2 Test.Framework.dll
+	MONO_PATH=../bin/:$(MONO_PATH) nunit-console2 Test.Framework.dll
 
 
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)
-
-# Install Unstable Mono Libraries (see configure.ac)
-
-install-data-hook:
-	for ASM in $(INSTALLED_ASSEMBLIES); do \
-		$(INSTALL) -c -m 0755 $$ASM $(DESTDIR)$(pkglibdir); \
-	done;
-
-uninstall-hook:
-	for ASM in $(INSTALLED_ASSEMBLIES); do \
-		rm -f $(DESTDIR)$(pkglibdir)/`basename $$ASM`; \
-	done;

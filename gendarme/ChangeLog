@@ -1,3 +1,8 @@
+2008-02-01  Andrew Jorgensen  <ajorgensen@novell.com>
+
+	* Makefile.am: Fixes to import gendarme into mono-tools
+	and a good amount of autotools love as well
+
 2008-01-31  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NEWS: Ready for 0.0.5

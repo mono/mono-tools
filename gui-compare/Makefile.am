@@ -51,15 +51,6 @@ gui_compare_resources = 			\
 	$(srcdir)/gtk-gui/objects.xml		\
 	$(srcdir)/cm/mn.png
 
-REWRITE = sed \
-	-e 's,@''prefix@,$(prefix),g'	\
-	-e 's,@''PACKAGE@,gui-compare,g'	\
-	-e 's,@''exe_file@,$@.exe,g'				\
-	-e 's,@''RUNTIME@,@RUNTIME@ --debug,g'
-
-gui-compare: gui-compare.in
-	$(REWRITE) < $(srcdir)/gui-compare.in > gui-compare
-
 EXTRA_DIST = $(gui_compare_sources) $(gui_compare_resources) gui-compare.mds gui-compare.mdp  gui-compare.in
 
 packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0 -pkg:glade-sharp-2.0 -r:Mono.Cecil.dll

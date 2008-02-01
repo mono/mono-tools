@@ -9,10 +9,10 @@ EXTRA_DIST = rules.xml rules.mds tests.mds
 DISTCLEANFILES = Makefile.in
 
 install-data-hook:
-	$(INSTALL) -c -m 0644 rules.xml $(DESTDIR)$(pkglibdir);
+	$(INSTALL) -c -m 0644 rules.xml $(DESTDIR)$(prefix)/lib/gendarme;
 
 uninstall-hook:
-	rm -f $(DESTDIR)$(pkglibdir)/`basename rules.xml`;
+	rm -f $(DESTDIR)$(prefix)/lib/gendarme/`basename rules.xml`;
 
 test:
 	for ASM in $(SUBDIRS); do \
