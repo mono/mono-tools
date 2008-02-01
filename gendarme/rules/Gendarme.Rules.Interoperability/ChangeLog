@@ -1,0 +1,48 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Changed to
+	use the new shared StackEntryAnalysis by Andreas Noever. Refactored
+	(split) by me to reduce self-test complaints ;-)
+
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarshalStringsInPInvokeDeclarationsRule.cs: New. Rule to ensure 
+	all string and StringBuilder have marshalling information 
+	[Daniel Abramov]
+	* Gendarme.Rules.Interoperability.xml.in: Add rule description and
+	update Uri for all of them.
+	* Makefile.am: Add rule and test to the build.
+
+2008-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseManagedAlternativesToPInvokeRule.cs: Override operators == and
+	!= since the struct PInvokeCall overrides Equals (Gendarme rule).
+
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseManagedAlternativesToPInvokeRule.cs: New. Rule to check if
+	p/invoke calls can be replaced with managed alternatives 
+	[Daniel Abramov]. Removed dead code and simplified GetHashCode (sp)
+	* Makefile.am: Add rule and test to the build.
+	* Gendarme.Rules.Interoperability.xml.in: Add rule description.
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Use new 
+	Location ctors.
+
+2008-01-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Change two 
+	methods to static (self-test)
+	* Gendarme.Rules.Interoperability.mdp: New. MonoDevelop project file.
+
+2007-12-30  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: New. Rule to 
+	ensure GetLastError is called soon enough after a p.invoke call.
+	Rule by Andreas Noever
+	* PInvokeShouldNotBeVisibleRule.cs: New. Rule to check that all
+	p/invoke declaration aren't directly visible from assemblies.
+	* Gendarme.Rules.Interoperability.xml.in: Rules descritions.
+	* Makefile.am: New. Build file for rules and tests.

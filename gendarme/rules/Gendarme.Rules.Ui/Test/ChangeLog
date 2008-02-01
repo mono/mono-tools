@@ -1,0 +1,21 @@
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseSTAThreadAttributeOnSWFEntryPointsTest.cs: New. Unit tests 
+	from Daniel Abramov (with a bit more coverage by myself).
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Ui.mdp: Update project file.
+
+2006-11-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Tests.Rules.Ui.csproj: New. Build file for VS.NET
+
+2006-11-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ChangeLog: New. Track changes to UI rules.
+	* ExecutableTargetTest.cs: New. Data (assemblies) for tests.
+	* GtkSharpExecutableTargetTest.cs: New. Tests for Gtk# apps.
+	* Makefile.am: New. Build file.
+	* SystemWindowsFormsExecutableTargetTest.cs: New. Tests for SWF apps.
+	* Test.Rules.Ui.mdp: New. MonoDevelop project file for unit tests.

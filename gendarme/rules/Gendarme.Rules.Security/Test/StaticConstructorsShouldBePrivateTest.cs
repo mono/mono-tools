@@ -1,0 +1,96 @@
+// 
+// Unit tests for StaticConstructorsShouldBePrivateRule
+//
+// Authors:
+//	Daniel Abramov <ex@vingrad.ru>
+//
+// Copyright (C) Daniel Abramov
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
+
+using Mono.Cecil;
+
+using Gendarme.Framework;
+using Gendarme.Rules.Security;
+
+using NUnit.Framework;
+
+namespace Test.Rules.Security {
+
+	internal class NoStaticCtorDefinedClass {
+	}
+
+	internal class PrivateStaticCtorDefinedClass {
+		static PrivateStaticCtorDefinedClass ()
+		{
+		}
+	}
+
+	[TestFixture]
+	public class StaticConstructorsShouldBePrivateTest {
+
+		private ITypeRule rule;
+		private AssemblyDefinition assembly;
+		private Runner runner;
+
+
+		[TestFixtureSetUp]
+		public void FixtureSetUp ()
+		{
+			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
+			assembly = AssemblyFactory.GetAssembly (unit);
+			rule = new StaticConstructorsShouldBePrivateRule ();
+			runner = new MinimalRunner ();
+		}
+
+		private TypeDefinition GetTest<T> ()
+		{
+			return assembly.MainModule.Types [typeof (T).FullName];
+		}
+
+		[Test]
+		public void TestNoStaticCtorDefinedClass ()
+		{
+			MessageCollection messages = rule.CheckType (GetTest<NoStaticCtorDefinedClass> (), runner);
+			Assert.IsNull (messages);
+		}
+
+		[Test]
+		public void TestPrivateStaticCtorDefinedClass ()
+		{
+			MessageCollection messages = rule.CheckType (GetTest<PrivateStaticCtorDefinedClass> (), runner);
+			Assert.IsNull (messages);
+		}
+
+		[Test]
+		public void TestNonPrivateStaticCtorDefinedClass ()
+		{
+			TypeDefinition inspectedType = GetTest<PrivateStaticCtorDefinedClass> ().Clone () as TypeDefinition;
+			foreach (MethodDefinition ctor in inspectedType.Constructors)
+				if (ctor.IsStatic)
+					ctor.IsPublic = true; // change it from private to public
+
+			MessageCollection messages = rule.CheckType (inspectedType, runner);
+			Assert.IsNotNull (messages);
+			Assert.AreEqual (1, messages.Count);
+		}
+	}
+}

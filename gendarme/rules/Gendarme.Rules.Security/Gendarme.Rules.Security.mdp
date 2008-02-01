@@ -1,0 +1,34 @@
+<Project name="Gendarme.Rules.Security" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../../bin" assembly="Gendarme.Rules.Security" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="../../bin/Release" assembly="Gendarme.Rules.Security" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="MethodCallWithSubsetLinkDemandRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="NonVirtualMethodWithInheritanceDemandRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="SealedTypeWithInheritanceDemandRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="SecureGetObjectDataOverridesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypeExposeFieldsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypeIsNotSubsetOfMethodSecurityRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypeLinkDemandRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Rules.Security.xml.in" subtype="Code" buildaction="Nothing" />
+    <File name="StaticConstructorsShouldBePrivateRule.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Assembly" localcopy="True" refto="../../../lib/Mono.Cecil.dll" />
+    <ProjectReference type="Project" localcopy="True" refto="framework" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  </References>
+  <Deployment.LinuxDeployData generatePcFile="False" />
+  <DeployTargets />
+</Project>

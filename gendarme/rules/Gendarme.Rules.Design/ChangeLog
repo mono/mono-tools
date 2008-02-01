@@ -1,0 +1,164 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideAlternativeNamesForOperatorOverloadsRule.cs: Change
+	op_Inequality alternative to (not) Equals instead of Compare.
+
+2008-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideAlternativeNamesForOperatorOverloadsRule.cs: Adapt for
+	API changes in MethodSignature.
+
+2008-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypesShouldBeInsideNamespacesRule.cs: Don't report nested types 
+	since the declaring type will already be reported and a single *fix*
+	is required (and more related to the declaring type than then nested
+	one).
+
+2008-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementEqualsAndGetHashCodeInPairRule.cs: This replace Gendarme.
+	Rule.BadPractice.ImplementingEqualsButNotGetHashCodeAndViceVersaRule.
+	Renamed, moved & rockified.
+	* Gendarme.Rules.Design.xml.in: Moved description.
+	* Makefile.am: Added (moved) rule and tests.
+
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableHelper.cs: Removed.
+	* EnsureSymmetryForOverloadedOperatorsTest.cs: New. Rule that 
+	ensure operators are overloaded in symmetry [Andreas Noever].
+	* DisposableFieldsShouldBeDisposedRule.cs: Adapted to use rocks
+	instead of DisposableHelper.
+	* OperatorEqualsShouldBeOverloadedTest.cs: New. Rule that ensure 
+	that operator == is overloaded when required [Andreas Noever].
+	* OverrideEqualsMethodTest.cs: New. Rule that ensure that method 
+	Equals is overriden when required [Andreas Noever].
+	* ProvideAlternativeNamesForOperatorOverloadsTest.cs: New. Rule
+	that ensure alternate methods are provided for operators [Andreas Noever].
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Adapted to 
+	use rocks instead of DisposableHelper.
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs: Adapted to use 
+	rocks instead of DisposableHelper.
+	* Gendarme.Rules.Design.xml.in: Add new rule descriptions.
+	* Makefile.am: Add new rules/tests to the build.
+
+2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Exclude generated code
+	from results (to reduce false positives).
+	* FinalizersShouldBeProtectedRule.cs: New. Rule to ensure that every
+	finalizer is protected.
+	* FinalizersShouldCallBaseClassFinalizerRule.cs: New. Rule to ensure
+	that every finalizer calls it's base class.
+	* Gendarme.Rules.Design.mdp: Add new files to MD project file.
+	* Gendarme.Rules.Design.xml.in: Added new rule descriptions.
+	* Makefile.am: Add new rules/tests to the build.
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Add check for static 
+	fields.
+	* DisposableTypesShouldHaveFinalizerRule.cs: Add check for static 
+	fields.
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Add checks 
+	for structs and static fields.
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs: Add checks 
+	for structs and static fields.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: New. Rule that check that
+	disposable fields are disposed by the Dispose method. [Andreas Noever]
+	* DisposableHelper.cs: Helper methods for new rules [Andreas Noever]
+	* DisposableTypesShouldHaveFinalizerRule.cs: New. Rule that check
+	that classes with disposable fields have a finalizer. [Andreas Noever]
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: New. Rule that
+	check that classes with disposable types implements IDisposable 
+	[Andreas Noever].
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs: New. Rule that 
+	check that classes with native fields implements IDisposable 
+	[Andreas Noever]
+	* Gendarme.Rules.Design.mdp: Add new files to MD project file.
+	* Gendarme.Rules.Design.xml.in: Added new rule descriptions.
+	* Makefile.am: Add new rules/tests to the build.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeArgumentsShouldHaveAccessorsRule.cs: New. Rule that check 
+	that all attribute's constructors have read-only properties (get) that
+	match their parameters [Daniel Abramov]
+	* Gendarme.Rules.Design.xml.in: Added new rule descriptions.
+	* Makefile.am: Add new rules/tests to the build.
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MissingAttributeUsageOnCustomAttributeRule.cs: New. Rule that checks
+	for attributes without a [AttributeUsage] attribute [Daniel Abramov]
+	* Gendarme.Rules.Design.xml.in: Added new rule descriptions.
+	* Gendarme.Rules.Design.mdp: Added files to MonoDevelop project file.
+	* Makefile.am: Add new rules/tests to the build.
+
+2008-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidPublicInstanceFieldsRule.cs: New. Rule to check for public
+	instance fields that could be converted into properties [Adrian Tsai]
+	* ConsiderConvertingMethodToPropertyRule.cs: New. Rule to check
+	for methods that could be converted into properties [Adrian Tsai]
+	* Gendarme.Rules.Design.xml.in: Added new rule descriptions.
+	* Gendarme.Rules.Design.mdp: Added files to MonoDevelop project file.
+	* Makefile.am: Add new rules/tests to the build.
+
+2007-12-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MainShouldNotBePublicRule.cs: New. Rule to check that the Main 
+	entry point isn't visible outside it's assembly. By Daniel Abramov.
+	* Gendarme.Rules.Design.xml.in: Added new rule description.
+	* Gendarme.Rules.Design.mdp: Add new file to MonoDevelop project file.
+	* Makefile.am: Add new rule/tests to the build.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsRule.cs: New. Rule
+	to check for public constructors inside abstract classes.
+	* AvoidEmptyInterfaceRule.cs: New. Rule to check for empty interfaces
+	* AvoidPropertiesWithoutGetAccessorRule.cs: New. Rule to check for
+	properties with only a setter.
+	* DefineAZeroValueRule.cs: New. Abstract base class for 
+	[EnumsShould|FlagsShouldNot]DefineAZeroValueRule.
+	* DontDeclareProtectedFieldsInSealedClassRule.cs: Updated to use
+	simpler Location ctor.
+	* EnumsShouldDefineAZeroValueRule.cs: New. Rule to check that all
+	enums, except flags, provide a 0 value.
+	* FlagsShouldNotDefineAZeroValueRule.cs: New. Rule to check that all
+	flags don't provide a 0 value.
+	* TypesShouldBeInsideNamespacesRule.cs: New. Rule to check that 
+	types are defined inside namspaces.
+	* UsingCloneWithoutImplementingICloneableRule.cs: Updated to use
+	simpler Location ctor and rocks.
+	* Gendarme.Rules.Design.mdp: Add new files to MonoDevelop project file.
+	* Gendarme.Rules.Design.xml.in: Update rules descriptions.
+	* Makefile.am: Add new rules to the build.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDeclareProtectedFieldsInSealedClassRule.cs: Avoid creating
+	MessageCollection unless needed.
+	* UsingCloneWithoutImplementingICloneableRule.cs: Avoid creating
+	MessageCollection unless needed. Also check Clone methods that return
+	the current type (not just System.Object)
+
+2007-10-27  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* Gendarme.Rules.Design.xml.in:  Added Uri with the documentation for
+	the rules.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDeclareProtectedFieldsInSealedClassRule.cs: New rule (Nidhi 
+	Rawal, GSoC 2007)
+	* UsingCloneWithoutImplementingICloneableRule.cs: New rule (Nidhi 
+	Rawal, GSoC 2007)
+	* Gendarme.Rules.Design.mdp: New. Project file for MonoDevelop.
+	* Gendarme.Rules.Design.xml.in: New. Rule descriptions.
+	* Makefile.am: New. Build file for rules and unit tests.

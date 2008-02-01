@@ -1,0 +1,4 @@
+2006-09-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Added documentation for new options (--quiet, --log,
+	--xml and --html).

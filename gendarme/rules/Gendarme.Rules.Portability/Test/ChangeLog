@@ -1,0 +1,40 @@
+2007-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExitCodeIsLimitedOnUnixTest.cs: New. Unit tests by Daniel Abramov
+
+2007-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NewLineLiteralTest.cs: Remove unused variable (compiler warning).
+	* MonoCompatibilityReviewTest.cs: New. Unit tests by Andreas Noever
+	* Test.Rules.Portability.mdp: Add new test to MonoDevelop project 
+	file.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixTest.cs: New. Unit tests for 
+	FeatureRequiresRootPrivilegeOnUnixRule.
+	* NewLineLiteralTest.cs: Fix namespace and remove unneeded variable.
+	* Test.Rules.Portability.mdp: Add new rule to the MonoDevelop 
+	project file.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Portability.mdp: Update project file.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-20  Jonathan Chambers  <joncham@gmail.com>
+
+	* Test.Rules.Portability.csproj: Make reference to nunit.framework
+	not a specific version for portability.
+	
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Portability.mdp: New. Project file for MonoDevelop.
+	* NewLineLiteralTest.cs: Avoid compiler warnings.
+
+2006-03-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NewLineLiteralTest.cs: New. Unit tests for the NewLineLiteralRule.

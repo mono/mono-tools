@@ -1,0 +1,37 @@
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseSTAThreadAttributeOnSWFEntryPointsRule.cs: New. Rule to check
+	that SWF apps have the [STAThread] attribute on their entry point.
+	[Daniel Abramov]
+	* Makefile.am: Add rule and test to the build.
+	* Gendarme.Rules.Ui.xml.in: Add rule description.
+
+2007-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutableTargetRule.cs: Move assembly reference checking code in
+	order to reduce code duplication for both rules.
+	* GtkSharpExecutableTargetRule.cs: Avoid code duplication.
+	* SystemWindowsFormsExecutableTargetRule.cs: Avoid code duplication.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Ui.mdp: Update project file.
+
+2006-11-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Ui.csproj: New. Build file for VS.NET
+
+2006-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Ui.xml.in: Fix description for SWF target rule.
+
+2006-11-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ChangeLog: New. Track changes to UI rules.
+	* ExecutableTargetRule.cs: New. Abstract rule to detect /target:winexe
+	in GUI applications.
+	* Gendarme.Rules.Ui.mdp: New. MonoDevelop project file for rules.
+	* Gendarme.Rules.Ui.xml.in: New. XML description of the rules.
+	* GtkSharpExecutableTargetRule.cs: New. Rule for Gtk#.
+	* Makefile.am: New. Build file.
+	* SystemWindowsFormsExecutableTargetRule.cs: New. Rule for SWF.

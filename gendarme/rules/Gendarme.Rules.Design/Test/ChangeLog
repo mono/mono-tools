@@ -1,0 +1,112 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideAlternativeNamesForOperatorOverloadsTest.cs: Add 
+	"override Equals" in EverythingIsThere class.
+
+2008-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypesShouldBeInsideNamespacesTest.cs: Adapt nested types test 
+	cases because we don't report them anymore.
+
+2008-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementEqualsAndGetHashCodeInPairTest.cs: Tests (updated and) 
+	moved from BadPractice.
+
+2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnsureSymmetryForOverloadedOperatorsTest.cs: New. Unit tests by 
+	Andreas Noever
+	* OperatorEqualsShouldBeOverloadedTest.cs: New. Unit tests by 
+	Andreas Noever
+	* OverrideEqualsMethodTest.cs: New. Unit tests by Andreas Noever
+	* ProvideAlternativeNamesForOperatorOverloadsTest.cs: New. Unit 
+	tests by Andreas Noever
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FinalizersShouldBeProtectedTest.cs: New. Unit tests by Daniel 
+	Abramov
+	* FinalizersShouldCallBaseClassFinalizerTest.cs: New. Unit tests by 
+	Daniel Abramov
+	* Test.Rules.Design.mdp: Added new tests to MD project file.
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DisposableFieldsShouldBeDisposedTest.cs: Add test case for static 
+	fields.
+	* DisposableTypesShouldHaveFinalizerTest.cs: Add test case for 
+	static fields.
+	* TypesWithDisposableFieldsShouldBeDisposableTest.cs: Add test 
+	cases for structs and static fields.
+	* TypesWithNativeFieldsShouldBeDisposableTest.cs: Add test cases 
+	for structs and static fields.
+
+2008-01-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedTest.cs: New. Unit tests by 
+	Andreas Noever.
+	* DisposableTypesShouldHaveFinalizerTest.cs: New. Unit tests by 
+	Andreas Noever.
+	* TypesWithDisposableFieldsShouldBeDisposableTest.cs: New. Unit 
+	tests by Andreas Noever.
+	* TypesWithNativeFieldsShouldBeDisposableTest.cs: New. Unit 
+	tests by Andreas Noever.
+	* Test.Rules.Design.mdp: Added new tests to MD project file.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeArgumentsShouldHaveAccessorsTest.cs: New. Unit tests from
+	Daniel Abramov.
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MissingAttributeUsageOnCustomAttributeTest.cs: New. Unit tests 
+	from Daniel Abramov.
+	* Test.Rules.Design.mdp: Add new unit tests to MonoDevelop 
+	project	file.
+
+2008-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidPublicInstanceFieldsTest.cs: New. Unit tests from Adrian Tsai
+	* ConsiderConvertingMethodToPropertyTest.cs: New. Unit tests from 
+	Adrian Tsai
+	* Test.Rules.Design.mdp: Add new unit tests to MonoDevelop 
+	project	file.
+
+2007-12-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MainShouldNotBePublicTest.cs: New. Unit tests from Daniel Abramov.
+	* Test.Rules.Design.mdp: Add new unit test to MonoDevelop project 
+	file.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsTest.cs: New. Unit tests
+	* AvoidEmptyInterfaceTest.cs: New. Unit tests
+	* AvoidPropertiesWithoutGetAccessorTest.cs: New. Unit tests
+	* EnumsShouldDefineAZeroValueTest.cs: New. Unit tests
+	* FlagsShouldNotDefineAZeroValueTest.cs: New. Unit tests
+	* TypesShouldBeInsideNamespacesTest.cs: New. Unit tests
+	* UsingCloneWithoutImplementingICloneableTest.cs: Add test cases 
+	for inheritance.
+	* Test.Rules.Design.mdp: Add new unit test to MonoDevelop project 
+	file.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UsingCloneWithoutImplementingICloneableTest.cs: Add a test case
+	where the Clone method return the type itself (not System.Object) 
+	since this is also a good candidate for ICloneable
+
+2007-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add missing file
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDeclareProtectedFieldsInSealedClassTest.cs: Unit tests (Nidhi 
+	Rawal, GSoC 2007)
+	* UsingCloneWithoutImplementingICloneableTest.cs: Unit tests (Nidhi 
+	Rawal, GSoC 2007)
+	* Test.Rules.Design.mdp: New. Project file for MonoDevelop.

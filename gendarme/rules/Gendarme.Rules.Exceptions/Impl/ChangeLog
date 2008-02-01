@@ -1,0 +1,16 @@
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExceptionBlockParser.cs: Since we now compile with >= 2.0 changed
+	this class to static.
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ExecutionPath.cs: Removed some unused code.
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ExecutionPath.cs: Handle the null argument in the Equals method.
+
+2006-06-19  Russell Morris  <russell@russellsprojects.com>
+
+	* Initial import of exception-management rule assembly

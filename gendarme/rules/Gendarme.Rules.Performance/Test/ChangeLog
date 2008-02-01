@@ -1,0 +1,128 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Add nested enum test 
+	cases.
+
+2008-01-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add more test cases for 
+	serialization constructors.
+
+2008-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnsealedConcreteAttributesTest.cs: New. Unit tests by 
+	Daniel Abramov
+	* Test.Rules.Performance.mdp: Add new test for MonoDevelop project 
+	file.
+
+2008-01-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidReturningArraysOnPropertiesTest.cs: New. Unit tests by 
+	Adrian Tsai
+	* AvoidUninstantiatedInternalClassesTest.cs: Add new enum test cases.
+	* Test.Rules.Performance.mdp: Add new test for MonoDevelop project 
+	file.
+
+2007-12-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs, AvoidUnusedParametersTest.cs:
+	Fix anonymous test cases since GMCS and CSC don't compile the types,
+	or methods, using the same names.
+
+2007-12-21  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidUnusedParametersTest.cs: Added a testcase for anonymous methods
+	due #350288 bug.
+
+2007-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Change the behavior of
+	a test since the condition is already checked by another rule.
+
+2007-11-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Added testcase for check compiler
+	generated methods, by example anonymous methods.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUncalledPrivateCodeTest.cs: Change behaviour, it's ok to have
+	unused private ctor (and it's common before static classes were 
+	available).
+	* AvoidUnusedParametersTest.cs: Added test cases for operators when
+	tracking some false positives reported in Cecil (make self-check)
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test case for explicit 
+	interface implementation.
+
+2007-11-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Moved class outside
+	the fixture (because it made them all nested). Removed test for 
+	InternalsVisibleToAttribute. This must be done from another assembly 
+	(or it will mess every results in this one).
+
+2007-11-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUncalledPrivateCodeTest.cs: Word around bug #343465 so test
+	all works under Mono and MS runtimes.
+
+2007-11-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Handle more cases (don't check for
+	method.Name). Add test case for finalizers.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidToStringOnStringsTest.cs: Unit tests (Lukasz Knop, GSoC 2007)
+	* AvoidUncalledPrivateCodeTest.cs: Unit tests (Nidhi Rawal, GSoC 2007)
+	* AvoidUninstantiatedInternalClassesTest.cs: Unit tests (Nidhi Rawal,
+	GSoC 2007)
+	* DontIgnoreMethodResultTest.cs: Unit tests (Lukasz Knop, GSoC 2007)
+	* UsingStringLengthInsteadOfCheckingEmptyStringTest.cs: Unit tests 
+	(Nidhi Rawal, GSoC 2007)
+	* Test.Rules.Performance.mdp: Update project file.
+
+2007-09-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidUnusedParametersTest.cs: Added a test case for empty method.
+
+2007-08-31  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidUnusedParametersTest.cs: New. Unit tests for
+	AvoidUnusedParametersRule.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-20  Jonathan Chambers  <joncham@gmail.com>
+
+	* Test.Rules.Performance.csproj: Make reference to nunit.framework
+	not a specific version for portability.
+	
+2006-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EmptyDestructorTest.cs: Fixed test case, EmptyDestructor should not
+	return null (as this is an error, i.e. counter-productive).
+
+2006-08-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseStringEmptyTest.cs: New. Unit tests for UseStringEmptyRule.
+	* Test.Rules.Performance.mdp: Add new test to MonoDevelop project.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Performance.mdp: New. Project file for MonoDevelop.
+	* EmptyDestructorTest.cs,
+	  IDisposableWithDestructorWithoutSuppressFinalizeTest.cs:
+		Add a property for the IntPtr to remove compiler warnings.
+
+2006-03-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EmptyDestructorTest.cs,
+	  IDisposableWithDestructorWithoutSuppressFinalizeTest.cs:
+		Conditions for success/failure were inverted when Gendarme 
+		framework was updated.

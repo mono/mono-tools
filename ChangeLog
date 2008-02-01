@@ -1,3 +1,7 @@
+2008-02-01  Andrew Jorgensen  <ajorgensen@novell.com>
+
+	* configure.in: get the path to Mono.Cecil.dll during configure
+
 2008-01-28  Wade Berrier  <wberrier@novell.com>
 
 	* configure.in: version bump -> 1.9

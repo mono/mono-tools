@@ -1,0 +1,51 @@
+2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckNewExceptionWithoutThrowingTest.cs: New. Unit tests by 
+	Andreas Noever.
+	* CheckNewThreadWithoutStartTest.cs: New. Unit tests by Andreas 
+	Noever.
+
+2008-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EqualShouldHandleNullArgTest.cs: Changed my mind about "new" ;-)
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaTest.cs: Tests
+	move (with rules) into Design since it affects the API.
+	* ToStringReturnsNullTest.cs: Add a bunch of new test cases.
+
+2008-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConstructorShouldNotCallVirtualMethodsTest.cs: Add a bunch
+	of test cases to exclude final, include non-virtual calls leading
+	to virtual calls, instance versus member/field calls...
+	* EqualShouldHandleNullArgTest.cs: Add a bunch of test cases
+	to duplicate common patterns (from class lib) leading to false 
+	positives.
+
+2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConstructorShouldNotCallVirtualMethodsTest.cs: New. Unit 
+	tests by Daniel Abramov. 
+	* GetEntryAssemblyMayReturnNullTest.cs: New. Unit tests by	
+	Daniel Abramov. 
+	* Test.Rules.BadPractice.mdp: Update MonoDevelop project file.
+
+2007-11-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EqualShouldHandleNullArgTest.cs: Add a test case where Equals 
+	simply return false.
+
+2007-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EqualShouldHandleNullArgTest.cs: Add little variations in the null
+	checks.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullTest.cs: Unit tests (Nidhi Rawal, 
+	GSoC 2007)
+	* EqualShouldHandleNullArgTest.cs: Unit tests (Nidhi Rawal, GSoC 2007)
+	* ImplementingEqualsButNotGetHashCodeAndViceVersaTest.cs: Unit tests 
+	(Nidhi Rawal, GSoC 2007)
+	* ToStringReturnsNullTest.cs: Unit tests (Nidhi Rawal, GSoC 2007)
+	* Test.Rules.BadPractice.mdp: Project file for MonoDevelop
+	* Makefile.am: Build file.

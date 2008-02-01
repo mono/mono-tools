@@ -1,0 +1,105 @@
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsoleRunner.cs: Start using Gendarme.Console.Writers namespace.
+	Change a method to static. 
+	* HtmlResultWriter.cs: Use 2.0 XslCompiledTransform (XslTransform 
+	being obsolete). Move into Gendarme.Console.Writers namespace.
+	* IResultWriter.cs: Move into Gendarme.Console.Writers namespace.
+	* TextResultWriter.cs: Move into Gendarme.Console.Writers namespace.
+	* XmlResultWriter.cs: Move into Gendarme.Console.Writers namespace.
+	* console.mdp: MD removed the "./" before the filenames
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ConsoleRunner.cs: Extracted methods for avoid a long method violation
+	from Main.
+
+2007-11-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ConsoleRunner.cs: Don't ignore methods result (it fails a rule) in the
+	self-test.
+
+2007-11-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ConsoleRunner.cs: Added support for set values for some properties in
+	the configuration XML file.
+
+2007-11-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Ensure patterns, like * and ?, works inside the 
+	current directory. Return the full path in this case too.
+
+2007-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Avoid WriteStaticFieldFromInstanceMethodRule 
+	inside runner
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* console.mdp: Now built with 2.0 rutime.
+
+2006-10-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.xsl: Create only one new browser-window per rule.
+
+2006-10-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Provide more information with assemblies. Fix some
+	typos.
+	* gendarme.xsl: Add links to mono-project.com for rules. Fix defects 
+	count on assemblies. Add defects count on rules. Ensure all defects 
+	are reported (even if the location is unknown). Display more details 
+	on where the defect are found (assembly, location).
+	* HtmlResultWriter.cs: Update signature for assemblies.
+	* IResultWriter.cs: Update signature for assemblies.
+	* Makefile.am: Rebuild gendarme.exe if the XSLT file changes.
+	* TextResultWriter.cs: Update signature for assemblies.
+	* XmlResultWriter.cs: Add fully-qualified assembly names when 
+	outputing aasemblies. Add short-name and Uri when outputing rules.
+	Both enables more useful HTML reports.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* gendarme.csproj: Included ChangeLog
+	* XmlResultWriter.cs, TextResultWriter.cs: Migrated untyped IList
+	messages collection to typed MessageCollection class.
+	  
+2006-09-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* console.mdp: Update MonoDevelop project file
+	* ConsoleRunner.cs: Add new options to the console runner.
+	* HtmlResultWriter.cs: New. Output HTML reports using the XML
+	output and the new XSL transform.
+	* IResultWriter.cs: New. Interface for all reporters. Original code 
+	from Christian Birkl adapted/merged with existing code.
+	* Makefile.am: Add new files to the build.
+	* TextResultWriter.cs: New. Output text reports. Original code from 
+	Christian Birkl adapted/merged with existing code.
+	* XmlResultWriter.cs: New. Output XML reports. Original code from 
+	Christian Birkl adapted/merged with existing code.
+
+2006-09-17  Christian Birkl <christian.birkl@gmail.com>
+
+	* gendarme.xsl: New. XSLT file to transform XML output into HTML.
+
+2006-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Fix exception when rules.xml contains XML 
+	comments. Patch by Christian Birkl.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* console.mdp: New. Project file for MonoDevelop.
+	* ConsoleRunner.cs: Adjust header display when Gendarme is compiled 
+	from a MD project.
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Read the copyright informations from the attribute
+	in AssemblyInfo.cs file. Fix NewLineLiteralRule in LoadConfiguration 
+	method (self-test).
+	* Makefile.am: Added self-test to promote compliance ;-)

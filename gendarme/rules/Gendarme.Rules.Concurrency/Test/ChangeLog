@@ -1,0 +1,35 @@
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NonConstantStaticFieldsShouldNotBeVisibleTest.cs: New. Unit tests
+	by Andreas Noever.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Concurrency.mdp: Update project file.
+
+2007-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* WriteStaticFieldFromInstanceMethodTest.cs: Update API to fix build.
+
+2006-11-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Concurrency.mdp: Add new tests to MonoDevelop project.
+	* WriteStaticFieldFromInstanceMethodTest.cs: New. Unit tests for the
+	new WriteStaticFieldFromInstanceMethodRule rule.
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-20  Jonathan Chambers  <joncham@gmail.com>
+
+	* Test.Rules.Concurrency.csproj: Make reference to nunit.framework
+	not a specific version for portability.
+	
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Concurrency.mdp: New. Project file for MonoDevelop.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingTest.cs: Convert (and add) tests to NUnit format.

@@ -1,0 +1,9 @@
+This is the third release of Gendarme which includes a few rules for
+* Concurrency;
+* Correctness;
+* Exceptions;
+* Performance;
+* Portability and
+* Security
+
+Special thanks to Duncan Mak for the Gendarme name and to JB Evain for Cecil.

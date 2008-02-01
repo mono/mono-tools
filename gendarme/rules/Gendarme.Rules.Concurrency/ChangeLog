@@ -1,0 +1,61 @@
+2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: New. Rule that
+	warns about non-constant static fields since their access needs to be
+	synchronized in multithreaded applications [Andreas Noever]
+	* Gendarme.Rules.Concurrency.xml.in: Add new rule description.
+	* Makefile.am: Add rule/test to the build.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckingLockingRule.cs: Use new Location ctor. Delay 
+	Hashtable creation a bit.
+	* WriteStaticFieldFromInstanceMethodRule.cs: Use new Location ctor.
+	Don't create MessageCollection until needed.
+
+2008-01-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckingLockingRule.cs: Turn some methods to static.
+
+2007-11-30  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* DoubleCheckingLockingRule.cs: Extracted a method for return the error
+	messages.  This fixes the AvoidLongMethod violation in self-test.  The
+	source now conforms the Mono style.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Concurrency.mdp: Update project file.
+
+2006-11-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Concurrency.mdp: Add new rule to MonoDevelop project.
+	* Gendarme.Rules.Concurrency.xml.in: Add description and information
+	about the new WriteStaticFieldFromInstanceMethodRule rule.
+	* Makefile.am: Add WriteStaticFieldFromInstanceMethodRule rule and 
+	tests to the build.
+	* WriteStaticFieldFromInstanceMethodRule.cs: New rule.
+
+2006-10-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Concurrency.xml.in: Update Uri for rules (to generate
+	more useful reports).	
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* Gendarme.Rules.Concurrency.csproj: Included ChangeLog
+	* DoubleCheckLockingRule.cs: Migrated untyped IList messages 
+	  collection to typed MessageCollection class.
+
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Concurrency.mdp: New. Project file for MonoDevelop.
+
+2006-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Use -pkg:mono-nunit to reference nunit assemblies.
+	Added self-test target to promote compliance ;-)

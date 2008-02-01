@@ -1,0 +1,64 @@
+2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotPrefixValuesWithEnumNameTest.cs: New. Unit tests from Andreas
+	Noever
+	* DoNotUseReservedInEnumValueNamesTest.cs: : New. Unit tests from
+	Andreas	Noever
+	* ParameterNamesShouldMatchOverridenMethodTest.cs: : New. Unit 
+	tests from Andreas Noever
+	* Test.Rules.Naming.mdp: Update MonoDevelop project file.
+
+2007-12-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeEndsWithAttributeSuffixTest.cs: Deleted. The new
+	UseCorrectSuffixTest is a superset of the rule/tests.
+	* Test.Rules.Naming.mdp: Update MonoDevelop project file.
+	* UseCorrectPrefixTest.cs: New. Test cases from Daniel Abramov.
+	* UseCorrectCasingTest.cs: New. Test cases from Daniel Abramov.
+	* UseCorrectSuffixTest.cs: New. Test cases from Daniel Abramov.
+	* UsePreferredTermsTest.cs: New. Test cases from Daniel Abramov.
+
+2007-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesTest.cs: Add test cases for 
+	non-nested types. Add test case with a delegate (2.0). Make sure 
+	everything is tested inside loops.
+	* Test.Rules.Naming.mdp: Use 2.0 runtime for tests.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesTest.cs: Unit tests (Nidhi Rawal, 
+	GSoC 2007)
+	* Test.Rules.Portability.mdp: Update project file.
+
+2007-10-05  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Naming.mdp:  Changed output directory, by convention
+	looking other Test.Rules.* projects.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Naming.mdp:  Removed empty directory entry in the
+	MonoDevelop project file.
+
+2007-10-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test.Rules.Naming.mdp:  New.  Created MonoDevelop project file for the
+	unit tests for the naming rules.
+
+2007-09-29  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* UsePluralNameInFlagEnumsTest.cs, 
+	UsePluralNameInEnumFlagsTest.cs,: Rename 
+	UsePluralNameInFlagEnumsTest.cs, file to
+	UsePluralNameInEnumFlagsTest.cs, because this file doesn't follow the
+	coding guidelines.
+
+2007-09-13  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeEndsWithAttributeSuffixTest.cs,
+	EnumNotEndsWithEnumOrFlagsSuffixTest.cs,
+	UsePluralNameInFlagEnumsTest.cs,
+	UseSingularNameInEnumsUnlessAreFlagsTest.cs: New.  Unit tests for the
+	rules.
+

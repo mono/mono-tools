@@ -1,0 +1,43 @@
+<Project name="Test.Rules.Design" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="DotNetProjectConfiguration">
+      <Output directory="../../../bin" assembly="Test.Rules.Design" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release" ctype="DotNetProjectConfiguration">
+      <Output directory="bin/Release" assembly="Test.Rules.Design" />
+      <Build debugmode="False" target="Library" />
+      <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="DontDeclareProtectedFieldsInSealedClassTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="UsingCloneWithoutImplementingICloneableTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AbstractTypesShouldNotHavePublicConstructorsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidEmptyInterfaceTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidPropertiesWithoutGetAccessorTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="EnumsShouldDefineAZeroValueTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="FlagsShouldNotDefineAZeroValueTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesShouldBeInsideNamespacesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="MainShouldNotBePublicTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidPublicInstanceFieldsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderConvertingMethodToPropertyTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="MissingAttributeUsageOnCustomAttributeTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableFieldsShouldBeDisposedTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableTypesShouldHaveFinalizerTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesWithDisposableFieldsShouldBeDisposableTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="TypesWithNativeFieldsShouldBeDisposableTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldBeProtectedTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldCallBaseClassFinalizerTest.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Assembly" localcopy="True" refto="../../../../lib/Mono.Cecil.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <ProjectReference type="Project" localcopy="True" refto="framework" />
+    <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Design" />
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  </References>
+</Project>

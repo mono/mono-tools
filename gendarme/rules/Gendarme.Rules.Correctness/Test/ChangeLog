@@ -1,0 +1,75 @@
+2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FloatComparisonRuleTest.cs: Add test case where we compare with
+	"this".
+	* UseValueInPropertySetterTest.cs: Add test case where a "this []"
+	property is used.
+
+2008-01-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontCompareWithNaNTest.cs: New. Unit tests for NaN.
+	* UseValueInPropertySetterTest.cs: Fix Empty test case since we 
+	don't report them anymore (too many false positives).
+
+2008-01-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* BadRecursiveInvocationTest.cs: Add more complex test cases to hunt
+	for false positives (detected while scanning corlib).
+	* FloatComparisonRuleTest.cs: Duplicate test cases for Double. Add
+	test cases for FP conversion and FP in arrays.
+	* UseValueInPropertySetterTest.cs: Add test case for empty setter
+	and for a call on the setter value.
+
+2008-01-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesTest.cs: line endings
+	* FloatComparisonRuleTest.cs: line endings
+	* UseValueInPropertySetterTest.cs: line endings and new test cases
+	for static properties
+	* Test.Rules.Correctness.mdp: MonoDevelop removed the "./" prefix 
+	before each file.
+
+2007-12-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseValueInPropertySetterTest.cs: Add test cases where an exception
+	is thrown in the setter (i.e. value isn't used but this should not
+	be reported as an error).
+
+2007-11-03  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidConstructorsInStaticTypesTest.cs: Added test for avoid false
+	positives if the class doesn't contains fields or methods.
+
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesTest.cs: Unit tests (Lukasz Knop, 
+	GSoC 2007)
+	* CallingEqualsWithNullArgTest.cs: Unit tests (Nidhi Rawal, GSoC 2007)
+	* FloatComparisonRuleTest.cs: Unit tests (Lukasz Knop, GSoC 2007)
+	* UseValueInPropertySetterTest.cs: Unit tests (Lukasz Knop, GSoC 2007)
+	* Test.Rules.Correctness.mdp: Update project files.
+
+2007-02-27  Jb Evain  <jbevain@gmail.com>
+
+	* MethodCanBeMadeStaticTest.cs:
+		Add tests for rule MethodCanBeMadeStatic.
+
+2006-10-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BadRecursiveInvocationTest.cs: Modify existing test case to make 
+	sure parameter names aren't required to match in a recursive call
+	(e.g. calling base class).
+
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-20  Jonathan Chambers  <joncham@gmail.com>
+
+	* Test.Rules.Correctness.csproj: Make reference to nunit.framework
+	not a specific version for portability.
+	
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Correctness.mdp: New. Project file for MonoDevelop.
+	* BadRecursiveInvocationTest.cs: Convert (and add) tests to NUnit format.

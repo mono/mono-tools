@@ -1,0 +1,38 @@
+2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Exeptions.mdp: Update project file.
+
+2007-09-24  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs:  Change rule
+	name for adhere to coding guidelines.  With this change, the rule
+        information in the xml file will be shown.
+
+2007-09-01  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs: New.  Unit
+	tests for DontSwallowErrorsCatchingNonSpecificExceptionsRule.
+	
+2006-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Adjust EXTRA_DIST to include project files in tarballs.
+
+2006-09-28  Christian Birkl  <christian.birkl@gmail.com>
+
+	* TestPatterns.cs: Migrated untyped IList messages collection	
+	to typed MessageCollection class.
+	
+2006-09-20  Jonathan Chambers  <joncham@gmail.com>
+
+	* Test.Rules.Exeptions.csproj: Make reference to nunit.framework
+	not a specific version for portability.
+	
+2006-07-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Exeptions.mdp: New. Project file for MonoDevelop.
+	* TestPatterns.cs: Renamed namespace and class to match other existing
+	unit tests. Fixed some compiler warnings.
+
+2006-06-19  Russell Morris  <russell@russellsprojects.com>
+
+	* Initial import of exception-management rule assembly

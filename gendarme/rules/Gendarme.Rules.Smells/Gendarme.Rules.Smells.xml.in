@@ -1,0 +1,43 @@
+<rules>
+	<rule 	Name="AvoidLongMethodsRule"
+		Type="Gendarme.Rules.Smells.AvoidLongMethodsRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidCodeDuplicatedInSameClassRule" >
+		<problem>Long methods are usually hard to understand and maintain.  The method '{0}' can cause problems because contains more code than the maximum allowed.</problem>
+		<solution>You should apply an Extract Method refactoring, but there are other solutions.</solution>
+	</rule>
+
+	<rule	Name="AvoidLongParameterListsRule"
+		Type="Gendarme.Rules.Smells.AvoidLongParameterListsRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidLongParameterListsRule" >
+		<problem>Generally, long parameter lists are hard to understand because they become hard to use and inconsistent.  And you will be forever changing them if you need more data.</problem>
+		<solution>You should apply the Replace parameter with method refactoring, or preserve whole object or introduce parameter object.</solution>
+	</rule>
+
+	<rule	Name="AvoidCodeDuplicatedInSameClassRule"
+		Type="Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidCodeDuplicatedInSameClassRule" >
+		<problem>There are same code structure in various methods in the same class.  Your code will be better if you can unify them.</problem>
+		<solution>You should apply the Extract Method refactoring and invoke the method from the places.</solution>
+	</rule>
+
+	<rule 	Name="AvoidCodeDuplicatedInSiblingClassesRule"
+		Type="Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidCodeDuplicatedInSiblingClassesRule">
+		<problem>There are same code structure in various methods in sibling classes.  Your code will be better if you can unify them.</problem>
+		<solution>You can apply the Pull Up Method refactoring.</solution>
+	</rule>
+
+	<rule 	Name="AvoidLargeClassesRule"
+		Type="Gendarme.Rules.Smells.AvoidLargeClassesRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidLargeClassesRule">
+		<problem>The class is trying to do too much.  Generally if a class is too large, duplicated code will not be far.</problem>
+		<solution>You can apply the Extract Class or Extract Subclass refactoring.</solution>
+	</rule>
+
+	<rule 	Name="AvoidSpeculativeGeneralityRule"
+		Type="Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule, Gendarme.Rules.Smells, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Smells#AvoidSpeculativeGeneralityRule">
+		<problem>If you will need the feature in the future then you should implement it in the future.</problem>
+		<solution>You can apply various refactorings: Collapse Hierarchy, Inline Class, Remove Parameter or Rename Method.</solution>
+	</rule>
+</rules>
