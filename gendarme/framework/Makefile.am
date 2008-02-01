@@ -33,7 +33,7 @@ framework_build_sources += $(framework_generated_sources)
 	mkdir ../bin
 
 $(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
-	cp `pkg-config --variable=Libraries cecil` $(top_builddir)/gendarme/bin/
+	cp $(CECIL_ASM) $(top_builddir)/gendarme/bin/
 
 ../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
 	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Xml.dll -out:$@ $(framework_build_sources)

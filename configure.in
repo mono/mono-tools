@@ -77,6 +77,9 @@ else
 AC_MSG_ERROR([You are missing Cecil (cecil.pc for packageconfig) required for gui-compare])
 fi
 
+CECIL_ASM=`pkg-config --variable=Libraries cecil`
+AC_SUBST(CECIL_ASM)
+
 dnl Intl
 GETTEXT_PACKAGE=mono-tools
 AC_SUBST(GETTEXT_PACKAGE)

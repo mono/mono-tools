@@ -58,7 +58,7 @@ assemblies = -r:System -r:Mono.Posix -r:System.Xml
 ress= $(foreach res,$(gui_compare_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 Mono.Cecil.dll: 
-	cp `pkg-config --variable=Libraries cecil` .
+	cp $(CECIL_ASM) .
 
 gui-compare.exe: $(gui_compare_sources) $(gui_compare_resources) Mono.Cecil.dll
 	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gui-compare.exe $(gui_compare_sources) $(ress) $(packages) $(assemblies)
