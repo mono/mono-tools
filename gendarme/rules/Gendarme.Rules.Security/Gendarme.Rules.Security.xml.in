@@ -1,61 +1,61 @@
 <rules>
 	<rule	Name="ArrayFieldsShouldNotBeReadOnlyRule" 
 		Type="Gendarme.Rules.Security.ArrayFieldsShouldNotBeReadOnlyRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#ArrayFieldsShouldNotBeReadOnlyRule" >
 		<problem>The type '{0}' contains read-only array, however values inside the array are not read-only.</problem>
 		<solution>Replace the array with a method returning a clone of the array or a read-only collection.</solution>
 	</rule>
 	<rule	Name="MethodCallWithSubsetLinkDemandRule" 
 		Type="Gendarme.Rules.Security.MethodCallWithSubsetLinkDemandRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#MethodCallWithSubsetLinkDemandRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#MethodCallWithSubsetLinkDemandRule" >
 		<problem>The method '{0}' has less protection than some methods it calls.</problem>
 		<solution>Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.</solution>
 	</rule>
 	<rule	Name="NativeFieldsShouldNotBeVisibleRule" 
 		Type="Gendarme.Rules.Security.NativeFieldsShouldNotBeVisibleRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#NativeFieldsShouldNotBeVisibleRule" >
 		<problem>The type '{0}' expose native fields that aren't read-only.</problem>
 		<solution>Native fields are best hidden or, if required, read-only.</solution>
 	</rule>
 	<rule	Name="NonVirtualMethodWithInheritanceDemandRule" 
 		Type="Gendarme.Rules.Security.NonVirtualMethodWithInheritanceDemandRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#NonVirtualMethodWithInheritanceDemandRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#NonVirtualMethodWithInheritanceDemandRule" >
 		<problem>The non-virtual method '{0}' has an InheritanceDemand that will never get executed.</problem>
 		<solution>Review the InheritanceDemand on this method (i.e. remove it or change it's SecurityAction to, probably, LinkDemand).</solution>
 	</rule>
 	<rule	Name="SealedTypeWithInheritanceDemandRule" 
 		Type="Gendarme.Rules.Security.SealedTypeWithInheritanceDemandRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#SealedTypeWithInheritanceDemandRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#SealedTypeWithInheritanceDemandRule" >
 		<problem>The sealed class '{0}' has an InheritanceDemand that will never get executed.</problem>
 		<solution>Review the InheritanceDemand on this class (i.e. remove it or change it's SecurityAction to, probably, LinkDemand).</solution>
 	</rule>
 	<rule	Name="SecureGetObjectDataOverridesRule" 
 		Type="Gendarme.Rules.Security.SecureGetObjectDataOverridesRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#SecureGetObjectDataOverridesRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#SecureGetObjectDataOverridesRule" >
 		<problem>The method '{0}' isn't protected correctly against a serialization attack.</problem>
 		<solution>A security Demand for SerializationFormatter should protect this method.</solution>
 	</rule>
 	<rule	Name="StaticConstructorsShouldBePrivateRule" 
 		Type="Gendarme.Rules.Security.StaticConstructorsShouldBePrivateRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#StaticConstructorsShouldBePrivateRule" >
 		<problem>The type '{0}' has a static constructor which is not private.</problem>
 		<solution>Change the static constructor to private.</solution>
 	</rule>
 	<rule	Name="TypeExposeFieldsRule" 
 		Type="Gendarme.Rules.Security.TypeExposeFieldsRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#TypeExposeFieldsRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#TypeExposeFieldsRule" >
 		<problem>The type '{0}' has a LinkDemand but has some public fields.</problem>
 		<solution>Remove the public fields from the class or change the field visibility.</solution>
 	</rule>
 	<rule	Name="TypeIsNotSubsetOfMethodSecurityRule" 
 		Type="Gendarme.Rules.Security.TypeIsNotSubsetOfMethodSecurityRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#TypeIsNotSubsetOfMethodSecurityRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#TypeIsNotSubsetOfMethodSecurityRule" >
 		<problem>The type '{0}' has declarative security permission that aren't a subset of the security on some of it's methods.</problem>
 		<solution>Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.</solution>
 	</rule>
 	<rule	Name="TypeLinkDemandRule" 
 		Type="Gendarme.Rules.Security.TypeLinkDemandRule, Gendarme.Rules.Security, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#TypeLinkDemandRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Security#TypeLinkDemandRule" >
 		<problem>The type {0} isn't sealed and has a LinkDemand. It should also have an InheritanceDemand for the same permissions.</problem>
 		<solution>Add an InheritanceDemand for the same permissions (as the LinkDemand) or seal the class.</solution>
 	</rule>

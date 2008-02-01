@@ -1,19 +1,19 @@
 <rules>
 	<rule	Name="GtkSharpExecutableTargetRule" 
 		Type="Gendarme.Rules.Ui.GtkSharpExecutableTargetRule, Gendarme.Rules.Ui, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#GtkSharpExecutableTargetRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Ui#GtkSharpExecutableTargetRule" >
 		<problem>The assembly '{0}' refers to gtk-sharp assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.</problem>
 		<solution>Recompile the assembly using /target:winexe</solution>
 	</rule>
 	<rule	Name="SystemWindowsFormsExecutableTargetRule" 
 		Type="Gendarme.Rules.Ui.SystemWindowsFormsExecutableTargetRule, Gendarme.Rules.Ui, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#SystemWindowsFormsExecutableTargetRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Ui#SystemWindowsFormsExecutableTargetRule" >
 		<problem>The assembly '{0}' refers to System.Windows.Forms assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.</problem>
 		<solution>Recompile the assembly using /target:winexe</solution>
 	</rule>
 	<rule	Name="UseSTAThreadAttributeOnSWFEntryPointsRule" 
 		Type="Gendarme.Rules.Ui.UseSTAThreadAttributeOnSWFEntryPointsRule, Gendarme.Rules.Ui, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
-		Uri="http://www.mono-project.com/Gendarme#UseSTAThreadAttributeOnSWFEntryPointsRule" >
+		Uri="http://www.mono-project.com/Gendarme.Rules.Ui#UseSTAThreadAttributeOnSWFEntryPointsRule" >
 		<problem>The System.Windows.Forms applications '{0}' entry-point (Main) is missing an [STAThread] attribute.</problem>
 		<solution>Add a [STAThread] attribute to your application Main method.</solution>
 	</rule>
