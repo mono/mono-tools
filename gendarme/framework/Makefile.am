@@ -6,7 +6,7 @@ DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
 
 pkgconfig_in_files = gendarme-framework.pc.in
 
-pkgconfigdir= $(prefix)/share/pkgconfig
+pkgconfigdir= $(prefix)/lib/pkgconfig
 pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
 
 framework_sources_in = ../AssemblyInfo.cs.in

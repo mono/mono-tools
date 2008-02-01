@@ -1,8 +1,3 @@
-2008-02-01  Andrew Jorgensen  <ajorgensen@novell.com>
-
-	* Makefile.am: pkg-config files for noarch builds go
-	in $prefix/share/pkgconfig
-
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Added CommonRocks and StackEntryAnalysis[Test] to 
