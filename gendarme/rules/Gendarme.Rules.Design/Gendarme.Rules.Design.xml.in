@@ -1,144 +1,144 @@
 <rules>
 	<rule	Name="AbstractTypesShouldNotHavePublicConstructorsRule"
-		Type="Gendarme.Rules.Design.AbstractTypesShouldNotHavePublicConstructorsRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.AbstractTypesShouldNotHavePublicConstructorsRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#AbstractTypesShouldNotHavePublicConstructorsRule" >
 		<problem>The class '{0}' provides public constructor(s).</problem>
 		<solution>Change constructor visibility to protected.</solution>
 	</rule>
 	<rule	Name="AttributeArgumentsShouldHaveAccessorsRule"
-		Type="Gendarme.Rules.Design.AttributeArgumentsShouldHaveAccessorsRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.AttributeArgumentsShouldHaveAccessorsRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#AttributeArgumentsShouldHaveAccessorsRule" >
 		<problem>All parameter values passed to '{0}' constructors should be visible through read-only properties.</problem>
 		<solution>Add the missing property getters to the class.</solution>
 	</rule>
 	<rule	Name="AvoidEmptyInterfaceRule"
-		Type="Gendarme.Rules.Design.AvoidEmptyInterfaceRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.AvoidEmptyInterfaceRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#AvoidEmptyInterfaceRule" >
 		<problem>The interface '{0}' does not define any members. This is generally a sign that the interface is used as a marker.</problem>
 		<solution>Review interface. If used as a marker then see if it could be replaced by using attributes.</solution>
 	</rule>
 	<rule	Name="AvoidPropertiesWithoutGetAccessorRule"
-		Type="Gendarme.Rules.Design.AvoidPropertiesWithoutGetAccessorRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.AvoidPropertiesWithoutGetAccessorRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#AvoidPropertiesWithoutGetAccessorRule" >
 		<problem>The property '{0}' does not provide a getter.</problem>
 		<solution>Add a getter to the property or change the property into a method.</solution>
 	</rule>
 	<rule	Name="AvoidPublicInstanceFieldsRule"
-		Type="Gendarme.Rules.Design.AvoidPublicInstanceFieldsRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.AvoidPublicInstanceFieldsRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#AvoidPublicInstanceFieldsRule" >
 		<problem>The type '{0}' contains public instance fields.</problem>
 		<solution>If possible change the public fields to properties.</solution>
 	</rule>
 	<rule	Name="ConsiderConvertingMethodToPropertyRule"
-		Type="Gendarme.Rules.Design.ConsiderConvertingMethodToPropertyRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.ConsiderConvertingMethodToPropertyRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#ConsiderConvertingMethodToPropertyRule" >
 		<problem>The method '{0}' looks like a candidate to be a property.</problem>
 		<solution>If possible change the method to a property, otherwise you can ignore the rule.</solution>
 	</rule>
 	<rule	Name="DisposableFieldsShouldBeDisposedRule" 
-		Type="Gendarme.Rules.Design.DisposableFieldsShouldBeDisposedRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.DisposableFieldsShouldBeDisposedRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#DisposableFieldsShouldBeDisposedRule" >
 		<problem>The class '{0}' contains disposable field(s) that aren't disposed.</problem>
 		<solution>Ensure that every disposable field(s) are disposed correctly.</solution>
 	</rule>
 	<rule	Name="DisposableTypesShouldHaveFinalizerRule" 
-		Type="Gendarme.Rules.Design.DisposableTypesShouldHaveFinalizerRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.DisposableTypesShouldHaveFinalizerRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#DisposableTypesShouldHaveFinalizerRule" >
 		<problem>The class '{0}' contains disposable field(s) but does not have a finalizer.</problem>
 		<solution>Add a finalizer (destructor in C#) but ensure to suppress its call in Dispose.</solution>
 	</rule>
 	<rule	Name="DontDeclareProtectedFieldsInSealedClassRule" 
-		Type="Gendarme.Rules.Design.DontDeclareProtectedFieldsInSealedClassRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.DontDeclareProtectedFieldsInSealedClassRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#DontDeclareProtectedFieldsInSealedClassRule" >
 		<problem>The sealed class '{0}' contains protected field(s).</problem>
 		<solution>Change the access specifier to public or private to represent the true use for the field.</solution>
 	</rule>
 	<rule	Name="EnsureSymmetryForOverloadedOperatorsRule"
-		Type="Gendarme.Rules.Design.EnsureSymmetryForOverloadedOperatorsRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.EnsureSymmetryForOverloadedOperatorsRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#EnsureSymmetryForOverloadedOperatorsRule" >
 		<problem>The type '{0}' should overload operators in symmetry (e.g. == and !=, + and -).</problem>
 		<solution>Add an overloaded for the missing operator and keep the type symmetrical.</solution>
 	</rule>
 	<rule	Name="EnumsShouldDefineAZeroValueRule"
-		Type="Gendarme.Rules.Design.EnumsShouldDefineAZeroValueRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.EnumsShouldDefineAZeroValueRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#EnumsShouldDefineAZeroValueRule" >
 		<problem>The enum '{0}' should define a member with a value of 0.</problem>
 		<solution>Add a new member in the enum with a value of 0.</solution>
 	</rule>
 	<rule	Name="FinalizersShouldBeProtectedRule"
-		Type="Gendarme.Rules.Design.FinalizersShouldBeProtectedRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.FinalizersShouldBeProtectedRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#FinalizersShouldBeProtectedRule" >
 		<problem>The finalizer (destructor) for type '{0}' isn't protected (family).</problem>
 		<solution>All finalizer should be declared as protected.</solution>
 	</rule>
 	<rule	Name="FinalizersShouldCallBaseClassFinalizerRule"
-		Type="Gendarme.Rules.Design.FinalizersShouldCallBaseClassFinalizerRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.FinalizersShouldCallBaseClassFinalizerRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#FinalizersShouldCallBaseClassFinalizerRule" >
 		<problem>The finalizer (destructor) for type '{0}' does not call it's base class finalizer.</problem>
 		<solution>All finalizer should call it's base class finalizer.</solution>
 	</rule>
 	<rule	Name="FlagsShouldNotDefineAZeroValueRule"
-		Type="Gendarme.Rules.Design.FlagsShouldNotDefineAZeroValueRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.FlagsShouldNotDefineAZeroValueRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#FlagsShouldNotDefineAZeroValueRule" >
 		<problem>The enumeration flag '{0}' defines a value of 0, which cannot be used as a real value.</problem>
 		<solution>Remove the 0 value from the flag.</solution>
 	</rule>
 	<rule	Name="ImplementEqualsAndGetHashCodeInPairRule" 
-		Type="Gendarme.Rules.Design.ImplementEqualsAndGetHashCodeInPairRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.ImplementEqualsAndGetHashCodeInPairRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#ImplementEqualsAndGetHashCodeInPairRule" >
 		<problem>Only one method of Equals(Object) or GetHashCode() is implemented in '{0}'.</problem>
 		<solution>Implement the missing method.</solution>
 	</rule>
 	<rule	Name="MainShouldNotBePublicRule"
-		Type="Gendarme.Rules.Design.MainShouldNotBePublicRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.MainShouldNotBePublicRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#MainShouldNotBePublicRule" >
 		<problem>The entry point (Main) of the assembly '{0}' is visible to the outside world (ref: C# Programming Guide).</problem>
 		<solution>Reduce entry point visibility if your language allows it. It may not be possible in some language, like VB).</solution>
 	</rule>
 	<rule	Name="MissingAttributeUsageOnCustomAttributeRule"
-		Type="Gendarme.Rules.Design.MissingAttributeUsageOnCustomAttributeRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.MissingAttributeUsageOnCustomAttributeRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#MissingAttributeUsageOnCustomAttributeRule" >
 		<problem>The attribute '{0}' doesn't specify on which items it can be used.</problem>
 		<solution>Specify [AttributeUsage] on each attribute class.</solution>
 	</rule>
 	<rule	Name="OperatorEqualsShouldBeOverloadedRule"
-		Type="Gendarme.Rules.Design.OperatorEqualsShouldBeOverloadedRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.OperatorEqualsShouldBeOverloadedRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#OperatorEqualsShouldBeOverloadedRule" >
 		<problem>The type '{0}' is a value type (struct) that override Equals, or both overloads + and - operators, but doesn't overload == and != operators.</problem>
 		<solution>Add overloads for the missing == and != operators.</solution>
 	</rule>
 	<rule	Name="OverrideEqualsMethodRule"
-		Type="Gendarme.Rules.Design.OverrideEqualsMethodRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.OverrideEqualsMethodRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#OverrideEqualsMethodRule" >
 		<problem>The type '{0}' overloads the == operator but doesn't override the Equals method.</problem>
 		<solution>Override the Equals method to match the results of the == operator.</solution>
 	</rule>
 	<rule	Name="ProvideAlternativeNamesForOperatorOverloadsRule"
-		Type="Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#ProvideAlternativeNamesForOperatorOverloadsRule" >
 		<problem>The type '{0}' contains overloads for some operators but doesn't provide named alternatives.</problem>
 		<solution>Add named methods equivalent to the operators for language that do not support them (e.g. VS.NET).</solution>
 	</rule>
 	<rule	Name="TypesShouldBeInsideNamespacesRule"
-		Type="Gendarme.Rules.Design.TypesShouldBeInsideNamespacesRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.TypesShouldBeInsideNamespacesRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#TypesShouldBeInsideNamespacesRule" >
 		<problem>The type '{0}' is visible and should be defined inside a namespace.</problem>
 		<solution>Move the type inside a namespace or reduce type visibility (e.g. internal or private).</solution>
 	</rule>
 	<rule	Name="TypesWithDisposableFieldsShouldBeDisposableRule"
-		Type="Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#TypesWithDisposableFieldsShouldBeDisposableRule" >
 		<problem>The type '{0}' contains disposable field(s) but doesn't implement IDisposable.</problem>
 		<solution>Implement IDisposable and free the disposable field(s) in the Dispose method.</solution>
 	</rule>
 	<rule	Name="TypesWithNativeFieldsShouldBeDisposableRule"
-		Type="Gendarme.Rules.Design.TypesWithNativeFieldsShouldBeDisposableRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.TypesWithNativeFieldsShouldBeDisposableRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#TypesWithNativeFieldsShouldBeDisposableRule" >
 		<problem>The type '{0}' contains native field(s) but doesn't implement IDisposable.</problem>
 		<solution>Implement IDisposable and free the native field(s) in the Dispose method.</solution>
 	</rule>
 	<rule	Name="UsingCloneWithoutImplementingICloneableRule" 
-		Type="Gendarme.Rules.Design.UsingCloneWithoutImplementingICloneableRule, Gendarme.Rules.Design, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Design.UsingCloneWithoutImplementingICloneableRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#UsingCloneWithoutImplementingICloneableRule" >
 		<problem>The class '{0}' uses Clone () method but does not implement ICloneable interface.</problem>
 		<solution>Implement the ICloneable interface.</solution>
