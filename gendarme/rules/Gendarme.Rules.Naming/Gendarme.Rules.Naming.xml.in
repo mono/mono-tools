@@ -1,66 +1,66 @@
 <rules>
 	<rule	Name="DetectNonAlphaNumericsInTypeNamesRule" 
-		Type="Gendarme.Rules.Naming.DetectNonAlphaNumericsInTypeNamesRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.DetectNonAlphaNumericsInTypeNamesRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#DetectNonAlphaNumericsInTypeNamesRule">
 		<problem>The type or method name '{0}' contains underscore in its name.</problem>
 		<solution>Remove the underscore from name.</solution>
 	</rule>
 	<rule 	Name="DoNotUseReservedInEnumValueNamesRule"
-		Type="Gendarme.Rules.Naming.DoNotUseReservedInEnumValueNamesRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.DoNotUseReservedInEnumValueNamesRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#DoNotUseReservedInEnumValueNamesRule">
 		<problem>The type '{0}' is an enumeration that contains value(s) named 'reserved'.</problem>
 		<solution>'Reserved' value should be removed since there's no need to reserve enums values.</solution>
 	</rule>
 	<rule 	Name="DoNotPrefixValuesWithEnumNameRule"
-		Type="Gendarme.Rules.Naming.DoNotPrefixValuesWithEnumNameRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.DoNotPrefixValuesWithEnumNameRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#DoNotPrefixValuesWithEnumNameRule">
 		<problem>The type '{0}' is an enumeration that contains value(s) using the enum's name.</problem>
 		<solution>Change the value name(s) not to include the enum's type name.</solution>
 	</rule>
 	<rule 	Name="EnumNotEndsWithEnumOrFlagsSuffixRule"
-		Type="Gendarme.Rules.Naming.EnumNotEndsWithEnumOrFlagsSuffixRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.EnumNotEndsWithEnumOrFlagsSuffixRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#EnumNotEndsWithEnumOrFlagsSuffixRule">
 		<problem>The type '{0}' is an enumeration and by convention the enums shoud not end with the Enum or Flags suffix.</problem>
 		<solution>Remove the Enum or Flags suffix in enum name.</solution>
 	</rule>
 	<rule 	Name="ParameterNamesShouldMatchOverridenMethodRule"
-		Type="Gendarme.Rules.Naming.ParameterNamesShouldMatchOverridenMethodRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.ParameterNamesShouldMatchOverridenMethodRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#ParameterNamesShouldMatchOverridenMethodRule">
 		<problem>The method '{0}' overrides (or implement) an existing method but does not use the same parameter names.</problem>
 		<solution>Keep parameter names consistent when overriding a class or implementing an interface.</solution>
 	</rule>
 	<rule 	Name="UseCorrectCasingRule"
-		Type="Gendarme.Rules.Naming.UseCorrectCasingRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UseCorrectCasingRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UseCorrectCasingRule">
 		<problem>The '{0}' identifier violates .NET naming conventions.</problem>
 		<solution>Make all type and method names pascal-cased (like MyClass), and all parameter names must be camel-cased (like myParameter).</solution>
 	</rule>
 	<rule 	Name="UseCorrectPrefixRule"
-		Type="Gendarme.Rules.Naming.UseCorrectPrefixRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UseCorrectPrefixRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UseCorrectPrefixRule">
 		<problem>The type '{0}' starts with an incorrect prefix or does not start with the required one. All interface names should start with the 'I' letter, followed by another capital letter. All type names, in contrast, should not have any specific prefix.</problem>
 		<solution>Rename the type and prefix it correctly.</solution>
 	</rule>
 	<rule 	Name="UseCorrectSuffixRule"
-		Type="Gendarme.Rules.Naming.UseCorrectSuffixRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UseCorrectSuffixRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UseCorrectSuffixRule">
 		<problem>The type '{0}' does not end with a correct suffix. That usually happens when you define a custom attribute or exception and forget appending suffixes like 'Attribute' or 'Exception' to the type name.</problem>
 		<solution>Rename the type and append the correct suffix.</solution>
 	</rule>
 	<rule 	Name="UsePluralNameInEnumFlagsRule"
-		Type="Gendarme.Rules.Naming.UsePluralNameInEnumFlagsRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UsePluralNameInEnumFlagsRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UsePluralNameInEnumFlagsRule">
 		<problem>The type '{0}' is a flags enumeration and by convention the flag enums should have a plural name.</problem>
 		<solution>Convert enum name from singular to plural.</solution>
 	</rule>
 	<rule 	Name="UsePreferredTermsRule"
-		Type="Gendarme.Rules.Naming.UsePreferredTermsRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UsePreferredTermsRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UsePreferredTermsRule">
 		<problem>The '{0}' identifier contains an obsolete term.</problem>
 		<solution>Replace an obsolete term with the preferred one.</solution>
 	</rule>
 	<rule 	Name="UseSingularNameInEnumsUnlessAreFlagsRule"
-		Type="Gendarme.Rules.Naming.UseSingularNameInEnumsUnlessAreFlagsRule, Gendarme.Rules.Naming, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.Naming.UseSingularNameInEnumsUnlessAreFlagsRule, Gendarme.Rules.Naming, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Naming#UseSingularNameInEnumsUnlessAreFlagsRule">
 		<problem>The type '{0}' is an enumeration and by convention the enums should have a singular name.</problem>
 		<solution>Convert enum name from plural to singular.</solution>

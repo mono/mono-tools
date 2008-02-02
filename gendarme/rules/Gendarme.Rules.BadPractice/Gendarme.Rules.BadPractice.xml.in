@@ -1,42 +1,42 @@
 <rules>
 	<rule	Name="CheckNewExceptionWithoutThrowingRule" 
-		Type="Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#CheckNewExceptionWithoutThrowingRule" >
 		<problem>The method '{0}' creates an exception that is never throwed nor returned to the caller.</problem>
 		<solution>Make sure the exception is required, throw it (if it is) or remove it (if not).</solution>
 	</rule>
 	<rule	Name="CheckNewThreadWithoutStartRule" 
-		Type="Gendarme.Rules.BadPractice.CheckNewThreadWithoutStartRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.CheckNewThreadWithoutStartRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#CheckNewThreadWithoutStartRule" >
 		<problem>The method '{0}' creates an thread that is never started nor returned to the caller.</problem>
 		<solution>Make sure the thread is required, start it (if it is) or remove it (if not).</solution>
 	</rule>
 	<rule	Name="CloneMethodShouldNotReturnNullRule" 
-		Type="Gendarme.Rules.BadPractice.CloneMethodShouldNotReturnNullRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.CloneMethodShouldNotReturnNullRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#CloneMethodShouldNotReturnNullRule" >
 		<problem>The ICloneable.Clone () method in '{0}' seems to return null in some circumstances.</problem>
 		<solution>Please return an appropriate object instead of returning null.</solution>
 	</rule>
 	<rule	Name="ConstructorShouldNotCallVirtualMethodsRule" 
-		Type="Gendarme.Rules.BadPractice.ConstructorShouldNotCallVirtualMethodsRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.ConstructorShouldNotCallVirtualMethodsRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#ConstructorShouldNotCallVirtualMethodsRule" >
 		<problem>The constructor '{0}' calls virtual methods which won't be known before runtime.</problem>
 		<solution>Avoid calling virtual methods from constructors unless the type is sealed.</solution>
 	</rule>
 	<rule	Name="EqualShouldHandleNullArgRule" 
-		Type="Gendarme.Rules.BadPractice.EqualShouldHandleNullArgRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.EqualShouldHandleNullArgRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#EqualShouldHandleNullArgRule" >
 		<problem>The method '{0}' does not handle null argument as it should be.</problem>
 		<solution>Modify the method implementation to return false if null argument found.</solution>
 	</rule>
 	<rule	Name="GetEntryAssemblyMayReturnNullRule" 
-		Type="Gendarme.Rules.BadPractice.GetEntryAssemblyMayReturnNullRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.GetEntryAssemblyMayReturnNullRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#GetEntryAssemblyMayReturnNullRule" >
 		<problem>The method '{0}' calls Assembly.GetEntryAssembly which may returns null if not called from the root application domain.</problem>
 		<solution>Avoid depending on Assembly.GetEntryAssembly inside reusable code.</solution>
 	</rule>
 	<rule	Name="ToStringReturnsNullRule" 
-		Type="Gendarme.Rules.BadPractice.ToStringReturnsNullRule, Gendarme.Rules.BadPractice, Version=@VERSION@, Culture=neutral, PublicKeyToken=null"
+		Type="Gendarme.Rules.BadPractice.ToStringReturnsNullRule, Gendarme.Rules.BadPractice, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.BadPractice#ToStringReturnsNullRule" >
 		<problem>The method '{0}' contains ToString () conversion that returns null.</problem>
 		<solution>Return an empty string or other appropriate string rather than returning null.</solution>
