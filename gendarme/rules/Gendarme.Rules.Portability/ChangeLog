@@ -1,3 +1,8 @@
+2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Split the checks
+	for Process and Ping out of CheckMethod (and please self-test).
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Don't report when 

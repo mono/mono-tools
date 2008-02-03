@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -40,59 +42,80 @@ namespace Gendarme.Rules.Portability {
 
 		private const string Ping = "System.Net.NetworkInformation.Ping";
 
+		//Check for usage of System.Diagnostics.Process.set_PriorityClass
+		private static bool CheckProcessSetPriorityClass (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Call:
+			case Code.Calli:
+			case Code.Callvirt:
+				MethodReference method = (ins.Operand as MethodReference);
+				if (method.Name != "set_PriorityClass")
+					return false;
+				if (method.DeclaringType.FullName != "System.Diagnostics.Process")
+					return false;
+
+				Instruction prev = ins.Previous; //check stack
+				switch (prev.OpCode.Code) {
+				case Code.Ldc_I4_S:
+					return ((ProcessPriorityClass) (sbyte) prev.Operand != ProcessPriorityClass.Normal);
+				case Code.Ldc_I4:
+					return ((ProcessPriorityClass) prev.Operand != ProcessPriorityClass.Normal);
+				case Code.Ldc_I4_M1:
+				case Code.Ldc_I4_0:
+				case Code.Ldc_I4_1:
+				case Code.Ldc_I4_2:
+				case Code.Ldc_I4_3:
+				case Code.Ldc_I4_4:
+				case Code.Ldc_I4_5:
+				case Code.Ldc_I4_6:
+				case Code.Ldc_I4_7:
+				case Code.Ldc_I4_8:
+					return false;
+				}
+				break;
+			}
+			return false;
+		}
+
+		private static bool CheckPing (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Newobj:	// new Ping ()
+			case Code.Call:		// MyPing () : base () ! (automatic parent constructor call)
+			case Code.Calli:
+			case Code.Callvirt:
+				MethodReference method = (ins.Operand as MethodReference);
+				return (method.DeclaringType.FullName == "System.Net.NetworkInformation.Ping");
+			}
+			return false;
+		}
+
 		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
 		{
 			if (!method.HasBody)
 				return runner.RuleSuccess;
 
 			// do not apply the rule to the Ping class itself (i.e. when running Gendarme on System.dll 2.0+)
-			bool is_ping = (method.DeclaringType.FullName == Ping || 
+			bool is_ping = (method.DeclaringType.FullName == Ping ||
 				(method.DeclaringType.IsNested && method.DeclaringType.DeclaringType.FullName == Ping));
 
 			MessageCollection results = null;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 
-				//Check for usage of System.Diagnostics.Process.set_PriorityClass
-				switch (ins.OpCode.Name) {
-				case "call":
-				case "calli":
-				case "callvirt":
-					MethodReference calledMethod = (MethodReference) ins.Operand;
-					if (calledMethod.Name != "set_PriorityClass")
-						break;
-					if (calledMethod.DeclaringType.FullName != "System.Diagnostics.Process")
-						break;
-
-					Instruction prev = ins.Previous; //check stack
-					if (prev.OpCode == OpCodes.Ldc_I4_S)
-						if ((ProcessPriorityClass) (sbyte) prev.Operand == ProcessPriorityClass.Normal)
-							break;
-
+				// Check for usage of System.Diagnostics.Process.set_PriorityClass
+				if (CheckProcessSetPriorityClass (ins)) {
 					if (results == null)
 						results = new MessageCollection ();
 
 					Location loc = new Location (method, ins.Offset);
 					Message msg = new Message ("Setting Process.PriorityClass to something else than ProcessPriorityClass.Normal requires root privileges.", loc, MessageType.Warning);
 					results.Add (msg);
-					break;
-				default:
-					break;
 				}
 
 				// short-circuit
-				if (is_ping)
-					continue;
-
-				switch (ins.OpCode.Name) {
-				case "newobj": //new Ping ()
-				case "call": //MyPing () : base () ! (automatic parent constructor call)
-				case "calli":
-				case "callvirt":
-					MethodReference calledMethod = (MethodReference) ins.Operand;
-					if (calledMethod.DeclaringType.FullName != "System.Net.NetworkInformation.Ping")
-						break;
-
+				if (!is_ping && CheckPing (ins)) {
 					if (results == null)
 						results = new MessageCollection ();
 
@@ -100,7 +123,6 @@ namespace Gendarme.Rules.Portability {
 					string s = String.Format ("Usage of {0} requires root privileges.", Ping);
 					Message msg = new Message (s, loc, MessageType.Warning);
 					results.Add (msg);
-					break;
 				}
 			}
 
