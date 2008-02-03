@@ -67,23 +67,26 @@ namespace Gendarme.Rules.Performance {
 
 		// some method return stuff that isn't required in most cases
 		// the rule ignores them
-		private static bool IsException (MethodReference method)
+		private static bool IsCallException (MethodReference method)
 		{
-			if (method == null)
-				return true;
-
 			switch (method.DeclaringType.FullName) {
 			case "System.IO.Directory":
-				// the returned DirectoryInfo is optional (since the directory is created)
-				return (method.Name == "CreateDirectory");
+			case "System.IO.DirectoryInfo":
+				// the returned DirectoryInfo returned by Create* methods are optional
+				return (method.ReturnType.ReturnType.FullName == "System.IO.DirectoryInfo");
 			case "System.Text.StringBuilder":
-				// StringBuilder Append* methods return the StringBuilder itself so
-				// the calls can be chained
-				return method.Name.StartsWith ("Append");
+				// StringBuilder Append*, Insert ... methods return the current 
+				// StringBuilder so the calls can be chained
+				return (method.ReturnType.ReturnType.FullName == "System.Text.StringBuilder");
 			case "System.Security.PermissionSet":
 				// PermissionSet return the permission (modified or unchanged) when
 				// IPermission are added or removed
 				return (method.Name == "AddPermission" || method.Name == "RemovePermission");
+			case "System.Reflection.MethodBase":
+				return (method.Name == "Invoke");
+			case "Mono.Security.ASN1":
+				// return the instance so we can chain operations
+				return (method.Name == "Add");
 			}
 
 			// many types provide a BeginInvoke, which return value (deriving from IAsyncResult)
@@ -97,19 +100,33 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
+		private static bool IsNewException (MemberReference method)
+		{
+			switch (method.ToString ()) {
+			// supplying a callback is enough to make the Timer creation worthwhile
+			case "System.Void System.Threading.Timer::.ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)":
+				return true;
+			default:
+				return false;
+			}
+		}
+
 		private static Message CheckForViolation (MethodDefinition method, Instruction instruction)
 		{
 			if ((instruction.OpCode.Code == Code.Newobj || instruction.OpCode.Code == Code.Newarr)) {
-				string s = String.Format ("Unused object of type {0} created", (instruction.Operand as MemberReference).ToString ());
-				Location loc = new Location (method, instruction.Offset);
-				return new Message (s, null, MessageType.Warning);
+				MemberReference member = (instruction.Operand as MemberReference);
+				if ((member != null) && !IsNewException (member)) {
+					string s = String.Format ("Unused object of type {0} created", member.ToString ());
+					Location loc = new Location (method, instruction.Offset);
+					return new Message (s, null, MessageType.Warning);
+				}
 			}
 
 			if (instruction.OpCode.Code == Code.Call || instruction.OpCode.Code == Code.Callvirt) {
 				MethodReference callee = instruction.Operand as MethodReference;
 				if (callee != null && !callee.ReturnType.ReturnType.IsValueType) {
 					// check for some common exceptions (to reduce false positive)
-					if (!IsException (callee)) {
+					if (!IsCallException (callee)) {
 						Location loc = new Location (method, instruction.Offset);
 						// most common case is something like: s.ToLower ();
 						MessageType messageType = (method.DeclaringType.FullName == "System.String") ? MessageType.Error : MessageType.Warning;

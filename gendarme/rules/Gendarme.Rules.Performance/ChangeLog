@@ -1,3 +1,10 @@
+2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesRule.cs: Reworked to reduce
+	false positives.
+	* DontIgnoreMethodResultRule.cs: Add more exceptions to reduce
+	false positives.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontIgnoreMethodResultRule.cs: Don't report on compiler/tools 

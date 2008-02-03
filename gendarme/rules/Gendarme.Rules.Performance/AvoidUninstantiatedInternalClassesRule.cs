@@ -46,9 +46,6 @@ namespace Gendarme.Rules.Performance {
 				return true;
 
 			// some stuff, like arrays, is nested under <PrivateImplementationDetails>
-			if (type.IsNested)
-				return type.IsGeneratedCode () || type.DeclaringType.IsGeneratedCode ();
-
 			return type.IsGeneratedCode ();
 		}
 
@@ -67,64 +64,88 @@ namespace Gendarme.Rules.Performance {
 
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.Types) {
-					foreach (MethodDefinition method in type.Constructors) {
-						ProcessMethod (method, list);
-					}
-					foreach (MethodDefinition method in type.Methods) {
-						ProcessMethod (method, list);
-					}
+					ProcessType (assembly, type, list);
 				}
 			}
 
 			cache.Add (assembly, list);
 		}
 
-		private static void ProcessMethod (MethodDefinition method, List<TypeReference> list)
+		private static void AddType (List<TypeReference> list, TypeReference type)
 		{
-			// this is needed in case we return an enum (or something mapped to p/invoke)
+			// we're interested in the array element type, not the array itself
+			if (type.IsArray ())
+				type = type.GetOriginalType ();
+
+			// only keep stuff from this assembly, which means we have a TypeDefinition (not a TypeReference)
+			// and types that are not visible outside the assembly (since this is what we check for)
+			TypeDefinition td = (type as TypeDefinition);
+			if ((td != null) && !td.IsVisible ())
+				list.AddIfNew (type);
+		}
+
+		public static void ProcessType (AssemblyDefinition assembly, TypeDefinition type, List<TypeReference> list)
+		{
+			foreach (FieldDefinition field in type.Fields) {
+				TypeReference t = field.FieldType;
+				// don't add the type itself (e.g. enums)
+				if (type != t)
+					AddType (list, t);
+			}
+			foreach (MethodDefinition method in type.Constructors) {
+				ProcessMethod (method, list);
+			}
+			foreach (MethodDefinition method in type.Methods) {
+				ProcessMethod (method, list);
+			}
+		}
+
+		public static void ProcessMethod (MethodDefinition method, List<TypeReference> list)
+		{
+			// this is needed in case we return an enum, a struct or something mapped 
+			// to p/invoke (i.e. no ctor called). We also need to check for arrays.
 			TypeReference t = method.ReturnType.ReturnType;
-			if (!list.Contains (t))
-				list.Add (t);
+			AddType (list, t);
 
 			// an "out" from a p/invoke must be flagged
 			foreach (ParameterDefinition parameter in method.Parameters) {
-				if (parameter.IsOut) {
-					// we don't want the reference (&) on the type
-					t = parameter.ParameterType.GetOriginalType ();
-					if (!list.Contains (t))
-						list.Add (t);
-				}
+				// we don't want the reference (&) on the type
+				t = parameter.ParameterType.GetOriginalType ();
+				AddType (list, t);
 			}
 
 			if (!method.HasBody)
 				return;
 
+			// add every type of variables we use
 			foreach (VariableDefinition variable in method.Body.Variables) {
 				t = variable.VariableType;
-				if (!list.Contains (t))
-					list.Add (t);
+				AddType (list, t);
 			}
 
+			// add every type we create or refer to (e.g. loading fields from an enum)
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode == OpCodes.Newobj) {
-					t = ins.Operand as TypeReference;
-					if (t == null) {
-						MethodReference m = ins.Operand as MethodReference;
-						if (m != null)
-							t = m.DeclaringType;
-					}
+				if (ins.Operand == null)
+					continue;
 
-					if ((t != null) && !list.Contains (t))
-						list.Add (t);
+				t = ins.Operand as TypeReference;
+				if (t == null) {
+					// this covers MethodReference and FieldReference
+					MemberReference m = ins.Operand as MemberReference;
+					if (m != null)
+						t = m.DeclaringType;
 				}
+
+				if (t != null)
+					AddType (list, t);
 			}
 		}
 
 		public MessageCollection CheckType (TypeDefinition type, Runner runner)
 		{
-			// rule apply to non-public types
-			// note: isAbstract also excludes static types (2.0)
-			if (type.IsPublic || type.IsAbstract)
+			// rule apply to internal (non-visible) types
+			// note: IsAbstract also excludes static types (2.0)
+			if (type.IsVisible () || type.IsAbstract)
 				return runner.RuleSuccess;
 
 			// some types are created by compilers and should be ignored
