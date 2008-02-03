@@ -160,9 +160,39 @@ namespace Test.Rules.Performance {
 		}
 	}
 
+	public class NestedEnumUsedAsParameter {
+		private enum PrivateEnum {
+			Good,
+			Bad,
+			Unsure
+		}
+		private bool Get (PrivateEnum p)
+		{
+			return false;
+		}
+	}
+
+	public class NestedConstValue {
+		public class Strings {
+			public const string Hello = "Allo";
+		}
+	}
+
 	public class ClassWithDelegate {
 		delegate void MyOwnDelegate (int x);
 	}
+
+	public abstract class ClassWithArray {
+		private class ExistAsArrayOnly {
+			int value;
+		}
+
+		private ExistAsArrayOnly [] Get ()
+		{
+			return null;
+		}
+	}
+
 
 	[TestFixture]
 	public class AvoidUninstantiatedInternalClassesTest {
@@ -290,6 +320,22 @@ namespace Test.Rules.Performance {
 			type = GetTest ("NestedEnumNotInstantiated/PrivateEnum");
 			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
 			Assert.IsNotNull (messageCollection);
+		}
+		
+		[Test]
+		public void NestedEnumUsedAsParameter ()
+		{
+			type = GetTest ("NestedEnumUsedAsParameter/PrivateEnum");
+			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
+			Assert.IsNull (messageCollection);
+		}
+
+		[Test]
+		public void StructExistAsArrayOnly ()
+		{
+			type = GetTest ("ClassWithArray/ExistAsArrayOnly");
+			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
+			Assert.IsNull (messageCollection);
 		}
 	}
 }

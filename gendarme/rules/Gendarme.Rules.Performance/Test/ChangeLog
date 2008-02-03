@@ -1,3 +1,8 @@
+2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Add more test cases.
+	* DontIgnoreMethodResultTest.cs: Add test cases for more exceptions.
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUninstantiatedInternalClassesTest.cs: Add nested enum test 
