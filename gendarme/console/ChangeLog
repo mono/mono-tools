@@ -1,3 +1,9 @@
+2008-02-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* gendarme.xsl: Display the correct message (not the first one) for
+	each location.
+	[Backport of r94712]
+
 2008-01-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ConsoleRunner.cs: Start using Gendarme.Console.Writers namespace.

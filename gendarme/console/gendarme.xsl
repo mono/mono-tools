@@ -146,7 +146,7 @@
 									<b>Location:</b>&#160;<xsl:value-of select="@Location" />
 									<br/>
 									<span class="found">
-										<xsl:value-of select="../message" />
+										<xsl:value-of select="." />
 									</span>
 									<br/>
 								</xsl:for-each>
