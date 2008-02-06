@@ -1,3 +1,8 @@
+2008-02-06  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidLongMethods.cs: The rule shouldn't be applied to static
+	constructors.
+
 2008-01-16  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLargeClassesRule.cs: The rule shouldn't be applied to enums.

@@ -1,3 +1,8 @@
+2008-02-06  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongMethodsTest.cs: Added a test for static constructors.  This
+	rule shouldn't be applied to static constructors.
+
 2008-01-16  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLargeClassesTest.cs: Added tests for skip the enums.  This rule
