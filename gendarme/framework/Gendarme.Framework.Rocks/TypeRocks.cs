@@ -240,7 +240,7 @@ namespace Gendarme.Framework.Rocks {
 
 		/// <summary>
 		/// Check if the type inherits from the specified type. Note that it is possible that
-		/// we might now be able to know the complete inheritance chain since the assembly 
+		/// we might not be able to know the complete inheritance chain since the assembly 
 		/// where the information resides could be unavailable.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
