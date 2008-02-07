@@ -1,3 +1,10 @@
+2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnsealedUninheritedInternalClassesTest.cs: New. Unit tests
+	by Scott Peterson.
+	* UseIsOperatorTest.cs: New. Unit tests.
+	* Test.Rules.Performance.mdp: Update project file.
+
 2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUninstantiatedInternalClassesTest.cs: Add more test cases.

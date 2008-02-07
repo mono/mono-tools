@@ -24,6 +24,9 @@
     <File name="AvoidToStringOnStringsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DontIgnoreMethodResultTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnsealedConcreteAttributesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidUnsealedUninheritedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidReturningArraysOnPropertiesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="UseIsOperatorTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
