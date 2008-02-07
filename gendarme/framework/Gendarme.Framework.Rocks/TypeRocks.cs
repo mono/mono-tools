@@ -278,10 +278,10 @@ namespace Gendarme.Framework.Rocks {
 		/// we might now be able to know all inheritance since the assembly where 
 		/// the information resides could be unavailable.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>True if the type inherits from <c>System.Attribute</c>, 
 		/// False otherwise.</returns>
-		public static bool IsAttribute (this TypeDefinition self)
+		public static bool IsAttribute (this TypeReference self)
 		{
 			return self.Inherits ("System.Attribute");
 		}
@@ -322,12 +322,13 @@ namespace Gendarme.Framework.Rocks {
 			if (self.Module.Assembly.Runtime >= TargetRuntime.NET_2_0) {
 				if (self.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
 					return true;
-			} else {
-				switch (self.Name [0]) {
-				case '<': // e.g. <PrivateImplementationDetails>
-				case '$': // e.g. $ArrayType$1 nested inside <PrivateImplementationDetails>
-					return true;
-				}
+			}
+
+			// sadly <Module> still shows up for 2.0, so the 1.x logic still applies
+			switch (self.Name [0]) {
+			case '<': // e.g. <Module>, <PrivateImplementationDetails>
+			case '$': // e.g. $ArrayType$1 nested inside <PrivateImplementationDetails>
+				return true;
 			}
 
 			// the type could be nested (inside a generated one) and not marked itself
@@ -356,7 +357,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the type is visible outside of the assembly.
 		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
 		/// <returns>True if the type can be used from outside of the assembly, false otherwise.</returns>
 		public static bool IsVisible (this TypeDefinition self)
 		{

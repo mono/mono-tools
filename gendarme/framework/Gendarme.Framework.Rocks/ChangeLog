@@ -1,3 +1,10 @@
+2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocks.cs: IsAttribute now works on a TypeReference. Fix 
+	IsVisible documentation (it needs a TypeDefinition). Rework 
+	IsGeneratedCode to ensure it catch the <Module> type (which is not
+	marked with an attribute).
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CommonRocks.cs: New. Shared but not Gendarme/Cecil specific rocks.
