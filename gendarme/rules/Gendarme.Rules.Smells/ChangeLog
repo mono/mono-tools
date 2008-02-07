@@ -1,6 +1,12 @@
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidLongMethodsRule.cs: The rule should be applied to static
+	constructors.  Now we add several extra instructions for each field for
+	initialize, specially if the field is an array.
+
 2008-02-06  Nestor Salceda  <nestor.salceda@gmail.com>
 	
-	* AvoidLongMethods.cs: The rule shouldn't be applied to static
+	* AvoidLongMethodsRule.cs: The rule shouldn't be applied to static
 	constructors.
 
 2008-01-16  Nestor Salceda  <nestor.salceda@gmail.com>

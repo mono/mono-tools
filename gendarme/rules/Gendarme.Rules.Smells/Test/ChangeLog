@@ -1,3 +1,8 @@
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidLongMethodsTest.cs: Added a test for the new strategy for static
+	constructors.
+
 2008-02-06  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongMethodsTest.cs: Added a test for static constructors.  This

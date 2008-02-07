@@ -51,10 +51,88 @@ namespace Gtk {
 }
 
 namespace Test.Rules.Smells {
+	public class LongStaticConstructorWithFields {
+		static readonly int foo;
+		static string bar;
+		static object baz;
 
-	public class LongStaticConstructor {
-		static LongStaticConstructor () {
-				Console.WriteLine ("I'm writting a test, and I will fill a screen with some useless code");
+		static LongStaticConstructorWithFields () {
+			foo = 5;
+			bar = "MyString";
+			baz = new object ();
+			Console.WriteLine ("I'm writting a test, and I will fill a screen with some useless code");
+			IList list = new ArrayList ();
+			list.Add ("Foo");
+			list.Add (4);
+			list.Add (6);
+
+			IEnumerator listEnumerator = list.GetEnumerator ();
+			while (listEnumerator.MoveNext ())
+				Console.WriteLine (listEnumerator.Current);
+
+			try {
+				list.Add ("Bar");
+				list.Add ('a');
+			}
+			catch (NotSupportedException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			foreach (object value in list) {
+				Console.Write (value);
+				Console.Write (Environment.NewLine);
+			}
+			
+			int x = 0;
+
+			for (int i = 0; i < 100; i++)
+				x++;
+			Console.WriteLine (x);
+	
+			string useless = "Useless String";
+
+			if (useless.Equals ("Other useless")) {
+				useless = String.Empty;
+				Console.WriteLine ("Other useless string");
+			}
+			
+			useless = String.Concat (useless," 1");
+			
+			for (int j = 0; j < useless.Length; j++) {
+				if (useless[j] == 'u')
+					Console.WriteLine ("I have detected an u char");
+				else
+					Console.WriteLine ("I have detected an useless char");
+			}
+			
+			try {
+				foreach (string environmentVariable in Environment.GetEnvironmentVariables ().Keys)
+					Console.WriteLine (environmentVariable);
+			}
+			catch (System.Security.SecurityException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			Console.WriteLine ("I will add more useless code !!");
+			
+			try {
+				if (!(File.Exists ("foo.txt"))) {
+					File.Create ("foo.txt");	
+					File.Delete ("foo.txt");
+				}
+			}
+			catch (IOException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+		}
+	}
+
+	public class LongStaticConstructorWithoutFields {
+		static LongStaticConstructorWithoutFields () {
+			Console.WriteLine ("I'm writting a test, and I will fill a screen with some useless code");
 			IList list = new ArrayList ();
 			list.Add ("Foo");
 			list.Add (4);
@@ -1077,9 +1155,19 @@ namespace Test.Rules.Smells {
 		}
 
 		[Test]
-		public void LongStaticConstructorTest () 
+		public void LongStaticConstructorWithoutFieldsTest () 
 		{
-			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructor"].Constructors.GetConstructor (true,Type.EmptyTypes);
+			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithoutFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
+			messageCollection = rule.CheckMethod (staticConstructor, new MinimalRunner ());
+			Assert.IsNotNull (messageCollection);
+			Assert.AreEqual (1, messageCollection.Count);
+		}
+
+		
+		[Test]
+		public void LongStaticConstructorWithFieldsTest () 
+		{
+			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
 			messageCollection = rule.CheckMethod (staticConstructor, new MinimalRunner ());
 			Assert.IsNull (messageCollection);
 		}
