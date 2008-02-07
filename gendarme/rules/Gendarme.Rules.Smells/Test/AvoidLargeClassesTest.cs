@@ -59,6 +59,16 @@ namespace Test.Rules.Smells {
 		string[] array;
 	}
 
+	public class ConstantClass {
+		const int x = 0, x1 = 1, x2 = 2, x3 = 3;
+		static readonly string foo, foo1, foo2, foo3;
+		static readonly DateTime bar, bar1, bar2, bar3;
+		float one, two, three, four;
+		const char c = 'c', c1 = 'b', c2 = 'a', c3 = 'z';
+		const short s = 2, s1 = 4, s2 = 6, s3 = 8;
+		static readonly string[] array;
+	}
+
 	public class ClassWithPrefixedFieldsWithCamelCasing {
 		int fooBar;
 		int fooBaz;
@@ -130,6 +140,16 @@ namespace Test.Rules.Smells {
 			messageCollection = rule.CheckType (type, new MinimalRunner ());
 			Assert.IsNull (messageCollection);
 		}
+
+		
+		[Test]
+		public void ConstantClassTest () 
+		{
+			type = assembly.MainModule.Types["Test.Rules.Smells.ConstantClass"];
+			messageCollection = rule.CheckType (type, new MinimalRunner ());
+			Assert.IsNull (messageCollection);
+		}
+
 
 		[Test]
 		public void ClassWithPrefixedFieldsWithCamelCasingTest ()

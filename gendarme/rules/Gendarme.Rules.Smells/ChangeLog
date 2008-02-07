@@ -1,4 +1,9 @@
-2008-07-07  Nestor Salceda  <nestor.salceda@gmail.com>
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLargeClassesRule.cs: Avoid positive when a class contains
+	constants or readonly fields.
+
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ExpressionFillerVisitor.cs, CodeDuplicatedLocator.cs, Expression.cs:
 	For performance issues types which aren't visible outside of the

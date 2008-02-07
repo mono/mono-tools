@@ -1,5 +1,10 @@
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 	
+	* AvoidLargeClassesTest.cs: Added a test for class storing common
+	constant values.
+
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+	
 	* AvoidLongMethodsTest.cs: Added a test for the new strategy for static
 	constructors.
 

@@ -53,7 +53,18 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool IsTooLarge (TypeDefinition type)
 		{
-			return type.Fields.Count >= MaxFields;
+			int counter = 0;
+			//Skip the constants and others related from this check.
+			//It's common use a class for store constants, by
+			//example: Gendarme.Framework.MethodSignatures.
+			foreach (FieldDefinition field in type.Fields) {
+				if (field.IsSpecialName || field.HasConstant || field.IsInitOnly)
+					continue;
+				if (field.IsGeneratedCode ())
+					continue;
+				counter++;
+			}
+			return counter >= MaxFields;
 		}
 
 		private void CheckForClassFields (TypeDefinition type)
