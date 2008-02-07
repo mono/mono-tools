@@ -105,17 +105,9 @@ public partial class MainWindow: Gtk.Window
 	{
 		Build ();
 		notebook1.Page = 1;
-		
-		//
-		// Load configuration
-		//
-		Config = GuiCompare.Config.GetConfig ();
-		ShowMissing.Active = Config.ShowMissing;
-		ShowErrors.Active = Config.ShowErrors;
-		ShowExtra.Active = Config.ShowExtra;
-		ShowPresent.Active = Config.ShowPresent;
-		ShowTodo.Active = Config.ShowTodo;
 
+		Config = GuiCompare.Config.GetConfig ();
+		
 		//
 		// Configure the GUI
 		//
@@ -227,6 +219,16 @@ public partial class MainWindow: Gtk.Window
 				}
 			}
 		};
+
+		//
+		// Load configuration
+		//
+		ShowMissing.Active = Config.ShowMissing;
+		ShowErrors.Active = Config.ShowErrors;
+		ShowExtra.Active = Config.ShowExtra;
+		ShowPresent.Active = Config.ShowPresent;
+		ShowTodo.Active = Config.ShowTodo;
+
 	}
 	
 	// A handle to our menu bar
