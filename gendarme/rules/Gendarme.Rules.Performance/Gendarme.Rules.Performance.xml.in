@@ -23,6 +23,12 @@
 		<problem>The internal type '{0}' is not instantiated by code within the assembly.</problem>
 		<solution>Remove the type or add the code that uses it.  If the type contains only static methods then either add the static modifier to the type or add the private construtor to the type to prevent the compiler from emitting a default public instance constructor.</solution>
 	</rule>
+	<rule	Name="AvoidUnsealedUninheritedInternalClassesRule" 
+		Type="Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalClassesRule, Gendarme.Rules.Performance, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Performance#AvoidUnsealedUninheritedInternalClassesRule" >
+		<problem>The type '{0}' should be sealed since it is not inherited from nor is it visibile outside the assembly.</problem>
+		<solution>You should seal this type, unless you plan to inherit from this type in the near-future.</solution>
+	</rule>
 	<rule	Name="AvoidUnsealedConcreteAttributesRule" 
 		Type="Gendarme.Rules.Performance.AvoidUnsealedConcreteAttributesRule, Gendarme.Rules.Performance, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Performance#AvoidUnsealedConcreteAttributesRule" >
@@ -52,6 +58,12 @@
 		Uri="http://www.mono-project.com/Gendarme.Rules.Performance#IDisposableWithDestructorWithoutSuppressFinalizeRule" >
 		<problem>The type '{0}' has a destructor and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside it's Dispose method.</problem>
 		<solution>Add a call to GC.SuppressFinalize inside your Dispose method.</solution>
+	</rule>
+	<rule	Name="UseIsOperatorRule" 
+		Type="Gendarme.Rules.Performance.UseIsOperatorRule, Gendarme.Rules.Performance, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Performance#UseStringEmptyRule" >
+		<problem>The method '{0}' should use the "is" operator and avoid the cast and compare to null.</problem>
+		<solution>Replace the cast and compare to null with the simpler "is" operator.</solution>
 	</rule>
 	<rule	Name="UseStringEmptyRule" 
 		Type="Gendarme.Rules.Performance.UseStringEmptyRule, Gendarme.Rules.Performance, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"

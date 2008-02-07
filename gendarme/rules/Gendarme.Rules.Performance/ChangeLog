@@ -1,3 +1,14 @@
+2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnsealedUninheritedInternalClassesRule.cs: New. Rule to check
+	for non-sealed and non-visible types [Scott Peterson]
+	* UseIsOperatorRule.cs: New. Rule to check when using the "is" 
+	operator would be better than a cast+null check [Seo Sanghyeon]
+	* Gendarme.Rules.Performance.xml.in: Add rule description.
+	* Gendarme.Rules.Performance.mdp: Add rule to MonoDevelop project 
+	file.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUninstantiatedInternalClassesRule.cs: Reworked to reduce

@@ -14,7 +14,7 @@ performance_rules_sources = EmptyDestructorRule.cs IDisposableWithDestructorWith
 	UseStringEmptyRule.cs AvoidUnusedParametersRule.cs AvoidUninstantiatedInternalClassesRule.cs \
 	AvoidUncalledPrivateCodeRule.cs AvoidToStringOnStringsRule.cs DontIgnoreMethodResultRule.cs \
 	UsingStringLengthInsteadOfCheckingEmptyStringRule.cs AvoidReturningArraysOnPropertiesRule.cs \
-	AvoidUnsealedConcreteAttributesRule.cs
+	AvoidUnsealedConcreteAttributesRule.cs UseIsOperatorRule.cs AvoidUnsealedUninheritedInternalClassesRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -26,7 +26,8 @@ performance_rules_build_sources += $(performance_rules_generated_sources)
 performance_test_sources = EmptyDestructorTest.cs IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs AvoidUnusedParametersTest.cs UsingStringLengthInsteadOfCheckingEmptyStringTest.cs \
 	AvoidUncalledPrivateCodeTest.cs AvoidToStringOnStringsTest.cs AvoidUninstantiatedInternalClassesTest.cs \
-	DontIgnoreMethodResultTest.cs AvoidReturningArraysOnPropertiesTest.cs AvoidUnsealedConcreteAttributesTest.cs
+	DontIgnoreMethodResultTest.cs AvoidReturningArraysOnPropertiesTest.cs AvoidUnsealedConcreteAttributesTest.cs \
+	UseIsOperatorTest.cs AvoidUnsealedUninheritedInternalClassesTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
