@@ -1,4 +1,9 @@
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongMethodsRule.cs: As suggested by Sebastien, the new
+	comparisons are better than a string comparison.
+
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* AvoidLongMethodsRule.cs: The rule should be applied to static
 	constructors.  Now we add several extra instructions for each field for

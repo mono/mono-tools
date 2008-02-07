@@ -74,16 +74,6 @@ namespace Gendarme.Rules.Smells {
 			return false;
 		}
 
-		private static bool IsStaticConstructor (MethodDefinition method)
-		{
-			return method.Name == MethodDefinition.Cctor;
-		}
-
-		private static bool IsConstructor (MethodDefinition method)
-		{
-			return method.Name == MethodDefinition.Ctor;
-		}
-
 		private static int CountStaticFields (TypeDefinition type) {
 			int counter = 0;
 			foreach (FieldDefinition field in type.Fields) {
@@ -132,11 +122,11 @@ namespace Gendarme.Rules.Smells {
 			
 			// rule applies!
 			// success if the instruction count is below the defined threshold
-			if (IsStaticConstructor (method)) {
+			if (method.IsConstructor && method.IsStatic) {
 				if (method.Body.Instructions.Count <= MaxInstructions + (CountStaticFields (method.DeclaringType as TypeDefinition) * AsignationRatio))
 					return runner.RuleSuccess;
 			}
-			else if (IsConstructor (method)) {
+			else if (method.IsConstructor && method.IsStatic) {
 				if (method.Body.Instructions.Count <= MaxInstructions + (CountInstanceFields (method.DeclaringType as TypeDefinition) * AsignationRatio))
 					return runner.RuleSuccess;
 			}
