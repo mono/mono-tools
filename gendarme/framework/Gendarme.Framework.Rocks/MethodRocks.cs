@@ -100,16 +100,6 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if the method corresponds to the get operation on a property.
-		/// </summary>
-		/// <param name="self">The MethodDefinition on which the extension method can be called.</param>
-		/// <returns>True if the method is a getter, False otherwise</returns>
-		public static bool IsGetter (this MethodDefinition self)
-		{
-			return ((self.SemanticsAttributes & MethodSemanticsAttributes.Getter) == MethodSemanticsAttributes.Getter);
-		}
-
-		/// <summary>
 		/// Check if the signature of a method is consitent for it's use as a Main method.
 		/// Note: it doesn't check that the method is the EntryPoint of it's assembly.
 		/// <code>
@@ -158,16 +148,6 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsProperty (this MethodDefinition self)
 		{
 			return ((self.SemanticsAttributes & (MethodSemanticsAttributes.Getter | MethodSemanticsAttributes.Setter)) != 0);
-		}
-
-		/// <summary>
-		/// Check if the method corresponds to the set operation on a property.
-		/// </summary>
-		/// <param name="self">The MethodDefinition on which the extension method can be called.</param>
-		/// <returns>True if the method is a setter, False otherwise</returns>
-		public static bool IsSetter (this MethodDefinition self)
-		{
-			return ((self.SemanticsAttributes & MethodSemanticsAttributes.Setter) == MethodSemanticsAttributes.Setter);
 		}
 
 		/// <summary>

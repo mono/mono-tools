@@ -1,3 +1,10 @@
+2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRocks.cs: Remove IsGetter and IsSetter since they are now 
+	properties in Cecil (SVH HEAD) and break the build.
+	* TypeRocks.cs: Remove obsoleted GetFinalizer since Nestor fixed all
+	their uses in the rules.
+
 2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypeRocks.cs: IsAttribute now works on a TypeReference. Fix 

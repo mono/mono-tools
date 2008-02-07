@@ -53,17 +53,6 @@ namespace Gendarme.Framework.Rocks {
 	public static class TypeRocks {
 
 		/// <summary>
-		/// Return the type finalizer (aka destructor).
-		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
-		/// <returns>The MethodDefinition of the finalizer or null if the type has no finalizer.</returns>
-		[Obsolete ("use the more general GetMethod (MethodSignatures.Finalize)")]
-		public static MethodDefinition GetFinalizer (this TypeDefinition self)
-		{
-			return self.GetMethod (MethodSignatures.Finalize);
-		}
-
-		/// <summary>
 		/// Returns the first MethodDefinition that satisfies a given MethodSignature.
 		/// </summary>
 		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
