@@ -33,7 +33,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Smells {
 
-	internal class ExpressionFillerVisitor : BaseCodeVisitor {
+	internal sealed class ExpressionFillerVisitor : BaseCodeVisitor {
 		private IList expressionContainer;
 		private Expression currentExpression;
 

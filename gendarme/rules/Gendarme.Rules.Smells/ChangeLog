@@ -1,3 +1,9 @@
+2008-07-07  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ExpressionFillerVisitor.cs, CodeDuplicatedLocator.cs, Expression.cs:
+	For performance issues types which aren't visible outside of the
+	assembly and haven't subclasses should be sealed.
+
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongMethodsRule.cs: As suggested by Sebastien, the new

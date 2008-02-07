@@ -37,7 +37,7 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
 
-	internal class CodeDuplicatedLocator {
+	internal sealed class CodeDuplicatedLocator {
 		private StringCollection methods = new StringCollection ();
 		private StringCollection types = new StringCollection ();
 
