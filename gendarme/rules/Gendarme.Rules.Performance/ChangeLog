@@ -1,3 +1,10 @@
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* DisposableTypesShouldHaveFinalizerRule.cs,
+	FinalizersShouldCallBaseClassFinalizerRule.cs,
+	FinalizersShouldBeProtectedRule.cs: Replaced TypeDefinition.GetFinalizer
+	with TypeDefinition.GetMethod for avoid some warnings when compiling.
+
 2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnsealedUninheritedInternalClassesRule.cs: New. Rule to check

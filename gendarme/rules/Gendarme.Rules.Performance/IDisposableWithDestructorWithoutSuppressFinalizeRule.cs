@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Performance {
 				return runner.RuleSuccess;
 
 			// #3 - look for a destructor
-			if (type.GetFinalizer () == null)
+			if (type.GetMethod (MethodSignatures.Finalize) == null)
 				return runner.RuleSuccess;
 
 			// #4 - look if GC.SuppressFinalize is being called in the

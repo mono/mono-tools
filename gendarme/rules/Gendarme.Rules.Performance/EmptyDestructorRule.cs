@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Performance {
 		public MessageCollection CheckType (TypeDefinition type, Runner runner)
 		{
 			// rule applies only to type with a finalizer
-			MethodDefinition finalizer = type.GetFinalizer ();
+			MethodDefinition finalizer = type.GetMethod (MethodSignatures.Finalize);
 			if (finalizer == null)
 				return runner.RuleSuccess;
 
