@@ -1,3 +1,8 @@
+2008-02-07  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodRocksTest.cs: Remove tests for IsGetter and IsSetter.
+	* TypeRocksTest.cs: Remove tests for GetFinalizer.
+
 2008-01-28  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocksTest.cs: Adapt unit tests for API changes.

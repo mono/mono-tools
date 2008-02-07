@@ -146,14 +146,6 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
-		public void IsGetter ()
-		{
-			Assert.IsTrue (GetMethod ("get_Value").IsGetter (), "get_Value");
-			Assert.IsFalse (GetMethod ("set_Value").IsGetter (), "set_Value");
-			Assert.IsFalse (GetMethod ("FixtureSetUp").IsGetter (), "FixtureSetUp");
-		}
-
-		[Test]
 		public void IsMain ()
 		{
 			Assert.IsTrue (GetMethod ("Test.Framework.Rocks.MethodRocksTest/MainClassVoidVoid", "Main").IsMain (), "MainClassVoidVoid");
@@ -169,14 +161,6 @@ namespace Test.Framework.Rocks {
 			Assert.IsTrue (GetMethod ("get_Value").IsProperty (), "get_Value");
 			Assert.IsTrue (GetMethod ("set_Value").IsProperty (), "set_Value");
 			Assert.IsFalse (GetMethod ("FixtureSetUp").IsProperty (), "FixtureSetUp");
-		}
-
-		[Test]
-		public void IsSetter ()
-		{
-			Assert.IsFalse (GetMethod ("get_Value").IsSetter (), "get_Value");
-			Assert.IsTrue (GetMethod ("set_Value").IsSetter (), "set_Value");
-			Assert.IsFalse (GetMethod ("FixtureSetUp").IsSetter (), "FixtureSetUp");
 		}
 
 		[Test]

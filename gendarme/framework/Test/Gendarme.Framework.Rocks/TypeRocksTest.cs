@@ -42,12 +42,6 @@ namespace Test.Framework.Rocks {
 	[TestFixture]
 	public class TypeRocksTest {
 
-		public class TypeFinalizer {
-			~TypeFinalizer ()
-			{
-			}
-		}
-
 		[System.Runtime.CompilerServices.CompilerGeneratedAttribute]
 		public class TypeCompilerGenerated {
 		}
@@ -144,13 +138,6 @@ namespace Test.Framework.Rocks {
 					return method;
 			Assert.Fail (name);
 			return null;
-		}
-
-		[Test]
-		public void GetFinalizer ()
-		{
-			Assert.IsNull (GetType (String.Empty).GetFinalizer (), "TypeRocksTest");
-			Assert.IsNotNull (GetType ("/TypeFinalizer").GetFinalizer (), "TypeFinalizer");
 		}
 
 		[Test]
