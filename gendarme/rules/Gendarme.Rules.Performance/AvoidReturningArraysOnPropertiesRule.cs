@@ -37,7 +37,7 @@ namespace Gendarme.Rules.Performance {
 
 		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
 		{
-			if (!method.IsGetter ())
+			if (!method.IsGetter)
 				return runner.RuleSuccess;
 
 			if (!method.ReturnType.ReturnType.IsArray ())

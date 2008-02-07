@@ -38,7 +38,7 @@ namespace Gendarme.Rules.Design {
 		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
 		{
 			// rule applies to setters
-			if (!method.IsSetter ())
+			if (!method.IsSetter)
 				return runner.RuleSuccess;
 
 			// rule applies
@@ -51,7 +51,7 @@ namespace Gendarme.Rules.Design {
 				// look for the getter name
 				if (md.Name == name) {
 					// and confirm it's getter
-					if (md.IsGetter ())
+					if (md.IsGetter)
 						return runner.RuleSuccess;
 				}
 			}

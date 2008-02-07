@@ -50,7 +50,7 @@ namespace Gendarme.Rules.Correctness {
 				return runner.RuleSuccess;
 
 			// rule applies to setters methods
-			if (!method.IsSetter ())
+			if (!method.IsSetter)
 				return runner.RuleSuccess;
 
 			// rule applies
