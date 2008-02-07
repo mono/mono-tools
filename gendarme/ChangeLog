@@ -1,3 +1,8 @@
+2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AUTHORS: Welcome new Gendarme hackers: Seo Sanghyeon and
+	Scott Peterson
+
 2008-02-01  Andrew Jorgensen  <ajorgensen@novell.com>
 
 	* Makefile.am: Fixes to import gendarme into mono-tools
