@@ -84,7 +84,7 @@ namespace Test.Rules.Design {
 		public void TestNonProtectedFinalizerDefinedClass ()
 		{
 			TypeDefinition typeDefinition = GetTest<FinalizerCallingBaseFinalizerClass> ().Clone () as TypeDefinition;
-			MethodDefinition finalizer = typeDefinition.GetFinalizer ();
+			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
 			// make it non-protected (e.g. public)
 			finalizer.IsPublic = true;
 

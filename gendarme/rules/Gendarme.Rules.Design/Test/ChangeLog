@@ -1,3 +1,8 @@
+2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* FinalizersShouldCallBaseClassFinalizerTest.cs:Replaced TypeDefinition.GetFinalizer
+	with TypeDefinition.GetMethod for avoid some warnings when compiling.
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideAlternativeNamesForOperatorOverloadsTest.cs: Add 

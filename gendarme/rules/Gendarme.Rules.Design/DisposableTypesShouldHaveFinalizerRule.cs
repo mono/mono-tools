@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Design {
 		{
 			if (!type.Implements ("System.IDisposable"))
 				return runner.RuleSuccess;
-			if (type.GetFinalizer () != null)
+			if (type.GetMethod (MethodSignatures.Finalize) != null)
 				return runner.RuleSuccess;
 
 			foreach (FieldDefinition field in type.Fields) {

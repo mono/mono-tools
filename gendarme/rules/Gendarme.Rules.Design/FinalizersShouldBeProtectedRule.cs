@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Design {
 
 		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
 		{
-			MethodDefinition finalizer = typeDefinition.GetFinalizer ();
+			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
 
 			if (finalizer == null) // no finalizer found
 				return runner.RuleSuccess;

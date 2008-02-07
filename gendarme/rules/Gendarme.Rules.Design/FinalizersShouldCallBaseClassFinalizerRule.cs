@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Design {
 			if (typeDefinition.BaseType == null)
 				return runner.RuleSuccess;
 
-			MethodDefinition finalizer = typeDefinition.GetFinalizer ();
+			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
 
 			if (finalizer == null) // no finalizer found
 				return runner.RuleSuccess;
