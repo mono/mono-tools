@@ -1,3 +1,9 @@
+2008-02-09  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* Makefile.am: Added tasks for API documentation generation.  One for
+	generating documentation and other for assembling the documentation for
+	distrubution puroposes.
+
 2008-02-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AUTHORS: Welcome new Gendarme hackers: Seo Sanghyeon and
