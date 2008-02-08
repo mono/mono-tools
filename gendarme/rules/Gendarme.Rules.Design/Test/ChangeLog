@@ -1,3 +1,8 @@
+2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumsShouldUseInt32Test.cs: New. Unit tests.
+	* Test.Rules.Design.mdp: Update project file.
+
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* FinalizersShouldCallBaseClassFinalizerTest.cs:Replaced TypeDefinition.GetFinalizer
