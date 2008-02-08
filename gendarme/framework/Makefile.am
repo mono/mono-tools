@@ -1,7 +1,7 @@
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
 EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
-CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll
+CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll Gendarme.Framework.doc.xml
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
 
 pkgconfig_in_files = gendarme-framework.pc.in
@@ -36,7 +36,7 @@ $(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
 	cp $(CECIL_ASM) $(top_builddir)/gendarme/bin/
 
 ../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Xml.dll -out:$@ $(framework_build_sources)
+	$(GMCS) -debug -target:library -doc:Gendarme.Framework.doc.xml -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Xml.dll -out:$@ $(framework_build_sources)
 
 framework_test_sources = \
 	Gendarme.Framework/MethodSignatureTest.cs \

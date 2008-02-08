@@ -1,3 +1,8 @@
+2008-02-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Added the documentation automatic generation when
+	compiling the framework.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Added CommonRocks and StackEntryAnalysis[Test] to 
