@@ -19,7 +19,8 @@ design_rules_sources = DontDeclareProtectedFieldsInSealedClassRule.cs UsingClone
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs DisposableTypesShouldHaveFinalizerRule.cs \
 	DisposableFieldsShouldBeDisposedRule.cs FinalizersShouldBeProtectedRule.cs FinalizersShouldCallBaseClassFinalizerRule.cs \
 	EnsureSymmetryForOverloadedOperatorsRule.cs OperatorEqualsShouldBeOverloadedRule.cs \
-	OverrideEqualsMethodRule.cs ProvideAlternativeNamesForOperatorOverloadsRule.cs ImplementEqualsAndGetHashCodeInPairRule.cs
+	OverrideEqualsMethodRule.cs ProvideAlternativeNamesForOperatorOverloadsRule.cs ImplementEqualsAndGetHashCodeInPairRule.cs \
+	EnumsShouldUseInt32Rule.cs
 
 design_rules_build_sources = $(addprefix $(srcdir)/, $(design_rules_sources))
 design_rules_build_sources += $(design_rules_generated_sources)
@@ -37,7 +38,7 @@ design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneW
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs DisposableTypesShouldHaveFinalizerTest.cs \
 	DisposableFieldsShouldBeDisposedTest.cs FinalizersShouldBeProtectedTest.cs FinalizersShouldCallBaseClassFinalizerTest.cs \
 	EnsureSymmetryForOverloadedOperatorsTest.cs OperatorEqualsShouldBeOverloadedTest.cs OverrideEqualsMethodTest.cs \
-	ProvideAlternativeNamesForOperatorOverloadsTest.cs ImplementEqualsAndGetHashCodeInPairTest.cs
+	ProvideAlternativeNamesForOperatorOverloadsTest.cs ImplementEqualsAndGetHashCodeInPairTest.cs EnumsShouldUseInt32Test.cs
 
 design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 

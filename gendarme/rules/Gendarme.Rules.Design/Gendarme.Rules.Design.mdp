@@ -29,12 +29,18 @@
     <File name="ConsiderConvertingMethodToPropertyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="MissingAttributeUsageOnCustomAttributeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DisposableFieldsShouldBeDisposedRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="DisposableHelper.cs" subtype="Code" buildaction="Compile" />
     <File name="DisposableTypesShouldHaveFinalizerRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithDisposableFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithNativeFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
     <File name="FinalizersShouldBeProtectedRule.cs" subtype="Code" buildaction="Compile" />
     <File name="FinalizersShouldCallBaseClassFinalizerRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AttributeArgumentsShouldHaveAccessorsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="EnsureSymmetryForOverloadedOperatorsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="EnumsShouldUseInt32Rule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ImplementEqualsAndGetHashCodeInPairRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="OperatorEqualsShouldBeOverloadedRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="OverrideEqualsMethodRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ProvideAlternativeNamesForOperatorOverloadsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

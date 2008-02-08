@@ -65,6 +65,12 @@
 		<problem>The enum '{0}' should define a member with a value of 0.</problem>
 		<solution>Add a new member in the enum with a value of 0.</solution>
 	</rule>
+	<rule	Name="EnumsShouldUseInt32Rule"
+		Type="Gendarme.Rules.Design.EnumsShouldUseInt32Rule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
+		Uri="http://www.mono-project.com/Gendarme.Rules.Design#EnumsShouldUseInt32Rule" >
+		<problem>Unless it is required for interoperability the enum '{0}' should use Int32 as it's underling storage type.</problem>
+		<solution>Remove the extra type from the enumeration declaration (Int32 will be used as default).</solution>
+	</rule>
 	<rule	Name="FinalizersShouldBeProtectedRule"
 		Type="Gendarme.Rules.Design.FinalizersShouldBeProtectedRule, Gendarme.Rules.Design, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Design#FinalizersShouldBeProtectedRule" >

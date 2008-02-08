@@ -1,3 +1,11 @@
+2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumsShouldUseInt32Rule.cs: New. Rule to warn about enumations that
+	are not based on Int32.
+	* Gendarme.Rules.Design.mdp: Update project file.
+	* Gendarme.Rules.Design.xml.in: Add new rule description.
+	* Makefile.am: Add new rule/test to the build.
+
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* DisposableTypesShouldHaveFinalizerRule.cs,
