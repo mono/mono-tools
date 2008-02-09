@@ -2,7 +2,7 @@ SUBDIRS = man framework console rules
 bin_SCRIPTS = gendarme
 EXTRA_DIST = gendarme.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln
 
-CLEANFILES = gendarme bin/rules.xml bin/Gendarme.Rules.*.xml 
+CLEANFILES = gendarme bin/rules.xml bin/Gendarme.Rules.*.xml
 
 DISTCLEANFILES = \
 	AssemblyInfo.cs \
@@ -31,6 +31,9 @@ run-test: test
 	cd rules;	\
 	make run-test;	\
 	cd ..;
+
+clean-local:
+	rm -fr doc
 
 doc: all
 	monodocer -assembly:bin/Gendarme.Framework.dll -importslashdoc:framework/Gendarme.Framework.doc.xml -path:doc

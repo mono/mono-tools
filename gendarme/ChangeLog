@@ -1,4 +1,9 @@
 2008-02-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: When we target clean, we should also delete doc
+	directory.
+
+2008-02-09  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* Makefile.am: Added tasks for API documentation generation.  One for
 	generating documentation and other for assembling the documentation for
