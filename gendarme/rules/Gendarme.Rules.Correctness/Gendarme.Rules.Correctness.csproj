@@ -1,14 +1,34 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{732905E1-1FD4-403A-93DD-EC4CF120091E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gendarme.Rules.Correctness</RootNamespace>
     <AssemblyName>Gendarme.Rules.Correctness</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>http://localhost/Gendarme.Rules.Correctness/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,12 +53,16 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidConstructorsInStaticTypesRule.cs" />
     <Compile Include="BadRecursiveInvocationRule.cs" />
+    <Compile Include="CallingEqualsWithNullArgRule.cs" />
     <Compile Include="dataflow\BasicBlock.cs" />
     <Compile Include="dataflow\CFG.cs" />
     <Compile Include="dataflow\CFGEdge.cs" />
     <Compile Include="dataflow\Dataflow.cs" />
     <Compile Include="dataflow\IDataflowAnalysis.cs" />
+    <Compile Include="DontCompareWithNaNRule.cs" />
+    <Compile Include="FloatComparisonRule.cs" />
     <Compile Include="graph\DFS.cs" />
     <Compile Include="graph\Edge.cs" />
     <Compile Include="graph\Graph.cs" />
@@ -53,10 +77,10 @@
     <Compile Include="NullDerefFrame.cs" />
     <Compile Include="NullDerefRule.cs" />
     <Compile Include="Nullity.cs" />
-    <Compile Include="OpCodeConstants.cs" />
+    <Compile Include="UseValueInPropertySetterRule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\lib\Mono.Cecil.csproj">
+    <ProjectReference Include="..\..\..\..\cecil\lib\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
     </ProjectReference>
@@ -67,6 +91,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
