@@ -650,7 +650,13 @@ namespace GuiCompare {
 		                                             FieldAttributes.HasFieldMarshal);
 		public override string GetMemberAccess ()
 		{
-			return (field_def.Attributes & masterInfoFieldMask).ToString();
+			FieldAttributes fa = field_def.Attributes & masterInfoFieldMask;
+
+			// remove the Assem from FamORAssem
+			if ((fa & FieldAttributes.FamORAssem) == FieldAttributes.FamORAssem)
+				fa = (fa & ~(FieldAttributes.FamORAssem)) | (FieldAttributes.Family);
+
+			return fa.ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
@@ -706,7 +712,13 @@ namespace GuiCompare {
 		                                               MethodAttributes.SpecialName);
 		public override string GetMemberAccess ()
 		{
-			return (method_def.Attributes & masterInfoMethodMask).ToString();
+			MethodAttributes ma = method_def.Attributes & masterInfoMethodMask;
+
+			// remove the Assem from FamORAssem
+			if ((ma & MethodAttributes.FamORAssem) == MethodAttributes.FamORAssem)
+				ma = (ma & ~(MethodAttributes.FamORAssem)) | (MethodAttributes.Family);
+
+			return ma.ToString();
 		}
 		
 		public override List<CompNamed> GetAttributes ()
@@ -798,10 +810,11 @@ namespace GuiCompare {
 	public class CecilProperty : CompProperty
 	{
 		public CecilProperty (PropertyDefinition pd)
-			: base (pd.Name)
+			: base (FormatName (pd, false))
 		{
 			this.pd = pd;
 			this.attributes = CecilUtils.GetCustomAttributes (pd, todos);
+			this.DisplayName = FormatName (pd, true);
 		}
 
 		public override string GetMemberType()
@@ -829,6 +842,44 @@ namespace GuiCompare {
 				rv.Add (new CecilMethod (pd.SetMethod));
 			
 			return rv;
+		}
+
+		static string FormatName (PropertyDefinition pd, bool beautify)
+		{
+			StringBuilder sb = new StringBuilder ();
+
+#if INCLUDE_TYPE_IN_PROPERTY_DISPLAYNAME
+			sb.Append (beautify
+				           ? CecilUtils.PrettyType (pd.PropertyType.FullName)
+				           : CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName));
+			sb.Append (" ");
+#else
+			if (!beautify) {
+				sb.Append (CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName));
+				sb.Append (" ");
+			}
+#endif
+			sb.Append (pd.Name);
+
+			if (pd.Parameters.Count > 0) {
+				sb.Append ('[');
+				bool first_p = true;
+				foreach (ParameterDefinition p in pd.Parameters) {
+					if (!first_p)
+						sb.Append (", ");
+					first_p = false;
+					sb.Append (beautify
+						   ? CecilUtils.PrettyType (p.ParameterType.FullName)
+						   : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
+					if (beautify) {
+						sb.Append (" ");
+						sb.Append (p.Name);
+					}
+				}
+				sb.Append (']');
+			}
+
+			return sb.ToString ();
 		}
 		
 		PropertyDefinition pd;

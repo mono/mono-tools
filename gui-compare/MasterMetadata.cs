@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text;
 using System.Xml;
 using Mono.Cecil;
 using Gtk;
@@ -62,7 +63,6 @@ namespace GuiCompare {
 					                            : (XMLAttributes)xml_cls.properties.attributeMap[key]);
 
 					property_list.Add (new MasterProperty ((string)key,
-					                                       (string)xml_cls.properties.keys[key],
 					                                       xml_cls.properties.ConvertToString (Int32.Parse ((string)xml_cls.properties.access[key])),
 					                                       (XMLMethods)xml_cls.properties.nameToMethod[key],
 					                                       attributes));
@@ -558,8 +558,8 @@ namespace GuiCompare {
 	}
 	
 	public class MasterProperty : CompProperty {
-		public MasterProperty (string key, string name, string propertyAccess, XMLMethods xml_methods, XMLAttributes attributes)
-			: base (name)
+		public MasterProperty (string key, string propertyAccess, XMLMethods xml_methods, XMLAttributes attributes)
+			: base (FormatName (key))
 		{
 			string[] keyparts = key.Split(new char[] {':'}, 3);
 			
@@ -592,6 +592,21 @@ namespace GuiCompare {
 			return methods;
 		}
 
+		static string FormatName (string key)
+		{
+			string[] keyparts = key.Split(new char[] {':'}, 3);
+
+			StringBuilder sb = new StringBuilder ();
+			sb.Append (keyparts[1]);
+			sb.Append (" ");
+			sb.Append (keyparts[0]);
+
+			if (keyparts[2] != "")
+				sb.AppendFormat ("[{0}]", keyparts[2]);
+
+			return sb.ToString ();
+		}
+	
 		List<CompNamed> methods;
 		XMLAttributes attributes;
 		string propertyType;

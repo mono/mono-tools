@@ -1,3 +1,22 @@
+2008-02-10  Chris Toshok  <toshok@ximian.com>
+
+	[ Fix a couple of bugs reported by jpobst ]
+	
+	* CecilMetadata.cs (CecilProperty.ctor): we can't just use the
+	name - multiple "Item" properties were screwing things up.
+	(CecilProperty.FormatName): format the name for display and for
+	comparison against the masterinfo.  Masterinfo version is "Type
+	Name [ param-types ]", and display version if "Name [
+	param-types]" (including the type in the display version made it a
+	little hard to actually see what the name of the property was.)
+	(CecilField.GetMemberAccess): convert FamORAssem to just Family.
+	(CecilMethod.GetMemberAccess): same.
+
+	* MasterMetadata.cs (MasterProperty.ctor): we need to format the
+	name based on the key, not on the name attribute alone.
+	(MasterProperty.FormatName): format the name to match up with
+	CecilProperty.FormatName.
+	
 2008-02-07  Stephane Delcroix  <sdelcroix@novell.com>
 
 	* MainWindow.cs: move the LoadConfiguration part at the end of
