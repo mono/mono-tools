@@ -1,0 +1,34 @@
+README for VisualStudio.NET users
+
+Gendarme includes a VS.NET solution to build and test itself. 
+
+
+\/\/\/ DISCLAIMER \/\/\/
+
+This is NOT the main build tool used for Gendarme development (autofu +
+Makefiles are). So it's likely that the solution and projects will 
+sometimes be out of sync and not usable without some changes [1].
+
+These are unsupported, for your convenience, files. Use at your own risk!
+
+/\/\/\ DISCLAIMER /\/\/\
+
+
+Requirements
+
+* The minimal requirements are VS.NET 2008 [2];
+* You need to check out both 'cecil' and 'mono-tools' SVN repositories
+* You need ICSharpCode.SharpZipLib.dll to compile Gendarme.Rules.Portability [3]
+* You need NUnit 2.4.x to build/run the unit tests
+
+
+Notes
+
+[1] Please report such issues and they will, eventually, be fixed when
+someone gets to work with VS.NET. Remember this is not the primary 
+development platform for Gendarme.
+
+[2] Older version won't work since Gendarme uses C# 3 features.
+
+[3] Get it from Mono mcs SVN repository or from download it from
+http://www.icsharpcode.net/OpenSource/SharpZipLib/
