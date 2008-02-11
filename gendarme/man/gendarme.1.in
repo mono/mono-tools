@@ -11,7 +11,7 @@
 .if t .sp .5v
 .if n .sp
 ..
-.TH Gendarme "Gendarme @VERSION@"
+.TH Gendarme "Gendarme @GENDARME_VERSION@"
 .SH NAME
 Gendarme \- Rule-based assembly verifier
 .SH SYNOPSIS
