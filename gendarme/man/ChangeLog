@@ -1,3 +1,7 @@
+2008-02-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Fix version number (from Mono version to Gendarme)
+
 2006-09-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Added documentation for new options (--quiet, --log,
