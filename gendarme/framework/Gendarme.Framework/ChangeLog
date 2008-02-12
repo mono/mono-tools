@@ -1,3 +1,15 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Rule.cs: Throw an exception if we try to use Problem or Solution 
+	on a rule without the needed attributes. Change Uri property to look
+	for DocumentUriAttribute. Make Active property usable.
+
+2008-02-12  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* DocumentationUriAttribute.cs, ProblemAttribute.cs, 
+	SolutionAttribute.cs: New files for the next version of the 
+	framework. Work in progress.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Confidence.cs, Defect.cs, IAssemblyRule.cs, IMethodRule.cs, 

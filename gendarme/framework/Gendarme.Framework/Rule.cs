@@ -35,16 +35,19 @@ namespace Gendarme.Framework {
 	/// </summary>
 	abstract public class Rule : IRule {
 
+		private bool active = true;
 		private IRunner runner;
 		private string rule_name;
+		private string problem;
+		private string solution;
 		private string rule_url;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.
 		/// </summary>
 		public virtual bool Active {
-			get { return true; }
-			set { ; }
+			get { return active; }
+			set { active = value; }
 		}
 
 		/// <summary>
@@ -69,34 +72,46 @@ namespace Gendarme.Framework {
 
 		public virtual string Problem { 
 			get {
-				//use cecil instead?
-				object[] attributes = GetType ().GetCustomAttributes (typeof (ProblemAttribute),false);
-				if (attributes.Length != 0)
-					return ((ProblemAttribute)attributes[0]).Problem;
-				return String.Empty;
+				if (problem == null) {
+					object [] attributes = GetType ().GetCustomAttributes (typeof (ProblemAttribute), true);
+					if (attributes.Length == 0)
+						throw new NotImplementedException ("Missing [Problem] attribute on rule.");
+					problem = ((ProblemAttribute) attributes [0]).Problem;
+				}
+				return problem;
 			}
 		}
 
 		public virtual string Solution { 
 			get {
-				object[] attributes = GetType ().GetCustomAttributes (typeof (SolutionAttribute),false);
-				if (attributes.Length != 0)
-					return ((SolutionAttribute)attributes[0]).Solution;
-				return String.Empty;
+				if (solution == null) {
+					object [] attributes = GetType ().GetCustomAttributes (typeof (SolutionAttribute), true);
+					if (attributes.Length == 0)
+						throw new NotImplementedException ("Missing [Solution] attribute on rule.");
+					solution = ((SolutionAttribute) attributes [0]).Solution;
+				}
+				return solution;
 			}
 		}
 
 		/// <summary>
 		/// Return an Uri instance to the rule documentation.
-		/// By default this returns:
+		/// By default, if no [DocumentationUri] attribute is used on the rule, this returns:
 		/// http://www.mono-project.com/{rule name space}#{rule name}
 		/// </summary>
 		public virtual Uri Uri {
 			get {
 				if (rule_url == null) {
 					Type t = GetType ();
-					rule_name = t.Name;
-					rule_url = String.Format ("http://www.mono-project.com/{0}#{1}", t.Namespace, rule_name);
+					if (rule_name == null)
+						rule_name = t.Name;
+
+					object [] attributes = t.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
+					if (attributes.Length == 0) {
+						rule_url = String.Format ("http://www.mono-project.com/{0}#{1}", t.Namespace, rule_name);
+					} else {
+						rule_url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
+					}
 				}
 				// note: we return a new copy since Uri is not immutable
 				return new Uri (rule_url);
