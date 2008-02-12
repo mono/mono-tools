@@ -1,3 +1,10 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Confidence.cs, Defect.cs, IAssemblyRule.cs, IMethodRule.cs, 
+	IRule.cs, IRunner.cs, ITypeRule.cs, MinimalRunner.cs, Rule.cs,
+	RuleResult.cs, Runner.cs, RunnerEventArgs.cs, Severity.cs: New files
+	for the next version of the framework. Work in progress.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Shared class to analyse the stack by 
