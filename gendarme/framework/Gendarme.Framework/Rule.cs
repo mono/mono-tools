@@ -37,10 +37,10 @@ namespace Gendarme.Framework {
 
 		private bool active = true;
 		private IRunner runner;
-		private string rule_name;
+		private string name;
 		private string problem;
 		private string solution;
-		private string rule_url;
+		private string url;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.
@@ -64,9 +64,9 @@ namespace Gendarme.Framework {
 		/// </summary>
 		public virtual string Name {
 			get {
-				if (rule_name == null)
-					rule_name = GetType ().Name;
-				return rule_name;
+				if (name == null)
+					name = GetType ().Name;
+				return name;
 			}
 		}
 
@@ -75,8 +75,9 @@ namespace Gendarme.Framework {
 				if (problem == null) {
 					object [] attributes = GetType ().GetCustomAttributes (typeof (ProblemAttribute), true);
 					if (attributes.Length == 0)
-						throw new NotImplementedException ("Missing [Problem] attribute on rule.");
-					problem = ((ProblemAttribute) attributes [0]).Problem;
+						problem = "Missing [Problem] attribute on rule.";
+					else
+						problem = ((ProblemAttribute) attributes [0]).Problem;
 				}
 				return problem;
 			}
@@ -87,8 +88,9 @@ namespace Gendarme.Framework {
 				if (solution == null) {
 					object [] attributes = GetType ().GetCustomAttributes (typeof (SolutionAttribute), true);
 					if (attributes.Length == 0)
-						throw new NotImplementedException ("Missing [Solution] attribute on rule.");
-					solution = ((SolutionAttribute) attributes [0]).Solution;
+						solution = "Missing [Solution] attribute on rule.";
+					else
+						solution = ((SolutionAttribute) attributes [0]).Solution;
 				}
 				return solution;
 			}
@@ -101,20 +103,20 @@ namespace Gendarme.Framework {
 		/// </summary>
 		public virtual Uri Uri {
 			get {
-				if (rule_url == null) {
+				if (url == null) {
 					Type t = GetType ();
-					if (rule_name == null)
-						rule_name = t.Name;
+					if (name == null)
+						name = t.Name;
 
 					object [] attributes = t.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
 					if (attributes.Length == 0) {
-						rule_url = String.Format ("http://www.mono-project.com/{0}#{1}", t.Namespace, rule_name);
+						url = String.Format ("http://www.mono-project.com/{0}#{1}", t.Namespace, name);
 					} else {
-						rule_url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
+						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}
 				}
 				// note: we return a new copy since Uri is not immutable
-				return new Uri (rule_url);
+				return new Uri (url);
 			}
 		}
 

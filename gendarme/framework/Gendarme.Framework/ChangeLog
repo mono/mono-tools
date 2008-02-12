@@ -1,3 +1,9 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Rule.cs: Renamed similar fields (smell) and don't throw an 
+	exception inside Problem and Solution properties (but return a
+	string that makes the lack of attribute clear).
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Rule.cs: Throw an exception if we try to use Problem or Solution 
