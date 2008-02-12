@@ -1,3 +1,8 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Portability.xml.in: Fix definition for
+	FeatureRequiresRootPrivilegeOnUnixRule.
+
 2008-02-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Split the checks
