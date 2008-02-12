@@ -1,3 +1,9 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Concurrency.xml.in: Fix copy-paste mistake for 
+	NonConstantStaticFieldsShouldNotBeVisibleRule.
+	[Backport of r95541]
+
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: New. Rule that
