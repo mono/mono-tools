@@ -8,8 +8,8 @@
 	<rule	Name="FeatureRequiresRootPrivilegeOnUnixRule" 
 		Type="Gendarme.Rules.Portability.FeatureRequiresRootPrivilegeOnUnixRule, Gendarme.Rules.Portability, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
 		Uri="http://www.mono-project.com/Gendarme.Rules.Portability#FeatureRequiresRootPrivilegeOnUnixRule" >
-		<problem>The method '{0}' use some literal values for new lines (e.g. \r\n) which aren't portable across operating systems.</problem>
-		<solution>Replace literals with Environment.NewLine.</solution>
+		<problem>The method '{0}' use some features that requires 'root' priviledge under Unix.</problem>
+		<solution>Make sure your code can work without requiring users to have 'root' priviledge.</solution>
 	</rule>
 	<rule	Name="MonoCompatibilityReviewRule" 
 		Type="Gendarme.Rules.Portability.MonoCompatibilityReviewRule, Gendarme.Rules.Portability, Version=@GENDARME_VERSION@, Culture=neutral, PublicKeyToken=null"
