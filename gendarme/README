@@ -1,9 +1,13 @@
-This is the third release of Gendarme which includes a few rules for
-* Concurrency;
-* Correctness;
-* Exceptions;
-* Performance;
-* Portability and
-* Security
+Gendarme README
 
-Special thanks to Duncan Mak for the Gendarme name and to JB Evain for Cecil.
+User-level documentation is available from the Mono:: project wiki
+http://www.mono-project.com/Gendarme
+
+ROADMAP
+http://groups.google.com/group/gendarme/web/roadmap
+
+Mailing list
+http://groups.google.com/group/gendarme
+
+Developer documentation
+http://groups.google.com/group/gendarme
