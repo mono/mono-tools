@@ -67,9 +67,24 @@ namespace Gendarme.Framework {
 			}
 		}
 
-		public abstract string Problem { get; }
+		public virtual string Problem { 
+			get {
+				//use cecil instead?
+				object[] attributes = GetType ().GetCustomAttributes (typeof (ProblemAttribute),false);
+				if (attributes.Length != 0)
+					return ((ProblemAttribute)attributes[0]).Problem;
+				return String.Empty;
+			}
+		}
 
-		public abstract string Solution { get; }
+		public virtual string Solution { 
+			get {
+				object[] attributes = GetType ().GetCustomAttributes (typeof (SolutionAttribute),false);
+				if (attributes.Length != 0)
+					return ((SolutionAttribute)attributes[0]).Solution;
+				return String.Empty;
+			}
+		}
 
 		/// <summary>
 		/// Return an Uri instance to the rule documentation.
