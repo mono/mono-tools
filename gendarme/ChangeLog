@@ -1,3 +1,9 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MIT.X11: Update copyrights up to 2008
+	* TODO: Link to the roadmap available in the Google Group 
+	* README: List the most common resources for Gendarme
+
 2008-02-01  Andrew Jorgensen  <ajorgensen@novell.com>
 
 	* Makefile.am: Fixes to import gendarme into mono-tools
