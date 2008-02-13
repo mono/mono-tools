@@ -27,11 +27,5 @@
 namespace Gendarme.Framework {
 
 	public class MinimalRunner : Runner {
-
-		public void Reset ()
-		{
-			defectCountBeforeCheck = 0;
-			Defects.Clear ();
-		}
 	}
 }

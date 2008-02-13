@@ -25,61 +25,71 @@
 // THE SOFTWARE.
 
 using System;
-using System.Text;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Framework {
 
-	// implementation of Defect classes must be immutable
-	abstract public class Defect {
+	// to be moved elsewhere
+	public static class IMetadataTokenProviderRock {
 
-		IRule rule;
-		string text;
-
-		protected Defect (IRule rule, string text)
+		public static AssemblyDefinition GetAssembly (this IMetadataTokenProvider self)
 		{
-			this.rule = rule;
-			this.text = text;
+			AssemblyDefinition ad = (self as AssemblyDefinition);
+			if (ad != null)
+				return ad;
+
+			TypeDefinition td = (self as TypeDefinition);
+			if (td != null)
+				return td.Module.Assembly;
+
+			MethodDefinition md = (self as MethodDefinition);
+			if (md != null)
+				return md.DeclaringType.Module.Assembly;
+
+			FieldDefinition fd = (self as FieldDefinition);
+			if (fd != null)
+				return fd.DeclaringType.Module.Assembly;
+
+			ParameterDefinition pd = (self as ParameterDefinition);
+			if (pd != null)
+				return pd.Method.DeclaringType.Module.Assembly;
+
+			return null;
 		}
-
-		public IRule Rule {
-			get { return rule; }
-		}
-
-		public string Text {
-			get { return text; }
-		}
-
-		abstract public AssemblyDefinition Assembly { get; }
-
-		abstract public Confidence Confidence { get; }
-
-		abstract public string Location { get; }
-
-		abstract public Severity Severity { get; }
-
-		abstract public object Target { get; }
 	}
 
-	public class Defect<T> : Defect {
+	public class Defect {
 
-		private T location;
+		private IRule rule;
+		private IMetadataTokenProvider target;
+		private IMetadataTokenProvider location;
 		private Severity severity;
 		private Confidence confidence;
 		private Instruction ins;
+		private string text;
 
-		public Defect (IRule rule, T location, Severity severity, Confidence confidence, string text)
-			: base (rule, text)
+		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Severity severity, Confidence confidence, string text)
 		{
+			if (rule == null)
+				throw new ArgumentNullException ("rule");
+			if (target == null)
+				throw new ArgumentNullException ("target");
+			if (location == null)
+				throw new ArgumentNullException ("location");
+
+			this.rule = rule;
+			this.target = target;
 			this.location = location;
 			this.confidence = confidence;
 			this.severity = severity;
+			this.text = text;
 		}
 
-		public Defect (IRule rule, T location, Instruction ins, Severity severity, Confidence confidence, string text)
-			: this (rule, location, severity, confidence, text)
+		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Instruction ins, Severity severity, Confidence confidence, string text)
+			: this (rule, target, location, severity, confidence, text)
 		{
 			// this ctor is usable only for MethodDefinition
 			if (!(location is MethodDefinition))
@@ -87,71 +97,52 @@ namespace Gendarme.Framework {
 			this.ins = ins;
 		}
 
-		public override AssemblyDefinition Assembly {
-			get {
-				AssemblyDefinition ad = (location as AssemblyDefinition);
-				if (ad != null)
-					return ad;
-
-				/*ModuleDefinition md = (location as ModuleDefinition);
-				if (md != null)
-					return md.Assembly;*/
-
-				TypeDefinition td = (location as TypeDefinition);
-				if (td != null)
-					return td.Module.Assembly;
-
-				MethodDefinition md = (location as MethodDefinition);
-				if (md != null)
-					return md.DeclaringType.Module.Assembly;
-
-				FieldDefinition fd = (location as FieldDefinition);
-				if (fd != null)
-					return fd.DeclaringType.Module.Assembly;
-
-				ParameterDefinition pd = (location as ParameterDefinition);
-				if (pd != null)
-					return pd.Method.DeclaringType.Module.Assembly;
-
-				return null;
-			}
+		public AssemblyDefinition Assembly {
+			get { return target.GetAssembly (); }
 		}
 
-		public override Confidence Confidence {
+		public Confidence Confidence {
 			get { return confidence; }
 		}
 
-		public override string Location {
+		public IMetadataTokenProvider Location {
+			get { return location; }
+		}
+
+		public IRule Rule {
+			get { return rule; }
+		}
+
+		public Severity Severity {
+			get { return severity; }
+		}
+
+		public string Source {
 			get {
 				if (ins == null)
-					return Assembly.Name.FullName;
+					return String.Empty;
 
-				MethodDefinition method = (location as MethodDefinition);
-				StringBuilder sb = new StringBuilder ();
-
-				// try to find to most
+				// try to find the closed sequence point for this instruction
 				Instruction search = ins;
 				while (search != null) {
 					if (search.SequencePoint != null) {
-						sb.AppendFormat ("{0}({1},{2})", search.SequencePoint.Document.Url,
-							search.SequencePoint.StartLine, search.SequencePoint.StartColumn);
-						return sb.ToString ();
+						return String.Format (CultureInfo.InvariantCulture, "{0}({1},{2})", 
+							search.SequencePoint.Document.Url, search.SequencePoint.StartLine, 
+							search.SequencePoint.StartColumn);
 					}
 					search = search.Previous;
 				}
 
-				sb.Append (method.ToString ());
-				sb.AppendFormat (":(0x{0:x4})", ins.Offset);
-				return sb.ToString ();
+				return String.Format (CultureInfo.InvariantCulture, "IL offset: (0x{0:x4})", ins.Offset);
 			}
 		}
 
-		public override Severity Severity {
-			get { return severity; }
+		public IMetadataTokenProvider Target {
+			get { return target; }
 		}
 
-		public override object Target {
-			get { return location; }
+		public string Text {
+			get { return text; }
 		}
 	}
 }

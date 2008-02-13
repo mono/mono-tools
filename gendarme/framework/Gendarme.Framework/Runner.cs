@@ -48,8 +48,9 @@ namespace Gendarme.Framework {
 		private IEnumerable<ITypeRule> type_rules;
 		private IEnumerable<IMethodRule> method_rules;
 		private IRule currentRule;
+		private IMetadataTokenProvider currentTarget;
 
-		protected int defectCountBeforeCheck;
+		private int defectCountBeforeCheck;
 
 		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;	// ??? ProcessAssembly ???
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
@@ -149,34 +150,39 @@ namespace Gendarme.Framework {
 
 		public void Report (AssemblyDefinition assembly, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<AssemblyDefinition> (currentRule, assembly, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, assembly, severity, confidence, message));
 		}
 
 		public void Report (TypeDefinition type, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<TypeDefinition> (currentRule, type, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, type, severity, confidence, message));
 		}
 
 		public void Report (FieldDefinition field, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<FieldDefinition> (currentRule, field, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, field, severity, confidence, message));
 		}
 
 		public void Report (MethodDefinition method, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<MethodDefinition> (currentRule, method, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, method, severity, confidence, message));
 		}
 
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<MethodDefinition> (currentRule, method, ins, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, method, ins, severity, confidence, message));
 		}
 
 		public void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<ParameterDefinition> (currentRule, parameter, severity, confidence, message));
+			defect_list.Add (new Defect (currentRule, currentTarget, parameter, severity, confidence, message));
 		}
 
+		public void Reset ()
+		{
+			defectCountBeforeCheck = 0;
+			Defects.Clear ();
+		}
 
 		private void OnEvent (EventHandler<RunnerEventArgs> handler, RunnerEventArgs e)
 		{
@@ -267,18 +273,22 @@ namespace Gendarme.Framework {
 			RunnerEventArgs runner_args = new RunnerEventArgs (this);
 
 			foreach (AssemblyDefinition assembly in assemblies) {
+				currentTarget = (IMetadataTokenProvider) assembly;
 				runner_args.CurrentAssembly = assembly;
 				OnAssembly (runner_args);
 
 				foreach (ModuleDefinition module in assembly.Modules) {
+					currentTarget = (IMetadataTokenProvider) module;
 					runner_args.CurrentModule = module;
 					OnModule (runner_args);
 
 					foreach (TypeDefinition type in module.Types) {
+						currentTarget = (IMetadataTokenProvider) type;
 						runner_args.CurrentType = type;
 						OnType (runner_args);
 
 						foreach (MethodDefinition method in GetMethods (type)) {
+							currentTarget = (IMetadataTokenProvider) method;
 							runner_args.CurrentMethod = method;
 							OnMethod (runner_args);
 						}

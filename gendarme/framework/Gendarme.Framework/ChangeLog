@@ -1,3 +1,9 @@
+2008-02-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Defect.cs: Merge Defect and Defect<T> into a non-generic class.
+	* MinimalRunner.cs: Move Reset method to Runner.
+	* Runner.cs: Adapt for Defect changes and add Reset method.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Defect.cs: Fix exception argument.
