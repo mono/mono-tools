@@ -1,3 +1,19 @@
+2008-02-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Defect.cs: Fix exception argument.
+	* IRunner.cs: [ComVisible (false)] at class level (to be moved 
+	to assembly-level). Use Cecil's IAnnotationProvider and change 
+	back Assemblies to Collection<AssemblyDefinition>. Remove the 
+	need to supply IRule to Report overloads (the runner knows which
+	rules it is). Add CurrentRuleResult so it's easier to track 
+	Success and Failure when writing a rule.
+	* MinimalRunner.cs: Add Reset method to help unit testing.
+	* Rule.cs: Call String.Format with CultureInfo.InvariantCulture
+	* Runner.cs: Implement changes required by IRunner. Make use of
+	of On[Assembly|Type|Method] to execute rules. Simplify Run.
+	* RunnerEventArgs.cs: Change setters to internal. Rules are not
+	allowed to play with those values.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Rule.cs: Renamed similar fields (smell) and don't throw an 

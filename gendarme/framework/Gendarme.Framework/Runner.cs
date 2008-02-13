@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -38,12 +37,19 @@ namespace Gendarme.Framework {
 
 	abstract public class Runner : IRunner {
 
-		Dictionary<IRule, string> ignore_list = new Dictionary <IRule, string> ();
-		Collection<Defect> defect_list = new Collection<Defect> ();
+		private Dictionary<IRule, string> ignore_list = new Dictionary<IRule, string> ();
+		private Collection<Defect> defect_list = new Collection<Defect> ();
 
-		Collection<IRule> rules = new Collection<IRule> ();
-		Dictionary<string, AssemblyDefinition> assemblies = new Dictionary<string, AssemblyDefinition> ();
+		private Collection<IRule> rules = new Collection<IRule> ();
+		private Collection<AssemblyDefinition> assemblies = new Collection<AssemblyDefinition> ();
 		private int verbose_level;
+
+		private IEnumerable<IAssemblyRule> assembly_rules;
+		private IEnumerable<ITypeRule> type_rules;
+		private IEnumerable<IMethodRule> method_rules;
+		private IRule currentRule;
+
+		protected int defectCountBeforeCheck;
 
 		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;	// ??? ProcessAssembly ???
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
@@ -54,7 +60,7 @@ namespace Gendarme.Framework {
 			get { return rules; }
 		}
 
-		public Dictionary<string,AssemblyDefinition> Assemblies {
+		public Collection<AssemblyDefinition> Assemblies {
 			get { return assemblies; }
 		}
 
@@ -73,7 +79,7 @@ namespace Gendarme.Framework {
 		// which allows caching information and treating the assemblies as "a set"
 		public void Initialize ()
 		{
-			foreach (AssemblyDefinition assembly in assemblies.Values) {
+			foreach (AssemblyDefinition assembly in assemblies) {
 				try {
 					assembly.MainModule.LoadSymbols ();
 				}
@@ -93,6 +99,10 @@ namespace Gendarme.Framework {
 					rule.Active = false;
 				}
 			}
+
+			assembly_rules = rules.OfType<IAssemblyRule> ();
+			type_rules = rules.OfType<ITypeRule> ();
+			method_rules = rules.OfType<IMethodRule> ();
 		}
 
 		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
@@ -137,34 +147,34 @@ namespace Gendarme.Framework {
 			defect_list.Add (defect);
 		}
 
-		public void Report (IRule rule, AssemblyDefinition assembly, Severity severity, Confidence confidence, string message)
+		public void Report (AssemblyDefinition assembly, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<AssemblyDefinition> (rule, assembly, severity, confidence, message));
+			defect_list.Add (new Defect<AssemblyDefinition> (currentRule, assembly, severity, confidence, message));
 		}
 
-		public void Report (IRule rule, TypeDefinition type, Severity severity, Confidence confidence, string message)
+		public void Report (TypeDefinition type, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<TypeDefinition> (rule, type, severity, confidence, message));
+			defect_list.Add (new Defect<TypeDefinition> (currentRule, type, severity, confidence, message));
 		}
 
-		public void Report (IRule rule, FieldDefinition field, Severity severity, Confidence confidence, string message)
+		public void Report (FieldDefinition field, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<FieldDefinition> (rule, field, severity, confidence, message));
+			defect_list.Add (new Defect<FieldDefinition> (currentRule, field, severity, confidence, message));
 		}
 
-		public void Report (IRule rule, MethodDefinition method, Severity severity, Confidence confidence, string message)
+		public void Report (MethodDefinition method, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<MethodDefinition> (rule, method, severity, confidence, message));
+			defect_list.Add (new Defect<MethodDefinition> (currentRule, method, severity, confidence, message));
 		}
 
-		public void Report (IRule rule, MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
+		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<MethodDefinition> (rule, method, ins, severity, confidence, message));
+			defect_list.Add (new Defect<MethodDefinition> (currentRule, method, ins, severity, confidence, message));
 		}
 
-		public void Report (IRule rule, ParameterDefinition parameter, Severity severity, Confidence confidence, string message)
+		public void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect<ParameterDefinition> (rule, parameter, severity, confidence, message));
+			defect_list.Add (new Defect<ParameterDefinition> (currentRule, parameter, severity, confidence, message));
 		}
 
 
@@ -179,121 +189,98 @@ namespace Gendarme.Framework {
 		protected virtual void OnAssembly (RunnerEventArgs e)
 		{
 			OnEvent (AnalyzeAssembly, e);
+
+			foreach (IAssemblyRule rule in assembly_rules) {
+				if (IsIgnored (rule, e.CurrentAssembly))
+					continue;
+				currentRule = rule;
+				defectCountBeforeCheck = Defects.Count;
+				rule.CheckAssembly (e.CurrentAssembly);
+			}
 		}
 
 		protected virtual void OnModule (RunnerEventArgs e)
 		{
 			OnEvent (AnalyzeModule, e);
+
+			// Since it has never been used in the previous years 
+			// this version of the Gendarme framework doesn't 
+			// support IModuleRule. Nor do we support ignore on 
+			// modules.
 		}
 
 		protected virtual void OnType (RunnerEventArgs e)
 		{
 			OnEvent (AnalyzeType, e);
+
+			foreach (ITypeRule rule in type_rules) {
+				if (IsIgnored (rule, e.CurrentType))
+					continue;
+				currentRule = rule;
+				defectCountBeforeCheck = Defects.Count;
+				rule.CheckType (e.CurrentType);
+			}
 		}
 
 		protected virtual void OnMethod (RunnerEventArgs e)
 		{
 			OnEvent (AnalyzeMethod, e);
-		}
-/*
-		private void ProcessAssemblies (RunnerEventArgs args)
-		{
-			foreach (AssemblyDefinition assembly in assemblies) {
-				args.CurrentAssembly = assembly;
-				OnAssembly (args);
 
-				foreach (IAssemblyRule rule in rules) {
-					if (IsIgnored (rule, assembly.ToString ()))
-						continue;
-					rule.CheckAssembly (assembly);
-				}
+			foreach (IMethodRule rule in method_rules) {
+				if (IsIgnored (rule, e.CurrentMethod))
+					continue;
 
-				ProcessModules (args);
+				currentRule = rule;
+				defectCountBeforeCheck = Defects.Count;
+				rule.CheckMethod (e.CurrentMethod);
 			}
 		}
 
-		private void ProcessModules (RunnerEventArgs args)
-		{
-			foreach (ModuleDefinition module in args.CurrentAssembly.Modules) {
-				args.CurrentModule = module;
-				OnModule (args);
-
-				// Note: we don't support IModuleRule in this version
-				// nor do we ignore on modules
-
-				ProcessTypes (args);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns>Return RuleResult.Failure is the number of defects has grown since 
+		/// the rule Check* method was called or RuleResult.Success otherwise</returns>
+		public RuleResult CurrentRuleResult {
+			get {
+				return (Defects.Count > defectCountBeforeCheck) ? 
+					RuleResult.Failure : RuleResult.Success;
 			}
 		}
 
-		private void ProcessTypes (RunnerEventArgs args)
+		// do a single foreach to get both constructors and methods for a type
+		private IEnumerable<MethodDefinition> GetMethods (TypeDefinition type)
 		{
-			foreach (TypeDefinition type in args.CurrentModule.Types) {
-				args.CurrentType = type;
-				OnType (args);
-
-				ProcessMethods (args);
-			}
+			foreach (MethodDefinition ctor in type.Constructors)
+				yield return ctor;
+			foreach (MethodDefinition method in type.Methods)
+				yield return method;
 		}
 
-		private void ProcessTypes (RunnerEventArgs args)
-		{
-		}
-*/
-		public void Run ()
+		/// <summary>
+		/// For all assemblies, every modules in each assembly, every 
+		/// type in each module, every methods in each type call all
+		/// applicable rules.
+		/// </summary>
+		public virtual void Run ()
 		{
 			RunnerEventArgs runner_args = new RunnerEventArgs (this);
 
-			IEnumerable<IAssemblyRule> assembly_rules = rules.OfType<IAssemblyRule> ();
-			IEnumerable<ITypeRule> type_rules = rules.OfType<ITypeRule> ();
-			IEnumerable<IMethodRule> method_rules = rules.OfType<IMethodRule> ();
-
-			foreach (AssemblyDefinition assembly in assemblies.Values) {
+			foreach (AssemblyDefinition assembly in assemblies) {
 				runner_args.CurrentAssembly = assembly;
 				OnAssembly (runner_args);
-
-				foreach (IAssemblyRule rule in assembly_rules) {
-					if (IsIgnored (rule, assembly))
-						continue;
-					rule.CheckAssembly (assembly);
-				}
 
 				foreach (ModuleDefinition module in assembly.Modules) {
 					runner_args.CurrentModule = module;
 					OnModule (runner_args);
 
-					// Since it has not been used in the previous years this version
-					// doesn't support IModuleRule nor do we ignore on modules
-
 					foreach (TypeDefinition type in module.Types) {
 						runner_args.CurrentType = type;
 						OnType (runner_args);
 
-						foreach (ITypeRule rule in type_rules) {
-							if (IsIgnored (rule, type))
-								continue;
-							rule.CheckType (type);
-						}
-
-						foreach (MethodDefinition constructor in type.Constructors) {
-							runner_args.CurrentMethod = constructor;
-							OnMethod (runner_args);
-
-							foreach (IMethodRule rule in method_rules) {
-								if (IsIgnored (rule, constructor))
-									continue;
-								rule.CheckMethod (constructor);
-							}
-						}
-
-						foreach (MethodDefinition method in type.Methods) {
+						foreach (MethodDefinition method in GetMethods (type)) {
 							runner_args.CurrentMethod = method;
 							OnMethod (runner_args);
-
-							foreach (IMethodRule rule in method_rules) {
-								if (IsIgnored (rule, method))
-									continue;
-								rule.CheckMethod (method);
-							}
 						}
 					}
 				}

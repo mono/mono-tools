@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 
@@ -36,6 +35,7 @@ namespace Gendarme.Framework {
 
 	// rules will have access to the runner thru this interface
 	// so anyone can make it's own runner without using the provided base class
+	[ComVisible (false)]
 	public interface IRunner {
 
 		// we should expose the list of assemblies, so rules can act on them
@@ -45,9 +45,10 @@ namespace Gendarme.Framework {
 		// E.g. Rule X is a superset of rule Y so Y disable itself is X is present
 
 		Collection<IRule> Rules { get; }
-		Dictionary<string, AssemblyDefinition> Assemblies  { get; }
+		Collection<AssemblyDefinition> Assemblies { get; }
 		Collection<Defect> Defects  { get; }
 		int VerbosityLevel { get; }
+		RuleResult CurrentRuleResult { get; }
 
 		event EventHandler<RunnerEventArgs> AnalyzeAssembly;	// ??? ProcessAssembly ???
 		event EventHandler<RunnerEventArgs> AnalyzeModule;
@@ -58,17 +59,11 @@ namespace Gendarme.Framework {
 
 		void Report (Defect defect);
 
-		[ComVisible (false)]
-		void Report (IRule rule, AssemblyDefinition assembly, Severity severity, Confidence confidence, string message);
-		[ComVisible (false)]
-		void Report (IRule rule, TypeDefinition type, Severity severity, Confidence confidence, string message);
-		[ComVisible (false)]
-		void Report (IRule rule, FieldDefinition field, Severity severity, Confidence confidence, string message);
-		[ComVisible (false)]
-		void Report (IRule rule, MethodDefinition method, Severity severity, Confidence confidence, string message);
-		[ComVisible (false)]
-		void Report (IRule rule, MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message);
-		[ComVisible (false)]
-		void Report (IRule rule, ParameterDefinition parameter, Severity severity, Confidence confidence, string message);
+		void Report (AssemblyDefinition assembly, Severity severity, Confidence confidence, string message);
+		void Report (TypeDefinition type, Severity severity, Confidence confidence, string message);
+		void Report (FieldDefinition field, Severity severity, Confidence confidence, string message);
+		void Report (MethodDefinition method, Severity severity, Confidence confidence, string message);
+		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message);
+		void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message);
 	}
 }

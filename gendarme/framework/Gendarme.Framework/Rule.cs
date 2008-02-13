@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 namespace Gendarme.Framework {
 
@@ -110,7 +111,8 @@ namespace Gendarme.Framework {
 
 					object [] attributes = t.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
 					if (attributes.Length == 0) {
-						url = String.Format ("http://www.mono-project.com/{0}#{1}", t.Namespace, name);
+						url = String.Format (CultureInfo.InvariantCulture, 
+							"http://www.mono-project.com/{0}#{1}", t.Namespace, name);
 					} else {
 						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}

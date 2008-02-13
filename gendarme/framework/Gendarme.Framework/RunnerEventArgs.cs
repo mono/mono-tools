@@ -50,7 +50,7 @@ namespace Gendarme.Framework {
 
 		public AssemblyDefinition CurrentAssembly {
 			get { return assembly; }
-			set {
+			internal set {
 				if (value != assembly) {
 					assembly = value;
 					module = null;
@@ -62,7 +62,7 @@ namespace Gendarme.Framework {
 
 		public ModuleDefinition CurrentModule {
 			get { return module; }
-			set {
+			internal set {
 				if (value != module) {
 					module = value;
 					type = null;
@@ -73,7 +73,7 @@ namespace Gendarme.Framework {
 
 		public TypeDefinition CurrentType {
 			get { return type; }
-			set {
+			internal set {
 				if (value != type) {
 					type = value;
 					method = null;
@@ -83,7 +83,7 @@ namespace Gendarme.Framework {
 
 		public MethodDefinition CurrentMethod {
 			get { return method; }
-			set { method = value; }
+			internal set { method = value; }
 		}
 	}
 }

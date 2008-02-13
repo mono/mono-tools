@@ -83,7 +83,7 @@ namespace Gendarme.Framework {
 		{
 			// this ctor is usable only for MethodDefinition
 			if (!(location is MethodDefinition))
-				throw new ArgumentException ("location");
+				throw new ArgumentException ("Only MethodDefinition can be used with this constructor.", "location");
 			this.ins = ins;
 		}
 
