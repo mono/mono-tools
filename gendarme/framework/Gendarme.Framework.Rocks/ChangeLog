@@ -1,3 +1,12 @@
+2008-02-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CecilRocks.cs: New. Shared rocks on other Cecil types 
+	(IMetadataTokenProviderRock).
+	* CustomAttributeRocks.cs: Fix exception argument.
+	* TypeRocks.cs: Added AllMethods to return an IEnumerable with
+	all methods *and* constructors. Fixed GetMethod methods to use it.
+	Add IsDelegate.
+
 2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs: Remove IsGetter and IsSetter since they are now 

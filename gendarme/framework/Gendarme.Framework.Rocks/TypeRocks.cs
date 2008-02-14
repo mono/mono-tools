@@ -35,7 +35,7 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 
-using Gendarme.Framework.Helpers;
+//using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Framework.Rocks {
 
