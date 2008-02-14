@@ -77,7 +77,7 @@ namespace Gendarme.Framework.Rocks {
 		public static bool ContainsAnyType (this CustomAttributeCollection self, string[] attributeTypeNames)
 		{
 			if (attributeTypeNames == null)
-				throw new ArgumentNullException ("attributeNames");
+				throw new ArgumentNullException ("attributeTypeNames");
 
 			foreach (CustomAttribute ca in self) {
 				string fullname = ca.Constructor.DeclaringType.FullName;

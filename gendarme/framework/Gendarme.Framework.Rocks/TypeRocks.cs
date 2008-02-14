@@ -31,8 +31,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
+
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Framework.Rocks {
 
@@ -53,6 +56,21 @@ namespace Gendarme.Framework.Rocks {
 	public static class TypeRocks {
 
 		/// <summary>
+		/// Return an IEnumerable that allows a single loop (like a foreach) to
+		/// traverse all MethodDefinition in the type. That includes the Constructors
+		/// and Methods collections.
+		/// </summary>
+		/// <param name="self"></param>
+		/// <returns>An IEnumerable to traverse all constructors and methods</returns>
+		public static IEnumerable<MethodDefinition> AllMethods (this TypeDefinition self)
+		{
+			foreach (MethodDefinition ctor in self.Constructors)
+				yield return ctor;
+			foreach (MethodDefinition method in self.Methods)
+				yield return method;
+		}
+
+		/// <summary>
 		/// Returns the first MethodDefinition that satisfies a given MethodSignature.
 		/// </summary>
 		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
@@ -63,7 +81,7 @@ namespace Gendarme.Framework.Rocks {
 		/// </remarks>
 		public static MethodDefinition GetMethod (this TypeDefinition self, MethodSignature signature)
 		{
-			foreach (MethodDefinition method in self.Methods) {
+			foreach (MethodDefinition method in self.AllMethods ()) {
 				if (signature.Matches (method))
 					return method;
 			}
@@ -82,7 +100,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
 		public static MethodDefinition GetMethod (this TypeDefinition self, MethodAttributes attributes, string name, string returnType, string [] parameters, Func<MethodDefinition, bool> customCondition)
 		{
-			foreach (MethodDefinition method in self.Methods) {
+			foreach (MethodDefinition method in self.AllMethods ()) {
 				if (name != null && method.Name != name)
 					continue;
 				if ((method.Attributes & attributes) != attributes)
@@ -273,6 +291,26 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsAttribute (this TypeReference self)
 		{
 			return self.Inherits ("System.Attribute");
+		}
+
+		/// <summary>
+		/// Check if the type is a delegate.
+		/// </summary>
+		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <returns>True if the type is a delegate, False otherwise.</returns>
+		public static bool IsDelegate (this TypeDefinition self)
+		{
+			// e.g. this occurs for <Module>
+			if (self.BaseType == null)
+				return false;
+
+			switch (self.BaseType.FullName) {
+			case "System.Delegate":
+			case "System.MulticastDelegate":
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		/// <summary>
