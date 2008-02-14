@@ -1,3 +1,13 @@
+2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* FieldRocks.cs: Add Resolve (FieldReference to FieldDefinition) and
+	change other rocks to accept FieldReference (and Resolve themselves).
+	* MethodRocks.cs: Add Resolve (MethodReference to MethodDefinition) 
+	and change other rocks to accept MethodReference (and Resolve 
+	themselves).
+	* TypeRocks.cs: Add Resolve (TypeReference to TypeDefinition) and
+	change other rocks to accept TypeReference (and Resolve themselves).
+
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CecilRocks.cs: New. Shared rocks on other Cecil types 

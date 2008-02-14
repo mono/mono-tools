@@ -60,26 +60,27 @@ namespace Gendarme.Framework.Rocks {
 		/// traverse all MethodDefinition in the type. That includes the Constructors
 		/// and Methods collections.
 		/// </summary>
-		/// <param name="self"></param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>An IEnumerable to traverse all constructors and methods</returns>
-		public static IEnumerable<MethodDefinition> AllMethods (this TypeDefinition self)
+		public static IEnumerable<MethodDefinition> AllMethods (this TypeReference self)
 		{
-			foreach (MethodDefinition ctor in self.Constructors)
+			TypeDefinition type = self.Resolve ();
+			foreach (MethodDefinition ctor in type.Constructors)
 				yield return ctor;
-			foreach (MethodDefinition method in self.Methods)
+			foreach (MethodDefinition method in type.Methods)
 				yield return method;
 		}
 
 		/// <summary>
 		/// Returns the first MethodDefinition that satisfies a given MethodSignature.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="signature">The MethodSignature to match.</param>
 		/// <returns>The first MethodDefinition for wich signature.Matches returns true.</returns>
 		/// <remarks>
 		/// Do not allocate a MethodSignature for only one call. Use one of the other GetMethod overloads instead.
 		/// </remarks>
-		public static MethodDefinition GetMethod (this TypeDefinition self, MethodSignature signature)
+		public static MethodDefinition GetMethod (this TypeReference self, MethodSignature signature)
 		{
 			foreach (MethodDefinition method in self.AllMethods ()) {
 				if (signature.Matches (method))
@@ -91,14 +92,14 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="attributes">An attribute mask matched against the attributes of the method.</param>
 		/// <param name="name">The name of the method to match. Ignored if null.</param>
 		/// <param name="returnType">The full name (Namespace.Type) of the return type. Ignored if null.</param>
 		/// <param name="parameters">An array of full names (Namespace.Type) of parameter types. Ignored if null. Null entries act as wildcards.</param>
 		/// <param name="customCondition">A custom condition that is called for each MethodDefinition that satisfies all other conditions. Ignored if null.</param>
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, MethodAttributes attributes, string name, string returnType, string [] parameters, Func<MethodDefinition, bool> customCondition)
+		public static MethodDefinition GetMethod (this TypeReference self, MethodAttributes attributes, string name, string returnType, string [] parameters, Func<MethodDefinition, bool> customCondition)
 		{
 			foreach (MethodDefinition method in self.AllMethods ()) {
 				if (name != null && method.Name != name)
@@ -132,13 +133,13 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method by name, returnType, parameters and attributes.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="attributes">An attribute mask matched against the attributes of the method.</param>
 		/// <param name="name">The name of the method to match. Ignored if null.</param>
 		/// <param name="returnType">The full name (Namespace.Type) of the return type. Ignored if null.</param>
 		/// <param name="parameters">An array of full names (Namespace.Type) of parameter types. Ignored if null. Null entries act as wildcard.</param>
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, MethodAttributes attributes, string name, string returnType, string [] parameters)
+		public static MethodDefinition GetMethod (this TypeReference self, MethodAttributes attributes, string name, string returnType, string [] parameters)
 		{
 			return self.GetMethod (attributes, name, returnType, parameters, null);
 		}
@@ -146,11 +147,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method by attributes and by name.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="attributes">An attribute mask matched against the attributes of the method.</param>
 		/// <param name="name">The name of the method to match. Ignored if null.</param>
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, MethodAttributes attributes, string name)
+		public static MethodDefinition GetMethod (this TypeReference self, MethodAttributes attributes, string name)
 		{
 			return self.GetMethod (attributes, name, null, null, null);
 		}
@@ -158,12 +159,12 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method by name, returnType and parameters.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="name">The name of the method to match. Ignored if null.</param>
 		/// <param name="returnType">The full name (Namespace.Type) of the return type. Ignored if null.</param>
 		/// <param name="parameters">An array of full names (Namespace.Type) of parameter types. Ignored if null. Null entries act as wildcards.</param>
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, string name, string returnType, string [] parameters)
+		public static MethodDefinition GetMethod (this TypeReference self, string name, string returnType, string [] parameters)
 		{
 			return self.GetMethod (0, name, returnType, parameters, null);
 		}
@@ -171,10 +172,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method with a specific name.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="name">The name of the method to match.</param>
 		/// <returns>The first MethodDefinition with a specifiy name.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, string name)
+		public static MethodDefinition GetMethod (this TypeReference self, string name)
 		{
 			return self.GetMethod (0, name, null, null, null);
 		}
@@ -182,10 +183,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Searches for a method using a custom condition.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="customCondition">A custom condition that is called for each MethodDefinition.</param>
 		/// <returns>The first MethodDefinition that satisfies the customCondition.</returns>
-		public static MethodDefinition GetMethod (this TypeDefinition self, Func<MethodDefinition, bool> customCondition)
+		public static MethodDefinition GetMethod (this TypeReference self, Func<MethodDefinition, bool> customCondition)
 		{
 			return self.GetMethod (0, null, null, null, customCondition);
 		}
@@ -205,10 +206,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Checks if at least one Method satisfies a given MethodSignature.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <param name="signature">The MethodSignature to match.</param>
 		/// <returns>True if at least one method matches the signature. Otherwise false.</returns>
-		public static bool HasMethod (this TypeDefinition self, MethodSignature signature)
+		public static bool HasMethod (this TypeReference self, MethodSignature signature)
 		{
 			return (self.GetMethod (signature) != null);
 		}
@@ -221,24 +222,24 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
 		/// <param name="interfaceName">Full name of the interface</param>
 		/// <returns>True if the type implements the interface, False otherwise.</returns>
-		public static bool Implements (this TypeDefinition self, string interfaceName)
+		public static bool Implements (this TypeReference self, string interfaceName)
 		{
 			if (interfaceName == null)
 				throw new ArgumentNullException ("interfaceName");
 
+			TypeDefinition type = self.Resolve ();
 			// special case, check if we implement ourselves
-			if (self.IsInterface && (self.FullName == interfaceName))
+			if (type.IsInterface && (type.FullName == interfaceName))
 				return true;
 
 			// does the type implements it itself
-			foreach (TypeReference iface in self.Interfaces) {
+			foreach (TypeReference iface in type.Interfaces) {
 				if (iface.FullName == interfaceName)
 					return true;
 			}
 			
 			// if not, then maybe it's parent does
-			// FIXME: right now we "ignore" case were a TypeReference is given
-			TypeDefinition parent = (self.BaseType as TypeDefinition);
+			TypeReference parent = type.BaseType;
 			if (parent != null)
 				return parent.Implements (interfaceName);
 
@@ -258,14 +259,12 @@ namespace Gendarme.Framework.Rocks {
 			if (className == null)
 				throw new ArgumentNullException ("className");
 
-			TypeReference current = self;
+			TypeReference current = self.Resolve ();
 			while ((current != null) && (current.FullName != "System.Object")) {
 				if (current.FullName == className)
 					return true;
 
-				// FIXME: plugin AssemblyResolver when ready
-				TypeDefinition type = (current as TypeDefinition);
-				current = (type == null) ? null : type.BaseType;
+				current = current.Resolve ().BaseType;
 			}
 			return false;
 		}
@@ -296,15 +295,16 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the type is a delegate.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>True if the type is a delegate, False otherwise.</returns>
-		public static bool IsDelegate (this TypeDefinition self)
+		public static bool IsDelegate (this TypeReference self)
 		{
+			TypeDefinition type = self.Resolve ();
 			// e.g. this occurs for <Module>
-			if (self.BaseType == null)
+			if (type.BaseType == null)
 				return false;
 
-			switch (self.BaseType.FullName) {
+			switch (type.BaseType.FullName) {
 			case "System.Delegate":
 			case "System.MulticastDelegate":
 				return true;
@@ -316,14 +316,15 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the type is a enumeration flags.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>True if the type as the [Flags] attribute, false otherwise.</returns>
-		public static bool IsFlags (this TypeDefinition self)
+		public static bool IsFlags (this TypeReference self)
 		{
-			if (!self.IsEnum)
+			TypeDefinition type = self.Resolve ();
+			if (!type.IsEnum)
 				return false;
 
-			return self.HasAttribute ("System.FlagsAttribute");
+			return type.HasAttribute ("System.FlagsAttribute");
 		}
 
 		/// <summary>
@@ -384,17 +385,31 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the type is visible outside of the assembly.
 		/// </summary>
-		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>True if the type can be used from outside of the assembly, false otherwise.</returns>
-		public static bool IsVisible (this TypeDefinition self)
+		public static bool IsVisible (this TypeReference self)
 		{
-			while (self.IsNested) {
-				if (self.IsNestedPrivate || self.IsNestedAssembly)
+			TypeDefinition type = (self as TypeDefinition);
+			while (type.IsNested) {
+				if (type.IsNestedPrivate || type.IsNestedAssembly)
 					return false;
 				// Nested classes are always inside the same assembly, so the cast is ok
-				self = (TypeDefinition) self.DeclaringType;
+				type = type.DeclaringType.Resolve ();
 			}
-			return self.IsPublic;
+			return type.IsPublic;
+		}
+
+		/// <summary>
+		/// Resolve a TypeReference into a TypeDefinition.
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <returns>A TypeDefinition if resolved, null otherwise.</returns>
+		public static TypeDefinition Resolve (this TypeReference self)
+		{
+			TypeDefinition type = (self as TypeDefinition);
+			if (type == null)
+				type = AssemblyResolver.Resolver.Resolve (self);
+			return type;
 		}
 	}
 }
