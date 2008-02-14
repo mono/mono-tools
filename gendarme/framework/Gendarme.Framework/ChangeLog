@@ -1,3 +1,9 @@
+2008-02-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyResolver.cs: Shameless copy of Linker AssemblyResolver
+	(with minimal changes) until Cecil got his own. Gendarme resolve
+	will be done using rocks (so changes should not affect rules)
+
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Defect.cs: Remove IMetadataTokenProviderRock (moved to 
