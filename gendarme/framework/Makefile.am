@@ -16,6 +16,7 @@ framework_sources = AssemblyManager.cs IRule.cs RuleCollection.cs \
 		    Rules.cs Runner.cs Violation.cs Violations.cs \
 		    Message.cs Location.cs MinimalRunner.cs \
 		    MessageCollection.cs MessageType.cs \
+		    Gendarme.Framework/AssemblyResolver.cs \
 		    Gendarme.Framework/MethodSignature.cs \
 		    Gendarme.Framework/MethodSignatures.cs \
 		    Gendarme.Framework/StackEntryAnalysis.cs \
