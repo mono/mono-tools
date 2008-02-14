@@ -1,3 +1,13 @@
+2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Defect.cs: Remove IMetadataTokenProviderRock (moved to 
+	CecilRocks.cs). Add more logic to find source code associated
+	with the defect (even if we don't have the instruction for it).
+	* MinimalRunner.cs: Removed.
+	* Runner.cs: Make some stuff internal for TestRunner.cs
+	* TestRunner.cs: New. Runner useful for unit testing as it has
+	some internal knowledge about Runner state and provide helpers.
+
 2008-02-13  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Defect.cs: Merge Defect and Defect<T> into a non-generic class.
