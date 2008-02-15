@@ -33,6 +33,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NUnit.Framework;
 
 namespace Test.Framework.Rocks {
@@ -45,6 +46,8 @@ namespace Test.Framework.Rocks {
 
 		[System.CodeDom.Compiler.GeneratedCodeAttribute ("unit test", "1.0")]
 		protected double gca = 1.0;
+
+		internal IntPtr ptr = IntPtr.Zero;
 
 		private AssemblyDefinition assembly;
 
@@ -128,6 +131,19 @@ namespace Test.Framework.Rocks {
 
 			type = assembly.MainModule.Types ["Test.Framework.Rocks.InternalType"];
 			Assert.IsFalse (GetField (type, "PublicField").IsVisible (), "InternalType.PublicField");
+		}
+
+		[Test]
+		public void Resolve ()
+		{
+			foreach (Instruction ins in type.Constructors [0].Body.Instructions) {
+				FieldReference field = (ins.Operand as FieldReference);
+				if ((field != null) && !(field is FieldDefinition)) {
+					FieldDefinition fd = field.Resolve ();
+					Assert.AreEqual (field.Name, fd.Name, "Name");
+					Assert.AreEqual (field.FieldType.FullName, fd.FieldType.FullName, "FieldType");
+				}
+			}
 		}
 	}
 }

@@ -1,3 +1,8 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* FieldRocksTest.cs: Add test case for Resolve
+	* TypeRocksTest.cs: Adjust namespaces
+
 2008-02-07  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MethodRocksTest.cs: Remove tests for IsGetter and IsSetter.

@@ -32,6 +32,7 @@ using System;
 using System.Runtime.InteropServices;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
