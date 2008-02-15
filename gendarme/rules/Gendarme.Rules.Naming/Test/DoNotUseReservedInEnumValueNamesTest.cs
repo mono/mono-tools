@@ -43,7 +43,7 @@ namespace Test.Rules.Naming {
 		private DoNotUseReservedInEnumValueNamesRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -52,6 +52,7 @@ namespace Test.Rules.Naming {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Naming.DoNotUseReservedInEnumValueNamesTest"];
 			rule = new DoNotUseReservedInEnumValueNamesRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -71,7 +72,8 @@ namespace Test.Rules.Naming {
 		public void TestNonEnum ()
 		{
 			TypeDefinition type = GetTest ("NonEnum");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		enum FalsePositive {
@@ -84,7 +86,8 @@ namespace Test.Rules.Naming {
 		public void TestFalsePositive ()
 		{
 			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		enum Reserved {
@@ -97,7 +100,8 @@ namespace Test.Rules.Naming {
 		public void TestReserved ()
 		{
 			TypeDefinition type = GetTest ("Reserved");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

@@ -57,7 +57,7 @@ namespace Test.Rules.Naming {
 		private UsePreferredTermsRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 	
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -65,16 +65,7 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new UsePreferredTermsRule ();
-			messageCollection = null;
-		}
-		
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (messageType, message.Type);
-			}
+			runner = new TestRunner (rule);
 		}
 		
       		private MethodDefinition GetPropertyGetter (string name)
@@ -100,44 +91,40 @@ namespace Test.Rules.Naming {
 		public void TestOneObsoleteTerm ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.SomeComPlusStuff"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestTwoObsoleteTerms ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.SomeComPlusAndIndicesStuff"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestCorrectMethodsAndProperties ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.TermsMethodsAndProperties"];
-			messageCollection = rule.CheckMethod (GetMethod ("SignIn"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
-			messageCollection = rule.CheckMethod (GetPropertyGetter ("Writable"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("SignIn");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
+			method = GetMethod ("get_Writable");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 		
 		[Test]
 		public void TestIncorrectMethodsAndProperties ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.TermsMethodsAndProperties"];
-			messageCollection = rule.CheckMethod (GetMethod ("SignOn"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
-			messageCollection = rule.CheckMethod (GetPropertyGetter ("Writeable"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("SignOn");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
+			method = GetMethod ("get_Writeable");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}		
 	}
 }

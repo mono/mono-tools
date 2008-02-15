@@ -76,7 +76,7 @@ namespace Test.Rules.Naming {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 	
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -84,72 +84,55 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new EnumNotEndsWithEnumOrFlagsSuffixRule ();
-			messageCollection = null;
-		}
-		
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (message.Type, messageType);
-			}
+			runner = new TestRunner (rule);
 		}
 		
 		[Test]
 		public void TestCorrectEnumName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ReturnValue"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestIncorrectEnumName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ReturnValueEnum"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestCorrectFlagsName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ReturnValues"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestIncorrectFlagsName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ReturnValuesFlags"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestIncorrectEnumNameInLower () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.returnvalueenum"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestIncorrectFlagsNameInLower () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.returnvaluesflags"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

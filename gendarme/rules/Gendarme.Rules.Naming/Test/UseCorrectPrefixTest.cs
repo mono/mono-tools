@@ -67,7 +67,7 @@ namespace Test.Rules.Naming {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -75,86 +75,71 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new UseCorrectPrefixRule ();
-			messageCollection = null;
-		}
-
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType)
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (messageType, message.Type);
-			}
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
 		public void TestCorrectClass ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAnotherCorrectClass ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.AnotherCorrectClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIncorrectClass ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CIncorrectClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestCorrectInterface ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ICorrectInterface"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIncorrectInterface ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectInterface"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAnotherIncorrectInterface ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.AnotherIncorrectInterface"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassAbbreviation ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CLSAbbreviation"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestInterfaceAbbreviation ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ICLSAbbreviation"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

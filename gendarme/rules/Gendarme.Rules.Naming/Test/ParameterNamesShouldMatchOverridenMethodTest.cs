@@ -75,10 +75,10 @@ namespace Test.Rules.Naming {
 	[TestFixture]
 	public class ParameterNamesShouldMatchOverridenMethodTest : BaseClass, ISomeInterface, ISomeInterface2 {
 
-		private ParameterNamesShouldMatchOverridenMethodRule rule;
+		private ParameterNamesShouldMatchOverriddenMethodRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -86,7 +86,8 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Naming.ParameterNamesShouldMatchOverridenMethodTest"];
-			rule = new ParameterNamesShouldMatchOverridenMethodRule ();
+			rule = new ParameterNamesShouldMatchOverriddenMethodRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -106,7 +107,8 @@ namespace Test.Rules.Naming {
 		public void TestVirtualCorrect ()
 		{
 			MethodDefinition method = GetTest ("VirtualCorrect");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		protected override void VirtualIncorrect (int vi1, int vi2a)
@@ -117,7 +119,8 @@ namespace Test.Rules.Naming {
 		public void TestVirtualIncorrect ()
 		{
 			MethodDefinition method = GetTest ("VirtualIncorrect");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		protected override void VirtualSuperIncorrect (int vsi1, bool vsi2_)
@@ -128,7 +131,8 @@ namespace Test.Rules.Naming {
 		public void TestVirtualSuperIncorrect ()
 		{
 			MethodDefinition method = GetTest ("VirtualSuperIncorrect");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		protected override void AbstractCorrect (int ac1, int ac2)
@@ -140,7 +144,8 @@ namespace Test.Rules.Naming {
 		public void TestAbstractCorrect ()
 		{
 			MethodDefinition method = GetTest ("AbstractCorrect");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		protected override void AbstractIncorrect (int ai1, int ai2_)
@@ -152,7 +157,8 @@ namespace Test.Rules.Naming {
 		public void TestAbstractIncorrect ()
 		{
 			MethodDefinition method = GetTest ("AbstractIncorrect");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		protected virtual void NoOverwrite (int a, int bb)
@@ -163,7 +169,8 @@ namespace Test.Rules.Naming {
 		public void TestNoOverwrite ()
 		{
 			MethodDefinition method = GetTest ("NoOverwrite");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public bool InterfaceMethod (int im_)
@@ -175,7 +182,8 @@ namespace Test.Rules.Naming {
 		public void TestInterfaceMethod ()
 		{
 			MethodDefinition method = GetTest ("InterfaceMethod");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		bool ISomeInterface2.InterfaceMethod2 (int im_)
@@ -187,7 +195,8 @@ namespace Test.Rules.Naming {
 		public void TestInterfaceMethod2 ()
 		{
 			MethodDefinition method = GetTest ("Test.Rules.Naming.ISomeInterface2.InterfaceMethod2");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

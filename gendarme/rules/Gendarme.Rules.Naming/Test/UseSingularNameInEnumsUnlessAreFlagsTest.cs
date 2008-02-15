@@ -66,50 +66,39 @@ namespace Test.Rules.Naming {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
-	
+		private TestRunner runner;
+
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new UseSingularNameInEnumsUnlessAreFlagsRule ();
-			messageCollection = null;
-		}
-		
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (message.Type, messageType);
-			}
+			runner = new TestRunner (rule);
 		}
 		
 		[Test]
 		public void TestEnumHasSingularName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.DayOfWeek"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestEnumHasPluralName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.DateTimeKinds"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestFlagsAllowedToHavePluralNames () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.StringSplitOptions"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
-	}		
+	}
 }

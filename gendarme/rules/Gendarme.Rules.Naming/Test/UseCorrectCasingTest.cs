@@ -84,7 +84,7 @@ namespace Test.Rules.Naming {
 		private UseCorrectCasingRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -92,16 +92,7 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new UseCorrectCasingRule ();
-			messageCollection = null;
-		}
-
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType)
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (messageType, message.Type);
-			}
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetMethod (string name)
@@ -117,74 +108,62 @@ namespace Test.Rules.Naming {
 		public void TestCorrectCasedClass ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIncorrectCasedClass ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.incorrectCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestCorrectCasedMethod ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			messageCollection = rule.CheckMethod (GetMethod ("CorrectCasing"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("CorrectCasing");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIncorrectCasedMethod ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			messageCollection = rule.CheckMethod (GetMethod ("incorrectCasing"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("incorrectCasing");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestCorrectCasedMethodWithIncorrectCasedParameters ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			messageCollection = rule.CheckMethod (GetMethod ("CorrectCasingWithTwoIncorrectParameters"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("CorrectCasingWithTwoIncorrectParameters");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIncorrectCasedMethodWithIncorrectCasedParameters ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			messageCollection = rule.CheckMethod (GetMethod ("incorrectCasingWithTwoIncorrectParameters"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (3, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
-		}
-
-		[Test]
-		public void TestIgnoringCctor ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			foreach (MethodDefinition method in type.Constructors)
-				if (method.Name == ".cctor")
-					messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("incorrectCasingWithTwoIncorrectParameters");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (3, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestIgnoringCtor ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
+			// .ctor and .cctor
 			foreach (MethodDefinition method in type.Constructors) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
+				Assert.AreEqual (0, runner.Defects.Count, "Count");
 			}
 		}
 
@@ -192,71 +171,69 @@ namespace Test.Rules.Naming {
 		public void TestGoodProperty ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("get_GoodProperty"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
-			messageCollection = rule.CheckMethod (GetMethod ("set_GoodProperty"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("get_GoodProperty");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
+			method = GetMethod ("set_GoodProperty");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void TestBadProperty ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("get_badProperty"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
-			messageCollection = rule.CheckMethod (GetMethod ("set_badProperty"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("get_badProperty");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
+			method = GetMethod ("set_badProperty");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void TestGoodEventHandler ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("add_GoodEvent"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
-			messageCollection = rule.CheckMethod (GetMethod ("remove_GoodEvent"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("add_GoodEvent");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
+			method = GetMethod ("remove_GoodEvent");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void TestBadEventHandler ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("add_badEvent"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
-			messageCollection = rule.CheckMethod (GetMethod ("remove_badEvent"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("add_badEvent");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
+			method = GetMethod ("remove_badEvent");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void TestPropertyLikeMethods ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("get_AccessorLike"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
-			messageCollection = rule.CheckMethod (GetMethod ("set_AccessorLike"), new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			MethodDefinition method = GetMethod ("get_AccessorLike");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
+			method = GetMethod ("set_AccessorLike");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}
-
 
 		[Test]
 		public void TestIgnoringOperator ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			messageCollection = rule.CheckMethod (GetMethod ("op_Addition"), new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			MethodDefinition method = GetMethod ("op_Addition");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
@@ -275,7 +252,8 @@ namespace Test.Rules.Naming {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (0, runner.Defects.Count, "Count");
 					break;
 				}
 			}

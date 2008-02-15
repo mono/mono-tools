@@ -1,3 +1,18 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesTest.cs
+	* DoNotPrefixValuesWithEnumNameTest.cs
+	* DoNotUseReservedInEnumValueNamesTest.cs
+	* EnumNotEndsWithEnumOrFlagsSuffixTest.cs
+	* ParameterNamesShouldMatchOverridenMethodTest.cs
+	* UseCorrectCasingTest.cs
+	* UseCorrectPrefixTest.cs
+	* UseCorrectSuffixTest.cs
+	* UsePluralNameInEnumFlagsTest.cs
+	* UsePreferredTermsTest.cs
+	* UseSingularNameInEnumsUnlessAreFlagsTest.cs:
+		Update unit tests wrt framework changes.
+
 2008-01-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotPrefixValuesWithEnumNameTest.cs: New. Unit tests from Andreas

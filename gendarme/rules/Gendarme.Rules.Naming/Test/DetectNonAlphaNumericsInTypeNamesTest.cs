@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ using System;
 using System.Reflection;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -85,15 +86,13 @@ namespace Test.Rules.Naming {
 			}
 		}
 			
-		class ClassContainingPrivateMethodWithUnderscore 
-		{
+		public class ClassContainingPrivateMethodWithUnderscore {
 			private void my_method ()
 			{
 			}
 		}
 		
-		class ClassContainingPublicMethodWithUnderscore
-		{
+		public class ClassContainingPublicMethodWithUnderscore {
 			public void methot_test ()
 			{
 			}
@@ -135,20 +134,18 @@ namespace Test.Rules.Naming {
 		}
 
 		
-		private IMethodRule methodRule;
-		private ITypeRule typeRule;
+		private IRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			methodRule = new DetectNonAlphaNumericsInTypeNamesRule();
-			typeRule = new DetectNonAlphaNumericsInTypeNamesRule();
-			messageCollection = null;
+			rule = new DetectNonAlphanumericInTypeNamesRule();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -162,7 +159,8 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassContainingProperty");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 			
@@ -171,7 +169,8 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassContainingEvent");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 			
@@ -180,7 +179,8 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassContainingConversionOperator");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 		
@@ -188,8 +188,10 @@ namespace Test.Rules.Naming {
 		public void privateMethodWithUnderscoreTest ()
 		{
 			type = GetTest ("ClassContainingPrivateMethodWithUnderscore");
+			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 		
@@ -198,51 +200,50 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassContainingPublicMethodWithUnderscore");
 			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			messageCollection = methodRule.CheckMethod (type.Methods [0], new MinimalRunner ());
-			Assert.IsNotNull (messageCollection, "MessageCollection");
-			Assert.AreEqual (messageCollection.Count, 1, "MessageCollection.Count");
+			foreach (MethodDefinition method in type.Methods) {
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+				Assert.AreEqual (1, runner.Defects.Count, "Count");
+			}
 		}
 		
 		[Test]
 		public void nestedPrivateClassWithUnderscoreTest ()
 		{
 			type = GetTest ("NestedPrivateClassName_WithUnderscore");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void nestedPublicClassWithUnderscoreTest ()
 		{
 			type = GetTest ("NestedPublicClassName_WithUnderscore");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void nestedPrivateInterfaceWithUnderscoreTest ()
 		{
 			type = GetTest ("NestedPrivateInterface_WithUnderscore");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection); 
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void nestedPublicInterfaceWithUnderscoreTest ()
 		{
 			type = GetTest ("NestedPublicInterface_WithUnderscore");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void defaultPrivateClassTest ()
 		{
 			type = GetTest ("DefaultPrivate_Class");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
@@ -250,7 +251,8 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("DefaultPrivate_Class");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 		
@@ -258,8 +260,8 @@ namespace Test.Rules.Naming {
 		public void classWithoutUnderscoreTest ()
 		{
 			type = GetTest ("ClassWithoutUnderscore");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
@@ -267,7 +269,8 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassWithoutUnderscore");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 
@@ -276,7 +279,9 @@ namespace Test.Rules.Naming {
 		{
 			type = GetTest ("ClassWithDelegate");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				RuleResult result = method.IsGeneratedCode () ? RuleResult.DoesNotApply : RuleResult.Success;
+				Assert.AreEqual (result, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
 			}
 		}
 
@@ -284,34 +289,32 @@ namespace Test.Rules.Naming {
 		public void InternalClassWithUnderscoreTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Naming.InternalClassName_WithUnderscore"];
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void PublicClassWithUnderscoreTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Naming.PublicClassName_WithUnderscore"];
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void InternalInterfaceWithUnderscoreTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Naming.InternalInterface_WithUnderscore"];
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void PublicInterfaceWithUnderscoreTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Naming.PublicInterface_WithUnderscore"];
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

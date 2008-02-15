@@ -208,7 +208,7 @@ namespace Test.Rules.Naming {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 	
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -216,60 +216,47 @@ namespace Test.Rules.Naming {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new UseCorrectSuffixRule ();
-			messageCollection = null;
-		}
-		
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (messageType, message.Type);
-			}
+			runner = new TestRunner (rule);
 		}
 		
 		[Test]
 		public void TestOneLevelInheritanceIncorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectAttr"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestOneLevelInheritanceCorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectAttribute"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceCorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherAttribute"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceIncorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherAttr"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceExternalTypeUndetermined () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectContextStaticAttribute"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 			//The System.ContextStaticAttribute class inherits from System.Attribute.
 			//But we can retrieve that info from a TypeReference, because now 
 			//Gendarme doesn't support loading assemblies.
@@ -279,16 +266,16 @@ namespace Test.Rules.Naming {
 		public void TestOneLevelInheritanceExternalTypeNoApplyed () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceExternalTypeNoApplyed () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.YetAnotherClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 			// The System.Random class doesn't inherit from any defined classes.
 			// But we can retrieve that info from a TypeReference, because now 
 			// Gendarme doesn't support loading assemblies.
@@ -298,70 +285,64 @@ namespace Test.Rules.Naming {
 		public void TestInterfaceImplementerCorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectICollectionCollection"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
  		[Test]
 		public void TestInterfaceImplementerIncorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectICollectionCol"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}			       
 		
 		[Test]
 		public void TestMultipleInterfaceImplementerCorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectMultipleInterfaceImplementerPermission"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}     
 
 		[Test]
 		public void TestMultipleInterfaceImplementerAnotherCorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectMultipleInterfaceImplementerCollection"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}				     
 		
        		[Test]
 		public void TestMultipleInterfaceImplementerIncorrectName () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectMultipleInterfaceImplementer"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}			       
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesCorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectDerivingClassImplementingInterfacesEventArgs"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}      
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesIncorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectDerivingClassImplementingInterfaces"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}      
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesAnotherIncorrectName ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectDerivingClassImplementingInterfacesCollection"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.AreEqual (1, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}      
 	}
 }
