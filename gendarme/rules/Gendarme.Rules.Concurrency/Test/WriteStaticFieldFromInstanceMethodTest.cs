@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -93,19 +93,19 @@ namespace Test.Rules.Correctness {
 
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 		private TypeDefinition type;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			type = assembly.MainModule.Types["Test.Rules.Correctness.WriteStaticFieldFromInstanceMethodTest/TestCase"];
 			rule = new WriteStaticFieldFromInstanceMethodRule ();
+			runner = new TestRunner (rule);
 		}
-		
+
 		private MethodDefinition GetTest (string name)
 		{
 			foreach (MethodDefinition md in type.Methods) {
@@ -123,57 +123,64 @@ namespace Test.Rules.Correctness {
 		public void GetConstField ()
 		{
 			MethodDefinition method = GetTest ("GetConstField");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void GetStaticField ()
 		{
 			MethodDefinition method = GetTest ("GetStaticField");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void SetStaticField ()
 		{
 			MethodDefinition method = GetTest ("SetStaticField");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void Append ()
 		{
 			MethodDefinition method = GetTest ("Append");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void AppendChange ()
 		{
 			MethodDefinition method = GetTest ("AppendChange");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void MultipleChanges ()
 		{
 			MethodDefinition method = GetTest ("MultipleChanges");
-			MessageCollection mc = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.AreEqual (2, mc.Count, "Count");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void StaticConstructor ()
 		{
 			MethodDefinition method = GetTest (".cctor");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void Constructor ()
 		{
 			MethodDefinition method = GetTest (".ctor");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

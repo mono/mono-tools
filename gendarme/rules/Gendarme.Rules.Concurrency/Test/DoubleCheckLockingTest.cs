@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2005 Aaron Tomb
-// Copyright (C) 2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -86,18 +86,18 @@ namespace Test.Rules.Concurrency {
 		}
 	
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			type = module.Types["Test.Rules.Concurrency.DoubleCheckLockingTest/Singleton"];
+			type = assembly.MainModule.Types ["Test.Rules.Concurrency.DoubleCheckLockingTest/Singleton"];
 			rule = new DoubleCheckLockingRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -113,22 +113,22 @@ namespace Test.Rules.Concurrency {
 		[Test]
 		public void SingleCheckBefore ()
 		{
-			MethodDefinition method = GetTest ("SingleCheckBefore"); 
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			MethodDefinition method = GetTest ("SingleCheckBefore");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void SingleCheckAfter ()
 		{
-			MethodDefinition method = GetTest ("SingleCheckAfter"); 
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			MethodDefinition method = GetTest ("SingleCheckAfter");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void DoubleCheck ()
 		{
-			MethodDefinition method = GetTest ("DoubleCheck"); 
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			MethodDefinition method = GetTest ("DoubleCheck");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 	}
 }

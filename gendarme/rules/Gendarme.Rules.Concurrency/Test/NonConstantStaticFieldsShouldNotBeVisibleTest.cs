@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -68,6 +70,7 @@ namespace Test.Rules.Concurrency {
 	public class NonConstantStaticFieldsShouldNotBeVisibleTest {
 
 		private NonConstantStaticFieldsShouldNotBeVisibleRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 
 
@@ -77,6 +80,7 @@ namespace Test.Rules.Concurrency {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new NonConstantStaticFieldsShouldNotBeVisibleRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -88,49 +92,49 @@ namespace Test.Rules.Concurrency {
 		public void TestHasPublicConst ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicConst");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicNonConstantStaticField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicNonConstantStaticField");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasProtectedNonConstantStaticField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasProtectedNonConstantStaticField");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasInternalNonConstantStaticField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasInternalNonConstantStaticField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicConstantStaticField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicConstantStaticField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPrivateNonConstantStaticField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPrivateNonConstantStaticField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicNonConstantField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicNonConstantField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }
