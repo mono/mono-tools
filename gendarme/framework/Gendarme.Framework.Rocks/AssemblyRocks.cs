@@ -43,5 +43,22 @@ namespace Gendarme.Framework.Rocks {
 		{
 			return self.CustomAttributes.ContainsType (attributeName);
 		}
+
+		/// <summary>
+		/// Check if the AssemblyName is reference by the assembly.
+		/// </summary>
+		/// <param name="self">The AssemblyDefinition on which the extension method can be called.</param>
+		/// <param name="assemblyName">AssemblyName of the reference</param>
+		/// <returns>True if any of the assembly's modules reference the assembly name, false otherwise.</returns>
+		public static bool References (this AssemblyDefinition self, string assemblyName)
+		{
+			foreach (ModuleDefinition module in self.Modules) {
+				foreach (AssemblyNameReference r in module.AssemblyReferences) {
+					if (r.Name == assemblyName)
+						return true;
+				}
+			}
+			return false;
+		}
 	}
 }

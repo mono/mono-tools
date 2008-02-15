@@ -1,3 +1,9 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AssemblyRocks.cs: Add References rock.
+	* CommonRocks.cs: Add AddRangeIfNew<T> rock.
+	* TypeRocks.cs: re-enable Gendarme.Framework.Helpers
+
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* FieldRocks.cs: Add Resolve (FieldReference to FieldDefinition) and

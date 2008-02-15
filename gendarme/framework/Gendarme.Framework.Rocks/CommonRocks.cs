@@ -46,5 +46,13 @@ namespace Gendarme.Framework.Rocks {
 			if (!self.Contains (item))
 				self.Add (item);
 		}
+
+		public static void AddRangeIfNew<T> (this IList<T> self, IEnumerable<T> items)
+		{
+			foreach (T item in items) {
+				if (!self.Contains (item))
+					self.Add (item);
+			}
+		}
 	}
 }
