@@ -4,7 +4,7 @@
 .\" Author:
 .\"	Sebastien Pouliot  <sebastien@ximian.com>
 .\"
-.\" Copyright (C) 2005-2006 Novell, Inc (http://www.novell.com)
+.\" Copyright (C) 2005-2006,2008 Novell, Inc (http://www.novell.com)
 .\"
 
 .de Sp
@@ -13,12 +13,16 @@
 ..
 .TH Gendarme "Gendarme @GENDARME_VERSION@"
 .SH NAME
-Gendarme \- Rule-based assembly verifier
+Gendarme \- Rule-based code analysis for Mono::
 .SH SYNOPSIS
 .PP
 .B gendarme [--config configfile] [--set ruleset] [--log file | --xml file | --html file] [--quiet] [--debug] assemblies ...
 .SH DESCRIPTION
-\fIgendarme\fP is a rule-based assembly verifier.
+\fIGendarme\fP is a extensible rule-based tool to find problems in .NET 
+applications and libraries. Gendarme inspects programs and libraries that
+contain code in ECMA CIL format (Mono and .NET) and looks for common 
+problems with the code, problems that compiler do not typically check or
+have not historically checked.
 .SH OPTIONS
 .TP
 .I "--config configfile"
@@ -39,8 +43,8 @@ Save the output, formatted as HTML, to the specified file.
 .I "--quiet"
 Display minimal output (results) from the runner.
 .TP
-.I "--debug"
-Enable debugging output.
+.I "--v|verbose"
+Enable debugging output. You can supply several -v to augment debugging verbosity.
 .TP
 .I "assemblies ..."
 Specify the assemblies to verify. You can specify multiple filenames, 
@@ -54,10 +58,10 @@ This files contains a list of all the rulesets available to Gendarme. Each
 ruleset includes a list of assemblies in which some, or all, rules can be
 verified (include) or not (exclude).
 .SH COPYRIGHT
-Copyright (C) 2005-2006 Novell, Inc (http://www.novell.com)
+Copyright (C) 2005-2008 Novell, Inc (http://www.novell.com)
 .SH MAILING LISTS
 Mailing lists are listed at the
-http://www.mono-project.com/Mailing_Lists
+http://groups.google.com/group/gendarme
 .SH WEB SITE
 http://www.mono-project.com/Gendarme
 .SH SEE ALSO

@@ -1,3 +1,8 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Update description and mailing-list. 
+	Change --debug to -v
+
 2008-02-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Fix version number (from Mono version to Gendarme)
