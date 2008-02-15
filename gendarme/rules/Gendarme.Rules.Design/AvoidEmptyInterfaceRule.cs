@@ -1,10 +1,10 @@
 // 
-// Gendarme.Rules.Design.AttributeArgumentsShouldHaveAccessorsRule
+// Gendarme.Rules.Design.AvoidEmptyInterfaceRule
 //
 // Authors:
-//	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Daniel Abramov
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,47 +25,35 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 using Mono.Cecil;
 
 using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	[Problem ("All parameter values passed to this type constructors should be visible through read-only properties.")]
-	[Solution ("Add the missing properties getters to this type.")]
-	public class AttributeArgumentsShouldHaveAccessorsRule : Rule, ITypeRule {
-
-		private List<string> allProperties = new List<string> ();
+	[Problem ("This interface does not define any members. This is generally a sign that the interface is used as a marker.")]
+	[Solution ("Review the interface usage. If used as a marker then see if it could be replaced by using attributes.")]
+	public class AvoidEmptyInterfaceRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule applies only to attributes
-			if (!type.IsAttribute ())
+			// rule only applies to interfaces
+			if (!type.IsInterface)
 				return RuleResult.DoesNotApply;
 
-			// look through getters
-			allProperties.Clear ();
-			foreach (PropertyDefinition property in type.Properties) {
-				if (property.GetMethod != null) {
-					allProperties.Add (property.Name);
-				}
-			}
+			// rule applies!
 
-			// look through parameters
-			foreach (MethodDefinition constructor in type.Constructors) {
-				foreach (ParameterDefinition param in constructor.Parameters) {
-					string correspondingPropertyName = char.ToUpper (param.Name [0]) + param.Name.Substring (1); // pascal case it
-					if (!allProperties.Contains (correspondingPropertyName)) {
-						string s = String.Format ("Add '{0}' property to the attribute class.", correspondingPropertyName);
-						Runner.Report (param, Severity.Medium, Confidence.High, s);
-						allProperties.Add (correspondingPropertyName); // to avoid double catching same property (e.g. from different constructors)
-					}
-				}
-			}
-			return Runner.CurrentRuleResult;
+			// first check if the interface defines it's own members
+			if (type.Methods.Count > 0)
+				return RuleResult.Success;
+
+			// otherwise it may implement more than one interface itself
+			if (type.Interfaces.Count > 1)
+				return RuleResult.Success;
+
+			Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }
