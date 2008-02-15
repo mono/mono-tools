@@ -1,27 +1,57 @@
+//
+// DoNotDestroyStackTraceRule
+//
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
 using System;
-using System.Collections;
+using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
 using Gendarme.Rules.Exceptions.Impl;
 
 namespace Gendarme.Rules.Exceptions {
 
-	public class DontDestroyStackTrace : IMethodRule {
+	[Problem ("A catch block in the method throws back the caught exception which destroys the stack trace.")]
+	[Solution ("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")]
+	public class DontDestroyStackTrace : Rule, IMethodRule {
 
 		private TypeReference void_reference;
-		private ArrayList warned_offsets_in_method;
+		private List<int> warned_offsets_in_method = new List<int> ();
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule only applies to methods with IL
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			ModuleDefinition module = method.DeclaringType.Module;
 			if (void_reference == null)
 				void_reference = module.Import (typeof (void));
 
-			ArrayList executionPaths = new ArrayList ();
+			List<ExecutionPath> executionPaths = new List<ExecutionPath> ();
 			ExecutionPathFactory epf = new ExecutionPathFactory (method);
 			ISEHGuardedBlock[] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
 			foreach (ISEHGuardedBlock guardedBlock in guardedBlocks) {
@@ -36,19 +66,16 @@ namespace Gendarme.Rules.Exceptions {
 				}
 			}
 
-			MessageCollection violations = new MessageCollection ();
-			warned_offsets_in_method = new ArrayList ();
+			warned_offsets_in_method.Clear ();
 
 			// Look for paths that 'throw ex;' instead of 'throw'
 			foreach (ExecutionPath catchPath in executionPaths)
-				ProcessCatchPath (catchPath, method, violations);
+				ProcessCatchPath (catchPath, method);
 
-			return (violations.Count == 0) ? null : violations;
+			return Runner.CurrentRuleResult;
 		}
 
-		private void ProcessCatchPath (ExecutionPath catchPath,
-					       MethodDefinition method,
-					       MessageCollection violations)
+		private void ProcessCatchPath (ExecutionPath catchPath, MethodDefinition method)
 		{
 			// Track original exception (top of stack at start) through to the final
 			// return (be it throw, rethrow, leave, or leave.s)
@@ -102,13 +129,7 @@ namespace Gendarme.Rules.Exceptions {
 						// If our original exception is on top of the stack,
 						// we're rethrowing it.This is deemed naughty...
 						if (!warned_offsets_in_method.Contains(cur.Offset)) {
-							Location loc =
-								new Location (method, cur.Offset);
-							Message msg = new Message (
-								"Throwing original exception - destroys stack trace!",
-								loc,
-								MessageType.Error);
-							violations.Add (msg);
+							Runner.Report (method, cur, Severity.Critical, Confidence.High, String.Empty);
 							warned_offsets_in_method.Add (cur.Offset);
 						}
 						return;
@@ -126,7 +147,6 @@ namespace Gendarme.Rules.Exceptions {
 					}
 				}
 			}
-			return;
 		}
 
 		private static int GetNumPops (Instruction instr)

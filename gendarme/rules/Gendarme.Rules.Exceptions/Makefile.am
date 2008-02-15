@@ -10,7 +10,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Exceptions.xml TestResult.xml
 
 exceptions_rules_sources_in = ../../AssemblyInfo.cs.in
 exceptions_rules_generated_sources = $(exceptions_rules_sources_in:.in=)
-exceptions_rules_sources = DontDestroyStackTrace.cs ISEHCatchBlock.cs \
+exceptions_rules_sources = DoNotDestroyStackTraceRule.cs ISEHCatchBlock.cs \
 	ISEHGuardedBlock.cs ISEHHandlerBlock.cs \
 	SEHHandlerType.cs Impl/ExceptionBlockParser.cs Impl/ExecutionBlock.cs \
 	Impl/ExecutionPath.cs Impl/ExecutionPathFactory.cs Impl/SEHCatchBlock.cs \
@@ -24,7 +24,7 @@ exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
 	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(exceptions_rules_build_sources)
 	cp Gendarme.Rules.*.xml ../../bin/
 
-exceptions_test_sources = TestPatterns.cs DontSwallowErrorsCatchingNonspecificExceptionsTest.cs 
+exceptions_test_sources = DontDestroyStackTraceTest.cs DontSwallowErrorsCatchingNonspecificExceptionsTest.cs 
 exceptions_test_build_sources = $(addprefix $(srcdir)/Test/, $(exceptions_test_sources))
 
 Test.Rules.Exceptions.dll: $(exceptions_test_build_sources) $(exceptions_rules_SCRIPTS)

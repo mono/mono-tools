@@ -1,3 +1,10 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotDestroyStackTraceRule.cs: (renamed from DontDestroyStackTrace.cs)
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs:
+		Updated rules wrt framework changes.
+	* Makefile.am: Adjusted for file name changes.
+
 2008-01-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DontDestroyStackTrace.cs: Use new Location ctors. Change some 

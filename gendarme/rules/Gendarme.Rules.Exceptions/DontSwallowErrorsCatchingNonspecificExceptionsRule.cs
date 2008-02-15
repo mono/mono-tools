@@ -33,7 +33,10 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
-	public class DontSwallowErrorsCatchingNonspecificExceptionsRule : IMethodRule {
+
+	[Problem ("The method catch a nonspecific exception.")]
+	[Solution ("You can rethrow the original exception, to avoid destroying the stacktrace, or you can handle more specific exceptions.")]
+	public class DontSwallowErrorsCatchingNonspecificExceptionsRule : Rule, IMethodRule {
 
 		//Added System.Object because is the code behind the following block:
 		//try {
@@ -53,39 +56,35 @@ namespace Gendarme.Rules.Exceptions {
 			return false;
 		}
 
-		private static bool ThrowsGeneralException (ExceptionHandler exceptionHandler)
+		private static Instruction ThrowsGeneralException (ExceptionHandler exceptionHandler)
 		{
 			for (Instruction currentInstruction = exceptionHandler.HandlerStart; currentInstruction != exceptionHandler.HandlerEnd; currentInstruction = currentInstruction.Next) {
 				if (currentInstruction.OpCode.Code == Code.Rethrow)
-					return true;
+					return null;
 			}
-			return false;
+			return exceptionHandler.HandlerStart;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition methodDefinition, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition methodDefinition)
 		{
+			// rule only applies to methods with IL
 			if (!methodDefinition.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection messageCollection = null;
 			ExceptionHandlerCollection exceptionHandlerCollection = methodDefinition.Body.ExceptionHandlers;
 			foreach (ExceptionHandler exceptionHandler in exceptionHandlerCollection) {
 				if (exceptionHandler.Type == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {
-						if (!ThrowsGeneralException (exceptionHandler)) {
-							Location location = new Location (methodDefinition, exceptionHandler.HandlerStart.Offset);
-							Message message = new Message ("Do not swallow errors catching nonspecific exceptions.", location, MessageType.Error);
-							if (messageCollection == null)
-								messageCollection = new MessageCollection (message);
-							else
-								messageCollection.Add (message);
+						Instruction throw_instruction = ThrowsGeneralException (exceptionHandler);
+						if (throw_instruction != null) {
+							Runner.Report (methodDefinition, throw_instruction, Severity.Medium, Confidence.High, String.Empty);
 						}
 					}
 				}
 			}
 
-			return messageCollection;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
