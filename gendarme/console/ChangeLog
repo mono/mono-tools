@@ -1,3 +1,17 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsoleRunner.cs: Updated runner for the new framework (still a 
+	work in progress).
+	* gendarme.xsl: Updated XSLT to match new XML format.
+	* HtmlResultWriter.cs: Produce HTML reports using gendarme.xsl and
+	the XML writer.
+	* Makefile.am: Updated with changes.
+	* Options.cs: Jonathan Pryor Getopt::Long-inspired option parsing 
+	library for C#
+	* ResultWriter.cs: Renamed from IResultWriter. Now an abstract class.
+	* TextResultWriter.cs: Updated for display more information.
+	* XmlResultWriter.cs: Updated xml format for results.
+
 2008-02-03  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* gendarme.xsl: Display the correct message (not the first one) for

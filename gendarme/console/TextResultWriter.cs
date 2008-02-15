@@ -29,70 +29,75 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
+using Mono.Cecil;
 
 using Gendarme.Framework;
 
-namespace Gendarme.Console.Writers {
+namespace Gendarme {
 
-	public class TextResultWriter : IResultWriter {
+	public class TextResultWriter : ResultWriter, IDisposable {
 
 		private TextWriter writer;
 		private bool need_closing;
-		private int index;
 
-		public TextResultWriter (string output)
+		public TextResultWriter (IRunner runner, string fileName)
+			: base (runner, fileName)
 		{
-			if ((output == null) || (output.Length == 0))
+			if ((fileName == null) || (fileName.Length == 0))
 				writer = System.Console.Out;
 			else {
-				writer = new StreamWriter (output);
+				writer = new StreamWriter (fileName);
 				need_closing = true;
 			}
 		}
 
-		public void Start ()
+		protected override void Write ()
 		{
-			index = 0;
+			int index = 0;
+
+			var query = from n in Runner.Defects
+				    orderby n.Severity
+				    select n;
+
+			foreach (Defect defect in query) {
+				IRule rule = defect.Rule;
+
+				writer.WriteLine ("{0}. {1}", ++index, rule.Name);
+				writer.WriteLine ();
+				writer.WriteLine ("Problem: {0}", rule.Problem);
+				writer.WriteLine ();
+				writer.WriteLine ("Details [Severity: {0}, Confidence: {1}]", defect.Severity, defect.Confidence);
+				writer.WriteLine ("* Target: {0}", defect.Target);
+				writer.WriteLine ("* Location: {0}", defect.Location);
+				if (!String.IsNullOrEmpty (defect.Text))
+					writer.WriteLine ("* {0}", defect.Text);
+				writer.WriteLine ();
+				writer.WriteLine ("Solution: {0}", rule.Solution);
+				writer.WriteLine ();
+				writer.WriteLine ("More info available at: {0}", rule.Uri.ToString ());
+				writer.WriteLine ();
+				writer.WriteLine ();
+			}
 		}
 
-		public void End ()
+		public void Dispose ()
 		{
-			if (need_closing)
-				writer.Close ();
+			Dispose (true);
+			GC.SuppressFinalize (this);
 		}
 
-		public void Write (IDictionary assemblies)
+		protected virtual void Dispose (bool disposing)
 		{
-		}
-
-		public void Write (Rules rules)
-		{
-		}
-
-		public void Write (Violation v)
-		{
-			RuleInformation ri = RuleInformationManager.GetRuleInformation (v.Rule);
-			writer.WriteLine ("{0}. {1}", ++index, ri.Name);
-			writer.WriteLine ();
-			writer.WriteLine ("Problem: {0}", String.Format (ri.Problem, v.Violator));
-			writer.WriteLine ();
-			if (v.Messages != null && v.Messages.Count > 0) {
-				writer.WriteLine ("Details:");
-				foreach (Message message in v.Messages) {
-					writer.WriteLine ("  {0}", message);
+			if (disposing) {
+				if (need_closing) {
+					writer.Close ();
+					writer.Dispose ();
 				}
-				writer.WriteLine ();
 			}
-			writer.WriteLine ("Solution: {0}", String.Format (ri.Solution, v.Violator));
-			writer.WriteLine ();
-			string url = ri.Uri;
-			if (url.Length > 0) {
-				writer.WriteLine ("More info available at: {0}", url);
-				writer.WriteLine ();
-			}
-			writer.WriteLine ();
 		}
 	}
 }

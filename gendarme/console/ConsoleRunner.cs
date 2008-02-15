@@ -27,363 +27,300 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
 
 using Mono.Cecil;
+
 using Gendarme.Framework;
-using Gendarme.Console.Writers;
 
-class ConsoleRunner : Runner {
+using NDesk.Options;
 
-	private const string defaultConfiguration = "rules.xml";
-	private const string defaultRuleSet = "default";
+namespace Gendarme {
 
-	private string config;
-	private string set;
-	private Hashtable assemblies;
-	private string format;
-	private string output;
+	public class ConsoleRunner : Runner {
 
-	private static Assembly assembly;
-	private bool quiet;
+		private string config_file = "rules.xml";
+		private string rule_set = "*";
+		private string html_file;
+		private string log_file;
+		private string xml_file;
+		private bool help;
+		private bool quiet;
+		private List<string> assembly_names;
 
-	static Assembly Assembly {
-		get {
-			if (assembly == null)
-				assembly = Assembly.GetExecutingAssembly ();
-			return assembly;
+		int Parse (string [] args)
+		{
+			var p = new OptionSet () {
+				{ "config=",	v => config_file = v },
+				{ "set=",	v => rule_set = v },
+				{ "log=",	v => log_file = v },
+				{ "xml=",	v => xml_file = v },
+				{ "html=",	v => html_file = v },
+				{ "v|verbose",  v => ++VerbosityLevel },
+				{ "quiet",	v => quiet = v != null },
+				{ "h|?|help",	v => help = v != null },
+			};
+			assembly_names = p.Parse (args);
+			return (assembly_names.Count > 0) ? 0 : 1;
 		}
-	}
 
-	static string GetFullPath (string filename)
-	{
-		if (Path.GetDirectoryName (filename) != String.Empty)
-			return filename;
-		return Path.Combine (Path.GetDirectoryName (Assembly.Location), filename);
-	}
+		// name can be
+		// - a filename (a single assembly)
+		// - a mask (*, ?) for multiple assemblies
+		// - a special file (@) containing a list of assemblies
+		int AddFiles (string name)
+		{
+			if (String.IsNullOrEmpty (name))
+				return 0;
 
-	static string GetNext (string[] args, int index, string defaultValue)
-	{
-		if ((args == null) || (index < 0) || (index >= args.Length))
-			return defaultValue;
-		return args [index];
-	}
-	
-	// name can be
-	// - a filename (a single assembly)
-	// - a mask (*, ?) for multiple assemblies
-	// - a special file (@) containing a list of assemblies
-	void AddFiles (string name)
-	{
-		if ((name == null) || (name.Length == 0))
-			return;
-			
-		if (name.StartsWith ("@")) {
-			// note: recursive (can contains @, masks and filenames)
-			using (StreamReader sr = File.OpenText (name.Substring (1))) {
-				while (sr.Peek () >= 0) {
-					AddFiles (sr.ReadLine ());
+			if (name.StartsWith ("@", StringComparison.OrdinalIgnoreCase)) {
+				// note: recursive (can contains @, masks and filenames)
+				using (StreamReader sr = File.OpenText (name.Substring (1))) {
+					while (sr.Peek () >= 0) {
+						AddFiles (sr.ReadLine ());
+					}
 				}
-			}
-		} else if (name.IndexOfAny (new char[] { '*', '?' }) >= 0) {
-			string dirname = Path.GetDirectoryName (name);
-			if (dirname.Length == 0)
-				dirname = "."; // assume current directory
-			string [] files = Directory.GetFiles (dirname, Path.GetFileName (name));
-			foreach (string file in files) {
-				assemblies.Add (Path.GetFullPath (file), null);
-			}
-		} else {
-			assemblies.Add (Path.GetFullPath (name), null);
-		}
-	}
-
-	bool ParseOptions (string[] args)
-	{
-		// defaults
-		config = GetFullPath (defaultConfiguration);
-		set = defaultRuleSet;
-		assemblies = new Hashtable ();
-
-		// TODO - we probably want (i.e. later) the possibility to 
-		// include/exclude certain rules from executing
-		for (int i=0; i < args.Length; i++) {
-			switch (args [i]) {
-			case "--config":
-				config = GetNext (args, ++i, defaultConfiguration);
-				break;
-			case "--set":
-				set = GetNext (args, ++i, defaultRuleSet);
-				break;
-			case "--debug":
-				debug = true;
-				break;
-			case "--quiet":
-				quiet = true;
-				break;
-			case "--help":
-				return false;
-			case "--log":
-				format = "text";
-				output = GetNext (args, ++i, String.Empty);
-				break;
-			case "--xml":
-				format = "xml";
-				output = GetNext (args, ++i, String.Empty);
-				break;
-			case "--html":
-				format = "html";
-				output = GetNext (args, ++i, String.Empty);
-				break;
-			default:
-				AddFiles (args[i]);
-				break;
-			}
-		}
-		return (assemblies.Count > 0);
-	}
-
-	bool LoadCustomParameters (XmlElement ruleset) {
-		foreach (XmlElement parameter in ruleset.SelectNodes ("parameter")) {
-			try {
-				if (!parameter.HasAttribute ("name"))
-					throw new XmlException ("The attribute name can't be found");
-				if (!parameter.HasAttribute ("value"))
-					throw new XmlException ("The attribute value can't be found");
-				if (!parameter.HasAttribute ("rule"))
-					throw new XmlException ("The attribute rule can't be found");
-					
-				string name = GetAttribute (parameter, "name", String.Empty);
-				int value = 0;
-				try {
-					value = Int32.Parse (GetAttribute (parameter, "value", String.Empty));
-				} 
-				catch (Exception exception) {
-					throw new XmlException ("The value for the value field should be an integer.", exception);
+			} else if (name.IndexOfAny (new char [] { '*', '?' }) >= 0) {
+				string dirname = Path.GetDirectoryName (name);
+				if (dirname.Length == 0)
+					dirname = "."; // assume current directory
+				string [] files = Directory.GetFiles (dirname, Path.GetFileName (name));
+				foreach (string file in files) {
+					AddAssembly (file);
 				}
-				string ruleName = GetAttribute (parameter, "rule", String.Empty);
-
-				ApplyCustomParameterToRule (ruleName, name, value);
+			} else {
+				AddAssembly (name);
 			}
-			catch (Exception e) {
-				Console.WriteLine ("Error reading parameters{0}Details: {1}", Environment.NewLine, e);
-				return false;
-			}
+			return 0;
 		}
-		return true;
-	}
 
-	static string GetAttribute (XmlElement xel, string name, string defaultValue)
-	{
-		XmlAttribute xa = xel.Attributes [name];
-		if (xa == null)
-			return defaultValue;
-		return xa.Value;
-	}
+		void AddAssembly (string filename)
+		{
+			string assembly_name = Path.GetFullPath (filename);
+			AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
+			(ad as IAnnotationProvider).Annotations.Add ("filename", assembly_name);
+			Assemblies.Add (ad);
+		}
 
-	bool LoadConfiguration ()
-	{
-		XmlDocument doc = new XmlDocument ();
-		doc.Load (config);
-		if (doc.DocumentElement.Name != "gendarme")
+		static string GetFullPath (string filename)
+		{
+			if (Path.GetDirectoryName (filename).Length > 0)
+				return filename;
+			return Path.Combine (Path.GetDirectoryName (Assembly.Location), filename);
+		}
+
+		static string GetAttribute (XmlElement xel, string name, string defaultValue)
+		{
+			XmlAttribute xa = xel.Attributes [name];
+			if (xa == null)
+				return defaultValue;
+			return xa.Value;
+		}
+
+		private static bool IsContainedInRuleSet (string rule, string mask)
+		{
+			string [] ruleSet = mask.Split ('|');
+			foreach (string entry in ruleSet) {
+				if (String.Compare (rule, entry.Trim ()) == 0)
+					return true;
+			}
 			return false;
+		}
 
-		bool result = false;
-		foreach (XmlElement ruleset in doc.DocumentElement.SelectNodes("ruleset")) {
-			if (ruleset.Attributes["name"].Value != set)
-				continue;
-			foreach (XmlElement assembly in ruleset.SelectNodes("rules")) {
-				string include = GetAttribute (assembly, "include", "*");
-				string exclude = GetAttribute (assembly, "exclude", String.Empty);
-				string from = GetFullPath (GetAttribute (assembly, "from", String.Empty));
-				try {
+		public static bool RuleFilter (Type type, object interfaceName)
+		{
+			return (type.ToString () == (interfaceName as string));
+		}
+
+		public int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask)
+		{
+			int total = 0;
+			Assembly a = Assembly.LoadFile (Path.GetFullPath (assembly));
+			foreach (Type t in a.GetTypes ()) {
+				if (t.IsAbstract || t.IsInterface)
+					continue;
+
+				if (includeMask != "*")
+					if (!IsContainedInRuleSet (t.Name, includeMask))
+						continue;
+
+				if ((excludeMask != null) && (excludeMask.Length > 0))
+					if (IsContainedInRuleSet (t.Name, excludeMask))
+						continue;
+
+				if (t.FindInterfaces (new TypeFilter (RuleFilter), "Gendarme.Framework.IRule").Length > 0) {
+					Rules.Add ((IRule) Activator.CreateInstance (t));
+					total++;
+				}
+			}
+			return total;
+		}
+
+		bool LoadConfiguration ()
+		{
+			XmlDocument doc = new XmlDocument ();
+			doc.Load (config_file);
+			if (doc.DocumentElement.Name != "gendarme")
+				return false;
+
+			bool result = false;
+			foreach (XmlElement ruleset in doc.DocumentElement.SelectNodes ("ruleset")) {
+				if (ruleset.Attributes ["name"].Value != rule_set)
+					continue;
+				foreach (XmlElement assembly in ruleset.SelectNodes ("rules")) {
+					string include = GetAttribute (assembly, "include", "*");
+					string exclude = GetAttribute (assembly, "exclude", String.Empty);
+					string from = GetFullPath (GetAttribute (assembly, "from", String.Empty));
+
 					int n = LoadRulesFromAssembly (from, include, exclude);
 					result = (result || (n > 0));
 				}
-				catch (Exception e) {
-					Console.WriteLine ("Error reading rules{1}Details: {0}", e, Environment.NewLine);
-					return false;
+			}
+			return result;
+		}
+
+		int Report ()
+		{
+			// generate text report (default, to console, if xml and html aren't specified)
+			if ((log_file != null) || ((xml_file == null) && (html_file == null))) {
+				using (TextResultWriter writer = new TextResultWriter (this, log_file)) {
+					writer.Report ();
 				}
 			}
-			if (!LoadCustomParameters (ruleset))
-				return false;
-		}
-		return result;
-	}
 
-	void ApplyCustomParameterToRule (string ruleName, string name, int value) 
-	{
-		IRule rule = GetRule (ruleName);
-		if (rule == null)
-			throw new ArgumentException (String.Format ("The rule name {0} can't be found in the rules collection", ruleName), "rule");
-		PropertyInfo property = rule.GetType ().GetProperty (name);
-		if (property == null)
-			throw new ArgumentException (String.Format ("The property {0} can't be found in the rule {1}", name, ruleName), "name");
-		if (!property.CanWrite)
-			throw new ArgumentException (String.Format ("The property {0} can't be written in the rule {1}", name, ruleName), "name");
-		object result = property.GetSetMethod ().Invoke (rule, new object[] {value});
-	}
-
-	IRule GetRule (string name) 
-	{
-		IRule result;
-		result = GetRuleFromSet (name, Rules.Assembly);
-		if (result == null) {
-			result = GetRuleFromSet (name, Rules.Module);
-			if (result == null) {
-				result = GetRuleFromSet (name, Rules.Type);
-				if (result == null) {
-					result = GetRuleFromSet (name, Rules.Method);
+			// generate XML report
+			if (xml_file != null) {
+				using (XmlResultWriter writer = new XmlResultWriter (this, xml_file)) {
+					writer.Report ();
 				}
 			}
-		}
-		return result;
-	}
 
-	static IRule GetRuleFromSet (string name, RuleCollection rules) 
-	{
-		foreach (IRule rule in rules) {
-			if (String.Compare (name, rule.GetType ().FullName) == 0)
-				return rule;
-		}
-		return null;
-	}
-
-	void Header ()
-	{
-		if (quiet)
-			return;
-
-		Assembly a = Assembly.GetExecutingAssembly();
-		Version v = a.GetName ().Version;
-		if (v.ToString () != "0.0.0.0") {
-			Console.WriteLine ("Gendarme v{0}", v);
-			object[] attr = a.GetCustomAttributes (typeof (AssemblyCopyrightAttribute), false);
-			if (attr.Length > 0)
-				Console.WriteLine (((AssemblyCopyrightAttribute) attr [0]).Copyright);
-		} else {
-			Console.WriteLine ("Gendarme - Development Snapshot");
-		}
-		Console.WriteLine ();
-	}
-
-	static void Help ()
-	{
-		Console.WriteLine ("Usage: gendarme [--config file] [--set ruleset] [--{log|xml|html} file] assembly");
-		Console.WriteLine ("Where");
-		Console.WriteLine ("  --config file\t\tSpecify the configuration file. Default is 'rules.xml'.");
-		Console.WriteLine ("  --set ruleset\t\tSpecify the set of rules to verify. Default is '*'.");
-		Console.WriteLine ("  --log file\t\tSave the text output to the specified file.");
-		Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
-		Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
-		Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
-		Console.WriteLine ("  --debug\t\tEnable debugging output.");
-		Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
-		Console.WriteLine ();
-	}
-
-	void Write (string text)
-	{
-		if (!quiet)
-			Console.Write (text);
-	}
-
-	void WriteLine (string text)
-	{
-		if (!quiet)
-			Console.WriteLine (text);
-	}
-	
-	void WriteLine (string text, params object[] args)
-	{
-		if (!quiet)
-			Console.WriteLine (text, args);
-	}
-
-	static void ProcessRules (ConsoleRunner runner)
-	{
-		runner.Header ();
-		string[] assemblies = new string [runner.assemblies.Count];
-		runner.assemblies.Keys.CopyTo (assemblies, 0);
-		DateTime total = DateTime.UtcNow;
-		foreach (string assembly in assemblies) {
-			DateTime start = DateTime.UtcNow;
-			runner.Write (assembly);
-			try {
-				AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly);
-				try {
-					runner.Process (ad);
-					runner.assemblies [assembly] = ad;
-					runner.WriteLine (" - completed ({0} seconds).", (DateTime.UtcNow - start).TotalSeconds);
-				}
-				catch (Exception e) {
-					runner.WriteLine (" - error executing rules{0}Details: {1}", Environment.NewLine, e);
+			// generate HTML report
+			if (html_file != null) {
+				using (HtmlResultWriter writer = new HtmlResultWriter (this, html_file)) {
+					writer.Report ();
 				}
 			}
-			catch (Exception e) {
-				runner.WriteLine (" - error processing{0}\tDetails: {1}", Environment.NewLine, e);
-			}
-		}
-		runner. WriteLine ("{0}{1} assemblies processed in {2} seconds.{0}",  Environment.NewLine, runner.assemblies.Count, 
-			(DateTime.UtcNow - total).TotalSeconds);
-	}
-
- 	static void Report (ConsoleRunner runner)
-	{
-		IResultWriter writer;
-		switch (runner.format) {
-		case "xml":
-			writer = new XmlResultWriter (runner.output);
-			break;
-		case "html":
-			writer = new HtmlResultWriter (runner.output);
-			break;
-		default:
-			writer = new TextResultWriter (runner.output);
-			break;
-		}
-
-		writer.Start ();
-		writer.Write (runner.assemblies);
-		writer.Write (runner.Rules);
-		foreach (Violation v in runner.Violations) {
-			writer.Write (v);
-		}
-		writer.End ();
-	}
-
-	static int Main (string[] args)
-	{
-		ConsoleRunner runner = new ConsoleRunner ();
-
-		// runner options and configuration
-		
-		try {
-			if (!runner.ParseOptions (args)) {
-				Help ();
-				return 1;
-			}
-			if (!runner.LoadConfiguration ()) {
-				Console.WriteLine ("No assembly file were specified.");
-				return 1;
-			}
-		}
-		catch (Exception e) {
-			Console.WriteLine (e);
-			return 1;
-		}
-
-		ProcessRules (runner);
-		Report (runner);
-		
-		if (runner.Violations.Count == 0) {
-			runner.WriteLine ("No rule's violation were found.");
 			return 0;
 		}
-		return 1;
+
+		int Execute (string [] args)
+		{
+			try {
+				int result = Parse (args);
+				if (result != 0) {
+					if (help) {
+						Help ();
+					}
+					return result;
+				}
+
+				Header ();
+
+				// load configuration, including rules, and continue if
+				// there's at least one rule to execute
+				if (!LoadConfiguration () || (Rules.Count < 1))
+					return 3;
+
+				foreach (string name in assembly_names) {
+					result = AddFiles (name);
+					if (result != 0)
+						return result;
+				}
+
+				// now that all rules and assemblies are know, time to initialize
+				Initialize ();
+				// before analizing the assemblies with the rules
+				Run ();
+
+				return Report ();
+			}
+			catch (Exception e) {
+				Console.WriteLine ("Uncatched exception occured. Please fill a bug report.");
+				Console.WriteLine ("Rule:\t{0}", CurrentRule);
+				Console.WriteLine ("Target:\t{0}", CurrentTarget);
+				Console.WriteLine ("Stack trace: {0}", e);
+				return 4;
+			}
+		}
+
+		public override void Run ()
+		{
+			DateTime start = DateTime.UtcNow;
+			base.Run ();
+			Console.WriteLine ("{0}{1} assemblies processed in {2} seconds.{0}",
+				Environment.NewLine, Assemblies.Count, (DateTime.UtcNow - start).TotalSeconds);
+		}
+
+		protected override void OnAssembly (RunnerEventArgs e)
+		{
+			DateTime start = DateTime.UtcNow;
+			base.OnAssembly (e);
+			Console.WriteLine ("{0}: {1} seconds.", 
+				(e.CurrentAssembly as IAnnotationProvider).Annotations ["filename"],
+				(DateTime.UtcNow - start).TotalSeconds);
+		}
+
+		void Header ()
+		{
+			if (quiet)
+				return;
+
+			Assembly a = Assembly.GetExecutingAssembly ();
+			Version v = a.GetName ().Version;
+			if (v.ToString () != "0.0.0.0") {
+				Console.WriteLine ("Gendarme v{0}", v);
+				object [] attr = a.GetCustomAttributes (typeof (AssemblyCopyrightAttribute), false);
+				if (attr.Length > 0)
+					Console.WriteLine (((AssemblyCopyrightAttribute) attr [0]).Copyright);
+			} else {
+				Console.WriteLine ("Gendarme - Development Snapshot");
+			}
+			Console.WriteLine ();
+		}
+
+		private static Assembly assembly;
+
+		static Assembly Assembly {
+			get {
+				if (assembly == null)
+					assembly = Assembly.GetExecutingAssembly ();
+				return assembly;
+			}
+		}
+
+		static void Help ()
+		{
+			Console.WriteLine ("Usage: gendarme [--config file] [--set ruleset] [--{log|xml|html} file] assembly");
+			Console.WriteLine ("Where");
+			Console.WriteLine ("  --config file\t\tSpecify the configuration file. Default is 'rules.xml'.");
+			Console.WriteLine ("  --set ruleset\t\tSpecify the set of rules to verify. Default is '*'.");
+			Console.WriteLine ("  --log file\t\tSave the text output to the specified file.");
+			Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
+			Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
+			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
+			Console.WriteLine ("  --v\t\tEnable debugging output (use multiple time to augment verbosity).");
+			Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
+			Console.WriteLine ();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns>0 for success, 
+		/// 1 if some defects are found, 
+		/// 2 if some parameters are bad,
+		/// 3 if a problem is related to the xml configuration file
+		/// 4 if an uncatched exception occured</returns>
+		static int Main (string [] args)
+		{
+			return new ConsoleRunner ().Execute (args);
+		}
 	}
 }

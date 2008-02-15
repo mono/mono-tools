@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -35,56 +34,53 @@ using System.Xml.Xsl;
 
 using Gendarme.Framework;
 
-namespace Gendarme.Console.Writers {
+namespace Gendarme {
 
-	public class HtmlResultWriter : IResultWriter {
+	public class HtmlResultWriter : ResultWriter, IDisposable {
 
-		private XmlResultWriter writer;
 		private string temp_filename;
-		private string final_filename;
 
-		public HtmlResultWriter (string output)
+		public HtmlResultWriter (IRunner runner, string fileName)
+			: base (runner, fileName)
 		{
-			final_filename = output;
 			temp_filename = Path.GetTempFileName ();
-			writer = new XmlResultWriter (temp_filename);
 		}
 
-		public void Start ()
+		protected override void Write()
 		{
-			writer.Start ();
-		}
-
-		public void End ()
-		{
-			try {
-				writer.End ();
-				// load XSL file from embedded resource
-				using (Stream s = Assembly.GetExecutingAssembly ().GetManifestResourceStream ("gendarme.xsl")) {
-					// process the XML result with the XSL file
-					XslCompiledTransform xslt = new XslCompiledTransform ();
-					xslt.Load (new XmlTextReader (s));
-					xslt.Transform (temp_filename, final_filename);
-				}
-			}
-			finally {
-				File.Delete (temp_filename);
+			using (XmlResultWriter writer = new XmlResultWriter (Runner, temp_filename)) {
+				writer.Report ();
 			}
 		}
 
-		public void Write (IDictionary assemblies)
+		protected override void Finish ()
 		{
-			writer.Write (assemblies);
+			// load XSL file from embedded resource
+			Assembly a = Assembly.GetExecutingAssembly ();
+			string[] resources = a.GetManifestResourceNames ();
+			if (resources.Length != 1)
+				throw new InvalidDataException ("Could not locate XSL style sheet");
+
+			using (Stream s = a.GetManifestResourceStream (resources [0])) {
+				// process the XML result with the XSL file
+				XslCompiledTransform xslt = new XslCompiledTransform ();
+				xslt.Load (new XmlTextReader (s));
+				xslt.Transform (temp_filename, FileName);
+			}
 		}
 
-		public void Write (Rules rules)
+		public void Dispose ()
 		{
-			writer.Write (rules);
+			Dispose (true);
+			GC.SuppressFinalize (this);
 		}
 
-		public void Write (Violation v)
+		protected virtual void Dispose (bool disposing)
 		{
-			writer.Write (v);
+			if (disposing) {
+				if (File.Exists (temp_filename))
+					File.Delete (temp_filename);
+			}
 		}
 	}
 }

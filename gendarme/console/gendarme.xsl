@@ -3,7 +3,7 @@
 	<xsl:output method="html" encoding="iso-8859-1" /> 
 	<xsl:template name="print-defect-rules">
 		<xsl:param name="name" />
-		: <xsl:value-of select="count(//violation[@Name = $name])" /> defects
+		: <xsl:value-of select="count(//rule[@Name = $name]/target/defect)" /> defects
 	</xsl:template>
 	<xsl:template name="print-rules">
 		<xsl:param name="type" />
@@ -57,7 +57,7 @@
 						padding: 10px;
 					}
 					span.found {
-						padding: 10px;
+						margin-left: 10px;
 					}
 					div.toc {
 						background-color: #F6F6F6;
@@ -86,17 +86,25 @@
 							<a href="#s1_1">&#160;&#160;1.1&#160;&#160;List of assemblies searched</a><br />
 							<a href="#s1_2">&#160;&#160;1.2&#160;&#160;List of rules used</a><br />
 							<a href="#s2">2&#160;&#160;Reported defects</a><br />
-						</p>						
+              <xsl:for-each select="results/rule">
+                 <a href="#{@Name}">&#160;&#160;2.<xsl:value-of select="position()" />&#160;<xsl:value-of select="@Name" /><br />
+                 </a>
+              </xsl:for-each>
+            </p>
 					</div>
 					<h1><a name="s1">Summary</a></h1>
-					
+          <p>
+            <a href="http://www.mono-project.com/Gendarme">Gendarme</a> found <xsl:value-of select="count(//rule/target/defect)" /> defects using <xsl:value-of select="count(//rules/rule)" /> rules.
+          </p>
 					<p>
 						<h2>List of assemblies analyzed</h2>
 						<ul>
-							<xsl:for-each select="input">
-								<xsl:variable name="assembly"><xsl:value-of select="@Name" /></xsl:variable>
+							<xsl:for-each select="files/file">
+								<xsl:variable name="file">
+                  <xsl:value-of select="@Name" />
+                </xsl:variable>
 								
-								<li><xsl:value-of select="text()" />: <xsl:value-of select="count(//violation[@Assembly = $assembly])" /> defects</li>
+								<li><xsl:value-of select="text()" />: <xsl:value-of select="count(//target[@Assembly = $file])" /> defects</li>
 							</xsl:for-each>
 						</ul>
 					</p>
@@ -106,10 +114,6 @@
 						
 						<xsl:call-template name="print-rules">						
 							<xsl:with-param name="type">Assembly</xsl:with-param>
-						</xsl:call-template>
-						
-						<xsl:call-template name="print-rules">
-							<xsl:with-param name="type">Module</xsl:with-param>
 						</xsl:call-template>
 						
 						<xsl:call-template name="print-rules">
@@ -124,8 +128,9 @@
 					<h1><a name="s2">Reported Defects</a></h1>
 					
 					<p>
-						<xsl:for-each select="violation">
+						<xsl:for-each select="results/rule">
 							<h3><xsl:value-of select="position()" />&#160;
+                <a name="{@Name}" />
 								<a href="{@Uri}" target="{@Name}">
 									<xsl:value-of select="@Name" />
 								</a>
@@ -137,21 +142,31 @@
 							</p>
 
 							<b>Found in:</b>
-							<p class="found">
-							Assembly Qualified Name: <i><xsl:value-of select="@Assembly" /></i><br/>
-							<xsl:if test="count(messages/message) != 0">
-								<xsl:for-each select="messages/message">
-									<br/>
+							<xsl:if test="count(target) != 0">
+								<xsl:for-each select="target">
+                  <p class="found">
+									<b>Target:</b>&#160;<xsl:value-of select="@Name" /><br/>
+                  <b>Assembly:</b>&#160;<xsl:value-of select="@Assembly" /><br/>
+                    <xsl:for-each select="defect">
 <!-- FIXME: use different color/style for warnings versus errors -->
-									<b>Location:</b>&#160;<xsl:value-of select="@Location" />
-									<br/>
-									<span class="found">
-										<xsl:value-of select="." />
-									</span>
-									<br/>
-								</xsl:for-each>
+                      <span class="found">
+                        <br/>
+                        <b>Severity:</b>&#160;<xsl:value-of select="@Severity" />&#160;
+                        <b>Confidence:</b>&#160;<xsl:value-of select="@Confidence" /><br/>
+                        <xsl:if test="@Location != (../@Name)">
+                         <b>Location:</b>&#160;<xsl:value-of select="@Location" /><br/>
+                        </xsl:if>
+                       <xsl:if test="string-length(@Source) &gt; 0">
+                          <b>Source:</b>&#160;<xsl:value-of select="@Source" /><br/>
+                        </xsl:if>
+                        <xsl:if test="string-length(.) &gt; 0">
+                          <b>Details:</b>&#160;<xsl:value-of select="." /><br/>
+                        </xsl:if>
+                      </span>
+                    </xsl:for-each>
+                  </p>
+                </xsl:for-each>
 							</xsl:if>
-							</p>
 
 							<b>Solution:</b>
 							<p class="solution">

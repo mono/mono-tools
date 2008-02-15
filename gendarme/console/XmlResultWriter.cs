@@ -1,5 +1,5 @@
 //
-// ResultWriter
+// XmlResultWriter
 //
 // Authors:
 //	Christian Birkl <christian.birkl@gmail.com>
@@ -29,29 +29,31 @@
 //
 
 using System;
-using System.Collections;
+using System.Linq;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
-using Gendarme.Framework;
 using Mono.Cecil;
 
-namespace Gendarme.Console.Writers {
+using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
-	public class XmlResultWriter : IResultWriter {
+namespace Gendarme {
+
+	public class XmlResultWriter : ResultWriter, IDisposable {
 
 		private XmlTextWriter writer;
 
-		public XmlResultWriter (string output)
+		public XmlResultWriter (IRunner runner, string fileName)
+			: base (runner, fileName)
 		{
-			if ((output == null) || (output.Length == 0))
+			if ((fileName == null) || (fileName.Length == 0))
 				writer = new XmlTextWriter (System.Console.Out);
 			else
-				writer = new XmlTextWriter (output, Encoding.UTF8);
+				writer = new XmlTextWriter (fileName, Encoding.UTF8);
 		}
 
-		public void Start ()
+		protected override void Start ()
 		{
 			writer.Formatting = Formatting.Indented;
 			writer.WriteProcessingInstruction ("xml", "version='1.0'");
@@ -59,74 +61,101 @@ namespace Gendarme.Console.Writers {
 			writer.WriteAttributeString ("date", DateTime.UtcNow.ToString ());
 		}
 
-		public void End ()
+		protected override void Write ()
 		{
-			writer.WriteEndElement ();
-			writer.Flush ();
-			writer.Close ();
-			writer = null;
-		}
-
-		public void Write (IDictionary assemblies)
-		{
-			foreach (DictionaryEntry de in assemblies) {
-				writer.WriteStartElement ("input");
-				AssemblyDefinition ad = (de.Value as AssemblyDefinition);
-				if (ad != null)
-					writer.WriteAttributeString ("Name", ad.Name.ToString ());
-				writer.WriteString ((string) de.Key);
+			writer.WriteStartElement ("files");
+			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
+				writer.WriteStartElement ("file");
+				writer.WriteAttributeString ("Name", assembly.Name.ToString ());
+				IAnnotationProvider provider = (assembly as IAnnotationProvider);
+				if (provider.Annotations.Contains ("filename")) {
+					writer.WriteString (provider.Annotations ["filename"] as string);
+				}
 				writer.WriteEndElement ();
 			}
-		}
+			writer.WriteEndElement ();
 
-		public void Write (Rules rules)
-		{
 			writer.WriteStartElement ("rules");
-			Rules ("Assembly", rules.Assembly);
-			Rules ("Module", rules.Module);
-			Rules ("Type", rules.Type);
-			Rules ("Method", rules.Method);
-			writer.WriteEndElement ();
-		}
-
-		private void Rules (string type, RuleCollection rules)
-		{
-			foreach (IRule rule in rules) {
-				RuleInformation info = RuleInformationManager.GetRuleInformation (rule);
-				writer.WriteStartElement ("rule");
-				writer.WriteAttributeString ("Name", info.Name);
-				writer.WriteAttributeString ("Type", type);
-				writer.WriteAttributeString ("Uri", info.Uri);
-				writer.WriteString (rule.GetType ().FullName);
-				writer.WriteEndElement ();
+			foreach (IRule rule in Runner.Rules) {
+				if (rule is IAssemblyRule)
+					WriteRule (rule, "Assembly");
+				if (rule is ITypeRule)
+					WriteRule (rule, "Type");
+				if (rule is IMethodRule)
+					WriteRule (rule, "Method");
 			}
-		}
+			writer.WriteEndElement ();
 
-		public void Write (Violation v)
-		{
-			RuleInformation ri = RuleInformationManager.GetRuleInformation (v.Rule);
+			var query = from n in Runner.Defects
+				    orderby n.Assembly.Name.FullName, n.Rule.Name
+				    group n by n.Rule into a
+				    select new {
+					    Rule = a.Key,
+					    Value = from o in a
+						    group o by o.Target into r
+						    select new {
+							    Target = r.Key,
+							    Value = r
+						    }
+				    };
 
-			writer.WriteStartElement ("violation");
-			writer.WriteAttributeString ("Assembly", v.Assembly.ToString ());
-			writer.WriteAttributeString ("Name", ri.Name);
-			writer.WriteAttributeString ("Uri", ri.Uri);
-			writer.WriteElementString ("problem", String.Format (ri.Problem, v.Violator));
-			writer.WriteElementString ("solution", String.Format (ri.Solution, v.Violator));
-
-			if ((v.Messages != null) && (v.Messages.Count > 0)) {
-				writer.WriteStartElement ("messages");
-				foreach (Message message in v.Messages) {
-					writer.WriteStartElement ("message");
-					if (message.Location != null)
-						writer.WriteAttributeString ("Location", message.Location.ToString ());
-					writer.WriteAttributeString ("Type", message.Type.ToString ());
-					writer.WriteString (message.Text);
+			writer.WriteStartElement ("results");
+			foreach (var value in query) {
+				writer.WriteStartElement ("rule");
+				writer.WriteAttributeString ("Name", value.Rule.Name);
+				writer.WriteAttributeString ("Uri", value.Rule.Uri.ToString ());
+				writer.WriteElementString ("problem", value.Rule.Problem);
+				writer.WriteElementString ("solution", value.Rule.Solution);
+				foreach (var v2 in value.Value) {
+					writer.WriteStartElement ("target");
+					writer.WriteAttributeString ("Name", v2.Target.ToString ());
+					writer.WriteAttributeString ("Assembly", v2.Target.GetAssembly ().Name.FullName);
+					foreach (var v3 in v2.Value) {
+						writer.WriteStartElement ("defect");
+						writer.WriteAttributeString ("Severity", v3.Severity.ToString ());
+						writer.WriteAttributeString ("Confidence", v3.Confidence.ToString ());
+						writer.WriteAttributeString ("Location", v3.Location.ToString ());
+						writer.WriteAttributeString ("Source", v3.Source);
+						writer.WriteString (v3.Text);
+						writer.WriteEndElement ();
+					}
 					writer.WriteEndElement ();
 				}
 				writer.WriteEndElement ();
 			}
-
 			writer.WriteEndElement ();
+		}
+
+		protected override void Finish ()
+		{
+			writer.WriteEndElement ();
+			writer.Flush ();
+		}
+
+		private void WriteRule (IRule rule, string type)
+		{
+			writer.WriteStartElement ("rule");
+			writer.WriteAttributeString ("Name", rule.Name);
+			writer.WriteAttributeString ("Type", type);
+			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
+			writer.WriteString (rule.GetType ().FullName);
+			writer.WriteEndElement ();
+		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected virtual void Dispose (bool disposing)
+		{
+			if (disposing) {
+				if (writer != null) {
+					writer.Close ();
+					writer = null;
+				}
+			}
 		}
 	}
 }

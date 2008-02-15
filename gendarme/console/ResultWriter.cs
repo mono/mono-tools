@@ -1,5 +1,5 @@
 //
-// IResultWriter interface
+// ResultWriter base class
 //
 // Authors:
 //	Christian Birkl <christian.birkl@gmail.com>
@@ -28,20 +28,47 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections;
-
 using Gendarme.Framework;
 
-namespace Gendarme.Console.Writers {
+namespace Gendarme {
 
-	public interface IResultWriter {
+	abstract public class ResultWriter {
 
-		void Start ();
-		void End ();
+		private IRunner runner;
+		private string filename;
 
-		void Write (IDictionary assemblies);
-		void Write (Rules rules);
-		void Write (Violation v);
+		protected ResultWriter (IRunner runner, string fileName)
+		{
+			this.runner = runner;
+			this.filename = fileName;
+		}
+
+		protected IRunner Runner {
+			get { return runner; }
+		}
+
+		protected string FileName {
+			get { return filename; }
+			set { filename = value; }
+		}
+
+		protected virtual void Start ()
+		{
+		}
+
+		protected virtual void Write ()
+		{
+		}
+
+		protected virtual void Finish ()
+		{
+		}
+
+		public void Report ()
+		{
+			Start ();
+			Write ();
+			Finish ();
+		}
 	}
 }
