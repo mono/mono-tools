@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Lukasz Knop <lukasz.knop@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2007 Lukasz Knop
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,55 +36,50 @@ using Gendarme.Rules.Correctness;
 using Mono.Cecil;
 using NUnit.Framework;
 
-
-namespace Test.Rules.Correctness
-{
-
+namespace Test.Rules.Correctness {
 
 	[TestFixture]
-	public class AvoidConstructorsInStaticTypesTest
-	{
-		public class CannotBeMadeStatic
-		{
+	public class AvoidConstructorsInStaticTypesTest {
+
+		public class CannotBeMadeStatic {
+
 			public void Method()
 			{
-
 			}
 		}
 
-		public class CanBeMadeStatic
-		{
-			public static void Method()
+		public class CanBeMadeStatic {
+
+			public static void Method ()
 			{
 			}
 		}
 
-		public static class IsStatic
-		{
-			public static void Method()
+		public static class IsStatic {
+
+			public static void Method ()
 			{
 			}
 		}
 
-		public class IsMadeStatic
-		{
-			private IsMadeStatic()
+		public class IsMadeStatic {
+
+			private IsMadeStatic ()
 			{
 			}
 
-			public static void Method()
+			public static void Method ()
 			{
 			}
 		}
 
-		public class EmptyClass 
-		{
+		public class EmptyClass {
 		}
 
 		private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp()
@@ -90,49 +87,47 @@ namespace Test.Rules.Correctness
 			string unit = Assembly.GetExecutingAssembly().Location;
 			assembly = AssemblyFactory.GetAssembly(unit);
 			rule = new AvoidConstructorsInStaticTypesRule();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
-
 
 		[Test]
 		public void TestClassHasNoPublicConstructors()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/IsMadeStatic"];
-			messageCollection = rule.CheckType(type, new MinimalRunner());
-			Assert.IsNull(messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassIsDeclaredStatic()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/IsStatic"];
-			messageCollection = rule.CheckType(type, new MinimalRunner());
-			Assert.IsNull(messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
-
 
 		[Test]
 		public void TestClassCannotBeMadeStatic()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/CannotBeMadeStatic"];
-			messageCollection = rule.CheckType(type, new MinimalRunner());
-			Assert.IsNull(messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCanBeMadeStatic()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/CanBeMadeStatic"];
-			messageCollection = rule.CheckType(type, new MinimalRunner());
-			Assert.IsNotNull(messageCollection);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestEmptyClass ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/EmptyClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

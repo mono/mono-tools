@@ -1,5 +1,5 @@
 //
-// Unit test for DontCompareWithNaNRule
+// Unit test for DoNotCompareWithNaNRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -39,7 +39,7 @@ using NUnit.Framework;
 namespace Test.Rules.Correctness {
 
 	[TestFixture]
-	public class DontCompareWithNaNTest {
+	public class DoNotCompareWithNaNTest {
 
 		public class SingleCases {
 
@@ -146,15 +146,15 @@ namespace Test.Rules.Correctness {
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DontCompareWithNaNRule ();
-			runner = new MinimalRunner ();
+			rule = new DoNotCompareWithNaNRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string typeName, string name)
@@ -172,74 +172,74 @@ namespace Test.Rules.Correctness {
 		public void EqualityOperator ()
 		{
 			MethodDefinition method = GetTest ("Single", "EqualityOperatorLeft");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-EqualityOperatorLeft");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-EqualityOperatorLeft");
 
 			method = GetTest ("Single", "EqualityOperatorRight");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-EqualityOperatorRight");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-EqualityOperatorRight");
 
 			method = GetTest ("Single", "Equality");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Single-Equality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Single-Equality");
 
 			method = GetTest ("Double", "EqualityOperatorLeft");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-EqualityOperatorLeft");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-EqualityOperatorLeft");
 
 			method = GetTest ("Double", "EqualityOperatorRight");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-EqualityOperatorRight");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-EqualityOperatorRight");
 
 			method = GetTest ("Double", "Equality");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Double-Equality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Double-Equality");
 		}
 
 		[Test]
 		public void InequalityOperator ()
 		{
 			MethodDefinition method = GetTest ("Single", "InequalityOperatorLeft");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-InequalityOperatorLeft");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-InequalityOperatorLeft");
 
 			method = GetTest ("Single", "InequalityOperatorRight");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-InequalityOperatorRight");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-InequalityOperatorRight");
 
 			method = GetTest ("Single", "Inequality");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Single-Inequality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Single-Inequality");
 
 			method = GetTest ("Double", "InequalityOperatorLeft");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-InequalityOperatorLeft");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-InequalityOperatorLeft");
 
 			method = GetTest ("Double", "InequalityOperatorRight");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-InequalityOperatorRight");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-InequalityOperatorRight");
 
 			method = GetTest ("Double", "Inequality");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Double-Inequality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Double-Inequality");
 		}
 
 		[Test]
 		public void NaNEquals ()
 		{
 			MethodDefinition method = GetTest ("Single", "NaNEquals");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-NaNEquals");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-NaNEquals");
 
 			method = GetTest ("Double", "NaNEquals");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-NaNEquals");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-NaNEquals");
 		}
 
 		[Test]
 		public void EqualsNaN ()
 		{
 			MethodDefinition method = GetTest ("Single", "EqualsNaN");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Single-EqualsNaN");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Single-EqualsNaN");
 
 			method = GetTest ("Double", "EqualsNaN");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Double-EqualsNaN");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Double-EqualsNaN");
 		}
 
 		[Test]
 		public void Equals ()
 		{
 			MethodDefinition method = GetTest ("Single", "Equals");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Single-Equals");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Single-Equals");
 
 			method = GetTest ("Double", "Equals");
-			Assert.IsNull (rule.CheckMethod (method, runner), "Double-Equals");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Double-Equals");
 		}
 	}
 }

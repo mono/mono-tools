@@ -63,18 +63,18 @@ namespace Test.Rules.Correctness {
 		}
 
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			type = module.Types ["Test.Rules.Correctness.MethodCanBeMadeStaticTest/Item"];
+			type = assembly.MainModule.Types ["Test.Rules.Correctness.MethodCanBeMadeStaticTest/Item"];
 			rule = new MethodCanBeMadeStaticRule ();
+			runner = new TestRunner (rule);
 		}
 
 		MethodDefinition GetTest (string name)
@@ -86,27 +86,26 @@ namespace Test.Rules.Correctness {
 			return null;
 		}
 
-		MessageCollection CheckMethod (MethodDefinition method)
-		{
-			return rule.CheckMethod (method, new MinimalRunner ());
-		}
-
 		[Test]
 		public void TestGoodCandidate ()
 		{
 			MethodDefinition method = GetTest ("Foo");
-			Assert.IsNotNull (CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNotGoodCandidate ()
 		{
 			MethodDefinition method = GetTest ("Bar");
-			Assert.IsNull (CheckMethod (method));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 			method = GetTest ("Baz");
-			Assert.IsNull (CheckMethod (method));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 			method = GetTest ("Gazonk");
-			Assert.IsNull (CheckMethod (method));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 		}
 	}
 }

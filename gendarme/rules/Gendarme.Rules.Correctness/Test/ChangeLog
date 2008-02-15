@@ -1,3 +1,14 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesTest.cs
+	* BadRecursiveInvocationTest.cs
+	* CallingEqualsWithNullArgTest.cs
+	* DontCompareWithNaNTest.cs
+	* FloatComparisonRuleTest.cs
+	* MethodCanBeMadeStaticTest.cs
+	* UseValueInPropertySetterTest.cs:
+		Update unit tests wrt framework changes.
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FloatComparisonRuleTest.cs: Add test case where we compare with

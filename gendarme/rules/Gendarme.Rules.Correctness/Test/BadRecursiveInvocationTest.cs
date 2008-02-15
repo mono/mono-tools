@@ -146,7 +146,7 @@ namespace Test.Rules.Correctness {
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 		private ModuleDefinition module;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -156,7 +156,7 @@ namespace Test.Rules.Correctness {
 			module = assembly.MainModule;
 			type = module.Types["Test.Rules.Correctness.BadRecursiveInvocationTest/BadRec"];
 			rule = new BadRecursiveInvocationRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -171,90 +171,105 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void RecursiveProperties ()
 		{
-			MethodDefinition method = GetTest ("get_Foo"); 
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "Foo");
+			MethodDefinition method = GetTest ("get_Foo");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			method = GetTest ("get_OnePlusFoo");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "OnePlusFoo");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 
 			method = GetTest ("get_FooPlusOne");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "FooPlusOne");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult3");
+			Assert.AreEqual (1, runner.Defects.Count, "Count3");
 		}
 		
 		[Test]
 		public void Property ()
 		{
 			MethodDefinition method = GetTest ("get_Bar");
-			Assert.IsNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test, Ignore ("uncatched by rule")]
 		public void IndirectRecursiveProperty ()
 		{
 			MethodDefinition method = GetTest ("get_FooBar");
-			Assert.IsNotNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void OverriddenMethod ()
 		{
 			MethodDefinition method = GetTest ("GetHashCode");
-			Assert.IsNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void BadRecursiveMethod ()
 		{
 			MethodDefinition method = GetTest ("Equals");
-			Assert.IsNotNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void BadFibo ()
 		{
 			MethodDefinition method = GetTest ("BadFibo");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "instance");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			method = GetTest ("StaticBadFibo");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "static");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void Fibonacci ()
 		{
 			MethodDefinition method = GetTest ("Fibonacci");
-			Assert.IsNull (rule.CheckMethod (method, runner), "instance");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			method = GetTest ("StaticFibonacci");
-			Assert.IsNull (rule.CheckMethod (method, runner), "static");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test, Ignore ("uncatched by rule")]
 		public void CodeUsingAnInstanceOfItself ()
 		{
 			MethodDefinition method = GetTest ("AnotherInstance");
-			Assert.IsNotNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAssert ()
 		{
 			MethodDefinition method = GetTest ("Assert");
-			Assert.IsNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestStaticCallingAnotherClassWithSameMethodName ()
 		{
 			MethodDefinition method = GetTest ("Write");
-			Assert.IsNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestUnreachable ()
 		{
 			MethodDefinition method = GetTest ("Unreachable");
-			Assert.IsNull (rule.CheckMethod (method, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

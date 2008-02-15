@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -131,18 +133,18 @@ namespace Test.Rules.Correctness
 			}
 		}
 		
-		private IMethodRule methodRule;
+		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			methodRule = new CallingEqualsWithNullArgRule ();
-			messageCollection = null;
+			rule = new CallingEqualsWithNullArgRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -155,82 +157,92 @@ namespace Test.Rules.Correctness
 		public void callToEqualsWithNullArgTest ()
 		{
 			type = GetTest ("CallToEqualsWithNullArg");
-			foreach (MethodDefinition method in type.Methods)
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			foreach (MethodDefinition method in type.Methods) {
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (1, runner.Defects.Count, "Count." + method.Name);
+			}
 		}
 		
 		[Test]
 		public void callingEqualsWithNonNullArgTest ()
 		{
 			type = GetTest ("CallingEqualsWithNonNullArg");
-			foreach (MethodDefinition method in type.Methods)
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			foreach (MethodDefinition method in type.Methods) {
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult." + method.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
+			}
 		}
 		
 		[Test]
 		public void enumPassingArgNullInEqualsTest ()
 		{
 			type = GetTest ("CallingEqualsOnEnum");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "PassingArgNullInEquals")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "PassingArgNullInEquals") {
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (1, runner.Defects.Count, "Count");
+				}
+			}
 		}
 		
 		[Test]
 		public void enumNotPassingArgNullInEqualsTest ()
 		{
 			type = GetTest ("CallingEqualsOnEnum");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "NotPassingNullArgInEquals")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "NotPassingNullArgInEquals") {
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (0, runner.Defects.Count, "Count");
+				}
+			}
 		}
 		
 		[Test]
 		public void passingNullArgumentThanStructTest ()
 		{
 			type = GetTest ("CallingEqualsOnStruct");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "PassingNullArgument")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "PassingNullArgument") {
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (1, runner.Defects.Count, "Count");
+				}
+			}
 		}
 				
 		[Test]
 		public void passingNonNullStructArgTest ()
 		{
 			type = GetTest ("CallingEqualsOnStruct");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "PassingNonNullArg")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "PassingNonNullArg") {
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (0, runner.Defects.Count, "Count");
+				}
+			}
 		}
 		
 		[Test]
 		public void passingNullArgumentThanArrayTest ()
 		{
 			type = GetTest ("CallingEqualsOnArray");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "PassingNullArg")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "PassingNullArg") {
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (1, runner.Defects.Count, "Count");
+				}
+			}
 		}
 		
 		[Test]
 		public void passingNonNullArrayArgumentTest ()
 		{
 			type = GetTest ("CallingEqualsOnArray");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "PassingNonNullArg")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.Name == "PassingNonNullArg") {
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (0, runner.Defects.Count, "Count");
+				}
+			}
 		}
 	}
 }
