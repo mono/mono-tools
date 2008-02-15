@@ -55,7 +55,7 @@ namespace Test.Rules.Performance {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 
 		[TestFixtureSetUp]
@@ -64,7 +64,7 @@ namespace Test.Rules.Performance {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidUnsealedConcreteAttributesRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -75,37 +75,32 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void TestAbstractAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<AbstractAttribute> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<AbstractAttribute> ()));
 		}
 
 		[Test]
 		public void TestAnAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<AnAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<AnAttribute> ()));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void TestNotAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NotAttribute> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (GetTest<NotAttribute> ()));
 		}
 
 		[Test]
 		public void TestSealedAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<SealedAttribute> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<SealedAttribute> ()));
 		}
 
 		[Test]
 		public void TestSealedAttributeInheritsAnAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<SealedAttributeInheritsAnAttribute> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<SealedAttributeInheritsAnAttribute> ()));
 		}
 	}
 }

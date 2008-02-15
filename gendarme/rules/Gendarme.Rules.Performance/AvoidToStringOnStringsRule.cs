@@ -37,17 +37,19 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Performance {
 
-	public class AvoidToStringOnStringsRule : IMethodRule {
+	[Problem ("You are calling ToString () in a string in the member '{0}', this is redundant and may produce some performance penalities.")]
+	[Solution ("You should remove the ToString () call.")]
+	public class AvoidToStringOnStringsRule : Rule, IMethodRule {
 
 		private const string MessageString = "No need to call ToString on a System.String instance";
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			bool containsAvoidToStringOnStrings = false;
 			// rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection messageCollection = null;
 			foreach (Instruction instruction in method.Body.Instructions) {
 				switch (instruction.OpCode.Code) {
 				case Code.Call:
@@ -55,19 +57,15 @@ namespace Gendarme.Rules.Performance {
 				case Code.Callvirt:
 					if (IsToString (instruction.Operand as MethodReference)) {
 						if (CheckStack (instruction.Previous, method)) {
-							if (messageCollection == null)
-								messageCollection = new MessageCollection ();
-
-							Location location = new Location (method, instruction.Offset);
-							Message message = new Message (MessageString, location, MessageType.Error);
-							messageCollection.Add (message);
+							Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, MessageString);
+							containsAvoidToStringOnStrings = true;
 						}
 					}
 					break;
 				}
 			}
 
-			return messageCollection;
+			return containsAvoidToStringOnStrings? RuleResult.Failure : RuleResult.Success;
 		}
 
 		private static bool IsToString (MethodReference method)

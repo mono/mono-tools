@@ -1,3 +1,10 @@
+2008-02-15  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Test/*.cs: Refactor the tests for accept the new rule's format.
+	* *.cs: Adapt the rules to the new framework.
+	* Makefile.am: Removed the -langversion:linq option. You should use at
+	least the 1.9 gmcs version to compile.
+
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* DisposableTypesShouldHaveFinalizerRule.cs,

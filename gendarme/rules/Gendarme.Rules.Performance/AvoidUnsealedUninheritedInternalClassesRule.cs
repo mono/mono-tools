@@ -33,26 +33,24 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	public class AvoidUnsealedUninheritedInternalClassesRule : ITypeRule {
+	[Problem ("Due to performance issues, types which are not visible outside of the assembly and which have no inherited types within the assembly should be sealed.")]
+	[Solution ("You should seal this type, unless you plan to inherit from this type in the near-future.")]
+	public class AvoidUnsealedUninheritedInternalClassesRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsAbstract || type.IsSealed || type.IsVisible () || type.IsGeneratedCode ())
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
 			foreach (TypeDefinition type_definition in type.Module.Types) {
 				// skip ourself
 				if (type_definition.FullName == type.FullName)
 					continue;
 				if (type_definition.Inherits (type.FullName))
-					return runner.RuleSuccess;
+					return RuleResult.Success;
 			}
-
-			Message msg = new Message (
-				"Due to performance issues, types which are not visible outside of the " +
-				"assembly and which have no inherited types within the assembly should be sealed.",
-				new Location (type), MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.High, Confidence.High, "Types which are not visible outside the assembly and without inherited types within the assembly should be sealed");
+			return RuleResult.Failure;
 		}
 	}
 }

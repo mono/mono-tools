@@ -37,7 +37,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	public class AvoidUninstantiatedInternalClassesRule : ITypeRule {
+	[Problem ("The internal type is not instantiated by code within the assembly.")]
+	[Solution ("Remove the type or add the code that uses it.  If the type contains only static methods then either add the static modifier to the type or add the private construtor to the type to prevent the compiler from emitting a default public instance constructor.")]
+	public class AvoidUninstantiatedInternalClassesRule : Rule, ITypeRule {
 
 		private static bool CheckSpecialTypes (TypeDefinition type)
 		{
@@ -141,27 +143,19 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply to internal (non-visible) types
 			// note: IsAbstract also excludes static types (2.0)
-			if (type.IsVisible () || type.IsAbstract)
-				return runner.RuleSuccess;
-
-			// some types are created by compilers and should be ignored
-			if (CheckSpecialTypes (type))
-				return runner.RuleSuccess;
-
-			// rule doesn't apply if the assembly open up itself to others using [InternalsVisibleTo]
-			if (type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute"))
-				return runner.RuleSuccess;
+			if (type.IsVisible () || type.IsAbstract || CheckSpecialTypes (type) || type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute"))
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
 			// if the type holds the Main entry point then it is considered useful
 			MethodDefinition entry_point = type.Module.Assembly.EntryPoint;
 			if ((entry_point != null) && (entry_point.DeclaringType == type))
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
 			// create a cache of all type instantiation inside this 
 			AssemblyDefinition assembly = type.Module.Assembly;
@@ -173,12 +167,10 @@ namespace Gendarme.Rules.Performance {
 
 			// if we can't find the non-public type being used in the assembly then the rule fails
 			if (list == null || !list.Contains (type)) {
-				Location location = new Location (type);
-				Message message = new Message ("There is no call for any of the types constructor found", location, MessageType.Error);
-				return new MessageCollection (message);
+				Runner.Report (type, Severity.High, Confidence.Normal, "There is no call for any of the types constructor found");
+				return RuleResult.Failure;
 			}
-
-			return runner.RuleSuccess;
+			return RuleResult.Success;
 		}
 	}
 }

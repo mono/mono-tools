@@ -27,25 +27,23 @@
 using System;
 
 using Mono.Cecil;
-
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	public class AvoidReturningArraysOnPropertiesRule : IMethodRule {
-
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+	
+	[Problem ("By convention properties should not return Arrays.")]
+	[Solution ("Replace the property by a method.")]
+	public class AvoidReturningArraysOnPropertiesRule : Rule, IMethodRule {
+		
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.IsGetter)
-				return runner.RuleSuccess;
+			if (!method.IsGetter || !method.ReturnType.ReturnType.IsArray ())
+				return RuleResult.Success;
 
-			if (!method.ReturnType.ReturnType.IsArray ())
-				return runner.RuleSuccess;
-
-			Location loc = new Location (method);
-			Message msg = new Message ("Avoid returning arrays from properties.", loc, MessageType.Warning);
-			return new MessageCollection (msg);
+			Runner.Report (method, Severity.Medium, Confidence.Total, "Avoid returning arrays from properties");
+			return RuleResult.Failure;
 		}
 	}
 }

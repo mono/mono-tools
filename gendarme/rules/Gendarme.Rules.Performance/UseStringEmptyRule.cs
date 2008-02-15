@@ -35,37 +35,31 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Performance {
 
-	public class UseStringEmptyRule : IMethodRule {
+	[Problem ("The method uses literal \"\" instead of String.Empty.")]
+	[Solution ("Change the empty string for String.Empty.")]
+	public class UseStringEmptyRule : Rule, IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// #1 - rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
-
-			MessageCollection results = null;
-
+			bool failure = false;
 			// #2 - look for string references
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.OperandType) {
 				case OperandType.InlineString:
 					string s = (ins.Operand as string);
 					if (s.Length == 0) {
-						Location loc = new Location (method, ins.Offset);
-						Message msg = new Message ("instance of an empty string has been found.",
-							loc, MessageType.Warning);
-						if (results == null)
-							results = new MessageCollection (msg);
-						else
-							results.Add (msg);
+						Runner.Report (method, ins, Severity.Medium, Confidence.High, "Instance of an empty string has been found");
+						failure = true;
 					}
 					break;
 				}
 			}
-
-			return results;
+			return failure ? RuleResult.Failure : RuleResult.Success;
 		}
 	}
 }

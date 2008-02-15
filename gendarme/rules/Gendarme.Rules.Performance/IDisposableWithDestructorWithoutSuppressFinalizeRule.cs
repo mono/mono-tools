@@ -34,8 +34,10 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
-
-	public class IDisposableWithDestructorWithoutSuppressFinalizeRule : ITypeRule {
+	
+	[Problem ("The type has a destructor and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside it's Dispose method.")]
+	[Solution ("Add a call to GC.SuppressFinalize inside your Dispose method.")]
+	public class IDisposableWithDestructorWithoutSuppressFinalizeRule : Rule, ITypeRule {
 
 		private static bool MethodMatchNameVoidEmpty (MethodDefinition md, string methodName)
 		{
@@ -46,11 +48,11 @@ namespace Gendarme.Rules.Performance {
 			return (md.ReturnType.ReturnType.ToString () == "System.Void");
 		}
 
-		private MessageCollection Recurse (MethodDefinition method, int level, Runner runner)
+		private RuleResult Recurse (MethodDefinition method, int level)
 		{
 			// some methods have no body (e.g. p/invokes, icalls)
 			if (!method.HasBody)
-				return runner.RuleFailure;
+				return RuleResult.Failure;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
@@ -59,25 +61,25 @@ namespace Gendarme.Rules.Performance {
 				case Code.Callvirt:
 					// are we calling GC.SuppressFinalize ?
 					if (ins.Operand.ToString () == "System.Void System.GC::SuppressFinalize(System.Object)")
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					else if (level < 3) {
 						MethodDefinition callee = (ins.Operand as MethodDefinition);
 						if (callee != null) {
-							if (Recurse (callee, level + 1, runner) == null)
-								return runner.RuleSuccess;
+							if (Recurse (callee, level + 1) == RuleResult.Success)
+								return RuleResult.Success;
 						}
 					}
 					break;
 				}
 			}
-			return runner.RuleFailure;
+			return RuleResult.Failure;
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// #1 - does the type implements System.IDisposable ?
 			if (!type.Implements ("System.IDisposable"))
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// #2 - look for the Dispose method
 			MethodDefinition dispose = null;
@@ -90,15 +92,15 @@ namespace Gendarme.Rules.Performance {
 				}
 			}
 			if (dispose == null)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
 			// #3 - look for a destructor
 			if (type.GetMethod (MethodSignatures.Finalize) == null)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
 			// #4 - look if GC.SuppressFinalize is being called in the
 			// Dispose method - or one of the method it calls
-			return Recurse (dispose, 0, runner);
+			return Recurse (dispose, 0);
 		}
 	}
 }

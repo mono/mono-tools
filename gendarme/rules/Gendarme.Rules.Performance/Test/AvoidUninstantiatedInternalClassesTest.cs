@@ -200,7 +200,7 @@ namespace Test.Rules.Performance {
 		private ITypeRule typeRule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -208,7 +208,7 @@ namespace Test.Rules.Performance {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			typeRule = new AvoidUninstantiatedInternalClassesRule ();
-			messageCollection = null;
+			runner = new TestRunner (typeRule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -218,124 +218,110 @@ namespace Test.Rules.Performance {
 		}
 		
 		[Test]
-		public void uninstantiatedInternalClassTest ()
+		public void UninstantiatedInternalClassTest ()
 		{
 			type = GetTest ("UninstantiatedInternalClass");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 		
 		[Test]
-		public void instantiatedInternalClassTest ()
+		public void InstantiatedInternalClassTest ()
 		{
 			type = GetTest ("InstantiatedInternalClass");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 		
 		[Test]
-		public void nestedInternalUninstantiatedClassTest ()
+		public void NestedInternalUninstantiatedClassTest ()
 		{
 			type = GetTest ("NestedInternalUninstantiatedClass");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 		
 		[Test]
-		public void nestedInternalInstantiatedClassTest ()
+		public void NestedInternalInstantiatedClassTest ()
 		{
 			type = GetTest ("NestedInternalInstantiatedClass");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 		
 		[Test]
-		public void nonInternalClassNotInstantiatedTest ()
+		public void NonInternalClassNotInstantiatedTest ()
 		{
 			type = GetTest ("NonInternalClassNotInstantiated");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 		
 		[Test]
-		public void staticClassTest ()
+		public void StaticClassTest ()
 		{
 			type = GetTest ("StaticClass");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 		
 		[Test]
-		public void methodContainingObjectCallIsNotCalledTest ()
+		public void MethodContainingObjectCallIsNotCalledTest ()
 		{
 			type = GetTest ("MethodContainingObjectCallIsNotCalled");
-			Assert.IsNull (typeRule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 		
 		[Test]
-		public void iFaceTest ()
+		public void IFaceTest ()
 		{
 			type = GetTest ("IFace");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NestedEnumReturnInstantiated ()
 		{
 			type = GetTest ("NestedEnumReturnInstantiated/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NestedEnumUsingInstantiated ()
 		{
 			type = GetTest ("NestedEnumUsingInstantiated/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NestedEnumExternInstantiated ()
 		{
 			type = GetTest ("NestedEnumExternInstantiated/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NestedEnumExternOutInstantiated ()
 		{
 			type = GetTest ("NestedEnumExternOutInstantiated/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NestedEnumNotInstantiated ()
 		{
 			type = GetTest ("NestedEnumNotInstantiated/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 		
 		[Test]
 		public void NestedEnumUsedAsParameter ()
 		{
 			type = GetTest ("NestedEnumUsedAsParameter/PrivateEnum");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void StructExistAsArrayOnly ()
 		{
 			type = GetTest ("ClassWithArray/ExistAsArrayOnly");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

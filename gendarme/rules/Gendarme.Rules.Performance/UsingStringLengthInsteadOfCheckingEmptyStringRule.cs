@@ -30,35 +30,30 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Performance
-{
-	public class UsingStringLengthInsteadOfCheckingEmptyStringRule: IMethodRule
-	{
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+namespace Gendarme.Rules.Performance {
+	[Problem ("The method compares the empty string by using Equals (\"\").")]
+	[Solution ("Use String.Length instead, it's faster compare ints than compare strings.")]
+	public class UsingStringLengthInsteadOfCheckingEmptyStringRule: Rule, IMethodRule {
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
- 			MessageCollection messageCollection = null;
-
+			bool checksEqualsInsteadOfLength = false;
 			foreach (Instruction instruction in method.Body.Instructions) {
 				if (instruction.Operand != null) {
 					if (instruction.Operand.ToString () == "System.Boolean System.String::Equals(System.String)") {
 						Instruction prevInstr = instruction.Previous;
 						if (prevInstr.OpCode.Name == "ldstr" && prevInstr.Operand.ToString().Length == 0) {
-							Location location = new Location (method, instruction.Offset);
-							Message message = new Message ("Method uses .Equals (\"\") method to check for empty string instead of using Length property ", location, MessageType.Error);
-							if (messageCollection == null)
-								messageCollection = new MessageCollection (message);
-							else
-								messageCollection.Add (message);
+							Runner.Report (method, instruction, Severity.Medium, Confidence.High, "Method uses Equals method to check for an empty string instead of using Length property");
+							checksEqualsInsteadOfLength = true;
 						}
 					}
 				}
 			}
 
-			return messageCollection;
+			return checksEqualsInsteadOfLength ? RuleResult.Failure : RuleResult.Success;
 		}
 	}
 }

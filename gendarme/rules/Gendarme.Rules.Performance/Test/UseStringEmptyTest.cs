@@ -91,6 +91,7 @@ namespace Test.Rules.Performance {
 		private AssemblyDefinition assembly;
 		private ModuleDefinition module;
 		private TypeDefinition type;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -100,6 +101,7 @@ namespace Test.Rules.Performance {
 			module = assembly.MainModule;
 			type = assembly.MainModule.Types["Test.Rules.Performance.UseStringEmptyTest/TestCase"];
 			rule = new UseStringEmptyRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private MethodDefinition GetTest (string name)
@@ -119,21 +121,21 @@ namespace Test.Rules.Performance {
 		public void GetConstField ()
 		{
 			MethodDefinition method = GetTest ("GetConstField");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void Append ()
 		{
 			MethodDefinition method = GetTest ("Append");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void Enclose ()
 		{
 			MethodDefinition method = GetTest ("Enclose");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -141,7 +143,7 @@ namespace Test.Rules.Performance {
 		{
 			// the "public_field" field is set to "" in the (hidden) ctor
 			MethodDefinition method = GetTest (".ctor");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -149,35 +151,35 @@ namespace Test.Rules.Performance {
 		{
 			// the "private_static_field" field is set to "" in the (hidden) class ctor
 			MethodDefinition method = GetTest (".cctor");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void GetField ()
 		{
 			MethodDefinition method = GetTest ("GetField");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void GetStaticField ()
 		{
 			MethodDefinition method = GetTest ("GetStaticField");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void Prepend ()
 		{
 			MethodDefinition method = GetTest ("Prepend");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void NoHarm ()
 		{
 			MethodDefinition method = GetTest ("NoStringWereHarmedInThisTestCase");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }

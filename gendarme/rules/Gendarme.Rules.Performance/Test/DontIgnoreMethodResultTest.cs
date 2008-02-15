@@ -125,6 +125,7 @@ namespace Test.Rules.Performance {
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 		private ModuleDefinition module;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp()
@@ -134,6 +135,7 @@ namespace Test.Rules.Performance {
 			module = assembly.MainModule;
 			type = module.Types["Test.Rules.Performance.DontIgnoreMethodResultTest/Item"];
 			rule = new DontIgnoreMethodResultRule();
+			runner = new TestRunner (rule);
 		}
 
 		MethodDefinition GetTest(string name)
@@ -145,60 +147,55 @@ namespace Test.Rules.Performance {
 			return null;
 		}
 
-		MessageCollection CheckMethod(MethodDefinition method)
-		{
-			return rule.CheckMethod(method, new MinimalRunner());
-		}
-
 		[Test]
 		public void TestStringMethods()
 		{
 			MethodDefinition method = GetTest("Violations");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestConstructor()
 		{
 			MethodDefinition method = GetTest("CreateItem");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestStringBuilder ()
 		{
 			MethodDefinition method = GetTest ("StringBuilderOk");
-			Assert.IsNull (CheckMethod (method), "Ok");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
 
 			method = GetTest ("StringBuilderBad");
-			Assert.IsNotNull (CheckMethod (method), "Bad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
 		}
 
 		[Test]
 		public void TestDirectory ()
 		{
 			MethodDefinition method = GetTest ("DirectoryOk");
-			Assert.IsNull (CheckMethod (method), "Ok");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
 
 			method = GetTest ("DirectoryBad");
-			Assert.IsNotNull (CheckMethod (method), "Bad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
 		}
 
 		[Test]
 		public void TestPermissionSet ()
 		{
 			MethodDefinition method = GetTest ("PermissionSetOk");
-			Assert.IsNull (CheckMethod (method), "Ok");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
 
 			method = GetTest ("PermissionSetBad");
-			Assert.IsNotNull (CheckMethod (method), "Bad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
 		}
 
 		[Test]
 		public void TestTimer ()
 		{
 			MethodDefinition method = GetTest ("TimerOk");
-			Assert.IsNull (CheckMethod (method), "Ok");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
 		}
 	}
 }

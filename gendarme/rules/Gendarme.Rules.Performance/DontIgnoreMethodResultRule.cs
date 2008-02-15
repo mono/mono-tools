@@ -38,31 +38,25 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	public class DontIgnoreMethodResultRule : IMethodRule {
+	[Problem ("The member ignores the result from the call.")]
+	[Solution ("You shouldn't ignore this result.")]
+	public class DontIgnoreMethodResultRule : Rule,IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies if the method has a body
-			if (!method.HasBody)
-				return runner.RuleSuccess;
-
 			// rule doesn't not apply to generated code (out of developer's control)
-			if (method.IsGeneratedCode ())
-				return runner.RuleSuccess;
+			if (!method.HasBody || method.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			foreach (Instruction instruction in method.Body.Instructions) {
 				if (instruction.OpCode.Code == Code.Pop) {
-					Message message = CheckForViolation (method, instruction.Previous);
-					if (message != null) {
-						if (mc == null)
-							mc = new MessageCollection (message);
-						else
-							mc.Add (message);
-					}
+					Defect defect = CheckForViolation (method, instruction.Previous);
+					if (defect != null) 
+						Runner.Report (defect);
 				}
 			}
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 
 		// some method return stuff that isn't required in most cases
@@ -111,14 +105,13 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private static Message CheckForViolation (MethodDefinition method, Instruction instruction)
+		private Defect CheckForViolation (MethodDefinition method, Instruction instruction)
 		{
 			if ((instruction.OpCode.Code == Code.Newobj || instruction.OpCode.Code == Code.Newarr)) {
 				MemberReference member = (instruction.Operand as MemberReference);
 				if ((member != null) && !IsNewException (member)) {
 					string s = String.Format ("Unused object of type {0} created", member.ToString ());
-					Location loc = new Location (method, instruction.Offset);
-					return new Message (s, null, MessageType.Warning);
+					return new Defect (this, method.DeclaringType, method, instruction, Severity.Medium, Confidence.Normal, s);
 				}
 			}
 
@@ -127,11 +120,8 @@ namespace Gendarme.Rules.Performance {
 				if (callee != null && !callee.ReturnType.ReturnType.IsValueType) {
 					// check for some common exceptions (to reduce false positive)
 					if (!IsCallException (callee)) {
-						Location loc = new Location (method, instruction.Offset);
-						// most common case is something like: s.ToLower ();
-						MessageType messageType = (method.DeclaringType.FullName == "System.String") ? MessageType.Error : MessageType.Warning;
 						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.ToString ());
-						return new Message (s, loc, messageType);
+						return new Defect (this, method.DeclaringType, method, instruction, Severity.Medium, Confidence.Normal, s);
 					}
 				}
 			}

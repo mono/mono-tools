@@ -32,24 +32,25 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
+	
+	[Problem ("Due performance issues, concrete attributes should be sealed.")]
+	[Solution ("Unless you plan to inherit from this attribute you should consider to seal it's type.")]
+	public class AvoidUnsealedConcreteAttributesRule : Rule, ITypeRule {
 
-	public class AvoidUnsealedConcreteAttributesRule : ITypeRule {
-
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to attributes
 			if (!type.IsAttribute ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			if (type.IsAbstract) // it's ok
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
 			if (type.IsSealed) // it's ok
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location loc = new Location (type);
-			Message msg = new Message ("Due to performance issues, attributes should all be declared sealed.", loc, MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.Medium, Confidence.High, "Due to performance issues, attributes should all be declared sealed");
+			return RuleResult.Failure;
 		}
 	}
 }

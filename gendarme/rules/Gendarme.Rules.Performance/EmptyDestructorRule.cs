@@ -35,15 +35,17 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
+	
+	[Problem ("The type has an empty destructor (or Finalize method).")]
+	[Solution ("Remove the empty destructor (or Finalize method) from the class.")]
+	public class EmptyDestructorRule : Rule, ITypeRule {
 
-	public class EmptyDestructorRule : ITypeRule {
-
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to type with a finalizer
 			MethodDefinition finalizer = type.GetMethod (MethodSignatures.Finalize);
 			if (finalizer == null)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
@@ -57,7 +59,7 @@ namespace Gendarme.Rules.Performance {
 					// it's empty if we're calling the base class destructor
 					MethodReference mr = (ins.Operand as MethodReference);
 					if ((mr == null) || !mr.IsFinalizer ())
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					break;
 				case Code.Nop:
 				case Code.Leave:
@@ -69,14 +71,13 @@ namespace Gendarme.Rules.Performance {
 					break;
 				default:
 					// destructor isn't empty (normal)
-					return runner.RuleSuccess;
+					return RuleResult.Success;
 				}
 			}
 
 			// finalizer is empty (bad / useless)
-			Location loc = new Location (finalizer);
-			Message msg = new Message ("The type finalizer is empty and should be removed.", loc, MessageType.Warning);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.Medium, Confidence.Normal, "The type finalizer is empty and should be removed.");
+			return RuleResult.Failure;
 		}
 	}
 }

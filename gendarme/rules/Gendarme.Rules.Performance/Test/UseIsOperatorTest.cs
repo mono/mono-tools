@@ -102,7 +102,7 @@ namespace Test.Rules.Performance {
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -111,7 +111,7 @@ namespace Test.Rules.Performance {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Performance.UseIsOperatorTest"];
 			rule = new UseIsOperatorRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -128,26 +128,26 @@ namespace Test.Rules.Performance {
 		public void Return ()
 		{
 			MethodDefinition method = GetTest ("ReturnEqualityBad");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "ReturnEqualityBad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ReturnEqualityBad");
 
 			method = GetTest ("ReturnInequalityBad");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "ReturnInequalityBad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ReturnInequalityBad");
 
 			method = GetTest ("ReturnEqualityOk");
-			Assert.IsNull (rule.CheckMethod (method, runner), "ReturnEqualityOk");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ReturnEqualityOk");
 
 			method = GetTest ("ReturnInequalityOk");
-			Assert.IsNull (rule.CheckMethod (method, runner), "ReturnInequalityOk");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ReturnInequalityOk");
 		}
 
 		[Test]
 		public void Conditions ()
 		{
 			MethodDefinition method = GetTest ("ConditionIsOk");
-			Assert.IsNull (rule.CheckMethod (method, runner), "ConditionIsOk");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ConditionIsOk");
 
 			method = GetTest ("ConditionAsOk");
-			Assert.IsNull (rule.CheckMethod (method, runner), "ConditionAsOk");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ConditionAsOk");
 		}
 
 		[Test]
@@ -156,13 +156,13 @@ namespace Test.Rules.Performance {
 		{
 			// missed opportunities are less problematic than false positives ;-)
 			MethodDefinition method = GetTest ("ConditionEqualityBad");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "ConditionEqualityBad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionEqualityBad");
 
 			method = GetTest ("ConditionInequalityBad");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "ConditionInequalityBad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionInequalityBad");
 
 			method = GetTest ("ConditionSplitBad");
-			Assert.IsNotNull (rule.CheckMethod (method, runner), "ConditionSplitBad");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionSplitBad");
 		}
 	}
 }

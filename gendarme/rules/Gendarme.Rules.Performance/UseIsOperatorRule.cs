@@ -32,16 +32,18 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Performance {
 
-	public class UseIsOperatorRule : IMethodRule {
+	[Problem ("The method should use the \"is\" operator and avoid the cast and compare to null.")]
+	[Solution ("Replace the cast and compare to null with the simpler \"is\" operator.")]
+	public class UseIsOperatorRule : Rule, IMethodRule {
 
-		private const string Text = "Using the 'is' operator would produce better (less) IL and would be easier to understand.";
+		private const string ErrorText = "Using the 'is' operator would produce better (less) IL and would be easier to understand.";
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection messages = null;
+			bool notContainsIsOperator = false;
 			InstructionCollection instructions = method.Body.Instructions;
 			int n = instructions.Count - 2;
 			for (int i = 0; i < n; i++) {
@@ -55,14 +57,11 @@ namespace Gendarme.Rules.Performance {
 				if (code2 != Code.Ceq)
 					continue;
 
-				if (messages == null)
-					messages = new MessageCollection ();
-				Location loc = new Location (method, i);
-				Message msg = new Message (Text, loc, MessageType.Warning);
-				messages.Add (msg);
+				notContainsIsOperator = true;
+				Runner.Report (method, instructions[i], Severity.High, Confidence.High, ErrorText);	
 			}
 
-			return messages;
+			return notContainsIsOperator? RuleResult.Failure : RuleResult.Success;
 		}
 	}
 }

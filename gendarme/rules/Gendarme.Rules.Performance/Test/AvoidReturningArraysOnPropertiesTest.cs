@@ -61,6 +61,7 @@ namespace Test.Rules.Performance {
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
 		private ModuleDefinition module;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -69,6 +70,7 @@ namespace Test.Rules.Performance {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			module = assembly.MainModule;
 			rule = new AvoidReturningArraysOnPropertiesRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -82,7 +84,7 @@ namespace Test.Rules.Performance {
 		{
 			TypeDefinition type = GetTest ("ShouldBeCaught");
 			foreach (MethodDefinition md in type.Methods)
-				Assert.IsNotNull (rule.CheckMethod (md, new MinimalRunner ()));
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md));
 		}
 
 		[Test]
@@ -90,7 +92,7 @@ namespace Test.Rules.Performance {
 		{
 			TypeDefinition type = GetTest ("ShouldBeIgnored");
 			foreach (MethodDefinition md in type.Methods)
-				Assert.IsNull (rule.CheckMethod (md, new MinimalRunner ()));
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
 		}
 	}
 }

@@ -96,6 +96,7 @@ namespace Test.Rules.Performance
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 		private ModuleDefinition module;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp()
@@ -105,6 +106,7 @@ namespace Test.Rules.Performance
 			module = assembly.MainModule;
 			type = module.Types["Test.Rules.Performance.AvoidToStringOnStringsTest/Item"];
 			rule = new AvoidToStringOnStringsRule();
+			runner = new TestRunner (rule);
 		}
 
 		MethodDefinition GetTest(string name)
@@ -116,51 +118,46 @@ namespace Test.Rules.Performance
 			return null;
 		}
 
-		MessageCollection CheckMethod(MethodDefinition method)
-		{
-			return rule.CheckMethod(method, new MinimalRunner());
-		}
-
 		[Test]
 		public void TestLocalString()
 		{
 			MethodDefinition method = GetTest("ToStringOnLocalString");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestParameter()
 		{
 			MethodDefinition method = GetTest("ToStringOnParameter");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestStaticField()
 		{
 			MethodDefinition method = GetTest("ToStringOnStaticField");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestField()
 		{
 			MethodDefinition method = GetTest("ToStringOnField");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestMethodResult()
 		{
 			MethodDefinition method = GetTest("ToStringOnMethodResult");
-			Assert.IsNotNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
 		}
 
 		[Test]
 		public void TestValidToString()
 		{
 			MethodDefinition method = GetTest("ValidToString");
-			Assert.IsNull(CheckMethod(method));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod(method));
 		}
 
 

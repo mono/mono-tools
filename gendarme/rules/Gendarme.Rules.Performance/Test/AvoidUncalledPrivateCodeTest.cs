@@ -334,7 +334,7 @@ namespace Test.Rules.Performance {
 		private IMethodRule methodRule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -342,12 +342,7 @@ namespace Test.Rules.Performance {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			methodRule = new AvoidUncalledPrivateCodeRule ();
-		}
-
-		[SetUp]
-		public void SetUp ()
-		{
-			messageCollection = null;
+			runner = new TestRunner (methodRule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -357,71 +352,64 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void uncalledPrivateMethodTest ()
+		public void UncalledPrivateMethodTest ()
 		{
 			type = GetTest ("UncalledPrivateMethod");
 			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			messageCollection = methodRule.CheckMethod (type.Methods [0], new MinimalRunner ());
-			Assert.IsNotNull (messageCollection, "UncalledPrivateMethod");
-			Assert.AreEqual (1, messageCollection.Count, "Count");
+			Assert.AreEqual (RuleResult.Failure , runner.CheckMethod (type.Methods [0]));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
-		public void calledPrivateMethodTest ()
+		public void CalledPrivateMethodTest ()
 		{
 			type = GetTest ("CalledPrivateMethod");
 			foreach (MethodDefinition md in type.Methods) {
 				switch (md.Name) {
 				case "Main":
 					// rule does not apply to Main
-					messageCollection = methodRule.CheckMethod (md, new MinimalRunner ());
-					Assert.IsNull (messageCollection, "Main");
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md));
 					break;
 				case "display":
-					messageCollection = methodRule.CheckMethod (md, new MinimalRunner ());
-					Assert.IsNull (messageCollection, "display");
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
 					break;
 				}
 			}
 		}
 
 		[Test]
-		public void uncalledInternalMethodTest ()
+		public void UncalledInternalMethodTest ()
 		{
 			type = GetTest ("UncalledInternalMethod");
 			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			messageCollection = methodRule.CheckMethod (type.Methods [0], new MinimalRunner ());
-			Assert.IsNotNull (messageCollection, "UncalledInternalMethod");
-			Assert.AreEqual (1, messageCollection.Count, "Count");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (type.Methods [0]));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
-		public void calledInternalMethodTest ()
+		public void CalledInternalMethodTest ()
 		{
 			type = GetTest ("CalledInternalMethod");
 			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			messageCollection = methodRule.CheckMethod (type.Methods [0], new MinimalRunner ());
-			Assert.IsNull (messageCollection, "CalledInternalMethod");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (type.Methods [0]));
 		}
 
 		[Test]
-		public void checkingForMainMethodTest ()
-		{
+		public void CheckingForMainMethodTest () {
 			type = GetTest ("CalledInternalMethod");
 			foreach (MethodDefinition method in type.Methods)
 				if (method.Name == "Main")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
-		public void publicMethodNotCalledInPrivateClassTest ()
+		public void PublicMethodNotCalledInPrivateClassTest ()
 		{
 			type = GetTest ("PublicMethodNotCalledInPrivateClass");
 			foreach (MethodDefinition method in type.Methods) {
 				switch (method.Name) {
 				case "publicMethod":
-					Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 					break;
 				default:
 					Assert.Fail ("Test case for method {0} is not handled", method.Name);
@@ -431,44 +419,41 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void publicMethodCalledInPrivateClassTest ()
+		public void PublicMethodCalledInPrivateClassTest ()
 		{
 			type = GetTest ("PublicMethodCalledInPrivateClass");
 			foreach (MethodDefinition method in type.Methods)
 				if (method.Name == "publicCalledMethod")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.Success ,runner.CheckMethod (method));
 		}
 
 		[Test]
-		public void publicMethodCalledInInternalClassTest ()
+		public void PublicMethodCalledInInternalClassTest ()
 		{
 			type = GetTest ("PublicMethodCalledInInternalClass");
 			foreach (MethodDefinition method in type.Methods)
 				if (method.Name == "publicMethodCalled")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
-		public void privateMethodInPrivateClassNotCalledTest ()
+		public void PrivateMethodInPrivateClassNotCalledTest ()
 		{
 			type = GetTest ("PrivateMethodInPrivateClassNotCalled");
 			foreach (MethodDefinition method in type.Methods)
 				if (method.Name == "privateMethodNotCalled")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
-		public void publicMethodNotCalledInNestedInternalClassTest ()
+		public void PublicMethodNotCalledInNestedInternalClassTest ()
 		{
 			type = GetTest ("NestedClasses");
 			foreach (MethodDefinition method in type.Methods) {
 				switch (method.Name) {
 				case "publicMethodNotCalledInNestedInternalClass":
-					Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 					break;
 				default:
 					Assert.Fail ("Test case for method {0} is not handled", method.Name);
@@ -478,7 +463,7 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void implementingInterfacesMembersTest ()
+		public void ImplementingInterfacesMembersTest ()
 		{
 			type = GetTest ("ImplementingExplicitInterfacesMembers");
 			foreach (MethodDefinition method in type.Methods) {
@@ -487,12 +472,12 @@ namespace Test.Rules.Performance {
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface1.IfaceMethod1":
 // mono bug #343465
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest+Iface1.IfaceMethod1":
-					Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
 					break;
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface2.IfaceMethod2":
 				// mono bug #343465
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest+Iface2.IfaceMethod2":
-					Assert.IsNotNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.Name);
 					break;
 				default:
 					Assert.Fail ("Test case for method {0} is not handled", method.Name);
@@ -502,50 +487,48 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void privateConstructorNotCalledTest ()
+		public void PrivateConstructorNotCalledTest ()
 		{
 			type = GetTest ("PrivateConstructorNotCalled");
 			foreach (MethodDefinition method in type.Constructors) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 			}
 		}
 
 		[Test]
-		public void staticConstructorNotCalledTest ()
+		public void StaticConstructorNotCalledTest ()
 		{
 			type = GetTest ("StaticConstructorNotCalled");
 			foreach (MethodDefinition method in type.Constructors)
 				if (method.Name == ".cctor")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void SerializationConstructors ()
 		{
-			Runner runner = new MinimalRunner ();
 			type = GetTest ("PublicSerializableConstructorNotCalled");
 			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.IsNull (methodRule.CheckMethod (ctor, runner), ctor.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
 			type = GetTest ("PrivateSerializableConstructorNotCalled");
 			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.IsNull (methodRule.CheckMethod (ctor, runner), ctor.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
 			type = GetTest ("ProtectedSerializableConstructorNotCalled");
 			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.IsNull (methodRule.CheckMethod (ctor, runner), ctor.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
 			type = GetTest ("InternalSerializableConstructorNotCalled");
 			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.IsNull (methodRule.CheckMethod (ctor, runner), ctor.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
 		}
 
 		[Test]
-		public void uncalledOverriddenMethodTest ()
+		public void UncalledOverriddenMethodTest ()
 		{
 			type = GetTest ("UncalledOverriddenMethod");
 			foreach (MethodDefinition method in type.Methods) {
 				switch (method.Name) {
 				case "ToString":
-					Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 					break;
 				default:
 					Assert.Fail ("Test case not handled");
@@ -555,40 +538,37 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void implementingComRegisterFunctionAttributeTest ()
+		public void ImplementingComRegisterFunctionAttributeTest ()
 		{
 			type = GetTest ("UsingComRegisterAndUnRegisterFunctionAttribute");
 			foreach (MethodDefinition method in type.Constructors)
 				if (method.Name == "register")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
-		public void implementingComUnregisterFunctionAttributeTest ()
+		public void ImplementingComUnregisterFunctionAttributeTest ()
 		{
 			type = GetTest ("UsingComRegisterAndUnRegisterFunctionAttribute");
 			foreach (MethodDefinition method in type.Constructors)
 				if (method.Name == "unregister")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
-		public void callingPrivateMethodsThroughDelegatesTest ()
+		public void CallingPrivateMethodsThroughDelegatesTest ()
 		{
 			type = GetTest ("CallingPrivateMethodsThroughDelegates");
 			foreach (MethodDefinition method in type.Constructors)
 				if (method.Name == "privateMethod")
-					messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void CheckClassWithFinalizer ()
 		{
 			type = GetTest ("ClassWithFinalizer");
-			Assert.IsNull (methodRule.CheckMethod (type.Methods [0], new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (type.Methods [0]));
 		}
 
 		[Test]
@@ -596,7 +576,7 @@ namespace Test.Rules.Performance {
 		{
 			type = GetTest ("MyList");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()), method.Name);
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 			}
 		}
 
@@ -616,7 +596,7 @@ namespace Test.Rules.Performance {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.IsNull (methodRule.CheckMethod (method, new MinimalRunner ()));
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 					break;
 				}
 			}

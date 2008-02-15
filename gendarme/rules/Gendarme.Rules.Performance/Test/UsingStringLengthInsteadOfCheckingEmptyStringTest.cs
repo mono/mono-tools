@@ -28,6 +28,7 @@ using System;
 using System.Reflection;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
 using NUnit.Framework;
@@ -105,8 +106,8 @@ namespace Test.Rules.Performance
 		
 		private IMethodRule methodRule;
 		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private MethodDefinition method;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -114,76 +115,57 @@ namespace Test.Rules.Performance
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			methodRule = new UsingStringLengthInsteadOfCheckingEmptyStringRule();
-			messageCollection = null;
+			runner = new TestRunner (methodRule);
 		}
 		
-		private TypeDefinition GetTest (string name)
+		private MethodDefinition GetTest (string type)
 		{
-			string fullname = "Test.Rules.Performance.UsingStringLengthInsteadOfCheckingEmptyStringTest/" + name;
-			return assembly.MainModule.Types[fullname];
+			string fullname = "Test.Rules.Performance.UsingStringLengthInsteadOfCheckingEmptyStringTest/" + type;
+			return assembly.MainModule.Types[fullname].GetMethod("Main");
 		}
 		
 		[Test]
 		public void usingStringEqualsTest ()
 		{
-			type = GetTest ("UsingStringEquals");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			method = GetTest ("UsingStringEquals");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-		
 		[Test]
 		public void usingStringLengthTest ()
 		{
-			type = GetTest ("UsingStringLength");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNull (messageCollection);
+			method = GetTest ("UsingStringLength");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void usingEquqlsWithNonStringArgTest ()
 		{
-			type = GetTest ("UsingEquqlsWithNonStringArg");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNull (messageCollection);
+			method = GetTest ("UsingEquqlsWithNonStringArg");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void anotherUseOfEqualsWithEmptyStringTest ()
 		{
-			type = GetTest ("AnotherUseOfEqualsWithEmptyString");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			method = GetTest ("AnotherUseOfEqualsWithEmptyString");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-		
+
 		[Test]
 		public void oneMoreUseOfEqualsWithEmptyStringTest ()
 		{
-			type = GetTest ("OneMoreUseOfEqualsWithEmptyString");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
+			method = GetTest ("OneMoreUseOfEqualsWithEmptyString");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (2, runner.Defects.Count);
 		}
 		
 		[Test]
 		public void usingEqualsWithNonEmptyStringTest ()
 		{
-			type = GetTest ("UsingEqualsWithNonEmptyString");
-			foreach (MethodDefinition method in type.Methods) {
-				messageCollection = methodRule.CheckMethod (method, new MinimalRunner ());
-			}
-			Assert.IsNull (messageCollection);
+			method = GetTest ("UsingEqualsWithNonEmptyString");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }

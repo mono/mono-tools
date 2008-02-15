@@ -60,7 +60,7 @@ namespace Test.Rules.Performance {
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
 		private MethodDefinition method;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		public void PrintBannerUsingParameter (Version version) 
 		{
@@ -181,73 +181,65 @@ namespace Test.Rules.Performance {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidUnusedParametersRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
 		public void PrintBannerUsingParameterTest () 
 		{
 			method = GetMethodForTest ("PrintBannerUsingParameter");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void PrintBannerUsingAssemblyTest ()
 		{
 			method = GetMethodForTest ("PrintBannerUsingAssembly");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-
+ 
 		[Test]
 		public void PrintBannerWithoutParametersTest () 
 		{
 			method = GetMethodForTest ("PrintBannerWithoutParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void MethodWithUnusedParametersTest () 
 		{
 			method = GetMethodForTest ("MethodWithUnusedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (2, runner.Defects.Count);
 		}
 		
 		[Test]
 		public void AbstractMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AbstractClass", "AbstractMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void VirtualMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.VirtualClass", "VirtualMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void OverrideMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.OverrideClass", "VirtualMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void ExternMethodTest () 
 		{
 			method = GetMethodForTest ("cos");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -255,8 +247,7 @@ namespace Test.Rules.Performance {
 		{
 			SimpleCallback callback = new SimpleCallback (SimpleCallbackImpl);
 			method = GetMethodForTest ("SimpleCallbackImpl");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -275,7 +266,7 @@ namespace Test.Rules.Performance {
 				}
 			}
 			Assert.IsNotNull (method, "method not found!");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "rule result");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -283,89 +274,84 @@ namespace Test.Rules.Performance {
 		{
 			SimpleEvent += new SimpleEventHandler (OnSimpleEvent);
 			method = GetMethodForTest ("OnSimpleEvent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		} 
 
 		[Test]
 		public void MethodWith5UsedParametersTest () 
 		{
 			method = GetMethodForTest ("MethodWith5UsedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void StaticMethodWithUnusedParametersTest () 
 		{
 			method = GetMethodForTest ("StaticMethodWithUnusedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (2, runner.Defects.Count);
 		}
 
 		[Test]
 		public void StaticMethodWithUsedParametersTest () 
 		{
 			method = GetMethodForTest ("StaticMethodWithUsedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void StaticMethodWith5UsedParametersTest () 
 		{
 			method = GetMethodForTest ("StaticMethodWith5UsedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void StaticMethodWith5UnusedParametersTest () 
 		{
 			method = GetMethodForTest ("StaticMethodWith5UnusedParameters");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (5, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (5, runner.Defects.Count);
 		}
 
 		[Test]
 		public void EmptyMethodTest ()
 		{
 			method = GetMethodForTest ("EmptyMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void OperatorsClass ()
 		{
 			method = GetMethodForTest ("op_Equality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Equality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Equality");
 
 			method = GetMethodForTest ("op_Inequality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Inequality");
+			Assert.AreEqual (RuleResult.Success, rule.CheckMethod (method), "op_Inequality");
 		}
 
 		[Test]
 		public void OperatorsStructureOk ()
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest/StructureOk", "op_Equality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Equality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Equality");
 
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest/StructureOk", "op_Inequality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Inequality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Inequality");
 		}
 
 		[Test]
 		public void OperatorsStructureBad ()
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest/StructureBad", "op_Equality");
-			Assert.AreEqual (2, rule.CheckMethod (method, new MinimalRunner ()).Count, "op_Equality");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "op_Equality");
+			Assert.AreEqual (2, runner.Defects.Count);
 
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest/StructureBad", "op_Inequality");
-			Assert.AreEqual (2, rule.CheckMethod (method, new MinimalRunner ()).Count, "op_Inequality");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "op_Inequality");
+			Assert.AreEqual (2, runner.Defects.Count);
 		}
 
 		[Test]
@@ -375,12 +361,12 @@ namespace Test.Rules.Performance {
 			AssemblyDefinition ad = AssemblyFactory.GetAssembly (cecil);
 
 			method = GetMethodFromAssembly (ad, "Mono.Cecil.Cil.OpCode", "op_Equality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Equality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Equality");
 
 			method = GetMethodFromAssembly (ad, "Mono.Cecil.Cil.OpCode", "op_Inequality");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), "op_Inequality");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Inequality");
 		}
-	
+
 		private MethodDefinition GetMethodForTest (string methodName) 
 		{
 			return GetMethodFromAssembly (assembly, "Test.Rules.Performance.AvoidUnusedParametersTest", methodName);

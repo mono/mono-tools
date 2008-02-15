@@ -71,6 +71,7 @@ namespace Test.Rules.Performance {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private ModuleDefinition module;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -79,6 +80,7 @@ namespace Test.Rules.Performance {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			module = assembly.MainModule;
 			rule = new EmptyDestructorRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -91,21 +93,21 @@ namespace Test.Rules.Performance {
 		public void NoDestructor ()
 		{
 			TypeDefinition type = GetTest ("NoDestructorClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 
 		[Test]
 		public void EmptyDestructor ()
 		{
 			TypeDefinition type = GetTest ("EmptyDestructorClass");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void Destructor ()
 		{
 			TypeDefinition type = GetTest ("DestructorClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

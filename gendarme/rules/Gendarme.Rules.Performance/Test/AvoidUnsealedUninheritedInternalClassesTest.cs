@@ -63,7 +63,7 @@ namespace Test.Rules.Performance {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 
 		[TestFixtureSetUp]
@@ -72,7 +72,7 @@ namespace Test.Rules.Performance {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidUnsealedUninheritedInternalClassesRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -91,53 +91,46 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void TestVisable ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<Visible> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Visible> ()));
 		}
 
 		[Test]
 		public void TestUnsealedInner ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest ("Outer/UnsealedInner"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest ("Outer/UnsealedInner")));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void TestSealedInner ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest ("Outer/SealedInner"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest ("Outer/SealedInner")));
 		}
 
 		[Test]
 		public void TestAbstract ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<Abstract> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Abstract> ()));
 		}
 
 		[Test]
 		public void TestConcrete ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<Concrete> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<Concrete> ()));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void TestSealed ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<Sealed> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Sealed> ()));
 		}
 
 		[Test]
 		public void TestUnsealed ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<Unsealed> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<Unsealed> ()));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 	}
 }

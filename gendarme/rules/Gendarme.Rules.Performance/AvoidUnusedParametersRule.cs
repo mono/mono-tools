@@ -37,7 +37,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	public class AvoidUnusedParametersRule : IMethodRule {
+	[Problem ("The method contains unused parameters.")]
+	[Solution ("You should remove or use the unused parameters.")]
+	public class AvoidUnusedParametersRule : Rule, IMethodRule {
 
 		private static bool UseParameter (MethodDefinition method, ParameterDefinition parameter)
 		{
@@ -112,32 +114,21 @@ namespace Gendarme.Rules.Performance {
 			return unusedParameters;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// catch abstract, pinvoke and icalls - where rule does not apply
-			if (!method.HasBody)
-				return runner.RuleSuccess;
-
 			// rule doesn't apply to virtual, overrides or generated code
-			if (method.IsVirtual || method.Overrides.Count != 0 || method.IsGeneratedCode ())
-				return runner.RuleSuccess;
-
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
-			if (IsReferencedByDelegate (method))
-				return runner.RuleSuccess;
+			if (!method.HasBody || method.IsVirtual || method.Overrides.Count != 0 || 
+			     method.IsGeneratedCode () || IsReferencedByDelegate (method))
+				return RuleResult.DoesNotApply;
 
 			// rule applies
-
-			MessageCollection mc = null;
+			bool containsUnusedParameters = false;
 			foreach (ParameterDefinition parameter in GetUnusedParameters (method)) {
-				Location location = new Location (method);
-				Message message = new Message (String.Format ("The parameter {0} is never used.", parameter.Name), location, MessageType.Error);
-				if (mc == null)
-					mc = new MessageCollection (message);
-				else
-					mc.Add (message);
+				Runner.Report (parameter, Severity.Medium, Confidence.Normal, String.Format ("The parameter {0} is never used", parameter.Name));
 			}
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
