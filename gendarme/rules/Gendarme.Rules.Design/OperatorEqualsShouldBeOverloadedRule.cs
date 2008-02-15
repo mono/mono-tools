@@ -29,39 +29,33 @@
 using System;
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class OperatorEqualsShouldBeOverloadedRule : ITypeRule {
+	[Problem ("This type overloads the == operator but doesn't override the Equals method.")]
+	[Solution ("Override the Equals method to match the results of the == operator.")]
+	public class OperatorEqualsShouldBeOverloadedRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsEnum || type.IsInterface)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			if (type.HasMethod (MethodSignatures.op_Addition) && type.HasMethod (MethodSignatures.op_Subtraction)) {
 				if (!type.HasMethod (MethodSignatures.op_Equality)) {
-					results = new MessageCollection ();
-					Location loc = new Location (type);
-					Message msg = new Message ("This type implements the addition (+) and subtraction (-) operators. It should also implement the equality (==) operator.", loc, MessageType.Warning);
-					results.Add (msg);
+					Runner.Report (type, Severity.Low, Confidence.High, "This type implements the addition (+) and subtraction (-) operators. It should also implement the equality (==) operator.");
 				}
 			}
 
 			if (type.IsValueType) {
 				if (type.HasMethod (MethodSignatures.Equals) && !type.HasMethod (MethodSignatures.op_Equality)) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (type);
-					Message msg = new Message ("This type overrides Object.Equals. It should also implement the equality (==) operator.", loc, MessageType.Warning);
-					results.Add (msg);
+					Runner.Report (type, Severity.Medium, Confidence.High, "This type overrides Object.Equals. It should also implement the equality (==) operator.");
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

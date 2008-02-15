@@ -33,21 +33,24 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	[Problem ("This enumeration flag defines a value of 0, which cannot be used as a real value.")]
+	[Solution ("Remove the 0 value from the flag.")]
 	public class FlagsShouldNotDefineAZeroValueRule : DefineAZeroValueRule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only on [Flags] (this takes care of checking for enums)
 			if (!type.IsFlags ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
 
-			if (!HasZeroValue (type))
-				return runner.RuleSuccess;
+			FieldDefinition field = GetZeroValueField (type);
+			if (field == null)
+				return RuleResult.Success;
 
-			Message msg = new Message ("Flags define a 0 value.", new Location (type), MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (field, Severity.High, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

@@ -34,43 +34,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class AttributeArgumentsShouldHaveAccessorsRule : ITypeRule {
+	[Problem ("All parameter values passed to this type constructors should be visible through read-only properties.")]
+	[Solution ("Add the missing properties getters to this type.")]
+	public class AttributeArgumentsShouldHaveAccessorsRule : Rule, ITypeRule {
 
 		private List<string> allProperties = new List<string> ();
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to attributes
-			if (!typeDefinition.IsAttribute ())
-				return runner.RuleSuccess;
+			if (!type.IsAttribute ())
+				return RuleResult.DoesNotApply;
 
 			// look through getters
 			allProperties.Clear ();
-			foreach (PropertyDefinition property in typeDefinition.Properties) {
+			foreach (PropertyDefinition property in type.Properties) {
 				if (property.GetMethod != null) {
 					allProperties.Add (property.Name);
 				}
 			}
 
-			Location loc = new Location (typeDefinition);
-			MessageCollection messages = runner.RuleSuccess;
-
 			// look through parameters
-			foreach (MethodDefinition constructor in typeDefinition.Constructors) {
+			foreach (MethodDefinition constructor in type.Constructors) {
 				foreach (ParameterDefinition param in constructor.Parameters) {
 					string correspondingPropertyName = char.ToUpper (param.Name [0]) + param.Name.Substring (1); // pascal case it
 					if (!allProperties.Contains (correspondingPropertyName)) {
-						Message msg = new Message (
-							string.Format ("All parameter values passed to an attribute constructor must be visible through read-only properties. Add '{0}' property to the attribute class.", correspondingPropertyName),
-									   loc, MessageType.Error);
-						if (messages == runner.RuleSuccess)
-							messages = new MessageCollection ();
-						messages.Add (msg);
+						string s = String.Format ("Add '{0}' property to the attribute class.", correspondingPropertyName);
+						Runner.Report (param, Severity.Medium, Confidence.High, s);
 						allProperties.Add (correspondingPropertyName); // to avoid double catching same property (e.g. from different constructors)
 					}
 				}
 			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

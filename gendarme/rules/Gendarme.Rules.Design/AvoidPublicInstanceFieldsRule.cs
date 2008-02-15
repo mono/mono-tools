@@ -33,39 +33,30 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class AvoidPublicInstanceFieldsRule : ITypeRule {
+	[Problem ("This type contains public instance fields.")]
+	[Solution ("If possible change the public fields to properties.")]
+	public class AvoidPublicInstanceFieldsRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply on enums
 			if (type.IsEnum)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
-			Location loc = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition fd in type.Fields) {
-
 				if (!fd.IsPublic || fd.IsSpecialName || fd.IsStatic || fd.HasConstant || fd.IsInitOnly)
 					continue;
 
-				if (results == null) {
-					results = new MessageCollection ();
-					loc = new Location (type);
-				}
-
 				if (fd.FieldType.IsArray ()) {
-					results.Add (new Message ("Consider converting the public instance field \'" + fd.Name +
-						"\' into a private field and a \'Set" + Char.ToUpper (fd.Name [0]) + fd.Name.Substring (1)
-						+ "\' method.", loc, MessageType.Warning));
+					string s = String.Format ("Consider converting the public instance field '{0}' into a private field and add a 'Set{1}' method.", 
+						fd.Name, Char.ToUpper (fd.Name [0]) + fd.Name.Substring (1));
+					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				} else {
-					results.Add (new Message ("Public instance field \'" + fd.Name + "\' should probably be a property.", loc, MessageType.Warning));
+					string s = String.Format ("Public instance field '{0}' should probably be a property.", fd.Name);
+					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				}
 			}
-
-			if (results == null)
-				return runner.RuleSuccess;
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

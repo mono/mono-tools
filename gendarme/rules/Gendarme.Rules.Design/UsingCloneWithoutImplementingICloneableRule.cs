@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,43 +31,41 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class UsingCloneWithoutImplementingICloneableRule: ITypeRule {
+	[Problem ("This type provides a Clone() method but does not implement the ICloneable interface.")]
+	[Solution ("Implement the ICloneable interface.")]
+	public class UsingCloneWithoutImplementingICloneableRule: Rule, ITypeRule {
 
-		// copy-pasted from gendarme\rules\Gendarme.Rules.BadPractice\CloneMethodShouldNotReturnNullRule.cs
 		private static bool IsCloneMethod (MethodDefinition method)
 		{
 			return (method.Name == "Clone" && (method.Parameters.Count == 0));
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies to type that doesn't implement System.IClonable
 			if (type.Implements ("System.ICloneable"))
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			foreach (MethodDefinition method in type.Methods) {
-				// we check for methods name Clone
+				// note: we don't use MethodSignatures.Clone because we want to
+				// (a) check the return value ourselves
+				// (b) deal with possibly multiple Clone methods
 				if (!IsCloneMethod (method))
 					continue;
 
 				// that return System.Object, e.g. public object Clone()
 				// or the current type, e.g. public <type> Clone()
 				if ((method.ReturnType.ReturnType.FullName == "System.Object") || (method.ReturnType.ReturnType == type)) {
-					Location location = new Location (type);
-					Message message = new Message ("A Clone() method is provided but System.ICloneable is not implemented", location, MessageType.Error);
-					if (mc == null)
-						mc = new MessageCollection (message);
-					else
-						mc.Add (message);
+					Runner.Report (method, Severity.Low, Confidence.High, String.Empty);
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

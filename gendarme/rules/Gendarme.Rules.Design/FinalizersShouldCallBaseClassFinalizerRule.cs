@@ -31,29 +31,30 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class FinalizersShouldCallBaseClassFinalizerRule : ITypeRule {
+	[Problem ("The finalizer for this type does not call its base class finalizer.")]
+	[Solution ("Since your language does not do this automatically, like C#, add a call to the base type finalizer just before the finalizer exits.")]
+	public class FinalizersShouldCallBaseClassFinalizerRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// handle System.Object (which can't call base class)
-			if (typeDefinition.BaseType == null)
-				return runner.RuleSuccess;
+			if (type.BaseType == null)
+				return RuleResult.DoesNotApply;
 
-			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
-
+			MethodDefinition finalizer = type.GetMethod (MethodSignatures.Finalize);
 			if (finalizer == null) // no finalizer found
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			if (IsBaseFinalizeCalled (finalizer))
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location loc = new Location (finalizer);
-			Message msg = new Message ("Base class finalizer must be called just before the method exits.", loc, MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (finalizer, Severity.Critical, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 
 		private static bool IsBaseFinalizeCalled (MethodDefinition finalizer)

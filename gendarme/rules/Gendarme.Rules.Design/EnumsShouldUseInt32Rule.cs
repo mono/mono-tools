@@ -33,13 +33,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class EnumsShouldUseInt32Rule : ITypeRule {
+	[Problem ("Unless required for interoperability this enumeration should use Int32 as its underling storage type.")]
+	[Solution ("Remove the extra type from the enumeration declaration (Int32 will be used as default).")]
+	public class EnumsShouldUseInt32Rule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only on enums
 			if (!type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
 
@@ -54,30 +56,30 @@ namespace Gendarme.Rules.Design {
 				break;
 			}
 
-			MessageType criticality = MessageType.Error;
+			Severity severity = Severity.Critical;
 			switch (value_type) {
 			case "System.Int32":
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 			// some are bad choice (when possible) but usable by all CLS compliant languages
 			case "System.Byte":
 			case "System.Int16":
 			case "System.Int64":
-				criticality = MessageType.Warning;
+				severity = Severity.High;
 				break;
 			// while others are not usable in non-CLS compliant languages
 			case "System.SByte":
 			case "System.UInt16":
 			case "System.UInt32":
 			case "System.UInt64":
-				criticality = MessageType.Error;
+				severity = Severity.Critical;
 				break;
 			default:
 				throw new NotSupportedException (value_type + " unexpected as a Enum value type");
 			}
 
 			string text = String.Format ("Enums should use System.Int32 instead of '{0}'.", value_type);
-			Message msg = new Message (text, new Location (type), criticality);
-			return new MessageCollection (msg);
+			Runner.Report (type, severity, Confidence.Total, text);
+			return RuleResult.Failure;
 		}
 	}
 }

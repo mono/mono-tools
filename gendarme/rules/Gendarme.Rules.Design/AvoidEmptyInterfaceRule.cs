@@ -1,10 +1,10 @@
 // 
-// Gendarme.Rules.Design.AvoidEmptyInterfaceRule
+// Gendarme.Rules.Design.AttributeArgumentsShouldHaveAccessorsRule
 //
 // Authors:
-//	Sebastien Pouliot  <sebastien@ximian.com>
+//	Daniel Abramov <ex@vingrad.ru>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007 Daniel Abramov
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,33 +25,47 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class AvoidEmptyInterfaceRule : ITypeRule {
+	[Problem ("All parameter values passed to this type constructors should be visible through read-only properties.")]
+	[Solution ("Add the missing properties getters to this type.")]
+	public class AttributeArgumentsShouldHaveAccessorsRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		private List<string> allProperties = new List<string> ();
+
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule only applies to interfaces
-			if (!type.IsInterface)
-				return runner.RuleSuccess;
+			// rule applies only to attributes
+			if (!type.IsAttribute ())
+				return RuleResult.DoesNotApply;
 
-			// rule applies!
+			// look through getters
+			allProperties.Clear ();
+			foreach (PropertyDefinition property in type.Properties) {
+				if (property.GetMethod != null) {
+					allProperties.Add (property.Name);
+				}
+			}
 
-			// first check if the interface defines it's own members
-			if (type.Methods.Count > 0)
-				return runner.RuleSuccess;
-
-			// otherwise it may implement more than one interface itself
-			if (type.Interfaces.Count > 0)
-				return runner.RuleSuccess;
-
-			Message msg = new Message ("Interface is empty.", new Location (type), MessageType.Warning);
-			return new MessageCollection (msg);
+			// look through parameters
+			foreach (MethodDefinition constructor in type.Constructors) {
+				foreach (ParameterDefinition param in constructor.Parameters) {
+					string correspondingPropertyName = char.ToUpper (param.Name [0]) + param.Name.Substring (1); // pascal case it
+					if (!allProperties.Contains (correspondingPropertyName)) {
+						string s = String.Format ("Add '{0}' property to the attribute class.", correspondingPropertyName);
+						Runner.Report (param, Severity.Medium, Confidence.High, s);
+						allProperties.Add (correspondingPropertyName); // to avoid double catching same property (e.g. from different constructors)
+					}
+				}
+			}
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

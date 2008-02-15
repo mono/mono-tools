@@ -33,26 +33,28 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class TypesShouldBeInsideNamespacesRule: ITypeRule {
+	[Problem ("This type is visible outside the assembly so it should be defined inside a namespace to avoid conflicts.")]
+	[Solution ("Move this type inside a namespace or reduce it's visibility (e.g. internal or private).")]
+	public class TypesShouldBeInsideNamespacesRule: Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to nested types, since the declaring type will already be reported
 			if (type.IsNested)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 			
 			// rule applies to only to types visible outside the assembly
 			if (!type.IsVisible ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
 
 			// check if the type resides inside a namespace
 			if (!String.IsNullOrEmpty (type.Namespace))
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Message msg = new Message ("Type is not declared inside a namespace.", new Location (type), MessageType.Warning);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

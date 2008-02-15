@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,28 +32,25 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design {
 
-	public class AbstractTypesShouldNotHavePublicConstructorsRule: ITypeRule {
+	[Problem ("This abstract type provides public constructor(s).")]
+	[Solution ("Change constructor visibility to protected.")]
+	public class AbstractTypesShouldNotHavePublicConstructorsRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only on abstract types
 			if (!type.IsAbstract)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
 
-			MessageCollection mc = null;
 			foreach (MethodDefinition ctor in type.Constructors) {
 				if (ctor.IsPublic) {
-					Message msg = new Message ("Public constructor found.", new Location (ctor), MessageType.Warning);
-					if (mc == null)
-						mc = new MessageCollection (msg);
-					else
-						mc.Add (msg);
+					Runner.Report (ctor, Severity.Low, Confidence.Total, String.Empty);
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

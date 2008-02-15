@@ -31,41 +31,40 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class ImplementEqualsAndGetHashCodeInPairRule : ITypeRule {
+	[Problem ("This type only implements one of the Equals(Object) or GetHashCode() methods.")]
+	[Solution ("Implement the missing method.")]
+	public class ImplementEqualsAndGetHashCodeInPairRule : Rule, ITypeRule {
 
 		private const string Message = "Type implements '{0}' but does not implement '{1}'";
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to interfaces and enums
 			if (type.IsInterface || type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			bool equals = type.HasMethod (MethodSignatures.Equals);
 			bool getHashCode = type.HasMethod (MethodSignatures.GetHashCode);
 
 			// if we have Equals but no GetHashCode method
 			if (equals && !getHashCode) {
-				Location location = new Location (type);
 				string text = String.Format (Message, MethodSignatures.Equals, MethodSignatures.GetHashCode);
-				Message message = new Message (text, location, MessageType.Error);
-				return new MessageCollection (message);
+				Runner.Report (type, Severity.Critical, Confidence.High, text);
 			}
 
 			// if we have GetHashCode but no Equals method
 			if (!equals && getHashCode) {
-				Location location = new Location (type);
-				string text = String.Format (Message, MethodSignatures.GetHashCode, MethodSignatures.Equals);
-				Message message = new Message (text, location, MessageType.Warning);
-				return new MessageCollection (message);
+				string text = String.Format (Message, MethodSignatures.Equals, MethodSignatures.GetHashCode);
+				Runner.Report (type, Severity.Medium, Confidence.High, text);
 			}
 
 			// we either have both Equals and GetHashCode or none (both fine)
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

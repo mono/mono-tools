@@ -29,12 +29,18 @@
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class EnsureSymmetryForOverloadedOperatorsRule : ITypeRule {
+	[Problem ("This type should overload operators in symmetry (e.g. == and !=, + and -).")]
+	[Solution ("Add the missing operator and keep the type operators symmetrical.")]
+	public class EnsureSymmetryForOverloadedOperatorsRule : Rule, ITypeRule {
+
+		private const string Message = "The '{0}' operator is present, for symmetry, the '{1}' operator should be added.";
 
 		static KeyValuePair<MethodSignature, MethodSignature> [] SymmetricOperators_Warning = new KeyValuePair<MethodSignature, MethodSignature> [] { 
 			new KeyValuePair<MethodSignature,MethodSignature> (MethodSignatures.op_Addition, MethodSignatures.op_Subtraction),
@@ -48,23 +54,21 @@ namespace Gendarme.Rules.Design {
 			new KeyValuePair<MethodSignature, MethodSignature> (MethodSignatures.op_True, MethodSignatures.op_False),
 		};
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsInterface || type.IsEnum)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (var kv in SymmetricOperators_Warning)
-				CheckOperatorPair (kv, type, MessageType.Warning, ref results);
+				CheckOperatorPair (kv, type, Severity.Medium);
 			foreach (var kv in SymmetricOperators_Error)
-				CheckOperatorPair (kv, type, MessageType.Error, ref results);
+				CheckOperatorPair (kv, type, Severity.High);
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 
-		private static void CheckOperatorPair (KeyValuePair<MethodSignature, MethodSignature> pair, TypeDefinition type, 
-			MessageType msgType, ref MessageCollection results)
+		private void CheckOperatorPair (KeyValuePair<MethodSignature, MethodSignature> pair, 
+			TypeDefinition type, Severity severity)
 		{
 			MethodDefinition op = type.GetMethod (pair.Key);
 			if (op == null) { //first one not defined
@@ -76,13 +80,9 @@ namespace Gendarme.Rules.Design {
 				if (type.HasMethod (pair.Value))
 					return; //both are defined
 			}
-			if (results == null)
-				results = new MessageCollection ();
-			Location loc = new Location (op);
-			string s = string.Format ("This type implements the '{0}' operator so, for symmetry, it should also implement the '{1}' operator.", 
-				pair.Key.Name, pair.Value.Name);
-			Message msg = new Message (s, loc, msgType);
-			results.Add (msg);
+
+			string s = string.Format (Message, pair.Key.Name, pair.Value.Name);
+			Runner.Report (op, severity, Confidence.Total, s);
 		}
 	}
 }

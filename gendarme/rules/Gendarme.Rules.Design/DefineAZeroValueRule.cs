@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,24 +32,18 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design {
 
-	abstract public class DefineAZeroValueRule {
+	abstract public class DefineAZeroValueRule : Rule {
 
-		protected static bool HasZeroValue (TypeDefinition type)
+		protected static FieldDefinition GetZeroValueField (TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields) {
-				switch (field.Name) {
-				case "value__":
-					// special case
-					break;
-				default:
-					if (field.Constant is int) {
-						if (((int) (field.Constant)) == 0)
-							return true;
-					}
-					break;
+				// the special __value field is not static like the others (user defined)
+				if (field.IsStatic && (field.Constant is int)) {
+					if (((int) (field.Constant)) == 0)
+						return field;
 				}
 			}
-			return false;
+			return null;
 		}
 	}
 }

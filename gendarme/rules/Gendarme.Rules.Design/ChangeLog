@@ -1,3 +1,33 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsRule.cs
+	* AttributeArgumentsShouldHaveAccessorsRule.cs
+	* AvoidEmptyInterfaceRule.cs
+	* AvoidPropertiesWithoutGetAccessorRule.cs
+	* AvoidPublicInstanceFieldsRule.cs
+	* ConsiderConvertingMethodToPropertyRule.cs
+	* DefineAZeroValueRule.cs
+	* DisposableFieldsShouldBeDisposedRule.cs
+	* DisposableTypesShouldHaveFinalizerRule.cs
+	* DontDeclareProtectedFieldsInSealedClassRule.cs
+	* EnsureSymmetryForOverloadedOperatorsRule.cs
+	* EnumsShouldDefineAZeroValueRule.cs
+	* EnumsShouldUseInt32Rule.cs
+	* FinalizersShouldBeProtectedRule.cs
+	* FinalizersShouldCallBaseClassFinalizerRule.cs
+	* FlagsShouldNotDefineAZeroValueRule.cs
+	* ImplementEqualsAndGetHashCodeInPairRule.cs
+	* MainShouldNotBePublicRule.cs
+	* MissingAttributeUsageOnCustomAttributeRule.cs
+	* OperatorEqualsShouldBeOverloadedRule.cs
+	* OverrideEqualsMethodRule.cs
+	* ProvideAlternativeNamesForOperatorOverloadsRule.cs
+	* TypesShouldBeInsideNamespacesRule.cs
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs
+	* UsingCloneWithoutImplementingICloneableRule.cs:
+		Update rules wrt framework changes.
+
 2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EnumsShouldUseInt32Rule.cs: New. Rule to warn about enumations that

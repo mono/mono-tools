@@ -31,26 +31,27 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class FinalizersShouldBeProtectedRule : ITypeRule {
+	[Problem ("The finalizer for this type isn't protected (family) and is not callable only from the runtime.")]
+	[Solution ("Change finalizer visibility to protected (family).")]
+	public class FinalizersShouldBeProtectedRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
-
+			MethodDefinition finalizer = type.GetMethod (MethodSignatures.Finalize);
 			if (finalizer == null) // no finalizer found
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// good finalizer:
 			if (finalizer.IsFamily && !finalizer.IsFamilyAndAssembly && !finalizer.IsFamilyOrAssembly)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location loc = new Location (finalizer);
-			Message msg = new Message ("Finalizer must be protected in order not to be called from user code.", loc, MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (finalizer, Severity.High, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

@@ -29,17 +29,24 @@
 using System;
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class TypesWithNativeFieldsShouldBeDisposableRule : ITypeRule {
+	[Problem ("This type contains native field(s) but doesn't implement IDisposable.")]
+	[Solution ("Implement IDisposable and free the native field(s) in it's Dispose method.")]
+	public class TypesWithNativeFieldsShouldBeDisposableRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		private const string AbstractTypeMessage = "Field is native. Type should implement a non-abstract Dispose() method";
+		private const string TypeMessage = "Field is native. Type should implement a Dispose() method";
+		private const string AbstractDisposeMessage = "Some fields are native pointers. Making this method abstract shifts the reponsability of disposing those fields to the inheritors of this class.";
+
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to enums, interfaces or structs
 			if (type.IsEnum || type.IsInterface || type.IsValueType)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			MethodDefinition explicitDisposeMethod = null;
 			MethodDefinition implicitDisposeMethod = null;
@@ -50,52 +57,34 @@ namespace Gendarme.Rules.Design {
 				implicitDisposeMethod = type.GetMethod (MethodSignatures.Dispose);
 				explicitDisposeMethod = type.GetMethod (MethodSignatures.DisposeExplicit);
 
-				if (IsAbstractMethod (implicitDisposeMethod))
+				if (((implicitDisposeMethod != null) && implicitDisposeMethod.IsAbstract) ||
+					((explicitDisposeMethod != null) && explicitDisposeMethod.IsAbstract)) {
 					abstractWarning = true;
-				if (IsAbstractMethod (explicitDisposeMethod))
-					abstractWarning = true;
-
-				if (abstractWarning == false)
-					return runner.RuleSuccess;
+				} else {
+					return RuleResult.Success;
+				}
 			}
-
-			MessageCollection results = null;
 
 			foreach (FieldDefinition field in type.Fields) {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
 					continue;
 				if (field.FieldType.GetOriginalType ().IsNative ()) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
 					if (abstractWarning)
-						results.Add (new Message (string.Format ("{1} is a native field. {0} shoud implement a non abstract Dispose() method.", type.FullName, field.Name), loc, MessageType.Warning));
+						Runner.Report (field, Severity.High, Confidence.High, AbstractTypeMessage);
 					else
-						results.Add (new Message (string.Format ("{1} is a native field. {0} should implement System.IDisposable to release unmanaged resources.", type.FullName, field.Name), loc, MessageType.Error));
+						Runner.Report (field, Severity.High, Confidence.High, TypeMessage);
 				}
 			}
 
-			if (results == null)
-				return runner.RuleSuccess; //no native fields
+			// Warn about possible confusion if the Dispose methods are abstract
+			if (implicitDisposeMethod != null && implicitDisposeMethod.IsAbstract)
+				Runner.Report (implicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
 
-			if (IsAbstractMethod (implicitDisposeMethod))
-				results.Add (GenerateAbstractWarning (implicitDisposeMethod));
-			if (IsAbstractMethod (explicitDisposeMethod))
-				results.Add (GenerateAbstractWarning (explicitDisposeMethod));
+			if (explicitDisposeMethod != null && explicitDisposeMethod.IsAbstract)
+				Runner.Report (explicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
 
-			return results;
-		}
-
-		private static bool IsAbstractMethod (MethodDefinition method)
-		{
-			return method != null && method.IsAbstract;
-		}
-
-		private static Message GenerateAbstractWarning (MethodDefinition method)
-		{
-			Location loc = new Location (method);
-			return new Message (string.Format ("{0} has at least one native field. Marking {1}() as abstract shifts the job of releasing those fields to the inheritors of this class.", method.DeclaringType.FullName, method.Name), loc, MessageType.Warning);
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

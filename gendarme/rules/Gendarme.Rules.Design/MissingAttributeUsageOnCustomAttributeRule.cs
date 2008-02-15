@@ -33,22 +33,23 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class MissingAttributeUsageOnCustomAttributeRule : ITypeRule {
+	[Problem ("This attribute does not specify on which items it can be used.")]
+	[Solution ("Specify [AttributeUsage] on this attribute type.")]
+	public class MissingAttributeUsageOnCustomAttributeRule : Rule, ITypeRule {
 
 		private const string AttributeUsageAttribute = "System.AttributeUsageAttribute";
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to attributes
 			if (!type.IsAttribute ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			if (type.HasAttribute (AttributeUsageAttribute)) // it's ok
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location loc = new Location (type);
-			Message msg = new Message ("When declaring an attribute, you should specify its usage targets using 'AttributeUsage' attribute to avoid one's wrong use.", loc, MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.High, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

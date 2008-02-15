@@ -29,31 +29,36 @@
 using System;
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class DisposableTypesShouldHaveFinalizerRule : ITypeRule {
+	[Problem ("This type contains native fields but does not have a finalizer.")]
+	[Solution ("Add a finalizer, calling Dispose(true), to release unmanaged resources.")]
+	public class DisposableTypesShouldHaveFinalizerRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule onyly applies to type that implements IDisposable
 			if (!type.Implements ("System.IDisposable"))
-				return runner.RuleSuccess;
-			if (type.GetMethod (MethodSignatures.Finalize) != null)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
+			// no problem is a finalizer is found
+			if (type.HasMethod (MethodSignatures.Finalize))
+				return RuleResult.Success;
+
+			// otherwise check for native types
 			foreach (FieldDefinition field in type.Fields) {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
 					continue;
-				if (field.FieldType.GetOriginalType ().IsNative ()) {
-					Location loc = new Location (type);
-					Message msg = new Message (string.Format ("{0} implements IDisposable and has native fields. It should implement a finalizer to release unmanaged resources.", type.FullName), loc, MessageType.Error);
-					return new MessageCollection (msg);
-				}
+				if (!field.FieldType.GetOriginalType ().IsNative ())
+					continue;
+				Runner.Report (field, Severity.High, Confidence.High, String.Empty);
 			}
 
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

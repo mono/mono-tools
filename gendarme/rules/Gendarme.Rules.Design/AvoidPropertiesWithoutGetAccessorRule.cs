@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,31 +33,27 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class AvoidPropertiesWithoutGetAccessorRule : IMethodRule {
+	[Problem ("This type contains some properties that have only setters.")]
+	[Solution ("Add a getter to the property or change the property into a method.")]
+	public class AvoidPropertiesWithoutGetAccessorRule : Rule, ITypeRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule applies to setters
-			if (!method.IsSetter)
-				return runner.RuleSuccess;
+			// rule applies to type with properties
+			if (type.Properties.Count == 0)
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
-			// check if there is a getter for the same property
-			string name = method.Name.Replace ("set_", "get_");
-			TypeDefinition type = method.DeclaringType as TypeDefinition;
-			// inside the declaring type
-			foreach (MethodDefinition md in type.Methods) {
-				// look for the getter name
-				if (md.Name == name) {
-					// and confirm it's getter
-					if (md.IsGetter)
-						return runner.RuleSuccess;
+			foreach (PropertyDefinition property in type.Properties) {
+				MethodDefinition setter = property.SetMethod;
+				if (setter != null) {
+					if (property.GetMethod == null) {
+						Runner.Report (setter, Severity.Medium, Confidence.Total, String.Empty);
+					}
 				}
 			}
-
-			Message msg = new Message ("The property only provide a set (and no get)", new Location (method), MessageType.Warning);
-			return new MessageCollection (msg);
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

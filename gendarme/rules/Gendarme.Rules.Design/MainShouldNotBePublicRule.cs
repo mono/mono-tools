@@ -29,29 +29,22 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class MainShouldNotBePublicRule : IAssemblyRule {
+	[Problem ("The entry point (Main) of this assembly is visible to the outside world (ref: C# Programming Guide).")]
+	[Solution ("Reduce entry point visibility if your language allows it. It may not be possible in some language, like VB.NET).")]
+	public class MainShouldNotBePublicRule : Rule, IAssemblyRule {
 
-		// might be moved to Rocks as well
-		private static bool IsVBAssembly (AssemblyDefinition assemblyDefinition)
-		{
-			// as of now, we check for Microsoft.VisualBasic.dll reference
-			foreach (AssemblyNameReference r in assemblyDefinition.MainModule.AssemblyReferences) {
-				if (r.Name == "Microsoft.VisualBasic")
-					return true;
-			}
-			return false;
-		}
+		private const string VisualBasic = "Microsoft.VisualBasic";
 
-
-		public MessageCollection CheckAssembly (AssemblyDefinition assemblyDefinition, Runner runner)
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			// assembly must have an entry point to be examined
-			MethodDefinition entryPoint = assemblyDefinition.EntryPoint;
-			if (entryPoint == null)
-				return runner.RuleSuccess;
+			MethodDefinition entry_point = assembly.EntryPoint;
+			if (entry_point == null)
+				return RuleResult.DoesNotApply;
 
 			// RULE APPLIES
 
@@ -59,25 +52,20 @@ namespace Gendarme.Rules.Design {
 			// if we can't get access to it (is this possible?) we abandon
 			// also, if it is not public, we don't have to continue our work
 			// - we can't reach Main () anyways
-			TypeDefinition declaringType = entryPoint.DeclaringType as TypeDefinition;
-			if (declaringType == null || !declaringType.IsPublic)
-				return runner.RuleSuccess;
+			TypeDefinition type = entry_point.DeclaringType.Resolve ();
+			if (type == null || !type.IsPublic)
+				return RuleResult.Success;
 
 			// at last, if Main () is not public, then it's okay
-			if (!entryPoint.IsPublic)
-				return runner.RuleSuccess;
+			if (!entry_point.IsPublic)
+				return RuleResult.Success;
 
-			Location loc;
-			string message;
-			if (!IsVBAssembly (assemblyDefinition)) {
-				loc = new Location (entryPoint);
-				message = "Main () method should not be visible outside the assembly. Make it private or internal.";
+			if (assembly.References (VisualBasic)) {
+				Runner.Report (type, Severity.Medium, Confidence.High, "Reduce class or module visibility (from public).");
 			} else {
-				loc = new Location (declaringType); // point at Module
-				message = "Main () method should not be visible outside the assembly. Do not make the module or class containing it public.";
+				Runner.Report (entry_point, Severity.Medium, Confidence.Total, "Change method visibility to private or internal.");
 			}
-			Message msg = new Message (message, loc, MessageType.Error);
-			return new MessageCollection (msg);
+			return RuleResult.Failure;
 		}
 	}
 }

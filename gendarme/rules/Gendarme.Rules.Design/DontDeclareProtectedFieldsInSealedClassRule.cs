@@ -1,10 +1,12 @@
 //
-// Gendarme.Rules.Dodgy.DontDeclareProtectedFieldsInSealedClassRule
+// Gendarme.Rules.Dodgy.DoNotDeclareProtectedFieldsInSealedTypeRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,27 +34,23 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design {
 
-	public class DontDeclareProtectedFieldsInSealedClassRule: ITypeRule {
+	[Problem ("This sealed type contains protected (family) field(s).")]
+	[Solution ("Change the field visibility to public or private to represent the true intended use of the field.")]
+	public class DoNotDeclareProtectedFieldsInSealedTypeRule: Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to sealed types
 			if (!type.IsSealed)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsFamily) {
-					Location location = new Location (type);
-					Message message = new Message ("This sealed class contains protected field(s)", location, MessageType.Error);
-					if (mc == null)
-						mc = new MessageCollection (message);
-					else
-						mc.Add (message);
+					Runner.Report (field, Severity.Low, Confidence.Total, String.Empty);
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

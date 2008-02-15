@@ -29,12 +29,16 @@
 using System;
 using System.Collections.Generic;
 using Mono.Cecil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class ProvideAlternativeNamesForOperatorOverloadsRule : ITypeRule {
+	[Problem ("This type contains overloads for some operators but doesn't provide named alternatives.")]
+	[Solution ("Add named methods equivalent to the operators for language that do not support them (e.g. VB.NET).")]
+	public class ProvideAlternativeNamesForOperatorOverloadsRule : Rule, ITypeRule {
 
 		static string [] NoParameter = new string [] { };
 		static string [] OneParameter = new string [] { null }; //new string [1] = one parameter of any type
@@ -76,12 +80,10 @@ namespace Gendarme.Rules.Design {
 			new KeyValuePair<MethodSignature,MethodSignature> (MethodSignatures.op_LessThanOrEqual, Compare),
 		};
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsEnum || type.IsInterface)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (var kv in AlternativeMethodNames) {
 				MethodDefinition op = type.GetMethod (kv.Key);
@@ -96,17 +98,13 @@ namespace Gendarme.Rules.Design {
 				}
 
 				if (!alternativeDefined) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (op);
 					string s = String.Format ("This type implements the '{0}' operator. Some languages do not support overloaded operators so an alternative '{1}' method should be provided.",
 						kv.Key.Name, kv.Value.Name);
-					Message msg = new Message (s, loc, MessageType.Warning);
-					results.Add (msg);
+					Runner.Report (op, Severity.Medium, Confidence.High, s);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

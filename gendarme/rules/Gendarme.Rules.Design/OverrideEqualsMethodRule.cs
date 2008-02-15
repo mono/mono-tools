@@ -29,25 +29,26 @@
 using System;
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	public class OverrideEqualsMethodRule : ITypeRule {
+	[Problem ("This type overloads the == operator but doesn't override the Equals method.")]
+	[Solution ("Override the Equals method to match the results of the == operator.")]
+	public class OverrideEqualsMethodRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsEnum || type.IsInterface)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			if (type.HasMethod (MethodSignatures.op_Equality)) {
-				if (!type.HasMethod (MethodSignatures.Equals)) {
-					Location loc = new Location (type);
-					Message msg = new Message ("This type implements the equality (==) operator. It should also override the Object.Equals method.", loc, MessageType.Warning);
-					return new MessageCollection (msg);
-				}
-			}
-			return runner.RuleSuccess;
+			MethodDefinition equality = type.GetMethod (MethodSignatures.op_Equality);
+			if ((equality == null) || type.HasMethod (MethodSignatures.Equals))
+				return RuleResult.Success;
+			
+			Runner.Report (equality, Severity.High, Confidence.High, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

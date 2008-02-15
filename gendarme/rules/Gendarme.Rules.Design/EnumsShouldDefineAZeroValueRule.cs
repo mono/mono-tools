@@ -33,25 +33,28 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	[Problem ("This enumeration does not provide a member with a value of 0.")]
+	[Solution ("Add a new member in the enum with a value of 0.")]
 	public class EnumsShouldDefineAZeroValueRule : DefineAZeroValueRule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only on enums
 			if (!type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule doesn't apply on [Flags]
 			if (type.IsFlags ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
 
-			if (HasZeroValue (type))
-				return runner.RuleSuccess;
+			FieldDefinition field = GetZeroValueField (type);
+			if (field != null)
+				return RuleResult.Success;
 
-			Message msg = new Message ("Enum doesn't define a 0 value.", new Location (type), MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }
