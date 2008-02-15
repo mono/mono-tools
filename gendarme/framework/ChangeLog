@@ -1,5 +1,10 @@
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
+	* Makefile.am: Adjust makefile with recent changes.
+	*.cs: Remove old fx classes.
+
+2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
+
 	* Makefile.am: Add AssemblyResolver to the build.
 
 2008-02-09  Nestor Salceda  <nestor.salceda@gmail.com>

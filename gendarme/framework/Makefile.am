@@ -11,21 +11,34 @@ pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
 
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
-framework_sources = AssemblyManager.cs IRule.cs RuleCollection.cs \
-		    RuleInformation.cs  RuleInformationManager.cs \
-		    Rules.cs Runner.cs Violation.cs Violations.cs \
-		    Message.cs Location.cs MinimalRunner.cs \
-		    MessageCollection.cs MessageType.cs \
-		    Gendarme.Framework/AssemblyResolver.cs \
-		    Gendarme.Framework/MethodSignature.cs \
-		    Gendarme.Framework/MethodSignatures.cs \
-		    Gendarme.Framework/StackEntryAnalysis.cs \
-		    Gendarme.Framework.Rocks/AssemblyRocks.cs \
-		    Gendarme.Framework.Rocks/CommonRocks.cs \
-		    Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
-		    Gendarme.Framework.Rocks/FieldRocks.cs \
-		    Gendarme.Framework.Rocks/MethodRocks.cs \
-		    Gendarme.Framework.Rocks/TypeRocks.cs
+framework_sources = \
+	Gendarme.Framework/AssemblyResolver.cs \
+	Gendarme.Framework/Confidence.cs \
+	Gendarme.Framework/Defect.cs \
+	Gendarme.Framework/DocumentationUriAttribute.cs \
+	Gendarme.Framework/IAssemblyRule.cs \
+	Gendarme.Framework/IMethodRule.cs \
+	Gendarme.Framework/IRule.cs \
+	Gendarme.Framework/IRunner.cs \
+	Gendarme.Framework/ITypeRule.cs \
+	Gendarme.Framework/ProblemAttribute.cs \
+	Gendarme.Framework/Rule.cs \
+	Gendarme.Framework/RuleResult.cs \
+	Gendarme.Framework/Runner.cs \
+	Gendarme.Framework/RunnerEventArgs.cs \
+	Gendarme.Framework/Severity.cs \
+	Gendarme.Framework/TestRunner.cs \
+	Gendarme.Framework/SolutionAttribute.cs \
+	Gendarme.Framework.Helpers/MethodSignature.cs \
+	Gendarme.Framework.Helpers/MethodSignatures.cs \
+	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \
+	Gendarme.Framework.Rocks/AssemblyRocks.cs \
+	Gendarme.Framework.Rocks/CecilRocks.cs \
+	Gendarme.Framework.Rocks/CommonRocks.cs \
+	Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
+	Gendarme.Framework.Rocks/FieldRocks.cs \
+	Gendarme.Framework.Rocks/MethodRocks.cs \
+	Gendarme.Framework.Rocks/TypeRocks.cs
 
 framework_build_sources = $(addprefix $(srcdir)/, $(framework_sources))
 framework_build_sources += $(framework_generated_sources)
@@ -37,11 +50,11 @@ $(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
 	cp $(CECIL_ASM) $(top_builddir)/gendarme/bin/
 
 ../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library -doc:Gendarme.Framework.doc.xml -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Xml.dll -out:$@ $(framework_build_sources)
+	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:dotnet -out:$@ $(framework_build_sources)
 
 framework_test_sources = \
-	Gendarme.Framework/MethodSignatureTest.cs \
-	Gendarme.Framework/StackEntryAnalysisTest.cs \
+	Gendarme.Framework.Helpers/MethodSignatureTest.cs \
+	Gendarme.Framework.Helpers/StackEntryAnalysisTest.cs \
 	Gendarme.Framework.Rocks/RocksTest.cs \
 	Gendarme.Framework.Rocks/AssemblyRocksTest.cs \
 	Gendarme.Framework.Rocks/CustomAttributeRocksTest.cs \
@@ -51,7 +64,7 @@ framework_test_sources = \
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
 Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(framework_test_build_sources)
 
 test: Test.Framework.dll
