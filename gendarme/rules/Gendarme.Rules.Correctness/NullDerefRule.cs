@@ -19,31 +19,29 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Correctness {
 
-public class NullDerefRule : IMethodRule {
+	[Problem ("This method, or property, might dereference a null pointer, or cause other code to do so.")]
+	[Solution ("Examine the detailed listing of problem locations, and ensure that the variables in question cannot be null.")]
+	public class NullDerefRule : Rule, IMethodRule {
 
-    public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
-    {
-        if(method.Body == null)
-            return runner.RuleSuccess;
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			if (method.Body == null)
+				return RuleResult.DoesNotApply;
 
-        CFG cfg = new CFG(method);
-        if(runner.Debug) {
-            cfg.PrintBasicBlocks();
-            cfg.PrintDot();
-        }
+			CFG cfg = new CFG (method);
+			// requires -v -v
+			if (Runner.VerbosityLevel > 1) {
+				cfg.PrintBasicBlocks ();
+				cfg.PrintDot ();
+			}
 
-        MessageCollection messages = new MessageCollection();
-        NonNullAttributeCollector nnaCollector =
-            new NonNullAttributeCollector();
-        IDataflowAnalysis analysis = new NullDerefAnalysis(method, messages,
-                nnaCollector, runner);
-        Dataflow dataflow = new Dataflow(cfg, analysis);
-        dataflow.Compute();
-        if(messages.Count > 0)
-            return messages;
-        else
-            return runner.RuleSuccess;
-    }
-}
+			NonNullAttributeCollector nnaCollector = new NonNullAttributeCollector();
+			IDataflowAnalysis analysis = new NullDerefAnalysis (method, nnaCollector, Runner);
 
+			Dataflow dataflow = new Dataflow (cfg, analysis);
+			dataflow.Compute ();
+
+			return Runner.CurrentRuleResult;
+		}
+	}
 }

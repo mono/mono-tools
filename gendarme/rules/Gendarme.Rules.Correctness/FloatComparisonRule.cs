@@ -38,7 +38,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class FloatComparisonRule : IMethodRule {
+	[Problem ("This method contais some code that performs equality operation between floating points.")]
+	[Solution ("Try comparing the absolute difference between the two floating point values and a small constant value.")]
+	public class FloatComparisonRule : Rule, IMethodRule {
 
 		private const string EqualityMessage = "Floating point values should not be directly compared for equality (e.g. == or !=).";
 		private const string EqualsMessage = "Floating point values should not be directly compared for equality using [Single|Double].Equals.";
@@ -94,28 +96,22 @@ namespace Gendarme.Rules.Correctness {
 			return problem;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// we only check methods with a body
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// we don't check System.Single and System.Double
 			// special case for handling mscorlib.dll
 			if (method.DeclaringType.IsFloatingPoint ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			foreach (Instruction instruction in method.Body.Instructions) {
 				switch (instruction.OpCode.Code) {
 				case Code.Ceq:
 					if (CheckCeqInstruction (SkipArithmeticOperations (instruction), method)) {
-						Location location = new Location (method, instruction.Offset);
-						Message message = new Message (EqualityMessage, location, MessageType.Error);
-						if (mc == null)
-							mc = new MessageCollection (message);
-						else
-							mc.Add (message);
+						Runner.Report (method, instruction, Severity.High, Confidence.Total, EqualityMessage);
 					}
 					break;
 				case Code.Call:
@@ -123,18 +119,13 @@ namespace Gendarme.Rules.Correctness {
 				case Code.Callvirt:
 					MemberReference member = instruction.Operand as MemberReference;
 					if (member.Name.Equals ("Equals") && member.DeclaringType.IsFloatingPoint ()) {
-						Location location = new Location (method, instruction.Offset);
-						Message message = new Message (EqualsMessage, location, MessageType.Error);
-						if (mc == null)
-							mc = new MessageCollection (message);
-						else
-							mc.Add (message);
+						Runner.Report (method, instruction, Severity.High, Confidence.Total, EqualsMessage);
 					}
 					break;
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 
 		static OpCode [] arithOpCodes = new OpCode [] {

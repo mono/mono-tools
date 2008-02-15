@@ -1,3 +1,18 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesRule.cs
+	* BadRecursiveInvocationRule.cs
+	* CallingEqualsWithNullArgRule.cs
+	* DontCompareWithNaNRule.cs
+	* FloatComparisonRule.cs
+	* MethodCanBeMadeStaticRule.cs
+	* NullDerefAnalysis.cs
+	* NullDerefFrame.cs
+	* NullDerefRule.cs
+	* Nullity.cs
+	* UseValueInPropertySetterRule.cs:
+		Update rules wrt framework changes.
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FloatComparisonRule.cs: Handle "this" and don't report defects on

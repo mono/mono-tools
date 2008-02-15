@@ -14,11 +14,10 @@
 
 namespace Gendarme.Rules.Correctness {
 
-public enum Nullity : int {
-    Unused  = 0,
-    Null    = 1,
-    NonNull = 2,
-    Unknown = 3,
-}
-
+	public enum Nullity {
+	    Unused  = 0,
+	    Null    = 1,
+	    NonNull = 2,
+	    Unknown = 3,
+	}
 }

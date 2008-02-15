@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2007 Lukasz Knop
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -37,46 +37,41 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class AvoidConstructorsInStaticTypesRule : ITypeRule {
+	[Problem ("This type contains only static fields and methods and have a non static constructor.")]
+	[Solution ("You should use an static constructor or make the fields and methods non-static.")]
+	public class AvoidConstructorsInStaticTypesRule : Rule, ITypeRule {
 
-		private const string MessageString = "Types with no instance fields or methods should not have public instance constructors";
-
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only if the type as method or fields
 			if (type.Methods.Count == 0 && type.Fields.Count == 0)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies only if all methods are static
 			foreach (MethodDefinition method in type.Methods) {
 				if (!method.IsStatic)
-					return runner.RuleSuccess;
+					return RuleResult.DoesNotApply;
 			}
 
 			// rule applies only if all fields are static
 			foreach (FieldDefinition field in type.Fields) {
 				if (!field.IsStatic)
-					return runner.RuleSuccess;
+					return RuleResult.DoesNotApply;
 			}
 
 			// rule applies only if the type isn't compiler generated
 			if (type.IsGeneratedCode ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies!
-			MessageCollection mc = null;
+
 			foreach (MethodDefinition ctor in type.Constructors) {
 				if (!ctor.IsStatic && ctor.IsPublic) {
-					Location location = new Location (ctor);
-					Message message = new Message(MessageString, location, MessageType.Error);
-					if (mc == null)
-						mc = new MessageCollection (message);
-					else
-						mc.Add (message);
+					Runner.Report (ctor, Severity.Low, Confidence.High, String.Empty);
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

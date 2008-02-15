@@ -38,7 +38,9 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class BadRecursiveInvocationRule : IMethodRule {
+	[Problem ("This method, or property, invokes itself recursively in a suspcious way.")]
+	[Solution ("Ensure that an exit condition exists to terminate recursion.")]
+	public class BadRecursiveInvocationRule : Rule, IMethodRule {
 
 		// note: parameter names do not have to match because we can be calling a base class virtual method
 		private static bool CheckParameters (MethodReference caller, MethodReference callee)
@@ -130,11 +132,11 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applies only if the method has a body
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.FlowControl) {
@@ -148,20 +150,19 @@ namespace Gendarme.Rules.Correctness {
 
 					// recursion detected! check if there a way out of it
 					if (CheckForEndlessRecursion (method, method.Body.Instructions.IndexOf (ins))) {
-						Location loc = new Location (method, ins.Offset);
-						Message msg = new Message ("Suspicious recursive call found.", loc, MessageType.Warning);
-						return new MessageCollection (msg);
+						Runner.Report (method, ins, Severity.Critical, Confidence.High, String.Empty);
+						return RuleResult.Failure;
 					}
 					break;
 				case FlowControl.Cond_Branch:
 				case FlowControl.Return:
 				case FlowControl.Throw:
 					// if there's a way to break free before a recursive call then we let it go
-					return runner.RuleSuccess;
+					return RuleResult.Success;
 				}
 			}
 
-			return runner.RuleSuccess;
+			return RuleResult.Success;
 		}
 	}
 }

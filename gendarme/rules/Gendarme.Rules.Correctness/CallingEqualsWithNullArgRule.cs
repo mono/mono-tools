@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,29 +27,22 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class CallingEqualsWithNullArgRule: IMethodRule {
+	[Problem ("This method calls Equals(object) with a null argument.")]
+	[Solution ("Pass some other appropriate argument than null, as passing null parameter should always return false.")]
+	public class CallingEqualsWithNullArgRule: Rule, IMethodRule {
 
-		private static bool IsEquals (MethodReference md)
-		{
-			if ((md == null) || (md.Name != "Equals"))
-				return false;
-
-			return (md.ReturnType.ReturnType.FullName == "System.Boolean");
-		}
-
-		private static bool IsCall (Instruction ins)
-		{
-			OpCode oc = ins.OpCode;
-			return ((oc == OpCodes.Call) || (oc == OpCodes.Calli) || (oc == OpCodes.Callvirt));
-		}
+		// MethodSignatures.Equals check for a System.Object parameter while this rule is more general
+		// and will work as long as there is a single parameter, whatever the type
+		private static readonly new MethodSignature Equals = new MethodSignature ("Equals", "System.Boolean", new string [1], MethodAttributes.Public);
 
 		private static bool IsPreviousLdnull (Instruction ins)
 		{
@@ -66,29 +59,28 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
-				return null;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			foreach (Instruction ins in method.Body.Instructions) {
 				// if we're calling bool type.Equals()
-				if (IsCall (ins) && IsEquals (ins.Operand as MethodReference)) {
-					// and that the previous, real, instruction is loading a null value
-					if (IsPreviousLdnull (ins)) {
-						Location location = new Location (method, ins.Offset);
-						Message message = new Message ("You should not call Equals (null), i.e., argument should not be null", location, MessageType.Error);
-
-						if (mc == null)
-							mc = new MessageCollection (message);
-						else
-							mc.Add (message);
+				switch (ins.OpCode.Code) {
+				case Code.Call:
+				case Code.Calli:
+				case Code.Callvirt:
+					if (Equals.Matches (ins.Operand as MethodReference)) {
+						// and that the previous, real, instruction is loading a null value
+						if (IsPreviousLdnull (ins)) {
+							Runner.Report (method, ins, Severity.Low, Confidence.High, String.Empty);
+						}
 					}
+					break;
 				}
 			}
 
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

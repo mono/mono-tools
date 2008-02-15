@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Correctness.DontCompareWithNaNRule
+// Gendarme.Rules.Correctness.DoNotCompareWithNaNRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -36,7 +36,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class DontCompareWithNaNRule : IMethodRule {
+	[Problem ("This method compares a floating point value with NaN (Not a Number) which always return false, even for (NaN == NaN).")]
+	[Solution ("Replace the code with a call to the appropriate Single.IsNaN(value) or Double.IsNaN(value).")]
+	public class DoNotCompareWithNaNRule : Rule, IMethodRule {
 
 		private const string EqualityMessage = "A floating point value is compared (== or !=) with [Single|Double].NaN.";
 		private const string EqualsMessage = "[Single|Double].Equals is called using NaN.";
@@ -69,13 +71,11 @@ namespace Gendarme.Rules.Correctness {
 			return true;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			MessageCollection messageCollection = null;
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection mc = null;
 			InstructionCollection il = method.Body.Instructions;
 			for (int i = 0; i < method.Body.Instructions.Count; i++) {
 				Instruction ins = il [i];
@@ -83,11 +83,7 @@ namespace Gendarme.Rules.Correctness {
 				// handle == and !=
 				case Code.Ceq:
 					if (!CheckPrevious (il, i - 1)) {
-						Message msg = new Message (EqualityMessage, new Location (method, ins.Offset), MessageType.Error);
-						if (mc == null)
-							mc = new MessageCollection (msg);
-						else
-							mc.Add (msg);
+						Runner.Report (method, ins, Severity.Critical, Confidence.Total, EqualityMessage);
 					}
 					break;
 				// handle calls to [Single|Double].Equals
@@ -97,17 +93,13 @@ namespace Gendarme.Rules.Correctness {
 					MemberReference callee = ins.Operand as MemberReference;
 					if (callee.Name.Equals ("Equals") && callee.DeclaringType.IsFloatingPoint ()) {
 						if (!CheckPrevious (il, i - 1)) {
-							Message msg = new Message (EqualsMessage, new Location (method, ins.Offset), MessageType.Error);
-							if (mc == null)
-								mc = new MessageCollection (msg);
-							else
-								mc.Add (msg);
+							Runner.Report (method, ins, Severity.Critical, Confidence.Total, EqualsMessage);
 						}
 					}
 					break;
 				}
 			}
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

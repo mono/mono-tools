@@ -38,20 +38,20 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
-	public class UseValueInPropertySetterRule : IMethodRule {
+	[Problem ("This property setter doesn't use 'value'.")]
+	[Solution ("The setter should use 'value' or, if unneeded, you should consider remove the setter to reduce possible confusion.")]
+	public class UseValueInPropertySetterRule : Rule, IMethodRule {
 
-		private const string MessageString = "Property setter should use the assigned value";
-
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			//Skip the test, instead of flooding messages
 			//in stubs or empty setters.
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies to setters methods
 			if (!method.IsSetter)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 			bool flow = false;
@@ -62,13 +62,13 @@ namespace Gendarme.Rules.Correctness {
 				case Code.Ldarg_0:
 					// first argument if property is static
 					if (method.IsStatic)
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					empty = false;
 					break;
 				case Code.Ldarg_1:
 					// second argument if property is not static (instance)
 					if (!method.IsStatic)
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					empty = false;
 					break;
 				case Code.Ldarg_2:
@@ -76,19 +76,19 @@ namespace Gendarme.Rules.Correctness {
 					// this[] properties have multiple parameters
 					int index = instruction.OpCode.Code - Code.Ldarg_1;
 					if (method.Parameters [index].Name == "value")
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					empty = false;
 					break;
 				case Code.Ldarga:
 				case Code.Ldarga_S:
 					if ((instruction.Operand as ParameterDefinition).Name == "value")
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					empty = false;
 					break;
 				// check if the IL simply throws an exception
 				case Code.Throw:
 					if (!flow)
-						return runner.RuleSuccess;
+						return RuleResult.Success;
 					empty = false;
 					break;
 				case Code.Nop:
@@ -110,10 +110,10 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			if (empty)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Message message = new Message (MessageString, new Location (method), MessageType.Error);
-			return new MessageCollection (message);
+			Runner.Report (method, Severity.High, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }
