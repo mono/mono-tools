@@ -43,6 +43,7 @@ namespace Test.Rules.Interoperability {
 		private GetLastErrorMustBeCalledRightAfterPInvokeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
+		private TestRunner runner;
 		
 		[DllImport ("User32.dll")]
 		static extern Boolean MessageBeep (UInt32 beepType);
@@ -124,6 +125,7 @@ namespace Test.Rules.Interoperability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Interoperability.GetLastErrorMustBeCalledRightAfterPInvokeTest"];
 			rule = new GetLastErrorMustBeCalledRightAfterPInvokeRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -139,70 +141,70 @@ namespace Test.Rules.Interoperability {
 		public void TestNothing ()
 		{
 			MethodDefinition method = GetTest ("CallNothing");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestNothingNotExternal ()
 		{
 			MethodDefinition method = GetTest ("CallNothingNotExternal");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError_valid ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError_valid");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError_invalid ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError_invalid");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError_invalid_newobj ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError_invalid_newobj");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError_invalid_struct ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError_invalid_struct");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPInvoke_GetError_valid_struct ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_GetError_valid_struct");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestGetError ()
 		{
 			MethodDefinition method = GetTest ("CallGetError");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		public void CallPInvoke_Branch ()
@@ -219,7 +221,7 @@ namespace Test.Rules.Interoperability {
 		public void TestPInvoke_Branch ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_Branch");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		public void CallPInvoke_Switch ()
@@ -240,7 +242,7 @@ namespace Test.Rules.Interoperability {
 		public void TestPInvoke_Switch ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_Switch");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		public void CallPInvoke_Endless ()
@@ -255,7 +257,7 @@ namespace Test.Rules.Interoperability {
 		public void TestPInvoke_Endless ()
 		{
 			MethodDefinition method = GetTest ("CallPInvoke_Endless");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		public void TwoPInvokes ()
@@ -269,7 +271,7 @@ namespace Test.Rules.Interoperability {
 		public void TestTwoPInvokes ()
 		{
 			MethodDefinition method = GetTest ("TwoPInvokes");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }

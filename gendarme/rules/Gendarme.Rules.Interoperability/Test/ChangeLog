@@ -1,3 +1,11 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeTest.cs
+	* MarshalStringsInPInvokeDeclarationsTest.cs
+	* PInvokeShouldNotBeVisibleTest.cs
+	* UseManagedAlternativesToPInvokeTest.cs:
+		Update unit tests wrt framework changes.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeTest.cs: More unit 

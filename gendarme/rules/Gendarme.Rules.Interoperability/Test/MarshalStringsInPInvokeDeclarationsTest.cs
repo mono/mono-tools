@@ -44,6 +44,7 @@ namespace Test.Rules.Interoperability {
 		private MarshalStringsInPInvokeDeclarationsRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
+		private TestRunner runner;
 
 		// checks for CharSet property
 		[DllImport ("kernel32")]
@@ -141,6 +142,7 @@ namespace Test.Rules.Interoperability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Interoperability.MarshalStringsInPInvokeDeclarationsTest"];
 			rule = new MarshalStringsInPInvokeDeclarationsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -156,65 +158,63 @@ namespace Test.Rules.Interoperability {
 		public void TestEmptyMethod ()
 		{
 			MethodDefinition method = GetTest ("EmptyMethod");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestNoStringsMethod ()
 		{
 			MethodDefinition method = GetTest ("Sleep");
-			MessageCollection messages = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestStringWithCharsetMethod ()
 		{
 			MethodDefinition method = GetTest ("FindFirstFile");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestStringBuilderWithCharsetMethod ()
 		{
 			MethodDefinition method = GetTest ("GetUserNameEx");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestStringWithoutCharsetMethod ()
 		{
 			MethodDefinition method = GetTest ("PlaySound");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestStringBuilderWithoutCharsetMethod ()
 		{
 			MethodDefinition method = GetTest ("MessageBox");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestDeclarationWithMarshalAs ()
 		{
 			MethodDefinition method = GetTest ("GetShortPathNameGood");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestDeclarationWithoutMarshalAsCharsetSpec ()
 		{
 			MethodDefinition method = GetTest ("GetShortPathNameBadParametersCharsetSpec");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestDeclarationWithoutMarshalAsCharsetNotSpec ()
 		{
 			MethodDefinition method = GetTest ("GetShortPathNameBadParametersCharsetNotSpec");
-			MessageCollection messages = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 	}
 }

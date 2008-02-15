@@ -72,6 +72,7 @@ namespace Test.Rules.Interoperability {
 	public class PInvokeShouldNotBeVisibleRuleTest {
 
 		private PInvokeShouldNotBeVisibleRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition internalType;
 		private TypeDefinition publicType;
@@ -91,6 +92,7 @@ namespace Test.Rules.Interoperability {
 			publicType_PublicNested = assembly.MainModule.Types ["Test.Rules.Interoperability.PInvokePublic"].NestedTypes [0];
 			publicType_InternalNested = assembly.MainModule.Types ["Test.Rules.Interoperability.PInvokePublic"].NestedTypes [1];
 			rule = new PInvokeShouldNotBeVisibleRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (TypeDefinition type, string name)
@@ -106,49 +108,49 @@ namespace Test.Rules.Interoperability {
 		public void TestInternal_Internal ()
 		{
 			MethodDefinition method = GetTest (internalType, "MessageBeepInternal");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestInternal_Public ()
 		{
 			MethodDefinition method = GetTest (internalType, "MessageBeepPublic");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}		
 		
 		[Test]
 		public void TestInternal_PublicNested()
 		{
 			MethodDefinition method = GetTest (internalType_PublicNested, "MessageBeepPublic");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 		
 		[Test]
 		public void TestPublic_Internal ()
 		{
 			MethodDefinition method = GetTest (publicType, "MessageBeepInternal");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestPublic_Public ()
 		{
 			MethodDefinition method = GetTest (publicType, "MessageBeepPublic");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}		
 		
 		[Test]
 		public void TestPublic_PublicNested ()
 		{
 			MethodDefinition method = GetTest (publicType_PublicNested, "MessageBeepPublic");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 		
 		[Test]
-		public void TestPublic_InernalNested ()
+		public void TestPublic_InternalNested ()
 		{
 			MethodDefinition method = GetTest (publicType_InternalNested, "MessageBeepPublic");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }

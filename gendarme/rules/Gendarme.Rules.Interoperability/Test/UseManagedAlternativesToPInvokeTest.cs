@@ -45,6 +45,7 @@ namespace Test.Rules.Interoperability {
 		private UseManagedAlternativesToPInvokeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
+		private TestRunner runner;
 
 		[DllImport ("kernel32")]
 		static extern void Sleep (uint time); // bad because we have Thread.Sleep ()
@@ -65,6 +66,7 @@ namespace Test.Rules.Interoperability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Interoperability.UseManagedAlternativesToPInvokeTest"];
 			rule = new UseManagedAlternativesToPInvokeRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -80,32 +82,28 @@ namespace Test.Rules.Interoperability {
 		public void TestEmptyMethod ()
 		{
 			MethodDefinition method = GetTest ("EmptyMethod");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestBadMethod ()
 		{
 			MethodDefinition method = GetTest ("Sleep");
-			MessageCollection messages = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestBadMethodMultipleSolutions ()
 		{
 			MethodDefinition method = GetTest ("FindFirstFile");
-			MessageCollection messages = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestOkMethod ()
 		{
 			MethodDefinition method = GetTest ("MessageBeep");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }
