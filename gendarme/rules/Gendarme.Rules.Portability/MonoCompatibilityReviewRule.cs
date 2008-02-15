@@ -27,51 +27,48 @@
 //
 
 using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Net;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
-using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
 
 using MoMA.Analyzer.MoMAWebService;
 
 namespace Gendarme.Rules.Portability {
 
-	public class MonoCompatibilityReviewRule : IMethodRule {
+	[Problem ("The method has some known limitations when used with the Mono:: runtime.")]
+	[Solution ("Check if this code is critical to your application. Also make sure your definition files are up to date.")]
+	public class MonoCompatibilityReviewRule : Rule, IMethodRule {
 
-		private System.Net.WebException DownloadExceptionInternal;
+		private const string NotImplementedMessage = "{0} is not implemented.{1}";
+		private const string MissingMessage = "{0} is missing from Mono.{1}";
+		private const string TodoMessage = "{0} is marked with a [MonoTODO] attribute: {1}.";
+
 		private Dictionary<string, string> NotImplementedInternal; //value is unused
 		private Dictionary<string, string> MissingInternal; //value is unused
 		private Dictionary<string, string> TodoInternal; //value = TODO Description
 
-		public System.Net.WebException DownloadException {
-			get { return DownloadExceptionInternal; }
-			set { DownloadExceptionInternal = value; }
-		}
-
 		public Dictionary<string, string> NotImplemented {
 			get { return NotImplementedInternal; }
-			set { NotImplementedInternal = value; }
 		}
 
 		public Dictionary<string, string> Missing {
 			get { return MissingInternal; }
-			set { MissingInternal = value; }
 		}
 
-		public Dictionary<string, string> Todo {
+		public Dictionary<string, string> ToDo {
 			get { return TodoInternal; }
-			set { TodoInternal = value; }
 		}
 		
-		public MonoCompatibilityReviewRule ()
+		public override void Initialize (IRunner runner)
 		{
+			base.Initialize (runner);
+
 			string localAppDataFolder = Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData);
 			string definitionsFolder = Path.Combine (localAppDataFolder, "Gendarme");
 			string definitionsFile = Path.Combine (definitionsFolder, "definitions.zip");
@@ -80,17 +77,8 @@ namespace Gendarme.Rules.Portability {
 				if (!Directory.Exists (definitionsFolder))
 					Directory.CreateDirectory (definitionsFolder);
 
-				try {
-					//try to download files from the net
-					MoMASubmit ws = new MoMASubmit ();
-					string definitionsUri = ws.GetLatestDefinitionsVersion ().Split ('|') [2];
-					ws.Dispose ();
-
-					System.Net.WebClient wc = new System.Net.WebClient ();
-					wc.DownloadFile (new Uri (definitionsUri), definitionsFile);
-				}
-				catch (System.Net.WebException e) {
-					DownloadException = e;
+				if (!Download (definitionsFile)) {
+					Active = false;
 					return;
 				}
 			}
@@ -100,18 +88,41 @@ namespace Gendarme.Rules.Portability {
 			while ((ze = zs.GetNextEntry ()) != null) {
 				switch (ze.Name) {
 				case "exception.txt":
-					NotImplemented = Read (new StreamReader (zs), false);
+					NotImplementedInternal = Read (new StreamReader (zs), false);
 					break;
 				case "missing.txt":
-					Missing = Read (new StreamReader (zs), false);
+					MissingInternal = Read (new StreamReader (zs), false);
 					break;
 				case "monotodo.txt":
-					Todo = Read (new StreamReader (zs), true);
+					TodoInternal = Read (new StreamReader (zs), true);
 					break;
 				default:
 					break;
 				}
 			}
+
+			// rule is active only if we have, at least one of, the MoMA files
+			Active = ((NotImplemented != null) || (Missing != null) || (ToDo != null));
+		}
+
+		private bool Download (string definitionsFile)
+		{
+			// try to download files from the net
+			try {
+				string definitionsUri;
+				using (MoMASubmit ws = new MoMASubmit ()) {
+					definitionsUri = ws.GetLatestDefinitionsVersion ().Split ('|') [2];
+				}
+
+				WebClient wc = new WebClient ();
+				wc.DownloadFile (new Uri (definitionsUri), definitionsFile);
+			}
+			catch (WebException e) {
+				if (Runner.VerbosityLevel > 0)
+					Console.WriteLine (e);
+				return false;
+			}
+			return true;
 		}
 
 		private static Dictionary<string, string> Read (StreamReader reader, bool split)
@@ -129,43 +140,26 @@ namespace Gendarme.Rules.Portability {
 			return dict;
 		}
 
-		private static void Check (Dictionary<string, string> dict, string calledMethod,
-				   MethodDefinition method, Instruction ins,
-				   ref MessageCollection results, string error, MessageType type)
+		private void Check (Dictionary<string, string> dict, MethodDefinition method, Instruction ins, string error, Severity severity)
 		{
-			if (dict == null)
+			string callee = ins.Operand.ToString ();
+			if (!dict.ContainsKey (callee))
 				return;
-			if (!dict.ContainsKey (calledMethod))
-				return;
 
-			if (results == null)
-				results = new MessageCollection ();
-
-			error = string.Format (error, calledMethod, dict [calledMethod]);
-			Location loc = new Location (method, ins.Offset);
-
-			Message msg = new Message (error, loc, type);
-			results.Add (msg);
+			string message = String.Format (error, callee, dict [callee]);
+			// confidence is Normal since we can't be sure if MoMA data is up to date
+			Runner.Report (method, ins, severity, Confidence.Normal, message);
 		}
 		
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule doesn't apply if method has no IL
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection results = null;
-
-			if (DownloadException != null) {
-				results = new MessageCollection ();
-				results.Add (new Message (string.Format ("Unable to read or download the definitions file: {0}.", DownloadException.Message), null, MessageType.Warning));
-				DownloadException = null;
-			}
-
-			if (NotImplemented == null && Missing == null && Todo == null)
-				return results;
+			// rule applies
 
 			foreach (Instruction ins in method.Body.Instructions) {
-
 				switch (ins.OpCode.Code) {
 				case Code.Call:
 				case Code.Calli:
@@ -174,23 +168,27 @@ namespace Gendarme.Rules.Portability {
 				case Code.Initobj:
 				case Code.Ldftn:
 				case Code.Ldvirtftn:
+					// calling not implemented method is very likely not to work == High
+					if (NotImplemented != null) {
+						Check (NotImplemented, method, ins, NotImplementedMessage, Severity.High);
+					}
 
-					string calledMethodString = ins.Operand.ToString ();
+					// calling missing methods can't work == Critical
+					if (Missing != null) {
+						Check (Missing, method, ins, MissingMessage, Severity.Critical);
+					}
 
-					Check (NotImplemented, calledMethodString, method, ins,
-					       ref results, "{0} is not implemented.", MessageType.Warning);
-					Check (Missing, calledMethodString, method, ins,
-					       ref results, "{0} is missing.", MessageType.Error);
-					Check (Todo, calledMethodString, method, ins,
-					       ref results, "{0} is marked with the MonoTODOAttribute ({1}).", MessageType.Warning);
-
+					// calling todo methods migh work with some limitations == Medium
+					if (ToDo != null) {
+						Check (ToDo, method, ins, TodoMessage, Severity.Medium);
+					}
 					break;
 				default:
 					break;
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

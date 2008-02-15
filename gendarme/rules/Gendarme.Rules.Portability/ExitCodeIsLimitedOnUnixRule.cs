@@ -30,10 +30,15 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Portability {
 
-	public class ExitCodeIsLimitedOnUnixRule : IAssemblyRule, IMethodRule {
+	[Problem ("The rule detected a value outside the 0-255 range or couldn't be sure of the returned value.")]
+	[Solution ("Review that your return values are all between 0 and 255, this will ensure them to works under both Unix and Windows OS.")]
+	public class ExitCodeIsLimitedOnUnixRule : Rule, IAssemblyRule, IMethodRule {
+
+		private const string Message = "In Unix, unlike in Windows, Main () method must return values between 0 and 255 inclusively. Change the exit code or change method return type from 'int' to 'void'.";
 
 		private enum InspectionResult {
 			Good,
@@ -41,52 +46,78 @@ namespace Gendarme.Rules.Portability {
 			Unsure
 		}
 
-		public MessageCollection CheckAssembly (AssemblyDefinition assemblyDefinition, Runner runner)
+		public override void Initialize (IRunner runner)
 		{
-			MethodDefinition entryPoint = assemblyDefinition.EntryPoint;
-			// if no entry point, good bye
-			if (entryPoint == null)
-				return runner.RuleSuccess;
+			base.Initialize (runner);
 
-			// if it returns void, we don't introspect it
-			// FIXME: entryPoint.ReturnType.ReturnType should not be null with void Main ()
-			// either bad unit tests or bug in cecil
-			if (entryPoint.ReturnType.ReturnType == null || entryPoint.ReturnType.ReturnType.FullName != "System.Int32")
-				return runner.RuleSuccess;
+			// we always want to call CheckAssembly (single call on each assembly)
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				Active = true;
+			};
 
-			return CheckIntMainBody (entryPoint.Body, runner);
+			// but we want to avoid checking all methods if the Environment type
+			// isn't referenced in a module (big performance difference)
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = false;
+				foreach (TypeReference type in e.CurrentAssembly.MainModule.TypeReferences) {
+					if (type.FullName == "System.Environment") {
+						Active = true;
+						break;
+					}
+				}
+			};
 		}
 
-
-		private static MessageCollection CheckIntMainBody (MethodBody body, Runner runner)
+		private void Report (MethodDefinition method, Instruction ins, InspectionResult result)
 		{
-			MessageCollection messages = runner.RuleSuccess;
+			switch (result) {
+			case InspectionResult.Good:
+				// should never occur
+				break;
+			case InspectionResult.Bad:
+				Runner.Report (method, ins, Severity.Medium, Confidence.High, 
+					"Return value is outside the range of valid values (0-255).");
+				break;
+			case InspectionResult.Unsure:
+				Runner.Report (method, ins, Severity.Medium, Confidence.Low, 
+					"Make sure not to return values that are out of range (0-255).");
+				break;
+			}
+		}
+
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
+		{
+			MethodDefinition entry_point = assembly.EntryPoint;
+
+			// the rule does not apply if the assembly has no entry point
+			// or if it's entry point has no IL
+			if ((entry_point == null) || !entry_point.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// the rule does not apply of the entry point returns void
+			// FIXME: entryPoint.ReturnType.ReturnType should not be null with void Main ()
+			// either bad unit tests or bug in cecil
+			if (entry_point.ReturnType.ReturnType == null || entry_point.ReturnType.ReturnType.FullName != "System.Int32")
+				return RuleResult.DoesNotApply;
+
 			Instruction previous = null;
-			foreach (Instruction current in body.Instructions) {
+			foreach (Instruction current in entry_point.Body.Instructions) {
 				switch (current.OpCode.Code) {
 				case Code.Nop:
 					break;
 				case Code.Ret:
-					InspectionResult results = CheckInstruction (previous);
-					if (results == InspectionResult.Good)
+					InspectionResult result = CheckInstruction (previous);
+					if (result == InspectionResult.Good)
 						break;
 
-					Location loc = new Location (body.Method, current.Offset);
-					Message message = null;
-					if (results == InspectionResult.Bad)
-						message = new Message ("In Unix, unlike in Windows, Main () method must return values between 0 and 255 inclusively. Change the exit code or change method return type from 'int' to 'void'.", loc, MessageType.Error);
-					else if (results == InspectionResult.Unsure)
-						message = new Message ("In Unix, unlike in Windows, Main () method must return values between 0 and 255 inclusively. Be sure not to return values that are out of range.", loc, MessageType.Warning);
-					if (messages == null)
-						messages = new MessageCollection ();
-					messages.Add (message);
+					Report (entry_point, current, result);
 					break;
 				default:
 					previous = current;
 					break;
 				}
 			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 
 		private static InspectionResult CheckInstruction (Instruction instruction)
@@ -114,29 +145,17 @@ namespace Gendarme.Rules.Portability {
 			default:
 				return InspectionResult.Unsure;
 			}
-
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// here we check for usage of Environment.ExitCode property
-			MethodDefinition entryPoint = method.DeclaringType.Module.Assembly.EntryPoint;
-
-			// assembly must have an entry point
-			if (entryPoint == null)
-				return runner.RuleSuccess;
-
-			// rule applies only to void Main-ish assemblies
-			// int Main () anyways returns something so we shouldn't care about ExitCode usage
-			if (entryPoint.ReturnType.ReturnType != null && entryPoint.ReturnType.ReturnType.FullName == "System.Int32")
-				return runner.RuleSuccess;
+			// rule does not apply if method has no IL
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
 
 			// go!
-			MessageCollection messages = runner.RuleSuccess;
 			Instruction previous = null;
 			foreach (Instruction current in method.Body.Instructions) {
-				// rather useful for debugging
-				// Console.WriteLine ("{0} {1}", current.OpCode, current.Operand);
 				switch (current.OpCode.Code) {
 				case Code.Nop:
 					break;
@@ -149,25 +168,16 @@ namespace Gendarme.Rules.Portability {
 					if (calledMethod.DeclaringType.FullName != "System.Environment")
 						break;
 
-					InspectionResult results = CheckInstruction (previous);
-					if (results == InspectionResult.Good)
+					InspectionResult result = CheckInstruction (previous);
+					if (result == InspectionResult.Good)
 						break;
 
-					if (messages == runner.RuleSuccess)
-						messages = new MessageCollection ();
-
-					Message message = null;
-					Location loc = new Location (method, current.Offset);
-					if (results == InspectionResult.Unsure)
-						message = new Message ("In Unix, unlike in Windows, process exit code can be a value between 0 and 255 inclusively. Be sure not to set it to values that are out of range.", loc, MessageType.Warning);
-					else // bad
-						message = new Message ("In Unix, unlike in Windows, process exit code can be a value between 0 and 255 inclusively. Do not set it to values that are out of range.", loc, MessageType.Error);
-					messages.Add (message);
+					Report (method, current, result);
 					break;
 				}
 				previous = current;
 			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -1,3 +1,11 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExitCodeIsLimitedOnUnixRule.cs
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs
+	* MonoCompatibilityReviewRule.cs
+	* NewLineLiteralRule.cs:
+		Updated rules wrt framework changes.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.Rules.Portability.xml.in: Fix definition for

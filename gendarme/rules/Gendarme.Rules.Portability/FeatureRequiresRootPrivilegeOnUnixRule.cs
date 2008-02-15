@@ -38,8 +38,15 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Portability {
 
-	public class FeatureRequiresRootPrivilegeOnUnixRule : IMethodRule {
+	[Problem ("The method use some features that requires 'root' priviledge under Unix.")]
+	[Solution ("Make sure your code can work without requiring users to have 'root' priviledge.")]
+	public class FeatureRequiresRootPrivilegeOnUnixRule : Rule, IMethodRule {
 
+		// localizable
+		private const string ProcessMessage = "Setting Process.PriorityClass to something else than ProcessPriorityClass.Normal requires root privileges.";
+		private const string PingMessage = "Usage of System.Net.NetworkInformation.Ping requires root privileges.";
+
+		// non-localizable
 		private const string Ping = "System.Net.NetworkInformation.Ping";
 
 		//Check for usage of System.Diagnostics.Process.set_PriorityClass
@@ -86,47 +93,36 @@ namespace Gendarme.Rules.Portability {
 			case Code.Calli:
 			case Code.Callvirt:
 				MethodReference method = (ins.Operand as MethodReference);
-				return (method.DeclaringType.FullName == "System.Net.NetworkInformation.Ping");
+				return (method.DeclaringType.FullName == Ping);
 			}
 			return false;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule does not apply to methods without IL
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			// do not apply the rule to the Ping class itself (i.e. when running Gendarme on System.dll 2.0+)
-			bool is_ping = (method.DeclaringType.FullName == Ping ||
-				(method.DeclaringType.IsNested && method.DeclaringType.DeclaringType.FullName == Ping));
-
-			MessageCollection results = null;
+			// Ping only exists in fx 2.0 and later
+			bool fx20 = (method.DeclaringType.Module.Assembly.Runtime >= TargetRuntime.NET_2_0);
 
 			foreach (Instruction ins in method.Body.Instructions) {
 
 				// Check for usage of System.Diagnostics.Process.set_PriorityClass
 				if (CheckProcessSetPriorityClass (ins)) {
-					if (results == null)
-						results = new MessageCollection ();
-
-					Location loc = new Location (method, ins.Offset);
-					Message msg = new Message ("Setting Process.PriorityClass to something else than ProcessPriorityClass.Normal requires root privileges.", loc, MessageType.Warning);
-					results.Add (msg);
+					// code won't work with default (non-root) users == High
+					Runner.Report (method, ins, Severity.High, Confidence.High, ProcessMessage);
 				}
 
 				// short-circuit
-				if (!is_ping && CheckPing (ins)) {
-					if (results == null)
-						results = new MessageCollection ();
-
-					Location loc = new Location (method, ins.Offset);
-					string s = String.Format ("Usage of {0} requires root privileges.", Ping);
-					Message msg = new Message (s, loc, MessageType.Warning);
-					results.Add (msg);
+				if (fx20 && CheckPing (ins)) {
+					// code won't work with default (non-root) users == High
+					Runner.Report (method, ins, Severity.High, Confidence.High, PingMessage);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -35,19 +35,20 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Portability {
 
-	public class NewLineLiteralRule: IMethodRule {
+	[Problem ("The method use some literal values for new lines (e.g. \\r\\n) which aren't portable across operating systems.")]
+	[Solution ("Replace literals with Environment.NewLine.")]
+	public class NewLineLiteralRule : Rule, IMethodRule {
 
 		private static char[] InvalidChar = { '\r', '\n' };
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// methods can be empty (e.g. p/invoke declarations)
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
-			MessageCollection results = null;
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Ldstr:
@@ -57,17 +58,11 @@ namespace Gendarme.Rules.Portability {
 						continue;
 
 					if (s.IndexOfAny (InvalidChar) >= 0) {
-						Location loc = new Location (method, ins.Offset);
 						// make the invalid char visible on output
 						s = s.Replace ("\n", "\\n");
 						s = s.Replace ("\r", "\\r");
-						Message msg = new Message (String.Format ("Found string: \"{0}\"", s),
-							loc, MessageType.Warning);
-
-						if (results == null)
-							results = new MessageCollection (msg);
-						else
-							results.Add (msg);
+						s = String.Format ("Found string: \"{0}\"", s);
+						Runner.Report (method, ins, Severity.Low, Confidence.High, s);
 					}
 					break;
 				default:
@@ -75,7 +70,7 @@ namespace Gendarme.Rules.Portability {
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
