@@ -1,3 +1,11 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs
+	* MarshalStringsInPInvokeDeclarationsRule.cs
+	* PInvokeShouldNotBeVisibleRule.cs
+	* UseManagedAlternativesToPInvokeRule.cs:
+		Update rules wrt framework changes.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Changed to

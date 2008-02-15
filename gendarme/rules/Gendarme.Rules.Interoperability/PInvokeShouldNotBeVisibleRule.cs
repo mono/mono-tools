@@ -31,32 +31,30 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
-	public class PInvokeShouldNotBeVisibleRule : IMethodRule {
+	[Problem ("P/Invoke declarations should not be visible outside of the assembly.")]
+	[Solution ("Wrap the p/invoke call into a managed class/method and include parameters, and result, validation(s).")]
+	public class PInvokeShouldNotBeVisibleRule : Rule, IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule does not apply to non-p/invoke
 			if (!method.IsPInvokeImpl)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
+			
+			// rule applies
+			
+			// ok if method is not visible (this include it's declaring type too)
+			if (!method.IsVisible ())
+				return RuleResult.Success;
 
-			if (!method.IsPublic)
-				return runner.RuleSuccess;
-
-			TypeDefinition type = (TypeDefinition) method.DeclaringType;
-
-			while (type.IsNested) {
-				if (!type.IsNestedPublic)
-					return runner.RuleSuccess;
-				type = (TypeDefinition) type.DeclaringType;
-			}
-			if (!type.IsPublic)
-				return runner.RuleSuccess;
-
-			Location loc = new Location (method);
-			Message msg = new Message ("P/Invoke declarations should not be visible outside of the assembly.", loc, MessageType.Warning);
-			return new MessageCollection (msg);
+			// code will work (low) but it's bad design (non-fx-like validations) and makes
+			// it easier to expose security vulnerabilities
+			Runner.Report (method, Severity.Low, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

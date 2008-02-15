@@ -33,38 +33,39 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Interoperability {
 
-	public class MarshalStringsInPInvokeDeclarationsRule : IMethodRule {
+	[Problem ("Marshaling information for string types is incomplete and what is required may be different from what you expected the default to be.")]
+	[Solution ("Add [DllImport CharSet=] on the method or [MarshalAs] on the parameter(s)")]
+	public class MarshalStringsInPInvokeDeclarationsRule : Rule, IMethodRule {
 
 		private static bool IsStringOrSBuilder (TypeReference reference)
 		{
-			TypeReference original = reference.GetOriginalType ();
-			return original.FullName == "System.String" || original.FullName == "System.Text.StringBuilder";
+			switch (reference.GetOriginalType ().FullName) {
+			case "System.String":
+			case "System.Text.StringBuilder":
+				return true;
+			default:
+				return false;
+			}
 		}
 
-		private static void AddBadParameterMessage (ref MessageCollection messages, ParameterDefinition param)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (messages == null)
-				messages = new MessageCollection ();
+			// rule does not apply to non-pinvoke methods
+			if (!method.IsPInvokeImpl)
+				return RuleResult.DoesNotApply;
 
-			Location loc = new Location (param.Method as MethodDefinition);
-			string text = string.Format ("Parameter '{0}', of type '{1}', does not have [MarshalAs] attribute, yet no [DllImport CharSet=] is set for the method '{2}'.", 
-				param.Name, param.ParameterType.Name, param.Method.Name);
-			Message msg = new Message (text, loc, MessageType.Error);
-			messages.Add (msg);
-		}
+			if (!method.PInvokeInfo.IsCharSetNotSpec)
+				return RuleResult.Success;
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
-		{
-			if (!method.IsPInvokeImpl || !method.PInvokeInfo.IsCharSetNotSpec)
-				return runner.RuleSuccess;
-
-			MessageCollection messages = runner.RuleSuccess;
 			foreach (ParameterDefinition parameter in method.Parameters) {
 				if (IsStringOrSBuilder (parameter.ParameterType) && (parameter.MarshalSpec == null)) {
-					AddBadParameterMessage (ref messages, parameter);
+					string text = string.Format ("Parameter '{0}', of type '{1}', does not have [MarshalAs] attribute, yet no [DllImport CharSet=] is set for the method '{2}'.",
+						parameter.Name, parameter.ParameterType.Name, parameter.Method.Name);
+					Runner.Report (parameter, Severity.High, Confidence.Total, text);
 				}
 			}
-			return messages;
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

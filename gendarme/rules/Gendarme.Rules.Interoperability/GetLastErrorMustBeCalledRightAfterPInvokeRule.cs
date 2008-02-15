@@ -26,17 +26,21 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
-	public class GetLastErrorMustBeCalledRightAfterPInvokeRule : IMethodRule {
+	[Problem ("GetLastError() should be called immediately after this the P/Invoke call.")]
+	[Solution ("Move the call to GetLastError just after the P/Invoke call.")]
+	public class GetLastErrorMustBeCalledRightAfterPInvokeRule : Rule, IMethodRule {
 
 		struct Branch {
 			public readonly Instruction Instruction;
@@ -48,6 +52,8 @@ namespace Gendarme.Rules.Interoperability {
 				this.DirtyMethodCalled = dirty;
 			}
 		}
+
+		private const string Message = "GetLastError() should be called immediately after this the PInvoke call.";
 
 		private const string GetLastError = "System.Int32 System.Runtime.InteropServices.Marshal::GetLastWin32Error()";
 		private List<string> AllowedCalls;
@@ -62,7 +68,7 @@ namespace Gendarme.Rules.Interoperability {
 
 		List<Branch> branches = new List<Branch> ();
 
-		private bool CheckPInvoke (MethodDefinition pinvoke, Instruction startInstruction)
+		private bool CheckPInvoke (Instruction startInstruction)
 		{
 			branches.Clear ();
 			branches.Add (new Branch (startInstruction.Next, false));
@@ -102,8 +108,9 @@ namespace Gendarme.Rules.Interoperability {
 						break;
 
 					if (alternatives != null) {
-						if (alternatives is Instruction) {
-							branches.AddIfNew (new Branch ((Instruction) alternatives, dirty));
+						Instruction alt_ins = (alternatives as Instruction);
+						if (alt_ins != null) {
+							branches.AddIfNew (new Branch (alt_ins, dirty));
 						} else {
 							Instruction [] alts = (Instruction []) alternatives;
 							foreach (Instruction altIns in alts)
@@ -124,12 +131,11 @@ namespace Gendarme.Rules.Interoperability {
 			return true;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule does not apply if the method has no IL
 			if (!method.HasBody)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
@@ -150,21 +156,18 @@ namespace Gendarme.Rules.Interoperability {
 						break;
 
 					// check if GetLastError is called near enough this pinvoke call
-					if (CheckPInvoke (pinvoke, ins))
+					if (CheckPInvoke (ins))
 						break;
 
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (method, ins.Offset);
-					Message msg = new Message ("GetLastError() should be called immediately after this the PInvoke call.", loc, MessageType.Error);
-					results.Add (msg);
+					// code might not work if an error occurs
+					Runner.Report (method, ins, Severity.High, Confidence.High, String.Empty);
 					break;
 				default:
 					break;
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

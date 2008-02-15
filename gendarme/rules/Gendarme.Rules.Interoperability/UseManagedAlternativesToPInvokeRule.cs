@@ -37,7 +37,9 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Interoperability {
 
-	public class UseManagedAlternativesToPInvokeRule : IMethodRule {
+	[Problem ("There is a potential managed API for the p/invoke declaration.")]
+	[Solution ("Use the suggested managed alternative to your p/invoke call and remove it's declaration.")]
+	public class UseManagedAlternativesToPInvokeRule : Rule, IMethodRule {
 
 		private struct PInvokeCall {
 
@@ -89,7 +91,7 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private class ManagedAlternatives {
+		private sealed class ManagedAlternatives {
 
 			private List<string> alternatives = new List<string> ();
 			private TargetRuntime runtime;
@@ -122,28 +124,17 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private static Dictionary<PInvokeCall, ManagedAlternatives> managedAlternatives;
-
-		static UseManagedAlternativesToPInvokeRule ()
-		{
-			managedAlternatives = new Dictionary<PInvokeCall, ManagedAlternatives> ();
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "Sleep"),
-						 new ManagedAlternatives ("System.Threading.Thread::Sleep ()"));
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "FindFirstFile"),
-						 new ManagedAlternatives ("System.IO.Directory::GetDirectories ()", "System.IO.Directory::GetFiles ()", "System.IO.Directory::GetFileSystemEntries ()"));
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "ReadFile"),
-						 new ManagedAlternatives ("System.IO.FileStream"));
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "WaitForMultipleObjects"),
-						 new ManagedAlternatives ("System.Threading.WaitHandle::WaitAny ()", "System.Threading.WaitHandle::WaitAll ()"));
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "GetLastError"),
-						 new ManagedAlternatives ("System.Runtime.InteropServices.Marshal::GetLastWin32Error ()"));
-			managedAlternatives.Add (new PInvokeCall ("user32.dll", "MessageBox"),
-						 new ManagedAlternatives ("System.Windows.Forms.MessageBox::Show ()"));
-			managedAlternatives.Add (new PInvokeCall ("kernel32.dll", "Beep"),
-						 new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Console::Beep ()"));
-			managedAlternatives.Add (new PInvokeCall ("winmm.dll", "PlaySound"),
-						 new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Media.SoundPlayer"));
-		}
+		private static Dictionary<PInvokeCall, ManagedAlternatives> managedAlternatives =
+			new Dictionary<PInvokeCall, ManagedAlternatives> () {
+				{ new PInvokeCall ("kernel32.dll", "Sleep"), new ManagedAlternatives ("System.Threading.Thread::Sleep ()") },
+				{ new PInvokeCall ("kernel32.dll", "FindFirstFile"), new ManagedAlternatives ("System.IO.Directory::GetDirectories ()", "System.IO.Directory::GetFiles ()", "System.IO.Directory::GetFileSystemEntries ()") },
+				{ new PInvokeCall ("kernel32.dll", "ReadFile"), new ManagedAlternatives ("System.IO.FileStream") },
+				{ new PInvokeCall ("kernel32.dll", "WaitForMultipleObjects"), new ManagedAlternatives ("System.Threading.WaitHandle::WaitAny ()", "System.Threading.WaitHandle::WaitAll ()") },
+				{ new PInvokeCall ("kernel32.dll", "GetLastError"), new ManagedAlternatives ("System.Runtime.InteropServices.Marshal::GetLastWin32Error ()") },
+				{ new PInvokeCall ("user32.dll", "MessageBox"), new ManagedAlternatives ("System.Windows.Forms.MessageBox::Show ()") },
+				{ new PInvokeCall ("kernel32.dll", "Beep"), new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Console::Beep ()") },
+				{ new PInvokeCall ("winmm.dll", "PlaySound"), new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Media.SoundPlayer") }
+			};
 
 		private static ManagedAlternatives GetManagedAlternatives (MethodDefinition method, TargetRuntime runtime)
 		{
@@ -151,30 +142,27 @@ namespace Gendarme.Rules.Interoperability {
 			PInvokeCall callInfo = new PInvokeCall (moduleName, method.Name);
 			if (managedAlternatives.ContainsKey (callInfo)) {
 				ManagedAlternatives alts = managedAlternatives [callInfo];
-				if (IsRuntimeVersionGreaterOrEqual (runtime, alts.Runtime))
+				if (runtime >= alts.Runtime)
 					return alts;
 			}
 			return null;
 		}
 
-		private static bool IsRuntimeVersionGreaterOrEqual (TargetRuntime a, TargetRuntime b)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			return (int) a >= (int) b; // as of now it works (and should work further)
-		}
-
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
-		{
+			// rule does not apply to non-pinvoke methods
 			if (!method.IsPInvokeImpl)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
+
+			// rule apply, looks for alternatives
 
 			ManagedAlternatives alternatives = GetManagedAlternatives (method, method.DeclaringType.Module.Assembly.Runtime);
 			if (alternatives == null)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location loc = new Location (method);
 			string message = string.Format ("Do not perform platform-dependent call ({0}) if it can be avoided. Use (one of) the following alternative(s) provided by .NET Framework: {1}.", method.Name, alternatives);
-			Message msg = new Message (message, loc, MessageType.Warning);
-			return new MessageCollection (msg);
+			Runner.Report (method, Severity.Low, Confidence.High, message);
+			return RuleResult.Failure;
 		}
 	}
 }
