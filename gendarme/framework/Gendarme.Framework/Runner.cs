@@ -97,6 +97,9 @@ namespace Gendarme.Framework {
 				try {
 					assembly.MainModule.LoadSymbols ();
 				}
+				catch (TypeLoadException) {
+					// this happens if a Mono.Cecil.Mdb.dll is not found
+				}
 				catch (COMException) {
 					// this happens if a PDB is missing
 				}

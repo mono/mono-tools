@@ -1,3 +1,9 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyResolver.cs: Handle GenericParameter.
+	* Runner.cs: Handle the case where Mono.Cecil.Mdb.dll is not
+	available.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Runner.cs: Expose CurrentRule and CurrentTarget

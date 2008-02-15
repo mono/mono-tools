@@ -31,6 +31,9 @@ using System.Collections;
 
 using Mono.Cecil;
 
+// spouliot
+using Gendarme.Framework.Rocks;
+
 //spouliot: namespace Mono.Linker {
 namespace Gendarme.Framework {
 
@@ -63,8 +66,10 @@ namespace Gendarme.Framework {
 		{
 			type = type.GetOriginalType ();
 
-			if (type is TypeDefinition)
-				return (TypeDefinition) type;
+			// spouliot
+			TypeDefinition result = (type as TypeDefinition);
+			if (result != null)
+				return result;
 
 			AssemblyNameReference reference = type.Scope as AssemblyNameReference;
 			if (reference != null) {
@@ -76,6 +81,12 @@ namespace Gendarme.Framework {
 			if (module != null)
 				return module.Types [type.FullName];
 
+			// spouliot
+			GenericParameter generic = (type as GenericParameter);
+			if (generic != null) {
+				return (generic.Owner as TypeReference).Resolve ();
+			}
+			// spouliot
 			throw new NotImplementedException ();
 		}
 
@@ -166,12 +177,11 @@ namespace Gendarme.Framework {
 				b = ((TypeSpecification) b).ElementType;
 			}
 
-			if (a is GenericParameter || b is GenericParameter) {
+			GenericParameter pa = (a as GenericParameter);
+			GenericParameter pb = (b as GenericParameter);
+			if ((pa != null) || (pb != null)) {
 				if (a.GetType () != b.GetType ())
 					return false;
-
-				GenericParameter pa = (GenericParameter) a;
-				GenericParameter pb = (GenericParameter) b;
 
 				return pa.Position == pb.Position;
 			}
