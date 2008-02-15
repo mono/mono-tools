@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006-2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,9 +28,12 @@
 
 using System;
 
+using Gendarme.Framework;
+
 namespace Gendarme.Rules.Ui {
 
-	public class SystemWindowsFormsExecutableTargetRule: ExecutableTargetRule {
+	[Problem ("The assembly refers to the 'System.Windows.Forms.dll' assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.")]
+	public class SystemWindowsFormsExecutableTargetRule : ExecutableTargetRule {
 
 		protected override string Toolkit {
 			get { return "WinForms"; }

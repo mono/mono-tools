@@ -26,6 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
@@ -34,16 +35,22 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Ui {
 
-	public class UseSTAThreadAttributeOnSWFEntryPointsRule : IAssemblyRule {
+	[Problem ("The System.Windows.Forms applications entry-point (Main) is missing an [STAThread] attribute.")]
+	[Solution ("Add a [STAThread] attribute to your application Main method.")]
+	public class UseSTAThreadAttributeOnSWFEntryPointsRule : Rule, IAssemblyRule {
+
 		private const string SystemWindowsForms = "System.Windows.Forms";
 
 		private const string STAThread = "System.STAThreadAttribute";
 		private const string MTAThread = "System.MTAThreadAttribute";
 
-		public MessageCollection CheckAssembly (AssemblyDefinition assembly, Runner runner)
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			if (assembly.EntryPoint == null)
-				return runner.RuleSuccess;
+			MethodDefinition entry_point = assembly.EntryPoint;
+			
+			// rule applies only if the assembly has an entry point
+			if (entry_point == null)
+				return RuleResult.DoesNotApply;
 
 			bool referencesSWF = false;
 			foreach (AssemblyNameReference assRef in assembly.MainModule.AssemblyReferences) {
@@ -53,17 +60,18 @@ namespace Gendarme.Rules.Ui {
 				}
 			}
 
+			// rule applies only if the assembly reference System.Windows.Forms.dll
 			if (!referencesSWF)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MethodDefinition entryPoint = assembly.EntryPoint;
-			bool hasSTA = entryPoint.HasAttribute (STAThread);
-			bool hasMTA = entryPoint.HasAttribute (MTAThread);
+			bool hasSTA = entry_point.HasAttribute (STAThread);
+			bool hasMTA = entry_point.HasAttribute (MTAThread);
 
+			// success if only [STAThread] attribute is present
 			if (hasSTA && !hasMTA)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			string text = string.Empty;
+			string text = String.Empty;
 			if (!hasSTA && hasMTA)
 				text = "In order for Windows Forms to work properly, replace [System.MTAThread] attribute with [System.STAThread] on the entry point.";
 			else if (hasSTA && hasMTA)
@@ -71,9 +79,9 @@ namespace Gendarme.Rules.Ui {
 			else if (!hasSTA && !hasMTA)
 				text = "In order for Windows Forms to work properly, place [System.STAThread] attribute upon the entry point.";
 
-			Location loc = new Location (entryPoint);
-			Message msg = new Message (text, loc, MessageType.Error);
-			return new MessageCollection (msg);
+			// note: assembly rule reporting a method defect
+			Runner.Report (entry_point, Severity.High, Confidence.Total, text);
+			return RuleResult.Failure;
 		}
 	}
 }

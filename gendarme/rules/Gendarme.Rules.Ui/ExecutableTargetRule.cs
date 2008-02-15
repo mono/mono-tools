@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006-2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -32,7 +32,8 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Ui {
 
-	abstract public class ExecutableTargetRule : IAssemblyRule {
+	[Solution ("Recompile the assembly using '/target:winexe'.")]
+	abstract public class ExecutableTargetRule : Rule, IAssemblyRule {
 
 		private bool CheckReferences (AssemblyDefinition assembly)
 		{
@@ -60,26 +61,25 @@ namespace Gendarme.Rules.Ui {
 
 		abstract protected byte[] GetAssemblyPublicKeyToken ();
 
-		public MessageCollection CheckAssembly (AssemblyDefinition assembly, Runner runner)
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			// 1. Check entry point, if no entry point then it's not an executable
 			if (assembly.EntryPoint == null)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// 2. Check if the assembly references SWF or GTK#
 			if (!CheckReferences (assembly))
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			// *** ok, the rule applies! ***
+			// *** ok, the rule applies! only Success or Failure from this point on ***
 
 			// 3. On Windows a console window will appear if the subsystem isn't Windows
 			//    i.e. the assembly wasn't compiled with /target:winexe
 			if (assembly.Kind == AssemblyKind.Windows)
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			string text = String.Format ("This {0} application was compiled without /target:winexe", Toolkit);
-			Message msg = new Message (text, null, MessageType.Warning);
-			return new MessageCollection (msg);
+			Runner.Report (assembly, Severity.Medium, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

@@ -1,3 +1,11 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutableTargetRule.cs
+	* GtkSharpExecutableTargetRule.cs
+	* SystemWindowsFormsExecutableTargetRule.cs
+	* UseSTAThreadAttributeOnSWFEntryPointsRule.cs:
+		Update rules wrt framework changes.
+
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseSTAThreadAttributeOnSWFEntryPointsRule.cs: New. Rule to check
