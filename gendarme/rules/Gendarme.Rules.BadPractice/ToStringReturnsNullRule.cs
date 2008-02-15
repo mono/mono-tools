@@ -33,31 +33,33 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class ToStringReturnsNullRule: ITypeRule {
+	[Problem ("This type contains a ToString () method that could returns null.")]
+	[Solution ("Return an empty string or other appropriate string rather than returning null.")]
+	public class ToStringReturnsNullRule: Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rules applies to types that overrides System.Object.Equals(object)
 			MethodDefinition method = type.GetMethod (MethodSignatures.ToString);
 			if ((method == null) || !method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
-			if (!CheckIfMethodReturnsNull (method))
-				return runner.RuleSuccess;
+			Instruction ins = CheckIfMethodReturnsNull (method);
+			if (ins == null)
+				return RuleResult.Success;
 
-			// FIXME: location
-			Location location = new Location (method, -1);
-			Message message = new Message ("Method 'ToString()' seems to returns null under some conditions.", location, MessageType.Error);
-			return new MessageCollection (message);
+			Runner.Report (method, ins, Severity.Medium, Confidence.Normal, String.Empty);
+			return RuleResult.Failure;
 		}
 
-		private static bool CheckIfMethodReturnsNull (MethodDefinition method)
+		private static Instruction CheckIfMethodReturnsNull (MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
@@ -65,28 +67,29 @@ namespace Gendarme.Rules.BadPractice {
 					switch (ins.Previous.OpCode.Code) {
 					case Code.Ldarg_0:
 						// very special case where String.ToString() return "this"
-						return false;
+						return null;
 					case Code.Ldloc_0:
 					case Code.Ldloc_1:
 					case Code.Ldloc_2:
+					case Code.Ldloc_3:
 					case Code.Ldloc_S:
 						// FIXME: we could detect some NULL in there
 						break;
 					case Code.Newobj:
 						// we're sure it's not null, e.g. new string ('!', 2)
-						return false;
+						return null;
 					case Code.Ldnull:
 						// we're sure it's null
-						return true;
+						return ins;
 					case Code.Ldstr:
-						return (ins.Previous.Operand == null);
+						return (ins.Previous.Operand == null) ? ins : null;
 					case Code.Ldfld:
 					case Code.Ldsfld:
 						// we could be sure for read-only fields with
 						//	if ((ins.Previous.Operand as FieldDefinition).IsInitOnly)
 						// but since it's unlikely we can track null in them...
 						// ...better not return false positives
-						return false;
+						return null;
 					case Code.Call:
 					case Code.Callvirt:
 						// note: calling other ToString() is safe since the rule applies to them too
@@ -98,7 +101,7 @@ namespace Gendarme.Rules.BadPractice {
 					break;
 				}
 			}
-			return false;
+			return null;
 		}
 	}
 }

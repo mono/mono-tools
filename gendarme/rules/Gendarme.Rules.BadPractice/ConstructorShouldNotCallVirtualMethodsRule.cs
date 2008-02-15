@@ -38,15 +38,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class ConstructorShouldNotCallVirtualMethodsRule : ITypeRule {
+	[Problem ("Some constructors calls virtual methods which won't be known before runtime.")]
+	[Solution ("Avoid calling virtual methods from constructors or seal the the type.")]
+	public class ConstructorShouldNotCallVirtualMethodsRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// sealed classes are ok
 			if (type.IsSealed)
-				return runner.RuleSuccess;
-
-			MessageCollection messages = runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// check each constructor
 			foreach (MethodDefinition constructor in type.Constructors) {
@@ -54,15 +54,15 @@ namespace Gendarme.Rules.BadPractice {
 				if (constructor.IsStatic || !constructor.HasBody)
 					continue;
 
-				CheckConstructor (constructor, ref messages);
+				CheckConstructor (constructor);
 			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 
-		private static void CheckConstructor (MethodDefinition constructor, ref MessageCollection messages)
+		private void CheckConstructor (MethodDefinition constructor)
 		{
 			Stack<string> stack = new Stack<string> ();
-			CheckMethod (constructor, ref messages, stack);
+			CheckMethod (constructor, stack);
 		}
 
 		private static bool IsSubsclass (TypeReference sub, TypeReference type)
@@ -110,7 +110,7 @@ namespace Gendarme.Rules.BadPractice {
 			return false;
 		}
 
-		private static void CheckMethod (MethodDefinition method, ref MessageCollection messages, Stack<string> stack)
+		private void CheckMethod (MethodDefinition method, Stack<string> stack)
 		{
 			if (!method.HasBody)
 				return;
@@ -140,17 +140,12 @@ namespace Gendarme.Rules.BadPractice {
 						continue;
 
 					if (md.IsVirtual && !md.IsFinal) {
-						Location loc = new Location (method, current.Offset);
 						string s = stack.Count == 0 ? method.ToString () : stack.Aggregate ((a1, a2) => a1 + ", " + Environment.NewLine + a2);
-						s = String.Format ("Calling a virtual method, '{0}', from {1} of a non-sealed class is a bad practice.", md, s);
-						Message msg = new Message (s, loc, MessageType.Error);
-						if (messages == null)
-							messages = new MessageCollection (msg);
-						else
-							messages.Add (msg);
+						s = String.Format ("Calling a virtual method, '{0}' from {1}.", md, s);
+						Runner.Report (method, current, Severity.High, Confidence.High, s);
 					} else {
 						stack.Push (method_name);
-						CheckMethod (md, ref messages, stack);
+						CheckMethod (md, stack);
 						stack.Pop ();
 					}
 					break;

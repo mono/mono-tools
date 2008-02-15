@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -32,6 +34,7 @@ using System.Linq;
 using System.Text;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
@@ -39,14 +42,14 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class CheckNewExceptionWithoutThrowingRule : IMethodRule {
+	[Problem ("This method creates an exception that is never throwed nor returned to the caller.")]
+	[Solution ("Make sure the exception is required, throw it (if it is) or remove it (if not).")]
+	public class CheckNewExceptionWithoutThrowingRule : Rule, IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			StackEntryAnalysis sea = null;
 
@@ -100,15 +103,12 @@ namespace Gendarme.Rules.BadPractice {
 				}
 
 				if (!exceptionUsed) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (method, ins.Offset);
-					Message msg = new Message ("This exception is not thrown, passed as an argument or returned by this method.", loc, MessageType.Warning);
-					results.Add (msg);
+					// Critical because code cannot work as intented
+					Runner.Report (method, ins, Severity.Critical, Confidence.High, String.Empty);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

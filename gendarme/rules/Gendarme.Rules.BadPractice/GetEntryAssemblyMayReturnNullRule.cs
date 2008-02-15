@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,41 +37,36 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class GetEntryAssemblyMayReturnNullRule : IMethodRule {
+	[Problem ("This method calls Assembly.GetEntryAssembly which may returns null if not called from the root application domain.")]
+	[Solution ("Avoid depending on Assembly.GetEntryAssembly inside reusable code.")]
+	public class GetEntryAssemblyMayReturnNullRule : Rule, IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition methodDefinition, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule doesn't not apply to methods without code (e.g. p/invokes)
-			if (!methodDefinition.HasBody)
-				return runner.RuleSuccess;
-
-			AssemblyDefinition assembly = methodDefinition.DeclaringType.Module.Assembly;
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
 
 			// not for executables
-			if (assembly.EntryPoint != null)
-				return runner.RuleSuccess;
+			if (method.DeclaringType.Module.Assembly.EntryPoint != null)
+				return RuleResult.DoesNotApply;
 
 			// go!
-			MessageCollection messages = runner.RuleSuccess;
-			foreach (Instruction current in methodDefinition.Body.Instructions) {
+
+			foreach (Instruction current in method.Body.Instructions) {
 				switch (current.OpCode.Code) {
 				case Code.Call:
 				case Code.Calli:
 				case Code.Callvirt:
 					MethodReference mr = (current.Operand as MethodReference);
-					if (mr != null && mr.Name == "GetEntryAssembly"
-					    && mr.DeclaringType.FullName == "System.Reflection.Assembly") { // that's it
-						Location loc = new Location (methodDefinition, current.Offset);
-						Message msg = new Message ("Assembly.GetEntryAssembly () method returns null when it is called not from the root application domain.", loc, MessageType.Warning);
-						if (messages == runner.RuleSuccess)
-							messages = new MessageCollection (msg);
-						else
-							messages.Add (msg);
+					if ((mr != null) && (mr.Name == "GetEntryAssembly")
+						&& (mr.DeclaringType.FullName == "System.Reflection.Assembly")) {
+						Runner.Report (method, current, Severity.Medium, Confidence.Total, String.Empty);
 					}
 					break;
 				}
 			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

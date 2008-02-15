@@ -26,34 +26,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class EqualShouldHandleNullArgRule: ITypeRule {
+	[Problem ("This Equals method does not handle null argument as it should.")]
+	[Solution ("Modify the method implementation to return false if null argument found.")]
+	public class EqualShouldHandleNullArgRule : Rule, ITypeRule {
 
-		private const string Message = "The overridden method Object.Equals (Object) does not return false if null value is found";
-
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rules applies to types that overrides System.Object.Equals(object)
 			MethodDefinition method = type.GetMethod (MethodSignatures.Equals);
 			if ((method == null) || !method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
 			// scan IL to see if null is checked and false returned
 			if (HandlesNullArg (method))
-				return runner.RuleSuccess;
-	
-			Location location = new Location (method);
-			Message msg = new Message (Message, location, MessageType.Error);
-			return new MessageCollection (msg);
+				return RuleResult.Success;
+
+			Runner.Report (method, Severity.Medium, Confidence.High, String.Empty);
+			return RuleResult.Failure;
 		}
 
 		// note: not perfect, in particular when calls to other methods are used

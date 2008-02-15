@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,75 +32,72 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	public class CloneMethodShouldNotReturnNullRule: ITypeRule {
+	[Problem ("The implementation ICloneable.Clone () seems to return null in some circumstances.")]
+	[Solution ("Return an appropriate object instead of returning null.")]
+	public class CloneMethodShouldNotReturnNullRule: Rule, ITypeRule {
 
 		private static bool IsCloneMethod (MethodDefinition method)
 		{
 			return (method.Name == "Clone" && (method.Parameters.Count == 0));
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to types implementing System.ICloneable
 			if (!type.Implements ("System.ICloneable"))
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			foreach (MethodDefinition method in type.Methods) {
-				// look for the Clone() method
-				if (!IsCloneMethod (method))
-					continue;
+			// rule applies only if a body is available (e.g. not for pinvokes...)
+			MethodDefinition method = type.GetMethod (MethodSignatures.Clone);
+			if ((method == null) || (!method.HasBody))
+				return RuleResult.DoesNotApply;
 
-				// rule applies only if a body is available (e.g. not for pinvokes...)
-				if (!method.HasBody)
-					return runner.RuleSuccess;
-
-				// FIXME: still *very* incomplete, but that will handle non-optimized code
-				// from MS CSC where "return null" == "nop | ldnull | stloc.0 | br.s | ldloc.0 | ret"
-				bool return_null = false;
-				Instruction previous = null;
-				foreach (Instruction instruction in method.Body.Instructions) {
-					switch (instruction.OpCode.Code) {
-					case Code.Nop:
-					case Code.Constrained:
-						// don't update previous
-						break;
-					case Code.Ldnull:
-						return_null = true;
+			// FIXME: still *very* incomplete, but that will handle non-optimized code
+			// from MS CSC where "return null" == "nop | ldnull | stloc.0 | br.s | ldloc.0 | ret"
+			bool return_null = false;
+			Instruction previous = null;
+			foreach (Instruction instruction in method.Body.Instructions) {
+				switch (instruction.OpCode.Code) {
+				case Code.Nop:
+				case Code.Constrained:
+					// don't update previous
+					break;
+				case Code.Ldnull:
+					return_null = true;
+					previous = instruction;
+					break;
+				case Code.Br:
+				case Code.Br_S:
+					// don't update previous if branching to next instruction
+					if (instruction.Operand != instruction.Next)
 						previous = instruction;
+					break;
+				case Code.Ldloc_0:
+					if ((previous != null) && (previous.OpCode.Code == Code.Stloc_0))
 						break;
-					case Code.Br:
-					case Code.Br_S:
-						// don't update previous if branching to next instruction
-						if (instruction.Operand != instruction.Next)
-							previous = instruction;
-						break;
-					case Code.Ldloc_0:
-						if ((previous != null) && (previous.OpCode.Code == Code.Stloc_0))
-							break;
-						return_null = false;
-						break;
-					case Code.Ret:
-						if (return_null) {
-							Location location = new Location (method, instruction.Offset);
-							Message message = new Message ("The ICloneable.Clone () method returns null", location, MessageType.Error);
-							return new MessageCollection (message);
-						}
-						previous = instruction;
-						break;
-					case Code.Stloc_0:
-						// return_null doesn't change state
-					default:
-						previous = instruction;
-						break;
+					return_null = false;
+					break;
+				case Code.Ret:
+					if (return_null) {
+						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, String.Empty);
+						return RuleResult.Failure;
 					}
+					previous = instruction;
+					break;
+				case Code.Stloc_0:
+					// return_null doesn't change state
+				default:
+					previous = instruction;
+					break;
 				}
 			}
 
-			return runner.RuleSuccess;
+			return RuleResult.Success;
 		}
 	}
 }
