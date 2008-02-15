@@ -180,7 +180,7 @@ namespace Test.Rules.BadPractice {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -188,7 +188,7 @@ namespace Test.Rules.BadPractice {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new EqualShouldHandleNullArgRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -201,48 +201,56 @@ namespace Test.Rules.BadPractice {
 		public void equalsChecksForNullArgTest ()
 		{
 			type = GetTest ("EqualsChecksForNullArg");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void equalsDoesNotReturnFalseForNullArgTest ()
 		{
 			type = GetTest ("EqualsDoesNotReturnFalseForNullArg");
-			Assert.IsNotNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void equalsNotOverriddenNotCheckingNullTest ()
 		{
 			type = GetTest ("EqualsNotOverriddenNotCheckingNull");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void equalsNotOverriddenNotReturningFalseForNullTest ()
 		{
 			type = GetTest ("EqualsNotOverriddenNotReturningFalseForNull");
-			Assert.IsNotNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void EqualsReturnConstant ()
 		{
 			type = GetTest ("EqualsReturnsFalse");
-			Assert.IsNull (rule.CheckType (type, runner), "EqualsReturnsFalse");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 
 			type = GetTest ("EqualsReturnsTrue");
-			Assert.IsNotNull (rule.CheckType (type, runner), "EqualsReturnsTrue");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void EqualsUsingIs ()
 		{
 			type = GetTest ("EqualsUsingIsReturnFalse");
-			Assert.IsNull (rule.CheckType (type, runner), "EqualsUsingIsReturnFalse");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 
 			type = GetTest ("EqualsUsingIsReturnTrue");
-			Assert.IsNotNull (rule.CheckType (type, runner), "EqualsUsingIsReturnTrue");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
@@ -250,21 +258,24 @@ namespace Test.Rules.BadPractice {
 		{
 			type = GetTest ("EqualsCallBase");
 			// we can't be sure so we shut up (else false positives gets really bad)
-			Assert.IsNull (rule.CheckType (type, runner), "EqualsCallBase");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void EqualsCheckThisTest ()
 		{
 			type = GetTest ("EqualsCheckThis");
-			Assert.IsNull (rule.CheckType (type, runner), "EqualsCheckThis");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void EqualsCheckTypeTest ()
 		{
 			type = GetTest ("EqualsCheckType");
-			Assert.IsNull (rule.CheckType (type, runner), "EqualsCheckType");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

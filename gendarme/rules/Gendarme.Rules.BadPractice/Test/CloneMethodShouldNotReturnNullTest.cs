@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,18 +95,18 @@ namespace Test.Rules.BadPractice
 			}
 		}
 			
-	 	private ITypeRule typeRule;
+	 	private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
 		
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			typeRule = new CloneMethodShouldNotReturnNullRule ();
-			messageCollection = null;
+			rule = new CloneMethodShouldNotReturnNullRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -117,42 +119,40 @@ namespace Test.Rules.BadPractice
 		public void cloneMethodReturningNullTest ()
 		{
 			type = GetTest ("CloneMethodReturningNull");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void cloneMethodNotReturningNullTest ()
 		{
 			type = GetTest ("CloneMethodNotReturningNull");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void notUsingICloneableCloneTest ()
 		{
 			type = GetTest ("NotUsingICloneableClone");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void cloneWithDifferentArgsReturningNullTest ()
 		{
 			type = GetTest ("CloneWithDifferentArgsReturningNull");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void cloneReturningNullInSomeConditionsTest ()
 		{
 			type = GetTest ("CloneReturningNullInSomeConditions");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

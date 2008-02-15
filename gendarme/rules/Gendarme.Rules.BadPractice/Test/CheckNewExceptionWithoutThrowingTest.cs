@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -43,6 +45,7 @@ namespace Test.Rules.BadPractice {
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 		private CheckNewExceptionWithoutThrowingRule rule;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -51,6 +54,7 @@ namespace Test.Rules.BadPractice {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.BadPractice.CheckNewExceptionWithoutThrowingTest"];
 			rule = new CheckNewExceptionWithoutThrowingRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public MethodDefinition GetTest (string name)
@@ -72,7 +76,8 @@ namespace Test.Rules.BadPractice {
 		public void TestDirectThrow ()
 		{
 			MethodDefinition method = GetTest ("DirectThrow");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public void SimpleError ()
@@ -84,7 +89,8 @@ namespace Test.Rules.BadPractice {
 		public void TestSimpleError ()
 		{
 			MethodDefinition method = GetTest ("SimpleError");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		public void LocalVariable ()
@@ -100,7 +106,8 @@ namespace Test.Rules.BadPractice {
 		public void TestLocalVariable ()
 		{
 			MethodDefinition method = GetTest ("LocalVariable");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public object Return ()
@@ -114,7 +121,8 @@ namespace Test.Rules.BadPractice {
 		public void TestReturn ()
 		{
 			MethodDefinition method = GetTest ("Return");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public object ReturnOther ()
@@ -129,7 +137,8 @@ namespace Test.Rules.BadPractice {
 		public void TestReturnOther ()
 		{
 			MethodDefinition method = GetTest ("ReturnOther");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		public object Branch ()
@@ -145,7 +154,8 @@ namespace Test.Rules.BadPractice {
 		public void TestBranch ()
 		{
 			MethodDefinition method = GetTest ("Branch");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public void TryCatch ()
@@ -166,7 +176,8 @@ namespace Test.Rules.BadPractice {
 		public void TestTryCatch ()
 		{
 			MethodDefinition method = GetTest ("TryCatch");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public void TryCatch2 ()
@@ -188,7 +199,8 @@ namespace Test.Rules.BadPractice {
 		public void TestTryCatch2 ()
 		{
 			MethodDefinition method = GetTest ("TryCatch2");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 
@@ -211,7 +223,8 @@ namespace Test.Rules.BadPractice {
 		public void TestTryCatchFinally ()
 		{
 			MethodDefinition method = GetTest ("TryCatchFinally");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public void Out (out Exception ex)
@@ -223,7 +236,8 @@ namespace Test.Rules.BadPractice {
 		public void TestOut ()
 		{
 			MethodDefinition method = GetTest ("Out");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		public void Ref (ref Exception ex)
@@ -235,7 +249,8 @@ namespace Test.Rules.BadPractice {
 		public void TestRef ()
 		{
 			MethodDefinition method = GetTest ("Ref");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -249,7 +264,8 @@ namespace Test.Rules.BadPractice {
 		public void TestCall ()
 		{
 			MethodDefinition method = GetTest ("Call");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		public void Call2 ()
@@ -262,7 +278,8 @@ namespace Test.Rules.BadPractice {
 		public void TestCall2 ()
 		{
 			MethodDefinition method = GetTest ("Call2");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

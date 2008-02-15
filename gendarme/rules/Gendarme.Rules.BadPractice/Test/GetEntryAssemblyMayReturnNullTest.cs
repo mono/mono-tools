@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +71,7 @@ namespace Test.Rules.BadPractice {
 
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 
 		[TestFixtureSetUp]
@@ -78,7 +80,7 @@ namespace Test.Rules.BadPractice {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new GetEntryAssemblyMayReturnNullRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -89,35 +91,41 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void TestMethodNotCallingGetEntryAssembly ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("NoCalls", new Type [] { }), runner);
-			Assert.IsNull (messages);
+			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("NoCalls", new Type [] { });
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestGetEntryAssemblyCallFromExecutable ()
 		{
-			assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("Main", new Type [] { });
-			assembly.Kind = AssemblyKind.Console;
-			MessageCollection messages = rule.CheckMethod (GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { }), runner);
-			Assert.IsNull (messages);
-			assembly.EntryPoint = null;
-			assembly.Kind = AssemblyKind.Dll;
+			try {
+				assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("Main", new Type [] { });
+				assembly.Kind = AssemblyKind.Console;
+				MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { });
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
+				Assert.AreEqual (0, runner.Defects.Count, "Count");
+			}
+			finally {
+				assembly.EntryPoint = null;
+				assembly.Kind = AssemblyKind.Dll;
+			}
 		}
 
 		[Test]
 		public void TestMethodCallingGetEntryAssemblyOnce ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("OneCall", new Type [] { }), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("OneCall", new Type [] { });
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestMethodCallingGetEntryAssemblyThreeTimes ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { }), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (3, messages.Count);
+			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { });
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (3, runner.Defects.Count, "Count");
 		}
 	}
 }

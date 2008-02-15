@@ -1,3 +1,14 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckNewExceptionWithoutThrowingTest.cs
+	* CheckNewThreadWithoutStartTest.cs
+	* CloneMethodShouldNotReturnNullTest.cs
+	* ConstructorShouldNotCallVirtualMethodsTest.cs
+	* EqualShouldHandleNullArgTest.cs
+	* GetEntryAssemblyMayReturnNullTest.cs
+	* ToStringReturnsNullTest.cs
+		Update unit tests wrt framework changes.
+
 2008-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckNewExceptionWithoutThrowingTest.cs: New. Unit tests by 

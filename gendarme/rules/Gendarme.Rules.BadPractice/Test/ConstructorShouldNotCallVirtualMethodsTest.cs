@@ -240,7 +240,7 @@ namespace Test.Rules.BadPractice {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 
 		[TestFixtureSetUp]
@@ -249,7 +249,7 @@ namespace Test.Rules.BadPractice {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new ConstructorShouldNotCallVirtualMethodsRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -257,101 +257,108 @@ namespace Test.Rules.BadPractice {
 			return assembly.MainModule.Types [typeof (T).FullName];
 		}
 
-
 		[Test]
 		public void TestClassWithStaticCtor ()
 		{
-			Assert.IsNull (rule.CheckType (GetTest<ClassWithStaticCtor> (), runner));
+			TypeDefinition type = GetTest<ClassWithStaticCtor> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestSealedClassWithVirtualCall ()
 		{
-			Assert.IsNull (rule.CheckType (GetTest<SealedClassWithVirtualCall> (), runner));
+			TypeDefinition type = GetTest<SealedClassWithVirtualCall> ();
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassWithInstanceOfItself ()
 		{
-			Assert.IsNull (rule.CheckType (GetTest<ClassWithInstanceOfItself> (), runner));
+			TypeDefinition type = GetTest<ClassWithInstanceOfItself> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCallingVirtualMethodOnce ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassCallingVirtualMethodOnce> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassCallingVirtualMethodOnce> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCallingVirtualMethodThreeTimes ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassCallingVirtualMethodThreeTimes> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (3, messages.Count);
+			TypeDefinition type = GetTest<ClassCallingVirtualMethodThreeTimes> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (3, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassNotCallingVirtualMethods ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassNotCallingVirtualMethods> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<ClassNotCallingVirtualMethods> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCallingVirtualMethodFromBaseClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassCallingVirtualMethodFromBaseClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassCallingVirtualMethodFromBaseClass> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCallingVirtualPropertyFromBaseClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassCallingVirtualPropertyFromBaseClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassCallingVirtualPropertyFromBaseClass> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassIndirectlyCallingVirtualMethod ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassIndirectlyCallingVirtualMethod> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassIndirectlyCallingVirtualMethod> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassIndirectlyCallingVirtualMethodFromBaseClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassIndirectlyCallingVirtualMethodFromBaseClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassIndirectlyCallingVirtualMethodFromBaseClass> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassIndirectlyCallingVirtualPropertyFromBaseClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassIndirectlyCallingVirtualPropertyFromBaseClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassIndirectlyCallingVirtualPropertyFromBaseClass> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassCallingVirtualMethodFromOtherClasses ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassCallingVirtualMethodFromOtherClasses> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<ClassCallingVirtualMethodFromOtherClasses> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestClassWithRecursiveVirtualCall ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ClassWithRecursiveVirtualCall> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<ClassWithRecursiveVirtualCall> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

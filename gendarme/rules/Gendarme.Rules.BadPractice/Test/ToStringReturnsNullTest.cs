@@ -120,7 +120,7 @@ namespace Test.Rules.BadPractice {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MinimalRunner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -128,7 +128,7 @@ namespace Test.Rules.BadPractice {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new ToStringReturnsNullRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -141,14 +141,16 @@ namespace Test.Rules.BadPractice {
 		public void ReturningNullTest ()
 		{
 			type = GetTest ("ToStringReturningNull");
-			Assert.IsNotNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void ReturningEmptyStringTest ()
 		{
 			type = GetTest ("ToStringReturningEmptyString");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
@@ -156,35 +158,40 @@ namespace Test.Rules.BadPractice {
 		{
 			type = GetTest ("ToStringReturningField");
 			// there's doubt but it's not easy (i.e. false positives) to be sure
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ReturningConstField ()
 		{
 			type = GetTest ("ToStringReturningConstField");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ReturningReadOnlyField ()
 		{
 			type = GetTest ("ToStringReturningReadOnlyField");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ReturningNewString ()
 		{
 			type = GetTest ("ToStringReturningNewString");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ReturningStringFormat ()
 		{
 			type = GetTest ("ToStringReturningStringFormat");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
@@ -192,7 +199,8 @@ namespace Test.Rules.BadPractice {
 		{
 			Assert.AreEqual (String.Empty, Convert.ToString ((object) null), "Convert.ToString(object)");
 			type = GetTest ("ToStringReturningConvertToStringObject");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
@@ -204,14 +212,16 @@ namespace Test.Rules.BadPractice {
 			// if the value passed to Convert.ToString is null or not
 			Assert.IsNull (Convert.ToString ((string) null), "Convert.ToString((string)null)");
 			type = GetTest ("ToStringReturningConvertToStringString");
-			Assert.IsNotNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ReturningTypeName ()
 		{
 			type = GetTest ("ToStringReturningTypeName");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }
