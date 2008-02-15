@@ -4,7 +4,7 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //
-// 	(C) 2007 Néstor Salceda
+// 	(C) 2007-2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the

@@ -185,7 +185,7 @@ namespace Test.Rules.Smells {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -193,34 +193,22 @@ namespace Test.Rules.Smells {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidCodeDuplicatedInSameClassRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (message.Type, messageType);
-			}
-		}
-		
 		[Test]
 		public void TestClassWithoutCodeDuplicated () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithoutCodeDuplicated"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 		
 		[Test]
 		public void TestClassWithCodeDuplicated () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithCodeDuplicated"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (3, messageCollection.Count);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (3, runner.Defects.Count);
 		}
 	}
 }

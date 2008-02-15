@@ -113,7 +113,7 @@ namespace Test.Rules.Smells {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp () 
@@ -121,24 +121,22 @@ namespace Test.Rules.Smells {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidLargeClassesRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
 		public void LargeClassTest () 
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.LargeClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (2, runner.Defects.Count);
 		}
 
 		[Test]
 		public void NotLargeClassTest () 
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.NotLargeClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		
@@ -146,72 +144,66 @@ namespace Test.Rules.Smells {
 		public void ConstantClassTest () 
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.ConstantClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
-
 
 		[Test]
 		public void ClassWithPrefixedFieldsWithCamelCasingTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.ClassWithPrefixedFieldsWithCamelCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 			
 		[Test]
 		public void ClassWithoutPrefixedFieldsWithMDashCasingTest () 
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.ClassWithoutPrefixedFieldsWithMDashCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void ClassWithPrefixedFieldsWithDashCasingTest () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithPrefixedFieldsWithDashCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void ClassWithPrefixedFieldsWithMDashCasingTest () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithPrefixedFieldsWithMDashCasing"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void ClassWithSomeConstantsFields ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithSomeConstantsFields"];
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void ClassWithSomeReadOnlyFields ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithSomeReadOnlyFields"];
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void ClassWithAutoImplementedProperties ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.AutoImplementedPropertiesClass"];
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void EnumsShouldNotBeCheckedTest ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.LargeEnum"];
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 	}
 }

@@ -4,7 +4,7 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //
-// 	(C) 2007 Néstor Salceda
+// 	(C) 2007-2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,26 +30,20 @@ using System;
 using System.Collections;
 
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
-
-	public class AvoidCodeDuplicatedInSiblingClassesRule : ITypeRule {
-		private MessageCollection messageCollection;
+	
+	[Problem ("There are same code structure in various methods in sibling classes.  Your code will be better if you can unify them.")]
+	[Solution ("You can apply the Pull Up Method refactoring.")]
+	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
 		private CodeDuplicatedLocator codeDuplicatedLocator;
 
 		private void FindCodeDuplicated (TypeDefinition type, ICollection siblingClasses)
 		{
-			foreach (MethodDefinition method in type.Methods) {
-				foreach (TypeDefinition sibling in siblingClasses) {
-					foreach (Message message in codeDuplicatedLocator.CompareMethodAgainstTypeMethods (method, sibling)) {
-						if (messageCollection == null)
-							messageCollection = new MessageCollection ();
-						messageCollection.Add (message);
-					}
-				}
-			}
+			foreach (MethodDefinition method in type.Methods) 
+				foreach (TypeDefinition sibling in siblingClasses) 
+					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (this, method, sibling);
 		}
 
 		private void CompareSiblingClasses (ICollection siblingClasses)
@@ -60,21 +54,15 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			//As rules are once instantiated and MessageCollection
-			//is a field, then you will need initialize the
-			//messageCollection every time you check a type.
-			messageCollection = null;
 			codeDuplicatedLocator = new CodeDuplicatedLocator ();
 
 			ICollection siblingClasses = Utilities.GetInheritedClassesFrom (type);
 			if (siblingClasses.Count >= 2)
 				CompareSiblingClasses (siblingClasses);
 
-			if (messageCollection == null || messageCollection.Count == 0)
-				return runner.RuleSuccess;
-			return messageCollection;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

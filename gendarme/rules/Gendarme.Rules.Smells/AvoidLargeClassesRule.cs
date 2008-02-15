@@ -4,7 +4,7 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //
-// 	(C) 2007 Néstor Salceda
+// 	(C) 2007-2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -37,9 +37,10 @@ namespace Gendarme.Rules.Smells {
 	//SUGGESTION: Public / Private ratios.
 	//SUGGESTION: Lines of Code.
 	//SUGGESTION: Weird distributions.
-	public class AvoidLargeClassesRule : ITypeRule {
+	[Problem ("The class is trying to do too much.  Generally if a class is too large, duplicated code will not be far.")]
+	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
+	public class AvoidLargeClassesRule : Rule,ITypeRule {
 
-		private MessageCollection messageCollection;
 		private static int maxFields = 25;
 
 		public static int MaxFields {
@@ -67,19 +68,12 @@ namespace Gendarme.Rules.Smells {
 			return counter >= MaxFields;
 		}
 
-		private void CheckForClassFields (TypeDefinition type)
+		private RuleResult CheckForClassFields (TypeDefinition type)
 		{
-			if (IsTooLarge (type))
-				AddMessage (type, "This class contains a lot of fields.  This is a sign for the Large Class Smell", MessageType.Error);
-		}
-
-		private void AddMessage (TypeDefinition type, string summary, MessageType messageType)
-		{
-			Location location = new Location (type);
-			Message message = new Message (summary, location, messageType);
-			if (messageCollection == null)
-				messageCollection = new MessageCollection ();
-			messageCollection.Add (message);
+			if (IsTooLarge (type)) {
+				Runner.Report (type, Severity.High, Confidence.High, "This type contains a lot of fields.");
+			}
+			return RuleResult.Success;	
 		}
 
 		private static bool HasPrefixedFields (string prefix, TypeDefinition type)
@@ -135,7 +129,7 @@ namespace Gendarme.Rules.Smells {
 			return String.Empty;
 		}
 
-		private static bool ExitsCommonPrefixes (TypeDefinition type)
+		private bool ExitsCommonPrefixes (TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				// skip special, constant and read-only fields
@@ -146,34 +140,30 @@ namespace Gendarme.Rules.Smells {
 					continue;
 
 				string prefix = GetFieldPrefix (field);
-				if (HasPrefixedFields (prefix, type))
+				if (HasPrefixedFields (prefix, type)) {
+					Runner.Report (type, Severity.Medium, Confidence.High, "This type contains common prefixes.");
 					return true;
+				}
 			}
 			return false;
 		}
 
-		private void CheckForCommonPrefixesInFields (TypeDefinition type)
+		private RuleResult CheckForCommonPrefixesInFields (TypeDefinition type)
 		{
 			if (ExitsCommonPrefixes (type))
-				AddMessage (type, "This type contains some fields with the same prefix.  Although this isn't bad, it's a sign for extract a class, for avoid the Large Class smell.", MessageType.Warning);
+				return RuleResult.Failure;
+			return RuleResult.Success;
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			messageCollection = null;
-
-			if (type.IsEnum)
-				return runner.RuleSuccess;
-
-			if (type.IsGeneratedCode ())
-				return runner.RuleSuccess;
+			if (type.IsEnum || type.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
 
 			CheckForClassFields (type);
 			CheckForCommonPrefixesInFields (type);
 
-			if (messageCollection == null || messageCollection.Count == 0)
-				return runner.RuleSuccess;
-			return messageCollection;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -4,7 +4,7 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //
-// 	(C) 2007 Néstor Salceda
+// 	(C) 2007-2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -97,19 +97,18 @@ namespace Gendarme.Rules.Smells {
 			return false;
 		}
 
-		internal MessageCollection CompareMethodAgainstTypeMethods (MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
+		internal bool CompareMethodAgainstTypeMethods (Rule rule, MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
 		{
-			MessageCollection messageCollection = new MessageCollection ();
+			bool containsDuplicated = false;
 			if (!CheckedTypes.Contains (targetTypeDefinition.Name)) {
 				foreach (MethodDefinition targetMethod in targetTypeDefinition.Methods) {
 					if (ContainsDuplicatedCode (currentMethod, targetMethod)) {
-						Location location = new Location (currentMethod);
-						Message message = new Message (String.Format ("Exists code duplicated with {0}.{1}", targetTypeDefinition.Name, targetMethod.Name), location, MessageType.Error);
-						messageCollection.Add (message);
+						rule.Runner.Report (currentMethod, Severity.High, Confidence.Normal,String.Format ("Exists code duplicated with {0}.{1}", targetTypeDefinition.Name, targetMethod.Name));
+						containsDuplicated = true;
 					}
 				}
 			}
-			return messageCollection;
+			return containsDuplicated; 
 		}
 	}
 }

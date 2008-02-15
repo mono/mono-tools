@@ -128,7 +128,7 @@ namespace Test.Rules.Smells {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp () 
@@ -136,59 +136,53 @@ namespace Test.Rules.Smells {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidSpeculativeGeneralityRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
 		public void AbstractClassesWithoutResponsabilityTest () 
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.AbstractClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void AbstractClassesWithResponsabilityTest ()
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.OtherAbstractClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void ClassWithUnusedParameterTest () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithUnusedParameter"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 		
 		[Test]
 		public void ClassWithFourUnusedParametersTest () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithFourUnusedParameters"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (4, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (4, runner.Defects.Count);
 		}
 
 		[Test]
 		public void ClassWithUnnecessaryDelegationTest ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.UnnecessaryDelegatedClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void ClassWithoutUnnecessaryDelegationTest ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.NotUnnecessaryDelegatedClass"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

@@ -785,7 +785,7 @@ namespace Test.Rules.Smells {
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
 		private MethodDefinition method;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp () 
@@ -793,7 +793,7 @@ namespace Test.Rules.Smells {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidLongMethodsRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		public void LongMethod () 
@@ -1046,121 +1046,106 @@ namespace Test.Rules.Smells {
 		public void LongMethodTest () 
 		{
 			method = GetMethodForTest ("LongMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void EmptyMethodTest () 
 		{
 			method = GetMethodForTest ("EmptyMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void ShortMethodTest () 
 		{
 			method = GetMethodForTest ("ShortMethod");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void FalseBuildMethodTest ()
 		{
 			method = GetMethodForTest ("Build");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-		
+
 		[Test]
 		public void WidgetBuildMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWidget", "Build");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void WidgetInitializeComponentMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWidget", "InitializeComponent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-
 
 		[Test]
 		public void DialogBuildMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainDialog", "Build");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void DialogInitializeComponentMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainDialog", "InitializeComponent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void WindowBuildMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWindow", "Build");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply ,rule.CheckMethod (method));
 		}
 
 		[Test]
 		public void WindowInitializeComponentMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWindow", "InitializeComponent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
-	
+
 		[Test]
 		public void FalseInitializeComponentTest () 
 		{
 			method = GetMethodForTest ("InitializeComponent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void FormInitializeComponentTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainForm", "InitializeComponent");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void FormBuildMethodTest () 
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Smells.MainForm", "Build");
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void LongStaticConstructorWithoutFieldsTest () 
 		{
 			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithoutFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (staticConstructor, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (staticConstructor));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		
@@ -1168,8 +1153,7 @@ namespace Test.Rules.Smells {
 		public void LongStaticConstructorWithFieldsTest () 
 		{
 			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (staticConstructor, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (staticConstructor));
 		}
 	}
 }

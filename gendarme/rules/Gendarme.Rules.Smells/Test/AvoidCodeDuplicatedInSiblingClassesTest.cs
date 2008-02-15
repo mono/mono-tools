@@ -93,7 +93,7 @@ namespace Test.Rules.Smells {
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -101,24 +101,22 @@ namespace Test.Rules.Smells {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidCodeDuplicatedInSiblingClassesRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
 		public void BaseClassWithCodeDuplicatedTest () 
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.BaseClassWithCodeDuplicated"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void BaseClassWithoutCodeDuplicatedTest ()
 		{
 			type = assembly.MainModule.Types ["Test.Rules.Smells.BaseClassWithoutCodeDuplicated"];
-			messageCollection = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

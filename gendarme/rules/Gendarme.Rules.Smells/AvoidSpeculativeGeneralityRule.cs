@@ -36,28 +36,20 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 
 namespace Gendarme.Rules.Smells {
-	public class AvoidSpeculativeGeneralityRule : ITypeRule {
+	[Problem ("If you will need the feature in the future then you should implement it in the future.")]
+	[Solution ("You can apply various refactorings: Collapse Hierarchy, Inline Class, Remove Parameter or Rename Method.")]
+	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
 
-		private MessageCollection messageCollection;
 
 		private void CheckAbstractClassWithoutResponsability (TypeDefinition type)
 		{
 			if (type.IsAbstract) {
 				ICollection inheritedClasses = Utilities.GetInheritedClassesFrom (type);
 				if (inheritedClasses.Count == 1)
-					AddMessage (type, "This abstract class only has one class inheritting from.  The abstract classes without responsability are a sign for the Speculative Generality smell.");
+					Runner.Report (type, Severity.Medium, Confidence.Normal, "This abstract class has only one class inheritting from.  The abstract classes without responsability are a sign for the Speculative Generality smell.");
 			}
 		}
 
-		private void AddMessage (TypeDefinition type, string summary)
-		{
-			Location location = new Location (type);
-			Message message = new Message (summary, location, MessageType.Error);
-			if (messageCollection == null)
-				messageCollection = new MessageCollection ();
-			messageCollection.Add (message);
-		}
-		
 		//return true if the method only contains only a single call.
 		private static bool OnlyDelegatesCall (MethodDefinition method)
 		{
@@ -95,59 +87,44 @@ namespace Gendarme.Rules.Smells {
 		private void CheckUnnecesaryDelegation (TypeDefinition type)
 		{
 			if (MostlyMethodsDelegatesCall (type) && InheritsOnlyFromObject (type))
-				AddMessage (type, "This class contains a lot of methods that only delgates the call to other.  This kind of Delegation could be a sign for Speculative Generality");
+				Runner.Report (type, Severity.Medium, Confidence.Normal, "This class contains a lot of methods that only delegates the call to other.  This king of Delegation could be a sign for Speculative Generality");
 		}
 
-		private static bool AvoidUnusedParametersRuleScheduled (Runner runner)
+		private bool AvoidUnusedParametersRuleScheduled ()
 		{
-			foreach (IMethodRule rule in runner.Rules.Method) {
+			foreach (IMethodRule rule in Runner.Rules) {
 				if (rule is AvoidUnusedParametersRule)
 					return true;
 			}
 			return false;
 		}
 
-		private void AddExistingMessages (MessageCollection existingMessages) {
-			if (existingMessages == null)
-				return;
-
-			foreach (Message violation in existingMessages) {
-				Message message = new Message ("This method contains unused parameters.  This is a sign for the Speculative Generality smell.",violation.Location, MessageType.Error);
-				if (messageCollection == null)
-					messageCollection = new MessageCollection ();
-				messageCollection.Add (message);
-			}
-		}
-
-		private void CheckMethods (IMethodRule rule, ICollection methods, Runner runner)
+		private void CheckMethods (IMethodRule rule, ICollection methods)
 		{
 			foreach (MethodDefinition method in methods) {
-				AddExistingMessages (rule.CheckMethod (method, runner));
+				rule.CheckMethod (method);
 			}
 		}
 
-		private void CheckUnusedParameters (TypeDefinition type, Runner runner)
+		private void CheckUnusedParameters (TypeDefinition type)
 		{
 			IMethodRule avoidUnusedParameters = new AvoidUnusedParametersRule ();
-			CheckMethods (avoidUnusedParameters, type.Methods, runner);
-			CheckMethods (avoidUnusedParameters, type.Constructors, runner);
+			avoidUnusedParameters.Initialize (Runner);
+			CheckMethods (avoidUnusedParameters, type.Methods);
+			CheckMethods (avoidUnusedParameters, type.Constructors);
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsGeneratedCode ())
-				return runner.RuleSuccess;
-
-			messageCollection = null;
-
+				return RuleResult.DoesNotApply;
+			
 			CheckAbstractClassWithoutResponsability (type);
-			if (!AvoidUnusedParametersRuleScheduled (runner))
-				CheckUnusedParameters (type, runner);
+			if (!AvoidUnusedParametersRuleScheduled ())
+				CheckUnusedParameters (type);
 
 			CheckUnnecesaryDelegation (type);
-			if (messageCollection == null || messageCollection.Count == 0)
-				return runner.RuleSuccess;
-			return messageCollection;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

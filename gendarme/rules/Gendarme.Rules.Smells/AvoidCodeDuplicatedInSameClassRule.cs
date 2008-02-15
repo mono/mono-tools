@@ -27,34 +27,24 @@
 //
 
 using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Text;
 
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
 
-	public class AvoidCodeDuplicatedInSameClassRule : ITypeRule {
-
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+	[Problem ("There are same code structure in various methods in the same class.  Your code will be better if you can unify them.")]
+	[Solution ("You should apply the Extract Method refactoring and invoke the method from the places.")]
+	public class AvoidCodeDuplicatedInSameClassRule : Rule, ITypeRule {
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			MessageCollection messageCollection = null;
 			CodeDuplicatedLocator locator = new CodeDuplicatedLocator ();
 			foreach (MethodDefinition current in type.Methods) {
-				foreach (Message message in locator.CompareMethodAgainstTypeMethods (current, type)) {
-					if (messageCollection == null)
-						messageCollection = new MessageCollection ();
-					messageCollection.Add (message);
-				}
+				locator.CompareMethodAgainstTypeMethods (this, current, type);
 				locator.CheckedMethods.Add (current.Name);
 			}
 
-			if (messageCollection == null || messageCollection.Count == 0)
-				return runner.RuleSuccess;
-			return messageCollection;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

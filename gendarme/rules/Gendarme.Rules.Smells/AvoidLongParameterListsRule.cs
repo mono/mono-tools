@@ -29,7 +29,6 @@
 using System;
 
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
@@ -37,7 +36,9 @@ namespace Gendarme.Rules.Smells {
 	//uncommon.
 	//SUGGESTION: Different value for public / private / protected methods *may*
 	//be useful.
-	public class AvoidLongParameterListsRule : IMethodRule {
+	[Problem ("Generally, long parameter lists are hard to understand because they become hard to use and inconsistent.  And you will be forever changing them if you need more data.")]
+	[Solution ("You should apply the Replace parameter with method refactoring, or preserve whole object or introduce parameter object")]
+	public class AvoidLongParameterListsRule : Rule,IMethodRule {
 		private int maxParameters = 6;
 
 		public int MaxParameters {
@@ -80,22 +81,17 @@ namespace Gendarme.Rules.Smells {
 				return method.Parameters.Count >= MaxParameters;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// we don't control, nor report, p/invoke declarations - someimes the poor C 
 			// guys don't have a choice to make long parameter lists ;-)
 			if (method.IsPInvokeImpl)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			if (HasLongParameterList (method)) {
-				MessageCollection messageCollection = new MessageCollection ();
-				Location location = new Location (method);
-				Message message = new Message ("The method contains a long parameter list.",location, MessageType.Error);
-				messageCollection.Add (message);
-				return messageCollection;
-			}
+			if (HasLongParameterList (method)) 
+				Runner.Report (method, Severity.Medium, Confidence.Normal, "This method contains a long parameter list.");
 
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

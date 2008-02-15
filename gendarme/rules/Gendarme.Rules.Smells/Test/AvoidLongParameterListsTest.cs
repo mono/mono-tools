@@ -42,7 +42,7 @@ namespace Test.Rules.Smells {
 		private AssemblyDefinition assembly;
 		private MethodDefinition method;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp () 
@@ -51,7 +51,7 @@ namespace Test.Rules.Smells {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types["Test.Rules.Smells.AvoidLongParameterListsTest"];
 			rule = new AvoidLongParameterListsRule ();
-			messageCollection = null;
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetMethodForTest (string methodName, Type[] parameterTypes) 
@@ -103,74 +103,66 @@ namespace Test.Rules.Smells {
 		public void MethodWithoutParametersTest () 
 		{
 			method = GetMethodForTest ("MethodWithoutParameters", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void MethodwithLongParameterListTest () 
 		{
 			method = GetMethodForTest ("MethodWithLongParameterList", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void MethodWithoutLongParameterList () 
 		{
 			method = GetMethodForTest ("MethodWithoutLongParameterList", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void OverloadedMethodTest () 
 		{
 			method = GetMethodForTest ("OverloadedMethod", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void OverloadedMethodWithParametersTest () 
 		{
 			method = GetMethodForTest ("OverloadedMethod", new Type[] {typeof (int)});
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void LongOverloadedMethodWithLittleOverloadTest () 
 		{
 			method = GetMethodForTest ("OverloadedMethod", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double), typeof (short), typeof (int), typeof (string[])});
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void LongOverloadedMethodWithoutLittleOverloadTest () 
 		{
 			method = GetMethodForTest ("OtherOverloaded", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double)});
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void OtherLongOverloadedMethodWithoutLittleOverloadTest () 
 		{
 			method = GetMethodForTest ("OtherOverloaded", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double), typeof (short)});
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (1, runner.Defects.Count);
 		}
 
 		[Test]
 		public void IgnoreExternalMethods ()
 		{
 			method = GetMethodForTest ("GdipCreateLineBrushFromRectI", new Type[] {typeof (object), typeof (int), typeof (int), typeof (int), typeof (int), typeof (IntPtr) });
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply ,runner.CheckMethod (method));
 		}
 	}
 }
