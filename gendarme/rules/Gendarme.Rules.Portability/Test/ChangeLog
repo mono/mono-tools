@@ -1,3 +1,11 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExitCodeIsLimitedOnUnixTest.cs
+	* FeatureRequiresRootPrivilegeOnUnixTest.cs
+	* MonoCompatibilityReviewTest.cs
+	* NewLineLiteralTest.cs:
+		Updated unit tests wrt framework changes.
+
 2007-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ExitCodeIsLimitedOnUnixTest.cs: New. Unit tests by Daniel Abramov

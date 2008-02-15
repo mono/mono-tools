@@ -40,6 +40,7 @@ namespace Test.Rules.Portability {
 	public class NewLineTest {
 
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 
@@ -80,6 +81,7 @@ namespace Test.Rules.Portability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Portability.NewLineTest"];
 			rule = new NewLineLiteralRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -95,42 +97,42 @@ namespace Test.Rules.Portability {
 		public void HasNewLineLiteral_13 ()
 		{
 			MethodDefinition method = GetTest ("GetNewLineLiteral_13");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void HasNewLineLiteral_10 ()
 		{
 			MethodDefinition method = GetTest ("GetNewLineLiteral_10");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void HasNewLineLiteral ()
 		{
 			MethodDefinition method = GetTest ("GetNewLineLiteral");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void HasNewLine ()
 		{
 			MethodDefinition method = GetTest ("GetNewLine");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void HasNull ()
 		{
 			MethodDefinition method = GetTest ("GetNull");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void HasEmpty ()
 		{
 			MethodDefinition method = GetTest ("GetEmpty");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 	}
 }

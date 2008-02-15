@@ -42,6 +42,7 @@ namespace Test.Rules.Portability {
 	public class MonoCompatibilityReviewTest {
 
 		private MonoCompatibilityReviewRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 
@@ -73,18 +74,18 @@ namespace Test.Rules.Portability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Portability.MonoCompatibilityReviewTest"];
 			rule = new MonoCompatibilityReviewRule ();
+			runner = new TestRunner (rule);
 		}
 
 		[SetUp]
 		public void SetUp ()
 		{
-			rule.NotImplemented = new Dictionary<string, string> ();
+			rule.NotImplemented.Clear ();
 			rule.NotImplemented.Add ("System.Int32 System.Object::GetHashCode()", null);
-			rule.Missing = new Dictionary<string, string> ();
+			rule.Missing.Clear ();
 			rule.Missing.Add ("System.String System.Object::ToString()", null);
-			rule.Todo = new Dictionary<string, string> ();
-			rule.Todo.Add ("System.Type System.Object::GetType()", "TODO");
-			rule.DownloadException = null;
+			rule.ToDo.Clear ();
+			rule.ToDo.Add ("System.Type System.Object::GetType()", "TODO");
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -100,34 +101,34 @@ namespace Test.Rules.Portability {
 		public void TestNotImplemented ()
 		{
 			MethodDefinition method = GetTest ("NotImplemented");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, rule.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestMissing ()
 		{
 			MethodDefinition method = GetTest ("Missing");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestTODO ()
 		{
 			MethodDefinition method = GetTest ("TODO");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestFalsePositive ()
 		{
 			MethodDefinition method = GetTest ("FalsePositive");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestOneTimeWarning ()
 		{
-			//inject some values
+/*			//inject some values
 			rule.DownloadException = new System.Net.WebException ("FAIL");
 
 			MethodDefinition method = GetTest ("FalsePositive");
@@ -136,24 +137,29 @@ namespace Test.Rules.Portability {
 			Assert.AreEqual (1, result.Count);
 
 			//should only warn once
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));*/
 		}
 
-		[Test]
-		[Ignore ("This test takes a few seconds.")]
-		public void TestDefinitionDownload ()
+		private void DeleteDefinitionData ()
 		{
 			string localAppDataFolder = Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData);
 			string definitionsFolder = Path.Combine (localAppDataFolder, "Gendarme");
 			string definitionsFile = Path.Combine (definitionsFolder, "definitions.zip");
 			if (File.Exists (definitionsFile))
 				File.Delete (definitionsFile);
+		}
+
+		[Test]
+		[Ignore ("This test takes a few seconds.")]
+		public void TestDefinitionDownload ()
+		{
+			DeleteDefinitionData ();
 
 			MonoCompatibilityReviewRule rule = new MonoCompatibilityReviewRule ();
+			rule.Initialize (new TestRunner (rule));
 			Assert.IsNotNull (rule.Missing);
 			Assert.IsNotNull (rule.NotImplemented);
-			Assert.IsNotNull (rule.Todo);
-			Assert.IsNull (rule.DownloadException);
+			Assert.IsNotNull (rule.ToDo);
 		}
 	}
 }

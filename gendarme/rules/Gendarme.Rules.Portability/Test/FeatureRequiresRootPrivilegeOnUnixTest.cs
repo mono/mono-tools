@@ -45,6 +45,7 @@ namespace Test.Rules.Portability {
 	public class FeatureRequiresRootPrivilegeOnUnixTest {
 
 		private FeatureRequiresRootPrivilegeOnUnixRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
 
@@ -97,6 +98,7 @@ namespace Test.Rules.Portability {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Portability.FeatureRequiresRootPrivilegeOnUnixTest"];
 			rule = new FeatureRequiresRootPrivilegeOnUnixRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -112,21 +114,21 @@ namespace Test.Rules.Portability {
 		public void TestSetPriority ()
 		{
 			MethodDefinition method = GetTest ("SetPriority");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestSetMyPriority ()
 		{
 			MethodDefinition method = GetTest ("SetMyPriority");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestSetPriorityNormal ()
 		{
 			MethodDefinition method = GetTest ("SetPriorityNormal"); //allowed value
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -134,7 +136,7 @@ namespace Test.Rules.Portability {
 		public void TestSetPriorityNormalVariable ()
 		{
 			MethodDefinition method = GetTest ("SetPriorityNormalVariable");
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -142,21 +144,21 @@ namespace Test.Rules.Portability {
 		{
 			TypeDefinition type = assembly.MainModule.Types ["Test.Rules.Portability.MyPing"]; //this class extends Ping
 			MethodDefinition method = type.Constructors [0]; //the constructor calls the base constructor
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestCreatePing ()
 		{
 			MethodDefinition method = GetTest ("CreatePing"); // calls new Ping ()
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
 		public void TestCreateObject ()
 		{
 			MethodDefinition method = GetTest ("CreateObject"); //calls new object()
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -164,7 +166,7 @@ namespace Test.Rules.Portability {
 		{
 			// use an already created Ping instance
 			MethodDefinition method = GetTest ("UsePing");
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 	}
 }

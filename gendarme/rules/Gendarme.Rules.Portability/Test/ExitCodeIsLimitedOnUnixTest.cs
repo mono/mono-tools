@@ -181,8 +181,8 @@ namespace Test.Rules.Portability {
 	public class ExitCodeIsLimitedOnUnixTest {
 
 		private ExitCodeIsLimitedOnUnixRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private Runner runner;
 
 		private AssemblyDefinition voidMainAssembly;
 		private TypeDefinition envSetExitCodeTester;
@@ -191,10 +191,10 @@ namespace Test.Rules.Portability {
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			rule = new ExitCodeIsLimitedOnUnixRule ();
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			runner = new MinimalRunner ();
+			rule = new ExitCodeIsLimitedOnUnixRule ();
+			runner = new TestRunner (rule);
 
 			// generate void Main () assembly
 			voidMainAssembly = AssemblyFactory.DefineAssembly ("GoodAssembly", AssemblyKind.Console);
@@ -208,15 +208,6 @@ namespace Test.Rules.Portability {
 			Assert.IsNotNull (envSetExitCodeTester);
 			envExitTester = voidMainAssembly.MainModule.Inject (assembly.MainModule.Types ["Test.Rules.Portability.EnvExitTester"]);
 			Assert.IsNotNull (envExitTester);
-		}
-
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType)
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (messageType, message.Type);
-			}
 		}
 
 		private AssemblyDefinition GetAssemblyAndInject<TInjectedType> ()
@@ -252,166 +243,147 @@ namespace Test.Rules.Portability {
 		[Test]
 		public void TestVoidMainAssembly ()
 		{
-			Assert.IsNull (rule.CheckAssembly (voidMainAssembly, runner));
+			Assert.AreEqual (RuleResult.DoesNotApply, rule.CheckAssembly (voidMainAssembly));
 		}
 
 		[Test]
 		public void TestGoodIntMainAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<GoodIntMainClass> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (GetAssemblyAndInject<GoodIntMainClass> ()));
 		}
 
 		[Test]
 		public void TestUnsureIntMainAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<UnsureIntMainClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Warning);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<UnsureIntMainClass> ()), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.Low, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestTooBigReturnedAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<TooBigReturnedMainClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<TooBigReturnedMainClass> ()), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestMinusOneReturnedAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<MinusOneReturnedMainClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<MinusOneReturnedMainClass> ()), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestSmallNegativeReturnedAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<SmallNegativeReturnedMainClass> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<SmallNegativeReturnedMainClass> ()), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvSetBadExitCodeFromNonExecutable ()
 		{
 			// get method from this assembly, not generated one
-			MessageCollection messages = rule.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvSetExitCodeTester"], "SetTooBigExitCode"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvSetExitCodeTester"], "SetTooBigExitCode")));
 		}
 
 		[Test]
 		public void TestNoEnvSetExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("EmptyMethod"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("EmptyMethod")));
 		}
 
 		[Test]
 		public void TestEnvSetGoodExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetGoodExitCode"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetGoodExitCode")));
 		}
 
 		[Test]
 		public void TestEnvSetMinusOneExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetMinusOneExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetMinusOneExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvSetSmallNegativeExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetSmallNegativeExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetSmallNegativeExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvSetTooBigExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetTooBigExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetTooBigExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvSetUnsureExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetUnsureExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Warning);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("SetUnsureExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.Low, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvExitWithBadExitCodeFromNonExecutable ()
 		{
 			// get method from this assembly, not generated one
-			MessageCollection messages = rule.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvExitTester"], "ExitWithTooBigExitCode"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvExitTester"], "ExitWithTooBigExitCode")));
 		}
 
 		[Test]
 		public void TestNoEnvExit ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("EmptyMethod"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvExitTest ("EmptyMethod")));
 		}
 
 		[Test]
 		public void TestEnvExitWithGoodExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("ExitWithGoodExitCode"), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvExitTest ("ExitWithGoodExitCode")));
 		}
 
 		[Test]
 		public void TestEnvExitWithMinusOneExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("ExitWithMinusOneExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvExitTest ("ExitWithMinusOneExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvExitWithSmallNegativeExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("ExitWithSmallNegativeExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvExitTest ("ExitWithSmallNegativeExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvExitWithTooBigExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("ExitWithTooBigExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvExitTest ("ExitWithTooBigExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.High, runner.Defects [0].Confidence, "Confidence");
 		}
 
 		[Test]
 		public void TestEnvExitWithUnsureExitCode ()
 		{
-			MessageCollection messages = rule.CheckMethod (GetMethodForEnvExitTest ("ExitWithUnsureExitCode"), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
-			CheckMessageType (messages, MessageType.Warning);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethodForEnvExitTest ("ExitWithUnsureExitCode")), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			Assert.AreEqual (Confidence.Low, runner.Defects [0].Confidence, "Confidence");
 		}
 	}
 }
