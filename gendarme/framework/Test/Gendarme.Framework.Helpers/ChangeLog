@@ -1,0 +1,6 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodSignatureTest.cs
+	* MethodSignaturesTest.cs
+	* StackEntryAnalysisTest.cs:
+		Move helper unit tests into new namespace.
