@@ -49,9 +49,9 @@ namespace Gendarme.Framework {
 		private IEnumerable<IAssemblyRule> assembly_rules;
 		private IEnumerable<ITypeRule> type_rules;
 		private IEnumerable<IMethodRule> method_rules;
-		// needed for TestRunner, we'll eventually open our internals to a Gendarme test assembly
-		internal IRule currentRule;
-		internal IMetadataTokenProvider currentTarget;
+
+		private IRule currentRule;
+		private IMetadataTokenProvider currentTarget;
 
 		private int defectCountBeforeCheck;
 
@@ -59,6 +59,16 @@ namespace Gendarme.Framework {
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
 		public event EventHandler<RunnerEventArgs> AnalyzeType;
 		public event EventHandler<RunnerEventArgs> AnalyzeMethod;
+
+		protected IRule CurrentRule {
+			get { return currentRule; }
+			set { currentRule = value; }
+		}
+
+		protected IMetadataTokenProvider CurrentTarget {
+			get { return currentTarget; }
+			set { currentTarget = value; }
+		}
 
 		public Collection<IRule> Rules {
 			get { return rules; }

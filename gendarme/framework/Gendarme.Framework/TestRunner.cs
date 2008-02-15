@@ -46,39 +46,29 @@ namespace Gendarme.Framework {
 
 		public TestRunner (IRule rule)
 		{
-			currentRule = rule;
-			currentRule.Initialize (this);
-		}
-/*
-		public IRule CurrentRule {
-			get { return currentRule; }
-			set { currentRule = value; }
+			CurrentRule = rule;
+			CurrentRule.Initialize (this);
 		}
 
-		public IMetadataTokenProvider CurrentTarget {
-			get { return currentTarget; }
-			set { currentTarget = value; }
-		}
-*/
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			Reset ();
-			currentTarget = assembly;
-			return (currentRule as IAssemblyRule).CheckAssembly (assembly);
+			CurrentTarget = assembly;
+			return (CurrentRule as IAssemblyRule).CheckAssembly (assembly);
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			Reset ();
-			currentTarget = type;
-			return (currentRule as ITypeRule).CheckType (type);
+			CurrentTarget = type;
+			return (CurrentRule as ITypeRule).CheckType (type);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			Reset ();
-			currentTarget = method;
-			return (currentRule as IMethodRule).CheckMethod (method);
+			CurrentTarget = method;
+			return (CurrentRule as IMethodRule).CheckMethod (method);
 		}
 	}
 }

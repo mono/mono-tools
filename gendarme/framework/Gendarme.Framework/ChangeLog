@@ -1,3 +1,8 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Runner.cs: Expose CurrentRule and CurrentTarget
+	* TestRunner.cs: Use newly exposed properties.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignature.cs
