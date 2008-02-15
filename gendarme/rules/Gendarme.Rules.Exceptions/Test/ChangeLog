@@ -1,3 +1,9 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDestroyStackTraceTest.cs: (renamed from TestPatterns.cs)
+	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs:
+		Update unit tests wrt framework changes.
+
 2007-10-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Exeptions.mdp: Update project file.

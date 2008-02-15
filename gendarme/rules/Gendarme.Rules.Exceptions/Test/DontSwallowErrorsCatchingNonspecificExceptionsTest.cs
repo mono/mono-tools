@@ -38,15 +38,14 @@ using NUnit.Framework;
 
 namespace Test.Rules.Exceptions {
 	
-
 	[TestFixture]
 	public class DontSwallowErrorsCatchingNonspecificExceptionsTest {
 		
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private MethodDefinition method;
 		private TypeDefinition type;
-		private MessageCollection messageCollection;
 		
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -54,109 +53,80 @@ namespace Test.Rules.Exceptions {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new DontSwallowErrorsCatchingNonspecificExceptionsRule ();
+			runner = new TestRunner (rule);
 			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DontSwallowErrorsCatchingNonspecificExceptionsTest"];
-			messageCollection = null;
 		}
-		
-		private void CheckMessageType (MessageCollection messageCollection, MessageType messageType) 
-		{
-			IEnumerator enumerator = messageCollection.GetEnumerator ();
-			if (enumerator.MoveNext ()) {
-				Message message = (Message) enumerator.Current;
-				Assert.AreEqual (message.Type, messageType);
-			}
-		}
-		
+
 		[Test]
 		public void SwallowErrorsCatchingExceptionsEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingExceptionEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
-		
 		
 		[Test]
 		public void SwallowErrorsCatchingExceptionsNoEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void SwallowErrorsCatchingSystemExceptionEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingSystemExceptionEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
-		
 		
 		[Test]
 		public void SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void SwallowErrorsCatchingTypeExceptionEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingTypeExceptionEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void SwallowErrorsCatchingAllEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingAllEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void SwallowErrorsCatchingAllNoEmptyCatchBlockTest () 
 		{
 			method = type.Methods.GetMethod ("SwallowErrorsCatchingAllNoEmptyCatchBlock", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NotSwallowRethrowingExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowRethrowingException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		
@@ -164,8 +134,8 @@ namespace Test.Rules.Exceptions {
 		public void NotSwallowRethrowingGeneralExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowRethrowingGeneralException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection); 
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		
@@ -173,48 +143,40 @@ namespace Test.Rules.Exceptions {
 		public void NotSwallowCatchingSpecificExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowCatchingSpecificException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNull (messageCollection); 
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NotSwallowThrowingANewExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowThrowingANewException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NotSwallowCatchingAllThrowingANewExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowCatchingAllThrowingANewException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NotSwallowCatchingTypeExceptionThrowingANewExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowCatchingTypeExceptionThrowingANewException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NotSwallowCatchingSystemExceptionThrowingANewExceptionTest () 
 		{
 			method = type.Methods.GetMethod ("NotSwallowCatchingSystemExceptionThrowingANewException", Type.EmptyTypes);
-			messageCollection = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
-			CheckMessageType (messageCollection, MessageType.Error);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		//Methods for make the tests
@@ -238,7 +200,6 @@ namespace Test.Rules.Exceptions {
 			}
 		}
 		
-		
 		public void SwallowErrorsCatchingSystemExceptionEmptyCatchBlock () 
 		{
 			try {
@@ -247,8 +208,6 @@ namespace Test.Rules.Exceptions {
 			catch (SystemException exception) {
 			}
 		}
-		
-		
 		
 		public void SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock () 
 		{

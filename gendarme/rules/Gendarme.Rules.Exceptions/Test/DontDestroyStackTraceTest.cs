@@ -1,3 +1,28 @@
+//
+// Unit Test for DontDestroyStackTraceTest Rule
+//
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
 using System;
 using System.Collections;
 using System.Reflection;
@@ -12,8 +37,8 @@ namespace Test.Rules.Exceptions {
 	public class DontDestroyStackTraceTest {
 	
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 		private TypeDefinition type;
 		
 		// Test setup
@@ -22,10 +47,9 @@ namespace Test.Rules.Exceptions {
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			string fullname = "Test.Rules.Exceptions.DontDestroyStackTraceTest";
-			type = module.Types [fullname];
+			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DontDestroyStackTraceTest"];
 			rule = new DontDestroyStackTrace ();
+			runner = new TestRunner (rule);
 		}
 
 		// Test infrastructure
@@ -38,60 +62,46 @@ namespace Test.Rules.Exceptions {
 		[Test]
 		public void TestThrowOriginalEx ()
 		{
-			string testName = "ThrowOriginalEx";
-			MethodDefinition method = GetMethodToTest (testName);
-
+			MethodDefinition method = GetMethodToTest ("ThrowOriginalEx");
 			// Should result in 1 warning message
-			MessageCollection list = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsTrue (list != null, "Warnings were not generated for the test named " + testName);
-			Assert.AreEqual (list.Count, 1, "One warning should have been generated for the test named " + testName);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestThrowOriginalExWithJunk ()
 		{
-			string testName = "ThrowOriginalExWithJunk";
-			MethodDefinition method = GetMethodToTest (testName);
-			
+			MethodDefinition method = GetMethodToTest ("ThrowOriginalExWithJunk");
 			// Should result in 1 warning message
-			MessageCollection list = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsTrue (list != null, "Warnings were not generated for the test named " + testName);
-			Assert.AreEqual (list.Count, 1, "One warning should have been generated for the test named " + testName);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestRethrowOriginalEx ()
 		{
-			string testName = "RethrowOriginalEx";
-			MethodDefinition method = GetMethodToTest (testName);
-
+			MethodDefinition method = GetMethodToTest ("RethrowOriginalEx");
 			// Should result in 0 warning messages
-			MessageCollection list = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsTrue (list == null, "Warnings were generated for the test named " + testName);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestThrowOriginalExAndRethrowWithJunk ()
 		{
-			string testName = "ThrowOriginalExAndRethrowWithJunk";
-			MethodDefinition method = GetMethodToTest (testName);
-
+			MethodDefinition method = GetMethodToTest ("ThrowOriginalExAndRethrowWithJunk");
 			// Should result in one warning message
-			MessageCollection list = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsTrue (list != null, "Warnings were not generated for the test named " + testName);
-			Assert.AreEqual (list.Count, 1, "One warning should have been generated for the test named " + testName);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestRethrowOriginalExAndThrowWithJunk ()
 		{
-			string testName = "RethrowOriginalExAndThrowWithJunk";
-			MethodDefinition method = GetMethodToTest (testName);
-
+			MethodDefinition method = GetMethodToTest ("RethrowOriginalExAndThrowWithJunk");
 			// Should result in one warning message
-			MessageCollection list = rule.CheckMethod (method, new MinimalRunner ());
-			Assert.IsTrue (list != null, "Warnings were not generated for the test named " + testName);
-			Assert.AreEqual (list.Count, 1, "One warning should have been generated for the test named " + testName);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		// Functions whose IL is used by the test cases for the DontDestroyStackTrace rule
