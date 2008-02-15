@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -33,25 +35,25 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
-	public class NonConstantStaticFieldsShouldNotBeVisibleRule : ITypeRule {
+	[Problem ("This type has some static fields that are not constant. They may represent problems in multithreaded applications.")]
+	[Solution ("Change the field to read-only, mark it [ThreadStatic] or make it non visible outside the assembly.")]
+	public class NonConstantStaticFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public const string Message = "This static field is not InitOnly (readonly). Multithreaded access to this field needs to be syncronized.";
+
+		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule does not apply to interface and enumerations
 			if (type.IsInterface || type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection results = null;
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsStatic && field.IsVisible () && !field.IsInitOnly && !field.IsLiteral) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
-					Message msg = new Message ("This static field is not InitOnly (readonly). Multithreaded access to this field needs to be syncronized.", loc, MessageType.Warning);
-					results.Add (msg);
+					Runner.Report (field, Severity.Medium, Confidence.High, Message);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

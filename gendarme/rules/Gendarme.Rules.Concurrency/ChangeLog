@@ -1,7 +1,15 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingRule.cs
+	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs
+	* WriteStaticFieldFromInstanceMethodRule.cs:
+		Update rules wrt framework changes.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.Rules.Concurrency.xml.in: Fix copy-paste mistake for 
-	NonConstantStaticFieldsShouldNotBeVisibleRule
+	NonConstantStaticFieldsShouldNotBeVisibleRule.
+	[Backport of r95541]
 
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
