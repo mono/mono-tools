@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -101,16 +101,16 @@ namespace Test.Rules.Security {
 		}
 
 		private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			rule = new TypeExposeFieldsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -123,42 +123,42 @@ namespace Test.Rules.Security {
 		public void NonPublic ()
 		{
 			TypeDefinition type = GetTest ("NonPublicClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NoSecurity ()
 		{
 			TypeDefinition type = GetTest ("NoSecurityClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NoDemand ()
 		{
 			TypeDefinition type = GetTest ("NoDemandClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 
 		[Test]
 		public void NoPublicField ()
 		{
 			TypeDefinition type = GetTest ("NoPublicFieldClass");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void LinkDemandWithField ()
 		{
 			TypeDefinition type = GetTest ("LinkDemandWithFieldClass");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void DemandWithField ()
 		{
 			TypeDefinition type = GetTest ("DemandWithFieldClass");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 	}
 }

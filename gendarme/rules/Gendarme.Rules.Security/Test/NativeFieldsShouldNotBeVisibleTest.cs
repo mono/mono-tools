@@ -76,6 +76,7 @@ namespace Test.Rules.Security {
 	public class NativeFieldsShouldNotBeVisibleTest {
 
 		private NativeFieldsShouldNotBeVisibleRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 
 
@@ -85,6 +86,7 @@ namespace Test.Rules.Security {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new NativeFieldsShouldNotBeVisibleRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -96,64 +98,63 @@ namespace Test.Rules.Security {
 		public void TestHasPublicNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeField");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasProtectedNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasProtectedNativeField");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasInternalNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasInternalNativeField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyNativeField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicNativeFieldArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeFieldArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyNativeFieldArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyNativeFieldArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicNativeFieldArrayArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeFieldArrayArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
-
 
 		[Test]
 		public void TestHasPublicNonNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNonNativeField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPrivateNativeField ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateNativeField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

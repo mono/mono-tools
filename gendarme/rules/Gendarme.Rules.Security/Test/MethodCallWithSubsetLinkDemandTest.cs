@@ -105,16 +105,16 @@ namespace Test.Rules.Security {
 		}
 
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			rule = new MethodCallWithSubsetLinkDemandRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -128,7 +128,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("SubsetInheritClass");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), method.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 
@@ -137,8 +137,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("NotASubsetInheritClass");
 			foreach (MethodDefinition method in type.Methods) {
-				int n = rule.CheckMethod (method, new MinimalRunner ()).Count;
-				Assert.AreEqual (0, n, method.ToString ());
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 
@@ -147,7 +146,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("SubsetCallClass");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()), method.ToString ());
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 
@@ -156,8 +155,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("NotASubsetCallClass");
 			foreach (MethodDefinition method in type.Methods) {
-				int n = rule.CheckMethod (method, new MinimalRunner ()).Count;
-				Assert.AreEqual (0, n, method.ToString ());
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 	}

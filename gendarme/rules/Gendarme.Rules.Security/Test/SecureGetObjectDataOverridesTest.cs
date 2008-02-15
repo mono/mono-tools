@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -57,12 +57,12 @@ namespace Test.Rules.Security {
 			{
 			}
 
-			public void GetObjectData(SerializationInfo info, StreamingContext context)
+			public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 			{
 			}
 		}
 
-		public class InheritISerializableClass : NameValueCollection {
+		public class InheritISerializableClass : ISerializableClass {
 
 			public InheritISerializableClass ()
 			{
@@ -121,17 +121,17 @@ namespace Test.Rules.Security {
 			}
 		}
 
-		private IMethodRule rule;
+		private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			rule = new SecureGetObjectDataOverridesRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -140,71 +140,54 @@ namespace Test.Rules.Security {
 			return assembly.MainModule.Types[fullname];
 		}
 
-		private MethodDefinition GetObjectData (TypeDefinition type)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "GetObjectData")
-					return method;
-			}
-			return null;
-		}
-
 		[Test]
 		public void Serializable ()
 		{
 			TypeDefinition type = GetTest ("SerializableClass");
 			// there's no GetObjectData method here so the test should never fail
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
-			}
+			Assert.AreEqual (RuleResult.DoesNotApply, rule.CheckType (type));
 		}
 
 		[Test]
 		public void ISerializable ()
 		{
 			TypeDefinition type = GetTest ("ISerializableClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void InheritISerializable ()
 		{
 			TypeDefinition type = GetTest ("InheritISerializableClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void LinkDemand ()
 		{
 			TypeDefinition type = GetTest ("LinkDemandClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void InheritanceDemand ()
 		{
 			TypeDefinition type = GetTest ("InheritanceDemandClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void Demand ()
 		{
 			TypeDefinition type = GetTest ("DemandClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void DemandWrongPermission ()
 		{
 			TypeDefinition type = GetTest ("DemandWrongPermissionClass");
-			MethodDefinition method = GetObjectData (type);
-			Assert.IsNotNull (rule.CheckMethod (method, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 	}
 }

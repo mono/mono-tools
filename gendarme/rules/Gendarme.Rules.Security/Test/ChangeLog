@@ -1,3 +1,17 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ArrayFieldsShouldNotBeReadOnlyTest.cs
+	* MethodCallWithSubsetLinkDemandTest.cs
+	* NativeFieldsShouldNotBeVisibleTest.cs
+	* NonVirtualMethodWithInheritanceDemandTest.cs
+	* SealedTypeWithInheritanceDemandTest.cs
+	* SecureGetObjectDataOverridesTest.cs
+	* StaticConstructorsShouldBePrivateTest.cs
+	* TypeExposeFieldsTest.cs
+	* TypeIsNotSubsetOfMethodSecurityTest.cs
+	* TypeLinkDemandTest.cs:
+		Updated unit tests wrt framework changes.
+
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NativeFieldsShouldNotBeVisibleTest.cs: New. Unit tests by 

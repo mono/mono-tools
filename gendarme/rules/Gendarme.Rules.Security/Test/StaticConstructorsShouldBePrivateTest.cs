@@ -48,8 +48,8 @@ namespace Test.Rules.Security {
 	public class StaticConstructorsShouldBePrivateTest {
 
 		private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private Runner runner;
 
 
 		[TestFixtureSetUp]
@@ -58,7 +58,7 @@ namespace Test.Rules.Security {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new StaticConstructorsShouldBePrivateRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -69,15 +69,13 @@ namespace Test.Rules.Security {
 		[Test]
 		public void TestNoStaticCtorDefinedClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoStaticCtorDefinedClass> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<NoStaticCtorDefinedClass> ()));
 		}
 
 		[Test]
 		public void TestPrivateStaticCtorDefinedClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<PrivateStaticCtorDefinedClass> (), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<PrivateStaticCtorDefinedClass> ()));
 		}
 
 		[Test]
@@ -88,9 +86,8 @@ namespace Test.Rules.Security {
 				if (ctor.IsStatic)
 					ctor.IsPublic = true; // change it from private to public
 
-			MessageCollection messages = rule.CheckType (inspectedType, runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (inspectedType), inspectedType.FullName);
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

@@ -68,6 +68,7 @@ namespace Test.Rules.Security {
 	public class ArrayFieldsShouldNotBeReadOnlyTest {
 
 		private ArrayFieldsShouldNotBeReadOnlyRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 
 
@@ -77,6 +78,7 @@ namespace Test.Rules.Security {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new ArrayFieldsShouldNotBeReadOnlyRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -88,49 +90,49 @@ namespace Test.Rules.Security {
 		public void TestHasStaticPublicReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasStaticPublicReadonlyArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasProtectedReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasProtectedReadonlyArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasInternalReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasInternalReadonlyArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPrivateReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateReadonlyArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasNoReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasNoReadonlyArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 
 		[Test]
 		public void TestHasPublicArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}
 }

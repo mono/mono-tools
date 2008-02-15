@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005-2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005-2006,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -46,12 +46,12 @@ namespace Test.Rules.Security {
 		public abstract class AbstractMethodsClass {
 
 			[SecurityPermission (SSP.SecurityAction.InheritanceDemand, ControlAppDomain = true)]
-			public abstract void Asbtract ();
+			public abstract void Abstract ();
 		}
 
 		public class VirtualMethodsClass: AbstractMethodsClass  {
 
-			public override void Asbtract ()
+			public override void Abstract ()
 			{
 			}
 
@@ -96,16 +96,16 @@ namespace Test.Rules.Security {
 		}
 
 		private IMethodRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			rule = new NonVirtualMethodWithInheritanceDemandRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -119,7 +119,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("AbstractMethodsClass");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 
@@ -128,7 +128,14 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("VirtualMethodsClass");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+				switch (method.Name) {
+				case "Abstract":
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
+					break;
+				case "Virtual":
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
+					break;
+				}
 			}
 		}
 
@@ -137,8 +144,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("NoVirtualMethodsClass");
 			foreach (MethodDefinition method in type.Methods) {
-				int n = rule.CheckMethod (method, new MinimalRunner ()).Count;
-				Assert.AreEqual (0, n, method.ToString ());
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 
@@ -147,7 +153,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("NotInheritanceDemandClass");
 			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, new MinimalRunner ()));
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.ToString ());
 			}
 		}
 	}
