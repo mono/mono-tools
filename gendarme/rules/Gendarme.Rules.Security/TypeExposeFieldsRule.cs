@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,26 +31,25 @@ using System.Collections;
 using System.Text;
 
 using Mono.Cecil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
-	public class TypeExposeFieldsRule : ITypeRule {
+	[Problem ("This type has a LinkDemand but expose some public fields.")]
+	[Solution ("Remove the public fields from the class or change the field visibility.")]
+	public class TypeExposeFieldsRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			// #1 - rule apply to types (and nested types) that are publicly visible
-			switch (type.Attributes & TypeAttributes.VisibilityMask) {
-			case TypeAttributes.Public:
-			case TypeAttributes.NestedPublic:
-				break;
-			default:
-				return runner.RuleSuccess;
-			}
+			// rule apply only to visible types
+			if (!type.IsVisible ())
+				return RuleResult.DoesNotApply;
 
-			// #2 - rule apply to type is protected by a Demand or a LinkDemand
+			// rule apply only to types protected by either a Demand or a LinkDemand
 			if (type.SecurityDeclarations.Count == 0)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			bool demand = false;
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
@@ -63,16 +62,17 @@ namespace Gendarme.Rules.Security {
 			}
 
 			if (!demand)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
-			// #3 - so it shouldn't have any public fields
+			// type shouldn't have any public fields
 			foreach (FieldDefinition field in type.Fields) {
-				if ((field.Attributes & FieldAttributes.Public) == FieldAttributes.Public)
-					return runner.RuleFailure;
+				if (field.IsPublic) {
+					Runner.Report (field, Severity.Critical, Confidence.Total, String.Empty);
+				}
 			}
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

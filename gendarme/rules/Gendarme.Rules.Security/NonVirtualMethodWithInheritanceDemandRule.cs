@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,13 +34,15 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security {
 
-	public class NonVirtualMethodWithInheritanceDemandRule : IMethodRule {
+	[Problem ("This non-virtual method has an InheritanceDemand that the runtime will never execute.")]
+	[Solution ("Review the InheritanceDemand on this method and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
+	public class NonVirtualMethodWithInheritanceDemandRule : Rule, IMethodRule {
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// #1 - this rule apply only to methods with an inheritance demand
+			// this rule apply only to methods with an inheritance demand
 			if (method.SecurityDeclarations.Count == 0)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			bool inherit = false;
 			foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {
@@ -52,15 +54,16 @@ namespace Gendarme.Rules.Security {
 				}
 			}
 			if (!inherit)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
-			// #2 - InheritanceDemand doesn't make sense on methods that cannot be overriden
-			if(method.IsVirtual)
-				return runner.RuleSuccess;
-			else
-				return runner.RuleFailure;
+			// InheritanceDemand doesn't make sense on methods that cannot be overriden
+			if (method.IsVirtual)
+				return RuleResult.Success;
+
+			Runner.Report (method, Severity.Low, Confidence.Total, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

@@ -33,25 +33,25 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
-	public class ArrayFieldsShouldNotBeReadOnlyRule : ITypeRule {
+	[Problem ("This type contains read-only array(s), however values inside the array(s) are not read-only.")]
+	[Solution ("Replace the array with a method returning a clone of the array or a read-only collection.")]
+	public class ArrayFieldsShouldNotBeReadOnlyRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule does not apply to interface and enumerations ??? struct ???
 			if (type.IsInterface || type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection results = null;
 			foreach (FieldDefinition field in type.Fields) {
-				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray ()) { //IsInitOnly == readonly
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
-					Message msg = new Message ("This array field is InitOnly (readonly). The readonly attribute does not apply to the elements of the array.", loc, MessageType.Warning);
-					results.Add (msg);
+				//IsInitOnly == readonly
+				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray ()) {
+					// Medium = this will work as long as no code starts "playing" with the array values
+					Runner.Report (field, Severity.Medium, Confidence.Total, String.Empty);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

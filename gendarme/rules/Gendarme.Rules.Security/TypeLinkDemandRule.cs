@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -32,29 +32,25 @@ using System.Security;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
-	public class TypeLinkDemandRule: ITypeRule {
+	[Problem ("The type isn't sealed and has a LinkDemand. It should also have an InheritanceDemand for the same permissions.")]
+	[Solution ("Add an InheritanceDemand for the same permissions (as the LinkDemand) or seal the class.")]
+	public class TypeLinkDemandRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			// #1 - rule apply to types (and nested types) that are publicly visible
-			switch (type.Attributes & TypeAttributes.VisibilityMask) {
-			case TypeAttributes.Public:
-			case TypeAttributes.NestedPublic:
-				break;
-			default:
-				return runner.RuleSuccess;
-			}
-
-			// #2 - rule apply to types that aren't sealed
-			if (type.IsSealed)
-				return runner.RuleSuccess;
+			// rule apply only to types that
+			// - are publicly visible
+			// - are not sealed
+			if (type.IsSealed || !type.IsVisible ())
+				return RuleResult.DoesNotApply;
 
 			PermissionSet link = null;
 			PermissionSet inherit = null;
-			// #3 - rule apply to types with a LinkDemand
+			// rule apply to types with a LinkDemand
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.LinkDemand:
@@ -68,29 +64,33 @@ namespace Gendarme.Rules.Security {
 				}
 			}
 
+			// no LinkDemand == no problem
 			if (link == null)
-				return runner.RuleSuccess; // no LinkDemand == no problem
+				return RuleResult.DoesNotApply;
 
-			// #4 - rule apply if there are virtual methods defined
+			// rule apply if there are virtual methods defined
 			bool virt = false;
 			foreach (MethodDefinition method in type.Methods) {
-				// #5 - ensure that the method is declared in this type (i.e. not in a parent)
+				// ensure that the method is declared in this type (i.e. not in a parent)
 				if (method.IsVirtual && ((method.DeclaringType as TypeDefinition) == type))
 					virt = true;
 			}
 
+			// no virtual method == no problem
 			if (!virt)
-				return runner.RuleSuccess; // no virtual method == no problem
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
-			// #5 - and ensure the LinkDemand is a subset of the InheritanceDemand
-			if (inherit == null)
-				return runner.RuleFailure; // LinkDemand without InheritanceDemand
-			if (link.IsSubsetOf (inherit))
-				return runner.RuleSuccess;
-			else
-				return runner.RuleFailure;
+			// Ensure the LinkDemand is a subset of the InheritanceDemand
+
+			if (inherit == null) {
+				// LinkDemand without InheritanceDemand
+				Runner.Report (type, Severity.High, Confidence.High, "LinkDemand is present but no InheritanceDemand is specified.");
+			} else if (!link.IsSubsetOf (inherit)) {
+				Runner.Report (type, Severity.High, Confidence.High, "LinkDemand is not a subset of InheritanceDemand.");
+			}
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

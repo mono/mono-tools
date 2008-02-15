@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -36,7 +36,9 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security {
 
-	public class TypeIsNotSubsetOfMethodSecurityRule : ITypeRule {
+	[Problem ("This type has declarative security permission that aren't a subset of the security on some of it's methods.")]
+	[Solution ("Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.")]
+	public class TypeIsNotSubsetOfMethodSecurityRule : Rule, ITypeRule {
 
 		private PermissionSet assert;
 		private PermissionSet deny;
@@ -80,10 +82,11 @@ namespace Gendarme.Rules.Security {
 			return apply;
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule applies only if type has security declarations
 			if (!RuleDoesAppliesToType (type))
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
@@ -99,32 +102,31 @@ namespace Gendarme.Rules.Security {
 						if (assert == null)
 							continue;
 						if (!assert.IsSubsetOf (declsec.PermissionSet))
-							return runner.RuleFailure;
+							Runner.Report (method, Severity.High, Confidence.Total, "Assert");
 						break;
 					case Mono.Cecil.SecurityAction.Deny:
 						if (deny == null)
 							continue;
 						if (!deny.IsSubsetOf (declsec.PermissionSet))
-							return runner.RuleFailure;
+							Runner.Report (method, Severity.High, Confidence.Total, "Deny");
 						break;
 					case Mono.Cecil.SecurityAction.PermitOnly:
 						if (permitonly == null)
 							continue;
 						if (!permitonly.IsSubsetOf (declsec.PermissionSet))
-							return runner.RuleFailure;
+							Runner.Report (method, Severity.High, Confidence.Total, "PermitOnly");
 						break;
 					case Mono.Cecil.SecurityAction.Demand:
 					case Mono.Cecil.SecurityAction.NonCasDemand:
 						if (demand == null)
 							continue;
 						if (!demand.IsSubsetOf (declsec.PermissionSet))
-							return runner.RuleFailure;
+							Runner.Report (method, Severity.High, Confidence.Total, "Demand");
 						break;
 					}
 				}
 			}
-			// other types security applies
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

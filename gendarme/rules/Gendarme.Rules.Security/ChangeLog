@@ -1,3 +1,17 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ArrayFieldsShouldNotBeReadOnlyRule.cs
+	* MethodCallWithSubsetLinkDemandRule.cs
+	* NativeFieldsShouldNotBeVisibleRule.cs
+	* NonVirtualMethodWithInheritanceDemandRule.cs
+	* SealedTypeWithInheritanceDemandRule.cs
+	* SecureGetObjectDataOverridesRule.cs
+	* StaticConstructorsShouldBePrivateRule.cs
+	* TypeExposeFieldsRule.cs
+	* TypeIsNotSubsetOfMethodSecurityRule.cs
+	* TypeLinkDemandRule.cs:
+		Update rules wrt framework changes.
+
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ArrayFieldsShouldNotBeReadOnlyRule.cs: New. Rule that warns 

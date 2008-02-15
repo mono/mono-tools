@@ -28,15 +28,17 @@
 
 using System;
 using System.Security;
-using System.Security.Permissions;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security {
 
-	public class MethodCallWithSubsetLinkDemandRule : IMethodRule {
+	[Problem ("This method is less protected than some methods it calls.")]
+	[Solution ("Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.")]
+	public class MethodCallWithSubsetLinkDemandRule : Rule, IMethodRule {
 
 		private static PermissionSet GetLinkDemand (MethodDefinition method)
 		{
@@ -61,45 +63,38 @@ namespace Gendarme.Rules.Security {
 			return calleeLinkDemand.IsSubsetOf (GetLinkDemand (caller));
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// #1 - rule apply to methods are publicly accessible
 			//	note that the type doesn't have to be public (indirect access)
 			if (!method.IsPublic)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// #2 - rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			//	otherwise we don't know what it's calling
 			if (!method.HasBody)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
 			// #3 - look for every method we call
-			MessageCollection mc = null;
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
 				case Code.Callvirt:
 				case Code.Calli:
-					MethodDefinition callee = AssemblyManager.GetMethod (ins.Operand);
-					if (callee == null) {
-						return runner.RuleSuccess; // ignore (missing reference)
-					}
+					MethodDefinition callee = (ins.Operand as MethodDefinition);
+					if (callee == null)
+						continue;
+
 					// 4 - and if it has security, ensure we don't reduce it's strength
 					if ((callee.SecurityDeclarations.Count > 0) && !Check (method, callee)) {
-						Location loc = new Location (method, ins.Offset);
-						Message msg = new Message ("Method doesn't have a subset of the LinkDemand", loc, MessageType.Warning); 
-						if (mc == null)
-							mc = new MessageCollection (msg);
-						else
-							mc.Add (msg);
-						return runner.RuleFailure;
+						Runner.Report (method, ins, Severity.High, Confidence.High, String.Empty);
 					}
 					break;
 				}
 			}
-			return mc;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

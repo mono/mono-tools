@@ -33,29 +33,29 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
-	public class NativeFieldsShouldNotBeVisibleRule : ITypeRule {
+	[Problem ("This type expose native fields that aren't read-only.")]
+	[Solution ("Native fields are best hidden or, if required, read-only.")]
+	public class NativeFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule does not apply to interface and enumerations
 			if (type.IsInterface || type.IsEnum)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
-			MessageCollection results = null;
 			foreach (FieldDefinition field in type.Fields) {
 				if (!field.IsVisible ())
 					continue;
 
 				//not readonly native fields or arrays of native fields
-				if ((field.FieldType.IsNative () && !field.IsInitOnly) || (field.FieldType.IsArray () && field.FieldType.GetOriginalType ().IsNative ())) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
-					Message msg = new Message ("This is a native field. Native fields should be InitOnly (readonly) or not be visible at all.", loc, MessageType.Warning);
-					results.Add (msg);
+				if ((field.FieldType.IsNative () && !field.IsInitOnly) || 
+					(field.FieldType.IsArray () && field.FieldType.GetOriginalType ().IsNative ())) {
+
+					Runner.Report (field, Severity.Medium, Confidence.Total, String.Empty);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

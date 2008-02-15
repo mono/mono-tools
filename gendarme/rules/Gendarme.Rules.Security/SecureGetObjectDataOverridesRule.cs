@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,10 +34,16 @@ using System.Text;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
-	public class SecureGetObjectDataOverridesRule: IMethodRule {
+	[Problem ("The method is not protected correctly against a serialization attack.")]
+	[Solution ("A security Demand for SerializationFormatter should protect this method.")]
+	public class SecureGetObjectDataOverridesRule : Rule, ITypeRule {
+
+		private const string NotFound = "No [Link]Demand were found.";
 
 		static PermissionSet _ruleSet;
 
@@ -52,58 +58,47 @@ namespace Gendarme.Rules.Security {
 			}
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			// check that the method is called "GetObjectData"
-			if (method.Name != "GetObjectData")
-				return runner.RuleSuccess;
+			// rule applies only to types that implements ISerializable
+			if (!type.Implements ("System.Runtime.Serialization.ISerializable"))
+				return RuleResult.DoesNotApply;
 
-			// check parameters
-			if (method.Parameters.Count != 2)
-				return runner.RuleSuccess;
-			if (method.Parameters[0].ParameterType.ToString () != "System.Runtime.Serialization.SerializationInfo")
-				return runner.RuleSuccess;
-			if (method.Parameters[1].ParameterType.ToString () != "System.Runtime.Serialization.StreamingContext")
-				return runner.RuleSuccess;
-
-			// check for ISerializable
-			bool iserialize = false;
-			TypeDefinition type = (TypeDefinition) method.DeclaringType;
-			if (type.Interfaces.Count > 0) {
-				// check if the type implements the "ISerializable" interface
-				foreach (TypeReference iface in type.Interfaces) {
-					if (iface.FullName == "System.Runtime.Serialization.ISerializable") {
-						iserialize = true;
-						break;
-					}
-				}
-			}
-			if (!iserialize) {
-				// then it's (recursively) base type may implements the "ISerializable" interface
-				// FIXME - while it's unlikely we have the right signature without ISerializable
-				// (leading to false positive) we should fix this using Cecil recent resolver
-			}
+			MethodDefinition method = type.GetMethod (MethodSignatures.GetObjectData);
+			if (method == null)
+				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
 			// is there any security applied ?
-			if (method.SecurityDeclarations.Count < 1)
-				return runner.RuleFailure;
+			if (method.SecurityDeclarations.Count < 1) {
+				Runner.Report (method, Severity.High, Confidence.Total, NotFound);
+				return RuleResult.Failure;
+			}
 
 			// the SerializationFormatter must be a subset of the one (of the) demand(s)
+			bool demand = false;
 			foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.Demand:
 				case Mono.Cecil.SecurityAction.NonCasDemand:
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
-					if (RuleSet.IsSubsetOf (declsec.PermissionSet))
-						return runner.RuleSuccess;
+					demand = true;
+					if (!RuleSet.IsSubsetOf (declsec.PermissionSet)) {
+						string message = String.Format ("{0} is not a subset of {1} permission set",
+							"SerializationFormatter", declsec.Action);
+						Runner.Report (method, Severity.High, Confidence.Total, message);
+					}
 					break;
 				}
 			}
 
-			return runner.RuleFailure;
+			// there was no [NonCas][Link]Demand but other actions are possible
+			if (!demand)
+				Runner.Report (method, Severity.High, Confidence.Total, NotFound);
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

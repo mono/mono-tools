@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,24 +34,26 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security {
 
-	public class SealedTypeWithInheritanceDemandRule : ITypeRule {
+	[Problem ("This sealed type has an InheritanceDemand that the runtime will never execute.")]
+	[Solution ("Review the InheritanceDemand on this type and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
+	public class SealedTypeWithInheritanceDemandRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// 1 - this applies only to sealed types
 			if (!type.IsSealed)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// 2 - the type must have an InheritanceDemand
 			if (type.SecurityDeclarations.Count == 0)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
-				if (declsec.Action == SecurityAction.InheritDemand)
-					return runner.RuleFailure;
+				if (declsec.Action == SecurityAction.InheritDemand) {
+					Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+				}
 			}
-			// the action wasn't an inheritance demand check
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -30,27 +30,29 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security {
 
-	public class StaticConstructorsShouldBePrivateRule : ITypeRule {
+	[Problem ("Static constructors must be private because otherwise they may be called once or multiple times from user code.")]
+	[Solution ("Change the static constructor visibility to private.")]
+	public class StaticConstructorsShouldBePrivateRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (typeDefinition.Constructors.Count == 0)
-				return runner.RuleSuccess;
+			// rule does not apply if type has no ctor
+			if (type.Constructors.Count == 0)
+				return RuleResult.DoesNotApply;
 
-			MethodDefinition violatingConstructor = null;
-			foreach (MethodDefinition constructor in typeDefinition.Constructors) {
+			MethodDefinition private_static_ctor = null;
+			foreach (MethodDefinition constructor in type.Constructors) {
 				if (constructor.IsStatic && !constructor.IsPrivate) {
-					violatingConstructor = constructor;
+					private_static_ctor = constructor;
 					break; // there cannot be two .cctor's so we can stop looking
 				}
 			}
 
-			if (violatingConstructor == null)
-				return runner.RuleSuccess;
+			if (private_static_ctor == null)
+				return RuleResult.Success;
 
-			Location loc = new Location (violatingConstructor);
-			Message msg = new Message ("Static constructors must be private because otherwise they may be called once or multiple times from user code.", loc, MessageType.Error);
-			return new MessageCollection (msg);
+			Runner.Report (private_static_ctor, Severity.Critical, Confidence.High, string.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }
