@@ -29,13 +29,14 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LINQ</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -43,20 +44,25 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;LINQ</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleRunner.cs" />
+    <None Include="ConsoleRunner2.cs" />
     <Compile Include="HtmlResultWriter.cs" />
-    <Compile Include="IResultWriter.cs" />
+    <Compile Include="ResultWriter.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="TextResultWriter.cs" />
     <Compile Include="XmlResultWriter.cs" />
   </ItemGroup>
@@ -90,6 +96,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gendarme.xsl" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -98,4 +107,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)..\..\..\rules\rules.xml" "$(TargetDir)"
+copy "$(TargetDir)..\..\..\..\..\cecil\pdb\Mono.Cecil.Pdb\$(OutDir)\Mono.Cecil.Pdb.*" "$(TargetDir)"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
