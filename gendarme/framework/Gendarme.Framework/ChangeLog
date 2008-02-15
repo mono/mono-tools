@@ -1,5 +1,12 @@
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* MethodSignature.cs
+	* MethodSignatures.cs
+	* StackEntryAnalysis.cs:
+		Moved into Gendarme.Framework.Helpers
+
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
 	* Runner.cs: Use Rocks to iterate all methods in a type.
 
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com>
