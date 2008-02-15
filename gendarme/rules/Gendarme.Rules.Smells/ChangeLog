@@ -1,3 +1,8 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSpeculativeGeneralityRule.cs: Fix rule check since we now use
+	a single collection for all rules.
+
 2008-02-15  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* Test/*.cs: Refactor the tests for accept the new rule's format.

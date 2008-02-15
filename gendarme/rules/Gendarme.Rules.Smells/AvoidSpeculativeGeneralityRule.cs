@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Smells {
 
 		private bool AvoidUnusedParametersRuleScheduled ()
 		{
-			foreach (IMethodRule rule in Runner.Rules) {
+			foreach (IRule rule in Runner.Rules) {
 				if (rule is AvoidUnusedParametersRule)
 					return true;
 			}
