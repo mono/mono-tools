@@ -1,0 +1,6 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodSignature.cs
+	* MethodSignatures.cs
+	* StackEntryAnalysis.cs:
+		Move helper classes into new namespace.
