@@ -33,6 +33,8 @@ using System.Runtime.InteropServices;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework.Rocks;
+
 namespace Gendarme.Framework {
 
 	abstract public class Runner : IRunner {
@@ -250,18 +252,9 @@ namespace Gendarme.Framework {
 		/// the rule Check* method was called or RuleResult.Success otherwise</returns>
 		public RuleResult CurrentRuleResult {
 			get {
-				return (Defects.Count > defectCountBeforeCheck) ? 
+				return (Defects.Count > defectCountBeforeCheck) ?
 					RuleResult.Failure : RuleResult.Success;
 			}
-		}
-
-		// do a single foreach to get both constructors and methods for a type
-		private IEnumerable<MethodDefinition> GetMethods (TypeDefinition type)
-		{
-			foreach (MethodDefinition ctor in type.Constructors)
-				yield return ctor;
-			foreach (MethodDefinition method in type.Methods)
-				yield return method;
 		}
 
 		/// <summary>
@@ -288,7 +281,7 @@ namespace Gendarme.Framework {
 						runner_args.CurrentType = type;
 						OnType (runner_args);
 
-						foreach (MethodDefinition method in GetMethods (type)) {
+						foreach (MethodDefinition method in type.AllMethods()) {
 							currentTarget = (IMetadataTokenProvider) method;
 							runner_args.CurrentMethod = method;
 							OnMethod (runner_args);

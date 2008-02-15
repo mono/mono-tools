@@ -1,3 +1,7 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Use Rocks to iterate all methods in a type.
+
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Shameless copy of Linker AssemblyResolver
