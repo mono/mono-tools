@@ -469,10 +469,12 @@ namespace Test.Rules.Performance {
 			foreach (MethodDefinition method in type.Methods) {
 				switch (method.Name) {
 				case "Main":
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
+					break;
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface1.IfaceMethod1":
 // mono bug #343465
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest+Iface1.IfaceMethod1":
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
 					break;
 				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface2.IfaceMethod2":
 				// mono bug #343465
@@ -596,7 +598,7 @@ namespace Test.Rules.Performance {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 					break;
 				}
 			}
