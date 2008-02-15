@@ -1,3 +1,18 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs
+	* DoNotPrefixValuesWithEnumNameRule.cs
+	* DoNotUseReservedInEnumValueNamesRule.cs
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs
+	* ParameterNamesShouldMatchOverridenMethodRule.cs
+	* UseCorrectCasingRule.cs
+	* UseCorrectPrefixRule.cs
+	* UseCorrectSuffixRule.cs
+	* UsePluralNameInEnumFlagsRule.cs
+	* UsePreferredTermsRule.cs
+	* UseSingularNameInEnumsUnlessAreFlagsRule.cs:
+		Update rules wrt framework changes.
+
 2008-01-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DetectNonAlphaNumericsInTypeNamesRule.cs: Add checks for generated

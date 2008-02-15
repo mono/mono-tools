@@ -37,32 +37,31 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class UseCorrectSuffixRule : ITypeRule {
+	[Problem ("This type does not end with the correct suffix. That usually happens when you define a custom attribute or exception and forget appending suffixes like 'Attribute' or 'Exception' to the type name.")]
+	[Solution ("Rename the type and append the correct suffix.")]
+	public class UseCorrectSuffixRule : Rule, ITypeRule {
 
 		// keys are base class names, values are arrays of possible suffixes
-		private Dictionary<string, string []> definedSuffixes =
-			new Dictionary<string, string []> ();
+		private static Dictionary<string, string []> definedSuffixes =
+			new Dictionary<string, string []> () {
+				{ "System.Attribute", new string [] { "Attribute" } },
+				{ "System.EventArgs", new string [] { "EventArgs" } },
+				{ "System.Exception", new string [] { "Exception" } },
+				{ "System.Collections.Queue", new string [] { "Collection", "Queue" } },
+				{ "System.Collections.Stack", new string [] { "Collection", "Stack" } },
+				{ "System.Data.DataSet", new string [] { "DataSet" } },
+				{ "System.Data.DataTable", new string [] { "DataTable", "Collection" } },
+				{ "System.IO.Stream", new string [] { "Stream" } },
+				{ "System.Security.IPermission", new string [] { "Permission" } },
+				{ "System.Security.Policy.IMembershipCondition", new string [] { "Condition" } },
+				{ "System.Collections.IDictionary", new string [] { "Dictionary" } },
+				{ "System.Collections.Generic.IDictionary", new string [] { "Dictionary" } },
+				{ "System.Collections.ICollection", new string [] { "Collection" } },
+				{ "System.Collections.Generic.ICollection", new string [] { "Collection" } },
+				{ "System.Collections.IEnumerable", new string [] { "Collection" } }
+			};
 
-		public UseCorrectSuffixRule ()
-		{
-			definedSuffixes.Add ("System.Attribute", new string [] { "Attribute" });
-			definedSuffixes.Add ("System.EventArgs", new string [] { "EventArgs" });
-			definedSuffixes.Add ("System.Exception", new string [] { "Exception" });
-			definedSuffixes.Add ("System.Collections.Queue", new string [] { "Collection", "Queue" });
-			definedSuffixes.Add ("System.Collections.Stack", new string [] { "Collection", "Stack" });
-			definedSuffixes.Add ("System.Data.DataSet", new string [] { "DataSet" });
-			definedSuffixes.Add ("System.Data.DataTable", new string [] { "DataTable", "Collection" });
-			definedSuffixes.Add ("System.IO.Stream", new string [] { "Stream" });
-			definedSuffixes.Add ("System.Security.IPermission", new string [] { "Permission" });
-			definedSuffixes.Add ("System.Security.Policy.IMembershipCondition", new string [] { "Condition" });
-			definedSuffixes.Add ("System.Collections.IDictionary", new string [] { "Dictionary" });
-			definedSuffixes.Add ("System.Collections.Generic.IDictionary", new string [] { "Dictionary" });
-			definedSuffixes.Add ("System.Collections.ICollection", new string [] { "Collection" });
-			definedSuffixes.Add ("System.Collections.Generic.ICollection", new string [] { "Collection" });
-			definedSuffixes.Add ("System.Collections.IEnumerable", new string [] { "Collection" });
-		}
-
-		private string [] GetSuffixes (string baseTypeName)
+		private static string [] GetSuffixes (string baseTypeName)
 		{
 			if (definedSuffixes.ContainsKey (baseTypeName)) {
 				return definedSuffixes [baseTypeName];
@@ -73,48 +72,48 @@ namespace Gendarme.Rules.Naming {
 
 		// checks if type name ends with an approriate suffix
 		// returns array of proposed suffixes via out suffixes parameter or empty list (if none)
-		private bool HasRequiredSuffix (TypeDefinition type, out List<string> suffixes)
+		private static bool HasRequiredSuffix (TypeDefinition type, List<string> suffixes)
 		{
-			suffixes = new List<string> ();
 			TypeDefinition current = type;
 
 			while (current != null && current.BaseType != null) {
 				// if we have any suffixes defined by base type, we select them
 				if (definedSuffixes.ContainsKey (current.BaseType.FullName)) {
-					suffixes.AddRange (GetSuffixes (current.BaseType.FullName));
+					suffixes.AddRangeIfNew (GetSuffixes (current.BaseType.FullName));
 				} else {
 					// if no suffix for base type is found, we start looking through interfaces
 					foreach (TypeReference iface in current.Interfaces)
 						if (definedSuffixes.ContainsKey (iface.FullName))
-							suffixes.AddRange (GetSuffixes (iface.FullName));
+							suffixes.AddRangeIfNew (GetSuffixes (iface.FullName));
 				}
 				if (suffixes.Count > 0) {
 					// if any suffixes found
 					// check whether type name ends with any of these suffixes
 					return suffixes.Exists (delegate (string suffix) { return type.Name.EndsWith (suffix); });
 				} else {
-					current = current.BaseType as TypeDefinition; // inspect base type
+					// inspect base type
+					current = current.BaseType.Resolve ();
 				}
 			}
 			// by default, return true
 			return true;
 		}
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		private List<string> proposedSuffixes = new List<string> ();
+
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to generated code (outside developer's control)
-			if (typeDefinition.IsGeneratedCode ())
-				return runner.RuleSuccess;
+			if (type.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
 
 			// ok, rule applies
 
-			List<string> proposedSuffixes;
-			if (HasRequiredSuffix (typeDefinition, out proposedSuffixes))
-				return runner.RuleSuccess;
+			proposedSuffixes.Clear ();
+			if (HasRequiredSuffix (type, proposedSuffixes))
+				return RuleResult.Success;
 
-			RemoveDuplicates (ref proposedSuffixes);
 			// there must be some suffixes defined, but type name doesn't end with any of them
-			Location location = new Location (typeDefinition);
 			string messageText;
 			if (proposedSuffixes.Count > 0) {
 				string joinedSuffixes = proposedSuffixes [0];
@@ -128,18 +127,8 @@ namespace Gendarme.Rules.Naming {
 			} else {
 				messageText = "The class name does not end with the correct suffix. However Gendarme could not determine what suffix should it end with. Contact the author of the rule to fix this bug.";
 			}
-			Message message = new Message (messageText, location, MessageType.Error);
-			return new MessageCollection (message);
-		}
-
-		private static void RemoveDuplicates (ref List<string> list)
-		{
-			List<string> newList = new List<string> ();
-			foreach (string s in list) {
-				if (!newList.Contains (s))
-					newList.Add (s);
-			}
-			list = newList;
+			Runner.Report (type, Severity.Medium, Confidence.High, messageText);
+			return RuleResult.Failure;
 		}
 	}
 }

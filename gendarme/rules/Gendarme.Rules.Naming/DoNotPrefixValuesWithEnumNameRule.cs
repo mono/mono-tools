@@ -33,14 +33,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class DoNotPrefixValuesWithEnumNameRule : ITypeRule {
+	[Problem ("This enumeration contains value names that starts with the enum's name.")]
+	[Solution ("hange the value name(s) not to include the enum's type name.")]
+	public class DoNotPrefixValuesWithEnumNameRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.IsEnum)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
 				// this excludes special "value__"
@@ -48,15 +48,11 @@ namespace Gendarme.Rules.Naming {
 					continue;
 
 				if (field.Name.StartsWith (type.Name, StringComparison.OrdinalIgnoreCase)) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
-					Message msg = new Message (string.Format ("Enum values should not be prefixed with the enum's name.", type.FullName), loc, MessageType.Warning);
-					results.Add (msg);
+					Runner.Report (field, Severity.Medium, Confidence.High, String.Empty);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -33,30 +33,27 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class DoNotUseReservedInEnumValueNamesRule : ITypeRule {
+	[Problem ("This type is an enumeration that contains value(s) named 'reserved'.")]
+	[Solution ("The 'reserved' value should be removed since there is no need to reserve enums values.")]
+	public class DoNotUseReservedInEnumValueNamesRule : Rule, ITypeRule {
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.IsEnum)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
 				// this excludes special "value__"
 				if (!field.IsStatic)
 					continue;
 
-				if (field.Name.ToLowerInvariant ().Contains ("reserved")) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (field);
-					Message msg = new Message (string.Format ("Enum should not contain fields for reserved values.", type.FullName), loc, MessageType.Warning);
-					results.Add (msg);
+				if (field.Name.ToUpperInvariant ().Contains ("RESERVED")) {
+					// High since removing/renaming the field can be a breaking change
+					Runner.Report (field, Severity.High, Confidence.High, String.Empty);
 				}
 			}
 
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

@@ -33,7 +33,9 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Naming {
 
-	public class UseCorrectPrefixRule : ITypeRule {
+	[Problem ("This type starts with an incorrect prefix or does not start with the required one. All interface names should start with the 'I' letter, followed by another capital letter. All other type names should not have any specific prefix.")]
+	[Solution ("Rename the type to have the correct prefix.")]
+	public class UseCorrectPrefixRule : Rule, ITypeRule {
 
 		private static bool IsCorrectTypeName (string name)
 		{
@@ -50,21 +52,22 @@ namespace Gendarme.Rules.Naming {
 			return name [0] == 'I' && char.IsUpper (name [1]);
 		}
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			Location location = new Location (typeDefinition);
-			if (typeDefinition.IsInterface) {
-				if (!IsCorrectInterfaceName (typeDefinition.Name)) { // interfaces should look like 'ISomething'
-					Message message = new Message (string.Format ("The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", typeDefinition.Name), location, MessageType.Error);
-					return new MessageCollection (message);
+			if (type.IsInterface) {
+				if (!IsCorrectInterfaceName (type.Name)) { // interfaces should look like 'ISomething'
+					string s = String.Format ("The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", type.Name);
+					Runner.Report (type, Severity.Critical, Confidence.High, s);
+					return RuleResult.Failure;
 				}
 			} else {
-				if (!IsCorrectTypeName (typeDefinition.Name)) { // class should _not_ look like 'CSomething"
-					Message message = new Message (string.Format ("The '{0}' type name starts with 'C' prefix but, according to existing naming conventions, type names should not have any specific prefix.", typeDefinition.Name), location, MessageType.Error);
-					return new MessageCollection (message);
+				if (!IsCorrectTypeName (type.Name)) { // class should _not_ look like 'CSomething"
+					string s = String.Format ("The '{0}' type name starts with 'C' prefix but, according to existing naming conventions, type names should not have any specific prefix.", type.Name);
+					Runner.Report (type, Severity.Medium, Confidence.High, s);
+					return RuleResult.Failure;
 				}
 			}
-			return runner.RuleSuccess;
+			return RuleResult.Success;
 		}
 	}
 }

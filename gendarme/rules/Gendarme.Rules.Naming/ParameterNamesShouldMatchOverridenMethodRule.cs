@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Naming.ParameterNamesShouldMatchOverridenMethodRule
+// Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
@@ -27,13 +27,17 @@
 //
 
 using System;
+using System.Globalization;
+
 using Mono.Cecil;
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class ParameterNamesShouldMatchOverridenMethodRule : IMethodRule {
+	[Problem ("This method overrides (or implement) an existing method but does not use the same parameter names as the original.")]
+	[Solution ("Keep parameter names consistent when overriding a class or implementing an interface.")]
+	public class ParameterNamesShouldMatchOverriddenMethodRule : Rule, IMethodRule {
 
 		private static bool SignatureMatches (MethodDefinition method, MethodDefinition baseMethod, bool explicitInterfaceCheck)
 		{
@@ -54,18 +58,17 @@ namespace Gendarme.Rules.Naming {
 					break;
 				}
 			}
-			if (!paramtersMatch)
-				return false;
-			return true;
+			return paramtersMatch;
 		}
 
 		private static MethodDefinition GetBaseMethod (MethodDefinition method)
 		{
-			TypeDefinition baseType = (TypeDefinition) method.DeclaringType;
-			while (baseType != baseType.BaseType) { //System.Object extends System.Object in cecil
-				baseType = baseType.BaseType as TypeDefinition;
-				if (baseType == null) //TODO: ToTypeDefinition ()
-					break;
+			TypeDefinition baseType = method.DeclaringType.Resolve ();
+			if (baseType == null)
+				return null;
+
+			while ((baseType.BaseType != null) && (baseType != baseType.BaseType)) {
+				baseType = baseType.BaseType.Resolve ();
 				foreach (MethodDefinition baseMethodCandidate in baseType.Methods) {
 					if (SignatureMatches (method, baseMethodCandidate, false))
 						return baseMethodCandidate;
@@ -78,9 +81,9 @@ namespace Gendarme.Rules.Naming {
 		{
 			TypeDefinition type = (TypeDefinition) method.DeclaringType;
 			foreach (TypeReference interfaceReference in type.Interfaces) {
-				TypeDefinition interfaceCandidate = interfaceReference as TypeDefinition;
+				TypeDefinition interfaceCandidate = interfaceReference.Resolve ();
 				if (interfaceCandidate == null)
-					continue; //TODO: ToTypeDefinition ();
+					continue;
 				foreach (MethodDefinition interfaceMethodCandidate in interfaceCandidate.Methods) {
 					if (SignatureMatches (method, interfaceMethodCandidate, true))
 						return interfaceMethodCandidate;
@@ -89,10 +92,10 @@ namespace Gendarme.Rules.Naming {
 			return null;
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition method, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.IsVirtual)
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			MethodDefinition baseMethod = null;
 			if (!method.IsNewSlot)
@@ -100,20 +103,17 @@ namespace Gendarme.Rules.Naming {
 			if (baseMethod == null)
 				baseMethod = GetInterfaceMethod (method);
 			if (baseMethod == null)
-				return runner.RuleSuccess;
-
-			MessageCollection results = null;
+				return RuleResult.Success;
 
 			for (int i = 0; i < method.Parameters.Count; i++) {
 				if (method.Parameters [i].Name != baseMethod.Parameters [i].Name) {
-					if (results == null)
-						results = new MessageCollection ();
-					Location loc = new Location (method);
-					Message msg = new Message (string.Format ("The name of parameter {0} ({1}) does not match the name of the parameter in the overriden method ({2}).", i + 1, method.Parameters [i].Name, baseMethod.Parameters [i].Name), loc, MessageType.Warning);
-					results.Add (msg);
+					string s = string.Format (CultureInfo.InstalledUICulture,
+						"The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
+						i + 1, method.Parameters [i].Name, baseMethod.Parameters [i].Name);
+					Runner.Report (method, Severity.Medium, Confidence.High, s);
 				}
 			}
-			return results;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

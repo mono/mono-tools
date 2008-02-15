@@ -36,28 +36,28 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class UseSingularNameInEnumsUnlessAreFlagsRule : ITypeRule {
+	[Problem ("This type is an enumeration and by convention it should have a singular name.")]
+	[Solution ("Change the enumeration name from the plural to the singular form.")]
+	public class UseSingularNameInEnumsUnlessAreFlagsRule : Rule, ITypeRule {
 
 		private static bool IsPlural (string typeName)
 		{
-			int stringComparation = String.Compare (typeName, typeName.Length -1, "s", 0, 1, true, CultureInfo.CurrentCulture);
-			return stringComparation == 0;
+			return (String.Compare (typeName, typeName.Length - 1, "s", 0, 1, true, CultureInfo.CurrentCulture) == 0);
 		}
 
-		public MessageCollection CheckType (TypeDefinition type, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to enums - but not enums marked with [Flags] attribute
 			if (!type.IsEnum || type.IsFlags ())
-				return runner.RuleSuccess;
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 
 			if (!IsPlural (type.Name))
-				return runner.RuleSuccess;
+				return RuleResult.Success;
 
-			Location location = new Location (type);
-			Message message = new Message ("The enum should not have a plural name.", location, MessageType.Error);
-			return new MessageCollection (message);
+			Runner.Report (type, Severity.Medium, Confidence.Normal, String.Empty);
+			return RuleResult.Failure;
 		}
 	}
 }

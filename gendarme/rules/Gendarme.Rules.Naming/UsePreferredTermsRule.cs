@@ -28,67 +28,58 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 using Mono.Cecil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Naming {
 
-	public class UsePreferredTermsRule : ITypeRule, IMethodRule {
+	[Problem ("The identifier contains some obsolete terms.")]
+	[Solution ("For consistency replace any obsolete terms with the preferred ones.")]
+	public class UsePreferredTermsRule : Rule, ITypeRule, IMethodRule {
+
+		private const string Message = "Obsolete term '{0}' should be replaced with '{1}'.";
 
 		// keys are obsolete terms, values are preferred ones
-		private Dictionary<string, string> preferredTerms = 
-			new Dictionary<string, string> ();
-		
-		public UsePreferredTermsRule ()
-		{
-			// list is based on the FxCop naming rule (as the whole rule is inspired by it)
-			// http://www.gotdotnet.com/Team/FxCop/Docs/Rules/Naming/UsePreferredTerms.html
-			preferredTerms.Add ("ComPlus", "EnterpriseServices");
-			preferredTerms.Add ("Cancelled", "Canceled");
-			preferredTerms.Add ("Indices", "Indexes");
-			preferredTerms.Add ("LogIn", "LogOn");
-			preferredTerms.Add ("LogOut", "LogOff");
-			preferredTerms.Add ("SignOn", "SignIn");
-			preferredTerms.Add ("SignOff", "SignOut");
-			preferredTerms.Add ("Writeable", "Writable");			
-		}
+		// list is based on the FxCop naming rule (as the whole rule is inspired by it)
+		// http://www.gotdotnet.com/Team/FxCop/Docs/Rules/Naming/UsePreferredTerms.html
+		private static Dictionary<string, string> preferredTerms =
+			new Dictionary<string, string> () {
+				{ "ComPlus", "EnterpriseServices" },
+				{ "Cancelled", "Canceled" },
+				{ "Indices", "Indexes" },
+				{ "LogIn", "LogOn" },
+				{ "LogOut", "LogOff" },
+				{ "SignOn", "SignIn" },
+				{ "SignOff", "SignOut" },
+				{ "Writeable", "Writable" }
+			};
 		
 		// common function checking any identifier
-		private MessageCollection CheckIdentifier (string identifier, Location location, Runner runner)
+		private RuleResult CheckIdentifier (TypeDefinition type, MethodDefinition method, string identifier)
 		{
-			Dictionary<string, string> foundTerms = new Dictionary<string, string> ();
 			// scan for any obsolete terms
 			foreach (KeyValuePair<string, string> pair in preferredTerms) {
-				if (identifier.IndexOf (pair.Key, StringComparison.InvariantCultureIgnoreCase) != -1) {
-					foundTerms.Add (pair.Key, pair.Value);
+				if (identifier.IndexOf (pair.Key, StringComparison.OrdinalIgnoreCase) != -1) {
+					string s = String.Format (Message, pair.Key, pair.Value);
+					if (type != null)
+						Runner.Report (type, Severity.Low, Confidence.High, s);
+					else
+						Runner.Report (method, Severity.Low, Confidence.High, s);
 				}
 			}
-			if (foundTerms.Count == 0)
-				return runner.RuleSuccess;
-			
-			// form our messages
-			MessageCollection messages = new MessageCollection ();
-			foreach (KeyValuePair<string, string> pair in foundTerms) {
-				string errorMessage = string.Format (
-					"Obsolete term '{0}' is used in the identifier. Replace it with the preferred term '{1}'.",
-					pair.Key, pair.Value);
-				Message message = new Message (errorMessage, location, MessageType.Error);
-				messages.Add (message);
-			}
-			return messages;
+			return Runner.CurrentRuleResult;
 		}
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
-			Location location = new Location (typeDefinition);
-			return CheckIdentifier (typeDefinition.Name, location, runner);
+			return CheckIdentifier (type, null, type.Name);
 		}
 
-		public MessageCollection CheckMethod (MethodDefinition methodDefinition, Runner runner)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			Location location = new Location (methodDefinition);
-			return CheckIdentifier (methodDefinition.Name, location, runner);
+			return CheckIdentifier (null, method, method.Name);
 		}
 	}
 }

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -35,33 +36,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	public class EnumNotEndsWithEnumOrFlagsSuffixRule : ITypeRule {
+	[Problem ("This type is an enumeration and, by convention, its name should not end with either Enum or Flags.")]
+	[Solution ("Remove the Enum or Flags suffix in enumeration name.")]
+	public class EnumNotEndsWithEnumOrFlagsSuffixRule : Rule, ITypeRule {
 
 		private static bool EndsWithSuffix (string suffix, string typeName)
 		{
-			return typeName.EndsWith (suffix) || typeName.ToLower ().EndsWith (suffix.ToLower ());
+			int pos = typeName.Length - suffix.Length;
+			if (pos < 0)
+				return false;
+
+			return (String.Compare (typeName, pos, suffix, 0, suffix.Length, true, CultureInfo.InvariantCulture) == 0);
 		}
 
-		public MessageCollection CheckType (TypeDefinition typeDefinition, Runner runner)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to enums
-			if (!typeDefinition.IsEnum)
-				return runner.RuleSuccess;
+			if (!type.IsEnum)
+				return RuleResult.DoesNotApply;
 
-			if (!typeDefinition.IsFlags ()) {
-				if (EndsWithSuffix ("Enum", typeDefinition.Name)) {
-					Location location = new Location (typeDefinition);
-					Message message = new Message ("Enum name should not end with the Enum suffix.", location, MessageType.Error);
-					return new MessageCollection (message);
+			if (!type.IsFlags ()) {
+				if (EndsWithSuffix ("Enum", type.Name)) {
+					Runner.Report (type, Severity.Medium, Confidence.High, "Enum name should not end with the 'Enum'.");
 				}
 			} else {
-				if (EndsWithSuffix ("Flags", typeDefinition.Name)) {
-					Location location = new Location (typeDefinition);
-					Message message = new Message ("Enum name should not end with the Flags suffix.", location, MessageType.Error);
-					return new MessageCollection (message);
+				if (EndsWithSuffix ("Flags", type.Name)) {
+					Runner.Report (type, Severity.Medium, Confidence.High, "Enum name should not end with the 'Flags'.");
 				}
 			}
-			return runner.RuleSuccess;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
