@@ -78,18 +78,18 @@ namespace Test.Rules.Design {
 
 
 		private ITypeRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private ModuleDefinition module;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			type = module.Types ["Test.Rules.Design.AvoidPublicInstanceFieldsTest"];
+			type = assembly.MainModule.Types ["Test.Rules.Design.AvoidPublicInstanceFieldsTest"];
 			rule = new AvoidPublicInstanceFieldsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -102,56 +102,64 @@ namespace Test.Rules.Design {
 		public void TestShouldBeCaught ()
 		{
 			TypeDefinition type = GetTest ("ShouldBeCaught");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestShouldBeIgnored ()
 		{
 			TypeDefinition type = GetTest ("ShouldBeIgnored");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestArraySpecialCase ()
 		{
 			TypeDefinition type = GetTest ("ArraySpecialCase");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestEnum ()
 		{
 			TypeDefinition type = GetTest ("Enum");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestFlags ()
 		{
 			TypeDefinition type = GetTest ("Flags");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestStaticSpecialCase ()
 		{
 			TypeDefinition type = GetTest ("StaticSpecialCase");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestConstSpecialCase ()
 		{
 			TypeDefinition type = GetTest ("ConstSpecialCase");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestReadOnlySpecialCase ()
 		{
 			TypeDefinition type = GetTest ("ReadOnlySpecialCase");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -118,10 +118,9 @@ namespace Test.Rules.Design {
 	[TestFixture]
 	public class AvoidPropertiesWithoutGetAccessorTest {
 
-
-		private IMethodRule rule;
+		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -129,7 +128,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AvoidPropertiesWithoutGetAccessorRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetType (string name)
@@ -142,81 +141,67 @@ namespace Test.Rules.Design {
 		public void WithNoProperties ()
 		{
 			TypeDefinition type = GetType ("AvoidPropertiesWithoutGetAccessorTest");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.Name);
-			}
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void WithBothGetAndSet ()
 		{
 			TypeDefinition type = GetType ("PublicAbstract");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("IPublic");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 
 			type = GetType ("PublicClass");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 
 			type = GetType ("PublicClassExplicitInterface");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult4");
+			Assert.AreEqual (0, runner.Defects.Count, "Count4");
 
 			type = GetType ("PublicClassInterface");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult5");
+			Assert.AreEqual (0, runner.Defects.Count, "Count5");
 		}
 
 		[Test]
 		public void WithOnlyGet ()
 		{
 			TypeDefinition type = GetType ("PublicAbstractGetOnly");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
-			type = GetType ("IPublicGetOnly");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void WithOnlySet ()
 		{
 			TypeDefinition type = GetType ("PublicAbstractSetOnly");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNotNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			type = GetType ("IPublicSetOnly");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNotNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 
 			type = GetType ("PublicSetOnlyInheritClass");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNotNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (1, runner.Defects.Count, "Count3");
 
 			type = GetType ("PublicSetOnlyImplementClass");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNotNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult4");
+			Assert.AreEqual (1, runner.Defects.Count, "Count4");
 
 			type = GetType ("PublicSetIsNotASetterClass");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.IsNull (rule.CheckMethod (method, runner), method.ToString ());
-			}
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult5");
+			Assert.AreEqual (0, runner.Defects.Count, "Count5");
 		}
 	}
 }

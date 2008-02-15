@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -93,7 +93,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AbstractTypesShouldNotHavePublicConstructorsRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetType (string name)
@@ -106,30 +106,36 @@ namespace Test.Rules.Design {
 		public void WithNoConstructors ()
 		{
 			TypeDefinition type = GetType ("PublicAbstractClass");
-			Assert.IsNull (rule.CheckType (type, runner), "PublicAbstractClass");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("AbstractTypesShouldNotHavePublicConstructorsTest/NestedPublicAbstractClass");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPublicAbstractClass");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void WithPublicConstructors ()
 		{
 			TypeDefinition type = GetType ("PublicAbstractClassWithPublicCtor");
-			Assert.AreEqual (1, rule.CheckType (type, runner).Count, "PublicAbstractClassWithPublicCtor");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			type = GetType ("AbstractTypesShouldNotHavePublicConstructorsTest/NestedPublicAbstractClassWithPublicCtors");
-			Assert.AreEqual (2, rule.CheckType (type, runner).Count, "NestedPublicAbstractClassWithPublicCtors");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (2, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void WithProtectedConstructors ()
 		{
 			TypeDefinition type = GetType ("PublicAbstractClassWithProtectedCtor");
-			Assert.IsNull (rule.CheckType (type, runner), "PublicAbstractClassWithProtectedCtor");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("AbstractTypesShouldNotHavePublicConstructorsTest/NestedPublicAbstractClassWithProtectedCtors");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPublicAbstractClassWithProtectedCtors");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 	}
 }

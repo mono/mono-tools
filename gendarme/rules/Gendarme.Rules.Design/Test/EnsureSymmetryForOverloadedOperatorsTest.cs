@@ -41,6 +41,7 @@ namespace Test.Rules.Design {
 		private EnsureSymmetryForOverloadedOperatorsRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -49,6 +50,7 @@ namespace Test.Rules.Design {
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Design.EnsureSymmetryForOverloadedOperatorsTest"];
 			rule = new EnsureSymmetryForOverloadedOperatorsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -69,7 +71,6 @@ namespace Test.Rules.Design {
 				for (int i = 0; i < parameterCount; i++)
 					mDef.Parameters.Add (new ParameterDefinition (testType));
 				testType.Methods.Add (mDef);
-
 			}
 			return testType;
 		}
@@ -82,7 +83,8 @@ namespace Test.Rules.Design {
 		public void TestFalsePositive ()
 		{
 			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		class EverythingOK {
@@ -106,7 +108,8 @@ namespace Test.Rules.Design {
 		public void TestEverythingOK ()
 		{
 			TypeDefinition type = GetTest ("EverythingOK");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		class Missing1 {
@@ -118,9 +121,8 @@ namespace Test.Rules.Design {
 		public void TestMissing1 ()
 		{
 			TypeDefinition type = GetTest ("Missing1");
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (2, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		class Missing2 {
@@ -132,72 +134,65 @@ namespace Test.Rules.Design {
 		public void TestMissing2 ()
 		{
 			TypeDefinition type = GetTest ("Missing2");
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (3, results.Count); // divide fires for multiply and modulus
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (3, runner.Defects.Count, "Count");
+			// divide fires for multiply and modulus
 		}
 
 		[Test]
 		public void TestModulus ()
 		{
 			TypeDefinition type = this.CreateType ("Modulus", new string [] { "op_Modulus" }, 2);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (1, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestGreater ()
 		{
 			TypeDefinition type = this.CreateType ("Greater", new string [] { "op_GreaterThan", "op_GreaterThanOrEqual" }, 2);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (2, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestLess ()
 		{
 			TypeDefinition type = this.CreateType ("Less", new string [] { "op_LessThan", "op_LessThanOrEqual" }, 2);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (2, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestEquality ()
 		{
 			TypeDefinition type = this.CreateType ("Equality", new string [] { "op_Equality" }, 2);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (1, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestInequality ()
 		{
 			TypeDefinition type = this.CreateType ("Inequality", new string [] { "op_Inequality" }, 2);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (1, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestTrue ()
 		{
 			TypeDefinition type = this.CreateType ("True", new string [] { "op_True" }, 1);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (1, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestFalse ()
 		{
 			TypeDefinition type = this.CreateType ("False", new string [] { "op_False" }, 1);
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (1, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

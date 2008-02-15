@@ -1,10 +1,12 @@
 // 
-// Unit tests for DontDeclareProtectedFieldsInSealedClassRule
+// Unit tests for DoNotDeclareProtectedFieldsInSealedTypeRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +37,7 @@ using NUnit.Framework;
 namespace Test.Rules.Design
 {
 	[TestFixture]
-	public class DontDeclareProtectedFieldsInSealedClassTest {
+	public class DoNotDeclareProtectedFieldsInSealedTypeTest {
 		
 		public sealed class UnInheritableClassWithProtectedField
 		{
@@ -55,18 +57,18 @@ namespace Test.Rules.Design
 			protected int j;
 		}
 		
-		private ITypeRule typeRule;
+		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private TestRunner runner;
 		
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			typeRule = new DontDeclareProtectedFieldsInSealedClassRule();
-			messageCollection = null;
+			rule = new DoNotDeclareProtectedFieldsInSealedTypeRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -79,25 +81,24 @@ namespace Test.Rules.Design
 		public void unInheritableClassWithProtectedFieldTest ()
 		{
 			type = GetTest ("UnInheritableClassWithProtectedField");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (2, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void unInheritableClassWithoutProtectedFieldsTest ()
 		{
 			type = GetTest ("UnInheritableClassWithoutProtectedFields");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void inheritableClassWithProtectedFieldsTest ()
 		{
 			type = GetTest ("InheritableClassWithProtectedFields");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

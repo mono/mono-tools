@@ -87,7 +87,7 @@ namespace Test.Rules.Design {
 
 		private DisposableTypesShouldHaveFinalizerRule rule;
 		private AssemblyDefinition assembly;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -95,6 +95,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new DisposableTypesShouldHaveFinalizerRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -106,42 +107,48 @@ namespace Test.Rules.Design {
 		public void TestHasFinalizer ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.HasFinalizer");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoFinalizer ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NoFinalizer");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNotDisposable ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NotDisposable");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoNativeFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NoNativeField");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNotDisposableBecauseStatic ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NotDisposableBecauseStatic");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

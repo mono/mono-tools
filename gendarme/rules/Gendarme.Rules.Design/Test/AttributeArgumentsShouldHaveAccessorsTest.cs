@@ -205,8 +205,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -214,7 +213,7 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new AttributeArgumentsShouldHaveAccessorsRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -225,68 +224,73 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestEmptyAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<EmptyAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<EmptyAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestJustClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<JustClass> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<JustClass> ();
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestMultiConstructorNoAccessorsMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<MultiConstructorNoAccessorsMissingAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<MultiConstructorNoAccessorsMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestMultiConstructorOneAccessorMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<MultiConstructorOneAccessorMissingAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<MultiConstructorOneAccessorMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestMultiConstructorTwoAccessorsMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<MultiConstructorTwoAccessorsMissingAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (2, messages.Count);
+			TypeDefinition type = GetTest<MultiConstructorTwoAccessorsMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNearlyEmptyttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NearlyEmptyAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<NearlyEmptyAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoAccessorsMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoAccessorsMissingAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<NoAccessorsMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestOneAccessorMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<OneAccessorMissingAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<OneAccessorMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestTwoAccessorsMissingAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<TwoAccessorsMissingAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (2, messages.Count);
+			TypeDefinition type = GetTest<TwoAccessorsMissingAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 	}
 }

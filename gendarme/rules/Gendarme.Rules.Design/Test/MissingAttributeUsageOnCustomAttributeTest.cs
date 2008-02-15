@@ -58,8 +58,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -67,7 +66,7 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new MissingAttributeUsageOnCustomAttributeRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -78,38 +77,41 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestNotAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NotAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<NotAttribute> ();
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoUsageDefinedAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoUsageDefinedAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<NoUsageDefinedAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoUsageDefinedInheritsUsageDefinedAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoUsageDefinedInheritsUsageDefinedAttribute> (), runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			TypeDefinition type = GetTest<NoUsageDefinedInheritsUsageDefinedAttribute> ();
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestUsageDefinedAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<UsageDefinedAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<UsageDefinedAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestUsageDefinedInheritsNoUsageDefinedAttribute ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<UsageDefinedInheritsNoUsageDefinedAttribute> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<UsageDefinedInheritsNoUsageDefinedAttribute> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

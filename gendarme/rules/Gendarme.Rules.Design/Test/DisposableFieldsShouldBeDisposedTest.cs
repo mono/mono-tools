@@ -44,7 +44,7 @@ namespace Test.Rules.Design {
 
 		private DisposableFieldsShouldBeDisposedRule rule;
 		private AssemblyDefinition assembly;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -52,6 +52,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new DisposableFieldsShouldBeDisposedRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -78,7 +79,8 @@ namespace Test.Rules.Design {
 		public void TestFalsePositive ()
 		{
 			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -94,7 +96,8 @@ namespace Test.Rules.Design {
 		public void TestDisposable ()
 		{
 			TypeDefinition type = GetTest ("Disposable");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -109,7 +112,8 @@ namespace Test.Rules.Design {
 		public void TestExtendsDispose ()
 		{
 			TypeDefinition type = GetTest ("ExtendsDispose");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 
@@ -124,7 +128,8 @@ namespace Test.Rules.Design {
 		public void TestExtendsDisposeCallsBase ()
 		{
 			TypeDefinition type = GetTest ("ExtendsDisposeCallsBase");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -140,7 +145,8 @@ namespace Test.Rules.Design {
 		public void TestExtendsDispose2 ()
 		{
 			TypeDefinition type = GetTest ("ExtendsDispose2");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 
@@ -158,7 +164,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsCorrect ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsCorrect");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -178,7 +185,8 @@ namespace Test.Rules.Design {
 		public void TestMultipleDisposeableFieldsCorrect ()
 		{
 			TypeDefinition type = GetTest ("MultipleDisposeableFieldsCorrect");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		
@@ -197,7 +205,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsIncorrect ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsIncorrect");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 
@@ -221,7 +230,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsDisposePattern ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsDisposePattern");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -240,7 +250,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsExplicit ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsExplicit");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 
@@ -263,7 +274,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsTwoCorrect ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsTwoCorrect");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		class DisposeableFieldsTwoIncorrect : IDisposable {
@@ -285,7 +297,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsTwoIncorrect ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsTwoIncorrect");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 
@@ -304,7 +317,8 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsWithStaticExplicit ()
 		{
 			TypeDefinition type = GetTest ("DisposeableFieldsWithStaticExplicit");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

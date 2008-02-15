@@ -113,7 +113,7 @@ namespace Test.Rules.Design {
 
 		private TypesWithDisposableFieldsShouldBeDisposableRule rule;
 		private AssemblyDefinition assembly;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -121,6 +121,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new TypesWithDisposableFieldsShouldBeDisposableRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -132,56 +133,64 @@ namespace Test.Rules.Design {
 		public void TestNoDisposeableFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NoDisposeableFields");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableFieldsImplementsIDisposeable ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsImplementsIDisposeable");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableFieldsExplicit ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsExplicit");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableFieldsImplementsIDisposeableAbstract ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsImplementsIDisposeableAbstract");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFields");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableFieldsArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestStructWithDisposeableFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.StructWithDisposeableFields");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestDisposeableStaticFieldsArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableStaticFieldsArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

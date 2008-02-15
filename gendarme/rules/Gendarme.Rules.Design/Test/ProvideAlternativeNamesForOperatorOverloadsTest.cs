@@ -41,6 +41,7 @@ namespace Test.Rules.Design {
 
 		private ProvideAlternativeNamesForOperatorOverloadsRule rule;
 		private AssemblyDefinition assembly;
+		private TestRunner runner;
 
 
 		[TestFixtureSetUp]
@@ -49,6 +50,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new ProvideAlternativeNamesForOperatorOverloadsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -68,7 +70,8 @@ namespace Test.Rules.Design {
 		public void TestFalsePositive ()
 		{
 			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		class EverythingIsThere {
@@ -138,7 +141,8 @@ namespace Test.Rules.Design {
 		public void TestEverythingIsThere ()
 		{
 			TypeDefinition type = GetTest ("EverythingIsThere");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		class MissingCompare {
@@ -154,9 +158,8 @@ namespace Test.Rules.Design {
 		public void TestMissingCompare ()
 		{
 			TypeDefinition type = GetTest ("MissingCompare");
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (5, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (5, runner.Defects.Count, "Count");
 		}
 
 		class MissingUnary {
@@ -175,9 +178,8 @@ namespace Test.Rules.Design {
 		public void TestMissingUnary ()
 		{
 			TypeDefinition type = GetTest ("MissingUnary");
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (8, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (8, runner.Defects.Count, "Count");
 		}
 
 		class MissingBinary {
@@ -199,9 +201,8 @@ namespace Test.Rules.Design {
 		public void TestMissingBinary ()
 		{
 			TypeDefinition type = GetTest ("MissingBinary");
-			MessageCollection results = rule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (results);
-			Assert.AreEqual (10, results.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (10, runner.Defects.Count, "Count");
 		}
 	}
 }

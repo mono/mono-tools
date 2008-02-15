@@ -142,7 +142,7 @@ namespace Test.Rules.Design {
 
 		private TypesWithNativeFieldsShouldBeDisposableRule rule;
 		private AssemblyDefinition assembly;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -150,6 +150,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new TypesWithNativeFieldsShouldBeDisposableRule ();
+			runner = new TestRunner (rule);
 		}
 
 		public TypeDefinition GetTest (string name)
@@ -161,77 +162,88 @@ namespace Test.Rules.Design {
 		public void TestNoNativeFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NoNativeFields");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsImplementsIDisposeable ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsImplementsIDisposeable");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsExplicit ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsExplicit");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsIntPtr ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsIntPtr");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsUIntPtr ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsUIntPtr");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsHandleRef ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsHandleRef");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAbstractNativeFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.AbstractNativeFields");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAbstractNativeFields2 ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.AbstractNativeFields2");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (2, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNativeFieldsArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldsArray");
-			Assert.IsNotNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestStructWithNativeFields ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.StructWithNativeFields");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void TestNativeStaticFieldsArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Design.NativeStaticFieldsArray");
-			Assert.IsNull (rule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

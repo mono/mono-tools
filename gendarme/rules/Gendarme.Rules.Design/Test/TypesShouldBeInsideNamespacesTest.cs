@@ -81,7 +81,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -89,7 +89,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new TypesShouldBeInsideNamespacesRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetType (string name)
@@ -101,58 +101,72 @@ namespace Test.Rules.Design {
 		public void OutsideNamespace ()
 		{
 			TypeDefinition type = GetType ("PublicTypeOutsideNamescape");
-			Assert.IsNotNull (rule.CheckType (type, runner), "PublicTypeOutsideNamescape");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			type = GetType ("InternalTypeOutsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "InternalTypeOutsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 
 			type = GetType ("PrivateClassOutsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "PrivateClassOutsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 		}
 
 		[Test]
 		public void NestedOutsideNamespace ()
 		{
 			TypeDefinition type = GetType ("PublicTypeOutsideNamescape/NestedPublicTypeOutsideNamescape");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPublicTypeOutsideNamescape");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("PublicTypeOutsideNamescape/NestedProtectedTypeOutsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedProtectedTypeOutsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 
 			type = GetType ("PublicTypeOutsideNamescape/NestedInternalTypeOutsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedInternalTypeInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 
 			type = GetType ("PublicTypeOutsideNamescape/NestedPrivateClassOutsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPrivateClassInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult4");
+			Assert.AreEqual (0, runner.Defects.Count, "Count4");
 		}
 
 		[Test]
 		public void InsideNamespace ()
 		{
 			TypeDefinition type = GetType ("Test.Rules.Design.PublicTypeInsideNamescape");
-			Assert.IsNull (rule.CheckType (type, runner), "PublicTypeInsideNamescape");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("Test.Rules.Design.InternalTypeInsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "InternalTypeInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 
 			type = GetType ("Test.Rules.Design.PrivateClassInsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "PrivateClassInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 		}
 
 		[Test]
 		public void NestedInsideNamespace ()
 		{
 			TypeDefinition type = GetType ("Test.Rules.Design.PublicTypeInsideNamescape/NestedPublicTypeInsideNamescape");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPublicTypeInsideNamescape");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetType ("Test.Rules.Design.PublicTypeInsideNamescape/NestedProtectedTypeInsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedProtectedTypeInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 
 			type = GetType ("Test.Rules.Design.PublicTypeInsideNamescape/NestedInternalTypeInsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedInternalTypeInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count3");
 
 			type = GetType ("Test.Rules.Design.PublicTypeInsideNamescape/NestedPrivateClassInsideNamespace");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPrivateClassInsideNamespace");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult4");
+			Assert.AreEqual (0, runner.Defects.Count, "Count4");
 		}
 	}
 }

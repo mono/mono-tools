@@ -39,7 +39,7 @@ namespace Test.Rules.Design {
 	public class MainShouldNotBePublicTest {
 
 		private IAssemblyRule rule;
-		private Runner runner;
+		private TestRunner runner;
 
 		private AssemblyDefinition goodAssembly;
 		private AssemblyDefinition anotherGoodAssembly;
@@ -50,7 +50,7 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			rule = new MainShouldNotBePublicRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 			GenerateRequiredAssemblies ();
 		}
 
@@ -87,27 +87,29 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestAnotherGoodAssembly ()
 		{
-			Assert.IsNull (rule.CheckAssembly (anotherGoodAssembly, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (anotherGoodAssembly));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestGoodAssembly ()
 		{
-			Assert.IsNull (rule.CheckAssembly (goodAssembly, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (goodAssembly));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestBadAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (badAssembly, runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (badAssembly));
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestNoEntryPointAssembly ()
 		{
-			Assert.IsNull (rule.CheckAssembly (noEntryPointAssembly, runner));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (noEntryPointAssembly));
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

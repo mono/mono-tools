@@ -61,8 +61,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -70,7 +69,7 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new FinalizersShouldCallBaseClassFinalizerRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -81,15 +80,17 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestNoFinalizerDefinedClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoFinalizerDefinedClass> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<NoFinalizerDefinedClass> ();
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestFinalizerCallingBaseFinalizerClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<FinalizerCallingBaseFinalizerClass> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<FinalizerCallingBaseFinalizerClass> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
@@ -106,11 +107,9 @@ namespace Test.Rules.Design {
 						break;
 					}
 				}
-
 			}
-			MessageCollection messages = rule.CheckType (typeDefinition, runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (typeDefinition), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

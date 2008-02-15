@@ -30,6 +30,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Design;
 
@@ -49,8 +50,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
-
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -58,7 +58,7 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new FinalizersShouldBeProtectedRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
@@ -69,15 +69,17 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestNoFinalizerClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<NoFinalizerClass> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<NoFinalizerClass> ();
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestProtectedFinalizerClass ()
 		{
-			MessageCollection messages = rule.CheckType (GetTest<ProtectedFinalizerClass> (), runner);
-			Assert.IsNull (messages);
+			TypeDefinition type = GetTest<ProtectedFinalizerClass> ();
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
@@ -88,9 +90,8 @@ namespace Test.Rules.Design {
 			// make it non-protected (e.g. public)
 			finalizer.IsPublic = true;
 
-			MessageCollection messages = rule.CheckType (typeDefinition, runner);
-			Assert.IsNotNull (messages);
-			Assert.AreEqual (1, messages.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (typeDefinition), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 	}
 }

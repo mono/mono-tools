@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ namespace Test.Rules.Design {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -79,7 +79,7 @@ namespace Test.Rules.Design {
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			rule = new FlagsShouldNotDefineAZeroValueRule ();
-			runner = new MinimalRunner ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -92,34 +92,40 @@ namespace Test.Rules.Design {
 		public void NotAnEnumType ()
 		{
 			TypeDefinition type = GetTest ("FlagsShouldNotDefineAZeroValueTest");
-			Assert.IsNull (rule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void NotAFlags ()
 		{
 			TypeDefinition type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedPublicEnumWithZeroValue");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPublicEnumWithZeroValue");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (0, runner.Defects.Count, "Count1");
 
 			type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedPrivateEnumWithoutZeroValue");
-			Assert.IsNull (rule.CheckType (type, runner), "NestedPrivateEnumWithoutZeroValue");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
 		[Test]
 		public void FlagsWithoutZeroValue ()
 		{
 			TypeDefinition type = GetTest ("InternalFlagsWithoutZeroValue");
-			Assert.IsNull (rule.CheckType (type, runner), "InternalFlagsWithoutZeroValue");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void FlagsWithZeroValue ()
 		{
 			TypeDefinition type = GetTest ("PrivateFlagsWithZeroValue");
-			Assert.IsNotNull (rule.CheckType (type, runner), "PrivateFlagsWithZeroValue");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count1");
 
 			type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedInternalFlagsWithZeroValue");
-			Assert.IsNotNull (rule.CheckType (type, runner), "NestedInternalFlagsWithZeroValue");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count2");
 		}
 	}
 }

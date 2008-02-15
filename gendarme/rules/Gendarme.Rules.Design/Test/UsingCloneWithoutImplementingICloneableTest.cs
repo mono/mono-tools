@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -112,18 +112,18 @@ namespace Test.Rules.Design
 			}
 		}
 		
-		private ITypeRule typeRule;
+		private ITypeRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		MessageCollection messageCollection;
+		private TestRunner runner;
 		
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			typeRule = new UsingCloneWithoutImplementingICloneableRule ();
-			messageCollection = null;
+			rule = new UsingCloneWithoutImplementingICloneableRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -136,70 +136,72 @@ namespace Test.Rules.Design
 		public void usingCloneAndImplementingICloneableTest ()
 		{
 			type = GetTest ("UsingCloneAndImplementingICloneable");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void usingCloneWithoutImplementingICloneableTest ()
 		{
 			type = GetTest ("UsingCloneWithoutImplementingICloneable");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (1, messageCollection.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void neitherUsingCloneNorImplementingICloneableTest ()
 		{
 			type = GetTest ("NeitherUsingCloneNorImplementingICloneable");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void anotherExampleOfNotUsingBothTest ()
 		{
 			type = GetTest ("AnotherExampleOfNotUsingBoth");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void OneMoreExampleTest ()
 		{
 			type = GetTest ("OneMoreExample");
-			messageCollection = typeRule.CheckType (type, new MinimalRunner ());
-			Assert.IsNull (messageCollection);
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void CloneReturnTypeNotObject ()
 		{
 			type = GetTest ("CloningType");
-			Assert.IsNotNull (typeRule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 
 		[Test]
-		[Ignore ("Type located outside this assembly - need AssemblyResolver")]
 		public void InheritFromTypeOutsideAssembly ()
 		{
 			type = GetTest ("MyArrayList");
-			Assert.IsNull (typeRule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void InheritFromTypeImplementingICloneableButWithoutOverride ()
 		{
 			type = GetTest ("SecondLevelClone");
-			Assert.IsNull (typeRule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void InheritFromTypeImplementingICloneable ()
 		{
 			type = GetTest ("SecondLevelCloneWithOverride");
-			Assert.IsNull (typeRule.CheckType (type, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }

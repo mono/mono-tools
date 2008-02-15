@@ -1,3 +1,32 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsTest.cs
+	* AttributeArgumentsShouldHaveAccessorsTest.cs
+	* AvoidEmptyInterfaceTest.cs
+	* AvoidPropertiesWithoutGetAccessorTest.cs
+	* AvoidPublicInstanceFieldsTest.cs
+	* ConsiderConvertingMethodToPropertyTest.cs
+	* DisposableFieldsShouldBeDisposedTest.cs
+	* DisposableTypesShouldHaveFinalizerTest.cs
+	* DontDeclareProtectedFieldsInSealedClassTest.cs
+	* EnsureSymmetryForOverloadedOperatorsTest.cs
+	* EnumsShouldDefineAZeroValueTest.cs
+	* EnumsShouldUseInt32Test.cs
+	* FinalizersShouldBeProtectedTest.cs
+	* FinalizersShouldCallBaseClassFinalizerTest.cs
+	* FlagsShouldNotDefineAZeroValueTest.cs
+	* ImplementEqualsAndGetHashCodeInPairTest.cs
+	* MainShouldNotBePublicTest.cs
+	* MissingAttributeUsageOnCustomAttributeTest.cs
+	* OperatorEqualsShouldBeOverloadedTest.cs
+	* OverrideEqualsMethodTest.cs
+	* ProvideAlternativeNamesForOperatorOverloadsTest.cs
+	* TypesShouldBeInsideNamespacesTest.cs
+	* TypesWithDisposableFieldsShouldBeDisposableTest.cs
+	* TypesWithNativeFieldsShouldBeDisposableTest.cs
+	* UsingCloneWithoutImplementingICloneableTest.cs:
+		Update unit tests wrt framework changes
+
 2008-02-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EnumsShouldUseInt32Test.cs: New. Unit tests.

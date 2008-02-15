@@ -81,15 +81,15 @@ namespace Test.Rules.Design {
 
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
 			rule = new ConsiderConvertingMethodToPropertyRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
@@ -102,16 +102,20 @@ namespace Test.Rules.Design {
 		public void TestShouldBeCaught ()
 		{
 			TypeDefinition type = GetTest ("ShouldBeCaught");
-			foreach (MethodDefinition md in type.Methods)
-				Assert.IsNotNull (rule.CheckMethod (md, new MinimalRunner ()), md.Name);
+			foreach (MethodDefinition md in type.Methods) {
+				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md), "RuleResult." + md.Name);
+				Assert.AreEqual (1, runner.Defects.Count, "Count." + md.Name);
+			}
 		}
 
 		[Test]
 		public void TestShouldBeIgnored ()
 		{
 			TypeDefinition type = GetTest ("ShouldBeIgnored");
-			foreach (MethodDefinition md in type.Methods)
-				Assert.IsNull (rule.CheckMethod (md, new MinimalRunner ()), md.Name);
+			foreach (MethodDefinition md in type.Methods) {
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md), "RuleResult." + md.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + md.Name);
+			}
 		}
 
 		[Test]
@@ -121,10 +125,12 @@ namespace Test.Rules.Design {
 			foreach (MethodDefinition md in type.Methods) {
 				switch (md.Name) {
 				case "GetMyValue":
-					Assert.IsNotNull (rule.CheckMethod (md, new MinimalRunner ()), md.Name);
+					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md), "RuleResult1");
+					Assert.AreEqual (1, runner.Defects.Count, "Count1");
 					break;
 				case "SetMyValue":
-					Assert.IsNull (rule.CheckMethod (md, new MinimalRunner ()), md.Name);
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md), "RuleResult2");
+					Assert.AreEqual (0, runner.Defects.Count, "Count2");
 					break;
 				}
 			}
@@ -135,7 +141,8 @@ namespace Test.Rules.Design {
 		{
 			TypeDefinition type = GetTest ("GetConstructor");
 			foreach (MethodDefinition md in type.Constructors) {
-				Assert.IsNull (rule.CheckMethod (md, new MinimalRunner ()), md.Name);
+				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md), "RuleResult." + md.Name);
+				Assert.AreEqual (0, runner.Defects.Count, "Count." + md.Name);
 			}
 		}
 	}

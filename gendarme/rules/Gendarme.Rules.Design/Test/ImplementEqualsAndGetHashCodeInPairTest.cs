@@ -128,17 +128,17 @@ namespace Test.Rules.Design {
 			}
 		}
 		
-		private ITypeRule typeRule;
+		private ITypeRule rule;
 		private AssemblyDefinition assembly;
-		private Runner runner;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			typeRule = new ImplementEqualsAndGetHashCodeInPairRule ();
-			runner = new MinimalRunner ();
+			rule = new ImplementEqualsAndGetHashCodeInPairRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -151,71 +151,72 @@ namespace Test.Rules.Design {
 		public void EqualsButNotGetHashCodeTest ()
 		{ 
 			TypeDefinition type = GetTest ("ImplementsEqualsButNotGetHashCode");
-			MessageCollection messageCollection = typeRule.CheckType (type, runner);
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void GetHashCodeButNotEqualsTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsGetHashCodeButNotEquals");
-			MessageCollection messageCollection = typeRule.CheckType (type, runner);
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void NoneOfThemTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsNoneOfThem");
-			Assert.IsNull (typeRule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void BothOfThemTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsBothOfThem");
-			Assert.IsNull (typeRule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void ImplementsEqualsUsesObjectGetHashCodeTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsEqualsUsesObjectGetHashCode");
-			MessageCollection messageCollection = typeRule.CheckType (type, runner);
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void ImplementsEqualsReuseBaseGetHashCodeTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsEqualsReuseBaseGetHashCode");
-			Assert.IsNull (typeRule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void ImplementsGetHashCodeUsesObjectEqualsTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementsGetHashCodeUsesObjectEquals");
-			MessageCollection messageCollection = typeRule.CheckType (type, runner);
-			Assert.IsNotNull (messageCollection);
-			Assert.AreEqual (messageCollection.Count, 1);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void EqualsWithTwoArgsTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementingEqualsWithTwoArgs");
-			Assert.IsNull (typeRule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 		
 		[Test]
 		public void GetHashCodeWithOneArgTest ()
 		{
 			TypeDefinition type = GetTest ("ImplementingGetHashCodeWithOneArg");
-			Assert.IsNull (typeRule.CheckType (type, runner));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 	}
 }
