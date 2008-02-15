@@ -1,3 +1,10 @@
+2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GtkSharpExecutableTargetTest.cs
+	* SystemWindowsFormsExecutableTargetTest.cs
+	* UseSTAThreadAttributeOnSWFEntryPointsTest.cs
+		Updated unit tests wrt framework changes.
+
 2008-01-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseSTAThreadAttributeOnSWFEntryPointsTest.cs: New. Unit tests 

@@ -72,16 +72,16 @@ namespace Test.Rules.Ui {
 	public class UseSTAThreadAttributeOnSWFEntryPointsTest {
 
 		private UseSTAThreadAttributeOnSWFEntryPointsRule rule;
+		private TestRunner runner;
 		private AssemblyDefinition assembly;
-		private Runner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			rule = new UseSTAThreadAttributeOnSWFEntryPointsRule ();
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			runner = new MinimalRunner ();
+			rule = new UseSTAThreadAttributeOnSWFEntryPointsRule ();
+			runner = new TestRunner (rule);
 		}
 
 		private AssemblyDefinition GetAssemblyAndInject<TInjectedType> (bool SWF)
@@ -115,57 +115,49 @@ namespace Test.Rules.Ui {
 		[Test]
 		public void TestNoEntryPoint ()
 		{
-			MessageCollection messages = rule.CheckAssembly (assembly, runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (assembly));
 		}
 
 		[Test]
 		public void TestNoTANonSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<NoAttributesMain> (false), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (GetAssemblyAndInject<NoAttributesMain> (false)));
 		}
 
 		[Test]
 		public void TestNoTASWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<NoAttributesMain> (true), runner);
-			Assert.IsNotNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<NoAttributesMain> (true)));
 		}
 
 		[Test]
 		public void TestSTANonSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<STAThreadMain> (false), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (GetAssemblyAndInject<STAThreadMain> (false)));
 		}
 
 		[Test]
 		public void TestMTANonSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<MTAThreadMain> (false), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (GetAssemblyAndInject<MTAThreadMain> (false)));
 		}
 
 		[Test]
 		public void TestSTAThreadSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<STAThreadMain> (true), runner);
-			Assert.IsNull (messages);
+			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (GetAssemblyAndInject<STAThreadMain> (true)));
 		}
 
 		[Test]
 		public void TestMTAThreadSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<MTAThreadMain> (true), runner);
-			Assert.IsNotNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<MTAThreadMain> (true)));
 		}
 
 		[Test]
 		public void TestSTAAndMTAThreadSWFAssembly ()
 		{
-			MessageCollection messages = rule.CheckAssembly (GetAssemblyAndInject<BothSTAAndMTAThreadMain> (true), runner);
-			Assert.IsNotNull (messages);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (GetAssemblyAndInject<BothSTAAndMTAThreadMain> (true)));
 		}
 	}
 }

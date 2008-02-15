@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -42,11 +42,13 @@ namespace Tests.Rules.Ui {
 	public class SystemWindowsFormsExecutableTargetTest {
 
 		private IAssemblyRule rule;
+		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			rule = new SystemWindowsFormsExecutableTargetRule ();
+			runner = new TestRunner (rule);
 		}
 
 		[Test]
@@ -54,7 +56,7 @@ namespace Tests.Rules.Ui {
 		{
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (Assembly.GetExecutingAssembly ().Location);
 			// this (unit test) assembly is a library (dll) and has no entry point
-			Assert.IsNull (rule.CheckAssembly (assembly, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (assembly));
 		}
 
 		[Test]
@@ -62,7 +64,7 @@ namespace Tests.Rules.Ui {
 		{
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.conexe_exe);
 			// this assembly is a executable (exe) but doesn't refer to SWF
-			Assert.IsNull (rule.CheckAssembly (assembly, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (assembly));
 		}
 
 		[Test]
@@ -70,7 +72,7 @@ namespace Tests.Rules.Ui {
 		{
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.swf_winexe_exe);
 			// this assembly is a executable (exe), refer to SWF and is compiled with /winexe
-			Assert.IsNull (rule.CheckAssembly (assembly, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (assembly));
 		}
 
 		[Test]
@@ -78,7 +80,7 @@ namespace Tests.Rules.Ui {
 		{
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.swfexe_exe);
 			// this assembly is a executable (exe) and refer to SWF but isn't compiled with /winexe
-			Assert.IsNotNull (rule.CheckAssembly (assembly, new MinimalRunner ()));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (assembly));
 		}
 	}
 }
