@@ -65,20 +65,20 @@ namespace Gendarme.Rules.Exceptions {
 			return exceptionHandler.HandlerStart;
 		}
 
-		public RuleResult CheckMethod (MethodDefinition methodDefinition)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies to methods with IL
-			if (!methodDefinition.HasBody)
+			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			ExceptionHandlerCollection exceptionHandlerCollection = methodDefinition.Body.ExceptionHandlers;
+			ExceptionHandlerCollection exceptionHandlerCollection = method.Body.ExceptionHandlers;
 			foreach (ExceptionHandler exceptionHandler in exceptionHandlerCollection) {
 				if (exceptionHandler.Type == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {
 						Instruction throw_instruction = ThrowsGeneralException (exceptionHandler);
 						if (throw_instruction != null) {
-							Runner.Report (methodDefinition, throw_instruction, Severity.Medium, Confidence.High, String.Empty);
+							Runner.Report (method, throw_instruction, Severity.Medium, Confidence.High, String.Empty);
 						}
 					}
 				}

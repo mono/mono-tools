@@ -1,3 +1,8 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Rename
+	parameter to match interface parameter name.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotDestroyStackTraceRule.cs: (renamed from DontDestroyStackTrace.cs)
