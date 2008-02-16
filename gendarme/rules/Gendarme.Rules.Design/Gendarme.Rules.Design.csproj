@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\console\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,9 +51,11 @@
     <Compile Include="AvoidEmptyInterfaceRule.cs" />
     <Compile Include="EnsureSymmetryForOverloadedOperatorsRule.cs" />
     <Compile Include="EnumsShouldDefineAZeroValueRule.cs" />
+    <Compile Include="EnumsShouldUseInt32Rule.cs" />
     <Compile Include="FinalizersShouldBeProtectedRule.cs" />
     <Compile Include="FinalizersShouldCallBaseClassFinalizerRule.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
+    <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedRule.cs" />

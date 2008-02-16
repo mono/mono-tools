@@ -51,15 +51,15 @@
     <Compile Include="AvoidEmptyInterfaceTest.cs" />
     <Compile Include="EnsureSymmetryForOverloadedOperatorsTest.cs" />
     <Compile Include="EnumsShouldDefineAZeroValueTest.cs" />
+    <Compile Include="EnumsShouldUseInt32Test.cs" />
     <Compile Include="FinalizersShouldBeProtectedTest.cs" />
     <Compile Include="FinalizersShouldCallBaseClassFinalizerTest.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueTest.cs" />
+    <Compile Include="ImplementEqualsAndGetHashCodeInPairTest.cs" />
     <Compile Include="MainShouldNotBePublicTest.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeTest.cs" />
-    <Compile Include="ObsoleteMessagesShouldNeverBeEmptyTest.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedTest.cs" />
     <Compile Include="OverrideEqualsMethodTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsTest.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesTest.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="UsingCloneWithoutImplementingICloneableTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\lib\Mono.Cecil.csproj">
+    <ProjectReference Include="..\..\..\..\..\cecil\lib\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
     </ProjectReference>
@@ -79,6 +79,9 @@
       <Project>{FC889577-F51A-469C-9F30-E967504E9E24}</Project>
       <Name>Gendarme.Rules.Design</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
