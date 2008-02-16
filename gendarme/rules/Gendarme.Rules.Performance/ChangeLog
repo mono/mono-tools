@@ -1,3 +1,7 @@
+2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidUnusedParametersRule.cs: Removed unused variable.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EmptyDestructorRule.cs

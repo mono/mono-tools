@@ -124,7 +124,6 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// rule applies
-			bool containsUnusedParameters = false;
 			foreach (ParameterDefinition parameter in GetUnusedParameters (method)) {
 				Runner.Report (parameter, Severity.Medium, Confidence.Normal, String.Format ("The parameter {0} is never used", parameter.Name));
 			}
