@@ -1,6 +1,7 @@
-2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DontCompareWithNaNTest.cs: Fix name change.
+	* FloatComparisonRuleTest.cs: Fix test not to depend on compiler.
 
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
