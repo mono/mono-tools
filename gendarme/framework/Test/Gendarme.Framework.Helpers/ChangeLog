@@ -1,3 +1,9 @@
+2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* MethodSignatureTest.cs, StackEntryAnalysisTest.cs: Use the
+	Gendarme.Framework.Helpers namespace.  This fixes the error when
+	the unit tests are compiled.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MethodSignatureTest.cs
