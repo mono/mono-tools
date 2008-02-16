@@ -41,11 +41,6 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("Return an appropriate object instead of returning null.")]
 	public class CloneMethodShouldNotReturnNullRule: Rule, ITypeRule {
 
-		private static bool IsCloneMethod (MethodDefinition method)
-		{
-			return (method.Name == "Clone" && (method.Parameters.Count == 0));
-		}
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to types implementing System.ICloneable

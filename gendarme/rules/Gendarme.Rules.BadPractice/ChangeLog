@@ -1,3 +1,7 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullRule: Remove unused method.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckNewExceptionWithoutThrowingRule.cs
