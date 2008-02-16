@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsTest.cs" />
-    <Compile Include="TestPatterns.cs" />
+    <Compile Include="DontDestroyStackTraceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\lib\Mono.Cecil.csproj">
