@@ -152,7 +152,7 @@ namespace Gendarme {
 		{
 			if (disposing) {
 				if (writer != null) {
-					writer.Close ();
+					(writer as IDisposable).Dispose ();
 					writer = null;
 				}
 			}

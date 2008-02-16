@@ -1,3 +1,7 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* XmlResultWriter.cs: Call Dispose (not Close).
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ConsoleRunner.cs: Updated runner for the new framework (still a 
