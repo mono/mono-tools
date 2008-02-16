@@ -1,3 +1,9 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Fix the case
+	where the p/invoke is inside another assembly using the 
+	AssemblyResolver.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs

@@ -146,9 +146,7 @@ namespace Gendarme.Rules.Interoperability {
 					if (ins.Next == null)
 						break;
 
-					MethodDefinition pinvoke = ins.Operand as MethodDefinition;
-					// FIXME: calls to external PInvoke methods are ignored (requires AssemblyResolver)
-					// but since p/invoke should not be visible this is not a big issue
+					MethodDefinition pinvoke = (ins.Operand as MethodReference).Resolve ();
 					if (pinvoke == null) 
 						break;
 
