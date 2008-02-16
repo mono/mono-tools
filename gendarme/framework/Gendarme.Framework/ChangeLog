@@ -1,3 +1,9 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Defect.cs: Make ExtractFirst methods static. Rename 
+	Get[Type|Method]FromLocation to Find*
+	* TestRunner.cs: Avoid code duplication in Check* methods.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Handle GenericParameter.

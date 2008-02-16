@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 using Mono.Cecil;
 
 namespace Gendarme.Framework {
@@ -50,24 +52,29 @@ namespace Gendarme.Framework {
 			CurrentRule.Initialize (this);
 		}
 
+		private void PreCheck (IMetadataTokenProvider obj)
+		{
+			if (obj == null)
+				throw new ArgumentNullException ("obj", "Cannot check a null object");
+			Reset ();
+			CurrentTarget = obj;
+		}
+
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			Reset ();
-			CurrentTarget = assembly;
+			PreCheck (assembly);
 			return (CurrentRule as IAssemblyRule).CheckAssembly (assembly);
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			Reset ();
-			CurrentTarget = type;
+			PreCheck (type);
 			return (CurrentRule as ITypeRule).CheckType (type);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			Reset ();
-			CurrentTarget = method;
+			PreCheck (method);
 			return (CurrentRule as IMethodRule).CheckMethod (method);
 		}
 	}

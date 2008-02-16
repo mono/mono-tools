@@ -90,7 +90,7 @@ namespace Gendarme.Framework {
 			get { return severity; }
 		}
 
-		private Instruction ExtractFirst (TypeDefinition type)
+		private static Instruction ExtractFirst (TypeDefinition type)
 		{
 			if (type == null)
 				return null;
@@ -102,7 +102,7 @@ namespace Gendarme.Framework {
 			return null;
 		}
 
-		private Instruction ExtractFirst (MethodDefinition method)
+		private static Instruction ExtractFirst (MethodDefinition method)
 		{
 			if ((method == null) || !method.HasBody)
 				return null;
@@ -110,7 +110,7 @@ namespace Gendarme.Framework {
 			return (ins.SequencePoint != null) ? ins : null;
 		}
 
-		private TypeDefinition GetTypeFromLocation ()
+		private TypeDefinition FindTypeFromLocation ()
 		{
 			MethodDefinition method = (location as MethodDefinition);
 			if (method != null)
@@ -127,7 +127,7 @@ namespace Gendarme.Framework {
 			return (location as TypeDefinition);
 		}
 
-		private MethodDefinition GetMethodFromLocation ()
+		private MethodDefinition FindMethodFromLocation ()
 		{
 			ParameterDefinition parameter = (location as ParameterDefinition);
 			if (parameter != null)
@@ -163,7 +163,7 @@ namespace Gendarme.Framework {
 
 				// MethodDefinition, ParameterDefinition
 				//	return the method source file with (appromixate) line number
-				MethodDefinition method = GetMethodFromLocation ();
+				MethodDefinition method = FindMethodFromLocation ();
 				if (method != null) {
 					candidate = ExtractFirst (method);
 					if (candidate != null) {
@@ -180,7 +180,7 @@ namespace Gendarme.Framework {
 				// TypeDefinition, FieldDefinition
 				//	return the type source file (based on the first ctor)
 				if (type == null)
-					type = GetTypeFromLocation ();
+					type = FindTypeFromLocation ();
 				candidate = ExtractFirst (type);
 				if (candidate != null) {
 					// we report only the source file of the first ctor (that reported something)
