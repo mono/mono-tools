@@ -1,3 +1,8 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsRule.cs: Display actual and maximum IL instruction 
+	counts if -v -v is supplied.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSpeculativeGeneralityRule.cs: Fix rule check since we now use

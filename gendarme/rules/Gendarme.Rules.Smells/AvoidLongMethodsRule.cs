@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Smells {
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
 	public class AvoidLongMethodsRule : Rule,IMethodRule {
 		private int maxInstructions = 170;
-		const int AsignationRatio = 7;
+		const int AssignationRatio = 7;
 		const int DefaultAmountOfElements = 13;
 		static Hashtable typeMethodDictionary;
 
@@ -117,20 +117,21 @@ namespace Gendarme.Rules.Smells {
 
 			// rule applies!
 			// success if the instruction count is below the defined threshold
+			int max = MaxInstructions;
 			if (method.IsConstructor && method.IsStatic) {
-				if (method.Body.Instructions.Count <= MaxInstructions + (CountStaticFields (method.DeclaringType as TypeDefinition) * AsignationRatio))
-					return RuleResult.Success;
+				max += CountStaticFields (method.DeclaringType as TypeDefinition) * AssignationRatio;
 			}
 			else if (method.IsConstructor && method.IsStatic) {
-				if (method.Body.Instructions.Count <= MaxInstructions + (CountInstanceFields (method.DeclaringType as TypeDefinition) * AsignationRatio))
-					return RuleResult.Success;
-			}
-			else {
-				if (method.Body.Instructions.Count <= MaxInstructions)
-					return RuleResult.Success;
+				max += CountInstanceFields (method.DeclaringType as TypeDefinition) * AssignationRatio;
 			}
 
-			Runner.Report (method, Severity.High, Confidence.Normal, "This method is long.");	
+			if (method.Body.Instructions.Count <= max)
+				return RuleResult.Success;
+
+			string s = (Runner.VerbosityLevel < 2) ? String.Empty : 
+				String.Format ("Method IL Size: {0}. Maximum Size: {1}", method.Body.Instructions.Count, max);
+
+			Runner.Report (method, Severity.High, Confidence.Normal, s);	
 			return RuleResult.Failure;
 		}
 	}
