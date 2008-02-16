@@ -1,3 +1,7 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TypeRocksTest.cs: Enable tests that required the AssemblyResolver
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* FieldRocksTest.cs: Add test case for Resolve

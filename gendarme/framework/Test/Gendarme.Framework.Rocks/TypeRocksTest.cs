@@ -220,7 +220,6 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
-		[Ignore ("cannot be sure without the AssemblyResolver")]
 		public void Inherits_FromAnotherAssembly ()
 		{
 			// we can't be sure here so to avoid false positives return false
@@ -262,7 +261,6 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
-		[Ignore ("cannot be sure without the AssemblyResolver")]
 		public void IsAttribute_InheritsFromAnotherAssembly ()
 		{
 			// we can't be sure here so to avoid false positives return false
