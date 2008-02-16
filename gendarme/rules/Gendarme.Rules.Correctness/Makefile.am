@@ -21,7 +21,7 @@ correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_so
 correctness_rules_build_sources += $(correctness_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Correctness.dll: $(correctness_rules_build_sources)
-	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -langversion:linq -r:../../bin/Gendarme.Framework.dll -out:$@ $(correctness_rules_build_sources)
+	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(correctness_rules_build_sources)
 	cp Gendarme.Rules.*.xml ../../bin/
 
 correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTest.cs UseValueInPropertySetterTest.cs \

@@ -1,3 +1,8 @@
+2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* Makefile.am: Removed the -langversion:linq option. You should use at
+        least the 1.9 gmcs version to compile.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesRule.cs
