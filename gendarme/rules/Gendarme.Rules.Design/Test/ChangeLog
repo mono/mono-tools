@@ -1,3 +1,7 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDeclareProtectedFieldsInSealedClassTest.cs: Fix name change.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AbstractTypesShouldNotHavePublicConstructorsTest.cs

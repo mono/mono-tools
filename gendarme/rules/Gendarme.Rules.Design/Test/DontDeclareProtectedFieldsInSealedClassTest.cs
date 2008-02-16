@@ -73,7 +73,7 @@ namespace Test.Rules.Design
 		
 		private TypeDefinition GetTest (string name)
 		{
-			string fullname = "Test.Rules.Design.DontDeclareProtectedFieldsInSealedClassTest/" + name;
+			string fullname = "Test.Rules.Design.DoNotDeclareProtectedFieldsInSealedTypeTest/" + name;
 			return assembly.MainModule.Types[fullname];
 		}
 		
