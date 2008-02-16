@@ -281,8 +281,8 @@ namespace Gendarme.Framework.Helpers {
 		/// <summary>
 		/// Follows the instructions until the specified stack entry is accessed.
 		/// </summary>
-		/// <param name="ins">The first instruction.</param>
-		/// <param name="stackEntry">The distance of the stack entry from the top of the stack. 0 means right on top.</param>
+		/// <param name="startInstruction">The first instruction.</param>
+		/// <param name="stackEntryDistance">The distance of the stack entry from the top of the stack. 0 means right on top.</param>
 		/// <returns>The instruction that pops the stackEntry and the distance of the entry to the top of the stack. If no valid instruction if found the method returns InstructionWithLeave.Empty.</returns>
 		private KeyValuePair<InstructionWithLeave, int> FollowStackEntry (InstructionWithLeave startInstruction, int stackEntryDistance)
 		{

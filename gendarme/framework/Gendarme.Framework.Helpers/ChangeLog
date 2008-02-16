@@ -1,3 +1,10 @@
+2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* MethodSignature.cs: Fix the cref reference.  Now points to
+	Gendarme.Framework.Helpers.MethodSignatures.
+	* StackEntryAnalysis.cs: Fix the parameters name for the correct
+	generation of documentation.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MethodSignature.cs
