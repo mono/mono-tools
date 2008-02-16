@@ -15,11 +15,11 @@
   </Configurations>
   <Contents>
     <File name="ConsoleRunner.cs" subtype="Code" buildaction="Compile" />
-    <File name="IResultWriter.cs" subtype="Code" buildaction="Compile" />
     <File name="TextResultWriter.cs" subtype="Code" buildaction="Compile" />
     <File name="XmlResultWriter.cs" subtype="Code" buildaction="Compile" />
     <File name="gendarme.xsl" subtype="Code" buildaction="EmbedAsResource" />
     <File name="HtmlResultWriter.cs" subtype="Code" buildaction="Compile" />
+    <File name="ResultWriter.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
