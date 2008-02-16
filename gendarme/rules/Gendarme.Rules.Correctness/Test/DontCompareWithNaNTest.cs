@@ -159,7 +159,7 @@ namespace Test.Rules.Correctness {
 
 		private MethodDefinition GetTest (string typeName, string name)
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Correctness.DontCompareWithNaNTest/" + typeName + "Cases"];
+			type = assembly.MainModule.Types ["Test.Rules.Correctness.DoNotCompareWithNaNTest/" + typeName + "Cases"];
 			foreach (MethodDefinition method in type.Methods) {
 				if (method.Name == name)
 					return method;
