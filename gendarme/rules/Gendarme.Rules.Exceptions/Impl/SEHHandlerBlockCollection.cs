@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Gendarme.Rules.Exceptions {
 
-	internal class SEHHandlerBlockCollection : IList, ICollection {
+	internal sealed class SEHHandlerBlockCollection : IList, ICollection {
 	
 		private ArrayList list;
 		
@@ -82,14 +82,14 @@ namespace Gendarme.Rules.Exceptions {
 			list.Insert (index, sehHandlerBlock);
 		}
 								
-		int IList.Add (object obj)
+		int IList.Add (object value)
 		{
-			return Add ((SEHHandlerBlock)obj);
+			return Add ((SEHHandlerBlock)value);
 		}
 		
-		void IList.Remove (object obj)
+		void IList.Remove (object value)
 		{
-			Remove ((SEHHandlerBlock)obj);
+			Remove ((SEHHandlerBlock)value);
 		}
 		
 		object IList.this[int index] {
@@ -97,19 +97,19 @@ namespace Gendarme.Rules.Exceptions {
 			set { throw new NotSupportedException (); }
 		}
 		
-		int IList.IndexOf (object obj)
+		int IList.IndexOf (object value)
 		{
-			return IndexOf ((SEHHandlerBlock)obj);
+			return IndexOf ((SEHHandlerBlock)value);
 		}
 		
-		bool IList.Contains (object obj)
+		bool IList.Contains (object value)
 		{
-			return Contains ((SEHHandlerBlock)obj);
+			return Contains ((SEHHandlerBlock)value);
 		}
 		
-		void IList.Insert (int index, object obj)
+		void IList.Insert (int index, object value)
 		{
-			Insert (index, (SEHHandlerBlock)obj);
+			Insert (index, (SEHHandlerBlock)value);
 		}
 	}
 }

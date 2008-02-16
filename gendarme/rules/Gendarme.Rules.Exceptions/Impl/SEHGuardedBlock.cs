@@ -5,7 +5,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
 	
-	internal class SEHGuardedBlock : ISEHGuardedBlock {
+	internal sealed class SEHGuardedBlock : ISEHGuardedBlock {
 	
 		private Instruction start;
 		private Instruction end;
@@ -35,8 +35,7 @@ namespace Gendarme.Rules.Exceptions {
 			}
 		}
 
-		public SEHHandlerBlockCollection SEHHandlerBlocksInternal
-		{
+		public SEHHandlerBlockCollection SEHHandlerBlocksInternal {
 			get { return handler_blocks; }
 		}
 	}
