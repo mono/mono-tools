@@ -1,3 +1,8 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Remove {0} from [Problem] attribute
+	* AvoidUninstantiatedInternalClassesRule.cs: Remove unused parameter.
+
 2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidUnusedParametersRule.cs: Removed unused variable.

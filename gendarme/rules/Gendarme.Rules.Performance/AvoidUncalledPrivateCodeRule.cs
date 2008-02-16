@@ -35,7 +35,7 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 	
-	[Problem ("A private or internal (assembly-level) member '{0}' does not have callers in the assembly, is not invoked by the common language runtime, and the member is not invoked by a delegate.")]
+	[Problem ("This private or internal (assembly-level) member does not have callers in the assembly, is not invoked by the common language runtime, and is not invoked by a delegate.")]
 	[Solution ("Remove the non-callable code or add the code that calls it.")]
 	public class AvoidUncalledPrivateCodeRule: Rule,IMethodRule {
 

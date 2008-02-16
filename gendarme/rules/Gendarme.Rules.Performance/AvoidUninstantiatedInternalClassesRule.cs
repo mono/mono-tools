@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Performance {
 
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.Types) {
-					ProcessType (assembly, type, list);
+					ProcessType (type, list);
 				}
 			}
 
@@ -86,7 +86,7 @@ namespace Gendarme.Rules.Performance {
 				list.AddIfNew (type);
 		}
 
-		public static void ProcessType (AssemblyDefinition assembly, TypeDefinition type, List<TypeReference> list)
+		public static void ProcessType (TypeDefinition type, List<TypeReference> list)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				TypeReference t = field.FieldType;
