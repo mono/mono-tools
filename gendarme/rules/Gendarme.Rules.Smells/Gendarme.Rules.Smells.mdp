@@ -24,7 +24,7 @@
     <File name="Expression.cs" subtype="Code" buildaction="Compile" />
     <File name="ExpressionFillerVisitor.cs" subtype="Code" buildaction="Compile" />
     <File name="Utilities.cs" subtype="Code" buildaction="Compile" />
-    <File name="Gendarme.Rules.Smells.xml.in" subtype="Code" buildaction="Nothing" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

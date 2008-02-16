@@ -16,6 +16,9 @@
   <Contents>
     <File name="GetLastErrorMustBeCalledRightAfterPInvokeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="PInvokeShouldNotBeVisibleTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="MarshalStringsInPInvokeDeclarationsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="UseManagedAlternativesToPInvokeTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Assembly" localcopy="True" refto="../../../../lib/Mono.Cecil.dll" />

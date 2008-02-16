@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 security_rulesdir=$(prefix)/lib/gendarme
 security_rules_SCRIPTS = ../../bin/Gendarme.Rules.Security.dll
-security_rules_DATA = Gendarme.Rules.Security.xml
-EXTRA_DIST = $(security_rules_sources) $(security_rules_sources_in) Gendarme.Rules.Security.xml \
+security_rules_DATA = 
+EXTRA_DIST = $(security_rules_sources) $(security_rules_sources_in) \
 	Gendarme.Rules.Security.mdp Gendarme.Rules.Security.csproj
 CLEANFILES = $(security_rules_SCRIPTS) $(security_rules_SCRIPTS).mdb Test.Rules.Security.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Security.xml TestResult.xml
@@ -19,8 +19,8 @@ security_rules_build_sources = $(addprefix $(srcdir)/, $(security_rules_sources)
 security_rules_build_sources += $(security_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Security.dll: $(security_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(security_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(security_rules_build_sources)
 
 security_test_sources = MethodCallWithSubsetLinkDemandTest.cs NonVirtualMethodWithInheritanceDemandTest.cs \
 	SealedTypeWithInheritanceDemandTest.cs SecureGetObjectDataOverridesTest.cs \
@@ -29,7 +29,7 @@ security_test_sources = MethodCallWithSubsetLinkDemandTest.cs NonVirtualMethodWi
 
 security_test_build_sources = $(addprefix $(srcdir)/Test/, $(security_test_sources))
 
-Test.Rules.Security.dll: $(security_rules_build_sources) $(security_rules_SCRIPTS)
+Test.Rules.Security.dll: $(security_test_build_sources) $(security_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(security_rules_SCRIPTS) -out:$@ $(security_test_build_sources)
 

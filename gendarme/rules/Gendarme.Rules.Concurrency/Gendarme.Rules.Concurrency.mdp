@@ -16,6 +16,7 @@
   <Contents>
     <File name="DoubleCheckLockingRule.cs" subtype="Code" buildaction="Compile" />
     <File name="WriteStaticFieldFromInstanceMethodRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="NonConstantStaticFieldsShouldNotBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

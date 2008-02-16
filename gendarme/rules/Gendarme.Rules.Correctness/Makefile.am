@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 correctness_rulesdir=$(prefix)/lib/gendarme
 correctness_rules_SCRIPTS = ../../bin/Gendarme.Rules.Correctness.dll
-correctness_rules_DATA = Gendarme.Rules.Correctness.xml
-EXTRA_DIST = $(correctness_rules_sources) $(correctness_rules_sources_in) Gendarme.Rules.Correctness.xml \
+correctness_rules_DATA = 
+EXTRA_DIST = $(correctness_rules_sources) $(correctness_rules_sources_in) \
 	 Gendarme.Rules.Correctness.mdp  Gendarme.Rules.Correctness.csproj
 CLEANFILES = $(correctness_rules_SCRIPTS) $(correctness_rules_SCRIPTS).mdb Test.Rules.Correctness.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Correctness.xml TestResult.xml
@@ -21,8 +21,8 @@ correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_so
 correctness_rules_build_sources += $(correctness_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Correctness.dll: $(correctness_rules_build_sources)
-	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(correctness_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(correctness_rules_build_sources)
 
 correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTest.cs UseValueInPropertySetterTest.cs \
 	AvoidConstructorsInStaticTypesTest.cs CallingEqualsWithNullArgTest.cs FloatComparisonRuleTest.cs \
@@ -30,7 +30,7 @@ correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTe
 
 correctness_test_build_sources = $(addprefix $(srcdir)/Test/, $(correctness_test_sources))
 
-Test.Rules.Correctness.dll: $(correctness_rules_build_sources) $(correctness_rules_SCRIPTS)
+Test.Rules.Correctness.dll: $(correctness_test_build_sources) $(correctness_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(correctness_rules_SCRIPTS) -out:$@ $(correctness_test_build_sources)
 

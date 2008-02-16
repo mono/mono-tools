@@ -21,8 +21,9 @@
     <File name="TypeExposeFieldsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypeIsNotSubsetOfMethodSecurityRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypeLinkDemandRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="Gendarme.Rules.Security.xml.in" subtype="Code" buildaction="Nothing" />
     <File name="StaticConstructorsShouldBePrivateRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ArrayFieldsShouldNotBeReadOnlyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="NativeFieldsShouldNotBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Assembly" localcopy="True" refto="../../../lib/Mono.Cecil.dll" />

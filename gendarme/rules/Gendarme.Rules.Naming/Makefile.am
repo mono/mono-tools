@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 naming_rulesdir=$(prefix)/lib/gendarme
 naming_rules_SCRIPTS = ../../bin/Gendarme.Rules.Naming.dll
-naming_rules_DATA = Gendarme.Rules.Naming.xml
-EXTRA_DIST = $(naming_rules_sources) $(naming_rules_sources_in) Gendarme.Rules.Naming.xml \
+naming_rules_DATA = 
+EXTRA_DIST = $(naming_rules_sources) $(naming_rules_sources_in) \
 	Gendarme.Rules.Naming.mdp 
 CLEANFILES = $(naming_rules_SCRIPTS)* Test.Rules.Naming.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Naming.xml TestResult.xml
@@ -20,8 +20,8 @@ naming_rules_build_sources = $(addprefix $(srcdir)/, $(naming_rules_sources))
 naming_rules_build_sources += $(naming_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Naming.dll: $(naming_rules_build_sources)
-	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(naming_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(naming_rules_build_sources)
 
 naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 	UsePluralNameInEnumFlagsTest.cs UseSingularNameInEnumsUnlessAreFlagsTest.cs \
@@ -31,9 +31,9 @@ naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 
 naming_test_build_sources = $(addprefix $(srcdir)/Test/, $(naming_test_sources))
 
-Test.Rules.Naming.dll: $(naming_rules_build_sources) $(naming_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
+Test.Rules.Naming.dll: $(naming_test_build_sources) $(naming_rules_SCRIPTS)
+	$(GMCS) -target:library -debug -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
+		:../../bin/Gendarme.Framework.dll -r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
 
 test: Test.Rules.Naming.dll
 

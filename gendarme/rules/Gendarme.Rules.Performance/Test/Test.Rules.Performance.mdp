@@ -27,6 +27,7 @@
     <File name="AvoidUnsealedUninheritedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidReturningArraysOnPropertiesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseIsOperatorTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />

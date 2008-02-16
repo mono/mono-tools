@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 badpractice_rulesdir=$(prefix)/lib/gendarme
 badpractice_rules_SCRIPTS = ../../bin/Gendarme.Rules.BadPractice.dll
-badpractice_rules_DATA = Gendarme.Rules.BadPractice.xml
-EXTRA_DIST = $(badpractice_rules_sources) $(badpractice_rules_sources_in) Gendarme.Rules.BadPractice.xml \
+badpractice_rules_DATA = 
+EXTRA_DIST = $(badpractice_rules_sources) $(badpractice_rules_sources_in) \
 	Gendarme.Rules.BadPractice.mdp 
 CLEANFILES = $(badpractice_rules_SCRIPTS) $(badpractice_rules_SCRIPTS).mdb Test.Rules.BadPractice.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.BadPractice.xml TestResult.xml
@@ -18,8 +18,8 @@ badpractice_rules_build_sources = $(addprefix $(srcdir)/, $(badpractice_rules_so
 badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.BadPractice.dll: $(badpractice_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(badpractice_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(badpractice_rules_build_sources)
 
 badpractice_test_sources = CloneMethodShouldNotReturnNullTest.cs EqualShouldHandleNullArgTest.cs \
 	ToStringReturnsNullTest.cs GetEntryAssemblyMayReturnNullTest.cs ConstructorShouldNotCallVirtualMethodsTest.cs \
@@ -27,7 +27,7 @@ badpractice_test_sources = CloneMethodShouldNotReturnNullTest.cs EqualShouldHand
 
 badpractice_test_build_sources = $(addprefix $(srcdir)/Test/, $(badpractice_test_sources))
 
-Test.Rules.BadPractice.dll: $(badpractice_rules_build_sources) $(badpractice_rules_SCRIPTS)
+Test.Rules.BadPractice.dll: $(badpractice_test_build_sources) $(badpractice_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(badpractice_rules_SCRIPTS) -out:$@ $(badpractice_test_build_sources)
 

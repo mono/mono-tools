@@ -15,7 +15,6 @@
   </Configurations>
   <Contents>
     <File name="DontDeclareProtectedFieldsInSealedClassRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="Gendarme.Rules.Design.xml.in" subtype="Code" buildaction="Nothing" />
     <File name="UsingCloneWithoutImplementingICloneableRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AbstractTypesShouldNotHavePublicConstructorsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidEmptyInterfaceRule.cs" subtype="Code" buildaction="Compile" />

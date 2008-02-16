@@ -25,6 +25,7 @@
     <File name="DoNotPrefixValuesWithEnumNameTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotUseReservedInEnumValueNamesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ParameterNamesShouldMatchOverridenMethodTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

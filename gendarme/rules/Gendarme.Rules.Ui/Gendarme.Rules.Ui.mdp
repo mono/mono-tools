@@ -17,6 +17,8 @@
     <File name="ExecutableTargetRule.cs" subtype="Code" buildaction="Compile" />
     <File name="GtkSharpExecutableTargetRule.cs" subtype="Code" buildaction="Compile" />
     <File name="SystemWindowsFormsExecutableTargetRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="UseSTAThreadAttributeOnSWFEntryPointsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

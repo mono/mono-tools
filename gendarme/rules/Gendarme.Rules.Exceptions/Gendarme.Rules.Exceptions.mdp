@@ -14,7 +14,6 @@
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="DontDestroyStackTrace.cs" subtype="Code" buildaction="Compile" />
     <File name="ISEHCatchBlock.cs" subtype="Code" buildaction="Compile" />
     <File name="ISEHGuardedBlock.cs" subtype="Code" buildaction="Compile" />
     <File name="ISEHHandlerBlock.cs" subtype="Code" buildaction="Compile" />
@@ -28,6 +27,8 @@
     <File name="Impl/SEHHandlerBlock.cs" subtype="Code" buildaction="Compile" />
     <File name="Impl/SEHHandlerBlockCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotDestroyStackTraceRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

@@ -17,16 +17,15 @@
     <File name="UsePluralNameInEnumFlagsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseSingularNameInEnumsUnlessAreFlagsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="EnumNotEndsWithEnumOrFlagsSuffixRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="Gendarme.Rules.Naming.xml.in" subtype="Code" buildaction="Nothing" />
     <File name="DetectNonAlphaNumericsInTypeNamesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseCorrectCasingRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseCorrectPrefixRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseCorrectSuffixRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UsePreferredTermsRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="NamingUtils.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotPrefixValuesWithEnumNameRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotUseReservedInEnumValueNamesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ParameterNamesShouldMatchOverridenMethodRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

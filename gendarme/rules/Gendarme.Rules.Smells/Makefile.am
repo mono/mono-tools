@@ -2,9 +2,9 @@ SUBDIRS=Test
 
 smells_rulesdir=$(prefix)/lib/gendarme
 smells_rules_SCRIPTS = ../../bin/Gendarme.Rules.Smells.dll
-smells_rules_DATA = Gendarme.Rules.Smells.xml
-EXTRA_DIST = $(smells_rules_sources) $(smells_rules_sources_in) Gendarme.Rules.Smells.xml \
-	Gendarme.Rules.Smells.mdp 
+smells_rules_DATA = 
+EXTRA_DIST = $(smells_rules_sources) $(smells_rules_sources_in) \
+	Gendarme.Rules.Smells.mdp Gendarme.Rules.Smells.csproj
 CLEANFILES = $(smells_rules_SCRIPTS) $(smells_rules_SCRIPTS).mdb Test.Rules.Smells.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Smells.xml TestResult.xml
 
@@ -26,9 +26,8 @@ smells_rules_build_sources = $(addprefix $(srcdir)/, $(smells_rules_sources))
 smells_rules_build_sources += $(smells_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Smells.dll: $(smells_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -r:../../bin/Gendarme.Rules.Performance.dll\
- 	-out:$@ $(smells_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-r:../../bin/Gendarme.Rules.Performance.dll -out:$@ $(smells_rules_build_sources)
 
 smells_test_sources =  \
 	AvoidCodeDuplicatedInSameClassTest.cs \
@@ -40,9 +39,9 @@ smells_test_sources =  \
 
 smells_test_build_sources = $(addprefix $(srcdir)/Test/, $(smells_test_sources))
 
-Test.Rules.Smells.dll: $(smells_rules_build_sources) $(smells_rules_SCRIPTS)
+Test.Rules.Smells.dll: $(smells_test_build_sources) $(smells_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-	-r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll -out:$@ $(smells_test_build_sources)
+		-r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll -out:$@ $(smells_test_build_sources)
 
 test: Test.Rules.Smells.dll
 

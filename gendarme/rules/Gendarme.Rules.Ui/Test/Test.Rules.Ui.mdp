@@ -17,6 +17,8 @@
     <File name="ExecutableTargetTest.cs" subtype="Code" buildaction="Compile" />
     <File name="GtkSharpExecutableTargetTest.cs" subtype="Code" buildaction="Compile" />
     <File name="SystemWindowsFormsExecutableTargetTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="UseSTAThreadAttributeOnSWFEntryPointsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />

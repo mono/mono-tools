@@ -14,8 +14,9 @@
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="TestPatterns.cs" subtype="Code" buildaction="Compile" />
     <File name="DontSwallowErrorsCatchingNonspecificExceptionsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="DontDestroyStackTraceTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Exceptions" />

@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 interoperability_rulesdir=$(prefix)/lib/gendarme
 interoperability_rules_SCRIPTS = ../../bin/Gendarme.Rules.Interoperability.dll
-interoperability_rules_DATA = Gendarme.Rules.Interoperability.xml
-EXTRA_DIST = $(interoperability_rules_sources) $(interoperability_rules_sources_in) Gendarme.Rules.Interoperability.xml \
+interoperability_rules_DATA = 
+EXTRA_DIST = $(interoperability_rules_sources) $(interoperability_rules_sources_in) \
 	Gendarme.Rules.Interoperability.mdp 
 CLEANFILES = $(interoperability_rules_SCRIPTS) $(interoperability_rules_SCRIPTS).mdb Test.Rules.Interoperability.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Interoperability.xml TestResult.xml
@@ -17,15 +17,15 @@ interoperability_rules_build_sources = $(addprefix $(srcdir)/, $(interoperabilit
 interoperability_rules_build_sources += $(interoperability_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Interoperability.dll: $(interoperability_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(interoperability_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(interoperability_rules_build_sources)
 
 interoperability_test_sources = PInvokeShouldNotBeVisibleTest.cs GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
 	UseManagedAlternativesToPInvokeTest.cs MarshalStringsInPInvokeDeclarationsTest.cs
 
 interoperability_test_build_sources = $(addprefix $(srcdir)/Test/, $(interoperability_test_sources))
 
-Test.Rules.Interoperability.dll: $(interoperability_rules_build_sources) $(interoperability_rules_SCRIPTS)
+Test.Rules.Interoperability.dll: $(interoperability_test_build_sources) $(interoperability_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(interoperability_rules_SCRIPTS) -out:$@ $(interoperability_test_build_sources)
 

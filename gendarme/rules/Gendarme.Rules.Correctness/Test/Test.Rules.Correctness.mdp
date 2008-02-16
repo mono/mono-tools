@@ -20,6 +20,8 @@
     <File name="AvoidConstructorsInStaticTypesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="FloatComparisonRuleTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseValueInPropertySetterTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="DontCompareWithNaNTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Correctness" />

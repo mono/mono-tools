@@ -20,6 +20,7 @@
     <File name="AvoidLongMethodsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidLongParameterListsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidSpeculativeGeneralityTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

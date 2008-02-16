@@ -17,6 +17,8 @@
     <File name="NewLineLiteralTest.cs" subtype="Code" buildaction="Compile" />
     <File name="FeatureRequiresRootPrivilegeOnUnixTest.cs" subtype="Code" buildaction="Compile" />
     <File name="MonoCompatibilityReviewTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="ExitCodeIsLimitedOnUnixTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Portability" />

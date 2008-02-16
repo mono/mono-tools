@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 concurrency_rulesdir=$(prefix)/lib/gendarme
 concurrency_rules_SCRIPTS = ../../bin/Gendarme.Rules.Concurrency.dll
-concurrency_rules_DATA = Gendarme.Rules.Concurrency.xml
-EXTRA_DIST = $(concurrency_rules_sources) $(concurrency_rules_sources_in) Gendarme.Rules.Concurrency.xml \
+concurrency_rules_DATA = 
+EXTRA_DIST = $(concurrency_rules_sources) $(concurrency_rules_sources_in) \
 	Gendarme.Rules.Concurrency.mdp Gendarme.Rules.Concurrency.csproj
 CLEANFILES = $(concurrency_rules_SCRIPTS) $(concurrency_rules_SCRIPTS).mdb Test.Rules.Concurrency.dll
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Concurrency.xml TestResult.xml
@@ -17,15 +17,15 @@ concurrency_rules_build_sources = $(addprefix $(srcdir)/, $(concurrency_rules_so
 concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Concurrency.dll: $(concurrency_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll -out:$@ $(concurrency_rules_build_sources)
-	cp Gendarme.Rules.*.xml ../../bin/
+	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+		-out:$@ $(concurrency_rules_build_sources)
 
 concurrency_test_sources = DoubleCheckLockingTest.cs WriteStaticFieldFromInstanceMethodTest.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleTest.cs
 
 concurrency_test_build_sources = $(addprefix $(srcdir)/Test/, $(concurrency_test_sources))
 
-Test.Rules.Concurrency.dll: $(concurrency_rules_build_sources) $(concurrency_rules_SCRIPTS)
+Test.Rules.Concurrency.dll: $(concurrency_test_build_sources) $(concurrency_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(concurrency_rules_SCRIPTS) -out:$@ $(concurrency_test_build_sources)
 
