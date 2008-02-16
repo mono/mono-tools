@@ -14,31 +14,42 @@
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="AssemblyManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="IRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="Location.cs" subtype="Code" buildaction="Compile" />
-    <File name="Message.cs" subtype="Code" buildaction="Compile" />
-    <File name="MessageCollection.cs" subtype="Code" buildaction="Compile" />
-    <File name="MinimalRunner.cs" subtype="Code" buildaction="Compile" />
-    <File name="RuleCollection.cs" subtype="Code" buildaction="Compile" />
-    <File name="RuleInformation.cs" subtype="Code" buildaction="Compile" />
-    <File name="RuleInformationManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="Rules.cs" subtype="Code" buildaction="Compile" />
-    <File name="Runner.cs" subtype="Code" buildaction="Compile" />
-    <File name="Violation.cs" subtype="Code" buildaction="Compile" />
-    <File name="Violations.cs" subtype="Code" buildaction="Compile" />
-    <File name="MessageType.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks" subtype="Directory" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks/CustomAttributeRocks.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks/MethodRocks.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks/TypeRocks.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks/AssemblyRocks.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Rocks/FieldRocks.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework" subtype="Directory" buildaction="Compile" />
+    <File name="Gendarme.Framework.Helpers" subtype="Directory" buildaction="Compile" />
+    <File name="Gendarme.Framework.Helpers/ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="Gendarme.Framework.Helpers/MethodSignature.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Helpers/MethodSignatures.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Helpers/StackEntryAnalysis.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Rocks/ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="Gendarme.Framework/AssemblyResolver.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="Gendarme.Framework/Confidence.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/Defect.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/DocumentationUriAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/IAssemblyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/IMethodRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/IRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/IRunner.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/ITypeRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/ProblemAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/Rule.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/RuleResult.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/Runner.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/RunnerEventArgs.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/Severity.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/SolutionAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/TestRunner.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Rocks/CecilRocks.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Assembly" localcopy="True" refto="../../lib/Mono.Cecil.dll" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </References>
   <DeployTargets />
