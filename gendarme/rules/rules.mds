@@ -13,6 +13,7 @@
       <Entry build="True" name="Gendarme.Rules.BadPractice" configuration="Debug" />
       <Entry build="True" name="Gendarme.Rules.Smells" configuration="Debug" />
       <Entry build="True" name="Gendarme.Rules.Interoperability" configuration="Debug" />
+      <Entry build="True" name="Gendarme.Rules.Serialization" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="Gendarme.Rules.Security" configuration="Release" />
@@ -27,6 +28,7 @@
       <Entry build="True" name="Gendarme.Rules.BadPractice" configuration="Release" />
       <Entry build="True" name="Gendarme.Rules.Smells" configuration="Release" />
       <Entry build="True" name="Gendarme.Rules.Interoperability" configuration="Release" />
+      <Entry build="True" name="Gendarme.Rules.Serialization" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Gendarme.Rules.Security" single="True">
@@ -42,6 +44,7 @@
     <Execute type="None" entry="Gendarme.Rules.BadPractice" />
     <Execute type="None" entry="Gendarme.Rules.Smells" />
     <Execute type="None" entry="Gendarme.Rules.Interoperability" />
+    <Execute type="None" entry="Gendarme.Rules.Serialization" />
   </StartMode>
   <DeployTargets />
   <Entries>
@@ -57,5 +60,6 @@
     <Entry filename="Gendarme.Rules.BadPractice/Gendarme.Rules.BadPractice.mdp" />
     <Entry filename="Gendarme.Rules.Smells/Gendarme.Rules.Smells.mdp" />
     <Entry filename="Gendarme.Rules.Interoperability/Gendarme.Rules.Interoperability.mdp" />
+    <Entry filename="Gendarme.Rules.Serialization/Gendarme.Rules.Serialization.mdp" />
   </Entries>
 </Combine>

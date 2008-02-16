@@ -14,6 +14,7 @@
       <Entry build="True" name="Test.Rules.Smells" configuration="Debug" />
       <Entry build="True" name="Test.Framework" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Interoperability" configuration="Debug" />
+      <Entry build="True" name="Test" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="Test.Rules.Security" configuration="Release" />
@@ -29,6 +30,7 @@
       <Entry build="True" name="Test.Rules.Smells" configuration="Release" />
       <Entry build="True" name="Test.Framework" configuration="Release" />
       <Entry build="True" name="Test.Rules.Interoperability" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Serialization" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Test.Rules.Portability" single="True">
@@ -45,6 +47,7 @@
     <Execute type="None" entry="Test.Rules.Smells" />
     <Execute type="None" entry="Test.Framework" />
     <Execute type="None" entry="Test.Rules.Interoperability" />
+    <Execute type="None" entry="Test.Rules.Serialization" />
   </StartMode>
   <DeployTargets />
   <Entries>
@@ -61,5 +64,6 @@
     <Entry filename="Gendarme.Rules.BadPractice/Test/Test.Rules.BadPractice.mdp" />
     <Entry filename="Gendarme.Rules.Smells/Test/Test.Rules.Smells.mdp" />
     <Entry filename="Gendarme.Rules.Interoperability/Test/Test.Rules.Interoperability.mdp" />
+    <Entry filename="Gendarme.Rules.Serialization/Test/Test.Rules.Serialization.mdp" />
   </Entries>
 </Combine>

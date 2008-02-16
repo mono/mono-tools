@@ -1,3 +1,11 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Rules.Serialization to the build.
+	* rules.xml: Add Serialization rules to "default", "self-test" and 
+	a new "serialization" ruleset.
+	* rules.mds: Add Serialization rules project to the solution.
+	* tests.mds: Add Serialization unit tests project to the solution.
+
 2008-01-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* rules.xml: Order rules alphabetically. Update mono-bcl rule set 
