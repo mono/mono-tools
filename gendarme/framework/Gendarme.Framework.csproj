@@ -53,34 +53,39 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyManager.cs" />
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocks.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\CecilRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CommonRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CustomAttributeRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\FieldRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\MethodRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\TypeRocks.cs" />
-    <Compile Include="Gendarme.Framework\MethodSignature.cs" />
-    <Compile Include="Gendarme.Framework\MethodSignatures.cs" />
-    <Compile Include="Gendarme.Framework\StackEntryAnalysis.cs" />
-    <Compile Include="IRule.cs" />
-    <Compile Include="Location.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageCollection.cs" />
-    <Compile Include="MessageType.cs" />
-    <Compile Include="MinimalRunner.cs" />
-    <Compile Include="RuleCollection.cs" />
-    <Compile Include="RuleInformation.cs" />
-    <Compile Include="RuleInformationManager.cs" />
-    <Compile Include="Rules.cs" />
-    <Compile Include="Runner.cs" />
-    <Compile Include="Violation.cs" />
-    <Compile Include="Violations.cs" />
+    <Compile Include="Gendarme.Framework\AssemblyResolver.cs" />
+    <Compile Include="Gendarme.Framework\Confidence.cs" />
+    <Compile Include="Gendarme.Framework\Defect.cs" />
+    <Compile Include="Gendarme.Framework\DocumentationUriAttribute.cs" />
+    <Compile Include="Gendarme.Framework\IAssemblyRule.cs" />
+    <Compile Include="Gendarme.Framework\IMethodRule.cs" />
+    <Compile Include="Gendarme.Framework\IRule.cs" />
+    <Compile Include="Gendarme.Framework\IRunner.cs" />
+    <Compile Include="Gendarme.Framework\ITypeRule.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\MethodSignature.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\MethodSignatures.cs" />
+    <Compile Include="Gendarme.Framework\ProblemAttribute.cs" />
+    <Compile Include="Gendarme.Framework\Rule.cs" />
+    <Compile Include="Gendarme.Framework\RuleResult.cs" />
+    <Compile Include="Gendarme.Framework\Runner.cs" />
+    <Compile Include="Gendarme.Framework\RunnerEventArgs.cs" />
+    <Compile Include="Gendarme.Framework\Severity.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\StackEntryAnalysis.cs" />
+    <Compile Include="Gendarme.Framework\SolutionAttribute.cs" />
+    <Compile Include="Gendarme.Framework\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
