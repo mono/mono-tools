@@ -1,3 +1,8 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewTest.cs: Use the runner, not the rule, to
+	call CheckMethod (otherwise internal state won't be correct).
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ExitCodeIsLimitedOnUnixTest.cs

@@ -94,6 +94,7 @@ namespace Test.Rules.Portability {
 				if (method.Name == name)
 					return method;
 			}
+			Assert.Fail ("Could not find '{0}'.", name);
 			return null;
 		}
 
@@ -101,7 +102,7 @@ namespace Test.Rules.Portability {
 		public void TestNotImplemented ()
 		{
 			MethodDefinition method = GetTest ("NotImplemented");
-			Assert.AreEqual (RuleResult.Failure, rule.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
 		}
 
 		[Test]
