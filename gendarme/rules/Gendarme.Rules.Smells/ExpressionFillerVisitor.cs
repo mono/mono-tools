@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Smells {
 
 		public ExpressionFillerVisitor () : base () {}
 
-		public override void VisitMethodBody (MethodBody methodBody)
+		public override void VisitMethodBody (MethodBody body)
 		{
 			expressionContainer = new ArrayList ();
 			currentExpression = null;
@@ -81,9 +81,9 @@ namespace Gendarme.Rules.Smells {
 			currentExpression.Add (instruction);
 		}
 
-		public override void VisitInstructionCollection (InstructionCollection instructionCollection)
+		public override void VisitInstructionCollection (InstructionCollection instructions)
 		{
-			foreach (Instruction instruction in instructionCollection) {
+			foreach (Instruction instruction in instructions) {
 				if (IsDelimiter (instruction))
 					CreateExpressionAndAddToExpressionContainer ();
 				if (IsAcceptable (instruction))

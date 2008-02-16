@@ -58,14 +58,14 @@ namespace Gendarme.Rules.Smells {
 				throw new ArgumentException ("You should use this class with Mono.Cecil.Cil.Instruction", "value");
 		}
 
-		public override bool Equals (object value)
+		public override bool Equals (object obj)
 		{
-			if (!(value is Expression))
+			if (!(obj is Expression))
 				throw new ArgumentException ("The value argument should be an Expression", "value");
-			if (value == null)
+			if (obj == null)
 				return false;
 
-			Expression targetExpression = (Expression) value;
+			Expression targetExpression = (Expression) obj;
 
 			if (HasSameSize (targetExpression))
 				return CompareInstructionsInOrder (targetExpression);
