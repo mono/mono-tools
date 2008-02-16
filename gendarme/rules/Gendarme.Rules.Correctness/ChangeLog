@@ -1,3 +1,8 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Remove NullDerefRule from build until it's fixed (and
+	avoid the noise it cause in self-tests)
+
 2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* Makefile.am: Removed the -langversion:linq option. You should use at

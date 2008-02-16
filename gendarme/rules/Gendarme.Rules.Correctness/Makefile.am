@@ -11,10 +11,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Correctness.xml TestResult.xml
 correctness_rules_sources_in = ../../AssemblyInfo.cs.in
 correctness_rules_generated_sources = $(correctness_rules_sources_in:.in=)
 correctness_rules_sources = BadRecursiveInvocationRule.cs MethodCanBeMadeStaticRule.cs \
-	CallingEqualsWithNullArgRule.cs NonNullAttribute.cs NonNullAttributeCollector.cs NullDerefAnalysis.cs NullDerefRule.cs \
-	NullDerefFrame.cs Nullity.cs graph/INode.cs graph/Node.cs graph/IEdge.cs graph/Edge.cs graph/IGraph.cs \
-	graph/Graph.cs dataflow/BasicBlock.cs dataflow/CFG.cs dataflow/CFGEdge.cs dataflow/Dataflow.cs graph/DFS.cs \
-	dataflow/IDataflowAnalysis.cs FloatComparisonRule.cs UseValueInPropertySetterRule.cs \
+	CallingEqualsWithNullArgRule.cs FloatComparisonRule.cs UseValueInPropertySetterRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs DontCompareWithNaNRule.cs
 
 correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_sources))
