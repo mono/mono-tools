@@ -50,7 +50,7 @@ $(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
 	cp $(CECIL_ASM) $(top_builddir)/gendarme/bin/
 
 ../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:dotnet -out:$@ $(framework_build_sources)
+	$(GMCS) -debug -target:library  -doc:Gendarme.Framework.doc.xml -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:dotnet -out:$@ $(framework_build_sources)
 
 framework_test_sources = \
 	Gendarme.Framework.Helpers/MethodSignatureTest.cs \

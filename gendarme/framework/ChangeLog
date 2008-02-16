@@ -1,3 +1,8 @@
+2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Generate the xml file for the documentation when the code
+	are compiled.
+
 2008-02-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Adjust makefile with recent changes.
