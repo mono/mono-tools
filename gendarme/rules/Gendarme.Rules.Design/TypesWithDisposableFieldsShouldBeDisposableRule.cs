@@ -51,7 +51,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to enums, interfaces or structs
-			if (type.IsEnum || type.IsInterface || type.IsValueType)
+			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition explicitDisposeMethod = null;
