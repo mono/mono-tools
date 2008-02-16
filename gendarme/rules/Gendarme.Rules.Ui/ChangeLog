@@ -1,3 +1,9 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutableTargetRule.cs, GtkSharpExecutableTargetRule.cs, 
+	SystemWindowsFormsExecutableTargetRule.cs: Remove Toolkit property
+	since it's not required anymore.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutableTargetRule.cs

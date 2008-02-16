@@ -35,10 +35,6 @@ namespace Gendarme.Rules.Ui {
 	[Problem ("The assembly refers to the 'System.Windows.Forms.dll' assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.")]
 	public class SystemWindowsFormsExecutableTargetRule : ExecutableTargetRule {
 
-		protected override string Toolkit {
-			get { return "WinForms"; }
-		}
-
 		protected override string AssemblyName {
 			get { return "System.Windows.Forms"; }
 		}

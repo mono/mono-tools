@@ -35,10 +35,6 @@ namespace Gendarme.Rules.Ui {
 	[Problem ("The assembly refers to the 'gtk-sharp.dll' assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.")]
 	public class GtkSharpExecutableTargetRule: ExecutableTargetRule {
 
-		protected override string Toolkit {
-			get { return "GtkSharp"; }
-		}
-
 		protected override string AssemblyName {
 			get { return "gtk-sharp"; }
 		}

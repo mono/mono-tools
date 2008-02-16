@@ -55,8 +55,6 @@ namespace Gendarme.Rules.Ui {
 			return false;
 		}
 
-		abstract protected string Toolkit { get; }
-
 		abstract protected string AssemblyName { get; }
 
 		abstract protected byte[] GetAssemblyPublicKeyToken ();
