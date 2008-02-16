@@ -33,7 +33,7 @@ naming_test_build_sources = $(addprefix $(srcdir)/Test/, $(naming_test_sources))
 
 Test.Rules.Naming.dll: $(naming_test_build_sources) $(naming_rules_SCRIPTS)
 	$(GMCS) -target:library -debug -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
-		:../../bin/Gendarme.Framework.dll -r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
+		-r:../../bin/Gendarme.Framework.dll -r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
 
 test: Test.Rules.Naming.dll
 
