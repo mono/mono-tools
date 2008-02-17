@@ -12,11 +12,14 @@ pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
 framework_sources = \
+	../AssemblyStaticInfo.cs \
 	Gendarme.Framework/AssemblyResolver.cs \
+	Gendarme.Framework/BasicIgnoreList.cs \
 	Gendarme.Framework/Confidence.cs \
 	Gendarme.Framework/Defect.cs \
 	Gendarme.Framework/DocumentationUriAttribute.cs \
 	Gendarme.Framework/IAssemblyRule.cs \
+	Gendarme.Framework/IIgnoreList.cs \
 	Gendarme.Framework/IMethodRule.cs \
 	Gendarme.Framework/IRule.cs \
 	Gendarme.Framework/IRunner.cs \
