@@ -41,8 +41,9 @@ namespace Gendarme.Rules.Serialization {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// [Serializable] is not applicable to interfaces
-			if (type.IsInterface)
+			// rule does not apply to interface (since [Serializable] is not applicable to interfaces)
+			// nor does it apply to delegates
+			if (type.IsInterface || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			// rule does not apply if the type does not implements ISerializable 
