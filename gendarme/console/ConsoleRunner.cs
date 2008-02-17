@@ -213,10 +213,8 @@ namespace Gendarme {
 		{
 			try {
 				int result = Parse (args);
-				if (result != 0) {
-					if (help) {
-						Help ();
-					}
+				if ((result != 0) || help) {
+					Help ();
 					return result;
 				}
 
@@ -249,21 +247,27 @@ namespace Gendarme {
 			}
 		}
 
+		private DateTime timer = DateTime.MinValue;
+
 		public override void Run ()
 		{
 			DateTime start = DateTime.UtcNow;
 			base.Run ();
+			DateTime end = DateTime.UtcNow;
+			Console.WriteLine (": {0} seconds.", (end - timer).TotalSeconds);
+			Console.WriteLine ();
 			Console.WriteLine ("{0}{1} assemblies processed in {2} seconds.{0}",
 				Environment.NewLine, Assemblies.Count, (DateTime.UtcNow - start).TotalSeconds);
 		}
 
 		protected override void OnAssembly (RunnerEventArgs e)
 		{
-			DateTime start = DateTime.UtcNow;
+			if (timer != DateTime.MinValue)
+				Console.WriteLine (": {0} seconds.", (DateTime.UtcNow - timer).TotalSeconds);
+			// next assembly
+			Console.Write ((e.CurrentAssembly as IAnnotationProvider).Annotations ["filename"]);
+			timer = DateTime.UtcNow;
 			base.OnAssembly (e);
-			Console.WriteLine ("{0}: {1} seconds.", 
-				(e.CurrentAssembly as IAnnotationProvider).Annotations ["filename"],
-				(DateTime.UtcNow - start).TotalSeconds);
 		}
 
 		void Header ()

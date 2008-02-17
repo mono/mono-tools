@@ -1,5 +1,7 @@
-2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
+	* ConsoleRunner.cs: Handle no arguments. Show correct timing for
+	each assembly being processed.
 	* XmlResultWriter.cs: Call Dispose (not Close).
 
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
