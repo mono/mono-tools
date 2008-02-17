@@ -6,7 +6,16 @@ DISTCLEANFILES = Makefile.in
 
 gendarme_sources_in = ../AssemblyInfo.cs.in
 gendarme_generated_sources = $(gendarme_sources_in:.in=)
-gendarme_sources = ConsoleRunner.cs ResultWriter.cs TextResultWriter.cs XmlResultWriter.cs HtmlResultWriter.cs Options.cs
+gendarme_sources = \
+	../AssemblyStaticInfo.cs \
+	ConsoleRunner.cs \
+	Settings.cs \
+	IgnoreFileList.cs \
+	Options.cs \
+	ResultWriter.cs \
+	HtmlResultWriter.cs \
+	TextResultWriter.cs \
+	XmlResultWriter.cs
 gendarme_resources = gendarme.xsl
 
 gendarme_build_sources = $(addprefix $(srcdir)/, $(gendarme_sources))

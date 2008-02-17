@@ -49,6 +49,7 @@ namespace Gendarme {
 		private string html_file;
 		private string log_file;
 		private string xml_file;
+		private string ignore_file;
 		private bool help;
 		private bool quiet;
 		private List<string> assembly_names;
@@ -61,6 +62,7 @@ namespace Gendarme {
 				{ "log=",	v => log_file = v },
 				{ "xml=",	v => xml_file = v },
 				{ "html=",	v => html_file = v },
+				{ "ignore=",	v => ignore_file = v },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "quiet",	v => quiet = v != null },
 				{ "h|?|help",	v => help = v != null },
@@ -107,83 +109,6 @@ namespace Gendarme {
 			Assemblies.Add (ad);
 		}
 
-		static string GetFullPath (string filename)
-		{
-			if (Path.GetDirectoryName (filename).Length > 0)
-				return filename;
-			return Path.Combine (Path.GetDirectoryName (Assembly.Location), filename);
-		}
-
-		static string GetAttribute (XmlElement xel, string name, string defaultValue)
-		{
-			XmlAttribute xa = xel.Attributes [name];
-			if (xa == null)
-				return defaultValue;
-			return xa.Value;
-		}
-
-		private static bool IsContainedInRuleSet (string rule, string mask)
-		{
-			string [] ruleSet = mask.Split ('|');
-			foreach (string entry in ruleSet) {
-				if (String.Compare (rule, entry.Trim ()) == 0)
-					return true;
-			}
-			return false;
-		}
-
-		public static bool RuleFilter (Type type, object interfaceName)
-		{
-			return (type.ToString () == (interfaceName as string));
-		}
-
-		public int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask)
-		{
-			int total = 0;
-			Assembly a = Assembly.LoadFile (Path.GetFullPath (assembly));
-			foreach (Type t in a.GetTypes ()) {
-				if (t.IsAbstract || t.IsInterface)
-					continue;
-
-				if (includeMask != "*")
-					if (!IsContainedInRuleSet (t.Name, includeMask))
-						continue;
-
-				if ((excludeMask != null) && (excludeMask.Length > 0))
-					if (IsContainedInRuleSet (t.Name, excludeMask))
-						continue;
-
-				if (t.FindInterfaces (new TypeFilter (RuleFilter), "Gendarme.Framework.IRule").Length > 0) {
-					Rules.Add ((IRule) Activator.CreateInstance (t));
-					total++;
-				}
-			}
-			return total;
-		}
-
-		bool LoadConfiguration ()
-		{
-			XmlDocument doc = new XmlDocument ();
-			doc.Load (config_file);
-			if (doc.DocumentElement.Name != "gendarme")
-				return false;
-
-			bool result = false;
-			foreach (XmlElement ruleset in doc.DocumentElement.SelectNodes ("ruleset")) {
-				if (ruleset.Attributes ["name"].Value != rule_set)
-					continue;
-				foreach (XmlElement assembly in ruleset.SelectNodes ("rules")) {
-					string include = GetAttribute (assembly, "include", "*");
-					string exclude = GetAttribute (assembly, "exclude", String.Empty);
-					string from = GetFullPath (GetAttribute (assembly, "from", String.Empty));
-
-					int n = LoadRulesFromAssembly (from, include, exclude);
-					result = (result || (n > 0));
-				}
-			}
-			return result;
-		}
-
 		int Report ()
 		{
 			// generate text report (default, to console, if xml and html aren't specified)
@@ -220,9 +145,10 @@ namespace Gendarme {
 
 				Header ();
 
-				// load configuration, including rules, and continue if
-				// there's at least one rule to execute
-				if (!LoadConfiguration () || (Rules.Count < 1))
+				// load configuration, including rules
+				Settings config = new Settings (this, config_file, rule_set);
+				// and continue if there's at least one rule to execute
+				if (!config.Load () || (Rules.Count < 1))
 					return 3;
 
 				foreach (string name in assembly_names) {
@@ -230,6 +156,8 @@ namespace Gendarme {
 					if (result != 0)
 						return result;
 				}
+
+				IgnoreList = new IgnoreFileList (this, ignore_file);
 
 				// now that all rules and assemblies are know, time to initialize
 				Initialize ();
@@ -239,9 +167,12 @@ namespace Gendarme {
 				return Report ();
 			}
 			catch (Exception e) {
-				Console.WriteLine ("Uncatched exception occured. Please fill a bug report.");
-				Console.WriteLine ("Rule:\t{0}", CurrentRule);
-				Console.WriteLine ("Target:\t{0}", CurrentTarget);
+				Console.WriteLine ();
+				Console.WriteLine ("An uncatched exception occured. Please fill a bug report @ https://bugzilla.novell.com/");
+				if (CurrentRule != null)
+					Console.WriteLine ("Rule:\t{0}", CurrentRule);
+				if (CurrentTarget != null)
+					Console.WriteLine ("Target:\t{0}", CurrentTarget);
 				Console.WriteLine ("Stack trace: {0}", e);
 				return 4;
 			}
@@ -256,8 +187,8 @@ namespace Gendarme {
 			DateTime end = DateTime.UtcNow;
 			Console.WriteLine (": {0} seconds.", (end - timer).TotalSeconds);
 			Console.WriteLine ();
-			Console.WriteLine ("{0}{1} assemblies processed in {2} seconds.{0}",
-				Environment.NewLine, Assemblies.Count, (DateTime.UtcNow - start).TotalSeconds);
+			Console.WriteLine ("{0} assemblies processed in {1} seconds.",
+				Assemblies.Count, (DateTime.UtcNow - start).TotalSeconds);
 		}
 
 		protected override void OnAssembly (RunnerEventArgs e)
@@ -288,13 +219,13 @@ namespace Gendarme {
 			Console.WriteLine ();
 		}
 
-		private static Assembly assembly;
+		private static Assembly runner_assembly;
 
-		static Assembly Assembly {
+		static public Assembly Assembly {
 			get {
-				if (assembly == null)
-					assembly = Assembly.GetExecutingAssembly ();
-				return assembly;
+				if (runner_assembly == null)
+					runner_assembly = Assembly.GetExecutingAssembly ();
+				return runner_assembly;
 			}
 		}
 

@@ -1,3 +1,12 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Split with Settings and add support for ignoring
+	defects based on a user supplied list.
+	* IgnoreFileList.cs: New. File-based ignore list.
+	* Settings.cs: New. Configuration support for runner.
+	* console.mdp: Update MonoDevelop project file.
+	* Makefile.am: Update build file.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ConsoleRunner.cs: Handle no arguments. Show correct timing for
