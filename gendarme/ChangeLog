@@ -1,3 +1,11 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyInfo.cs.in: Remove static stuff and keep only the version.
+	* AssemblyStaticInfo.cs: New. Keep static/shared stuff here.
+	* self-test.ignore: New. Start an ignore list for self-test.
+	* gendarme.mds: Update MonoDevelop project file.
+	* Makefile.am: Update build file.
+
 2008-02-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MIT.X11: Update copyrights up to 2008

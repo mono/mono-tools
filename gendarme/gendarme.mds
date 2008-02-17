@@ -6,6 +6,7 @@
       <Entry build="True" name="rules" configuration="" />
       <Entry build="True" name="tests" configuration="" />
       <Entry build="True" name="unit-tests" configuration="Default" />
+      <Entry build="True" name="Mono.Cecil" configuration="Debug|Any CPU" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="framework" configuration="Release" />
@@ -13,6 +14,7 @@
       <Entry build="True" name="rules" configuration="" />
       <Entry build="True" name="tests" configuration="" />
       <Entry build="True" name="unit-tests" configuration="Default" />
+      <Entry build="True" name="Mono.Cecil" configuration="Debug|Any CPU" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="console" single="True">
@@ -21,6 +23,7 @@
     <Execute type="None" entry="rules" />
     <Execute type="None" entry="tests" />
     <Execute type="None" entry="unit-tests" />
+    <Execute type="None" entry="Mono.Cecil" />
   </StartMode>
   <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
   <DeployTargets />
@@ -30,5 +33,6 @@
     <Entry filename="rules/rules.mds" />
     <Entry filename="rules/tests.mds" />
     <Entry filename="rules/rules.md-nunit" />
+    <Entry filename="../../cecil/lib/Mono.Cecil.csproj" />
   </Entries>
 </Combine>

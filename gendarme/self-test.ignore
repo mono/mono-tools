@@ -1,0 +1,11 @@
+# OK - The rule itself needs the literal new line characters to test against them
+R: Gendarme.Rules.Portability.NewLineLiteralRule
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Portability.NewLineLiteralRule::CheckMethod(Mono.Cecil.MethodDefinition)
+
+# OK - For symmetry with GetPopCount this method is not turned to static
+R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
+M: System.Int32 Gendarme.Framework.Helpers.StackEntryAnalysis::GetPushCount(Mono.Cecil.Cil.Instruction)
+
+# OK - false positive, the real value can't be found looking in Main alone
+R: Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule
+A: gendarme, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null

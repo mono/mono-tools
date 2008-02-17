@@ -1,6 +1,6 @@
 SUBDIRS = man framework console rules
 bin_SCRIPTS = gendarme
-EXTRA_DIST = gendarme.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln
+EXTRA_DIST = gendarme.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore
 
 CLEANFILES = gendarme bin/rules.xml bin/Gendarme.Rules.*.xml
 
@@ -43,7 +43,7 @@ assemble-doc: doc
 	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<source provider='ecma' basefile='gendarme' path='gendarme'/>\n</monodoc>" > doc/gendarme.source; 
 
 self-test: all
-	cp rules/rules.xml bin; \
 	cd bin;	\
-	mono --debug gendarme.exe --set self-test --html self-test.html gendarme.exe Gendarme.*.dll;	\
+	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
+		gendarme.exe Gendarme.*.dll; \
 	cd ..;
