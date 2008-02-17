@@ -1,5 +1,6 @@
-2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AssemblyResolver.cs: Fix NRE when resolving some methods
 	* Defect.cs: Make ExtractFirst methods static. Rename 
 	Get[Type|Method]FromLocation to Find*
 	* Runner.cs: Handle case where MDB is unavailable.

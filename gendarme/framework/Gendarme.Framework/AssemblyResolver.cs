@@ -125,10 +125,16 @@ namespace Gendarme.Framework {
 		{
 			while (type != null) {
 				MethodDefinition method = GetMethod (type.Methods, reference);
-				if (method == null)
+				if (method == null) {
+					// spouliot
+					// things like: System.Byte System.Byte[,]::Get(System.Int32,System.Int32)
+					// would cause a NRE here
+					if (type.BaseType == null)
+						return null;
 					type = Resolve (type.BaseType);
-				else
+				} else {
 					return method;
+				}
 			}
 
 			return null;
