@@ -44,6 +44,10 @@ namespace Test.Rules.Security {
 		}
 	}
 
+	internal interface InterfaceHasNoConstructor {
+		int GetMe { get; }
+	}
+
 	[TestFixture]
 	public class StaticConstructorsShouldBePrivateTest {
 
@@ -88,6 +92,12 @@ namespace Test.Rules.Security {
 
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (inspectedType), inspectedType.FullName);
 			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void TestInterface ()
+		{
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (GetTest<InterfaceHasNoConstructor> ()));
 		}
 	}
 }

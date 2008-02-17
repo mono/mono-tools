@@ -73,6 +73,13 @@ namespace Test.Rules.Security {
 			}
 		}
 
+		public class InheritISerializableWithoutOverrideClass : ISerializableClass {
+
+			public InheritISerializableWithoutOverrideClass ()
+			{
+			}
+		}
+
 		public class LinkDemandClass: ISerializable {
 
 			public LinkDemandClass ()
@@ -159,7 +166,14 @@ namespace Test.Rules.Security {
 		public void InheritISerializable ()
 		{
 			TypeDefinition type = GetTest ("InheritISerializableClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "InheritISerializableClass");
+		}
+
+		[Test]
+		public void InheritISerializableWithoutOverride ()
+		{
+			TypeDefinition type = GetTest ("InheritISerializableWithoutOverrideClass");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "InheritISerializableWithoutOverrideClass");
 		}
 
 		[Test]

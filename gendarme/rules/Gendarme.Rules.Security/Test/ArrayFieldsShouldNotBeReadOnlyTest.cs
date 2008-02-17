@@ -64,6 +64,39 @@ namespace Test.Rules.Security {
 		public string [] Array;
 	}
 
+	public struct StructHasStaticPublicReadonlyArray {
+		public static readonly string [] Array;
+	}
+
+	public struct StructHasPublicReadonlyArray {
+		public readonly string [] Array;
+	}
+
+/* this does not compile 
+	public struct StructHasProtectedReadonlyArray {
+		protected readonly string [] Array;
+	}
+*/
+	public struct StructHasInternalReadonlyArray {
+		internal readonly string [] Array;
+	}
+
+	public struct StructHasPrivateReadonlyArray {
+		private readonly string [] Array;
+	}
+
+	public struct StructHasNoReadonlyArray {
+		public readonly string NoArray;
+	}
+
+	public struct StructHasPublicArray {
+		public string [] Array;
+	}
+
+	public interface IHaveArrayGetter {
+		string [] Array { get; }
+	}
+
 	[TestFixture]
 	public class ArrayFieldsShouldNotBeReadOnlyTest {
 
@@ -90,49 +123,74 @@ namespace Test.Rules.Security {
 		public void TestHasStaticPublicReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasStaticPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasStaticPublicReadonlyArray");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Struct");
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasPublicReadonlyArray");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Struct");
 		}
 
 		[Test]
 		public void TestHasProtectedReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasProtectedReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
 		}
 
 		[Test]
 		public void TestHasInternalReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasInternalReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasInternalReadonlyArray");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
 		}
 
 		[Test]
 		public void TestHasPrivateReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasPrivateReadonlyArray");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
 		}
 
 		[Test]
 		public void TestHasNoReadonlyArray ()
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasNoReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasNoReadonlyArray");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
 		}
 
 		[Test]
 		public void TestHasPublicArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			TypeDefinition type = GetTest ("Test.Rules.Security.HasNoReadonlyArray");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
+
+			type = GetTest ("Test.Rules.Security.StructHasNoReadonlyArray");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
+		}
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			TypeDefinition type = GetTest ("Test.Rules.Security.IHaveArrayGetter");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "Interface");
 		}
 	}
 }

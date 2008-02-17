@@ -1,3 +1,13 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ArrayFieldsShouldNotBeReadOnlyTest.cs: Duplicate test cases for 
+	structs. Add test case for interface.
+	* NativeFieldsShouldNotBeVisibleTest.cs: Add test case for interface.
+	* SecureGetObjectDataOverridesTest.cs: Add test case where we inherit
+	from ISerializable but do not override GetObjectData.
+	* StaticConstructorsShouldBePrivateTest.cs: Add test case for 
+	interface (no constructor).
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ArrayFieldsShouldNotBeReadOnlyTest.cs

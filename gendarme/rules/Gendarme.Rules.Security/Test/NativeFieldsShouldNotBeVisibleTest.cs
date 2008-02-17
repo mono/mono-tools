@@ -72,6 +72,10 @@ namespace Test.Rules.Security {
 		private IntPtr Native;
 	}
 
+	public interface IHaveNativePointerGetter {
+		IntPtr NativePointer { get; }
+	}
+
 	[TestFixture]
 	public class NativeFieldsShouldNotBeVisibleTest {
 
@@ -155,6 +159,13 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateNativeField");
 			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+		}
+
+		[Test]
+		public void TestInterfaceWithPointerGetter ()
+		{
+			TypeDefinition type = GetTest ("Test.Rules.Security.IHaveNativePointerGetter");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
 	}
 }
