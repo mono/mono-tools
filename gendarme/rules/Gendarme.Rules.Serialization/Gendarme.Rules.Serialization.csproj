@@ -41,7 +41,6 @@
     <Compile Include="UseCorrectSignatureForSerializationMethodsRule.cs" />
     <Compile Include="MissingSerializableAttributeOnISerializableTypeRule.cs" />
     <Compile Include="MissingSerializationConstructorRule.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cecil\lib\Mono.Cecil.csproj">
@@ -52,6 +51,9 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
