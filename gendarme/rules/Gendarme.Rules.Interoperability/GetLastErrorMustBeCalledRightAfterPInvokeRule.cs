@@ -56,15 +56,12 @@ namespace Gendarme.Rules.Interoperability {
 		private const string Message = "GetLastError() should be called immediately after this the PInvoke call.";
 
 		private const string GetLastError = "System.Int32 System.Runtime.InteropServices.Marshal::GetLastWin32Error()";
-		private List<string> AllowedCalls;
 
-		public GetLastErrorMustBeCalledRightAfterPInvokeRule ()
-		{
-			AllowedCalls = new List<string> ();
-			AllowedCalls.Add ("System.Boolean System.Runtime.InteropServices.SafeHandle::get_IsInvalid()");
-			AllowedCalls.Add ("System.Boolean System.IntPtr::op_Inequality(System.IntPtr,System.IntPtr)");
-			AllowedCalls.Add ("System.Boolean System.IntPtr::op_Equality(System.IntPtr,System.IntPtr)");
-		}
+		static List<string> AllowedCalls = new List<string> () {
+			"System.Boolean System.Runtime.InteropServices.SafeHandle::get_IsInvalid()",
+			"System.Boolean System.IntPtr::op_Inequality(System.IntPtr,System.IntPtr)",
+			"System.Boolean System.IntPtr::op_Equality(System.IntPtr,System.IntPtr)"
+		};
 
 		List<Branch> branches = new List<Branch> ();
 

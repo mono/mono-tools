@@ -1,3 +1,8 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Change to static
+	and initialize it directly.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Fix the case
