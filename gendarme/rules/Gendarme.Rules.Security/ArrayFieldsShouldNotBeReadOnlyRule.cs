@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Security {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply to interface and enumerations ??? struct ???
+			// rule does not apply to interface and enumerations
 			if (type.IsInterface || type.IsEnum)
 				return RuleResult.DoesNotApply;
 
