@@ -653,7 +653,7 @@ namespace Test.Framework {
 		}
 
 		[Test]
-		[Ignore ("StackEntryAnalysis does currently not check wich instance the field belongs to. This will need a reverse StackEntry test and AssemblyResolver support (for protected fields and/or static fields).")]
+		[Ignore ("StackEntryAnalysis does currently not check which instance the field belongs to. This will need a reverse StackEntry test and AssemblyResolver support (for protected fields and/or static fields).")]
 		public void TestField2 ()
 		{
 			MethodDefinition m = GetTest ("Field2");
