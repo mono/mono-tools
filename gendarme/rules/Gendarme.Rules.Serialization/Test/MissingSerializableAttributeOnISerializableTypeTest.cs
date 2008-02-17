@@ -27,6 +27,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Serialization;
@@ -50,9 +51,17 @@ namespace Test.Rules.Serialization {
 	[Serializable]
 	public class ClassWithAttribute : ISerializable {
 
-		public void GetObjectData (SerializationInfo info, StreamingContext context)
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
 		{
 		}
+	}
+
+	// this class is not [Serializable]
+	public class InheritFromISerializableClass : ClassWithAttribute {
+	}
+
+	public class ClassWithDelegate {
+		private SendOrPostCallback SubmitResultsOperationCompleted;
 	}
 
 	[TestFixture]
@@ -85,6 +94,9 @@ namespace Test.Rules.Serialization {
 				
 			type = GetTest ("ClassWithAttributeOnly");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "ClassWithAttributeOnly");
+
+			type = GetTest ("ClassWithDelegate");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "ClassWithDelegate");
 		}
 
 		[Test]
@@ -99,6 +111,9 @@ namespace Test.Rules.Serialization {
 		{
 			TypeDefinition type = GetTest ("ClassWithoutAttribute");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithoutAttribute");
+
+			type = GetTest ("InheritFromISerializableClass");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "InheritFromISerializableClass");
 		}
 	}
 }
