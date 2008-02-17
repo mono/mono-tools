@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -40,7 +39,6 @@ namespace Gendarme.Framework {
 
 	abstract public class Runner : IRunner {
 
-		private Dictionary<IRule, string> ignore_list = new Dictionary<IRule, string> ();
 		private Collection<Defect> defect_list = new Collection<Defect> ();
 
 		private Collection<IRule> rules = new Collection<IRule> ();
@@ -53,10 +51,10 @@ namespace Gendarme.Framework {
 
 		private IRule currentRule;
 		private IMetadataTokenProvider currentTarget;
-
+		private IIgnoreList ignoreList;
 		private int defectCountBeforeCheck;
 
-		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;	// ??? ProcessAssembly ???
+		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
 		public event EventHandler<RunnerEventArgs> AnalyzeType;
 		public event EventHandler<RunnerEventArgs> AnalyzeMethod;
@@ -71,10 +69,19 @@ namespace Gendarme.Framework {
 			set { currentTarget = value; }
 		}
 
+		protected IIgnoreList IgnoreList {
+			get {
+				if (ignoreList == null)
+					throw new InvalidOperationException ("No IgnoreList has been set for this runner.");
+				return ignoreList;
+			}
+			set { ignoreList = value; }
+		}
+
 		public Collection<IRule> Rules {
 			get { return rules; }
 		}
-
+ 
 		public Collection<AssemblyDefinition> Assemblies {
 			get { return assemblies; }
 		}
@@ -88,7 +95,6 @@ namespace Gendarme.Framework {
 			set { verbose_level = value; }
 		}
 
-
 		// once every assembly are loaded *and* all the rules are known -> we initialized all rules.
 		// this ensure that the list of assemblies is available at rule initialization time
 		// which allows caching information and treating the assemblies as "a set"
@@ -98,11 +104,8 @@ namespace Gendarme.Framework {
 				try {
 					assembly.MainModule.LoadSymbols ();
 				}
-				catch (FileNotFoundException) {
-					// this happens if MDB is missing
-				}
 				catch (TypeLoadException) {
-					// this happens if the Mono.Cecil.Mdb.dll assembly is not found
+					// this happens if a Mono.Cecil.Mdb.dll is not found
 				}
 				catch (COMException) {
 					// this happens if a PDB is missing
@@ -124,40 +127,6 @@ namespace Gendarme.Framework {
 			assembly_rules = rules.OfType<IAssemblyRule> ();
 			type_rules = rules.OfType<ITypeRule> ();
 			method_rules = rules.OfType<IMethodRule> ();
-		}
-
-		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
-		{
-			if ((rule == null) || !rule.Active)
-				return true;
-			if (assembly == null)
-				throw new ArgumentNullException ("assembly");
-
-			return false; // (ignore_list.Contains (rule, method.ToString ()));
-		}
-
-		public bool IsIgnored (IRule rule, TypeDefinition type)
-		{
-			if ((rule == null) || !rule.Active)
-				return true;
-			if (type == null)
-				throw new ArgumentNullException ("type");
-
-			// check for type itself (full match)
-			// otherwise check for assembly
-			return IsIgnored (rule, type.Module.Assembly);
-		}
-
-		public bool IsIgnored (IRule rule, MethodDefinition method)
-		{
-			if ((rule == null) || !rule.Active)
-				return true;
-			if (method == null)
-				throw new ArgumentNullException ("method");
-
-			// check for method itself (full match)
-			// otherwise check for its type
-			return IsIgnored (rule, (method.DeclaringType as TypeDefinition));
 		}
 
 		public void Report (Defect defect)
@@ -217,7 +186,7 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeAssembly, e);
 
 			foreach (IAssemblyRule rule in assembly_rules) {
-				if (IsIgnored (rule, e.CurrentAssembly))
+				if (IgnoreList.IsIgnored (rule, e.CurrentAssembly))
 					continue;
 				currentRule = rule;
 				defectCountBeforeCheck = Defects.Count;
@@ -240,7 +209,7 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeType, e);
 
 			foreach (ITypeRule rule in type_rules) {
-				if (IsIgnored (rule, e.CurrentType))
+				if (IgnoreList.IsIgnored (rule, e.CurrentType))
 					continue;
 				currentRule = rule;
 				defectCountBeforeCheck = Defects.Count;
@@ -253,7 +222,7 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeMethod, e);
 
 			foreach (IMethodRule rule in method_rules) {
-				if (IsIgnored (rule, e.CurrentMethod))
+				if (IgnoreList.IsIgnored (rule, e.CurrentMethod))
 					continue;
 
 				currentRule = rule;

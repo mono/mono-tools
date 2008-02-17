@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.ITypeRule interface
+// Gendarme.Framework.TestRunner
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -44,12 +44,13 @@ namespace Gendarme.Framework {
 	/// before each Check[Assembly|Type|Method] calls so we can easily
 	/// Assert on Defects.Count.
 	/// </summary>
-	public class TestRunner : Runner {
+	public class TestRunner : Runner, IIgnoreList {
 
 		public TestRunner (IRule rule)
 		{
 			CurrentRule = rule;
 			CurrentRule.Initialize (this);
+			IgnoreList = this;
 		}
 
 		private void PreCheck (IMetadataTokenProvider obj)
@@ -76,6 +77,21 @@ namespace Gendarme.Framework {
 		{
 			PreCheck (method);
 			return (CurrentRule as IMethodRule).CheckMethod (method);
+		}
+
+		public bool IsIgnored (IRule rule, MethodDefinition method)
+		{
+			return !rule.Active;
+		}
+
+		public bool IsIgnored (IRule rule, TypeDefinition type)
+		{
+			return !rule.Active;
+		}
+
+		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
+		{
+			return !rule.Active;
 		}
 	}
 }

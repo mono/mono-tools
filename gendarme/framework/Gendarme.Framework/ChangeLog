@@ -1,3 +1,14 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BasicIgnoreList.cs: Basic implementation, with storage, for
+	keeping an ignore list.
+	* IIgnoreList.cs: New. Interface to ignorance ;-)
+	* IRule.cs: Add FullName.
+	* Rule.cs: Implement FullName using the type full name.
+	* Runner.cs: Add support to ignore some known defects (or false 
+	positives).
+	* TestRunner.cs: Implement IIgnoreList.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Fix NRE when resolving some methods

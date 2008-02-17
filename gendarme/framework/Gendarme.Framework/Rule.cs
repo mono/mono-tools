@@ -60,7 +60,7 @@ namespace Gendarme.Framework {
 		}
 
 		/// <summary>
-		/// Return the name of the rule.
+		/// Return the short name of the rule.
 		/// By default this returns the name of the current class.
 		/// </summary>
 		public virtual string Name {
@@ -69,6 +69,14 @@ namespace Gendarme.Framework {
 					name = GetType ().Name;
 				return name;
 			}
+		}
+
+		/// <summary>
+		/// Return the full name of the rule.
+		/// By default this returns the full name of the current class.
+		/// </summary>
+		public virtual string FullName {
+			get { return GetType ().ToString (); }
 		}
 
 		public virtual string Problem { 

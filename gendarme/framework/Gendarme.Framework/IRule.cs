@@ -47,9 +47,14 @@ namespace Gendarme.Framework {
 		IRunner Runner { get; }
 
 		/// <summary>
-		/// Unique name for the rule.
+		/// Short name for the rule.
 		/// </summary>
 		string Name { get; }
+
+		/// <summary>
+		/// Unique name for the rule.
+		/// </summary>
+		string FullName { get; }
 
 		/// <summary>
 		/// URI to the rule documentation.
