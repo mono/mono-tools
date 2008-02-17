@@ -7,7 +7,7 @@
     <ProjectGuid>{E95A3AB9-A303-4859-8BCA-458C79496548}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>gendarme</RootNamespace>
+    <RootNamespace>Gendarme</RootNamespace>
     <AssemblyName>gendarme</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -30,6 +30,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>gendarme.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,9 +60,11 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyStaticInfo.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ConsoleRunner.cs" />
-    <None Include="ConsoleRunner2.cs" />
     <Compile Include="HtmlResultWriter.cs" />
+    <Compile Include="IgnoreFileList.cs" />
     <Compile Include="ResultWriter.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="TextResultWriter.cs" />
@@ -111,6 +115,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>copy "$(TargetDir)..\..\..\rules\rules.xml" "$(TargetDir)"
+copy "$(TargetDir)..\..\..\self-test.ignore" "$(TargetDir)"
 copy "$(TargetDir)..\..\..\..\..\cecil\pdb\Mono.Cecil.Pdb\$(OutDir)\Mono.Cecil.Pdb.*" "$(TargetDir)"
 </PostBuildEvent>
   </PropertyGroup>
