@@ -59,6 +59,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CecilRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CommonRocks.cs" />
@@ -71,6 +74,8 @@
     <Compile Include="Gendarme.Framework\Defect.cs" />
     <Compile Include="Gendarme.Framework\DocumentationUriAttribute.cs" />
     <Compile Include="Gendarme.Framework\IAssemblyRule.cs" />
+    <Compile Include="Gendarme.Framework\BasicIgnoreList.cs" />
+    <Compile Include="Gendarme.Framework\IIgnoreList.cs" />
     <Compile Include="Gendarme.Framework\IMethodRule.cs" />
     <Compile Include="Gendarme.Framework\IRule.cs" />
     <Compile Include="Gendarme.Framework\IRunner.cs" />
