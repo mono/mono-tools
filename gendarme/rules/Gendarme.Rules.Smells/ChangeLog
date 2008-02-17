@@ -1,3 +1,8 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Expression.cs: Avoid double-cast and don't throw an exception here
+	(not a good place). We need a rule for the later behaviour.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsRule.cs: Avoid NRE when processing System.Object.

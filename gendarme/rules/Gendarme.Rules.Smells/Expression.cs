@@ -60,12 +60,9 @@ namespace Gendarme.Rules.Smells {
 
 		public override bool Equals (object obj)
 		{
-			if (!(obj is Expression))
-				throw new ArgumentException ("The value argument should be an Expression", "value");
-			if (obj == null)
+			Expression targetExpression = (obj as Expression);
+			if (targetExpression == null)
 				return false;
-
-			Expression targetExpression = (Expression) obj;
 
 			if (HasSameSize (targetExpression))
 				return CompareInstructionsInOrder (targetExpression);
