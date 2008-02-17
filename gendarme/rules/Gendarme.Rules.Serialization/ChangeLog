@@ -1,0 +1,27 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: Does not
+	apply to delegates.
+
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: Avoid NRE
+	on ISerializable itself. Also make the rule a bit faster by ignoring
+	all interfaces.
+
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeserializeOptionalFieldRule.cs: New. Rule to check that fields 
+	marked with [OptionalField] are deserialized correctly.
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: New. Rule 
+	that checks that types implementing ISerializable are also marked 
+	with a [Serializable] attribute.
+	* MissingSerializationConstructorRule.cs: New. Rule to ensure the
+	constructor required for ISerializable is present (since interfaces
+	can't force you to declare ctors)
+	* UseCorrectSignatureForSerializationMethodsRule.cs: New. Rule to 
+	ensure the correct signature is using when using the [de]serialization
+	attributes.
+	* Gendarme.Rules.Serialization.mdp: New. MonoDevelop project file.
+	* Makefile.am: New. Build rules and tests.
+

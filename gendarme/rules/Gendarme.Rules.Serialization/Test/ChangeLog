@@ -1,0 +1,13 @@
+2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MissingSerializableAttributeOnISerializableTypeTest.cs: Add test
+	cases for inheritance and for delegates.
+
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeserializeOptionalFieldTest.cs: New. unit tests.
+	* MissingSerializableAttributeOnISerializableTypeTest.cs: New. unit tests.
+	* MissingSerializationConstructorTest.cs: New. unit tests.
+	* UseCorrectSignatureForSerializationMethodsTest.cs: New. unit tests.
+	* Makefile.am: New.
+	* Test.Rules.Serialization.mdp: New. MonoDevelop project file.
