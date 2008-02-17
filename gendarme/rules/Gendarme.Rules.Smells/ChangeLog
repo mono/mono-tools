@@ -1,3 +1,7 @@
+2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsRule.cs: Avoid NRE when processing System.Object.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidCodeDuplicatedInSameClassRule.cs: Ignore rule on generated 

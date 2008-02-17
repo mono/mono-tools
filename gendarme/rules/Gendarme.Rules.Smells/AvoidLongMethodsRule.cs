@@ -67,8 +67,8 @@ namespace Gendarme.Rules.Smells {
 			if (method.Parameters.Count != 0)
 				return false;
 
-			if (method.DeclaringType is TypeDefinition) {
-				TypeDefinition type = (TypeDefinition) method.DeclaringType;
+			TypeDefinition type = method.DeclaringType.Resolve ();
+			if ((type != null) && (type.BaseType != null)) {
 				if (typeMethodDictionary.ContainsKey (type.BaseType.FullName))
 					return (String.Compare (method.Name, (string) typeMethodDictionary[type.BaseType.FullName]) == 0);
 			}
