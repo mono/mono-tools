@@ -1,3 +1,7 @@
+2008-03-03  Wade Berrier  <wberrier@novell.com>
+
+	* Makefile.am: Use gmcs to build, as monodoc is migrating to gmcs.
+
 2008-01-16  Wade Berrier  <wberrier@novell.com>
 
 	* monodoc.desktop.in: no extension on icon, remove
