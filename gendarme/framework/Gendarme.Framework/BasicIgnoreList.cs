@@ -40,7 +40,7 @@ namespace Gendarme.Framework {
 	/// </summary>
 	public class BasicIgnoreList : IIgnoreList {
 
-		class Metadata {
+		sealed class Metadata {
 			List<AssemblyDefinition> assemblies;
 			List<TypeDefinition> types;
 			List<MethodDefinition> methods;

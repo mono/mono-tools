@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -104,11 +105,14 @@ namespace Gendarme.Framework {
 				try {
 					assembly.MainModule.LoadSymbols ();
 				}
+				catch (FileNotFoundException) { 	 
+					// this happens if a MDB file is missing 	 
+				}
 				catch (TypeLoadException) {
 					// this happens if a Mono.Cecil.Mdb.dll is not found
 				}
 				catch (COMException) {
-					// this happens if a PDB is missing
+					// this happens if a PDB file is missing
 				}
 			}
 
