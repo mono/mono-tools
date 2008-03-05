@@ -1,3 +1,11 @@
+2008-03-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnneededCallsOnStringRule.cs: Source file renamed from 
+	AvoidToStringOnStringsRule.cs since the rule has been generalized
+	to cover more similar cases. E.g. Clone(), Substring(0) and 
+	ToString(IFormatProvider).
+	* Makefile.am: Rename rule and test files.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Remove {0} from [Problem] attribute

@@ -17,7 +17,7 @@ performance_rules_sources = \
 	AvoidUnusedParametersRule.cs \
 	AvoidUninstantiatedInternalClassesRule.cs \
 	AvoidUncalledPrivateCodeRule.cs \
-	AvoidToStringOnStringsRule.cs \
+	AvoidUnneededCallsOnStringRule.cs \
 	DontIgnoreMethodResultRule.cs \
 	UsingStringLengthInsteadOfCheckingEmptyStringRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \
@@ -39,7 +39,7 @@ performance_test_sources = \
 	AvoidUnusedParametersTest.cs \
 	UsingStringLengthInsteadOfCheckingEmptyStringTest.cs \
 	AvoidUncalledPrivateCodeTest.cs \
-	AvoidToStringOnStringsTest.cs \
+	AvoidUnneededCallsOnStringTest.cs \
 	AvoidUninstantiatedInternalClassesTest.cs \
 	DontIgnoreMethodResultTest.cs \
 	AvoidReturningArraysOnPropertiesTest.cs \
