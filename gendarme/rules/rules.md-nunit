@@ -2,17 +2,17 @@
   <Configurations active="Default">
     <Configuration name="Default" ctype="NUnitAssemblyGroupProjectConfiguration">
       <Assemblies>
-        <Assembly Path="../bin/Test.Rules.Ui.dll" />
-        <Assembly Path="../bin/Test.Rules.Smells.dll" />
-        <Assembly Path="../bin/Test.Rules.Security.dll" />
-        <Assembly Path="../bin/Test.Rules.Portability.dll" />
-        <Assembly Path="../bin/Test.Rules.Performance.dll" />
-        <Assembly Path="../bin/Test.Rules.Naming.dll" />
-        <Assembly Path="../bin/Test.Rules.Exceptions.dll" />
-        <Assembly Path="../bin/Test.Rules.Design.dll" />
-        <Assembly Path="../bin/Test.Rules.Correctness.dll" />
-        <Assembly Path="../bin/Test.Rules.Concurrency.dll" />
-        <Assembly Path="../bin/Test.Rules.BadPractice.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.BadPractice.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Concurrency.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Correctness.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Design.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Exceptions.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Naming.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Performance.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Portability.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Security.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Smells.dll" />
+        <Assembly Path="/home/poupou/svn/mono-tools/gendarme/bin/Test.Rules.Ui.dll" />
       </Assemblies>
     </Configuration>
   </Configurations>

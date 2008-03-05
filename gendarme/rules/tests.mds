@@ -1,5 +1,5 @@
 <Combine name="tests" fileversion="2.0">
-  <Configurations>
+  <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="Test.Rules.Security" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Portability" configuration="Debug" />
@@ -14,7 +14,7 @@
       <Entry build="True" name="Test.Rules.Smells" configuration="Debug" />
       <Entry build="True" name="Test.Framework" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Interoperability" configuration="Debug" />
-      <Entry build="True" name="Test" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Serialization" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="Test.Rules.Security" configuration="Release" />

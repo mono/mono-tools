@@ -4,13 +4,13 @@
       <Output directory="../../../bin" assembly="Test.Rules.Performance" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="/noconfig-" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="../../../bin/Release" assembly="Test.Rules.Performance" />
       <Build debugmode="False" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="/noconfig-" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
@@ -21,20 +21,20 @@
     <File name="AvoidUncalledPrivateCodeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUninstantiatedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UsingStringLengthInsteadOfCheckingEmptyStringTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="AvoidToStringOnStringsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DontIgnoreMethodResultTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnsealedConcreteAttributesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnsealedUninheritedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidReturningArraysOnPropertiesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseIsOperatorTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="AvoidUnneededCallsOnStringTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
     <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
-    <ProjectReference type="Assembly" localcopy="True" refto="../../../../lib/Mono.Cecil.dll" />
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
   <DeployTargets />

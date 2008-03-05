@@ -1,5 +1,5 @@
 <Combine name="rules" fileversion="2.0">
-  <Configurations>
+  <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
       <Entry build="True" name="Gendarme.Rules.Security" configuration="Debug" />
       <Entry build="True" name="Gendarme.Rules.Portability" configuration="Debug" />
