@@ -36,7 +36,7 @@ using Gendarme.Framework;
 
 namespace Gendarme {
 
-	public class HtmlResultWriter : ResultWriter, IDisposable {
+	public class HtmlResultWriter : ResultWriter {
 
 		private string temp_filename;
 
@@ -69,13 +69,7 @@ namespace Gendarme {
 			}
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
+		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {
 				if (File.Exists (temp_filename))

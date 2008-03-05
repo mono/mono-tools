@@ -28,11 +28,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
+
 using Gendarme.Framework;
 
 namespace Gendarme {
 
-	abstract public class ResultWriter {
+	abstract public class ResultWriter : IDisposable {
 
 		private IRunner runner;
 		private string filename;
@@ -41,6 +43,11 @@ namespace Gendarme {
 		{
 			this.runner = runner;
 			this.filename = fileName;
+		}
+
+		~ResultWriter ()
+		{
+			Dispose (false);
 		}
 
 		protected IRunner Runner {
@@ -70,5 +77,13 @@ namespace Gendarme {
 			Write ();
 			Finish ();
 		}
+
+		public void Dispose ()
+		{
+			Dispose (true);
+			GC.SuppressFinalize (this);
+		}
+
+		protected abstract void Dispose (bool disposing);
 	}
 }
