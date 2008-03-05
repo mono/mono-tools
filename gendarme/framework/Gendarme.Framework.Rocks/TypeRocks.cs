@@ -72,6 +72,47 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Check if a type reference collection contains a type of a specific name.
+		/// </summary>
+		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>
+		/// <param name="typeName">Full name of the type.</param>
+		/// <returns>True if the collection contains an type of the same name,
+		/// False otherwise.</returns>
+		public static bool ContainsType (this TypeReferenceCollection self, string typeName)
+		{
+			if (typeName == null)
+				throw new ArgumentNullException ("typeName");
+
+			foreach (TypeReference type in self) {
+				if (type.FullName == typeName)
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Check if a type reference collection contains any of the specified type names.
+		/// </summary>
+		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>
+		/// <param name="typeNames">A string array of full type names.</param>
+		/// <returns>True if the collection contains any types matching one specified,
+		/// False otherwise.</returns>
+		public static bool ContainsAnyType (this TypeReferenceCollection self, string [] typeNames)
+		{
+			if (typeNames == null)
+				throw new ArgumentNullException ("typeNames");
+
+			foreach (TypeReference type in self) {
+				string fullname = type.FullName;
+				foreach (string type_full_name in typeNames) {
+					if (fullname == type_full_name)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Returns the first MethodDefinition that satisfies a given MethodSignature.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
