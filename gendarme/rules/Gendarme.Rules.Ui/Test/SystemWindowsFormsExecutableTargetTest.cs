@@ -36,7 +36,7 @@ using Gendarme.Rules.Ui;
 
 using NUnit.Framework;
 
-namespace Tests.Rules.Ui {
+namespace Test.Rules.Ui {
 
 	[TestFixture]
 	public class SystemWindowsFormsExecutableTargetTest {
