@@ -67,10 +67,10 @@ namespace Gendarme.Rules.Interoperability {
 				return module;
 			}
 
-			public override bool Equals (object obj)
+			public override bool Equals (object o)
 			{
-				if (obj is PInvokeCall)
-					return (this == (PInvokeCall) obj);
+				if (o is PInvokeCall)
+					return (this == (PInvokeCall) o);
 
 				return false;
 			}
