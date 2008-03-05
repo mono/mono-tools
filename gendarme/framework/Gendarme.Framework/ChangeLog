@@ -1,3 +1,8 @@
+2008-03-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Rule.cs: Reduce code duplication between Problem and Solution
+	properties.
+
 2008-03-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BasicIgnoreList.cs: Seal inner class.

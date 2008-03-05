@@ -79,14 +79,22 @@ namespace Gendarme.Framework {
 			get { return GetType ().ToString (); }
 		}
 
+		private object GetCustomAttribute (Type type)
+		{
+			object [] attributes = GetType ().GetCustomAttributes (type, true);
+			if (attributes.Length == 0)
+				return null;
+			return attributes [0];
+		}
+
 		public virtual string Problem { 
 			get {
 				if (problem == null) {
-					object [] attributes = GetType ().GetCustomAttributes (typeof (ProblemAttribute), true);
-					if (attributes.Length == 0)
+					object obj = GetCustomAttribute (typeof (ProblemAttribute));
+					if (obj == null)
 						problem = "Missing [Problem] attribute on rule.";
 					else
-						problem = ((ProblemAttribute) attributes [0]).Problem;
+						problem = (obj as ProblemAttribute).Problem;
 				}
 				return problem;
 			}
@@ -95,11 +103,11 @@ namespace Gendarme.Framework {
 		public virtual string Solution { 
 			get {
 				if (solution == null) {
-					object [] attributes = GetType ().GetCustomAttributes (typeof (SolutionAttribute), true);
-					if (attributes.Length == 0)
+					object obj = GetCustomAttribute (typeof (SolutionAttribute));
+					if (obj == null)
 						solution = "Missing [Solution] attribute on rule.";
 					else
-						solution = ((SolutionAttribute) attributes [0]).Solution;
+						solution = (obj as SolutionAttribute).Solution;
 				}
 				return solution;
 			}
