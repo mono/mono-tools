@@ -45,6 +45,19 @@ namespace Gendarme.Rules.Correctness {
 		private const string EqualityMessage = "Floating point values should not be directly compared for equality (e.g. == or !=).";
 		private const string EqualsMessage = "Floating point values should not be directly compared for equality using [Single|Double].Equals.";
 
+		private static string[] FloatingPointTypes = { "System.Single", "System.Double" };
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// we want to avoid checking all methods if the module doesn't refer to either
+			// System.Single or System.Double (big performance difference)
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = e.CurrentAssembly.MainModule.TypeReferences.ContainsAnyType (FloatingPointTypes);
+			};
+		}
+
 		private static bool CheckCeqInstruction (Instruction instruction, MethodDefinition method)
 		{
 			bool problem = false;

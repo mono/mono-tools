@@ -1,3 +1,8 @@
+2008-03-04  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DontCompareWithNaNRule.cs, FloatComparisonRule.cs: Don't 
+	execute rules if the module does not use floating point types.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Remove NullDerefRule from build until it's fixed (and

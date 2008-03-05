@@ -43,6 +43,19 @@ namespace Gendarme.Rules.Correctness {
 		private const string EqualityMessage = "A floating point value is compared (== or !=) with [Single|Double].NaN.";
 		private const string EqualsMessage = "[Single|Double].Equals is called using NaN.";
 
+		private static string[] FloatingPointTypes = { "System.Single", "System.Double" };
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// we want to avoid checking all methods if the module doesn't refer to either
+			// System.Single or System.Double (big performance difference)
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = e.CurrentAssembly.MainModule.TypeReferences.ContainsAnyType (FloatingPointTypes);
+			};
+		}
+
 		private static bool CheckPrevious (InstructionCollection il, int index)
 		{
 			for (int i = index; i >= 0; i--) {
