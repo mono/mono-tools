@@ -1,8 +1,3 @@
-2008-03-05  Nestor Salceda  <nestor.salceda@gmail.com>
-	
-	* UseManagedAlternativesToPInvokeRule.cs: Rename obj to o, for avoid
-	ParameterNamesShouldMatchOverriddenMethodRule violation on self-test.
-
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Change to static
