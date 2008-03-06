@@ -1,3 +1,7 @@
+2008-03-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSpeculativeGeneralityRule.cs: Change CheckMethods to static.
+
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Expression.cs: Avoid double-cast and don't throw an exception here

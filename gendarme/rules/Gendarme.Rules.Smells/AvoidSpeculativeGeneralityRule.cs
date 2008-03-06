@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Smells {
 			return false;
 		}
 
-		private void CheckMethods (IMethodRule rule, ICollection methods)
+		private static void CheckMethods (IMethodRule rule, ICollection methods)
 		{
 			foreach (MethodDefinition method in methods) {
 				rule.CheckMethod (method);
