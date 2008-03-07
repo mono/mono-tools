@@ -63,6 +63,9 @@ if test "x$enable_gecko" = "xyes"; then
    AC_SUBST(MOZILLA_HOME)
 fi
 
+dnl TODO: check for webkit-sharp
+AM_CONDITIONAL(ENABLE_WEBKIT, test "xno" = "xyes")
+
 
 if test "x$enable_gtkhtml$enable_gecko" = "xnono" ; then
    AC_MSG_ERROR([no HTML display found. You need either gtkhtml or gecko])

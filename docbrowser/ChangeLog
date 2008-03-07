@@ -1,3 +1,9 @@
+2008-03-07  Alp Toker  <alp@nuanti.com>
+
+	* WebKitHtmlRender.cs:
+	* Makefile.am:
+	* browser.cs: Initial WebKit backend for monodoc (not enabled yet).
+
 2008-03-03  Wade Berrier  <wberrier@novell.com>
 
 	* Makefile.am: Use gmcs to build, as monodoc is migrating to gmcs.

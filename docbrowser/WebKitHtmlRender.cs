@@ -1,0 +1,58 @@
+//
+// WebKitHtmlRender.cs: Implementation of IHtmlRender that uses WebKit
+//
+// Author: Alp Toker <alp@nuanti.com>
+//
+
+using System;
+using System.IO;
+using Gtk;
+using WebKit;
+
+namespace Monodoc {
+public class WebKitHtmlRender : IHtmlRender {
+
+	WebView web_view;
+	public Widget HtmlPanel {
+		get { return (Widget) web_view; }
+	}
+
+	string url;
+	public string Url {
+		get { return url; }
+	}
+
+	RootTree help_tree;
+	public event EventHandler OnUrl;
+	public event EventHandler UrlClicked;
+
+	public WebKitHtmlRender (RootTree help_tree) 
+	{
+		web_view = new WebView ();
+		web_view.Show (); 
+		this.help_tree = help_tree;
+	}
+
+	public void JumpToAnchor (string anchor)
+	{
+	}
+
+	public void Copy () 
+	{
+	}
+
+	public void SelectAll () 
+	{
+		web_view.SelectAll ();	
+	}
+
+	public void Render (string html) 
+	{
+		web_view.LoadHtmlString (html, null);
+	}
+
+	public void Print (string html)
+	{
+	}
+}
+}

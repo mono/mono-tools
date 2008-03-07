@@ -1,3 +1,7 @@
+2008-03-07  Alp Toker  <alp@nuanti.com>
+
+	* configure.in: Add no-op webkit-sharp check (for docbrowser).
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Gendarme does not need the .xml[.in] files anymore :)

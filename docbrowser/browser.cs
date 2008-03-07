@@ -2313,6 +2313,15 @@ public class Tab : Notebook {
 			HelpSource.use_css = false;
 		}
 
+		/*
+		if (html == null || html_preview == null) {
+			html = GetRenderer ("WebKitHtmlRender.dll", "Monodoc.WebKitHtmlRender", browser);
+			html_preview = GetRenderer ("WebKitHtmlRender.dll", "Monodoc.WebKitHtmlRender", browser);
+			browser.UseGecko = false;
+			HelpSource.use_css = true;
+		}
+		*/
+
 		if (html == null || html_preview == null)
 			throw new Exception ("Couldn't find html renderer!");
 				
