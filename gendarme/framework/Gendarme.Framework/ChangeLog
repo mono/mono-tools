@@ -1,4 +1,9 @@
-2008-03-07 Sebastien Pouliot  <sebastien@ximian.com>
+2008-03-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Rule.cs: Cache Type. This saves 2% (about 16mb) of the memory 
+	required to process all Mono 2.0 assemblies.
+
+2008-03-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TestRunner.cs: Add methods to allow easier testing of the 
 	events.

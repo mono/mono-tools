@@ -39,9 +39,11 @@ namespace Gendarme.Framework {
 		private bool active = true;
 		private IRunner runner;
 		private string name;
+		private string full_name;
 		private string problem;
 		private string solution;
 		private string url;
+		private Type type;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.
@@ -66,7 +68,7 @@ namespace Gendarme.Framework {
 		public virtual string Name {
 			get {
 				if (name == null)
-					name = GetType ().Name;
+					name = Type.Name;
 				return name;
 			}
 		}
@@ -76,12 +78,24 @@ namespace Gendarme.Framework {
 		/// By default this returns the full name of the current class.
 		/// </summary>
 		public virtual string FullName {
-			get { return GetType ().ToString (); }
+			get {
+				if (full_name == null)
+					full_name = Type.FullName;
+				return full_name;
+			}
+		}
+
+		private Type Type {
+			get {
+				if (type == null)
+					type = GetType ();
+				return type;
+			}
 		}
 
 		private object GetCustomAttribute (Type type)
 		{
-			object [] attributes = GetType ().GetCustomAttributes (type, true);
+			object [] attributes = Type.GetCustomAttributes (type, true);
 			if (attributes.Length == 0)
 				return null;
 			return attributes [0];
@@ -121,14 +135,10 @@ namespace Gendarme.Framework {
 		public virtual Uri Uri {
 			get {
 				if (url == null) {
-					Type t = GetType ();
-					if (name == null)
-						name = t.Name;
-
-					object [] attributes = t.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
+					object [] attributes = Type.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
 					if (attributes.Length == 0) {
 						url = String.Format (CultureInfo.InvariantCulture, 
-							"http://www.mono-project.com/{0}#{1}", t.Namespace, name);
+							"http://www.mono-project.com/{0}#{1}", Type.Namespace, Name);
 					} else {
 						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}
