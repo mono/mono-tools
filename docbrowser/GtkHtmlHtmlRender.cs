@@ -31,11 +31,6 @@ class GtkHtmlHtmlRender : IHtmlRender {
 	
 	public GtkHtmlHtmlRender (RootTree help_tree) 
 	{
-		html_panel = new HTML();
-		html_panel.Show(); 
-		html_panel.LinkClicked += new LinkClickedHandler (LinkClicked);
-		html_panel.OnUrl += new OnUrlHandler (OnUrlMouseOver);
-		html_panel.UrlRequested += new UrlRequestedHandler (UrlRequested);
 		this.help_tree = help_tree;
 	}
 	
@@ -115,5 +110,34 @@ class GtkHtmlHtmlRender : IHtmlRender {
 
 		PrintManager.Print (Html);
 	}
+
+	public bool Initialize ()
+	{
+		try {
+			html_panel = new HTML ();
+		}
+		catch (Exception ex) {
+			Console.WriteLine (ex.Message);
+			Console.WriteLine (ex.StackTrace);
+			return false;
+		}
+		html_panel.Show ();
+		html_panel.LinkClicked += new LinkClickedHandler (LinkClicked);
+		html_panel.OnUrl += new OnUrlHandler (OnUrlMouseOver);
+		html_panel.UrlRequested += new UrlRequestedHandler (UrlRequested);
+		return true;
+
+	}
+
+	public Capabilities Capabilities
+	{
+		get { return Capabilities.None; }
+	}
+
+	public string Name
+	{
+		get { return "GtkHtml"; }
+	}
+
 }
 }

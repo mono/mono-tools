@@ -13,9 +13,12 @@ endif
 if ENABLE_WEBKIT
 WEBKIT_TARGET=WebKitHtmlRender.dll
 endif
+if ENABLE_MONOWEBBROWSER
+MONOWEBBROWSER_TARGET=MonoWebBrowserHtmlRender.dll
+endif
 
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb monodoc.desktop
-monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET) $(WEBKIT_TARGET)
+CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb $(MONOWEBBROWSER_TARGET) $(MONOWEBBROWSER_TARGET).mdb monodoc.desktop
+monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET) $(WEBKIT_TARGET) $(MONOWEBBROWSER_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc
 
@@ -45,6 +48,10 @@ gtkhtmlrender_sources = 		\
 webkitrender_sources = 			\
 	$(srcdir)/WebKitHtmlRender.cs
 
+monowebbrowserrender_sources = 		\
+	$(srcdir)/BrowserWidget.cs	\
+	$(srcdir)/MonoWebBrowserHtmlRender.cs
+
 admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
@@ -53,9 +60,12 @@ browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:System.Web.Services
 # we insert gtkhtml libs if we have them for printing 
 geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+
 # TODO: use pkg-config for webkit-sharp
 WEBKIT_SHARP_LIBS = -r:nwebkit.dll
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+
+monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.Mozilla.dll
 
 EXTRA_DIST = \
 	$(browser_sources) 		\
@@ -87,6 +97,9 @@ GtkHtmlHtmlRender.dll : $(gtkhtmlrender_sources) browser.exe
 
 WebKitHtmlRender.dll : $(webkitrender_sources) browser.exe
 	$(GMCS) -debug -target:library -out:$@ $(webkitrender_sources) $(webkitrender_assemblies) $(CSHARP_FLAGS)
+
+MonoWebBrowserHtmlRender.dll : $(monowebbrowserrender_sources) browser.exe
+	$(GMCS) -debug -target:library -out:$@ $(monowebbrowserrender_sources) $(monowebbrowserrender_assemblies) $(CSHARP_FLAGS)
 
 b: browser.exe
 	MONO_PATH=. $(RUNTIME) --debug browser.exe

@@ -54,5 +54,22 @@ public class WebKitHtmlRender : IHtmlRender {
 	public void Print (string html)
 	{
 	}
+
+	public bool Initialize ()
+	{
+		return true;
+	}
+
+	public Capabilities Capabilities
+	{
+		get { return Capabilities.Css | Capabilities.Fonts; }
+	}
+
+	public string Name
+	{
+		get { return "WebKit"; }
+	}
+
+
 }
 }

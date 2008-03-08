@@ -39,15 +39,39 @@ public class GeckoHtmlRender : IHtmlRender {
 	public GeckoHtmlRender (RootTree help_tree) 
 	{
 		this.help_tree = help_tree;
-		tmpPath = Path.Combine (Path.GetTempPath(), "monodoc");
-		html_panel = new WebControl (tmpPath, "MonodocGecko"); 
+	}
+
+	public bool Initialize ()
+	{
+		tmpPath = Path.Combine (Path.GetTempPath (), "monodoc");
+		try {
+			html_panel = new WebControl (tmpPath, "MonodocGecko");
+		}
+		catch (Exception ex) {
+			Console.WriteLine (ex.Message);
+			Console.WriteLine (ex.StackTrace);
+			return false;
+		}
+
 		html_panel.Show(); //due to Gecko bug
 		html_panel.OpenUri += OnOpenUri;
 		html_panel.LinkMsg += OnLinkMsg;
 		panel = new Viewport();
 		panel.Add (html_panel);
 		cache_imgs = new Hashtable();
+		return true;
 	}
+
+	public Capabilities Capabilities
+	{
+		get { return Capabilities.Css | Capabilities.Fonts; }
+	}
+
+	public string Name
+	{
+		get { return "Gecko"; }
+	}
+
 
 	protected void OnOpenUri (object o, OpenUriArgs args)
 	{

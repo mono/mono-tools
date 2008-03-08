@@ -15,6 +15,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Collections;
+using System.Collections.Generic;
 using System.Web.Services.Protocols;
 using System.Xml;
 
@@ -23,8 +24,8 @@ class Driver {
 	static int Main (string [] args)
 	{
 		string topic = null;
-		bool useGecko = true;
 		bool remote_mode = false;
+		string engine = "Gecko";
 		
 		for (int i = 0; i < args.Length; i++){
 			switch (args [i]){
@@ -98,8 +99,14 @@ class Driver {
 				remote_mode = true;
 				break;
 				
-			case "--no-gecko":
-				useGecko = false;
+			case "--engine":
+				if (i + 1 == args.Length) {
+					Console.WriteLine ("Usage: --engine engine, where engine is the name of the browser engine to use (Gecko, GtkHtml, WebKit, MonoWebBrowser or another).");
+					return 1;
+				}
+
+				engine = args [i+1];
+				i++;
 				break;
 			default:
 				topic = args [i];
@@ -112,7 +119,7 @@ class Driver {
 		
 		Settings.RunningGUI = true;
 		Application.Init ();
-		Browser browser = new Browser (useGecko);
+		Browser browser = new Browser (engine);
 		
 		if (topic != null)
 			browser.LoadUrl (topic);
@@ -165,7 +172,7 @@ public class Browser {
 	public Notebook tabs_nb;
 	public Tab CurrentTab;
 	bool HoldCtrl;
-	public bool UseGecko;
+	public string engine;
 
 	[Glade.Widget] public MenuItem bookmarksMenu;
 	[Glade.Widget] MenuItem view1;
@@ -231,9 +238,11 @@ public class Browser {
 
 	public ArrayList bookList;
 
-	public Browser (bool UseGecko)
+	public Capabilities capabilities;
+
+	public Browser (string engine)
 	{
-		this.UseGecko = UseGecko;
+		this.engine = engine;		
 		ui = new Glade.XML (null, "browser.glade", "window1", null);
 		ui.Autoconnect (this);
 
@@ -280,7 +289,10 @@ public class Browser {
 		tabs_nb.SwitchPage += new SwitchPageHandler(ChangeTab);
 		help_container.Add(tabs_nb);
 
-		if (UseGecko) {
+		AddTab();
+			
+			
+		if ((capabilities & Capabilities.Fonts) != 0) {
 			// Add Menu entries for changing the font
 			Menu aux = (Menu) view1.Submenu;
 			MenuItem sep = new SeparatorMenuItem ();
@@ -334,9 +346,10 @@ public class Browser {
 
 		index_browser = IndexBrowser.MakeIndexBrowser (this);
 		
-		AddTab();
 		MainWindow.ShowAll();
 	}
+
+
 
 	// Initianlizes the search index
 	void CreateSearchPanel ()
@@ -821,7 +834,7 @@ ExtLoop:
 	void on_print_activate (object sender, EventArgs e) 
 	{
 		 // desactivate css temporary
-		 if (UseGecko)
+		 if ((capabilities & Capabilities.Css) != 0)
 		 	HelpSource.use_css = false;
 		 
 		string url = CurrentUrl;
@@ -842,7 +855,7 @@ ExtLoop:
 		if (html != null)
 			CurrentTab.html.Print (html);
 
-		if (UseGecko)
+		if ((capabilities & Capabilities.Css) != 0)
 			HelpSource.use_css = true;
 	}
 
@@ -2264,19 +2277,37 @@ public class Tab : Notebook {
 			text_editor.GrabFocus ();	
 	}
 
-	static IHtmlRender GetRenderer (string file, string type, Browser browser)
+	public static IHtmlRender GetRenderer (string engine, string fallback, Browser browser)
 	{
-		try {
-			
-			string exeAssembly = Assembly.GetExecutingAssembly ().Location;
-			string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
-			Assembly dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, file));
-			Type t = dll.GetType (type, true);
-		
-			return (IHtmlRender) Activator.CreateInstance (t, new object [1] { browser.help_tree });
-		} catch {
-			return null;
+		Dictionary<string, IHtmlRender> backends = new Dictionary<string, IHtmlRender> ();
+		string[] dlls = System.IO.Directory.GetFiles (AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+		foreach (string dll in dlls) {
+			Assembly ass = Assembly.LoadFile (dll);
+			System.Type type = ass.GetType ("Monodoc." + ass.GetName ().Name, false, false);
+			if (type == null)
+				continue;
+			IHtmlRender backend = (IHtmlRender) Activator.CreateInstance (type, new object[1] { browser.help_tree });
+			backends.Add (backend.Name, backend);
 		}
+
+		if (backends.ContainsKey (engine) && backends[engine].Initialize ())
+			return backends[engine];
+		else if (backends.ContainsKey (fallback) &&  backends[fallback].Initialize ())
+			return backends[fallback];
+		return null;
+
+		
+		//try {
+			
+		//    string exeAssembly = Assembly.GetExecutingAssembly ().Location;
+		//    string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
+		//    Assembly dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, file));
+		//    Type t = dll.GetType (type, true);
+		
+		//    return (IHtmlRender) Activator.CreateInstance (t, new object [1] { browser.help_tree });
+		//} catch {
+		//    return null;
+		//}
 	}
 	
 
@@ -2300,19 +2331,34 @@ public class Tab : Notebook {
 		//
 		// Setup the HTML rendering and preview area
 		//
-		if (browser.UseGecko) {
-			html = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
-			html_preview = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
-			HelpSource.use_css = true;
-		}
-		
-		if (html == null || html_preview == null) {
-			html = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
-			html_preview = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
-			browser.UseGecko = false;
-			HelpSource.use_css = false;
-		}
 
+		html = GetRenderer (browser.engine, "GtkHtml", browser);
+		html_preview = GetRenderer (browser.engine, "GtkHtml", browser);
+		browser.capabilities = html.Capabilities;
+
+		if ((html.Capabilities & Capabilities.Css) != 0)
+			HelpSource.use_css = true;
+
+		//if (browser.UseGecko) {
+		//    html = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
+		//    html_preview = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
+		//    HelpSource.use_css = true;
+		//}
+		
+		//if (html == null || html_preview == null) {
+		//    html = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
+		//    html_preview = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
+		//    browser.UseGecko = false;
+		//    HelpSource.use_css = false;
+		//}
+
+		//if (html == null || html_preview == null) {
+		//    html = GetRenderer ("MonoWebBrowserHtmlRender.dll", "Monodoc.MonoWebBrowserHtmlRender", browser);
+		//    html_preview = GetRenderer ("MonoWebBrowserHtmlRender.dll", "Monodoc.MonoWebBrowserHtmlRender", browser);
+		//    browser.UseGecko = false;
+		//    HelpSource.use_css = false;
+		//}
+		
 		/*
 		if (html == null || html_preview == null) {
 			html = GetRenderer ("WebKitHtmlRender.dll", "Monodoc.WebKitHtmlRender", browser);
@@ -2326,7 +2372,7 @@ public class Tab : Notebook {
 			throw new Exception ("Couldn't find html renderer!");
 				
 		//Prepare Font for css (TODO: use GConf?)
-		if (browser.UseGecko && SettingsHandler.Settings.preferred_font_size == 0) { 
+		if ((html.Capabilities & Capabilities.Fonts) != 0 && SettingsHandler.Settings.preferred_font_size == 0) { 
 			Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");
 			SettingsHandler.Settings.preferred_font_family = font_desc.Family;
 			SettingsHandler.Settings.preferred_font_size = 100; //size: 100%

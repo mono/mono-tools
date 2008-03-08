@@ -66,9 +66,12 @@ fi
 dnl TODO: check for webkit-sharp
 AM_CONDITIONAL(ENABLE_WEBKIT, test "xno" = "xyes")
 
+# PKG_CHECK_MODULES(MONOWEBBROWSER, mono-webbrowser, enable_monowebbrowser=yes, enable_monowebbrowser=no)
+# AC_SUBST(MONOWEBBROWSER_LIBS)
+AM_CONDITIONAL(ENABLE_MONOWEBBROWSER, test "x$enable_monowebbrowser" = "xyes")
 
-if test "x$enable_gtkhtml$enable_gecko" = "xnono" ; then
-   AC_MSG_ERROR([no HTML display found. You need either gtkhtml or gecko])
+if test "x$enable_gtkhtml$enable_gecko$enable_monowebbrowser" = "xnono" ; then
+   AC_MSG_ERROR([no HTML display found. You need either gtkhtml, gecko or Mono.Mozilla])
 fi
 
 dnl
@@ -176,7 +179,10 @@ echo "---"
 echo "Configuration summary"
 echo ""
 echo "   * Installation prefix = $prefix"
-echo "   * gecko-sharp.dll = $enable_gecko"
+echo "   * Using Gecko = $enable_gecko"
+echo "   * Using GtkHtml = $enable_gtkhtml"
+echo "   * Using Mono.WebBrowser = $enable_monowebbrowser"
+echo "   * Using WebKit = $enable_webkit"
 echo ""
 echo "      NOTE: if any of the above say 'no' you may install the"
 echo "            corresponding development packages for them, rerun"

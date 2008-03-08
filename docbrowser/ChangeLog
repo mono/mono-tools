@@ -1,3 +1,21 @@
+2008-03-08  Andreia Gaita  <avidigal@novell.com>
+
+	* MonoWebBrowserHtmlRender.cs, 
+	  BrowserWidget.cs,
+	  Makefile.am: Mono.Mozilla backend
+
+	* IHtmlRender.cs, 
+	  GeckoHtmlRender.cs, 
+	  GtkHtmlHtmlRender.cs, 
+	  WebKitHtmlRender.cs: Support for checking backend capabilities. Added 
+	  Initialize method to detect if the backend is functional on load.
+
+	* browser.cs: Take out --no-gecko option, and add instead a --engine option, 
+	  taking an engine name (equivalent to IHtmlRender.Name). Scan the filesystem 
+      for assemblies that can be loaded as backends, load the requested engine or
+      fallback to GtkHtml. Remove UseGecko checks and use the backend Capabilities
+	  flags instead.
+
 2008-03-07  Alp Toker  <alp@nuanti.com>
 
 	* WebKitHtmlRender.cs:
@@ -598,7 +616,7 @@
 2003-12-15  Duncan Mak  <duncan@ximian.com>
 
 	* browser.cs:
-	* browser.glade: Commit bookmarks support code from Borja Sánchez
+	* browser.glade: Commit bookmarks support code from Borja Sï¿½nchez
 	Zamorano <borsanza@terra.es>.
 
 2003-12-04  John Luke  <jluke@cfl.rr.com>

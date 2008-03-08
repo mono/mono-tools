@@ -1,3 +1,8 @@
+2008-03-08  Andreia Gaita  <avidigal@novell.com>
+
+	* configure.in (docbrowser): Add mono-webbrowser check, and tweak
+	the detected browser engine message to list what is available.
+
 2008-03-07  Alp Toker  <alp@nuanti.com>
 
 	* configure.in: Add no-op webkit-sharp check (for docbrowser).
