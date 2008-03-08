@@ -1,3 +1,9 @@
+2008-03-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisableDebuggingCodeTest.cs: New. Unit tests for 
+	DisableDebuggingCodeRule.
+	* Test.Rules.BadPractice.mdp: Update MD project file.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckNewExceptionWithoutThrowingTest.cs
