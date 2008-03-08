@@ -46,11 +46,14 @@ namespace Gendarme.Framework {
 	/// </summary>
 	public class TestRunner : Runner, IIgnoreList {
 
+		private RunnerEventArgs event_args;
+
 		public TestRunner (IRule rule)
 		{
 			CurrentRule = rule;
 			CurrentRule.Initialize (this);
 			IgnoreList = this;
+			Initialize ();
 		}
 
 		private void PreCheck (IMetadataTokenProvider obj)
@@ -79,6 +82,8 @@ namespace Gendarme.Framework {
 			return (CurrentRule as IMethodRule).CheckMethod (method);
 		}
 
+		// IIgnoreList
+
 		public bool IsIgnored (IRule rule, MethodDefinition method)
 		{
 			return !rule.Active;
@@ -92,6 +97,67 @@ namespace Gendarme.Framework {
 		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
 		{
 			return !rule.Active;
+		}
+
+		// reuse the same instance
+		private RunnerEventArgs Arguments {
+			get {
+				if (event_args == null)
+					event_args = new RunnerEventArgs (this);
+				return event_args;
+			}
+		}
+
+		/// <summary>
+		/// Calls the protected Runner.OnAssembly method, which raise the AnalyzeAssembly event.
+		/// </summary>
+		/// <param name="assembly">The AssemblyDefinition which will be used to fill the RunnerEventArgs parameter to OnAssembly.</param>
+		public void OnAssembly (AssemblyDefinition assembly)
+		{
+			Arguments.CurrentAssembly = assembly;
+			Arguments.CurrentModule = null;
+			Arguments.CurrentType = null;
+			Arguments.CurrentMethod = null;
+			base.OnAssembly (Arguments);
+		}
+
+		/// <summary>
+		/// Calls the protected Runner.OnModule method, which raise the AnalyzeModule event.
+		/// </summary>
+		/// <param name="module">The ModuleDefinition which will be used to fill the RunnerEventArgs parameter to OnModule.</param>
+		public void OnModule (ModuleDefinition module)
+		{
+			Arguments.CurrentAssembly = module.Assembly;
+			Arguments.CurrentModule = module;
+			Arguments.CurrentType = null;
+			Arguments.CurrentMethod = null;
+			base.OnModule (Arguments);
+		}
+
+		/// <summary>
+		/// Calls the protected Runner.OnType method, which raise the AnalyzeType event.
+		/// </summary>
+		/// <param name="type">The TypeDefinition which will be used to fill the RunnerEventArgs parameter to OnType.</param>
+		public void OnType (TypeDefinition type)
+		{
+			Arguments.CurrentAssembly = type.Module.Assembly;
+			Arguments.CurrentModule = type.Module;
+			Arguments.CurrentType = type;
+			Arguments.CurrentMethod = null;
+			base.OnType (Arguments);
+		}
+
+		/// <summary>
+		/// Calls the protected Runner.OnMethod, which raise the AnalyzeMethod event.
+		/// </summary>
+		/// <param name="module">The MethodDefinition which will be used to fill the RunnerEventArgs parameter to OnMethod.</param>
+		public void OnMethod (MethodDefinition method)
+		{
+			Arguments.CurrentAssembly = method.DeclaringType.Module.Assembly;
+			Arguments.CurrentModule = method.DeclaringType.Module;
+			Arguments.CurrentType = (method.DeclaringType as TypeDefinition);
+			Arguments.CurrentMethod = method;
+			base.OnMethod (Arguments);
 		}
 	}
 }

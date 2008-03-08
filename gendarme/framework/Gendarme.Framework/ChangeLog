@@ -1,3 +1,8 @@
+2008-03-07 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TestRunner.cs: Add methods to allow easier testing of the 
+	events.
+
 2008-03-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Rule.cs: Reduce code duplication between Problem and Solution
