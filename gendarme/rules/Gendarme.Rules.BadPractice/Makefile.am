@@ -12,7 +12,7 @@ badpractice_rules_sources_in = ../../AssemblyInfo.cs.in
 badpractice_rules_generated_sources = $(badpractice_rules_sources_in:.in=)
 badpractice_rules_sources = CloneMethodShouldNotReturnNullRule.cs EqualShouldHandleNullArgRule.cs \
 	ToStringReturnsNullRule.cs GetEntryAssemblyMayReturnNullRule.cs ConstructorShouldNotCallVirtualMethodsRule.cs \
-	CheckNewExceptionWithoutThrowingRule.cs CheckNewThreadWithoutStartRule.cs
+	CheckNewExceptionWithoutThrowingRule.cs CheckNewThreadWithoutStartRule.cs DisableDebuggingCodeRule.cs
 
 badpractice_rules_build_sources = $(addprefix $(srcdir)/, $(badpractice_rules_sources))
 badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
@@ -23,7 +23,7 @@ badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
 
 badpractice_test_sources = CloneMethodShouldNotReturnNullTest.cs EqualShouldHandleNullArgTest.cs \
 	ToStringReturnsNullTest.cs GetEntryAssemblyMayReturnNullTest.cs ConstructorShouldNotCallVirtualMethodsTest.cs \
-	CheckNewExceptionWithoutThrowingTest.cs CheckNewThreadWithoutStartTest.cs
+	CheckNewExceptionWithoutThrowingTest.cs CheckNewThreadWithoutStartTest.cs DisableDebuggingCodeTest.cs
 
 badpractice_test_build_sources = $(addprefix $(srcdir)/Test/, $(badpractice_test_sources))
 

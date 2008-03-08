@@ -1,3 +1,10 @@
+2008-03-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisableDebuggingCodeRule.cs: New. Rule to check for debugging
+	CWL left inside assemblies (ref: bug #366450)
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CloneMethodShouldNotReturnNullRule: Remove unused method.

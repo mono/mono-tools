@@ -22,6 +22,7 @@
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="CheckNewExceptionWithoutThrowingRule.cs" subtype="Code" buildaction="Compile" />
     <File name="CheckNewThreadWithoutStartRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisableDebuggingCodeRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
