@@ -45,6 +45,8 @@ public class GeckoHtmlRender : IHtmlRender {
 	{
 		tmpPath = Path.Combine (Path.GetTempPath (), "monodoc");
 		try {
+			string mozBinDir = System.Environment.GetEnvironmentVariable ("MOZILLA_HOME");
+			WebControl.CompPath = mozBinDir;
 			html_panel = new WebControl (tmpPath, "MonodocGecko");
 		}
 		catch (Exception ex) {

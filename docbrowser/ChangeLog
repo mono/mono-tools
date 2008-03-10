@@ -1,3 +1,9 @@
+2008-03-10  Andreia Gaita  <avidigal@novell.com>
+
+	* GeckoHtmlRender.cs: Set gecko's CompPath property to the launcher-detected
+	MOZILLA_HOME env var so that gecko uses the runtime path as the basis for 
+	loading	components (#341815)
+
 2008-03-08  Alp Toker  <alp@nuanti.com>
 
 	* monodoc.in: Remove obsolete --no-gecko in launcher script and document the
