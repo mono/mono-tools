@@ -1,3 +1,10 @@
+2008-03-10  Andreia Gaita  <avidigal@novell.com>
+	[Backport to 1.9]
+	* GeckoHtmlRender.cs: Set gecko's CompPath property to the launcher-detected
+	MOZILLA_HOME env var so that gecko uses the runtime path as the basis for 
+	loading	components (#341815)
+	* monodoc.in: reactivate the gecko engine
+
 2008-01-16  Wade Berrier  <wberrier@novell.com>
 
 	* monodoc.desktop.in: no extension on icon, remove

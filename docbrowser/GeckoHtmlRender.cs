@@ -40,6 +40,11 @@ public class GeckoHtmlRender : IHtmlRender {
 	{
 		this.help_tree = help_tree;
 		tmpPath = Path.Combine (Path.GetTempPath(), "monodoc");
+
+		string mozHome = System.Environment.GetEnvironmentVariable ("MOZILLA_HOME");
+		if (mozHome != null)
+			WebControl.CompPath = mozHome;
+
 		html_panel = new WebControl (tmpPath, "MonodocGecko"); 
 		html_panel.Show(); //due to Gecko bug
 		html_panel.OpenUri += OnOpenUri;
