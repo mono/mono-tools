@@ -45,8 +45,9 @@ public class GeckoHtmlRender : IHtmlRender {
 	{
 		tmpPath = Path.Combine (Path.GetTempPath (), "monodoc");
 		try {
-			string mozBinDir = System.Environment.GetEnvironmentVariable ("MOZILLA_HOME");
-			WebControl.CompPath = mozBinDir;
+			string mozHome = System.Environment.GetEnvironmentVariable ("MOZILLA_HOME");
+			if (mozHome != null)
+				WebControl.CompPath = mozHome;
 			html_panel = new WebControl (tmpPath, "MonodocGecko");
 		}
 		catch (Exception ex) {
@@ -209,7 +210,17 @@ public class GeckoHtmlRender : IHtmlRender {
 		Console.WriteLine ("XXXX");
 		
 #if USE_GTKHTML_PRINT
-		PrintManager.Print (Html);
+		try {
+			PrintManager.Print (Html);
+		} catch {
+			MessageDialog md = new MessageDialog (null, 
+					DialogFlags.DestroyWithParent,
+					MessageType.Error, 
+					ButtonsType.Close, "Printing not supported without gtkhtml");
+	     
+			int result = md.Run ();
+			md.Destroy();
+		}
 #else
 		MessageDialog md = new MessageDialog (null, 
 				DialogFlags.DestroyWithParent,
