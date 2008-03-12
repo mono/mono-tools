@@ -1,0 +1,5 @@
+2008-03-11  Daniel Abramov  <ex@vingrad.ru>
+
+	* MethodRuleTestFixture.cs: New.
+	* RuleTestFixture.cs: New.
+	* TypeRuleTestFixture.cs: New.

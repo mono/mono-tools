@@ -1,0 +1,4 @@
+2008-03-11  Daniel Abramov  <ex@vingrad.ru>
+
+	* Test.Rules.mdp: New. MonoDevelop project file for common unit
+	tests functionalities.
