@@ -5,7 +5,7 @@ design_rules_SCRIPTS = ../../bin/Gendarme.Rules.Design.dll
 design_rules_DATA = 
 EXTRA_DIST = $(design_rules_sources) $(design_rules_sources_in) \
 	Gendarme.Rules.Design.mdp 
-CLEANFILES = $(design_rules_SCRIPTS) $(design_rules_SCRIPTS).mdb Test.Rules.Design.dll
+CLEANFILES = $(design_rules_SCRIPTS) $(design_rules_SCRIPTS).mdb Test.Rules.Design.dll* Test.Rules.*
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 
 design_rules_sources_in = ../../AssemblyInfo.cs.in
@@ -43,7 +43,9 @@ design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneW
 design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 
 Test.Rules.Design.dll: $(design_test_build_sources) $(design_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	cp ../Test.Rules/Test.Rules.dll* .
+	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
+		-r:$(top_builddir)/gendarme/bin/Gendarme.Framework.dll -r:Test.Rules.dll \
 		-r:$(design_rules_SCRIPTS) -out:$@ $(design_test_build_sources)
 
 test: Test.Rules.Design.dll

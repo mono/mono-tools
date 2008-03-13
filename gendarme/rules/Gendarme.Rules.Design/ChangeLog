@@ -1,3 +1,7 @@
+2008-03-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add reference to Test.Rules to the unit test assembly.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Don't check
