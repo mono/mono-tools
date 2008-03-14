@@ -1,5 +1,5 @@
 testdir=.
-test_SCRIPTS = Test.Rules.dll
+test_SCRIPTS = 
 test_DATA = 
 EXTRA_DIST = $(test_sources) Test.Rules.mdp
 CLEANFILES = Test.Rules.dll Test.Rules.dll.mdb
