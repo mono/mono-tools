@@ -150,7 +150,7 @@ namespace Gendarme.Framework {
 		/// <summary>
 		/// Calls the protected Runner.OnMethod, which raise the AnalyzeMethod event.
 		/// </summary>
-		/// <param name="module">The MethodDefinition which will be used to fill the RunnerEventArgs parameter to OnMethod.</param>
+		/// <param name="method">The MethodDefinition which will be used to fill the RunnerEventArgs parameter to OnMethod.</param>
 		public void OnMethod (MethodDefinition method)
 		{
 			Arguments.CurrentAssembly = method.DeclaringType.Module.Assembly;
