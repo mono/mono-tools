@@ -61,9 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidReturningArraysOnPropertiesTest.cs" />
-    <Compile Include="AvoidToStringOnStringsTest.cs" />
     <Compile Include="AvoidUncalledPrivateCodeTest.cs" />
     <Compile Include="AvoidUninstantiatedInternalClassesTest.cs" />
+    <Compile Include="AvoidUnneededCallsOnStringTest.cs" />
     <Compile Include="AvoidUnsealedConcreteAttributesTest.cs" />
     <Compile Include="AvoidUnsealedUninheritedInternalClassesTest.cs" />
     <Compile Include="AvoidUnusedParametersTest.cs" />

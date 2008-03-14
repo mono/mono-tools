@@ -53,7 +53,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DontDestroyStackTrace.cs" />
+    <Compile Include="DoNotDestroyStackTraceRule.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" />
     <Compile Include="Impl\ExceptionBlockParser.cs" />
     <Compile Include="Impl\ExecutionBlock.cs" />

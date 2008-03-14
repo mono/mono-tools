@@ -58,9 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidReturningArraysOnPropertiesRule.cs" />
-    <Compile Include="AvoidToStringOnStringsRule.cs" />
     <Compile Include="AvoidUncalledPrivateCodeRule.cs" />
     <Compile Include="AvoidUninstantiatedInternalClassesRule.cs" />
+    <Compile Include="AvoidUnneededCallsOnStringRule.cs" />
     <Compile Include="AvoidUnsealedConcreteAttributesRule.cs" />
     <Compile Include="AvoidUnsealedUninheritedInternalClassesRule.cs" />
     <Compile Include="AvoidUnusedParametersRule.cs" />
