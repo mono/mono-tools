@@ -1,6 +1,8 @@
-2008-03-15  Sebastien Pouliot  <sebastien@ximian.com>
+2008-03-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Options.cs: Update to version 0.2.0
+	* HtmlResultWriter.cs: Try harder to find the XSLT in the assembly 
+	resource files.
 
 2008-03-04  Sebastien Pouliot  <sebastien@ximian.com>
 
