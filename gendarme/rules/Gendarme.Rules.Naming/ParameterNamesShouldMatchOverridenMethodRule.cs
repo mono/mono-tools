@@ -94,7 +94,7 @@ namespace Gendarme.Rules.Naming {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.IsVirtual)
+			if (!method.IsVirtual || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition baseMethod = null;
