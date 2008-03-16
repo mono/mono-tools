@@ -1,3 +1,12 @@
+2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedParametersRule.cs: Don't report defects on methods
+	that contains parameter inheriting from EventArgs. GUI apps use
+	them a lot and, while not real "false positive", the method 
+	signature is outside the developer's control so it cannot be 
+	fixed (signature-wise) and rarely denotes a real problem. Fix
+	bug #350288
+
 2008-03-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededCallsOnStringRule.cs: Source file renamed from 

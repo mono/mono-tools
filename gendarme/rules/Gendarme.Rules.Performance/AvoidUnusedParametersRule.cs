@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Néstor Salceda
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,7 +29,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -45,6 +47,7 @@ namespace Gendarme.Rules.Performance {
 		{
 			if (!method.HasBody)
 				return false;
+
 			foreach (Instruction instruction in method.Body.Instructions) {
 				switch (instruction.OpCode.Code) {
 				case Code.Ldarg_0:
@@ -104,10 +107,20 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		private static ICollection GetUnusedParameters (MethodDefinition method)
+		private static List<ParameterDefinition> GetUnusedParameters (MethodDefinition method)
 		{
-			ArrayList unusedParameters = new ArrayList ();
+			List<ParameterDefinition> unusedParameters = new List<ParameterDefinition> ();
 			foreach (ParameterDefinition parameter in method.Parameters) {
+				// EventArgs parameters are often required in method signatures,
+				// but often not required. Reduce "false positives"(*) for GUI apps
+				// (*) it's more a "don't report things outside developer's control"
+				if (parameter.ParameterType.Inherits ("System.EventArgs")) {
+					// even the other parameters are often ignored since
+					// the signature is made to cover most cases
+					unusedParameters.Clear ();
+					return unusedParameters;
+				}
+
 				if (!UseParameter (method, parameter))
 					unusedParameters.Add (parameter);
 			}
@@ -125,7 +138,9 @@ namespace Gendarme.Rules.Performance {
 
 			// rule applies
 			foreach (ParameterDefinition parameter in GetUnusedParameters (method)) {
-				Runner.Report (parameter, Severity.Medium, Confidence.Normal, String.Format ("The parameter {0} is never used", parameter.Name));
+				string text = String.Format ("Parameter '{0}' of type '{1}' is never used in the method.", 
+					parameter.Name, parameter.ParameterType);
+				Runner.Report (parameter, Severity.Medium, Confidence.Normal, text);
 			}
 			return Runner.CurrentRuleResult;
 		}
