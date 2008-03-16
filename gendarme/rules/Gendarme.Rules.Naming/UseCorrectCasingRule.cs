@@ -118,7 +118,8 @@ namespace Gendarme.Rules.Naming {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (method.IsConstructor)
+			// ignore constructors (.ctor or .cctor) and compiler/tool-generated code
+			if (method.IsConstructor || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			string name = method.Name;
