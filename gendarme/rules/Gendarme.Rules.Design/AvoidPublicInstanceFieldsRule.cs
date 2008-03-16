@@ -34,13 +34,14 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	[Problem ("This type contains public instance fields.")]
-	[Solution ("If possible change the public fields to properties.")]
+	[Solution ("If possible change the public fields into properties.")]
 	public class AvoidPublicInstanceFieldsRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule doesn't apply on enums
-			if (type.IsEnum)
+			// rule doesn't apply on enums or to compiler/tools-generated code
+			// e.g. CSC compiles anonymous methods as an inner type that expose public fields
+			if (type.IsEnum || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition fd in type.Fields) {
