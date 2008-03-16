@@ -1,3 +1,7 @@
+2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedParametersTest.cs: Add EventArgs test cases.
+
 2008-03-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededCallsOnStringTest.cs: Source file renamed from 

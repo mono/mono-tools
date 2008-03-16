@@ -175,6 +175,17 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		public void ButtonClick_EvenArgsUnused (object o, EventArgs e)
+		{
+			if (o == null)
+				throw new ArgumentNullException ("o");
+		}
+
+		public void ButtonClick_NoParameterUnused (object o, EventArgs e)
+		{
+			Console.WriteLine ("uho");
+		}
+
 		[TestFixtureSetUp]
 		public void FixtureSetUp () 
 		{
@@ -365,6 +376,18 @@ namespace Test.Rules.Performance {
 
 			method = GetMethodFromAssembly (ad, "Mono.Cecil.Cil.OpCode", "op_Inequality");
 			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "op_Inequality");
+		}
+
+		[Test]
+		public void EventArgs ()
+		{
+			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest", "ButtonClick_EvenArgsUnused");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ButtonClick_EvenArgsUnused/Result");
+			Assert.AreEqual (0, runner.Defects.Count, "ButtonClick_EvenArgsUnused/Count");
+
+			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest", "ButtonClick_NoParameterUnused");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ButtonClick_NoParameterUnused/Result");
+			Assert.AreEqual (0, runner.Defects.Count, "ButtonClick_NoParameterUnused/Count");
 		}
 
 		private MethodDefinition GetMethodForTest (string methodName) 
