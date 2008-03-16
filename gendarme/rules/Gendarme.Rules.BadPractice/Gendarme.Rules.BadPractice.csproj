@@ -41,6 +41,7 @@
     <Compile Include="CheckNewThreadWithoutStartRule.cs" />
     <Compile Include="CloneMethodShouldNotReturnNullRule.cs" />
     <Compile Include="ConstructorShouldNotCallVirtualMethodsRule.cs" />
+    <Compile Include="DisableDebuggingCodeRule.cs" />
     <Compile Include="EqualShouldHandleNullArgRule.cs" />
     <Compile Include="GetEntryAssemblyMayReturnNullRule.cs" />
     <Compile Include="ToStringReturnsNullRule.cs" />
