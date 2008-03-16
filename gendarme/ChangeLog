@@ -1,3 +1,7 @@
+2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.svg: Put GHOP's Steve P. logo into repository.
+
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyInfo.cs.in: Remove static stuff and keep only the version.
