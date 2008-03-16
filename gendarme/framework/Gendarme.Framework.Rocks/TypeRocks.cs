@@ -447,6 +447,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>A TypeDefinition if resolved, null otherwise.</returns>
 		public static TypeDefinition Resolve (this TypeReference self)
 		{
+			// this can occurs, e.g. generic parameters that needs recursive resolves
+			if (self == null)
+				return null;
+
 			TypeDefinition type = (self as TypeDefinition);
 			if (type == null)
 				type = AssemblyResolver.Resolver.Resolve (self);

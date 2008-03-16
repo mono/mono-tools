@@ -1,3 +1,7 @@
+2008-03-16  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TypeRocks.cs: Add null check in Resolve.
+
 2008-03-04  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocks.cs: Add Contains[Any]Type method extentions for 
