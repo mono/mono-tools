@@ -118,7 +118,11 @@ namespace Gendarme.Framework {
 
 			foreach (Rule rule in rules) {
 				try {
-					rule.Initialize (this);
+					// don't initialize rules that *we*, the runner, don't want
+					// to execute later (this also avoids the rule logic to reset
+					// the Active property during optimizations)
+					if (rule.Active)
+						rule.Initialize (this);
 				}
 				catch (Exception e) {
 					// if something goes wrong in initialization we desactivate the rule

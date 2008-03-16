@@ -1,3 +1,11 @@
+2008-03-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Don't initialize rules that are not active. This is
+	useful when a runner decides to load a rule (e.g. to get more 
+	information about it) then decide not to use it (think UI ;-). 
+	This also makes it easier (well no change) to continue using 
+	Active for rule optimizations.
+
 2008-03-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Rule.cs: Cache Type. This saves 2% (about 16mb) of the memory 
