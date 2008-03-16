@@ -28,6 +28,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
@@ -47,6 +48,14 @@ namespace Test.Rules.Naming {
 	}
 
 	public interface PublicInterface_WithUnderscore {
+	}
+
+	// from Mono.Cecil.Pdb
+	[Guid ("809c652e-7396-11d2-9771-00a0c9b4d50c")]
+	[InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
+	[ComVisible (true)]
+	interface IMetaDataDispenser {
+		void DefineScope_Placeholder ();
 	}
 
 	[TestFixture]
@@ -315,6 +324,18 @@ namespace Test.Rules.Naming {
 			type = assembly.MainModule.Types["Test.Rules.Naming.PublicInterface_WithUnderscore"];
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
 			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void ComInterop ()
+		{
+			type = assembly.MainModule.Types ["Test.Rules.Naming.IMetaDataDispenser"];
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "Type/RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Type/Count");
+
+			MethodDefinition method = type.GetMethod ("DefineScope_Placeholder");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "Method/RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Method/Count");
 		}
 	}
 }
