@@ -84,6 +84,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Design", "rules
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Rules", "rules\Test.Rules\Test.Rules.csproj", "{069148AF-86AB-4EE3-BFB9-429AE722461F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swf-wizard-runner", "swf-wizard-runner\swf-wizard-runner.csproj", "{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "win32-setup", "win32-setup\win32-setup.vdproj", "{8EC56425-BA98-4C43-9163-FC18BEDE3FC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -218,6 +222,12 @@ Global
 		{069148AF-86AB-4EE3-BFB9-429AE722461F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{069148AF-86AB-4EE3-BFB9-429AE722461F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{069148AF-86AB-4EE3-BFB9-429AE722461F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EC56425-BA98-4C43-9163-FC18BEDE3FC2}.Debug|Any CPU.ActiveCfg = Debug
+		{8EC56425-BA98-4C43-9163-FC18BEDE3FC2}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
