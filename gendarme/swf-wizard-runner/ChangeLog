@@ -1,0 +1,14 @@
+2008-03-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.cs
+	* GuiRunner.cs
+	* swf-wizard-runner.csproj
+	* Wizard.cs
+	* Wizard.resx
+	* Wizard.Designer.cs
+	* Resources/gendarme.png
+	* Properties/Resources.resx
+	* Properties/Resources.Designer.cs
+	* Properties/Settings.settings
+	* Properties/Settings.Designer.cs
+		Initial import of SWF Wizard Runner
