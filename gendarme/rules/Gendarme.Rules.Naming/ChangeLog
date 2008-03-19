@@ -1,3 +1,8 @@
+2008-03-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectSuffixRule.cs: Fix case where generics are used (since
+	it affects the suffix of the type). Fix bug #372250
+
 2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectCasingRule.cs: Ignore generated code. VS SWF designer

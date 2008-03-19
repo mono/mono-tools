@@ -4,9 +4,11 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //      Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Néstor Salceda
 //  (C) 2007 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -70,6 +72,18 @@ namespace Gendarme.Rules.Naming {
 			}
 		}
 
+		// handle types using generics
+		private static string GetFullName (TypeReference type)
+		{
+			string name = type.FullName;
+			// handle types using generics
+			if ((type is GenericInstanceType) || (type.GenericParameters.Count > 0)) {
+				int pos = name.IndexOf ('`');
+				name = name.Substring (0, pos);
+			}
+			return name;
+		}
+
 		// checks if type name ends with an approriate suffix
 		// returns array of proposed suffixes via out suffixes parameter or empty list (if none)
 		private static bool HasRequiredSuffix (TypeDefinition type, List<string> suffixes)
@@ -77,19 +91,25 @@ namespace Gendarme.Rules.Naming {
 			TypeDefinition current = type;
 
 			while (current != null && current.BaseType != null) {
+				string base_name = GetFullName (current.BaseType);
+
 				// if we have any suffixes defined by base type, we select them
-				if (definedSuffixes.ContainsKey (current.BaseType.FullName)) {
-					suffixes.AddRangeIfNew (GetSuffixes (current.BaseType.FullName));
+				if (definedSuffixes.ContainsKey (base_name)) {
+					suffixes.AddRangeIfNew (GetSuffixes (base_name));
 				} else {
 					// if no suffix for base type is found, we start looking through interfaces
-					foreach (TypeReference iface in current.Interfaces)
-						if (definedSuffixes.ContainsKey (iface.FullName))
-							suffixes.AddRangeIfNew (GetSuffixes (iface.FullName));
+					foreach (TypeReference iface in current.Interfaces) {
+						string interface_name = GetFullName (iface);
+						if (definedSuffixes.ContainsKey (interface_name))
+							suffixes.AddRangeIfNew (GetSuffixes (interface_name));
+					}
 				}
 				if (suffixes.Count > 0) {
 					// if any suffixes found
 					// check whether type name ends with any of these suffixes
-					return suffixes.Exists (delegate (string suffix) { return type.Name.EndsWith (suffix); });
+					return suffixes.Exists (delegate (string suffix) {
+						return GetFullName (type).EndsWith (suffix);
+					});
 				} else {
 					// inspect base type
 					current = current.BaseType.Resolve ();
