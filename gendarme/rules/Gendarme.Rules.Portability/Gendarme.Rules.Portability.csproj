@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\cecil\gendarme\rules\Gendarme.Rules.Portability\bin\Debug\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\..\..\mcs\class\lib\net_2_0\ICSharpCode.SharpZipLib.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
