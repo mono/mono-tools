@@ -252,7 +252,7 @@ namespace Test.Rules.Naming {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
+					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
 					Assert.AreEqual (0, runner.Defects.Count, "Count");
 					break;
 				}

@@ -4,9 +4,11 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //      Abramov Daniel <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Néstor Salceda
 //  (C) 2007 Abramov Daniel
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,6 +32,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 using Gendarme.Framework;
@@ -201,8 +205,20 @@ namespace Test.Rules.Naming {
 	}
 	
 	public class IncorrectDerivingClassImplementingInterfaces : DerivingClassImplementingInterfaces { 
-	}	
-	
+	}
+
+	public class CorrectCollection<T> : Collection<T> {
+	}
+
+	public class CollectionIncorrect<T> : Collection<T> {
+	}
+
+	public class CorrectDictionary<T, V> : Dictionary<T, V> {
+	}
+
+	public class DictionaryIncorrect<T, V> : Dictionary<T, V> {
+	}
+
 	[TestFixture]
 	public class UseCorrectSuffixTest {
 		private ITypeRule rule;
@@ -343,6 +359,30 @@ namespace Test.Rules.Naming {
 			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectDerivingClassImplementingInterfacesCollection"];
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
 			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}      
+		}
+
+		[Test]
+		public void GenericCollection ()
+		{
+			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectCollection`1"];
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "CorrectCollection<T>/RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "CorrectCollection<T>/Count");
+
+			type = assembly.MainModule.Types ["Test.Rules.Naming.CollectionIncorrect`1"];
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "CollectionIncorrect<T>/RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "CollectionIncorrect<T>/Count");
+		}
+
+		[Test]
+		public void GenericDictionary ()
+		{
+			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectDictionary`2"];
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "CorrectCollection<T>/RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "CorrectCollection<T>/Count");
+
+			type = assembly.MainModule.Types ["Test.Rules.Naming.DictionaryIncorrect`2"];
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "CollectionIncorrect<T>/RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "CollectionIncorrect<T>/Count");
+		}
 	}
 }
