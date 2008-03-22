@@ -1,8 +1,8 @@
-SUBDIRS = man framework console rules
-bin_SCRIPTS = gendarme
-EXTRA_DIST = gendarme.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore
+SUBDIRS = man framework console rules swf-wizard-runner win32-setup
+bin_SCRIPTS = gendarme gendarme-wizard
+EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore
 
-CLEANFILES = gendarme bin/rules.xml bin/Gendarme.Rules.*.xml
+CLEANFILES = gendarme gendarme-wizard bin/rules.xml bin/Gendarme.Rules.*.xml
 
 DISTCLEANFILES = \
 	AssemblyInfo.cs \
@@ -45,5 +45,5 @@ assemble-doc: doc
 self-test: all
 	cd bin;	\
 	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
-		gendarme.exe Gendarme.*.dll; \
+		gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
 	cd ..;
