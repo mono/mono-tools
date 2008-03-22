@@ -1,6 +1,6 @@
 wizarddir=$(prefix)/lib/gendarme
 wizard_SCRIPTS = ../bin/gendarme-wizard.exe
-EXTRA_DIST = $(wizard_sources) $(wizard_sources_in) swf-wizard-runner.csproj
+EXTRA_DIST = $(wizard_sources) $(wizard_sources_in) swf-wizard-runner.csproj Wizard.resx Properties/Resources.resx
 CLEANFILES = $(wizard_SCRIPTS) $(wizard_SCRIPTS).mdb Wizard.resources Properties/Resources.resources
 DISTCLEANFILES = Makefile.in
 
