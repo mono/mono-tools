@@ -1,5 +1,6 @@
-2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
+2008-03-22  Sebastien Pouliot  <sebastien@ximian.com> 
 
+	* gendarme-wizard.in: New. Script to call the Gendarme SWF Wizard
 	* Makefile.am: Add swf-wizard-runner and win32-setup to the build
 
 2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
