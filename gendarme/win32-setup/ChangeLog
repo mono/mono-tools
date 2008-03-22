@@ -1,3 +1,8 @@
+2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Can't build setup (outside of VS) but it makes 
+	sure the file is bundled in make dist.
+
 2008-03-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* win32-setup.vdproj: VS.NET project file for setup.
