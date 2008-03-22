@@ -1,3 +1,16 @@
+2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GuiRunner.cs: Fix rule loading so it works when the wizard
+	is invoke using a script.
+	* Wizard.cs: Always save an existing copy, if existing, of any
+	report type (instead of re-generating it). Remove check for 
+	InvokeRequired since this (often but not always) breaks on MWF.
+	* Wizard.Designer.cs: Enlarge vertical space for logo (not sure
+	why this is required on MWF).
+	* Properties/Resources.resx: Make logo path unix-friendly.
+	* Makefile.am: New. Allow to build the wizard from the 
+	command-line.
+
 2008-03-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.cs

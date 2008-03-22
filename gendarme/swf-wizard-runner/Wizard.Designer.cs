@@ -1,4 +1,4 @@
-﻿namespace Gendarme {
+namespace Gendarme {
 
 	partial class Wizard {
 		/// <summary>
@@ -489,7 +489,7 @@
 			this.pictureBox1.Image = global::Gendarme.Properties.Resources.gendarme;
 			this.pictureBox1.Location = new System.Drawing.Point (12, 14);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size (134, 171);
+			this.pictureBox1.Size = new System.Drawing.Size (134, 202);
 			this.pictureBox1.TabIndex = 10;
 			this.pictureBox1.TabStop = false;
 			// 

@@ -1,4 +1,4 @@
-﻿//
+//
 // GuiRunner.cs: A SWF-based Wizard Runner for Gendarme
 //
 // Authors:
@@ -68,7 +68,8 @@ namespace Gendarme {
 		public void LoadRules ()
 		{
 			// load every dll to check for rules...
-			FileInfo[] files = new DirectoryInfo (Environment.CurrentDirectory).GetFiles ("*.dll");
+			string dir = Path.GetDirectoryName (typeof (IRule).Assembly.Location);
+			FileInfo [] files = new DirectoryInfo (dir).GetFiles ("*.dll");
 			foreach (FileInfo info in files) {
 				// except for a few, well known, ones
 				switch (info.FullName) {

@@ -1,4 +1,4 @@
-﻿//
+//
 // Gendarme.cs: A SWF-based Wizard Runner for Gendarme
 //
 // Authors:
@@ -381,18 +381,14 @@ namespace Gendarme {
 			Runner.Initialize ();
 			Runner.Run ();
 
-			if (InvokeRequired) {
-				BeginInvoke ((Action) (() => Current = Page.Report));
-			} else {
-				Current = Page.Report;
-			}
+			BeginInvoke ((Action) (() => Current = Page.Report));
 		}
 
 		private bool ConfirmAnalyzeAbort (bool quit)
 		{
 			string message = String.Format ("Abort the current analysis being executed {0}Gendarme ?",
 				quit ? "and quit " : String.Empty);
-			return (MessageBox.Show (this, message, "Abort ?", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+			return (MessageBox.Show (this, message, "Gendarme", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 				MessageBoxDefaultButton.Button2) == DialogResult.Yes);
 		}
 
@@ -432,37 +428,50 @@ namespace Gendarme {
 			next_button.Enabled = false;
 		}
 
+		private bool CouldCopyReport (ref string currentName, string fileName)
+		{
+			// if possible avoid re-creating the report (as it can 
+			// be a long operation) and simply copy the file
+			bool copy = (currentName != null);
+			if (copy)
+				File.Copy (currentName, fileName);
+
+			currentName = fileName;
+			return copy;
+		}
+
 		private void SaveReportButtonClick (object sender, EventArgs e)
 		{
 			if (save_file_dialog.ShowDialog () != DialogResult.OK)
 				return;
 
 			string filename = save_file_dialog.FileName;
+			ResultWriter writer = null;
 
 			switch (save_file_dialog.FilterIndex) {
 			case 1:
-				// avoid re-creating the report and simply copy the file
-				if (html_report_filename != null) {
-					File.Copy (html_report_filename, filename);
-				} else {
-					using (HtmlResultWriter writer = new HtmlResultWriter (Runner, filename)) {
-						writer.Report ();
-					}
-				}
-				html_report_filename = filename;
+				if (CouldCopyReport (ref html_report_filename, filename))
+					return;
+
+				writer = new HtmlResultWriter (Runner, filename);
 				break;
 			case 2:
-				using (XmlResultWriter writer = new XmlResultWriter (Runner, filename)) {
-					writer.Report ();
-				}
-				xml_report_filename = filename;
+				if (CouldCopyReport (ref xml_report_filename, filename))
+					return;
+
+				writer = new XmlResultWriter (Runner, filename);
 				break;
 			case 3:
-				using (TextResultWriter writer = new TextResultWriter (Runner, filename)) {
-					writer.Report ();
-				}
-				text_report_filename = filename;
+				if (CouldCopyReport (ref text_report_filename, filename))
+					return;
+
+				writer = new TextResultWriter (Runner, filename);
 				break;
+			}
+
+			if (writer != null) {
+				writer.Report ();
+				writer.Dispose ();
 			}
 		}
 
