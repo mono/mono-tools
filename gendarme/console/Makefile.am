@@ -22,7 +22,7 @@ gendarme_build_sources = $(addprefix $(srcdir)/, $(gendarme_sources))
 gendarme_build_sources += $(gendarme_generated_sources)
 
 ../bin/gendarme.exe: $(gendarme_build_sources) $(gendarme_resources)
-	$(GMCS) -debug -d:LINQ -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../bin/Gendarme.Framework.dll -r:System.Xml.dll \
+	$(GMCS) -debug -r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(gendarme_build_sources) -resource:gendarme.xsl
 
 self-test: ../bin/gendarme.exe

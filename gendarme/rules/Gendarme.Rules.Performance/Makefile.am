@@ -29,7 +29,7 @@ performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_so
 performance_rules_build_sources += $(performance_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Performance.dll: $(performance_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(performance_rules_build_sources)
 
 performance_test_sources = \
@@ -50,7 +50,7 @@ performance_test_sources = \
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
 Test.Rules.Performance.dll: $(performance_test_build_sources) $(performance_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
+	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit \
 		-r:../../bin/Gendarme.Framework.dll -r:$(performance_rules_SCRIPTS) -out:$@ $(performance_test_build_sources)
 
 test: Test.Rules.Performance.dll

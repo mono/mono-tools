@@ -1,5 +1,5 @@
 frameworkdir=$(prefix)/lib/gendarme
-framework_SCRIPTS = ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
+framework_SCRIPTS = ../bin/Gendarme.Framework.dll
 EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
 CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll Gendarme.Framework.doc.xml
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
@@ -49,11 +49,8 @@ framework_build_sources += $(framework_generated_sources)
 ../bin/:
 	mkdir ../bin
 
-$(top_builddir)/gendarme/bin/Mono.Cecil.dll: ../bin/
-	cp $(CECIL_ASM) $(top_builddir)/gendarme/bin/
-
-../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library  -doc:Gendarme.Framework.doc.xml -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll \
+../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(CECIL_ASM)
+	$(GMCS) -debug -target:library  -doc:Gendarme.Framework.doc.xml -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
@@ -67,8 +64,8 @@ framework_test_sources = \
 	Gendarme.Framework.Rocks/FieldRocksTest.cs
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
-Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(top_builddir)/gendarme/bin/Mono.Cecil.dll
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
+Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(CECIL_ASM)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(framework_test_build_sources)
 
 test: Test.Framework.dll

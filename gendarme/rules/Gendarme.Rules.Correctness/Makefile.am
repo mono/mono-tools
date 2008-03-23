@@ -18,7 +18,7 @@ correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_so
 correctness_rules_build_sources += $(correctness_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Correctness.dll: $(correctness_rules_build_sources)
-	$(GMCS) -debug -target:library  -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library  -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(correctness_rules_build_sources)
 
 correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTest.cs UseValueInPropertySetterTest.cs \
@@ -28,7 +28,7 @@ correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTe
 correctness_test_build_sources = $(addprefix $(srcdir)/Test/, $(correctness_test_sources))
 
 Test.Rules.Correctness.dll: $(correctness_test_build_sources) $(correctness_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(correctness_rules_SCRIPTS) -out:$@ $(correctness_test_build_sources)
 
 test: Test.Rules.Correctness.dll

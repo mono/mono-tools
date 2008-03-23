@@ -21,14 +21,14 @@ exceptions_rules_build_sources = $(addprefix $(srcdir)/, $(exceptions_rules_sour
 exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Exceptions.dll: $(exceptions_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(exceptions_rules_build_sources)
 
 exceptions_test_sources = DontDestroyStackTraceTest.cs DontSwallowErrorsCatchingNonspecificExceptionsTest.cs 
 exceptions_test_build_sources = $(addprefix $(srcdir)/Test/, $(exceptions_test_sources))
 
 Test.Rules.Exceptions.dll: $(exceptions_test_build_sources) $(exceptions_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(exceptions_rules_SCRIPTS) -out:$@ $(exceptions_test_build_sources)
 
 test: Test.Rules.Exceptions.dll

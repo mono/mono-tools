@@ -20,7 +20,7 @@ naming_rules_build_sources = $(addprefix $(srcdir)/, $(naming_rules_sources))
 naming_rules_build_sources += $(naming_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Naming.dll: $(naming_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(naming_rules_build_sources)
 
 naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
@@ -32,7 +32,7 @@ naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 naming_test_build_sources = $(addprefix $(srcdir)/Test/, $(naming_test_sources))
 
 Test.Rules.Naming.dll: $(naming_test_build_sources) $(naming_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
+	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit \
 		-r:../../bin/Gendarme.Framework.dll -r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
 
 test: Test.Rules.Naming.dll

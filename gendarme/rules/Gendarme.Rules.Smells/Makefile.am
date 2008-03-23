@@ -26,7 +26,7 @@ smells_rules_build_sources = $(addprefix $(srcdir)/, $(smells_rules_sources))
 smells_rules_build_sources += $(smells_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Smells.dll: $(smells_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-r:../../bin/Gendarme.Rules.Performance.dll -out:$@ $(smells_rules_build_sources)
 
 smells_test_sources =  \
@@ -40,7 +40,7 @@ smells_test_sources =  \
 smells_test_build_sources = $(addprefix $(srcdir)/Test/, $(smells_test_sources))
 
 Test.Rules.Smells.dll: $(smells_test_build_sources) $(smells_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll -out:$@ $(smells_test_build_sources)
 
 test: Test.Rules.Smells.dll

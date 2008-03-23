@@ -26,7 +26,7 @@ design_rules_build_sources = $(addprefix $(srcdir)/, $(design_rules_sources))
 design_rules_build_sources += $(design_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Design.dll: $(design_rules_build_sources)
-	$(GMCS) -debug -target:library -langversion:linq -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -r:System.Core.dll \
+	$(GMCS) -debug -target:library -langversion:linq -r:$(CECIL_ASM) -r:System.Core.dll \
 		-r:../../bin/Gendarme.Framework.dll -out:$@ $(design_rules_build_sources)
 
 design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneWithoutImplementingICloneableTest.cs \
@@ -44,7 +44,7 @@ design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 
 Test.Rules.Design.dll: $(design_test_build_sources) $(design_rules_SCRIPTS)
 	cp ../Test.Rules/Test.Rules.dll* .
-	$(GMCS) -target:library -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll -pkg:mono-nunit \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit \
 		-r:$(top_builddir)/gendarme/bin/Gendarme.Framework.dll -r:Test.Rules.dll \
 		-r:$(design_rules_SCRIPTS) -out:$@ $(design_test_build_sources)
 

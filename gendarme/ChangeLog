@@ -1,3 +1,24 @@
+2008-03-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* rules/Gendarme.Rules.Security/Makefile.am
+	* rules/Gendarme.Rules.Design/Makefile.am
+	* rules/Gendarme.Rules.Naming/Makefile.am
+	* rules/Gendarme.Rules.Serialization/Makefile.am
+	* rules/Gendarme.Rules.Ui/Makefile.am
+	* rules/Gendarme.Rules.Exceptions/Makefile.am
+	* rules/Gendarme.Rules.Interoperability/Makefile.am
+	* rules/Gendarme.Rules.Concurrency/Makefile.am
+	* rules/Gendarme.Rules.Correctness/Makefile.am
+	* rules/Gendarme.Rules.Smells/Makefile.am
+	* rules/Gendarme.Rules.BadPractice/Makefile.am
+	* rules/Gendarme.Rules.Performance/Makefile.am
+	* rules/Gendarme.Rules.Portability/Makefile.am
+	* framework/Makefile.am
+	* console/Makefile.am
+	* swf-wizard-runner/Makefile.am:
+		Refer directly to Mono.Cecil assembly, not to a local copy,
+		of it.
+
 2008-03-22  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* gendarme-wizard.in: New. Script to call the Gendarme SWF Wizard
