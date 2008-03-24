@@ -15,7 +15,7 @@ test_sources = \
 	Helpers/DefinitionLoader.cs
 
 Test.Rules.dll: $(test_sources)
-	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(top_builddir)/gendarme/bin/Mono.Cecil.dll \
+	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(CECIL_ASM) \
 		-r:$(top_builddir)/gendarme/bin/Gendarme.Framework.dll -out:$@ $(test_sources)
 
 test: Test.Rules.dll
