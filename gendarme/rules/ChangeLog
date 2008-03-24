@@ -1,3 +1,7 @@
+2008-03-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Re-order directories to start with Test.Rules
+
 2008-03-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Test.Rules to the build.
