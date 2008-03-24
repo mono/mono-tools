@@ -23,7 +23,8 @@ performance_rules_sources = \
 	AvoidReturningArraysOnPropertiesRule.cs \
 	AvoidUnsealedConcreteAttributesRule.cs \
 	UseIsOperatorRule.cs \
-	AvoidUnsealedUninheritedInternalClassesRule.cs
+	AvoidUnsealedUninheritedInternalClassesRule.cs \
+	OverrideValueTypeDefaultsRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -45,12 +46,14 @@ performance_test_sources = \
 	AvoidReturningArraysOnPropertiesTest.cs \
 	AvoidUnsealedConcreteAttributesTest.cs \
 	UseIsOperatorTest.cs \
-	AvoidUnsealedUninheritedInternalClassesTest.cs
+	AvoidUnsealedUninheritedInternalClassesTest.cs \
+	OverrideValueTypeDefaultsTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
 Test.Rules.Performance.dll: $(performance_test_build_sources) $(performance_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit \
+	cp ../Test.Rules/*.dll .
+	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit -r:Test.Rules.dll \
 		-r:../../bin/Gendarme.Framework.dll -r:$(performance_rules_SCRIPTS) -out:$@ $(performance_test_build_sources)
 
 test: Test.Rules.Performance.dll
