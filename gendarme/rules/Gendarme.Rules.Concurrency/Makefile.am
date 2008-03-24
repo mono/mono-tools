@@ -26,7 +26,7 @@ concurrency_test_sources = DoubleCheckLockingTest.cs WriteStaticFieldFromInstanc
 concurrency_test_build_sources = $(addprefix $(srcdir)/Test/, $(concurrency_test_sources))
 
 Test.Rules.Concurrency.dll: $(concurrency_test_build_sources) $(concurrency_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(top_$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
 		-r:$(concurrency_rules_SCRIPTS) -out:$@ $(concurrency_test_build_sources)
 
 test: Test.Rules.Concurrency.dll
