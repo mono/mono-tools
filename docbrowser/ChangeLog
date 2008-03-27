@@ -1,3 +1,8 @@
+2008-03-27  Andreia Gaita <avidigal@novell.com> 
+
+	* MonoWebBrowserHtmlRender.cs: Take out debugging output. Fix url
+	  getter.
+
 2008-03-11  Andreia Gaita <avidigal@novell.com> 
 
 	* GeckoHtmlRender.cs: Apply #341815 fix with null check.

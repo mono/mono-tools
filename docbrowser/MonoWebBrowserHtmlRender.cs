@@ -32,16 +32,12 @@ namespace Monodoc
 	public class MonoWebBrowserHtmlRender : IHtmlRender
 	{
 		BrowserWidget html_panel;
-//		Widget html_panel;
 		RootTree help_tree;
 		
 		public MonoWebBrowserHtmlRender (RootTree help_tree)
 		{
 			
 			
-//			html_panel = new Gtk.Bin (IntPtr.Zero);
-//			html_panel.ExposeEvent += new ExposeEventHandler (OnExposed);
-			//html_panel.Realized += new EventHandler (OnRealized);
 			this.help_tree = help_tree;
 			
 		}
@@ -76,7 +72,6 @@ namespace Monodoc
 		//Render the HTML code given
 		public void Render (string html_code) 
 		{
-			Console.WriteLine (html_code);
 			html_panel.browser.Render (html_code);
 		}
 
@@ -85,7 +80,7 @@ namespace Monodoc
 		// As every implementation of HtmlRender will have differents events
 		// we try to homogenize them with the variabel
 		public string Url { 
-			get {return String.Empty;}//return html_panel.browser.Document.Url; } 
+			get {return html_panel.browser.Document.Url; } 
 		}
 
 		public Widget HtmlPanel { 
