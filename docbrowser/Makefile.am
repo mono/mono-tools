@@ -71,6 +71,7 @@ EXTRA_DIST = \
 	$(browser_sources) 		\
 	$(geckorender_sources)		\
 	$(gtkhtmlrender_sources)	\
+	$(monowebbrowserrender_sources)	\
 	$(webkitrender_sources)		\
 	monodoc.desktop.in		\
 	admin.cs			\

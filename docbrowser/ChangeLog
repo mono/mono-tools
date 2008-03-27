@@ -1,3 +1,8 @@
+2008-03-27  Wade Berrier  <wberrier@novell.com> 
+
+	* Makefile.am: add monowebbrowser_sources to EXTRA_DIST so we
+	can build from a tarball.
+
 2008-03-27  Andreia Gaita <avidigal@novell.com> 
 
 	* MonoWebBrowserHtmlRender.cs: Take out debugging output. Fix url
