@@ -1,3 +1,10 @@
+2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* swf-wizard-runner.mdp: New. MD project file. It compile but won't
+	execute properly (since I don't know how to set the resource name 
+	correctly).
+	* Makefile.am: Use resgen2
+
 2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GuiRunner.cs: Fix rule loading so it works when the wizard

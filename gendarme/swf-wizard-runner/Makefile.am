@@ -24,11 +24,11 @@ wizard_build_sources = $(addprefix $(srcdir)/, $(wizard_sources))
 wizard_build_sources += $(wizard_generated_sources)
 
 Wizard.resources:
-	resgen /compile Wizard.resx 
+	resgen2 /compile Wizard.resx 
 
 Properties/Resources.resources:
 	cd Properties; \
-	resgen /compile Resources.resx; \
+	resgen2 /compile Resources.resx; \
 	cd ..
 
 ../bin/gendarme-wizard.exe: $(wizard_build_sources) $(wizard_resources) Wizard.resources Properties/Resources.resources
