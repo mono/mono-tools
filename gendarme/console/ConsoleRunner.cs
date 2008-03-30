@@ -44,8 +44,8 @@ namespace Gendarme {
 
 	public class ConsoleRunner : Runner {
 
-		private string config_file = "rules.xml";
-		private string rule_set = "*";
+		private string config_file;
+		private string rule_set = "default";
 		private string html_file;
 		private string log_file;
 		private string xml_file;

@@ -1,3 +1,11 @@
+2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Fix default value for 'rule_set' so that the 
+	--set command line option does not need to be specified (in this 
+	case the rule set "default" will be used).
+	* Settings.cs: If not specified look for the "rules.xml" file that
+	resides with the runner.
+
 2008-03-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Options.cs: Update to version 0.2.0

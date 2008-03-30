@@ -37,6 +37,8 @@ namespace Gendarme {
 
 	public class Settings {
 
+		private const string DefaultRulesFile = "rules.xml";
+
 		private IRunner runner;
 		private string config_file;
 		private string rule_set;
@@ -44,8 +46,12 @@ namespace Gendarme {
 		public Settings (IRunner runner, string configurationFile, string ruleSet)
 		{
 			this.runner = runner;
-			this.config_file = configurationFile;
 			this.rule_set = ruleSet;
+			if (String.IsNullOrEmpty (configurationFile)) {
+				config_file = GetFullPath (DefaultRulesFile);
+			} else {
+				config_file = configurationFile;
+			}
 		}
 
 		static string GetFullPath (string filename)
