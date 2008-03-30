@@ -24,7 +24,8 @@ performance_rules_sources = \
 	AvoidUnsealedConcreteAttributesRule.cs \
 	UseIsOperatorRule.cs \
 	AvoidUnsealedUninheritedInternalClassesRule.cs \
-	OverrideValueTypeDefaultsRule.cs
+	OverrideValueTypeDefaultsRule.cs \
+	ImplementEqualsTypeRule.cs 
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -47,7 +48,8 @@ performance_test_sources = \
 	AvoidUnsealedConcreteAttributesTest.cs \
 	UseIsOperatorTest.cs \
 	AvoidUnsealedUninheritedInternalClassesTest.cs \
-	OverrideValueTypeDefaultsTest.cs
+	OverrideValueTypeDefaultsTest.cs \
+	ImplementEqualsTypeTest.cs 
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 

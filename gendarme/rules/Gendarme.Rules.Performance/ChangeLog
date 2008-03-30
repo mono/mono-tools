@@ -1,3 +1,11 @@
+2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementEqualsTypeRule.cs: New. Rule to suggest providing an
+	Equals(type) method if Equals(object) is overriden. This can make a
+	bug difference for ValueType since this remove boxing.
+	* Gendarme.Rules.Performance.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedParametersRule.cs: Don't report defects on methods
