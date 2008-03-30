@@ -268,6 +268,8 @@ namespace Gendarme.Framework.Rocks {
 			if (interfaceName == null)
 				throw new ArgumentNullException ("interfaceName");
 
+			bool generic = (interfaceName.IndexOf ('`') >= 0);
+
 			TypeDefinition type = self.Resolve ();
 			// special case, check if we implement ourselves
 			if (type.IsInterface && (type.FullName == interfaceName))
@@ -275,7 +277,8 @@ namespace Gendarme.Framework.Rocks {
 
 			// does the type implements it itself
 			foreach (TypeReference iface in type.Interfaces) {
-				if (iface.FullName == interfaceName)
+				string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
+				if (fullname == interfaceName)
 					return true;
 			}
 			

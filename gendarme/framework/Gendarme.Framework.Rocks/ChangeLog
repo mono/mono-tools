@@ -1,3 +1,7 @@
+2008-03-30 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocks.cs: Handle generic interfaces in Implements.
+
 2008-03-30 Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocks.cs: Don't break but continue if parameters don't match.
