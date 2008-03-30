@@ -1,3 +1,9 @@
+2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementIComparableCorreclyTest.cs: New. Unit tests for
+	ImplementIComparableCorreclyRule.
+	* Test.Rules.Design.mdp: Add new rule to MD project.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontDeclareProtectedFieldsInSealedClassTest.cs: Fix name change.
