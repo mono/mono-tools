@@ -1,3 +1,8 @@
+2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementEqualsTypeTest.cs: New. Test for ImplementEqualsTypeRule.
+	* Test.Rules.Performance.mdp: Add test to MD project file.
+
 2008-03-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedParametersTest.cs: Add EventArgs test cases.

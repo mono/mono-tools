@@ -28,6 +28,8 @@
     <File name="UseIsOperatorTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="AvoidUnneededCallsOnStringTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ImplementEqualsTypeTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="OverrideValueTypeDefaultsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
@@ -35,6 +37,7 @@
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
+    <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
   <DeployTargets />
