@@ -162,7 +162,7 @@ namespace Gendarme.Framework.Rocks {
 						}
 					}
 					if (parameterError)
-						break;
+						continue; // there could be an overload with the "right" parameters
 				}
 				if (customCondition != null && !customCondition (method))
 					continue;

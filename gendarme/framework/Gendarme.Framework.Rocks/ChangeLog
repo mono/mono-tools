@@ -1,3 +1,8 @@
+2008-03-30 Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TypeRocks.cs: Don't break but continue if parameters don't match.
+	There could be a matching overload just waiting to be found.
+
 2008-03-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocks.cs: Add null check in Resolve.
