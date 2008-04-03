@@ -1,3 +1,8 @@
+2008-04-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Design.mdp: Add missing reference to Test.Rules
+	assembly [Daniel Abramov]
+
 2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementIComparableCorreclyTest.cs: New. Unit tests for
