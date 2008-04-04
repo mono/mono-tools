@@ -1,3 +1,9 @@
+2008-04-03  Daniel Abramov <ex@vingrad.ru>
+
+	* ImplementGenericCollectionInterfacesTest.cs: New. Unit tests
+	for ImplementGenericCollectionInterfacesRule.
+	* Test.Rules.Design.mdp: Add rule to MD project file.
+
 2008-04-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Design.mdp: Add missing reference to Test.Rules
