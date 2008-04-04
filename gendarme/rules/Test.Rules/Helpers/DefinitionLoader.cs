@@ -33,7 +33,10 @@ using Mono.Cecil;
 
 namespace Test.Rules.Helpers {
 	
-	internal static class DefinitionLoader {
+	/// <summary>
+	/// Class that provides helper methods to load type and method definitions.
+	/// </summary>
+	public static class DefinitionLoader {
 
 		/// <summary>
 		/// Gets full name for a type to be loaded by Cecil, replacing '+' with '/' if one is nested.

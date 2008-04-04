@@ -1,3 +1,8 @@
+2008-04-03  Daniel Abramov  <ex@vingrad.ru>
+
+	* DefinitionLoader.cs: DefinitionLoader made public because
+	it seems to be useful for other test assemblies.
+
 2008-03-11  Daniel Abramov  <ex@vingrad.ru>
 
 	* AssemblyCache.cs: New.
