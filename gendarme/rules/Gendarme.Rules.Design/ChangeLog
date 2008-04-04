@@ -1,3 +1,11 @@
+2008-04-03  Daniel Abramov <ex@vingrad.ru>
+
+	* ImplementGenericCollectionInterfacesRule.cs: New rule to check
+	if the class implementing IEnumerable implements IEnumerable<T>
+	too (only for .NET 2.0+).
+	* Gendarme.Rules.Design.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and test to the build.
+
 2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementIComparableCorreclyRule.cs: New. Rule to check that 

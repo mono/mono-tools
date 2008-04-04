@@ -41,6 +41,7 @@
     <File name="OverrideEqualsMethodRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ProvideAlternativeNamesForOperatorOverloadsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ImplementIComparableCorreclyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ImplementGenericCollectionInterfacesRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
