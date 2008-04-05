@@ -1,5 +1,5 @@
 //
-// Unit tests for ImplementIComparableCorreclyRule
+// Unit tests for ImplementIComparableCorrectlyRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -37,7 +37,7 @@ using Test.Rules.Definitions;
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class ImplementIComparableCorreclyTest : TypeRuleTestFixture<ImplementIComparableCorreclyRule> {
+	public class ImplementIComparableCorrectlyTest : TypeRuleTestFixture<ImplementIComparableCorrectlyRule> {
 
 		[Test]
 		public void NotApplicable ()
@@ -45,7 +45,7 @@ namespace Test.Rules.Design {
 			AssertRuleDoesNotApply (SimpleTypes.Enum);
 			AssertRuleDoesNotApply (SimpleTypes.Interface);
 
-			AssertRuleDoesNotApply<ImplementIComparableCorreclyTest> ();
+			AssertRuleDoesNotApply<ImplementIComparableCorrectlyTest> ();
 		}
 
 		// tests for IComparable

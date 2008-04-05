@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Design.ImplementIComparableCorreclyRule
+// Gendarme.Rules.Design.ImplementIComparableCorrectlyRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Design {
 
 	[Problem ("This type implements IComparable so it should override Equals(object) and overloads the ==, !=, < and > operators.")]
 	[Solution ("Implement the suggested method and/or operators.")]
-	public class ImplementIComparableCorreclyRule : Rule, ITypeRule {
+	public class ImplementIComparableCorrectlyRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
