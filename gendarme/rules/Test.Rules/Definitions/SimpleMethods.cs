@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,7 +32,9 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
+
+using Mono.Cecil;
 
 namespace Test.Rules.Definitions {
 
@@ -44,9 +48,6 @@ namespace Test.Rules.Definitions {
 		/// </summary>
 		[DllImport ("libc.so")]
 		private static extern void strncpy (StringBuilder dest, string src, uint n);
-		private delegate void ExternalMethodDelegate (StringBuilder dest, string src, uint n);
-
-		private static SimpleMethods instance = new SimpleMethods ();
 
 		private SimpleMethods ()
 		{
@@ -59,21 +60,28 @@ namespace Test.Rules.Definitions {
 		{
 		}
 
+		private static MethodDefinition external_method;
+		private static MethodDefinition empty_method;
+
 		/// <value>
-		/// Gets a delegate to private and static external method.
+		/// Gets a MethodDefinition to private and static external method.
 		/// </value>
-		public static Delegate ExternalMethod {
+		public static MethodDefinition ExternalMethod {
 			get {
-				return new ExternalMethodDelegate (strncpy);
+				if (external_method == null)
+					external_method = DefinitionLoader.GetMethodDefinition<SimpleMethods> ("strncpy");
+				return external_method;
 			}
 		}
 
 		/// <value>
-		/// Gets a delegate to private instance empty method. 
+		/// Gets a MethodDefinition to private instance empty method. 
 		/// </value>
-		public static Delegate EmptyMethod {
+		public static MethodDefinition EmptyMethod {
 			get {
-				return new NoReturnMethod (instance.DoNothing);
+				if (empty_method == null)
+					empty_method = DefinitionLoader.GetMethodDefinition<SimpleMethods> ("DoNothing");
+				return empty_method;
 			}
 		}
 	}

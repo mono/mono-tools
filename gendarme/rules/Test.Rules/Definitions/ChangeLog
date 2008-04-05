@@ -1,3 +1,7 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SimpleMethods.cs: Return MethodDefinition instead of Delegate.
+
 2008-03-11  Daniel Abramov  <ex@vingrad.ru>
 
 	* SimpleMethods.cs: New.
