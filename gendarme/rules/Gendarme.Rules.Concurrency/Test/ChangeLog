@@ -1,3 +1,10 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingTest.cs: Add two more test cases and update
+	existing tests to the new, simpler, test design.
+	* WriteStaticFieldFromInstanceMethodTest.cs: Fix namespace.
+	* Test.Rules.Concurrency.mdp: Add reference to Test.Rules.dll
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoubleCheckLockingTest.cs

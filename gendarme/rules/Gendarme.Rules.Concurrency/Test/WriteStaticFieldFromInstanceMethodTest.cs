@@ -34,7 +34,7 @@ using Gendarme.Rules.Concurrency;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace Test.Rules.Correctness {
+namespace Test.Rules.Concurrency {
 
 	[TestFixture]
 	public class WriteStaticFieldFromInstanceMethodTest {
@@ -101,7 +101,7 @@ namespace Test.Rules.Correctness {
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types["Test.Rules.Correctness.WriteStaticFieldFromInstanceMethodTest/TestCase"];
+			type = assembly.MainModule.Types["Test.Rules.Concurrency.WriteStaticFieldFromInstanceMethodTest/TestCase"];
 			rule = new WriteStaticFieldFromInstanceMethodRule ();
 			runner = new TestRunner (rule);
 		}

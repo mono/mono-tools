@@ -28,25 +28,22 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Concurrency;
-using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Concurrency {
 
 	[TestFixture]
-	public class DoubleCheckLockingTest {
+	public class DoubleCheckLockingTest : MethodRuleTestFixture<DoubleCheckLockingRule> {
 	
 		public class Singleton {
 		
 			private static volatile Singleton instance;
 			private static object syncRoot = new object ();
 
-			private Singleton()
+			private Singleton ()
 			{
 			}
 
@@ -54,7 +51,21 @@ namespace Test.Rules.Concurrency {
 				get {
 					if (instance == null) {
 						lock (syncRoot) {
-							instance = new Singleton();
+							instance = new Singleton ();
+						}
+					}
+					return instance;
+				}
+			}
+
+			public static Singleton MultipleChecksBefore {
+				get {
+					if (instance == null) {
+						// useless but not dangerous
+						if (instance == null) {
+							lock (syncRoot) {
+								instance = new Singleton ();
+							}
 						}
 					}
 					return instance;
@@ -65,7 +76,21 @@ namespace Test.Rules.Concurrency {
 				get {
 					lock (syncRoot) {
 						if (instance == null) {
-							instance = new Singleton();
+							instance = new Singleton ();
+						}
+					}
+					return instance;
+				}
+			}
+
+			public static Singleton MultipleChecksAfter {
+				get {
+					lock (syncRoot) {
+						if (instance == null) {
+							// useless but not dangerous
+							if (instance == null) {
+								instance = new Singleton ();
+							}
 						}
 					}
 					return instance;
@@ -77,7 +102,7 @@ namespace Test.Rules.Concurrency {
 					if (instance == null) {
 						lock (syncRoot) {
 							if (instance == null) 
-								instance = new Singleton();
+								instance = new Singleton ();
 						}
 					}
 					return instance;
@@ -85,50 +110,24 @@ namespace Test.Rules.Concurrency {
 			}
 		}
 	
-		private IMethodRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void CheckBefore ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Concurrency.DoubleCheckLockingTest/Singleton"];
-			rule = new DoubleCheckLockingRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			string get_name = "get_" + name;
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == get_name)
-					return method;
-			}
-			return null;
+			AssertRuleSuccess<Singleton> ("get_SingleCheckBefore");
+			AssertRuleSuccess<Singleton> ("get_MultipleChecksBefore");
 		}
 
 		[Test]
-		public void SingleCheckBefore ()
+		public void CheckAfter ()
 		{
-			MethodDefinition method = GetTest ("SingleCheckBefore");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void SingleCheckAfter ()
-		{
-			MethodDefinition method = GetTest ("SingleCheckAfter");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess<Singleton> ("get_SingleCheckAfter");
+			AssertRuleSuccess<Singleton> ("get_MultipleChecksAfter");
 		}
 
 		[Test]
 		public void DoubleCheck ()
 		{
-			MethodDefinition method = GetTest ("DoubleCheck");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<Singleton> ("get_DoubleCheck");
 		}
 	}
 }
