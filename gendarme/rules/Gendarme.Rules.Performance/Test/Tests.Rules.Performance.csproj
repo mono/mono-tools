@@ -34,7 +34,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -70,6 +70,7 @@
     <Compile Include="DontIgnoreMethodResultTest.cs" />
     <Compile Include="EmptyDestructorTest.cs" />
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeTest.cs" />
+    <Compile Include="MathMinMaxCandidateTest.cs" />
     <Compile Include="UseIsOperatorTest.cs" />
     <Compile Include="UseStringEmptyTest.cs" />
     <Compile Include="UsingStringLengthInsteadOfCheckingEmptyStringTest.cs" />
@@ -82,6 +83,10 @@
     <ProjectReference Include="..\..\..\framework\Gendarme.Framework.csproj">
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+      <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
+      <Name>Test.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Performance.csproj">
       <Project>{7A8D4AE7-66FA-42E0-BDCB-400D8E0ECFA6}</Project>

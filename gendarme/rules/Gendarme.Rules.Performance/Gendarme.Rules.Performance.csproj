@@ -67,6 +67,7 @@
     <Compile Include="DontIgnoreMethodResultRule.cs" />
     <Compile Include="EmptyDestructorRule.cs" />
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeRule.cs" />
+    <Compile Include="MathMinMaxCandidateRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
     <Compile Include="UseStringEmptyRule.cs" />
     <Compile Include="UsingStringLengthInsteadOfCheckingEmptyStringRule.cs" />
