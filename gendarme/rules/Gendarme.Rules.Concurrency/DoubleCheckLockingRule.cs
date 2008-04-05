@@ -30,10 +30,13 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
@@ -43,91 +46,91 @@ namespace Gendarme.Rules.Concurrency {
 	[Solution ("Remove the lock check that occurs outside of the protected region.")]
 	public class DoubleCheckLockingRule : Rule, IMethodRule {
 
+		Stack<int> monitorOffsetList = new Stack<int> ();
+		List<Instruction> comparisons = new List<Instruction> ();
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// is this module using Monitor.Enter ? (lock in c#)
+			// if not then this rule does not need to be executed for the module
+			// note: mscorlib.dll is an exception since it defines, not refer, System.Threading.Monitor
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType ("System.Threading.Monitor");
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule doesn't apply if the method has no IL
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			Hashtable comparisons = new Hashtable ();
-			InstructionCollection insns = method.Body.Instructions;
+			comparisons.Clear ();
+			monitorOffsetList.Clear ();
 
-			ArrayList monitorOffsetList = new ArrayList(10);
-			for(int i = 0; i < insns.Count; i++) {
-				int mcount = monitorOffsetList.Count;
-				Instruction[] twoBefore = TwoBeforeBranch(insns[i]);
-				if(twoBefore != null) {
-					if(monitorOffsetList.Count > 0) {
+			foreach (Instruction ins in method.Body.Instructions) {
+				switch (ins.OpCode.FlowControl) {
+				case FlowControl.Cond_Branch:
+					if ((ins.Previous == null) || (ins.Previous.Previous == null))
+						continue;
+					if (monitorOffsetList.Count > 0) {
 						/* If there's a comparison in the list matching this
 						* one, we have double-check locking. */
-						foreach(Instruction insn in comparisons.Keys) {
-							Instruction[] twoBeforeI =
-								(Instruction[])comparisons[insn];
-							if(!EffectivelyEqual(insn, insns[i]))
+						foreach (Instruction insn in comparisons) {
+							if (!EffectivelyEqual (insn, ins))
 								continue;
-							if(!EffectivelyEqual(twoBeforeI[0], twoBefore[0]))
+							if (!EffectivelyEqual (insn.Previous, ins.Previous))
 								continue;
-							if(!EffectivelyEqual(twoBeforeI[1], twoBefore[1]))
+							if (!EffectivelyEqual (insn.Previous.Previous, ins.Previous.Previous))
 								continue;
-							if(mcount <= 0)
-								continue;
-							if(insn.Offset >= (int)monitorOffsetList[mcount - 1])
+							if (insn.Offset >= monitorOffsetList.Peek ())
 								continue;
 
 							Runner.Report (method, insn, Severity.Medium, Confidence.High, String.Empty);
 							return RuleResult.Failure;
 						}
 					}
-					comparisons[insns[i]] = twoBefore;
+					comparisons.Add (ins);
+					break;
+				case FlowControl.Call:
+					MethodReference m = (ins.Operand as MethodReference);
+					if (IsMonitorMethod (m, "Enter"))
+						monitorOffsetList.Push (ins.Offset);
+					else if (IsMonitorMethod (m, "Exit")) {
+						if (monitorOffsetList.Count > 0)
+							monitorOffsetList.Pop ();
+					}
+					break;
 				}
-				if(IsMonitorMethod(insns[i], "Enter"))
-					monitorOffsetList.Add(insns[i].Offset);
-				if(IsMonitorMethod(insns[i], "Exit"))
-					if(mcount > 0)
-						monitorOffsetList.RemoveAt(monitorOffsetList.Count - 1);
 			}
 			return RuleResult.Success;
 		}
-		
-		private static bool IsMonitorMethod(Instruction insn, string methodName)
+
+		private static bool IsMonitorMethod (MethodReference method, string methodName)
 		{
-			if(!insn.OpCode.Name.Equals("call"))
+			if (method.Name != methodName)
 				return false;
-			MethodReference method = (MethodReference)insn.Operand;
-			if(!method.Name.Equals(methodName))
-				return false;
-			if(!method.DeclaringType.FullName.Equals("System.Threading.Monitor"))
-				return false;
-			return true;
+			return (method.DeclaringType.FullName == "System.Threading.Monitor");
 		}
 
-		private static Instruction[] TwoBeforeBranch(Instruction insn)
+		private static bool EffectivelyEqual (Instruction insn1, Instruction insn2)
 		{
-			if(insn.OpCode.FlowControl != FlowControl.Cond_Branch)
-				return null;
-			if(insn.Previous == null || insn.Previous.Previous == null)
-				return null;
-			Instruction[] twoInsns = new Instruction[2];
-			twoInsns[0] = insn.Previous;
-			twoInsns[1] = insn.Previous.Previous;
-			return twoInsns;
-		}
+			// return false if opcode are different
+			if (insn1.OpCode != insn2.OpCode)
+				return false;
 
-		private static bool EffectivelyEqual(Instruction insn1, Instruction insn2)
-		{
-			if(!insn1.OpCode.Equals(insn2.OpCode))
-				return false;
-			/* If both are branch instructions, we don't care about their
-			* targets, only their opcodes. */
-			if(insn1.OpCode.FlowControl == FlowControl.Cond_Branch)
+			// If both are branch instructions, we don't care about their targets, only their opcodes.
+			if (insn1.OpCode.FlowControl == FlowControl.Cond_Branch)
 				return true;
-			/* For other instructions, their operands must also be equal. */
-			if(insn1.Operand == null && insn2.Operand == null)
-				return true;
-			if(insn1.Operand != null && insn2.Operand != null)
-				if(insn1.Operand.Equals(insn2.Operand))
-					return true;
-				return false;
+
+			// For other instructions, their operands must also be equal.
+			if (insn1.Operand == null)
+				return (insn2.Operand == null);
+
+			return insn1.Operand.Equals (insn2.Operand);
 		}
 	}
 }

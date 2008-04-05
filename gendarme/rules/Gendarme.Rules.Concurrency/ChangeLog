@@ -1,3 +1,9 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingRule.cs: Optimization by using Initialize 
+	(mainly) and by removing allocations/using generic collections.
+	* Makefile.am: Add reference to Test.Rules.dll for unit tests
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoubleCheckLockingRule.cs
