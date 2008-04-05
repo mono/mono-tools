@@ -1,3 +1,7 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.mds: Add wizard to the MD solution.
+
 2008-03-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* rules/Gendarme.Rules.Security/Makefile.am
