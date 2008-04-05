@@ -1,3 +1,9 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontCompareWithNaNRule.cs, FloatComparisonRule.cs: mscorlib
+	defines, not refer, to System.Single|Double (and the rule must
+	apply to it too!)
+
 2008-03-04  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DontCompareWithNaNRule.cs, FloatComparisonRule.cs: Don't 
