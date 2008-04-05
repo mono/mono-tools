@@ -55,6 +55,7 @@
     <Compile Include="FinalizersShouldCallBaseClassFinalizerRule.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
+    <Compile Include="ImplementGenericCollectionInterfacesRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedRule.cs" />
