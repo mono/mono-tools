@@ -25,7 +25,8 @@ performance_rules_sources = \
 	UseIsOperatorRule.cs \
 	AvoidUnsealedUninheritedInternalClassesRule.cs \
 	OverrideValueTypeDefaultsRule.cs \
-	ImplementEqualsTypeRule.cs 
+	ImplementEqualsTypeRule.cs \
+	MathMinMaxCandidateRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -49,7 +50,8 @@ performance_test_sources = \
 	UseIsOperatorTest.cs \
 	AvoidUnsealedUninheritedInternalClassesTest.cs \
 	OverrideValueTypeDefaultsTest.cs \
-	ImplementEqualsTypeTest.cs 
+	ImplementEqualsTypeTest.cs \
+	MathMinMaxCandidateTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 

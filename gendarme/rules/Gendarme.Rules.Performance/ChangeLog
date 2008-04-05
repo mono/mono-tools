@@ -1,3 +1,12 @@
+2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MathMinMaxCandidateRule.cs: New. Rule that checks for code
+	patterns that should be replaced by Math.Min or Math.Max since the
+	JIT can inline them for better performance (wrt manually inlining
+	them). Suggestion from Marek Safar (bug #373269)
+	* Gendarme.Rules.Performance.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementEqualsTypeRule.cs: New. Rule to suggest providing an
