@@ -5,9 +5,9 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions.Impl {
 
-	public class ExecutionPath : CollectionBase, ICloneable {
+	public class ExecutionPathCollection : CollectionBase, ICloneable {
 	
-		public ExecutionPath ()
+		public ExecutionPathCollection ()
 		{
 		}
 
@@ -31,18 +31,22 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			if (obj == null)
 				return false;
 
-			ExecutionPath other = obj as ExecutionPath;
-			if(other == null)
-				return false;			
+			return Equals (obj as ExecutionPathCollection);
+		}
 
-			if (other.Count != Count)
+		public bool Equals (ExecutionPathCollection path)
+		{
+			if (path == null)
+				return false;
+
+			if (path.Count != Count)
 				return false;
 
 			IEnumerator thisEnum = List.GetEnumerator ();
-			IEnumerator otherEnum = other.GetEnumerator ();
-			while (thisEnum.MoveNext() && otherEnum.MoveNext ()) {
-				ExecutionBlock thisBlock = (ExecutionBlock)thisEnum.Current;
-				ExecutionBlock otherBlock = (ExecutionBlock)otherEnum.Current;
+			IEnumerator otherEnum = path.GetEnumerator ();
+			while (thisEnum.MoveNext () && otherEnum.MoveNext ()) {
+				ExecutionBlock thisBlock = (ExecutionBlock) thisEnum.Current;
+				ExecutionBlock otherBlock = (ExecutionBlock) otherEnum.Current;
 				if (thisBlock.First.Offset != otherBlock.First.Offset ||
 					thisBlock.Last.Offset != otherBlock.Last.Offset)
 					return false;
@@ -59,7 +63,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 
 		public object Clone ()
 		{
-			ExecutionPath other = new ExecutionPath ();
+			ExecutionPathCollection other = new ExecutionPathCollection ();
 			foreach (ExecutionBlock block in List)
 				other.Add((ExecutionBlock)block.Clone ());
 

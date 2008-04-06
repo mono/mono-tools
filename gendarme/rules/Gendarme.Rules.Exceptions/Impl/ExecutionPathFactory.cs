@@ -14,7 +14,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			this.method = method;
 		}
 
-		public ExecutionPath[] CreatePaths (Instruction start, Instruction end)
+		public ExecutionPathCollection[] CreatePaths (Instruction start, Instruction end)
 		{
 			if (start == null)
 				throw new ArgumentNullException ("start");
@@ -34,15 +34,15 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			}
 
 			ArrayList paths = new ArrayList ();
-			CreatePathHelper (start, end, new ExecutionPath (), paths);
-			ExecutionPath[] ret = new ExecutionPath [paths.Count];
+			CreatePathHelper (start, end, new ExecutionPathCollection (), paths);
+			ExecutionPathCollection[] ret = new ExecutionPathCollection [paths.Count];
 			paths.CopyTo (ret);
 			return ret;
 		}
 
 		private void CreatePathHelper (Instruction start, 
 					       Instruction end, 
-					       ExecutionPath path, 
+					       ExecutionPathCollection path, 
 					       ArrayList completedPaths)
 		{
 			ExecutionBlock curBlock = new ExecutionBlock ();
@@ -62,7 +62,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 								path.Add (curBlock);
 								CreatePathHelper (target, 
 										end, 
-										(ExecutionPath)path.Clone (),
+										(ExecutionPathCollection)path.Clone (),
 										completedPaths);
 							}
 						}
@@ -81,7 +81,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 							path.Add (curBlock);
 							CreatePathHelper (target, 
 									end, 
-									(ExecutionPath)path.Clone (),
+									(ExecutionPathCollection)path.Clone (),
 									completedPaths);
 						} 
 						if (!path.Contains (cur.Next)) {

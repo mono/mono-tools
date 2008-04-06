@@ -1,3 +1,10 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionPath.cs: Add Equals(ExecutionPath) method to satisfy 
+	ImplementEqualsTypeRule. Renamed class to ExecutionPathCollection 
+	to satisfy UseCorrectSuffixRule
+	* ExecutionPathFactory.cs: Rename ExecutionPath to *Collection.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* SEHCatchBlock.cs: Seal internal class.
