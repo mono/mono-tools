@@ -1,3 +1,10 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Add test cases for
+	[un]used generic types.
+	* DontIgnoreMethodResultTest: Add test cases for Stack.Pop (which 
+	we ignore on purpose). Renamed to *DoNot*IgnoreMethodResultRule.
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MathMinMaxCandidateTest.cs: New. Tests for MathMinMaxCandidateRule

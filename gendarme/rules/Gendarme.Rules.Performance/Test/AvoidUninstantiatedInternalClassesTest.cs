@@ -193,6 +193,37 @@ namespace Test.Rules.Performance {
 		}
 	}
 
+	internal class Item<T> {
+
+		T item;
+
+		public Item ()
+		{
+		}
+
+		public Item (T item)
+		{
+			this.item = item;
+		}
+
+		public T GetItem ()
+		{
+			return item;
+		}
+	}
+
+	internal class Items<T,V> {
+
+		T item1;
+		V item2;
+
+		public Items (T item1, V item2)
+		{
+			this.item1 = item1;
+			this.item2 = item2;
+		}
+	}
+
 
 	[TestFixture]
 	public class AvoidUninstantiatedInternalClassesTest {
@@ -322,6 +353,17 @@ namespace Test.Rules.Performance {
 		{
 			type = GetTest ("ClassWithArray/ExistAsArrayOnly");
 			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+		}
+
+		[Test]
+		public void Generics_ItemT ()
+		{
+			Item<int> item = new Item<int> (1);
+			type = GetTest ("Item`1");
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Item<T>");
+
+			type = GetTest ("Items`2");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Items<T,V>");
 		}
 	}
 }

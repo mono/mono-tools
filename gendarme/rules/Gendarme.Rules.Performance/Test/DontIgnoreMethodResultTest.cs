@@ -1,5 +1,5 @@
 //
-// Unit tests for DontIgnoreMethodResultRule
+// Unit tests for DoNotIgnoreMethodResultRule
 //
 // Authors:
 //	Lukasz Knop <lukasz.knop@gmail.com>
@@ -29,6 +29,8 @@
 //
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -40,12 +42,14 @@ using System.Threading;
 using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class DontIgnoreMethodResultTest {
+	public class DoNotIgnoreMethodResultTest : MethodRuleTestFixture<DoNotIgnoreMethodResultRule> {
 
 		public class Item {
 
@@ -119,6 +123,18 @@ namespace Test.Rules.Performance {
 			{
 				new Timer (TimeoutCallback, null, 3000, Timeout.Infinite);
 			}
+
+			public void Stack ()
+			{
+				Stack stack = new Stack ();
+				stack.Pop ();
+			}
+
+			public void StackGenerics ()
+			{
+				Stack<int> stack = new Stack<int> ();
+				stack.Pop ();
+			}
 		}
 
 		private IMethodRule rule;
@@ -133,8 +149,8 @@ namespace Test.Rules.Performance {
 			string unit = Assembly.GetExecutingAssembly().Location;
 			assembly = AssemblyFactory.GetAssembly(unit);
 			module = assembly.MainModule;
-			type = module.Types["Test.Rules.Performance.DontIgnoreMethodResultTest/Item"];
-			rule = new DontIgnoreMethodResultRule();
+			type = module.Types["Test.Rules.Performance.DoNotIgnoreMethodResultTest/Item"];
+			rule = new DoNotIgnoreMethodResultRule();
 			runner = new TestRunner (rule);
 		}
 
@@ -196,6 +212,13 @@ namespace Test.Rules.Performance {
 		{
 			MethodDefinition method = GetTest ("TimerOk");
 			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
+		}
+
+		[Test]
+		public void StackPop ()
+		{
+			AssertRuleSuccess<Item> ("Stack");
+			AssertRuleSuccess<Item> ("StackGenerics");
 		}
 	}
 }
