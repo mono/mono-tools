@@ -9,3 +9,8 @@ M: System.Int32 Gendarme.Framework.Helpers.StackEntryAnalysis::GetPushCount(Mono
 # OK - false positive, the real value can't be found looking in Main alone
 R: Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule
 A: gendarme, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null
+
+# OK - NDesk.Options.OptionSet::Add chains
+R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
+M: System.Int32 Gendarme.ConsoleRunner::Parse(System.String[])
+M: System.Void NDesk.Options.OptionSet::SetItem(System.Int32,NDesk.Options.Option)

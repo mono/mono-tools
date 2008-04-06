@@ -1,3 +1,8 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Ignore NDesk.Options.OptionSet::Add wrt
+	Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.mds: Add wizard to the MD solution.
