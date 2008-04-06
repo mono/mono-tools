@@ -1,3 +1,10 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesTest.cs: Report generic types
+	correctly.
+	* DontIgnoreMethodResultTest: Exclude Stack.Pop (and it's generic
+	version).
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MathMinMaxCandidateRule.cs: New. Rule that checks for code

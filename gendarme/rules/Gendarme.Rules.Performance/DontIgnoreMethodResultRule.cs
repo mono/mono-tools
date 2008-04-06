@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Performance {
 
 	[Problem ("The member ignores the result from the call.")]
 	[Solution ("You shouldn't ignore this result.")]
-	public class DontIgnoreMethodResultRule : Rule,IMethodRule {
+	public class DoNotIgnoreMethodResultRule : Rule,IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -63,7 +63,8 @@ namespace Gendarme.Rules.Performance {
 		// the rule ignores them
 		private static bool IsCallException (MethodReference method)
 		{
-			switch (method.DeclaringType.FullName) {
+			// GetOriginalType makes generic type easier to compare
+			switch (method.DeclaringType.GetOriginalType ().FullName) {
 			case "System.IO.Directory":
 			case "System.IO.DirectoryInfo":
 				// the returned DirectoryInfo returned by Create* methods are optional
@@ -78,6 +79,9 @@ namespace Gendarme.Rules.Performance {
 				return (method.Name == "AddPermission" || method.Name == "RemovePermission");
 			case "System.Reflection.MethodBase":
 				return (method.Name == "Invoke");
+			case "System.Collections.Stack":
+			case "System.Collections.Generic.Stack`1":
+				return (method.Name == "Pop");
 			case "Mono.Security.ASN1":
 				// return the instance so we can chain operations
 				return (method.Name == "Add");

@@ -132,10 +132,15 @@ namespace Gendarme.Rules.Performance {
 
 				t = ins.Operand as TypeReference;
 				if (t == null) {
-					// this covers MethodReference and FieldReference
-					MemberReference m = ins.Operand as MemberReference;
-					if (m != null)
-						t = m.DeclaringType;
+					MethodReference m = ins.Operand as MethodReference;
+					if (m != null) {
+						GenericInstanceType generic = (m.DeclaringType as GenericInstanceType);
+						t = (generic == null) ? m.DeclaringType : generic.GetOriginalType ();
+					} else {
+						FieldReference f = ins.Operand as FieldReference;
+						if (f != null)
+							t = f.DeclaringType;
+					}
 				}
 
 				if (t != null)
