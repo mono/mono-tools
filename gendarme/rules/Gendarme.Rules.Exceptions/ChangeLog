@@ -1,3 +1,11 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs: New. Rule to 
+	check if exception derived from ArgumentException are created with 
+	some useful information (i.e. not the default constructor).
+	* Gendarme.Rules.Exceptions.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontDestroyStackTraceRule.cs: Rename to DoNotDestroyStackTraceRule.

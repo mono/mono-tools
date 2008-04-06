@@ -15,7 +15,8 @@ exceptions_rules_sources = DoNotDestroyStackTraceRule.cs ISEHCatchBlock.cs \
 	SEHHandlerType.cs Impl/ExceptionBlockParser.cs Impl/ExecutionBlock.cs \
 	Impl/ExecutionPath.cs Impl/ExecutionPathFactory.cs Impl/SEHCatchBlock.cs \
 	Impl/SEHGuardedBlock.cs Impl/SEHHandlerBlock.cs Impl/SEHHandlerBlockCollection.cs \
-	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs
+	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
+	AvoidArgumentExceptionDefaultConstructorRule.cs
 
 exceptions_rules_build_sources = $(addprefix $(srcdir)/, $(exceptions_rules_sources))
 exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
@@ -24,11 +25,15 @@ exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
 	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(exceptions_rules_build_sources)
 
-exceptions_test_sources = DontDestroyStackTraceTest.cs DontSwallowErrorsCatchingNonspecificExceptionsTest.cs 
+exceptions_test_sources = DontDestroyStackTraceTest.cs \
+	DontSwallowErrorsCatchingNonspecificExceptionsTest.cs \
+	AvoidArgumentExceptionDefaultConstructorTest.cs
+
 exceptions_test_build_sources = $(addprefix $(srcdir)/Test/, $(exceptions_test_sources))
 
 Test.Rules.Exceptions.dll: $(exceptions_test_build_sources) $(exceptions_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	cp ../Test.Rules/*.dll .
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll -r:Test.Rules.dll \
 		-r:$(exceptions_rules_SCRIPTS) -out:$@ $(exceptions_test_build_sources)
 
 test: Test.Rules.Exceptions.dll
