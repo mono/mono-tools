@@ -18,6 +18,8 @@ Test.Rules.dll: $(test_sources)
 	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(CECIL_ASM) \
 		-r:$(top_builddir)/gendarme/bin/Gendarme.Framework.dll -out:$@ $(test_sources)
 
+all: Test.Rules.dll
+
 test: Test.Rules.dll
 
 run-test: test
