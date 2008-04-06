@@ -53,6 +53,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidArgumentExceptionDefaultConstructorRule.cs" />
     <Compile Include="DoNotDestroyStackTraceRule.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" />
     <Compile Include="Impl\ExceptionBlockParser.cs" />
