@@ -37,9 +37,9 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
 
-	internal sealed class Expression : CollectionBase {
+	internal sealed class ExpressionCollection : CollectionBase {
 
-		public Expression () : base () {}
+		public ExpressionCollection () : base () {}
 
 		public void Add (Instruction instruction)
 		{
@@ -60,22 +60,26 @@ namespace Gendarme.Rules.Smells {
 
 		public override bool Equals (object obj)
 		{
-			Expression targetExpression = (obj as Expression);
-			if (targetExpression == null)
+			return Equals (obj as ExpressionCollection);
+		}
+
+		public bool Equals (ExpressionCollection expression)
+		{
+			if (expression == null)
 				return false;
 
-			if (HasSameSize (targetExpression))
-				return CompareInstructionsInOrder (targetExpression);
+			if (HasSameSize (expression))
+				return CompareInstructionsInOrder (expression);
 
 			return false;
 		}
 
-		private bool HasSameSize (Expression expression)
+		private bool HasSameSize (ExpressionCollection expression)
 		{
 			return Count == expression.Count;
 		}
 
-		private bool CompareInstructionsInOrder (Expression targetExpression)
+		private bool CompareInstructionsInOrder (ExpressionCollection targetExpression)
 		{
 			bool equality = true;
 			for (int index = 0; index < Count; index++) {

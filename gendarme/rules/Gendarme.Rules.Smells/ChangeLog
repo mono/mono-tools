@@ -1,3 +1,12 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CodeDuplicatedLocator.cs: Renamed Expression to ExpressionCollection
+	* Expression.cs: Add Equals(Expression) method to satisfy 
+	ImplementEqualsTypeRule. Renamed class to ExpressionCollection to
+	satisfy UseCorrectSuffixRule
+	* ExpressionFillerVisitor.cs: Renamed Expression to 
+	ExpressionCollection
+
 2008-03-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSpeculativeGeneralityRule.cs: Change CheckMethods to static.

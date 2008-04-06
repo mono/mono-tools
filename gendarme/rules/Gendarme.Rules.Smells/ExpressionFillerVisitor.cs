@@ -35,7 +35,7 @@ namespace Gendarme.Rules.Smells {
 
 	internal sealed class ExpressionFillerVisitor : BaseCodeVisitor {
 		private IList expressionContainer;
-		private Expression currentExpression;
+		private ExpressionCollection currentExpression;
 
 		public ExpressionFillerVisitor () : base () {}
 
@@ -63,7 +63,7 @@ namespace Gendarme.Rules.Smells {
 		private void CreateExpressionAndAddToExpressionContainer ()
 		{
 			if (CanCreateANewExpression ()) {
-				currentExpression = new Expression ();
+				currentExpression = new ExpressionCollection ();
 				expressionContainer.Add (currentExpression);
 			}
 		}

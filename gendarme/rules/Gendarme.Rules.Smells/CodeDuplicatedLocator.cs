@@ -60,8 +60,8 @@ namespace Gendarme.Rules.Smells {
 			bool equality = false;
 
 			while (currentEnumerator.MoveNext () & targetEnumerator.MoveNext ()) {
-				Expression currentExpression = (Expression) currentEnumerator.Current;
-				Expression targetExpression = (Expression) targetEnumerator.Current;
+				ExpressionCollection currentExpression = (ExpressionCollection) currentEnumerator.Current;
+				ExpressionCollection targetExpression = (ExpressionCollection) targetEnumerator.Current;
 
 				if (equality && currentExpression.Equals (targetExpression))
 					return true;
