@@ -62,6 +62,33 @@ namespace Gendarme.Framework.Helpers {
 				this.Instruction = ins;
 				this.StackOffset = offset;
 			}
+
+			public override bool Equals (object obj)
+			{
+				if (obj is UsageResult)
+					return Equals ((UsageResult) obj);
+				return false;
+			}
+
+			public bool Equals (UsageResult usageResult)
+			{
+				return (Instruction == usageResult.Instruction) && (StackOffset == usageResult.StackOffset);
+			}
+
+			public override int GetHashCode ()
+			{
+				return Instruction.GetHashCode () ^ StackOffset.GetHashCode ();
+			}
+
+			public static bool operator == (UsageResult left, UsageResult right)
+			{
+				return left.Equals (right);
+			}
+
+			public static bool operator != (UsageResult left, UsageResult right)
+			{
+				return !left.Equals (right);
+			}
 		}
 
 		enum StoreType {
@@ -89,10 +116,8 @@ namespace Gendarme.Framework.Helpers {
 			/// <summary>
 			/// Use this to check if an instruction accesses a StoreSlot. True if this is not a StoreSlot.
 			/// </summary>
-			public bool IsNone
-			{
-				get
-				{
+			public bool IsNone {
+				get {
 					return this.Type == StoreType.None;
 				}
 			}
@@ -115,6 +140,11 @@ namespace Gendarme.Framework.Helpers {
 					return false;
 				StoreSlot other = (StoreSlot) obj;
 				return this == other;
+			}
+
+			public bool Equals (StoreSlot storeSlot)
+			{
+				return this == storeSlot;
 			}
 
 			public override int GetHashCode ()
@@ -188,6 +218,50 @@ namespace Gendarme.Framework.Helpers {
 				return new InstructionWithLeave ((Instruction) this.LeaveStack [this.LeaveStack.Length - 1].Operand, newStack);
 			}
 
+			public override bool Equals (object obj)
+			{
+				if (obj is InstructionWithLeave)
+					return Equals ((InstructionWithLeave) obj);
+				return false;
+			}
+
+			public bool Equals (InstructionWithLeave iwl)
+			{
+				if (Instruction != iwl.Instruction)
+					return false;
+
+				if (LeaveStack == null)
+					return (iwl.LeaveStack == null);
+
+				if (LeaveStack.Length != iwl.LeaveStack.Length)
+					return false;
+
+				for (int i = 0; i < LeaveStack.Length; i++) {
+					if (LeaveStack [i] != iwl.LeaveStack [i])
+						return false;
+				}
+				return true;
+			}
+
+			public override int GetHashCode ()
+			{
+				int hc = Instruction.GetHashCode ();
+				if (LeaveStack != null) {
+					foreach (Instruction ins in LeaveStack)
+						hc ^= ins.GetHashCode ();
+				}
+				return hc;
+			}
+
+			public static bool operator == (InstructionWithLeave left, InstructionWithLeave right)
+			{
+				return left.Equals (right);
+			}
+
+			public static bool operator != (InstructionWithLeave left, InstructionWithLeave right)
+			{
+				return !left.Equals (right);
+			}
 		}
 
 		public MethodDefinition Method {

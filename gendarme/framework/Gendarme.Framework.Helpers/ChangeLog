@@ -1,3 +1,10 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Add Equals,	GetHashCode and ==, != 
+	operators on InstructionWithLeave and UsageResult to satisfy 
+	OverrideValueTypeDefaultsRule. Add Equals(StoreSlot) method to 
+	satisfy ImplementEqualsTypeRule.
+
 2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* MethodSignature.cs: Fix the cref reference.  Now points to
