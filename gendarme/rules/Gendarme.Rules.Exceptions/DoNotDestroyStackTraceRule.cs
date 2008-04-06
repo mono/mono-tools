@@ -36,7 +36,7 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("A catch block in the method throws back the caught exception which destroys the stack trace.")]
 	[Solution ("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")]
-	public class DontDestroyStackTrace : Rule, IMethodRule {
+	public class DoNotDestroyStackTrace : Rule, IMethodRule {
 
 		private TypeReference void_reference;
 		private List<int> warned_offsets_in_method = new List<int> ();
@@ -51,14 +51,14 @@ namespace Gendarme.Rules.Exceptions {
 			if (void_reference == null)
 				void_reference = module.Import (typeof (void));
 
-			List<ExecutionPath> executionPaths = new List<ExecutionPath> ();
+			List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 			ExecutionPathFactory epf = new ExecutionPathFactory (method);
 			ISEHGuardedBlock[] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
 			foreach (ISEHGuardedBlock guardedBlock in guardedBlocks) {
 				foreach (ISEHHandlerBlock handlerBlock in
 					 guardedBlock.SEHHandlerBlocks) {
 					if (handlerBlock is SEHCatchBlock) {
-					    ExecutionPath[] ret =
+					    ExecutionPathCollection[] ret =
 						epf.CreatePaths (handlerBlock.Start,
 								 handlerBlock.End);
 						executionPaths.AddRange (ret);
@@ -69,13 +69,13 @@ namespace Gendarme.Rules.Exceptions {
 			warned_offsets_in_method.Clear ();
 
 			// Look for paths that 'throw ex;' instead of 'throw'
-			foreach (ExecutionPath catchPath in executionPaths)
+			foreach (ExecutionPathCollection catchPath in executionPaths)
 				ProcessCatchPath (catchPath, method);
 
 			return Runner.CurrentRuleResult;
 		}
 
-		private void ProcessCatchPath (ExecutionPath catchPath, MethodDefinition method)
+		private void ProcessCatchPath (ExecutionPathCollection catchPath, MethodDefinition method)
 		{
 			// Track original exception (top of stack at start) through to the final
 			// return (be it throw, rethrow, leave, or leave.s)
