@@ -1,3 +1,7 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectSuffixRule.cs: Allow the Set suffix for collections.
+
 2008-03-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectSuffixRule.cs: Fix case where generics are used (since

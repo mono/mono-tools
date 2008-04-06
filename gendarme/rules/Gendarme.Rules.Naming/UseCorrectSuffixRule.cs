@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Naming {
 				{ "System.Collections.IDictionary", new string [] { "Dictionary" } },
 				{ "System.Collections.Generic.IDictionary", new string [] { "Dictionary" } },
 				{ "System.Collections.ICollection", new string [] { "Collection" } },
-				{ "System.Collections.Generic.ICollection", new string [] { "Collection" } },
+				{ "System.Collections.Generic.ICollection", new string [] { "Collection", "Set" } },
 				{ "System.Collections.IEnumerable", new string [] { "Collection" } }
 			};
 
