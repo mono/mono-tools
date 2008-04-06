@@ -1,3 +1,9 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidArgumentExceptionDefaultConstructorTest.cs: New. Unit tests
+	for AvoidArgumentExceptionDefaultConstructorRule.
+	* Test.Rules.Exceptions.mdp: Add tests to MD project file.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontDestroyStackTraceTest.cs: Rename to DoNotDestroyStackTrace
