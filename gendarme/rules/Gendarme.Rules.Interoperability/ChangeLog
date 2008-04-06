@@ -1,3 +1,11 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Add Equals,
+	GetHashCode and ==,!= operators on Branch to satisfy 
+	OverrideValueTypeDefaultsRule.
+	* UseManagedAlternativesToPInvokeRule.cs: Add Equals(PInvokeCall) 
+	method to satisfy ImplementEqualsTypeRule.
+
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Change to static

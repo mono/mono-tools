@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007-2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -50,6 +52,33 @@ namespace Gendarme.Rules.Interoperability {
 			{
 				this.Instruction = ins;
 				this.DirtyMethodCalled = dirty;
+			}
+
+			public override bool Equals (object obj)
+			{
+				if (obj is Branch)
+					return Equals ((Branch) obj);
+				return false;
+			}
+
+			public bool Equals (Branch branch)
+			{
+				return (Instruction == branch.Instruction) && (DirtyMethodCalled == branch.DirtyMethodCalled);
+			}
+
+			public override int GetHashCode ()
+			{
+				return Instruction.GetHashCode () ^ DirtyMethodCalled.GetHashCode ();
+			}
+
+			public static bool operator == (Branch left, Branch right)
+			{
+				return left.Equals (right);
+			}
+
+			public static bool operator != (Branch left, Branch right)
+			{
+				return !left.Equals (right);
 			}
 		}
 

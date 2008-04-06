@@ -75,6 +75,11 @@ namespace Gendarme.Rules.Interoperability {
 				return false;
 			}
 
+			public bool Equals (PInvokeCall pinvoke)
+			{
+				return (this == pinvoke);
+			}
+
 			public static bool operator == (PInvokeCall call1, PInvokeCall call2)
 			{
 				return ((call1.module == call2.module) && (call1.MethodName == call2.MethodName));
