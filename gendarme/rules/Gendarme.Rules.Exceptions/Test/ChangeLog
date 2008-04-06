@@ -1,3 +1,8 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDestroyStackTraceTest.cs: Rename to DoNotDestroyStackTrace
+	[Rule|Test]
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontDestroyStackTraceTest.cs: (renamed from TestPatterns.cs)

@@ -34,7 +34,7 @@ using NUnit.Framework;
 namespace Test.Rules.Exceptions {
 
 	[TestFixture]	
-	public class DontDestroyStackTraceTest {
+	public class DoNotDestroyStackTraceTest {
 	
 		private IMethodRule rule;
 		private TestRunner runner;
@@ -47,8 +47,8 @@ namespace Test.Rules.Exceptions {
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DontDestroyStackTraceTest"];
-			rule = new DontDestroyStackTrace ();
+			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DoNotDestroyStackTraceTest"];
+			rule = new DoNotDestroyStackTrace ();
 			runner = new TestRunner (rule);
 		}
 
