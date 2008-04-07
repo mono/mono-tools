@@ -1,3 +1,9 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExitCodeIsLimitedOnUnixRule.cs: Simplify Initialize (using rocks).
+	Don't report a defect if we call a method that returns a byte (since
+	we're sure it's value is ok).
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ExitCodeIsLimitedOnUnixRule.cs

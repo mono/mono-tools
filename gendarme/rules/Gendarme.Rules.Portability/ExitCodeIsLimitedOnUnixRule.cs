@@ -58,13 +58,7 @@ namespace Gendarme.Rules.Portability {
 			// but we want to avoid checking all methods if the Environment type
 			// isn't referenced in a module (big performance difference)
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = false;
-				foreach (TypeReference type in e.CurrentAssembly.MainModule.TypeReferences) {
-					if (type.FullName == "System.Environment") {
-						Active = true;
-						break;
-					}
-				}
+				Active = e.CurrentAssembly.MainModule.TypeReferences.ContainsType ("System.Environment");
 			};
 		}
 
@@ -142,6 +136,12 @@ namespace Gendarme.Rules.Portability {
 			case Code.Ldc_I4: // normal int - should check whether is within [0, 255]
 				int a = (int) instruction.Operand;
 				return (a >= 0 && a <= 255) ? InspectionResult.Good : InspectionResult.Bad;
+			case Code.Call:
+			case Code.Callvirt:
+				if ((instruction.Operand as MethodReference).ReturnType.ReturnType.FullName == "System.Byte")
+					return InspectionResult.Good;
+				else
+					return InspectionResult.Unsure; // could be within 0-255 or not
 			default:
 				return InspectionResult.Unsure;
 			}
