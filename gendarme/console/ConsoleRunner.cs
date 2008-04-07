@@ -54,7 +54,7 @@ namespace Gendarme {
 		private bool quiet;
 		private List<string> assembly_names;
 
-		int Parse (string [] args)
+		byte Parse (string [] args)
 		{
 			var p = new OptionSet () {
 				{ "config=",	v => config_file = v },
@@ -68,14 +68,14 @@ namespace Gendarme {
 				{ "h|?|help",	v => help = v != null },
 			};
 			assembly_names = p.Parse (args);
-			return (assembly_names.Count > 0) ? 0 : 1;
+			return (byte) ((assembly_names.Count > 0) ? 0 : 1);
 		}
 
 		// name can be
 		// - a filename (a single assembly)
 		// - a mask (*, ?) for multiple assemblies
 		// - a special file (@) containing a list of assemblies
-		int AddFiles (string name)
+		byte AddFiles (string name)
 		{
 			if (String.IsNullOrEmpty (name))
 				return 0;
@@ -109,7 +109,7 @@ namespace Gendarme {
 			Assemblies.Add (ad);
 		}
 
-		int Report ()
+		byte Report ()
 		{
 			// generate text report (default, to console, if xml and html aren't specified)
 			if ((log_file != null) || ((xml_file == null) && (html_file == null))) {
@@ -134,10 +134,10 @@ namespace Gendarme {
 			return 0;
 		}
 
-		int Execute (string [] args)
+		byte Execute (string [] args)
 		{
 			try {
-				int result = Parse (args);
+				byte result = Parse (args);
 				if ((result != 0) || help) {
 					Help ();
 					return result;
@@ -148,8 +148,10 @@ namespace Gendarme {
 				// load configuration, including rules
 				Settings config = new Settings (this, config_file, rule_set);
 				// and continue if there's at least one rule to execute
-				if (!config.Load () || (Rules.Count < 1))
+				if (!config.Load () || (Rules.Count < 1)) {
+					Console.WriteLine ("Configuration parameters does not match any known rule.");
 					return 3;
+				}
 
 				foreach (string name in assembly_names) {
 					result = AddFiles (name);

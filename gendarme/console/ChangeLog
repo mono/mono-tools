@@ -1,3 +1,9 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Report all errors using a byte (instead of an
+	int) to satisfy ExitCodeIsLimitedOnUnixRule. Display a warning if
+	no rule is selected for analysis (instead of displaying nothing).
+
 2008-03-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Fix default value for 'rule_set' so that the 
