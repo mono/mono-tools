@@ -8,5 +8,5 @@ M: System.Int32 Gendarme.Framework.Helpers.StackEntryAnalysis::GetPushCount(Mono
 
 # OK - NDesk.Options.OptionSet::Add chains
 R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
-M: System.Int32 Gendarme.ConsoleRunner::Parse(System.String[])
+M: System.Byte Gendarme.ConsoleRunner::Parse(System.String[])
 M: System.Void NDesk.Options.OptionSet::SetItem(System.Int32,NDesk.Options.Option)
