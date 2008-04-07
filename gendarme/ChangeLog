@@ -1,3 +1,8 @@
+2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* self-test.ignore: Remove ignore entry for 
+	ExitCodeIsLimitedOnUnixRule
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Ignore NDesk.Options.OptionSet::Add wrt
