@@ -33,8 +33,8 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
-	[Problem ("The runtime won't consider this type as serializable unless your add the [Serialization] attribute to its definition.")]
-	[Solution ("Add [Serialization] to its definition.")]
+	[Problem ("The runtime won't consider this type as serializable unless your add the [Serializable] attribute to its definition.")]
+	[Solution ("Add [Serializable] to its definition.")]
 	public class MissingSerializableAttributeOnISerializableTypeRule : Rule, ITypeRule {
 
 		private const string ISerializable = "System.Runtime.Serialization.ISerializable";

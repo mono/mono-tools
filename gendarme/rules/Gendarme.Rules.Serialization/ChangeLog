@@ -1,4 +1,9 @@
 2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: Replace 
+	"[Serialization]" with "[Serializable]".
+
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* MissingSerializableAttributeOnISerializableTypeRule.cs: Improving the
 	comprehension of the solution.
