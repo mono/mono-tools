@@ -1,3 +1,8 @@
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: Improving the
+	comprehension of the solution.
+
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MissingSerializableAttributeOnISerializableTypeRule.cs: Does not
