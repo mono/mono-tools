@@ -70,6 +70,7 @@
     <Compile Include="DontIgnoreMethodResultTest.cs" />
     <Compile Include="EmptyDestructorTest.cs" />
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeTest.cs" />
+    <Compile Include="ImplementEqualsTypeTest.cs" />
     <Compile Include="MathMinMaxCandidateTest.cs" />
     <Compile Include="UseIsOperatorTest.cs" />
     <Compile Include="UseStringEmptyTest.cs" />

@@ -56,6 +56,7 @@
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesRule.cs" />
+    <Compile Include="ImplementIComparableCorreclyRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedRule.cs" />

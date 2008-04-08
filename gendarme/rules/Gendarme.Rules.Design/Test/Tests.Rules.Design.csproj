@@ -55,6 +55,7 @@
     <Compile Include="FlagsShouldNotDefineAZeroValueTest.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairTest.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesTest.cs" />
+    <Compile Include="ImplementIComparableCorreclyTest.cs" />
     <Compile Include="MainShouldNotBePublicTest.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeTest.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedTest.cs" />
