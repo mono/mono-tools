@@ -1,4 +1,10 @@
-2008-04-08  Nestor Salceda <nestor.salceda@gmail.com>
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLargeClassesRule.cs, CodeDuplicatedLocator.cs,
+	AvoidCodeDuplicatedInSiblingClassesRule.cs,
+	AvoidCodeDuplicatedInSameClassRule.cs: Fix a typo.
+
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* Expression.cs: Moved to ExpressionCollection.cs
 	* ExpressionCollection.cs: Moved due the new class name.

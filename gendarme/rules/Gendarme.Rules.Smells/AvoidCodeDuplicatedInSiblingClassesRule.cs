@@ -34,7 +34,7 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
 	
-	[Problem ("There are same code structure in various methods in sibling classes.  Your code will be better if you can unify them.")]
+	[Problem ("There is similar code in various methods in sibling classes.  Your code will be better if you can unify them.")]
 	[Solution ("You can apply the Pull Up Method refactoring.")]
 	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
 		private CodeDuplicatedLocator codeDuplicatedLocator;

@@ -34,7 +34,7 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
-	[Problem ("There are same code structure in various methods in the same class.  Your code will be better if you can unify them.")]
+	[Problem ("There is similar code in various methods in the same class.  Your code will be better if you can unify them.")]
 	[Solution ("You should apply the Extract Method refactoring and invoke the method from the places.")]
 	public class AvoidCodeDuplicatedInSameClassRule : Rule, ITypeRule {
 

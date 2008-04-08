@@ -37,7 +37,7 @@ namespace Gendarme.Rules.Smells {
 	//SUGGESTION: Public / Private ratios.
 	//SUGGESTION: Lines of Code.
 	//SUGGESTION: Weird distributions.
-	[Problem ("The class is trying to do too much.  Generally if a class is too large, duplicated code will not be far.")]
+	[Problem ("The class is trying to do too much.  Generally if a class is too large, duplicated code will not be far away.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLargeClassesRule : Rule,ITypeRule {
 
