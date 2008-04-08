@@ -41,7 +41,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	[Problem ("This type contains disposable field(s) but doesn't implement IDisposable.")]
-	[Solution ("Implement IDisposable and free the disposable field(s) in it's Dispose method.")]
+	[Solution ("Implement IDisposable and free the disposable field(s) in its Dispose method.")]
 	public class TypesWithDisposableFieldsShouldBeDisposableRule : Rule, ITypeRule {
 
 		private const string AbstractTypeMessage = "Field implement IDisposable. Type should implement a non-abstract Dispose() method";

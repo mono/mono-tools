@@ -1,3 +1,7 @@
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Fixed a typo.
+
 2008-04-03  Daniel Abramov <ex@vingrad.ru>
 
 	* ImplementGenericCollectionInterfacesRule.cs: New rule to check
