@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Security {
 	[Solution ("A security Demand for SerializationFormatter should protect this method.")]
 	public class SecureGetObjectDataOverridesRule : Rule, ITypeRule {
 
-		private const string NotFound = "No [Link]Demand were found.";
+		private const string NotFound = "No [Link]Demand was found.";
 
 		static PermissionSet _ruleSet;
 

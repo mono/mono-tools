@@ -1,3 +1,7 @@
+2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* SecureGetObjectDataOverridesRule.cs: Fixed a typo.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ArrayFieldsShouldNotBeReadOnlyRule.cs
