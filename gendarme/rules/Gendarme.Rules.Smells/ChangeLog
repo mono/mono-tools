@@ -1,3 +1,9 @@
+2008-04-08  Nestor Salceda <nestor.salceda@gmail.com>
+
+	* Expression.cs: Moved to ExpressionCollection.cs
+	* ExpressionCollection.cs: Moved due the new class name.
+	* Makefile.am: Replaced Expression.cs with ExpressionCollection.cs
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CodeDuplicatedLocator.cs: Renamed Expression to ExpressionCollection

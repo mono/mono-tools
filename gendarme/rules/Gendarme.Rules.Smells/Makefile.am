@@ -14,7 +14,7 @@ smells_rules_sources =  \
 	AvoidLargeClassesRule.cs \
 	AvoidLongMethodsRule.cs \
 	AvoidLongParameterListsRule.cs \
-	Expression.cs \
+	ExpressionCollection.cs \
 	ExpressionFillerVisitor.cs \
 	CodeDuplicatedLocator.cs \
 	AvoidCodeDuplicatedInSameClassRule.cs \

@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Smells.Expression class
+// Gendarme.Rules.Smells.ExpressionCollection class
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
