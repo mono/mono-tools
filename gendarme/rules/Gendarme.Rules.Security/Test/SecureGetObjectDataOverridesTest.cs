@@ -27,35 +27,24 @@
 //
 
 using System;
-using System.Collections.Specialized;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using SSP = System.Security.Permissions;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Security;
-using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Security {
 
 	[TestFixture]
-	public class SecureGetObjectDataOverridesTest {
+	public class SecureGetObjectDataOverridesTest : TypeRuleTestFixture<SecureGetObjectDataOverridesRule> {
 
 		[Serializable]
 		public class SerializableClass {
-
-			public SerializableClass ()
-			{
-			}
 		}
 
 		public class ISerializableClass : ISerializable {
-
-			public ISerializableClass ()
-			{
-			}
 
 			public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 			{
@@ -63,10 +52,6 @@ namespace Test.Rules.Security {
 		}
 
 		public class InheritISerializableClass : ISerializableClass {
-
-			public InheritISerializableClass ()
-			{
-			}
 
 			public override void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
@@ -82,11 +67,15 @@ namespace Test.Rules.Security {
 
 		public class LinkDemandClass: ISerializable {
 
-			public LinkDemandClass ()
+			[SecurityPermission (SecurityAction.LinkDemand, SerializationFormatter = true)]
+			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
+		}
 
-			[SecurityPermission (SSP.SecurityAction.LinkDemand, SerializationFormatter = true)]
+		public class AlternateSyntaxLinkDemandClass : ISerializable {
+
+			[SecurityPermission (SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
@@ -94,11 +83,15 @@ namespace Test.Rules.Security {
 
 		public class InheritanceDemandClass: ISerializable {
 
-			public InheritanceDemandClass ()
+			[SecurityPermission (SecurityAction.InheritanceDemand, SerializationFormatter = true)]
+			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
+		}
 
-			[SecurityPermission (SSP.SecurityAction.InheritanceDemand, SerializationFormatter = true)]
+		public class AlternateSyntaxInheritanceDemandClass : ISerializable {
+
+			[SecurityPermission (SecurityAction.InheritanceDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
@@ -106,11 +99,15 @@ namespace Test.Rules.Security {
 
 		public class DemandClass: ISerializable {
 
-			public DemandClass ()
+			[SecurityPermission (SecurityAction.Demand, SerializationFormatter = true)]
+			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
+		}
 
-			[SecurityPermission (SSP.SecurityAction.Demand, SerializationFormatter = true)]
+		public class AlternateSyntaxDemandClass : ISerializable {
+
+			[SecurityPermission (SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
@@ -118,90 +115,49 @@ namespace Test.Rules.Security {
 
 		public class DemandWrongPermissionClass: ISerializable {
 
-			public DemandWrongPermissionClass ()
-			{
-			}
-
-			[SecurityPermission (SSP.SecurityAction.Demand, ControlAppDomain = true)]
+			[SecurityPermission (SecurityAction.Demand, ControlAppDomain = true)]
 			public void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 			}
 		}
 
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void SerializableWithoutGetObjectData ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new SecureGetObjectDataOverridesRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Security.SecureGetObjectDataOverridesTest/" + name;
-			return assembly.MainModule.Types[fullname];
+			// there's no GetObjectData method here so the test does not apply
+			AssertRuleDoesNotApply<SerializableClass> ();
+			AssertRuleDoesNotApply<InheritISerializableWithoutOverrideClass> ();
 		}
 
 		[Test]
-		public void Serializable ()
+		public void GetObjectDataWithoutDemand ()
 		{
-			TypeDefinition type = GetTest ("SerializableClass");
-			// there's no GetObjectData method here so the test should never fail
-			Assert.AreEqual (RuleResult.DoesNotApply, rule.CheckType (type));
+			AssertRuleFailure<ISerializableClass> ();
+			AssertRuleFailure<InheritISerializableClass> ();
 		}
 
 		[Test]
-		public void ISerializable ()
+		public void GetObjectDataWithSerializationFormatterDemand ()
 		{
-			TypeDefinition type = GetTest ("ISerializableClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleSuccess<DemandClass> ();
+			AssertRuleSuccess<LinkDemandClass> ();
+			// not enough
+			AssertRuleFailure<InheritanceDemandClass> ();
 		}
 
 		[Test]
-		public void InheritISerializable ()
+		public void GetObjectDataWithSerializationFormatterDemand_UsingFlags ()
 		{
-			TypeDefinition type = GetTest ("InheritISerializableClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "InheritISerializableClass");
+			AssertRuleSuccess<AlternateSyntaxDemandClass> ();
+			AssertRuleSuccess<AlternateSyntaxLinkDemandClass> ();
+			// not enough
+			AssertRuleFailure<AlternateSyntaxInheritanceDemandClass> ();
 		}
 
 		[Test]
-		public void InheritISerializableWithoutOverride ()
+		public void GetObjectDataWithWrongDemand ()
 		{
-			TypeDefinition type = GetTest ("InheritISerializableWithoutOverrideClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "InheritISerializableWithoutOverrideClass");
-		}
-
-		[Test]
-		public void LinkDemand ()
-		{
-			TypeDefinition type = GetTest ("LinkDemandClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void InheritanceDemand ()
-		{
-			TypeDefinition type = GetTest ("InheritanceDemandClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-		}
-
-		[Test]
-		public void Demand ()
-		{
-			TypeDefinition type = GetTest ("DemandClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void DemandWrongPermission ()
-		{
-			TypeDefinition type = GetTest ("DemandWrongPermissionClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<DemandWrongPermissionClass> ();
 		}
 	}
 }

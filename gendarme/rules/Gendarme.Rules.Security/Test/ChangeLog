@@ -1,3 +1,10 @@
+2008-04-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SecureGetObjectDataOverridesTest.cs: Updated to new format. Add 
+	test cases where the enum/flag based syntax is used with declarative
+	security.
+	* Test.Rules.Security.mdp: Add reference to Test.Rules assembly.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ArrayFieldsShouldNotBeReadOnlyTest.cs: Duplicate test cases for 
