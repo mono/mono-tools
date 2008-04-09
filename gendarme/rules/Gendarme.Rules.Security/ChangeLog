@@ -1,3 +1,15 @@
+2008-04-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodCallWithSubsetLinkDemandRule.cs: Call Resolve before
+	reading the PermissionSet.
+	* SecureGetObjectDataOverridesRule.cs: Call Resolve before 
+	reading the PermissionSet. Fix bug #375368
+	* TypeIsNotSubsetOfMethodSecurityRule.cs: Call Resolve before
+	reading the PermissionSet.
+	* TypeLinkDemandRule.cs: Call Resolve before reading the 
+	PermissionSet.
+	* Makefile.am: Add reference to Test.Rules assembly.
+
 2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* SecureGetObjectDataOverridesRule.cs: Fixed a typo.

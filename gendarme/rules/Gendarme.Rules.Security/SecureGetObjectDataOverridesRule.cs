@@ -85,6 +85,7 @@ namespace Gendarme.Rules.Security {
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
 					demand = true;
+					declsec.Resolve ();
 					if (!RuleSet.IsSubsetOf (declsec.PermissionSet)) {
 						string message = String.Format ("{0} is not a subset of {1} permission set",
 							"SerializationFormatter", declsec.Action);

@@ -60,6 +60,7 @@ namespace Gendarme.Rules.Security {
 			// #2 - this rules doesn't apply to LinkDemand (both are executed)
 			// and to InheritanceDemand (both are executed at different time).
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
+				declsec.Resolve ();
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.Assert:
 					assert = declsec.PermissionSet;

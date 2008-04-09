@@ -46,6 +46,7 @@ namespace Gendarme.Rules.Security {
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
+					declsec.Resolve ();
 					return declsec.PermissionSet;
 				}
 			}

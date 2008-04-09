@@ -55,10 +55,12 @@ namespace Gendarme.Rules.Security {
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
+					declsec.Resolve ();
 					link = declsec.PermissionSet;
 					break;
 				case Mono.Cecil.SecurityAction.InheritDemand:
 				case Mono.Cecil.SecurityAction.NonCasInheritance:
+					declsec.Resolve ();
 					inherit = declsec.PermissionSet;
 					break;
 				}
