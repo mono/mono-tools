@@ -41,7 +41,7 @@
     <Compile Include="AvoidLongParameterListsRule.cs" />
     <Compile Include="AvoidSpeculativeGeneralityRule.cs" />
     <Compile Include="CodeDuplicatedLocator.cs" />
-    <Compile Include="Expression.cs" />
+    <Compile Include="ExpressionCollection.cs" />
     <Compile Include="ExpressionFillerVisitor.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
