@@ -59,6 +59,10 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+      <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
+      <Name>Test.Rules</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Naming.csproj">
       <Project>{C57E2A54-3BBF-49D7-B3E5-688EE1F63250}</Project>
       <Name>Gendarme.Rules.Naming</Name>
