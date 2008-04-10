@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Design {
 	[Solution ("Implement the missing method.")]
 	public class ImplementEqualsAndGetHashCodeInPairRule : Rule, ITypeRule {
 
-		private const string Message = "Type implements '{0}' but does not implement '{1}'";
+		private const string Message = "Type implements '{0}' but is missing '{1}'.";
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Design {
 
 			// if we have GetHashCode but no Equals method
 			if (!equals && getHashCode) {
-				string text = String.Format (Message, MethodSignatures.Equals, MethodSignatures.GetHashCode);
+				string text = String.Format (Message, MethodSignatures.GetHashCode, MethodSignatures.Equals);
 				Runner.Report (type, Severity.Medium, Confidence.High, text);
 			}
 

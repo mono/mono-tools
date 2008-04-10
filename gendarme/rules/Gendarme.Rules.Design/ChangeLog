@@ -1,3 +1,8 @@
+2008-04-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementEqualsAndGetHashCodeInPairRule.cs: Fix message (spotted
+	by Andy Hume).
+
 2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Fixed a typo.
