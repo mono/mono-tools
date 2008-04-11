@@ -37,17 +37,6 @@ using Mono.Cecil;
 namespace Test.Rules.Fixtures {
 	
 	/// <summary>
-	/// Commonly used delegate that can be passed to helper methods.
-	/// It represents a parameterless method that doesn't return anything.
-	/// </summary>
-	public delegate void NoReturnMethod ();
-	/// <summary>
-	/// Commonly used delegate that can passed to helper methods.
-	/// It represents a parameterless method that returns something.
-	/// </summary>
-	public delegate object ReturnMethod ();
-
-	/// <summary>
 	/// Abstract class providing various helper methods that method test fixtures should inherit from.
 	/// </summary>
 	/// <typeparam name="TMethodRule">Type of rule to be tested.</typeparam>
@@ -86,16 +75,6 @@ namespace Test.Rules.Fixtures {
 		}
 		
 		/// <summary>
-		/// Asserts that the rule does not apply to the method. 
-		/// </summary>
-		/// <param name="method">Method to check.</param>
-		/// <typeparam name="T">Type containing the method.</typeparam>
-		protected void AssertRuleDoesNotApply (Delegate method)
-		{
-			base.AssertRuleDoesNotApply (DefinitionLoader.GetMethodDefinition (method));
-		}
-		
-		/// <summary>
 		/// Asserts that the rule has been executed successfully for each method in the type. 
 		/// </summary>
 		/// <typeparam name="T">Type containing the methods.</typeparam>
@@ -125,16 +104,6 @@ namespace Test.Rules.Fixtures {
 		{
 			base.AssertRuleSuccess (DefinitionLoader.GetMethodDefinition<T> (method, parameters));
 		}
-		
-		/// <summary>
-		/// Asserts that the rule has been executed successfully. 
-		/// </summary>
-		/// <param name="method">Method to test.</param>
-		protected void AssertRuleSuccess (Delegate method)
-		{
-			base.AssertRuleSuccess (DefinitionLoader.GetMethodDefinition (method));
-		}
-
 		
 		/// <summary>
 		/// Asserts that the rule has failed to execute successfully for each method in the type. 
@@ -200,24 +169,5 @@ namespace Test.Rules.Fixtures {
 		{
 			base.AssertRuleFailure (DefinitionLoader.GetMethodDefinition<T> (method, parameters), expectedCount);
 		}
-
-		/// <summary>
-		/// Asserts that the rule has failed to execute successfully. 
-		/// </summary>
-		/// <param name="method">Method to test.</param>
-		protected void AssertRuleFailure (Delegate method)
-		{
-			base.AssertRuleFailure (DefinitionLoader.GetMethodDefinition (method));
-		}
-
-		/// <summary>
-		/// Asserts that the rule has failed to execute successfully. 
-		/// </summary>
-		/// <param name="method">Method to test.</param>
-		/// <param name="expectedCount">Expected message count.</param>
-		protected void AssertRuleFailure (Delegate method, int expectedCount)
-		{
-			base.AssertRuleFailure (DefinitionLoader.GetMethodDefinition (method), expectedCount);
-		}	
 	}
 }

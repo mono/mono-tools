@@ -1,3 +1,7 @@
+2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRuleTestFixture.cs: Remove delegate support.
+
 2008-03-11  Daniel Abramov  <ex@vingrad.ru>
 
 	* MethodRuleTestFixture.cs: New.
