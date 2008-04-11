@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Adrian Tsai <adrian_tsai@hotmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) 2007 Adrian Tsai
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +31,14 @@ using System.Reflection;
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class ConsiderConvertingMethodToPropertyTest {
+	public class ConsiderConvertingMethodToPropertyTest : MethodRuleTestFixture<ConsiderConvertingMethodToPropertyRule> {
 
 		public class ShouldBeCaught {
 			int Foo;
@@ -43,14 +47,23 @@ namespace Test.Rules.Design {
 			int GetFoo () { return Foo; }
 			bool IsBar () { return Bar; }
 
+			// note: won't be reported since it does not return void
 			int SetFoo (int value) { return (Foo = value); }
 			void SetBar (bool value) { Bar = value; }
 		}
 
+		[Test]
+		public void TestShouldBeCaught ()
+		{
+			AssertRuleFailure<ShouldBeCaught> ("GetFoo");
+			AssertRuleFailure<ShouldBeCaught> ("IsBar");
+			AssertRuleSuccess<ShouldBeCaught> ("SetFoo");
+			AssertRuleSuccess<ShouldBeCaught> ("SetBar");
+		}
+
 		public class ShouldBeIgnored {
 			int getfoo;
-			int GetFoo
-			{
+			int GetFoo {
 				get { return getfoo; }
 				set { getfoo = value; }
 			}
@@ -58,6 +71,13 @@ namespace Test.Rules.Design {
 			byte [] Baz;
 
 			byte [] GetBaz () { return Baz; }
+		}
+
+		[Test]
+		public void TestShouldBeIgnored ()
+		{
+			AssertRuleDoesNotApply<ShouldBeIgnored> ("get_GetFoo");
+			AssertRuleDoesNotApply<ShouldBeIgnored> ("GetBaz");
 		}
 
 		public class ShouldBeIgnoredMultipleValuesInSet {
@@ -74,76 +94,69 @@ namespace Test.Rules.Design {
 			}
 		}
 
-		public class GetConstructor {
-			public GetConstructor () { } // Should be ignored
-		}
-
-
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new ConsiderConvertingMethodToPropertyRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.ConsiderConvertingMethodToPropertyTest/" + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
-		[Test]
-		public void TestShouldBeCaught ()
-		{
-			TypeDefinition type = GetTest ("ShouldBeCaught");
-			foreach (MethodDefinition md in type.Methods) {
-				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md), "RuleResult." + md.Name);
-				Assert.AreEqual (1, runner.Defects.Count, "Count." + md.Name);
-			}
-		}
-
-		[Test]
-		public void TestShouldBeIgnored ()
-		{
-			TypeDefinition type = GetTest ("ShouldBeIgnored");
-			foreach (MethodDefinition md in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md), "RuleResult." + md.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + md.Name);
-			}
-		}
-
 		[Test]
 		public void TestShouldBeIgnoredMultipleValuesInSet ()
 		{
-			TypeDefinition type = GetTest ("ShouldBeIgnoredMultipleValuesInSet");
-			foreach (MethodDefinition md in type.Methods) {
-				switch (md.Name) {
-				case "GetMyValue":
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md), "RuleResult1");
-					Assert.AreEqual (1, runner.Defects.Count, "Count1");
-					break;
-				case "SetMyValue":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md), "RuleResult2");
-					Assert.AreEqual (0, runner.Defects.Count, "Count2");
-					break;
-				}
-			}
+			AssertRuleFailure<ShouldBeIgnoredMultipleValuesInSet> ("GetMyValue");
+			// ignored, too many parameters to be converted into a property
+			AssertRuleSuccess<ShouldBeIgnoredMultipleValuesInSet> ("SetMyValue");
+		}
+
+		public class GetConstructor {
+			public GetConstructor () { } // Should be ignored
 		}
 
 		[Test]
 		public void TestGetConstructor ()
 		{
-			TypeDefinition type = GetTest ("GetConstructor");
-			foreach (MethodDefinition md in type.Constructors) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md), "RuleResult." + md.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + md.Name);
+			AssertRuleDoesNotApply<ShouldBeIgnored> (".ctor");
+		}
+
+		private void GetVoid ()
+		{
+		}
+
+		private bool GetBool ()
+		{
+			return true;
+		}
+
+		internal class Base {
+			public virtual bool GetBool ()
+			{
+				return true;
 			}
+		}
+
+		internal class Inherit : Base {
+			public override bool GetBool ()
+			{
+				return false;
+			}
+		}
+
+		[Test]
+		public void GetOnly ()
+		{
+			AssertRuleFailure<ConsiderConvertingMethodToPropertyTest> ("GetBool", 1);
+			AssertRuleFailure<Base> ("GetBool", 1);
+			// we can't blame Inherit for Base bad choice since it can be outside the
+			// developer's control to change (e.g. in another assembly)
+			AssertRuleDoesNotApply<Inherit> ("GetBool");
+			// a Get* method that return void is badly named but it's not the issue at hand
+			AssertRuleSuccess<ConsiderConvertingMethodToPropertyTest> ("GetVoid");
+		}
+
+		private void SetObject (object value)
+		{
+			// no getter so it should be ignored
+			// otherwise by fixing this th euser would only trigger another rule
+		}
+
+		[Test]
+		public void SetOnly ()
+		{
+			AssertRuleSuccess<ConsiderConvertingMethodToPropertyTest> ("SetObject");
 		}
 	}
 }

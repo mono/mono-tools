@@ -1,3 +1,10 @@
+2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingMethodToPropertyTest.cs: Ignore Set* without
+	a Get* methods. Ignore overrides (can be out of developer's control,
+	but the base virtual method will be reported if not). Update to use
+	new test helpers.
+
 2008-04-03  Daniel Abramov <ex@vingrad.ru>
 
 	* ImplementGenericCollectionInterfacesTest.cs: New. Unit tests
