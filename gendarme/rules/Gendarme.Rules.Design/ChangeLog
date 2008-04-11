@@ -1,3 +1,9 @@
+2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingMethodToPropertyRule.cs: Don't apply the rule
+	to overrides. Don't check Set* methods but report them if we find an
+	appropriate Get* method (single defect).
+
 2008-04-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementEqualsAndGetHashCodeInPairRule.cs: Fix message (spotted
