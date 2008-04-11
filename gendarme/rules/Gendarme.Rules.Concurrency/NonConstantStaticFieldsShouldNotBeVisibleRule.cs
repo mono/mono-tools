@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Concurrency {
 	[Solution ("Change the field to read-only, mark it [ThreadStatic] or make it non visible outside the assembly.")]
 	public class NonConstantStaticFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
-		public const string Message = "This static field is not InitOnly (readonly). Multithreaded access to this field needs to be syncronized.";
+		public const string Message = "This static field is not InitOnly (readonly). Multithreaded access to this field needs to be synchronized.";
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
