@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,6 +32,8 @@ using System;
 using System.Reflection;
 
 using Mono.Cecil;
+
+using Gendarme.Framework.Rocks;
 
 namespace Test.Rules.Helpers {
 	
@@ -60,43 +64,18 @@ namespace Test.Rules.Helpers {
 	
 			return type.FullName;
 		}
-		
-		
-		/// <summary>
-		/// Gets a MethodDefinition for the delegate.
-		/// </summary>
-		/// <param name="methodDelegate">Delegate to the method to load.</param>
-		/// <returns>MethodDefinition associated with specified method.</returns>
-		public static MethodDefinition GetMethodDefinition (Delegate methodDelegate)
+
+		private static bool MatchParameters (MethodDefinition method, Type [] parameters)
 		{
-			// get method the delegate is pointing at
-			MethodInfo reflectionMethod = methodDelegate.Method;
+			if (method.Parameters.Count != parameters.Length)
+				return false;
 
-			// obtain type definition for the delegate
-			TypeDefinition type = GetTypeDefinition (reflectionMethod.DeclaringType);
-
-			// ensure such type exists
-			if (type == null)
-				throw new ArgumentException (string.Format ("Could not load {0} type.", type.FullName));
-			
-			// look for method definition
-			string signature = reflectionMethod.ToString ();
-
-			MethodDefinition matchingMethod = null;
-			foreach (MethodDefinition method in type.Methods.GetMethod (reflectionMethod.Name)) {
-				if (signature == method.ToString ())
-					matchingMethod = method;
-				
-				if (matchingMethod != null)
-					break;
+			for (int i = 0; i < method.Parameters.Count; i++) {
+				if (parameters [i].FullName != method.Parameters [i].ParameterType.FullName)
+					return false;
 			}
-			
-			if (matchingMethod == null)
-				throw new ArgumentException (string.Format ("Method {0} was not found in {1} class.", reflectionMethod.Name, type.FullName));
-
-			return matchingMethod;
+			return true;
 		}
-
 
 		/// <summary>
 		/// Gets a MethodDefinition for method by its name and parameter types.
@@ -107,29 +86,38 @@ namespace Test.Rules.Helpers {
 		/// <returns>MethodDefinition associated with the specified method.</returns>
 		public static MethodDefinition GetMethodDefinition (TypeDefinition type, string methodName, Type [] methodParameters)
 		{
-			// find method definition
-			MethodDefinition matchingMethod = null;
-			MethodDefinition [] methods = type.Methods.GetMethod (methodName);
-			
-			if (methods.Length == 0)
-				throw new ArgumentException (string.Format ("Method {0} was not found in class {1}.", methodName, type.FullName));
+			int ambiguous = 0;
+			MethodDefinition result = null;
 
-			if (methodParameters != null) {
-				matchingMethod = type.Methods.GetMethod (methodName, methodParameters);
-			} else {
-				// another possible case is when null is passed - in case there is only one overload
-				if (methods.Length == 1) // only one method with specified name - use it
-					matchingMethod = methods [0];
-				
-				else // amigious (multiple overloads, parameters not specified)
-					throw new ArgumentException (string.Format ("Name {0} is ambigious between {1} overloads. You should also pass parameter types in this case.", methodName, methods.Length));
+			foreach (MethodDefinition method in type.AllMethods ()) {
+				if (method.Name != methodName)
+					continue;
+
+				if (methodParameters == null) {
+					ambiguous++;
+					result = method;
+					continue;
+				}
+
+				// check parameters
+				if (MatchParameters (method, methodParameters)) {
+					result = method;
+					break;
+				}
 			}
-			
-			// check if method was found
-			if (matchingMethod == null)
-				throw new ArgumentException (string.Format ("Method {0} was not found in class {1}.", methodName, type.FullName));
 
-			return matchingMethod;
+			if (result == null) {
+				string msg = String.Format ("Method {0} was not found in class {1}.", methodName, type.FullName);
+				throw new ArgumentException (msg, "methodName");
+			}
+
+			// ambiguous (multiple overloads, parameters not specified)
+			if (ambiguous > 1) {
+				string msg = String.Format ("Name {0} is ambiguous between {1} overloads. You should also pass parameter types in this case.", methodName, ambiguous);
+				throw new ArgumentException (msg, "methodName");
+			}
+
+			return result;
 		}
 
 		/// <summary>

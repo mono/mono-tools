@@ -1,3 +1,8 @@
+2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DefinitionLoader.cs: Rework GetMethodDefinition so it can work
+	on constructors too.
+
 2008-04-03  Daniel Abramov  <ex@vingrad.ru>
 
 	* DefinitionLoader.cs: DefinitionLoader made public because
