@@ -51,14 +51,22 @@ namespace Gendarme {
 			Report
 		}
 
+		class AssemblyInfo {
+			public DateTime Timestamp;
+			public AssemblyDefinition Definition;
+		}
+
 		private const string Url = "http://www.mono-project.com/Gendarme";
 
 		static Process process;
 
 		private bool rules_populated;
-		private Dictionary<string, AssemblyDefinition> assemblies;
+		private Dictionary<string, AssemblyInfo> assemblies;
 		private GuiRunner runner;
 		private int counter;
+
+		private MethodInvoker assembly_loader;
+		private IAsyncResult assemblies_loading;
 
 		private MethodInvoker rule_loader;
 		private IAsyncResult rules_loading;
@@ -83,6 +91,8 @@ namespace Gendarme {
 				GetVersion (GetType ()));
 			welcome_framework_label.Text = String.Format ("Gendarme Framework Version {0}",
 				GetVersion (typeof (IRule)));
+
+			assembly_loader = UpdateAssemblies;
 
 			UpdatePageUI ();
 		}
@@ -239,6 +249,9 @@ namespace Gendarme {
 
 		private void UpdateAddFilesUI ()
 		{
+			if (assemblies == null)
+				assemblies = new Dictionary<string, AssemblyInfo> ();
+
 			int files_count = file_list_box.Items.Count;
 			bool has_files = (files_count > 0);
 			next_button.Enabled = has_files;
@@ -256,8 +269,10 @@ namespace Gendarme {
 			if (open_file_dialog.ShowDialog (this) == DialogResult.OK) {
 				foreach (string filename in open_file_dialog.FileNames) {
 					// don't add duplicates
-					if (!file_list_box.Items.Contains (filename))
+					if (!file_list_box.Items.Contains (filename)) {
 						file_list_box.Items.Add (filename);
+						assemblies.Add (filename, new AssemblyInfo ());
+					}
 				}
 			}
 			UpdatePageUI ();
@@ -280,12 +295,27 @@ namespace Gendarme {
 			UpdatePageUI ();
 		}
 
+		public void UpdateAssemblies ()
+		{
+			foreach (KeyValuePair<string,AssemblyInfo> kvp in assemblies) {
+				DateTime last_write = File.GetLastWriteTimeUtc (kvp.Key);
+				if ((kvp.Value.Definition == null) || (kvp.Value.Timestamp < last_write)) {
+					AssemblyInfo a = kvp.Value;
+					a.Timestamp = last_write;
+					a.Definition = AssemblyFactory.GetAssembly (kvp.Key);
+				}
+			}
+		}
+
 		#endregion
 
 		#region Select Rules
 
 		private void UpdateSelectRulesUI ()
 		{
+			// asynchronously load assemblies (or the one that changed)
+			assemblies_loading = assembly_loader.BeginInvoke (EndCallback, assembly_loader);
+
 			rules_count_label.Text = String.Format ("{0} rules are available.", Runner.Rules.Count);
 			if (rules_loading == null)
 				throw new InvalidOperationException ("rules_loading");
@@ -300,6 +330,7 @@ namespace Gendarme {
 			if (rules_populated)
 				return;
 
+			rules_tree_view.BeginUpdate ();
 			foreach (IRule rule in Runner.Rules) {
 				TreeNode node = new TreeNode (rule.FullName);
 				node.Checked = true;
@@ -308,6 +339,7 @@ namespace Gendarme {
 				rules_tree_view.Nodes.Add (node);
 			}
 			rules_tree_view.Sort ();
+			rules_tree_view.EndUpdate ();
 			rules_populated = true;
 			UpdatePageUI ();
 		}
@@ -338,7 +370,12 @@ namespace Gendarme {
 
 		private void UpdateAnalyzeUI ()
 		{
+			// update UI before waiting for assemblies to be loaded
 			next_button.Enabled = false;
+			analyze_status_label.Text = String.Format ("Processing assembly 1 of {0}",
+				assemblies.Count);
+			// make sure all assemblies are loaded into memory
+			assemblies_loading.AsyncWaitHandle.WaitOne ();
 			PrepareAnalyze ();
 			analyze = Analyze;
 			analyzing = analyze.BeginInvoke (EndCallback, analyze);
@@ -351,25 +388,15 @@ namespace Gendarme {
 			xml_report_filename = null;
 			text_report_filename = null;
 
-			if (assemblies == null)
-				assemblies = new Dictionary<string, AssemblyDefinition> ();
-
-			// add all items from the list box (and avoid reloading the ones already present)
-			foreach (string assembly in file_list_box.Items) {
-				if (assemblies.ContainsKey (assembly))
-					continue;
-
-				// if needed complete loading
-				AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly);
-				(ad as IAnnotationProvider).Annotations.Add ("filename", assembly);
-				assemblies.Add (assembly, ad);
-			}
+			// just to pick up any change between the original load (a few steps bacl)
+			// and the assemblies "right now" sitting on disk
+			UpdateAssemblies ();
 
 			Runner.Reset ();
 			Runner.Assemblies.Clear ();
-			foreach (KeyValuePair<string, AssemblyDefinition> kvp in assemblies) {
+			foreach (KeyValuePair<string, AssemblyInfo> kvp in assemblies) {
 				// add assemblies references to runner
-				Runner.Assemblies.Add (kvp.Value);
+				Runner.Assemblies.Add (kvp.Value.Definition);
 			}
 
 			progress_bar.Maximum = Runner.Assemblies.Count;
@@ -401,7 +428,6 @@ namespace Gendarme {
 			analyze_status_label.Text = String.Format ("Processing assembly {0} of {1}",
 				counter, e.Runner.Assemblies.Count);
 			analyze_assembly_label.Text = "Assembly: " + e.CurrentAssembly.Name.FullName;
-			progress_bar.Value = counter++;
 		}
 
 		/// <summary>
@@ -410,6 +436,7 @@ namespace Gendarme {
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
 		public void PostUpdate (RunnerEventArgs e)
 		{
+			progress_bar.Value = counter++;
 			analyze_defect_label.Text = String.Format ("Defects Found: {0}", e.Runner.Defects.Count);
 		}
 

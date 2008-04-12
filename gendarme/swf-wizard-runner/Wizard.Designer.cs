@@ -495,16 +495,22 @@ namespace Gendarme {
 			// 
 			// Wizard
 			// 
+			this.AcceptButton = this.next_button;
 			this.AutoScaleDimensions = new System.Drawing.SizeF (6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size (632, 446);
+			this.ClientSize = new System.Drawing.Size (634, 448);
+			this.ControlBox = false;
 			this.Controls.Add (this.pictureBox1);
 			this.Controls.Add (this.back_button);
 			this.Controls.Add (this.next_button);
 			this.Controls.Add (this.cancel_button);
 			this.Controls.Add (this.help_button);
 			this.Controls.Add (this.wizard_tab_control);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon) (resources.GetObject ("$this.Icon")));
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size (640, 480);
+			this.MinimumSize = new System.Drawing.Size (640, 480);
 			this.Name = "Wizard";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Gendarme";
