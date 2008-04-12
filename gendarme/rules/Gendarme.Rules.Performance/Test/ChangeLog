@@ -1,3 +1,8 @@
+2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test case where a private
+	method is used in its declaring type's nested type(s) [Cedric Vivier]
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUninstantiatedInternalClassesTest.cs: Add test cases for

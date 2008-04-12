@@ -70,6 +70,19 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		public class NestedCalledPrivateMethod {
+			class Nested {
+				void callParentDisplay ()
+				{
+					display ();
+				}
+			}
+
+			private static void display ()
+			{
+			}
+		}
+
 		public class UncalledInternalMethod {
 			internal void print ()
 			{
@@ -370,6 +383,19 @@ namespace Test.Rules.Performance {
 					// rule does not apply to Main
 					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md));
 					break;
+				case "display":
+					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
+					break;
+				}
+			}
+		}
+
+		[Test]
+		public void NestedCalledPrivateMethodTest ()
+		{
+			type = GetTest ("NestedCalledPrivateMethod");
+			foreach (MethodDefinition md in type.Methods) {
+				switch (md.Name) {
 				case "display":
 					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
 					break;
