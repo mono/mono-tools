@@ -41,15 +41,37 @@ namespace Gendarme {
 
 	public class TextResultWriter : ResultWriter, IDisposable {
 
+		enum ColorScheme {
+			None,
+			Light,
+			Dark
+		}
+
 		private TextWriter writer;
 		private bool need_closing;
+		private ColorScheme color_scheme;
 
 		public TextResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
 		{
-			if ((fileName == null) || (fileName.Length == 0))
+			if ((fileName == null) || (fileName.Length == 0)) {
 				writer = System.Console.Out;
-			else {
+
+				string color_override = Environment.GetEnvironmentVariable ("GENDARME_COLOR") ?? "dark";
+				switch (color_override.ToLowerInvariant ()) {
+				case "none":
+					color_scheme = ColorScheme.None;
+					break;
+				case "light":
+					color_scheme = ColorScheme.Light;
+					break;
+				case "dark":
+				default:
+					color_scheme = ColorScheme.Dark;
+					break;
+				}
+			} else {
+				color_scheme = ColorScheme.None;
 				writer = new StreamWriter (fileName);
 				need_closing = true;
 			}
@@ -66,9 +88,16 @@ namespace Gendarme {
 			foreach (Defect defect in query) {
 				IRule rule = defect.Rule;
 
+				BeginColor (
+					(Severity.Critical == defect.Severity || Severity.High == defect.Severity)
+					? ConsoleColor.DarkRed : ConsoleColor.DarkYellow);
 				writer.WriteLine ("{0}. {1}", ++index, rule.Name);
 				writer.WriteLine ();
-				writer.WriteLine ("Problem: {0}", rule.Problem);
+				EndColor ();
+				BeginColor (ConsoleColor.DarkRed);
+				writer.Write ("Problem: ");
+				EndColor ();
+				writer.Write (rule.Problem);
 				writer.WriteLine ();
 				writer.WriteLine ("Details [Severity: {0}, Confidence: {1}]", defect.Severity, defect.Confidence);
 				writer.WriteLine ("* Target: {0}", defect.Target);
@@ -76,7 +105,10 @@ namespace Gendarme {
 				if (!String.IsNullOrEmpty (defect.Text))
 					writer.WriteLine ("* {0}", defect.Text);
 				writer.WriteLine ();
-				writer.WriteLine ("Solution: {0}", rule.Solution);
+				BeginColor (ConsoleColor.DarkGreen);
+				writer.Write ("Solution: ");
+				EndColor ();
+				writer.Write (rule.Solution);
 				writer.WriteLine ();
 				writer.WriteLine ("More info available at: {0}", rule.Uri.ToString ());
 				writer.WriteLine ();
@@ -90,6 +122,28 @@ namespace Gendarme {
 				if (need_closing) {
 					writer.Dispose ();
 				}
+			}
+		}
+
+		private void BeginColor (ConsoleColor color)
+		{
+			switch (color_scheme) {
+			case ColorScheme.Dark:
+				Console.ForegroundColor = color;
+				break;
+			case ColorScheme.Light:
+				Console.ForegroundColor = (ConsoleColor) color + 8;
+				break;
+			}
+		}
+
+		private void EndColor ()
+		{
+			switch (color_scheme) {
+			case ColorScheme.Dark:
+			case ColorScheme.Light:
+				Console.ResetColor ();
+				break;
 			}
 		}
 	}
