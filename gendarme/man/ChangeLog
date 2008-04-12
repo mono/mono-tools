@@ -1,3 +1,7 @@
+2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Document GENDARME_COLOR environment variable.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Update description and mailing-list. 

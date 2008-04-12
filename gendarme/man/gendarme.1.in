@@ -57,6 +57,17 @@ line.
 This files contains a list of all the rulesets available to Gendarme. Each 
 ruleset includes a list of assemblies in which some, or all, rules can be
 verified (include) or not (exclude).
+.SH ENVIRONMENT VARIABLES
+.TP
+.I GENDARME_COLOR
+The runner will use colors when displaying defects on the console. 
+By default colors are dark in order to display correctly on any 
+background. You can change this default to "light" (lighter colors 
+looks nice on a dark background, or "none" so no colors will be used.
+E.g.
+.nf
+    GENDARME_COLOR=none gendarme ...
+.fi
 .SH COPYRIGHT
 Copyright (C) 2005-2008 Novell, Inc (http://www.novell.com)
 .SH MAILING LISTS
