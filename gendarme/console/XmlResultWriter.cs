@@ -66,11 +66,8 @@ namespace Gendarme {
 			writer.WriteStartElement ("files");
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				writer.WriteStartElement ("file");
-				writer.WriteAttributeString ("Name", assembly.Name.ToString ());
-				IAnnotationProvider provider = (assembly as IAnnotationProvider);
-				if (provider.Annotations.Contains ("filename")) {
-					writer.WriteString (provider.Annotations ["filename"] as string);
-				}
+				writer.WriteAttributeString ("Name", assembly.Name.FullName);
+				writer.WriteString (assembly.MainModule.Image.FileInformation.FullName);
 				writer.WriteEndElement ();
 			}
 			writer.WriteEndElement ();

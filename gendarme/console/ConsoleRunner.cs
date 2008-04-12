@@ -105,7 +105,6 @@ namespace Gendarme {
 		{
 			string assembly_name = Path.GetFullPath (filename);
 			AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
-			(ad as IAnnotationProvider).Annotations.Add ("filename", assembly_name);
 			Assemblies.Add (ad);
 		}
 

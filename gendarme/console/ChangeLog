@@ -1,3 +1,9 @@
+2008-04-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsoleRunner.cs: Don't annotate assembly.
+	* XmlResultWriter.cs: We don't need annotations to get the original
+	filename of the assembly.
+
 2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: By default add some colors to our display
