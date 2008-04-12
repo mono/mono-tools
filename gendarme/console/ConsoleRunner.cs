@@ -197,7 +197,7 @@ namespace Gendarme {
 			if (timer != DateTime.MinValue)
 				Console.WriteLine (": {0} seconds.", (DateTime.UtcNow - timer).TotalSeconds);
 			// next assembly
-			Console.Write ((e.CurrentAssembly as IAnnotationProvider).Annotations ["filename"]);
+			Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.FullName);
 			timer = DateTime.UtcNow;
 			base.OnAssembly (e);
 		}
