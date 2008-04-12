@@ -93,7 +93,19 @@ namespace Gendarme.Rules.Performance {
 					return RuleResult.Success;
 
 				// then we must check if this type use the private method
-				if (!CheckTypeForMethodUsage ((method.DeclaringType as TypeDefinition), method)) {
+				bool called = CheckTypeForMethodUsage ((method.DeclaringType as TypeDefinition), method);
+
+				// then we must check if this type's nested types (if any) use the private method
+				if (!called) {
+					foreach (TypeDefinition nested in (method.DeclaringType as TypeDefinition).NestedTypes) {
+						called = CheckTypeForMethodUsage (nested, method);
+						if (called)
+							break;
+					}
+				}
+
+				// report if the private method is uncalled
+				if (!called) {
 					Runner.Report (method, Severity.High, Confidence.Normal, "The private method code is not used in it's declaring type");
 					return RuleResult.Failure;
 				}
