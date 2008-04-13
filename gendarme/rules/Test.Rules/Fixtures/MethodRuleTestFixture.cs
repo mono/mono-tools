@@ -30,6 +30,7 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Test.Rules.Helpers;
 
 using Mono.Cecil;
@@ -49,7 +50,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleDoesNotApply<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
 				base.AssertRuleDoesNotApply (method);
 		}
 		
@@ -80,7 +81,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleSuccess<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
 				base.AssertRuleSuccess (method);
 		}
 		
@@ -111,7 +112,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleFailure<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
 				base.AssertRuleFailure (method);
 		}
 		
@@ -122,7 +123,7 @@ namespace Test.Rules.Fixtures {
 		/// <param name="expectedCount">Expected defect count for each method.</param>
 		protected void AssertRuleFailure<T> (int expectedCount)
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
 				base.AssertRuleFailure (method, expectedCount);
 		}
 		
