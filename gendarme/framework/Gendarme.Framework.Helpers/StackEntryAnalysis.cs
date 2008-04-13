@@ -233,6 +233,9 @@ namespace Gendarme.Framework.Helpers {
 				if (LeaveStack == null)
 					return (iwl.LeaveStack == null);
 
+				if (iwl.LeaveStack == null)
+					return false;
+
 				if (LeaveStack.Length != iwl.LeaveStack.Length)
 					return false;
 

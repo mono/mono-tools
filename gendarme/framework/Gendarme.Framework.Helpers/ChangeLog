@@ -1,3 +1,8 @@
+2008-04-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Prevent possible NRE in 
+	InstructionWithLeave.Equals. 
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Add Equals,	GetHashCode and ==, != 
