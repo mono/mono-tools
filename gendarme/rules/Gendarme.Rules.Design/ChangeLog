@@ -1,3 +1,8 @@
+2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* OperatorEqualsShouldBeOverloadedRule.cs: Fix Problem/Solution
+	attributes to match the rule. Found by Ben Motmans.
+
 2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingMethodToPropertyRule.cs: Don't apply the rule

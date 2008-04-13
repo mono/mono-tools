@@ -34,8 +34,8 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	[Problem ("This type overloads the == operator but doesn't override the Equals method.")]
-	[Solution ("Override the Equals method to match the results of the == operator.")]
+	[Problem ("This type override the Equals method, or overloads + and - operators, but doesn't overload the == operator.")]
+	[Solution ("Overload the == operator to match the results of the Equals method.")]
 	public class OperatorEqualsShouldBeOverloadedRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
