@@ -103,7 +103,7 @@ namespace Gendarme.Rules.Smells {
 			if (!CheckedTypes.Contains (targetTypeDefinition.Name)) {
 				foreach (MethodDefinition targetMethod in targetTypeDefinition.Methods) {
 					if (ContainsDuplicatedCode (currentMethod, targetMethod)) {
-						rule.Runner.Report (currentMethod, Severity.High, Confidence.Normal,String.Format ("Duplicate code in {0}.{1}", targetTypeDefinition.Name, targetMethod.Name));
+						rule.Runner.Report (currentMethod, Severity.High, Confidence.Normal, String.Format ("Duplicate code with {0}", targetMethod));
 						containsDuplicated = true;
 					}
 				}
