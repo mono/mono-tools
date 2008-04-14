@@ -30,6 +30,7 @@ using System;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 	//SUGGESTION: Setting all required properties in a constructor isn't
@@ -61,24 +62,34 @@ namespace Gendarme.Rules.Smells {
 
 		private static MethodReference GetShortestOverloaded (MethodDefinition method)
 		{
-			if (method.DeclaringType is TypeDefinition) {
-				TypeDefinition type = (TypeDefinition) method.DeclaringType;
-				MethodReference shortestOverloaded = (MethodReference) method;
-				foreach (MethodReference overloadedMethod in type.Methods.GetMethod (method.Name)) {
-					if (overloadedMethod.Parameters.Count < shortestOverloaded.Parameters.Count)
-						shortestOverloaded = overloadedMethod;
-				}
-				return shortestOverloaded;
+			TypeDefinition type = method.DeclaringType.Resolve ();
+			MethodReference shortestOverloaded = (MethodReference) method;
+			foreach (MethodReference overloadedMethod in type.Methods.GetMethod (method.Name)) {
+				if (overloadedMethod.Parameters.Count < shortestOverloaded.Parameters.Count)
+					shortestOverloaded = overloadedMethod;
 			}
-			return method;
+			return shortestOverloaded;
 		}
 
 		private bool HasLongParameterList (MethodDefinition method)
 		{
-			if (IsOverloaded (method))
+			if (method.IsConstructor) {
+				// no need to call IsOverloaded since all constructors share the same name
+				foreach (MethodDefinition ctor in method.DeclaringType.Resolve ().Constructors) {
+					// if we have a default, non-static, visible ctor then it's not too long
+					if ((ctor.Parameters.Count == 0) && !ctor.IsStatic && ctor.IsVisible ())
+						return false;
+					// it's also ok if we find a ctor with less than the maximum number of parameters
+					if (ctor.Parameters.Count <= MaxParameters)
+						return false;
+				}
+				// no default (visible) ctor and no ctor with less than the maximum number of parameters
+				return true;
+			} else if (IsOverloaded (method)) {
 				return GetShortestOverloaded (method).Parameters.Count >= MaxParameters;
-			else
+			} else {
 				return method.Parameters.Count >= MaxParameters;
+			}
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
