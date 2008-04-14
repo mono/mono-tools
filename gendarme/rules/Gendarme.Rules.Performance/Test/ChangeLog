@@ -1,3 +1,9 @@
+2008-04-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Fix some cases (e.g. bad 
+	values,	checking ctors instead of methods)... and add new ones. 
+	Update tests to new format. 
+
 2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Add test case where a private

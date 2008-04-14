@@ -27,31 +27,27 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.InteropServices;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
+
 using NUnit.Framework;
-using System.Collections;
+using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 	
 	[TestFixture]
-	public class AvoidUncalledPrivateCodeTest {
+	public class AvoidUncalledPrivateCodeTest : MethodRuleTestFixture<AvoidUncalledPrivateCodeRule> {
 		
-		public class AnonymousMethod {
-			private void MethodWithAnonymousMethod ()
-			{
-				string[] values = new string[] {"one", "two", "three"};
-				if (Array.Exists (values, delegate (string  myString) { return myString.Length == 3;}))
-					Console.WriteLine ("Exists strings with length == 3");
-			}
-		}
-
 		public class UncalledPrivateMethod {
 			private void display ()
 			{
@@ -70,17 +66,12 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		public class NestedCalledPrivateMethod {
-			class Nested {
-				void callParentDisplay ()
-				{
-					display ();
-				}
-			}
-
-			private static void display ()
-			{
-			}
+		[Test]
+		public void PrivateMethodsInPublicType ()
+		{
+			AssertRuleFailure<UncalledPrivateMethod> ("display", 1);
+			AssertRuleSuccess<CalledPrivateMethod> ("display");
+			AssertRuleDoesNotApply<CalledPrivateMethod> ("Main");
 		}
 
 		public class UncalledInternalMethod {
@@ -103,54 +94,142 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private class PublicMethodNotCalledInPrivateClass {
-			public void publicMethod ()
-			{
-			}
+		[Test]
+		public void InternalMethodsInPublicTypes ()
+		{
+			AssertRuleFailure<UncalledInternalMethod> ("print", 1);
+			AssertRuleSuccess<CalledInternalMethod> ("CalledMethod");
+			AssertRuleDoesNotApply<MethodCallingClass> ("Main");
 		}
 
-		internal class PublicMethodNotCalledInInternalClass {
-			public void publicMethod ()
-			{
-			}
-		}
-
-		private class PublicMethodCalledInPrivateClass {
-			public void publicCalledMethod ()
-			{
-			}
-
-			public static void Main (string [] args)
-			{
-				PublicMethodCalledInPrivateClass p = new PublicMethodCalledInPrivateClass ();
-				p.publicCalledMethod ();
-			}
-		}
-
-		internal class PublicMethodCalledInInternalClass {
-			public void publicMethodCalled ()
-			{
-			}
-
-			public static void Main (string [] args)
-			{
-				PublicMethodCalledInInternalClass p = new PublicMethodCalledInInternalClass ();
-				p.publicMethodCalled ();
-			}
-		}
-
-		private class PrivateMethodInPrivateClassNotCalled {
+		private class PrivateMethodInPrivateClass {
 			private void privateMethodNotCalled ()
 			{
+				privateMethodCalled ();
+			}
+
+			// only called by uncalled method - but we don't report that
+			private void privateMethodCalled ()
+			{
+			}
+		}
+
+		[Test]
+		public void PrivateMethodsInPrivateType ()
+		{
+			AssertRuleFailure<PrivateMethodInPrivateClass> ("privateMethodNotCalled", 1);
+			AssertRuleSuccess<PrivateMethodInPrivateClass> ("privateMethodCalled");
+		}
+
+		private class PublicMethodsInPrivateClass {
+			public void PublicCalledMethod ()
+			{
+			}
+
+			public virtual void PublicVirtualUncalledMethod ()
+			{
+			}
+
+			public void PublicUncalledMethod ()
+			{
+			}
+
+			public static void Main (string [] args)
+			{
+				PublicMethodsInPrivateClass p = new PublicMethodsInPrivateClass ();
+				p.PublicCalledMethod ();
+			}
+		}
+
+		internal class PublicMethodsInInternalClass {
+			public void PublicCalledMethod ()
+			{
+			}
+
+			public virtual void PublicVirtualUncalledMethod ()
+			{
+			}
+
+			public void PublicUncalledMethod ()
+			{
+			}
+
+			public static void Main (string [] args)
+			{
+				PublicMethodsInInternalClass p = new PublicMethodsInInternalClass ();
+				p.PublicCalledMethod ();
+			}
+		}
+
+		[Test]
+		public void PublicMethods ()
+		{
+			AssertRuleFailure<PublicMethodsInPrivateClass> ("PublicUncalledMethod");
+			AssertRuleSuccess<PublicMethodsInPrivateClass> ("PublicVirtualUncalledMethod");
+			AssertRuleSuccess<PublicMethodsInPrivateClass> ("PublicCalledMethod");
+			AssertRuleFailure<PublicMethodsInInternalClass> ("PublicUncalledMethod");
+			AssertRuleSuccess<PublicMethodsInInternalClass> ("PublicVirtualUncalledMethod");
+			AssertRuleSuccess<PublicMethodsInInternalClass> ("PublicCalledMethod");
+		}
+
+		public class AnonymousMethod {
+			private void MethodWithAnonymousMethod ()
+			{
+				string [] values = new string [] { "one", "two", "three" };
+				if (Array.Exists (values, delegate (string myString) { return myString.Length == 3; }))
+					Console.WriteLine ("Exists strings with length == 3");
 			}
 		}
 
 		internal class NestedClasses {
 			public class AnotherClass {
-				public void publicMethodNotCalledInNestedInternalClass ()
+				private void UncalledPrivateInNestedInternal ()
+				{
+				}
+
+				internal void UncalledInternalInNestedInternal ()
+				{
+				}
+
+				// public method but not visible outside the assembly
+				public void UncalledPublicInNestedInternal ()
+				{
+				}
+
+				// protected method but not visible outside the assembly
+				protected void UncalledProtectedInNestedInternal ()
 				{
 				}
 			}
+		}
+
+		public class NestedCalledMethods {
+			class Nested {
+				void callParentDisplay ()
+				{
+					display ();
+					display2 ();
+				}
+			}
+
+			private static void display ()
+			{
+			}
+
+			internal static void display2 ()
+			{
+			}
+		}
+
+		[Test]
+		public void NestedMethods ()
+		{
+			AssertRuleFailure<NestedClasses.AnotherClass> ("UncalledPrivateInNestedInternal");
+			AssertRuleFailure<NestedClasses.AnotherClass> ("UncalledInternalInNestedInternal");
+			AssertRuleFailure<NestedClasses.AnotherClass> ("UncalledPublicInNestedInternal");
+			AssertRuleFailure<NestedClasses.AnotherClass> ("UncalledProtectedInNestedInternal");
+
+			AssertRuleSuccess<NestedCalledMethods> ("display");
 		}
 
 		interface Iface1 {
@@ -161,6 +240,7 @@ namespace Test.Rules.Performance {
 			void IfaceMethod2 ();
 		}
 
+		// both methods are unused but needed to satisfy interface requirements
 		public class ImplementingExplicitInterfacesMembers : Iface1, Iface2 {
 			void Iface1.IfaceMethod1 ()
 			{
@@ -169,13 +249,12 @@ namespace Test.Rules.Performance {
 			void Iface2.IfaceMethod2 ()
 			{
 			}
+		}
 
-			public static void Main (string [] args)
-			{
-				ImplementingExplicitInterfacesMembers i = new ImplementingExplicitInterfacesMembers ();
-				Iface1 iobject = i;
-				iobject.IfaceMethod1 ();
-			}
+		[Test]
+		public void ImplementingExplicitInterfaces ()
+		{
+			AssertRuleSuccess<ImplementingExplicitInterfacesMembers> ();
 		}
 
 		public class PrivateConstructorNotCalled {
@@ -190,6 +269,13 @@ namespace Test.Rules.Performance {
 			{
 				i = 5;
 			}
+		}
+
+		[Test]
+		public void Constructors ()
+		{
+			AssertRuleSuccess<PrivateConstructorNotCalled> ();
+			AssertRuleDoesNotApply<StaticConstructorNotCalled> (".cctor");
 		}
 
 		[Serializable]
@@ -228,22 +314,59 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		public class UncalledOverriddenMethod {
+		[Test]
+		public void SerializationConstructors ()
+		{
+			AssertRuleSuccess<PublicSerializableConstructorNotCalled> ();
+			AssertRuleSuccess<PrivateSerializableConstructorNotCalled> ();
+			AssertRuleSuccess<ProtectedSerializableConstructorNotCalled> ();
+			AssertRuleSuccess<InternalSerializableConstructorNotCalled> ();
+		}
+
+		public class UncalledPublicOverriddenMethod {
 			public override string ToString ()
+			{
+				return ToStringToo ();
+			}
+
+			internal virtual string ToStringToo ()
 			{
 				return String.Empty;
 			}
 		}
 
+		public class UncalledInternalOverriddenMethod : UncalledPublicOverriddenMethod {
+			// this can be accessed thru UncalledPublicOverriddenMethod 
+			internal override string ToStringToo ()
+			{
+				return "aha!";
+			}
+		}
+
+		[Test]
+		public void UncalledOverriddenMethodTest ()
+		{
+			AssertRuleSuccess<UncalledPublicOverriddenMethod> ();
+			AssertRuleSuccess<UncalledInternalOverriddenMethod> ();
+		}
+
 		public class UsingComRegisterAndUnRegisterFunctionAttribute {
-			[ComRegisterFunctionAttribute]
+			[ComRegisterFunction]
 			private void register ()
 			{
 			}
-			[ComUnregisterFunctionAttribute]
+
+			[ComUnregisterFunction]
 			private void unregister ()
 			{
 			}
+		}
+
+		[Test]
+		public void ComRegisterFunctions ()
+		{
+			AssertRuleDoesNotApply<UsingComRegisterAndUnRegisterFunctionAttribute> ("register");
+			AssertRuleDoesNotApply<UsingComRegisterAndUnRegisterFunctionAttribute> ("unregister");
 		}
 
 		public class CallingPrivateMethodsThroughDelegates {
@@ -261,6 +384,12 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		[Test]
+		public void Delegates ()
+		{
+			AssertRuleSuccess<CallingPrivateMethodsThroughDelegates> ("privateMethod");
+		}
+
 		public class ClassWithFinalizer {
 
 			// finalizer is private but we can't report it as unused
@@ -271,7 +400,94 @@ namespace Test.Rules.Performance {
 			// note: don't add anything else in this class or the test will break
 		}
 
-		public class MyList : IList {
+		[Test]
+		public void Finalizer ()
+		{
+			AssertRuleSuccess<ClassWithFinalizer> ();
+		}
+
+		internal class MyList : IList {
+
+			public MyList ()
+			{
+			}
+
+			public int Add (object value)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public void Clear ()
+			{
+				throw new NotImplementedException ();
+			}
+
+			public bool Contains (object value)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public int IndexOf (object value)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public void Insert (int index, object value)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public bool IsFixedSize {
+				get { throw new NotImplementedException (); }
+			}
+
+			public bool IsReadOnly {
+				get { throw new NotImplementedException (); }
+			}
+
+			public void Remove (object value)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public void RemoveAt (int index)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public object this [int index] {
+				get {
+					throw new NotImplementedException ();
+				}
+				set {
+					throw new NotImplementedException ();
+				}
+			}
+
+			public void CopyTo (Array array, int index)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public int Count {
+				get { throw new NotImplementedException (); }
+			}
+
+			public bool IsSynchronized {
+				get { throw new NotImplementedException (); }
+			}
+
+			public object SyncRoot {
+				get { throw new NotImplementedException (); }
+			}
+
+			public IEnumerator GetEnumerator ()
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		public class MyExplicitList : IList {
 
 			int IList.Add (object value)
 			{
@@ -344,275 +560,31 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private IMethodRule methodRule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void InterfaceImplementations ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			methodRule = new AvoidUncalledPrivateCodeRule ();
-			runner = new TestRunner (methodRule);
+			new MyList ();
+			AssertRuleSuccess<MyList> ();
+			AssertRuleSuccess<MyExplicitList> ();
 		}
+
+		private AssemblyDefinition assembly;
 
 		private TypeDefinition GetTest (string name)
 		{
+			if (assembly == null) {
+				string unit = Assembly.GetExecutingAssembly ().Location;
+				assembly = AssemblyFactory.GetAssembly (unit);
+			}
 			string fullname = "Test.Rules.Performance.AvoidUncalledPrivateCodeTest/" + name;
 			return assembly.MainModule.Types [fullname];
-		}
-
-		[Test]
-		public void UncalledPrivateMethodTest ()
-		{
-			type = GetTest ("UncalledPrivateMethod");
-			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			Assert.AreEqual (RuleResult.Failure , runner.CheckMethod (type.Methods [0]));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void CalledPrivateMethodTest ()
-		{
-			type = GetTest ("CalledPrivateMethod");
-			foreach (MethodDefinition md in type.Methods) {
-				switch (md.Name) {
-				case "Main":
-					// rule does not apply to Main
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (md));
-					break;
-				case "display":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void NestedCalledPrivateMethodTest ()
-		{
-			type = GetTest ("NestedCalledPrivateMethod");
-			foreach (MethodDefinition md in type.Methods) {
-				switch (md.Name) {
-				case "display":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void UncalledInternalMethodTest ()
-		{
-			type = GetTest ("UncalledInternalMethod");
-			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (type.Methods [0]));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void CalledInternalMethodTest ()
-		{
-			type = GetTest ("CalledInternalMethod");
-			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (type.Methods [0]));
-		}
-
-		[Test]
-		public void CheckingForMainMethodTest () {
-			type = GetTest ("CalledInternalMethod");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "Main")
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void PublicMethodNotCalledInPrivateClassTest ()
-		{
-			type = GetTest ("PublicMethodNotCalledInPrivateClass");
-			foreach (MethodDefinition method in type.Methods) {
-				switch (method.Name) {
-				case "publicMethod":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-					break;
-				default:
-					Assert.Fail ("Test case for method {0} is not handled", method.Name);
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void PublicMethodCalledInPrivateClassTest ()
-		{
-			type = GetTest ("PublicMethodCalledInPrivateClass");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "publicCalledMethod")
-					Assert.AreEqual (RuleResult.Success ,runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void PublicMethodCalledInInternalClassTest ()
-		{
-			type = GetTest ("PublicMethodCalledInInternalClass");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "publicMethodCalled")
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void PrivateMethodInPrivateClassNotCalledTest ()
-		{
-			type = GetTest ("PrivateMethodInPrivateClassNotCalled");
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == "privateMethodNotCalled")
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
-		}
-
-		[Test]
-		public void PublicMethodNotCalledInNestedInternalClassTest ()
-		{
-			type = GetTest ("NestedClasses");
-			foreach (MethodDefinition method in type.Methods) {
-				switch (method.Name) {
-				case "publicMethodNotCalledInNestedInternalClass":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-					break;
-				default:
-					Assert.Fail ("Test case for method {0} is not handled", method.Name);
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void ImplementingInterfacesMembersTest ()
-		{
-			type = GetTest ("ImplementingExplicitInterfacesMembers");
-			foreach (MethodDefinition method in type.Methods) {
-				switch (method.Name) {
-				case "Main":
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
-					break;
-				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface1.IfaceMethod1":
-// mono bug #343465
-				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest+Iface1.IfaceMethod1":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-					break;
-				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest.Iface2.IfaceMethod2":
-				// mono bug #343465
-				case "Test.Rules.Performance.AvoidUncalledPrivateCodeTest+Iface2.IfaceMethod2":
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.Name);
-					break;
-				default:
-					Assert.Fail ("Test case for method {0} is not handled", method.Name);
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void PrivateConstructorNotCalledTest ()
-		{
-			type = GetTest ("PrivateConstructorNotCalled");
-			foreach (MethodDefinition method in type.Constructors) {
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-			}
-		}
-
-		[Test]
-		public void StaticConstructorNotCalledTest ()
-		{
-			type = GetTest ("StaticConstructorNotCalled");
-			foreach (MethodDefinition method in type.Constructors)
-				if (method.Name == ".cctor")
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void SerializationConstructors ()
-		{
-			type = GetTest ("PublicSerializableConstructorNotCalled");
-			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
-			type = GetTest ("PrivateSerializableConstructorNotCalled");
-			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
-			type = GetTest ("ProtectedSerializableConstructorNotCalled");
-			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
-			type = GetTest ("InternalSerializableConstructorNotCalled");
-			foreach (MethodDefinition ctor in type.Constructors)
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (ctor), ctor.ToString ());
-		}
-
-		[Test]
-		public void UncalledOverriddenMethodTest ()
-		{
-			type = GetTest ("UncalledOverriddenMethod");
-			foreach (MethodDefinition method in type.Methods) {
-				switch (method.Name) {
-				case "ToString":
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-					break;
-				default:
-					Assert.Fail ("Test case not handled");
-					break;
-				}
-			}
-		}
-
-		[Test]
-		public void ImplementingComRegisterFunctionAttributeTest ()
-		{
-			type = GetTest ("UsingComRegisterAndUnRegisterFunctionAttribute");
-			foreach (MethodDefinition method in type.Constructors)
-				if (method.Name == "register")
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void ImplementingComUnregisterFunctionAttributeTest ()
-		{
-			type = GetTest ("UsingComRegisterAndUnRegisterFunctionAttribute");
-			foreach (MethodDefinition method in type.Constructors)
-				if (method.Name == "unregister")
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void CallingPrivateMethodsThroughDelegatesTest ()
-		{
-			type = GetTest ("CallingPrivateMethodsThroughDelegates");
-			foreach (MethodDefinition method in type.Constructors)
-				if (method.Name == "privateMethod")
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void CheckClassWithFinalizer ()
-		{
-			type = GetTest ("ClassWithFinalizer");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (type.Methods [0]));
-		}
-
-		[Test]
-		public void CheckExplicitInterfaceImplementation ()
-		{
-			type = GetTest ("MyList");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.Name);
-			}
 		}
 
 		[Test]
 		public void AnonymousMethodTest ()
 		{
 			// compiler generated code is compiler dependant, check for [g]mcs (inner type)
-			type = GetTest ("AnonymousMethod/<>c__CompilerGenerated0");
+			TypeDefinition type = GetTest ("AnonymousMethod/<>c__CompilerGenerated0");
 			// otherwise try for csc (inside same class)
 			if (type == null)
 				type = GetTest ("AnonymousMethod");
@@ -624,7 +596,7 @@ namespace Test.Rules.Performance {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+					AssertRuleDoesNotApply (method);
 					break;
 				}
 			}
