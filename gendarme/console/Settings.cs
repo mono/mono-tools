@@ -29,7 +29,9 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Schema;
 
 using Gendarme.Framework;
 
@@ -42,6 +44,7 @@ namespace Gendarme {
 		private IRunner runner;
 		private string config_file;
 		private string rule_set;
+		private IList<string> validation_errors = new List<string> ();
 
 		public Settings (IRunner runner, string configurationFile, string ruleSet)
 		{
@@ -108,13 +111,55 @@ namespace Gendarme {
 			return total;
 		}
 
+		private void OnValidationErrors (object sender, ValidationEventArgs args)
+		{
+			validation_errors.Add (args.Exception.Message.Replace ("XmlSchema error", String.Format ("Error in the configuration file {0}", config_file)));
+		}
+
+		private Stream GetXsdStream ()
+		{
+			string xsd = null;
+			Assembly executing = Assembly.GetExecutingAssembly ();
+			foreach (string resource in executing.GetManifestResourceNames ()) {
+				if (resource.EndsWith ("gendarme.xsd")) {
+					xsd = resource;
+					break;
+				}
+			}
+
+			if (xsd == null)
+				throw new InvalidDataException ("Could not locate Xml Schema Definition.");
+			return executing.GetManifestResourceStream (xsd);	
+		}
+
+		private void ValidateXmlDocument ()
+		{
+			using (Stream stream = GetXsdStream ()) {
+				XmlReaderSettings settings = new XmlReaderSettings ();
+				settings.Schemas.Add (XmlSchema.Read (stream, OnValidationErrors));
+				settings.ValidationType = ValidationType.Schema;
+				settings.ValidationEventHandler += OnValidationErrors;
+				using (XmlReader reader = XmlReader.Create (config_file, settings)) {
+					while (reader.Read ()){}
+				}
+			}
+		}
+	
+		public IEnumerable<string> ValidationErrors {
+			get {
+				return validation_errors;
+			}
+		}
+
 		public bool Load ()
 		{
-			XmlDocument doc = new XmlDocument ();
-			doc.Load (config_file);
-			if (doc.DocumentElement.Name != "gendarme")
+			ValidateXmlDocument ();
+			if (validation_errors.Count != 0)
 				return false;
 
+			XmlDocument doc = new XmlDocument ();
+			doc.Load (config_file);
+			
 			bool result = false;
 			foreach (XmlElement ruleset in doc.DocumentElement.SelectNodes ("ruleset")) {
 				if (ruleset.Attributes ["name"].Value != rule_set)

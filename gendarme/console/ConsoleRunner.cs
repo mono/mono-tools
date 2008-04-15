@@ -148,7 +148,13 @@ namespace Gendarme {
 				Settings config = new Settings (this, config_file, rule_set);
 				// and continue if there's at least one rule to execute
 				if (!config.Load () || (Rules.Count < 1)) {
-					Console.WriteLine ("Configuration parameters does not match any known rule.");
+					int validationErrorsCounter = 0;
+					foreach (string error in config.ValidationErrors) {
+						Console.WriteLine (error);
+						validationErrorsCounter++;
+					}
+					if (validationErrorsCounter == 0)
+						Console.WriteLine ("Configuration parameters does not match any known rule.");
 					return 3;
 				}
 

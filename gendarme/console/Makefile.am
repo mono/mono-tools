@@ -16,14 +16,18 @@ gendarme_sources = \
 	HtmlResultWriter.cs \
 	TextResultWriter.cs \
 	XmlResultWriter.cs
-gendarme_resources = gendarme.xsl
+gendarme_resources = \
+	gendarme.xsl \
+	gendarme.xsd
 
 gendarme_build_sources = $(addprefix $(srcdir)/, $(gendarme_sources))
 gendarme_build_sources += $(gendarme_generated_sources)
 
+gendarme_build_resources = $(foreach res,$(gendarme_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
+
 ../bin/gendarme.exe: $(gendarme_build_sources) $(gendarme_resources)
 	$(GMCS) -debug -r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll \
-		-out:$@ $(gendarme_build_sources) -resource:gendarme.xsl
+		-out:$@ $(gendarme_build_sources) $(gendarme_build_resources)
 
 self-test: ../bin/gendarme.exe
 	mono --debug ../bin/gendarme.exe ../bin/gendarme.exe

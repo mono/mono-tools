@@ -1,3 +1,12 @@
+2008-04-15  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Added gendarme.xsd as resource.
+	* Settings.cs: Added validation against the xsd file.
+	* ConsoleRunner.cs: Report errors produced by the xml configuration
+	file.
+	* gendarme.xsd: New.  Added the xsd for validate xml configuration
+	files.
+
 2008-04-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ConsoleRunner.cs: Don't annotate assembly.
