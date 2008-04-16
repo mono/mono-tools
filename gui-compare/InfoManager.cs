@@ -140,25 +140,25 @@ namespace GuiCompare
 		
 		string [] api_sl11 = {
 			"mscorlib",
-			"agclr.dll",
+			"System.Windows.dll",
 			"Microsoft.VisualBasic",
 			"System",
 			"System.Core",
 			"System.Net",
-			"System.SilverLight",
+			"System.Windows.Browser",
 			"System.Xml.Core",
 		};
 
 		string [] api_sl2_beta = {
 			"mscorlib",
-			"agclr",
+			"System.Windows",
 			"Microsoft.VisualBasic",
 			"System",
 			"System.Core",
 			"System.Net",
 			"System.Runtime.Serialization",
 			"System.ServiceModel",
-			"System.SilverLight",
+			"System.Windows.Browser",
 			"System.Xml.Core",
 		};
 		
@@ -406,7 +406,7 @@ namespace GuiCompare
 					 });
 					
 				main.StartCompare (delegate {
-					main.Title = assemblyfile;
+					main.Title = String.Format ("{0} to {1}", masterinfo, assemblyfile);
 				});
 			});
 		}
