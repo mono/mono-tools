@@ -41,12 +41,13 @@ smells_test_build_sources = $(addprefix $(srcdir)/Test/, $(smells_test_sources))
 
 Test.Rules.Smells.dll: $(smells_test_build_sources) $(smells_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll -out:$@ $(smells_test_build_sources)
+		-r:../Test.Rules/Test.Rules.dll  -r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll \
+		-out:$@ $(smells_test_build_sources)
 
 test: Test.Rules.Smells.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Smells.dll
+	MONO_PATH=../../bin/:../Test.Rules/$(MONO_PATH) nunit-console2 Test.Rules.Smells.dll
 
 self-test: $(smells_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(smells_rules_SCRIPTS)

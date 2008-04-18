@@ -1,3 +1,11 @@
+2008-04-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongParameterListsRule.cs: Refactored to be a ITypeRule instead
+	of IMethodRule.
+	* Test/AvoidLongParameterListsRule.cs: Updated tests for the new
+	refactoring and updated with the new Test utilites.
+	* Makefile.am: Added the Test.Smells reference.
+
 2008-04-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsRule.cs: Handle constructors just like 

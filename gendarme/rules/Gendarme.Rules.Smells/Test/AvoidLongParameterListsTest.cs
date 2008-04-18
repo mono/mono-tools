@@ -4,7 +4,7 @@
 // Authors:
 //      Néstor Salceda <nestor.salceda@gmail.com>
 //
-//      (C) 2007 Néstor Salceda
+//      (C) 2007-2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,135 +34,109 @@ using Mono.Cecil;
 using NUnit.Framework;
 using Gendarme.Framework;
 using Gendarme.Rules.Smells;
+using Test.Rules.Fixtures;
+using Test.Rules.Definitions;
 
 namespace Test.Rules.Smells {
+	
 	[TestFixture]
-	public class AvoidLongParameterListsTest {
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private MethodDefinition method;
-		private TypeDefinition type;
-		private TestRunner runner;
+	public class AvoidLongParameterListsTest : TypeRuleTestFixture<AvoidLongParameterListsRule> {
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp () 
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types["Test.Rules.Smells.AvoidLongParameterListsTest"];
-			rule = new AvoidLongParameterListsRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetMethodForTest (string methodName, Type[] parameterTypes) 
-		{
-			if (parameterTypes == Type.EmptyTypes) {
-				if (type.Methods.GetMethod (methodName).Length == 1)
-					return type.Methods.GetMethod (methodName)[0];
-			}
-			return type.Methods.GetMethod (methodName, parameterTypes);
-		}
-
-		public void MethodWithoutParameters () 
-		{
-		}
-
-		public void MethodWithoutLongParameterList (int x, char c, object obj, bool j, string f) 
-		{
-		}
-
-		public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array)
-		{
-		}
-
-		public void OverloadedMethod () 
-		{
-		}
-
-		public void OverloadedMethod (int x) 
-		{
-		}
-
-		public void OverloadedMethod (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) 
-		{
-		}
-
-		public void OtherOverloaded (int x, char c, object obj, bool j, string f, float z, double u)
-		{
-		}
-
-		public void OtherOverloaded (int x, char c, object obj, bool j, string f, float z, double u, short s)
-		{
-		}
-
-		// copy-paste from Mono's System.Drawing, types changed to avoid referencing assembly
-		[DllImport ("gdiplus.dll")]
-		static internal extern int GdipCreateLineBrushFromRectI (object rect, int color1, int color2, int linearGradientMode, int wrapMode, IntPtr brush);
-
-		[Test]
-		public void MethodWithoutParametersTest () 
-		{
-			method = GetMethodForTest ("MethodWithoutParameters", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+		class ExternalMethodWrapper {
+			[DllImport ("gdiplus.dll")]
+			static internal extern int GdipCreateLineBrushFromRectI (object rect, int color1, int color2, int linearGradientMode, int wrapMode, IntPtr brush);
 		}
 
 		[Test]
-		public void MethodwithLongParameterListTest () 
+		public void ExternalMethodTest ()
 		{
-			method = GetMethodForTest ("MethodWithLongParameterList", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleDoesNotApply<ExternalMethodWrapper> ();
+		}
+
+		class MethodWithoutLongParametersWrapper {
+			public void SimpleMethod () {}
+			public void MethodWithoutLongParameterList (int x, char c, object obj, bool j, string f) {}
 		}
 
 		[Test]
-		public void MethodWithoutLongParameterList () 
+		public void MethodWithoutParametersTest  ()
 		{
-			method = GetMethodForTest ("MethodWithoutLongParameterList", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess<MethodWithoutLongParametersWrapper> ();
+		}
+
+
+		class MethodWithLongParametersWrapper {
+			public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
 		}
 
 		[Test]
-		public void OverloadedMethodTest () 
+		public void MethodWithLongParametersTest ()
 		{
-			method = GetMethodForTest ("OverloadedMethod", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleFailure<MethodWithLongParametersWrapper> (1);
+		}
+			
+		class OverloadedMethodWrapper {
+			public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
+			public void MethodWithLongParameterList (int x, char c) {}
+		}
+	
+		[Test]
+		public void OverloadedMethodWrapperTest () 
+		{
+			AssertRuleSuccess<OverloadedMethodWrapper> ();
+		}
+
+		class FailingOverloadedMethodWrapper {
+			public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
+			public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f, float z, double u, short s) {}
 		}
 
 		[Test]
-		public void OverloadedMethodWithParametersTest () 
+		public void FailingOverloadedMethodWrapperTest () 
 		{
-			method = GetMethodForTest ("OverloadedMethod", new Type[] {typeof (int)});
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			//Only report de smaller fail
+			AssertRuleFailure<FailingOverloadedMethodWrapper> (1);
+		}
+
+		class VariousViolationsMethodWrapper {
+			[DllImport ("gdiplus.dll")]
+			static internal extern int GdipCreateLineBrushFromRectI (object rect, int color1, int color2, int linearGradientMode, int wrapMode, IntPtr brush);
+			public void SimpleMethod () {}
+			public void FirstOverload (int x, char c, object obj, bool j, string f) {}
+			public void FirstOverload (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
+			public void SecondOverload (int x, char c) {}
+			public void SecondOverload (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
+			public void ThirdOverload (int x, char c, object obj, bool j, string f, float z, double u, short s) {}
+			public void ThirdOverload (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
+			public void FourthOverload (int x, char c, object obj, bool j, string f, float z, double u, short s) {}
+			public void FourthOverload (int x, char c, object obj, bool j, string f, float z, double u, short s, int v, string[] array) {}
 		}
 
 		[Test]
-		public void LongOverloadedMethodWithLittleOverloadTest () 
+		public void VariousViolationsMethodWrapperTest ()
 		{
-			method = GetMethodForTest ("OverloadedMethod", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double), typeof (short), typeof (int), typeof (string[])});
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			//Fail the Third and Fourth Overloads
+			AssertRuleFailure<VariousViolationsMethodWrapper> (2);
+		}
+
+		class ShortConstructor {
+			public ShortConstructor (int x, float f, char c) {}
 		}
 
 		[Test]
-		public void LongOverloadedMethodWithoutLittleOverloadTest () 
+		public void ShortConstructorTest ()
 		{
-			method = GetMethodForTest ("OtherOverloaded", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double)});
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleSuccess<ShortConstructor> ();
+		}
+
+		class LongConstructor {
+			public LongConstructor (int x, float f, char c, string str, object obj, double d, short s, object[] array) {}
 		}
 
 		[Test]
-		public void OtherLongOverloadedMethodWithoutLittleOverloadTest () 
+		public void LongConstructorTest ()
 		{
-			method = GetMethodForTest ("OtherOverloaded", new Type[] {typeof (int), typeof (char), typeof (object), typeof (bool), typeof (string), typeof (float), typeof (double), typeof (short)});
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
-		}
-
-		[Test]
-		public void IgnoreExternalMethods ()
-		{
-			method = GetMethodForTest ("GdipCreateLineBrushFromRectI", new Type[] {typeof (object), typeof (int), typeof (int), typeof (int), typeof (int), typeof (IntPtr) });
-			Assert.AreEqual (RuleResult.DoesNotApply ,runner.CheckMethod (method));
+			AssertRuleFailure<LongConstructor> (1);
 		}
 	}
 }
