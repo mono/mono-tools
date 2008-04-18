@@ -120,6 +120,13 @@ namespace Gendarme.Rules.Smells {
 					return false;
 			return type.Methods.Count != 0;
 		}
+
+		private RuleResult CheckDelegate (TypeDefinition type)
+		{
+			if (HasMoreParametersThanAllowed (type.GetMethod ("Invoke")))
+				Runner.Report (type, Severity.Medium, Confidence.Normal, "This delegate contains a long parameter list.");
+			return Runner.CurrentRuleResult;
+		}
 		
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -127,6 +134,9 @@ namespace Gendarme.Rules.Smells {
 			// guys don't have a choice to make long parameter lists ;-)
 			if (OnlyContainsExternalMethods (type))
 				return RuleResult.DoesNotApply;
+			
+			if (type.IsDelegate ())
+				return CheckDelegate (type);
 
 			CheckConstructor (GetSmallerConstructorFrom (type));
 			

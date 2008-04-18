@@ -119,24 +119,44 @@ namespace Test.Rules.Smells {
 			AssertRuleFailure<VariousViolationsMethodWrapper> (2);
 		}
 
-		class ShortConstructor {
-			public ShortConstructor (int x, float f, char c) {}
+		class ShortConstructorWrapper {
+			public ShortConstructorWrapper (int x, float f, char c) {}
 		}
 
 		[Test]
-		public void ShortConstructorTest ()
+		public void ShortConstructorWrapperTest ()
 		{
-			AssertRuleSuccess<ShortConstructor> ();
+			AssertRuleSuccess<ShortConstructorWrapper> ();
 		}
 
-		class LongConstructor {
-			public LongConstructor (int x, float f, char c, string str, object obj, double d, short s, object[] array) {}
+		class LongConstructorWrapper {
+			public LongConstructorWrapper (int x, float f, char c, string str, object obj, double d, short s, object[] array) {}
 		}
 
 		[Test]
-		public void LongConstructorTest ()
+		public void LongConstructorWrapperTest ()
 		{
-			AssertRuleFailure<LongConstructor> (1);
+			AssertRuleFailure<LongConstructorWrapper> (1);
+		}
+
+		class ShortDelegateWrapper {
+			public delegate void ShortDelegate (int x, char c);
+		}
+
+		[Test]
+		public void ShortDelegateWrapperTest ()
+		{
+			AssertRuleSuccess<ShortDelegateWrapper.ShortDelegate> ();
+		}
+
+		class LongDelegateWrapper {
+			public delegate void LongDelegate (int x, float f, char c, string str, object obj, double d, short s, object[] array);
+		}
+
+		[Test]
+		public void LongDelegateWrapperTest ()
+		{
+			AssertRuleFailure<LongDelegateWrapper.LongDelegate> (1);
 		}
 	}
 }
