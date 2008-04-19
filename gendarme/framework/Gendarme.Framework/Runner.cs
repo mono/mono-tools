@@ -101,6 +101,11 @@ namespace Gendarme.Framework {
 		// which allows caching information and treating the assemblies as "a set"
 		public void Initialize ()
 		{
+			AnalyzeAssembly = null;
+			AnalyzeModule = null;
+			AnalyzeType = null;
+			AnalyzeMethod = null;
+
 			foreach (AssemblyDefinition assembly in assemblies) {
 				try {
 					assembly.MainModule.LoadSymbols ();

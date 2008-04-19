@@ -1,3 +1,8 @@
+2008-04-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Reset the events. The wizard runner can reuse the 
+	runner with a different rule set.
+
 2008-03-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Runner.cs: Don't initialize rules that are not active. This is
