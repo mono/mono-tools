@@ -601,5 +601,36 @@ namespace Test.Rules.Performance {
 				}
 			}
 		}
+
+		// from libanculus
+		// http://code.google.com/p/libanculus-sharp/source/browse/trunk/src/Anculus.Core/Sorting/QuickSorter.cs
+
+		public class Anculus {
+			public void Sort<T> (IList<T> list, IComparer<T> comparer)
+			{
+				Sort<T> (list, comparer, 0, list.Count - 1);
+			}
+
+			private static void Sort<T> (IList<T> list, IComparer<T> comparer, int lower, int upper)
+			{
+				if (lower < upper) {
+					int split = Pivot<T> (list, comparer, lower, upper);
+					Sort<T> (list, comparer, lower, split - 1);
+					Sort<T> (list, comparer, split + 1, upper);
+				}
+			}
+
+			private static int Pivot<T> (IList<T> list, IComparer<T> comparer, int lower, int upper)
+			{
+				return 0;
+			}
+		}
+
+		[Test]
+		[Ignore ("Fails due to mono bug under investigation")]
+		public void Generics ()
+		{
+			AssertRuleSuccess<Anculus> ();
+		}
 	}
 }

@@ -1,3 +1,7 @@
+2008-04-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test case using generics.
+
 2008-04-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Fix some cases (e.g. bad 
