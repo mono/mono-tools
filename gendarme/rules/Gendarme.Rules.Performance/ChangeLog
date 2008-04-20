@@ -1,3 +1,9 @@
+2008-04-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Use the token in the cache 
+	(instead of the MethodReference). Does not work on Mono when
+	using generics.
+
 2008-04-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Refactor to cache results (and

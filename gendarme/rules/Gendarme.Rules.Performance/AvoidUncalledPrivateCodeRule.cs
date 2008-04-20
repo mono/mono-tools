@@ -170,13 +170,18 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		static Dictionary<TypeDefinition, List<MethodReference>> cache = new Dictionary<TypeDefinition, List<MethodReference>> ();
+		static Dictionary<TypeDefinition, List<uint>> cache = new Dictionary<TypeDefinition, List<uint>> ();
+
+		private static uint GetToken (MethodReference method)
+		{
+			return method.GetOriginalMethod ().MetadataToken.ToUInt ();
+		}
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
 		{
-			List<MethodReference> methods;
+			List<uint> methods;
 			if (!cache.TryGetValue (type, out methods)) {
-				methods = new List<MethodReference> ();
+				methods = new List<uint> ();
 				foreach (MethodDefinition md in type.AllMethods ()) {
 					if (!md.HasBody)
 						continue;
@@ -186,22 +191,22 @@ namespace Gendarme.Rules.Performance {
 				cache.Add (type, methods);
 			}
 
-			if (methods.Contains (method))
+			if (methods.Contains (GetToken (method)))
 				return true;
 
 			foreach (MethodReference mr in method.Resolve ().Overrides) {
-				if (methods.Contains (mr))
+				if (methods.Contains (GetToken (mr)))
 					return true;
 			}
 			return false;
 		}
 
-		private static void BuildMethodUsage (List<MethodReference> methods, MethodDefinition method)
+		private static void BuildMethodUsage (List<uint> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = (ins.Operand as MethodReference);
 				if (mr != null)
-					methods.Add (mr);
+					methods.AddIfNew (GetToken (mr));
 			}
 		}
 	}
