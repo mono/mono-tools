@@ -151,6 +151,34 @@ namespace Gendarme {
 			}
 		}
 
+		private IRule GetRule (string name)
+		{
+			foreach (IRule rule in runner.Rules) {
+				if (rule.GetType ().ToString ().Contains (name)) 
+					return rule;
+			}
+			return null;
+		}
+		
+		private void SetCustomParameters (XmlElement rules)
+		{
+			foreach (XmlElement parameter in rules.SelectNodes ("parameter")) {
+				string ruleName = GetAttribute (parameter, "rule", String.Empty);
+				string propertyName = GetAttribute (parameter, "property", String.Empty);
+				int value = Int32.Parse (GetAttribute (parameter, "value", String.Empty));
+				
+				IRule rule = GetRule (ruleName);
+				if (rule == null)
+					throw new XmlException (String.Format ("The rule with name {0} doesn't exist.  Review your configuration file.", ruleName));
+				PropertyInfo property = rule.GetType ().GetProperty (propertyName);
+				if (property == null)
+					throw new XmlException (String.Format ("The property {0} can't be found in the rule {1}.  Review your configuration file.", propertyName, ruleName));
+				if (!property.CanWrite)
+					throw new XmlException (String.Format ("The property {0} can't be written in the rule {1}.  Review your configuration file", propertyName, ruleName));
+				property.GetSetMethod ().Invoke (rule, new object[] {value});
+			}
+		}
+
 		public bool Load ()
 		{
 			ValidateXmlDocument ();
@@ -171,6 +199,8 @@ namespace Gendarme {
 
 					int n = LoadRulesFromAssembly (from, include, exclude);
 					result = (result || (n > 0));
+					if (result) 
+						SetCustomParameters (assembly);
 				}
 			}
 			return result;
