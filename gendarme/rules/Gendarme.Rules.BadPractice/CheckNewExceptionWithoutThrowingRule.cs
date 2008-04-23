@@ -29,9 +29,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
@@ -59,10 +56,11 @@ namespace Gendarme.Rules.BadPractice {
 
 				MethodReference constructor = (MethodReference) ins.Operand;
 
-				//if (!constructor.DeclaringType.Inherits ("System.Exception")) //Not ready yet, assembly resolver is missing
-				if (!constructor.DeclaringType.Name.EndsWith ("Exception"))
+				if (!constructor.DeclaringType.Inherits ("System.Exception"))
 					continue;
-				if (ins.Next != null && ins.Next.OpCode.Code == Code.Throw) //quick check to safe resources
+
+				// quick check to save resources
+				if (ins.Next != null && ins.Next.OpCode.Code == Code.Throw)
 					continue;
 
 				if (sea == null)

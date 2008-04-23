@@ -72,7 +72,8 @@ namespace Gendarme.Rules.BadPractice {
 			// if the module does not reference System.Console then no
 			// method inside it will be calling any Console.write* methods
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= e.CurrentModule.TypeReferences.ContainsType (Console);
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (Console);
 			};
 		}
 

@@ -1,3 +1,10 @@
+2008-04-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisableDebuggingCodeRule.cs: Change Initialize so the rule 
+	applies to corlib too (which defines, not refer to Console type).
+	* CheckNewExceptionWithoutThrowingRule.cs: Use Inherits (instead
+	of checking name suffix) to find Exception-devired types.
+
 2008-03-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisableDebuggingCodeRule.cs: New. Rule to check for debugging
