@@ -1,3 +1,9 @@
+2008-04-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisableDebuggingCodeTest.cs: Adapt to change for Initialize 
+	behavior. If a runner desactivate a rule then it should not 
+	re-activate itself.
+
 2008-03-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisableDebuggingCodeTest.cs: New. Unit tests for 

@@ -125,6 +125,10 @@ namespace Test.Rules.BadPractice {
 		{
 			rule.Active = false;
 			runner.OnAssembly (assembly);
+			Assert.IsFalse (rule.Active, "Default-Active-False");
+
+			rule.Active = true;
+			runner.OnAssembly (assembly);
 			Assert.IsTrue (rule.Active, "Assembly-Active-True");
 
 			runner.OnModule (assembly.MainModule);
