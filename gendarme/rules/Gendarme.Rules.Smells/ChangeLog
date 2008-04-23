@@ -1,4 +1,11 @@
-2008-04-28  Nestor Salceda  <nestor.salceda@gmail.com>
+2008-04-23  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidLongMethodsRule.cs: The C# compiler was optimized in order to
+	reduce the number of instructions, and then this rule failed.  I have
+	decremented the default MaxInstructions value, and all tests are passed
+	successfully with the SVN HEAD and the 1.9 release.
+
+2008-04-18  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongParameterListsRule.cs: Implemented delegate checking.
 	* Test/AvoidLongParameterListsRule.cs: Added tests for delegate special

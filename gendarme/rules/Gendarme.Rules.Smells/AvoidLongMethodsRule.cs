@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Smells {
 	[Problem ("Long methods are usually hard to understand and maintain.  The method can cause problems because contains more code than the maximum allowed.")]
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
 	public class AvoidLongMethodsRule : Rule,IMethodRule {
-		private int maxInstructions = 170;
+		private int maxInstructions = 165;
 		const int AssignationRatio = 7;
 		const int DefaultAmountOfElements = 13;
 		static Hashtable typeMethodDictionary;
