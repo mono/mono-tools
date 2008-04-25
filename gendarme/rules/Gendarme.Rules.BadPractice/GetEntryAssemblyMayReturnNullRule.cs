@@ -41,6 +41,25 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("Avoid depending on Assembly.GetEntryAssembly inside reusable code.")]
 	public class GetEntryAssemblyMayReturnNullRule : Rule, IMethodRule {
 
+		private const string Assembly = "System.Reflection.Assembly";
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// GetEntryAssembly will work inside executables
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.EntryPoint == null);
+			};
+
+			// if the module does not reference System.Reflection.Assembly 
+			// then no method inside it will be calling GetEntryAssembly
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (Assembly);
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule doesn't not apply to methods without code (e.g. p/invokes)
@@ -60,7 +79,7 @@ namespace Gendarme.Rules.BadPractice {
 				case Code.Callvirt:
 					MethodReference mr = (current.Operand as MethodReference);
 					if ((mr != null) && (mr.Name == "GetEntryAssembly")
-						&& (mr.DeclaringType.FullName == "System.Reflection.Assembly")) {
+						&& (mr.DeclaringType.FullName == Assembly)) {
 						Runner.Report (method, current, Severity.Medium, Confidence.Total, String.Empty);
 					}
 					break;

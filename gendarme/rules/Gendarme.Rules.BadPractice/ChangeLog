@@ -1,3 +1,11 @@
+2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckNewThreadWithoutStartRule.cs: Use Initialize to avoid 
+	executing the rule on some assemblies (52 out of 72 for Mono 2.0)
+	* GetEntryAssemblyMayReturnNullRule.cs: Use Initialize to avoid
+	executing the rule on some assemblies (36 out of 72 for Mono 2.0)
+	and when the assembly is an EXE.
+
 2008-04-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisableDebuggingCodeRule.cs: Change Initialize so the rule 
