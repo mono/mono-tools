@@ -1,3 +1,13 @@
+2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidReturningArraysOnPropertiesRule.cs: Add an alternate
+	solution (to return a collection) and remove details as it does
+	not provide more information (than the [Solution] already provides).
+	* UseStringEmptyRule.cs: Remove variable to track defect state 
+	and use Runner.CurrentRuleResult instead. Remove details as it
+	does not provide more information (than the [Solution] already 
+	provides).
+
 2008-04-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Use the token in the cache 

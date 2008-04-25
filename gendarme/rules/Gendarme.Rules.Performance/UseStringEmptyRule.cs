@@ -46,20 +46,18 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
-			bool failure = false;
+
 			// #2 - look for string references
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.OperandType) {
 				case OperandType.InlineString:
 					string s = (ins.Operand as string);
-					if (s.Length == 0) {
-						Runner.Report (method, ins, Severity.Medium, Confidence.High, "Instance of an empty string has been found");
-						failure = true;
-					}
+					if (s.Length == 0)
+						Runner.Report (method, ins, Severity.Medium, Confidence.High, String.Empty);
 					break;
 				}
 			}
-			return failure ? RuleResult.Failure : RuleResult.Success;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

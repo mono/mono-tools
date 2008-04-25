@@ -32,9 +32,8 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	
-	[Problem ("By convention properties should not return Arrays.")]
-	[Solution ("Replace the property by a method.")]
+	[Problem ("By convention properties should not return arrays.")]
+	[Solution ("Return a read-only collection or replace the property by a method.")]
 	public class AvoidReturningArraysOnPropertiesRule : Rule, IMethodRule {
 		
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -42,7 +41,7 @@ namespace Gendarme.Rules.Performance {
 			if (!method.IsGetter || !method.ReturnType.ReturnType.IsArray ())
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.Medium, Confidence.Total, "Avoid returning arrays from properties");
+			Runner.Report (method, Severity.Medium, Confidence.Total, String.Empty);
 			return RuleResult.Failure;
 		}
 	}
