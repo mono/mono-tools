@@ -47,6 +47,8 @@ namespace Test.Rules.Design {
 			int GetFoo () { return Foo; }
 			bool IsBar () { return Bar; }
 
+			bool HasFoo () { return (0 != Foo); }
+
 			// note: won't be reported since it does not return void
 			int SetFoo (int value) { return (Foo = value); }
 			void SetBar (bool value) { Bar = value; }
@@ -57,6 +59,7 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleFailure<ShouldBeCaught> ("GetFoo");
 			AssertRuleFailure<ShouldBeCaught> ("IsBar");
+			AssertRuleFailure<ShouldBeCaught> ("HasFoo");
 			AssertRuleSuccess<ShouldBeCaught> ("SetFoo");
 			AssertRuleSuccess<ShouldBeCaught> ("SetBar");
 		}
@@ -67,10 +70,15 @@ namespace Test.Rules.Design {
 				get { return getfoo; }
 				set { getfoo = value; }
 			}
+			bool HasFoo {
+				get { return false; }
+			}
 
 			byte [] Baz;
 
 			byte [] GetBaz () { return Baz; }
+
+			byte [] HasBaz () { return null; }
 		}
 
 		[Test]
@@ -78,6 +86,8 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleDoesNotApply<ShouldBeIgnored> ("get_GetFoo");
 			AssertRuleDoesNotApply<ShouldBeIgnored> ("GetBaz");
+			AssertRuleDoesNotApply<ShouldBeIgnored> ("get_HasFoo");
+			AssertRuleDoesNotApply<ShouldBeIgnored> ("HasBaz");
 		}
 
 		public class ShouldBeIgnoredMultipleValuesInSet {
