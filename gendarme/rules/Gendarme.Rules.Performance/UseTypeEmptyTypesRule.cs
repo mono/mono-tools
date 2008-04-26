@@ -44,9 +44,9 @@ namespace Gendarme.Rules.Performance {
 			base.Initialize (runner);
 
 			// Type.EmptyTypes is only available since fx 2.0 so there's no point
-			// to execute it on every methods if the 
+			// to execute it on every methods if the
 			// assembly target runtime is earlier than 2.0
-			Runner.AnalyzeAssembly += (o, e) => 
+			Runner.AnalyzeAssembly += (o, e) =>
 				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
 		}
 
@@ -57,26 +57,24 @@ namespace Gendarme.Rules.Performance {
 
 			// look for array of Type creation
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Newarr:
-					var type = (TypeReference) ins.Operand;
+				if (ins.OpCode != OpCodes.Newarr)
+					continue;
 
-					if (type.FullName != Constants.Type)
-						continue;
+				var type = (TypeReference) ins.Operand;
 
-					var prev = ins.Previous;
+				if (type.FullName != Constants.Type)
+					continue;
 
-					if (prev == null) // extremely unlikely
-						continue;
+				var prev = ins.Previous;
 
-					if ((prev.OpCode == OpCodes.Ldc_I4_0) ||
-						(prev.OpCode == OpCodes.Ldc_I4 && prev.Operand == (int) 0) ||
-						(prev.OpCode == OpCodes.Ldc_I4_S && prev.Operand == (byte) 0)) {
+				if (prev == null) // extremely unlikely
+					continue;
 
-						Runner.Report (method, ins, Severity.Medium, Confidence.High, string.Empty);
-					}
+				if ((prev.OpCode == OpCodes.Ldc_I4_0) ||
+					(prev.OpCode == OpCodes.Ldc_I4 && prev.Operand == (int) 0) ||
+					(prev.OpCode == OpCodes.Ldc_I4_S && prev.Operand == (byte) 0)) {
 
-					break;
+					Runner.Report (method, ins, Severity.Medium, Confidence.High, string.Empty);
 				}
 			}
 
