@@ -1,3 +1,9 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExceptionShouldBeVisibleRule.cs: New. Check that exception 
+	inheriting from base exception types are visible.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: New. Rule to 
