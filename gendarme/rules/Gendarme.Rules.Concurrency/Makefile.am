@@ -10,8 +10,10 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Concurrency.xml TestResult.xml
 
 concurrency_rules_sources_in = ../../AssemblyInfo.cs.in
 concurrency_rules_generated_sources = $(concurrency_rules_sources_in:.in=)
-concurrency_rules_sources = DoubleCheckLockingRule.cs WriteStaticFieldFromInstanceMethodRule.cs \
-	NonConstantStaticFieldsShouldNotBeVisibleRule.cs
+concurrency_rules_sources = DoubleCheckLockingRule.cs \
+	WriteStaticFieldFromInstanceMethodRule.cs \
+	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \
+	DontUseLockedRegionOutsideMethod.cs
 
 concurrency_rules_build_sources = $(addprefix $(srcdir)/, $(concurrency_rules_sources))
 concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
@@ -20,8 +22,10 @@ concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
 	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
 		-out:$@ $(concurrency_rules_build_sources)
 
-concurrency_test_sources = DoubleCheckLockingTest.cs WriteStaticFieldFromInstanceMethodTest.cs \
-	NonConstantStaticFieldsShouldNotBeVisibleTest.cs
+concurrency_test_sources = DoubleCheckLockingTest.cs \
+	WriteStaticFieldFromInstanceMethodTest.cs \
+	NonConstantStaticFieldsShouldNotBeVisibleTest.cs \
+	DontUseLockedRegionOutsideMethodTest.cs
 
 concurrency_test_build_sources = $(addprefix $(srcdir)/Test/, $(concurrency_test_sources))
 

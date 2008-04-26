@@ -31,53 +31,42 @@
 using System;
 
 using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace Gendarme.Rules.Concurrency
-{
+namespace Gendarme.Rules.Concurrency {
+
 	// TODO: do a rule that checks if Monitor.Enter is used *before* Exit (dumb code, I know)
 	// TODO: do a more complex rule that checks that you have used Thread.Monitor.Exit in a finally block
 	[Problem ("This method uses Thread.Monitor.Enter() but doesn't use Thread.Monitor.Exit().")]
 	[Solution ("Rather use the lock{} statement in case your language is C#, or Thread.Monitor.Exit() in other case.")]
-	public class DontUseLockedRegionOutsideMethodRule : Rule, IMethodRule
-	{
-		public DontUseLockedRegionOutsideMethodRule ()
-		{
-			
-		}
+	public class DoNotUseLockedRegionOutsideMethodRule : Rule, IMethodRule {
 		
-		RuleResult IMethodRule.CheckMethod (MethodDefinition method)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule doesn't apply if the method has no IL
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 			
-			bool hasEnter = false;
-			bool hasExit = false;
+			int enter = 0;
+			int exit = 0;
 			
 			foreach (Instruction ins in method.Body.Instructions) {
 				if (ins.OpCode.FlowControl == FlowControl.Call) {
 					MethodReference m = (ins.Operand as MethodReference);
 					if (IsMonitorMethod (m, "Enter")) {
-						hasEnter = true;
-						if (hasExit) {
-							break;
-						}
-					}
-					else if (IsMonitorMethod (m, "Exit")) {
-						hasExit = true;
-						if (hasEnter) {
-							break;
-						}
+						enter++;
+					} else if (IsMonitorMethod (m, "Exit")) {
+						exit++;
 					}
 				}
 			}
 			
-			if (((!hasExit) && (!hasEnter)) || (hasExit && hasEnter))
+			if (enter == exit)
 				return RuleResult.Success;
+
+			Runner.Report (method, Severity.High, Confidence.Normal, String.Empty);
 			return RuleResult.Failure;
 		}
 		

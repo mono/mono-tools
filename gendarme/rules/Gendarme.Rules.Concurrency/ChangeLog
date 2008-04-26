@@ -1,3 +1,9 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontUseLockedRegionOutsideMethod.cs: Add missing reporting (not 
+	very accurate now) and simplified logic a bit while making it work 
+	with my new test case.
+
 2008-04-26  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Gendarme.Rules.Concurrency.mdp, DontUseLockedRegionOutsideMethod.cs:
