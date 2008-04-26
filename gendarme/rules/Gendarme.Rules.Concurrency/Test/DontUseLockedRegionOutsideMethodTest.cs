@@ -1,10 +1,10 @@
 //
-// Unit tests for DoubleCheckLockingRule
+// Unit tests for DontUseLockedRegionOutsideMethodTest
 //
 // Authors:
 //	Andres G. Aragoneses <aaragoneses@novell.com>
 //
-// Copyright (C) 2005 Andres G. Aragoneses
+// Copyright (C) 2008 Andres G. Aragoneses
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,7 +34,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Concurrency {
 
 	[TestFixture]
-	public class DontUseLockedRegionOutsideMethodTest : MethodRuleTestFixture<DontUseLockedRegionOutsideMethodRule> {
+	public class DoNotUseLockedRegionOutsideMethodTest : MethodRuleTestFixture<DoNotUseLockedRegionOutsideMethodRule> {
 	
 		public class Monitors {
 
@@ -65,6 +65,12 @@ namespace Test.Rules.Concurrency {
 				WithoutThreadExit ();
 			}
 
+			public static void TwoEnterOneExit ()
+			{
+				lock (new object ()) {
+					System.Threading.Monitor.Enter (new object ());
+				}
+			}
 		}
 	
 		[Test]
@@ -73,6 +79,7 @@ namespace Test.Rules.Concurrency {
 			AssertRuleSuccess<Monitors> ("WithLockStatement");
 			AssertRuleSuccess<Monitors> ("WithoutConcurrency");
 			AssertRuleFailure<Monitors> ("WithoutThreadExit");
+			AssertRuleFailure<Monitors> ("TwoEnterOneExit");
 		}
 	}
 }
