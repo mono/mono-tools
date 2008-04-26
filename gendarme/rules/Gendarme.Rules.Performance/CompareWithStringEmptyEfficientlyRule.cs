@@ -78,8 +78,6 @@ namespace Gendarme.Rules.Performance {
 					if (field.Name != "Empty")
 						continue;
 					break;
-				default:
-					throw new NotImplementedException (prev.OpCode.Code.ToString ());
 				}
 
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, String.Empty);

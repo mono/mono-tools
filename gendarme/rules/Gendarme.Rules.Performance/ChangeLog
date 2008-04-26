@@ -1,3 +1,8 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CompareWithStringEmptyEfficientlyRule.cs: Remove debugging NIE
+	hack.
+
 2008-04-26  Jb Evain  <jbevain@novell.com>
 
 	* UseTypeEmptyTypesRule.cs: New rule that checks for unecessary
