@@ -56,7 +56,8 @@ namespace Gendarme {
 			public AssemblyDefinition Definition;
 		}
 
-		private const string Url = "http://www.mono-project.com/Gendarme";
+		private const string BaseUrl = "http://www.mono-project.com/";
+		private const string DefaultUrl = BaseUrl + "Gendarme";
 
 		static Process process;
 
@@ -86,7 +87,7 @@ namespace Gendarme {
 			// to implement this wizard
 			wizard_tab_control.Top = -22;
 
-			welcome_link_label.Text = Url;
+			welcome_link_label.Text = DefaultUrl;
 			welcome_wizard_label.Text = String.Format ("Gendarme Wizard Runner Version {0}",
 				GetVersion (GetType ()));
 			welcome_framework_label.Text = String.Format ("Gendarme Framework Version {0}",
@@ -197,7 +198,7 @@ namespace Gendarme {
 		private void HelpButtonClick (object sender, EventArgs e)
 		{
 			// open web browser to http://www.mono-project.com/Gendarme
-			Open (Url);
+			Open (DefaultUrl);
 		}
 
 		private void UpdatePageUI ()
@@ -240,7 +241,7 @@ namespace Gendarme {
 
 		private void GendarmeLinkClick (object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Open (Url);
+			Open (DefaultUrl);
 		}
 
 		#endregion
@@ -330,14 +331,30 @@ namespace Gendarme {
 			if (rules_populated)
 				return;
 
+			Dictionary<string, TreeNode> nodes = new Dictionary<string, TreeNode> ();
+
 			rules_tree_view.BeginUpdate ();
 			foreach (IRule rule in Runner.Rules) {
-				TreeNode node = new TreeNode (rule.FullName);
+				TreeNode parent;
+				string name_space = rule.FullName.Substring (0, rule.FullName.Length - rule.Name.Length - 1);
+				if (!nodes.TryGetValue (name_space, out parent)) {
+					parent = new TreeNode (name_space);
+					parent.Checked = true;
+					nodes.Add (name_space, parent);
+					rules_tree_view.Nodes.Add (parent);
+				}
+
+				TreeNode node = new TreeNode (rule.Name);
 				node.Checked = true;
 				node.Tag = rule;
 				node.ToolTipText = rule.Problem;
-				rules_tree_view.Nodes.Add (node);
+				parent.Nodes.Add (node);
 			}
+			foreach (TreeNode node in rules_tree_view.Nodes) {
+				node.ToolTipText = String.Format ("{0} rules available", node.Nodes.Count);
+			}
+			nodes.Clear ();
+
 			rules_tree_view.Sort ();
 			rules_tree_view.EndUpdate ();
 			rules_populated = true;
@@ -349,11 +366,13 @@ namespace Gendarme {
 			string url = null;
 
 			if (rules_tree_view.SelectedNode == null)
-				url = Url;
+				url = DefaultUrl;
 			else {
-				// we need quote because of the # in the rule url (mono bug #371567)
-				url = String.Format ("{0}{1}{0}", "\"",
-					(rules_tree_view.SelectedNode.Tag as IRule).Uri);
+				if (rules_tree_view.SelectedNode.Tag == null) {
+					url = BaseUrl + rules_tree_view.SelectedNode.Text;
+				} else {
+					url = (rules_tree_view.SelectedNode.Tag as IRule).Uri.ToString ();
+				}
 			}
 
 			Open (url);
@@ -361,7 +380,15 @@ namespace Gendarme {
 
 		private void RulesTreeViewAfterCheck (object sender, TreeViewEventArgs e)
 		{
-			(e.Node.Tag as IRule).Active = e.Node.Checked;
+			IRule rule = (e.Node.Tag as IRule);
+			if (rule == null) {
+				// childs
+				foreach (TreeNode node in e.Node.Nodes) {
+					node.Checked = e.Node.Checked;
+				}
+			} else {
+				rule.Active = e.Node.Checked;
+			}
 		}
 
 		#endregion
@@ -371,9 +398,11 @@ namespace Gendarme {
 		private void UpdateAnalyzeUI ()
 		{
 			// update UI before waiting for assemblies to be loaded
+			progress_bar.Value = 0;
 			next_button.Enabled = false;
 			analyze_status_label.Text = String.Format ("Processing assembly 1 of {0}",
 				assemblies.Count);
+			analyze_defect_label.Text = String.Format ("Defects Found: 0");
 			// make sure all assemblies are loaded into memory
 			assemblies_loading.AsyncWaitHandle.WaitOne ();
 			PrepareAnalyze ();
@@ -404,7 +433,7 @@ namespace Gendarme {
 
 		private void Analyze ()
 		{
-			counter = 1;
+			counter = 0;
 			Runner.Initialize ();
 			Runner.Run ();
 
@@ -423,8 +452,9 @@ namespace Gendarme {
 		/// Update UI before analyzing an assembly.
 		/// </summary>
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
-		public void PreUpdate (RunnerEventArgs e)
+		public void PreAssemblyUpdate (RunnerEventArgs e)
 		{
+			progress_bar.Value = counter++;
 			analyze_status_label.Text = String.Format ("Processing assembly {0} of {1}",
 				counter, e.Runner.Assemblies.Count);
 			analyze_assembly_label.Text = "Assembly: " + e.CurrentAssembly.Name.FullName;
@@ -434,9 +464,8 @@ namespace Gendarme {
 		/// Update UI after analyzing an assembly.
 		/// </summary>
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
-		public void PostUpdate (RunnerEventArgs e)
+		public void PostTypeUpdate (RunnerEventArgs e)
 		{
-			progress_bar.Value = counter++;
 			analyze_defect_label.Text = String.Format ("Defects Found: {0}", e.Runner.Defects.Count);
 		}
 

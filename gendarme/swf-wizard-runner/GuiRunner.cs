@@ -87,11 +87,15 @@ namespace Gendarme {
 		protected override void OnAssembly (RunnerEventArgs e)
 		{
 			// update wizard UI on the main, i.e. UI, thread
-			wizard.BeginInvoke ((Action) (() => wizard.PreUpdate (e)));
+			wizard.BeginInvoke ((Action) (() => wizard.PreAssemblyUpdate (e)));
 			base.OnAssembly (e);
-			wizard.BeginInvoke ((Action) (() => wizard.PostUpdate (e)));
 		}
 
+		protected override void OnType (RunnerEventArgs e)
+		{
+			base.OnType (e);
+			wizard.BeginInvoke ((Action) (() => wizard.PostTypeUpdate (e)));
+		}
 
 		// Ignore List is not supported by the Wizard runner
 

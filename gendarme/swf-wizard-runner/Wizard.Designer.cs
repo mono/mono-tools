@@ -317,7 +317,6 @@ namespace Gendarme {
 			this.rules_tree_view.Location = new System.Drawing.Point (15, 47);
 			this.rules_tree_view.Name = "rules_tree_view";
 			this.rules_tree_view.ShowNodeToolTips = true;
-			this.rules_tree_view.ShowRootLines = false;
 			this.rules_tree_view.Size = new System.Drawing.Size (468, 301);
 			this.rules_tree_view.TabIndex = 0;
 			this.rules_tree_view.AfterCheck += new System.Windows.Forms.TreeViewEventHandler (this.RulesTreeViewAfterCheck);

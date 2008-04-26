@@ -1,3 +1,9 @@
+2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GuiRunner.cs: Better progress display.
+	* Wizard.Designer.cs: Show root lines on the rule treeview.
+	* Wizard.cs: Show rules in a tree, per assembly.
+
 2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Load the assemblies asynchronously. Update any loaded 
