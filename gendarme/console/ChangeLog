@@ -1,3 +1,7 @@
+2008-04-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* gendarme.xsl: Output HTML as UTF-8
+
 2008-04-21  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* Settings.cs: Added support for allowing set properties from the XML
