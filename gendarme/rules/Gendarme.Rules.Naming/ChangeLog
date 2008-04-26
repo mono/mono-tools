@@ -1,3 +1,11 @@
+2008-04-26  Jb Evain  <jbevain@novell.com>
+
+	* UseCorrectCasingRule.cs: check for proper namespace casing.
+	Rules are as follows: if the namespace length is 1, we
+	report an error, if it's 2, we check that all letters
+	are properly cased, if it's 3, we check that all letters
+	are not upper cased, and that we're pascal case otherwise.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectSuffixRule.cs: Allow the Set suffix for collections.
