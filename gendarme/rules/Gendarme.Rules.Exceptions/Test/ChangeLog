@@ -1,3 +1,8 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExceptionShouldBeVisibleTest.cs: New. Unit tests for 
+	ExceptionShouldBeVisibleRule.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidArgumentExceptionDefaultConstructorTest.cs: New. Unit tests
