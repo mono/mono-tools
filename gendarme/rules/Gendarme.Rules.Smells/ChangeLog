@@ -1,3 +1,10 @@
+2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
+	
+	* AvoidMessageChainsRule.cs: New.  First rule in the Rule Day :)
+	* Test/AvoidMessageChainsTest.cs: New.  Tests for AvoidMessageChains
+	rule.
+	* Makefile.am: Added both to the build.
+
 2008-04-23  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* AvoidLongMethodsRule.cs: The C# compiler was optimized in order to

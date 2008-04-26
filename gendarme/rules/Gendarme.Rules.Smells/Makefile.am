@@ -20,7 +20,8 @@ smells_rules_sources =  \
 	AvoidCodeDuplicatedInSameClassRule.cs \
 	AvoidCodeDuplicatedInSiblingClassesRule.cs \
 	Utilities.cs \
-	AvoidSpeculativeGeneralityRule.cs 
+	AvoidSpeculativeGeneralityRule.cs \
+	AvoidMessageChainsRule.cs
 
 smells_rules_build_sources = $(addprefix $(srcdir)/, $(smells_rules_sources))
 smells_rules_build_sources += $(smells_rules_generated_sources)
@@ -35,7 +36,8 @@ smells_test_sources =  \
 	AvoidLargeClassesTest.cs \
 	AvoidLongMethodsTest.cs \
 	AvoidLongParameterListsTest.cs \
-	AvoidSpeculativeGeneralityTest.cs
+	AvoidSpeculativeGeneralityTest.cs \
+	AvoidMessageChainsTest.cs
 
 smells_test_build_sources = $(addprefix $(srcdir)/Test/, $(smells_test_sources))
 
