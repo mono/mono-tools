@@ -35,6 +35,11 @@ using Gendarme.Rules.Naming;
 using Mono.Cecil;
 using NUnit.Framework;
 
+namespace Test.IO {	class Foo {} }
+namespace Test.Fa { class Foo {} }
+namespace Test.ASP { class Foo {} class Bar {} }
+namespace Test.A { class Foo {} }
+
 namespace Test.Rules.Naming {
 
 	public class CorrectCasing {
@@ -102,6 +107,42 @@ namespace Test.Rules.Naming {
 					return method;
 			}
 			return null;
+		}
+
+		[Test]
+		public void TestCorrectNamespaceOfLength2 ()
+		{
+			type = assembly.MainModule.Types ["Test.IO.Foo"];
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void TestIncorrectNamespaceOfLength2 ()
+		{
+			type = assembly.MainModule.Types ["Test.Fa.Foo"];
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void TestIncorrectNamespaceOfLength1 ()
+		{
+			type = assembly.MainModule.Types ["Test.A.Foo"];
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void TestIncorrectNamespaceIsReportedOnce ()
+		{
+			type = assembly.MainModule.Types ["Test.ASP.Foo"];
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult #1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count #1");
+
+			type = assembly.MainModule.Types ["Test.ASP.Bar"];
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult #2");
+			Assert.AreEqual (0, runner.Defects.Count, "Count #2");
 		}
 
 		[Test]

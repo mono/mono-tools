@@ -1,3 +1,8 @@
+2008-04-26  Jb Evain  <jbevain@novell.com.com>
+
+	* UseCorrectCasingTest.cs: add tests for namespace casing
+	checks.
+
 2008-03-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectCasingTest.cs: Fix test case for compiler-generated code
