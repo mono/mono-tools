@@ -1,5 +1,10 @@
 2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidMessageChainsRule.cs: Use descriptive messages when report a
+	violation.
+
+2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidMessageChainsRule.cs: Trimming down several false positives.
 	* Test/AviodMessageChainsTest.cs: Replaced tests with better ones.  The
 	latest gives us a lot of false positives.

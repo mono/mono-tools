@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Smells {
 					counter++;
 				if (IsDelimiter (instruction)) {
 					if (counter >= MaxChainLength)
-						Runner.Report (method, instruction, Severity.Medium, Confidence.Low, "Found");
+						Runner.Report (method, instruction, Severity.Medium, Confidence.Low, "This method contains a message chain, your code could be hardly coupled to with its navigation structure.");
 					counter = 0;
 				}
 			}
