@@ -1,4 +1,4 @@
-2008-04-26  Jb Evain  <jbevain@novell.com.com>
+2008-04-26  Jb Evain  <jbevain@novell.com>
 
 	* UseCorrectCasingTest.cs: add tests for namespace casing
 	checks.
