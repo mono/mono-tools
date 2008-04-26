@@ -1,3 +1,10 @@
+2008-04-26  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Concurrency.mdp, DontUseLockedRegionOutsideMethodTest.cs:
+	  My first rule with its tests! It's very simple but more will come
+	  (noted in the TODO's). I hope it works because I cannot check it
+	  right now, the Gendarme.Tests are failing compilation for me.
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoubleCheckLockingTest.cs: Add two more test cases and update
