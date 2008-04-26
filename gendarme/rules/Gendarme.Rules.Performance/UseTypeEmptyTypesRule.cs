@@ -60,8 +60,8 @@ namespace Gendarme.Rules.Performance {
 					continue;
 
 				if ((prev.OpCode == OpCodes.Ldc_I4_0) ||
-					(prev.OpCode == OpCodes.Ldc_I4 && prev.Operand == (int) 0) ||
-					(prev.OpCode == OpCodes.Ldc_I4_S && prev.Operand == (byte) 0)) {
+					(prev.OpCode == OpCodes.Ldc_I4 && (int) prev.Operand == (int) 0) ||
+					(prev.OpCode == OpCodes.Ldc_I4_S && (sbyte) prev.Operand == (sbyte) 0)) {
 
 					Runner.Report (method, ins, Severity.Medium, Confidence.High, string.Empty);
 				}
