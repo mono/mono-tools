@@ -1,3 +1,9 @@
+2008-04-26  Jb Evain  <jbevain@novell.com>
+
+	* UseTypeEmptyTypesTest.cs: New tests for the new UseTypeEmptyTypesRule
+	that checks for unecessary creation of empty array of types.
+	* Makefile.am: add the new guy to the build.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CompareWithStringEmptyEfficientlyTest.cs: New. This replace
