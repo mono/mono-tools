@@ -1,3 +1,11 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CompareWithStringEmptyEfficientlyRule.cs: Replace the existing
+	UsingStringLengthInsteadOfCheckingEmptyStringRule rule. Add checks
+	for String.Empty and Equality and Inequality operators.
+	* UsingStringLengthInsteadOfCheckingEmptyStringRule.cs: Removed
+	* Makefile.am: Update build with new names.
+
 2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidReturningArraysOnPropertiesRule.cs: Add an alternate

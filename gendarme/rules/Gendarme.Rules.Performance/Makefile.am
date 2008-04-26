@@ -19,7 +19,7 @@ performance_rules_sources = \
 	AvoidUncalledPrivateCodeRule.cs \
 	AvoidUnneededCallsOnStringRule.cs \
 	DontIgnoreMethodResultRule.cs \
-	UsingStringLengthInsteadOfCheckingEmptyStringRule.cs \
+	CompareWithStringEmptyEfficientlyRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \
 	AvoidUnsealedConcreteAttributesRule.cs \
 	UseIsOperatorRule.cs \
@@ -40,7 +40,7 @@ performance_test_sources = \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
 	AvoidUnusedParametersTest.cs \
-	UsingStringLengthInsteadOfCheckingEmptyStringTest.cs \
+	CompareWithStringEmptyEfficientlyTest.cs \
 	AvoidUncalledPrivateCodeTest.cs \
 	AvoidUnneededCallsOnStringTest.cs \
 	AvoidUninstantiatedInternalClassesTest.cs \
