@@ -1,3 +1,8 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MissingExceptionConstructorsTest.cs: New. Unit tests for 
+	MissingExceptionConstructorsRule.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExceptionShouldBeVisibleTest.cs: New. Unit tests for 
