@@ -107,10 +107,22 @@ namespace Test.Rules.Smells {
 		}
 
 		[Test]
-		[Ignore ("Next case")]
 		public void ChainWithTemporaryVariablesTest ()
 		{
 			AssertRuleFailure<AvoidMessageChainsTest> ("ChainWithTemporaryVariables", 1);
+		}
+
+		public void NoChainWithTemporaryVariables ()
+		{
+			int x;
+			char c;
+			Console.WriteLine ("More tests");
+		}
+
+		[Test]
+		public void NoChainWithTemporaryVariablesTEst ()
+		{
+			AssertRuleSuccess<AvoidMessageChainsTest> ("NoChainWithTemporaryVariables");
 		}
 	}
 }

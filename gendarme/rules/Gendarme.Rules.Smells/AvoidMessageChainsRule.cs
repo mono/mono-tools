@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Gendarme.Framework;
 using Mono.Cecil;
@@ -48,23 +49,111 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
+		private void CheckConsecutiveCalls (MethodDefinition method)
+		{
+			int counter = 0;
+			foreach (Instruction instruction in method.Body.Instructions) {
+				if (IsCallInstruction (instruction))
+					counter++;
+				else
+					counter = 0;
+				if (counter == MaxChainLength)
+					Runner.Report (method, instruction, Severity.High, Confidence.Normal, "You are making a message chain, your code is hardly coupled to the navigation structure.  Any change in the relationships will cause a client change.");
+			}
+		}
+
+		private bool IsCallInstruction (Instruction instruction)
+		{
+			return instruction.OpCode == OpCodes.Call ||
+				instruction.OpCode == OpCodes.Callvirt;
+		}
+
+		private bool IsStoreInstruction (Instruction instruction)
+		{
+			return instruction.OpCode.FlowControl == FlowControl.Next &&
+				instruction.OpCode.OpCodeType == OpCodeType.Macro &&
+				instruction.OpCode.OperandType == OperandType.InlineNone &&
+				instruction.OpCode.StackBehaviourPop == StackBehaviour.Pop1 &&
+				instruction.OpCode.StackBehaviourPush == StackBehaviour.Push0;
+		}
+
+		private bool IsLoadInstruction (Instruction instruction)
+		{
+			return instruction.OpCode.FlowControl == FlowControl.Next &&
+				instruction.OpCode.OpCodeType == OpCodeType.Macro &&
+				instruction.OpCode.OperandType == OperandType.InlineNone &&
+				instruction.OpCode.StackBehaviourPop == StackBehaviour.Pop0 &&
+				instruction.OpCode.StackBehaviourPush == StackBehaviour.Push1;
+		}
+
+		private int GetVariableIdentifierFrom (OpCode opCode) 
+		{
+			return Int32.Parse (opCode.Name.Substring (opCode.Name.Length - 1, 1));
+		}
+
+		private Dictionary<int, int> GetPossibleChains (MethodDefinition method)
+		{
+			//Is not the better choice, multiples values,
+			//reassignations, but by the moment ...
+			Dictionary<int, int> possibleChains = new Dictionary<int, int> ();
+			int currentVariable = 0;
+			Instruction current = method.Body.Instructions[method.Body.Instructions.Count - 1];
+			while (current != null) {
+				//if a load instruction is interfered with a
+				//store we will have a dependency.
+				if (IsStoreInstruction (current)) 
+					currentVariable = GetVariableIdentifierFrom (current.OpCode);	
+				if (IsLoadInstruction (current)) 
+					if (currentVariable != GetVariableIdentifierFrom (current.OpCode))  
+						possibleChains.Add (currentVariable, GetVariableIdentifierFrom (current.OpCode));
+				current = current.Previous;
+			}
+			return possibleChains;
+		}
+
+		private Dictionary<int, int> GetCostTable (MethodDefinition method)
+		{
+			Dictionary<int, int> costTable = new Dictionary<int, int> ();
+			int counter = 0;
+			foreach (Instruction current in method.Body.Instructions) {
+				if (IsStoreInstruction (current)) {
+					costTable.Add (GetVariableIdentifierFrom (current.OpCode), counter);
+					counter = 0;
+				}
+				else 
+					if (IsCallInstruction (current))
+						counter++;
+					else
+						counter = 0;
+			}
+			return costTable;
+		}
+
+		private void CheckTemporaryLocals (MethodDefinition method)
+		{
+			//At least one local var to continue
+			if (method.Body.Variables.Count == 0)
+				return;
+			
+			Dictionary<int, int> possibleChains = GetPossibleChains (method);
+			Dictionary<int, int> costTable = GetCostTable (method);
+			
+			foreach (int key in possibleChains.Keys) {
+				int depends = possibleChains[key];
+				int totalCost = costTable[key] + costTable[depends];
+				if (totalCost == MaxChainLength)
+					Runner.Report (method, Severity.High, Confidence.Normal, "You are making a message chain, your code is hardly coupled to the navigation structure.  Any change in the relationships will cause a client change.");
+			}
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody) 
 				return RuleResult.DoesNotApply;
 			
-			//We count for several call or callvirt concatenated
-			//instructions
-			int counter = 0;
-			foreach (Instruction instruction in method.Body.Instructions) {
-					if (instruction.OpCode == OpCodes.Call || instruction.OpCode == OpCodes.Callvirt)
-						counter++;
-					else
-						counter = 0;
-					if (counter == MaxChainLength)
-						Runner.Report (method, instruction, Severity.High, Confidence.Normal, "You are making a message chain, your code is hardly coupled to the navigation structure.  Any change in the relationships will cause a client change.");
-			}
-			
+			CheckConsecutiveCalls (method);
+			CheckTemporaryLocals (method);
+
 			return Runner.CurrentRuleResult;
 		}
 	}
