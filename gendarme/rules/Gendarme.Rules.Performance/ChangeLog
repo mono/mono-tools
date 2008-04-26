@@ -1,3 +1,10 @@
+2008-04-26  Jb Evain  <jbevain@novell.com>
+
+	* UseTypeEmptyTypesRule.cs: New rule that checks for unecessary
+	creation of empty array of types (used a lot for reflection), while
+	.net 2 introduces Type.EmptyTypes. Rule only enabled for fx > 2.0.
+	* Makefile.am: add the new guy to the build.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CompareWithStringEmptyEfficientlyRule.cs: Replace the existing

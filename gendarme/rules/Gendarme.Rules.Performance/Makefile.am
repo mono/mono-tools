@@ -14,6 +14,7 @@ performance_rules_sources = \
 	EmptyDestructorRule.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeRule.cs \
 	UseStringEmptyRule.cs \
+	UseTypeEmptyTypesRule.cs \
 	AvoidUnusedParametersRule.cs \
 	AvoidUninstantiatedInternalClassesRule.cs \
 	AvoidUncalledPrivateCodeRule.cs \
@@ -39,6 +40,7 @@ performance_test_sources = \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
+	UseTypeEmptyTypesTest.cs \
 	AvoidUnusedParametersTest.cs \
 	CompareWithStringEmptyEfficientlyTest.cs \
 	AvoidUncalledPrivateCodeTest.cs \
