@@ -1,5 +1,10 @@
 2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidMessageChainsRule.cs: Some fixes for avoid the exceptions in self
+	test target.
+
+2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidMessageChainsRule.cs: Implemented logic for detect chains created
 	with local variables.  By the moment it's a bit constrained, only 5
 	local variables and without reassignments.

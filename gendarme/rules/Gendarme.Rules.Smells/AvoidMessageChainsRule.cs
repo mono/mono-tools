@@ -105,7 +105,8 @@ namespace Gendarme.Rules.Smells {
 					currentVariable = GetVariableIdentifierFrom (current.OpCode);	
 				if (IsLoadInstruction (current)) 
 					if (currentVariable != GetVariableIdentifierFrom (current.OpCode))  
-						possibleChains.Add (currentVariable, GetVariableIdentifierFrom (current.OpCode));
+						if (!possibleChains.ContainsKey(currentVariable))
+							possibleChains.Add (currentVariable, GetVariableIdentifierFrom (current.OpCode));
 				current = current.Previous;
 			}
 			return possibleChains;
@@ -117,7 +118,8 @@ namespace Gendarme.Rules.Smells {
 			int counter = 0;
 			foreach (Instruction current in method.Body.Instructions) {
 				if (IsStoreInstruction (current)) {
-					costTable.Add (GetVariableIdentifierFrom (current.OpCode), counter);
+					if (!costTable.ContainsKey (GetVariableIdentifierFrom (current.OpCode)))
+						costTable.Add (GetVariableIdentifierFrom (current.OpCode), counter);
 					counter = 0;
 				}
 				else 
@@ -140,9 +142,11 @@ namespace Gendarme.Rules.Smells {
 			
 			foreach (int key in possibleChains.Keys) {
 				int depends = possibleChains[key];
-				int totalCost = costTable[key] + costTable[depends];
-				if (totalCost == MaxChainLength)
-					Runner.Report (method, Severity.High, Confidence.Normal, "You are making a message chain, your code is hardly coupled to the navigation structure.  Any change in the relationships will cause a client change.");
+				if (costTable.ContainsKey (key) && costTable.ContainsKey (depends)) {
+					int totalCost = costTable[key] + costTable[depends];
+					if (totalCost == MaxChainLength)
+						Runner.Report (method, Severity.High, Confidence.Normal, "You are making a message chain, your code is hardly coupled to the navigation structure.  Any change in the relationships will cause a client change.");
+				}
 			}
 		}
 
