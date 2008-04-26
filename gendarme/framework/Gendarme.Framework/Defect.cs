@@ -36,6 +36,11 @@ namespace Gendarme.Framework {
 
 	public class Defect {
 
+		// http://blogs.msdn.com/jmstall/archive/2005/06/19/FeeFee_SequencePoints.aspx
+		private const int PdbHiddenLine = 0xFEEFEE;
+
+		private static string AlmostEqualTo = new string (new char [] { '\u2248' });
+
 		private IRule rule;
 		private IMetadataTokenProvider target;
 		private IMetadataTokenProvider location;
@@ -136,24 +141,43 @@ namespace Gendarme.Framework {
 			return (location as MethodDefinition);
 		}
 
+		private static string FormatSequencePoint (SequencePoint sp, bool exact)
+		{
+			return FormatSequencePoint (sp.Document.Url, sp.StartLine, sp.StartColumn, exact);
+		}
+
+		private static string FormatSequencePoint (string document, int line, int column, bool exact)
+		{
+			string sline = (line == PdbHiddenLine) ? "unavailable" : line.ToString ();
+
+			// MDB (mono symbols) does not provide any column information (so we don't show any)
+			// there's also no point in showing a column number if we're not totally sure about the line
+			if (exact && (column > 0))
+				return String.Format (CultureInfo.InvariantCulture, "{0}({1},{2})", document, sline, column);
+
+			return String.Format (CultureInfo.InvariantCulture, "{0}({2}{1})", document, sline,
+				exact ? String.Empty : AlmostEqualTo);
+		}
+
+		private static string GetSource (Instruction ins)
+		{
+			// try to find the closed sequence point for this instruction
+			Instruction search = ins;
+			while (search != null) {
+				// skip empty entries and entries that are hidden (0xFEEFEE)
+				if ((search.SequencePoint != null) && (search.SequencePoint.StartLine != PdbHiddenLine))
+					return FormatSequencePoint (search.SequencePoint, (search == ins));
+
+				search = search.Previous;
+			}
+			// no details, we only have the IL offset to report
+			return String.Format (CultureInfo.InvariantCulture, "debugging symbols unavailable, IL offset 0x{0:x4}", ins.Offset);
+		}
+
 		public string Source {
 			get {
-				if (ins != null) {
-					// try to find the closed sequence point for this instruction
-					Instruction search = ins;
-					while (search != null) {
-						if (search.SequencePoint != null) {
-							// real details were provided
-							return String.Format (CultureInfo.InvariantCulture, "{0}({1},{2})",
-								search.SequencePoint.Document.Url,
-								search.SequencePoint.StartLine,
-								search.SequencePoint.StartColumn);
-						}
-						search = search.Previous;
-					}
-					// no details, we only have the IL offset to report
-					return String.Format (CultureInfo.InvariantCulture, "debugging information unavailable, IL offset 0x{0:x4}", ins.Offset);
-				}
+				if (ins != null)
+					return GetSource (ins);
 
 				// rule didn't provide an Instruction but we do our best to
 				// find something since this is our only link to the source code
@@ -162,16 +186,17 @@ namespace Gendarme.Framework {
 				TypeDefinition type = null;
 
 				// MethodDefinition, ParameterDefinition
-				//	return the method source file with (appromixate) line number
+				//	return the method source file with (approximate) line number
 				MethodDefinition method = FindMethodFromLocation ();
 				if (method != null) {
 					candidate = ExtractFirst (method);
 					if (candidate != null) {
-						// we approximated the results (line - 1, no column)
-						// to get (close) to the method definition
-						return String.Format (CultureInfo.InvariantCulture, "{0}({1})",
-							candidate.SequencePoint.Document.Url,
-							candidate.SequencePoint.StartLine - 1);
+						int line = candidate.SequencePoint.StartLine;
+						// we approximate (line - 1, no column) to get (closer) to the definition
+						// unless we have the special 0xFEEFEE value (used in PDB for hidden source code)
+						if (line != PdbHiddenLine)
+							line--;
+						return FormatSequencePoint (candidate.SequencePoint.Document.Url, line, 0, false);
 					}
 					// we may still be lucky to find the (a) source file for the type itself
 					type = (method.DeclaringType as TypeDefinition);
@@ -184,7 +209,7 @@ namespace Gendarme.Framework {
 				candidate = ExtractFirst (type);
 				if (candidate != null) {
 					// we report only the source file of the first ctor (that reported something)
-					return (candidate.SequencePoint.Document.Url);
+					return candidate.SequencePoint.Document.Url;
 				}
 
 				return String.Empty;
