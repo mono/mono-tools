@@ -43,7 +43,8 @@ namespace Gendarme.Rules.Design {
 							"GetHashCode",
 							"GetType",
 							"GetTypeCode",
-							"GetValue"};
+							"GetValue",
+							"HasElementTypeImpl"};
 		private const string Void = "System.Void";
 		string [] parameter = new string [1];
 
@@ -87,10 +88,11 @@ namespace Gendarme.Rules.Design {
 
 			// rule applies
 
-			// If it starts with "get" or "is", has no parameters and returns something
+			// If it starts with "get" or "is" or "has", has no parameters and returns something
 			bool get = StartsWith ("get", method.Name);
 			bool isp = StartsWith ("is", method.Name);
-			if ((get || isp) && (method.Parameters.Count == 0) && (method.ReturnType.ReturnType.FullName != Void)) {
+			bool has = StartsWith ("has", method.Name);
+			if ((get || isp || has) && (method.Parameters.Count == 0) && (method.ReturnType.ReturnType.FullName != Void)) {
 				// if it's a getter then look for a setter (to complete the report)
 				string msg = get ? ReportAssociatedSetter (method) : String.Empty;
 				Runner.Report (method, Severity.Low, Confidence.Normal, msg);

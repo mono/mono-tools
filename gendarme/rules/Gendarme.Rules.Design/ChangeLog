@@ -1,3 +1,8 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingMethodToPropertyRule.cs: Add checks for 
+	methods starting with Has*. Patch from Cedric Vivier.
+
 2008-04-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* OperatorEqualsShouldBeOverloadedRule.cs: Fix Problem/Solution
