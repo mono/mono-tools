@@ -1,3 +1,8 @@
+2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ParameterNamesShouldMatchOverridenMethodRule.cs:  Remove a duplicated
+	call to ReturnType.  
+
 2008-04-26  Jb Evain  <jbevain@novell.com>
 
 	* UseCorrectCasingRule.cs: check for proper namespace casing.

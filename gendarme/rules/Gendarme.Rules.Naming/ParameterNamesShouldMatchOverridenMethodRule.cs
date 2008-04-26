@@ -47,7 +47,7 @@ namespace Gendarme.Rules.Naming {
 				if (method.Name != baseMethod.DeclaringType.FullName + "." + baseMethod.Name)
 					return false;
 			}
-			if (method.ReturnType.ReturnType.ToString () != baseMethod.ReturnType.ReturnType.ToString ())
+			if (method.ReturnType.ToString () != baseMethod.ReturnType.ToString ())
 				return false;
 			if (method.Parameters.Count != baseMethod.Parameters.Count)
 				return false;
