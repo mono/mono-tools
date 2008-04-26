@@ -39,17 +39,6 @@ namespace Gendarme.Rules.Performance {
 	[Solution ("Change the array creation for Type.EmptyTypes.")]
 	public class UseTypeEmptyTypesRule : Rule, IMethodRule {
 
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// Type.EmptyTypes is only available since fx 2.0 so there's no point
-			// to execute it on every methods if the
-			// assembly target runtime is earlier than 2.0
-			Runner.AnalyzeAssembly += (o, e) =>
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
