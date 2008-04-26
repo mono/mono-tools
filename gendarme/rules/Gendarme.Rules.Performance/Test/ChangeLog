@@ -1,3 +1,10 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CompareWithStringEmptyEfficientlyTest.cs: New. This replace
+	UsingStringLengthInsteadOfCheckingEmptyStringTest.cs with more test
+	cases and the new test format.
+	* UsingStringLengthInsteadOfCheckingEmptyStringTest.cs: removed
+
 2008-04-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Add test case using generics.
