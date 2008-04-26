@@ -1,3 +1,8 @@
+2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidMessageChainsTest.cs: Added tests for check chains in the
+	arguments.
+
 2008-02-07  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* AvoidLargeClassesTest.cs: Added a test for class storing common

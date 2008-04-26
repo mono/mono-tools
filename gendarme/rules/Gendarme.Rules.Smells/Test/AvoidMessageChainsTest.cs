@@ -28,6 +28,7 @@
 
 using System;
 using System.Reflection;
+using System.Text;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Smells;
@@ -48,10 +49,16 @@ namespace Test.Rules.Smells {
 			Console.WriteLine ("I love rock and roll");		
 		}
 
+		public void MethodWithArgumentsWithoutChain (Encoding encoding)
+		{
+			encoding.GetEncoder ();
+		}
+
 		[Test]
 		public void MethodWithoutChainTest ()
 		{
 			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithoutChain");
+			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithArgumentsWithoutChain");
 		}
 
 		public void MethodWithChain ()
@@ -68,11 +75,17 @@ namespace Test.Rules.Smells {
 			int minor = Assembly.GetExecutingAssembly ().GetName ().Version.Minor;
 		}
 
+		public void MethodWithArgumentsChained (Encoding encoding)
+		{
+			encoding.GetEncoder ().Fallback.CreateFallbackBuffer ().GetNextChar ();
+		}
+
 		[Test]
 		public void MethodWithChainTest ()
 		{
 			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithChain", 1);
 			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithVariousChains", 2);
+			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithArgumentsChained", 1);
 		}
 
 		[Test]
