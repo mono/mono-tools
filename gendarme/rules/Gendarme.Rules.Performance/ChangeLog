@@ -1,7 +1,8 @@
-2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeStructureRule.cs: New. Rule to check for oversized 
 	structures.
+	* CompareWithStringEmptyEfficientlyRule.cs: Fix false positives.
 	* Makefile.am: add rule and tests to the build.
 
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>

@@ -30,7 +30,9 @@ using System;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
@@ -41,7 +43,7 @@ namespace Gendarme.Rules.Performance {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule apply only if the method has a body (e.g. p/invokes, icalls don't)
-			if (!method.HasBody)
+			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -78,6 +80,8 @@ namespace Gendarme.Rules.Performance {
 					if (field.Name != "Empty")
 						continue;
 					break;
+				default:
+					continue;
 				}
 
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, String.Empty);
