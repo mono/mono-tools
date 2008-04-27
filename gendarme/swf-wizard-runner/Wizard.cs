@@ -52,8 +52,18 @@ namespace Gendarme {
 		}
 
 		class AssemblyInfo {
-			public DateTime Timestamp;
-			public AssemblyDefinition Definition;
+			private DateTime timestamp;
+			private AssemblyDefinition definition;
+
+			public DateTime Timestamp {
+				get { return timestamp; }
+				set { timestamp = value; }
+			}
+
+			public AssemblyDefinition Definition {
+				get { return definition; }
+				set { definition = value; }
+			}
 		}
 
 		private const string BaseUrl = "http://www.mono-project.com/";
