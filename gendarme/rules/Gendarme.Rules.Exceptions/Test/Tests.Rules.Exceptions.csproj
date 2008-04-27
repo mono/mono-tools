@@ -63,6 +63,8 @@
     <Compile Include="AvoidArgumentExceptionDefaultConstructorTest.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsTest.cs" />
     <Compile Include="DontDestroyStackTraceTest.cs" />
+    <Compile Include="ExceptionShouldBeVisibleTest.cs" />
+    <Compile Include="MissingExceptionConstructorsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

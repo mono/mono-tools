@@ -51,6 +51,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DontUseLockedRegionOutsideMethod.cs" />
     <Compile Include="DoubleCheckLockingRule.cs" />
     <Compile Include="NonConstantStaticFieldsShouldNotBeVisibleRule.cs" />
     <Compile Include="WriteStaticFieldFromInstanceMethodRule.cs" />

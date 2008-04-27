@@ -49,6 +49,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -56,6 +58,7 @@
     <Compile Include="AvoidArgumentExceptionDefaultConstructorRule.cs" />
     <Compile Include="DoNotDestroyStackTraceRule.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" />
+    <Compile Include="ExceptionShouldBeVisibleRule.cs" />
     <Compile Include="Impl\ExceptionBlockParser.cs" />
     <Compile Include="Impl\ExecutionBlock.cs" />
     <Compile Include="Impl\ExecutionPath.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="ISEHCatchBlock.cs" />
     <Compile Include="ISEHGuardedBlock.cs" />
     <Compile Include="ISEHHandlerBlock.cs" />
+    <Compile Include="MissingExceptionConstructorsRule.cs" />
     <Compile Include="SEHHandlerType.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -43,6 +43,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AvoidLongParameterListsTest.cs" />
+    <Compile Include="AvoidMessageChainsTest.cs" />
     <Compile Include="AvoidSpeculativeGeneralityTest.cs" />
   </ItemGroup>
   <ItemGroup>

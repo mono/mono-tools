@@ -57,6 +57,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidLargeStructureRule.cs" />
     <Compile Include="AvoidReturningArraysOnPropertiesRule.cs" />
     <Compile Include="AvoidUncalledPrivateCodeRule.cs" />
     <Compile Include="AvoidUninstantiatedInternalClassesRule.cs" />
@@ -71,7 +72,8 @@
     <Compile Include="MathMinMaxCandidateRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
     <Compile Include="UseStringEmptyRule.cs" />
-    <Compile Include="UsingStringLengthInsteadOfCheckingEmptyStringRule.cs" />
+    <Compile Include="CompareWithStringEmptyEfficientlyRule.cs" />
+    <Compile Include="UseTypeEmptyTypesRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

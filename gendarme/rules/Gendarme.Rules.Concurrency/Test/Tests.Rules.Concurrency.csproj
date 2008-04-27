@@ -60,6 +60,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DontUseLockedRegionOutsideMethodTest.cs" />
     <Compile Include="DoubleCheckLockingTest.cs" />
     <Compile Include="NonConstantStaticFieldsShouldNotBeVisibleTest.cs" />
     <Compile Include="WriteStaticFieldFromInstanceMethodTest.cs" />
