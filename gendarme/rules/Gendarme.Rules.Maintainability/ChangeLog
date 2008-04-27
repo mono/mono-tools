@@ -1,0 +1,5 @@
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Build Gendarme.Rules.Maintainability rules.
+	* AvoidComplexMethodsRule.cs: New.  Rule for check the method
+	cyclomatic complexity.  Thanks Cedric !
