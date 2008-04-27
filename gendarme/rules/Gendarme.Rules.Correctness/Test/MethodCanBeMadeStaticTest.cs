@@ -26,6 +26,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Reflection;
 
 using Gendarme.Framework;
@@ -58,6 +59,10 @@ namespace Test.Rules.Correctness {
 			}
 
 			public virtual void Gazonk ()
+			{
+			}
+
+			public void OnItemBang (object sender, EventArgs ea)
 			{
 			}
 		}
@@ -106,6 +111,9 @@ namespace Test.Rules.Correctness {
 			method = GetTest ("Gazonk");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult3");
 			Assert.AreEqual (0, runner.Defects.Count, "Count3");
+			method = GetTest ("OnItemBang");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult4");
+			Assert.AreEqual (0, runner.Defects.Count, "Count4");
 		}
 	}
 }
