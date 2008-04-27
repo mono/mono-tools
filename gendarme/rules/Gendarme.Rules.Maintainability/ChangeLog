@@ -1,5 +1,11 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLackOfCohesionOfMethodsRule.cs: Skip the empty methods whithout
+	body and move the accessors to the linq query.  Fixes the break in the
+	self-test target.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidLackOfCohesionOfMethodsRule.cs: New.  Rule for check the cohesion
 	in the methods.  Thanks Cedric !
 	* Makefile.am:  Add the rule and the test to the build.
