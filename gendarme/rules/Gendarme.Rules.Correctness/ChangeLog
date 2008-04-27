@@ -1,3 +1,8 @@
+2008-04-27  Jb Evain  <jbevain@novell.com>
+
+	* MethodCanBeMadeStaticRule.cs: Disable this rule
+	when analyzing event callbacks.
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontCompareWithNaNRule.cs, FloatComparisonRule.cs: mscorlib

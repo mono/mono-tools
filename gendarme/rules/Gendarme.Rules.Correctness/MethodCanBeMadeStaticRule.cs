@@ -43,7 +43,9 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// we only check non static, non virtual methods and not constructors
-			if (method.IsStatic || method.IsVirtual || method.IsConstructor)
+			// we also don't check event callbacks, as they usually bring a lot of false positive,
+			// and that developers are tied to their signature
+			if (method.IsStatic || method.IsVirtual || method.IsConstructor || method.IsEventCallback ())
 				return RuleResult.DoesNotApply;
 
 			// we only check methods with a body
