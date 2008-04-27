@@ -1,5 +1,9 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidComplexMethodsRule.cs: I forget change the header.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidComplexMethodsRule.cs: Move to Gendarme.Rules.Maintainability
 	namespace.
 	* Test/AvoidComplexMethodsTest.cs: Move to Test.Rules.Maintainability

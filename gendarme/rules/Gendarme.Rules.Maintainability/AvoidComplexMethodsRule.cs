@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Smells.AvoidComplexMethodsRule class
+// Gendarme.Rules.Maintainability.AvoidComplexMethodsRule class
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
