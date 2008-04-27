@@ -1,3 +1,7 @@
+2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
+
+	* Gendarme.Rules.Maintainability.mdp: new project.
+
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidComplexMethodsRule.cs: I forget change the header.

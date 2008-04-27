@@ -1,3 +1,7 @@
+2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
+
+	* Test.Rules.Maintainability.mdp: New project.
+
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLackOfCohesionOfMethodsTest.cs: New.  Unit tests for the rule.
