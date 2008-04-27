@@ -1,5 +1,10 @@
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
+	* AvoidUninstantiatedInternalClassesRule.cs: remove
+	duplicated code using the AllMethods rocks.
+
+2008-04-27  Jb Evain  <jbevain@novell.com>
+
 	* AvoidUncalledPrivateCodeRule.cs: use an HashSet instead
 	of a List for faster lookup.
 

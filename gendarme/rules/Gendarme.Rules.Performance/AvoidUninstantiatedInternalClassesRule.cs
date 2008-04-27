@@ -91,10 +91,7 @@ namespace Gendarme.Rules.Performance {
 					AddType (typeset, t);
 			}
 
-			foreach (MethodDefinition method in type.Constructors)
-				ProcessMethod (method, typeset);
-
-			foreach (MethodDefinition method in type.Methods)
+			foreach (MethodDefinition method in type.AllMethods ())
 				ProcessMethod (method, typeset);
 		}
 
