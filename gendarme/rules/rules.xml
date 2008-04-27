@@ -13,6 +13,7 @@
 		<rules include="*" from="Gendarme.Rules.Serialization.dll" />
 		<rules include="*" from="Gendarme.Rules.Smells.dll"/>
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
+		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
 	</ruleset>
 
 	<ruleset name="default">
@@ -87,5 +88,8 @@
 	</ruleset>
 	<ruleset name="serialization">
 		<rules include="*" from="Gendarme.Rules.Serialization.dll"/>
+	</ruleset>
+	<ruleset name="maintainability">
+		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
 	</ruleset>
 </gendarme>

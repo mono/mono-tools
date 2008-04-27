@@ -1,5 +1,10 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* rules.xml: Add Maintainability rules to "self-test" and a new
+	"maintainability" ruleset.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* Makefile.am: Appended the Maintainability build.
 
 2008-03-24  Sebastien Pouliot  <sebastien@ximian.com>
