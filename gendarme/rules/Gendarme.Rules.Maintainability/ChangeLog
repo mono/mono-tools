@@ -1,5 +1,10 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLackOfCohesionOfMethodsRule.cs: Improved the linq query.  It
+	avoids a .Where call, and it doesn't need the ToIEnumerable<T> call.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidLackOfCohesionOfMethodsRule.cs: Skip the empty methods whithout
 	body and move the accessors to the linq query.  Fixes the break in the
 	self-test target.

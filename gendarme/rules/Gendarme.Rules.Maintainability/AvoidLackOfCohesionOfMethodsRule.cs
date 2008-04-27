@@ -67,23 +67,14 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 		
-		//TODO: Perhaps is a nice candidate to be a rock ?
-		//It will allow us use linq with Cecil in the rules :)
-		private IEnumerable<T> ToIEnumerable<T> (IEnumerable enumerable) 
-		{
-			foreach (T t in enumerable)
-				yield return t;
-		}
-
 		public double GetCohesivenessForType (TypeDefinition type)
 		{
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
 			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
 			
-			var methods = from met in ToIEnumerable<MethodDefinition> (type.Methods)
-				where met.HasBody 
-				where !met.IsSpecialName
+			var methods = from MethodDefinition met in type.Methods
+				where met.HasBody && !met.IsSpecialName
 				select met; 
 
 			foreach (MethodDefinition method in methods)
