@@ -1,0 +1,10 @@
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLackOfCohesionOfMethodsTest.cs: New.  Unit tests for the rule.
+	Thanks Cedric !
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Build Gendarme.Rules.Maintainability tests.
+	* AvoidComplexMethodsTest.cs: New.  Unit tests for the rule.
+	Thanks Cedric !
