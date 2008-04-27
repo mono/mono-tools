@@ -53,27 +53,23 @@ namespace Gendarme.Rules.Performance {
 
 		// we use this to cache the information about the assembly
 		// i.e. all types instantiated by the assembly
-		private Dictionary<AssemblyDefinition, List<TypeReference>> cache;
+		private Dictionary<AssemblyDefinition, HashSet<TypeReference>> cache = new Dictionary<AssemblyDefinition, HashSet<TypeReference>> ();
 
-		public void CacheInstantiationFromAssembly (AssemblyDefinition assembly)
+		void CacheInstantiationFromAssembly (AssemblyDefinition assembly)
 		{
-			if (cache == null)
-				cache = new Dictionary<AssemblyDefinition, List<TypeReference>> ();
-			else if (cache.ContainsKey (assembly))
+			if (cache.ContainsKey (assembly))
 				return;
 
-			List<TypeReference> list = new List<TypeReference> ();
+			var typeset = new HashSet<TypeReference> ();
 
-			foreach (ModuleDefinition module in assembly.Modules) {
-				foreach (TypeDefinition type in module.Types) {
-					ProcessType (type, list);
-				}
-			}
+			foreach (ModuleDefinition module in assembly.Modules)
+				foreach (TypeDefinition type in module.Types)
+					ProcessType (type, typeset);
 
-			cache.Add (assembly, list);
+			cache.Add (assembly, typeset);
 		}
 
-		private static void AddType (List<TypeReference> list, TypeReference type)
+		static void AddType (HashSet<TypeReference> typeset, TypeReference type)
 		{
 			// we're interested in the array element type, not the array itself
 			if (type.IsArray ())
@@ -83,37 +79,37 @@ namespace Gendarme.Rules.Performance {
 			// and types that are not visible outside the assembly (since this is what we check for)
 			TypeDefinition td = (type as TypeDefinition);
 			if ((td != null) && !td.IsVisible ())
-				list.AddIfNew (type);
+				typeset.Add (type);
 		}
 
-		public static void ProcessType (TypeDefinition type, List<TypeReference> list)
+		public static void ProcessType (TypeDefinition type, HashSet<TypeReference> typeset)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				TypeReference t = field.FieldType;
 				// don't add the type itself (e.g. enums)
 				if (type != t)
-					AddType (list, t);
+					AddType (typeset, t);
 			}
-			foreach (MethodDefinition method in type.Constructors) {
-				ProcessMethod (method, list);
-			}
-			foreach (MethodDefinition method in type.Methods) {
-				ProcessMethod (method, list);
-			}
+
+			foreach (MethodDefinition method in type.Constructors)
+				ProcessMethod (method, typeset);
+
+			foreach (MethodDefinition method in type.Methods)
+				ProcessMethod (method, typeset);
 		}
 
-		public static void ProcessMethod (MethodDefinition method, List<TypeReference> list)
+		public static void ProcessMethod (MethodDefinition method, HashSet<TypeReference> typeset)
 		{
 			// this is needed in case we return an enum, a struct or something mapped 
 			// to p/invoke (i.e. no ctor called). We also need to check for arrays.
 			TypeReference t = method.ReturnType.ReturnType;
-			AddType (list, t);
+			AddType (typeset, t);
 
 			// an "out" from a p/invoke must be flagged
 			foreach (ParameterDefinition parameter in method.Parameters) {
 				// we don't want the reference (&) on the type
 				t = parameter.ParameterType.GetOriginalType ();
-				AddType (list, t);
+				AddType (typeset, t);
 			}
 
 			if (!method.HasBody)
@@ -122,7 +118,7 @@ namespace Gendarme.Rules.Performance {
 			// add every type of variables we use
 			foreach (VariableDefinition variable in method.Body.Variables) {
 				t = variable.VariableType;
-				AddType (list, t);
+				AddType (typeset, t);
 			}
 
 			// add every type we create or refer to (e.g. loading fields from an enum)
@@ -144,7 +140,7 @@ namespace Gendarme.Rules.Performance {
 				}
 
 				if (t != null)
-					AddType (list, t);
+					AddType (typeset, t);
 			}
 		}
 
@@ -166,15 +162,16 @@ namespace Gendarme.Rules.Performance {
 			AssemblyDefinition assembly = type.Module.Assembly;
 			CacheInstantiationFromAssembly (assembly);
 
-			List<TypeReference> list = null;
+			HashSet<TypeReference> typeset = null;
 			if (cache.ContainsKey (assembly))
-				list = cache [assembly];
+				typeset = cache [assembly];
 
 			// if we can't find the non-public type being used in the assembly then the rule fails
-			if (list == null || !list.Contains (type)) {
+			if (typeset == null || !typeset.Contains (type)) {
 				Runner.Report (type, Severity.High, Confidence.Normal, "There is no call for any of the types constructor found");
 				return RuleResult.Failure;
 			}
+
 			return RuleResult.Success;
 		}
 	}
