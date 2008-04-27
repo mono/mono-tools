@@ -45,14 +45,16 @@ namespace Test.Rules.Performance {
 
 			Type [] empty = new Type [0];
 			
-			public void CreateEmptyTypeArray ()
+			public bool CreateEmptyTypeArray ()
 			{
 				Type [] array = new Type [0];
+				return (array == null);
 			}
 
-			public void CreateNotEmptyTypeArray ()
+			public bool CreateNotEmptyTypeArray ()
 			{
 				Type [] array = new Type [42];
+				return (array == null);
 			}
 		}
 

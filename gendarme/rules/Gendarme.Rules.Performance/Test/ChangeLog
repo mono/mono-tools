@@ -1,7 +1,9 @@
-2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeStructureTest.cs: New. Unit tests for 
 	AvoidLargeStructureRule.
+	* UseTypeEmptyTypesTest.cs: Adapt tests so they works when compiled
+	with CSC (which optimized out the previous version).
 
 2008-04-26  Jb Evain  <jbevain@novell.com>
 
