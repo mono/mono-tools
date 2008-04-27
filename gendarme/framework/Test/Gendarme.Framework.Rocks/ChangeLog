@@ -1,3 +1,7 @@
+2008-04-27  Jb Evain  <jbevain@novell.com> 
+
+	* MethodRocksTest.cs: add tests for IsEventCallback method rock.
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocksTest.cs: Enable tests that required the AssemblyResolver

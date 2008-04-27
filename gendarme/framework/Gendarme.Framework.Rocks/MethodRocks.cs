@@ -177,5 +177,19 @@ namespace Gendarme.Framework.Rocks {
 				method = AssemblyResolver.Resolver.Resolve (self);
 			return method;
 		}
+
+		/// <summary>
+		/// Check if the method has the signature of an Event callback.
+		/// They are usually of the form: void Method (object sender, EventArgs ea), where
+		/// the second parameters is either EventArgs or a subclass of it
+		/// </summary>
+		/// <param name="self">The MethodReference on which the extension method can be called.</param>
+		/// <returns>True if the method has the signature of an event callback.</returns>
+		public static bool IsEventCallback (this MethodReference self)
+		{
+			var parameters = self.Resolve ().Parameters;
+
+			return parameters.Count == 2 && parameters [1].ParameterType.Inherits ("System.EventArgs");
+		}
 	}
 }

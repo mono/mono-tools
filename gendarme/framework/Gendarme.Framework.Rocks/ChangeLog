@@ -1,3 +1,9 @@
+2008-04-27 Jb Evain  <jbevain@novell.com>
+
+	* MethodRocks.cs: Add a IsEventCallback method rock. Used
+	to detect methods whose signature are of the form:
+	void Method (object sender, EventArgs ea).
+
 2008-03-30 Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypeRocks.cs: Handle generic interfaces in Implements.

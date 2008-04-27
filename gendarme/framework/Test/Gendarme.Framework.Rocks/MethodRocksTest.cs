@@ -75,6 +75,16 @@ namespace Test.Framework.Rocks {
 			set { throw new NotSupportedException (); }
 		}
 
+		protected void EventCallback (object sender, EventArgs ea)
+		{
+		}
+
+		public class FooEventArgs : EventArgs {}
+
+		protected void FooEventCallback (object sender, FooEventArgs fea)
+		{
+		}
+
 		private AssemblyDefinition assembly;
 
 		[TestFixtureSetUp]
@@ -185,6 +195,14 @@ namespace Test.Framework.Rocks {
 
 			type = assembly.MainModule.Types ["Test.Framework.Rocks.InternalType"];
 			Assert.IsFalse (type.GetMethod ("PublicMethod").IsVisible (), "InternalType.PublicMethod");
+		}
+
+		[Test]
+		public void IsEventCallback ()
+		{
+			Assert.IsTrue (GetMethod ("EventCallback").IsEventCallback (), "EventCallback");
+			Assert.IsTrue (GetMethod ("FooEventCallback").IsEventCallback (), "FooEventCallback");
+			Assert.IsFalse (GetMethod ("IsEventCallback").IsEventCallback (), "IsEventCallback");
 		}
 	}
 }
