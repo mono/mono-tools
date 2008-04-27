@@ -1,5 +1,11 @@
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
+	* AvoidUnusedParametersRule.cs: refactoring work.
+	Rule does not apply any more to even callbacks of kind
+	Callback (object sender, *EventArgs ea).
+
+2008-04-27  Jb Evain  <jbevain@novell.com>
+
 	* AvoidUninstantiatedInternalClassesRule.cs: remove
 	duplicated code using the AllMethods rocks.
 

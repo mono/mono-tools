@@ -1,3 +1,8 @@
+2008-04-27  Jb Evain  <jbevain@novell.com>
+
+	* AvoidUnusedParametersTest.cs: Rule does not apply
+	to event callback.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeStructureTest.cs: New. Unit tests for 

@@ -382,11 +382,11 @@ namespace Test.Rules.Performance {
 		public void EventArgs ()
 		{
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest", "ButtonClick_EvenArgsUnused");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ButtonClick_EvenArgsUnused/Result");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "ButtonClick_EvenArgsUnused/Result");
 			Assert.AreEqual (0, runner.Defects.Count, "ButtonClick_EvenArgsUnused/Count");
 
 			method = GetMethodForTestFrom ("Test.Rules.Performance.AvoidUnusedParametersTest", "ButtonClick_NoParameterUnused");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ButtonClick_NoParameterUnused/Result");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "ButtonClick_NoParameterUnused/Result");
 			Assert.AreEqual (0, runner.Defects.Count, "ButtonClick_NoParameterUnused/Count");
 		}
 

@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -48,22 +49,24 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody)
 				return false;
 
+			var index = method.Parameters.IndexOf (parameter);
+
 			foreach (Instruction instruction in method.Body.Instructions) {
 				switch (instruction.OpCode.Code) {
 				case Code.Ldarg_0:
-					if (method.Parameters.IndexOf (parameter) == 0)
+					if (index == 0)
 						return true;
 					break;
 				case Code.Ldarg_1:
-					if (method.Parameters.IndexOf (parameter) == (method.IsStatic ? 1 : 0))
+					if (index == GetParameterIndex (method, 1))
 						return true;
 					break;
 				case Code.Ldarg_2:
-					if (method.Parameters.IndexOf (parameter) == (method.IsStatic ? 2 : 1))
+					if (index == GetParameterIndex (method, 2))
 						return true;
 					break;
 				case Code.Ldarg_3:
-					if (method.Parameters.IndexOf (parameter) == (method.IsStatic ? 3 : 2))
+					if (index == GetParameterIndex (method, 3))
 						return true;
 					break;
 				case Code.Ldarg_S:
@@ -79,10 +82,16 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
+		static int GetParameterIndex (MethodDefinition method, int index)
+		{
+			return method.IsStatic ? index : index - 1;
+		}
+
 		private static bool ContainsReferenceDelegateInstructionFor (MethodDefinition method, MethodDefinition delegateMethod)
 		{
 			if (!method.HasBody)
 				return false;
+
 			foreach (Instruction instruction in method.Body.Instructions) {
 				if (instruction.OpCode.Code == Code.Ldftn)
 					return instruction.Operand.Equals (delegateMethod);
@@ -93,38 +102,31 @@ namespace Gendarme.Rules.Performance {
 		private static bool IsReferencedByDelegate (MethodDefinition delegateMethod)
 		{
 			TypeDefinition declaringType = delegateMethod.DeclaringType as TypeDefinition;
-			if (declaringType != null) {
-				foreach (MethodDefinition method in declaringType.Methods) {
-					if (ContainsReferenceDelegateInstructionFor (method, delegateMethod))
-						return true;
-				}
+			if (declaringType == null)
+				return false;
 
-				foreach (MethodDefinition method in declaringType.Constructors) {
-					if (ContainsReferenceDelegateInstructionFor (method, delegateMethod))
-						return true;
-				}
-			}
+			foreach (var method in declaringType.AllMethods ())
+				if (ContainsReferenceDelegateInstructionFor (method, delegateMethod))
+					return true;
+
 			return false;
 		}
 
-		private static List<ParameterDefinition> GetUnusedParameters (MethodDefinition method)
+		static IEnumerable<ParameterDefinition> GetUnusedParameters (MethodDefinition method)
 		{
-			List<ParameterDefinition> unusedParameters = new List<ParameterDefinition> ();
-			foreach (ParameterDefinition parameter in method.Parameters) {
-				// EventArgs parameters are often required in method signatures,
-				// but often not required. Reduce "false positives"(*) for GUI apps
-				// (*) it's more a "don't report things outside developer's control"
-				if (parameter.ParameterType.Inherits ("System.EventArgs")) {
-					// even the other parameters are often ignored since
-					// the signature is made to cover most cases
-					unusedParameters.Clear ();
-					return unusedParameters;
-				}
+			return from ParameterDefinition parameter in method.Parameters
+				   where !UseParameter (method, parameter)
+				   select parameter;
+		}
 
-				if (!UseParameter (method, parameter))
-					unusedParameters.Add (parameter);
-			}
-			return unusedParameters;
+		// EventArgs parameters are often required in method signatures,
+		// but often not required. Reduce "false positives"(*) for GUI apps
+		// (*) it's more a "don't report things outside developer's control"
+		static bool IsEventCallback (MethodDefinition method)
+		{
+			var parameters = method.Parameters;
+
+			return parameters.Count == 2 && parameters [1].ParameterType.Inherits ("System.EventArgs");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -133,7 +135,7 @@ namespace Gendarme.Rules.Performance {
 			// rule doesn't apply to virtual, overrides or generated code
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
 			if (!method.HasBody || method.IsVirtual || method.Overrides.Count != 0 || 
-			     method.IsGeneratedCode () || IsReferencedByDelegate (method))
+			     method.IsGeneratedCode () || IsReferencedByDelegate (method) || IsEventCallback (method))
 				return RuleResult.DoesNotApply;
 
 			// rule applies
