@@ -1,5 +1,12 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidComplexMethodsRule.cs: Move to Gendarme.Rules.Maintainability
+	namespace.
+	* Test/AvoidComplexMethodsTest.cs: Move to Test.Rules.Maintainability
+	namespace.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidLackOfCohesionOfMethodsRule.cs: Improved the linq query.  It
 	avoids a .Where call, and it doesn't need the ToIEnumerable<T> call.
 

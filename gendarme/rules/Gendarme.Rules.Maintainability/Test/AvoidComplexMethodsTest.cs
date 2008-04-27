@@ -30,7 +30,7 @@ using System;
 using System.Reflection;
 
 using Gendarme.Framework;
-using Gendarme.Rules.Smells;
+using Gendarme.Rules.Maintainability;
 using Mono.Cecil;
 
 using NUnit.Framework;
@@ -38,7 +38,7 @@ using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 
-namespace Test.Rules.Smells {
+namespace Test.Rules.Maintainability {
 
 	[AttributeUsage(AttributeTargets.Method)]
 	public sealed class ExpectedCCAttribute : Attribute
@@ -332,7 +332,7 @@ namespace Test.Rules.Smells {
 		[Test]
 		public void CyclomaticComplexityMeasurementTest ()
 		{
-			Type rType = Assembly.GetExecutingAssembly ().GetType ("Test.Rules.Smells.MethodsWithExpectedCC");
+			Type rType = Assembly.GetExecutingAssembly ().GetType ("Test.Rules.Maintainability.MethodsWithExpectedCC");
 			TypeDefinition type = DefinitionLoader.GetTypeDefinition<MethodsWithExpectedCC> ();
 			ExpectedCCAttribute expectedCC;
 			int cc;

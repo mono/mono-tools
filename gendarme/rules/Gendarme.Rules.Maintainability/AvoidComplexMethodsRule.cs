@@ -35,7 +35,7 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Smells {
+namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("Methods with a cyclomatic complexity equal or greater than 15 are harder to understand and maintain.")]
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
