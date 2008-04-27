@@ -175,6 +175,8 @@ gendarme/rules/Gendarme.Rules.Interoperability/Makefile
 gendarme/rules/Gendarme.Rules.Interoperability/Test/Makefile
 gendarme/rules/Gendarme.Rules.Serialization/Makefile
 gendarme/rules/Gendarme.Rules.Serialization/Test/Makefile
+gendarme/rules/Gendarme.Rules.Maintainability/Makefile
+gendarme/rules/Gendarme.Rules.Maintainability/Test/Makefile
 gendarme/swf-wizard-runner/Makefile
 gendarme/win32-setup/Makefile
 ])

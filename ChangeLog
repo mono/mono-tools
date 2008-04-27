@@ -1,3 +1,7 @@
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* configure.in: Add Maintainability setup to the build.
+
 2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Add Gendarme's Wizard and Win32 setup to the build
