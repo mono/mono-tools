@@ -1,3 +1,8 @@
+2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
+
+	* rules.mds, tests.mds: added new projects for
+	Gendarme.Rules.Maintainability.
+
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* rules.xml: Add Maintainability rules to "self-test" and a new
