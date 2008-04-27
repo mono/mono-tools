@@ -119,23 +119,16 @@ namespace Gendarme.Rules.Performance {
 				   select parameter;
 		}
 
-		// EventArgs parameters are often required in method signatures,
-		// but often not required. Reduce "false positives"(*) for GUI apps
-		// (*) it's more a "don't report things outside developer's control"
-		static bool IsEventCallback (MethodDefinition method)
-		{
-			var parameters = method.Parameters;
-
-			return parameters.Count == 2 && parameters [1].ParameterType.Inherits ("System.EventArgs");
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// catch abstract, pinvoke and icalls - where rule does not apply
 			// rule doesn't apply to virtual, overrides or generated code
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
+			// Also EventArgs parameters are often required in method signatures,
+			// but often not required. Reduce "false positives"(*) for GUI apps
+			// (*) it's more a "don't report things outside developer's control"
 			if (!method.HasBody || method.IsVirtual || method.Overrides.Count != 0 || 
-			     method.IsGeneratedCode () || IsReferencedByDelegate (method) || IsEventCallback (method))
+			     method.IsGeneratedCode () || IsReferencedByDelegate (method) || method.IsEventCallback ())
 				return RuleResult.DoesNotApply;
 
 			// rule applies
