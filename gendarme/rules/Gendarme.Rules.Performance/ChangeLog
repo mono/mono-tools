@@ -1,3 +1,7 @@
+2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
+
+	* Gendarme.Rules.Performance.mdp: updated.
+
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
 	* AvoidUnusedParametersRule.cs: replace IsEventCallback

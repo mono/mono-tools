@@ -1,3 +1,7 @@
+2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
+
+	* Test.Rules.Performance.mdp: Updated.
+
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
 	* AvoidUnusedParametersTest.cs: Rule does not apply

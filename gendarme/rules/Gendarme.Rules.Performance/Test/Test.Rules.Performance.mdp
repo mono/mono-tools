@@ -20,7 +20,6 @@
     <File name="AvoidUnusedParametersTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUncalledPrivateCodeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUninstantiatedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="UsingStringLengthInsteadOfCheckingEmptyStringTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DontIgnoreMethodResultTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnsealedConcreteAttributesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnsealedUninheritedInternalClassesTest.cs" subtype="Code" buildaction="Compile" />
@@ -31,6 +30,9 @@
     <File name="ImplementEqualsTypeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="OverrideValueTypeDefaultsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="MathMinMaxCandidateTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidLargeStructureTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="CompareWithStringEmptyEfficientlyTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="UseTypeEmptyTypesTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
