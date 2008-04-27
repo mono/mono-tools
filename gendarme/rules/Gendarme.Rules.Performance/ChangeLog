@@ -1,5 +1,10 @@
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
+	* AvoidUncalledPrivateCodeRule.cs: use an HashSet instead
+	of a List for faster lookup.
+
+2008-04-27  Jb Evain  <jbevain@novell.com>
+
 	* AvoidUninstantiatedInternalClassesRule.cs: use an
 	HashSet instead of a List to keep track of types,
 	for faster lookups.

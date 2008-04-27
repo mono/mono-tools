@@ -170,7 +170,7 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		static Dictionary<TypeDefinition, List<uint>> cache = new Dictionary<TypeDefinition, List<uint>> ();
+		static Dictionary<TypeDefinition, HashSet<uint>> cache = new Dictionary<TypeDefinition, HashSet<uint>> ();
 
 		private static uint GetToken (MethodReference method)
 		{
@@ -179,9 +179,9 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
 		{
-			List<uint> methods;
+			HashSet<uint> methods;
 			if (!cache.TryGetValue (type, out methods)) {
-				methods = new List<uint> ();
+				methods = new HashSet<uint> ();
 				foreach (MethodDefinition md in type.AllMethods ()) {
 					if (!md.HasBody)
 						continue;
@@ -201,12 +201,12 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		private static void BuildMethodUsage (List<uint> methods, MethodDefinition method)
+		private static void BuildMethodUsage (HashSet<uint> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = (ins.Operand as MethodReference);
 				if (mr != null)
-					methods.AddIfNew (GetToken (mr));
+					methods.Add (GetToken (mr));
 			}
 		}
 	}
