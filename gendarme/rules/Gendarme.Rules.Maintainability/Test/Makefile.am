@@ -1,4 +1,4 @@
-EXTRA_DIST = *.cs Test.Rules.Maintainability.mdp 
+EXTRA_DIST = *.cs 
 DISTCLEANFILES = Makefile.in
 
 all:
