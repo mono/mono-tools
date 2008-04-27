@@ -1,3 +1,7 @@
+2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLargeClassesRule.cs: Fix string empty check.
+
 2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidMessageChainsRule.cs: Use descriptive messages when report a

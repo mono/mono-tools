@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool HasPrefixedFields (string prefix, TypeDefinition type)
 		{
-			if (prefix == String.Empty)
+			if (prefix.Length == 0)
 				return false;
 
 			int counter = 0;
