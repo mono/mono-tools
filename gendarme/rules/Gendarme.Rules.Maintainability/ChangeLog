@@ -1,5 +1,11 @@
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLackOfCohesionOfMethodsRule.cs: New.  Rule for check the cohesion
+	in the methods.  Thanks Cedric !
+	* Makefile.am:  Add the rule and the test to the build.
+
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* Makefile.am: Build Gendarme.Rules.Maintainability rules.
 	* AvoidComplexMethodsRule.cs: New.  Rule for check the method
 	cyclomatic complexity.  Thanks Cedric !

@@ -11,7 +11,8 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Maintainability.xml TestResult.xml
 maintainability_rules_sources_in = ../../AssemblyInfo.cs.in
 maintainability_rules_generated_sources = $(maintainability_rules_sources_in:.in=)
 maintainability_rules_sources = \
-	AvoidComplexMethodsRule.cs 
+	AvoidComplexMethodsRule.cs \
+	AvoidLackOfCohesionOfMethodsRule.cs
 
 maintainability_rules_build_sources = $(addprefix $(srcdir)/, $(maintainability_rules_sources))
 maintainability_rules_build_sources += $(maintainability_rules_generated_sources)
@@ -21,7 +22,8 @@ maintainability_rules_build_sources += $(maintainability_rules_generated_sources
 		-out:$@ $(maintainability_rules_build_sources)
 
 maintainability_test_sources = \
-	AvoidComplexMethodsTest.cs 
+	AvoidComplexMethodsTest.cs \
+	AvoidLackOfCohesionOfMethodsTest.cs
 
 maintainability_test_build_sources = $(addprefix $(srcdir)/Test/, $(maintainability_test_sources))
 
