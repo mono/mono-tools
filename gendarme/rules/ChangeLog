@@ -1,3 +1,7 @@
+2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Appended the Maintainability build.
+
 2008-03-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Re-order directories to start with Test.Rules

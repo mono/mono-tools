@@ -4,7 +4,8 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Portability Gendarme.Rules.Exceptions \
 	 Gendarme.Rules.Ui Gendarme.Rules.Naming Gendarme.Rules.Design \
 	 Gendarme.Rules.Smells Gendarme.Rules.BadPractice \
-	 Gendarme.Rules.Interoperability Gendarme.Rules.Serialization
+	 Gendarme.Rules.Interoperability Gendarme.Rules.Serialization \
+	 Gendarme.Rules.Maintainability
 
 EXTRA_DIST = rules.xml rules.mds tests.mds
 DISTCLEANFILES = Makefile.in
