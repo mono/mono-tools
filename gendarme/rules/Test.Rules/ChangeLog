@@ -1,3 +1,7 @@
+2008-04-28  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.mdp: Workaround for bug#367145.
+
 2008-03-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefame.am: Refer directly to Mono.Cecil assembly, not to a 
