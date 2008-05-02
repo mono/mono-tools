@@ -20,7 +20,8 @@ design_rules_sources = DontDeclareProtectedFieldsInSealedClassRule.cs UsingClone
 	DisposableFieldsShouldBeDisposedRule.cs FinalizersShouldBeProtectedRule.cs FinalizersShouldCallBaseClassFinalizerRule.cs \
 	EnsureSymmetryForOverloadedOperatorsRule.cs OperatorEqualsShouldBeOverloadedRule.cs \
 	OverrideEqualsMethodRule.cs ProvideAlternativeNamesForOperatorOverloadsRule.cs ImplementEqualsAndGetHashCodeInPairRule.cs \
-	EnumsShouldUseInt32Rule.cs ImplementIComparableCorreclyRule.cs ImplementGenericCollectionInterfacesRule.cs
+	EnumsShouldUseInt32Rule.cs ImplementIComparableCorreclyRule.cs ImplementGenericCollectionInterfacesRule.cs \
+	ConsiderConvertingFieldToNullableRule.cs
 
 design_rules_build_sources = $(addprefix $(srcdir)/, $(design_rules_sources))
 design_rules_build_sources += $(design_rules_generated_sources)
@@ -39,7 +40,8 @@ design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneW
 	DisposableFieldsShouldBeDisposedTest.cs FinalizersShouldBeProtectedTest.cs FinalizersShouldCallBaseClassFinalizerTest.cs \
 	EnsureSymmetryForOverloadedOperatorsTest.cs OperatorEqualsShouldBeOverloadedTest.cs OverrideEqualsMethodTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs ImplementEqualsAndGetHashCodeInPairTest.cs EnumsShouldUseInt32Test.cs \
-	ImplementIComparableCorreclyTest.cs ImplementGenericCollectionInterfacesTest.cs
+	ImplementIComparableCorreclyTest.cs ImplementGenericCollectionInterfacesTest.cs \
+	ConsiderConvertingFieldToNullableTest.cs
 
 design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 
