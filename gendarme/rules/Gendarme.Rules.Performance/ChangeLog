@@ -1,3 +1,9 @@
+2008-05-01  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLargeStructureRule.cs: Remove unused GetPackSize method.
+	Use IsPrimitive definition (inside a collection, the switch case 
+	was big enough to do the same) for well known values.
+
 2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
 
 	* Gendarme.Rules.Performance.mdp: updated.

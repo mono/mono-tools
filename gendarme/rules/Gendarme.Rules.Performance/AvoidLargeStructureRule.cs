@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -49,12 +50,23 @@ namespace Gendarme.Rules.Performance {
 		// return different results on 64 bits systems
 		private const int ReferenceSize = 4;
 
-/*		private static int GetPackSize (TypeDefinition type)
-		{
-			int pack = type.PackingSize;
-			return pack == 0 ? DefaultPaddingSize : pack;
-		}
-*/
+		static Dictionary<string, int> Primitives = new Dictionary<string, int> (14) {
+			{ Constants.Byte, 1 },
+			{ Constants.SByte, 1 },
+			{ Constants.Boolean, 1 },
+			{ Constants.Int16, 2 },
+			{ Constants.UInt16, 2 },
+			{ Constants.Char, 2 },
+			{ Constants.Int32, 4 },
+			{ Constants.UInt32, 4 },
+			{ Constants.Single, 4 },
+			{ Constants.Int64, 8 },
+			{ Constants.UInt64, 8 },
+			{ Constants.Double, 8 },
+			{ Constants.IntPtr, ReferenceSize },	// so rule return the same results
+			{ Constants.UIntPtr, ReferenceSize },	// on 32 and 64 bits architectures
+		};
+
 		private static long SizeOfEnum (TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields) {
@@ -111,24 +123,11 @@ namespace Gendarme.Rules.Performance {
 			if (!type.IsValueType)
 				return ReferenceSize;
 
-			// list based on TypeCode enumeration
-			switch (type.FullName) {
-			case "System.Byte":
-			case "System.SByte":
-			case "System.Boolean":
-				return 1;
-			case "System.Int16":
-			case "System.UInt16":
-			case "System.Char":
-				return 2;
-			case "System.Int32":
-			case "System.UInt32":
-			case "System.Single":
-				return 4;
-			case "System.Int64":
-			case "System.UInt64":
-			case "System.Double":
-				return 8;
+			// list based on Type.IsPrimitive
+			if (type.Namespace == "System") {
+				int size;
+				if (Primitives.TryGetValue (type.FullName, out size))
+					return (long) size;
 			}
 
 			TypeDefinition td = type.Resolve ();
