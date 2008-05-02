@@ -41,10 +41,6 @@ namespace Gendarme.Rules.Maintainability {
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
 	public class AvoidComplexMethodsRule : Rule,IMethodRule {
 
-		static AvoidComplexMethodsRule ()
-		{
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			//does rule apply?
