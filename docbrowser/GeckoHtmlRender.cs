@@ -80,7 +80,7 @@ public class GeckoHtmlRender : IHtmlRender {
 	{
 		url = CheckUrl (args.AURI);
 		// if the file is cached on disk, return
-		if (url.StartsWith ("file:///")) 
+		if (url.StartsWith ("file:///") || url.StartsWith("javascript:", StringComparison.InvariantCultureIgnoreCase)) 
 			return;
 		
 		if (UrlClicked != null)
@@ -139,12 +139,12 @@ public class GeckoHtmlRender : IHtmlRender {
 
 	// Substitute the src of the images with the appropriate path
 	string ProcessImages (string html_code)
-	{
+	{					
 		//If there are no Images return fast
 		int pos = html_code.IndexOf ("<img", 0, html_code.Length);
 		if (pos == -1)
-			return html_code;
-
+			return html_code;			
+			
 		StringBuilder html = new StringBuilder ();
 		html.Append (html_code.Substring (0, pos)); 
 		int srcIni, srcEnd;
@@ -166,6 +166,9 @@ public class GeckoHtmlRender : IHtmlRender {
 			} else {
 				//obtain the stream from the compressed sources
 				s = help_tree.GetImage (Img);
+				if (s == null) {
+					s = help_tree.GetImage (Img.Substring (Img.LastIndexOf ("/") + 1));
+				}
 				if (s != null) {
 					//write the file to a tmp directory
 					img_name = Img.Substring (Img.LastIndexOf (":")+1);
@@ -198,6 +201,11 @@ public class GeckoHtmlRender : IHtmlRender {
 				//Add from " to the next <img
 				html.Append (html_code.Substring (srcEnd, pos - srcEnd)); //check this
 		}
+		
+		foreach (string cached in cache_imgs.Keys) {
+			html.Replace ("\"" + cached + "\"", "\"" + (string)cache_imgs[cached] + "\"");
+		}
+		
 		return html.ToString();
 	}
 
