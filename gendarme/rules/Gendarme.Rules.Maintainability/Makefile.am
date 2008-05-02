@@ -3,7 +3,8 @@ SUBDIRS=Test
 maintainability_rulesdir=$(prefix)/lib/gendarme
 maintainability_rules_SCRIPTS = ../../bin/Gendarme.Rules.Maintainability.dll
 maintainability_rules_DATA = 
-EXTRA_DIST = $(maintainability_rules_sources) $(maintainability_rules_sources_in)
+EXTRA_DIST = $(maintainability_rules_sources) $(maintainability_rules_sources_in) \
+	Gendarme.Rules.Maintainability.csproj Gendarme.Rules.Maintainability.mdp
 CLEANFILES = $(maintainability_rules_SCRIPTS) Test.Rules.Maintainability.dll
 DISTCLEANFILES = Makefile.in TestResult.xml
 

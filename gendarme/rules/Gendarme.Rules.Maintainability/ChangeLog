@@ -1,3 +1,8 @@
+2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Maintainability.csproj: New. VS.NET project file.
+	* Makefile.am: Add project files to dist
+
 2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
 
 	* Gendarme.Rules.Maintainability.mdp: new project.
