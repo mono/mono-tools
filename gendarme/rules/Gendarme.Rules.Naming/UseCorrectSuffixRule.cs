@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 using Mono.Cecil;
 using Gendarme.Framework;
@@ -63,15 +64,6 @@ namespace Gendarme.Rules.Naming {
 				{ "System.Collections.IEnumerable", new string [] { "Collection" } }
 			};
 
-		private static string [] GetSuffixes (string baseTypeName)
-		{
-			if (definedSuffixes.ContainsKey (baseTypeName)) {
-				return definedSuffixes [baseTypeName];
-			} else {
-				return new string [] { };
-			}
-		}
-
 		// handle types using generics
 		private static string GetFullName (TypeReference type)
 		{
@@ -93,15 +85,15 @@ namespace Gendarme.Rules.Naming {
 			while (current != null && current.BaseType != null) {
 				string base_name = GetFullName (current.BaseType);
 
-				// if we have any suffixes defined by base type, we select them
-				if (definedSuffixes.ContainsKey (base_name)) {
-					suffixes.AddRangeIfNew (GetSuffixes (base_name));
+				string[] candidates;
+				if (definedSuffixes.TryGetValue (base_name, out candidates)) {
+					suffixes.AddRangeIfNew (candidates);
 				} else {
 					// if no suffix for base type is found, we start looking through interfaces
 					foreach (TypeReference iface in current.Interfaces) {
 						string interface_name = GetFullName (iface);
-						if (definedSuffixes.ContainsKey (interface_name))
-							suffixes.AddRangeIfNew (GetSuffixes (interface_name));
+						if (definedSuffixes.TryGetValue (interface_name, out candidates))
+							suffixes.AddRangeIfNew (candidates);
 					}
 				}
 				if (suffixes.Count > 0) {
@@ -115,8 +107,23 @@ namespace Gendarme.Rules.Naming {
 					current = current.BaseType.Resolve ();
 				}
 			}
-			// by default, return true
-			return true;
+			// found nothing
+			return (suffixes.Count == 0);
+		}
+
+		private static string ComposeMessage (List<string> candidates)
+		{
+			if (candidates.Count == 1)
+				return String.Format ("The type name does not end with '{0}' suffix. Append it to the type name.", candidates [0]);
+
+			StringBuilder sb = new StringBuilder ("The type name does not end with one of the following suffixes: ");
+			sb.Append (candidates [0]);
+			for (int i = 1; i < candidates.Count; i++) {
+				sb.Append (", ");
+				sb.Append (candidates [i]);
+			}
+			sb.Append (". Append any of them to the type name.");
+			return sb.ToString ();
 		}
 
 		private List<string> proposedSuffixes = new List<string> ();
@@ -134,20 +141,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.Success;
 
 			// there must be some suffixes defined, but type name doesn't end with any of them
-			string messageText;
-			if (proposedSuffixes.Count > 0) {
-				string joinedSuffixes = proposedSuffixes [0];
-				if (proposedSuffixes.Count == 1) {
-					messageText = string.Format ("The class name does not end with '{0}' suffix. Append it to the type name.", proposedSuffixes [0]);
-				} else {
-					foreach (string suffix in proposedSuffixes)
-						joinedSuffixes += ", " + suffix;
-					messageText = string.Format ("The class name does not end with one of the following suffixes: {0}. Append any of them to the type name.", joinedSuffixes);
-				}
-			} else {
-				messageText = "The class name does not end with the correct suffix. However Gendarme could not determine what suffix should it end with. Contact the author of the rule to fix this bug.";
-			}
-			Runner.Report (type, Severity.Medium, Confidence.High, messageText);
+			Runner.Report (type, Severity.Medium, Confidence.High, ComposeMessage (proposedSuffixes));
 			return RuleResult.Failure;
 		}
 	}

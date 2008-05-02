@@ -1,3 +1,9 @@
+2008-05-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectSuffixRule.cs: Use TryGetValue to avoid access to the 
+	Dictionary. Refactor textual report outside the CheckType (it's 
+	larger) and avoid reporting twice the first item.
+
 2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ParameterNamesShouldMatchOverridenMethodRule.cs:  Remove a duplicated
