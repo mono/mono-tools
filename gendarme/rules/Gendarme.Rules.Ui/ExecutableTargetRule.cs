@@ -30,7 +30,7 @@ using System;
 using Mono.Cecil;
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Ui {
+namespace Gendarme.Rules.UI {
 
 	[Solution ("Recompile the assembly using '/target:winexe'.")]
 	abstract public class ExecutableTargetRule : Rule, IAssemblyRule {

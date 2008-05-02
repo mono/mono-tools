@@ -33,7 +33,7 @@ using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
 
-namespace Gendarme.Rules.Ui {
+namespace Gendarme.Rules.UI {
 
 	[Problem ("The System.Windows.Forms applications entry-point (Main) is missing an [STAThread] attribute.")]
 	[Solution ("Add a [STAThread] attribute to your application Main method.")]

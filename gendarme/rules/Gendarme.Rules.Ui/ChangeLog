@@ -1,3 +1,7 @@
+2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* .cs: Renamed namespace from Ui to UI
+
 2008-02-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutableTargetRule.cs, GtkSharpExecutableTargetRule.cs, 

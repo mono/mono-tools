@@ -33,11 +33,11 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
-using Gendarme.Rules.Ui;
+using Gendarme.Rules.UI;
 
 using NUnit.Framework;
 
-namespace Test.Rules.Ui {
+namespace Test.Rules.UI {
 	internal class CommonMainClass { }
 
 	internal class NoAttributesMain : CommonMainClass {

@@ -1,3 +1,7 @@
+2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* .cs: Renamed namespaces from Ui to UI
+
 2008-03-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutableTargetTest.cs, GtkSharpExecutableTargetTest.cs,

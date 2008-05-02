@@ -28,7 +28,7 @@
 
 using System;
 
-namespace Test.Rules.Ui {
+namespace Test.Rules.UI {
 
 	public class ExecutableTargetTest {
 

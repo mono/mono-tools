@@ -30,7 +30,7 @@ using System;
 
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Ui {
+namespace Gendarme.Rules.UI {
 
 	[Problem ("The assembly refers to the 'gtk-sharp.dll' assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.")]
 	public class GtkSharpExecutableTargetRule: ExecutableTargetRule {

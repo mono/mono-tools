@@ -32,11 +32,11 @@ using System.Reflection;
 using Mono.Cecil;
 
 using Gendarme.Framework;
-using Gendarme.Rules.Ui;
+using Gendarme.Rules.UI;
 
 using NUnit.Framework;
 
-namespace Test.Rules.Ui {
+namespace Test.Rules.UI {
 
 	[TestFixture]
 	public class GtkSharpExecutableTargetTest {
