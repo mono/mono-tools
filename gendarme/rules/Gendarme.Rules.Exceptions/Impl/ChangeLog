@@ -1,3 +1,8 @@
+2008-05-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionPath.cs: Refactor to simplify and use generics 
+	fix ImplementGenericCollectionInterfacesRule defect on type.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionPath.cs: Add Equals(ExecutionPath) method to satisfy 
