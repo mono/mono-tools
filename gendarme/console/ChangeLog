@@ -1,3 +1,8 @@
+2008-05-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TextResultWriter.cs: Split large Write method. Also avoid reporting
+	both target and location when they are identical.
+
 2008-05-02  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* gendarme.csproj: Embed gendarme.xsd as a resource inside the 

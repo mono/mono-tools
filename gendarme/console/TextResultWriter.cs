@@ -50,6 +50,7 @@ namespace Gendarme {
 		private TextWriter writer;
 		private bool need_closing;
 		private ColorScheme color_scheme;
+		private int index;
 
 		public TextResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
@@ -79,41 +80,48 @@ namespace Gendarme {
 
 		protected override void Write ()
 		{
-			int index = 0;
-
 			var query = from n in Runner.Defects
 				    orderby n.Severity
 				    select n;
 
-			foreach (Defect defect in query) {
-				IRule rule = defect.Rule;
+			foreach (Defect defect in query)
+				WriteDefect (defect);
+		}
 
-				BeginColor (
-					(Severity.Critical == defect.Severity || Severity.High == defect.Severity)
-					? ConsoleColor.DarkRed : ConsoleColor.DarkYellow);
-				writer.WriteLine ("{0}. {1}", ++index, rule.Name);
-				writer.WriteLine ();
-				EndColor ();
-				BeginColor (ConsoleColor.DarkRed);
-				writer.Write ("Problem: ");
-				EndColor ();
-				writer.Write (rule.Problem);
-				writer.WriteLine ();
-				writer.WriteLine ("Details [Severity: {0}, Confidence: {1}]", defect.Severity, defect.Confidence);
-				writer.WriteLine ("* Target: {0}", defect.Target);
+		private void WriteDefect (Defect defect)
+		{
+			IRule rule = defect.Rule;
+
+			BeginColor (
+				(Severity.Critical == defect.Severity || Severity.High == defect.Severity)
+				? ConsoleColor.DarkRed : ConsoleColor.DarkYellow);
+			writer.WriteLine ("{0}. {1}", ++index, rule.Name);
+			writer.WriteLine ();
+			EndColor ();
+
+			BeginColor (ConsoleColor.DarkRed);
+			writer.Write ("Problem: ");
+			EndColor ();
+			writer.Write (rule.Problem);
+			writer.WriteLine ();
+
+			writer.WriteLine ("Details [Severity: {0}, Confidence: {1}]", defect.Severity, defect.Confidence);
+			writer.WriteLine ("* Target: {0}", defect.Target);
+			if (defect.Location != defect.Target)
 				writer.WriteLine ("* Location: {0}", defect.Location);
-				if (!String.IsNullOrEmpty (defect.Text))
-					writer.WriteLine ("* {0}", defect.Text);
-				writer.WriteLine ();
-				BeginColor (ConsoleColor.DarkGreen);
-				writer.Write ("Solution: ");
-				EndColor ();
-				writer.Write (rule.Solution);
-				writer.WriteLine ();
-				writer.WriteLine ("More info available at: {0}", rule.Uri.ToString ());
-				writer.WriteLine ();
-				writer.WriteLine ();
-			}
+			if (!String.IsNullOrEmpty (defect.Text))
+				writer.WriteLine ("* {0}", defect.Text);
+			writer.WriteLine ();
+
+			BeginColor (ConsoleColor.DarkGreen);
+			writer.Write ("Solution: ");
+			EndColor ();
+			writer.Write (rule.Solution);
+			writer.WriteLine ();
+
+			writer.WriteLine ("More info available at: {0}", rule.Uri.ToString ());
+			writer.WriteLine ();
+			writer.WriteLine ();
 		}
 
 		protected override void Dispose (bool disposing)
