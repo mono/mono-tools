@@ -53,14 +53,14 @@ namespace Gendarme.Rules.Exceptions {
 
 			List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 			ExecutionPathFactory epf = new ExecutionPathFactory (method);
-			ISEHGuardedBlock[] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
+			ISEHGuardedBlock [] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
 			foreach (ISEHGuardedBlock guardedBlock in guardedBlocks) {
 				foreach (ISEHHandlerBlock handlerBlock in
 					 guardedBlock.SEHHandlerBlocks) {
 					if (handlerBlock is SEHCatchBlock) {
-					    ExecutionPathCollection[] ret =
-						epf.CreatePaths (handlerBlock.Start,
-								 handlerBlock.End);
+						ExecutionPathCollection [] ret =
+						    epf.CreatePaths (handlerBlock.Start,
+								     handlerBlock.End);
 						executionPaths.AddRange (ret);
 					}
 				}
@@ -73,6 +73,36 @@ namespace Gendarme.Rules.Exceptions {
 				ProcessCatchPath (catchPath, method);
 
 			return Runner.CurrentRuleResult;
+		}
+
+		private static bool IsStoreLoc (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Stloc:
+			case Code.Stloc_0:
+			case Code.Stloc_1:
+			case Code.Stloc_2:
+			case Code.Stloc_3:
+			case Code.Stloc_S:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		private static bool IsLoadLoc (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Ldloc:
+			case Code.Ldloc_0:
+			case Code.Ldloc_1:
+			case Code.Ldloc_2:
+			case Code.Ldloc_3:
+			case Code.Ldloc_S:
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		private void ProcessCatchPath (ExecutionPathCollection catchPath, MethodDefinition method)
@@ -97,30 +127,16 @@ namespace Gendarme.Rules.Exceptions {
 						// Rethrown exception - no problem!
 						return;
 
-					if (cur.OpCode == OpCodes.Stloc ||
-					   cur.OpCode == OpCodes.Stloc_0 ||
-					   cur.OpCode == OpCodes.Stloc_1 ||
-					   cur.OpCode == OpCodes.Stloc_2 ||
-					   cur.OpCode == OpCodes.Stloc_3 ||
-					   cur.OpCode == OpCodes.Stloc_S) {
-
+					if (IsStoreLoc (cur)) {
 						int varIndex = GetVarIndex (cur);
-						if (exStackPos == 0)
-						{
+						if (exStackPos == 0) {
 							// Storing argument on top of stack in local variable reference
 							localVarPos = varIndex;
 							exStackPos = -1;
 						} else if (localVarPos != -1 && varIndex == localVarPos)
 							// Writing over orignal exception...
 							localVarPos = -1;
-					} else if (localVarPos != -1 &&
-						   (cur.OpCode == OpCodes.Ldloc ||
-						    cur.OpCode == OpCodes.Ldloc_0 ||
-						    cur.OpCode == OpCodes.Ldloc_1 ||
-						    cur.OpCode == OpCodes.Ldloc_2 ||
-						    cur.OpCode == OpCodes.Ldloc_3 ||
-						    cur.OpCode == OpCodes.Ldloc_S)) {
-
+					} else if (localVarPos != -1 && IsLoadLoc (cur)) {
 						int varIndex = GetVarIndex (cur);
 						if (varIndex == localVarPos)
 							// Loading exception from local var back onto stack
@@ -128,7 +144,7 @@ namespace Gendarme.Rules.Exceptions {
 					} else if (cur.OpCode == OpCodes.Throw && exStackPos == 0) {
 						// If our original exception is on top of the stack,
 						// we're rethrowing it.This is deemed naughty...
-						if (!warned_offsets_in_method.Contains(cur.Offset)) {
+						if (!warned_offsets_in_method.Contains (cur.Offset)) {
 							Runner.Report (method, cur, Severity.Critical, Confidence.High, String.Empty);
 							warned_offsets_in_method.Add (cur.Offset);
 						}
@@ -175,15 +191,15 @@ namespace Gendarme.Rules.Exceptions {
 			case StackBehaviour.Popref_popi_popref:
 				return 3;
 			case StackBehaviour.Varpop:
-				if(instr.Operand is MethodReference) {
+				if (instr.Operand is MethodReference) {
 					// We have to determine from the call how many arguments will
 					// be popped from the stack
-					MethodReference callMethod = (MethodReference)instr.Operand;
+					MethodReference callMethod = (MethodReference) instr.Operand;
 					return callMethod.Parameters.Count;
 				} else {
-					throw new InvalidOperationException("Unexpected instruction: '" +
-					instr.OpCode.ToString() + "' at offset 0x" +
-					instr.Offset.ToString("X"));
+					throw new InvalidOperationException ("Unexpected instruction: '" +
+					instr.OpCode.ToString () + "' at offset 0x" +
+					instr.Offset.ToString ("X"));
 				}
 			}
 
@@ -207,7 +223,7 @@ namespace Gendarme.Rules.Exceptions {
 			case StackBehaviour.Varpush:
 				// We have to determine from the call how many arguments will
 				// be pushed onto the stack
-				MethodReference callMethod = (MethodReference)instr.Operand;
+				MethodReference callMethod = (MethodReference) instr.Operand;
 				return (callMethod.ReturnType.ReturnType == void_reference) ?
 					0 : 1;
 			}
@@ -215,24 +231,30 @@ namespace Gendarme.Rules.Exceptions {
 			return 0;
 		}
 
-		private static int GetVarIndex (Instruction instr)
+		private static int GetVarIndex (Instruction ins)
 		{
-			if (instr.OpCode == OpCodes.Stloc_0 || instr.OpCode == OpCodes.Ldloc_0)
+			switch (ins.OpCode.Code) {
+			case Code.Ldloc_0:
+			case Code.Stloc_0:
 				return 0;
-			else if (instr.OpCode == OpCodes.Stloc_1 || instr.OpCode == OpCodes.Ldloc_1)
+			case Code.Ldloc_1:
+			case Code.Stloc_1:
 				return 1;
-			else if (instr.OpCode == OpCodes.Stloc_2 || instr.OpCode == OpCodes.Ldloc_2)
+			case Code.Ldloc_2:
+			case Code.Stloc_2:
 				return 2;
-			else if (instr.OpCode == OpCodes.Stloc_3 || instr.OpCode == OpCodes.Ldloc_3)
+			case Code.Ldloc_3:
+			case Code.Stloc_3:
 				return 3;
-			else if (instr.OpCode == OpCodes.Stloc_S || instr.OpCode == OpCodes.Stloc ||
-				instr.OpCode == OpCodes.Ldloc_S || instr.OpCode == OpCodes.Ldloc)
-			{
-				VariableDefinition varDef = (VariableDefinition)instr.Operand;
+			case Code.Ldloc_S:
+			case Code.Ldloc:
+			case Code.Stloc_S:
+			case Code.Stloc:
+				VariableDefinition varDef = (ins.Operand as VariableDefinition);
 				return varDef.Index;
+			default:
+				return -1;
 			}
-
-			return -1;
 		}
 	}
 }

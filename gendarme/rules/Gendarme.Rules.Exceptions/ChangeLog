@@ -1,3 +1,8 @@
+2008-05-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotDestroyStackTraceRule.cs: Refactor to avoid 2 defects (long 
+	and complex methods) in self-test. Smaller IL size for GetVarIndex.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MissingExceptionConstructorsRule.cs: New. Check if every exception
