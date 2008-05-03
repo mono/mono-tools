@@ -49,19 +49,20 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		private bool IsDelimiter (Instruction instruction)
+		private static bool IsDelimiter (Instruction instruction)
 		{
-			return instruction.OpCode == OpCodes.Pop ||
-				instruction.OpCode == OpCodes.Stloc_0 ||
-				instruction.OpCode == OpCodes.Stloc_1 ||
-				instruction.OpCode == OpCodes.Stloc_2 ||
-				instruction.OpCode == OpCodes.Stloc_3 ||
-				instruction.OpCode == OpCodes.Stloc_S ||
-				instruction.OpCode == OpCodes.Stloc ||
-				instruction.OpCode == OpCodes.Stfld ||
+			Code code = instruction.OpCode.Code;
+			return code == Code.Pop ||
+				code == Code.Stloc_0 ||
+				code == Code.Stloc_1 ||
+				code == Code.Stloc_2 ||
+				code == Code.Stloc_3 ||
+				code == Code.Stloc_S ||
+				code == Code.Stloc ||
+				code == Code.Stfld ||
 				instruction.OpCode.FlowControl == FlowControl.Branch ||
-				instruction.OpCode.FlowControl == FlowControl.Cond_Branch||
-				instruction.OpCode == OpCodes.Throw;
+				instruction.OpCode.FlowControl == FlowControl.Cond_Branch ||
+				code == Code.Throw;
 		}
 
 		private void CheckConsecutiveCalls (MethodDefinition method)
@@ -71,8 +72,11 @@ namespace Gendarme.Rules.Smells {
 				if (instruction.OpCode == OpCodes.Callvirt)
 					counter++;
 				if (IsDelimiter (instruction)) {
-					if (counter >= MaxChainLength)
-						Runner.Report (method, instruction, Severity.Medium, Confidence.Low, "This method contains a message chain, your code could be hardly coupled to with its navigation structure.");
+					if (counter >= MaxChainLength) {
+						string s = (Runner.VerbosityLevel < 2) ? String.Empty :
+							String.Format ("Chain length {0} versus maximum of {1}.", counter, MaxChainLength);
+						Runner.Report (method, instruction, Severity.Medium, Confidence.Low, s);
+					}
 					counter = 0;
 				}
 			}

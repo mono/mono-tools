@@ -54,7 +54,7 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		private MethodDefinition GetSmallerConstructorFrom (TypeDefinition type)
+		private static MethodDefinition GetSmallerConstructorFrom (TypeDefinition type)
 		{
 			if (type.Constructors.Count == 1)
 				return type.Constructors[0];
@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Smells {
 
 		//TODO: Perhaps we can perform this action with linq instead of
 		//loop + hashtable
-		private IEnumerable<MethodDefinition> GetSmallerOverloaded (TypeDefinition type)
+		private static IEnumerable<MethodDefinition> GetSmallerOverloaded (TypeDefinition type)
 		{
 			IDictionary<string, MethodDefinition> possibleOverloaded = new Dictionary<string, MethodDefinition> ();
 			foreach (MethodDefinition method in type.Methods) {
@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Smells {
 			return possibleOverloaded.Values;
 		}
 
-		private bool OnlyContainsExternalMethods (TypeDefinition type)
+		private static bool OnlyContainsExternalMethods (TypeDefinition type)
 		{
 			foreach (MethodDefinition method in type.Methods)
 				if (!method.IsPInvokeImpl)

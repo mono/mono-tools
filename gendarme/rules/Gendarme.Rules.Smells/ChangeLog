@@ -1,3 +1,12 @@
+2008-05-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLongParameterListsRule.cs: Change some methods to static.
+	* AvoidMessageChainsRule.cs: Made IsDelimiter static and compare 
+	Code (enum) not OpCodes (struct) as this generate half the IL. Don't
+	report a static string (dupes with Problem and Solution) since it
+	make reports longer than needed. Add extra details when -v -v is 
+	supplied (chain length and maximum).
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeClassesRule.cs: Fix string empty check.
