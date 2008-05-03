@@ -494,7 +494,7 @@ namespace Gendarme {
 			next_button.Enabled = false;
 		}
 
-		private bool CouldCopyReport (ref string currentName, string fileName)
+		private static bool CouldCopyReport (ref string currentName, string fileName)
 		{
 			// if possible avoid re-creating the report (as it can 
 			// be a long operation) and simply copy the file
