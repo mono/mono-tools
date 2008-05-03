@@ -31,8 +31,8 @@
 	</xs:complexType>
 
 	<xs:complexType name="parameterType">
-		<xs:attribute name="rule" type="xs:notEmptyString" use="required"/>
-		<xs:attribute name="property" type="xs:notEmptyString" use="required"/>
+		<xs:attribute name="rule" type="notEmptyString" use="required"/>
+		<xs:attribute name="property" type="notEmptyString" use="required"/>
 		<xs:attribute name="value" type="xs:integer" use="required"/>
 	</xs:complexType>
 

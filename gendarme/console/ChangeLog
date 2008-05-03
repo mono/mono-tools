@@ -1,3 +1,9 @@
+2008-05-02  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* gendarme.csproj: Embed gendarme.xsd as a resource inside the 
+	assembly.
+	* gendarme.xsd: Fix typos.
+
 2008-04-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* gendarme.xsl: Output HTML as UTF-8

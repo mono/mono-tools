@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
+    <EmbeddedResource Include="gendarme.xsd" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
