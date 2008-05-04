@@ -1,3 +1,8 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EqualShouldHandleNullArgRule.cs: Simplify method (self-test cc).
+	Fix all known positives (3) that were still found in Mono BCL.
+
 2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckNewThreadWithoutStartRule.cs: Use Initialize to avoid 

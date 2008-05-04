@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.BadPractice.EqualShouldHandleNullArgRule
+// Gendarme.Rules.BadPractice.EqualsShouldHandleNullArgRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -38,95 +38,79 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	[Problem ("This Equals method does not handle null argument as it should.")]
-	[Solution ("Modify the method implementation to return false if null argument found.")]
-	public class EqualShouldHandleNullArgRule : Rule, ITypeRule {
+	[Solution ("Modify the method implementation to return false if a null argument found.")]
+	public class EqualsShouldHandleNullArgRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rules applies to types that overrides System.Object.Equals(object)
 			MethodDefinition method = type.GetMethod (MethodSignatures.Equals);
-			if ((method == null) || !method.HasBody)
+			if ((method == null) || !method.HasBody || method.IsStatic)
 				return RuleResult.DoesNotApply;
 
 			// rule applies
 
 			// scan IL to see if null is checked and false returned
-			if (HandlesNullArg (method))
+			if (CheckSequence (method.Body.Instructions [0], type))
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.Medium, Confidence.High, String.Empty);
 			return RuleResult.Failure;
 		}
 
-		// note: not perfect, in particular when calls to other methods are used
-		private static bool HandlesNullArg (MethodDefinition method)
+		private static bool CheckSequence (Instruction ins, TypeDefinition type)
 		{
-			bool this_used = false;
-			bool object_used = false;
-			bool null_check = false;
-			bool return_value = false;
-
-			int n = 500; // avoid endless loop
-			Instruction ins = method.Body.Instructions [0];
-			while ((ins != null) && (n-- > 0)) {
+			bool previous_ldarg1 = false;
+			while (ins != null) {
 				switch (ins.OpCode.Code) {
-				case Code.Ldarg_0:
-					this_used = true;
-					break;
 				case Code.Ldarg_1:
-					// object parameter is used
-					object_used = true;
-					break;
-				case Code.Ldc_I4_0:
-					// it's possible that Equals returns false (without any more checks)
-					return_value = false;
-					break;
-				case Code.Ldc_I4_1:
-					// it's possible that Equals returns true (without any more checks)
-					return_value = true;
-					break;
-				case Code.Isinst:
-					if (object_used)
-						null_check = true;
-					break;
-				case Code.Brtrue:
-				case Code.Brtrue_S:
-					// this could be the null check after Ldarg_1
-					if (object_used && !null_check) {
-						null_check = true;
-						// we do not branch since ldarg_1 is null
-					}
-					break;
+					previous_ldarg1 = true;
+					ins = ins.Next;
+					continue;
 				case Code.Brfalse:
 				case Code.Brfalse_S:
-					if (object_used || null_check) {
-						// this could be the null check after Ldarg_1
-						if (!null_check)
-							null_check = (ins.Previous.OpCode.Code == Code.Ldarg_1);
-						ins = (Instruction) ins.Operand;
-						continue;
-					}
+					if (previous_ldarg1)
+						return CheckSequence (ins.Operand as Instruction, type);
 					break;
 				case Code.Ceq:
-					// if (this == obj), this cannot be null
-					if (this_used && object_used)
-						null_check = true;
+					if ((previous_ldarg1) && (ins.Next.OpCode.Code == Code.Ret))
+						return true;
 					break;
+				case Code.Bne_Un:
+				case Code.Bne_Un_S:
+					if (CheckSequence (ins.Operand as Instruction, type))
+						return true;
+					break;
+				case Code.Isinst:
+					if (!previous_ldarg1)
+						break;
+					if ((ins.Operand as TypeReference) != type)
+						break;
+					switch (ins.Next.OpCode.Code) {
+					case Code.Brfalse:
+					case Code.Brfalse_S:
+						return CheckSequence (ins.Next.Operand as Instruction, type);
+					}
+					ins = ins.Next;
+					continue;
 				case Code.Ret:
-					// if we return the value from a call
+					// we're not sure of what the other call will return
+					// but since it's probably a base class then the same rule apples there
 					if (ins.Previous.OpCode.FlowControl == FlowControl.Call)
 						return true;
-					ins = null;
+					return (ins.Previous.OpCode.Code != Code.Ldc_I4_1);
+				case Code.Throw:
+					// don't report when an exception is thrown
+					return true;
+				default:
+					ins = ins.Next;
 					continue;
 				}
+
+				previous_ldarg1 = false;
 				ins = ins.Next;
 			}
-			// case #1: object was not used
-			if (!object_used)
-				return !return_value;
-			else
-				return (null_check && !return_value);
-			// not sure, but we don't want to bury results with false-negative
+			return false;
 		}
 	}
 }
