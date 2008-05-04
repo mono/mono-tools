@@ -44,11 +44,27 @@ namespace Gendarme.Rules.Exceptions {
 		// localizable
 		private const string MissingConstructor = "Exception is missing '{0} {1}{2}' constructor.";
 
-		private static bool CheckInnerException (MethodDefinition ctor)
+		private static bool CheckForStringConstructor (MethodDefinition ctor)
+		{
+			if (!ctor.IsPublic)
+				return false;
+
+			return (ctor.Parameters [0].ParameterType.FullName == "System.String");
+		}
+
+		private static bool CheckForInnerExceptionConstructor (MethodDefinition ctor)
 		{
 			string first = ctor.Parameters [0].ParameterType.FullName;
 			string last = ctor.Parameters [ctor.Parameters.Count - 1].ParameterType.FullName;
 			return ((first == "System.String") && (last == Exception));
+		}
+
+		private static bool CheckForSerializationConstructor (MethodDefinition ctor)
+		{
+			if (ctor.IsPrivate || ctor.IsFamily)
+				return MethodSignatures.SerializationConstructor.Matches (ctor);
+
+			return false;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -73,31 +89,27 @@ namespace Gendarme.Rules.Exceptions {
 
 				switch (ctor.Parameters.Count) {
 				case 0:
+					// there can be only one so only it's visibility matters
 					empty_ctor = ctor.IsPublic;
 					break;
 				case 1:
-					if (!string_ctor && ctor.IsPublic)
-						string_ctor = (ctor.Parameters [0].ParameterType.FullName == "System.String");
+					string_ctor |= CheckForStringConstructor (ctor);
 					break;
 				case 2:
 					if (ctor.IsPublic) {
 						if (!inner_exception_ctor) {
-							inner_exception_ctor = CheckInnerException (ctor);
+							inner_exception_ctor = CheckForInnerExceptionConstructor (ctor);
 							if (inner_exception_ctor)
 								break;
 						}
-						if (!string_ctor && ctor.IsPublic) {
-							string_ctor = (ctor.Parameters [0].ParameterType.FullName == "System.String");
-							break;
-						}
-					}
-					if (!serialization_ctor && (ctor.IsPrivate || ctor.IsFamily)) {
-						serialization_ctor = MethodSignatures.SerializationConstructor.Matches (ctor);
+
+						string_ctor |= CheckForStringConstructor (ctor);
+					} else {
+						serialization_ctor |= CheckForSerializationConstructor (ctor);
 					}
 					break;
 				default:
-					if (!inner_exception_ctor)
-						inner_exception_ctor = CheckInnerException (ctor);
+					inner_exception_ctor |= CheckForInnerExceptionConstructor (ctor);
 					break;
 				}
 			}

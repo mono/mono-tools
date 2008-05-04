@@ -1,3 +1,8 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MissingExceptionConstructorsRule.cs: Refactor to reduce complexity
+	and size of the CheckType method (self-test).
+
 2008-05-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotDestroyStackTraceRule.cs: Refactor to avoid 2 defects (long 
