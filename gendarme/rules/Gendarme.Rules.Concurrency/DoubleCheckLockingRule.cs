@@ -40,7 +40,7 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
-	// FIXME?: see http://groups.google.com/group/gendarme/browse_thread/thread/b46d1ddc3a2d8fb9http://groups.google.com/group/gendarme/browse_thread/thread/b46d1ddc3a2d8fb9#msg_9b9c2989cedb4c34
+	// FIXME?: see http://groups.google.com/group/gendarme/browse_thread/thread/b46d1ddc3a2d8fb9#msg_9b9c2989cedb4c34
 	
 	// note: the rule only report a single double-lock per method
 
