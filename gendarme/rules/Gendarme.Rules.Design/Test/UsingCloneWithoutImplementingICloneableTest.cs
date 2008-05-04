@@ -33,12 +33,15 @@ using System.Reflection;
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Mono.Cecil;
-using NUnit.Framework;
 
-namespace Test.Rules.Design
-{
+using NUnit.Framework;
+using Test.Rules.Fixtures;
+
+namespace Test.Rules.Design{
+
 	[TestFixture]
-	public class UsingCloneWithoutImplementingICloneableTest {
+	public class UsingCloneWithoutImplementingICloneableTest : TypeRuleTestFixture<UsingCloneWithoutImplementingICloneableRule> {
+
 		public class UsingCloneAndImplementingICloneable: ICloneable
 		{
 			public virtual object Clone ()
@@ -53,6 +56,13 @@ namespace Test.Rules.Design
 			{
 				return this.MemberwiseClone ();
 			}
+		}
+
+		[Test]
+		public void CorrectSignatures ()
+		{
+			AssertRuleDoesNotApply<UsingCloneAndImplementingICloneable> ();
+			AssertRuleFailure<UsingCloneWithoutImplementingICloneable> (1);
 		}
 		
 		public class NeitherUsingCloneNorImplementingICloneable
@@ -86,6 +96,15 @@ namespace Test.Rules.Design
 			}
 		}
 
+		[Test]
+		public void WrongSignatures ()
+		{
+			AssertRuleSuccess<NeitherUsingCloneNorImplementingICloneable> ();
+			AssertRuleSuccess<AnotherExampleOfNotUsingBoth> ();
+			AssertRuleSuccess<OneMoreExample> ();
+			AssertRuleSuccess<CloningType> ();
+		}
+
 		// ArrayList implements ICloneable but it located in another assembly (mscorlib)
 		public class MyArrayList : ArrayList {
 
@@ -111,97 +130,13 @@ namespace Test.Rules.Design
 				return new SecondLevelCloneWithOverride ();
 			}
 		}
-		
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-		
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UsingCloneWithoutImplementingICloneableRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.UsingCloneWithoutImplementingICloneableTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-			
-		[Test]
-		public void usingCloneAndImplementingICloneableTest ()
-		{
-			type = GetTest ("UsingCloneAndImplementingICloneable");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void usingCloneWithoutImplementingICloneableTest ()
-		{
-			type = GetTest ("UsingCloneWithoutImplementingICloneable");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void neitherUsingCloneNorImplementingICloneableTest ()
-		{
-			type = GetTest ("NeitherUsingCloneNorImplementingICloneable");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void anotherExampleOfNotUsingBothTest ()
-		{
-			type = GetTest ("AnotherExampleOfNotUsingBoth");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void OneMoreExampleTest ()
-		{
-			type = GetTest ("OneMoreExample");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
 
 		[Test]
-		public void CloneReturnTypeNotObject ()
+		public void DeepInheritance ()
 		{
-			type = GetTest ("CloningType");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void InheritFromTypeOutsideAssembly ()
-		{
-			type = GetTest ("MyArrayList");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void InheritFromTypeImplementingICloneableButWithoutOverride ()
-		{
-			type = GetTest ("SecondLevelClone");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void InheritFromTypeImplementingICloneable ()
-		{
-			type = GetTest ("SecondLevelCloneWithOverride");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<MyArrayList> ();
+			AssertRuleDoesNotApply<SecondLevelClone> ();
+			AssertRuleDoesNotApply<SecondLevelCloneWithOverride> ();
 		}
 	}
 }

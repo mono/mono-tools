@@ -1,3 +1,9 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UsingCloneWithoutImplementingICloneableTest.cs: Update test
+	cases to new format. Change expected result when Clone does not 
+	return System.Object.
+
 2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingFieldToNullableRuleTest.cs: New. Test cases 
