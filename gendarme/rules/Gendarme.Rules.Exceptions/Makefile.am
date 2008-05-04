@@ -10,11 +10,8 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Exceptions.xml TestResult.xml
 
 exceptions_rules_sources_in = ../../AssemblyInfo.cs.in
 exceptions_rules_generated_sources = $(exceptions_rules_sources_in:.in=)
-exceptions_rules_sources = DoNotDestroyStackTraceRule.cs ISEHCatchBlock.cs \
-	ISEHGuardedBlock.cs ISEHHandlerBlock.cs \
-	SEHHandlerType.cs Impl/ExceptionBlockParser.cs Impl/ExecutionBlock.cs \
-	Impl/ExecutionPath.cs Impl/ExecutionPathFactory.cs Impl/SEHCatchBlock.cs \
-	Impl/SEHGuardedBlock.cs Impl/SEHHandlerBlock.cs Impl/SEHHandlerBlockCollection.cs \
+exceptions_rules_sources = DoNotDestroyStackTraceRule.cs SEHHandlerType.cs Impl/ExceptionBlockParser.cs Impl/ExecutionBlock.cs \
+	Impl/ExecutionPath.cs Impl/ExecutionPathFactory.cs Impl/SEHCatchBlock.cs Impl/SEHGuardedBlock.cs Impl/SEHHandlerBlock.cs \
 	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
 	AvoidArgumentExceptionDefaultConstructorRule.cs \
 	ExceptionShouldBeVisibleRule.cs \

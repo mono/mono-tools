@@ -1,3 +1,10 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotDestroyStackTraceRule.cs: Adapt to SEH* changes.
+	* ISEHCatchBlock.cs, ISEHGuardedBlock.cs, ISEHHandlerBlock.cs: 
+	Removed interfaces.
+	* Makefile.am: Remove unneeded/removed files.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MissingExceptionConstructorsRule.cs: Refactor to reduce complexity

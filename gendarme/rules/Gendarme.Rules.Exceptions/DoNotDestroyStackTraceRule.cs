@@ -53,10 +53,9 @@ namespace Gendarme.Rules.Exceptions {
 
 			List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 			ExecutionPathFactory epf = new ExecutionPathFactory (method);
-			ISEHGuardedBlock [] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
-			foreach (ISEHGuardedBlock guardedBlock in guardedBlocks) {
-				foreach (ISEHHandlerBlock handlerBlock in
-					 guardedBlock.SEHHandlerBlocks) {
+			SEHGuardedBlock [] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
+			foreach (SEHGuardedBlock guardedBlock in guardedBlocks) {
+				foreach (SEHHandlerBlock handlerBlock in guardedBlock.SEHHandlerBlocks) {
 					if (handlerBlock is SEHCatchBlock) {
 						ExecutionPathCollection [] ret =
 						    epf.CreatePaths (handlerBlock.Start,
