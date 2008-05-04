@@ -36,14 +36,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	[Problem ("This type provides a Clone() method but does not implement the ICloneable interface.")]
-	[Solution ("Implement the ICloneable interface.")]
+	[Problem ("This type provides a Clone() method returning System.Object but does not implement the ICloneable interface.")]
+	[Solution ("Implement the ICloneable interface or change the return type to this type.")]
 	public class UsingCloneWithoutImplementingICloneableRule: Rule, ITypeRule {
-
-		private static bool IsCloneMethod (MethodDefinition method)
-		{
-			return (method.Name == "Clone" && (method.Parameters.Count == 0));
-		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -55,14 +50,16 @@ namespace Gendarme.Rules.Design {
 				// note: we don't use MethodSignatures.Clone because we want to
 				// (a) check the return value ourselves
 				// (b) deal with possibly multiple Clone methods
-				if (!IsCloneMethod (method))
+				if (method.Name != "Clone")
+					continue;
+
+				if (method.Parameters.Count > 0)
 					continue;
 
 				// that return System.Object, e.g. public object Clone()
 				// or the current type, e.g. public <type> Clone()
-				if ((method.ReturnType.ReturnType.FullName == "System.Object") || (method.ReturnType.ReturnType == type)) {
+				if (method.ReturnType.ReturnType.FullName == "System.Object")
 					Runner.Report (method, Severity.Low, Confidence.High, String.Empty);
-				}
 			}
 
 			return Runner.CurrentRuleResult;

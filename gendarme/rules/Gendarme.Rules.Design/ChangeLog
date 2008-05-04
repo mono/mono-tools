@@ -1,3 +1,10 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UsingCloneWithoutImplementingICloneableRule.cs: Change rule
+	not to warn when Clone return something else than System.Object 
+	since implementing ICloneable won't be enough anyway (and changing
+	to System.Object just add unneeded casts).
+
 2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingFieldToNullableRule.cs: New. Rule to promote
