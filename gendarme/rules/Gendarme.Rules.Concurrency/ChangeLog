@@ -1,5 +1,9 @@
 2008-05-05  Andres G. Aragoneses <aaragoneses@novell.com> 
 
+	* DoubleCheckLockingRule.cs: More concrete link.
+
+2008-05-05  Andres G. Aragoneses <aaragoneses@novell.com> 
+
 	* DoubleCheckLockingRule.cs: Add an informative comment.
 
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
