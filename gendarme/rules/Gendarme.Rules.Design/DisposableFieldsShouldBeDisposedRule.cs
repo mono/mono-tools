@@ -41,6 +41,14 @@ namespace Gendarme.Rules.Design {
 	[Solution ("Ensure that every disposable field(s) are disposed correctly.")]
 	public class DisposableFieldsShouldBeDisposedRule : Rule, ITypeRule {
 
+		private static MethodDefinition GetNonAbstractMethod (TypeDefinition type, MethodSignature signature)
+		{
+			MethodDefinition method = type.GetMethod (signature);
+			if ((method == null) || method.IsAbstract)
+				return null;
+			return method;
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to generated code (out of developer control)
@@ -52,14 +60,8 @@ namespace Gendarme.Rules.Design {
 			if (!type.Implements ("System.IDisposable"))
 				return RuleResult.DoesNotApply;
 
-			MethodDefinition implicitDisposeMethod = type.GetMethod (MethodSignatures.Dispose);
-			MethodDefinition explicitDisposeMethod = type.GetMethod (MethodSignatures.DisposeExplicit);
-
-			if (implicitDisposeMethod == null || implicitDisposeMethod.IsAbstract)
-				implicitDisposeMethod = null;
-			if (explicitDisposeMethod == null || explicitDisposeMethod.IsAbstract)
-				explicitDisposeMethod = null;
-
+			MethodDefinition implicitDisposeMethod = GetNonAbstractMethod (type, MethodSignatures.Dispose);
+			MethodDefinition explicitDisposeMethod = GetNonAbstractMethod (type, MethodSignatures.DisposeExplicit);
 			// note: handled by TypesWithDisposableFieldsShouldBeDisposableRule
 			if (implicitDisposeMethod == null && explicitDisposeMethod == null) 
 				return RuleResult.Success;

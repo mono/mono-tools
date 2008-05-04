@@ -1,3 +1,8 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Simplify finding 
+	Dispose	methods a bit (self-test).
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UsingCloneWithoutImplementingICloneableRule.cs: Change rule
