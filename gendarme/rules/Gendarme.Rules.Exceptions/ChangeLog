@@ -1,3 +1,9 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotDestroyStackTraceRule.cs: More refactoring. Use Initialize
+	to void_reference. Reuse executionPaths collection. Adjust to SHE 
+	changes.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotDestroyStackTraceRule.cs: Adapt to SEH* changes.

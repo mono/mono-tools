@@ -39,7 +39,18 @@ namespace Gendarme.Rules.Exceptions {
 	public class DoNotDestroyStackTrace : Rule, IMethodRule {
 
 		private TypeReference void_reference;
+		private List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 		private List<int> warned_offsets_in_method = new List<int> ();
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				if (void_reference == null)
+					void_reference = e.CurrentModule.Import (typeof (void));
+			};
+		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -47,20 +58,12 @@ namespace Gendarme.Rules.Exceptions {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			ModuleDefinition module = method.DeclaringType.Module;
-			if (void_reference == null)
-				void_reference = module.Import (typeof (void));
-
-			List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
+			executionPaths.Clear ();
 			ExecutionPathFactory epf = new ExecutionPathFactory (method);
-			SEHGuardedBlock [] guardedBlocks = ExceptionBlockParser.GetExceptionBlocks (method);
-			foreach (SEHGuardedBlock guardedBlock in guardedBlocks) {
+			foreach (SEHGuardedBlock guardedBlock in ExceptionBlockParser.GetExceptionBlocks (method)) {
 				foreach (SEHHandlerBlock handlerBlock in guardedBlock.SEHHandlerBlocks) {
 					if (handlerBlock is SEHCatchBlock) {
-						ExecutionPathCollection [] ret =
-						    epf.CreatePaths (handlerBlock.Start,
-								     handlerBlock.End);
-						executionPaths.AddRange (ret);
+						executionPaths.AddRange (epf.CreatePaths (handlerBlock.Start, handlerBlock.End));
 					}
 				}
 			}
