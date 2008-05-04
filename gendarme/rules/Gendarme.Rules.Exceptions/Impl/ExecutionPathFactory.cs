@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -14,12 +14,13 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			this.method = method;
 		}
 
-		public ExecutionPathCollection[] CreatePaths (Instruction start, Instruction end)
+		public IList<ExecutionPathCollection> CreatePaths (Instruction start, Instruction end)
 		{
 			if (start == null)
 				throw new ArgumentNullException ("start");
 			if (end == null)
 				throw new ArgumentNullException ("end");
+#if DEBUG
 			if (!method.Body.Instructions.Contains (start))
 				throw new ArgumentException(
 					"start instruction is not contained in method " + 
@@ -32,18 +33,14 @@ namespace Gendarme.Rules.Exceptions.Impl {
 					method.DeclaringType.FullName + "::" + method.Name,
 					"end");
 			}
-
-			ArrayList paths = new ArrayList ();
+#endif
+			List<ExecutionPathCollection> paths = new List<ExecutionPathCollection> ();
 			CreatePathHelper (start, end, new ExecutionPathCollection (), paths);
-			ExecutionPathCollection[] ret = new ExecutionPathCollection [paths.Count];
-			paths.CopyTo (ret);
-			return ret;
+			return paths;
 		}
 
-		private void CreatePathHelper (Instruction start, 
-					       Instruction end, 
-					       ExecutionPathCollection path, 
-					       ArrayList completedPaths)
+		private void CreatePathHelper (Instruction start, Instruction end, 
+			ExecutionPathCollection path, List<ExecutionPathCollection> completedPaths)
 		{
 			ExecutionBlock curBlock = new ExecutionBlock ();
 			curBlock.First = start;

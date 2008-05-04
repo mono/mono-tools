@@ -1,3 +1,10 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ExceptionBlockParser.cs: Use generics and return a collection.
+	* ExecutionPathFactory.cs: Avoid temporary array (and use the 
+	collection). #if out debug checks (can be re-enabled for debugging)
+	* SEHGuardedBlock.cs: Add useful ctor to help consumers.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExceptionBlockParser.cs, ExecutionBlock.cs, ExecutionPath.cs,

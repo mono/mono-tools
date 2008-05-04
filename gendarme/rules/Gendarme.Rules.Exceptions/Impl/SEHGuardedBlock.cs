@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
@@ -14,6 +13,13 @@ namespace Gendarme.Rules.Exceptions {
 		public SEHGuardedBlock ()
 		{
 			handler_blocks = new List<SEHHandlerBlock> ();
+		}
+
+		public SEHGuardedBlock (Instruction start, Instruction end)
+			: this ()
+		{
+			this.start = start;
+			this.end = end;
 		}
 		
 		public Instruction Start {
