@@ -4,7 +4,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
 
-	internal class SEHHandlerBlock : ISEHHandlerBlock {
+	internal class SEHHandlerBlock {
 	
 		private Instruction start = null;
 		private Instruction end = null;

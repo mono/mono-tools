@@ -1,3 +1,11 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExceptionBlockParser.cs, ExecutionBlock.cs, ExecutionPath.cs,
+	ExecutionPathFactory.cs, SEHCatchBlock.cs, SEHGuardedBlock.cs, 
+	SEHHandlerBlock.cs: Refactor to remove interfaces and use generic 
+	collections (work in progress).
+	* SEHHandlerBlockCollection.cs: Removed (generics are now used).
+
 2008-05-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionPath.cs: Refactor to simplify and use generics 

@@ -4,7 +4,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
 	
-	internal sealed class SEHCatchBlock : SEHHandlerBlock, ISEHCatchBlock {
+	internal sealed class SEHCatchBlock : SEHHandlerBlock {
 	
 		private TypeReference type_reference = null;
 		

@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions.Impl {
 
-	public class ExecutionBlock : ICloneable {
+	public class ExecutionBlock {
 	
 		private Instruction firstInstruction;
 		private Instruction lastInstruction;
@@ -37,21 +35,12 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			}
 		}
 
-		public void Print () 
-		{
-			Console.WriteLine ("{0:X} {1:X}", First.Offset, Last.Offset);
-		}
-
-		#region ICloneable Members
-
-		public object Clone ()
+		public ExecutionBlock Clone ()
 		{
 			ExecutionBlock other = new ExecutionBlock ();
 			other.First = firstInstruction;
 			other.Last = lastInstruction;
 			return other;
 		}
-
-		#endregion
 	}
 }

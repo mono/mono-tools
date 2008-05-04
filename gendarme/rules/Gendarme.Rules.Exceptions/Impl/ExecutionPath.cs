@@ -15,7 +15,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 		private ExecutionPathCollection (ExecutionPathCollection coll)
 		{
 			foreach (ExecutionBlock block in coll)
-				Add ((ExecutionBlock) block.Clone ());
+				Add (block.Clone ());
 		}
 
 		public bool Contains (Instruction instruction)
@@ -23,7 +23,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 			return this.Any (block => block.Contains (instruction));
 		}
 
-		public object Clone ()
+		public ExecutionPathCollection Clone ()
 		{
 			return new ExecutionPathCollection (this);
 		}

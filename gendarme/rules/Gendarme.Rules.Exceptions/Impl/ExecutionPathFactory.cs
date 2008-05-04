@@ -62,7 +62,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 								path.Add (curBlock);
 								CreatePathHelper (target, 
 										end, 
-										(ExecutionPathCollection)path.Clone (),
+										path.Clone (),
 										completedPaths);
 							}
 						}
@@ -81,7 +81,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 							path.Add (curBlock);
 							CreatePathHelper (target, 
 									end, 
-									(ExecutionPathCollection)path.Clone (),
+									path.Clone (),
 									completedPaths);
 						} 
 						if (!path.Contains (cur.Next)) {

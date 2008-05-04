@@ -5,9 +5,9 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
 
-	public static class ExceptionBlockParser {
+	internal static class ExceptionBlockParser {
 	
-		public static ISEHGuardedBlock[] GetExceptionBlocks (MethodDefinition method)
+		public static SEHGuardedBlock[] GetExceptionBlocks (MethodDefinition method)
 		{
 			Hashtable blockStarts = new Hashtable ();
 			ExceptionHandlerCollection ehc = null;
@@ -34,7 +34,7 @@ namespace Gendarme.Rules.Exceptions {
 						cb.Start = eh.HandlerStart;
 						cb.End = eh.HandlerEnd;
 						cb.Type = SEHHandlerType.Catch;
-						guardedBlock.SEHHandlerBlocksInternal.Add (cb);
+						guardedBlock.SEHHandlerBlocks.Add (cb);
 					}
 					else if (eh.Type == ExceptionHandlerType.Finally) {
 						if (!blockStarts.ContainsKey (eh.TryStart)) {
@@ -50,12 +50,12 @@ namespace Gendarme.Rules.Exceptions {
 						hb.Start = eh.HandlerStart;
 						hb.End = eh.HandlerEnd;
 						hb.Type = SEHHandlerType.Finally;
-						guardedBlock.SEHHandlerBlocksInternal.Add (hb);
+						guardedBlock.SEHHandlerBlocks.Add (hb);
 					}
 				}
 			}
 			
-			ISEHGuardedBlock[] ret = new ISEHGuardedBlock [blockStarts.Count];
+			SEHGuardedBlock[] ret = new SEHGuardedBlock [blockStarts.Count];
 			blockStarts.Values.CopyTo (ret,0);
 			return ret;
 		}

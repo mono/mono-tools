@@ -1,19 +1,19 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions {
 	
-	internal sealed class SEHGuardedBlock : ISEHGuardedBlock {
+	internal sealed class SEHGuardedBlock {
 	
 		private Instruction start;
 		private Instruction end;
-		private SEHHandlerBlockCollection handler_blocks;
+		private List<SEHHandlerBlock> handler_blocks;
 		
 		public SEHGuardedBlock ()
 		{
-			handler_blocks = new SEHHandlerBlockCollection ();
+			handler_blocks = new List<SEHHandlerBlock> ();
 		}
 		
 		public Instruction Start {
@@ -25,17 +25,8 @@ namespace Gendarme.Rules.Exceptions {
 			get { return end; }
 			set { end = value; }
 		}
-		
-		public ISEHHandlerBlock[] SEHHandlerBlocks {
-			get {
-				ISEHHandlerBlock[] ret =
-					new ISEHHandlerBlock [handler_blocks.Count];
-				handler_blocks.CopyTo (ret, 0);
-				return ret;
-			}
-		}
 
-		public SEHHandlerBlockCollection SEHHandlerBlocksInternal {
+		public ICollection<SEHHandlerBlock> SEHHandlerBlocks {
 			get { return handler_blocks; }
 		}
 	}
