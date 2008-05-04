@@ -1,5 +1,5 @@
 // 
-// Unit tests for EqualShouldHandleNullArgRule
+// Unit tests for EqualsShouldHandleNullArgRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -32,12 +32,16 @@ using System.Reflection;
 using Gendarme.Framework;
 using Gendarme.Rules.BadPractice;
 using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.BadPractice {
 
+#pragma warning disable 114, 649, 659
+
 	[TestFixture]
-	public class EqualShouldHandleNullArgTest {
+	public class EqualsShouldHandleNullArgTest : TypeRuleTestFixture<EqualsShouldHandleNullArgRule> {
 
 		public class EqualsChecksForNullArg {
 			public override bool Equals (object obj)
@@ -46,10 +50,6 @@ namespace Test.Rules.BadPractice {
 					return false;
 				else
 					return this == obj;
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 		
@@ -61,20 +61,12 @@ namespace Test.Rules.BadPractice {
 
 				return this == obj;
 			}
-			public override int GetHashCode ()
-			{
-				return 1;
-			}
 		}
 		
 		public class EqualsNotOverriddenNotCheckingNull {
 			public bool Equals (object obj)
 			{
 				return this == obj;
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 		
@@ -86,20 +78,21 @@ namespace Test.Rules.BadPractice {
 
 				return true;
 			}
-			public override int GetHashCode ()
-			{
-				return 1;
-			}
+		}
+
+		[Test]
+		public void Basic ()
+		{
+			AssertRuleSuccess<EqualsChecksForNullArg> ();
+			AssertRuleFailure<EqualsDoesNotReturnFalseForNullArg> (1);
+			AssertRuleSuccess<EqualsNotOverriddenNotCheckingNull> ();
+			AssertRuleFailure<EqualsNotOverriddenNotReturningFalseForNull> ();
 		}
 
 		public class EqualsReturnsFalse {
 			public override bool Equals (object obj)
 			{
 				return false;
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 
@@ -108,10 +101,13 @@ namespace Test.Rules.BadPractice {
 			{
 				return true;
 			}
-			public override int GetHashCode ()
-			{
-				return 1;
-			}
+		}
+
+		[Test]
+		public void Constants ()
+		{
+			AssertRuleSuccess<EqualsReturnsFalse> ();
+			AssertRuleFailure<EqualsReturnsTrue> (1);
 		}
 
 		public struct EqualsUsingIsReturnFalse {
@@ -120,10 +116,6 @@ namespace Test.Rules.BadPractice {
 				if (obj is EqualsUsingIsReturnFalse)
 					return Object.ReferenceEquals (this, obj);
 				return false;
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 
@@ -134,20 +126,34 @@ namespace Test.Rules.BadPractice {
 					return Object.ReferenceEquals (this, obj);
 				return true;
 			}
-			public override int GetHashCode ()
+		}
+
+		// from /mcs/class/corlib/System.Reflection.Emit/SignatureToken.cs
+		public struct EqualsUsingIsReturnVariable {
+			internal int tokValue;
+			public override bool Equals (object obj)
 			{
-				return 1;
+				bool res = obj is EqualsUsingIsReturnVariable;
+				if (res) {
+					EqualsUsingIsReturnVariable that = (EqualsUsingIsReturnVariable) obj;
+					res = (this.tokValue == that.tokValue);
+				}
+				return res;
 			}
+		}
+
+		[Test]
+		public void EqualsUsingIs ()
+		{
+			AssertRuleSuccess<EqualsUsingIsReturnFalse> ();
+			AssertRuleFailure<EqualsUsingIsReturnTrue> (1);
+			AssertRuleSuccess<EqualsUsingIsReturnVariable> ();
 		}
 
 		public class EqualsCallBase : EqualsReturnsTrue {
 			public override bool Equals (object obj)
 			{
 				return base.Equals (obj);
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 
@@ -156,10 +162,6 @@ namespace Test.Rules.BadPractice {
 			public override bool Equals (object obj)
 			{
 				return (this == obj);
-			}
-			public override int GetHashCode ()
-			{
-				return 1;
 			}
 		}
 
@@ -171,111 +173,76 @@ namespace Test.Rules.BadPractice {
 					return false;
 				return true;
 			}
-			public override int GetHashCode ()
+		}
+
+		// from /mcs/class/System/System.ComponentModel/DisplayNameAttribute.cs
+		public class CheckThisFirst {
+			string DisplayName;
+			public override bool Equals (object obj)
 			{
-				return 1;
+				if (obj == this)
+					return true;
+
+				CheckThisFirst dna = obj as CheckThisFirst;
+
+				if (dna == null)
+					return false;
+				return dna.DisplayName == DisplayName;
 			}
 		}
-		
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new EqualShouldHandleNullArgRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.BadPractice.EqualShouldHandleNullArgTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-		
 		[Test]
-		public void equalsChecksForNullArgTest ()
+		public void CommonPatterns ()
 		{
-			type = GetTest ("EqualsChecksForNullArg");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<EqualsCheckThis> ();
+			AssertRuleSuccess<EqualsCheckType> ();
+			AssertRuleSuccess<CheckThisFirst> ();
 		}
-		
-		[Test]
-		public void equalsDoesNotReturnFalseForNullArgTest ()
-		{
-			type = GetTest ("EqualsDoesNotReturnFalseForNullArg");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+
+		public class StaticEquals {
+
+			static public bool Equals (object obj)
+			{
+				return false;
+			}
 		}
-		
-		[Test]
-		public void equalsNotOverriddenNotCheckingNullTest ()
-		{
-			type = GetTest ("EqualsNotOverriddenNotCheckingNull");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+
+		public class EqualsTwoParameters {
+
+			public new bool Equals (object left, object right)
+			{
+				return (left == right);
+			}
 		}
-		
-		[Test]
-		public void equalsNotOverriddenNotReturningFalseForNullTest ()
-		{
-			type = GetTest ("EqualsNotOverriddenNotReturningFalseForNull");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+
+		public class EqualsReference {
+
+			public bool Equals (EqualsReference obj)
+			{
+				return this == obj;
+			}
 		}
 
 		[Test]
-		public void EqualsReturnConstant ()
+		public void NotApplicable ()
 		{
-			type = GetTest ("EqualsReturnsFalse");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<StaticEquals> ();
+			AssertRuleDoesNotApply<EqualsTwoParameters> ();
+			AssertRuleDoesNotApply<EqualsReference> ();
+		}
 
-			type = GetTest ("EqualsReturnsTrue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		public class Throw {
+
+			public bool Equals (object obj)
+			{
+				throw new NotSupportedException ();
+			}
 		}
 
 		[Test]
-		public void EqualsUsingIs ()
+		public void Special ()
 		{
-			type = GetTest ("EqualsUsingIsReturnFalse");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-
-			type = GetTest ("EqualsUsingIsReturnTrue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void EqualsCallBaseClass ()
-		{
-			type = GetTest ("EqualsCallBase");
-			// we can't be sure so we shut up (else false positives gets really bad)
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void EqualsCheckThisTest ()
-		{
-			type = GetTest ("EqualsCheckThis");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void EqualsCheckTypeTest ()
-		{
-			type = GetTest ("EqualsCheckType");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Throw> ();
 		}
 	}
 }

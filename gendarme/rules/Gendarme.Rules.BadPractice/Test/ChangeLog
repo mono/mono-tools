@@ -1,3 +1,8 @@
+2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EqualShouldHandleNullArgTest.cs: Convert test cases to new 
+	format. Add new test cases based on Mono BCL (old) false positives.
+
 2008-04-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisableDebuggingCodeTest.cs: Adapt to change for Initialize 
