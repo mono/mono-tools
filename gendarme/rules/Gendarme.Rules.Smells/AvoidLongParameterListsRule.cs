@@ -59,16 +59,16 @@ namespace Gendarme.Rules.Smells {
 			if (type.Constructors.Count == 1)
 				return type.Constructors[0];
 
-			MethodDefinition bigger = null;
+			MethodDefinition smallest = null;
 			foreach (MethodDefinition constructor in type.Constructors) {
-				if (bigger != null) {
-					if (bigger.Parameters.Count > constructor.Parameters.Count)
-						bigger = constructor;
-				}
-				else 
-					bigger = constructor;
+				// skip the static ctor since it will always be the smallest one
+				if (constructor.IsStatic)
+					continue;
+
+				if ((smallest == null) || (smallest.Parameters.Count > constructor.Parameters.Count))
+					smallest = constructor;
 			}
-			return bigger;
+			return smallest;
 		}
 
 		private bool HasMoreParametersThanAllowed (MethodDefinition method)
