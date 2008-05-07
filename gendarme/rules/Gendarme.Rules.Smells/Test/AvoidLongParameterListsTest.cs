@@ -158,5 +158,22 @@ namespace Test.Rules.Smells {
 		{
 			AssertRuleFailure<LongDelegateWrapper.LongDelegate> (1);
 		}
+
+		class StaticConstructor {
+
+			static StaticConstructor ()
+			{
+			}
+
+			public StaticConstructor (int a, bool b, char c, double d, Enum e, float f)
+			{
+			}
+		}
+
+		[Test]
+		public void StaticConstructorTest ()
+		{
+			AssertRuleFailure<StaticConstructor> (1);
+		}
 	}
 }

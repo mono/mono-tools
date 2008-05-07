@@ -1,3 +1,8 @@
+2008-05-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongParameterListsTest.cs: Add test case with a static ctor
+	and a long instance ctor.
+
 2008-04-26  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidMessageChainsTest.cs: Added tests for check chains in the
