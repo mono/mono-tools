@@ -30,6 +30,7 @@ framework_sources = \
 	Gendarme.Framework/Runner.cs \
 	Gendarme.Framework/RunnerEventArgs.cs \
 	Gendarme.Framework/Severity.cs \
+	Gendarme.Framework/Symbols.cs \
 	Gendarme.Framework/TestRunner.cs \
 	Gendarme.Framework/SolutionAttribute.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
