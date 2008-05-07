@@ -1,3 +1,8 @@
+2008-05-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Defect.cs: Split debugging symbols resolution out of here.
+	* Symbols.cs: New. Symbols stuff moved here.
+
 2008-04-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Defect.cs: Deal with the special 0xFEEFEE value present in PDB 
