@@ -35,6 +35,7 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 
@@ -86,6 +87,7 @@ namespace Test.Rules.Design {
 		public void TestNonProtectedFinalizerDefinedClass ()
 		{
 			TypeDefinition typeDefinition = GetTest<FinalizerCallingBaseFinalizerClass> ().Clone () as TypeDefinition;
+			typeDefinition.Module = assembly.MainModule;
 			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
 			// make it non-protected (e.g. public)
 			finalizer.IsPublic = true;

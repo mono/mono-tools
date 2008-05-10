@@ -31,7 +31,9 @@ using System;
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 
@@ -65,6 +67,7 @@ namespace Test.Rules.Design {
 		public TypeDefinition CreateType (string name, string [] methods, int parameterCount)
 		{
 			TypeDefinition testType = new TypeDefinition (name, "", TypeAttributes.Class, type.BaseType);
+			testType.Module = assembly.MainModule;
 			TypeDefinition returnType = new TypeDefinition ("Boolean", "System", TypeAttributes.Class, type.BaseType);
 			foreach (string method in methods) {
 				MethodDefinition mDef = new MethodDefinition (method, MethodAttributes.Static | MethodAttributes.SpecialName, returnType);

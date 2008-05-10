@@ -33,6 +33,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 

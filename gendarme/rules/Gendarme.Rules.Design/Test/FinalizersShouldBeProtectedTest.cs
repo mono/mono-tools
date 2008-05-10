@@ -33,6 +33,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 
@@ -97,6 +98,7 @@ namespace Test.Rules.Design {
 		public void TestFinalizerNotCallingBaseFinalizerClass ()
 		{
 			TypeDefinition typeDefinition = GetTest<FinalizerCallingBaseFinalizerClass> ().Clone () as TypeDefinition;
+			typeDefinition.Module = assembly.MainModule;
 			MethodDefinition finalizer = typeDefinition.Methods.GetMethod ("Finalize") [0];
 			// remove base call
 			foreach (Instruction current in finalizer.Body.Instructions) {
