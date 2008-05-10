@@ -37,10 +37,50 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
-	[Problem ("Methods with a cyclomatic complexity equal or greater than 15 are harder to understand and maintain.")]
+	[Problem ("Methods with a cyclomatic complexity equal or greater than 25 are harder to understand and maintain.")]
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
 	public class AvoidComplexMethodsRule : Rule,IMethodRule {
 
+		// defaults match fxcop rule http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1575061&SiteID=1
+		// so people using both tools should not see conflicting results
+		private int success = 25;
+		private int low = 0;
+		private int medium = 0;
+		private int high = 0;
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// works if only SuccessThreshold is configured in rules.xml
+			if (low == 0)
+				low = success * 2;
+			if (medium == 0)
+				medium = success * 3;
+			if (high == 0)
+				high = success * 4;
+		}
+
+		public int SuccessThreshold {
+			get { return success; }
+			set { success = value; }
+		}
+
+		public int LowThreshold {
+			get { return low; }
+			set { low = value; }
+		}
+
+		public int MediumThreshold {
+			get { return medium; }
+			set { medium = value; }
+		}
+
+		public int HighThreshold {
+			get { return high; }
+			set { high = value; }
+		}
+	
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			//does rule apply?
@@ -49,7 +89,7 @@ namespace Gendarme.Rules.Maintainability {
 
 			//yay! rule do apply!
 			int cc = GetCyclomaticComplexityForMethod(method);
-			if (cc < 15)
+			if (cc < SuccessThreshold)
 				return RuleResult.Success;
 
 			//how's severity?
@@ -62,11 +102,20 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 
-		public static Severity GetCyclomaticComplexitySeverity(int cc)
+		public Severity GetCyclomaticComplexitySeverity(int cc)
 		{
-			if (cc < 20) return Severity.Low;//15<=CC<20 is not good but not catastrophic either
-			if (cc < 30) return Severity.Medium;//this should be refactored asap
-			return Severity.High;//CC>=30, now we really need to do something
+			// 25 <= CC < 50 is not good but not catastrophic either
+			if (cc < LowThreshold)
+				return Severity.Low;
+			// 50 <= CC < 75 this should be refactored asap
+			if (cc < MediumThreshold)
+				return Severity.Medium;
+			// 75 <= CC < 100 this SHOULD be refactored asap
+			if (cc < HighThreshold)
+				return Severity.High;
+			// CC > 100, don't touch it since it may become a classic in textbooks 
+			// anyway probably no one can understand it ;-)
+			return Severity.Critical;
 		}
 
 		public static int GetCyclomaticComplexityForMethod(MethodDefinition method)
@@ -139,4 +188,3 @@ namespace Gendarme.Rules.Maintainability {
 	}
 
 }
-
