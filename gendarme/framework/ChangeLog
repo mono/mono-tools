@@ -1,3 +1,7 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Remove Gendarme.Framework.TestRunner from the build.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Gendarme.Framework.Symbols to the build.
