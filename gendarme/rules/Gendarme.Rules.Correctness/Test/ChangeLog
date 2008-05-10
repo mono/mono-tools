@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Correctness.mdp: Fix references.
+
 2008-05-10  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* UseValueInPropertySetterTest.cs,

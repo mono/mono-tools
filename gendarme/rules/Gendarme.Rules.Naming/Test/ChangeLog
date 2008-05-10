@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Naming.mdp: Fix references.
+
 2008-04-26  Jb Evain  <jbevain@novell.com>
 
 	* UseCorrectCasingTest.cs: add tests for namespace casing

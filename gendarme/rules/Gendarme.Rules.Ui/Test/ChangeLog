@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Ui.mdp: Fix references.
+
 2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* .cs: Renamed namespaces from Ui to UI

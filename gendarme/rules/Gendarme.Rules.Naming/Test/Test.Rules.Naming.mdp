@@ -33,6 +33,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
+    <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
 </Project>

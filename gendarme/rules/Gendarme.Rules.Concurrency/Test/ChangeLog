@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Concurrency.mdp: Fix references.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontUseLockedRegionOutsideMethodTest.cs: Update header and add 

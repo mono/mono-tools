@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Performance.mdp: Fix references.
+
 2008-04-27  Andres G. Aragoneses  <aaragoneses@novell.com>
 
 	* Test.Rules.Performance.mdp: Updated.

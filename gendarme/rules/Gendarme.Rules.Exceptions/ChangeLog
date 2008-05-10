@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Gendarme.Rules.Exceptions.mdp: Fix references.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotDestroyStackTraceRule.cs: More refactoring. Use Initialize

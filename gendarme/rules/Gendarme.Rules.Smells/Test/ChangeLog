@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Smells.mdp: Fix references.
+
 2008-05-10  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLargeClassesTest.cs, AvoidSpeculativeGeneralityTest.cs,

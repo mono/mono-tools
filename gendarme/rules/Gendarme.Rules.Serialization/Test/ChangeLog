@@ -1,3 +1,7 @@
+2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.Serialization.mdp: Fix references.
+
 2008-02-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MissingSerializableAttributeOnISerializableTypeTest.cs: Add test
