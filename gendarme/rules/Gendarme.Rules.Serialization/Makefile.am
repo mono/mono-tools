@@ -27,12 +27,12 @@ serialization_test_build_sources = $(addprefix $(srcdir)/Test/, $(serialization_
 
 Test.Rules.Serialization.dll: $(serialization_test_build_sources) $(serialization_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(serialization_rules_SCRIPTS) -out:$@ $(serialization_test_build_sources)
+		-r:$(serialization_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(serialization_test_build_sources)
 
 test: Test.Rules.Serialization.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Serialization.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Serialization.dll
 
 self-test: $(serialization_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(serialization_rules_SCRIPTS)

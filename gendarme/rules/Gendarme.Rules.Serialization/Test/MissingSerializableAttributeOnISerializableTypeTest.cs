@@ -34,6 +34,7 @@ using Gendarme.Rules.Serialization;
 
 using Mono.Cecil;
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Serialization {
 
