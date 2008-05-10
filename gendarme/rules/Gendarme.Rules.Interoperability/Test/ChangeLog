@@ -1,3 +1,8 @@
+2008-05-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Test.cs: New. Test cases for 
+	DoNotCastIntPtrToInt32Rule.
+
 2008-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeTest.cs
