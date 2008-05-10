@@ -34,6 +34,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Security;
 using Mono.Cecil;
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Security {
 

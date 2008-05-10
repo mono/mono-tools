@@ -1,3 +1,9 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StaticConstructorsShouldBePrivateTest.cs: Fix test since Clone is 
+	not complete enough for TestRunner.
+	* *.cs: Add missing 'using Test.Rules.Helpers;'
+
 2008-04-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* SecureGetObjectDataOverridesTest.cs: Updated to new format. Add 

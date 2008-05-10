@@ -34,6 +34,7 @@ using Gendarme.Rules.Security;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Security {
 

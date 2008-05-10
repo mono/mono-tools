@@ -32,6 +32,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Security;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Security {
 
@@ -85,13 +86,22 @@ namespace Test.Rules.Security {
 		[Test]
 		public void TestNonPrivateStaticCtorDefinedClass ()
 		{
-			TypeDefinition inspectedType = GetTest<PrivateStaticCtorDefinedClass> ().Clone () as TypeDefinition;
-			foreach (MethodDefinition ctor in inspectedType.Constructors)
-				if (ctor.IsStatic)
-					ctor.IsPublic = true; // change it from private to public
-
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (inspectedType), inspectedType.FullName);
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			TypeDefinition inspectedType = GetTest<PrivateStaticCtorDefinedClass> ();
+			MethodDefinition static_ctor = null;
+			foreach (MethodDefinition ctor in inspectedType.Constructors) {
+				if (ctor.IsStatic) {
+					static_ctor = ctor;
+					break;
+				}
+			}
+			try {
+				static_ctor.IsPublic = true; // change it from private to public
+				Assert.AreEqual (RuleResult.Failure, runner.CheckType (inspectedType), inspectedType.FullName);
+				Assert.AreEqual (1, runner.Defects.Count, "Count");
+			}
+			finally {
+				static_ctor.IsPublic = false;
+			}
 		}
 
 		[Test]
