@@ -1,3 +1,9 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RunnerEventArgs.cs: Change setters to public since TestRunner
+	needs them.
+	* TestRunner.cs: Moving to Test.Rules.dll
+
 2008-05-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Defect.cs: Split debugging symbols resolution out of here.
