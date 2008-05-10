@@ -1,15 +1,19 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Helpers/TestRunner to the build.
+
 2008-04-28  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.mdp: Workaround for bug#367145.
 
 2008-03-24  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* Makefame.am: Refer directly to Mono.Cecil assembly, not to a 
+	* Makefile.am: Refer directly to Mono.Cecil assembly, not to a 
 	local copy, of it.
 
 2008-03-12  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* Makefame.am: New. Makefile support for this new helper assembly.
+	* Makefile.am: New. Makefile support for this new helper assembly.
 
 2008-03-11  Daniel Abramov  <ex@vingrad.ru>
 
