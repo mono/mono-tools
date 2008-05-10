@@ -1,3 +1,12 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSpeculativeGeneralityRule.cs: Avoid calling Utilities.
+	GetInheritedClassesFrom (since it returns a collection and we only 
+	need the count) and replace it by CountInheritedClassesFrom which
+	works across all the assembly set of the runner (fix false positive
+	in self-test). Also skip inactive rules when checking if the rule
+	AvoidUnusedParametersRule is scheduled for execution.
+
 2008-05-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsTest.cs: Don't consider static constructors

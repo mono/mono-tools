@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -40,13 +39,27 @@ namespace Gendarme.Rules.Smells {
 	[Solution ("You can apply various refactorings: Collapse Hierarchy, Inline Class, Remove Parameter or Rename Method.")]
 	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
 
+		public int CountInheritedClassesFrom (TypeDefinition baseType)
+		{
+			int count = 0;
+			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
+				foreach (ModuleDefinition module in assembly.Modules) {
+					foreach (TypeDefinition type in module.Types) {
+						if ((baseType == type.BaseType) || (type.BaseType != null &&
+							(baseType.FullName == type.BaseType.FullName))) {
+							count++;
+						}
+					}
+				}
+			}
+			return count;
+		}
 
 		private void CheckAbstractClassWithoutResponsability (TypeDefinition type)
 		{
 			if (type.IsAbstract) {
-				ICollection inheritedClasses = Utilities.GetInheritedClassesFrom (type);
-				if (inheritedClasses.Count == 1)
-					Runner.Report (type, Severity.Medium, Confidence.Normal, "This abstract class has only one class inheritting from.  The abstract classes without responsability are a sign for the Speculative Generality smell.");
+				if (CountInheritedClassesFrom (type) == 1)
+					Runner.Report (type, Severity.Medium, Confidence.Normal, "This abstract class has only one class inheritting from.  Abstract classes without responsability are a sign for the Speculative Generality smell.");
 			}
 		}
 
@@ -80,7 +93,7 @@ namespace Gendarme.Rules.Smells {
 				if (OnlyDelegatesCall (method))
 					delegationCounter++;
 			}
-			
+
 			return type.Methods.Count / 2 + 1 <= delegationCounter;
 		}
 
@@ -93,32 +106,29 @@ namespace Gendarme.Rules.Smells {
 		private bool AvoidUnusedParametersRuleScheduled ()
 		{
 			foreach (IRule rule in Runner.Rules) {
+				// skip rules that are loaded but inactive
+				if (!rule.Active)
+					continue;
 				if (rule is AvoidUnusedParametersRule)
 					return true;
 			}
 			return false;
 		}
 
-		private static void CheckMethods (IMethodRule rule, ICollection methods)
-		{
-			foreach (MethodDefinition method in methods) {
-				rule.CheckMethod (method);
-			}
-		}
-
 		private void CheckUnusedParameters (TypeDefinition type)
 		{
 			IMethodRule avoidUnusedParameters = new AvoidUnusedParametersRule ();
 			avoidUnusedParameters.Initialize (Runner);
-			CheckMethods (avoidUnusedParameters, type.Methods);
-			CheckMethods (avoidUnusedParameters, type.Constructors);
+			foreach (MethodDefinition method in type.AllMethods ()) {
+				avoidUnusedParameters.CheckMethod (method);
+			}
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
-			
+
 			CheckAbstractClassWithoutResponsability (type);
 			if (!AvoidUnusedParametersRuleScheduled ())
 				CheckUnusedParameters (type);
