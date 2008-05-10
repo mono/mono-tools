@@ -37,6 +37,8 @@ using Gendarme.Rules.Correctness;
 using Mono.Cecil;
 using NUnit.Framework;
 
+using Test.Rules.Helpers;
+
 namespace Test.Rules.Correctness {
 
 	[TestFixture]
