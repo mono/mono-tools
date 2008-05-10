@@ -29,12 +29,12 @@ correctness_test_build_sources = $(addprefix $(srcdir)/Test/, $(correctness_test
 
 Test.Rules.Correctness.dll: $(correctness_test_build_sources) $(correctness_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(correctness_rules_SCRIPTS) -out:$@ $(correctness_test_build_sources)
+		-r:$(correctness_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(correctness_test_build_sources)
 
 test: Test.Rules.Correctness.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Correctness.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Correctness.dll
 
 self-test: $(correctness_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(correctness_rules_SCRIPTS)
