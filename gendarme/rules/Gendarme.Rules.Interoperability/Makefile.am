@@ -11,7 +11,8 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Interoperability.xml TestResult.xml
 interoperability_rules_sources_in = ../../AssemblyInfo.cs.in
 interoperability_rules_generated_sources = $(interoperability_rules_sources_in:.in=)
 interoperability_rules_sources = PInvokeShouldNotBeVisibleRule.cs GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
-	UseManagedAlternativesToPInvokeRule.cs MarshalStringsInPInvokeDeclarationsRule.cs
+	UseManagedAlternativesToPInvokeRule.cs MarshalStringsInPInvokeDeclarationsRule.cs \
+	DoNotCastIntPtrToInt32Rule.cs
 
 interoperability_rules_build_sources = $(addprefix $(srcdir)/, $(interoperability_rules_sources))
 interoperability_rules_build_sources += $(interoperability_rules_generated_sources)
@@ -21,18 +22,19 @@ interoperability_rules_build_sources += $(interoperability_rules_generated_sourc
 		-out:$@ $(interoperability_rules_build_sources)
 
 interoperability_test_sources = PInvokeShouldNotBeVisibleTest.cs GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
-	UseManagedAlternativesToPInvokeTest.cs MarshalStringsInPInvokeDeclarationsTest.cs
+	UseManagedAlternativesToPInvokeTest.cs MarshalStringsInPInvokeDeclarationsTest.cs \
+	DoNotCastIntPtrToInt32Test.cs
 
 interoperability_test_build_sources = $(addprefix $(srcdir)/Test/, $(interoperability_test_sources))
 
 Test.Rules.Interoperability.dll: $(interoperability_test_build_sources) $(interoperability_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(interoperability_rules_SCRIPTS) -out:$@ $(interoperability_test_build_sources)
+	$(GMCS) -unsafe -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+		-r:$(interoperability_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(interoperability_test_build_sources)
 
 test: Test.Rules.Interoperability.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Interoperability.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Interoperability.dll
 
 self-test: $(interoperability_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(interoperability_rules_SCRIPTS)

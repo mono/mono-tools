@@ -1,3 +1,9 @@
+2008-05-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Rule.cs: New. Rule to ensure we're not 
+	generating code limiting IntPtr to work on 32bits architectures.
+	* Makefile.am: Add rule and test to the build.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Add Equals,
