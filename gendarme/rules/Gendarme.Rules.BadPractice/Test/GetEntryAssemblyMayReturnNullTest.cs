@@ -36,6 +36,8 @@ using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
 
+using Test.Rules.Helpers;
+
 namespace Test.Rules.BadPractice {
 
 	internal class ClassCallingGetEntryAssembly {

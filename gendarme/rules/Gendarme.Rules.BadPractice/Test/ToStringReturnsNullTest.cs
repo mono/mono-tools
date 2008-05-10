@@ -33,6 +33,8 @@ using Gendarme.Rules.BadPractice;
 using Mono.Cecil;
 using NUnit.Framework;
 
+using Test.Rules.Helpers;
+
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]

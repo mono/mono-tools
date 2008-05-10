@@ -1,3 +1,14 @@
+2008-05-10  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* CheckNewExceptionWithoutThrowingTest.cs,
+	  CloneMethodShouldNotReturnNullTest.cs,
+	  ConstructorShouldNotCallVirtualMethodsTest.cs,
+	  CheckNewThreadWithoutStartTest.cs,
+	  GetEntryAssemblyMayReturnNullTest.cs, Test.Rules.BadPractice.mdp,
+	  ToStringReturnsNullTest.cs, DisableDebuggingCodeTest.cs: Update (to
+	  fix build): somebody forgot to include the new namespace when
+	  moving TestRunner.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EqualShouldHandleNullArgTest.cs: Convert test cases to new 

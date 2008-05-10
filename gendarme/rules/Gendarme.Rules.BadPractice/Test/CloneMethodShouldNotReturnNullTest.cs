@@ -34,6 +34,8 @@ using Gendarme.Rules.BadPractice;
 using Mono.Cecil;
 using NUnit.Framework;
 
+using Test.Rules.Helpers;
+
 namespace Test.Rules.BadPractice
 {
 	[TestFixture]
@@ -95,7 +97,7 @@ namespace Test.Rules.BadPractice
 			}
 		}
 			
-	 	private ITypeRule rule;
+		private ITypeRule rule;
 		private TestRunner runner;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;

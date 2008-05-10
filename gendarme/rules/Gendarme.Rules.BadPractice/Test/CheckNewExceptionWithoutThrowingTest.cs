@@ -37,6 +37,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
 
+using Test.Rules.Helpers;
+
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
