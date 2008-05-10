@@ -27,12 +27,12 @@ ui_test_build_sources = $(addprefix $(srcdir)/Test/, $(ui_test_sources))
 
 Test.Rules.Ui.dll: $(ui_test_build_sources) $(ui_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(ui_rules_SCRIPTS) -out:$@ $(ui_test_build_sources)
+		-r:$(ui_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(ui_test_build_sources)
 
 test: Test.Rules.Ui.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Ui.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Ui.dll
 
 self-test: $(ui_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(ui_rules_SCRIPTS)

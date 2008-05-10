@@ -35,6 +35,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.UI;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.UI {
 
