@@ -1,3 +1,9 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TestRunner.cs: Move from Gendarme.Framework.dll. Change namespace.
+	Allow the runner to work with rules that works across several 
+	assemblies (i.e. populate Assemblies collection)
+
 2008-04-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DefinitionLoader.cs: Rework GetMethodDefinition so it can work
