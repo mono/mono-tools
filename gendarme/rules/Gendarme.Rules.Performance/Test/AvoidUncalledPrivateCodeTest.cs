@@ -41,7 +41,6 @@ using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 	

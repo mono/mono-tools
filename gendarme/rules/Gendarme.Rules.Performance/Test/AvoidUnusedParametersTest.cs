@@ -32,9 +32,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 using Mono.Cecil;
-using NUnit.Framework;
 using Gendarme.Framework;
 using Gendarme.Rules.Performance;
+
+using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 
