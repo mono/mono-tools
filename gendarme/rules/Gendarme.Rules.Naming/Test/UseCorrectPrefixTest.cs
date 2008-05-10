@@ -33,7 +33,9 @@ using System.Reflection;
 using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Naming {
 

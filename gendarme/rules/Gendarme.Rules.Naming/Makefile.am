@@ -32,13 +32,13 @@ naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 naming_test_build_sources = $(addprefix $(srcdir)/Test/, $(naming_test_sources))
 
 Test.Rules.Naming.dll: $(naming_test_build_sources) $(naming_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit \
+	$(GMCS) -target:library -debug -r:$(CECIL_ASM) -pkg:mono-nunit -r:../Test.Rules/Test.Rules.dll \
 		-r:../../bin/Gendarme.Framework.dll -r:$(naming_rules_SCRIPTS) -out:$@ $(naming_test_build_sources)
 
 test: Test.Rules.Naming.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Naming.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Naming.dll
 
 self-test: $(naming_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(naming_rules_SCRIPTS)
