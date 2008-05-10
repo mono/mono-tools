@@ -35,6 +35,7 @@ using Mono.Cecil;
 using NUnit.Framework;
 using Gendarme.Framework;
 using Gendarme.Rules.Smells;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Smells {
 

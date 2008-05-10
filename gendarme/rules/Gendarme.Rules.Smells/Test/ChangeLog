@@ -1,3 +1,11 @@
+2008-05-10  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLargeClassesTest.cs, AvoidSpeculativeGeneralityTest.cs,
+	AvoidCodeDuplicatedInSameClassTest.cs, AvoidLongMethodsTest.cs,
+	AvoidCodeDuplicatedInSiblingClassesTest.cs: The reference for TestRunner
+	class has been changed, it is placed now in Test.Rules.Helpers
+	namespace.
+
 2008-05-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsTest.cs: Add test case with a static ctor

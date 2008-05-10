@@ -37,6 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Smells;
 
 using System.Windows.Forms;
+using Test.Rules.Helpers;
 
 //Stubs for the Gtk testing.
 namespace Gtk {
