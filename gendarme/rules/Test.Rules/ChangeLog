@@ -1,3 +1,7 @@
+2008-05-10  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* Test.Rules.mdp: Update to fix build.
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Helpers/TestRunner to the build.
