@@ -34,6 +34,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Portability;
 
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Portability {
 

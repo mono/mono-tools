@@ -35,6 +35,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Portability;
 using Mono.Cecil;
 using NUnit.Framework;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Portability {
 

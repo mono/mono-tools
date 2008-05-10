@@ -26,12 +26,12 @@ portability_test_build_sources = $(addprefix $(srcdir)/Test/, $(portability_test
 
 Test.Rules.Portability.dll: $(portability_test_build_sources) $(portability_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(portability_rules_SCRIPTS) -out:$@ $(portability_test_build_sources)
+		-r:$(portability_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(portability_test_build_sources)
 
 test: Test.Rules.Portability.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Portability.dll
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Portability.dll
 
 self-test: $(portability_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(portability_rules_SCRIPTS)
