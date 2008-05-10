@@ -213,8 +213,8 @@ namespace Test.Rules.Maintainability {
 			Console.Write("oob");
 		}
 
-		[ExpectedCC(15)]
-		public object Test15(object val)
+		[ExpectedCC(27)]
+		public object Test27(object val)
 		{
 			if (val == null) {/*2*/
 				return null;
@@ -223,69 +223,57 @@ namespace Test.Rules.Maintainability {
 			{
 				string sRef = "eateat";
 				return sRef;
-			}
-			else if (val.GetType() == typeof(int)/*4*/
-				|| val.GetType() == typeof(uint)/*5*/
-				|| val.GetType() == typeof(float)/*6*/
-				|| val.GetType() == typeof(double)/*7*/
-				|| val.GetType() == typeof(byte)/*8*/
-				|| val.GetType() == typeof(long)/*9*/
-				|| val.GetType() == typeof(ulong)/*10*/
-				|| val.GetType() == typeof(char))/*11*/
-			{
+			} else if (val.GetType () == typeof (int)/*4*/
+				|| val.GetType () == typeof (uint)/*5*/
+				|| val.GetType () == typeof (float)/*6*/
+				|| val.GetType () == typeof (double)/*7*/
+				|| val.GetType () == typeof (byte)/*8*/
+				|| val.GetType () == typeof (sbyte)/*9*/
+				|| val.GetType () == typeof (short)/*10*/
+				|| val.GetType () == typeof (ushort)/*11*/
+				|| val.GetType () == typeof (long)/*12*/
+				|| val.GetType () == typeof (ulong)/*13*/
+				|| val.GetType () == typeof (void)/*14*/
+				|| val.GetType () == typeof (IntPtr)/*15*/
+				|| val.GetType () == typeof (UIntPtr)/*16*/
+				|| val.GetType () == typeof (char))/*17*/ {
 				return 50;
 			}
-			else if (val.GetType() == typeof(bool))/*12*/
+			else if (val.GetType() == typeof(bool))/*19*/
 			{
-				return (val.GetType().FullName == "foo") ? true/*13*/ : false/*14*/;
+				return (val.GetType().FullName == "foo") ? true/*19*/ : false/*20*/;
 			}
-			else if (val.GetType() == typeof(object))/*15*/
-			{
-				return val;
-			}
-			throw new InvalidOperationException();
-		}
-
-		[ExpectedCC(21)]
-		public object Test21(object val)
-		{
-			if (val == null) {/*2*/
-				return null;
-			}
-			else if (val.GetType() == typeof(string))/*3*/
-			{
-				string sRef = "eateat";
-				return sRef;
-			}
-			else if (val.GetType() == typeof(int)/*4*/
-				|| val.GetType() == typeof(uint)/*5*/
-				|| val.GetType() == typeof(float)/*6*/
-				|| val.GetType() == typeof(double)/*7*/
-				|| val.GetType() == typeof(byte)/*8*/
-				|| val.GetType() == typeof(long)/*9*/
-				|| val.GetType() == typeof(ulong)/*10*/
-				|| val.GetType() == typeof(char))/*11*/
-			{
-				return 50;
-			}
-			else if (val.GetType() == typeof(bool))/*12*/
-			{
-				return (val.GetType().FullName == "foo") ? true/*13*/ : false/*14*/;
-			}
-			else if (val.GetType() == typeof(object))/*15*/
+			else if (val.GetType() == typeof(object))/*21*/
 			{
 				return val;
 			}
 			int i = val.GetHashCode();
-			if (i > 0/*16*/ && i < 42/*17*/)
+			if (i > 0/*22*/ && i < 42/*23*/)
 			{
 				return null;
 			}
-			else if (i == 42/*18*/ || i == 69/*19*/)
+			else if (i == 42/*24*/ || i == 69/*25*/)
 			{
-				return (i == 42) ? true/*20*/ : false/*21*/;
+				return (i == 42) ? true/*26*/ : false/*27*/;
 			}
 			throw new InvalidOperationException();
+		}
+
+		[ExpectedCC (53)]
+		public void TooManyIf (char c)
+		{
+			if ((c == 'a') || (c == 'b') || (c == 'c') || (c == 'd') || (c == 'e') ||
+				(c == 'f') || (c == 'g') || (c == 'h') || (c == 'i') ||	(c == 'j') ||
+				(c == 'k') || (c == 'l') || (c == 'm') || (c == 'n') || (c == 'o') ||
+				(c == 'p') || (c == 'q') || (c == 'r') || (c == 's') ||	(c == 't') ||
+				(c == 'u') || (c == 'v') || (c == 'w') || (c == 'x') ||	(c == 'y') ||
+				(c == 'z') || (c == 'A') || (c == 'B') || (c == 'C') ||	(c == 'D') ||
+				(c == 'E') || (c == 'F') || (c == 'G') || (c == 'H') || (c == 'I') ||
+				(c == 'J') || (c == 'K') || (c == 'L') || (c == 'M') || (c == 'N') ||
+				(c == 'O') || (c == 'P') || (c == 'Q') || (c == 'R') ||	(c == 'S') ||
+				(c == 'T') || (c == 'U') || (c == 'V') || (c == 'W') ||	(c == 'X') ||
+				(c == 'Y') || (c == 'Z'))
+					Console.WriteLine ("52!");
 		}
 
 		[ExpectedCC(15)]
@@ -294,32 +282,24 @@ namespace Test.Rules.Maintainability {
 		{
 			if (val == null) {/*2*/
 				return null;
-			}
-			else if (val.GetType() == typeof(string))/*3*/
-			{
+			} else if (val.GetType () == typeof (string))/*3*/ {
 				string sRef = "eateat";
 				return sRef;
-			}
-			else if (val.GetType() == typeof(int)/*4*/
-				|| val.GetType() == typeof(uint)/*5*/
-				|| val.GetType() == typeof(float)/*6*/
-				|| val.GetType() == typeof(double)/*7*/
-				|| val.GetType() == typeof(byte)/*8*/
-				|| val.GetType() == typeof(long)/*9*/
-				|| val.GetType() == typeof(ulong)/*10*/
-				|| val.GetType() == typeof(char))/*11*/
-			{
+			} else if (val.GetType () == typeof (int)/*4*/
+				  || val.GetType () == typeof (uint)/*5*/
+				  || val.GetType () == typeof (float)/*6*/
+				  || val.GetType () == typeof (double)/*7*/
+				  || val.GetType () == typeof (byte)/*8*/
+				  || val.GetType () == typeof (long)/*9*/
+				  || val.GetType () == typeof (ulong)/*10*/
+				  || val.GetType () == typeof (char))/*11*/ {
 				return 50;
-			}
-			else if (val.GetType() == typeof(bool))/*12*/
-			{
-				return (val.GetType().FullName == "foo") ? true/*13*/ : false/*14*/;
-			}
-			else if (val.GetType() == typeof(object))/*15*/
-			{
+			} else if (val.GetType () == typeof (bool))/*12*/ {
+				return (val.GetType ().FullName == "foo") ? true/*13*/ : false/*14*/;
+			} else if (val.GetType () == typeof (object))/*15*/ {
 				return val;
 			}
-			throw new InvalidOperationException();
+			throw new InvalidOperationException ();
 		}
 
 	}
@@ -366,13 +346,13 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void ComplexMethodTest ()
 		{
-			AssertRuleFailure<MethodsWithExpectedCC> ("Test15");
+			AssertRuleFailure<MethodsWithExpectedCC> ("Test27");
 		}
 
 		[Test]
 		public void MoreComplexMethodTest ()
 		{
-			AssertRuleFailure<MethodsWithExpectedCC> ("Test21");
+			AssertRuleFailure<MethodsWithExpectedCC> ("TooManyIf");
 		}
 
 		[Test]
@@ -380,8 +360,5 @@ namespace Test.Rules.Maintainability {
 		{
 			AssertRuleDoesNotApply<MethodsWithExpectedCC> ("Generated15");
 		}
-
 	}
-
 }
-

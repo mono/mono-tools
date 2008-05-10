@@ -1,3 +1,7 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsTest.cs: Adapt unit tests with new threshold.
+
 2008-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Tests.Rules.Maintainability.csproj: New. VS.NET project file.
