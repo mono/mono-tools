@@ -29,12 +29,14 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Interoperability;
 using Mono.Cecil;
+
 using NUnit.Framework;
-using System.Text;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Interoperability {
 
