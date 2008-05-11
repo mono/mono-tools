@@ -1,3 +1,8 @@
+2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepInheritanceTreeRule.cs: New. Rule to check if the 
+	inheritance tree of types gets deeper than 4 levels.
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidComplexMethodsRule.cs: Change default threshold to 25 (to 
