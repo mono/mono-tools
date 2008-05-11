@@ -36,7 +36,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("This type inheritance tree is more than four level deep.")]
-	[Solution ("Refactor your class hierarchy to reduce it's depth. Consider using extension methods (C# 3) to extend existing types.")]
+	[Solution ("Refactor your class hierarchy to reduce it's depth. Consider using extension methods to extend existing types.")]
 	public class AvoidDeepInheritanceTreeRule : Rule, ITypeRule {
 
 		private const int MaximumDepth = 4;
