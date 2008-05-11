@@ -14,7 +14,8 @@ naming_rules_sources = EnumNotEndsWithEnumOrFlagsSuffixRule.cs \
 	UsePluralNameInEnumFlagsRule.cs UseSingularNameInEnumsUnlessAreFlagsRule.cs \
 	DetectNonAlphaNumericsInTypeNamesRule.cs UseCorrectCasingRule.cs UseCorrectPrefixRule.cs UseCorrectSuffixRule.cs \
 	UsePreferredTermsRule.cs DoNotPrefixValuesWithEnumNameRule.cs DoNotUseReservedInEnumValueNamesRule.cs \
-	ParameterNamesShouldMatchOverridenMethodRule.cs
+	ParameterNamesShouldMatchOverridenMethodRule.cs \
+	DoNotPrefixEventsWithAfterOrBeforeRule.cs
 
 naming_rules_build_sources = $(addprefix $(srcdir)/, $(naming_rules_sources))
 naming_rules_build_sources += $(naming_rules_generated_sources)
@@ -27,7 +28,8 @@ naming_test_sources = EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 	UsePluralNameInEnumFlagsTest.cs UseSingularNameInEnumsUnlessAreFlagsTest.cs \
 	DetectNonAlphaNumericsInTypeNamesTest.cs UseCorrectCasingTest.cs UseCorrectPrefixTest.cs UseCorrectSuffixTest.cs \
 	UsePreferredTermsTest.cs DoNotPrefixValuesWithEnumNameTest.cs DoNotUseReservedInEnumValueNamesTest.cs \
-	ParameterNamesShouldMatchOverridenMethodTest.cs
+	ParameterNamesShouldMatchOverridenMethodTest.cs \
+	DoNotPrefixEventsWithAfterOrBeforeTest.cs
 
 naming_test_build_sources = $(addprefix $(srcdir)/Test/, $(naming_test_sources))
 
