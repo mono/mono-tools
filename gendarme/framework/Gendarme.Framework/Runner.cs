@@ -106,8 +106,11 @@ namespace Gendarme.Framework {
 			AnalyzeType = null;
 			AnalyzeMethod = null;
 
+			AssemblyResolver.Resolver.AssemblyCache.Clear ();
+
 			foreach (AssemblyDefinition assembly in assemblies) {
 				try {
+					AssemblyResolver.Resolver.AssemblyCache.Add (assembly.Name.Name, assembly);
 					assembly.MainModule.LoadSymbols ();
 				}
 				catch (FileNotFoundException) { 	 
@@ -178,6 +181,11 @@ namespace Gendarme.Framework {
 		public void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message)
 		{
 			defect_list.Add (new Defect (currentRule, currentTarget, parameter, severity, confidence, message));
+		}
+
+		public void Report (EventDefinition evnt, Severity severity, Confidence confidence, string message)
+		{
+			defect_list.Add (new Defect (currentRule, currentTarget, evnt, severity, confidence, message));
 		}
 
 		public void Reset ()

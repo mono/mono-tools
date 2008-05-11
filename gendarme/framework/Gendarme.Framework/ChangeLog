@@ -1,3 +1,9 @@
+2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* IRunner.cs: Add a Report overload for EventDefinition.
+	* Runner.cs: Set and Clear Resolver cache (to reuse the runner).
+	Implement Report(EventDefinition...)
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* RunnerEventArgs.cs: Change setters to public since TestRunner
