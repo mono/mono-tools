@@ -63,6 +63,13 @@ namespace Gendarme {
 
 		protected override void Write ()
 		{
+			WriteFiles ();
+			WriteRules ();
+			WriteDefects ();
+		}
+
+		private void WriteFiles ()
+		{
 			writer.WriteStartElement ("files");
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				writer.WriteStartElement ("file");
@@ -71,7 +78,10 @@ namespace Gendarme {
 				writer.WriteEndElement ();
 			}
 			writer.WriteEndElement ();
+		}
 
+		private void WriteRules ()
+		{
 			writer.WriteStartElement ("rules");
 			foreach (IRule rule in Runner.Rules) {
 				if (rule is IAssemblyRule)
@@ -82,7 +92,20 @@ namespace Gendarme {
 					WriteRule (rule, "Method");
 			}
 			writer.WriteEndElement ();
+		}
 
+		private void WriteRule (IRule rule, string type)
+		{
+			writer.WriteStartElement ("rule");
+			writer.WriteAttributeString ("Name", rule.Name);
+			writer.WriteAttributeString ("Type", type);
+			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
+			writer.WriteString (rule.GetType ().FullName);
+			writer.WriteEndElement ();
+		}
+
+		private void WriteDefects ()
+		{
 			var query = from n in Runner.Defects
 				    orderby n.Assembly.Name.FullName, n.Rule.Name
 				    group n by n.Rule into a
@@ -99,22 +122,12 @@ namespace Gendarme {
 			writer.WriteStartElement ("results");
 			foreach (var value in query) {
 				writer.WriteStartElement ("rule");
-				writer.WriteAttributeString ("Name", value.Rule.Name);
-				writer.WriteAttributeString ("Uri", value.Rule.Uri.ToString ());
-				writer.WriteElementString ("problem", value.Rule.Problem);
-				writer.WriteElementString ("solution", value.Rule.Solution);
+				WriteRuleDetails (value.Rule);
 				foreach (var v2 in value.Value) {
 					writer.WriteStartElement ("target");
-					writer.WriteAttributeString ("Name", v2.Target.ToString ());
-					writer.WriteAttributeString ("Assembly", v2.Target.GetAssembly ().Name.FullName);
-					foreach (var v3 in v2.Value) {
-						writer.WriteStartElement ("defect");
-						writer.WriteAttributeString ("Severity", v3.Severity.ToString ());
-						writer.WriteAttributeString ("Confidence", v3.Confidence.ToString ());
-						writer.WriteAttributeString ("Location", v3.Location.ToString ());
-						writer.WriteAttributeString ("Source", v3.Source);
-						writer.WriteString (v3.Text);
-						writer.WriteEndElement ();
+					WriteTargetDetails (v2.Target);
+					foreach (Defect defect in v2.Value) {
+						WriteDefect (defect);
 					}
 					writer.WriteEndElement ();
 				}
@@ -123,20 +136,35 @@ namespace Gendarme {
 			writer.WriteEndElement ();
 		}
 
+		private void WriteRuleDetails (IRule rule)
+		{
+			writer.WriteAttributeString ("Name", rule.Name);
+			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
+			writer.WriteElementString ("problem", rule.Problem);
+			writer.WriteElementString ("solution", rule.Solution);
+		}
+
+		private void WriteTargetDetails (IMetadataTokenProvider target)
+		{
+			writer.WriteAttributeString ("Name", target.ToString ());
+			writer.WriteAttributeString ("Assembly", target.GetAssembly ().Name.FullName);
+		}
+
+		private void WriteDefect (Defect defect)
+		{
+			writer.WriteStartElement ("defect");
+			writer.WriteAttributeString ("Severity", defect.Severity.ToString ());
+			writer.WriteAttributeString ("Confidence", defect.Confidence.ToString ());
+			writer.WriteAttributeString ("Location", defect.Location.ToString ());
+			writer.WriteAttributeString ("Source", defect.Source);
+			writer.WriteString (defect.Text);
+			writer.WriteEndElement ();
+		}
+
 		protected override void Finish ()
 		{
 			writer.WriteEndElement ();
 			writer.Flush ();
-		}
-
-		private void WriteRule (IRule rule, string type)
-		{
-			writer.WriteStartElement ("rule");
-			writer.WriteAttributeString ("Name", rule.Name);
-			writer.WriteAttributeString ("Type", type);
-			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
-			writer.WriteString (rule.GetType ().FullName);
-			writer.WriteEndElement ();
 		}
 
 		protected override void Dispose (bool disposing)
