@@ -1,3 +1,8 @@
+2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotPrefixEventsWithAfterOrBeforeTest.cs: New. Unit tests for
+	DoNotPrefixEventsWithAfterOrBeforeRule
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Naming.mdp: Fix references.
