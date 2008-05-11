@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -66,19 +65,22 @@ namespace Gendarme.Rules.Maintainability {
 			Runner.Report (type, sev, Confidence.Normal, s);
 			return RuleResult.Failure;
 		}
+
+		private static IEnumerable<MethodDefinition> GetMethods (TypeDefinition type)
+		{
+			return from MethodDefinition met in type.Methods
+				where met.HasBody && !met.IsSpecialName
+				select met; 
+		}
 		
 		public double GetCohesivenessForType (TypeDefinition type)
 		{
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
 			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
-			
-			var methods = from MethodDefinition met in type.Methods
-				where met.HasBody && !met.IsSpecialName
-				select met; 
 
-			foreach (MethodDefinition method in methods)
-			{
+			foreach (MethodDefinition method in GetMethods (type)) {
+
 				//Mset is true if the method has already incremented M
 				bool Mset = false;
 				//Fset keeps the fields already addressed in the current method
@@ -132,47 +134,47 @@ namespace Gendarme.Rules.Maintainability {
 
 		public double SuccessLowerLimit
 		{
-			get { return _successCoh; }
-			set { _successCoh = value; }
+			get { return successCoh; }
+			set { successCoh = value; }
 		}
-		protected double _successCoh = 0.5;
+		protected double successCoh = 0.5;
 
 		public double LowSeverityLowerLimit
 		{
-			get { return _lowCoh; }
-			set { _lowCoh = value; }
+			get { return lowCoh; }
+			set { lowCoh = value; }
 		}
-		protected double _lowCoh = 0.4;
+		protected double lowCoh = 0.4;
 
 		public double MediumSeverityLowerLimit
 		{
-			get { return _medCoh; }
-			set { _medCoh = value; }
+			get { return medCoh; }
+			set { medCoh = value; }
 		}
-		protected double _medCoh = 0.2;
+		protected double medCoh = 0.2;
 
 		public int MinimumMethodCount
 		{
-			get { return _minMethodCount; }
+			get { return method_minimum_count; }
 			set {
-				if (value < 1) throw new ArgumentException("MinimumMethodCount", "MinimumMethodCount cannot be lesser than 1");
-				_minMethodCount = value;
+				if (value < 1)
+					throw new ArgumentException ("MinimumMethodCount cannot be lesser than 1", "MinimumMethodCount");
+				method_minimum_count = value;
 			}
 		}
-		protected int _minMethodCount = 2;//set at 2 to remove 'uninsteresting' types
+		protected int method_minimum_count = 2;//set at 2 to remove 'uninteresting' types
 
 		public int MinimumFieldCount
 		{
-			get { return _minFieldCount; }
+			get { return field_minimum_count; }
 			set {
-				if (value < 0) throw new ArgumentException("MinimumFieldCount", "MinimumFieldCount cannot be lesser than 0");
-				_minFieldCount = value;
+				if (value < 0)
+					throw new ArgumentException ("MinimumFieldCount cannot be lesser than 0", "MinimumFieldCount");
+				field_minimum_count = value;
 			}
 		}
-		protected int _minFieldCount = 1;//set at 1 to remove 'uninsteresting' types
+		protected int field_minimum_count = 1;//set at 1 to remove 'uninteresting' types
 		                                 //this shouldn't be set to another value than MinimumMethodCount/2
 
 	}
-
 }
-

@@ -1,3 +1,10 @@
+2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Refactor against 
+	AvoidLongMethodsRule (GetCohesivenessForType) and 
+	AvoidLargeClassesRule (common prefixes). Fix exception arguments
+	ordering.
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepInheritanceTreeRule.cs: New. Rule to check if the 
