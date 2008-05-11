@@ -38,9 +38,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	[Problem ("The member ignores the result from the call.")]
-	[Solution ("You shouldn't ignore this result.")]
-	public class DoNotIgnoreMethodResultRule : Rule,IMethodRule {
+	[Problem ("The method ignores the result value from the specified call.")]
+	[Solution ("You shouldn't ignore the result value.")]
+	public class DoNotIgnoreMethodResultRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -51,51 +51,29 @@ namespace Gendarme.Rules.Performance {
 
 			foreach (Instruction instruction in method.Body.Instructions) {
 				if (instruction.OpCode.Code == Code.Pop) {
-					Defect defect = CheckForViolation (method, instruction.Previous);
-					if (defect != null) 
-						Runner.Report (defect);
+					CheckForViolation (method, instruction.Previous);
 				}
 			}
 			return Runner.CurrentRuleResult;
 		}
 
-		// some method return stuff that isn't required in most cases
-		// the rule ignores them
 		private static bool IsCallException (MethodReference method)
 		{
-			// GetOriginalType makes generic type easier to compare
-			switch (method.DeclaringType.GetOriginalType ().FullName) {
-			case "System.IO.Directory":
+			switch (method.DeclaringType.FullName) {
+			case "System.String":
+				// Since strings are immutable, calling System.String methods that returns strings 
+				// better be assigned to something
+				return (method.ReturnType.ReturnType.FullName != "System.String");
 			case "System.IO.DirectoryInfo":
-				// the returned DirectoryInfo returned by Create* methods are optional
-				return (method.ReturnType.ReturnType.FullName == "System.IO.DirectoryInfo");
-			case "System.Text.StringBuilder":
-				// StringBuilder Append*, Insert ... methods return the current 
-				// StringBuilder so the calls can be chained
-				return (method.ReturnType.ReturnType.FullName == "System.Text.StringBuilder");
+				// GetDirectories overloads don't apply to the instance
+				return (method.Name != "GetDirectories");
 			case "System.Security.PermissionSet":
-				// PermissionSet return the permission (modified or unchanged) when
-				// IPermission are added or removed
-				return (method.Name == "AddPermission" || method.Name == "RemovePermission");
-			case "System.Reflection.MethodBase":
-				return (method.Name == "Invoke");
-			case "System.Collections.Stack":
-			case "System.Collections.Generic.Stack`1":
-				return (method.Name == "Pop");
-			case "Mono.Security.ASN1":
-				// return the instance so we can chain operations
-				return (method.Name == "Add");
+				// Intersection and Union returns a new PermissionSet (it does not change the instance)
+				return (method.ReturnType.ReturnType.FullName != "System.Security.PermissionSet");
+			default:
+				// this is useless anytime, if unassigned, more in cases like a StringBuilder
+				return (method.Name != "ToString");
 			}
-
-			// many types provide a BeginInvoke, which return value (deriving from IAsyncResult)
-			// isn't needed in many cases
-			if (method.Name == "BeginInvoke") {
-				if (method.Parameters.Count > 0) {
-					return (method.Parameters [0].ParameterType.FullName == "System.Delegate");
-				}
-			}
-
-			return false;
 		}
 
 		private static bool IsNewException (MemberReference method)
@@ -109,13 +87,13 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private Defect CheckForViolation (MethodDefinition method, Instruction instruction)
+		private void CheckForViolation (MethodDefinition method, Instruction instruction)
 		{
 			if ((instruction.OpCode.Code == Code.Newobj || instruction.OpCode.Code == Code.Newarr)) {
 				MemberReference member = (instruction.Operand as MemberReference);
 				if ((member != null) && !IsNewException (member)) {
-					string s = String.Format ("Unused object of type {0} created", member.ToString ());
-					return new Defect (this, method.DeclaringType, method, instruction, Severity.Medium, Confidence.Normal, s);
+					string s = String.Format ("Unused object of type '{0}' created.", member.ToString ());
+					Runner.Report (method, instruction, Severity.High, Confidence.Normal, s);
 				}
 			}
 
@@ -125,11 +103,10 @@ namespace Gendarme.Rules.Performance {
 					// check for some common exceptions (to reduce false positive)
 					if (!IsCallException (callee)) {
 						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.ToString ());
-						return new Defect (this, method.DeclaringType, method, instruction, Severity.Medium, Confidence.Normal, s);
+						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, s);
 					}
 				}
 			}
-			return null;
 		}
 	}
 }

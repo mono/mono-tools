@@ -1,3 +1,9 @@
+2008-05-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DontIgnoreMethodResultRule.cs: Change logic to check for specific
+	cases (black list) instead of everything minus exceptions (white-
+	listing). Cut down a lot on false positives.
+
 2008-05-01  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeStructureRule.cs: Remove unused GetPackSize method.
