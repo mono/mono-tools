@@ -4,6 +4,7 @@
 // Authors:
 //	Christian Birkl <christian.birkl@gmail.com>
 //	Sebastien Pouliot <sebastien@ximian.com>
+//  Jb Evain <jbevain@novell.com>
 //
 // Copyright (C) 2006 Christian Birkl
 // Copyright (C) 2006, 2008 Novell, Inc (http://www.novell.com)
@@ -29,9 +30,11 @@
 //
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 using Mono.Cecil;
 
@@ -42,69 +45,77 @@ namespace Gendarme {
 
 	public class XmlResultWriter : ResultWriter, IDisposable {
 
-		private XmlTextWriter writer;
+		XmlWriter writer;
+		XElement root;
 
 		public XmlResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
 		{
+			writer = XmlWriter.Create (
+				CreateWriterFor (fileName),
+				new XmlWriterSettings { Indent = true, CloseOutput = true });
+		}
+
+		static TextWriter CreateWriterFor (string fileName)
+		{
 			if ((fileName == null) || (fileName.Length == 0))
-				writer = new XmlTextWriter (System.Console.Out);
+				return System.Console.Out;
 			else
-				writer = new XmlTextWriter (fileName, Encoding.UTF8);
+				return new StreamWriter (fileName, false, Encoding.UTF8);
 		}
 
 		protected override void Start ()
 		{
-			writer.Formatting = Formatting.Indented;
-			writer.WriteProcessingInstruction ("xml", "version='1.0'");
-			writer.WriteStartElement ("gendarme-output");
-			writer.WriteAttributeString ("date", DateTime.UtcNow.ToString ());
+			root = new XElement ("gendarme-output",
+				new XAttribute ("date", DateTime.UtcNow.ToString ()));
 		}
 
 		protected override void Write ()
 		{
-			WriteFiles ();
-			WriteRules ();
-			WriteDefects ();
+			root.Add (
+				CreateFiles (),
+				CreateRules (),
+				CreateDefects ());
 		}
 
-		private void WriteFiles ()
+		private XElement CreateFiles ()
 		{
-			writer.WriteStartElement ("files");
-			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
-				writer.WriteStartElement ("file");
-				writer.WriteAttributeString ("Name", assembly.Name.FullName);
-				writer.WriteString (assembly.MainModule.Image.FileInformation.FullName);
-				writer.WriteEndElement ();
-			}
-			writer.WriteEndElement ();
+			return new XElement ("files",
+				from AssemblyDefinition assembly in Runner.Assemblies
+				select new XElement ("file",
+					new XAttribute ("Name", assembly.Name.FullName),
+					new XText (assembly.MainModule.Image.FileInformation.FullName)));
 		}
 
-		private void WriteRules ()
+		static string GetRuleType (IRule rule)
 		{
-			writer.WriteStartElement ("rules");
-			foreach (IRule rule in Runner.Rules) {
-				if (rule is IAssemblyRule)
-					WriteRule (rule, "Assembly");
-				if (rule is ITypeRule)
-					WriteRule (rule, "Type");
-				if (rule is IMethodRule)
-					WriteRule (rule, "Method");
-			}
-			writer.WriteEndElement ();
+			if (rule is IAssemblyRule)
+				return "Assembly";
+			if (rule is ITypeRule)
+				return "Type";
+			if (rule is IMethodRule)
+				return "Method";
+
+			throw new NotSupportedException ("RuleType not supported: " + rule.GetType ());
 		}
 
-		private void WriteRule (IRule rule, string type)
+		private XElement CreateRules ()
 		{
-			writer.WriteStartElement ("rule");
-			writer.WriteAttributeString ("Name", rule.Name);
-			writer.WriteAttributeString ("Type", type);
-			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
-			writer.WriteString (rule.GetType ().FullName);
-			writer.WriteEndElement ();
+			return new XElement ("rules",
+				from rule in Runner.Rules
+				select CreateRule (rule, GetRuleType (rule)));
 		}
 
-		private void WriteDefects ()
+		static XElement CreateRule (IRule rule, string type)
+		{
+			return new XElement ("rule",
+				new XAttribute ("Name", rule.Name),
+				new XAttribute ("Type", type),
+				new XAttribute ("Uri", rule.Uri.ToString ()),
+				new XText (rule.GetType ().FullName));
+		}
+
+		private XElement CreateDefects ()
 		{
 			var query = from n in Runner.Defects
 				    orderby n.Assembly.Name.FullName, n.Rule.Name
@@ -119,61 +130,60 @@ namespace Gendarme {
 						    }
 				    };
 
-			writer.WriteStartElement ("results");
-			foreach (var value in query) {
-				writer.WriteStartElement ("rule");
-				WriteRuleDetails (value.Rule);
-				foreach (var v2 in value.Value) {
-					writer.WriteStartElement ("target");
-					WriteTargetDetails (v2.Target);
-					foreach (Defect defect in v2.Value) {
-						WriteDefect (defect);
-					}
-					writer.WriteEndElement ();
-				}
-				writer.WriteEndElement ();
-			}
-			writer.WriteEndElement ();
+			return new XElement ("results",
+				from value in query
+				select new XElement ("rule",
+					CreateRuleDetails (value.Rule),
+					from v2 in value.Value
+					select new XElement ("target",
+						CreateTargetDetails (v2.Target),
+						from Defect defect in v2.Value
+						select CreateDefect (defect))));
 		}
 
-		private void WriteRuleDetails (IRule rule)
+		static XObject [] CreateRuleDetails (IRule rule)
 		{
-			writer.WriteAttributeString ("Name", rule.Name);
-			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
-			writer.WriteElementString ("problem", rule.Problem);
-			writer.WriteElementString ("solution", rule.Solution);
+			return new XObject [] {
+				new XAttribute ("Name", rule.Name),
+				new XAttribute ("Uri", rule.Uri.ToString ()),
+				new XElement ("problem", rule.Problem),
+				new XElement ("solution", rule.Solution) };
 		}
 
-		private void WriteTargetDetails (IMetadataTokenProvider target)
+		static XObject [] CreateTargetDetails (IMetadataTokenProvider target)
 		{
-			writer.WriteAttributeString ("Name", target.ToString ());
-			writer.WriteAttributeString ("Assembly", target.GetAssembly ().Name.FullName);
+			return new XObject [] {
+				new XAttribute ("Name", target.ToString ()),
+				new XAttribute ("Assembly", target.GetAssembly ().Name.FullName) };
 		}
 
-		private void WriteDefect (Defect defect)
+		static XElement CreateDefect (Defect defect)
 		{
-			writer.WriteStartElement ("defect");
-			writer.WriteAttributeString ("Severity", defect.Severity.ToString ());
-			writer.WriteAttributeString ("Confidence", defect.Confidence.ToString ());
-			writer.WriteAttributeString ("Location", defect.Location.ToString ());
-			writer.WriteAttributeString ("Source", defect.Source);
-			writer.WriteString (defect.Text);
-			writer.WriteEndElement ();
+			return new XElement ("defect",
+				new XAttribute ("Severity", defect.Severity.ToString ()),
+				new XAttribute ("Confidence", defect.Confidence.ToString ()),
+				new XAttribute ("Location", defect.Location.ToString ()),
+				new XAttribute ("Source", defect.Source),
+				new XText (defect.Text));
 		}
 
 		protected override void Finish ()
 		{
-			writer.WriteEndElement ();
-			writer.Flush ();
+			var document = new XDocument (
+				new XDeclaration ("1.0", "utf-8", "yes"),
+				root);
+
+			document.Save (writer);
 		}
 
 		protected override void Dispose (bool disposing)
 		{
-			if (disposing) {
-				if (writer != null) {
-					(writer as IDisposable).Dispose ();
-					writer = null;
-				}
+			if (!disposing)
+				return;
+
+			if (writer != null) {
+				(writer as IDisposable).Dispose ();
+				writer = null;
 			}
 		}
 	}

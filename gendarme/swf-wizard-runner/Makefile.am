@@ -33,7 +33,7 @@ Properties/Resources.resources:
 
 ../bin/gendarme-wizard.exe: $(wizard_build_sources) $(wizard_resources) Wizard.resources Properties/Resources.resources
 	$(GMCS) -debug -target:winexe -r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll \
-		-r:System.Core.dll -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Xml.dll \
+		-r:System.Core.dll -r:System.Xml.Linq.dll -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Xml.dll \
 		-resource:../console/gendarme.xsl -resource:Wizard.resources,Gendarme.Wizard.resources \
 		-resource:Properties/Resources.resources,Gendarme.Properties.Resources.resources \
 		-out:$@ $(wizard_build_sources)
