@@ -115,7 +115,6 @@ namespace Test.Rules.Interoperability {
 		}
 
 		[Test]
-		[Ignore ("[g]mcs is buggy, see #389073")]
 		public void TypeCastUIntPtr ()
 		{
 			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToInt32", 1);

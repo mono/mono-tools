@@ -1,3 +1,8 @@
+2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Test.cs: Re-enable test case since
+	Marek fixed bug #389073
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Interoperability.mdp: Fix references.
