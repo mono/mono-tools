@@ -33,8 +33,6 @@ using Gendarme.Framework.Rocks;
 
 namespace Test.Rules.Helpers {
 
-	// FIXME: http://code.google.com/p/google-highly-open-participation-mono/issues/detail?id=75
-
 	/// <summary>
 	/// To execute properly Gendarme.Framework.Runner keeps the state of
 	/// two variables internally, the current I[Assembly|Type|Method]Rule
