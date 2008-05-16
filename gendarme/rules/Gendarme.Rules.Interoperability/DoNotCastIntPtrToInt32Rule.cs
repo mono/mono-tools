@@ -45,7 +45,7 @@ namespace Gendarme.Rules.Interoperability {
 			Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 		}
 
-		private string Convert (Instruction ins)
+		private static string Convert (Instruction ins)
 		{
 			if (ins == null)
 				return null;

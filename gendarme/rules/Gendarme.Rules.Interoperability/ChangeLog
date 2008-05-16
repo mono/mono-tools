@@ -1,3 +1,8 @@
+2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Rule.cs: Change Convert method to static
+	(self-test).
+
 2008-05-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Rule.cs: New. Rule to ensure we're not 
