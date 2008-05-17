@@ -1,3 +1,7 @@
+2008-05-17 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: New. Extension methods for ModuleDefinition.
+
 2008-04-27 Jb Evain  <jbevain@novell.com>
 
 	* MethodRocks.cs: Add a IsEventCallback method rock. Used
