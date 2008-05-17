@@ -1,3 +1,9 @@
+2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RemoveUnusedLocalVariablesRule.cs: New. Rule to warn about unused
+	variables inside methods.
+	* Makefile.am: add rule and tests to the build.
+
 2008-05-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DontIgnoreMethodResultRule.cs: Change logic to check for specific
