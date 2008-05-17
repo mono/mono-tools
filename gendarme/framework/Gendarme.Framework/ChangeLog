@@ -1,3 +1,7 @@
+2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Delegate symbols loading to rocks.
+
 2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* IRunner.cs: Add a Report overload for EventDefinition.

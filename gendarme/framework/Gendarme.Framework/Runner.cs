@@ -109,19 +109,8 @@ namespace Gendarme.Framework {
 			AssemblyResolver.Resolver.AssemblyCache.Clear ();
 
 			foreach (AssemblyDefinition assembly in assemblies) {
-				try {
-					AssemblyResolver.Resolver.AssemblyCache.Add (assembly.Name.Name, assembly);
-					assembly.MainModule.LoadSymbols ();
-				}
-				catch (FileNotFoundException) { 	 
-					// this happens if a MDB file is missing 	 
-				}
-				catch (TypeLoadException) {
-					// this happens if a Mono.Cecil.Mdb.dll is not found
-				}
-				catch (COMException) {
-					// this happens if a PDB file is missing
-				}
+				assembly.MainModule.LoadDebuggingSymbols ();
+				AssemblyResolver.Resolver.AssemblyCache.Add (assembly.Name.Name, assembly);
 			}
 
 			foreach (Rule rule in rules) {
