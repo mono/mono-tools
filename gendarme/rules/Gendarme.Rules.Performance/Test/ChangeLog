@@ -1,3 +1,9 @@
+2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RemoveUnusedLocalVariablesTest.cs: New. Unit tests for
+	RemoveUnusedLocalVariablesRule. A bit limited since it depends
+	on the compiler removing (or not) the unused variables.
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Performance.mdp: Fix references.
