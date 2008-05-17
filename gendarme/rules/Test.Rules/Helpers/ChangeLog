@@ -1,3 +1,7 @@
+2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyCache.cs: Load debugging symbols when caching an assembly.
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TestRunner.cs: Move from Gendarme.Framework.dll. Change namespace.
