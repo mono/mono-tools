@@ -1,3 +1,7 @@
+2008-05-17  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* framework.mdp: Fix build.
+
 2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Gendarme.Framework.Rocks.ModuleRocks to the build.
