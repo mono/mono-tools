@@ -116,7 +116,7 @@ namespace Gendarme {
 			validation_errors.Add (args.Exception.Message.Replace ("XmlSchema error", String.Format ("Error in the configuration file {0}", config_file)));
 		}
 
-		private Stream GetXsdStream ()
+		private static Stream GetXsdStream ()
 		{
 			string xsd = null;
 			Assembly executing = Assembly.GetExecutingAssembly ();
