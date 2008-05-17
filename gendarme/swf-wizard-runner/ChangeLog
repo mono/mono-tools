@@ -1,3 +1,7 @@
+2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Sealed class AssemblyInfo (self-test).
+
 2008-05-14  Jb Evain  <jbevain@novell.com>
 
 	* Makefile.am: reference System.Xml.Linq.

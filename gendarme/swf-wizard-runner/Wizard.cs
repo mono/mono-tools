@@ -51,7 +51,7 @@ namespace Gendarme {
 			Report
 		}
 
-		class AssemblyInfo {
+		sealed class AssemblyInfo {
 			private DateTime timestamp;
 			private AssemblyDefinition definition;
 
