@@ -41,6 +41,7 @@ framework_sources = \
 	Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
 	Gendarme.Framework.Rocks/FieldRocks.cs \
 	Gendarme.Framework.Rocks/MethodRocks.cs \
+	Gendarme.Framework.Rocks/ModuleRocks.cs \
 	Gendarme.Framework.Rocks/TypeRocks.cs
 
 framework_build_sources = $(addprefix $(srcdir)/, $(framework_sources))
