@@ -118,9 +118,14 @@ namespace Gendarme.Rules.Exceptions {
 			int localVarPos = -1;
 
 			foreach (ExecutionBlock block in catchPath) {
-				Instruction cur = block.First;
+				Instruction cur = null;
+				
 				while (cur != block.Last) {
-
+					if (cur == null)
+						cur = block.First;
+					else
+						cur = cur.Next;
+ 
 					if (cur.OpCode == OpCodes.Rethrow)
 						// Rethrown exception - no problem!
 						return;
@@ -159,8 +164,6 @@ namespace Gendarme.Rules.Exceptions {
 							exStackPos += numPushes - numPops;
 						}
 					}
-					
-					cur = cur.Next;
 				}
 			}
 		}
