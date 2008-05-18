@@ -58,7 +58,7 @@ namespace Gendarme {
 
 		static TextWriter CreateWriterFor (string fileName)
 		{
-			if ((fileName == null) || (fileName.Length == 0))
+			if (String.IsNullOrEmpty (fileName))
 				return System.Console.Out;
 			else
 				return new StreamWriter (fileName, false, Encoding.UTF8);

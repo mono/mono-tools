@@ -55,7 +55,7 @@ namespace Gendarme {
 		public TextResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
 		{
-			if ((fileName == null) || (fileName.Length == 0)) {
+			if (String.IsNullOrEmpty (fileName)) {
 				writer = System.Console.Out;
 
 				string color_override = Environment.GetEnvironmentVariable ("GENDARME_COLOR") ?? "dark";

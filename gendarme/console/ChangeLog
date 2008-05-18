@@ -1,3 +1,8 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TextResultWriter.cs: Use String.IsNullOrEmpty (self-test)
+	* XmlResultWriter.cs: Use String.IsNullOrEmpty (self-test)
+
 2008-05-18  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* console.mdp: Fix build.
