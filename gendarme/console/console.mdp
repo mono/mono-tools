@@ -31,6 +31,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
+    <ProjectReference type="Assembly" localcopy="True" refto="System.Xml.Linq.dll" />
   </References>
   <DeployTargets />
 </Project>
