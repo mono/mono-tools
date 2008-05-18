@@ -1,3 +1,10 @@
+2008-05-19  Andres G. Aragoneses <aaragoneses@novell.com> 
+
+	* DoNotDestroyStackTraceRule.cs: Tiny optimization. I would become nuts
+	  if this is not correct because it's so simple (however I cannot
+	  test it because of some exception http://monoport.com/12016 I'm
+	  getting... :-? Probably I need SVN mono).
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Gendarme.Rules.Exceptions.mdp: Fix references.
