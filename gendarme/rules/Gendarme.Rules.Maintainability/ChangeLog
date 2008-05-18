@@ -1,3 +1,10 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyRule.cs: New. Rule to suggest using
+	String.IsNullOrEmpty over a null and length check on the same string
+	[Fix bug/request #362867]
+	* Makefile.am:  Add the rule and the test to the build.
+
 2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Refactor against 

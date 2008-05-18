@@ -13,7 +13,8 @@ maintainability_rules_generated_sources = $(maintainability_rules_sources_in:.in
 maintainability_rules_sources = \
 	AvoidComplexMethodsRule.cs \
 	AvoidDeepInheritanceTreeRule.cs \
-	AvoidLackOfCohesionOfMethodsRule.cs
+	AvoidLackOfCohesionOfMethodsRule.cs \
+	PreferStringIsNullOrEmptyRule.cs
 
 maintainability_rules_build_sources = $(addprefix $(srcdir)/, $(maintainability_rules_sources))
 maintainability_rules_build_sources += $(maintainability_rules_generated_sources)
@@ -25,7 +26,8 @@ maintainability_rules_build_sources += $(maintainability_rules_generated_sources
 maintainability_test_sources = \
 	AvoidComplexMethodsTest.cs \
 	AvoidDeepInheritanceTreeTest.cs \
-	AvoidLackOfCohesionOfMethodsTest.cs
+	AvoidLackOfCohesionOfMethodsTest.cs \
+	PreferStringIsNullOrEmptyTest.cs
 
 maintainability_test_build_sources = $(addprefix $(srcdir)/Test/, $(maintainability_test_sources))
 
