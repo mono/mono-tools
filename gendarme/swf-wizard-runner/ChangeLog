@@ -1,3 +1,7 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* swf-wizard-runner.mdp.mdp: Refer to System.Xml.Linq from GAC. 
+
 2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Sealed class AssemblyInfo (self-test).
