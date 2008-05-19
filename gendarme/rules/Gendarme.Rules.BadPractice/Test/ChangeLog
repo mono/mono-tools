@@ -1,3 +1,8 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ObsoleteMessagesShouldNotBeEmptyTest.cs: New. Unit tests for
+	ObsoleteMessagesShouldNotBeEmptyRule
+
 2008-05-10  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* CheckNewExceptionWithoutThrowingTest.cs,
