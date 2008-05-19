@@ -29,7 +29,8 @@ performance_rules_sources = \
 	ImplementEqualsTypeRule.cs \
 	MathMinMaxCandidateRule.cs \
 	AvoidLargeStructureRule.cs \
-	RemoveUnusedLocalVariablesRule.cs
+	RemoveUnusedLocalVariablesRule.cs \
+	AvoidUnneededUnboxingRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -57,7 +58,8 @@ performance_test_sources = \
 	ImplementEqualsTypeTest.cs \
 	MathMinMaxCandidateTest.cs \
 	AvoidLargeStructureTest.cs \
-	RemoveUnusedLocalVariablesTest.cs
+	RemoveUnusedLocalVariablesTest.cs \
+	AvoidUnneededUnboxingTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 

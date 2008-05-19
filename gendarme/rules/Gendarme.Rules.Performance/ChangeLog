@@ -1,3 +1,9 @@
+2008-05-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnneededUnboxingRule.cs: New. Rule to warn about multiple,
+	unneeded, unboxing inside methods.
+	* Makefile.am: add rule and tests to the build.
+
 2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* RemoveUnusedLocalVariablesRule.cs: New. Rule to warn about unused
