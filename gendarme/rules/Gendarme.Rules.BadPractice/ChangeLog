@@ -1,3 +1,9 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs: New. Check that 
+	when [Obsolete] is used a description is provided.
+	* Makefile.am: Add rule/test to the build.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EqualShouldHandleNullArgRule.cs: Simplify method (self-test cc).

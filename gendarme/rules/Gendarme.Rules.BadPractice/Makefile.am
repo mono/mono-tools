@@ -12,7 +12,8 @@ badpractice_rules_sources_in = ../../AssemblyInfo.cs.in
 badpractice_rules_generated_sources = $(badpractice_rules_sources_in:.in=)
 badpractice_rules_sources = CloneMethodShouldNotReturnNullRule.cs EqualShouldHandleNullArgRule.cs \
 	ToStringReturnsNullRule.cs GetEntryAssemblyMayReturnNullRule.cs ConstructorShouldNotCallVirtualMethodsRule.cs \
-	CheckNewExceptionWithoutThrowingRule.cs CheckNewThreadWithoutStartRule.cs DisableDebuggingCodeRule.cs
+	CheckNewExceptionWithoutThrowingRule.cs CheckNewThreadWithoutStartRule.cs DisableDebuggingCodeRule.cs \
+	ObsoleteMessagesShouldNotBeEmptyRule.cs
 
 badpractice_rules_build_sources = $(addprefix $(srcdir)/, $(badpractice_rules_sources))
 badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
@@ -23,18 +24,19 @@ badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
 
 badpractice_test_sources = CloneMethodShouldNotReturnNullTest.cs EqualShouldHandleNullArgTest.cs \
 	ToStringReturnsNullTest.cs GetEntryAssemblyMayReturnNullTest.cs ConstructorShouldNotCallVirtualMethodsTest.cs \
-	CheckNewExceptionWithoutThrowingTest.cs CheckNewThreadWithoutStartTest.cs DisableDebuggingCodeTest.cs
+	CheckNewExceptionWithoutThrowingTest.cs CheckNewThreadWithoutStartTest.cs DisableDebuggingCodeTest.cs \
+	ObsoleteMessagesShouldNotBeEmptyTest.cs
 
 badpractice_test_build_sources = $(addprefix $(srcdir)/Test/, $(badpractice_test_sources))
 
 Test.Rules.BadPractice.dll: $(badpractice_test_build_sources) $(badpractice_rules_SCRIPTS)
 	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:$(badpractice_rules_SCRIPTS) -out:$@ $(badpractice_test_build_sources)
+		-r:../Test.Rules/Test.Rules.dll -r:$(badpractice_rules_SCRIPTS) -out:$@ $(badpractice_test_build_sources)
 
 test: Test.Rules.BadPractice.dll
 
 run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.BadPractice.dll
+	MONO_PATH=../../bin/:../Test.Rules/$(MONO_PATH) nunit-console2 Test.Rules.BadPractice.dll
 
 self-test: $(badpractice_rules_SCRIPTS)
 	mono --debug ../../bin/gendarme.exe $(badpractice_rules_SCRIPTS)
