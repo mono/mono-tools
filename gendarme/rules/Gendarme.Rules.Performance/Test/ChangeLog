@@ -1,3 +1,8 @@
+2008-05-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnneededUnboxingTest.cs: New. Unit tests for 
+	AvoidUnneededUnboxingRule
+
 2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* RemoveUnusedLocalVariablesTest.cs: New. Unit tests for
