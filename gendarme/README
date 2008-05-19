@@ -11,3 +11,13 @@ http://groups.google.com/group/gendarme
 
 Developer documentation
 http://groups.google.com/group/gendarme
+
+
+IMPORTANT NOTES
+
+* Gendarme "official" build system is based on the auto*/Makefile files
+and tested on monobuild. See mono-tools on http://mono.ximian.com/monobuild/
+
+* MonoDevelop and Visual Studio project files are NOT always up to date
+with Makefiles. This depends on the developer making changes and his 
+personal access to the developing environments.

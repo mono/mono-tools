@@ -10,3 +10,8 @@ M: System.Int32 Gendarme.Framework.Helpers.StackEntryAnalysis::GetPushCount(Mono
 R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
 M: System.Byte Gendarme.ConsoleRunner::Parse(System.String[])
 M: System.Void NDesk.Options.OptionSet::SetItem(System.Int32,NDesk.Options.Option)
+
+#OK - some FX provided types will never work with the default (4) value
+R: Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule
+T: Gendarme.Wizard
+T: MoMA.Analyzer.MoMAWebService.MoMASubmit

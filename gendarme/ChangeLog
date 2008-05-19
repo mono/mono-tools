@@ -1,3 +1,12 @@
+2008-04-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* README: Add (the periodic remainder ;-) that Makefiles are 
+	*the* official build system used by Gendarme while others
+	(MonoDevelop and VS.NET) are user-supported.
+	* self-test.ignore: Add ignore entry AvoidDeepInheritanceTreeRule
+	since some FX provided types will never work with the default (4)
+	value.
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* self-test.ignore: Remove ignore entry for 
