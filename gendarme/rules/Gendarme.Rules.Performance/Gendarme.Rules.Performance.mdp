@@ -32,6 +32,7 @@
     <File name="MathMinMaxCandidateRule.cs" subtype="Code" buildaction="Compile" />
     <File name="CompareWithStringEmptyEfficientlyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseTypeEmptyTypesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidLargeStructureRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
