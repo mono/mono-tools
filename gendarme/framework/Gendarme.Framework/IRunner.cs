@@ -66,5 +66,6 @@ namespace Gendarme.Framework {
 		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message);
 		void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message);
 		void Report (EventDefinition evnt, Severity severity, Confidence confidence, string message);
+		void Report (PropertyDefinition property, Severity severity, Confidence confidence, string message);
 	}
 }

@@ -1,3 +1,8 @@
+2008-05-19  Jb Evain  <jbevain@novell.com>
+
+	* IRunner.cs, Runner.cs: add a Report method that takes
+	a PropertyDefinition. Fixes the build.
+
 2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Runner.cs: Delegate symbols loading to rocks.

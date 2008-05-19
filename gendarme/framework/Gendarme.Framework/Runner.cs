@@ -177,6 +177,11 @@ namespace Gendarme.Framework {
 			defect_list.Add (new Defect (currentRule, currentTarget, evnt, severity, confidence, message));
 		}
 
+		public void Report (PropertyDefinition property, Severity severity, Confidence confidence, string message)
+		{
+			defect_list.Add (new Defect (currentRule, currentTarget, property, severity, confidence, message));
+		}
+
 		public void Reset ()
 		{
 			defectCountBeforeCheck = 0;
