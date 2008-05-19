@@ -144,42 +144,52 @@ namespace Gendarme.Framework {
 
 		public void Report (AssemblyDefinition assembly, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, assembly, severity, confidence, message));
+			AddDefect (assembly, severity, confidence, message);
 		}
 
 		public void Report (TypeDefinition type, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, type, severity, confidence, message));
+			AddDefect (type, severity, confidence, message);
 		}
 
 		public void Report (FieldDefinition field, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, field, severity, confidence, message));
+			AddDefect (field, severity, confidence, message);
 		}
 
 		public void Report (MethodDefinition method, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, method, severity, confidence, message));
+			AddDefect (method, severity, confidence, message);
 		}
 
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, method, ins, severity, confidence, message));
+			AddMethodDefect (method, ins, severity, confidence, message);
 		}
 
 		public void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, parameter, severity, confidence, message));
+			AddDefect (parameter, severity, confidence, message);
 		}
 
 		public void Report (EventDefinition evnt, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, evnt, severity, confidence, message));
+			AddDefect (evnt, severity, confidence, message);
 		}
 
 		public void Report (PropertyDefinition property, Severity severity, Confidence confidence, string message)
 		{
-			defect_list.Add (new Defect (currentRule, currentTarget, property, severity, confidence, message));
+			AddDefect (property, severity, confidence, message);
+		}
+
+		void AddDefect (IMetadataTokenProvider location, Severity severity, Confidence confidence, string message)
+		{
+			defect_list.Add (new Defect (currentRule, currentTarget, location, severity, confidence, message));
+		}		
+
+		void AddMethodDefect (MethodDefinition method, Instruction instruction, Severity severity, Confidence confidence, string message)
+		{
+			defect_list.Add (new Defect (currentRule, currentTarget, method, instruction, severity, confidence, message));
 		}
 
 		public void Reset ()
