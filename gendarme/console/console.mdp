@@ -24,6 +24,7 @@
     <File name="IgnoreFileList.cs" subtype="Code" buildaction="Compile" />
     <File name="Options.cs" subtype="Code" buildaction="Compile" />
     <File name="Settings.cs" subtype="Code" buildaction="Compile" />
+    <File name="gendarme.xsd" subtype="Code" buildaction="EmbedAsResource" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
@@ -31,7 +32,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
-    <ProjectReference type="Assembly" localcopy="True" refto="System.Xml.Linq.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </References>
   <DeployTargets />
 </Project>

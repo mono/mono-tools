@@ -1,3 +1,9 @@
+2008-05-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* console.mdp: Refer to System.Xml.Linq from GAC (not local). 
+	Embed gendarme.xsd as a resource (like the Makefile does).
+	* Settings.cs: Be more explicit if we don't find gendarme.xsd.
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: Use String.IsNullOrEmpty (self-test)

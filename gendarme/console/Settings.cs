@@ -128,7 +128,7 @@ namespace Gendarme {
 			}
 
 			if (xsd == null)
-				throw new InvalidDataException ("Could not locate Xml Schema Definition.");
+				throw new InvalidDataException ("Could not locate Xml Schema Definition inside assembly ressources.");
 			return executing.GetManifestResourceStream (xsd);	
 		}
 
