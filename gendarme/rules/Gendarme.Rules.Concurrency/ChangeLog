@@ -1,3 +1,13 @@
+2008-05-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesRule.cs: New. Rule to report when lock(this)
+	or lock(typeof(X)) is being used.
+	* DoNotLockOnWeakIdentityObjectsRule.cs: New. Rule to report when
+	a lock is done on an object with a weak identity.
+	* LockAnalyzerRule.cs: Base class for both new rules.
+	* Gendarme.Rules.Concurrency.mdp: Update MD project file
+	* Makefile.am: Add new rules/tests to build.
+
 2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontUseLockedRegionOutsideMethod.cs: Override Initialize to avoid

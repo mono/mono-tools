@@ -13,7 +13,10 @@ concurrency_rules_generated_sources = $(concurrency_rules_sources_in:.in=)
 concurrency_rules_sources = DoubleCheckLockingRule.cs \
 	WriteStaticFieldFromInstanceMethodRule.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \
-	DontUseLockedRegionOutsideMethod.cs
+	DontUseLockedRegionOutsideMethod.cs \
+	LockAnalyzerRule.cs \
+	DoNotLockOnThisOrTypesRule.cs \
+	DoNotLockOnWeakIdentityObjectsRule.cs
 
 concurrency_rules_build_sources = $(addprefix $(srcdir)/, $(concurrency_rules_sources))
 concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
@@ -25,7 +28,9 @@ concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
 concurrency_test_sources = DoubleCheckLockingTest.cs \
 	WriteStaticFieldFromInstanceMethodTest.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleTest.cs \
-	DontUseLockedRegionOutsideMethodTest.cs
+	DontUseLockedRegionOutsideMethodTest.cs \
+	DoNotLockOnThisOrTypesTest.cs \
+	DoNotLockOnWeakIdentityObjectsTest.cs
 
 concurrency_test_build_sources = $(addprefix $(srcdir)/Test/, $(concurrency_test_sources))
 
