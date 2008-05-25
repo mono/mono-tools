@@ -118,12 +118,13 @@ namespace Gendarme {
 		private XElement CreateDefects ()
 		{
 			var query = from n in Runner.Defects
-				    orderby n.Assembly.Name.FullName, n.Rule.Name
 				    group n by n.Rule into a
+				    orderby a.Key.Name
 				    select new {
 					    Rule = a.Key,
 					    Value = from o in a
 						    group o by o.Target into r
+						    orderby r.Key.GetAssembly ().Name.FullName
 						    select new {
 							    Target = r.Key,
 							    Value = r

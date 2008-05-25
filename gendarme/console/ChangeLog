@@ -1,3 +1,7 @@
+2008-05-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* XmlResultWriter.cs: Fix sorting
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* console.mdp: Refer to System.Xml.Linq from GAC (not local). 
