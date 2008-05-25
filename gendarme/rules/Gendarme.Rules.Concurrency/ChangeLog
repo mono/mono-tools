@@ -1,3 +1,8 @@
+2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontUseLockedRegionOutsideMethod.cs: Override Initialize to avoid
+	executing the rule unless the current module use the Monitor class.
+
 2008-05-05  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* DoubleCheckLockingRule.cs: More concrete link.

@@ -31,6 +31,7 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -42,6 +43,19 @@ namespace Gendarme.Rules.Concurrency {
 	[Problem ("This method uses Thread.Monitor.Enter() but doesn't use Thread.Monitor.Exit().")]
 	[Solution ("Rather use the lock{} statement in case your language is C#, or Thread.Monitor.Exit() in other case.")]
 	public class DoNotUseLockedRegionOutsideMethodRule : Rule, IMethodRule {
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// is this module using Monitor.Enter/Exit ? (lock in c#)
+			// if not then this rule does not need to be executed for the module
+			// note: mscorlib.dll is an exception since it defines, not refer, System.Threading.Monitor
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType ("System.Threading.Monitor");
+			};
+		}
 		
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
