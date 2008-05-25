@@ -1,3 +1,9 @@
+2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Rule.cs: Don't apply rule to GetHashCode
+	methods since it's unlikely that the downcast will cause problem
+	and this reduce the main source of false-positives.
+
 2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Rule.cs: Change Convert method to static

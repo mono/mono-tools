@@ -32,6 +32,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Interoperability {
 
@@ -41,7 +42,7 @@ namespace Gendarme.Rules.Interoperability {
 
 		private void Report (MethodDefinition method, Instruction ins, string typeName)
 		{
-			string msg = String.Format ("Type cast to {0}.", typeName);
+			string msg = String.Format ("Type cast to '{0}'.", typeName);
 			Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 		}
 
@@ -71,6 +72,10 @@ namespace Gendarme.Rules.Interoperability {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// it's a safe bet that the downsizing of the [U]IntPtr is not a problem inside GetHashCode
+			if (MethodSignatures.GetHashCode.Matches (method))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
