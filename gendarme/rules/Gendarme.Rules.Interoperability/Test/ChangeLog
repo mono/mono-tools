@@ -1,3 +1,8 @@
+2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotCastIntPtrToInt32Test.cs: Add test case for methods 
+	without IL and for GetHashCode (does not apply in both cases)
+
 2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Test.cs: Re-enable test case since

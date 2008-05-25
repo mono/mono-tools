@@ -35,6 +35,7 @@ using Gendarme.Rules.Interoperability;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
+using Test.Rules.Definitions;
 
 #pragma warning disable 169
 
@@ -148,6 +149,25 @@ namespace Test.Rules.Interoperability {
 		{
 			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("BadLoop", 1);
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("GoodLoop");
+		}
+
+		public override bool Equals (object obj)
+		{
+			return base.Equals (obj);
+		}
+
+		public override int GetHashCode ()
+		{
+			 return base.GetHashCode();
+		}
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no IL for p/invokes
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// rule does not apply to GetHashCode
+			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("GetHashCode");
 		}
 	}
 }
