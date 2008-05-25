@@ -1,3 +1,11 @@
+2008-05-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesTest.cs: New. Unit tests for 
+	DoNotLockOnThisOrTypesRule
+	* DoNotLockOnWeakIdentityObjectsTest.cs: New. Unit tests for 
+	DoNotLockOnWeakIdentityObjectsRule
+	* Test.Rules.Concurrency.mdp: Update MD project file
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Concurrency.mdp: Fix references.

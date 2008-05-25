@@ -19,6 +19,8 @@
     <File name="NonConstantStaticFieldsShouldNotBeVisibleTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="DontUseLockedRegionOutsideMethodTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotLockOnThisOrTypesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotLockOnWeakIdentityObjectsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Concurrency" />
