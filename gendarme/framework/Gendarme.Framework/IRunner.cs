@@ -33,21 +33,33 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Framework {
 
-	// rules will have access to the runner thru this interface
-	// so anyone can make it's own runner without using the provided base class
+	/// <summary>
+	/// Rules will have access to the runner thru this interface.
+	/// This makes it possible, to anyone, to make it's own runner without using
+	/// the provided base class.
+	/// </summary>
 	[ComVisible (false)]
 	public interface IRunner {
 
-		// we should expose the list of assemblies, so rules can act on them
-		// as "a set". E.g. checking for inheritance, smells ...
-
-		// we should expose the list of rules, so rules can also act on them
-		// E.g. Rule X is a superset of rule Y so Y disable itself is X is present
-
+		/// <summary>
+		/// This expose the list of rules, so rules can also act on them.
+		/// E.g. Rule X is a superset of rule Y so Y disable itself is X is present
+		/// </summary>
 		Collection<IRule> Rules { get; }
+
+		/// <summary>
+		/// This expose the list of assemblies so rules can act on them as "a set". 
+		/// E.g. applying a rule based on data outside the current assembly
+		/// </summary>
 		Collection<AssemblyDefinition> Assemblies { get; }
+
 		Collection<Defect> Defects  { get; }
 		int VerbosityLevel { get; }
+
+		/// <summary>
+		/// Helper property to avoid each rule having it's own state/logic about 
+		/// the result (RuleResult.Success or RuleResult.Failure) of its analysis
+		/// </summary>
 		RuleResult CurrentRuleResult { get; }
 
 		event EventHandler<RunnerEventArgs> AnalyzeAssembly;	// ??? ProcessAssembly ???
@@ -59,13 +71,10 @@ namespace Gendarme.Framework {
 
 		void Report (Defect defect);
 
-		void Report (AssemblyDefinition assembly, Severity severity, Confidence confidence, string message);
-		void Report (TypeDefinition type, Severity severity, Confidence confidence, string message);
-		void Report (FieldDefinition field, Severity severity, Confidence confidence, string message);
-		void Report (MethodDefinition method, Severity severity, Confidence confidence, string message);
+		void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence);
+		void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence, string message);
+
+		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence);
 		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message);
-		void Report (ParameterDefinition parameter, Severity severity, Confidence confidence, string message);
-		void Report (EventDefinition evnt, Severity severity, Confidence confidence, string message);
-		void Report (PropertyDefinition property, Severity severity, Confidence confidence, string message);
 	}
 }

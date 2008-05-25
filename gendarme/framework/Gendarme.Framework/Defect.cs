@@ -62,13 +62,20 @@ namespace Gendarme.Framework {
 			this.text = text;
 		}
 
-		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Instruction ins, Severity severity, Confidence confidence, string text)
+		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Severity severity, Confidence confidence)
+			: this (rule, target, location, severity, confidence, String.Empty)
+		{
+		}
+
+		public Defect (IRule rule, IMetadataTokenProvider target, MethodDefinition location, Instruction ins, Severity severity, Confidence confidence, string text)
 			: this (rule, target, location, severity, confidence, text)
 		{
-			// this ctor is usable only for MethodDefinition
-			if (!(location is MethodDefinition))
-				throw new ArgumentException ("Only MethodDefinition can be used with this constructor.", "location");
 			this.ins = ins;
+		}
+
+		public Defect (IRule rule, IMetadataTokenProvider target, MethodDefinition location, Instruction ins, Severity severity, Confidence confidence)
+			: this (rule, target, location, ins, severity, confidence, String.Empty)
+		{
 		}
 
 		public AssemblyDefinition Assembly {
