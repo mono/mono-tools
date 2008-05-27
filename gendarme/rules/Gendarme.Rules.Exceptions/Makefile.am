@@ -15,7 +15,8 @@ exceptions_rules_sources = DoNotDestroyStackTraceRule.cs SEHHandlerType.cs Impl/
 	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
 	AvoidArgumentExceptionDefaultConstructorRule.cs \
 	ExceptionShouldBeVisibleRule.cs \
-	MissingExceptionConstructorsRule.cs
+	MissingExceptionConstructorsRule.cs \
+	AvoidThrowingBasicExceptionsRule.cs
 
 exceptions_rules_build_sources = $(addprefix $(srcdir)/, $(exceptions_rules_sources))
 exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
@@ -28,7 +29,8 @@ exceptions_test_sources = DontDestroyStackTraceTest.cs \
 	DontSwallowErrorsCatchingNonspecificExceptionsTest.cs \
 	AvoidArgumentExceptionDefaultConstructorTest.cs \
 	ExceptionShouldBeVisibleTest.cs \
-	MissingExceptionConstructorsTest.cs
+	MissingExceptionConstructorsTest.cs \
+	AvoidThrowingBasicExceptionsTest.cs
 
 exceptions_test_build_sources = $(addprefix $(srcdir)/Test/, $(exceptions_test_sources))
 

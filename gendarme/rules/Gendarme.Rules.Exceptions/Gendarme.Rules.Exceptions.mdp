@@ -26,6 +26,7 @@
     <File name="DoNotDestroyStackTraceRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="AvoidArgumentExceptionDefaultConstructorRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidThrowingBasicExceptionsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

@@ -1,3 +1,11 @@
+2008-05-26  Daniel Abramov <ex@vingrad.ru> 
+
+	* AvoidThrowingBasicExceptions.cs: New. Rule to ensure
+	that specific types of exceptions are used instead of basic ones.
+	* Gendarme.Rules.Exceptions.mdp, Gendarme.Rules.Exceptions.csproj:
+	Add rule to project files.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-05-19  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* DoNotDestroyStackTraceRule.cs: Revert r103436 (the last case wasn't
