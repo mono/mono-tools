@@ -1,3 +1,7 @@
+2008-05-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Fix build.
+
 2008-05-02  Andreia Gaita <avidigal@novell.com> 
 
 	* GeckoHtmlRender.cs: Fix image loading. Fix javascript: urls.

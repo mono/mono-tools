@@ -65,7 +65,7 @@ gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIB
 WEBKIT_SHARP_LIBS = -r:nwebkit.dll
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
-monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.Mozilla.dll
+monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.WebBrowser.dll
 
 EXTRA_DIST = \
 	$(browser_sources) 		\
