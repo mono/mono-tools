@@ -28,6 +28,7 @@
 		<xs:attribute name="include" type="notEmptyString" use="required"/>
 		<xs:attribute name="exclude" type="notEmptyString"/>
 		<xs:attribute name="from" type="notEmptyString" use="required"/>
+		<xs:attribute name="applyTo" type="visibilityModifier"/>
 	</xs:complexType>
 
 	<xs:complexType name="parameterType">
@@ -41,6 +42,14 @@
 	<xs:simpleType name="notEmptyString">
 		<xs:restriction base="xs:string">
 			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="visibilityModifier">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="all"/>
+			<xs:enumeration value="visible"/>
+			<xs:enumeration value="nonvisible"/>
 		</xs:restriction>
 	</xs:simpleType>
 

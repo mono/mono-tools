@@ -1,3 +1,8 @@
+2008-05-27  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* gendarme.xsd: Added the applyTo section for allowing to apply rules to
+	different visibility scenarios.
+
 2008-05-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* XmlResultWriter.cs: Fix sorting
