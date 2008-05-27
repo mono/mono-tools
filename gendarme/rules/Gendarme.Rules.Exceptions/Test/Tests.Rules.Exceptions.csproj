@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidArgumentExceptionDefaultConstructorTest.cs" />
+    <Compile Include="AvoidThrowingBasicExceptionsTest.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsTest.cs" />
     <Compile Include="DontDestroyStackTraceTest.cs" />
     <Compile Include="ExceptionShouldBeVisibleTest.cs" />

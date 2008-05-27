@@ -1,3 +1,10 @@
+2008-05-26  Daniel Abramov  <ex@vingrad.ru>
+
+	* AvoidThrowingBasicExceptionsTest.cs: New. Unit tests for 
+	AvoidThrowingBasicExceptionsRule.
+	* Test.Rules.Exceptions.mdp, Tests.Rules.Exceptions.csproj:
+	Update project files.
+
 2008-04-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MissingExceptionConstructorsTest.cs: New. Unit tests for 
