@@ -124,7 +124,7 @@ namespace Gendarme.Framework {
 				catch (Exception e) {
 					// if something goes wrong in initialization we desactivate the rule
 					if (VerbosityLevel > 0)
-						Console.WriteLine (e);
+						Console.Error.WriteLine (e);
 					rule.Active = false;
 				}
 			}
