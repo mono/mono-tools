@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Portability {
 			}
 			catch (WebException e) {
 				if (Runner.VerbosityLevel > 0)
-					Console.WriteLine (e);
+					Console.Error.WriteLine (e);
 				return false;
 			}
 			return true;

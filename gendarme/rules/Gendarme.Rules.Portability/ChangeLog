@@ -1,3 +1,8 @@
+2008-05-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewRule.cs: Whine at the right stream 
+	(self-test).
+
 2008-04-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ExitCodeIsLimitedOnUnixRule.cs: Simplify Initialize (using rocks).
