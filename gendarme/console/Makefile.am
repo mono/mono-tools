@@ -10,6 +10,7 @@ gendarme_sources = \
 	../AssemblyStaticInfo.cs \
 	ConsoleRunner.cs \
 	Settings.cs \
+	Helpers.cs \
 	IgnoreFileList.cs \
 	Options.cs \
 	ResultWriter.cs \

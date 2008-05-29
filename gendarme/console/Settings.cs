@@ -116,25 +116,11 @@ namespace Gendarme {
 			validation_errors.Add (args.Exception.Message.Replace ("XmlSchema error", String.Format ("Error in the configuration file {0}", config_file)));
 		}
 
-		private static Stream GetXsdStream ()
-		{
-			string xsd = null;
-			Assembly executing = Assembly.GetExecutingAssembly ();
-			foreach (string resource in executing.GetManifestResourceNames ()) {
-				if (resource.EndsWith ("gendarme.xsd")) {
-					xsd = resource;
-					break;
-				}
-			}
-
-			if (xsd == null)
-				throw new InvalidDataException ("Could not locate Xml Schema Definition inside assembly ressources.");
-			return executing.GetManifestResourceStream (xsd);	
-		}
-
 		private void ValidateXmlDocument ()
 		{
-			using (Stream stream = GetXsdStream ()) {
+			using (Stream stream = Helpers.GetStreamFromResource ("gendarme.xsd")) {
+				if (stream == null)
+					throw new InvalidDataException ("Could not locate Xml Schema Definition inside resources.");
 				XmlReaderSettings settings = new XmlReaderSettings ();
 				settings.Schemas.Add (XmlSchema.Read (stream, OnValidationErrors));
 				settings.ValidationType = ValidationType.Schema;

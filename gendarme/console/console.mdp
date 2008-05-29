@@ -25,6 +25,7 @@
     <File name="Options.cs" subtype="Code" buildaction="Compile" />
     <File name="Settings.cs" subtype="Code" buildaction="Compile" />
     <File name="gendarme.xsd" subtype="Code" buildaction="EmbedAsResource" />
+    <File name="Helpers.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

@@ -1,10 +1,10 @@
 //
-// HtmlResultWriter.cs
+// Gendarme Console Settings
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006, 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,49 +29,19 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Xml;
-using System.Xml.Xsl;
-
-using Gendarme.Framework;
 
 namespace Gendarme {
 
-	public class HtmlResultWriter : ResultWriter {
+	static class Helpers {
 
-		private string temp_filename;
-
-		public HtmlResultWriter (IRunner runner, string fileName)
-			: base (runner, fileName)
+		public static Stream GetStreamFromResource (string resourceName)
 		{
-			temp_filename = Path.GetTempFileName ();
-		}
-
-		protected override void Write()
-		{
-			using (XmlResultWriter writer = new XmlResultWriter (Runner, temp_filename)) {
-				writer.Report ();
+			Assembly executing = Assembly.GetExecutingAssembly ();
+			foreach (string resource in executing.GetManifestResourceNames ()) {
+				if (resource.EndsWith (resourceName))
+					return executing.GetManifestResourceStream (resource);
 			}
-		}
-
-		protected override void Finish ()
-		{
-			// load XSL file from embedded resource
-			using (Stream s = Helpers.GetStreamFromResource ("gendarme.xsl")) {
-				if (s == null)
-					throw new InvalidDataException ("Could not locate XSL style sheet inside resources.");
-				// process the XML result with the XSL file
-				XslCompiledTransform xslt = new XslCompiledTransform ();
-				xslt.Load (new XmlTextReader (s));
-				xslt.Transform (temp_filename, FileName);
-			}
-		}
-
-		protected override void Dispose (bool disposing)
-		{
-			if (disposing) {
-				if (File.Exists (temp_filename))
-					File.Delete (temp_filename);
-			}
+			return null;
 		}
 	}
 }

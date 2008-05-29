@@ -1,3 +1,11 @@
+2008-05-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Helpers.cs: New. Add helper to read files from resources.
+	* HtmlResultWriter.cs: Make use of new helper class.
+	* Settings.cs: Make use of new helper class.
+	* Makefile.am: Update build file.
+	* console.mdp: Update MD project file.
+
 2008-05-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* gendarme.xsd: Added the applyTo section for allowing to apply rules to
