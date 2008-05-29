@@ -15,6 +15,7 @@ wizard_sources = \
 	Wizard.Designer.cs \
 	Properties/Resources.Designer.cs \
 	Properties/Settings.Designer.cs \
+	../console/Helpers.cs \
 	../console/ResultWriter.cs \
 	../console/HtmlResultWriter.cs \
 	../console/TextResultWriter.cs \
