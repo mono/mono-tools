@@ -1,3 +1,9 @@
+2008-05-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.in: Add $MONO_OPTIONS since this is more common than
+	the $MONO_EXTRA_ARGS we have been using (and keeping for 
+	compatibility)
+
 2008-04-18  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* README: Add (the periodic remainder ;-) that Makefiles are 
