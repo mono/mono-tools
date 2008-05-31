@@ -37,6 +37,19 @@
 			<html>
 				<head>
 					<title>Gendarme Report</title>
+					<script language="javascript">
+function expcol (sender, args)
+{
+	var el = document.getElementById (args);
+	if (el.style.display == 'block') {
+		sender.textContent = '[show]';
+		el.style.display = 'none';
+	} else {
+		sender.textContent = '[hide]';
+		el.style.display = 'block';
+	}
+}
+					</script>
 				</head>
 				<style type="text/css">
 					h1, h2, h3 {
@@ -82,36 +95,39 @@
 							<b style="font-size: 10pt;">Table of contents</b>
 						</div>
 						<p style="font-size: 10pt;">														
-							<a href="#s1">1&#160;&#160;Summary</a><br />
-							<a href="#s1_1">&#160;&#160;1.1&#160;&#160;List of assemblies searched</a><br />
-							<a href="#s1_2">&#160;&#160;1.2&#160;&#160;List of rules used</a><br />
-							<a href="#s2">2&#160;&#160;Reported defects</a><br />
+							<a href="#s1">1.&#160;&#160;Summary</a><br />
+							<a href="#s1_1">&#160;&#160;1.1.&#160;&#160;List of assemblies searched</a><br />
+							<a href="#s1_2">&#160;&#160;1.2.&#160;&#160;List of rules used</a><br />
+							<a href="#s2">2.&#160;&#160;Reported defects</a><br />
               <xsl:for-each select="results/rule">
-                 <a href="#{@Name}">&#160;&#160;2.<xsl:value-of select="position()" />&#160;<xsl:value-of select="@Name" /><br />
+                 <a href="#{@Name}">&#160;&#160;2.<xsl:value-of select="position()" />.&#160;<xsl:value-of select="@Name" /><br />
                  </a>
               </xsl:for-each>
             </p>
 					</div>
 					<h1><a name="s1">Summary</a></h1>
           <p>
-            <a href="http://www.mono-project.com/Gendarme">Gendarme</a> found <xsl:value-of select="count(//rule/target/defect)" /> defects using <xsl:value-of select="count(//rules/rule)" /> rules.
+            <a href="http://www.mono-project.com/Gendarme">Gendarme</a> found <xsl:value-of select="count(//rule/target/defect)" /> potential defects using <xsl:value-of select="count(//rules/rule)" /> rules.
           </p>
 					<p>
-						<h2>List of assemblies analyzed</h2>
+<h2>List of assemblies analyzed
+<a style="font-size: 66%;" href="#" onclick="expcol(this,'Assemblies_block'); return false;">[show]</a></h2>
+<div id="Assemblies_block" style="display:none;">
 						<ul>
 							<xsl:for-each select="files/file">
 								<xsl:variable name="file">
-                  <xsl:value-of select="@Name" />
-                </xsl:variable>
+									<xsl:value-of select="@Name" />
+								</xsl:variable>
 								
 								<li><xsl:value-of select="text()" />: <xsl:value-of select="count(//target[@Assembly = $file])" /> defects</li>
 							</xsl:for-each>
 						</ul>
+</div>
 					</p>
-					
 					<p>
-						<h2>List of rules used</h2>
-						
+<h2>List of rules used
+<a style="font-size: 66%;" href="#" onclick="expcol(this,'Rules_block'); return false;">[show]</a></h2>
+<div id="Rules_block" style="display:none;">
 						<xsl:call-template name="print-rules">						
 							<xsl:with-param name="type">Assembly</xsl:with-param>
 						</xsl:call-template>
@@ -123,19 +139,18 @@
 						<xsl:call-template name="print-rules">
 							<xsl:with-param name="type">Method</xsl:with-param>
 						</xsl:call-template>
+</div>
 					</p>
 					
 					<h1><a name="s2">Reported Defects</a></h1>
-					
 					<p>
 						<xsl:for-each select="results/rule">
-							<h3><xsl:value-of select="position()" />&#160;
-                <a name="{@Name}" />
-								<a href="{@Uri}" target="{@Name}">
-									<xsl:value-of select="@Name" />
-								</a>
+							<h3>
+<xsl:value-of select="position()" />.&#160;<a name="{@Name}" />
+<a href="{@Uri}" target="{@Name}"><xsl:value-of select="@Name" /></a>&#160;
+<a style="font-size: 66%;" href="#" onclick="expcol(this,'{@Name}_block'); return false;">[hide]</a>
 							</h3>
-
+<div id="{@Name}_block" style="display:block;">
 							<b>Problem:</b>
 							<p class="problem">
 								<xsl:value-of select="problem" />
@@ -145,7 +160,7 @@
 							<xsl:if test="count(target) != 0">
 								<xsl:for-each select="target">
                   <p class="found">
-									<b>Target:</b>&#160;<xsl:value-of select="@Name" /><br/>
+		<b>Target:</b>&#160;<xsl:value-of select="@Name" /><br/>
                   <b>Assembly:</b>&#160;<xsl:value-of select="@Assembly" /><br/>
                     <xsl:for-each select="defect">
 <!-- FIXME: use different color/style for warnings versus errors -->
@@ -172,6 +187,7 @@
 							<p class="solution">
 								<xsl:value-of select="solution" />
 							</p>							
+</div>
 						</xsl:for-each>
 					</p>
 				</body>

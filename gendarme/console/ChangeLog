@@ -1,3 +1,8 @@
+2008-05-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.xsl: Make lists and defects collapse/hide to ease 
+	results readability.
+
 2008-05-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Helpers.cs: New. Add helper to read files from resources.
