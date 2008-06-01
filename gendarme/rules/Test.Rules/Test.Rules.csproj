@@ -42,6 +42,7 @@
     <Compile Include="Fixtures\TypeRuleTestFixture.cs" />
     <Compile Include="Helpers\AssemblyCache.cs" />
     <Compile Include="Helpers\DefinitionLoader.cs" />
+    <Compile Include="Helpers\TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
