@@ -56,11 +56,15 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyStaticInfo.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ConsoleRunner.cs" />
     <Compile Include="HtmlResultWriter.cs" />
