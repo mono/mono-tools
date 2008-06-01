@@ -53,7 +53,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -67,6 +66,7 @@
     <Compile Include="Gendarme.Framework.Rocks\CustomAttributeRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\FieldRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\MethodRocks.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\ModuleRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\TypeRocks.cs" />
     <Compile Include="Gendarme.Framework\AssemblyResolver.cs" />
     <Compile Include="Gendarme.Framework\Confidence.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="Gendarme.Framework\Severity.cs" />
     <Compile Include="Gendarme.Framework.Helpers\StackEntryAnalysis.cs" />
     <Compile Include="Gendarme.Framework\SolutionAttribute.cs" />
-    <Compile Include="Gendarme.Framework\TestRunner.cs" />
+    <Compile Include="Gendarme.Framework\Symbols.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
