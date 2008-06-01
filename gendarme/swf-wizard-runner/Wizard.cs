@@ -506,35 +506,35 @@ namespace Gendarme {
 			return copy;
 		}
 
+		private ResultWriter GetSelectedWriter (int index, string filename)
+		{
+			switch (save_file_dialog.FilterIndex) {
+			case 1:
+				if (CouldCopyReport (ref html_report_filename, filename))
+					return null;
+
+				return new HtmlResultWriter (Runner, filename);
+			case 2:
+				if (CouldCopyReport (ref xml_report_filename, filename))
+					return null;
+
+				return new XmlResultWriter (Runner, filename);
+			case 3:
+				if (CouldCopyReport (ref text_report_filename, filename))
+					return null;
+
+				return new TextResultWriter (Runner, filename);
+			default:
+				return null;
+			}
+		}
+
 		private void SaveReportButtonClick (object sender, EventArgs e)
 		{
 			if (save_file_dialog.ShowDialog () != DialogResult.OK)
 				return;
 
-			string filename = save_file_dialog.FileName;
-			ResultWriter writer = null;
-
-			switch (save_file_dialog.FilterIndex) {
-			case 1:
-				if (CouldCopyReport (ref html_report_filename, filename))
-					return;
-
-				writer = new HtmlResultWriter (Runner, filename);
-				break;
-			case 2:
-				if (CouldCopyReport (ref xml_report_filename, filename))
-					return;
-
-				writer = new XmlResultWriter (Runner, filename);
-				break;
-			case 3:
-				if (CouldCopyReport (ref text_report_filename, filename))
-					return;
-
-				writer = new TextResultWriter (Runner, filename);
-				break;
-			}
-
+			ResultWriter writer = GetSelectedWriter (save_file_dialog.FilterIndex, save_file_dialog.FileName);
 			if (writer != null) {
 				writer.Report ();
 				writer.Dispose ();

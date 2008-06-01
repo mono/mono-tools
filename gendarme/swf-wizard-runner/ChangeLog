@@ -1,3 +1,7 @@
+2008-06-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Refactor ResultWriter selection.
+
 2008-05-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add ../console/Helpers.cs to the build
