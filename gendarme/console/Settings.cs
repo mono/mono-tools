@@ -87,7 +87,28 @@ namespace Gendarme {
 			return (type.ToString () == (interfaceName as string));
 		}
 
-		private int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask)
+		private static void SetApplicabilityScope (IRule rule, string applicabilityScope) 
+		{
+			switch (applicabilityScope) {
+			case "visible":
+				rule.ApplicabilityScope = ApplicabilityScope.Visible;
+				break;
+			case "nonvisible":
+				rule.ApplicabilityScope = ApplicabilityScope.NonVisible;
+				break;
+			case "all":
+				rule.ApplicabilityScope = ApplicabilityScope.All;
+				break;
+			default:
+				//if the scope is not empty, notify
+				if (!String.IsNullOrEmpty (applicabilityScope))
+					Console.Error.WriteLine ("Unknown scope value '{0}' . Defaulting to 'all'", applicabilityScope);
+				rule.ApplicabilityScope = ApplicabilityScope.All;
+				break;
+			}
+		}
+
+		private int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask, string applicabilityScope)
 		{
 			int total = 0;
 			Assembly a = Assembly.LoadFile (Path.GetFullPath (assembly));
@@ -104,7 +125,10 @@ namespace Gendarme {
 						continue;
 
 				if (t.FindInterfaces (new TypeFilter (RuleFilter), "Gendarme.Framework.IRule").Length > 0) {
-					runner.Rules.Add ((IRule) Activator.CreateInstance (t));
+					IRule rule = (IRule) Activator.CreateInstance (t);
+					runner.Rules.Add (rule);
+					SetApplicabilityScope (rule, applicabilityScope);
+
 					total++;
 				}
 			}
@@ -182,8 +206,9 @@ namespace Gendarme {
 					string include = GetAttribute (assembly, "include", "*");
 					string exclude = GetAttribute (assembly, "exclude", String.Empty);
 					string from = GetFullPath (GetAttribute (assembly, "from", String.Empty));
+					string applicabilityScope = GetAttribute (assembly, "applyTo", String.Empty);
 
-					int n = LoadRulesFromAssembly (from, include, exclude);
+					int n = LoadRulesFromAssembly (from, include, exclude, applicabilityScope);
 					result = (result || (n > 0));
 					if (result) 
 						SetCustomParameters (assembly);

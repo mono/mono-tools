@@ -212,7 +212,19 @@ namespace Gendarme.Framework {
 					continue;
 				currentRule = rule;
 				defectCountBeforeCheck = Defects.Count;
-				rule.CheckType (e.CurrentType);
+				switch (rule.ApplicabilityScope) {
+				case ApplicabilityScope.Visible:
+					if (e.CurrentType.IsVisible ())
+						rule.CheckType (e.CurrentType);
+					break;
+				case ApplicabilityScope.NonVisible:
+					if (!e.CurrentType.IsVisible ())
+						rule.CheckType (e.CurrentType);
+					break;
+				default:
+					rule.CheckType (e.CurrentType);
+					break;
+				}
 			}
 		}
 
@@ -226,7 +238,19 @@ namespace Gendarme.Framework {
 
 				currentRule = rule;
 				defectCountBeforeCheck = Defects.Count;
-				rule.CheckMethod (e.CurrentMethod);
+				switch (rule.ApplicabilityScope) {
+				case ApplicabilityScope.Visible:
+					if (e.CurrentMethod.IsVisible ())
+						rule.CheckMethod (e.CurrentMethod);
+					break;
+				case ApplicabilityScope.NonVisible:
+					if (!e.CurrentMethod.IsVisible ())
+						rule.CheckMethod (e.CurrentMethod);
+					break;
+				default:
+					rule.CheckMethod (e.CurrentMethod);
+					break;
+				}
 			}
 		}
 

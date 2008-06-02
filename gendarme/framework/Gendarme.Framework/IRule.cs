@@ -78,5 +78,11 @@ namespace Gendarme.Framework {
 		/// </summary>
 		/// <param name="runner">Runner that will execute the rule during analysis.</param>
 		void Initialize (IRunner runner);
+
+		/// <summary>
+		/// Defines the how the rule are going to be applied to a
+		/// target according its visibility modifier.
+		/// </summary>
+		ApplicabilityScope ApplicabilityScope {get; set;}
 	}
 }

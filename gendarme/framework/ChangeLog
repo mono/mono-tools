@@ -1,3 +1,13 @@
+2008-06-02  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Add the ApplicabilityScope.cs to the framework build.
+	* ApplicabilityScope.cs: New, the enum for codify the different
+	applicability behaviours.
+	* IRule.cs: Added a getter and setter to the rule.
+	* Rule.cs: Added the getter and setter bodies.
+	* Runner.cs: According their applicability scope, the runner runs or not
+	runs the check against a target.
+
 2008-05-17  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* framework.mdp: Fix build.

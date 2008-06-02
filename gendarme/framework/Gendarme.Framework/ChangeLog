@@ -1,3 +1,12 @@
+2008-06-02  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ApplicabilityScope.cs: New, the enum for codify the different
+	applicability behaviours.
+	* IRule.cs: Added a getter and setter to the rule.
+	* Rule.cs: Added the getter and setter bodies.
+	* Runner.cs: According their applicability scope, the runner runs or not
+	runs the check against a target.
+
 2008-05-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Runner.cs: Whine at the right stream (self-test).

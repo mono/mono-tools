@@ -44,6 +44,7 @@ namespace Gendarme.Framework {
 		private string solution;
 		private string url;
 		private Type type;
+		private ApplicabilityScope applicability_scope;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.
@@ -157,6 +158,16 @@ namespace Gendarme.Framework {
 		public virtual void Initialize (IRunner runner)
 		{
 			this.runner = runner;
+		}
+
+
+		public ApplicabilityScope ApplicabilityScope {
+			get {
+				return applicability_scope;
+			}
+			set {
+				applicability_scope = value;
+			}
 		}
 	}
 }
