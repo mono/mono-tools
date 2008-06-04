@@ -159,9 +159,9 @@ namespace GuiCompare
 			"System.Runtime.Serialization",
 			"System.ServiceModel",
 			"System.Windows.Browser",
-			"System.Xml.Core",
+			"System.Xml",
 		};
-		
+
 		string [] api_3_5 = {
 			"mscorlib",
 			"System",
