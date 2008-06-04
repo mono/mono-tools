@@ -231,15 +231,17 @@ namespace GuiCompare {
 			foreach (CustomAttribute ca in provider.CustomAttributes) {
 				TypeDefinition resolved = CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType);
 
-				if (resolved == null)
-					continue;
+				if (resolved != null) {
+					if (resolved.IsNotPublic)
+						continue;
 
-				if (resolved.IsNotPublic)
-					continue;
-				
-				if (IsTODOAttribute (resolved))
-					todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));
-				else if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName))
+					if (IsTODOAttribute (resolved)) {
+						todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));					
+						continue;
+					}
+				}
+
+				if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName))
 					rv.Add (new CecilAttribute (ca));
 			}
 			return rv;
