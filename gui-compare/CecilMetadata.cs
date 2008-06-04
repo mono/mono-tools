@@ -230,7 +230,10 @@ namespace GuiCompare {
 			List<CompNamed> rv = new List<CompNamed>();
 			foreach (CustomAttribute ca in provider.CustomAttributes) {
 				TypeDefinition resolved = CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType);
-				
+
+				if (resolved == null)
+					continue;
+
 				if (resolved.IsNotPublic)
 					continue;
 				

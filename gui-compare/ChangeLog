@@ -1,5 +1,11 @@
 2008-06-04  Jb Evain  <jbevain@novell.com>
 
+	* CecilMetadata.cs (CecilUtils.GetCustomAttributes): don't
+	crash if the custom attribute constructor's declaring type
+	can not be resolved.
+
+2008-06-04  Jb Evain  <jbevain@novell.com>
+
 	* InfoManager.cs: System.Xml.Core is renamed to System.Xml
 	in SL 2.0b.
 
