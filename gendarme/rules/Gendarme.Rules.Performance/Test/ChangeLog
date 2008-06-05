@@ -1,3 +1,9 @@
+2008-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderCustomAccessorsForNonVisibleEventsTest.cs: New. Unit
+	tests for ConsiderCustomAccessorsForNonVisibleEventsRule.
+	* Test.Rules.Performance.mdp: Update MD project file.
+
 2008-05-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededUnboxingTest.cs: New. Unit tests for 

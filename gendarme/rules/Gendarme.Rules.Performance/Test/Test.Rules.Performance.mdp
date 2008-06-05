@@ -33,6 +33,7 @@
     <File name="AvoidLargeStructureTest.cs" subtype="Code" buildaction="Compile" />
     <File name="CompareWithStringEmptyEfficientlyTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseTypeEmptyTypesTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderCustomAccessorsForNonVisibleEventsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
