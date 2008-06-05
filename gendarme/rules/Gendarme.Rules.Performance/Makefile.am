@@ -30,7 +30,8 @@ performance_rules_sources = \
 	MathMinMaxCandidateRule.cs \
 	AvoidLargeStructureRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
-	AvoidUnneededUnboxingRule.cs
+	AvoidUnneededUnboxingRule.cs \
+	ConsiderCustomAccessorsForNonVisibleEventsRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -59,7 +60,8 @@ performance_test_sources = \
 	MathMinMaxCandidateTest.cs \
 	AvoidLargeStructureTest.cs \
 	RemoveUnusedLocalVariablesTest.cs \
-	AvoidUnneededUnboxingTest.cs
+	AvoidUnneededUnboxingTest.cs \
+	ConsiderCustomAccessorsForNonVisibleEventsTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 

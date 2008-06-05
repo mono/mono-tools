@@ -1,3 +1,12 @@
+2008-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderCustomAccessorsForNonVisibleEventsRule.cs: New. Rule 
+	that checks type non-visible events and report them if they are 
+	marked as synchronized (making it possible to remove the lock, if
+	unneeded, and remove the lock performance penality).
+	* Gendarme.Rules.Performance.mdp: Update MD project file.
+	* Makefile.am: add rule and tests to the build.
+
 2008-05-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededUnboxingRule.cs: New. Rule to warn about multiple,
