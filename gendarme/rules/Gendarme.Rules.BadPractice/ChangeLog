@@ -1,3 +1,10 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckNewExceptionWithoutThrowingRule.cs: Rename 
+	StackEntryAnalysis.UsageResult to StackEntryUsageResult
+	* CheckNewThreadWithoutStartRule.cs: Rename 
+	StackEntryAnalysis.UsageResult to StackEntryUsageResult
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ObsoleteMessagesShouldNotBeEmptyRule.cs: New. Check that 

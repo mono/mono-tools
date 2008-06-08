@@ -66,7 +66,7 @@ namespace Gendarme.Rules.BadPractice {
 				if (sea == null)
 					sea = new StackEntryAnalysis (method);
 
-				StackEntryAnalysis.UsageResult [] usageResults = sea.GetStackEntryUsage (ins);
+				StackEntryUsageResult [] usageResults = sea.GetStackEntryUsage (ins);
 
 				bool exceptionUsed = false;
 				foreach (var usage in usageResults) {

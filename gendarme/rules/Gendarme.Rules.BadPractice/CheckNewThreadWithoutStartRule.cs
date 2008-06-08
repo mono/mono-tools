@@ -43,7 +43,7 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("Make sure the thread is required, start it (if it is) or remove it (if not).")]
 	public class CheckNewThreadWithoutStartRule : Rule, IMethodRule {
 
-		private static bool CheckUsage (StackEntryAnalysis.UsageResult [] usageResults)
+		private static bool CheckUsage (StackEntryUsageResult [] usageResults)
 		{
 			foreach (var usage in usageResults) {
 				switch (usage.Instruction.OpCode.Code) {
@@ -113,7 +113,7 @@ namespace Gendarme.Rules.BadPractice {
 				if (sea == null)
 					sea = new StackEntryAnalysis (method);
 
-				StackEntryAnalysis.UsageResult [] usageResults = sea.GetStackEntryUsage (ins);
+				StackEntryUsageResult [] usageResults = sea.GetStackEntryUsage (ins);
 
 				if (!CheckUsage (usageResults)) {
 					// Critical because code cannot work as intented
