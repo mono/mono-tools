@@ -1,3 +1,10 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidVisibleNestedTypesRule.cs: New. Rule that warn about nested 
+	types that are visible.
+	* Gendarme.Rules.Design.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and test to the build.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Simplify finding 

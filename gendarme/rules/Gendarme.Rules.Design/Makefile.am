@@ -21,13 +21,13 @@ design_rules_sources = DontDeclareProtectedFieldsInSealedClassRule.cs UsingClone
 	EnsureSymmetryForOverloadedOperatorsRule.cs OperatorEqualsShouldBeOverloadedRule.cs \
 	OverrideEqualsMethodRule.cs ProvideAlternativeNamesForOperatorOverloadsRule.cs ImplementEqualsAndGetHashCodeInPairRule.cs \
 	EnumsShouldUseInt32Rule.cs ImplementIComparableCorreclyRule.cs ImplementGenericCollectionInterfacesRule.cs \
-	ConsiderConvertingFieldToNullableRule.cs
+	ConsiderConvertingFieldToNullableRule.cs AvoidVisibleNestedTypesRule.cs
 
 design_rules_build_sources = $(addprefix $(srcdir)/, $(design_rules_sources))
 design_rules_build_sources += $(design_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Design.dll: $(design_rules_build_sources)
-	$(GMCS) -debug -target:library -langversion:linq -r:$(CECIL_ASM) -r:System.Core.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:System.Core.dll \
 		-r:../../bin/Gendarme.Framework.dll -out:$@ $(design_rules_build_sources)
 
 design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneWithoutImplementingICloneableTest.cs \
@@ -41,7 +41,7 @@ design_test_sources = DontDeclareProtectedFieldsInSealedClassTest.cs UsingCloneW
 	EnsureSymmetryForOverloadedOperatorsTest.cs OperatorEqualsShouldBeOverloadedTest.cs OverrideEqualsMethodTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs ImplementEqualsAndGetHashCodeInPairTest.cs EnumsShouldUseInt32Test.cs \
 	ImplementIComparableCorreclyTest.cs ImplementGenericCollectionInterfacesTest.cs \
-	ConsiderConvertingFieldToNullableTest.cs
+	ConsiderConvertingFieldToNullableTest.cs AvoidVisibleNestedTypesTest.cs
 
 design_test_build_sources = $(addprefix $(srcdir)/Test/, $(design_test_sources))
 
