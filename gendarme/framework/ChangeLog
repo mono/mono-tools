@@ -1,3 +1,8 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add StackEntryUsageResult.cs to the build.
+	* framework.mdp: Add StackEntryUsageResult.cs to the MD project file.
+
 2008-06-02  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Add the ApplicabilityScope.cs to the framework build.
