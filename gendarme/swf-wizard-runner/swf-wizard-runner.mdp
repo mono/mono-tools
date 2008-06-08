@@ -31,6 +31,7 @@
     <File name="../console/gendarme.xsl" subtype="Code" buildaction="EmbedAsResource" />
     <File name="Properties/Settings.settings" subtype="Code" buildaction="Nothing" />
     <File name="../console/Helpers.cs" subtype="Code" buildaction="Compile" />
+    <File name="Page.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />

@@ -1,3 +1,10 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Page.cs: New. Moved un-nested enum from Wizard.cs [self-test]
+	* Wizard.cs: Remove Page nested enum.
+	* Makefile.am: Add Page.cs to the build
+	* swf-wizard-runner.mdp: Update MD project file.
+
 2008-06-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Refactor ResultWriter selection.

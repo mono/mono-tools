@@ -11,6 +11,7 @@ wizard_sources = \
 	../AssemblyStaticInfo.cs \
 	Gendarme.cs \
 	GuiRunner.cs \
+	Page.cs \
 	Wizard.cs \
 	Wizard.Designer.cs \
 	Properties/Resources.Designer.cs \

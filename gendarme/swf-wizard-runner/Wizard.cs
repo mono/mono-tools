@@ -43,14 +43,6 @@ namespace Gendarme {
 		// used to call code asynchronously
 		delegate void MethodInvoker ();
 
-		public enum Page {
-			Welcome,
-			AddFiles,
-			SelectRules,
-			Analyze,
-			Report
-		}
-
 		sealed class AssemblyInfo {
 			private DateTime timestamp;
 			private AssemblyDefinition definition;
