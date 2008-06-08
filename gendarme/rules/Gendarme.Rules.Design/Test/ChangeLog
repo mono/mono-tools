@@ -1,3 +1,9 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidVisibleNestedTypesTest.cs: New. Unit tests for 
+	AvoidVisibleNestedTypesRule.
+	* Test.Rules.Design.mdp: Add tests to MD project file.
+
 2008-05-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UsingCloneWithoutImplementingICloneableTest.cs: Update test
