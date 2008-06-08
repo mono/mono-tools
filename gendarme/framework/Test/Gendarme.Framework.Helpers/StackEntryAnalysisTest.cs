@@ -81,7 +81,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("SimpleReturn");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -98,7 +98,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("SimpleLoc");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -116,7 +116,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Loc");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -148,7 +148,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Loc2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -165,7 +165,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Pop");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (0, result.Length);
 		}
@@ -186,7 +186,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Branch");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -205,7 +205,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Branch2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode);
@@ -234,7 +234,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("TryFinally");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode);
@@ -271,7 +271,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("NestedTryFinally");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode);
@@ -308,7 +308,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("NestedTryFinally2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode);
@@ -338,7 +338,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("TryCatch");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length); //no "return a";
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode); //return a.ToString ();
@@ -381,7 +381,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("TryCatchFinally");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length); //no "return a";
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode); //return a.ToString ();
@@ -421,7 +421,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("MultipleCatch");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length); //no "return a";
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode); //return b.ToString ();
@@ -440,7 +440,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Starg");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -457,7 +457,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Starg2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -474,7 +474,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("StargStatic");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -492,7 +492,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("OutArg");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (OpCodes.Stind_Ref, result [0].Instruction.OpCode);
@@ -510,7 +510,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("OutArg2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (OpCodes.Stind_Ref, result [0].Instruction.OpCode);
@@ -543,7 +543,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Switch");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (OpCodes.Callvirt, result [0].Instruction.OpCode);
@@ -578,7 +578,7 @@ namespace Test.Framework {
 			m.Body.CilWorker.Append (switch2);
 
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (3, result.Length);
 			Assert.AreEqual (OpCodes.Ret, result [0].Instruction.OpCode);
@@ -597,7 +597,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Castclass");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Throw, result [0].Instruction.OpCode);
@@ -616,7 +616,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("StackOffset");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (4, result.Length);
 			Assert.AreEqual (0, result [0].StackOffset);
@@ -637,7 +637,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Field");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (Code.Stfld, result [0].Instruction.OpCode.Code);
@@ -658,7 +658,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("Field2");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (Code.Stfld, result [0].Instruction.OpCode.Code);
@@ -676,7 +676,7 @@ namespace Test.Framework {
 		{
 			MethodDefinition m = GetTest ("StaticField");
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
 
 			Assert.AreEqual (2, result.Length);
 			Assert.AreEqual (Code.Stsfld, result [0].Instruction.OpCode.Code);
@@ -699,7 +699,7 @@ namespace Test.Framework {
 			m.Body.CilWorker.Emit (OpCodes.Ret);
 
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
-			StackEntryAnalysis.UsageResult [] result = sea.GetStackEntryUsage (m.Body.Instructions[0]);
+			StackEntryUsageResult [] result = sea.GetStackEntryUsage (m.Body.Instructions[0]);
 
 			Assert.AreEqual (1, result.Length);
 			Assert.AreEqual (OpCodes.Calli, result [0].Instruction.OpCode);

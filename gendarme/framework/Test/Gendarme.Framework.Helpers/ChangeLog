@@ -1,3 +1,8 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysisTest.cs: Rename StackEntryAnalysis.UsageResult 
+	to StackEntryUsageResult
+
 2008-02-16  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* MethodSignatureTest.cs, StackEntryAnalysisTest.cs: Use the
