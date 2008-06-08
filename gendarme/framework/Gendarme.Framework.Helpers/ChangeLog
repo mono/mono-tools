@@ -1,3 +1,9 @@
+2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Move out nested UsageResult type. Also
+	return a list, not an array, from FindLoad. [self-test]
+	* StackEntryUsageResult.cs: New. Un-nested, renamed, UsageResult
+
 2008-04-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Prevent possible NRE in 

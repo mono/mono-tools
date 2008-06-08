@@ -45,52 +45,6 @@ namespace Gendarme.Framework.Helpers {
 	/// </summary>
 	public class StackEntryAnalysis {
 
-		/// <summary>
-		/// Represents a usage of a StackEntry
-		/// </summary>
-		public struct UsageResult {
-			/// <summary>
-			/// The instruction that uses the StackEntry
-			/// </summary>
-			public readonly Instruction Instruction;
-			/// <summary>
-			/// The positive offset of the StackEntry before the instruction executes. 0 means right on top.
-			/// </summary>
-			public readonly int StackOffset;
-			public UsageResult (Instruction ins, int offset)
-			{
-				this.Instruction = ins;
-				this.StackOffset = offset;
-			}
-
-			public override bool Equals (object obj)
-			{
-				if (obj is UsageResult)
-					return Equals ((UsageResult) obj);
-				return false;
-			}
-
-			public bool Equals (UsageResult usageResult)
-			{
-				return (Instruction == usageResult.Instruction) && (StackOffset == usageResult.StackOffset);
-			}
-
-			public override int GetHashCode ()
-			{
-				return Instruction.GetHashCode () ^ StackOffset.GetHashCode ();
-			}
-
-			public static bool operator == (UsageResult left, UsageResult right)
-			{
-				return left.Equals (right);
-			}
-
-			public static bool operator != (UsageResult left, UsageResult right)
-			{
-				return !left.Equals (right);
-			}
-		}
-
 		enum StoreType {
 			None,
 			Local,
@@ -289,7 +243,7 @@ namespace Gendarme.Framework.Helpers {
 		/// </summary>
 		/// <param name="ins">The instruction.</param>
 		/// <returns>An array of UsageResults containing the instructions that use the value and the stack offset of the entry at that instruction. A StackOffset of 0 means right on top of the stack.</returns>
-		public UsageResult [] GetStackEntryUsage (Instruction ins)
+		public StackEntryUsageResult [] GetStackEntryUsage (Instruction ins)
 		{
 			/* In the main loop we search for all usages of a StackEntry.
 			 * Then we check each usage for a store (to a local variable or an argument), search for corrosponding loads and search for usages of the new Stackentry.
@@ -317,9 +271,9 @@ namespace Gendarme.Framework.Helpers {
 			}
 
 			//build return value
-			UsageResult [] results = new UsageResult [UsedBy.Count];
+			StackEntryUsageResult [] results = new StackEntryUsageResult [UsedBy.Count];
 			for (int i = 0; i < results.Length; i++)
-				results [i] = new UsageResult (UsedBy [i].Key.Instruction, UsedBy [i].Value);
+				results [i] = new StackEntryUsageResult (UsedBy [i].Key.Instruction, UsedBy [i].Value);
 			return results;
 		}
 
@@ -415,7 +369,7 @@ namespace Gendarme.Framework.Helpers {
 		/// <param name="insWithLeave">The first instruction to start the search at.</param>
 		/// <param name="slot">The slot to search.</param>
 		/// <returns>An array of instructions that load from the slot.</returns>
-		private InstructionWithLeave [] FindLoad (InstructionWithLeave insWithLeave, StoreSlot slot)
+		private List<InstructionWithLeave> FindLoad (InstructionWithLeave insWithLeave, StoreSlot slot)
 		{
 			LoadAlternatives.Clear ();
 			LoadResults.Clear ();
@@ -491,7 +445,7 @@ namespace Gendarme.Framework.Helpers {
 					}
 				}
 			}
-			return LoadResults.ToArray ();
+			return LoadResults;
 		}
 
 		/// <summary>
