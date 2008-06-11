@@ -86,6 +86,28 @@ namespace Test.Rules.Performance {
 		}
 	}
 
+	// people may use the following two patterns to have
+	// static classes in C# 1.
+	internal sealed class InternalSealedClassWithPrivateCtor {
+		private InternalSealedClassWithPrivateCtor ()
+		{
+		}
+
+		public static void Foo ()
+		{
+		}
+	}
+
+	internal abstract class InternalAbstractClassWithPrivateCtor {
+		private InternalAbstractClassWithPrivateCtor ()
+		{
+		}
+
+		public static void Bar ()
+		{
+		}
+	}
+
 	public static class StaticClass {
 		public static void display ()
 		{
@@ -285,7 +307,21 @@ namespace Test.Rules.Performance {
 			type = GetTest ("NonInternalClassNotInstantiated");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
 		}
-		
+
+		[Test]
+		public void InternalSealedClassWithPrivateCtor ()
+		{
+			type = GetTest ("InternalSealedClassWithPrivateCtor");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+		}
+
+		[Test]
+		public void InternalAbstractClassWithPrivateCtorTest ()
+		{
+			type = GetTest ("InternalAbstractClassWithPrivateCtor");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+		}
+
 		[Test]
 		public void StaticClassTest ()
 		{

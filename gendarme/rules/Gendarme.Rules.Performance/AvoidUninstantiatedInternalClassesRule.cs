@@ -141,11 +141,23 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
+		static bool HasSinglePrivateConstructor (TypeDefinition type)
+		{
+			if (type.Constructors.Count != 1)
+				return false;
+
+			return type.Constructors [0].Parameters.Count == 0;
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply to internal (non-visible) types
 			// note: IsAbstract also excludes static types (2.0)
 			if (type.IsVisible () || type.IsAbstract || CheckSpecialTypes (type) || type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute"))
+				return RuleResult.DoesNotApply;
+
+			// people use this pattern to have a static class in C# 1.
+			if (type.IsSealed && HasSinglePrivateConstructor (type))
 				return RuleResult.DoesNotApply;
 
 			// rule applies
