@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Performance {
 
 		public static void ProcessMethod (MethodDefinition method, HashSet<TypeReference> typeset)
 		{
-			// this is needed in case we return an enum, a struct or something mapped 
+			// this is needed in case we return an enum, a struct or something mapped
 			// to p/invoke (i.e. no ctor called). We also need to check for arrays.
 			TypeReference t = method.ReturnType.ReturnType;
 			AddType (typeset, t);
@@ -146,7 +146,12 @@ namespace Gendarme.Rules.Performance {
 			if (type.Constructors.Count != 1)
 				return false;
 
-			return type.Constructors [0].Parameters.Count == 0;
+			var constructor = type.Constructors [0];
+
+			if (constructor.Parameters.Count != 0)
+				return false;
+
+			return constructor.IsPrivate;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -167,7 +172,7 @@ namespace Gendarme.Rules.Performance {
 			if ((entry_point != null) && (entry_point.DeclaringType == type))
 				return RuleResult.Success;
 
-			// create a cache of all type instantiation inside this 
+			// create a cache of all type instantiation inside this
 			AssemblyDefinition assembly = type.Module.Assembly;
 			CacheInstantiationFromAssembly (assembly);
 
