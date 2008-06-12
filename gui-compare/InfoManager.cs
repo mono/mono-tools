@@ -284,7 +284,8 @@ namespace GuiCompare
 				break;
 
 			case "SL2":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl2b1.tar.gz");
+				//u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl2b1.tar.gz");
+				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl2b2.tar.gz");
 				break;
 				
 			case "3.5":
@@ -541,7 +542,7 @@ namespace GuiCompare
 			Populate (sub, "API 3.5 (WxF SP1)", "3.0", "3.5", api_3_5_wxf);
 			
 			Populate (sub, "Silverlight 1.1 (Deprecated)", "2.1", "2.1", api_sl11);
-			Populate (sub, "Silverlight 2.0", "2.1", "SL2", api_sl2_beta);
+			Populate (sub, "Silverlight 2.0 (Beta 2)", "2.1", "SL2", api_sl2_beta);
 		}
 	}
 }
