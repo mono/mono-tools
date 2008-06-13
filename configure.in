@@ -10,6 +10,7 @@ dnl C# compiler
 AC_PATH_PROG(MCS, mcs, no)
 AC_PATH_PROG(GMCS, gmcs, no)
 AC_PATH_PROG(RUNTIME, mono, no)
+AC_PATH_PROG(GACUTIL, gacutil, no)
 
 CS="C#"
 if test "x$MCS" = "xno"  ; then
@@ -31,6 +32,8 @@ AC_SUBST(MCS)
 AC_SUBST(GMCS)
 AC_SUBST(RUNTIME)
 AC_SUBST(RESGEN)
+AC_SUBST(GACUTIL)
+
 
 PKG_CHECK_MODULES(NUNIT, mono-nunit)
 AC_SUBST(NUNIT_LIBS)
@@ -64,14 +67,34 @@ if test "x$enable_gecko" = "xyes"; then
 fi
 
 dnl TODO: check for webkit-sharp
-AM_CONDITIONAL(ENABLE_WEBKIT, test "xno" = "xyes")
+# AM_CONDITIONAL(ENABLE_WEBKIT, test "xno" = "xyes")
+PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0, enable_webkit=yes, enable_webkit=no)
+AC_SUBST(WEBKIT_SHARP_LIBS)
+AM_CONDITIONAL(ENABLE_WEBKIT, test "x$enable_webkit" = "xyes")
 
 # PKG_CHECK_MODULES(MONOWEBBROWSER, mono-webbrowser, enable_monowebbrowser=yes, enable_monowebbrowser=no)
 # AC_SUBST(MONOWEBBROWSER_LIBS)
+
+AC_MSG_CHECKING([for Mono.WebBrowser])
+if test "x$GACUTIL" = "xno"
+then
+   	AC_MSG_RESULT([no])
+	if test "x$enable_monowebbrowser" = "x" ; then enable_monowebbrowser=no ; fi
+else
+	if $GACUTIL -l Mono.WebBrowser | grep -q "Mono.WebBrowser" 
+	then
+		AC_MSG_RESULT([yes])
+		enable_monowebbrowser=yes
+	else
+		AC_MSG_RESULT([no])
+		enable_monowebbrowser=no
+	fi  
+fi
+MONOWEBBROWSER_LIBS=-r:Mono.WebBrowser
 AM_CONDITIONAL(ENABLE_MONOWEBBROWSER, test "x$enable_monowebbrowser" = "xyes")
 
-if test "x$enable_gtkhtml$enable_gecko$enable_monowebbrowser" = "xnono" ; then
-   AC_MSG_ERROR([no HTML display found. You need either gtkhtml, gecko or Mono.Mozilla])
+if test "x$enable_gtkhtml$enable_gecko$enable_monowebbrowser$enable_webkit" = "xnononono" ; then
+   AC_MSG_ERROR([no HTML display found. You need either gtkhtml, gecko, WebKit or Mono.WebBrowser])
 fi
 
 dnl

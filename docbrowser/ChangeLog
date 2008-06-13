@@ -1,3 +1,12 @@
+2008-06-14  Andreia Gaita <avidigal@novell.com> 
+
+	* browser.cs: Fix loader to not load all the backends. Instead, try
+	  loading the selected engine, then the fallback if the first fails,
+	  then any other available engine if the fallback fails (and then
+	  throw hands in the air and give up). Sprinkle try/catch blocks
+	  liberally.
+	* Makefile.am: Enable webkit detection.
+
 2008-05-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Fix build.

@@ -62,7 +62,7 @@ geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_L
 gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 # TODO: use pkg-config for webkit-sharp
-WEBKIT_SHARP_LIBS = -r:nwebkit.dll
+# WEBKIT_SHARP_LIBS = -r:nwebkit.dll
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.WebBrowser.dll

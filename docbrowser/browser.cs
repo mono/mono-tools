@@ -2277,37 +2277,65 @@ public class Tab : Notebook {
 			text_editor.GrabFocus ();	
 	}
 
-	public static IHtmlRender GetRenderer (string engine, string fallback, Browser browser)
-	{
-		Dictionary<string, IHtmlRender> backends = new Dictionary<string, IHtmlRender> ();
-		string[] dlls = System.IO.Directory.GetFiles (AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-		foreach (string dll in dlls) {
-			Assembly ass = Assembly.LoadFile (dll);
+
+	private static IHtmlRender LoadRenderer (string dll, Browser browser) {
+		try {
+			Assembly ass = Assembly.LoadFile (dll);		
 			System.Type type = ass.GetType ("Monodoc." + ass.GetName ().Name, false, false);
 			if (type == null)
-				continue;
-			IHtmlRender backend = (IHtmlRender) Activator.CreateInstance (type, new object[1] { browser.help_tree });
-			backends.Add (backend.Name, backend);
+				return null;
+			return (IHtmlRender) Activator.CreateInstance (type, new object[1] { browser.help_tree });
+		} catch (Exception ex) {
+			Console.Error.WriteLine (ex);
+		}
+		return null;
+	}
+	
+	
+	public static IHtmlRender GetRenderer (string engine, string fallback, Browser browser)
+	{
+		IHtmlRender renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, engine + "HtmlRender.dll"), browser);
+		if (renderer != null) {
+			try {
+				if (renderer.Initialize ()) {
+					Console.WriteLine ("using " + renderer.Name);
+					return renderer;
+				}
+			} catch (Exception ex) {
+				Console.Error.WriteLine (ex);
+			}
+		}
+		
+		renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, fallback + "HtmlRender.dll"), browser);
+		if (renderer != null) {
+			try {
+				if (renderer.Initialize ()) {
+					Console.WriteLine ("using " + renderer.Name);
+					return renderer;
+				}
+			} catch (Exception ex) {
+				Console.Error.WriteLine (ex);
+			}
 		}
 
-		if (backends.ContainsKey (engine) && backends[engine].Initialize ())
-			return backends[engine];
-		else if (backends.ContainsKey (fallback) &&  backends[fallback].Initialize ())
-			return backends[fallback];
-		return null;
+		string[] dlls = System.IO.Directory.GetFiles (AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+		foreach (string dll in dlls) {
+			if (dll.IndexOf (engine + "HtmlRender.dll") < 0 && dll.IndexOf (fallback + "HtmlRender.dll") < 0) {
+				renderer = LoadRenderer (dll, browser);
+				if (renderer != null) {
+					try {
+						if (renderer.Initialize ()) {
+							Console.WriteLine ("using " + renderer.Name);
+							return renderer;
+						}
+					} catch (Exception ex) {
+						Console.Error.WriteLine (ex);
+					}
+				}
+			}
+		}
 
-		
-		//try {
-			
-		//    string exeAssembly = Assembly.GetExecutingAssembly ().Location;
-		//    string myPath = System.IO.Path.GetDirectoryName (exeAssembly);
-		//    Assembly dll = Assembly.LoadFrom (System.IO.Path.Combine (myPath, file));
-		//    Type t = dll.GetType (type, true);
-		
-		//    return (IHtmlRender) Activator.CreateInstance (t, new object [1] { browser.help_tree });
-		//} catch {
-		//    return null;
-		//}
+		return null;		
 	}
 	
 
@@ -2334,43 +2362,14 @@ public class Tab : Notebook {
 
 		html = GetRenderer (browser.engine, "GtkHtml", browser);
 		html_preview = GetRenderer (browser.engine, "GtkHtml", browser);
+		if (html == null || html_preview == null)
+			throw new Exception ("Couldn't find html renderer!");
+
 		browser.capabilities = html.Capabilities;
 
 		if ((html.Capabilities & Capabilities.Css) != 0)
 			HelpSource.use_css = true;
 
-		//if (browser.UseGecko) {
-		//    html = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
-		//    html_preview = GetRenderer ("GeckoHtmlRender.dll", "Monodoc.GeckoHtmlRender", browser);
-		//    HelpSource.use_css = true;
-		//}
-		
-		//if (html == null || html_preview == null) {
-		//    html = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
-		//    html_preview = GetRenderer ("GtkHtmlHtmlRender.dll", "Monodoc.GtkHtmlHtmlRender", browser);
-		//    browser.UseGecko = false;
-		//    HelpSource.use_css = false;
-		//}
-
-		//if (html == null || html_preview == null) {
-		//    html = GetRenderer ("MonoWebBrowserHtmlRender.dll", "Monodoc.MonoWebBrowserHtmlRender", browser);
-		//    html_preview = GetRenderer ("MonoWebBrowserHtmlRender.dll", "Monodoc.MonoWebBrowserHtmlRender", browser);
-		//    browser.UseGecko = false;
-		//    HelpSource.use_css = false;
-		//}
-		
-		/*
-		if (html == null || html_preview == null) {
-			html = GetRenderer ("WebKitHtmlRender.dll", "Monodoc.WebKitHtmlRender", browser);
-			html_preview = GetRenderer ("WebKitHtmlRender.dll", "Monodoc.WebKitHtmlRender", browser);
-			browser.UseGecko = false;
-			HelpSource.use_css = true;
-		}
-		*/
-
-		if (html == null || html_preview == null)
-			throw new Exception ("Couldn't find html renderer!");
-				
 		//Prepare Font for css (TODO: use GConf?)
 		if ((html.Capabilities & Capabilities.Fonts) != 0 && SettingsHandler.Settings.preferred_font_size == 0) { 
 			Pango.FontDescription font_desc = Pango.FontDescription.FromString ("Sans 12");

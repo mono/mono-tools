@@ -1,3 +1,7 @@
+2008-06-14  Andreia Gaita <avidigal@novell.com> 
+
+	* configure.in: Enable webkit and mono.webbrowser detection.
+
 2008-04-27  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* configure.in: Add Maintainability setup to the build.
