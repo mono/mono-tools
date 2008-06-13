@@ -1,5 +1,9 @@
 2008-06-14  Andreia Gaita <avidigal@novell.com> 
 
+	* WebKitHtmlRender.cs: Enable link click events
+
+2008-06-14  Andreia Gaita <avidigal@novell.com> 
+
 	* browser.cs: Fix loader to not load all the backends. Instead, try
 	  loading the selected engine, then the fallback if the first fails,
 	  then any other available engine if the fallback fails (and then

@@ -30,6 +30,11 @@ public class WebKitHtmlRender : IHtmlRender {
 	{
 		web_view = new WebView ();
 		web_view.Show (); 
+		web_view.NavigationRequested += delegate (object sender, NavigationRequestedArgs e) {
+			url = e.Request.Uri;
+			if (UrlClicked != null)
+				UrlClicked (this, new EventArgs());
+		};
 		this.help_tree = help_tree;
 	}
 
