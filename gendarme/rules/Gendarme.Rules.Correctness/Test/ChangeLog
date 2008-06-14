@@ -1,3 +1,9 @@
+2008-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewDoubleAssignmentTest.cs: New. Unit tests for 
+	ReviewDoubleAssignmentRule
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Correctness.mdp: Fix references.
