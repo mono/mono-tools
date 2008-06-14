@@ -1,3 +1,7 @@
+2008-06-14 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: New. Extension methods for Instruction.
+
 2008-05-17 Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ModuleRocks.cs: New. Extension methods for ModuleDefinition.
