@@ -42,6 +42,7 @@ framework_sources = \
 	Gendarme.Framework.Rocks/CommonRocks.cs \
 	Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
 	Gendarme.Framework.Rocks/FieldRocks.cs \
+	Gendarme.Framework.Rocks/InstructionRocks.cs \
 	Gendarme.Framework.Rocks/MethodRocks.cs \
 	Gendarme.Framework.Rocks/ModuleRocks.cs \
 	Gendarme.Framework.Rocks/TypeRocks.cs
@@ -62,6 +63,7 @@ framework_test_sources = \
 	Gendarme.Framework.Rocks/RocksTest.cs \
 	Gendarme.Framework.Rocks/AssemblyRocksTest.cs \
 	Gendarme.Framework.Rocks/CustomAttributeRocksTest.cs \
+	Gendarme.Framework.Rocks/InstructionRocksTest.cs \
 	Gendarme.Framework.Rocks/MethodRocksTest.cs \
 	Gendarme.Framework.Rocks/TypeRocksTest.cs \
 	Gendarme.Framework.Rocks/FieldRocksTest.cs
