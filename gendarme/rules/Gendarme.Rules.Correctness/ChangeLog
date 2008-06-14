@@ -1,3 +1,10 @@
+2008-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewDoubleAssignmentRule.cs: New. Rule to detect double 
+	assignments on fields or variables (e.g. x = x = 42;)
+	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-04-27  Jb Evain  <jbevain@novell.com>
 
 	* MethodCanBeMadeStaticRule.cs: Disable this rule

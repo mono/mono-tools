@@ -39,6 +39,7 @@
     <File name="FloatComparisonRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseValueInPropertySetterRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DontCompareWithNaNRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewDoubleAssignmentRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
