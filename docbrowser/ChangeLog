@@ -1,5 +1,9 @@
 2008-06-14  Andreia Gaita <avidigal@novell.com> 
 
+	* WebKitHtmlRender.cs, browser.cs: Add Anchor, Copy and Print support
+
+2008-06-14  Andreia Gaita <avidigal@novell.com> 
+
 	* WebKitHtmlRender.cs: Enable link click events
 
 2008-06-14  Andreia Gaita <avidigal@novell.com> 

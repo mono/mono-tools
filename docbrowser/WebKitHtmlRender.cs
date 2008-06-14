@@ -40,10 +40,12 @@ public class WebKitHtmlRender : IHtmlRender {
 
 	public void JumpToAnchor (string anchor)
 	{
+		web_view.Open ("#" + anchor);
 	}
 
 	public void Copy () 
 	{
+		web_view.CopyClipboard ();
 	}
 
 	public void SelectAll () 
@@ -58,6 +60,7 @@ public class WebKitHtmlRender : IHtmlRender {
 
 	public void Print (string html)
 	{
+		web_view.ExecuteScript ("print();");
 	}
 
 	public bool Initialize ()

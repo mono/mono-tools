@@ -21,11 +21,15 @@ using System.Xml;
 
 namespace Monodoc {
 class Driver {
+	  
+	public static string[] engines = {"WebKit", "GtkHtml", "MonoWebBrowser", "Gecko"};
+	  
 	static int Main (string [] args)
 	{
 		string topic = null;
 		bool remote_mode = false;
-		string engine = "Gecko";
+		
+		string engine = engines[0];
 		
 		for (int i = 0; i < args.Length; i++){
 			switch (args [i]){
@@ -101,7 +105,7 @@ class Driver {
 				
 			case "--engine":
 				if (i + 1 == args.Length) {
-					Console.WriteLine ("Usage: --engine engine, where engine is the name of the browser engine to use (Gecko, GtkHtml, WebKit, MonoWebBrowser or another).");
+					Console.WriteLine ("Usage: --engine engine, where engine is the name of the browser engine to use (WebKit, GtkHtml, MonoWebBrowser, Gecko or another).");
 					return 1;
 				}
 
@@ -2302,7 +2306,7 @@ public class Tab : Notebook {
 					return renderer;
 				}
 			} catch (Exception ex) {
-				Console.Error.WriteLine (ex);
+				//Console.Error.WriteLine (ex);
 			}
 		}
 		
@@ -2314,13 +2318,13 @@ public class Tab : Notebook {
 					return renderer;
 				}
 			} catch (Exception ex) {
-				Console.Error.WriteLine (ex);
+				//Console.Error.WriteLine (ex);
 			}
 		}
 
-		string[] dlls = System.IO.Directory.GetFiles (AppDomain.CurrentDomain.BaseDirectory, "*.dll");
-		foreach (string dll in dlls) {
-			if (dll.IndexOf (engine + "HtmlRender.dll") < 0 && dll.IndexOf (fallback + "HtmlRender.dll") < 0) {
+		foreach (string backend in Driver.engines) {
+			string dll = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, backend + "HtmlRender.dll");
+			if (System.IO.File.Exists (dll)) {
 				renderer = LoadRenderer (dll, browser);
 				if (renderer != null) {
 					try {
@@ -2329,12 +2333,12 @@ public class Tab : Notebook {
 							return renderer;
 						}
 					} catch (Exception ex) {
-						Console.Error.WriteLine (ex);
+						//Console.Error.WriteLine (ex);
 					}
-				}
+				}			
 			}
 		}
-
+		
 		return null;		
 	}
 	
@@ -2360,8 +2364,8 @@ public class Tab : Notebook {
 		// Setup the HTML rendering and preview area
 		//
 
-		html = GetRenderer (browser.engine, "GtkHtml", browser);
-		html_preview = GetRenderer (browser.engine, "GtkHtml", browser);
+		html = GetRenderer (browser.engine, Driver.engines[1], browser);
+		html_preview = GetRenderer (browser.engine, Driver.engines[1], browser);
 		if (html == null || html_preview == null)
 			throw new Exception ("Couldn't find html renderer!");
 
