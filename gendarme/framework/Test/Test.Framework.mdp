@@ -29,6 +29,7 @@
     <File name="Gendarme.Framework.Helpers/ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="Gendarme.Framework.Helpers/MethodSignatureTest.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework.Helpers/StackEntryAnalysisTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Rocks/InstructionRocksTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="nunit.core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
