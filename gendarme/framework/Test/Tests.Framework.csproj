@@ -45,6 +45,7 @@
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CustomAttributeRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\FieldRocksTest.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\InstructionRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\MethodRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\RocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\TypeRocksTest.cs" />

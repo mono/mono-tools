@@ -60,14 +60,17 @@
     <Compile Include="..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="Gendarme.Framework.Helpers\StackEntryUsageResult.cs" />
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CecilRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CommonRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CustomAttributeRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\FieldRocks.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\InstructionRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\MethodRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\ModuleRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\TypeRocks.cs" />
+    <Compile Include="Gendarme.Framework\ApplicabilityScope.cs" />
     <Compile Include="Gendarme.Framework\AssemblyResolver.cs" />
     <Compile Include="Gendarme.Framework\Confidence.cs" />
     <Compile Include="Gendarme.Framework\Defect.cs" />
