@@ -52,6 +52,7 @@ namespace Gendarme {
 		private string ignore_file;
 		private bool help;
 		private bool quiet;
+		private bool version;
 		private List<string> assembly_names;
 
 		byte Parse (string [] args)
@@ -65,6 +66,7 @@ namespace Gendarme {
 				{ "ignore=",	v => ignore_file = v },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "quiet",	v => quiet = v != null },
+				{ "version",	v => version = v != null },
 				{ "h|?|help",	v => help = v != null },
 			};
 			assembly_names = p.Parse (args);
@@ -137,12 +139,14 @@ namespace Gendarme {
 		{
 			try {
 				byte result = Parse (args);
+				Header ();
+				if (version)
+					return 0;
+
 				if ((result != 0) || help) {
 					Help ();
-					return result;
+					return help ? (byte) 0 : result;
 				}
-
-				Header ();
 
 				// load configuration, including rules
 				Settings config = new Settings (this, config_file, rule_set);

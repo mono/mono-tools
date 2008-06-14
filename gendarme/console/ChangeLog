@@ -1,3 +1,7 @@
+2008-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsolerRunner.cs: Add support for --version
+
 2008-06-02  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* Settings.cs: Parse the applyTo xml attribute and sets the mode to
