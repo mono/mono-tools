@@ -2306,7 +2306,7 @@ public class Tab : Notebook {
 					return renderer;
 				}
 			} catch (Exception ex) {
-				//Console.Error.WriteLine (ex);
+				Console.Error.WriteLine (ex);
 			}
 		}
 		

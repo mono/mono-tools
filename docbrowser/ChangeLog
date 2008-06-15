@@ -1,3 +1,9 @@
+2008-06-15  Andreia Gaita <avidigal@novell.com> 
+
+	* browser.cs: Uncomment exception message
+	* WebKitHtmlRender.cs: Add missing return value. Add handler to
+	  allowing monodoc to update the status bar on mouse hover.
+
 2008-06-14  Andreia Gaita <avidigal@novell.com> 
 
 	* WebKitHtmlRender.cs, browser.cs: Add Anchor, Copy and Print support

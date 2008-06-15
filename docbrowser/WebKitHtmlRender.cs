@@ -34,6 +34,12 @@ public class WebKitHtmlRender : IHtmlRender {
 			url = e.Request.Uri;
 			if (UrlClicked != null)
 				UrlClicked (this, new EventArgs());
+			e.RetVal = NavigationResponse.Ignore;
+		};
+		web_view.HoveringOverLink += delegate (object sender, HoveringOverLinkArgs e) {
+			url = e.Link;
+			if (OnUrl != null)
+			  OnUrl (this, new EventArgs ());
 		};
 		this.help_tree = help_tree;
 	}
