@@ -7,6 +7,12 @@ assemblydir = $(libdir)/ilcontrast
 desktopdir = $(datadir)/applications
 pixmapdir = $(datadir)/pixmaps
 
+if ENABLE_WEBKIT
+assembly_DATA = $(TARGET)
+bin_SCRIPTS = ilcontrast
+desktop_DATA = ilcontrast.desktop
+pixmap_DATA = ilcontrast.png
+else
 if ENABLE_GECKO
 assembly_DATA = $(TARGET)
 bin_SCRIPTS = ilcontrast
@@ -14,10 +20,15 @@ desktop_DATA = ilcontrast.desktop
 pixmap_DATA = ilcontrast.png
 else
 all:
-	echo "Install gecko-sharp to build ilContrast"
+	echo "Install webkit-sharp or gecko-sharp to build ilContrast"
+endif
 endif
 
-references = $(GTK_SHARP_LIBS) $(GECKO_SHARP_LIBS) -r:ICSharpCode.SharpZipLib.dll
+if ENABLE_WEBKIT
+references = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) -r:ICSharpCode.SharpZipLib.dll
+else
+references = $(GTK_SHARP_LIBS) $(GECKO_SHARP_LIBS) -d:USE_GECKO -r:ICSharpCode.SharpZipLib.dll
+endif
 
 resources = 							\
 	/resource:$(srcdir)/ilcontrast.png,ilcontrast.png	\

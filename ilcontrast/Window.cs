@@ -40,7 +40,11 @@ namespace IlContrast {
 
 		Box main_vbox;
 		Statusbar statusbar;
+#if USE_GECKO
 		Gecko.WebControl browser;
+#else
+		WebKit.WebView web_view;
+#endif
 		bool first_show = false;
 		Thread worker;
 		ComparisonInfo info;
@@ -49,10 +53,17 @@ namespace IlContrast {
 		{
 			DefaultSize = new Size (450, 450);
 
-			browser = new Gecko.WebControl ();
 			main_vbox = new VBox (false, 0);
 			AddActionUI ();
+#if USE_GECKO
+			browser = new Gecko.WebControl ();
 			main_vbox.PackStart (browser, true, true, 0);
+#else
+			web_view = new WebKit.WebView ();
+			ScrolledWindow sw = new ScrolledWindow ();
+			sw.Add (web_view);
+			main_vbox.PackStart (sw, true, true, 0);
+#endif
 			statusbar = new Statusbar ();
 			main_vbox.PackStart (statusbar, false, false, 0);
 			Add (main_vbox);
@@ -125,7 +136,11 @@ namespace IlContrast {
 
 		void LoadUrl (string url)
 		{
+#if USE_GECKO
 			browser.LoadUrl (url);
+#else
+			web_view.Open (url);
+#endif
 		}
 
 		void GenerateHtmlTarget ()

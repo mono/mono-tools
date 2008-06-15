@@ -1,3 +1,8 @@
+2008-06-15  Alp Toker  <alp@nuanti.com>
+
+	* Makefile.am:
+	* Window.cs: Add WebKit support, enabled if webkit-sharp is around.
+
 2008-01-16  Wade Berrier  <wberrier@novell.com>
 
 	* ilconstrast.desktop.in: no extension on icon, remove
