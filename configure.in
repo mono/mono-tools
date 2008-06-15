@@ -66,8 +66,6 @@ if test "x$enable_gecko" = "xyes"; then
    AC_SUBST(MOZILLA_HOME)
 fi
 
-dnl TODO: check for webkit-sharp
-# AM_CONDITIONAL(ENABLE_WEBKIT, test "xno" = "xyes")
 PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0, enable_webkit=yes, enable_webkit=no)
 AC_SUBST(WEBKIT_SHARP_LIBS)
 AM_CONDITIONAL(ENABLE_WEBKIT, test "x$enable_webkit" = "xyes")
