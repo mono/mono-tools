@@ -495,8 +495,6 @@ namespace Gendarme {
 			// Wizard
 			// 
 			this.AcceptButton = this.next_button;
-			this.AutoScaleDimensions = new System.Drawing.SizeF (6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size (634, 448);
 			this.ControlBox = false;
 			this.Controls.Add (this.pictureBox1);

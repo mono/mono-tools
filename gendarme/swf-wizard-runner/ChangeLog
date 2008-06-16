@@ -1,3 +1,8 @@
+2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.Designer.cs: Disable auto-scaling since it resize the form
+	based on the font (and look bad on some Linux desktop).
+
 2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Page.cs: New. Moved un-nested enum from Wizard.cs [self-test]
