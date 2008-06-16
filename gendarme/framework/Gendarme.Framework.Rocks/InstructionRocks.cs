@@ -69,6 +69,49 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Return the operand of the Instruction. For macro instruction the operand is constructed.
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <param name="method">The method inside which the instruction comes from.</param>
+		/// <returns>Return the operand that the non-macro version of this Instruction would have.</returns>
+		public static object GetOperand (this Instruction self, MethodDefinition method)
+		{
+			if ((self == null) || (method == null))
+				return null;
+
+			Code code = self.OpCode.Code;
+			int index;
+			switch (code) {
+			case Code.Ldarg_0:
+			case Code.Ldarg_1:
+			case Code.Ldarg_2:
+			case Code.Ldarg_3:
+				index = code - Code.Ldarg_0;
+				if (!method.IsStatic) {
+					index--;
+					if (index < 0)
+						return null;
+				}
+				return method.Parameters [index];
+			case Code.Ldloc_0:
+			case Code.Ldloc_1:
+			case Code.Ldloc_2:
+			case Code.Ldloc_3:
+				return method.Body.Variables [code - Code.Ldloc_0];
+			case Code.Stloc_0:
+			case Code.Stloc_1:
+			case Code.Stloc_2:
+			case Code.Stloc_3:
+				return method.Body.Variables [code - Code.Stloc_0];
+			default:
+				// TODO - complete converting macro
+				if ((self.Operand == null) && (self.OpCode.OpCodeType == OpCodeType.Macro))
+					throw new NotImplementedException (self.OpCode.ToString ());
+				return self.Operand;
+			}
+		}
+
+		/// <summary>
 		/// Get the VariableDefinition associated with the Instruction.
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>
