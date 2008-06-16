@@ -1,3 +1,12 @@
+2008-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewDoubleAssignmentRule.cs: Handle same fields from different 
+	instances.
+	* ReviewUseOfModuloOneOnIntegersRule.cs: New. Rule to detect modulo
+	1 (x % 0) on integral types. This always return 0 and is probably a typo.
+	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-06-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentRule.cs: New. Rule to detect double 
