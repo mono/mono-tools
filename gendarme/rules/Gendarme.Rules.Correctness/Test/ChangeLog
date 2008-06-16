@@ -1,3 +1,11 @@
+2008-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewDoubleAssignmentTest.cs: Add test case where the field comes
+	from differrent instances of the same type.
+	* ReviewUseOfModuloOneOnIntegersTest.cs: New. Unit tests for 
+	ReviewUseOfModuloOneOnIntegersRule
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-06-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentTest.cs: New. Unit tests for 

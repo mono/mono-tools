@@ -69,12 +69,24 @@ namespace Test.Rules.Correctness {
 			Console.WriteLine ("{0} - {1}", ul1, ul2);
 		}
 
+		struct Struct {
+			public long Field;
+		}
+
+		public void DoubleAssignementOnDifferentInstanceFields ()
+		{
+			Struct s1, s2;
+			s1.Field = s2.Field = 42;
+			Console.WriteLine ("{0} - {1}", s1.Field, s2.Field);
+		}
+
 		[Test]
 		public void Fields ()
 		{
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignmentOnField");
 			AssertRuleFailure<ReviewDoubleAssignmentTest> ("DoubleAssignmentOnField", 2);
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentFields");
+			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentInstanceFields");
 		}
 
 		static DateTime dt;

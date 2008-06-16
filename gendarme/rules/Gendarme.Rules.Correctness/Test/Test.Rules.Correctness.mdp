@@ -23,6 +23,7 @@
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="DontCompareWithNaNTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ReviewDoubleAssignmentTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewUseOfModuloOneOnIntegersTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Correctness" />
