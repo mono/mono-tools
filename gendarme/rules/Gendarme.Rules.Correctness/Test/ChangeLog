@@ -1,3 +1,9 @@
+2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewUselessControlFlowTest.cs: New. Unit tests for
+	ReviewUselessControlFlowRule
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentTest.cs: Add test case where the field comes
