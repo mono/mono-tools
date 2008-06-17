@@ -14,6 +14,7 @@ correctness_rules_sources = BadRecursiveInvocationRule.cs MethodCanBeMadeStaticR
 	CallingEqualsWithNullArgRule.cs FloatComparisonRule.cs UseValueInPropertySetterRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs DontCompareWithNaNRule.cs \
 	ReviewDoubleAssignmentRule.cs \
+	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs
 
 correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_sources))
@@ -27,6 +28,7 @@ correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTe
 	AvoidConstructorsInStaticTypesTest.cs CallingEqualsWithNullArgTest.cs FloatComparisonRuleTest.cs \
 	DontCompareWithNaNTest.cs \
 	ReviewDoubleAssignmentTest.cs \
+	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs
 
 correctness_test_build_sources = $(addprefix $(srcdir)/Test/, $(correctness_test_sources))

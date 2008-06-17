@@ -1,3 +1,11 @@
+2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewUselessControlFlowRule.cs: New. Rule to defect useless
+	control flow in the method IL. They are either (potentially dangerous)
+	typos or empty code block (e.g. forgotten, or not, TODO).
+	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentRule.cs: Handle same fields from different 
