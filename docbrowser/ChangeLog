@@ -1,3 +1,8 @@
+2008-06-17  Andreia Gaita <avidigal@novell.com> 
+
+	* browser.cs: Fix alternate engine loading so it tries every available
+	  engine if the first one fails.
+
 2008-06-15  Andreia Gaita <avidigal@novell.com> 
 
 	* browser.cs: Uncomment exception message

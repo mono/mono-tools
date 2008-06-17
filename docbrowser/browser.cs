@@ -22,7 +22,7 @@ using System.Xml;
 namespace Monodoc {
 class Driver {
 	  
-	public static string[] engines = {"WebKit", "GtkHtml", "MonoWebBrowser", "Gecko"};
+	public static string[] engines = {"WebKit", "MonoWebBrowser", "Gecko", "GtkHtml"};
 	  
 	static int Main (string [] args)
 	{
@@ -2296,7 +2296,7 @@ public class Tab : Notebook {
 	}
 	
 	
-	public static IHtmlRender GetRenderer (string engine, string fallback, Browser browser)
+	public static IHtmlRender GetRenderer (string engine, Browser browser)
 	{
 		IHtmlRender renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, engine + "HtmlRender.dll"), browser);
 		if (renderer != null) {
@@ -2310,30 +2310,20 @@ public class Tab : Notebook {
 			}
 		}
 		
-		renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, fallback + "HtmlRender.dll"), browser);
-		if (renderer != null) {
-			try {
-				if (renderer.Initialize ()) {
-					Console.WriteLine ("using " + renderer.Name);
-					return renderer;
-				}
-			} catch (Exception ex) {
-				//Console.Error.WriteLine (ex);
-			}
-		}
-
 		foreach (string backend in Driver.engines) {
-			string dll = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, backend + "HtmlRender.dll");
-			if (System.IO.File.Exists (dll)) {
-				renderer = LoadRenderer (dll, browser);
-				if (renderer != null) {
-					try {
-						if (renderer.Initialize ()) {
-							Console.WriteLine ("using " + renderer.Name);
-							return renderer;
+			if (backend != engine) {
+				string dll = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, backend + "HtmlRender.dll");
+				if (System.IO.File.Exists (dll)) {
+					renderer = LoadRenderer (dll, browser);
+					if (renderer != null) {
+						try {
+							if (renderer.Initialize ()) {
+								Console.WriteLine ("using " + renderer.Name);
+								return renderer;
+							}
+						} catch (Exception ex) {
+							Console.Error.WriteLine (ex);
 						}
-					} catch (Exception ex) {
-						//Console.Error.WriteLine (ex);
 					}
 				}			
 			}
@@ -2364,8 +2354,8 @@ public class Tab : Notebook {
 		// Setup the HTML rendering and preview area
 		//
 
-		html = GetRenderer (browser.engine, Driver.engines[1], browser);
-		html_preview = GetRenderer (browser.engine, Driver.engines[1], browser);
+		html = GetRenderer (browser.engine, browser);
+		html_preview = GetRenderer (browser.engine, browser);
 		if (html == null || html_preview == null)
 			throw new Exception ("Couldn't find html renderer!");
 
