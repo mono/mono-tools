@@ -1,3 +1,9 @@
+2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotRoundIntegersTest.cs: New. Unit tests for 
+	DoNotRoundIntegersRule
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewUselessControlFlowTest.cs: New. Unit tests for
