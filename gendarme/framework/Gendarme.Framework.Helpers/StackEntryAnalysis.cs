@@ -320,8 +320,8 @@ namespace Gendarme.Framework.Helpers {
 			Instruction ins = startInstruction.Instruction;
 
 			while (true) {
-				int pop = this.GetPopCount (ins);
-				int push = this.GetPushCount (ins);
+				int pop = ins.GetPopCount (this.Method);
+				int push = ins.GetPushCount ();
 
 				if (pop > stackEntryDistance)  //does this instruction pop the stack entry 
 					return new KeyValuePair<InstructionWithLeave, int> (startInstruction.Copy (ins), stackEntryDistance);
@@ -486,13 +486,10 @@ namespace Gendarme.Framework.Helpers {
 		{
 			switch (ins.OpCode.Code) {
 			case Code.Ldloc_0:
-				return new StoreSlot (StoreType.Local, 0);
 			case Code.Ldloc_1:
-				return new StoreSlot (StoreType.Local, 1);
 			case Code.Ldloc_2:
-				return new StoreSlot (StoreType.Local, 2);
 			case Code.Ldloc_3:
-				return new StoreSlot (StoreType.Local, 3);
+				return new StoreSlot (StoreType.Local, ins.OpCode.Code - Code.Ldloc_0);
 			case Code.Ldloc_S:
 			case Code.Ldloc:
 				return new StoreSlot (StoreType.Local, ((VariableDefinition) ins.Operand).Index);
@@ -504,13 +501,10 @@ namespace Gendarme.Framework.Helpers {
 				return new StoreSlot (StoreType.StaticField, (int) ((FieldReference) ins.Operand).MetadataToken.ToUInt ());
 
 			case Code.Ldarg_0:
-				return new StoreSlot (StoreType.Argument, 0);
 			case Code.Ldarg_1:
-				return new StoreSlot (StoreType.Argument, 1);
 			case Code.Ldarg_2:
-				return new StoreSlot (StoreType.Argument, 2);
 			case Code.Ldarg_3:
-				return new StoreSlot (StoreType.Argument, 3);
+				return new StoreSlot (StoreType.Argument, ins.OpCode.Code - Code.Ldarg_0);
 			case Code.Ldarg_S:
 			case Code.Ldarg: {
 					int sequence = ((ParameterDefinition) ins.Operand).Sequence;
@@ -551,13 +545,10 @@ namespace Gendarme.Framework.Helpers {
 		{
 			switch (ins.OpCode.Code) {
 			case Code.Stloc_0:
-				return new StoreSlot (StoreType.Local, 0);
 			case Code.Stloc_1:
-				return new StoreSlot (StoreType.Local, 1);
 			case Code.Stloc_2:
-				return new StoreSlot (StoreType.Local, 2);
 			case Code.Stloc_3:
-				return new StoreSlot (StoreType.Local, 3);
+				return new StoreSlot (StoreType.Local, ins.OpCode.Code - Code.Stloc_0);
 			case Code.Stloc_S:
 			case Code.Stloc:
 				return new StoreSlot (StoreType.Local, ((VariableDefinition) ins.Operand).Index);
@@ -593,94 +584,8 @@ namespace Gendarme.Framework.Helpers {
 				}
 				goto default;
 
-
-
 			default:
 				return new StoreSlot (StoreType.None, -1);
-			}
-		}
-
-		private int GetPopCount (Instruction ins)
-		{
-			switch (ins.OpCode.StackBehaviourPop) {
-			case StackBehaviour.Pop0:
-				return 0;
-
-			case StackBehaviour.Pop1:
-			case StackBehaviour.Popi:
-			case StackBehaviour.Popref:
-				return 1;
-
-			case StackBehaviour.Pop1_pop1:
-			case StackBehaviour.Popi_pop1:
-			case StackBehaviour.Popi_popi8:
-			case StackBehaviour.Popi_popr4:
-			case StackBehaviour.Popi_popr8:
-			case StackBehaviour.Popref_pop1:
-			case StackBehaviour.Popref_popi:
-			case StackBehaviour.Popi_popi:
-				return 2;
-
-			case StackBehaviour.Popi_popi_popi:
-			case StackBehaviour.Popref_popi_popi:
-			case StackBehaviour.Popref_popi_popi8:
-			case StackBehaviour.Popref_popi_popr4:
-			case StackBehaviour.Popref_popi_popr8:
-			case StackBehaviour.Popref_popi_popref:
-				return 3;
-
-			case StackBehaviour.PopAll:
-				goto default;
-
-			case StackBehaviour.Varpop:
-				switch (ins.OpCode.FlowControl) {
-				case FlowControl.Return:
-					return this.Method.ReturnType.ReturnType.FullName == "System.Void" ? 0 : 1;
-
-				case FlowControl.Call:
-					IMethodSignature calledMethod = (IMethodSignature) ins.Operand;
-					if (ins.OpCode.Code != Code.Newobj)
-						if (calledMethod.HasThis)
-							return 1 + calledMethod.Parameters.Count;
-					return calledMethod.Parameters.Count;
-
-				default:
-					throw new NotImplementedException ("Varpop not supported for this Instruction.");
-				}
-
-			default:
-				throw new NotImplementedException (ins.OpCode.StackBehaviourPop + " not supported.");
-			}
-		}
-
-		private int GetPushCount (Instruction ins)
-		{
-			switch (ins.OpCode.StackBehaviourPush) {
-			case StackBehaviour.Push0:
-				return 0;
-
-			case StackBehaviour.Push1:
-			case StackBehaviour.Pushi:
-			case StackBehaviour.Pushi8:
-			case StackBehaviour.Pushr4:
-			case StackBehaviour.Pushr8:
-			case StackBehaviour.Pushref:
-				return 1;
-
-			case StackBehaviour.Push1_push1:
-				return 2;
-
-			case StackBehaviour.Varpush:
-				if (ins.OpCode.Code == Code.Call || ins.OpCode.Code == Code.Calli || ins.OpCode.Code == Code.Callvirt) {
-					IMethodSignature calledMethod = (IMethodSignature) ins.Operand;
-					if (calledMethod.ReturnType.ReturnType.FullName == "System.Void")
-						return 0;
-					return 1;
-				} else {
-					throw new NotImplementedException ("Varpush not supported for this Instruction.");
-				}
-			default:
-				throw new NotImplementedException (ins.OpCode.StackBehaviourPush + " not supported.");
 			}
 		}
 	}

@@ -1,3 +1,9 @@
+2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Move out GetPopCount and GetPushCount 
+	(into InstructionRocks). Simplify some switch/case to generate
+	less code.
+
 2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Move out nested UsageResult type. Also
