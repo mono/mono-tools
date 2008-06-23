@@ -13,6 +13,7 @@ correctness_rules_generated_sources = $(correctness_rules_sources_in:.in=)
 correctness_rules_sources = BadRecursiveInvocationRule.cs MethodCanBeMadeStaticRule.cs \
 	CallingEqualsWithNullArgRule.cs FloatComparisonRule.cs UseValueInPropertySetterRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs DontCompareWithNaNRule.cs \
+	DoNotRoundIntegersRule.cs \
 	ReviewDoubleAssignmentRule.cs \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs
@@ -27,6 +28,7 @@ correctness_rules_build_sources += $(correctness_rules_generated_sources)
 correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTest.cs UseValueInPropertySetterTest.cs \
 	AvoidConstructorsInStaticTypesTest.cs CallingEqualsWithNullArgTest.cs FloatComparisonRuleTest.cs \
 	DontCompareWithNaNTest.cs \
+	DoNotRoundIntegersTest.cs \
 	ReviewDoubleAssignmentTest.cs \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs

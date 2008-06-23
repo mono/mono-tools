@@ -1,6 +1,14 @@
+2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotRoundIntegersRule.cs: New. Rule to detect cases where a
+	rounding method (like Floor, Ceiling, Truncate or Round) is being
+	used on an integer value.
+	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* ReviewUselessControlFlowRule.cs: New. Rule to defect useless
+	* ReviewUselessControlFlowRule.cs: New. Rule to detect useless
 	control flow in the method IL. They are either (potentially dangerous)
 	typos or empty code block (e.g. forgotten, or not, TODO).
 	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
