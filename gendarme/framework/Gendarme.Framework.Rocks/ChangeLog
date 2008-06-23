@@ -1,3 +1,9 @@
+2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Add GetParameter, IsLoadArgument and 
+	IsStoreArgument rocks. Move GetPopCount and GetPushCount from 
+	StackEntryAnalysis.
+
 2008-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Add GetOperand rock to simplify the analysis
