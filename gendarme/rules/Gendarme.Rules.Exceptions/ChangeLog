@@ -1,3 +1,14 @@
+2008-06-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidThrowingBasicExceptionsRule.cs: Extract common code into
+	NewExceptionRule abstract class.
+	* DoNotThrowReservedExceptionRule.cs: New. Rule to check if 
+	reserved exceptions types are created inside methods.
+	* NewExceptionRule.cs: New. Abstract base class for both 
+	AvoidThrowingBasicExceptionsRule and DoNotThrowReservedExceptionRule
+	* Gendarme.Rules.Exceptions.mdp: Update MD project file.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-05-26  Daniel Abramov <ex@vingrad.ru> 
 
 	* AvoidThrowingBasicExceptions.cs: New. Rule to ensure

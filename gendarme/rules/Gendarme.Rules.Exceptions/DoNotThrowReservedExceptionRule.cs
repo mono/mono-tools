@@ -1,11 +1,9 @@
 // 
-// Gendarme.Rules.Exceptions.AvoidThrowingBasicExceptionsRule
+// Gendarme.Rules.Exceptions.DoNotThrowReservedExceptionRule
 //
 // Authors:
-//	Daniel Abramov <ex@vingrad.ru>
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Daniel Abramov
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,19 +28,19 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
 
-	[Problem ("This method creates (and probably throws) an exception of Exception, ApplicationException or SystemException type.")]
-	[Solution ("Try to use more specific exception types. If none of existing types meet your needs, create custom exception class that inherits from System.Exception or any appropriate descendant of it.")]
-	public class AvoidThrowingBasicExceptionsRule : NewExceptionsRule {
+	[Problem ("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException or OutOfMemoryException.")]
+	[Solution ("Select and create a better suited exception type, one that is not reserved by the runtime.")]
+	public class DoNotThrowReservedExceptionRule : NewExceptionsRule {
 
-		static string [] BasicExceptions = { "System.Exception", "System.ApplicationException", "System.SystemException" };
+		static string [] ReservedExceptions = { "System.ExecutionEngineException", "System.IndexOutOfRangeException", "System.NullReferenceException", "System.OutOfMemoryException" };
 
 		protected override string [] GetExceptionTypes ()
 		{
-			return BasicExceptions;
+			return ReservedExceptions;
 		}
 
 		protected override Severity Severity {
-			get { return Severity.Medium; }
+			get { return Severity.High; }
 		}
 	}
 }
