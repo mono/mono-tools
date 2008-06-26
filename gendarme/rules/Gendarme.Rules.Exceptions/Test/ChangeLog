@@ -1,3 +1,9 @@
+2008-06-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotThrowReservedExceptionTest.cs: New. Unit tests for
+	DoNotThrowReservedExceptionRule.
+	* Test.Rules.Exceptions.mdp: Update MD project file.
+
 2008-05-26  Daniel Abramov  <ex@vingrad.ru>
 
 	* AvoidThrowingBasicExceptionsTest.cs: New. Unit tests for 
