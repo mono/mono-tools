@@ -1,0 +1,91 @@
+//
+// Gendarme.Rules.Correctness.ReviewUseOfInt64BitsToDoubleRule
+//
+// Authors:
+//	Sebastien Pouliot <sebastien@ximian.com>
+//
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using System;
+
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+
+using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
+
+namespace Gendarme.Rules.Correctness {
+
+	// rule idea credits to FindBug - http://findbugs.sourceforge.net/
+	// DMI: Double.longBitsToDouble invoked on an int (DMI_LONG_BITS_TO_DOUBLE_INVOKED_ON_INT)
+
+	[Problem ("This method calls System.BitConverter.Int64BitsToDouble(Int64) in a way that suggest it tries to convert an integer value, not the bits, into a double.")]
+	[Solution ("Verify the code logic. This could be a bad, non-working, convertion from an integer type into a double.")]
+	public class ReviewUseOfInt64BitsToDoubleRule : Rule, IMethodRule {
+
+		private const string BitConverter = "System.BitConverter";
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not reference System.BitConverter then no
+			// method inside it will be calling any BitConverter.Int64BitsToDouble method
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (BitConverter);
+			};
+		}
+
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			foreach (Instruction ins in method.Body.Instructions) {
+				if (ins.OpCode.FlowControl != FlowControl.Call)
+					continue;
+
+				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr.Name != "Int64BitsToDouble")
+					continue;
+				if (mr.DeclaringType.FullName != BitConverter)
+					continue;
+
+				// if the previous call convert a value into a long (int64)
+				// then it's likely that the API is being misused
+				switch (ins.Previous.OpCode.Code) {
+				case Code.Conv_I8:
+				case Code.Conv_U8:
+				case Code.Conv_Ovf_I8:
+				case Code.Conv_Ovf_I8_Un:
+				case Code.Conv_Ovf_U8:
+				case Code.Conv_Ovf_U8_Un:
+					Runner.Report (method, ins, Severity.High, Confidence.High);
+					break;
+				}
+			}
+			return Runner.CurrentRuleResult;
+		}
+	}
+}

@@ -43,6 +43,7 @@
     <File name="ReviewUseOfModuloOneOnIntegersRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ReviewUselessControlFlowRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotRoundIntegersRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewUseOfInt64BitsToDoubleRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

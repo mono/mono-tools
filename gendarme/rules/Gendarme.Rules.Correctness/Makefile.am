@@ -16,6 +16,7 @@ correctness_rules_sources = BadRecursiveInvocationRule.cs MethodCanBeMadeStaticR
 	DoNotRoundIntegersRule.cs \
 	ReviewDoubleAssignmentRule.cs \
 	ReviewUselessControlFlowRule.cs \
+	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs
 
 correctness_rules_build_sources = $(addprefix $(srcdir)/, $(correctness_rules_sources))
@@ -31,6 +32,7 @@ correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTe
 	DoNotRoundIntegersTest.cs \
 	ReviewDoubleAssignmentTest.cs \
 	ReviewUselessControlFlowTest.cs \
+	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs
 
 correctness_test_build_sources = $(addprefix $(srcdir)/Test/, $(correctness_test_sources))
