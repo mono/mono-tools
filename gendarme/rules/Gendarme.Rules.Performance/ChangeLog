@@ -1,3 +1,8 @@
+2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeStructureRule.cs: Add missing [Problem] and [Solution]
+	attributes to the rule.
+
 2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidTypeGetTypeForConstantStringsRule.cs: New. Rule to check

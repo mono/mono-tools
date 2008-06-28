@@ -36,6 +36,8 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	[Problem ("This structure is larger than the recommanded size (16 bytes) and this can degrade performance.")]
+	[Solution ("Try to reduce the struct size or change it into a class.")]
 	public class AvoidLargeStructureRule : Rule, ITypeRule {
 
 		private const int MaximumRecommandedSize = 16;
