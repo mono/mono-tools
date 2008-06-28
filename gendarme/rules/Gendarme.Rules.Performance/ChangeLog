@@ -1,3 +1,11 @@
+2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeGetTypeForConstantStringsRule.cs: New. Rule to check
+	if calls to Type.GetType(string), which requires reflection, could 
+	be changed into, faster, typeof(x).
+	* Gendarme.Rules.Performance.mdp: Update MD project file.
+	* Makefile.am: add rule and tests to the build.
+
 2008-06-11  Jb Evain  <jbevain@novell.com>
 
 	* AvoidUninstantiatedInternalClassesRule.cs: when facing

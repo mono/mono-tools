@@ -31,7 +31,8 @@ performance_rules_sources = \
 	AvoidLargeStructureRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
 	AvoidUnneededUnboxingRule.cs \
-	ConsiderCustomAccessorsForNonVisibleEventsRule.cs
+	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
+	AvoidTypeGetTypeForConstantStringsRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -61,7 +62,8 @@ performance_test_sources = \
 	AvoidLargeStructureTest.cs \
 	RemoveUnusedLocalVariablesTest.cs \
 	AvoidUnneededUnboxingTest.cs \
-	ConsiderCustomAccessorsForNonVisibleEventsTest.cs
+	ConsiderCustomAccessorsForNonVisibleEventsTest.cs \
+	AvoidTypeGetTypeForConstantStringsTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
