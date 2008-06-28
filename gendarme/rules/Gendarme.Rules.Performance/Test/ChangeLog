@@ -1,3 +1,9 @@
+2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeGetTypeForConstantStringsTest.cs: New. Unit tests for
+	AvoidTypeGetTypeForConstantStringsRule.
+	* Test.Rules.Performance.mdp: Update MD project file.
+
 2008-06-11  Jb Evain  <jbevain@novell.com>
 
 	* AvoidUninstantiatedInternalClassesTest.cs: add tests for
