@@ -122,7 +122,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static long SizeOf (TypeReference type)
 		{
-			if (!type.IsValueType)
+			if (!type.IsValueType || type.IsArray ())
 				return ReferenceSize;
 
 			// list based on Type.IsPrimitive

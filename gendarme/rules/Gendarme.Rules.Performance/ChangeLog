@@ -1,3 +1,7 @@
+2008-06-28  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLargeStructureRule.cs: Handle arrays correctly.
+
 2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeStructureRule.cs: Add missing [Problem] and [Solution]
