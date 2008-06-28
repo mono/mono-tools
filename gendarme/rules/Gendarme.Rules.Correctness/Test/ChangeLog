@@ -1,3 +1,9 @@
+2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewUseOfInt64BitsToDoubleTest.cs: New. Unit tests for
+	ReviewUseOfInt64BitsToDoubleRule.
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotRoundIntegersTest.cs: New. Unit tests for 
