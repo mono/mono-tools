@@ -28,6 +28,8 @@
 
 using System;
 
+using Mono.Cecil;
+using Mono.Cecil.Metadata;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
@@ -275,5 +277,35 @@ namespace Test.Rules.Performance {
 			Outer x;
 		}
 		*/
+
+		// from Mono.Cecil
+
+		struct Elem {
+
+			public bool Simple;
+			public bool String;
+			public bool Type;
+			public bool BoxedValueType;
+
+			public ElementType FieldOrPropType;
+			public object Value;
+
+			public TypeReference ElemType;
+		}
+
+		struct FixedArg {
+			bool SzArray;
+			uint NumElem;
+			Elem [] Elems;
+		}
+
+		[Test]
+		public unsafe void Array ()
+		{
+			AssertRuleSuccess<FixedArg> ();
+			// note: sizeof (FixedArg) does not work (well compile) because of the array
+			//Assert.AreEqual (sizeof (FixedArg), GetSize (typeof (FixedArg)), "Size");
+			Assert.AreEqual (12, GetSize (typeof (FixedArg)), "Size");
+		}
 	}
 }

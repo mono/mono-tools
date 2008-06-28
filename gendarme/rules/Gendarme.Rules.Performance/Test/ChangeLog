@@ -1,3 +1,7 @@
+2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeStructureTest.cs: Add test case for arrays.
+
 2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidTypeGetTypeForConstantStringsTest.cs: New. Unit tests for
