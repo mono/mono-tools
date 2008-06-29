@@ -118,19 +118,19 @@ namespace Gendarme.Rules.Smells {
 			// rule applies!
 			// success if the instruction count is below the defined threshold
 			int max = MaxInstructions;
-			if (method.IsConstructor && method.IsStatic) {
-				max += CountStaticFields (method.DeclaringType as TypeDefinition) * AssignationRatio;
-			}
-			else if (method.IsConstructor && method.IsStatic) {
-				max += CountInstanceFields (method.DeclaringType as TypeDefinition) * AssignationRatio;
+			if (method.IsConstructor) {
+				TypeDefinition td = (method.DeclaringType as TypeDefinition);
+				if (method.IsStatic) {
+					max += CountStaticFields (td) * AssignationRatio;
+				} else {
+					max += CountInstanceFields (td) * AssignationRatio;
+				}
 			}
 
 			if (method.Body.Instructions.Count <= max)
 				return RuleResult.Success;
 
-			string s = (Runner.VerbosityLevel < 2) ? String.Empty : 
-				String.Format ("Method IL Size: {0}. Maximum Size: {1}", method.Body.Instructions.Count, max);
-
+			string s = String.Format ("Method IL Size: {0}. Maximum Size: {1}", method.Body.Instructions.Count, max);
 			Runner.Report (method, Severity.High, Confidence.Normal, s);	
 			return RuleResult.Failure;
 		}

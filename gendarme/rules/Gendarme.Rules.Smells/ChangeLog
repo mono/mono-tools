@@ -1,3 +1,9 @@
+2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsRule.cs: Fix typo for IsStatic check. Report
+	the actual versus maximum IL instruction found (since this is 
+	useful to the end user that wants to fix his code).
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSpeculativeGeneralityRule.cs: Avoid calling Utilities.
