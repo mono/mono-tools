@@ -1,3 +1,8 @@
+2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BasicIgnoreList.cs: Avoid exception if an ignored rule is not
+	part of the rule set being executed.
+
 2008-06-02  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ApplicabilityScope.cs: New, the enum for codify the different

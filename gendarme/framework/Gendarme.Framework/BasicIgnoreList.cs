@@ -108,17 +108,23 @@ namespace Gendarme.Framework {
 
 		private void Add (string rule, AssemblyDefinition assembly)
 		{
-			GetMetadata (rule, true).Assemblies.Add (assembly);
+			Metadata m = GetMetadata (rule, true);
+			if (m != null)
+				m.Assemblies.Add (assembly);
 		}
 
 		private void Add (string rule, TypeDefinition type)
 		{
-			GetMetadata (rule, true).Types.Add (type);
+			Metadata m = GetMetadata (rule, true);
+			if (m != null)
+				m.Types.Add (type);
 		}
 
 		private void Add (string rule, MethodDefinition method)
 		{
-			GetMetadata (rule, true).Methods.Add (method);
+			Metadata m = GetMetadata (rule, true);
+			if (m != null)
+				m.Methods.Add (method);
 		}
 
 		protected bool AddAssembly (string rule, string assembly)
