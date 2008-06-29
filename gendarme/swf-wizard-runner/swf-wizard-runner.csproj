@@ -63,6 +63,7 @@
       <Link>XmlResultWriter.cs</Link>
     </Compile>
     <Compile Include="GuiRunner.cs" />
+    <Compile Include="Page.cs" />
     <Compile Include="Wizard.cs">
       <SubType>Form</SubType>
     </Compile>
