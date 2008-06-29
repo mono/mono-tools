@@ -30,6 +30,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Exceptions.Impl;
 
 namespace Gendarme.Rules.Exceptions {
@@ -77,36 +78,6 @@ namespace Gendarme.Rules.Exceptions {
 			return Runner.CurrentRuleResult;
 		}
 
-		private static bool IsStoreLoc (Instruction ins)
-		{
-			switch (ins.OpCode.Code) {
-			case Code.Stloc:
-			case Code.Stloc_0:
-			case Code.Stloc_1:
-			case Code.Stloc_2:
-			case Code.Stloc_3:
-			case Code.Stloc_S:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		private static bool IsLoadLoc (Instruction ins)
-		{
-			switch (ins.OpCode.Code) {
-			case Code.Ldloc:
-			case Code.Ldloc_0:
-			case Code.Ldloc_1:
-			case Code.Ldloc_2:
-			case Code.Ldloc_3:
-			case Code.Ldloc_S:
-				return true;
-			default:
-				return false;
-			}
-		}
-
 		private void ProcessCatchPath (ExecutionPathCollection catchPath, MethodDefinition method)
 		{
 			// Track original exception (top of stack at start) through to the final
@@ -130,8 +101,8 @@ namespace Gendarme.Rules.Exceptions {
 						// Rethrown exception - no problem!
 						return;
 
-					if (IsStoreLoc (cur)) {
-						int varIndex = GetVarIndex (cur);
+					if (cur.IsStoreLocal ()) {
+						int varIndex = cur.GetVariable (method).Index;
 						if (exStackPos == 0) {
 							// Storing argument on top of stack in local variable reference
 							localVarPos = varIndex;
@@ -139,8 +110,8 @@ namespace Gendarme.Rules.Exceptions {
 						} else if (localVarPos != -1 && varIndex == localVarPos)
 							// Writing over orignal exception...
 							localVarPos = -1;
-					} else if (localVarPos != -1 && IsLoadLoc (cur)) {
-						int varIndex = GetVarIndex (cur);
+					} else if (localVarPos != -1 && cur.IsLoadLocal ()) {
+						int varIndex = cur.GetVariable (method).Index;
 						if (varIndex == localVarPos)
 							// Loading exception from local var back onto stack
 							exStackPos = 0;
@@ -155,108 +126,16 @@ namespace Gendarme.Rules.Exceptions {
 					} else if (exStackPos != -1) {
 						// If we're still on the stack, track our position after
 						// this instruction
-						int numPops = GetNumPops (cur);
+						int numPops = cur.GetPopCount (method);
 						if (exStackPos < numPops) {
 							// Popped ex off of stack
 							exStackPos = -1;
 						} else {
-							int numPushes = GetNumPushes (cur);
+							int numPushes = cur.GetPushCount ();
 							exStackPos += numPushes - numPops;
 						}
 					}
 				}
-			}
-		}
-
-		private static int GetNumPops (Instruction instr)
-		{
-			switch (instr.OpCode.StackBehaviourPop) {
-			case StackBehaviour.Pop0:
-				return 0;
-			case StackBehaviour.Pop1:
-			case StackBehaviour.Popi:
-			case StackBehaviour.Popref:
-				return 1;
-			case StackBehaviour.Pop1_pop1:
-			case StackBehaviour.Popi_pop1:
-			case StackBehaviour.Popi_popi:
-			case StackBehaviour.Popi_popi8:
-			case StackBehaviour.Popi_popr4:
-			case StackBehaviour.Popi_popr8:
-			case StackBehaviour.Popref_pop1:
-			case StackBehaviour.Popref_popi:
-				return 2;
-			case StackBehaviour.Popi_popi_popi:
-			case StackBehaviour.Popref_popi_popi:
-			case StackBehaviour.Popref_popi_popi8:
-			case StackBehaviour.Popref_popi_popr4:
-			case StackBehaviour.Popref_popi_popr8:
-			case StackBehaviour.Popref_popi_popref:
-				return 3;
-			case StackBehaviour.Varpop:
-				if (instr.Operand is MethodReference) {
-					// We have to determine from the call how many arguments will
-					// be popped from the stack
-					MethodReference callMethod = (MethodReference) instr.Operand;
-					return callMethod.Parameters.Count;
-				} else {
-					throw new InvalidOperationException ("Unexpected instruction: '" +
-					instr.OpCode.ToString () + "' at offset 0x" +
-					instr.Offset.ToString ("X"));
-				}
-			}
-
-			return 0;
-		}
-
-		private int GetNumPushes (Instruction instr)
-		{
-			switch (instr.OpCode.StackBehaviourPush) {
-			case StackBehaviour.Push0:
-				return 0;
-			case StackBehaviour.Push1:
-			case StackBehaviour.Pushi:
-			case StackBehaviour.Pushi8:
-			case StackBehaviour.Pushr4:
-			case StackBehaviour.Pushr8:
-			case StackBehaviour.Pushref:
-				return 1;
-			case StackBehaviour.Push1_push1:
-				return 2;
-			case StackBehaviour.Varpush:
-				// We have to determine from the call how many arguments will
-				// be pushed onto the stack
-				MethodReference callMethod = (MethodReference) instr.Operand;
-				return (callMethod.ReturnType.ReturnType == void_reference) ?
-					0 : 1;
-			}
-
-			return 0;
-		}
-
-		private static int GetVarIndex (Instruction ins)
-		{
-			switch (ins.OpCode.Code) {
-			case Code.Ldloc_0:
-			case Code.Stloc_0:
-				return 0;
-			case Code.Ldloc_1:
-			case Code.Stloc_1:
-				return 1;
-			case Code.Ldloc_2:
-			case Code.Stloc_2:
-				return 2;
-			case Code.Ldloc_3:
-			case Code.Stloc_3:
-				return 3;
-			case Code.Ldloc_S:
-			case Code.Ldloc:
-			case Code.Stloc_S:
-			case Code.Stloc:
-				VariableDefinition varDef = (ins.Operand as VariableDefinition);
-				return varDef.Index;
-			default:
-				return -1;
 			}
 		}
 	}

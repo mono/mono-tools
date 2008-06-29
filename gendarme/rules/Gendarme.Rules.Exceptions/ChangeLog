@@ -1,3 +1,7 @@
+2008-06-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotDestroyStackTraceRule.cs: Simplify using InstructionRocks.
+
 2008-06-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidThrowingBasicExceptionsRule.cs: Extract common code into
