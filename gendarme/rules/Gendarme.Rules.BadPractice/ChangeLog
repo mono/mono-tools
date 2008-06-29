@@ -1,3 +1,11 @@
+2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReplaceIncompleteOddnessCheckRule.cs: New. Rule that check
+	for a common, yet incomplete, oddness check (that fails when 
+	using negative numbers).
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckNewExceptionWithoutThrowingRule.cs: Rename 
