@@ -92,7 +92,7 @@ namespace Gendarme.Framework.Rocks {
 				if (!method.IsStatic) {
 					index--;
 					if (index < 0)
-						return null;
+						return method.DeclaringType; // this
 				}
 				return method.Parameters [index];
 			case Code.Ldloc_0:

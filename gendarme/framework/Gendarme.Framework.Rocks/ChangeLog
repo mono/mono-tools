@@ -1,3 +1,9 @@
+2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Change GetOperand to return a 
+	TypeReference when "this" (ldarg_0 in an instance method) is 
+	found.
+
 2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Add GetParameter, IsLoadArgument and 
