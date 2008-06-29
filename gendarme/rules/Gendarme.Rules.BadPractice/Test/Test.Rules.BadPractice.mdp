@@ -23,6 +23,8 @@
     <File name="CheckNewExceptionWithoutThrowingTest.cs" subtype="Code" buildaction="Compile" />
     <File name="CheckNewThreadWithoutStartTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DisableDebuggingCodeTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReplaceIncompleteOddnessCheckTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ObsoleteMessagesShouldNotBeEmptyTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

@@ -1,3 +1,9 @@
+2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReplaceIncompleteOddnessCheckTest.cs: New. Unit tests for 
+	ReplaceIncompleteOddnessCheckRule
+	* Test.Rules.BadPractice.mdp: Update MD project file.
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ObsoleteMessagesShouldNotBeEmptyTest.cs: New. Unit tests for
