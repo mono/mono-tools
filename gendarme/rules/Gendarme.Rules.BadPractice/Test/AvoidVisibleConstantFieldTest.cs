@@ -29,6 +29,7 @@ using System;
 using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.BadPractice {
@@ -37,9 +38,9 @@ namespace Test.Rules.BadPractice {
 	public class AvoidVisibleConstantFieldTest : TypeRuleTestFixture<AvoidVisibleConstantFieldRule> {
 
 		public class PublicBad {
-			public const double ZeroDouble = 0.0;		// 1
-			protected const int ZeroInteger = 0;		// 2
-			protected ulong MaxUInt64 = UInt64.MaxValue;	// 3
+			public const double ZeroDouble = 0.0;			// 1
+			protected const int ZeroInteger = 0;			// 2
+			protected const ulong MaxUInt64 = UInt64.MaxValue;	// 3
 
 			// ok, since it can only be null
 			public const object Null = null;
@@ -80,6 +81,7 @@ namespace Test.Rules.BadPractice {
 		public class ProtectedGood {
 			public static readonly string Empty = String.Empty;
 			public const object Null = null;
+			protected int count = 1;
 		}
 
 		public class ProtectedEmpty {
@@ -107,6 +109,12 @@ namespace Test.Rules.BadPractice {
 		{
 			AssertRuleDoesNotApply<Private> ();
 			AssertRuleDoesNotApply<Internal> ();
+		}
+
+		[Test]
+		public void Others ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
 		}
 	}
 }

@@ -39,12 +39,12 @@ namespace Gendarme.Rules.BadPractice {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// if the type is not visible or has no fields then the rule does not apply
-			if ((type.Fields.Count == 0) || !type.IsVisible ())
+			if ((type.Fields.Count == 0) || type.IsEnum || !type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
 				// look for 'const' fields
-				if ((field.Attributes & FieldAttributes.InitOnly) == FieldAttributes.InitOnly)
+				if (!field.IsLiteral)
 					continue;
 
 				// that are visible outside the current assembly
