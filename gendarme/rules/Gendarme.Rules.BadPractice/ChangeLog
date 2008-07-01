@@ -1,3 +1,13 @@
+2008-06-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidVisibleConstantFieldRule.cs: New. Rule that check
+	for a constant fields visible to other assemblies. Using them
+	makes the value, not a reference to the field, part of the 
+	assemblies that reference the field. This requires all those
+	assemblies to be recompiled if the value change.
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-06-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReplaceIncompleteOddnessCheckRule.cs: New. Rule that check

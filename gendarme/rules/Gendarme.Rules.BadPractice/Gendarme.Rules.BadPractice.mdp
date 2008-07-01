@@ -25,6 +25,7 @@
     <File name="DisableDebuggingCodeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ReplaceIncompleteOddnessCheckRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ObsoleteMessagesShouldNotBeEmptyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidVisibleConstantFieldRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
