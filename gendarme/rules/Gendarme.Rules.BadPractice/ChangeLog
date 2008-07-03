@@ -1,3 +1,10 @@
+2008-07-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCallingProblematicMethodsRule.cs: Use IComparer instead
+	of IEqualityComparer and avoid the "constant" GetHashCode hack.
+	Use a custom delagate in order to remove the struct allocations 
+	and make the source code smaller (and easier to test).
+
 2008-07-03  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidCallingProblematicMethodsRule.cs: New. Rule that check for

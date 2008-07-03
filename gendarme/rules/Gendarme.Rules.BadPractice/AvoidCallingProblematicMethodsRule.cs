@@ -37,105 +37,44 @@ namespace Gendarme.Rules.BadPractice {
 	[Problem ("There are potentially dangerous calls into your code.")]
 	[Solution ("You should remove or replace the call to the dangerous method.")]
 	public class AvoidCallingProblematicMethodsRule : Rule, IMethodRule {
-		Dictionary<string, ProblematicMethodInfo> problematicMethods = new Dictionary<string, ProblematicMethodInfo> (new StartWithEqualityComparer ()); 
-		
-		sealed class StartWithEqualityComparer : IEqualityComparer <string> {
 
-			public bool Equals (string key, string source)
-			{
-				return source.StartsWith (key);
-			}
+		sealed class StartWithComparer : IComparer <string> {
 
-			public int GetHashCode (string obj)
+			public int Compare (string x, string y)
 			{
-				if (obj == null)
+				if (x.StartsWith (y))
 					return 0;
-				//If two objects are equals, they return the
-				//same hash code
-				//If two objects are different, they don't have
-				//to return different hash code -> and that will
-				//be determined by the Equals call
-				return GetHashCode ();
+				return String.CompareOrdinal (x, y);
 			}
 		}
 
-		private struct ProblematicMethodInfo {
-			Severity severity;
-			Predicate<Instruction> predicate;
+		delegate Severity? GetSeverity (Instruction ins);
 
-			public ProblematicMethodInfo (Severity severity, Predicate<Instruction> predicate)
-			{
-				this.severity = severity;
-				this.predicate = predicate;
-			}
-			
-			public Severity Severity {
-				get {
-					return severity;
-				}
-			}
-
-			public Predicate<Instruction> Predicate {
-				get {
-					return predicate;
-				}
-			}
-
-			public override bool Equals (object obj)
-			{
-				if (obj == null)
-					return false;
-				ProblematicMethodInfo target = (ProblematicMethodInfo) obj;
-				return target.Severity == Severity && target.Predicate == Predicate;
-			}
-
-			public bool Equals (ProblematicMethodInfo target)
-			{
-				return target.Severity == Severity && target.Predicate == Predicate;
-			}
-
-			public override int GetHashCode ()
-			{
-				return Severity.GetHashCode () ^ Predicate.GetHashCode ();
-			}
-
-			public static bool operator == (ProblematicMethodInfo left, ProblematicMethodInfo right)
-			{
-				return left.Equals (right);
-			}
-
-			public static bool operator != (ProblematicMethodInfo left, ProblematicMethodInfo right)
-			{
-				return !left.Equals (right);
-			}
-		}
+		SortedDictionary<string, GetSeverity> problematicMethods = new SortedDictionary<string, GetSeverity> (new StartWithComparer ()); 
 
 		public AvoidCallingProblematicMethodsRule ()
 		{
 			problematicMethods.Add ("System.Void System.GC::Collect(", 
-				new ProblematicMethodInfo (Severity.Critical, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.Critical; });
 			problematicMethods.Add ("System.Void System.Threading.Thread::Suspend()", 
-				new ProblematicMethodInfo (Severity.Medium, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.Medium; });
 			problematicMethods.Add ("System.Void System.Threading.Thread::Resume()", 
-				new ProblematicMethodInfo (Severity.Medium, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.Medium; });
 			problematicMethods.Add ("System.IntPtr System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()", 
-				new ProblematicMethodInfo (Severity.Critical, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.Critical; });
 			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFrom(", 
-				new ProblematicMethodInfo (Severity.High, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.High; });
 			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFile(", 
-				new ProblematicMethodInfo (Severity.High, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.High; });
 			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadWithPartialName(", 
-				new ProblematicMethodInfo (Severity.High, 
-					delegate (Instruction call) {return true;}));
+				delegate (Instruction call) { return Severity.High; });
 			problematicMethods.Add ("System.Object System.Type::InvokeMember(", 
-				new ProblematicMethodInfo (Severity.Critical, 
-					delegate (Instruction call) {return IsAccessingWithNonPublicModifiers (call);}));
+				delegate (Instruction call) {
+					if (IsAccessingWithNonPublicModifiers (call))
+						return Severity.Critical;
+					else
+						return null;
+				});
 		}
 
 		private static bool OperandIsNonPublic (BindingFlags operand)
@@ -161,10 +100,9 @@ namespace Gendarme.Rules.BadPractice {
 
 		private Severity? IsProblematicCall (Instruction call, string operand)
 		{
-			ProblematicMethodInfo info;
-			if (problematicMethods.TryGetValue (operand, out info)) {
-				if (info.Predicate (call))
-					return info.Severity;
+			GetSeverity sev;
+			if (problematicMethods.TryGetValue (operand, out sev)) {
+				return sev.Invoke (call);
 			}
 			
 			return null;
