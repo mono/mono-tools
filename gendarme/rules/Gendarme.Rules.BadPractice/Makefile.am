@@ -15,7 +15,8 @@ badpractice_rules_sources = CloneMethodShouldNotReturnNullRule.cs EqualShouldHan
 	CheckNewExceptionWithoutThrowingRule.cs CheckNewThreadWithoutStartRule.cs DisableDebuggingCodeRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
-	AvoidVisibleConstantFieldRule.cs
+	AvoidVisibleConstantFieldRule.cs \
+	AvoidCallingProblematicMethodsRule.cs
 
 badpractice_rules_build_sources = $(addprefix $(srcdir)/, $(badpractice_rules_sources))
 badpractice_rules_build_sources += $(badpractice_rules_generated_sources)
@@ -29,7 +30,8 @@ badpractice_test_sources = CloneMethodShouldNotReturnNullTest.cs EqualShouldHand
 	CheckNewExceptionWithoutThrowingTest.cs CheckNewThreadWithoutStartTest.cs DisableDebuggingCodeTest.cs \
 	ObsoleteMessagesShouldNotBeEmptyTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
-	AvoidVisibleConstantFieldTest.cs
+	AvoidVisibleConstantFieldTest.cs \
+	AvoidCallingProblematicMethodsTest.cs
 
 badpractice_test_build_sources = $(addprefix $(srcdir)/Test/, $(badpractice_test_sources))
 

@@ -1,3 +1,10 @@
+2008-07-03  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCallingProblematicMethodsRule.cs: New. Rule that check for
+	potentially damaging / dangerous methods calls.
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-06-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidVisibleConstantFieldRule.cs: New. Rule that check
