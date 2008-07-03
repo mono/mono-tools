@@ -26,6 +26,7 @@
     <File name="ReplaceIncompleteOddnessCheckTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ObsoleteMessagesShouldNotBeEmptyTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleConstantFieldTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidCallingProblematicMethodsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
