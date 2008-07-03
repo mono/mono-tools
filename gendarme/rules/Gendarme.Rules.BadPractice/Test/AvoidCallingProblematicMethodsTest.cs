@@ -31,7 +31,6 @@ using System.Globalization;
 using System.Configuration.Assemblies;
 using System.Security.Policy;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
@@ -120,13 +119,25 @@ namespace Test.Rules.BadPractice {
 			this.GetType ().InvokeMember ("Foo", BindingFlags.Public | BindingFlags.IgnoreCase, null, null, Type.EmptyTypes);
 			this.GetType ().InvokeMember ("Foo", BindingFlags.Public | BindingFlags.Instance, null, null, Type.EmptyTypes, CultureInfo.CurrentCulture);
 			this.GetType ().InvokeMember ("Foo", BindingFlags.Public | BindingFlags.DeclaredOnly, null, null, Type.EmptyTypes, null, CultureInfo.CurrentCulture, null);
+		}
 
+		public void MethodWithInvokeMemberWithUnkownFlagsCall (BindingFlags flags)
+		{
+			this.GetType ().InvokeMember ("Foo", flags, null, null, Type.EmptyTypes);
+		}
+
+		public void MethodWithInvokeMemberWithLargeValueCall ()
+		{
+			BindingFlags flags = (BindingFlags) Int32.MinValue;
+			this.GetType ().InvokeMember ("Foo", flags, null, null, Type.EmptyTypes, null, CultureInfo.CurrentCulture, null);
 		}
 
 		[Test]
 		public void MethodWithInvokeMemberWithoutPrivateFlagsCallTest ()
 		{
 			AssertRuleSuccess<AvoidCallingProblematicMethodsTest> ("MethodWithInvokeMemberWithoutPrivateFlagsCall");
+			AssertRuleSuccess<AvoidCallingProblematicMethodsTest> ("MethodWithInvokeMemberWithUnkownFlagsCall");
+			AssertRuleSuccess<AvoidCallingProblematicMethodsTest> ("MethodWithInvokeMemberWithLargeValueCall");
 		}
 		
 		private class MySafeHandle : SafeHandleZeroOrMinusOneIsInvalid {
