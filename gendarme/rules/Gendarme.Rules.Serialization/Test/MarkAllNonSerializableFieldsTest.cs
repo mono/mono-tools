@@ -91,6 +91,11 @@ namespace Test.Rules.Serialization {
 			IList List = new ArrayList ();
 		}
 
+		[Serializable]
+		class SerializableWithStaticFieldsClass {
+			static NonSerializableClass nonSerializable;
+		}
+
 		[Test]
 		public void SkipOnNonSerializableClassesTest ()
 		{
@@ -143,7 +148,7 @@ namespace Test.Rules.Serialization {
 		}
 
 		[Test]
-		public void SuccessOnSerializableWithInterfaceClassTest () 
+		public void FailOnSerializableWithInterfaceClassTest () 
 		{
 			//The SerializableAttribute can't be applied to an
 			//interface, and we can only check the polimorphism in
@@ -157,6 +162,12 @@ namespace Test.Rules.Serialization {
 			//Perhaps a better analysis could try to look for the
 			//concrete class, but it couldn't have a 100% of success
 			//because the polimorphism is resolved at run-time.
+		}
+
+		[Test]
+		public void SuccessOnSerializableWithStaticFieldsClassTest ()
+		{
+			AssertRuleSuccess<SerializableWithStaticFieldsClass> ();
 		}
 	}
 }

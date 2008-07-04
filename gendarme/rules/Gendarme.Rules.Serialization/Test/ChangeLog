@@ -1,5 +1,10 @@
 2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* MarkAllNonSerializableFieldsTest.cs: Add test for the serialization of
+	static fields.
+
+2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* MarkAllNonSerializableFieldsTest.cs: New. Unit tests for
 	MarkAllNonSerializableFieldsRule.
 	* Test.Rules.Serialization.mdp: Update MD project file.
