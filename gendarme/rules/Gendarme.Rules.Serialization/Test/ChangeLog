@@ -1,3 +1,9 @@
+2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* MarkAllNonSerializableFieldsTest.cs: New. Unit tests for
+	MarkAllNonSerializableFieldsRule.
+	* Test.Rules.Serialization.mdp: Update MD project file.
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Serialization.mdp: Fix references.
