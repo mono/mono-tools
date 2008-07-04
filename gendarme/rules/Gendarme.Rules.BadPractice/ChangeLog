@@ -1,3 +1,9 @@
+2008-07-04  Jb Evain  <jbevain@novell.com>
+
+	* AvoidCallingProblematicMethodsRule.cs: refactor to avoid
+	creating a new delegate type by using Func<,>, and use the
+	lambda syntax to shorten anonymous methods declarations.
+
 2008-07-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCallingProblematicMethodsRule.cs: Use IComparer instead

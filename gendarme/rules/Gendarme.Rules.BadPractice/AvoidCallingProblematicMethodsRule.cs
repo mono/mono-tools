@@ -48,33 +48,18 @@ namespace Gendarme.Rules.BadPractice {
 			}
 		}
 
-		delegate Severity? GetSeverity (Instruction ins);
-
-		SortedDictionary<string, GetSeverity> problematicMethods = new SortedDictionary<string, GetSeverity> (new StartWithComparer ()); 
+		SortedDictionary<string, Func<Instruction, Severity?>> problematicMethods = new SortedDictionary<string, Func<Instruction, Severity?>> (new StartWithComparer ()); 
 
 		public AvoidCallingProblematicMethodsRule ()
 		{
-			problematicMethods.Add ("System.Void System.GC::Collect(", 
-				delegate (Instruction call) { return Severity.Critical; });
-			problematicMethods.Add ("System.Void System.Threading.Thread::Suspend()", 
-				delegate (Instruction call) { return Severity.Medium; });
-			problematicMethods.Add ("System.Void System.Threading.Thread::Resume()", 
-				delegate (Instruction call) { return Severity.Medium; });
-			problematicMethods.Add ("System.IntPtr System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()", 
-				delegate (Instruction call) { return Severity.Critical; });
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFrom(", 
-				delegate (Instruction call) { return Severity.High; });
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFile(", 
-				delegate (Instruction call) { return Severity.High; });
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadWithPartialName(", 
-				delegate (Instruction call) { return Severity.High; });
-			problematicMethods.Add ("System.Object System.Type::InvokeMember(", 
-				delegate (Instruction call) {
-					if (IsAccessingWithNonPublicModifiers (call))
-						return Severity.Critical;
-					else
-						return null;
-				});
+			problematicMethods.Add ("System.Void System.GC::Collect(", call => Severity.Critical);
+			problematicMethods.Add ("System.Void System.Threading.Thread::Suspend()", call => Severity.Medium);
+			problematicMethods.Add ("System.Void System.Threading.Thread::Resume()", call => Severity.Medium);
+			problematicMethods.Add ("System.IntPtr System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()", call => Severity.Critical);
+			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFrom(", call => Severity.High);
+			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFile(", call => Severity.High);
+			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadWithPartialName(", call => Severity.High);
+			problematicMethods.Add ("System.Object System.Type::InvokeMember(", call => IsAccessingWithNonPublicModifiers (call) ? Severity.Critical : (Severity?) null);
 		}
 
 		private static bool OperandIsNonPublic (BindingFlags operand)
@@ -100,11 +85,10 @@ namespace Gendarme.Rules.BadPractice {
 
 		private Severity? IsProblematicCall (Instruction call, string operand)
 		{
-			GetSeverity sev;
-			if (problematicMethods.TryGetValue (operand, out sev)) {
-				return sev.Invoke (call);
-			}
-			
+			Func<Instruction, Severity?> sev;
+			if (problematicMethods.TryGetValue (operand, out sev))
+				return sev (call);
+
 			return null;
 		}
 		
@@ -114,12 +98,13 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.FlowControl == FlowControl.Call) {
-					string operand = instruction.Operand.ToString ();
-					Severity? severity = IsProblematicCall (instruction, operand);
-					if (severity.HasValue) 
-						Runner.Report (method, instruction, severity.Value, Confidence.High, String.Format ("You are calling to {0}, which is a potentially problematic method", operand));
-				}
+				if (instruction.OpCode.FlowControl != FlowControl.Call)
+					continue;
+
+				string operand = instruction.Operand.ToString ();
+				Severity? severity = IsProblematicCall (instruction, operand);
+				if (severity.HasValue) 
+					Runner.Report (method, instruction, severity.Value, Confidence.High, String.Format ("You are calling to {0}, which is a potentially problematic method", operand));
 			}	
 
 			return Runner.CurrentRuleResult;
