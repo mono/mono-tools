@@ -1,3 +1,10 @@
+2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* MarkAllNonSerializableFieldsRule.cs: New. Rule that checks that all
+	fields in a serializable class are also serializable.
+	* Gendarme.Rules.Serialization.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-04-08  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* MissingSerializableAttributeOnISerializableTypeRule.cs: Replace 

@@ -11,7 +11,8 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Serialization.xml TestResult.xml
 serialization_rules_sources_in = ../../AssemblyInfo.cs.in
 serialization_rules_generated_sources = $(serialization_rules_sources_in:.in=)
 serialization_rules_sources = DeserializeOptionalFieldRule.cs MissingSerializableAttributeOnISerializableTypeRule.cs \
-	MissingSerializationConstructorRule.cs UseCorrectSignatureForSerializationMethodsRule.cs
+	MissingSerializationConstructorRule.cs UseCorrectSignatureForSerializationMethodsRule.cs \
+	MarkAllNonSerializableFieldsRule.cs
 
 serialization_rules_build_sources = $(addprefix $(srcdir)/, $(serialization_rules_sources))
 serialization_rules_build_sources += $(serialization_rules_generated_sources)
@@ -21,7 +22,8 @@ serialization_rules_build_sources += $(serialization_rules_generated_sources)
 		-out:$@ $(serialization_rules_build_sources)
 
 serialization_test_sources = DeserializeOptionalFieldTest.cs MissingSerializableAttributeOnISerializableTypeTest.cs \
-	MissingSerializationConstructorTest.cs UseCorrectSignatureForSerializationMethodsTest.cs
+	MissingSerializationConstructorTest.cs UseCorrectSignatureForSerializationMethodsTest.cs \
+	MarkAllNonSerializableFieldsTest.cs
 
 serialization_test_build_sources = $(addprefix $(srcdir)/Test/, $(serialization_test_sources))
 
