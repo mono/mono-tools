@@ -1,5 +1,9 @@
 2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* MarkAllNonSerializableFieldsRule.cs: Skip the static fields.
+
+2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* MarkAllNonSerializableFieldsRule.cs: Inline the const strings for
 	reporting warnings.
 

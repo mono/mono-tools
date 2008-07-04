@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Serialization {
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsNotSerialized) { 
+				if (!field.IsNotSerialized && !field.IsStatic) { 
 					TypeDefinition fieldType = field.FieldType.Resolve ();
 
 					if (fieldType.IsInterface) {
