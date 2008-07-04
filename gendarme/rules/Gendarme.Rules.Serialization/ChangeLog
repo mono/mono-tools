@@ -1,5 +1,10 @@
 2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
 
+	* MarkAllNonSerializableFieldsRule.cs: Inline the const strings for
+	reporting warnings.
+
+2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
+
 	* MarkAllNonSerializableFieldsRule.cs: New. Rule that checks that all
 	fields in a serializable class are also serializable.
 	* Gendarme.Rules.Serialization.mdp: Update MD project file.

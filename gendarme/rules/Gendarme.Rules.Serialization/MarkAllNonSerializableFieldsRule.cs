@@ -35,15 +35,11 @@ namespace Gendarme.Rules.Serialization {
 	[Problem ("This type is Serializable, but contains fields that aren't serializable and this can drive you to some troubles and SerializationExceptions.")]
 	[Solution ("Make sure you are marking all non serializable fields with the NonSerialized attribute, or implement your custom serialization.")]
 	public class MarkAllNonSerializableFieldsRule : Rule, ITypeRule {
-		const string ISerializable = "System.Runtime.Serialization.ISerializable";
-		const string MessageError = "The field {0} isn't serializable.";
-		const string InterfaceMessageError = "Serialization of interface {0} as field {1} unknown until runtime";
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//if isn't serializable or
 			//implements a custom serialization
-			if (!type.IsSerializable || type.Implements (ISerializable))
+			if (!type.IsSerializable || type.Implements ("System.Runtime.Serialization.ISerializable"))
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
@@ -51,11 +47,11 @@ namespace Gendarme.Rules.Serialization {
 					TypeDefinition fieldType = field.FieldType.Resolve ();
 
 					if (fieldType.IsInterface) {
-						Runner.Report (field, Severity.Critical, Confidence.Low, String.Format (InterfaceMessageError, fieldType, field.Name));
+						Runner.Report (field, Severity.Critical, Confidence.Low, String.Format ("Serialization of interface {0} as field {1} unknown until runtime", fieldType, field.Name));
 						continue;
 					}
 					if (!fieldType.IsEnum && !fieldType.IsSerializable)
-						Runner.Report (field, Severity.Critical, Confidence.High, String.Format (MessageError, field.Name));
+						Runner.Report (field, Severity.Critical, Confidence.High, String.Format ("The field {0} isn't serializable.", field.Name));
 				}
 			}
 
