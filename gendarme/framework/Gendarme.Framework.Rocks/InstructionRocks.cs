@@ -105,10 +105,18 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Stloc_2:
 			case Code.Stloc_3:
 				return method.Body.Variables [code - Code.Stloc_0];
+			case Code.Ldc_I4_M1:
+			case Code.Ldc_I4_0:
+			case Code.Ldc_I4_1:
+			case Code.Ldc_I4_2:
+			case Code.Ldc_I4_3:
+			case Code.Ldc_I4_4:
+			case Code.Ldc_I4_5:
+			case Code.Ldc_I4_6:
+			case Code.Ldc_I4_7:
+			case Code.Ldc_I4_8:
+				return (code - Code.Ldc_I4_0); 
 			default:
-				// TODO - complete converting macro
-				if ((self.Operand == null) && (self.OpCode.OpCodeType == OpCodeType.Macro))
-					throw new NotImplementedException (self.OpCode.ToString ());
 				return self.Operand;
 			}
 		}
@@ -314,6 +322,64 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Return if the Instruction is the load of an element (ldelem* family)
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <returns>True if the instruction is a load element, False otherwise</returns>
+		public static bool IsLoadElement (this Instruction self)
+		{
+			if (self == null)
+				return false;
+
+			switch (self.OpCode.Code) {
+			case Code.Ldelem_Any:
+			case Code.Ldelem_I:
+			case Code.Ldelem_I1:
+			case Code.Ldelem_I2:
+			case Code.Ldelem_I4:
+			case Code.Ldelem_I8:
+			case Code.Ldelem_R4:
+			case Code.Ldelem_R8:
+			case Code.Ldelem_Ref:
+			case Code.Ldelem_U1:
+			case Code.Ldelem_U2:
+			case Code.Ldelem_U4:
+			case Code.Ldelema:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Return if the Instruction is a load indirect (ldind* family)
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <returns>True if the instruction is a load indirect, False otherwise</returns>
+		public static bool IsLoadIndirect (this Instruction self)
+		{
+			if (self == null)
+				return false;
+
+			switch (self.OpCode.Code) {
+			case Code.Ldind_I:
+			case Code.Ldind_I1:
+			case Code.Ldind_I2:
+			case Code.Ldind_I4:
+			case Code.Ldind_I8:
+			case Code.Ldind_R4:
+			case Code.Ldind_R8:
+			case Code.Ldind_Ref:
+			case Code.Ldind_U1:
+			case Code.Ldind_U2:
+			case Code.Ldind_U4:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		/// <summary>
 		/// Return if the Instruction is a load of a local variable (ldloc* family).
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>
@@ -378,6 +444,27 @@ namespace Gendarme.Framework.Rocks {
 			default:
 				return false;
 			}
+		}
+
+		/// <summary>
+		/// Return the instruction that match the current instruction. This is computed by 
+		/// substracting push and adding pop counts until the total becomes zero.
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <param name="method">The method from which the instruction was extracted.</param>
+		/// <returns>The instruction that match the current instruction.</returns>
+		public static Instruction TraceBack (this Instruction self, MethodDefinition method)
+		{
+			int n = self.GetPopCount (method);
+			self = self.Previous;
+			while (self != null) {
+				n -= self.GetPushCount ();
+				if (n == 0)
+					return self;
+				n += self.GetPopCount (method);
+				self = self.Previous;
+			}
+			return null;
 		}
 	}
 }

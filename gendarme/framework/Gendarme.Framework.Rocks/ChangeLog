@@ -1,3 +1,8 @@
+2008-07-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Add IsLoadElement, IsLoadIndirect and
+	TraceBack rocks.
+
 2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Change GetOperand to return a 
