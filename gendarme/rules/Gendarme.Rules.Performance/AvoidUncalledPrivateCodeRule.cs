@@ -113,12 +113,14 @@ namespace Gendarme.Rules.Performance {
 			if (method.Overrides.Count > 0)
 				return true;
 
+			TypeDefinition type = (method.DeclaringType as TypeDefinition);
+
 			// then we must check if this type use the private method
-			if (CheckTypeForMethodUsage ((method.DeclaringType as TypeDefinition), method))
+			if (CheckTypeForMethodUsage (type, method))
 				return true;
 
 			// then we must check if this type's nested types (if any) use the private method
-			foreach (TypeDefinition nested in (method.DeclaringType as TypeDefinition).NestedTypes) {
+			foreach (TypeDefinition nested in type.NestedTypes) {
 				if (CheckTypeForMethodUsage (nested, method))
 					return true;
 			}

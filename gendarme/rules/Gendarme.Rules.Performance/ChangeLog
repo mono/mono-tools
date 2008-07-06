@@ -1,3 +1,12 @@
+2008-07-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCastsRule.cs: New. Rule to check if the code 
+	repeat some cast operations more than one time.
+	* AvoidUncalledPrivateCodeRule.cs: Apply AvoidRepetitiveCastsRule
+	to rule (self-test).
+	* Gendarme.Rules.Performance.mdp: Update MD project file.
+	* Makefile.am: add rule and tests to the build.
+
 2008-06-28  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeStructureRule.cs: Handle arrays correctly.

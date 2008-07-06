@@ -32,7 +32,8 @@ performance_rules_sources = \
 	RemoveUnusedLocalVariablesRule.cs \
 	AvoidUnneededUnboxingRule.cs \
 	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
-	AvoidTypeGetTypeForConstantStringsRule.cs
+	AvoidTypeGetTypeForConstantStringsRule.cs \
+	AvoidRepetitiveCastsRule.cs
 
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
@@ -63,7 +64,8 @@ performance_test_sources = \
 	RemoveUnusedLocalVariablesTest.cs \
 	AvoidUnneededUnboxingTest.cs \
 	ConsiderCustomAccessorsForNonVisibleEventsTest.cs \
-	AvoidTypeGetTypeForConstantStringsTest.cs
+	AvoidTypeGetTypeForConstantStringsTest.cs \
+	AvoidRepetitiveCastsTest.cs
 
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
