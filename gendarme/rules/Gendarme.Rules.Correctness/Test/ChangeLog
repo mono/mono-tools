@@ -1,3 +1,9 @@
+2008-07-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewSelfAssignmentTest.cs: New. Unit tests for 
+	ReviewSelfAssignmentRule.
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-06-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewUseOfInt64BitsToDoubleTest.cs: New. Unit tests for

@@ -27,6 +27,7 @@
     <File name="ReviewUselessControlFlowTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotRoundIntegersTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ReviewUseOfInt64BitsToDoubleTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewSelfAssignmentTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Correctness" />
