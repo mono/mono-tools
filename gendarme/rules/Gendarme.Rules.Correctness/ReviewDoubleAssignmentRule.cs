@@ -71,30 +71,10 @@ namespace Gendarme.Rules.Correctness {
 				return null;
 
 			// backward: DUP, (possible CONV), LD (value to be duplicated), LD instance, LD instance
-			ins = ins.Previous; // DUP
-			int n = 1;
-			object op1 = null;
-			object op2 = null;
-			while ((ins != null) && (n != -1)) {
-				if (ins.OpCode.StackBehaviourPop == StackBehaviour.Pop0) {
-					switch (ins.OpCode.StackBehaviourPush) {
-					case StackBehaviour.Push1:
-					case StackBehaviour.Pushi:
-					case StackBehaviour.Pushref:
-						if (n == 0)
-							op2 = ins.GetOperand (method);
-						if (n == -1)
-							op1 = ins.GetOperand (method);
-						n--;
-						break;
-					}
-				}
-				ins = ins.Previous;
-			}
-			if (op1 != op2)
+			if (stfld.TraceBack (method).GetOperand (method) != next.TraceBack (method).GetOperand (method))
 				return null;
 
-			return String.Format ("Instance field '{0}' on same variable '{1}'.", fd1.Name, op1);
+			return String.Format ("Instance field '{0}' on same variable '{1}'.", fd1.Name, vd1.Name);
 		}
 
 		static string CheckDoubleAssignement (MethodDefinition method, Instruction ins, Instruction next)

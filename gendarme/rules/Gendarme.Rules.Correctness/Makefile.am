@@ -15,6 +15,7 @@ correctness_rules_sources = BadRecursiveInvocationRule.cs MethodCanBeMadeStaticR
 	AvoidConstructorsInStaticTypesRule.cs DontCompareWithNaNRule.cs \
 	DoNotRoundIntegersRule.cs \
 	ReviewDoubleAssignmentRule.cs \
+	ReviewSelfAssignmentRule.cs \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs
@@ -31,6 +32,7 @@ correctness_test_sources = BadRecursiveInvocationTest.cs MethodCanBeMadeStaticTe
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
 	ReviewDoubleAssignmentTest.cs \
+	ReviewSelfAssignmentTest.cs \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs
