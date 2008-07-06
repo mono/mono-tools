@@ -1,3 +1,9 @@
+2008-07-05  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* InstructionRocks.cs: Add a special case for PopAll so we can
+	abort the track back (without an exception). Fix XML documentation
+	warning.
+
 2008-07-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Add IsLoadElement, IsLoadIndirect and

@@ -164,7 +164,7 @@ namespace Gendarme.Framework.Rocks {
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>
 		/// <param name="method">The method inside which the instruction comes from 
-		/// (needed for StackBehaviour.Varpop).
+		/// (needed for StackBehaviour.Varpop).</param>
 		/// <returns>The number of value removed (pop) from the stack for this instruction.</returns>
 		public static int GetPopCount (this Instruction self, MethodDefinition method)
 		{
@@ -214,7 +214,7 @@ namespace Gendarme.Framework.Rocks {
 				}
 
 			case StackBehaviour.PopAll:
-				throw new NotImplementedException ("PopAll not supported for this Instruction.");
+				return -1;
 			default:
 				string unknown = String.Format ("'{0}' is not a valid value for instruction '{1}'.",
 					self.OpCode.StackBehaviourPush, self.OpCode);
@@ -461,7 +461,10 @@ namespace Gendarme.Framework.Rocks {
 				n -= self.GetPushCount ();
 				if (n == 0)
 					return self;
-				n += self.GetPopCount (method);
+				int pop = self.GetPopCount (method);
+				if (pop == -1)
+					return null; // PopAll
+				n += pop;
 				self = self.Previous;
 			}
 			return null;
