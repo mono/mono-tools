@@ -35,6 +35,7 @@
     <File name="UseTypeEmptyTypesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ConsiderCustomAccessorsForNonVisibleEventsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidTypeGetTypeForConstantStringsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidRepetitiveCastsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Performance" />
