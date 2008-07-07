@@ -179,7 +179,7 @@ namespace Gendarme {
 			}
 			catch (Exception e) {
 				Console.WriteLine ();
-				Console.WriteLine ("An uncatched exception occured. Please fill a bug report @ https://bugzilla.novell.com/");
+				Console.WriteLine ("An uncaught exception occured. Please fill a bug report @ https://bugzilla.novell.com/");
 				if (CurrentRule != null)
 					Console.WriteLine ("Rule:\t{0}", CurrentRule);
 				if (CurrentTarget != null)
@@ -263,7 +263,7 @@ namespace Gendarme {
 		/// 1 if some defects are found, 
 		/// 2 if some parameters are bad,
 		/// 3 if a problem is related to the xml configuration file
-		/// 4 if an uncatched exception occured</returns>
+		/// 4 if an uncaught exception occured</returns>
 		static int Main (string [] args)
 		{
 			return new ConsoleRunner ().Execute (args);

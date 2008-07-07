@@ -194,7 +194,7 @@ namespace Test.Rules.Correctness {
 			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
-		[Test, Ignore ("uncatched by rule")]
+		[Test, Ignore ("uncaught by rule")]
 		public void IndirectRecursiveProperty ()
 		{
 			MethodDefinition method = GetTest ("get_FooBar");
@@ -242,7 +242,7 @@ namespace Test.Rules.Correctness {
 			Assert.AreEqual (0, runner.Defects.Count, "Count2");
 		}
 
-		[Test, Ignore ("uncatched by rule")]
+		[Test, Ignore ("uncaught by rule")]
 		public void CodeUsingAnInstanceOfItself ()
 		{
 			MethodDefinition method = GetTest ("AnotherInstance");
