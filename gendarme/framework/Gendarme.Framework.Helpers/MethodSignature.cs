@@ -109,7 +109,7 @@ namespace Gendarme.Framework.Helpers {
 		public bool Matches (MethodReference method)
 		{
 			if (method == null)
-				throw new ArgumentNullException ("method");
+				return false;
 
 			if (Name != null && method.Name != Name)
 				return false;

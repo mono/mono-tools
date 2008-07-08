@@ -1,3 +1,8 @@
+2008-07-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs: Change Match method to behave more like 
+	Equals, i.e. return false for null, not an exception.
+
 2008-06-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Move out GetPopCount and GetPushCount 
