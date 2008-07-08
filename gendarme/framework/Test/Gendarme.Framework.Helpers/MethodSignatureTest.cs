@@ -70,10 +70,9 @@ namespace Test.Framework {
 		}
 
 		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
 		public void MatchNull ()
 		{
-			new MethodSignature ().Matches (null);
+			Assert.IsFalse (new MethodSignature ().Matches (null));
 		}
 
 		public void Method (bool parameter)
