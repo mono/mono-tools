@@ -271,6 +271,9 @@ namespace Gendarme.Framework.Rocks {
 			bool generic = (interfaceName.IndexOf ('`') >= 0);
 
 			TypeDefinition type = self.Resolve ();
+			if (type == null)
+				return false;		// could not resolve
+
 			// special case, check if we implement ourselves
 			if (type.IsInterface && (type.FullName == interfaceName))
 				return true;
@@ -308,7 +311,10 @@ namespace Gendarme.Framework.Rocks {
 				if (current.FullName == className)
 					return true;
 
-				current = current.Resolve ().BaseType;
+				TypeDefinition td = current.Resolve ();
+				if (td == null)
+					return false;		// could not resolve type
+				current = td.BaseType;
 			}
 			return false;
 		}
@@ -344,8 +350,8 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsDelegate (this TypeReference self)
 		{
 			TypeDefinition type = self.Resolve ();
-			// e.g. this occurs for <Module>
-			if (type.BaseType == null)
+			// e.g. this occurs for <Module> or GenericParameter
+			if (null == type || type.BaseType == null)
 				return false;
 
 			switch (type.BaseType.FullName) {
