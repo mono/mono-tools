@@ -110,7 +110,7 @@ namespace Gendarme.Framework {
 
 			foreach (AssemblyDefinition assembly in assemblies) {
 				assembly.MainModule.LoadDebuggingSymbols ();
-				AssemblyResolver.Resolver.AssemblyCache.Add (assembly.Name.Name, assembly);
+				AssemblyResolver.Resolver.CacheAssembly (assembly);
 			}
 
 			foreach (Rule rule in rules) {

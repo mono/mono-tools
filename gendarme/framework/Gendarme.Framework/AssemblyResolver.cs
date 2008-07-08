@@ -3,8 +3,9 @@
 //
 // Author:
 //   Jb Evain (jbevain@novell.com)
+//   Sebastien Pouliot  <sebastien@ximian.com>
 //
-// (C) 2007 Novell, Inc.
+// Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,37 +29,42 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 
 using Mono.Cecil;
 
-// spouliot
 using Gendarme.Framework.Rocks;
 
-//spouliot: namespace Mono.Linker {
 namespace Gendarme.Framework {
 
 	public class AssemblyResolver : BaseAssemblyResolver {
 
-		Hashtable _assemblies;
+		SortedList<string, AssemblyDefinition> assemblies;
 
-		public IDictionary AssemblyCache {
-			get { return _assemblies; }
+		private AssemblyResolver ()
+		{
+			assemblies = new SortedList<string, AssemblyDefinition> ();
 		}
 
-		public AssemblyResolver ()
-		{
-			_assemblies = new Hashtable ();
+		public IDictionary<string,AssemblyDefinition> AssemblyCache {
+			get { return assemblies; }
 		}
 
 		public override AssemblyDefinition Resolve (AssemblyNameReference name)
 		{
-			AssemblyDefinition asm = (AssemblyDefinition) _assemblies [name.Name];
-			if (asm == null) {
-				asm = base.Resolve (name);
-				asm.Resolver = this;
-				_assemblies [name.Name] = asm;
+			string aname = name.Name;
+			AssemblyDefinition asm = null;
+			if (!assemblies.TryGetValue (aname, out asm)) {
+				try {
+					asm = base.Resolve (name);
+					asm.Resolver = this;
+				}
+				catch (FileNotFoundException) {
+					// note: analysis will be incomplete
+				}
+				assemblies.Add (aname, asm);
 			}
-
 			return asm;
 		}
 
@@ -66,7 +72,6 @@ namespace Gendarme.Framework {
 		{
 			type = type.GetOriginalType ();
 
-			// spouliot
 			TypeDefinition result = (type as TypeDefinition);
 			if (result != null)
 				return result;
@@ -74,6 +79,8 @@ namespace Gendarme.Framework {
 			AssemblyNameReference reference = type.Scope as AssemblyNameReference;
 			if (reference != null) {
 				AssemblyDefinition assembly = Resolve (reference);
+				if (assembly == null)
+					return null;
 				return assembly.MainModule.Types [type.FullName];
 			}
 
@@ -81,31 +88,28 @@ namespace Gendarme.Framework {
 			if (module != null)
 				return module.Types [type.FullName];
 
-			// spouliot
 			GenericParameter generic = (type as GenericParameter);
 			if (generic != null) {
 				return (generic.Owner as TypeReference).Resolve ();
 			}
-			// spouliot
+
 			throw new NotImplementedException ();
 		}
 
 		public FieldDefinition Resolve (FieldReference field)
 		{
 			TypeDefinition type = Resolve (field.DeclaringType);
-			return GetField (type.Fields, field);
-		}
+			if (type == null)
+				return (field as FieldDefinition);		// could not resolve type
 
-		static FieldDefinition GetField (ICollection collection, FieldReference reference)
-		{
-			foreach (FieldDefinition field in collection) {
-				if (field.Name != reference.Name)
+			foreach (FieldDefinition fd in type.Fields) {
+				if (fd.Name != field.Name)
 					continue;
 
-				if (!AreSame (field.FieldType, reference.FieldType))
+				if (!AreSame (fd.FieldType, field.FieldType))
 					continue;
 
-				return field;
+				return fd;
 			}
 
 			return null;
@@ -113,8 +117,14 @@ namespace Gendarme.Framework {
 
 		public MethodDefinition Resolve (MethodReference method)
 		{
+			if (method == null)
+				return null;
+
 			TypeDefinition type = Resolve (method.DeclaringType);
 			method = method.GetOriginalMethod ();
+			if (type == null)
+				return (method as MethodDefinition);		// could not resolve type
+
 			if (method.Name == MethodDefinition.Cctor || method.Name == MethodDefinition.Ctor)
 				return GetMethod (type.Constructors, method);
 			else
@@ -126,7 +136,6 @@ namespace Gendarme.Framework {
 			while (type != null) {
 				MethodDefinition method = GetMethod (type.Methods, reference);
 				if (method == null) {
-					// spouliot
 					// things like: System.Byte System.Byte[,]::Get(System.Int32,System.Int32)
 					// would cause a NRE here
 					if (type.BaseType == null)
@@ -197,11 +206,12 @@ namespace Gendarme.Framework {
 
 		public void CacheAssembly (AssemblyDefinition assembly)
 		{
-			_assemblies [assembly.Name.FullName] = assembly;
 			assembly.Resolver = this;
+			assemblies.Add (assembly.Name.Name, assembly);
+			string location = Path.GetDirectoryName (assembly.MainModule.Image.FileInformation.FullName);
+			AddSearchDirectory (location);
 		}
 
-// spouliot
 		static private AssemblyResolver resolver;
 
 		static public AssemblyResolver Resolver {
@@ -211,6 +221,5 @@ namespace Gendarme.Framework {
 				return resolver;
 			}
 		}
-// spouliot
 	}
 }

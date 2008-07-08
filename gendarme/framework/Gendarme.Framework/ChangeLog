@@ -1,3 +1,13 @@
+2008-07-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyResolver.cs: Catch FileNotFoundException coming from 
+	Cecil's	BaseAssemblyResolver. Look for assemblies where the current
+	one (being analyzed) was loaded. Return null when a Resolve call 
+	fails. Use generics where appropriate. Stop tracking changes from 
+	the original linker source code.
+	* Runner.cs: Use the CacheAssembly method instead of the collection
+	itself. This allows us to do a bit more work unrelated to the runners.
+
 2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BasicIgnoreList.cs: Avoid exception if an ignored rule is not
