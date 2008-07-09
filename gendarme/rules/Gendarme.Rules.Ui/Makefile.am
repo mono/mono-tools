@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 ui_rulesdir=$(prefix)/lib/gendarme
 ui_rules_SCRIPTS = ../../bin/Gendarme.Rules.Ui.dll
 ui_rules_DATA = 
@@ -16,8 +17,8 @@ ui_rules_sources = ExecutableTargetRule.cs GtkSharpExecutableTargetRule.cs \
 ui_rules_build_sources = $(addprefix $(srcdir)/, $(ui_rules_sources))
 ui_rules_build_sources += $(ui_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Ui.dll: $(ui_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Ui.dll: $(ui_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(ui_rules_build_sources)
 
 ui_test_sources = ExecutableTargetTest.cs GtkSharpExecutableTargetTest.cs \
@@ -26,7 +27,7 @@ ui_test_sources = ExecutableTargetTest.cs GtkSharpExecutableTargetTest.cs \
 ui_test_build_sources = $(addprefix $(srcdir)/Test/, $(ui_test_sources))
 
 Test.Rules.Ui.dll: $(ui_test_build_sources) $(ui_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) \
 		-r:$(ui_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(ui_test_build_sources)
 
 test: Test.Rules.Ui.dll
