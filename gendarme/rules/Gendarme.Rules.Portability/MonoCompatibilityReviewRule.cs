@@ -83,21 +83,24 @@ namespace Gendarme.Rules.Portability {
 				}
 			}
 
-			ZipInputStream zs = new ZipInputStream (File.OpenRead (definitionsFile));
-			ZipEntry ze;
-			while ((ze = zs.GetNextEntry ()) != null) {
-				switch (ze.Name) {
-				case "exception.txt":
-					NotImplementedInternal = Read (new StreamReader (zs), false);
-					break;
-				case "missing.txt":
-					MissingInternal = Read (new StreamReader (zs), false);
-					break;
-				case "monotodo.txt":
-					TodoInternal = Read (new StreamReader (zs), true);
-					break;
-				default:
-					break;
+			using (FileStream fs = File.OpenRead (definitionsFile)) {
+				using (ZipInputStream zs = new ZipInputStream (fs)) {
+					ZipEntry ze;
+					while ((ze = zs.GetNextEntry ()) != null) {
+						switch (ze.Name) {
+						case "exception.txt":
+							NotImplementedInternal = Read (new StreamReader (zs), false);
+							break;
+						case "missing.txt":
+								MissingInternal = Read (new StreamReader (zs), false);
+							break;
+						case "monotodo.txt":
+							TodoInternal = Read (new StreamReader (zs), true);
+							break;
+						default:
+							break;
+						}
+					}
 				}
 			}
 
@@ -114,8 +117,9 @@ namespace Gendarme.Rules.Portability {
 					definitionsUri = ws.GetLatestDefinitionsVersion ().Split ('|') [2];
 				}
 
-				WebClient wc = new WebClient ();
-				wc.DownloadFile (new Uri (definitionsUri), definitionsFile);
+				using (WebClient wc = new WebClient ()) {
+					wc.DownloadFile (new Uri (definitionsUri), definitionsFile);
+				}
 			}
 			catch (WebException e) {
 				if (Runner.VerbosityLevel > 0)

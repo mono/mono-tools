@@ -29,7 +29,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Diagnostics;
 
 using Mono.Cecil;
@@ -52,50 +51,36 @@ namespace Gendarme.Rules.Portability {
 		//Check for usage of System.Diagnostics.Process.set_PriorityClass
 		private static bool CheckProcessSetPriorityClass (Instruction ins)
 		{
-			switch (ins.OpCode.Code) {
-			case Code.Call:
-			case Code.Calli:
-			case Code.Callvirt:
-				MethodReference method = (ins.Operand as MethodReference);
-				if (method.Name != "set_PriorityClass")
-					return false;
-				if (method.DeclaringType.FullName != "System.Diagnostics.Process")
-					return false;
+			if (ins.OpCode.FlowControl != FlowControl.Call)
+				return false;
 
-				Instruction prev = ins.Previous; //check stack
-				switch (prev.OpCode.Code) {
-				case Code.Ldc_I4_S:
-					return ((ProcessPriorityClass) (sbyte) prev.Operand != ProcessPriorityClass.Normal);
-				case Code.Ldc_I4:
-					return ((ProcessPriorityClass) prev.Operand != ProcessPriorityClass.Normal);
-				case Code.Ldc_I4_M1:
-				case Code.Ldc_I4_0:
-				case Code.Ldc_I4_1:
-				case Code.Ldc_I4_2:
-				case Code.Ldc_I4_3:
-				case Code.Ldc_I4_4:
-				case Code.Ldc_I4_5:
-				case Code.Ldc_I4_6:
-				case Code.Ldc_I4_7:
-				case Code.Ldc_I4_8:
-					return false;
-				}
-				break;
+			MethodReference method = (ins.Operand as MethodReference);
+			if ((method == null) || (method.Name != "set_PriorityClass"))
+				return false;
+			if (method.DeclaringType.FullName != "System.Diagnostics.Process")
+				return false;
+
+			Instruction prev = ins.Previous; //check stack
+			if (prev == null)
+				return false;
+
+			switch (prev.OpCode.Code) {
+			case Code.Ldc_I4_S:
+				return ((ProcessPriorityClass) (sbyte) prev.Operand != ProcessPriorityClass.Normal);
+			case Code.Ldc_I4:
+				return ((ProcessPriorityClass) prev.Operand != ProcessPriorityClass.Normal);
+			default:
+				return false;
 			}
-			return false;
 		}
 
 		private static bool CheckPing (Instruction ins)
 		{
-			switch (ins.OpCode.Code) {
-			case Code.Newobj:	// new Ping ()
-			case Code.Call:		// MyPing () : base () ! (automatic parent constructor call)
-			case Code.Calli:
-			case Code.Callvirt:
-				MethodReference method = (ins.Operand as MethodReference);
-				return (method.DeclaringType.FullName == Ping);
-			}
-			return false;
+			if (ins.OpCode.FlowControl != FlowControl.Call)
+				return false;
+
+			MethodReference method = (ins.Operand as MethodReference);
+			return ((method != null) && (method.DeclaringType.FullName == Ping));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

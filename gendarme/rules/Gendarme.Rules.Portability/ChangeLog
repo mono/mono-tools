@@ -1,3 +1,11 @@
+2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Simplify logic a
+	bit. Handle the case where Resolve returns null (cannot find the 
+	required assemblies)
+	* MonoCompatibilityReviewRule.cs: Dispose as soon as possible.
+	* Makefile.am: Rebuild if the framework has changed.
+
 2008-05-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MonoCompatibilityReviewRule.cs: Whine at the right stream 
