@@ -40,11 +40,11 @@ namespace Gendarme.Framework {
 
 	public class AssemblyResolver : BaseAssemblyResolver {
 
-		SortedList<string, AssemblyDefinition> assemblies;
+		Dictionary<string, AssemblyDefinition> assemblies;
 
 		private AssemblyResolver ()
 		{
-			assemblies = new SortedList<string, AssemblyDefinition> ();
+			assemblies = new Dictionary<string, AssemblyDefinition> ();
 		}
 
 		public IDictionary<string,AssemblyDefinition> AssemblyCache {
