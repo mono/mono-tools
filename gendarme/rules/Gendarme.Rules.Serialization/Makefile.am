@@ -13,7 +13,7 @@ serialization_rules_sources_in = ../../AssemblyInfo.cs.in
 serialization_rules_generated_sources = $(serialization_rules_sources_in:.in=)
 serialization_rules_sources = DeserializeOptionalFieldRule.cs MissingSerializableAttributeOnISerializableTypeRule.cs \
 	MissingSerializationConstructorRule.cs UseCorrectSignatureForSerializationMethodsRule.cs \
-	MarkAllNonSerializableFieldsRule.cs
+	MarkAllNonSerializableFieldsRule.cs CallBaseMethodsOnISerializableTypesRule.cs
 
 serialization_rules_build_sources = $(addprefix $(srcdir)/, $(serialization_rules_sources))
 serialization_rules_build_sources += $(serialization_rules_generated_sources)
@@ -24,7 +24,7 @@ serialization_rules_build_sources += $(serialization_rules_generated_sources)
 
 serialization_test_sources = DeserializeOptionalFieldTest.cs MissingSerializableAttributeOnISerializableTypeTest.cs \
 	MissingSerializationConstructorTest.cs UseCorrectSignatureForSerializationMethodsTest.cs \
-	MarkAllNonSerializableFieldsTest.cs
+	MarkAllNonSerializableFieldsTest.cs CallBaseMethodsOnISerializableTypesTest.cs
 
 serialization_test_build_sources = $(addprefix $(srcdir)/Test/, $(serialization_test_sources))
 

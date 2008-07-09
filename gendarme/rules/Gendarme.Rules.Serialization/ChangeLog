@@ -1,3 +1,11 @@
+2008-07-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* CallBaseMethodsOnISerializableTypesRule.cs: New. Rule for checking
+	the correct implementation (calling the base methods) of the custom
+	serialization.
+	* Gendarme.Rules.Serialization.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Rebuild if the framework has changed.
