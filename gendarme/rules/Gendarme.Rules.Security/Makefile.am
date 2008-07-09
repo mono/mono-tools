@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 security_rulesdir=$(prefix)/lib/gendarme
 security_rules_SCRIPTS = ../../bin/Gendarme.Rules.Security.dll
 security_rules_DATA = 
@@ -18,8 +19,8 @@ security_rules_sources = MethodCallWithSubsetLinkDemandRule.cs NonVirtualMethodW
 security_rules_build_sources = $(addprefix $(srcdir)/, $(security_rules_sources))
 security_rules_build_sources += $(security_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Security.dll: $(security_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Security.dll: $(security_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(security_rules_build_sources)
 
 security_test_sources = MethodCallWithSubsetLinkDemandTest.cs NonVirtualMethodWithInheritanceDemandTest.cs \
@@ -30,8 +31,7 @@ security_test_sources = MethodCallWithSubsetLinkDemandTest.cs NonVirtualMethodWi
 security_test_build_sources = $(addprefix $(srcdir)/Test/, $(security_test_sources))
 
 Test.Rules.Security.dll: $(security_test_build_sources) $(security_rules_SCRIPTS)
-	cp ../Test.Rules/Test.Rules.dll* .
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll -r:Test.Rules.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) -r:../Test.Rules/Test.Rules.dll \
 		-r:$(security_rules_SCRIPTS) -out:$@ $(security_test_build_sources)
 
 test: Test.Rules.Security.dll

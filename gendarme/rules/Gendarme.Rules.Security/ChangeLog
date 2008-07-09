@@ -1,3 +1,7 @@
+2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Rebuild if the framework has changed.
+
 2008-04-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodCallWithSubsetLinkDemandRule.cs: Call Resolve before
