@@ -164,31 +164,23 @@ namespace Gendarme.Rules.Interoperability {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Call:
-				case Code.Calli:
-				case Code.Callvirt:
-					// nothing do check if there's no more instructions
-					if (ins.Next == null)
-						break;
+				if (ins.OpCode.FlowControl != FlowControl.Call)
+					continue;
 
-					MethodDefinition pinvoke = (ins.Operand as MethodReference).Resolve ();
-					if (pinvoke == null) 
-						break;
-
-					if (!pinvoke.IsPInvokeImpl)
-						break;
-
-					// check if GetLastError is called near enough this pinvoke call
-					if (CheckPInvoke (ins))
-						break;
-
-					// code might not work if an error occurs
-					Runner.Report (method, ins, Severity.High, Confidence.High, String.Empty);
+				// nothing do check if there's no more instructions
+				if (ins.Next == null)
 					break;
-				default:
+
+				MethodDefinition pinvoke = (ins.Operand as MethodReference).Resolve ();
+				if ((pinvoke == null) || !pinvoke.IsPInvokeImpl)
 					break;
-				}
+
+				// check if GetLastError is called near enough this pinvoke call
+				if (CheckPInvoke (ins))
+					break;
+
+				// code might not work if an error occurs
+				Runner.Report (method, ins, Severity.High, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;

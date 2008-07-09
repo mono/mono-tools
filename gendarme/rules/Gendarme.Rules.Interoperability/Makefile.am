@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 interoperability_rulesdir=$(prefix)/lib/gendarme
 interoperability_rules_SCRIPTS = ../../bin/Gendarme.Rules.Interoperability.dll
 interoperability_rules_DATA = 
@@ -18,7 +19,7 @@ interoperability_rules_build_sources = $(addprefix $(srcdir)/, $(interoperabilit
 interoperability_rules_build_sources += $(interoperability_rules_generated_sources)
 
 ../../bin/Gendarme.Rules.Interoperability.dll: $(interoperability_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(interoperability_rules_build_sources)
 
 interoperability_test_sources = PInvokeShouldNotBeVisibleTest.cs GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
@@ -28,7 +29,7 @@ interoperability_test_sources = PInvokeShouldNotBeVisibleTest.cs GetLastErrorMus
 interoperability_test_build_sources = $(addprefix $(srcdir)/Test/, $(interoperability_test_sources))
 
 Test.Rules.Interoperability.dll: $(interoperability_test_build_sources) $(interoperability_rules_SCRIPTS)
-	$(GMCS) -unsafe -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -unsafe -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) \
 		-r:$(interoperability_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(interoperability_test_build_sources)
 
 test: Test.Rules.Interoperability.dll

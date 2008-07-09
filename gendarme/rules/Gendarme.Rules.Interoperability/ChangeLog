@@ -1,3 +1,10 @@
+2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Simplify 
+	logic a bit. Handle the case where Resolve returns null (cannot 
+	find the required assemblies)
+	* Makefile.am: Rebuild if the framework has changed.
+
 2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Rule.cs: Don't apply rule to GetHashCode
