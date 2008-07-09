@@ -1,4 +1,4 @@
-2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
+2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ParameterNamesShouldMatchOverridenMethodRule.cs: Handle the case
 	where Resolve returns null (cannot find the required assemblies)
