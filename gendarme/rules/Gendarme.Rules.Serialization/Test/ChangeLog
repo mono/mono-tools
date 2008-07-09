@@ -1,3 +1,9 @@
+2008-07-09  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* CallBaseMethodsOnISerializableTypesTest.cs: New. Unit tests for
+	CallBaseMethodsOnISerializableTypesRule.
+	* Test.Rules.Serialization.mdp: Update MD project file.
+
 2008-07-04  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* MarkAllNonSerializableFieldsTest.cs: Add test for the serialization of
