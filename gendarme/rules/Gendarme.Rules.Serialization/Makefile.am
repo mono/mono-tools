@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 serialization_rulesdir=$(prefix)/lib/gendarme
 serialization_rules_SCRIPTS = ../../bin/Gendarme.Rules.Serialization.dll
 serialization_rules_DATA = 
@@ -17,8 +18,8 @@ serialization_rules_sources = DeserializeOptionalFieldRule.cs MissingSerializabl
 serialization_rules_build_sources = $(addprefix $(srcdir)/, $(serialization_rules_sources))
 serialization_rules_build_sources += $(serialization_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Serialization.dll: $(serialization_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Serialization.dll: $(serialization_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(serialization_rules_build_sources)
 
 serialization_test_sources = DeserializeOptionalFieldTest.cs MissingSerializableAttributeOnISerializableTypeTest.cs \
@@ -28,7 +29,7 @@ serialization_test_sources = DeserializeOptionalFieldTest.cs MissingSerializable
 serialization_test_build_sources = $(addprefix $(srcdir)/Test/, $(serialization_test_sources))
 
 Test.Rules.Serialization.dll: $(serialization_test_build_sources) $(serialization_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) \
 		-r:$(serialization_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(serialization_test_build_sources)
 
 test: Test.Rules.Serialization.dll
