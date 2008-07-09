@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 concurrency_rulesdir=$(prefix)/lib/gendarme
 concurrency_rules_SCRIPTS = ../../bin/Gendarme.Rules.Concurrency.dll
 concurrency_rules_DATA = 
@@ -21,8 +22,8 @@ concurrency_rules_sources = DoubleCheckLockingRule.cs \
 concurrency_rules_build_sources = $(addprefix $(srcdir)/, $(concurrency_rules_sources))
 concurrency_rules_build_sources += $(concurrency_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Concurrency.dll: $(concurrency_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Concurrency.dll: $(concurrency_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(concurrency_rules_build_sources)
 
 concurrency_test_sources = DoubleCheckLockingTest.cs \
@@ -36,7 +37,7 @@ concurrency_test_build_sources = $(addprefix $(srcdir)/Test/, $(concurrency_test
 
 Test.Rules.Concurrency.dll: $(concurrency_test_build_sources) $(concurrency_rules_SCRIPTS)
 	cp ../Test.Rules/*.dll .
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:Test.Rules.dll -r:../../bin/Gendarme.Framework.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:Test.Rules.dll -r:$(framework) \
 		-r:$(concurrency_rules_SCRIPTS) -out:$@ $(concurrency_test_build_sources)
 
 test: Test.Rules.Concurrency.dll
