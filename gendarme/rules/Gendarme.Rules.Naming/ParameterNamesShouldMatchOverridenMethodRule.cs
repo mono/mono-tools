@@ -69,6 +69,9 @@ namespace Gendarme.Rules.Naming {
 
 			while ((baseType.BaseType != null) && (baseType != baseType.BaseType)) {
 				baseType = baseType.BaseType.Resolve ();
+				if (baseType == null)
+					return null;		// could not resolve
+
 				foreach (MethodDefinition baseMethodCandidate in baseType.Methods) {
 					if (SignatureMatches (method, baseMethodCandidate, false))
 						return baseMethodCandidate;

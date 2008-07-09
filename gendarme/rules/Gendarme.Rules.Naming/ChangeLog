@@ -1,5 +1,11 @@
 2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: Handle the case
+	where Resolve returns null (cannot find the required assemblies)
+	* Makefile.am: Rebuild if the framework has changed.
+
+2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
+
 	* DoNotPrefixEventsWithAfterOrBeforeRule.cs: New. Rule to check
 	if event names starts with either After of Before prefixes.
 
