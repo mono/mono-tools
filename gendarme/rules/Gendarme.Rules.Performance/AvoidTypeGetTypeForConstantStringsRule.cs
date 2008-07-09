@@ -53,7 +53,7 @@ namespace Gendarme.Rules.Performance {
 
 				// look for calls to: static Type System.Type.GetType(string...)
 				MethodReference mr = (ins.Operand as MethodReference);
-				if ((mr.Name != "GetType") ||(mr.Parameters.Count == 0))
+				if ((mr == null) || (mr.Name != "GetType") ||(mr.Parameters.Count == 0))
 					continue;
 				if (mr.DeclaringType.FullName != "System.Type")
 					continue;

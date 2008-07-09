@@ -145,9 +145,11 @@ namespace Gendarme.Rules.Performance {
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
 			foreach (TypeReference tr in type.Interfaces) {
 				TypeDefinition intf = tr.Resolve ();
-				foreach (MethodReference member in intf.Methods) {
-					if (method.Name == member.Name)
-						return true;
+				if (intf != null) {
+					foreach (MethodReference member in intf.Methods) {
+						if (method.Name == member.Name)
+							return true;
+					}
 				}
 			}
 			return false;

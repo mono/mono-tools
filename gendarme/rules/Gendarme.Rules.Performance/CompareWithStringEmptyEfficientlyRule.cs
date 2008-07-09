@@ -51,7 +51,7 @@ namespace Gendarme.Rules.Performance {
 					continue;
 
 				MethodReference mref = (ins.Operand as MethodReference);
-				if (mref.DeclaringType.FullName != "System.String")
+				if ((mref == null) || (mref.DeclaringType.FullName != "System.String"))
 					continue;
 
 				// covers Equals(string) method and both == != operators

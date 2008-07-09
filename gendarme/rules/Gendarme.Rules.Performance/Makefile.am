@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 performance_rulesdir=$(prefix)/lib/gendarme
 performance_rules_SCRIPTS = ../../bin/Gendarme.Rules.Performance.dll
 performance_rules_DATA = 
@@ -38,8 +39,8 @@ performance_rules_sources = \
 performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
 performance_rules_build_sources += $(performance_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Performance.dll: $(performance_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Performance.dll: $(performance_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(performance_rules_build_sources)
 
 performance_test_sources = \
@@ -70,9 +71,8 @@ performance_test_sources = \
 performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
 
 Test.Rules.Performance.dll: $(performance_test_build_sources) $(performance_rules_SCRIPTS)
-	cp ../Test.Rules/*.dll .
-	$(GMCS) -target:library -debug -unsafe -r:$(CECIL_ASM) -pkg:mono-nunit -r:Test.Rules.dll \
-		-r:../../bin/Gendarme.Framework.dll -r:$(performance_rules_SCRIPTS) -out:$@ $(performance_test_build_sources)
+	$(GMCS) -target:library -debug -unsafe -r:$(CECIL_ASM) -pkg:mono-nunit -r:../Test.Rules/Test.Rules.dll \
+		-r:$(framework) -r:$(performance_rules_SCRIPTS) -out:$@ $(performance_test_build_sources)
 
 test: Test.Rules.Performance.dll
 
