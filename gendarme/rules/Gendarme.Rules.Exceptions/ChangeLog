@@ -1,3 +1,7 @@
+2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Rebuild if the framework has changed.
+
 2008-06-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotDestroyStackTraceRule.cs: Simplify using InstructionRocks.

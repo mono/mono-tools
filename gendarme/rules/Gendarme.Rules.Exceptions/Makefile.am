@@ -1,5 +1,6 @@
 SUBDIRS=Test
 
+framework=../../bin/Gendarme.Framework.dll
 exceptions_rulesdir=$(prefix)/lib/gendarme
 exceptions_rules_SCRIPTS = ../../bin/Gendarme.Rules.Exceptions.dll
 exceptions_rules_DATA = 
@@ -23,8 +24,8 @@ exceptions_rules_sources = DoNotDestroyStackTraceRule.cs SEHHandlerType.cs Impl/
 exceptions_rules_build_sources = $(addprefix $(srcdir)/, $(exceptions_rules_sources))
 exceptions_rules_build_sources += $(exceptions_rules_generated_sources)
 
-../../bin/Gendarme.Rules.Exceptions.dll: $(exceptions_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
+../../bin/Gendarme.Rules.Exceptions.dll: $(exceptions_rules_build_sources) $(framework)
+	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
 		-out:$@ $(exceptions_rules_build_sources)
 
 exceptions_test_sources = DontDestroyStackTraceTest.cs \
@@ -39,7 +40,7 @@ exceptions_test_build_sources = $(addprefix $(srcdir)/Test/, $(exceptions_test_s
 
 Test.Rules.Exceptions.dll: $(exceptions_test_build_sources) $(exceptions_rules_SCRIPTS)
 	cp ../Test.Rules/*.dll .
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll -r:Test.Rules.dll \
+	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) -r:Test.Rules.dll \
 		-r:$(exceptions_rules_SCRIPTS) -out:$@ $(exceptions_test_build_sources)
 
 test: Test.Rules.Exceptions.dll
