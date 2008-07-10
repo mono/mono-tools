@@ -95,10 +95,7 @@ namespace Gendarme.Rules.Maintainability {
 			//how's severity?
 			Severity sev = GetCyclomaticComplexitySeverity(cc);
 
-			string s = (Runner.VerbosityLevel < 2) ? String.Empty :
-					String.Format ("Method's cyclomatic complexity : {0}.", cc);
-
-			Runner.Report (method, sev, Confidence.High, s);
+			Runner.Report (method, sev, Confidence.High, String.Format ("Method's cyclomatic complexity : {0}.", cc));
 			return RuleResult.Failure;
 		}
 

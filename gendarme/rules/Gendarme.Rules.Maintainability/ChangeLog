@@ -1,3 +1,12 @@
+2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsRule.cs: Always report the calculated CC 
+	since it is useful to the end user (to see how much complexity 
+	there is ;-)
+	* AvoidLackOfCohesionOfMethodsRule.cs: Always report the 
+	calculated cohesion (for the same reasons).
+	* Makefile.am: Start using ../common.make
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyRule.cs: New. Rule to suggest using

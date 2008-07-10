@@ -59,10 +59,7 @@ namespace Gendarme.Rules.Maintainability {
 			//how's severity?
 			Severity sev = GetCohesivenessSeverity(coh);
 
-			string s = (Runner.VerbosityLevel < 2) ? String.Empty :
-					String.Format ("Type's cohesiveness : {0}.", coh);
-
-			Runner.Report (type, sev, Confidence.Normal, s);
+			Runner.Report (type, sev, Confidence.Normal, String.Format ("Type's cohesiveness : {0}.", coh));
 			return RuleResult.Failure;
 		}
 
