@@ -51,8 +51,11 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoNotLockOnThisOrTypesRule.cs" />
+    <Compile Include="DoNotLockOnWeakIdentityObjectsRule.cs" />
     <Compile Include="DontUseLockedRegionOutsideMethod.cs" />
     <Compile Include="DoubleCheckLockingRule.cs" />
+    <Compile Include="LockAnalyzerRule.cs" />
     <Compile Include="NonConstantStaticFieldsShouldNotBeVisibleRule.cs" />
     <Compile Include="WriteStaticFieldFromInstanceMethodRule.cs" />
   </ItemGroup>
