@@ -37,6 +37,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoNotCastIntPtrToInt32Rule.cs" />
     <Compile Include="GetLastErrorMustBeCalledRightAfterPInvokeRule.cs" />
     <Compile Include="MarshalStringsInPInvokeDeclarationsRule.cs" />
     <Compile Include="PInvokeShouldNotBeVisibleRule.cs" />
