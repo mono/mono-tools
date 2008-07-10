@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DetectNonAlphaNumericsInTypeNamesTest.cs" />
+    <Compile Include="DoNotPrefixEventsWithAfterOrBeforeTest.cs" />
     <Compile Include="DoNotPrefixValuesWithEnumNameTest.cs" />
     <Compile Include="DoNotUseReservedInEnumValueNamesTest.cs" />
     <Compile Include="EnumNotEndsWithEnumOrFlagsSuffixTest.cs" />
