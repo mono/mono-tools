@@ -33,7 +33,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>..\..\console\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -61,6 +61,8 @@
     <None Include="dataflow\CFGEdge.cs" />
     <None Include="dataflow\Dataflow.cs" />
     <None Include="dataflow\IDataflowAnalysis.cs" />
+    <Compile Include="DoNotRoundIntegersRule.cs" />
+    <Compile Include="DoNotUseModuloOneRule.cs" />
     <Compile Include="DontCompareWithNaNRule.cs" />
     <Compile Include="FloatComparisonRule.cs" />
     <None Include="graph\DFS.cs" />
@@ -77,6 +79,11 @@
     <None Include="NullDerefFrame.cs" />
     <None Include="NullDerefRule.cs" />
     <None Include="Nullity.cs" />
+    <Compile Include="ProtectVisibleEventsRule.cs" />
+    <Compile Include="ReviewDoubleAssignmentRule.cs" />
+    <Compile Include="ReviewSelfAssignmentRule.cs" />
+    <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />
+    <Compile Include="ReviewUselessControlFlowRule.cs" />
     <Compile Include="UseValueInPropertySetterRule.cs" />
   </ItemGroup>
   <ItemGroup>

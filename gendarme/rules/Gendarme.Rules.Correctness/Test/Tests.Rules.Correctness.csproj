@@ -63,9 +63,16 @@
     <Compile Include="AvoidConstructorsInStaticTypesTest.cs" />
     <Compile Include="BadRecursiveInvocationTest.cs" />
     <Compile Include="CallingEqualsWithNullArgTest.cs" />
+    <Compile Include="DoNotRoundIntegersTest.cs" />
+    <Compile Include="DoNotUseModuloOneTest.cs" />
     <Compile Include="DontCompareWithNaNTest.cs" />
     <Compile Include="FloatComparisonRuleTest.cs" />
     <Compile Include="MethodCanBeMadeStaticTest.cs" />
+    <Compile Include="ProtectVisibleEventsTest.cs" />
+    <Compile Include="ReviewDoubleAssignmentTest.cs" />
+    <Compile Include="ReviewSelfAssignmentTest.cs" />
+    <Compile Include="ReviewUselessControlFlowTest.cs" />
+    <Compile Include="ReviewUseOfInt64BitsToDoubleTest.cs" />
     <Compile Include="UseValueInPropertySetterTest.cs" />
   </ItemGroup>
   <ItemGroup>
