@@ -27,40 +27,42 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
-	
+
 	[Problem ("There is similar code in various methods in sibling classes.  Your code will be better if you can unify them.")]
 	[Solution ("You can apply the Pull Up Method refactoring.")]
 	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
-		private CodeDuplicatedLocator codeDuplicatedLocator;
 
-		private void FindCodeDuplicated (TypeDefinition type, ICollection siblingClasses)
+		private CodeDuplicatedLocator codeDuplicatedLocator = new CodeDuplicatedLocator ();
+
+		private void FindCodeDuplicated (TypeDefinition type, ICollection<TypeDefinition> siblingClasses)
 		{
-			foreach (MethodDefinition method in type.Methods) 
-				foreach (TypeDefinition sibling in siblingClasses) 
+			foreach (MethodDefinition method in type.Methods)
+				foreach (TypeDefinition sibling in siblingClasses)
 					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (this, method, sibling);
 		}
 
-		private void CompareSiblingClasses (ICollection siblingClasses)
+		private void CompareSiblingClasses (ICollection<TypeDefinition> siblingClasses)
 		{
 			foreach (TypeDefinition type in siblingClasses) {
 				FindCodeDuplicated (type, siblingClasses);
-				codeDuplicatedLocator.CheckedTypes.Add (type.Name);
+				codeDuplicatedLocator.CheckedTypes.AddIfNew (type.Name);
 			}
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			codeDuplicatedLocator = new CodeDuplicatedLocator ();
-
-			ICollection siblingClasses = Utilities.GetInheritedClassesFrom (type);
-			if (siblingClasses.Count >= 2)
+			ICollection<TypeDefinition> siblingClasses = Utilities.GetInheritedClassesFrom (type);
+			if (siblingClasses.Count >= 2) {
+				codeDuplicatedLocator.Clear ();
 				CompareSiblingClasses (siblingClasses);
+			}
 
 			return Runner.CurrentRuleResult;
 		}

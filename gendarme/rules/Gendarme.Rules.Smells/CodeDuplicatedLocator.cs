@@ -28,7 +28,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Text;
 
 using Mono.Cecil;
@@ -38,19 +38,25 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Smells {
 
 	internal sealed class CodeDuplicatedLocator {
-		private StringCollection methods = new StringCollection ();
-		private StringCollection types = new StringCollection ();
+		private HashSet<string> methods = new HashSet<string> ();
+		private HashSet<string> types = new HashSet<string> ();
 
-		internal StringCollection CheckedMethods {
+		internal ICollection<string> CheckedMethods {
 			get {
 				return methods;
 			}
 		}
 
-		internal StringCollection CheckedTypes {
+		internal ICollection<string> CheckedTypes {
 			get {
 				return types;
 			}
+		}
+
+		public void Clear ()
+		{
+			methods.Clear ();
+			types.Clear ();
 		}
 
 		private static bool ExistsExpressionsReplied (ICollection currentExpressions, ICollection targetExpressions)

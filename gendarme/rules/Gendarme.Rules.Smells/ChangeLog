@@ -1,3 +1,14 @@
+2008-07-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSameClassRule.cs: Don't add duplicate entries.
+	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Reuse (after clearing)
+	the existing CodeDuplicatedLocator. Don't add duplicate entries.
+	* CodeDuplicatedLocator.cs: Use generic based HashSet instead of 
+	StringCollection. Add a Clear method so the instance can be reused.
+	* Utilities.cs: Use generics.
+	[using both rules on System.dll (2.0 profile) now takes 10 seconds
+	instead of 16 seconds]
+
 2008-06-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsRule.cs: Fix typo for IsStatic check. Report

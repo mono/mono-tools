@@ -27,16 +27,19 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+
+using Gendarme.Framework;
 
 using Mono.Cecil;
 
 namespace Gendarme.Rules.Smells {
 
 	internal static class Utilities {
-		public static ICollection GetInheritedClassesFrom (TypeDefinition baseType)
+
+		public static ICollection<TypeDefinition> GetInheritedClassesFrom (TypeDefinition baseType)
 		{
-			ArrayList inheritedClasses = new ArrayList ();
+			List<TypeDefinition> inheritedClasses = new List<TypeDefinition> ();
 			foreach (TypeDefinition type in baseType.Module.Types) {
 				if ((type.BaseType != null) && type.BaseType.Equals (baseType))
 					inheritedClasses.Add (type);
