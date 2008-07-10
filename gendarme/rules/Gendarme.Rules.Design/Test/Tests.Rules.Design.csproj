@@ -42,6 +42,7 @@
     <Compile Include="AttributeArgumentsShouldHaveAccessorsTest.cs" />
     <Compile Include="AvoidPropertiesWithoutGetAccessorTest.cs" />
     <Compile Include="AvoidPublicInstanceFieldsTest.cs" />
+    <Compile Include="AvoidVisibleNestedTypesTest.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyTest.cs" />
     <Compile Include="DisposableFieldsShouldBeDisposedTest.cs" />
     <Compile Include="DisposableTypesShouldHaveFinalizerTest.cs" />
