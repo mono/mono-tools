@@ -1,8 +1,12 @@
 testdir=.
 test_SCRIPTS = 
 test_DATA = 
+
+framework=../../bin/Gendarme.Framework.dll
+common_tests=../Test.Rules/Test.Rules.dll
+
 EXTRA_DIST = $(test_sources) Test.Rules.mdp Test.Rules.csproj
-CLEANFILES = Test.Rules.dll Test.Rules.dll.mdb ../../bin/Test.Rules.dll
+CLEANFILES = Test.Rules.dll Test.Rules.dll.mdb $(common_tests)
 DISTCLEANFILES = Makefile.in
 
 test_sources = \
@@ -15,14 +19,13 @@ test_sources = \
 	Helpers/DefinitionLoader.cs \
 	Helpers/TestRunner.cs
 
-Test.Rules.dll: $(test_sources)
-	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(CECIL_ASM) \
-		-r:$(top_builddir)/gendarme/bin/Gendarme.Framework.dll -out:$@ $(test_sources)
+$(common_tests): $(test_sources)
+	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(test_sources)
 
-all: Test.Rules.dll
+all: $(common_tests)
 
-test: Test.Rules.dll
+test: $(common_tests)
 
 run-test: test
 
-self-test: $(rules_SCRIPTS)
+self-test:

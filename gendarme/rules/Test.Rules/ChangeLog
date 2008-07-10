@@ -1,3 +1,8 @@
+2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: A bit simplified (but still different from "real"
+	rules Makefiles)
+
 2008-05-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Test.Rules.csproj to the dist. Make sure to clean
