@@ -37,7 +37,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallBaseMethodsOnISerializableTypesRule.cs" />
     <Compile Include="DeserializeOptionalFieldRule.cs" />
+    <Compile Include="MarkAllNonSerializableFieldsRule.cs" />
     <Compile Include="UseCorrectSignatureForSerializationMethodsRule.cs" />
     <Compile Include="MissingSerializableAttributeOnISerializableTypeRule.cs" />
     <Compile Include="MissingSerializationConstructorRule.cs" />

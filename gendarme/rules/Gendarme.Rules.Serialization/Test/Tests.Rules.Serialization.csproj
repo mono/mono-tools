@@ -38,7 +38,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CallBaseMethodsOnISerializableTypesTest.cs" />
     <Compile Include="DeserializeOptionalFieldTest.cs" />
+    <Compile Include="MarkAllNonSerializableFieldsTest.cs" />
     <Compile Include="UseCorrectSignatureForSerializationMethodsTest.cs" />
     <Compile Include="MissingSerializableAttributeOnISerializableTypeTest.cs" />
     <Compile Include="MissingSerializationConstructorTest.cs" />
