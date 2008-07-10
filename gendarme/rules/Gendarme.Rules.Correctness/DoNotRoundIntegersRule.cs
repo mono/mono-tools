@@ -117,7 +117,7 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.DeclaringType.FullName != "System.Math")
+				if ((mr == null) || (mr.DeclaringType.FullName != "System.Math"))
 					continue;
 
 				Instruction value = null;

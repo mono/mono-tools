@@ -58,6 +58,11 @@ namespace Gendarme.Rules.Correctness {
 
 		private static bool CompareMethods (MethodReference method1, MethodReference method2, bool checkType)
 		{
+			if (method1 == null)
+				return (method2 == null);
+			if (method2 == null)
+				return false;
+
 			// static or instance mismatch
 			if (method1.HasThis != method2.HasThis)
 				return false;
@@ -141,7 +146,7 @@ namespace Gendarme.Rules.Correctness {
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.FlowControl) {
 				case FlowControl.Call:
-					MethodReference callee = (MethodReference) ins.Operand;
+					MethodReference callee = (ins.Operand as MethodReference);
 					// check type name only if the call isn't virtual
 					bool check_type = (ins.OpCode.Code != Code.Callvirt);
 					// continue scanning unless we're calling ourself
