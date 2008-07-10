@@ -1,17 +1,19 @@
 SUBDIRS=Test
 
-framework=../../bin/Gendarme.Framework.dll
+include ../common.make
+
+rules_dll = ../../bin/Gendarme.Rules.Performance.dll
+tests_dll = Test.Rules.Performance.dll
+
 performance_rulesdir=$(prefix)/lib/gendarme
-performance_rules_SCRIPTS = ../../bin/Gendarme.Rules.Performance.dll
+performance_rules_SCRIPTS = $(rules_dll)
 performance_rules_DATA = 
-EXTRA_DIST = $(performance_rules_sources) $(performance_rules_sources_in) \
-	Gendarme.Rules.Performance.mdp Gendarme.Rules.Performance.csproj
-CLEANFILES = $(performance_rules_SCRIPTS) $(performance_rules_SCRIPTS).mdb Test.Rules.Performance.dll
+
+EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Performance.mdp Gendarme.Rules.Performance.csproj
+CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Performance.xml TestResult.xml
 
-performance_rules_sources_in = ../../AssemblyInfo.cs.in
-performance_rules_generated_sources = $(performance_rules_sources_in:.in=)
-performance_rules_sources = \
+rules_sources = \
 	EmptyDestructorRule.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeRule.cs \
 	UseStringEmptyRule.cs \
@@ -36,14 +38,9 @@ performance_rules_sources = \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
 	AvoidRepetitiveCastsRule.cs
 
-performance_rules_build_sources = $(addprefix $(srcdir)/, $(performance_rules_sources))
-performance_rules_build_sources += $(performance_rules_generated_sources)
+EXTRA_TESTS_OPTIONS = -unsafe
 
-../../bin/Gendarme.Rules.Performance.dll: $(performance_rules_build_sources) $(framework)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
-		-out:$@ $(performance_rules_build_sources)
-
-performance_test_sources = \
+tests_sources = \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
@@ -67,18 +64,3 @@ performance_test_sources = \
 	ConsiderCustomAccessorsForNonVisibleEventsTest.cs \
 	AvoidTypeGetTypeForConstantStringsTest.cs \
 	AvoidRepetitiveCastsTest.cs
-
-performance_test_build_sources = $(addprefix $(srcdir)/Test/, $(performance_test_sources))
-
-Test.Rules.Performance.dll: $(performance_test_build_sources) $(performance_rules_SCRIPTS)
-	$(GMCS) -target:library -debug -unsafe -r:$(CECIL_ASM) -pkg:mono-nunit -r:../Test.Rules/Test.Rules.dll \
-		-r:$(framework) -r:$(performance_rules_SCRIPTS) -out:$@ $(performance_test_build_sources)
-
-test: Test.Rules.Performance.dll
-
-run-test: test
-	MONO_PATH=../../bin/:$(MONO_PATH) nunit-console2 Test.Rules.Performance.dll
-
-self-test: $(performance_rules_SCRIPTS)
-	mono --debug ../../bin/gendarme.exe $(performance_rules_SCRIPTS)
-
