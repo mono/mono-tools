@@ -1,39 +1,29 @@
 SUBDIRS=Test
 
-framework=../../bin/Gendarme.Framework.dll
+include ../common.make
+
+rules_dll = ../../bin/Gendarme.Rules.Portability.dll
+tests_dll = Test.Rules.Portability.dll
+
 portability_rulesdir=$(prefix)/lib/gendarme
 portability_rules_SCRIPTS = ../../bin/Gendarme.Rules.Portability.dll
 portability_rules_DATA = 
-EXTRA_DIST = $(portability_rules_sources) $(portability_rules_sources_in) \
-	Gendarme.Rules.Portability.mdp Gendarme.Rules.Portability.csproj
-CLEANFILES = $(portability_rules_SCRIPTS) $(portability_rules_SCRIPTS).mdb Test.Rules.Portability.dll
+
+EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Portability.mdp Gendarme.Rules.Portability.csproj
+CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Portability.xml TestResult.xml
 
-portability_rules_sources_in = ../../AssemblyInfo.cs.in
-portability_rules_generated_sources = $(portability_rules_sources_in:.in=)
-portability_rules_sources = NewLineLiteralRule.cs FeatureRequiresRootPrivilegeOnUnixRule.cs \
-	MonoCompatibilityReviewRule.cs MoMAWebService.cs ExitCodeIsLimitedOnUnixRule.cs
+EXTRA_RULES_OPTIONS = -r:ICSharpCode.SharpZipLib.dll -pkg:dotnet
 
-portability_rules_build_sources = $(addprefix $(srcdir)/, $(portability_rules_sources))
-portability_rules_build_sources += $(portability_rules_generated_sources)
+rules_sources = \
+	NewLineLiteralRule.cs \
+	ExitCodeIsLimitedOnUnixRule.cs \
+	FeatureRequiresRootPrivilegeOnUnixRule.cs \
+	MoMAWebService.cs \
+	MonoCompatibilityReviewRule.cs 
 
-../../bin/Gendarme.Rules.Portability.dll: $(portability_rules_build_sources) $(framework)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -pkg:dotnet -r:ICSharpCode.SharpZipLib.dll \
-		-r:$(framework) -out:$@ $(portability_rules_build_sources)
-
-portability_test_sources = NewLineLiteralTest.cs FeatureRequiresRootPrivilegeOnUnixTest.cs \
-	MonoCompatibilityReviewTest.cs ExitCodeIsLimitedOnUnixTest.cs
-portability_test_build_sources = $(addprefix $(srcdir)/Test/, $(portability_test_sources))
-
-Test.Rules.Portability.dll: $(portability_test_build_sources) $(portability_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) \
-		-r:$(portability_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(portability_test_build_sources)
-
-test: Test.Rules.Portability.dll
-
-run-test: test
-	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Portability.dll
-
-self-test: $(portability_rules_SCRIPTS)
-	mono --debug ../../bin/gendarme.exe $(portability_rules_SCRIPTS)
-
+tests_sources = \
+	NewLineLiteralTest.cs \
+	ExitCodeIsLimitedOnUnixTest.cs \
+	FeatureRequiresRootPrivilegeOnUnixTest.cs \
+	MonoCompatibilityReviewTest.cs 
