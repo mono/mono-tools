@@ -1,56 +1,38 @@
 SUBDIRS=Test
 
+include ../common.make
+
+rules_dll = ../../bin/Gendarme.Rules.Smells.dll
+tests_dll = Test.Rules.Smells.dll
+
 smells_rulesdir=$(prefix)/lib/gendarme
-smells_rules_SCRIPTS = ../../bin/Gendarme.Rules.Smells.dll
+smells_rules_SCRIPTS = $(rules_dll)
 smells_rules_DATA = 
-EXTRA_DIST = $(smells_rules_sources) $(smells_rules_sources_in) \
-	Gendarme.Rules.Smells.mdp Gendarme.Rules.Smells.csproj
-CLEANFILES = $(smells_rules_SCRIPTS) $(smells_rules_SCRIPTS).mdb Test.Rules.Smells.dll
+
+EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Smells.mdp Gendarme.Rules.Smells.csproj
+CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Smells.xml TestResult.xml
 
-smells_rules_sources_in = ../../AssemblyInfo.cs.in
-smells_rules_generated_sources = $(smells_rules_sources_in:.in=)
-smells_rules_sources =  \
+EXTRA_RULES_OPTIONS = -r:../../bin/Gendarme.Rules.Performance.dll
+
+rules_sources =  \
+	AvoidCodeDuplicatedInSameClassRule.cs \
+	AvoidCodeDuplicatedInSiblingClassesRule.cs \
 	AvoidLargeClassesRule.cs \
 	AvoidLongMethodsRule.cs \
 	AvoidLongParameterListsRule.cs \
+	AvoidSpeculativeGeneralityRule.cs \
+	CodeDuplicatedLocator.cs \
 	ExpressionCollection.cs \
 	ExpressionFillerVisitor.cs \
-	CodeDuplicatedLocator.cs \
-	AvoidCodeDuplicatedInSameClassRule.cs \
-	AvoidCodeDuplicatedInSiblingClassesRule.cs \
-	Utilities.cs \
-	AvoidSpeculativeGeneralityRule.cs \
-	AvoidMessageChainsRule.cs
+	Utilities.cs
 
-smells_rules_build_sources = $(addprefix $(srcdir)/, $(smells_rules_sources))
-smells_rules_build_sources += $(smells_rules_generated_sources)
+EXTRA_TESTS_OPTIONS = -r:System.Windows.Forms.dll
 
-../../bin/Gendarme.Rules.Smells.dll: $(smells_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:../../bin/Gendarme.Framework.dll \
-		-r:../../bin/Gendarme.Rules.Performance.dll -out:$@ $(smells_rules_build_sources)
-
-smells_test_sources =  \
+tests_sources =  \
 	AvoidCodeDuplicatedInSameClassTest.cs \
 	AvoidCodeDuplicatedInSiblingClassesTest.cs \
 	AvoidLargeClassesTest.cs \
 	AvoidLongMethodsTest.cs \
 	AvoidLongParameterListsTest.cs \
-	AvoidSpeculativeGeneralityTest.cs \
-	AvoidMessageChainsTest.cs
-
-smells_test_build_sources = $(addprefix $(srcdir)/Test/, $(smells_test_sources))
-
-Test.Rules.Smells.dll: $(smells_test_build_sources) $(smells_rules_SCRIPTS)
-	$(GMCS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../../bin/Gendarme.Framework.dll \
-		-r:../Test.Rules/Test.Rules.dll  -r:$(smells_rules_SCRIPTS) -r:System.Windows.Forms.dll \
-		-out:$@ $(smells_test_build_sources)
-
-test: Test.Rules.Smells.dll
-
-run-test: test
-	MONO_PATH=../../bin/:../Test.Rules/$(MONO_PATH) nunit-console2 Test.Rules.Smells.dll
-
-self-test: $(smells_rules_SCRIPTS)
-	mono --debug ../../bin/gendarme.exe $(smells_rules_SCRIPTS)
-
+	AvoidSpeculativeGeneralityTest.cs
