@@ -46,13 +46,23 @@ namespace Test.Rules.Fixtures {
 	public abstract class RuleTestFixture<TRule, TMetadataToken>
 		where TRule : IRule, new () {
 
+		private TRule rule;
 		private TestRunner runner;
+
+		public TRule Rule {
+			get { return rule; }
+		}
+
+		public Runner Runner {
+			get { return runner; }
+		}
 
 		/// <summary>
 		/// Creates a RuleTestFixture instance, the runner and the rule itself.
 		/// </summary>
 		protected RuleTestFixture ()		{
-			this.runner = new TestRunner (new TRule ());
+			rule = new TRule ();
+			runner = new TestRunner (rule);
 		}
 		
 		/// <summary>
