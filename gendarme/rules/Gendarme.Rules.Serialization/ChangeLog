@@ -1,6 +1,12 @@
 2008-07-11  Nestor Salceda  <nestor.salceda@gmail.com>
 
-	* ImplementISerializableCorrectlyRule.cs: Now.  Rule for ensuring the
+	* ImplementISerializableCorrectlyRule.cs: Change the foreach loop for an
+	inverted for loop.  Change the order of evaluation in order to achieve a
+	bit more of performance.  Make clearer the message errors.
+
+2008-07-11  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ImplementISerializableCorrectlyRule.cs: New.  Rule for ensuring the
 	correct implementation of the ISerializable interface.  It also makes
 	sure you use the [NonSerialized] attribute if you aren't serializing a
 	field.

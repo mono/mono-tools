@@ -73,13 +73,12 @@ namespace Gendarme.Rules.Serialization {
 			if (target.DeclaringType != current || !target.IsGetter || !target.HasBody)
 				return null;//Where are you calling dude?
 
-			FieldReference reference = null;
-			foreach (Instruction each in target.Body.Instructions) {
-				if (each.OpCode == OpCodes.Ldfld)
-					reference = (FieldReference) each.Operand;
+			int count = target.Body.Instructions.Count;
+			for (int index = count - 1; index >= 0; index--) {
+				if (target.Body.Instructions[index].OpCode == OpCodes.Ldfld)
+					return (FieldReference) target.Body.Instructions[index].Operand;
 			}
-			//Return the nearest to the ret instruction.
-			return reference;
+			return null;
 		}
 
 		private static FieldReference GetFieldReference (Instruction instruction, MethodDefinition method)
@@ -106,15 +105,15 @@ namespace Gendarme.Rules.Serialization {
 			IList<FieldReference> fieldsUsed = GetFieldsUsedIn (getObjectData);
 			
 			foreach (FieldDefinition field in type.Fields) {
-				if (!fieldsUsed.Contains (field) && !field.IsNotSerialized && !field.IsStatic)
-					Runner.Report (type, Severity.Medium, Confidence.High, String.Format ("The field {0} isn't going to be serialized, please use the [NonSerialized] attribute.", field.Name));
+				if (!field.IsNotSerialized && !field.IsStatic && !fieldsUsed.Contains (field))
+					Runner.Report (type, Severity.Medium, Confidence.High, String.Format ("The field '{0}' will not be serialized. For clarity consider marking it with the [NonSerialized] attribute.", field.Name));
 			}
 		}
 
 		private void CheckExtensibilityFor (TypeDefinition type, MethodDefinition getObjectData)
 		{
 			if (!type.IsSealed && getObjectData.IsFinal)
-				Runner.Report (type, Severity.High, Confidence.Total, "If this class is going to be sealed, seal it; else you should make virtual the GetObjectData method.");
+				Runner.Report (type, Severity.High, Confidence.Total, "Either seal this type or change GetObjectData method to be virtual");
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
