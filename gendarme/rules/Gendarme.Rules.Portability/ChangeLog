@@ -1,3 +1,8 @@
+2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Fix unused 'msg' (last minute change)
+	and static-ify some methods (self-test).
+
 2008-07-10  Daniel Abramov  <ex@vingrad.ru>
 
 	* DoNotHardcodePathsRule.cs: New rule that looks for hardcoded 

@@ -150,21 +150,21 @@ namespace Gendarme.Rules.Portability {
 				return null;
 		}
 
-		bool CanBeWindowsAbsolutePath (string s)
+		static bool CanBeWindowsAbsolutePath (string s)
 		{
 			// true for strings like ?:\*
 			// e.g. 'C:\some\path' or 'D:\something.else"
 			return s [1] == ':' && s [2] == '\\';
 		}
 
-		bool CanBeWindowsUNCPath (string s)
+		static bool CanBeWindowsUNCPath (string s)
 		{
 			// true for Windows UNC paths
 			// e.g. \\Server\Directory\File
 			return s [0] == '\\' && s [1] == '\\';
 		}
 
-		bool CanBeUnixAbsolutePath (string s)
+		static bool CanBeUnixAbsolutePath (string s)
 		{
 			// true for strings like /*
 			return s [0] == '/';
@@ -390,7 +390,7 @@ namespace Gendarme.Rules.Portability {
 				AddPoints (4);
 		}
 
-		bool IdentifierLooksLikePath (string name)
+		static bool IdentifierLooksLikePath (string name)
 		{
 			// Console.WriteLine ("// analyzing identifier '{0}'", name);
 
@@ -400,7 +400,7 @@ namespace Gendarme.Rules.Portability {
 				name.Contains ("path");
 		}
 
-		int CountOccurences (string str, char c)
+		static int CountOccurences (string str, char c)
 		{
 			// helper method to tell how many times a certain character occurs in the string
 			int n = 0;
@@ -455,7 +455,7 @@ namespace Gendarme.Rules.Portability {
 				// important as this allows a quick false positive check without checking the source code
 				if (conf.HasValue) {
 					string msg = String.Format ("string \"{0}\" looks quite like a filename.", candidate);
-					Runner.Report (method, ins, Severity.High, conf.Value, candidate);
+					Runner.Report (method, ins, Severity.High, conf.Value, msg);
 				}
 			}
 
