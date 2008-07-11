@@ -19,6 +19,7 @@
     <File name="MonoCompatibilityReviewTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="ExitCodeIsLimitedOnUnixTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotHardcodePathsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Portability" />
@@ -27,6 +28,7 @@
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
     <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
   <DeployTargets />
