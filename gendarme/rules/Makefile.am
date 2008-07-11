@@ -7,7 +7,7 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Interoperability Gendarme.Rules.Serialization \
 	 Gendarme.Rules.Maintainability
 
-EXTRA_DIST = rules.xml rules.mds tests.mds
+EXTRA_DIST = rules.xml rules.mds tests.mds common.make
 DISTCLEANFILES = Makefile.in
 
 install-data-hook:
