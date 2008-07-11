@@ -6,7 +6,7 @@ rules_dll = ../../bin/Gendarme.Rules.Exceptions.dll
 tests_dll = Test.Rules.Exceptions.dll
 
 exceptions_rulesdir=$(prefix)/lib/gendarme
-exceptions_rules_SCRIPTS = ../../bin/Gendarme.Rules.Exceptions.dll
+exceptions_rules_SCRIPTS = $(rules_dll)
 exceptions_rules_DATA = 
 
 EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Exceptions.mdp Gendarme.Rules.Exceptions.csproj

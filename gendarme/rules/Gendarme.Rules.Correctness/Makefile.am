@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 include ../common.make
 
-rules_dll = ../../bin/Gendarme.Rules.Serialization.dll
-tests_dll = Test.Rules.Serialization.dll
+rules_dll = ../../bin/Gendarme.Rules.Correctness.dll
+tests_dll = Test.Rules.Correctness.dll
 
 correctness_rulesdir=$(prefix)/lib/gendarme
 correctness_rules_SCRIPTS = $(rules_dll)

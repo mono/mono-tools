@@ -2,8 +2,8 @@ SUBDIRS=Test
 
 include ../common.make
 
-rules_dll = ../../bin/Gendarme.Rules.Smells.dll
-tests_dll = Test.Rules.Smells.dll
+rules_dll = ../../bin/Gendarme.Rules.Ui.dll
+tests_dll = Test.Rules.Ui.dll
 
 ui_rulesdir=$(prefix)/lib/gendarme
 ui_rules_SCRIPTS = $(rules_dll)
