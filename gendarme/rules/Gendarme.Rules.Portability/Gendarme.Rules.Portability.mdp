@@ -19,6 +19,7 @@
     <File name="MoMAWebService.cs" subtype="Code" buildaction="Compile" />
     <File name="MonoCompatibilityReviewRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ExitCodeIsLimitedOnUnixRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotHardcodePathsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>

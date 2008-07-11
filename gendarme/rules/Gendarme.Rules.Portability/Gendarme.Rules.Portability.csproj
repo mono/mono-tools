@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExitCodeIsLimitedOnUnixRule.cs" />
+    <Compile Include="DoNotHardcodePathsRule.cs" />
     <Compile Include="FeatureRequiresRootPrivilegeOnUnixRule.cs" />
     <Compile Include="MoMAWebService.cs" />
     <Compile Include="MonoCompatibilityReviewRule.cs" />

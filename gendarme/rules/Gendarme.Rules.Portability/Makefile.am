@@ -16,14 +16,16 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Portability.xml TestResult.xml
 EXTRA_RULES_OPTIONS = -r:ICSharpCode.SharpZipLib.dll -pkg:dotnet
 
 rules_sources = \
-	NewLineLiteralRule.cs \
+	DoNotHardcodePathsRule.cs \
 	ExitCodeIsLimitedOnUnixRule.cs \
 	FeatureRequiresRootPrivilegeOnUnixRule.cs \
 	MoMAWebService.cs \
-	MonoCompatibilityReviewRule.cs 
+	MonoCompatibilityReviewRule.cs \
+	NewLineLiteralRule.cs
 
 tests_sources = \
-	NewLineLiteralTest.cs \
+	DoNotHardcodePathsTest.cs \
 	ExitCodeIsLimitedOnUnixTest.cs \
 	FeatureRequiresRootPrivilegeOnUnixTest.cs \
-	MonoCompatibilityReviewTest.cs 
+	MonoCompatibilityReviewTest.cs \
+	NewLineLiteralTest.cs

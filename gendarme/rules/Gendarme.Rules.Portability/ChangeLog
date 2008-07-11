@@ -1,3 +1,12 @@
+2008-07-10  Daniel Abramov  <ex@vingrad.ru>
+
+	* DoNotHardcodePathsRule.cs: New rule that looks for hardcoded 
+	path strings like 'C:\something.txt' or '/usr/home' and warns the
+	developer that they may break application portability.
+	* Makefile.am, 
+	* Gendarme.Rules.Portability.mdp,
+	* Gendarme.Rules.Portability.csproj: Add new rule.
+
 2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make

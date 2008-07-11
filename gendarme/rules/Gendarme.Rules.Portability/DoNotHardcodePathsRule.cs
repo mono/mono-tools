@@ -1,0 +1,465 @@
+// 
+// Gendarme.Rules.Portability.DoNotHardcodePathsRule
+//
+// Authors:
+//	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot  <sebastien@ximian.com>
+//
+// Copyright (C) 2008 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
+using System.Collections.Generic;
+
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+
+using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
+
+namespace Gendarme.Rules.Portability {
+
+	[Problem ("This string looks like a path that may become invalid if the code is executed on a different operating system.")]
+	[Solution ("Use System.IO.Path and System.Environment types to generate paths instead of hardcoding them.")]
+	public class DoNotHardcodePathsRule : Rule, IMethodRule {
+
+		// result cache
+		private static Dictionary<string, Confidence?> resultCache =
+			new Dictionary<string, Confidence?> ();
+
+		// (back)slash counters
+		private int slashes;
+		private int backslashes;
+
+		// method body being checked
+		private MethodBody method_body;
+
+		// point counter
+		private int current_score;
+
+		void AddPoints (int pts)
+		{
+			current_score += pts;
+			// Console.WriteLine ("// added {0} pts", pts);
+		}
+
+		Confidence? CheckIfStringIsHardcodedPath (Instruction ldstr, string str)
+		{
+			// try to filter out false positives:
+
+			// count (back)slashes
+			slashes = CountOccurences (str, '/');
+			backslashes = CountOccurences (str, '\\');
+
+			// if there's no (back)slashes, string's not going to cause
+			// any portability problems
+			if (slashes == 0 && backslashes == 0)
+				return null;
+
+			// file paths don't contain //
+			if (str.Contains ("//"))
+				return null;
+
+			// don't check XML strings
+			if (str.Contains ("</") || str.Contains ("/>"))
+				return null;
+
+			// files paths don't usually have more than one dot (in extension)
+			if (CountOccurences (str, '.') > 2)
+				return null;
+
+
+			// handle different cases
+			if (CanBeWindowsAbsolutePath (str)) {
+				// whoooaaa! most probably we have a windows absolute path here
+				AddPoints (5); // add points (5 because '*:\*' is less common)
+				backslashes--; // we should't count a backslash in drive letter
+
+				// process a windows path
+				ProcessWindowsPath (str);
+
+			} else if (CanBeWindowsUNCPath (str)) {
+				AddPoints (4); // add points
+				backslashes -= 2;
+
+				// go!
+				ProcessWindowsPath (str);
+
+			} else if (CanBeUnixAbsolutePath (str)) {
+				// same for unix
+				AddPoints (2); // add points (2 because '/*' is more common)
+				slashes--; // we shouldn't count a slash in the beginning
+
+				// process a unix path
+				ProcessUnixProbablyAbsolutePath (str);
+
+			} else {
+				// since that's not an absolute path, we need to
+				// switch between unix/windows path handlers
+				// depending on what character is more common
+				// ('/' for unix, '\' for windows)
+
+				if (backslashes > slashes)
+					ProcessWindowsPath (str); // like directory\something\..
+				else if (backslashes < slashes)
+					ProcessUnixPath (str); // like directory/something/..
+
+			}
+
+			// process the extension
+			try {
+				ProcessExtension (System.IO.Path.GetExtension (str));
+			}
+			catch (ArgumentException) {
+				// catch any invalid path character (more common on windows)
+			}
+
+			// try to guess how the string is used
+			TryGuessUsage (ldstr);
+
+			// Console.WriteLine ("// total score: {0}", current_score);
+
+			if (current_score > 13)
+				return Confidence.Total;
+
+			else if (current_score > 9)
+				return Confidence.High;
+
+			else if (current_score > 7)
+				return Confidence.Normal;
+
+			else
+				return null;
+		}
+
+		bool CanBeWindowsAbsolutePath (string s)
+		{
+			// true for strings like ?:\*
+			// e.g. 'C:\some\path' or 'D:\something.else"
+			return s [1] == ':' && s [2] == '\\';
+		}
+
+		bool CanBeWindowsUNCPath (string s)
+		{
+			// true for Windows UNC paths
+			// e.g. \\Server\Directory\File
+			return s [0] == '\\' && s [1] == '\\';
+		}
+
+		bool CanBeUnixAbsolutePath (string s)
+		{
+			// true for strings like /*
+			return s [0] == '/';
+		}
+
+		void ProcessWindowsPath (string path)
+		{
+			// Console.WriteLine ("// process win path");
+
+			// normally, windows paths don't contain slashes 
+			if (slashes == 0 && backslashes > 1)
+				AddPoints (2);
+
+			// the more backslashes there are
+			// the more we are convinced it's a path:
+
+			if (backslashes > 3)
+				AddPoints (4);
+
+			else if (backslashes > 1)
+				AddPoints (3);
+
+			else if (backslashes == 1)
+				AddPoints (2);
+		}
+
+		void ProcessUnixProbablyAbsolutePath (string path)
+		{
+			// check for common prefixes
+			if (path.StartsWith ("/bin/") ||
+			    path.StartsWith ("/etc/") ||
+			    path.StartsWith ("/sbin/") ||
+			    path.StartsWith ("/dev/") ||
+			    path.StartsWith ("/lib/") ||
+			    path.StartsWith ("/usr/") ||
+			    path.StartsWith ("/tmp/") ||
+			    path.StartsWith ("/proc/") ||
+			    path.StartsWith ("/sys/") ||
+			    path.StartsWith ("/cdrom/") ||
+			    path.StartsWith ("/home/") ||
+			    path.StartsWith ("/media/") ||
+			    path.StartsWith ("/mnt/") ||
+			    path.StartsWith ("/opt/") ||
+			    path.StartsWith ("/var/"))
+
+				AddPoints (4);
+
+			ProcessUnixPath (path);
+		}
+
+		void ProcessUnixPath (string path)
+		{
+			// Console.WriteLine ("// process ux path");
+
+			// normally, unix paths don't contain backslashes (unlike windows)
+			if (backslashes == 0)
+				AddPoints (2);
+
+			// the more slashes there are
+			// the more we are convinced it's a path:
+
+			if (slashes > 3)
+				AddPoints (3);
+
+			else if (slashes > 1)
+				AddPoints (2);
+
+			else if (slashes == 1)
+				AddPoints (1);
+		}
+
+		void ProcessExtension (string ext)
+		{
+			// Console.WriteLine ("// process extension");
+
+			int length = ext.Length;
+
+			// now we look at the extension length
+			// NB: extension name also includes a dot (.)
+
+			if (length < 2 || length > 6)
+				return;
+
+			if (length == 4) // this is very common for extensions => really good sign :-)
+				AddPoints (4);
+
+			else
+				AddPoints (3); // less common but still good
+		}
+
+		void TryGuessUsage (Instruction ldstr)
+		{
+			// Console.WriteLine ("// guess usage");
+
+			// here we hope to get some additional points
+			// from further usage analysis
+
+			// no further usage, good-bye!
+			if (ldstr.Next == null)
+				return;
+
+			// we handle two cases:
+
+			// #1: string can be stored into a local variable or field with a well-sounding name*
+			// * - well-sounding == name.Contains ("dir") || name.Contains ("file") || ...
+
+			if (CheckIfStored (ldstr.Next))
+				return;
+
+			// if we reach this point, it means #1 didn't catch anything
+
+			// now, try option #2: navigate to the closest call(i|virt)? or newobj
+			// and see what we can learn
+
+			Instruction current = ldstr.Next;
+			// this counter will be used to calculate parameter position
+			int paramOffset = 0;
+
+			// take next instruction if any until it is call(i|virt)? or newobj
+			while (current != null && !CheckIfMethodOrCtorIsCalled (current, paramOffset)) {
+				current = current.Next;
+				paramOffset++;
+			}
+		}
+
+		// true == handled
+		// false == unhandled
+		bool CheckIfStored (Instruction afterLdstr)
+		{
+			switch (afterLdstr.OpCode.Code) {
+			case Code.Stfld: // store into field
+			case Code.Stsfld:
+				CheckIdentifier ((afterLdstr.Operand as FieldReference).Name);
+				break;
+			default:
+				if (afterLdstr.IsStoreLocal ())
+					CheckIdentifier (afterLdstr.GetVariable (method_body.Method).Name);
+				else
+					return false;
+				break;
+			}
+
+			return true; // handled
+		}
+
+		// true == handled
+		// false == unhandled
+		bool CheckIfMethodOrCtorIsCalled (Instruction ins, int currentOffset)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Call:
+			case Code.Calli:
+			case Code.Callvirt:
+				// this is a call
+				MethodReference target = ins.Operand as MethodReference;
+
+				// this happens sometimes so it's worth checking
+				if (target == null)
+					return true;
+
+				// we can avoid some false positives by doing additional checks here
+
+				string methodName = target.Name;
+				string typeName = target.DeclaringType.FullName;
+
+				if (typeName.StartsWith ("Microsoft.Win32.Registry") // registry keys
+				    || (typeName.StartsWith ("System.Xml") // xpath expressions
+					&& methodName.StartsWith ("Select"))) {
+					AddPoints (-42);
+					return true; // handled
+				}
+
+				// see what we can learn
+
+				if (target.Name.StartsWith ("set_") &&
+				    target.Parameters.Count == 1)
+					// to improve performance, don't Resolve ()
+					// this is a setter (in 99% cases)
+					CheckIdentifier (target.Name);
+				else
+					// we can also check parameter name
+					CheckMethodParameterName (target, currentOffset);
+
+				break;
+
+			case Code.Newobj:
+				// this is a constructor call
+				MethodReference ctor = (MethodReference) ins.Operand;
+				string createdTypeName = ctor.DeclaringType.FullName;
+
+				// avoid catching regular expressions
+				if (createdTypeName == "System.Text.RegularExpressions.Regex")
+					AddPoints (-42);
+
+				break;
+
+			default:
+				return false;
+			}
+
+			return true; // handled
+		}
+
+		void CheckMethodParameterName (MethodReference methodReference, int parameterOffset)
+		{
+			MethodDefinition method = methodReference.Resolve ();
+			int parameterIndex = method.Parameters.Count - parameterOffset - 1;
+
+			// to prevent some uncommon situations
+			if (parameterIndex < 0 || parameterIndex >= method.Parameters.Count)
+				return;
+
+			// parameterOffset is distance in instructions between ldstr and call(i|virt)?
+			ParameterDefinition parameter = method.Parameters [method.Parameters.Count - parameterOffset - 1];
+
+			// if its name is 'pathy', score some points!
+			CheckIdentifier (parameter.Name);
+		}
+
+		void CheckIdentifier (string name)
+		{
+			if (IdentifierLooksLikePath (name))
+				AddPoints (4);
+		}
+
+		bool IdentifierLooksLikePath (string name)
+		{
+			// Console.WriteLine ("// analyzing identifier '{0}'", name);
+
+			name = name.ToLower ();
+			return name.Contains ("file") ||
+				name.Contains ("dir") ||
+				name.Contains ("path");
+		}
+
+		int CountOccurences (string str, char c)
+		{
+			// helper method to tell how many times a certain character occurs in the string
+			int n = 0;
+			for (int i = 0; i < str.Length; i++)
+				if (str [i] == c)
+					n++;
+			return n;
+		}
+
+		Confidence? GetConfidence (Instruction ldstr, string candidate)
+		{
+			string str = (string) ldstr.Operand;
+
+			// check if string is already in cache
+			Confidence? result;
+			if (resultCache.TryGetValue (candidate, out result))
+				return result;
+
+			// process and cache result
+			result = CheckIfStringIsHardcodedPath (ldstr, candidate);
+			resultCache.Add (str, result);
+			return result;
+		}
+
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			// if method has no IL, we don't check it
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			method_body = method.Body;
+
+			// enumerate instructions to look for strings
+			foreach (Instruction ins in method.Body.Instructions) {
+				// Console.WriteLine ("{0} {1}", ins.OpCode, ins.Operand);
+
+				if (ins.OpCode != OpCodes.Ldstr)
+					continue;
+
+				slashes = backslashes = current_score = 0;
+
+				// check if loaded string is a hardcoded path
+				string candidate = (ins.Operand as string);
+
+				// don't check too short strings (we do this very earlier to avoid caching the small values)
+				if (candidate.Length < 4)
+					continue;
+
+				Confidence? conf = GetConfidence (ins, candidate);
+
+				// if sure enough, report the problem with the candidate string
+				// important as this allows a quick false positive check without checking the source code
+				if (conf.HasValue) {
+					string msg = String.Format ("string \"{0}\" looks quite like a filename.", candidate);
+					Runner.Report (method, ins, Severity.High, conf.Value, candidate);
+				}
+			}
+
+			return Runner.CurrentRuleResult;
+		}
+	}
+}
