@@ -1,3 +1,7 @@
+2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Start using ../common.make
+
 2008-07-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Rebuild if the framework has changed.
