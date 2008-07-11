@@ -2,7 +2,7 @@ SUBDIRS=Test
 
 include ../common.make
 
-rules_dll = ../../bin/Gendarme.Exceptions.Smells.dll
+rules_dll = ../../bin/Gendarme.Rules.Exceptions.dll
 tests_dll = Test.Rules.Exceptions.dll
 
 exceptions_rulesdir=$(prefix)/lib/gendarme
