@@ -1,42 +1,30 @@
 SUBDIRS=Test
 
-framework=../../bin/Gendarme.Framework.dll
+include ../common.make
+
+rules_dll = ../../bin/Gendarme.Rules.Smells.dll
+tests_dll = Test.Rules.Smells.dll
+
 interoperability_rulesdir=$(prefix)/lib/gendarme
-interoperability_rules_SCRIPTS = ../../bin/Gendarme.Rules.Interoperability.dll
+interoperability_rules_SCRIPTS = $(rules_dll)
 interoperability_rules_DATA = 
-EXTRA_DIST = $(interoperability_rules_sources) $(interoperability_rules_sources_in) \
-	Gendarme.Rules.Interoperability.mdp 
-CLEANFILES = $(interoperability_rules_SCRIPTS) $(interoperability_rules_SCRIPTS).mdb Test.Rules.Interoperability.dll
+
+EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Interoperability.mdp Gendarme.Rules.Interoperability.csproj 
+CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Interoperability.xml TestResult.xml
 
-interoperability_rules_sources_in = ../../AssemblyInfo.cs.in
-interoperability_rules_generated_sources = $(interoperability_rules_sources_in:.in=)
-interoperability_rules_sources = PInvokeShouldNotBeVisibleRule.cs GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
-	UseManagedAlternativesToPInvokeRule.cs MarshalStringsInPInvokeDeclarationsRule.cs \
-	DoNotCastIntPtrToInt32Rule.cs
+rules_sources = \
+	DoNotCastIntPtrToInt32Rule.cs \
+	GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
+	MarshalStringsInPInvokeDeclarationsRule.cs \
+	PInvokeShouldNotBeVisibleRule.cs \
+	UseManagedAlternativesToPInvokeRule.cs
 
-interoperability_rules_build_sources = $(addprefix $(srcdir)/, $(interoperability_rules_sources))
-interoperability_rules_build_sources += $(interoperability_rules_generated_sources)
+EXTRA_TESTS_OPTIONS = -unsafe
 
-../../bin/Gendarme.Rules.Interoperability.dll: $(interoperability_rules_build_sources)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -r:$(framework) \
-		-out:$@ $(interoperability_rules_build_sources)
-
-interoperability_test_sources = PInvokeShouldNotBeVisibleTest.cs GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
-	UseManagedAlternativesToPInvokeTest.cs MarshalStringsInPInvokeDeclarationsTest.cs \
+tests_sources = \
 	DoNotCastIntPtrToInt32Test.cs
-
-interoperability_test_build_sources = $(addprefix $(srcdir)/Test/, $(interoperability_test_sources))
-
-Test.Rules.Interoperability.dll: $(interoperability_test_build_sources) $(interoperability_rules_SCRIPTS)
-	$(GMCS) -unsafe -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:$(framework) \
-		-r:$(interoperability_rules_SCRIPTS) -r:../Test.Rules/Test.Rules.dll -out:$@ $(interoperability_test_build_sources)
-
-test: Test.Rules.Interoperability.dll
-
-run-test: test
-	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 Test.Rules.Interoperability.dll
-
-self-test: $(interoperability_rules_SCRIPTS)
-	mono --debug ../../bin/gendarme.exe $(interoperability_rules_SCRIPTS)
-
+	GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
+	MarshalStringsInPInvokeDeclarationsTest.cs \
+	PInvokeShouldNotBeVisibleTest.cs \
+	UseManagedAlternativesToPInvokeTest.cs
