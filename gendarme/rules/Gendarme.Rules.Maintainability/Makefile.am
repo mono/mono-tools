@@ -16,12 +16,10 @@ rules_sources = \
 	AvoidComplexMethodsRule.cs \
 	AvoidDeepInheritanceTreeRule.cs \
 	AvoidLackOfCohesionOfMethodsRule.cs \
-	AvoidUnnecessarySpecializationRule.cs \
 	PreferStringIsNullOrEmptyRule.cs
 
 tests_sources = \
 	AvoidComplexMethodsTest.cs \
 	AvoidDeepInheritanceTreeTest.cs \
 	AvoidLackOfCohesionOfMethodsTest.cs \
-	AvoidUnnecessarySpecializationTest.cs \
 	PreferStringIsNullOrEmptyTest.cs
