@@ -19,7 +19,8 @@ rules_sources = \
 	MarkAllNonSerializableFieldsRule.cs \
 	MissingSerializableAttributeOnISerializableTypeRule.cs \
 	MissingSerializationConstructorRule.cs \
-	UseCorrectSignatureForSerializationMethodsRule.cs
+	UseCorrectSignatureForSerializationMethodsRule.cs \
+	ImplementISerializableCorrectlyRule.cs
 
 tests_sources = \
 	CallBaseMethodsOnISerializableTypesTest.cs \
@@ -27,4 +28,5 @@ tests_sources = \
 	MarkAllNonSerializableFieldsTest.cs \
 	MissingSerializableAttributeOnISerializableTypeTest.cs \
 	MissingSerializationConstructorTest.cs \
-	UseCorrectSignatureForSerializationMethodsTest.cs
+	UseCorrectSignatureForSerializationMethodsTest.cs \
+	ImplementISerializableCorrectlyTest.cs

@@ -1,3 +1,12 @@
+2008-07-11  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ImplementISerializableCorrectlyRule.cs: Now.  Rule for ensuring the
+	correct implementation of the ISerializable interface.  It also makes
+	sure you use the [NonSerialized] attribute if you aren't serializing a
+	field.
+	* Gendarme.Rules.Serialization.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-07-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make
