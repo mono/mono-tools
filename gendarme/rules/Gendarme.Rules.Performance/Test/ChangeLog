@@ -1,3 +1,10 @@
+2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedPrivateFieldsTest.cs: New. Unit tests for 
+	AvoidUnusedPrivateFieldsRule. There is a bug that prevent from
+	running the generic test on mono (needs more investigation) but
+	the rule itself works.
+
 2008-07-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCastsTest.cs: New. Unit tests for 
