@@ -1,3 +1,11 @@
+2008-07-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidConstructorsInStaticTypesRule.cs: Rework the rule to
+	be more specific to 1.x code - where we want to the possibility 
+	to instantiate "static" types by avoiding a visible default ctor.
+	* Makefile.am: Fix typo that limited the number of tests being 
+	built and executed.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewUseOfModuloOneOnIntegersRule.cs: Remove unused field 

@@ -29,7 +29,7 @@ rules_sources = \
 	UseValueInPropertySetterRule.cs
 
 tests_sources = \
-	AvoidConstructorsInStaticTypesTest.cs 
+	AvoidConstructorsInStaticTypesTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \
 	DontCompareWithNaNTest.cs \
