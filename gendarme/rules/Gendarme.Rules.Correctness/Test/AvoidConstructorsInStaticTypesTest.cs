@@ -30,18 +30,18 @@
 
 using System;
 using System.Reflection;
-using System.Text;
-using Gendarme.Framework;
-using Gendarme.Rules.Correctness;
-using Mono.Cecil;
-using NUnit.Framework;
 
+using Mono.Cecil;
+using Gendarme.Rules.Correctness;
+
+using NUnit.Framework;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Correctness {
 
 	[TestFixture]
-	public class AvoidConstructorsInStaticTypesTest {
+	public class AvoidConstructorsInStaticTypesTest : TypeRuleTestFixture<AvoidConstructorsInStaticTypesRule> {
 
 		public class CannotBeMadeStatic {
 
@@ -50,18 +50,23 @@ namespace Test.Rules.Correctness {
 			}
 		}
 
-		public class CanBeMadeStatic {
+		[Test]
+		public void TestClassCannotBeMadeStatic ()
+		{
+			AssertRuleSuccess<CannotBeMadeStatic> ();
+		}
+
+		public class CouldBeStatic {
 
 			public static void Method ()
 			{
 			}
 		}
 
-		public static class IsStatic {
-
-			public static void Method ()
-			{
-			}
+		[Test]
+		public void TestClassCanBeMadeStatic ()
+		{
+			AssertRuleFailure<CouldBeStatic> (1);
 		}
 
 		public class IsMadeStatic {
@@ -75,61 +80,58 @@ namespace Test.Rules.Correctness {
 			}
 		}
 
+		[Test]
+		public void TestClassHasNoPublicConstructors ()
+		{
+			AssertRuleSuccess<IsMadeStatic> ();
+		}
+
 		public class EmptyClass {
+			// this creates a public ctor
 		}
 
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
+		public class InheritClass : EmptyClass {
+			private int x;
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp()
-		{
-			string unit = Assembly.GetExecutingAssembly().Location;
-			assembly = AssemblyFactory.GetAssembly(unit);
-			rule = new AvoidConstructorsInStaticTypesRule();
-			runner = new TestRunner (rule);
+			public void Show ()
+			{
+				Console.WriteLine (x);
+			}
 		}
 
-		[Test]
-		public void TestClassHasNoPublicConstructors()
-		{
-			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/IsMadeStatic"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
+		public class InheritAddingOnlyStatic : InheritClass {
 
-		[Test]
-		public void TestClassIsDeclaredStatic()
-		{
-			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/IsStatic"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			static string Message = "Hello";
+
+			static public void Display ()
+			{
+				Console.WriteLine (Message);
+			}
 		}
 
 		[Test]
-		public void TestClassCannotBeMadeStatic()
+		public void Inheritance ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/CannotBeMadeStatic"];
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleFailure<EmptyClass> (1); // default, visible, ctor
+			AssertRuleSuccess<InheritClass> ();
+			AssertRuleSuccess<InheritAddingOnlyStatic> ();
+		}
+
+		static class StaticClass {
+
+			static void Show ()
+			{
+				Console.WriteLine ("hello");
+			}
 		}
 
 		[Test]
-		public void TestClassCanBeMadeStatic()
+		public void StaticType ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/CanBeMadeStatic"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestEmptyClass ()
-		{
-			type = assembly.MainModule.Types["Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/EmptyClass"];
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			// the nice generic-based test syntax won't work on static types :(
+			Assembly a = typeof (AvoidConstructorsInStaticTypesTest).Assembly;
+			TypeDefinition type = DefinitionLoader.GetTypeDefinition (a, "Test.Rules.Correctness.AvoidConstructorsInStaticTypesTest/StaticClass");
+			AssertRuleDoesNotApply (type);
 		}
 	}
 }
