@@ -1,3 +1,8 @@
+2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocks.cs: Added IsStatic for static types (2.0+). Fixed 
+	IsVisible to work when resolving is required (or not possible).
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* InstructionRocks.cs: Change GetOperand to case Ldc_I4_S to an

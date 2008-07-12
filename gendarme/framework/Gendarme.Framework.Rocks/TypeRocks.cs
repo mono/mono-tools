@@ -433,13 +433,29 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Check if the type is static (2.0+)
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <returns>True if the type is static, false otherwise.</returns>
+		public static bool IsStatic (this TypeReference self)
+		{
+			TypeDefinition type = self.Resolve ();
+			if (type == null)
+				return false;
+			return (type.IsSealed && type.IsAbstract);
+		}
+
+		/// <summary>
 		/// Check if the type is visible outside of the assembly.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
 		/// <returns>True if the type can be used from outside of the assembly, false otherwise.</returns>
 		public static bool IsVisible (this TypeReference self)
 		{
-			TypeDefinition type = (self as TypeDefinition);
+			TypeDefinition type = self.Resolve ();
+			if (type == null)
+				return true; // it's probably visible since we have a reference to it
+
 			while (type.IsNested) {
 				if (type.IsNestedPrivate || type.IsNestedAssembly)
 					return false;
