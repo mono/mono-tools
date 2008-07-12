@@ -36,7 +36,8 @@ rules_sources = \
 	AvoidUnneededUnboxingRule.cs \
 	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
-	AvoidRepetitiveCastsRule.cs
+	AvoidRepetitiveCastsRule.cs \
+	AvoidUnusedPrivateFieldsRule.cs
 
 EXTRA_TESTS_OPTIONS = -unsafe
 
@@ -63,4 +64,5 @@ tests_sources = \
 	AvoidUnneededUnboxingTest.cs \
 	ConsiderCustomAccessorsForNonVisibleEventsTest.cs \
 	AvoidTypeGetTypeForConstantStringsTest.cs \
-	AvoidRepetitiveCastsTest.cs
+	AvoidRepetitiveCastsTest.cs \
+	AvoidUnusedPrivateFieldsTest.cs
