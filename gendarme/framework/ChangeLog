@@ -1,3 +1,7 @@
+2008-07-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Fix Makefile.am not to compile the framework everytime.
+
 2008-07-09  Jb Evain  <jbevain@novell.com>
 
 	* AssemblyResolver.cs: use a Dictionary<,> instead of a SortedList

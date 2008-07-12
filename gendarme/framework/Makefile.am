@@ -50,10 +50,8 @@ framework_sources = \
 framework_build_sources = $(addprefix $(srcdir)/, $(framework_sources))
 framework_build_sources += $(framework_generated_sources)
 
-../bin/:
-	mkdir ../bin
-
-../bin/Gendarme.Framework.dll: ../bin/ $(framework_build_sources) $(CECIL_ASM)
+../bin/Gendarme.Framework.dll: $(framework_build_sources) $(CECIL_ASM)
+	test -d ../bin || mkdir ../bin
 	$(GMCS) -debug -target:library  -doc:Gendarme.Framework.doc.xml -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
