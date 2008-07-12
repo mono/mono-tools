@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="CallBaseMethodsOnISerializableTypesTest.cs" />
     <Compile Include="DeserializeOptionalFieldTest.cs" />
+    <Compile Include="ImplementISerializableCorrectlyTest.cs" />
     <Compile Include="MarkAllNonSerializableFieldsTest.cs" />
     <Compile Include="UseCorrectSignatureForSerializationMethodsTest.cs" />
     <Compile Include="MissingSerializableAttributeOnISerializableTypeTest.cs" />
