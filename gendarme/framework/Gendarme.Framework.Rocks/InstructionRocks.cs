@@ -116,6 +116,8 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Ldc_I4_7:
 			case Code.Ldc_I4_8:
 				return (code - Code.Ldc_I4_0); 
+			case Code.Ldc_I4_S:
+				return (int) (sbyte) self.Operand;
 			default:
 				return self.Operand;
 			}
