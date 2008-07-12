@@ -35,11 +35,22 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
-	[Problem ("This type inheritance tree is more than four level deep.")]
-	[Solution ("Refactor your class hierarchy to reduce it's depth. Consider using extension methods to extend existing types.")]
+	[Problem ("This type inheritance tree is more than four levels deep.")]
+	[Solution ("Refactor your class hierarchy to reduce its depth. Consider using extension methods to extend existing types.")]
 	public class AvoidDeepInheritanceTreeRule : Rule, ITypeRule {
 
-		private const int MaximumDepth = 4;
+		public int MaximumDepth {
+			get { return maximumDepth; }
+			set { maximumDepth = value; }
+		}
+		private int maximumDepth = 4;
+
+		public bool CountExternalDepth {
+			get { return countExternalDepth; }
+			set { countExternalDepth = value; }
+		}
+		private bool countExternalDepth = false;
+
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -49,13 +60,14 @@ namespace Gendarme.Rules.Maintainability {
 			int depth = 0;
 			while (type.BaseType != null) {
 				type = type.BaseType.Resolve ();
-				depth++;
+				if (countExternalDepth || Runner.Assemblies.Contains (type.Module.Assembly))
+					depth++;
 			}
 
 			if (depth <= MaximumDepth)
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Medium, Confidence.Total, String.Format ("Inheritance tree depth {0}.", depth));
+			Runner.Report (type, Severity.Medium, Confidence.Total, String.Format ("Inheritance tree depth : {0}.", depth));
 			return RuleResult.Failure;
 		}
 	}

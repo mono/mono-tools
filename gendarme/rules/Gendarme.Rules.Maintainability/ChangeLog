@@ -1,3 +1,10 @@
+2008-07-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepInheritanceTreeRule.cs: Change the default rule behaviour
+	to check only inheritance inside the set of assemblies being analyzed
+	(instead of the whole resolvable class libraries). This can be
+	changed back using the configuration file. Patch by Cedric Vivier.
+
 2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsRule.cs: Always report the calculated CC 
