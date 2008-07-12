@@ -1,3 +1,10 @@
+2008-07-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepInheritanceTreeRule.cs: A second set of test cases
+	for the (new) default rule behaviour, working on the set of
+	assemblies only (not the whole resolvable framework). Patch by
+	Cedric Vivier.
+
 2008-05-18  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* PreferStringIsNullOrEmptyTest.cs: New. Unit tests for 

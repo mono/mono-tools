@@ -36,8 +36,32 @@ using Test.Rules.Fixtures;
 
 namespace Test.Rules.Maintainability {
 
+	public class Internal : HMACSHA1 {
+	}
+
+	public class InternalOne : Internal {
+	}
+
+	public class InternalTwo : InternalOne {
+	}
+
+	public class InternalThree : InternalTwo {
+	}
+
+	public class InternalFour : InternalThree {
+	}
+
+	public class InternalFive : InternalFour {
+	}
+
 	[TestFixture]
-	public class AvoidDeepInheritanceTreeTest : TypeRuleTestFixture<AvoidDeepInheritanceTreeRule> {
+	public class AvoidDeepInheritanceTreeTestWithCountExternalDepth : TypeRuleTestFixture<AvoidDeepInheritanceTreeRule> {
+
+		[SetUp]
+		public void SetUp ()
+		{
+			Rule.CountExternalDepth = true;
+		}
 
 		[Test]
 		public void DoesNotApply ()
@@ -89,5 +113,41 @@ namespace Test.Rules.Maintainability {
 		{
 			AssertRuleFailure<MyHMACSHA1> ();
 		}
+
+		[Test]
+		public void InternalOneWithCountExternalDepth ()
+		{
+			AssertRuleFailure<InternalOne> ();
+		}
+
+	}
+
+	[TestFixture]
+	public class AvoidDeepInheritanceTreeTest : TypeRuleTestFixture<AvoidDeepInheritanceTreeRule> {
+
+		[Test]
+		public void InternalZero ()
+		{
+			AssertRuleSuccess<Internal> ();
+		}
+
+		[Test]
+		public void InternalOne ()
+		{
+			AssertRuleSuccess<InternalOne> ();
+		}
+
+		[Test]
+		public void InternalFour ()
+		{
+			AssertRuleSuccess<InternalFour> ();
+		}
+
+		[Test]
+		public void InternalFive ()
+		{
+			AssertRuleFailure<InternalFive> ();
+		}
+
 	}
 }
