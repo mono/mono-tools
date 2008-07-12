@@ -43,8 +43,6 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("Verify the code logic. The likely logic is probably (i % 2) to separate even/odd or (i & 1) to check the least significant bit.")]
 	public class ReviewUseOfModuloOneOnIntegersRule : Rule, IMethodRule {
 
-		private const string SystemDecimal = "System.Decimal";
-
 		static bool CheckModuloOne (Instruction ins)
 		{
 			switch (ins.OpCode.Code) {
