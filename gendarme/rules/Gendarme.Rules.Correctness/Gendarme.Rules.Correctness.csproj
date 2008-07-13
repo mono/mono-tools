@@ -62,7 +62,6 @@
     <None Include="dataflow\Dataflow.cs" />
     <None Include="dataflow\IDataflowAnalysis.cs" />
     <Compile Include="DoNotRoundIntegersRule.cs" />
-    <Compile Include="DoNotUseModuloOneRule.cs" />
     <Compile Include="DontCompareWithNaNRule.cs" />
     <Compile Include="FloatComparisonRule.cs" />
     <None Include="graph\DFS.cs" />
@@ -84,6 +83,7 @@
     <Compile Include="ReviewSelfAssignmentRule.cs" />
     <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />
     <Compile Include="ReviewUselessControlFlowRule.cs" />
+    <Compile Include="ReviewUseOfModuloOneOnIntegersRule.cs" />
     <Compile Include="UseValueInPropertySetterRule.cs" />
   </ItemGroup>
   <ItemGroup>
