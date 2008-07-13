@@ -38,8 +38,6 @@ namespace Gendarme.Rules.Portability {
 	[Solution ("Review that your return values are all between 0 and 255, this will ensure them to works under both Unix and Windows OS.")]
 	public class ExitCodeIsLimitedOnUnixRule : Rule, IAssemblyRule, IMethodRule {
 
-		private const string Message = "In Unix, unlike in Windows, Main () method must return values between 0 and 255 inclusively. Change the exit code or change method return type from 'int' to 'void'.";
-
 		private enum InspectionResult {
 			Good,
 			Bad,
