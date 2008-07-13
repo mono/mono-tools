@@ -1,3 +1,8 @@
+2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Remove unused field
+	(self-test)
+
 2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make

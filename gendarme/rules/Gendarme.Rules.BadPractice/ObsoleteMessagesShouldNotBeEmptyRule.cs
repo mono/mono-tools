@@ -38,7 +38,6 @@ namespace Gendarme.Rules.BadPractice {
 	public class ObsoleteMessagesShouldNotBeEmptyRule : Rule, ITypeRule {
 
 		private const string ObsoleteAttribute = "System.ObsoleteAttribute";
-		private const string ErrorMessage = "An empty, unhelpful message is returned to the developer.";
 
 		private static bool CheckAttributes (CustomAttributeCollection cac)
 		{
