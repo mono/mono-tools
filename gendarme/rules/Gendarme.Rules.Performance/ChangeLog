@@ -1,3 +1,10 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeNumberOfLocalVariablesRule.cs: Rule to warn if a method
+	has a very large of local variables - since it's likely the JIT won't be
+	able to do a good job assigning registers to them.
+	* Makefile.am: add rule and tests to the build.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedPrivateFieldsRule.cs: Rule to warn if a private field

@@ -14,6 +14,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Performance.xml TestResult.xml
 
 rules_sources = \
+	AvoidLargeNumberOfLocalVariablesRule.cs \
 	EmptyDestructorRule.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeRule.cs \
 	UseStringEmptyRule.cs \
@@ -42,6 +43,7 @@ rules_sources = \
 EXTRA_TESTS_OPTIONS = -unsafe
 
 tests_sources = \
+	AvoidLargeNumberOfLocalVariablesTest.cs \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
