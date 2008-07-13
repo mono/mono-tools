@@ -1,3 +1,8 @@
+2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderUsingStaticTypeTest.cs: New. Unit tests for 
+	ConsiderUsingStaticTypeRule.
+
 2008-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidVisibleNestedTypesTest.cs: New. Unit tests for 
