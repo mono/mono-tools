@@ -14,6 +14,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 
 rules_sources = \
+	ConsiderUsingStaticTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs \
 	DefineAZeroValueRule.cs \
@@ -46,6 +47,7 @@ rules_sources = \
 	AvoidVisibleNestedTypesRule.cs
 
 tests_sources = \
+	ConsiderUsingStaticTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs \
 	EnumsShouldDefineAZeroValueTest.cs \
