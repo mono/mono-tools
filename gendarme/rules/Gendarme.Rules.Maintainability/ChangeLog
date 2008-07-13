@@ -1,3 +1,11 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: New. Rule to check if some
+	method parameters could use a type lower in the hierarchy than the one 
+	being used. [committed for Cedric Vivier]
+	* Gendarme.Rules.Maintainability.mdp: Update MD project files.
+	* Makefile.am:  Add the rule and the test to the build.
+
 2008-07-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepInheritanceTreeRule.cs: Change the default rule behaviour

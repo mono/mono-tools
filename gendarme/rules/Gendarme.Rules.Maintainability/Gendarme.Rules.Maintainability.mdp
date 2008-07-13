@@ -19,10 +19,12 @@
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="AvoidDeepInheritanceTreeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="PreferStringIsNullOrEmptyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidUnnecessarySpecializationRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
     <ProjectReference type="Project" localcopy="True" refto="framework" />
   </References>
+  <GtkDesignInfo gtkVersion="2.8.4" />
 </Project>
