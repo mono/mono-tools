@@ -82,8 +82,6 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private const string Message = "GetLastError() should be called immediately after this the PInvoke call.";
-
 		private const string GetLastError = "System.Int32 System.Runtime.InteropServices.Marshal::GetLastWin32Error()";
 
 		static List<string> AllowedCalls = new List<string> () {
