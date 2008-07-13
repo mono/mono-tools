@@ -1,3 +1,13 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRefAndOutParametersRule.cs: New. Rule to warn for visible API
+	that expose ref or out parameters. This help keeping the public API 
+	as simple as possible.
+	* ConsiderConvertingFieldToNullableRule.cs: Change some methods (using
+	ref) from protected (no need) to private.
+	* Gendarme.Rules.Design.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and test to the build.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderUsingStaticTypeRule.cs: New. Rule that warn if a type 

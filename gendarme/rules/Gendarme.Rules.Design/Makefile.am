@@ -14,6 +14,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 
 rules_sources = \
+	AvoidRefAndOutParametersRule.cs \
 	ConsiderUsingStaticTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs \
@@ -47,6 +48,7 @@ rules_sources = \
 	AvoidVisibleNestedTypesRule.cs
 
 tests_sources = \
+	AvoidRefAndOutParametersTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs \

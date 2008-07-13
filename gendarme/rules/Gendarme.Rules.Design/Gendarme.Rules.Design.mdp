@@ -43,6 +43,8 @@
     <File name="ImplementIComparableCorreclyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ImplementGenericCollectionInterfacesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleNestedTypesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidRefAndOutParametersRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderUsingStaticTypeRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
@@ -51,4 +53,5 @@
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
+  <GtkDesignInfo gtkVersion="2.8.4" />
 </Project>
