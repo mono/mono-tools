@@ -1,3 +1,9 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRefAndOutParametersTest.cs: New. Unit tests for 
+	AvoidRefAndOutParametersRule.
+	* Test.Rules.Design.mdp: Add tests to MD project file.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderUsingStaticTypeTest.cs: New. Unit tests for 
