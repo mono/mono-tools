@@ -1,3 +1,7 @@
+2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* win32-setup.vdproj: Update with new options and assemblies.
+
 2008-03-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Can't build setup (outside of VS) but it makes 
