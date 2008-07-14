@@ -62,6 +62,7 @@
     <Compile Include="AvoidArgumentExceptionDefaultConstructorRule.cs" />
     <Compile Include="AvoidThrowingBasicExceptionsRule.cs" />
     <Compile Include="DoNotDestroyStackTraceRule.cs" />
+    <Compile Include="DoNotThrowReservedExceptionRule.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" />
     <Compile Include="ExceptionShouldBeVisibleRule.cs" />
     <Compile Include="Impl\ExceptionBlockParser.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Impl\SEHGuardedBlock.cs" />
     <Compile Include="Impl\SEHHandlerBlock.cs" />
     <Compile Include="MissingExceptionConstructorsRule.cs" />
+    <Compile Include="NewExceptionRule.cs" />
     <Compile Include="SEHHandlerType.cs" />
   </ItemGroup>
   <ItemGroup>
