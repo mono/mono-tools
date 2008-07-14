@@ -17,6 +17,7 @@ rules_sources = \
 	AvoidDeepInheritanceTreeRule.cs \
 	AvoidLackOfCohesionOfMethodsRule.cs \
 	AvoidUnnecessarySpecializationRule.cs \
+	ConsiderUsingStopwatchRule.cs \
 	PreferStringIsNullOrEmptyRule.cs
 
 tests_sources = \
@@ -24,4 +25,5 @@ tests_sources = \
 	AvoidDeepInheritanceTreeTest.cs \
 	AvoidLackOfCohesionOfMethodsTest.cs \
 	AvoidUnnecessarySpecializationTest.cs \
+	ConsiderUsingStopwatchTest.cs \
 	PreferStringIsNullOrEmptyTest.cs

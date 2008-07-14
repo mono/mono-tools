@@ -1,3 +1,11 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsiderUsingStopwatchRule.cs: New. Rule to check if the use of
+	DateTime could not be replaced with the use of a Stopwatch to 
+	increase the code clarity. [committed for Cedric Vivier]
+	* Gendarme.Rules.Maintainability.mdp: Update MD project files.
+	* Makefile.am:  Add the rule and the test to the build.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: New. Rule to check if some
