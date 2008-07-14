@@ -27,6 +27,7 @@
     <File name="ObsoleteMessagesShouldNotBeEmptyTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleConstantFieldTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidCallingProblematicMethodsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotForgetNotImplementedMethodsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
@@ -38,4 +39,5 @@
     <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
+  <GtkDesignInfo gtkVersion="2.8.4" />
 </Project>
