@@ -1,3 +1,9 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsiderUsingStopwatchTest.cs: Test cases for 
+	ConsiderUsingStopwatchRule [committed for Cedric Vivier]
+	* Test.Rules.Maintainability.mdp: Update MD project files.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Test cases for

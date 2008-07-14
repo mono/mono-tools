@@ -21,6 +21,7 @@
     <File name="AvoidDeepInheritanceTreeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="PreferStringIsNullOrEmptyTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnnecessarySpecializationTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderUsingStopwatchTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
