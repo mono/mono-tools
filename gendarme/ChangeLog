@@ -1,5 +1,6 @@
-2008-07-14  Sebastien Pouliot  <sebastien@ximian.com> 
+2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* NEWS: Update for the next release.
 	* self-test.ignore: Update (and add) some ignore entries.
 
 2008-06-15  Daniel Nauck  <dna@mono-project.de>

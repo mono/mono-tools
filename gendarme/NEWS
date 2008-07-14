@@ -1,3 +1,110 @@
+2008-07-14  Version 0.2.0.0
+
+	This release includes the development results of the last six 
+	months, including some major events like the Novell Hack Week 
+	(Winter 2008 edition), which changed much of the Gendarme 
+	framework, the first "Gendarme Rule Day" and the first part of
+	GSoC 2008 work by Nestor Salceda.
+
+	General highlights:
+
+	* Performance enhancements, memory usage reduction (mostly 
+	inside Cecil but the gains are very visible in Gendarme)
+	* MDB/PDB support: source files and line numbers are now 
+	provided with defects [Sebastien Pouliot]
+	* New Windows installer: You can now easily enjoy Gendarme, and 
+	it's wizard, from Windows computers [Sebastien Pouliot]
+	* .desktop file for the Wizard runner [Daniel Nauck]
+	* Console runner now uses color when displaying on the console
+	[Cedric Vivier]
+	* Albeit a bit invisible to end users, we started using the new
+	unit test helpers made during GHOP [Daniel Abramov]
+	* Bug fixes: works continue, like previous releases, to remove
+	false positives from existing rules;
+	
+	and a lot of new rules including:
+
+	Gendarme.Rules.BadPractice
+	* AvoidCallingProblematicMethodsRule [Nestor Salceda]
+	* AvoidVisibleConstantFieldRule [Sebastien Pouliot]
+	* DoNotForgetNotImplementedMethodsRule [Cedric Vivier]
+	* DisableDebuggingCodeRule [Sebastien Pouliot]
+	* ObsoleteMessagesShouldNotBeEmptyRule [Sebastien Pouliot]
+	* ReplaceIncompleteOddnessCheckRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Concurrency
+	* DoNotLockOnThisOrTypesRule [Sebastien Pouliot]
+	* DoNotLockOnWeakIdentityObjectsRule [Sebastien Pouliot]
+	* DoNotUseLockedRegionOutsideMethodRule [Andres G. Aragoneses]
+
+	Gendarme.Rules.Correctness
+	* DoNotRoundIntegersRule [Sebastien Pouliot]
+	* ReviewDoubleAssignmentRule [Sebastien Pouliot]
+	* ReviewSelfAssignmentRule [Sebastien Pouliot]
+	* ReviewUselessControlFlow [Sebastien Pouliot]
+	* ReviewUseOfInt64BitsToDoubleRule [Sebastien Pouliot]
+	* ReviewUseOfModuloOneOnIntegersRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Design
+	* AvoidMultidimensionalIndexerRule [Sebastien Pouliot]
+	* AvoidRefAndOutParametersRule [Sebastien Pouliot]
+	* AvoidVisibleNestedTypesRule [Sebastien Pouliot]
+	* ConsiderConvertingFieldToNullableRule [Cedric Vivier]
+	* ConsiderUsingStaticTypeRule.cs [Sebastien Pouliot]
+	* ImplementGenericCollectionInterfacesRule [Daniel Abramov]
+	* ImplementIComparableCorreclyRule [Sebastien Pouliot]
+	* PreferIntegerOrStringForIndexersRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Exception
+	* AvoidArgumentExceptionDefaultConstructorRule [Sebastien Pouliot]
+	* AvoidThrowingBasicExceptionsRule [Daniel Abramov]
+	* DoNotThrowReservedExceptionRule [Sebastien Pouliot]
+	* ExceptionShouldBeVisibleRule [Sebastien Pouliot]
+	* MissingExceptionConstructorsRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Interoperability
+	* DoNotCastIntPtrToInt32Rule [Sebastien Pouliot]
+
+	Gendarme.Rules.Maintainability (new)
+	* AvoidComplexMethodsRule [Cedric Vivier]
+	* AvoidDeepInheritanceTreeRule [Sebastien Pouliot]
+	* AvoidLackOfCohesionOfMethodRule [Cedric Vivier]
+	* ConsiderUsingStopwatchRule [Cedric Vivier]
+	* PreferStringIsNullOrEmptyRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Naming
+	* DoNotPrefixEventsWithAfterOrBeforeRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Performance
+	* AvoidLargeNumberOfLocalVariablesRule [Sebastien Pouliot]
+	* AvoidLargeStructureRule [Sebastien Pouliot]
+	* AvoidRepetitiveCastsRule [Sebastien Pouliot]
+	* AvoidTypeGetTypeWhenPossibleRule [Sebastien Pouliot]
+	* AvoidUnusedPrivateFieldsRule [Sebastien Pouliot]
+	* AvoidUnneededUnboxingRule [Sebastien Pouliot]
+	* AvoidUnsealedUninheritedInternalClassesRule [Scott Peterson]
+	* ImplementEqualsTypeRule [Sebastien Pouliot]
+	* OverrideValueTypeDefaultsRule [Sebastien Pouliot]
+	* RemoveUnusedLocalVariablesRule [Sebastien Pouliot]
+	* UseIsOperatorRule [Seo Sanghyeon]
+	* UseTypeEmptyTypesRule [JB Evain]
+
+	Gendarme.Rules.Portability
+	* DoNotHardcodePathsRule [Daniel Abramov]
+
+	Gendarme.Rules.Serialization (new)
+	* CallBaseMethodsOnISerializableTypesRule [Nestor Salceda]
+	* DeserializeOptionalFieldRule [Sebastien Pouliot]
+	* ImplementISerializableCorrectlyRule [Nestor Salceda]
+	* MarkAllNonSerializableFieldsRule [Nestor Salceda]
+	* MissingSerializableAttributeOnISerializableTypeRule [Sebastien Pouliot]
+	* MissingSerializationConstructorRule [Sebastien Pouliot]
+	* UseCorrectSignatureForSerializationMethodsRule [Sebastien Pouliot]
+
+	Contributors for this release are:
+	Andres G. Aragoneses, Cedric Vivier, Daniel Abramov, JB Evain,
+	Nestor Salceda, Scott Peterson, Sebastien Pouliot, Seo Sanghyeon.
+
 2008-01-31  Version 0.0.5
 
 	This time Google Highly Open Participation (GHOP) was the main 
