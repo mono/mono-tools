@@ -42,7 +42,7 @@
     <Compile Include="AvoidLargeClassesRule.cs" />
     <Compile Include="AvoidLongMethodsRule.cs" />
     <Compile Include="AvoidLongParameterListsRule.cs" />
-    <Compile Include="AvoidMessageChainsRule.cs" />
+    <None Include="AvoidMessageChainsRule.cs" />
     <Compile Include="AvoidSpeculativeGeneralityRule.cs" />
     <Compile Include="CodeDuplicatedLocator.cs" />
     <Compile Include="ExpressionCollection.cs" />
