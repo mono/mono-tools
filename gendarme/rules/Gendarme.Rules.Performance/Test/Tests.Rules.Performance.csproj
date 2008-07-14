@@ -62,6 +62,10 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidLargeNumberOfLocalVariablesTest.cs" />
+    <Compile Include="AvoidTypeGetTypeWhenPossibleTest.cs" />
+    <Compile Include="AvoidUnneededCastTest.cs" />
+    <Compile Include="AvoidUnneededUnboxingTest.cs" />
     <Compile Include="AvoidLargeStructureTest.cs" />
     <Compile Include="AvoidReturningArraysOnPropertiesTest.cs" />
     <Compile Include="AvoidUncalledPrivateCodeTest.cs" />
@@ -70,12 +74,15 @@
     <Compile Include="AvoidUnsealedConcreteAttributesTest.cs" />
     <Compile Include="AvoidUnsealedUninheritedInternalClassesTest.cs" />
     <Compile Include="AvoidUnusedParametersTest.cs" />
+    <Compile Include="AvoidUnusedPrivateFieldsTest.cs" />
     <Compile Include="CompareWithStringEmptyEfficientlyTest.cs" />
+    <Compile Include="ConsiderCustomAccessorsForNonVisibleEventsTest.cs" />
     <Compile Include="DontIgnoreMethodResultTest.cs" />
     <Compile Include="EmptyDestructorTest.cs" />
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeTest.cs" />
     <Compile Include="ImplementEqualsTypeTest.cs" />
     <Compile Include="MathMinMaxCandidateTest.cs" />
+    <Compile Include="RemoveUnusedLocalVariablesTest.cs" />
     <Compile Include="UseIsOperatorTest.cs" />
     <Compile Include="UseStringEmptyTest.cs" />
     <Compile Include="UseTypeEmptyTypesTest.cs" />

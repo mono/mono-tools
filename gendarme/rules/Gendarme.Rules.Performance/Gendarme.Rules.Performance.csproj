@@ -57,6 +57,10 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidTypeGetTypeWhenPossibleRule.cs" />
+    <Compile Include="AvoidUnneededCastRule.cs" />
+    <Compile Include="AvoidUnneededUnboxingRule.cs" />
+    <Compile Include="AvoidLargeNumberOfLocalVariablesRule.cs" />
     <Compile Include="AvoidLargeStructureRule.cs" />
     <Compile Include="AvoidReturningArraysOnPropertiesRule.cs" />
     <Compile Include="AvoidUncalledPrivateCodeRule.cs" />
@@ -65,11 +69,15 @@
     <Compile Include="AvoidUnsealedConcreteAttributesRule.cs" />
     <Compile Include="AvoidUnsealedUninheritedInternalClassesRule.cs" />
     <Compile Include="AvoidUnusedParametersRule.cs" />
+    <Compile Include="AvoidUnusedPrivateFieldsRule.cs" />
+    <Compile Include="ConsiderCustomAccessorsForNonVisibleEventsRule.cs" />
     <Compile Include="DontIgnoreMethodResultRule.cs" />
     <Compile Include="EmptyDestructorRule.cs" />
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeRule.cs" />
     <Compile Include="ImplementEqualsTypeRule.cs" />
     <Compile Include="MathMinMaxCandidateRule.cs" />
+    <Compile Include="OverrideValueTypeDefaultsRule.cs" />
+    <Compile Include="RemoveUnusedLocalVariablesRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
     <Compile Include="UseStringEmptyRule.cs" />
     <Compile Include="CompareWithStringEmptyEfficientlyRule.cs" />
