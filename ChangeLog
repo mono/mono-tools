@@ -1,3 +1,7 @@
+2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Bump Gendarme to 0.2.0.0 for the Mono 2.0 branch.
+
 2008-06-14  Andreia Gaita <avidigal@novell.com> 
 
 	* configure.in: Enable webkit and mono.webbrowser detection.
