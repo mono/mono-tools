@@ -78,7 +78,6 @@
     <None Include="NullDerefFrame.cs" />
     <None Include="NullDerefRule.cs" />
     <None Include="Nullity.cs" />
-    <Compile Include="ProtectVisibleEventsRule.cs" />
     <Compile Include="ReviewDoubleAssignmentRule.cs" />
     <Compile Include="ReviewSelfAssignmentRule.cs" />
     <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />

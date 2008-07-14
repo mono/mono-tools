@@ -68,7 +68,6 @@
     <Compile Include="DontCompareWithNaNTest.cs" />
     <Compile Include="FloatComparisonRuleTest.cs" />
     <Compile Include="MethodCanBeMadeStaticTest.cs" />
-    <Compile Include="ProtectVisibleEventsTest.cs" />
     <Compile Include="ReviewDoubleAssignmentTest.cs" />
     <Compile Include="ReviewSelfAssignmentTest.cs" />
     <Compile Include="ReviewUselessControlFlowTest.cs" />
