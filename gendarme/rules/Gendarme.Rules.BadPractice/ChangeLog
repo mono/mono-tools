@@ -1,3 +1,11 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotForgetNotImplementedMethodsRule.cs: New. Rule to check if
+	some method are incomplete (e.g. throwing NotImplementedException)
+	[committed for Cedric Vivier with a few changes from myself]
+	* Gendarme.Rules.BadPractice.mdp: Update MD project file.
+	* Makefile.am: Add rule/test to the build.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Remove unused field

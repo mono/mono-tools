@@ -27,10 +27,12 @@
     <File name="ObsoleteMessagesShouldNotBeEmptyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleConstantFieldRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidCallingProblematicMethodsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="DoNotForgetNotImplementedMethodsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
   </References>
+  <GtkDesignInfo gtkVersion="2.8.4" />
 </Project>

@@ -21,6 +21,7 @@ rules_sources = \
 	CloneMethodShouldNotReturnNullRule.cs \
 	ConstructorShouldNotCallVirtualMethodsRule.cs \
 	DisableDebuggingCodeRule.cs \
+	DoNotForgetNotImplementedMethodsRule.cs \
 	EqualShouldHandleNullArgRule.cs \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
@@ -29,11 +30,12 @@ rules_sources = \
 
 tests_sources = \
 	AvoidVisibleConstantFieldTest.cs \
-	AvoidCallingProblematicMethodsTest.cs
+	AvoidCallingProblematicMethodsTest.cs \
 	CheckNewExceptionWithoutThrowingTest.cs \
 	CheckNewThreadWithoutStartTest.cs \
-	ConstructorShouldNotCallVirtualMethodsTest.cs \
 	CloneMethodShouldNotReturnNullTest.cs \
+	ConstructorShouldNotCallVirtualMethodsTest.cs \
+	DoNotForgetNotImplementedMethodsTest.cs \
 	DisableDebuggingCodeTest.cs \
 	EqualShouldHandleNullArgTest.cs \
 	GetEntryAssemblyMayReturnNullTest.cs \
