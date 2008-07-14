@@ -14,9 +14,11 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 
 rules_sources = \
+	AvoidMultidimensionalIndexerRule.cs \
 	AvoidRefAndOutParametersRule.cs \
 	ConsiderUsingStaticTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
+	PreferIntegerOrStringForIndexersRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs \
 	DefineAZeroValueRule.cs \
 	EnumsShouldDefineAZeroValueRule.cs \
@@ -48,9 +50,11 @@ rules_sources = \
 	AvoidVisibleNestedTypesRule.cs
 
 tests_sources = \
+	AvoidMultidimensionalIndexerTest.cs \
 	AvoidRefAndOutParametersTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
+	PreferIntegerOrStringForIndexersTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs \
 	EnumsShouldDefineAZeroValueTest.cs \
 	FlagsShouldNotDefineAZeroValueTest.cs \
