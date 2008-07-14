@@ -39,10 +39,14 @@
   <ItemGroup>
     <Compile Include="AbstractTypesShouldNotHavePublicConstructorsRule.cs" />
     <Compile Include="AttributeArgumentsShouldHaveAccessorsRule.cs" />
-    <Compile Include="AvoidNestedTypesRule.cs" />
+    <Compile Include="AvoidMultidimensionalIndexerRule.cs" />
     <Compile Include="AvoidPropertiesWithoutGetAccessorRule.cs" />
     <Compile Include="AvoidPublicInstanceFieldsRule.cs" />
+    <Compile Include="AvoidRefAndOutParametersRule.cs" />
+    <Compile Include="AvoidVisibleNestedTypesRule.cs" />
+    <Compile Include="ConsiderConvertingFieldToNullableRule.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyRule.cs" />
+    <Compile Include="ConsiderUsingStaticTypeRule.cs" />
     <Compile Include="DefineAZeroValueRule.cs" />
     <Compile Include="DisposableFieldsShouldBeDisposedRule.cs" />
     <Compile Include="DisposableTypesShouldHaveFinalizerRule.cs" />
@@ -61,6 +65,7 @@
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedRule.cs" />
     <Compile Include="OverrideEqualsMethodRule.cs" />
+    <Compile Include="PreferIntegerOrStringForIndexersRule.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsRule.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />
