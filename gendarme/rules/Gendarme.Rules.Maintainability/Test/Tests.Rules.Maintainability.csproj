@@ -39,7 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidComplexMethodsTest.cs" />
+    <Compile Include="AvoidDeepInheritanceTreeTest.cs" />
     <Compile Include="AvoidLackOfCohesionOfMethodsTest.cs" />
+    <Compile Include="AvoidUnnecessarySpecializationTest.cs" />
+    <Compile Include="ConsiderUsingStopwatchTest.cs" />
+    <Compile Include="PreferStringIsNullOrEmptyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

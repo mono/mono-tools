@@ -38,7 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidComplexMethodsRule.cs" />
+    <Compile Include="AvoidDeepInheritanceTreeRule.cs" />
     <Compile Include="AvoidLackOfCohesionOfMethodsRule.cs" />
+    <Compile Include="AvoidUnnecessarySpecializationRule.cs" />
+    <Compile Include="ConsiderUsingStopwatchRule.cs" />
+    <Compile Include="PreferStringIsNullOrEmptyRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
