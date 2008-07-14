@@ -2,16 +2,44 @@
 R: Gendarme.Rules.Portability.NewLineLiteralRule
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Portability.NewLineLiteralRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
-# OK - For symmetry with GetPopCount this method is not turned to static
+# OK - don't apply the rule to itself
+R: Gendarme.Rules.Portability.DoNotHardcodePathsRule
+M: System.Void Gendarme.Rules.Portability.DoNotHardcodePathsRule::ProcessUnixProbablyAbsolutePath(System.String)
+
+# OK - in those case the specialization has it's contextual sense and helps readability
+R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsAnyType(Mono.Cecil.CustomAttributeCollection,System.String[])
+M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsType(Mono.Cecil.CustomAttributeCollection,System.String)
+M: System.Void Gendarme.Framework.Defect::.ctor(Gendarme.Framework.IRule,Mono.Cecil.IMetadataTokenProvider,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Gendarme.Framework.Severity,Gendarme.Framework.Confidence,System.String)
+
+# OK - the gendarme framework is not a beginner, nor easy, API
+R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
+M: Mono.Cecil.Cil.Instruction Gendarme.Framework.Helpers.StackEntryAnalysis::GetNextInstruction(Mono.Cecil.Cil.Instruction,System.Object&)
+
+# OK - the field is not owned by this type
+R: Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule
+T: Gendarme.GuiRunner
+
+# non-gendarme code / NDesk.Options
+R: Gendarme.Rules.Security.SecureGetObjectDataOverridesRule
+T: NDesk.Options.OptionException
+R: Gendarme.Rules.Exceptions.MissingExceptionConstructorsRule
+T: NDesk.Options.OptionException
 R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
-M: System.Int32 Gendarme.Framework.Helpers.StackEntryAnalysis::GetPushCount(Mono.Cecil.Cil.Instruction)
-
-# OK - NDesk.Options.OptionSet::Add chains
-R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
-M: System.Byte Gendarme.ConsoleRunner::Parse(System.String[])
-M: System.Void NDesk.Options.OptionSet::SetItem(System.Int32,NDesk.Options.Option)
-
-#OK - some FX provided types will never work with the default (4) value
-R: Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule
-T: Gendarme.Wizard
-T: MoMA.Analyzer.MoMAWebService.MoMASubmit
+M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
+M: System.Void NDesk.Options.OptionSet::Invoke(NDesk.Options.OptionContext,System.String,System.String,NDesk.Options.Option)
+R: Gendarme.Rules.Exceptions.DontSwallowErrorsCatchingNonspecificExceptionsRule
+M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
+R: Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalClassesRule
+T: NDesk.Options.OptionSet/ActionOption
+T: NDesk.Options.OptionSet/ActionOption`1
+T: NDesk.Options.OptionSet/ActionOption`2
+R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
+M: System.String[] NDesk.Options.Option::get_ValueSeparators()
+M: System.String[] NDesk.Options.Option::get_Names()
+R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
+T: NDesk.Options.OptionSet
+R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
+R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
+M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
