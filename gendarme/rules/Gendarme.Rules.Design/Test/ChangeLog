@@ -1,3 +1,11 @@
+2008-07-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidMultidimensionalIndexerTest.cs: New. Unit tests for 
+	AvoidMultidimensionalIndexerRule.
+	* PreferIntegerOrStringForIndexersTest.cs: New. Unit tests for 
+	PreferIntegerOrStringForIndexersRule.
+	* Test.Rules.Design.mdp: Add tests to MD project file.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRefAndOutParametersTest.cs: New. Unit tests for 
