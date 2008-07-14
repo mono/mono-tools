@@ -47,6 +47,7 @@
     <File name="ConsiderUsingStaticTypeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidMultidimensionalIndexerRule.cs" subtype="Code" buildaction="Compile" />
     <File name="PreferIntegerOrStringForIndexersRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderConvertingFieldToNullableRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

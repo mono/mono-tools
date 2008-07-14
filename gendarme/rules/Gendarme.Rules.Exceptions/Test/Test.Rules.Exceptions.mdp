@@ -20,6 +20,8 @@
     <File name="AvoidArgumentExceptionDefaultConstructorTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidThrowingBasicExceptionsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotThrowReservedExceptionTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ExceptionShouldBeVisibleTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="MissingExceptionConstructorsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Exceptions" />
@@ -30,5 +32,6 @@
     <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
+  <GtkDesignInfo gtkVersion="2.8.4" />
   <DeployTargets />
 </Project>

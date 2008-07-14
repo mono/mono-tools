@@ -37,6 +37,8 @@
     <File name="AvoidTypeGetTypeForConstantStringsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidRepetitiveCastsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidUnusedPrivateFieldsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidLargeNumberOfLocalVariablesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="RemoveUnusedLocalVariablesRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

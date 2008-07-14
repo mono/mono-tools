@@ -29,6 +29,8 @@
     <File name="AvoidThrowingBasicExceptionsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotThrowReservedExceptionRule.cs" subtype="Code" buildaction="Compile" />
     <File name="NewExceptionRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="ExceptionShouldBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MissingExceptionConstructorsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
@@ -36,5 +38,6 @@
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
+  <GtkDesignInfo gtkVersion="2.8.4" />
   <DeployTargets />
 </Project>

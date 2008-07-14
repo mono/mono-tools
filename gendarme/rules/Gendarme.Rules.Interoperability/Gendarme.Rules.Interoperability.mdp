@@ -19,10 +19,12 @@
     <File name="MarshalStringsInPInvokeDeclarationsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="UseManagedAlternativesToPInvokeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
+    <File name="DoNotCastIntPtrToInt32Rule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
   </References>
+  <GtkDesignInfo gtkVersion="2.8.4" />
 </Project>

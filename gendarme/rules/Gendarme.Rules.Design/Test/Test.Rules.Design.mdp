@@ -47,6 +47,7 @@
     <File name="ConsiderUsingStaticTypeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidMultidimensionalIndexerTest.cs" subtype="Code" buildaction="Compile" />
     <File name="PreferIntegerOrStringForIndexersTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConsiderConvertingFieldToNullableTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
