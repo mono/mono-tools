@@ -1,3 +1,9 @@
+2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GuiRunner.cs: Prefer Assembly.Load to LoadFile (AvoidCalling
+	ProblematicMethodsRule). Also correct the "skip well known" 
+	assemblies hack.
+
 2008-06-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.Designer.cs: Disable auto-scaling since it resize the form

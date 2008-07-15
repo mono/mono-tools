@@ -54,7 +54,8 @@ namespace Gendarme {
 
 		private void LoadRulesFromAssembly (string assemblyName)
 		{
-			Assembly a = Assembly.LoadFile (Path.GetFullPath (assemblyName));
+			AssemblyName aname = AssemblyName.GetAssemblyName (Path.GetFullPath (assemblyName));
+			Assembly a = Assembly.Load (aname);
 			foreach (Type t in a.GetTypes ()) {
 				if (t.IsAbstract || t.IsInterface)
 					continue;
@@ -72,7 +73,7 @@ namespace Gendarme {
 			FileInfo [] files = new DirectoryInfo (dir).GetFiles ("*.dll");
 			foreach (FileInfo info in files) {
 				// except for a few, well known, ones
-				switch (info.FullName) {
+				switch (info.Name) {
 				case "Mono.Cecil.dll":
 				case "Mono.Cecil.Pdb.dll":
 				case "Mono.Cecil.Mdb.dll":
