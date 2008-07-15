@@ -64,9 +64,9 @@ namespace Gendarme {
 			return Path.Combine (Path.GetDirectoryName (ConsoleRunner.Assembly.Location), filename);
 		}
 
-		static string GetAttribute (XmlElement xel, string name, string defaultValue)
+		static string GetAttribute (XmlNode node, string name, string defaultValue)
 		{
-			XmlAttribute xa = xel.Attributes [name];
+			XmlAttribute xa = node.Attributes [name];
 			if (xa == null)
 				return defaultValue;
 			return xa.Value;
@@ -111,7 +111,8 @@ namespace Gendarme {
 		private int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask, string applicabilityScope)
 		{
 			int total = 0;
-			Assembly a = Assembly.LoadFile (Path.GetFullPath (assembly));
+			AssemblyName aname = AssemblyName.GetAssemblyName (Path.GetFullPath (assembly));
+			Assembly a = Assembly.Load (aname);
 			foreach (Type t in a.GetTypes ()) {
 				if (t.IsAbstract || t.IsInterface)
 					continue;
@@ -170,7 +171,7 @@ namespace Gendarme {
 			return null;
 		}
 		
-		private void SetCustomParameters (XmlElement rules)
+		private void SetCustomParameters (XmlNode rules)
 		{
 			foreach (XmlElement parameter in rules.SelectNodes ("parameter")) {
 				string ruleName = GetAttribute (parameter, "rule", String.Empty);

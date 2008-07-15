@@ -1,3 +1,9 @@
+2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Settings.cs: Use XmlNode over XmlElement (AvoidUnnecessary
+	SpecializationRule) and prefer Assembly.Load to LoadFile
+	(AvoidCallingProblematicMethodsRule). 
+
 2008-07-07  Stephane Delcroix  <sdelcroix@novell.com>
 
 	* ConsoleRunner.cs: fix a typo
