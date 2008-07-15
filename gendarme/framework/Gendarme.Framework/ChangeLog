@@ -1,3 +1,8 @@
+2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Runner.cs: Nullify currentRule and currentTarget in case an 
+	exception is thrown after Run was executed (e.g. while reporting)
+
 2008-07-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Catch FileNotFoundException coming from 
