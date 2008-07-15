@@ -1,3 +1,8 @@
+2008-07-15  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ModuleRocks.cs: Look up the Mono.Cecil.Mdb.dll in the GAC if can't be
+	found in the current folder.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypeRocks.cs: Added IsStatic for static types (2.0+). Fixed 
