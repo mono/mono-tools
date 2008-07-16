@@ -123,7 +123,9 @@ namespace Gendarme.Rules.Smells {
 
 		private RuleResult CheckDelegate (TypeDefinition type)
 		{
-			if (HasMoreParametersThanAllowed (type.GetMethod ("Invoke")))
+			MethodDefinition method = type.GetMethod ("Invoke");
+			// MulticastDelegate inherits from Delegate without overriding Invoke
+			if ((method != null) && HasMoreParametersThanAllowed (method))
 				Runner.Report (type, Severity.Medium, Confidence.Normal, "This delegate contains a long parameter list.");
 			return Runner.CurrentRuleResult;
 		}
