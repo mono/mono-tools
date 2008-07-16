@@ -165,6 +165,8 @@ namespace Gendarme.Framework.Helpers {
 			public InstructionWithLeave Pop ()
 			{
 				Instruction [] newStack = null;
+				if (LeaveStack == null)
+					return new InstructionWithLeave ();
 				if (LeaveStack.Length != 1) {
 					newStack = new Instruction [LeaveStack.Length - 1];
 					Array.Copy (LeaveStack, newStack, newStack.Length);
@@ -381,7 +383,7 @@ namespace Gendarme.Framework.Helpers {
 				insWithLeave = LoadAlternatives [i]; //the first instruction of the block (contains the leave stack)
 
 				Instruction ins = insWithLeave.Instruction; //the current instruction
-				while (true) {
+				while (ins != null) {
 
 					if (GetStoreSlot (ins) == slot) //check if the slot gets overwritten
 						break;

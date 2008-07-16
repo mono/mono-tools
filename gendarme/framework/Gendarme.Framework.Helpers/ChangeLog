@@ -1,3 +1,8 @@
+2008-07-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Fix case where the LeaveStack is empty,
+	i.e. null, when Pop is called.
+
 2008-07-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignature.cs: Change Match method to behave more like 
