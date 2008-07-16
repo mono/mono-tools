@@ -1,3 +1,7 @@
+2008-07-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongParameterListsTest.cs: Add test case for MulticastDelegate
+
 2008-05-11  Andres G. Aragoneses <aaragoneses@novell.com> 
 
 	* Test.Rules.Smells.mdp: Fix references.

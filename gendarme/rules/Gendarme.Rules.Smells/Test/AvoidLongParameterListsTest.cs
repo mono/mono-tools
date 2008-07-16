@@ -175,5 +175,11 @@ namespace Test.Rules.Smells {
 		{
 			AssertRuleFailure<StaticConstructor> (1);
 		}
+
+		[Test]
+		public void MulticastDelegateTest ()
+		{
+			AssertRuleSuccess<MulticastDelegate> ();
+		}
 	}
 }
