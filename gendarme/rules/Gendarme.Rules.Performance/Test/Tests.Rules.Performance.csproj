@@ -63,8 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidLargeNumberOfLocalVariablesTest.cs" />
-    <Compile Include="AvoidTypeGetTypeWhenPossibleTest.cs" />
-    <Compile Include="AvoidUnneededCastTest.cs" />
+    <Compile Include="AvoidRepetitiveCastsTest.cs" />
+    <Compile Include="AvoidTypeGetTypeForConstantStringsTest.cs" />
     <Compile Include="AvoidUnneededUnboxingTest.cs" />
     <Compile Include="AvoidLargeStructureTest.cs" />
     <Compile Include="AvoidReturningArraysOnPropertiesTest.cs" />

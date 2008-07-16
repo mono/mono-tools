@@ -57,8 +57,8 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AvoidTypeGetTypeWhenPossibleRule.cs" />
-    <Compile Include="AvoidUnneededCastRule.cs" />
+    <Compile Include="AvoidRepetitiveCastsRule.cs" />
+    <Compile Include="AvoidTypeGetTypeForConstantStringsRule.cs" />
     <Compile Include="AvoidUnneededUnboxingRule.cs" />
     <Compile Include="AvoidLargeNumberOfLocalVariablesRule.cs" />
     <Compile Include="AvoidLargeStructureRule.cs" />
