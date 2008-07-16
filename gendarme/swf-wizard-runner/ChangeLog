@@ -1,3 +1,8 @@
+2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.ico: Add Gendarme icon
+	* Makefile.am: Add icon to dist
+
 2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GuiRunner.cs: Prefer Assembly.Load to LoadFile (AvoidCalling
