@@ -38,7 +38,7 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Correctness {
 
-	[Problem ("This method, or property, invokes itself recursively in a suspcious way.")]
+	[Problem ("This method, or property, invokes itself recursively in a suspicious way.")]
 	[Solution ("Ensure that an exit condition exists to terminate recursion.")]
 	public class BadRecursiveInvocationRule : Rule, IMethodRule {
 
