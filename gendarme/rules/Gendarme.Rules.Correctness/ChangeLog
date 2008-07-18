@@ -1,3 +1,10 @@
+2008-07-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: New. Rule to check
+	the correct fields passed to a formatting method.
+	* Makefile.am: Add rule/test to the build.
+	* Gendarme.Rules.Correctness.mdp: Add rule to MD project file.
+
 2008-07-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationRule.cs: Fix typo in [Problem] as noted

@@ -26,7 +26,8 @@ rules_sources = \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs \
-	UseValueInPropertySetterRule.cs
+	UseValueInPropertySetterRule.cs \
+	ProvideCorrectArgumentsToFormattingMethodsRule.cs
 
 tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
@@ -41,4 +42,5 @@ tests_sources = \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs \
-	UseValueInPropertySetterTest.cs
+	UseValueInPropertySetterTest.cs \
+	ProvideCorrectArgumentsToFormattingMethodsTest.cs
