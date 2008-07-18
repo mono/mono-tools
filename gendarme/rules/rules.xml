@@ -29,6 +29,7 @@
 		<rules include="*" from="Gendarme.Rules.Security.dll" />
 		<rules include="*" from="Gendarme.Rules.Serialization.dll" />
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
+		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
 		<!-- no rule from Smells is included in this set -->
 	</ruleset>
 
