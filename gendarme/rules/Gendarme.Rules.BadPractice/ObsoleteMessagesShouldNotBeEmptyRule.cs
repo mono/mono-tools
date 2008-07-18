@@ -39,6 +39,18 @@ namespace Gendarme.Rules.BadPractice {
 
 		private const string ObsoleteAttribute = "System.ObsoleteAttribute";
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not have a reference to System.ObsoleteAttribute 
+			// then nothing will be marked as obsolete inside it
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (ObsoleteAttribute);
+			};
+		}
+
 		private static bool CheckAttributes (CustomAttributeCollection cac)
 		{
 			foreach (CustomAttribute ca in cac) {
