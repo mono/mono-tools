@@ -1,3 +1,9 @@
+2008-07-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: New.  Unit tests
+	for ProvideCorrectArgumentsToFormattingMethodsRule. 
+	* Test.Rules.Correctness.mdp: Add tests to the MD project file.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesTest.cs: Update unit tests to
