@@ -1,3 +1,7 @@
+2008-07-18  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongMethodsTest.cs: Add test case for non-static constructors.
+
 2008-07-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsTest.cs: Add test case for MulticastDelegate

@@ -203,6 +203,158 @@ namespace Test.Rules.Smells {
 		}
 	}
 
+	public class LongConstructorWithFields {
+		readonly int foo;
+		string bar, bar1, bar2, bar3;
+		object baz, baz1, baz2, baz3;
+
+		public LongConstructorWithFields () {
+			foo = 5;
+			bar = "MyString";
+			baz = new object ();
+			Console.WriteLine ("I'm writting a test, and I will fill a screen with some useless code");
+			IList list = new ArrayList ();
+			list.Add ("Foo");
+			list.Add (4);
+			list.Add (6);
+
+			IEnumerator listEnumerator = list.GetEnumerator ();
+			while (listEnumerator.MoveNext ())
+				Console.WriteLine (listEnumerator.Current);
+
+			try {
+				list.Add ("Bar");
+				list.Add ('a');
+			}
+			catch (NotSupportedException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			foreach (object value in list) {
+				Console.Write (value);
+				Console.Write (Environment.NewLine);
+			}
+			
+			int x = 0;
+
+			for (int i = 0; i < 100; i++)
+				x++;
+			Console.WriteLine (x);
+	
+			string useless = "Useless String";
+
+			if (useless.Equals ("Other useless")) {
+				useless = String.Empty;
+				Console.WriteLine ("Other useless string");
+			}
+			
+			useless = String.Concat (useless," 1");
+			
+			for (int j = 0; j < useless.Length; j++) {
+				if (useless[j] == 'u')
+					Console.WriteLine ("I have detected an u char");
+				else
+					Console.WriteLine ("I have detected an useless char");
+			}
+			
+			try {
+				foreach (string environmentVariable in Environment.GetEnvironmentVariables ().Keys)
+					Console.WriteLine (environmentVariable);
+			}
+			catch (System.Security.SecurityException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			Console.WriteLine ("I will add more useless code !!");
+			
+			try {
+				if (!(File.Exists ("foo.txt"))) {
+					File.Create ("foo.txt");	
+					File.Delete ("foo.txt");
+				}
+			}
+			catch (IOException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+		}
+	}
+
+	public class LongConstructorWithoutFields {
+		public LongConstructorWithoutFields () {
+			Console.WriteLine ("I'm writting a test, and I will fill a screen with some useless code");
+			IList list = new ArrayList ();
+			list.Add ("Foo");
+			list.Add (4);
+			list.Add (6);
+
+			IEnumerator listEnumerator = list.GetEnumerator ();
+			while (listEnumerator.MoveNext ())
+				Console.WriteLine (listEnumerator.Current);
+
+			try {
+				list.Add ("Bar");
+				list.Add ('a');
+			}
+			catch (NotSupportedException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			foreach (object value in list) {
+				Console.Write (value);
+				Console.Write (Environment.NewLine);
+			}
+			
+			int x = 0;
+
+			for (int i = 0; i < 100; i++)
+				x++;
+			Console.WriteLine (x);
+	
+			string useless = "Useless String";
+
+			if (useless.Equals ("Other useless")) {
+				useless = String.Empty;
+				Console.WriteLine ("Other useless string");
+			}
+			
+			useless = String.Concat (useless," 1");
+			
+			for (int j = 0; j < useless.Length; j++) {
+				if (useless[j] == 'u')
+					Console.WriteLine ("I have detected an u char");
+				else
+					Console.WriteLine ("I have detected an useless char");
+			}
+			
+			try {
+				foreach (string environmentVariable in Environment.GetEnvironmentVariables ().Keys)
+					Console.WriteLine (environmentVariable);
+			}
+			catch (System.Security.SecurityException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+
+			Console.WriteLine ("I will add more useless code !!");
+			
+			try {
+				if (!(File.Exists ("foo.txt"))) {
+					File.Create ("foo.txt");	
+					File.Delete ("foo.txt");
+				}
+			}
+			catch (IOException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+		}
+	}
+
+
 	public class MainWidget : Gtk.Bin {
 		protected virtual void Build () 
 		{
@@ -1155,6 +1307,22 @@ namespace Test.Rules.Smells {
 		{
 			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
 			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (staticConstructor));
+		}
+
+		[Test]
+		public void LongConstructorWithoutFieldsTest ()
+		{
+			MethodDefinition constructor = assembly.MainModule.Types["Test.Rules.Smells.LongConstructorWithoutFields"].Constructors.GetConstructor (false, Type.EmptyTypes);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (constructor));
+			Assert.AreEqual (1, runner.Defects.Count);
+		}
+
+		[Test]
+		public void LongConstructorWithFieldsTest ()
+		{
+			
+			MethodDefinition constructor = assembly.MainModule.Types["Test.Rules.Smells.LongConstructorWithFields"].Constructors.GetConstructor (false, Type.EmptyTypes);
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (constructor));
 		}
 	}
 }
