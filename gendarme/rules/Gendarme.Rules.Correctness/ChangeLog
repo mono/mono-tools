@@ -1,3 +1,8 @@
+2008-07-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BadRecursiveInvocationRule.cs: Fix typo in [Problem] as noted
+	by Richard Birkby.
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidConstructorsInStaticTypesRule.cs: Rework the rule to
