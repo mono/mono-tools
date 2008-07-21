@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Smells {
 		private static int CountStaticFields (TypeDefinition type) {
 			int counter = 0;
 			foreach (FieldDefinition field in type.Fields) {
-				if (field.IsStatic || field.IsInitOnly || field.HasConstant)
+				if (field.IsStatic || field.HasConstant)
 					counter++;
 				//if the field is an array, we should take care
 				//about their elements.
@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Smells {
 		private static int CountInstanceFields (TypeDefinition type) {
 			int counter = 0;
 			foreach (FieldDefinition field in type.Fields) {
-				if (!(field.IsStatic || field.IsInitOnly || field.HasConstant))
+				if (!(field.IsStatic || field.HasConstant))
 					counter++;
 				//I not take care about arrays here.
 			}

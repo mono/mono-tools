@@ -1,3 +1,8 @@
+2008-07-21  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongMethodsRule.cs: Checking only the static fields and constants
+	will avoid the false positive with readonly fields.
+
 2008-07-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsRule.cs: Fix CheckDelegate to work on
