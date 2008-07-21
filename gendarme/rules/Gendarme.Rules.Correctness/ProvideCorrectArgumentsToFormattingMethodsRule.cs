@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using Gendarme.Framework;
@@ -41,7 +40,7 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("Pass the correct arguments to the formatting method.")]
 	public class ProvideCorrectArgumentsToFormattingMethodsRule : Rule, IMethodRule {
 		static MethodSignature formatSignature = new MethodSignature ("Format", "System.String");
-		static Regex formatterRegex = new Regex ("{");
+		static HashSet<char> results = new HashSet<char> ();
 
 		private static IEnumerable<Instruction> GetCallsToStringFormat (MethodDefinition method)
 		{
@@ -72,11 +71,10 @@ namespace Gendarme.Rules.Correctness {
 		//TODO: It only works with 0 - 9 digits, no more than 10.
 		private static int GetExpectedParameters (string loaded)
 		{
-			IList<char> results = new List<char> ();
-			foreach (Match match in formatterRegex.Matches (loaded)) {
-				char numberedIndex = loaded[match.Index + 1];
-				if (!results.Contains (numberedIndex) && Char.IsDigit (numberedIndex))
-					results.Add (numberedIndex);
+			results.Clear ();
+			for (int index = 0; index < loaded.Length; index++) {
+				if (loaded[index] == '{' && Char.IsDigit (loaded[index + 1]))
+					results.Add (loaded[index]);
 			}
 
 			return results.Count;

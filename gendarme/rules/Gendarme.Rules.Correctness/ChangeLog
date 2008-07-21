@@ -1,3 +1,8 @@
+2008-07-22  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Remove the use
+	Regexp, and use a HashSet<char> as Dan suggested.
+
 2008-07-18  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: New. Rule to check
