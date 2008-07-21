@@ -1,3 +1,8 @@
+2008-07-21  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidLongMethodsTest.cs: Add test case for a class with readonly
+	fields.
+
 2008-07-18  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongMethodsTest.cs: Add test case for non-static constructors.
