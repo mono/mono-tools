@@ -59,10 +59,18 @@ namespace Test.Rules.Helpers {
 		/// <returns>Full name using '/' as a nesting separator ready to be loaded by Cecil.</returns>
 		private static string GetCecilTypeName (Type type)
 		{
-			if (type.IsNested) 
-				return GetCecilNestedTypeName (type.FullName);
-	
-			return type.FullName;
+			string name = type.FullName;
+
+			if (type.IsGenericType) {
+				int pos = name.IndexOf ("[");
+				if (pos > 0)
+					name = name.Substring (0, pos);
+			}
+
+			if (type.IsNested)
+				return GetCecilNestedTypeName (name);
+
+			return name;
 		}
 
 		private static bool MatchParameters (MethodDefinition method, Type [] parameters)

@@ -1,3 +1,7 @@
+2008-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DefinitionLoader.cs: Handle generic types inside GetCecilTypeName
+
 2008-05-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyCache.cs: Load debugging symbols when caching an assembly.
