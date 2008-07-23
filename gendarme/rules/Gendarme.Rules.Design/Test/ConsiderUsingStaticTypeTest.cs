@@ -43,7 +43,7 @@ namespace Test.Rules.Design {
 	public class ConsiderUsingStaticTypeTest : TypeRuleTestFixture<ConsiderUsingStaticTypeRule> {
 
 		[Test]
-		public void DoesNotApply ()
+		public void SkipOnNonClassesTest ()
 		{
 			AssertRuleDoesNotApply (SimpleTypes.Enum);
 			AssertRuleDoesNotApply (SimpleTypes.Interface);
@@ -59,7 +59,7 @@ namespace Test.Rules.Design {
 		}
 
 		[Test]
-		public void Static ()
+		public void SuccessOnStaticClassTest ()
 		{
 			TypeDefinition type = DefinitionLoader.GetTypeDefinition (typeof (ConsiderUsingStaticTypeTest).Assembly, "Test.Rules.Design.ConsiderUsingStaticTypeTest/StaticClass");
 			AssertRuleSuccess (type);
@@ -74,7 +74,7 @@ namespace Test.Rules.Design {
 		}
 
 		[Test]
-		public void CouldBeStatic ()
+		public void FailOnCouldBeStaticClassTest ()
 		{
 			AssertRuleFailure<CouldBeStaticClass> (1);
 		}
@@ -83,6 +83,14 @@ namespace Test.Rules.Design {
 			// this creates a public ctor
 		}
 
+		[Test]
+		public void SkipOnEmptyClassTest ()
+		{
+			AssertRuleDoesNotApply<EmptyClass> ();
+		}
+
+		//You cannot do this class static
+		//This is the same testcase that EventArgs inheritance
 		public class InheritAddingStatic : EmptyClass {
 			static private int x;
 
@@ -101,13 +109,35 @@ namespace Test.Rules.Design {
 				Console.WriteLine (Message);
 			}
 		}
+		
+		[Test]
+		public void SkipOnInheritanceTest ()
+		{
+			AssertRuleDoesNotApply<InheritAddingStatic> ();
+			AssertRuleDoesNotApply<InheritAddingInstance> ();
+		}
+
+		public class ClassWithOnlyFields {
+			int x;
+			char c;
+		}
 
 		[Test]
-		public void Inheritance ()
+		public void SuccessOnClassWithOnlyFieldsTest ()
 		{
-			AssertRuleFailure<EmptyClass> (1);
-			AssertRuleFailure<InheritAddingStatic> (1);
-			AssertRuleSuccess<InheritAddingInstance> ();
+			AssertRuleSuccess<ClassWithOnlyFields> ();
+		}
+
+		public class ClassWithOnlyMethods {
+			public void MakeStuff ()
+			{
+			}
+		}
+
+		[Test]
+		public void SuccessOnClassWithOnlyMethodsTest ()
+		{
+			AssertRuleSuccess<ClassWithOnlyMethods> ();
 		}
 	}
 }
