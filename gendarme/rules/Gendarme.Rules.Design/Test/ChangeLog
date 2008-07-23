@@ -1,3 +1,8 @@
+2008-07-23  Nestor Salceda  <nestor.salceda@gmail.com>
+
+	* ConsiderUsingStaticTypeTest.cs: Fix the existing tests because they
+	are a bit confusing.  This new tests removes several false positives.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidMultidimensionalIndexerTest.cs: New. Unit tests for 
