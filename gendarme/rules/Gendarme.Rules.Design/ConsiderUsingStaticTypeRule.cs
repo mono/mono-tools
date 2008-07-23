@@ -67,23 +67,23 @@ namespace Gendarme.Rules.Design {
 				if (!field.IsStatic)
 					return false;
 			}
-
-			if (type.BaseType.FullName == "System.Object")
-				return true;
-
-			return IsAllStatic (type.BaseType.Resolve ());
+			
+			return true;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only if the type isn't: an enum, an interface, a struct, a delegate or compiler generated
-			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsDelegate () || type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsInterface || type.IsValueType
+				|| type.IsDelegate () || type.IsGeneratedCode ()
+				|| type.BaseType != null && type.BaseType.FullName != "System.Object" 
+				|| type.Fields.Count == 0 && type.Methods.Count == 0)
 				return RuleResult.DoesNotApply;
-
+			
 			// success if the type is already static
 			if (type.IsStatic ())
 				return RuleResult.Success;
-
+			
 			if (IsAllStatic (type)) {
 				// no technical reason not to use a static type exists
 				Runner.Report (type, Severity.Medium, Confidence.High);
