@@ -1,3 +1,13 @@
+2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedPrivateFieldsRule.cs: Fix [Problem] and [Solution]
+	to match the rule (wrong copy-paste). Don't process literals (e.g. 
+	const) since their value is copied into IL and this results in many
+	false positives (handled or not).
+	* Makefile.am: Compile without optimization since newer gmcs is
+	now converting "" into String.Empty automagically (making our test 
+	cases fails).
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeNumberOfLocalVariablesRule.cs: Rule to warn if a method
