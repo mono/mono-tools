@@ -411,11 +411,16 @@ namespace GuiCompare
 				});
 			});
 		}
-		
+
 		void Populate (Menu container, string caption, string pdir, string collection, string [] elements)
 		{
 			string profiledir = System.IO.Path.Combine (monodir, pdir);
-			
+			string MONO_GAC_PREFIX = Environment.GetEnvironmentVariable ("MONO_GAC_PREFIX");
+			string[] gac_prefixes = null;
+
+			if (MONO_GAC_PREFIX != null)
+				gac_prefixes = MONO_GAC_PREFIX.Split (':');
+
 			MenuItem item = new MenuItem (caption);
 			Menu sub = new Menu ();
 			item.Submenu = sub;
@@ -429,12 +434,34 @@ namespace GuiCompare
 						continue;
 					child = new SeparatorMenuItem ();
 				} else {
-					string assemblyfile = System.IO.Path.Combine (profiledir, e + ".dll");
-					string element = e;
-					if (!System.IO.File.Exists (assemblyfile)){
-						Console.WriteLine ("Skipping {0} as {1} does not have it", e, profiledir);
+					string assemblyfile = null;
+					bool found = false;
+
+					if (gac_prefixes == null) {
+						assemblyfile = System.IO.Path.Combine (profiledir, e + ".dll");
+						found = System.IO.File.Exists (assemblyfile);
+					}
+					else {
+						foreach (string prefix in gac_prefixes) {
+							assemblyfile = System.IO.Path.Combine (
+									       System.IO.Path.Combine (
+										       System.IO.Path.Combine (
+											       System.IO.Path.Combine (prefix, "lib"),
+											       "mono"),
+										       pdir),
+									       e + ".dll");
+							found = System.IO.File.Exists (assemblyfile);
+							if (found)
+								break;
+						}
+					}
+
+					if (!found) {
+						Console.WriteLine ("Skipping {0} for profile {1}, could not locate it in profile dir or MONO_GAC_PREFIX", e, pdir);
 						continue;
 					}
+
+					string element = e;
 					child = new MenuItem (e);
 					child.Activated += delegate {
 						StartPresetCompare (assemblyfile, collection, element);
