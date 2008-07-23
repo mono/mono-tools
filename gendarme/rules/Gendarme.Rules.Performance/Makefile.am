@@ -40,7 +40,8 @@ rules_sources = \
 	AvoidRepetitiveCastsRule.cs \
 	AvoidUnusedPrivateFieldsRule.cs
 
-EXTRA_TESTS_OPTIONS = -unsafe
+# turn off optimization for tests since gmcs (unlike MS csc) now turns "" into String.Empty when optimizing is on
+EXTRA_TESTS_OPTIONS = -unsafe -o-
 
 tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \

@@ -37,9 +37,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	[Problem ("This method calls several times into some properties. This is expensive for virtual properties or when the property cannot be inlined.")]
-	[Solution ("Refactor your code to avoid the multiple calls by caching the value.")]
+	[Problem ("This type contains private fields that seems unused.")]
+	[Solution ("Remove unused fields to reduce the memory required by the type or correct the use of the field.")]
 	public class AvoidUnusedPrivateFieldsRule : Rule, ITypeRule {
+
+		private HashSet<FieldDefinition> fields = new HashSet<FieldDefinition> ();
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -49,16 +51,10 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// copy all fields into an hashset
-			HashSet<FieldDefinition> fields = new HashSet<FieldDefinition> ();
-			Dictionary<object, FieldDefinition> literals = new Dictionary<object, FieldDefinition> ();
+			fields.Clear ();
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsPrivate)
+				if (!field.IsPrivate || field.IsLiteral)
 					continue;
-
-				if (field.IsLiteral && field.HasConstant && (field.Constant != null)) {
-					if (!literals.ContainsKey (field.Constant))
-						literals.Add (field.Constant, field);
-				}
 
 				fields.Add (field);
 			}
@@ -69,17 +65,11 @@ namespace Gendarme.Rules.Performance {
 					continue;
 
 				foreach (Instruction ins in method.Body.Instructions) {
-					object operand = ins.GetOperand (method);
-					if (operand == null)
-						continue;
-					FieldDefinition fd = null;
-					FieldReference fr = (operand as FieldReference);
-					if (fr != null)
-						fd = fr.Resolve (); // resolving is required for generic types
+					FieldDefinition fd = ins.GetField ();
 					if (fd == null)
-						literals.TryGetValue (operand, out fd);
-					if (fd != null)
-						fields.Remove (fd);
+						continue;
+
+					fields.Remove (fd);
 				}
 			}
 
