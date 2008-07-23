@@ -1,3 +1,9 @@
+2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedPrivateFieldsTest.cs: Modify test cases to ignore
+	literals. Remove Ignore from generic test since DefinitionLoader was
+	fixed (the problem was not related to mono).
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeNumberOfLocalVariablesTest.cs: New. Unit tests

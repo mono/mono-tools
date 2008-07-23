@@ -128,7 +128,9 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void ConstantFields ()
 		{
-			AssertRuleFailure<ClassConstUnused> (2);
+			// constant (literals) are ignored since their value is copied
+			// into IL (i.e. the field itself is not used)
+			AssertRuleSuccess<ClassConstUnused> ();
 			AssertRuleSuccess<ClassConstString> ();
 			AssertRuleSuccess<ClassConstInt> ();
 			AssertRuleSuccess<ClassConstSmallInt> ();
@@ -150,7 +152,6 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		[Ignore ("test fails, inside the infrastructure, due to a mono bug. rule seems fine")]
 		public void GenericsFields ()
 		{
 			AssertRuleFailure<GenericUnused<int>> (1);
