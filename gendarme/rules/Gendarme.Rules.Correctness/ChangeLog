@@ -1,3 +1,9 @@
+2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BadRecursiveInvocationRule.cs: Fix false positives when generics
+	or explicit interfaces are being used. Optimized CompareMethods to use
+	MetadataToken (when possible) and removed Instructions.IndexOf call.
+
 2008-07-22  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Remove the use
