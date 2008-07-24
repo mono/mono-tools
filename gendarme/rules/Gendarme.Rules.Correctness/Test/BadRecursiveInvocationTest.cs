@@ -29,21 +29,28 @@
 //
 
 using System;
-using System.Reflection;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Correctness;
-using Mono.Cecil;
 using NUnit.Framework;
 
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Correctness {
 
+#pragma warning disable 162
+
 	[TestFixture]
-	public class BadRecursiveInvocationTest {
+	public class BadRecursiveInvocationTest : MethodRuleTestFixture<BadRecursiveInvocationRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		class BadRec {
 
@@ -144,134 +151,160 @@ namespace Test.Rules.Correctness {
 			}
 		}
 		
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			type = module.Types["Test.Rules.Correctness.BadRecursiveInvocationTest/BadRec"];
-			rule = new BadRecursiveInvocationRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
-			}
-			return null;
-		}
-
 		[Test]
 		public void RecursiveProperties ()
 		{
-			MethodDefinition method = GetTest ("get_Foo");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-
-			method = GetTest ("get_OnePlusFoo");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-
-			method = GetTest ("get_FooPlusOne");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult3");
-			Assert.AreEqual (1, runner.Defects.Count, "Count3");
+			AssertRuleFailure<BadRec> ("get_Foo", 1);
+			AssertRuleFailure<BadRec> ("get_OnePlusFoo", 1);
+			AssertRuleFailure<BadRec> ("get_FooPlusOne", 1);
 		}
 		
 		[Test]
 		public void Property ()
 		{
-			MethodDefinition method = GetTest ("get_Bar");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<BadRec> ("get_Bar");
 		}
 
 		[Test, Ignore ("uncaught by rule")]
 		public void IndirectRecursiveProperty ()
 		{
-			MethodDefinition method = GetTest ("get_FooBar");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<BadRec> ("get_FooBar", 1);
 		}
 
 		[Test]
 		public void OverriddenMethod ()
 		{
-			MethodDefinition method = GetTest ("GetHashCode");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<BadRec> ("GetHashCode");
 		}
 		
 		[Test]
 		public void BadRecursiveMethod ()
 		{
-			MethodDefinition method = GetTest ("Equals");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<BadRec> ("Equals", 1);
 		}
 
 		[Test]
 		public void BadFibo ()
 		{
-			MethodDefinition method = GetTest ("BadFibo");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-
-			method = GetTest ("StaticBadFibo");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
+			AssertRuleFailure<BadRec> ("BadFibo", 1);
+			AssertRuleFailure<BadRec> ("StaticBadFibo", 1);
 		}
 
 		[Test]
 		public void Fibonacci ()
 		{
-			MethodDefinition method = GetTest ("Fibonacci");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			method = GetTest ("StaticFibonacci");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleSuccess<BadRec> ("Fibonacci");
+			AssertRuleSuccess<BadRec> ("StaticFibonacci");
 		}
 
 		[Test, Ignore ("uncaught by rule")]
 		public void CodeUsingAnInstanceOfItself ()
 		{
-			MethodDefinition method = GetTest ("AnotherInstance");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<BadRec> ("AnotherInstance", 1);
 		}
 
 		[Test]
 		public void TestAssert ()
 		{
-			MethodDefinition method = GetTest ("Assert");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<BadRec> ("Assert");
 		}
 
 		[Test]
 		public void TestStaticCallingAnotherClassWithSameMethodName ()
 		{
-			MethodDefinition method = GetTest ("Write");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<BadRec> ("Write");
 		}
 
 		[Test]
 		public void TestUnreachable ()
 		{
-			MethodDefinition method = GetTest ("Unreachable");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<BadRec> ("Unreachable");
+		}
+
+		// test case provided by Richard Birkby
+		internal sealed class FalsePositive7 {
+
+			public void Run ()
+			{
+				GetType ();
+				Console.WriteLine (Select ());
+			}
+
+			private static T Select<T> ()
+			{
+				return default (T);
+			}
+
+			private static string Select ()
+			{
+				return Select<string> ();
+			}
+		}
+
+		[Test]
+		public void Generics ()
+		{
+			AssertRuleSuccess<FalsePositive7> ();
+		}
+
+		internal class InterfaceCallGood : IDeserializationCallback {
+
+			protected virtual void OnDeserialization (object sender)
+			{
+				((IDeserializationCallback) this).OnDeserialization (sender);
+			}
+
+			void IDeserializationCallback.OnDeserialization (object sender)
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		internal class InterfaceCallBad : IDeserializationCallback {
+
+			void IDeserializationCallback.OnDeserialization (object sender)
+			{
+				// uho
+				((IDeserializationCallback) this).OnDeserialization (sender);
+			}
+		}
+
+		[Test]
+		public void Interfaces ()
+		{
+			AssertRuleSuccess<InterfaceCallGood> ();
+			AssertRuleFailure<InterfaceCallBad> ("System.Runtime.Serialization.IDeserializationCallback.OnDeserialization", 1);
+		}
+
+		// since we detect dots for interfaces... we test .ctor and .cctor
+		public class MyObject : ICloneable {
+
+			static MyObject ()
+			{
+			}
+
+			public MyObject ()
+			{
+				Clone ();
+			}
+
+			public object Clone ()
+			{
+				throw new NotImplementedException ();
+			}
+
+			object ICloneable.Clone ()
+			{
+				return new MyObject ();
+			}
+		}
+
+		[Test]
+		public void Dots ()
+		{
+			AssertRuleSuccess<MyObject> (".cctor");
+			AssertRuleSuccess<MyObject> (".ctor");
+			AssertRuleSuccess<MyObject> ("System.ICloneable.Clone");
 		}
 	}
 }
