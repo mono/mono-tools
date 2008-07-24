@@ -132,11 +132,11 @@ namespace Gendarme.Rules.Correctness {
 					int n = ins.GetPopCount (method);
 					value = ins.Previous;
 					while (value != null) {
-						n += value.GetPopCount (method) - value.GetPushCount ();
-						value = value.Previous;
 						// stop before first parameter
 						if (n == 1)
 							break;
+						n += value.GetPopCount (method) - value.GetPushCount ();
+						value = value.Previous;
 					}
 					break;
 				}
