@@ -1,3 +1,8 @@
+2008-07-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotRoundIntegersTest.cs: Added new test case provied by 
+	Richard Birkby.
+
 2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationTest.cs: Update test cases to new format and 
