@@ -1,3 +1,8 @@
+2008-07-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotRoundIntegersRule.cs: Move up break condition to make sure
+	we're not missing the return value of a previous call before Round.
+
 2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationRule.cs: Fix false positives when generics
