@@ -301,5 +301,22 @@ namespace Test.Rules.Correctness {
 			Assert.AreEqual (4m, ChainChainDecimal ("3.1415"), "ChainChainDecimal");
 			AssertRuleSuccess<DoNotRoundIntegersTest> ("ChainChainDecimal");
 		}
+
+		// test case provided by Richard Birkby
+		internal sealed class FalsePositive8 {
+
+			public decimal Run ()
+			{
+				GetType ();
+				int x = 5;
+				return Math.Round (x * 0.5M);
+			}
+		}
+
+		[Test]
+		public void DecimalResult ()
+		{
+			AssertRuleSuccess<FalsePositive8> ("Run");
+		}
 	}
 }
