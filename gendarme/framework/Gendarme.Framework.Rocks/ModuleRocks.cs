@@ -77,6 +77,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="self"></param>
 		public static void LoadDebuggingSymbols (this ModuleDefinition self)
 		{
+			// don't create a new reader if the symbols are already loaded
+			IAnnotationProvider provider = (self as IAnnotationProvider);
+			if (provider.Annotations.Contains ("symbols"))
+				return;
+
 			string image_name = self.Image.FileInformation.FullName;
 			string symbol_name = image_name + ".mdb";
 			Type reader_type = null;
@@ -104,12 +109,10 @@ namespace Gendarme.Framework.Rocks {
 			if (reader_type == null)
 				return;
 
-			IAnnotationProvider provider = (self as IAnnotationProvider);
-			provider.Annotations.Add ("symbols", symbol_name);
-
 			ISymbolStoreFactory factory = (ISymbolStoreFactory) Activator.CreateInstance (reader_type);
 			try {
 				self.LoadSymbols (factory.CreateReader (self, image_name));
+				provider.Annotations.Add ("symbols", symbol_name);
 			}
 			catch (FileNotFoundException) {
 				// this happens if a MDB file is missing 	 
