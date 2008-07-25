@@ -1,3 +1,10 @@
+2008-07-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: Exit early from LoadDebuggingSymbols if the symbols
+	are already loaded (i.e. the reader was created). This avoid an 
+	exception for the wizard since this is called each time a new analysis
+	is performed (without the need to reload the assemblies).
+
 2008-07-15  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ModuleRocks.cs: Look up the Mono.Cecil.Mdb.dll in the GAC if can't be
