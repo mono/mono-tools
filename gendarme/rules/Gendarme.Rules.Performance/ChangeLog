@@ -1,3 +1,9 @@
+2008-07-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Don't ignore properties and
+	detect use when generics are used.
+	[Fix bug #410000]
+
 2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedPrivateFieldsRule.cs: Fix [Problem] and [Solution]
