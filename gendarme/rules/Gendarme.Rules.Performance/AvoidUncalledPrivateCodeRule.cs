@@ -132,8 +132,8 @@ namespace Gendarme.Rules.Performance {
 		// note: we need to be consistant with some stuff we propose in other rules
 		private static bool CheckPublicMethod (MethodDefinition method)
 		{
-			// handle things like operators
-			if (method.IsSpecialName)
+			// handle things like operators - but not properties
+			if (method.IsSpecialName && !method.IsProperty ())
 				return true;
 			
 			// handle non-virtual Equals, e.g. Equals(type)
@@ -183,18 +183,10 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
 		{
-			HashSet<uint> methods;
-			if (!cache.TryGetValue (type, out methods)) {
-				methods = new HashSet<uint> ();
-				foreach (MethodDefinition md in type.AllMethods ()) {
-					if (!md.HasBody)
-						continue;
+			if (type.GenericParameters.Count > 0)
+				type = type.GetOriginalType ().Resolve ();
 
-					BuildMethodUsage (methods, md);
-				}
-				cache.Add (type, methods);
-			}
-
+			HashSet<uint> methods = GetCache (type);
 			if (methods.Contains (GetToken (method)))
 				return true;
 
@@ -205,12 +197,34 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
+		private static HashSet<uint> GetCache (TypeDefinition type)
+		{
+			HashSet<uint> methods;
+			if (!cache.TryGetValue (type, out methods)) {
+				methods = new HashSet<uint> ();
+				cache.Add (type, methods);
+				foreach (MethodDefinition md in type.AllMethods ()) {
+					if (!md.HasBody)
+						continue;
+
+					BuildMethodUsage (methods, md);
+				}
+			}
+			return methods;
+		}
+
 		private static void BuildMethodUsage (HashSet<uint> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr != null)
-					methods.Add (GetToken (mr));
+				if (mr == null)
+					continue;
+
+				TypeDefinition type = mr.DeclaringType.Resolve ();
+				if ((type != null) && (type.GenericParameters.Count > 0)) {
+					methods.Add (GetToken (type.GetMethod (mr.Name)));
+				}
+				methods.Add (GetToken (mr));
 			}
 		}
 	}
