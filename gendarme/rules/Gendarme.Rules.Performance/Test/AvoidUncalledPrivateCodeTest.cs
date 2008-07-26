@@ -631,5 +631,45 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess<Anculus> ();
 		}
+
+		// test case from gmcs - bug #410000
+		class EmptyAddressOf /*: EmptyExpression, IMemoryLocation */ {
+			// THIS PROPERTY IS NEVER USED
+			public bool IsFixed { get { return true; } }
+		}
+
+		[Test]
+		public void UnusedProperty ()
+		{
+			AssertRuleFailure<EmptyAddressOf> ("get_IsFixed");
+		}
+
+		// test case provided by Richard Birkby
+		internal sealed class FalsePositive1 {
+			public void Run ()
+			{
+				GetType ();
+				Foo<object> f = new Foo<object> ();
+				f.FalsePositive1 ();
+			}
+
+			sealed class Foo<T> {
+				public void FalsePositive1 ()
+				{
+					GetType ();
+				}
+			}
+		}
+
+		public void RunFalsePositive ()
+		{
+			new FalsePositive1 ().Run ();
+		}
+
+		[Test]
+		public void MoreGenerics ()
+		{
+			AssertRuleSuccess<FalsePositive1> ();
+		}
 	}
 }
