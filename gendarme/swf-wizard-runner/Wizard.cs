@@ -357,8 +357,14 @@ namespace Gendarme {
 			}
 			nodes.Clear ();
 
+			// this extra [End|Begin]Update is brought to you by Vista(tm)
+			// http://forums.msdn.microsoft.com/en-US/netfxbcl/thread/3fd6c4a2-b5c7-4334-b11a-e909b11e8bdc/
+			rules_tree_view.EndUpdate ();
+
+			rules_tree_view.BeginUpdate ();
 			rules_tree_view.Sort ();
 			rules_tree_view.EndUpdate ();
+
 			rules_populated = true;
 			UpdatePageUI ();
 		}
