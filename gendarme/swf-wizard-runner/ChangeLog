@@ -1,3 +1,9 @@
+2008-07-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Add an extra [End|Begin]Update on the TreeView before
+	calling Sort. Fix a bug (infinite recursion) under Vista (and Windows
+	2008 server) operating systems.
+
 2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.ico: Add Gendarme icon
