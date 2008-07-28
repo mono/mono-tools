@@ -1,3 +1,9 @@
+2008-07-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.Designer.cs: Make it look better for high-DPI displays.
+	* Wizard.cs: Display a single version number based on the 
+	Gendarme framework.
+
 2008-07-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Add an extra [End|Begin]Update on the TreeView before

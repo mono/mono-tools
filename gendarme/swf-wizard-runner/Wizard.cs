@@ -87,22 +87,19 @@ namespace Gendarme {
 			InitializeComponent ();
 			// hide the tabs from the TabControl/TabPage[s] being [mis-]used
 			// to implement this wizard
-			wizard_tab_control.Top = -22;
+			wizard_tab_control.Top = -24;
 
 			welcome_link_label.Text = DefaultUrl;
-			welcome_wizard_label.Text = String.Format ("Gendarme Wizard Runner Version {0}",
-				GetVersion (GetType ()));
-			welcome_framework_label.Text = String.Format ("Gendarme Framework Version {0}",
-				GetVersion (typeof (IRule)));
+
+			Version v = typeof (IRule).Assembly.GetName ().Version;
+			if ((v.Major == 0) && (v.Minor == 0))
+				welcome_gendarme_label.Text = "Gendarme (development snapshot)";
+			else
+				welcome_gendarme_label.Text = String.Format ("Gendarme, version {0}", v);
 
 			assembly_loader = UpdateAssemblies;
 
 			UpdatePageUI ();
-		}
-
-		private static Version GetVersion (Type type)
-		{
-			return type.Assembly.GetName ().Version;
 		}
 
 		static void EndCallback (IAsyncResult result)
