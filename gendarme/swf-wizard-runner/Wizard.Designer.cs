@@ -30,11 +30,8 @@ namespace Gendarme {
 			this.wizard_tab_control = new System.Windows.Forms.TabControl ();
 			this.tabPage1 = new System.Windows.Forms.TabPage ();
 			this.welcome_title_label = new System.Windows.Forms.Label ();
-			this.label11 = new System.Windows.Forms.Label ();
 			this.label10 = new System.Windows.Forms.Label ();
-			this.welcome_wizard_label = new System.Windows.Forms.Label ();
-			this.welcome_framework_label = new System.Windows.Forms.Label ();
-			this.label2 = new System.Windows.Forms.Label ();
+			this.welcome_gendarme_label = new System.Windows.Forms.Label ();
 			this.label1 = new System.Windows.Forms.Label ();
 			this.welcome_link_label = new System.Windows.Forms.LinkLabel ();
 			this.addfiles_tab_page = new System.Windows.Forms.TabPage ();
@@ -85,7 +82,7 @@ namespace Gendarme {
 			this.wizard_tab_control.Controls.Add (this.tabPage3);
 			this.wizard_tab_control.Controls.Add (this.analyze_tab_tage);
 			this.wizard_tab_control.Controls.Add (this.results_tab_Page);
-			this.wizard_tab_control.Location = new System.Drawing.Point (133, 22);
+			this.wizard_tab_control.Location = new System.Drawing.Point (133, 0);
 			this.wizard_tab_control.Name = "wizard_tab_control";
 			this.wizard_tab_control.SelectedIndex = 0;
 			this.wizard_tab_control.Size = new System.Drawing.Size (501, 415);
@@ -93,14 +90,11 @@ namespace Gendarme {
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add (this.welcome_title_label);
-			this.tabPage1.Controls.Add (this.label11);
-			this.tabPage1.Controls.Add (this.label10);
-			this.tabPage1.Controls.Add (this.welcome_wizard_label);
-			this.tabPage1.Controls.Add (this.welcome_framework_label);
-			this.tabPage1.Controls.Add (this.label2);
+			this.tabPage1.Controls.Add (this.welcome_gendarme_label);
 			this.tabPage1.Controls.Add (this.label1);
 			this.tabPage1.Controls.Add (this.welcome_link_label);
+			this.tabPage1.Controls.Add (this.label10);
+			this.tabPage1.Controls.Add (this.welcome_title_label);
 			this.tabPage1.Location = new System.Drawing.Point (4, 25);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding (3);
@@ -111,72 +105,56 @@ namespace Gendarme {
 			// welcome_title_label
 			// 
 			this.welcome_title_label.AutoSize = true;
+			this.welcome_title_label.Dock = System.Windows.Forms.DockStyle.Top;
 			this.welcome_title_label.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			this.welcome_title_label.Location = new System.Drawing.Point (15, 12);
+			this.welcome_title_label.Location = new System.Drawing.Point (3, 3);
+			this.welcome_title_label.Margin = new System.Windows.Forms.Padding (0);
 			this.welcome_title_label.Name = "welcome_title_label";
-			this.welcome_title_label.Size = new System.Drawing.Size (139, 13);
-			this.welcome_title_label.TabIndex = 8;
+			this.welcome_title_label.Padding = new System.Windows.Forms.Padding (12, 12, 0, 0);
+			this.welcome_title_label.Size = new System.Drawing.Size (151, 25);
+			this.welcome_title_label.TabIndex = 1;
 			this.welcome_title_label.Text = "Welcome to Gendarme ";
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point (15, 127);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size (105, 13);
-			this.label11.TabIndex = 6;
-			this.label11.Text = "For more information:";
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point (15, 33);
+			this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label10.Location = new System.Drawing.Point (3, 28);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size (477, 77);
+			this.label10.Padding = new System.Windows.Forms.Padding (12, 12, 12, 0);
+			this.label10.Size = new System.Drawing.Size (487, 355);
 			this.label10.TabIndex = 5;
 			this.label10.Text = resources.GetString ("label10.Text");
 			// 
-			// welcome_wizard_label
+			// welcome_gendarme_label
 			// 
-			this.welcome_wizard_label.AutoSize = true;
-			this.welcome_wizard_label.Location = new System.Drawing.Point (15, 214);
-			this.welcome_wizard_label.Name = "welcome_wizard_label";
-			this.welcome_wizard_label.Size = new System.Drawing.Size (152, 13);
-			this.welcome_wizard_label.TabIndex = 4;
-			this.welcome_wizard_label.Text = "Wizard Runner Version 0.0.0.0";
-			// 
-			// welcome_framework_label
-			// 
-			this.welcome_framework_label.AutoSize = true;
-			this.welcome_framework_label.Location = new System.Drawing.Point (15, 227);
-			this.welcome_framework_label.Name = "welcome_framework_label";
-			this.welcome_framework_label.Size = new System.Drawing.Size (133, 13);
-			this.welcome_framework_label.TabIndex = 3;
-			this.welcome_framework_label.Text = "Framework Version 0.0.0.0";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point (15, 173);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size (56, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "Gendarme";
+			this.welcome_gendarme_label.AutoSize = true;
+			this.welcome_gendarme_label.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.welcome_gendarme_label.Location = new System.Drawing.Point (3, 192);
+			this.welcome_gendarme_label.Name = "welcome_gendarme_label";
+			this.welcome_gendarme_label.Padding = new System.Windows.Forms.Padding (12, 0, 0, 1);
+			this.welcome_gendarme_label.Size = new System.Drawing.Size (68, 14);
+			this.welcome_gendarme_label.TabIndex = 2;
+			this.welcome_gendarme_label.Text = "Gendarme";
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point (15, 186);
+			this.label1.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.label1.Location = new System.Drawing.Point (3, 206);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size (253, 13);
+			this.label1.Padding = new System.Windows.Forms.Padding (12, 0, 0, 1);
+			this.label1.Size = new System.Drawing.Size (265, 14);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Copyright © 2005-2008 Novell, Inc. and contributors";
 			// 
 			// welcome_link_label
 			// 
 			this.welcome_link_label.AutoSize = true;
-			this.welcome_link_label.Location = new System.Drawing.Point (15, 140);
+			this.welcome_link_label.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.welcome_link_label.Location = new System.Drawing.Point (3, 220);
 			this.welcome_link_label.Name = "welcome_link_label";
-			this.welcome_link_label.Size = new System.Drawing.Size (203, 13);
+			this.welcome_link_label.Padding = new System.Windows.Forms.Padding (12, 0, 0, 150);
+			this.welcome_link_label.Size = new System.Drawing.Size (215, 163);
 			this.welcome_link_label.TabIndex = 0;
 			this.welcome_link_label.TabStop = true;
 			this.welcome_link_label.Text = "http://www.mono-project.com/Gendarme";
@@ -201,7 +179,7 @@ namespace Gendarme {
 			// add_files_count_label
 			// 
 			this.add_files_count_label.AutoSize = true;
-			this.add_files_count_label.Location = new System.Drawing.Point (15, 352);
+			this.add_files_count_label.Location = new System.Drawing.Point (15, 357);
 			this.add_files_count_label.Name = "add_files_count_label";
 			this.add_files_count_label.Size = new System.Drawing.Size (85, 13);
 			this.add_files_count_label.TabIndex = 9;
@@ -222,15 +200,15 @@ namespace Gendarme {
 			this.label5.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
 			this.label5.Location = new System.Drawing.Point (15, 12);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size (115, 13);
+			this.label5.Size = new System.Drawing.Size (147, 13);
 			this.label5.TabIndex = 7;
-			this.label5.Text = "Add Assembly Files";
+			this.label5.Text = "Add Assembly Files        ";
 			// 
 			// add_files_button
 			// 
-			this.add_files_button.Location = new System.Drawing.Point (327, 352);
+			this.add_files_button.Location = new System.Drawing.Point (246, 352);
 			this.add_files_button.Name = "add_files_button";
-			this.add_files_button.Size = new System.Drawing.Size (75, 23);
+			this.add_files_button.Size = new System.Drawing.Size (115, 23);
 			this.add_files_button.TabIndex = 6;
 			this.add_files_button.Text = "Add files...";
 			this.add_files_button.UseVisualStyleBackColor = true;
@@ -238,9 +216,9 @@ namespace Gendarme {
 			// 
 			// remove_file_button
 			// 
-			this.remove_file_button.Location = new System.Drawing.Point (408, 352);
+			this.remove_file_button.Location = new System.Drawing.Point (367, 352);
 			this.remove_file_button.Name = "remove_file_button";
-			this.remove_file_button.Size = new System.Drawing.Size (75, 23);
+			this.remove_file_button.Size = new System.Drawing.Size (116, 23);
 			this.remove_file_button.TabIndex = 5;
 			this.remove_file_button.Text = "Remove file";
 			this.remove_file_button.UseVisualStyleBackColor = true;
@@ -273,18 +251,18 @@ namespace Gendarme {
 			// 
 			// browse_documentation_button
 			// 
-			this.browse_documentation_button.Location = new System.Drawing.Point (327, 354);
+			this.browse_documentation_button.Location = new System.Drawing.Point (246, 354);
 			this.browse_documentation_button.Name = "browse_documentation_button";
-			this.browse_documentation_button.Size = new System.Drawing.Size (156, 23);
+			this.browse_documentation_button.Size = new System.Drawing.Size (237, 23);
 			this.browse_documentation_button.TabIndex = 5;
-			this.browse_documentation_button.Text = "Browse Documentation...";
+			this.browse_documentation_button.Text = "Browse Rule Documentation...";
 			this.browse_documentation_button.UseVisualStyleBackColor = true;
 			this.browse_documentation_button.Click += new System.EventHandler (this.BrowseDocumentationButtonClick);
 			// 
 			// rules_count_label
 			// 
 			this.rules_count_label.AutoSize = true;
-			this.rules_count_label.Location = new System.Drawing.Point (15, 351);
+			this.rules_count_label.Location = new System.Drawing.Point (15, 357);
 			this.rules_count_label.Name = "rules_count_label";
 			this.rules_count_label.Size = new System.Drawing.Size (112, 13);
 			this.rules_count_label.TabIndex = 10;
@@ -540,11 +518,9 @@ namespace Gendarme {
 		private System.Windows.Forms.TabPage analyze_tab_tage;
 		private System.Windows.Forms.TabPage results_tab_Page;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label welcome_gendarme_label;
 		private System.Windows.Forms.Button next_button;
 		private System.Windows.Forms.Button back_button;
-		private System.Windows.Forms.Label welcome_wizard_label;
-		private System.Windows.Forms.Label welcome_framework_label;
 		private System.Windows.Forms.Button add_files_button;
 		private System.Windows.Forms.Button remove_file_button;
 		private System.Windows.Forms.ListBox file_list_box;
@@ -558,7 +534,6 @@ namespace Gendarme {
 		private System.Windows.Forms.Label report_subtitle_label;
 		private System.Windows.Forms.SaveFileDialog save_file_dialog;
 		private System.Windows.Forms.Label welcome_title_label;
-		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.Button view_report_button;
 		private System.Windows.Forms.Button save_report_button;
