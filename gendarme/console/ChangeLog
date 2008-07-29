@@ -1,3 +1,10 @@
+2008-07-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Better display if no assemblies are specified.
+	Don't throw an exception if the assembly name is not valid.
+	* Settings.cs: Don't throw an exception of we cannot load a rule 
+	assembly.
+
 2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Settings.cs: Use XmlNode over XmlElement (AvoidUnnecessary

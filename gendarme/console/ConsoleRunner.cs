@@ -105,9 +105,14 @@ namespace Gendarme {
 
 		void AddAssembly (string filename)
 		{
-			string assembly_name = Path.GetFullPath (filename);
-			AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
-			Assemblies.Add (ad);
+			try {
+				string assembly_name = Path.GetFullPath (filename);
+				AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
+				Assemblies.Add (ad);
+			}
+			catch (ArgumentException) {
+				Console.Error.WriteLine ("Could not load assembly '{0}'.", filename);
+			}
 		}
 
 		byte Report ()
@@ -193,6 +198,11 @@ namespace Gendarme {
 
 		public override void Run ()
 		{
+			if (Assemblies.Count == 0) {
+				Console.WriteLine ("No assemblies were specified to be analyzed.");
+				return;
+			}
+
 			DateTime start = DateTime.UtcNow;
 			base.Run ();
 			DateTime end = DateTime.UtcNow;
@@ -221,12 +231,14 @@ namespace Gendarme {
 			Version v = a.GetName ().Version;
 			if (v.ToString () != "0.0.0.0") {
 				Console.WriteLine ("Gendarme v{0}", v);
-				object [] attr = a.GetCustomAttributes (typeof (AssemblyCopyrightAttribute), false);
-				if (attr.Length > 0)
-					Console.WriteLine (((AssemblyCopyrightAttribute) attr [0]).Copyright);
 			} else {
 				Console.WriteLine ("Gendarme - Development Snapshot");
 			}
+
+			object [] attr = a.GetCustomAttributes (typeof (AssemblyCopyrightAttribute), false);
+			if (attr.Length > 0)
+				Console.WriteLine (((AssemblyCopyrightAttribute) attr [0]).Copyright);
+
 			Console.WriteLine ();
 		}
 
@@ -250,7 +262,7 @@ namespace Gendarme {
 			Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
 			Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
 			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
-			Console.WriteLine ("  --v\t\tEnable debugging output (use multiple time to augment verbosity).");
+			Console.WriteLine ("  --v\t\t\tEnable debugging output (use multiple time to augment verbosity).");
 			Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
 			Console.WriteLine ();
 		}
