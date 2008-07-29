@@ -110,9 +110,17 @@ namespace Gendarme {
 
 		private int LoadRulesFromAssembly (string assembly, string includeMask, string excludeMask, string applicabilityScope)
 		{
+			Assembly a = null;
+			try {
+				AssemblyName aname = AssemblyName.GetAssemblyName (Path.GetFullPath (assembly));
+				a = Assembly.Load (aname);
+			}
+			catch (FileNotFoundException) {
+				Console.Error.WriteLine ("Could not load rules from assembly '{0}'.", assembly);
+				return 0;
+			}
+
 			int total = 0;
-			AssemblyName aname = AssemblyName.GetAssemblyName (Path.GetFullPath (assembly));
-			Assembly a = Assembly.Load (aname);
 			foreach (Type t in a.GetTypes ()) {
 				if (t.IsAbstract || t.IsInterface)
 					continue;
