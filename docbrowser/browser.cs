@@ -22,7 +22,7 @@ using System.Xml;
 namespace Monodoc {
 class Driver {
 	  
-	public static string[] engines = {"WebKit", "MonoWebBrowser", "Gecko", "GtkHtml"};
+	public static string[] engines = {"WebKit", "Gecko", "MonoWebBrowser", "GtkHtml"};
 	  
 	static int Main (string [] args)
 	{
@@ -2283,6 +2283,9 @@ public class Tab : Notebook {
 
 
 	private static IHtmlRender LoadRenderer (string dll, Browser browser) {
+		if (!System.IO.File.Exists (dll))
+			return null;
+		
 		try {
 			Assembly ass = Assembly.LoadFile (dll);		
 			System.Type type = ass.GetType ("Monodoc." + ass.GetName ().Name, false, false);
@@ -2312,18 +2315,15 @@ public class Tab : Notebook {
 		
 		foreach (string backend in Driver.engines) {
 			if (backend != engine) {
-				string dll = System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, backend + "HtmlRender.dll");
-				if (System.IO.File.Exists (dll)) {
-					renderer = LoadRenderer (dll, browser);
-					if (renderer != null) {
-						try {
-							if (renderer.Initialize ()) {
-								Console.WriteLine ("using " + renderer.Name);
-								return renderer;
-							}
-						} catch (Exception ex) {
-							Console.Error.WriteLine (ex);
+				renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, backend + "HtmlRender.dll"), browser);
+				if (renderer != null) {
+					try {
+						if (renderer.Initialize ()) {
+							Console.WriteLine ("using " + renderer.Name);
+							return renderer;
 						}
+					} catch (Exception ex) {
+						Console.Error.WriteLine (ex);
 					}
 				}			
 			}
