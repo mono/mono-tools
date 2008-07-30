@@ -1,8 +1,13 @@
+2008-07-30  Andreia Gaita <avidigal@novell.com> 
+
+	* browser.cs: Fix loader not to dump an exception when it a backend assembly 
+	  doesn't exist. Change backend loading order.
+
 2008-06-17  Andreia Gaita <avidigal@novell.com> 
 
 	* browser.cs: Fix alternate engine loading so it tries every available
 	  engine if the first one fails.
-
+	
 2008-06-15  Andreia Gaita <avidigal@novell.com> 
 
 	* browser.cs: Uncomment exception message
