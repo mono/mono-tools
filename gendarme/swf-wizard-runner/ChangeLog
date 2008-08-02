@@ -1,3 +1,7 @@
+2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Remove unneeded call to String.Format [self-test]
+
 2008-07-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.Designer.cs: Make it look better for high-DPI displays.

@@ -407,7 +407,7 @@ namespace Gendarme {
 			next_button.Enabled = false;
 			analyze_status_label.Text = String.Format ("Processing assembly 1 of {0}",
 				assemblies.Count);
-			analyze_defect_label.Text = String.Format ("Defects Found: 0");
+			analyze_defect_label.Text = "Defects Found: 0";
 			// make sure all assemblies are loaded into memory
 			assemblies_loading.AsyncWaitHandle.WaitOne ();
 			PrepareAnalyze ();
