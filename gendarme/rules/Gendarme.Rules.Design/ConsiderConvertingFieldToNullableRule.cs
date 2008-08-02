@@ -88,9 +88,6 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			//nullables do not exist on NET<2.0 so this rule does not apply
-			if (type.Module.Assembly.Runtime < TargetRuntime.NET_2_0)
-				return RuleResult.DoesNotApply;
 			if (type.IsEnum || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 

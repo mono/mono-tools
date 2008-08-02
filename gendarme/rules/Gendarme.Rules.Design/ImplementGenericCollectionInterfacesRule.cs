@@ -41,19 +41,25 @@ namespace Gendarme.Rules.Design {
 	[Solution ("Implement one of generic collection interfaces such as IEnumerable<T>, ICollection<T> or IList<T>.")]
 	public class ImplementGenericCollectionInterfacesRule : Rule, ITypeRule {
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// we only want to run this on assemblies that use 2.0 or later
+			// since generics were not available before
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
+			};
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule applies only to 2.0+ assemblies
-			TargetRuntime runtime = type.Module.Assembly.Runtime;
-			if (runtime == TargetRuntime.NET_1_0 || runtime == TargetRuntime.NET_1_1)
-				return RuleResult.DoesNotApply;
-			
-			// rule applies only to public types
-			if (!type.IsPublic && !type.IsNestedPublic)
-				return RuleResult.DoesNotApply;
-			
 			// rule does not apply to enums, interfaces and generated code
 			if (type.IsEnum || type.IsInterface || type.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
+			
+			// rule applies only to visible types
+			if (!type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			// rule only applies if the type implements IEnumerable
@@ -66,7 +72,7 @@ namespace Gendarme.Rules.Design {
 
 			// the type should implement IEnumerable<T> too
 			if (!type.Implements ("System.Collections.Generic.IEnumerable`1"))
-				Runner.Report (type, Severity.Medium, Confidence.High, "Implement generic collection interface.");
+				Runner.Report (type, Severity.Medium, Confidence.High);
 
 			return Runner.CurrentRuleResult;
 		}

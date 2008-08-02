@@ -1,3 +1,10 @@
+2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingFieldToNullableRule.cs: Don't duplicate FX check
+	in both Initialize and CheckType (removed).
+	* ImplementGenericCollectionInterfacesRule.cs: Move FX check into
+	the Initialize method - this will make it faster for 1.x assemblies.
+
 2008-07-23  Nestor Salceda  <nestor.salceda@gmail.com>
 	
 	* ConsiderUsingStaticTypeRule.cs: Fix the rule in order to avoid false
