@@ -1,3 +1,10 @@
+2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingFieldToNullableTest.cs: Add test case for
+	FX version (Initialize check) and a few others to complete coverage.
+	* ImplementGenericCollectionInterfacesTest.cs: Change FX version 
+	test case to check Initialize (not CheckType) method.
+
 2008-07-23  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ConsiderUsingStaticTypeTest.cs: Fix the existing tests because they

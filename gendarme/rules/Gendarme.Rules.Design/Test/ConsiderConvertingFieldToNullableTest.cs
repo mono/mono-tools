@@ -28,6 +28,8 @@
 
 using System;
 
+using Mono.Cecil;
+
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
@@ -83,6 +85,16 @@ namespace Test.Rules.Design {
 		HasValue,
 		Value
 	}
+
+	public class ClassWithSmallFieldNames {
+		bool has;
+		string foo;
+	}
+
+	public class ClassWithNonHasBool {
+		bool initialized;
+		string foo;
+	}
 	#pragma warning restore 169
 
 
@@ -102,7 +114,8 @@ namespace Test.Rules.Design {
 			AssertRuleSuccess<ClassWithoutPotentialNullable> ();
 			AssertRuleSuccess<ClassWithoutPotentialNullable2> ();
 			AssertRuleSuccess<ClassWithoutPotentialNullable3> ();
-
+			AssertRuleSuccess<ClassWithSmallFieldNames> ();
+			AssertRuleSuccess<ClassWithNonHasBool> ();
 		}
 
 		[Test]
@@ -118,7 +131,25 @@ namespace Test.Rules.Design {
 			AssertRuleDoesNotApply<SomeEnum> ();
 		}
 
+		[Test]
+		public void NotApplicableBefore2_0 ()
+		{
+			// ensure that the rule does not apply for types defined in 1.x assemblies
+			TypeDefinition violator = DefinitionLoader.GetTypeDefinition<ClassWithOnePotentialNullable> ();
+			TargetRuntime realRuntime = violator.Module.Assembly.Runtime;
+			try {
+
+				// fake assembly runtime version and do the check
+				violator.Module.Assembly.Runtime = TargetRuntime.NET_1_1;
+				Rule.Active = true;
+				Rule.Initialize (Runner);
+				Assert.IsFalse (Rule.Active, "Active");
+			}
+			catch {
+				// rollback
+				violator.Module.Assembly.Runtime = realRuntime;
+				Rule.Active = true;
+			}
+		}
 	}
-
 }
-
