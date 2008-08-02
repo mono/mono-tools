@@ -107,13 +107,19 @@ namespace Test.Rules.Design {
 			// ensure that the rule does not apply for types defined in 1.x assemblies
 			TypeDefinition violator = DefinitionLoader.GetTypeDefinition<NoUseOfGenerics> ();
 			TargetRuntime realRuntime = violator.Module.Assembly.Runtime;
+			try {
 
-			// fake assembly runtime version and do the check
-			violator.Module.Assembly.Runtime = TargetRuntime.NET_1_1;
-			AssertRuleDoesNotApply (violator);
-
-			// rollback
-			violator.Module.Assembly.Runtime = realRuntime;
+				// fake assembly runtime version and do the check
+				violator.Module.Assembly.Runtime = TargetRuntime.NET_1_1;
+				Rule.Active = true;
+				Rule.Initialize (Runner);
+				Assert.IsFalse (Rule.Active, "Active");
+			}
+			catch {
+				// rollback
+				violator.Module.Assembly.Runtime = realRuntime;
+				Rule.Active = true;
+			}
 		}
 		
 		[Test]
