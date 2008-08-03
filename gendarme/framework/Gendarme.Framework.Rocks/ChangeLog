@@ -1,3 +1,8 @@
+2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* InstructionRocks.cs: Add an overload to TraceBack that accept an
+	offset. This makes it easier to find all parameters to a method call.
+
 2008-07-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ModuleRocks.cs: Exit early from LoadDebuggingSymbols if the symbols
