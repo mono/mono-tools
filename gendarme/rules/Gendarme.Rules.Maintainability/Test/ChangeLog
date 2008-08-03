@@ -1,3 +1,9 @@
+2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsiderUsingStopwatchTest.cs: Complete coverage by adding 
+	test cases for Initialize and an external method (DoesNotApply). 
+	Added test cases to check for Ref/Out DateTime parameters.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ConsiderUsingStopwatchTest.cs: Test cases for 
