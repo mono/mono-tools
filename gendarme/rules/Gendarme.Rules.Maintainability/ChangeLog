@@ -1,5 +1,8 @@
-2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
+2008-08-03  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidComplexMethodsRule.cs: Use automatic properties for all
+	Threadhold properties. Reuse (i.e. Clear) 'targets' between rule
+	executions (to reduce memory requirements).
 	* ConsiderUsingStopwatchRule.cs: Use new rocks to simplify code.
 	Rework parameter checks to consider Ref and Out parameters.
 
