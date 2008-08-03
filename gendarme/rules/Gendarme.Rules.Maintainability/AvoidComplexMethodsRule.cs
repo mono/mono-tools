@@ -43,43 +43,32 @@ namespace Gendarme.Rules.Maintainability {
 
 		// defaults match fxcop rule http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1575061&SiteID=1
 		// so people using both tools should not see conflicting results
-		private int success = 25;
-		private int low = 0;
-		private int medium = 0;
-		private int high = 0;
+		public AvoidComplexMethodsRule ()
+		{
+			SuccessThreshold = 25;
+		}
 
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
 
 			// works if only SuccessThreshold is configured in rules.xml
-			if (low == 0)
-				low = success * 2;
-			if (medium == 0)
-				medium = success * 3;
-			if (high == 0)
-				high = success * 4;
+			if (LowThreshold == 0)
+				LowThreshold = SuccessThreshold * 2;
+			if (MediumThreshold == 0)
+				MediumThreshold = SuccessThreshold * 3;
+			if (HighThreshold == 0)
+				HighThreshold = SuccessThreshold * 4;
 		}
 
-		public int SuccessThreshold {
-			get { return success; }
-			set { success = value; }
-		}
+		public int SuccessThreshold { get; set; }
 
-		public int LowThreshold {
-			get { return low; }
-			set { low = value; }
-		}
+		public int LowThreshold { get; set; }
 
-		public int MediumThreshold {
-			get { return medium; }
-			set { medium = value; }
-		}
+		public int MediumThreshold { get; set; }
 
-		public int HighThreshold {
-			get { return high; }
-			set { high = value; }
-		}
+		public int HighThreshold { get; set; }
+
 	
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -115,9 +104,10 @@ namespace Gendarme.Rules.Maintainability {
 			return Severity.Critical;
 		}
 
-		public static int GetCyclomaticComplexityForMethod(MethodDefinition method)
+		public int GetCyclomaticComplexityForMethod (MethodDefinition method)
 		{
-			if (!method.HasBody) return 1;
+			if (!method.HasBody)
+				return 1;
 
 			int cc = 1;
 
@@ -147,9 +137,11 @@ namespace Gendarme.Rules.Maintainability {
 			return cc;
 		}
 
-		private static int GetNumberOfSwitchTargets(Instruction inst)
+		List<Instruction> targets = new List<Instruction> ();
+
+		private int GetNumberOfSwitchTargets (Instruction inst)
 		{
-			List<Instruction> targets = new List<Instruction> ();
+			targets.Clear ();
 			foreach (Instruction target in ((Instruction[]) inst.Operand))
 			{
 				if (!targets.Contains (target))
