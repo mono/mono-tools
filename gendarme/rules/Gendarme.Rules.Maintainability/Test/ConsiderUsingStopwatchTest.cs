@@ -3,8 +3,10 @@
 //
 // Authors:
 //      Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //      (C) 2008 Cedric Vivier
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,13 +30,15 @@
 
 using System;
 
+using Mono.Cecil;
+
 using Gendarme.Framework;
 using Gendarme.Rules.Maintainability;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
-
 
 namespace Test.Rules.Maintainability {
 
@@ -145,12 +149,61 @@ namespace Test.Rules.Maintainability {
 			DateTime now = DateTime.Now;
 			TimeSpan diff = now - baseTime;
 		}
+
+		public TimeSpan Return ()
+		{
+			DateTime start = DateTime.Now;
+			//stuff
+			return DateTime.Now - start;
+		}
+
+		public TimeSpan Ref (ref DateTime start)
+		{
+			start = DateTime.Now;
+			//stuff
+			return DateTime.Now - start;
+		}
+
+		public TimeSpan Out (out DateTime end)
+		{
+			DateTime start = DateTime.Now;
+			//stuff
+			end = DateTime.Now;
+			return end - start;
+		}
 	}
 	#pragma warning restore 169
 
 
 	[TestFixture]
-	public class ConsiderUsingStopwatch : MethodRuleTestFixture<ConsiderUsingStopwatchRule> {
+	public class ConsiderUsingStopwatchTest : MethodRuleTestFixture<ConsiderUsingStopwatchRule> {
+
+		[Test]
+		public void Initialize ()
+		{
+			// ensure that the rule does not apply for types defined in 1.x assemblies
+			TypeDefinition violator = DefinitionLoader.GetTypeDefinition<ConsiderUsingStopwatchTest> ();
+			TargetRuntime realRuntime = violator.Module.Assembly.Runtime;
+			try {
+
+				// fake assembly runtime version and do the check
+				violator.Module.Assembly.Runtime = TargetRuntime.NET_1_1;
+				Rule.Active = true;
+				Rule.Initialize (Runner);
+				Assert.IsFalse (Rule.Active, "Active");
+			}
+			catch {
+				// rollback
+				violator.Module.Assembly.Runtime = realRuntime;
+				Rule.Active = true;
+			}
+		}
+
+		[Test]
+		public void NotApplicable ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		[Test]
 		public void Success ()
@@ -195,7 +248,12 @@ namespace Test.Rules.Maintainability {
 			AssertRuleFailure<TestClass> ("ManyLocals", 1);
 		}
 
+		[Test]
+		public void SpecialCases ()
+		{
+			AssertRuleFailure<TestClass> ("Return", 1);
+			AssertRuleFailure<TestClass> ("Ref", 1);
+			AssertRuleFailure<TestClass> ("Out", 1);
+		}
 	}
-
 }
-
