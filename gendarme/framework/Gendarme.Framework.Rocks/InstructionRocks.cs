@@ -457,7 +457,20 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The instruction that match the current instruction.</returns>
 		public static Instruction TraceBack (this Instruction self, MethodDefinition method)
 		{
-			int n = self.GetPopCount (method);
+			return TraceBack (self, method, 0);
+		}
+
+		/// <summary>
+		/// Return the instruction that match the current instruction. This is computed by 
+		/// substracting push and adding pop counts until the total becomes zero.
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <param name="method">The method from which the instruction was extracted.</param>
+		/// <param name="offset">Offset to add the the Pop count. Useful to track several parameters to a method.</param>
+		/// <returns>The instruction that match the current instruction.</returns>
+		public static Instruction TraceBack (this Instruction self, MethodDefinition method, int offset)
+		{
+			int n = offset + self.GetPopCount (method);
 			self = self.Previous;
 			while (self != null) {
 				n -= self.GetPushCount ();
