@@ -28,6 +28,8 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Maintainability;
@@ -58,6 +60,10 @@ namespace Test.Rules.Maintainability {
 
 	public class MethodsWithExpectedCC
 	{
+		[ExpectedCC (1)]
+		[DllImport ("libc.so")]
+		private static extern void strncpy (StringBuilder dest, string src, uint n);
+
 		[ExpectedCC(1)]
 		public void Test1()
 		{
@@ -312,20 +318,16 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void CyclomaticComplexityMeasurementTest ()
 		{
-			Type rType = Assembly.GetExecutingAssembly ().GetType ("Test.Rules.Maintainability.MethodsWithExpectedCC");
 			TypeDefinition type = DefinitionLoader.GetTypeDefinition<MethodsWithExpectedCC> ();
-			ExpectedCCAttribute expectedCC;
-			int cc;
+			int actual_cc;
+			int expected_cc;
 
-			foreach (MethodDefinition method in type.Methods)
-			{
-				cc = AvoidComplexMethodsRule.GetCyclomaticComplexityForMethod(method);
-				expectedCC = (ExpectedCCAttribute)
-					rType.GetMethod (method.Name).GetCustomAttributes(
-										typeof(ExpectedCCAttribute), false)[0];
-				Assert.AreEqual (cc, expectedCC.Value,
+			foreach (MethodDefinition method in type.Methods) {
+				actual_cc = Rule.GetCyclomaticComplexityForMethod (method);
+				expected_cc = (int) method.CustomAttributes [0].ConstructorParameters [0];
+				Assert.AreEqual (actual_cc, expected_cc,
 					"CC for method '{0}' is {1} but should have been {2}.",
-					method, cc, expectedCC);
+					method.Name, actual_cc, expected_cc);
 			}
 		}
 
@@ -360,5 +362,27 @@ namespace Test.Rules.Maintainability {
 		{
 			AssertRuleDoesNotApply<MethodsWithExpectedCC> ("Generated15");
 		}
+
+		[Test]
+		public void Custom ()
+		{
+			try {
+				Rule.SuccessThreshold = 10;
+				Rule.LowThreshold = 15;
+				Rule.MediumThreshold = 25;
+				AssertRuleFailure<MethodsWithExpectedCC> ("Test27", 1);
+				Assert.AreEqual (Severity.High, Runner.Defects [0].Severity, "Test27-Severity");
+				Rule.HighThreshold = 50;
+				AssertRuleFailure<MethodsWithExpectedCC> ("TooManyIf", 1);
+				Assert.AreEqual (Severity.Critical, Runner.Defects [0].Severity, "TooManyIf-Severity");
+			}
+			finally {
+				Rule.SuccessThreshold = 25;
+				Rule.LowThreshold = 50;
+				Rule.MediumThreshold = 75;
+				Rule.HighThreshold = 100;
+			}
+		}
+
 	}
 }

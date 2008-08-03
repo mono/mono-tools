@@ -1,5 +1,7 @@
-2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
+2008-08-03  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidComplexMethodsTest.cs: Add test cases for better coverage.
+	Use Cecil (instead of reflection) to read ExpectedCC.
 	* ConsiderUsingStopwatchTest.cs: Complete coverage by adding 
 	test cases for Initialize and an external method (DoesNotApply). 
 	Added test cases to check for Ref/Out DateTime parameters.
