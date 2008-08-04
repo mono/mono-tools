@@ -36,6 +36,7 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Maintainability;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Maintainability {
@@ -253,8 +254,38 @@ namespace Test.Rules.Maintainability {
 		}
 	}
 
+	// resolve won't work when running unit test from makefiles
+	interface ITestTypeRule {
+		RuleResult CheckType (TypeDefinition type);
+	}
+
+	interface ITestMethodRule {
+		RuleResult CheckMethod (MethodDefinition method);
+	}
+
+	class TestRule : Rule, ITestTypeRule, ITestMethodRule {
+
+		public RuleResult CheckType (TypeDefinition type)
+		{
+			Console.WriteLine (type.Name);
+			return RuleResult.DoesNotApply;
+		}
+
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			Console.WriteLine (method.Name);
+			return RuleResult.Success;
+		}
+	}
+
 	[TestFixture]
 	public class AvoidUnnecessarySpecializationTest : MethodRuleTestFixture<AvoidUnnecessarySpecializationRule> {
+
+		[Test]
+		public void NotApplicable ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		[Test]
 		public void FooCouldBeBase ()
@@ -351,7 +382,11 @@ namespace Test.Rules.Maintainability {
 			AssertRuleDoesNotApply<GeneralizedClass> ("set_Property");
 		}
 
+		[Test]
+		public void SatisfyInterface ()
+		{
+			AssertRuleDoesNotApply<TestRule> ("CheckType");
+			AssertRuleDoesNotApply<TestRule> ("CheckMethod");
+		}
 	}
-
 }
-

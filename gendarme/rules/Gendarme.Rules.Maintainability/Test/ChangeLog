@@ -1,3 +1,8 @@
+2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationTest.cs: Add test cases where
+	methods parameters are dictated from the interface definition.
+
 2008-08-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsTest.cs: Add test cases for better coverage.
