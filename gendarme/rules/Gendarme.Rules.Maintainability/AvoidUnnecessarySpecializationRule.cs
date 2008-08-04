@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -42,29 +43,6 @@ namespace Gendarme.Rules.Maintainability {
 		private StackEntryAnalysis sea;
 		private TypeReference[] leastTypes;
 		private int[] leastDepths;
-
-		private static ParameterDefinition GetParameter (MethodDefinition method, Instruction ins)
-		{
-			switch (ins.OpCode.Code) {
-			case Code.Ldarg_0:
-			case Code.Ldarg_1:
-			case Code.Ldarg_2:
-			case Code.Ldarg_3:
-				int index = ins.OpCode.Code - Code.Ldarg_0;
-				if (!method.IsStatic) {
-					index--;
-					if (index < 0) return null;
-				}
-				return method.Parameters [index];
-			case Code.Ldarg_S :
-			case Code.Ldarga_S :
-			case Code.Ldarg:
-			case Code.Ldarga:
-				return (ins.Operand as ParameterDefinition);
-			}
-
-			throw new ArgumentException("not a ldarg instruction", "ins");
-		}
 
 		private static TypeReference GetActualType (TypeReference type)
 		{
@@ -190,7 +168,7 @@ namespace Gendarme.Rules.Maintainability {
 			return false;
 		}
 
-		private void UpdateParameterLeastType (ParameterDefinition parameter, StackEntryUsageResult[] usageResults)
+		private void UpdateParameterLeastType (ParameterReference parameter, StackEntryUsageResult [] usageResults)
 		{
 			int pIndex = parameter.Sequence - 1;
 			if (pIndex < 0) throw new InvalidOperationException("parameter.Sequence < 1");
@@ -251,7 +229,7 @@ namespace Gendarme.Rules.Maintainability {
 
 		private void CheckParameter (MethodDefinition method, Instruction ins)
 		{
-			ParameterDefinition parameter = GetParameter (method, ins);
+			ParameterDefinition parameter = ins.GetParameter (method);
 			if (null == parameter) //this is `this`, we do not care
 				return;
 			if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
@@ -271,6 +249,24 @@ namespace Gendarme.Rules.Maintainability {
 			UpdateParameterLeastType (parameter, usage);
 		}
 
+		public bool SignatureDictatedByInterface (MethodDefinition method)
+		{
+			TypeDefinition type = (method.DeclaringType as TypeDefinition);
+			if (type.Interfaces.Count > 0) {
+				MethodSignature sig = GetSignature (method);
+				foreach (TypeReference intf_ref in type.Interfaces) {
+					TypeDefinition intr = intf_ref.Resolve ();
+					if (intr == null)
+						continue;
+					foreach (MethodDefinition md in intr.Methods) {
+						if (sig.Matches (md))
+							return true;
+					}
+				}
+			}
+			return false;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody || method.IsGeneratedCode () || method.IsCompilerControlled)
@@ -278,25 +274,17 @@ namespace Gendarme.Rules.Maintainability {
 			if (method.Parameters.Count == 0 || method.IsProperty ())
 				return RuleResult.DoesNotApply;
 
+			// we can't change parameter types if they were specified by an interface
+			if (SignatureDictatedByInterface (method))
+				return RuleResult.DoesNotApply;
+
 			leastTypes = new TypeReference [method.Parameters.Count];
 			leastDepths = new int [leastTypes.Length];
 
 			//look at each argument usage
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Ldarg_0 :
-				case Code.Ldarg_1 :
-				case Code.Ldarg_2 :
-				case Code.Ldarg_3 :
-				case Code.Ldarg_S :
-				case Code.Ldarga_S :
-				case Code.Ldarg :
-				case Code.Ldarga :
+				if (ins.IsLoadArgument ())
 					CheckParameter (method, ins);
-					break;
-				default:
-					continue;
-				}
 			}
 
 			CheckParametersSpecializationDelta (method);
@@ -320,9 +308,9 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private string GetSuggestionMessage (ParameterDefinition parameter)
+		private string GetSuggestionMessage (ParameterReference parameter)
 		{
-			System.Text.StringBuilder sb = new System.Text.StringBuilder ();
+			StringBuilder sb = new StringBuilder ();
 			sb.Append ("Parameter '");
 			sb.Append (parameter.Name);
 			if (parameter.ParameterType is GenericParameter)
