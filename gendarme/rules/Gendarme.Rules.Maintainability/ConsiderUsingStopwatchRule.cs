@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Maintainability {
 			return (ld.GetVariable (method).Index == st.GetVariable (method).Index);
 		}
 
-		private static bool IsGetNow (MethodDefinition method, Instruction ins)
+		private static bool IsGetNow (Instruction ins)
 		{
 			if (ins.OpCode.Code != Code.Call)
 				return false;
@@ -83,7 +83,7 @@ namespace Gendarme.Rules.Maintainability {
 				while (null != prev) {
 					// look for a STLOC* instruction and compare the variable indexes
 					if (prev.IsStoreLocal () && AreMirrorInstructions (ins, prev, method))
-						return IsGetNow (method, prev.Previous);
+						return IsGetNow (prev.Previous);
 					prev = prev.Previous;
 				}
 			} else if (ins.OpCode.Code == Code.Ldobj) {
@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Maintainability {
 					prev = prev.Previous;
 				}
 			} else {
-				return IsGetNow (method, ins);
+				return IsGetNow (ins);
 			}
 			return false;
 		}

@@ -1,3 +1,11 @@
+2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderUsingStopwatchRule.cs: Remove unneeded parameter on 
+	IsGetNow method (self-test).
+	* AvoidUnnecessarySpecializationRule.cs: Ignore methods where
+	the parameters are dictated by an interface that the type implements.
+	Also use new rocks to simplify rule and apply rule to itself ;-)
+
 2008-08-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsRule.cs: Use automatic properties for all
