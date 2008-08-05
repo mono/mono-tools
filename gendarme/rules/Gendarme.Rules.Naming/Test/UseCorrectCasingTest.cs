@@ -77,6 +77,10 @@ namespace Test.Rules.Naming {
 		public static int operator + (MoreComplexCasing a, int b) { return 0; } // ignore!
 	}
 
+	public class PrivateEventCasing {
+		private event EventHandler good_private_event;
+	}
+
 	[TestFixture]
 	public class UseCorrectCasingTest {
 		public class AnonymousMethod {
@@ -256,6 +260,16 @@ namespace Test.Rules.Naming {
 			method = GetMethod ("remove_badEvent");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
 			Assert.AreEqual (1, runner.Defects.Count, "Count2");
+		}
+
+		[Test]
+		public void TestGoodPrivateEvent ()
+		{
+			type = assembly.MainModule.Types ["Test.Rules.Naming.PrivateEventCasing"];
+			MethodDefinition method = GetMethod ("add_good_private_event");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult1");
+			method = GetMethod ("remove_good_private_event");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult2");
 		}
 
 		[Test]
