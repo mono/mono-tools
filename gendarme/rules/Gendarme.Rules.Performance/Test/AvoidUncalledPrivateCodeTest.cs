@@ -43,7 +43,9 @@ using NUnit.Framework;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
-	
+
+#pragma warning disable 169
+
 	[TestFixture]
 	public class AvoidUncalledPrivateCodeTest : MethodRuleTestFixture<AvoidUncalledPrivateCodeRule> {
 		
@@ -707,12 +709,17 @@ namespace Test.Rules.Performance {
 				Used -= new EventHandler (Common);
 			}
 
+			private event EventHandler foo, bar;
+
 			event EventHandler IFoo.Foo {
-				add { throw new NotImplementedException (); }
-				remove { throw new NotImplementedException (); }
+				add { foo += value; }
+				remove { foo -= value; }
 			}
 
-			public event EventHandler Bar;
+			public event EventHandler Bar {
+				add { bar += value; }
+				remove { bar -= value; }
+			}
 		}
 
 		[Test]
@@ -727,6 +734,11 @@ namespace Test.Rules.Performance {
 			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.add_Foo");
 			// not used but we ignore explicit interfaces
 			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.remove_Foo");
+
+			// however the compiler will still generate it's own add/remove methods 
+			// that we simply ignore since they are out of the developer's control
+			AssertRuleDoesNotApply<EventCases> ("add_foo");
+			AssertRuleDoesNotApply<EventCases> ("remove_foo");
 
 			AssertRuleSuccess<EventCases> ("add_Bar");
 			AssertRuleSuccess<EventCases> ("remove_Bar");

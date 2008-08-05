@@ -1,3 +1,9 @@
+2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test cases for events.
+	Compilers generates default add/remove methods for them and they
+	should not be reported since they are outside developer's control.
+
 2008-07-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Add test case for detected 
