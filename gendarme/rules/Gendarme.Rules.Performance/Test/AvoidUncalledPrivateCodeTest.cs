@@ -671,5 +671,65 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess<FalsePositive1> ();
 		}
+
+		interface IFoo {
+			event EventHandler Foo;
+		}
+
+		interface IBar {
+			event EventHandler Bar;
+		}
+
+		private class EventCases : IFoo, IBar {
+			private event EventHandler unused;
+
+			event EventHandler Unused {
+				add { unused += value; }
+				remove { unused -= value; }
+			}
+
+			private event EventHandler used;
+
+			event EventHandler Used {
+				add { used += value; }
+				remove { used -= value; }
+			}
+
+			public EventCases ()
+			{
+				Used += new EventHandler (Common);
+				(this as IFoo).Foo += new EventHandler (Common);
+				Bar += new EventHandler (Common);
+			}
+
+			void Common (object sender, EventArgs e)
+			{
+				Used -= new EventHandler (Common);
+			}
+
+			event EventHandler IFoo.Foo {
+				add { throw new NotImplementedException (); }
+				remove { throw new NotImplementedException (); }
+			}
+
+			public event EventHandler Bar;
+		}
+
+		[Test]
+		public void Events ()
+		{
+			AssertRuleFailure<EventCases> ("add_Unused", 1);
+			AssertRuleFailure<EventCases> ("remove_Unused", 1);
+
+			AssertRuleSuccess<EventCases> ("add_Used");
+			AssertRuleSuccess<EventCases> ("remove_Used");
+
+			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.add_Foo");
+			// not used but we ignore explicit interfaces
+			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.remove_Foo");
+
+			AssertRuleSuccess<EventCases> ("add_Bar");
+			AssertRuleSuccess<EventCases> ("remove_Bar");
+		}
 	}
 }
