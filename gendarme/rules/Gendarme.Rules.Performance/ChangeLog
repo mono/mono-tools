@@ -1,3 +1,9 @@
+2008-08-05  Peter Johanson  <peter@peterjohanson.com>
+
+	* AvoidUnusedParametersRule.cs: Properly check every delegate
+	created inside a method, to see if a certain method is used
+	in a delegate instance.
+
 2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Fix rule not to apply for

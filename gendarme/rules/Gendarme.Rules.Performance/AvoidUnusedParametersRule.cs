@@ -93,8 +93,9 @@ namespace Gendarme.Rules.Performance {
 				return false;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.Code == Code.Ldftn)
-					return instruction.Operand.Equals (delegateMethod);
+				if (instruction.OpCode.Code == Code.Ldftn &&
+				    instruction.Operand.Equals (delegateMethod))
+					return true;
 			}
 			return false;
 		}
