@@ -124,6 +124,10 @@ namespace Test.Rules.Performance {
 		{
 		}
 
+		public void SimpleCallbackImpl2 (int x) 
+		{
+		}
+
 		public void AnonymousMethodWithUnusedParameters ()
 		{
 			SimpleCallback callback = delegate (int x) {
@@ -260,6 +264,19 @@ namespace Test.Rules.Performance {
 		{
 			SimpleCallback callback = new SimpleCallback (SimpleCallbackImpl);
 			method = GetMethodForTest ("SimpleCallbackImpl");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+		}
+
+		[Test]
+		public void DelegateMethodTestWithMultipleDelegates () 
+		{
+			SimpleCallback callback = new SimpleCallback (SimpleCallbackImpl);
+			SimpleCallback callback2 = new SimpleCallback (SimpleCallbackImpl2);
+
+			method = GetMethodForTest ("SimpleCallbackImpl");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+
+			method = GetMethodForTest ("SimpleCallbackImpl2");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 
