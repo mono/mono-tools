@@ -43,7 +43,9 @@ using NUnit.Framework;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
-	
+
+#pragma warning disable 169
+
 	[TestFixture]
 	public class AvoidUncalledPrivateCodeTest : MethodRuleTestFixture<AvoidUncalledPrivateCodeRule> {
 		
@@ -670,6 +672,76 @@ namespace Test.Rules.Performance {
 		public void MoreGenerics ()
 		{
 			AssertRuleSuccess<FalsePositive1> ();
+		}
+
+		interface IFoo {
+			event EventHandler Foo;
+		}
+
+		interface IBar {
+			event EventHandler Bar;
+		}
+
+		private class EventCases : IFoo, IBar {
+			private event EventHandler unused;
+
+			event EventHandler Unused {
+				add { unused += value; }
+				remove { unused -= value; }
+			}
+
+			private event EventHandler used;
+
+			event EventHandler Used {
+				add { used += value; }
+				remove { used -= value; }
+			}
+
+			public EventCases ()
+			{
+				Used += new EventHandler (Common);
+				(this as IFoo).Foo += new EventHandler (Common);
+				Bar += new EventHandler (Common);
+			}
+
+			void Common (object sender, EventArgs e)
+			{
+				Used -= new EventHandler (Common);
+			}
+
+			private event EventHandler foo, bar;
+
+			event EventHandler IFoo.Foo {
+				add { foo += value; }
+				remove { foo -= value; }
+			}
+
+			public event EventHandler Bar {
+				add { bar += value; }
+				remove { bar -= value; }
+			}
+		}
+
+		[Test]
+		public void Events ()
+		{
+			AssertRuleFailure<EventCases> ("add_Unused", 1);
+			AssertRuleFailure<EventCases> ("remove_Unused", 1);
+
+			AssertRuleSuccess<EventCases> ("add_Used");
+			AssertRuleSuccess<EventCases> ("remove_Used");
+
+			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.add_Foo");
+			// not used but we ignore explicit interfaces
+			AssertRuleSuccess<EventCases> ("Test.Rules.Performance.AvoidUncalledPrivateCodeTest.IFoo.remove_Foo");
+
+			// however the compiler will still generate it's own add/remove methods 
+			// that we simply ignore since they are out of the developer's control
+			AssertRuleDoesNotApply<EventCases> ("add_foo");
+			AssertRuleDoesNotApply<EventCases> ("remove_foo");
+
+			AssertRuleSuccess<EventCases> ("add_Bar");
+			AssertRuleSuccess<EventCases> ("remove_Bar");
 		}
 	}
 }
