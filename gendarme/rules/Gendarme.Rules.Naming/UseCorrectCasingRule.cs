@@ -174,6 +174,12 @@ namespace Gendarme.Rules.Naming {
 			if (method.IsConstructor || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
+			// don't consider private compiler generated add / remove on events
+			if ((method.IsAddOn || method.IsRemoveOn) &&
+			    (method.ImplAttributes & MethodImplAttributes.Synchronized) != 0 &&
+			    method.IsPrivate)
+				return RuleResult.DoesNotApply;
+
 			string name = method.Name;
 			MethodSemanticsAttributes attrs = method.SemanticsAttributes;
 			MethodSemanticsAttributes mask = MethodSemanticsAttributes.Getter | MethodSemanticsAttributes.Setter
