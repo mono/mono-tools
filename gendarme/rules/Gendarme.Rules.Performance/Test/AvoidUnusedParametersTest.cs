@@ -36,6 +36,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
@@ -57,7 +58,7 @@ namespace Test.Rules.Performance {
 	}
 	
 	[TestFixture]
-	public class AvoidUnusedParametersTest {
+	public class AvoidUnusedParametersTest : MethodRuleTestFixture<AvoidUnusedParametersRule> {
 		
 		private IMethodRule rule;
 		private AssemblyDefinition assembly;
@@ -77,6 +78,14 @@ namespace Test.Rules.Performance {
 		public void PrintBannerWithoutParameters () 
 		{
 			Console.WriteLine ("Welcome to the foo program {0}", Assembly.GetExecutingAssembly ().GetName ().Version);
+		}
+
+		[Test]
+		public void PrintBanner ()
+		{
+			AssertRuleSuccess<AvoidUnusedParametersTest> ("PrintBannerUsingParameter");
+			AssertRuleFailure<AvoidUnusedParametersTest> ("PrintBannerUsingAssembly", 1);
+			AssertRuleDoesNotApply<AvoidUnusedParametersTest> ("PrintBannerWithoutParameters");
 		}
 
 		public void MethodWithUnusedParameters (IEnumerable enumerable, int x) 
@@ -121,6 +130,10 @@ namespace Test.Rules.Performance {
 
 		public delegate void SimpleCallback (int x);
 		public void SimpleCallbackImpl (int x) 
+		{
+		}
+
+		public void SimpleCallbackImpl2 (int x) 
 		{
 		}
 
@@ -197,27 +210,7 @@ namespace Test.Rules.Performance {
 			runner = new TestRunner (rule);
 		}
 
-		[Test]
-		public void PrintBannerUsingParameterTest () 
-		{
-			method = GetMethodForTest ("PrintBannerUsingParameter");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void PrintBannerUsingAssemblyTest ()
-		{
-			method = GetMethodForTest ("PrintBannerUsingAssembly");
-			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
-		}
  
-		[Test]
-		public void PrintBannerWithoutParametersTest () 
-		{
-			method = GetMethodForTest ("PrintBannerWithoutParameters");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
 
 		[Test]
 		public void MethodWithUnusedParametersTest () 
@@ -260,6 +253,19 @@ namespace Test.Rules.Performance {
 		{
 			SimpleCallback callback = new SimpleCallback (SimpleCallbackImpl);
 			method = GetMethodForTest ("SimpleCallbackImpl");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+		}
+
+		[Test]
+		public void DelegateMethodTestWithMultipleDelegates () 
+		{
+			SimpleCallback callback = new SimpleCallback (SimpleCallbackImpl);
+			SimpleCallback callback2 = new SimpleCallback (SimpleCallbackImpl2);
+
+			method = GetMethodForTest ("SimpleCallbackImpl");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+
+			method = GetMethodForTest ("SimpleCallbackImpl2");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
 		}
 

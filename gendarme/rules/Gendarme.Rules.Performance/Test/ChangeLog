@@ -1,3 +1,14 @@
+2008-08-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedParametersTest.cs: Start using the new test code.
+	Change from Success to DoesNotApply the result for parameter-less
+	methods.
+
+2008-08-05  Peter Johanson  <peter@peterjohanson.com>
+
+	* AvoidUnusedParametersTest.cs: Ensure the rule works
+	for several methods used with delegates inside one method.
+
 2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Add test cases for events.
