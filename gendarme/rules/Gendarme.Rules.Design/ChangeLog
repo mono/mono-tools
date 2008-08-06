@@ -1,3 +1,8 @@
+2008-08-06  Peter Johanson  <peter@peterjohanson.com>
+
+	* AvoidPublicInstanceFieldsRule.cs: Make the rule not apply
+	to private or internal nested types.
+
 2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingFieldToNullableRule.cs: Don't duplicate FX check
