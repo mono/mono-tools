@@ -1,3 +1,15 @@
+2008-08-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedParametersRule.cs: Use a bitmask (maximum of 64 
+	parameters) to see which parameter gets used (or not). Save more 
+	than 84MB (12%) of memory allocated over all Mono 2.0 assemblies
+
+2008-08-05  Peter Johanson  <peter@peterjohanson.com>
+
+	* AvoidUnusedParametersRule.cs: Properly check every delegate
+	created inside a method, to see if a certain method is used
+	in a delegate instance.
+
 2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Fix rule not to apply for

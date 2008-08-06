@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.AvoidUnusedParameters class
+// Gendarme.Rules.Performance.AvoidUnusedParametersRule class
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
@@ -29,8 +29,6 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -44,57 +42,15 @@ namespace Gendarme.Rules.Performance {
 	[Solution ("You should remove or use the unused parameters.")]
 	public class AvoidUnusedParametersRule : Rule, IMethodRule {
 
-		private static bool UseParameter (MethodDefinition method, ParameterDefinition parameter)
-		{
-			if (!method.HasBody)
-				return false;
-
-			var index = method.Parameters.IndexOf (parameter);
-
-			foreach (Instruction instruction in method.Body.Instructions) {
-				switch (instruction.OpCode.Code) {
-				case Code.Ldarg_0:
-					if (index == 0)
-						return true;
-					break;
-				case Code.Ldarg_1:
-					if (index == GetParameterIndex (method, 1))
-						return true;
-					break;
-				case Code.Ldarg_2:
-					if (index == GetParameterIndex (method, 2))
-						return true;
-					break;
-				case Code.Ldarg_3:
-					if (index == GetParameterIndex (method, 3))
-						return true;
-					break;
-				case Code.Ldarg_S:
-				case Code.Ldarga:
-				case Code.Ldarga_S:
-					if (instruction.Operand.Equals (parameter))
-						return true;
-					break;
-				default:
-					break;
-				}
-			}
-			return false;
-		}
-
-		static int GetParameterIndex (MethodDefinition method, int index)
-		{
-			return method.IsStatic ? index : index - 1;
-		}
-
 		private static bool ContainsReferenceDelegateInstructionFor (MethodDefinition method, MethodDefinition delegateMethod)
 		{
 			if (!method.HasBody)
 				return false;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.Code == Code.Ldftn)
-					return instruction.Operand.Equals (delegateMethod);
+				if (instruction.OpCode.Code == Code.Ldftn &&
+				    instruction.Operand.Equals (delegateMethod))
+					return true;
 			}
 			return false;
 		}
@@ -112,31 +68,58 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		static IEnumerable<ParameterDefinition> GetUnusedParameters (MethodDefinition method)
-		{
-			return from ParameterDefinition parameter in method.Parameters
-				   where !UseParameter (method, parameter)
-				   select parameter;
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// catch abstract, pinvoke and icalls - where rule does not apply
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// skip methods without parameters
+			int pcount = method.Parameters.Count;
+			if (pcount == 0)
+				return RuleResult.DoesNotApply;
+
 			// rule doesn't apply to virtual, overrides or generated code
+
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
+			if (method.IsVirtual || method.Overrides.Count != 0 || method.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
+		
 			// Also EventArgs parameters are often required in method signatures,
 			// but often not required. Reduce "false positives"(*) for GUI apps
 			// (*) it's more a "don't report things outside developer's control"
-			if (!method.HasBody || method.IsVirtual || method.Overrides.Count != 0 || 
-			     method.IsGeneratedCode () || IsReferencedByDelegate (method) || method.IsEventCallback ())
+			if (method.IsEventCallback () || IsReferencedByDelegate (method))
 				return RuleResult.DoesNotApply;
 
 			// rule applies
-			foreach (ParameterDefinition parameter in GetUnusedParameters (method)) {
-				string text = String.Format ("Parameter '{0}' of type '{1}' is never used in the method.", 
-					parameter.Name, parameter.ParameterType);
-				Runner.Report (parameter, Severity.Medium, Confidence.Normal, text);
+
+			// we limit ourselves to the first 64 parameters
+			if (pcount > 64)
+				pcount = 64;
+			ulong mask = 0;
+
+			// scan IL to see which parameter is being used
+			foreach (Instruction ins in method.Body.Instructions) {
+				ParameterDefinition parameter = ins.GetParameter (method);
+				if (parameter == null)
+					continue;
+				mask |= ((ulong)1 << (parameter.Sequence - 1));
 			}
+
+			// quick out based on value - i.e. every parameter is being used
+			int shift = 64 - pcount;
+			if ((mask << shift) == (UInt64.MaxValue << shift))
+				return RuleResult.Success;
+
+			for (int i = 0; i < pcount; i++) {
+				if ((mask & ((ulong) 1 << i)) == 0) {
+					ParameterDefinition parameter = method.Parameters [i];
+					string text = String.Format ("Parameter '{0}' of type '{1}' is never used in the method.",
+						parameter.Name, parameter.ParameterType);
+					Runner.Report (parameter, Severity.Medium, Confidence.Normal, text);
+				}
+			}
+
 			return Runner.CurrentRuleResult;
 		}
 	}
