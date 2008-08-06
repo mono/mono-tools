@@ -67,6 +67,24 @@ namespace Test.Rules.Design {
 			public readonly int x = 1;
 		}
 
+		public class NestedParent {
+			public class NestedPublic {
+				public string name;
+			}
+
+			protected class NestedProtected {
+				public string name;
+			}
+
+			private class NestedPrivate {
+				public string name;
+			}
+
+			internal class NestedInternal {
+				public string name;
+			}
+		}
+
 		public enum Enum {
 			Zero,
 			One
@@ -137,6 +155,26 @@ namespace Test.Rules.Design {
 		{
 			TypeDefinition type = GetTest ("Flags");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
+		}
+
+		[Test]
+		public void TestNonPublicNested ()
+		{
+			TypeDefinition type = GetTest ("NestedParent/NestedPublic");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+
+			type = GetTest ("NestedParent/NestedProtected");
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
+			Assert.AreEqual (1, runner.Defects.Count, "Count");
+
+			type = GetTest ("NestedParent/NestedPrivate");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
+			Assert.AreEqual (0, runner.Defects.Count, "Count");
+
+			type = GetTest ("NestedParent/NestedInternal");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult4");
 			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 

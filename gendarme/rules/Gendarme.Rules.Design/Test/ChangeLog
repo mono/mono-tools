@@ -1,3 +1,9 @@
+2008-08-06  Peter Johanson  <peter@peterjohanson.com>
+
+	* AvoidPublicInstanceFieldsTest.cs: Test nested types
+	with various visibilities. The rule does not apply
+	to private or internal nested types.
+
 2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingFieldToNullableTest.cs: Add test case for
