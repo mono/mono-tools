@@ -94,14 +94,14 @@ namespace Gendarme.Rules.Portability {
 				backslashes--; // we should't count a backslash in drive letter
 
 				// process a windows path
-				ProcessWindowsPath (str);
+				ProcessWindowsPath ();
 
 			} else if (CanBeWindowsUNCPath (str)) {
 				AddPoints (4); // add points
 				backslashes -= 2;
 
 				// go!
-				ProcessWindowsPath (str);
+				ProcessWindowsPath ();
 
 			} else if (CanBeUnixAbsolutePath (str)) {
 				// same for unix
@@ -118,9 +118,9 @@ namespace Gendarme.Rules.Portability {
 				// ('/' for unix, '\' for windows)
 
 				if (backslashes > slashes)
-					ProcessWindowsPath (str); // like directory\something\..
+					ProcessWindowsPath (); // like directory\something\..
 				else if (backslashes < slashes)
-					ProcessUnixPath (str); // like directory/something/..
+					ProcessUnixPath (); // like directory/something/..
 
 			}
 
@@ -170,7 +170,7 @@ namespace Gendarme.Rules.Portability {
 			return s [0] == '/';
 		}
 
-		void ProcessWindowsPath (string path)
+		void ProcessWindowsPath ()
 		{
 			// Console.WriteLine ("// process win path");
 
@@ -212,10 +212,10 @@ namespace Gendarme.Rules.Portability {
 
 				AddPoints (4);
 
-			ProcessUnixPath (path);
+			ProcessUnixPath ();
 		}
 
-		void ProcessUnixPath (string path)
+		void ProcessUnixPath ()
 		{
 			// Console.WriteLine ("// process ux path");
 

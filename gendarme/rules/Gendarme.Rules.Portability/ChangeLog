@@ -1,3 +1,7 @@
+2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Remove unused parameters (self-test)
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExitCodeIsLimitedOnUnixRule.cs: Remove unused field (self-test)
