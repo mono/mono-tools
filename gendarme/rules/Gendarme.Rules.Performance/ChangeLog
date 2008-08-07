@@ -1,3 +1,7 @@
+2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCastsRule.cs: Fix calls to methods.
+
 2008-08-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedParametersRule.cs: Use a bitmask (maximum of 64 
