@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Xml;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Performance;
@@ -230,6 +231,61 @@ namespace Test.Rules.Performance {
 		public void Null ()
 		{
 			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("GetParentName");
+		}
+
+		private static void FalsePositive5 ()
+		{
+			XmlDocument doc = new XmlDocument ();
+			doc.LoadXml ("<a/>");
+
+			foreach (XmlNode node in doc.SelectNodes ("a")) {
+			}
+			foreach (XmlNode node in doc.SelectNodes ("b")) {
+			}
+			foreach (XmlNode node in doc.SelectNodes ("c")) {
+			}
+			foreach (XmlNode node in doc.SelectNodes ("d")) {
+			}
+		}
+
+		[Test]
+		public void Xml ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("FalsePositive5");
+		}
+
+		class IndexerResultCastTest {
+			object this [int index] {
+				get { return "Bob"; }
+			}
+
+			object GetString (int i)
+			{
+				return i.ToString ();
+			}
+
+			static void Indexers ()
+			{
+				IndexerResultCastTest inst = new IndexerResultCastTest ();
+				string a = (string) inst [1];
+				string b = (string) inst [2];
+				Console.WriteLine (a, b);
+			}
+
+			static void Methods ()
+			{
+				IndexerResultCastTest inst = new IndexerResultCastTest ();
+				string c = (string) inst.GetString (1);
+				string d = (string) inst.GetString (2);
+				Console.WriteLine (c, d);
+			}
+		}
+
+		[Test]
+		public void MethodCalls ()
+		{
+			AssertRuleSuccess<IndexerResultCastTest> ("Indexers");
+			AssertRuleSuccess<IndexerResultCastTest> ("Methods");
 		}
 	}
 }
