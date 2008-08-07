@@ -1,3 +1,8 @@
+2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCastsTest.cs: Add test cases from Richard Birkby
+	(FalsePositive5) and Peter Johanson (IndexerResultCastTest).
+
 2008-08-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedParametersTest.cs: Start using the new test code.
