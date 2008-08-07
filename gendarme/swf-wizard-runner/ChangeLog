@@ -1,3 +1,7 @@
+2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: (GetSelectedWriter) Use the index parameter.
+
 2008-08-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Remove unneeded call to String.Format [self-test]
