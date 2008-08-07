@@ -503,7 +503,7 @@ namespace Gendarme {
 
 		private ResultWriter GetSelectedWriter (int index, string filename)
 		{
-			switch (save_file_dialog.FilterIndex) {
+			switch (index) {
 			case 1:
 				if (CouldCopyReport (ref html_report_filename, filename))
 					return null;
