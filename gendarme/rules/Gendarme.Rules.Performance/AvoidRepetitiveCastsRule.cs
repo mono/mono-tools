@@ -46,7 +46,15 @@ namespace Gendarme.Rules.Performance {
 		static object GetOrigin (Instruction ins, MethodDefinition method)
 		{
 			Instruction previous = ins.Previous;
-			if ((previous.OpCode.FlowControl == FlowControl.Call) || previous.IsLoadElement () || previous.IsLoadIndirect ())
+
+			bool call = (previous.OpCode.FlowControl == FlowControl.Call);
+			if (call) {
+				Instruction next = ins.Next;
+				if (next.IsStoreLocal ())
+					return ins.Next.GetOperand (method);
+			}
+			
+			if (call || previous.IsLoadElement () || previous.IsLoadIndirect ())
 				return previous.TraceBack (method).GetOperand (method);
 
 			return previous.GetOperand (method);
@@ -57,7 +65,6 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			isinst.Clear ();
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Isinst:		// if (t is T) ...
@@ -89,6 +96,9 @@ namespace Gendarme.Rules.Performance {
 				}
 			}
 
+			if (isinst.Count == 0)
+				return RuleResult.Success;
+
 			foreach (KeyValuePair<object, Dictionary<TypeReference, int>> kpv in isinst) {
 				foreach (KeyValuePair<TypeReference, int> kpv2 in kpv.Value) {
 					if (kpv2.Value == 1)
@@ -98,6 +108,7 @@ namespace Gendarme.Rules.Performance {
 					Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
 				}
 			}
+			isinst.Clear ();
 
 			return Runner.CurrentRuleResult;
 		}
