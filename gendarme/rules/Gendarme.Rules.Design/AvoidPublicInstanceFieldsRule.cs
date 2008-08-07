@@ -43,6 +43,10 @@ namespace Gendarme.Rules.Design {
 			// e.g. CSC compiles anonymous methods as an inner type that expose public fields
 			if (type.IsEnum || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
+			
+			// rule doesn't apply to private or internal nested types
+			if (type.IsNestedPrivate || type.IsNestedAssembly)
+				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition fd in type.Fields) {
 				if (!fd.IsPublic || fd.IsSpecialName || fd.IsStatic || fd.HasConstant || fd.IsInitOnly)
