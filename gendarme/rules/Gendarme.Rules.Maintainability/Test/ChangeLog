@@ -1,3 +1,8 @@
+2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationTest.cs: Add a few test cases for
+	better coverage and one, ignored, for a false positive we have.
+
 2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Add test cases where
