@@ -122,10 +122,13 @@ namespace GuiCompare {
 		
 		public static bool ShouldSkipAttribute (string name)
 		{
-			if (name.StartsWith ("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute"))
+			switch (name) {
+			case "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute":
+			case "System.NonSerializedAttribute":	// pseudo-attribute (but sadly part of the XML definitions)
 				return true;
-			
-			return false;
+			default:
+				return false;
+			}
 		}
 		
 		public static List<CompNamed> GetAttributes (XMLAttributes attributes)
@@ -527,7 +530,8 @@ namespace GuiCompare {
 		{
 			this.fieldType = fieldType;
 			this.fieldValue = fieldValue;
-			this.fieldAccess = fieldAccess;
+			// we don't care about the Assembly (internal) part
+			this.fieldAccess = fieldAccess.Replace ("FamORAssem", "Family");
 			this.attributes = attributes;
 		}
 
@@ -627,7 +631,8 @@ namespace GuiCompare {
 			this.returnType = returnType;
 			this.parameters = parameters;
 			this.genericConstraints = genericConstraints;
-			this.methodAccess = methodAccess;
+			// we don't care about the Assembly (internal) part
+			this.methodAccess = methodAccess.Replace ("FamORAssem", "Family");
 			this.attributes = attributes;
 		}
 

@@ -1,3 +1,17 @@
+2008-08-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CecilMetadata.cs: Don't recurse on BaseType when looking at 
+	interfaces, otherwise we end up with a lot of extras (compared to 
+	the XML definition). Process private methods that are implementing 
+	an explicit interface requirement. Add NotSerialized to the 
+	FieldAttributes mask. 
+	* MasterMetadata.cs: Add NonSerializedAttribute to ShouldSkipAttribute
+	since this pseudo-attribute is part of the XML definition. Add 
+	FamORAssem checks (replace by Family) since this introduce false 
+	errors in the reports (we don't care about the internal/assembly part)
+	* Masterinfo.cs: Fix bad check with FamORAssem that turned private
+	stuff into Family.
+
 2008-06-04  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs (CecilUtils.GetCustomAttributes): don't

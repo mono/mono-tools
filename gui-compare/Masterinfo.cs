@@ -1009,7 +1009,7 @@ using System.Xml;
 			// ignore ReservedMasks
 			ma &= ~ MethodAttributes.ReservedMask;
 			ma &= ~ MethodAttributes.VtableLayoutMask;
-			if ((ma & MethodAttributes.FamORAssem) != 0)
+			if ((ma & MethodAttributes.FamORAssem) == MethodAttributes.FamORAssem)
 				ma = (ma & ~ MethodAttributes.FamORAssem) | MethodAttributes.Family;
 
 			// ignore the HasSecurity attribute for now

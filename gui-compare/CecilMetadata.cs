@@ -73,31 +73,14 @@ namespace GuiCompare {
 		                                        List<CompNamed> event_list)
 		{
 			if (interface_list != null) {
-				TypeDefinition td = fromDef;
-				TypeReference fromRef;
-				
-				do {
-					foreach (TypeReference ifc in td.Interfaces) {
-						TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
-						if (ifc_def.IsNotPublic)
-							continue;
-							
-						CecilInterface new_ifc = new CecilInterface (ifc);
-						bool found = false;
-						for (int i = 0; i < interface_list.Count; i ++) {
-							if (interface_list[i].Name == new_ifc.Name) {
-								found = true;
-								break;
-							}
-						}
-						if (!found)
-							interface_list.Add (new_ifc);
-					}
-					fromRef = td.BaseType;
-					if (fromRef != null)
-						td = CecilUtils.Resolver.Resolve (fromRef);
-				} while (fromRef != null);
+				foreach (TypeReference ifc in fromDef.Interfaces) {
+					TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
+					if (ifc_def.IsNotPublic)
+						continue;
+					interface_list.Add (new CecilInterface (ifc));
+				}
 			}
+
 			if (constructor_list != null) {
 				foreach (MethodDefinition md in fromDef.Constructors) {
 					if (md.IsPrivate || md.IsAssembly)
@@ -111,8 +94,13 @@ namespace GuiCompare {
 						if (!md.Name.StartsWith("op_"))
 							continue;
 					}
-					if (md.IsPrivate || md.IsAssembly)
+					if (md.IsAssembly)
 						continue;
+					// don't exclude private methods that implements explicit interfaces
+					// note: this also adds explicit implementation of *private* interfaces (should be rare)
+					if (md.IsPrivate && md.Name.IndexOf ('.') < 0)
+						continue;
+
 					method_list.Add (new CecilMethod (md));
 				}
 			}
@@ -652,7 +640,8 @@ namespace GuiCompare {
 		                                             FieldAttributes.InitOnly | 
 		                                             FieldAttributes.Literal | 
 		                                             FieldAttributes.HasDefault | 
-		                                             FieldAttributes.HasFieldMarshal);
+		                                             FieldAttributes.HasFieldMarshal |
+		                                             FieldAttributes.NotSerialized );
 		public override string GetMemberAccess ()
 		{
 			FieldAttributes fa = field_def.Attributes & masterInfoFieldMask;
