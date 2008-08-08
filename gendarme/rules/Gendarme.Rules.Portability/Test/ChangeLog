@@ -1,3 +1,8 @@
+2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsTest.cs: Add test case from Richard Birkby 
+	and my (working) variation.
+
 2008-07-10  Daniel Abramov  <ex@vingrad.ru>
 
 	* DoNotHardcodePathsTest.cs: Unit tests for new rule.
