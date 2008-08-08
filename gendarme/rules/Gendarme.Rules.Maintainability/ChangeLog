@@ -1,3 +1,7 @@
+2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Small fixes for self-test
+
 2008-08-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderUsingStopwatchRule.cs: Remove unneeded parameter on 

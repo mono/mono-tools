@@ -41,8 +41,8 @@ namespace Gendarme.Rules.Maintainability {
 	public class AvoidUnnecessarySpecializationRule : Rule, IMethodRule {
 
 		private StackEntryAnalysis sea;
-		private TypeReference[] leastTypes;
-		private int[] leastDepths;
+		private TypeReference[] types_least;
+		private int[] depths_least;
 
 		private static TypeReference GetActualType (TypeReference type)
 		{
@@ -217,9 +217,9 @@ namespace Gendarme.Rules.Maintainability {
 
 				if (needUpdate) {
 					currentLeastDepth = GetActualTypeDepth (currentLeastType);
-					if (null == leastTypes [pIndex] || currentLeastDepth > leastDepths [pIndex]) {
-						leastTypes [pIndex] = currentLeastType;
-						leastDepths [pIndex] = currentLeastDepth;
+					if (null == types_least [pIndex] || currentLeastDepth > depths_least [pIndex]) {
+						types_least [pIndex] = currentLeastType;
+						depths_least [pIndex] = currentLeastDepth;
 					}
 					if (currentLeastDepth == parameterDepth) //no need to check further
 						return;
@@ -249,7 +249,7 @@ namespace Gendarme.Rules.Maintainability {
 			UpdateParameterLeastType (parameter, usage);
 		}
 
-		public bool SignatureDictatedByInterface (MethodDefinition method)
+		static bool SignatureDictatedByInterface (MethodReference method)
 		{
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
 			if (type.Interfaces.Count > 0) {
@@ -278,8 +278,8 @@ namespace Gendarme.Rules.Maintainability {
 			if (SignatureDictatedByInterface (method))
 				return RuleResult.DoesNotApply;
 
-			leastTypes = new TypeReference [method.Parameters.Count];
-			leastDepths = new int [leastTypes.Length];
+			types_least = new TypeReference [method.Parameters.Count];
+			depths_least = new int [types_least.Length];
 
 			//look at each argument usage
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -295,10 +295,10 @@ namespace Gendarme.Rules.Maintainability {
 		private void CheckParametersSpecializationDelta (MethodDefinition method)
 		{
 			for (int i = 0; i < method.Parameters.Count; ++i) {
-				if (null == leastTypes [i]) continue; //argument is not used
+				if (null == types_least [i]) continue; //argument is not used
 
 				ParameterDefinition parameter = method.Parameters [i];
-				int delta = GetActualTypeDepth (parameter.ParameterType) - leastDepths [i];
+				int delta = GetActualTypeDepth (parameter.ParameterType) - depths_least [i];
 
 				if (delta > 0) {
 					string message = GetSuggestionMessage (parameter);
@@ -317,7 +317,7 @@ namespace Gendarme.Rules.Maintainability {
 				sb.Append ("' could be constrained to type '");
 			else
 				sb.Append ("' could be of type '");
-			sb.Append (leastTypes [parameter.Sequence - 1].FullName);
+			sb.Append (types_least [parameter.Sequence - 1].FullName);
 			sb.Append ("'.");
 			return sb.ToString ();
 		}
