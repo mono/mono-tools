@@ -1,3 +1,7 @@
+2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Use icon. Fix a few dependencies.
+
 2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: (GetSelectedWriter) Use the index parameter.

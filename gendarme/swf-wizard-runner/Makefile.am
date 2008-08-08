@@ -1,7 +1,7 @@
 wizarddir=$(prefix)/lib/gendarme
 wizard_SCRIPTS = ../bin/gendarme-wizard.exe
 EXTRA_DIST = $(wizard_sources) $(wizard_sources_in) swf-wizard-runner.csproj Wizard.resx Properties/Resources.resx \
-	Resources/gendarme.png gendarme.ico
+	Resources/gendarme.png gendarme.ico swf-wizard-runner.mdp
 CLEANFILES = $(wizard_SCRIPTS) $(wizard_SCRIPTS).mdb Wizard.resources Properties/Resources.resources
 DISTCLEANFILES = Makefile.in
 
@@ -25,10 +25,10 @@ wizard_sources = \
 wizard_build_sources = $(addprefix $(srcdir)/, $(wizard_sources))
 wizard_build_sources += $(wizard_generated_sources)
 
-Wizard.resources:
+Wizard.resources: Wizard.resx
 	resgen2 /compile Wizard.resx 
 
-Properties/Resources.resources:
+Properties/Resources.resources: Properties/Resources.resx
 	cd Properties; \
 	resgen2 /compile Resources.resx; \
 	cd ..
@@ -38,7 +38,7 @@ Properties/Resources.resources:
 		-r:System.Core.dll -r:System.Xml.Linq.dll -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Xml.dll \
 		-resource:../console/gendarme.xsl -resource:Wizard.resources,Gendarme.Wizard.resources \
 		-resource:Properties/Resources.resources,Gendarme.Properties.Resources.resources \
-		-out:$@ $(wizard_build_sources)
+		-win32icon:gendarme.ico -out:$@ $(wizard_build_sources)
 
 self-test: $(wizard_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(wizard_SCRIPTS)
