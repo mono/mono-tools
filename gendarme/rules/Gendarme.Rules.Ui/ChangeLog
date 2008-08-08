@@ -1,3 +1,8 @@
+2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutableTargetRule.cs: Use new overload instead of using a 
+	String.Empty parameter.
+
 2008-07-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make

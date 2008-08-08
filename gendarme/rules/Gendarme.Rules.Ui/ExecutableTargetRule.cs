@@ -76,7 +76,7 @@ namespace Gendarme.Rules.UI {
 			if (assembly.Kind == AssemblyKind.Windows)
 				return RuleResult.Success;
 
-			Runner.Report (assembly, Severity.Medium, Confidence.Total, String.Empty);
+			Runner.Report (assembly, Severity.Medium, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}
