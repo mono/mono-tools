@@ -28,6 +28,7 @@
 
 using System;
 using System.IO;
+using System.Xml;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Portability;
@@ -257,6 +258,44 @@ namespace Test.Rules.Portability {
 			AssertRuleSuccess<DoNotHardcodePathsTest> ("DontReportStringsWithManyDots");
 			AssertRuleSuccess<DoNotHardcodePathsTest> ("DontReportXPath");
 			AssertRuleSuccess<DoNotHardcodePathsTest> ("DontReportRegexes");
+		}
+
+		// test case provided by Richard Birkby
+		internal sealed class FalsePositive5 {
+			public void Run ()
+			{
+				GetType ();
+
+				XmlDocument doc = new XmlDocument ();
+				doc.LoadXml ("<a><b><c/></b></a>");
+
+				AddVariable ("a/b/c", doc);
+			}
+
+			private static void AddVariable (string xpath, XmlNode node)
+			{
+				node.SelectSingleNode (xpath);
+			}
+		}
+
+		internal sealed class Fixed5 {
+			public void Run ()
+			{
+				GetType ();
+
+				XmlDocument doc = new XmlDocument ();
+				doc.LoadXml ("<a><b><c/></b></a>");
+
+				doc.SelectSingleNode ("b/c/d");
+			}
+		}
+
+		[Test]
+		public void XPath ()
+		{
+			AssertRuleFailure<FalsePositive5> ("Run", 1);
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence, "1");
+			AssertRuleSuccess<Fixed5> ("Run");
 		}
 	}
 }
