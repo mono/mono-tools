@@ -118,6 +118,7 @@ namespace Gendarme.Rules.Performance {
 			switch (opcode.Code) {
 			case Code.Ldind_I:
 			case Code.Ldind_I1:
+			case Code.Ldind_I2:
 			case Code.Ldind_I4:
 			case Code.Ldind_I8: // same used for U8
 			case Code.Ldind_R4:
@@ -291,7 +292,7 @@ namespace Gendarme.Rules.Performance {
 
 				// if value before and after the branch match then we have a candidate
 				if (((op1 == next) && (op2 == branch)) || ((op2 == next) && (op1 == branch))) {
-					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, String.Empty);
+					Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
 				}
 			}
 

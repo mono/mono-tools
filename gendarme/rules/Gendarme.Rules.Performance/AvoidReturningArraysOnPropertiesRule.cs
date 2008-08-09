@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Performance {
 			if (!method.IsGetter || !method.ReturnType.ReturnType.IsArray ())
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.Medium, Confidence.Total, String.Empty);
+			Runner.Report (method, Severity.Medium, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}
