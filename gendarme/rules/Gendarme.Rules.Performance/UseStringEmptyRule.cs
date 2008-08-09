@@ -53,7 +53,7 @@ namespace Gendarme.Rules.Performance {
 				case OperandType.InlineString:
 					string s = (ins.Operand as string);
 					if (s.Length == 0)
-						Runner.Report (method, ins, Severity.Medium, Confidence.High, String.Empty);
+						Runner.Report (method, ins, Severity.Medium, Confidence.High);
 					break;
 				}
 			}

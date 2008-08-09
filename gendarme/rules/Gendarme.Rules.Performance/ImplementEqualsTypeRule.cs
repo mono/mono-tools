@@ -61,7 +61,7 @@ namespace Gendarme.Rules.Performance {
 			// we consider this a step more severe for value types since it will need 
 			// boxing/unboxing with Equals(object)
 			Severity severity = type.IsValueType ? Severity.Medium : Severity.Low;
-			Runner.Report (type, severity, Confidence.High, String.Empty);
+			Runner.Report (type, severity, Confidence.High);
 			return RuleResult.Failure;
 		}
 	}

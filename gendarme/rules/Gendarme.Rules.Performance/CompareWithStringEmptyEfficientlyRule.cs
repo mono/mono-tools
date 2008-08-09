@@ -84,7 +84,7 @@ namespace Gendarme.Rules.Performance {
 					continue;
 				}
 
-				Runner.Report (method, ins, Severity.Medium, Confidence.High, String.Empty);
+				Runner.Report (method, ins, Severity.Medium, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;

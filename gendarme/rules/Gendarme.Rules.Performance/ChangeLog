@@ -1,3 +1,17 @@
+2008-08-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidReturningArraysOnPropertiesRule.cs: Use shorter overload.
+	* AvoidUncalledPrivateCodeRule.cs: Split DoesNotApply-checks into a
+	separate method. Avoid unneeded	specialization on some methods (self
+	tests)
+	* AvoidUninstantiatedInternalClassesRule.cs: Avoid unneeded 
+	specialization on CheckSpecialTypes (self-test). Use shorter overload.
+	* CompareWithStringEmptyEfficientlyRule.cs: Use shorter overload.
+	* ImplementEqualsTypeRule.cs: Use shorter overload.
+	* MathMinMaxCandidateRule.cs: Add missing Ldind_I2. Use shorter 
+	overload.
+	* UseStringEmptyRule.cs: Use shorter overload.
+
 2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCastsRule.cs: Fix calls to methods.
