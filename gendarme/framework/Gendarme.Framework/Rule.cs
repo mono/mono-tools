@@ -44,7 +44,7 @@ namespace Gendarme.Framework {
 		private string solution;
 		private string url;
 		private Type type;
-		private ApplicabilityScope applicability_scope;
+		private ApplicabilityScope applicability_scope = ApplicabilityScope.All;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.

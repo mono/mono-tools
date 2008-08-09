@@ -1,3 +1,9 @@
+2008-08-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Rule.cs: Set default ApplicabilityScope value to All. Otherwise
+	the wizard would not report the same number of defects than the
+	console runner.
+
 2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Runner.cs: Nullify currentRule and currentTarget in case an 
