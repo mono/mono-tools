@@ -91,5 +91,41 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<RemoveUnusedLocalVariablesTest> ("ReturnLocal_StoreOnly");
 			AssertRuleFailure<RemoveUnusedLocalVariablesTest> ("ReturnLocal_Unused");
 		}
+
+		// test case provided by Richard Birkby
+		internal sealed class FalsePositive6 {
+
+			public void Run ()
+			{
+				GetType ();
+				foreach (string s in AddValues ()) {
+					Console.WriteLine (s);
+				}
+			}
+
+			public static IEnumerable<string> AddValues ()
+			{
+				string newValue = null;
+
+				foreach (string value in new string [] { "1", "2", "3" }) {
+					decimal firstValue;
+					decimal secondValue;
+					if (Decimal.TryParse (newValue, out firstValue) &&
+					Decimal.TryParse (value, out secondValue)) {
+						newValue = (firstValue + secondValue).ToString ();
+					} else {
+						newValue = null;
+					}
+				}
+
+				yield return newValue;
+			}
+		}
+
+		[Test]
+		public void Out ()
+		{
+			AssertRuleSuccess<FalsePositive6> ("AddValues");
+		}
 	}
 }
