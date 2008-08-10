@@ -1,3 +1,8 @@
+2008-08-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RemoveUnusedLocalVariablesTest.cs: Add test case from Richard 
+	Birkby.
+
 2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCastsTest.cs: Add test cases from Richard Birkby
