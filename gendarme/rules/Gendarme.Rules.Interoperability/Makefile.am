@@ -23,7 +23,7 @@ rules_sources = \
 EXTRA_TESTS_OPTIONS = -unsafe
 
 tests_sources = \
-	DoNotCastIntPtrToInt32Test.cs
+	DoNotCastIntPtrToInt32Test.cs \
 	GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
 	MarshalStringsInPInvokeDeclarationsTest.cs \
 	PInvokeShouldNotBeVisibleTest.cs \

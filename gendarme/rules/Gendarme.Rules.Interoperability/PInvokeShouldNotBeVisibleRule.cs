@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -36,7 +38,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	[Problem ("P/Invoke declarations should not be visible outside of the assembly.")]
-	[Solution ("Wrap the p/invoke call into a managed class/method and include parameters, and result, validation(s).")]
+	[Solution ("Reduce the visibility of the p/invoke method and make sure its declared as static.")]
 	public class PInvokeShouldNotBeVisibleRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -47,14 +49,18 @@ namespace Gendarme.Rules.Interoperability {
 			
 			// rule applies
 			
-			// ok if method is not visible (this include it's declaring type too)
-			if (!method.IsVisible ())
-				return RuleResult.Success;
+			// code is very unlikely to work (because of the extra this parameter)
+			// note: existing C# compilers won't compile instance p/invoke, e.g.  
+			// error CS0601: The DllImport attribute must be specified on a method marked `static' and `extern'
+			if (!method.IsStatic)
+				Runner.Report (method, Severity.Critical, Confidence.Total);
 
 			// code will work (low) but it's bad design (non-fx-like validations) and makes
 			// it easier to expose security vulnerabilities
-			Runner.Report (method, Severity.Low, Confidence.Total, String.Empty);
-			return RuleResult.Failure;
+			if (method.IsVisible ())
+				Runner.Report (method, Severity.Low, Confidence.Total);
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
