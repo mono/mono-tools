@@ -1,3 +1,9 @@
+2008-08-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* PInvokeShouldNotBeVisibleRule.cs: Add check for non-static
+	p/invokes.
+	* Makefile.am: Include all unit tests (typo)
+
 2008-07-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Remove 
