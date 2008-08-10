@@ -1,3 +1,8 @@
+2008-08-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* PInvokeShouldNotBeVisibleTest.cs: Convert tests to new syntax.
+	Add test case for instance-based (non static) p/invoke.
+
 2008-05-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Test.cs: Add test case for methods 
