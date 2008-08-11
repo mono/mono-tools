@@ -1,5 +1,9 @@
 2008-08-11  Massimiliano Mantione  <massi@ximian.com>
 
+	* Makefile.am: reverted previous commit (it breaks the build).
+
+2008-08-11  Massimiliano Mantione  <massi@ximian.com>
+
 	* Makefile.am: Added Mono.Profiler subdirectory.
 
 2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
