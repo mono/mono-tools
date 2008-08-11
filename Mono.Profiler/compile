@@ -1,0 +1,1 @@
+gmcs -debug -out:profiler-decoder.exe profiler-decoder-library/*.cs profiler-file-decoder/*.cs

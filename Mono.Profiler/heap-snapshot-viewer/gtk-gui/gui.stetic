@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.10.2</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="../../heap-snapshot-explorer/bin/Debug/heap-snapshot-explorer.dll" />
+    <widget-library name="../bin/Debug/heap-snapshot-viewer.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="Mono.Profiler.MainWindow" design-size="468 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <widget class="Mono.Profiler.HeapSnapshotExplorer" id="heapExplorer">
+        <property name="MemberName" />
+        <property name="Events">ButtonPressMask</property>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

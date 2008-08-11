@@ -1,0 +1,168 @@
+2008-08-05  Massimiliano Mantione <massi@ximian.com>
+	* Reader.cs: If the file is truncated "cleanly" do not throw exceptions.
+
+2008-08-04  Massimiliano Mantione <massi@ximian.com>
+	Removed .pc file generation.
+
+2008-08-01  Massimiliano Mantione <massi@ximian.com>
+	* Makefile.am, profiler-decoder-library.mdp: renamed output assembly.
+
+2008-08-01  Massimiliano Mantione <massi@ximian.com>
+	Makefile.am, profiler-decoder-library.pc.in: Regenerated from MonoDevelop.
+
+2008-07-28  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs: Fixed decoding for the "allocation summaries" feature.
+
+2008-06-18  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs (StackFrame, CallStack): Keep track of stack depth.
+
+2008-06-18  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs (CallStack): Added explicit thread id.
+	* EventProcessor.cs: likewise.
+
+2008-06-18  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Initial implementation of allocation summaries.
+	* Decoder.cs: likewise.
+	* ObjectModel.cs: likewise.
+	* EventProcessor.cs: likewise.
+
+2008-05-23  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs (IProfilerEventHandler): Added StatisticalCallChainStart
+	method to handle call chains.
+	* Decoder.cs (StatisticalCode): Added CALL_CHAIN.
+	(Decode): Decode call chains (calling StatisticalCallChainStart).
+	* ObjectModel.cs: Added caller and callee data to IStatisticalHitItem.
+	* EventProcessor.cs: Use all of the above to handle call chains.
+
+2008-05-12  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added a flag to ILoadedElementFactory and
+	IHeapSnapshot to specify if the snapshot objects must be created
+	in memory or not, so that memory is not wasted if the user is only
+	interested in the other profiling info.
+	* Decoder.cs: Likewise.
+	* ObjectModel.cs: Likewise, and cleaned up "heap-desc" functionality.
+	* EventProcessor.cs: Likewise.
+
+2008-05-12  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added support for garbage collection counter.
+	* Decoder.cs: Likewise.
+	* ObjectModel.cs: Likewise.
+	* EventProcessor.cs: Likewise, and added support for garbage collection
+	statistics in general (GcStatistics class and gc events).
+
+2008-05-05  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs: Fixed stupid decoding bug.
+	* BaseTypes.cs: Changed FIXME comment.
+
+2008-05-02  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs: Modified the Decode method to recognize the new way
+	in which the unmanaged symbols are emitted.
+	* EventProcessor.cs: Likewise, and added accounting of unrecognized
+	symbols (statistical hits not found on symbol tables).
+	* ObjectModel.cs: Similar changes to handle unmanaged symbols.
+	* BaseTypes.cs: Likewise.
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: Added heap object set comparison operation.
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs (InitializeBackReferences): temporary workaround for
+	snapshot issue (it seems we get "false" references).
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* EventProcessor.cs: removed commented code.
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* Reader (SeekableLogFileReader): Add block timestamps.
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs (BlockData): Cope with new timestamp in header.
+
+2008-04-16  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Fix spelling of "backReferencesInitialized".
+
+2008-04-15  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs (HeapObjectSet): Added "AllocatedBytes" property.
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	* Reader.cs (SeekableLogFileReader): Implemented a new kind of reader
+	that simply scans the file and builds a summary of all the blocks and
+	their file offsets, but reads no data (each block can be read later).
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs (BlockData): Added methods to decode the block header.
+	* Reader.cs (ReadBlock): Use the new methods to decode the block header.
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: Completed heap object sets and basic filters.
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Made start and end times proper "DateTime" values.
+	instead of ambiguous "ulong" counters.
+	* ObjectModel.cs: likewise.
+	* EventProcessor.cs: likewise.
+	* Decoder.cs: likewise.
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: Initial implementation of heap object sets.
+
+2008-04-11  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: Made HeapSnapshot non generic (since it is in the
+	specific object model keeping it generic was pointless).
+	* EventProcessor.cs: Likewise.
+
+2008-04-11  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs (ObjextModel.ctor): Added explicit assignments.
+
+2008-04-11  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added back references tracking to HeapObject, and code
+	to build them to BaseHeapSnapshot.
+	* EventProcessor.cs (HeapReportEnd): Do back references initialization.
+
+2008-04-10  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Renamed HeapSnapshot to BaseHeapSnapshot because
+	this should be extended, and added a "initialAllocations" argument
+	to the NewHeapSnapshot factory method to allow the initialization
+	of heap summary data.
+	* Decoder.cs: pass "initialAllocations" to the new snapshot.
+	* EventProcessor.cs: Added new HeapSnapshot class which provides
+	desc-heap like reporting facilities.
+
+2008-03-19  Massimiliano Mantione <massi@ximian.com>
+	NativeLibraryReader.cs: Redirect stderr to hide it.
+
+2008-03-19  Massimiliano Mantione <massi@ximian.com>
+	EventProcessor.cs: Added ProfilerEventHandler.clicksToSeconds method.
+
+2008-03-19  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs: Uncommented LogLine method but made it public to
+	avoid warnings.
+
+2008-03-11  Massimiliano Mantione <massi@ximian.com>
+	BaseTypes.cs, Decoder.cs, EventProcessor.cs, NativeLibraryReader.cs,
+	ObjectModel.cs: Added heap profiling decoding, and changed statistical
+	information format to allow further extensibility.
+
+2008-03-04  Massimiliano Mantione <massi@ximian.com>
+	* Decoder.cs: changed out parameters into return values, and
+	commented out tracing code for performance.
+	* Reader.cs: Support recycling byte[] buffers.
+
+2008-02-28  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: LoadedElementHandler: changed loadedClasses and
+	loadedMethods hash tables into arrays.
+	
+2008-02-28  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: added support for gc start-stop world events.
+	* Decode.cs: likewise.
+	
+2008-01-11  Massimiliano Mantione <massi@ximian.com>
+	* AssemblyInfo.cs: Added (first code dump).
+	* NativeLibraryReader.cs: Added (first code dump).
+	* BaseTypes.cs: Added (first code dump).
+	* EventProcessor.cs: Added (first code dump).
+	* Reader.cs: Added (first code dump).
+	* Decoder.cs: Added (first code dump).
+	* ObjectModel.cs: Added (first code dump).
+	* profiler-decoder-library.mdp: Added (first code dump).
+	* ChangeLog: Added (first code dump).

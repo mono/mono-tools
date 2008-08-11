@@ -1,0 +1,29 @@
+<Combine name="Mono.Profiler" fileversion="2.0" outputpath="build/bin/">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="mprof-decoder-library" configuration="Debug" />
+      <Entry build="True" name="mprof-decoder" configuration="Debug" />
+      <Entry build="True" name="mprof-heap-viewer" configuration="Debug" />
+      <Entry build="True" name="mprof-heap-explorer" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="mprof-decoder-library" configuration="Release" />
+      <Entry build="True" name="mprof-decoder" configuration="Release" />
+      <Entry build="True" name="mprof-heap-viewer" configuration="Release" />
+      <Entry build="True" name="mprof-heap-explorer" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="mprof-decoder" single="True">
+    <Execute type="None" entry="mprof-decoder-library" />
+    <Execute type="None" entry="mprof-decoder" />
+    <Execute type="None" entry="mprof-heap-viewer" />
+    <Execute type="None" entry="mprof-heap-explorer" />
+  </StartMode>
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
+  <Entries>
+    <Entry filename="profiler-decoder-library/profiler-decoder-library.mdp" />
+    <Entry filename="profiler-file-decoder/profiler-file-decoder.mdp" />
+    <Entry filename="heap-snapshot-viewer/heap-snapshot-viewer.mdp" />
+    <Entry filename="heap-snapshot-explorer/heap-snapshot-explorer.mdp" />
+  </Entries>
+</Combine>

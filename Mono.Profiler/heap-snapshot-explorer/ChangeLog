@@ -1,0 +1,6 @@
+2008-08-04  Massimiliano Mantione <massi@ximian.com>
+	Removed .pc file generation.
+
+2008-08-01  Massimiliano Mantione <massi@ximian.com>
+	* Makefile.am, gtk-gui/gui.stetic heap-snapshot-explorer.mdp: renamed
+	output assembly.

@@ -1,0 +1,12 @@
+2008-08-04  Massimiliano Mantione <massi@ximian.com>
+	Added man page.
+
+2008-08-01  Massimiliano Mantione <massi@ximian.com>
+	* Makefile.am, heap-snapshot-viewer.mdp: renamed output assembly.
+	* heap-snapshot-viewer.in: renamed to mprof-heap-viewer.in
+
+2008-08-01  Massimiliano Mantione <massi@ximian.com>
+	* Makefile.am: Regenerated from MonoDevelop.
+
+2008-04-13  Massimiliano Mantione <massi@ximian.com>
+	Initial code commit (just a plain MonoDevelop GTK# project for now).
