@@ -55,7 +55,7 @@ namespace Gendarme.Rules.Design {
 					continue;
 				if (!field.FieldType.GetOriginalType ().IsNative ())
 					continue;
-				Runner.Report (field, Severity.High, Confidence.High, String.Empty);
+				Runner.Report (field, Severity.High, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;

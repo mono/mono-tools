@@ -50,7 +50,7 @@ namespace Gendarme.Rules.Design {
 			if (finalizer.IsFamily && !finalizer.IsFamilyAndAssembly && !finalizer.IsFamilyOrAssembly)
 				return RuleResult.Success;
 
-			Runner.Report (finalizer, Severity.High, Confidence.Total, String.Empty);
+			Runner.Report (finalizer, Severity.High, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

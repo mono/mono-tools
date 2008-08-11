@@ -49,7 +49,7 @@ namespace Gendarme.Rules.Design {
 			if (field == null)
 				return RuleResult.Success;
 
-			Runner.Report (field, Severity.High, Confidence.Total, String.Empty);
+			Runner.Report (field, Severity.High, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

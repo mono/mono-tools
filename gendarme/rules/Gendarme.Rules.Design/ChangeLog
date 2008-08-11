@@ -1,3 +1,16 @@
+2008-08-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsRule.cs, 
+	AvoidEmptyInterfaceRule.cs, AvoidPropertiesWithoutGetAccessorRule.cs,
+	DisposableTypesShouldHaveFinalizerRule.cs,
+	DontDeclareProtectedFieldsInSealedClassRule.cs, 
+	EnumsShouldDefineAZeroValueRule.cs, FinalizersShouldBeProtectedRule.cs,
+	FinalizersShouldCallBaseClassFinalizerRule.cs, 
+	FlagsShouldNotDefineAZeroValueRule.cs, 
+	MissingAttributeUsageOnCustomAttributeRule.cs, 
+	OverrideEqualsMethodRule.cs, TypesShouldBeInsideNamespacesRule.cs,
+	UsingCloneWithoutImplementingICloneableRule.cs: Use shorter override.
+
 2008-08-06  Peter Johanson  <peter@peterjohanson.com>
 
 	* AvoidPublicInstanceFieldsRule.cs: Make the rule not apply

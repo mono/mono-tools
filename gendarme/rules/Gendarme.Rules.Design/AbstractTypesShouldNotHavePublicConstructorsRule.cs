@@ -46,7 +46,7 @@ namespace Gendarme.Rules.Design {
 
 			foreach (MethodDefinition ctor in type.Constructors) {
 				if (ctor.IsPublic) {
-					Runner.Report (ctor, Severity.Low, Confidence.Total, String.Empty);
+					Runner.Report (ctor, Severity.Low, Confidence.Total);
 				}
 			}
 

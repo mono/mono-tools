@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Dodgy.DoNotDeclareProtectedFieldsInSealedTypeRule
+// Gendarme.Rules.Design.DoNotDeclareProtectedFieldsInSealedTypeRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -46,7 +46,7 @@ namespace Gendarme.Rules.Design {
 
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsFamily) {
-					Runner.Report (field, Severity.Low, Confidence.Total, String.Empty);
+					Runner.Report (field, Severity.Low, Confidence.Total);
 				}
 			}
 

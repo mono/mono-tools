@@ -53,7 +53,7 @@ namespace Gendarme.Rules.Design {
 			if (!String.IsNullOrEmpty (type.Namespace))
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+			Runner.Report (type, Severity.Low, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}
