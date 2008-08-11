@@ -13,7 +13,12 @@ namespace GuiCompare {
 	static class CecilUtils {
 		public static string PrettyType (string type)
 		{
-			/* handle suffixes first, recursively */
+			/* handle prefixes first, like nullable types, recursively */
+			if (type.StartsWith ("System.Nullable`1<")) {
+				return String.Concat (PrettyType (type.Substring (18, type.Length - 19)), "?");
+			}
+
+			/* then handle suffixes, recursively */
 			if (type.EndsWith ("[]"))
 				return String.Concat (PrettyType (type.Substring (0, type.Length - 2)), "[]");
 			else if (type.EndsWith ("*"))

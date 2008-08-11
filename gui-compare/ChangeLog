@@ -1,3 +1,7 @@
+2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CecilMetadata.cs: PrettyPrint nullable types correctly.
+
 2008-08-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CecilMetadata.cs: Don't recurse on BaseType when looking at 
