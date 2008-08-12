@@ -112,7 +112,7 @@ DLL_REFERENCES =
 
 CLEANFILES = $(PROGRAMFILES) $(LINUX_DESKTOPAPPLICATIONS) $(COMMONAPPLICATIONDATAROOT_MAN_MAN1) $(BINARIES) 
 
-include $(top_srcdir)/Makefile.include
+include $(top_srcdir)/Mono.Profiler/Makefile.include
 
 MPROF_HEAP_VIEWER = $(BUILD_DIR)/mprof-heap-viewer
 MPROF_HEAP_VIEWER_DESKTOP = $(BUILD_DIR)/mprof-heap-viewer.desktop

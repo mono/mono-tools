@@ -1,3 +1,6 @@
+2008-08-12  Massimiliano Mantione <massi@ximian.com>
+	* Makefile.am: Fixed for integration into mono-tools;
+
 2008-08-05  Massimiliano Mantione <massi@ximian.com>
 	* Reader.cs: If the file is truncated "cleanly" do not throw exceptions.
 

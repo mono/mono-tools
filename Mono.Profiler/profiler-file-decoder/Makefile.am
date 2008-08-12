@@ -80,7 +80,7 @@ DLL_REFERENCES =
 
 CLEANFILES = $(PROGRAMFILES) $(COMMONAPPLICATIONDATAROOT_MAN_MAN1) $(BINARIES) 
 
-include $(top_srcdir)/Makefile.include
+include $(top_srcdir)/Mono.Profiler/Makefile.include
 
 MPROF_DECODER_1 = $(BUILD_DIR)/man/man1/mprof-decoder.1
 MPROF_DECODER = $(BUILD_DIR)/mprof-decoder

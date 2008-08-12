@@ -85,7 +85,7 @@ DLL_REFERENCES =
 
 CLEANFILES = $(PROGRAMFILES) 
 
-include $(top_srcdir)/Makefile.include
+include $(top_srcdir)/Mono.Profiler/Makefile.include
 
 
 $(eval $(call emit-deploy-target,PROFILER_DECODER_LIBRARY_DLL))
