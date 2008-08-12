@@ -95,6 +95,27 @@ if test "x$enable_gtkhtml$enable_gecko$enable_monowebbrowser$enable_webkit" = "x
    AC_MSG_ERROR([no HTML display found. You need either gtkhtml, gecko, WebKit or Mono.WebBrowser])
 fi
 
+AC_ARG_ENABLE(debug,
+	AC_HELP_STRING([--enable-debug],
+		[Use 'DEBUG' Configuration [default=YES]]),
+		enable_debug=yes, enable_debug=no)
+AM_CONDITIONAL(ENABLE_DEBUG, test x$enable_debug = xyes)
+if test "x$enable_debug" = "xyes" ; then
+	CONFIG_REQUESTED="yes"
+fi
+AC_ARG_ENABLE(release,
+	AC_HELP_STRING([--enable-release],
+		[Use 'RELEASE' Configuration [default=NO]]),
+		enable_release=yes, enable_release=no)
+AM_CONDITIONAL(ENABLE_RELEASE, test x$enable_release = xyes)
+if test "x$enable_release" = "xyes" ; then
+	CONFIG_REQUESTED="yes"
+fi
+if test -z "$CONFIG_REQUESTED" ; then
+	AM_CONDITIONAL(ENABLE_DEBUG, true)
+	enable_debug=yes
+fi
+
 dnl
 dnl I hate PKG_CONFIG_MODULES, that is for the weak
 dnl
@@ -200,6 +221,13 @@ gendarme/rules/Gendarme.Rules.Maintainability/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Test/Makefile
 gendarme/swf-wizard-runner/Makefile
 gendarme/win32-setup/Makefile
+Mono.Profiler/profiler-file-decoder/Makefile
+Mono.Profiler/Makefile
+Mono.Profiler/heap-snapshot-viewer/mprof-heap-viewer
+Mono.Profiler/heap-snapshot-viewer/Makefile
+Mono.Profiler/profiler-decoder-library/Makefile
+Mono.Profiler/profiler-file-decoder/mprof-decoder
+Mono.Profiler/heap-snapshot-explorer/Makefile
 ])
 
 echo "---"

@@ -1,3 +1,10 @@
+2008-08-12  Massimiliano Mantione  <massi@ximian.com>
+	* Makefile.am, configure.in: Integrated Mono.Profiler in the build.
+	* Mono.Profiler/configure.ac, Mono.Profiler/autogen.sh:
+	Deleted (no longer needed).
+	* Mono.Profiler/adjust-makefiles.sh: Added this script to fix the
+	makefiles again if they are regenerated from Monodevelop.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Bump Gendarme version to match the Mono release.
