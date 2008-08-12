@@ -84,12 +84,16 @@ namespace Gendarme.Rules.Correctness {
 				if (next.OpCode.Code == Code.Stfld) {
 					if (Compare (next, ins, method)) {
 						FieldDefinition field = ins.GetField ();
-						msg = String.Format ("Instance field '{0}' of type '{1}'.", field.Name, field.FieldType.FullName);
+						if (field != null) {
+							msg = String.Format ("Instance field '{0}' of type '{1}'.", 
+								field.Name, field.FieldType.FullName);
+						}
 					}
 				} else if (next.OpCode.Code == Code.Stsfld) {
 					FieldDefinition field = next.GetField ();
-					if (field == ins.GetField ()) {
-						msg = String.Format ("Static field '{0}' of type '{1}'.", field.Name, field.FieldType.FullName);
+					if ((field != null) && (field == ins.GetField ())) {
+						msg = String.Format ("Static field '{0}' of type '{1}'.", 
+							field.Name, field.FieldType.FullName);
 					}
 // too much false positive because compilers add their own variables 
 // and don't always "play well" with them

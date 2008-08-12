@@ -88,7 +88,8 @@ namespace Gendarme.Rules.Correctness {
 			if (method1.ReturnType.ReturnType.FullName != method2.ReturnType.ReturnType.FullName)
 				return false;
 
-			if (!explicit_interface && !method2.DeclaringType.Resolve ().IsInterface)
+			TypeDefinition t2 = method2.DeclaringType.Resolve ();
+			if (!explicit_interface && (t2 != null) && !t2.IsInterface)
 				return true;
 
 			// we're calling into an interface and this could be us!

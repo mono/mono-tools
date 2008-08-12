@@ -46,6 +46,9 @@ namespace Gendarme.Rules.Correctness {
 
 		static bool IsAllStatic (TypeDefinition type)
 		{
+			if (type == null)
+				return false;
+
 			foreach (MethodDefinition ctor in type.Constructors) {
 				// let's the default ctor pass (since it's always here for 1.x code)
 				if (!ctor.IsStatic && (ctor.Parameters.Count > 1))
