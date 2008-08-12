@@ -1,3 +1,8 @@
+2008-08-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: Quick temporary hack to handle case where the
+	debugging format is older than what the Mono.Cecil.Mdb supports.
+
 2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* InstructionRocks.cs: Add an overload to TraceBack that accept an

@@ -123,6 +123,9 @@ namespace Gendarme.Framework.Rocks {
 			catch (COMException) {
 				// this happens if a PDB file is missing
 			}
+			catch {
+				// MonoSymbolFileException (not visible since we don't directly link with it)
+			}
 		}
 	}
 }
