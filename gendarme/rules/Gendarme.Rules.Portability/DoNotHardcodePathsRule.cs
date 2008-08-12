@@ -371,6 +371,9 @@ namespace Gendarme.Rules.Portability {
 		void CheckMethodParameterName (MethodReference methodReference, int parameterOffset)
 		{
 			MethodDefinition method = methodReference.Resolve ();
+			if (method == null)
+				return;
+
 			int parameterIndex = method.Parameters.Count - parameterOffset - 1;
 
 			// to prevent some uncommon situations

@@ -1,3 +1,8 @@
+2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Fix case where we can't resolve the
+	method on which we want to check a parameter name.
+
 2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotHardcodePathsRule.cs: Remove unused parameters (self-test)
