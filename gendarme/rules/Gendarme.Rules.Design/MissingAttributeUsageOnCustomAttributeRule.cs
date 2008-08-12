@@ -48,7 +48,7 @@ namespace Gendarme.Rules.Design {
 			if (type.HasAttribute (AttributeUsageAttribute)) // it's ok
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.High, Confidence.Total, String.Empty);
+			Runner.Report (type, Severity.High, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

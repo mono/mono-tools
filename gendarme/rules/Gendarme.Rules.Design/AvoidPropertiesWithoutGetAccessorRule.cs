@@ -49,7 +49,7 @@ namespace Gendarme.Rules.Design {
 				MethodDefinition setter = property.SetMethod;
 				if (setter != null) {
 					if (property.GetMethod == null) {
-						Runner.Report (setter, Severity.Medium, Confidence.Total, String.Empty);
+						Runner.Report (setter, Severity.Medium, Confidence.Total);
 					}
 				}
 			}

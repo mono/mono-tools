@@ -47,7 +47,7 @@ namespace Gendarme.Rules.Design {
 			if ((equality == null) || type.HasMethod (MethodSignatures.Equals))
 				return RuleResult.Success;
 			
-			Runner.Report (equality, Severity.High, Confidence.High, String.Empty);
+			Runner.Report (equality, Severity.High, Confidence.High);
 			return RuleResult.Failure;
 		}
 	}

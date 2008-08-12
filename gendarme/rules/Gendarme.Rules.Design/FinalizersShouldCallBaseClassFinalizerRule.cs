@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -53,7 +52,7 @@ namespace Gendarme.Rules.Design {
 			if (IsBaseFinalizeCalled (finalizer))
 				return RuleResult.Success;
 
-			Runner.Report (finalizer, Severity.Critical, Confidence.Total, String.Empty);
+			Runner.Report (finalizer, Severity.Critical, Confidence.Total);
 			return RuleResult.Failure;
 		}
 
