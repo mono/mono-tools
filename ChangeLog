@@ -1,4 +1,8 @@
 2008-08-12  Massimiliano Mantione  <massi@ximian.com>
+	* Mono.Profiler/Makefile.am, Mono.Profiler/adjust-makefiles.sh:
+	More fixes for the Mono.Profiler integration.
+
+2008-08-12  Massimiliano Mantione  <massi@ximian.com>
 	* Makefile.am, configure.in: Integrated Mono.Profiler in the build.
 	* Mono.Profiler/configure.ac, Mono.Profiler/autogen.sh:
 	Deleted (no longer needed).
