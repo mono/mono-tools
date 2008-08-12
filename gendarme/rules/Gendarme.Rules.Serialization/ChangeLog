@@ -1,3 +1,8 @@
+2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarkAllNonSerializableFieldsRule.cs: Fix case where we can't resolve
+	a field's type.
+
 2008-07-11  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* ImplementISerializableCorrectlyRule.cs: Change the foreach loop for an

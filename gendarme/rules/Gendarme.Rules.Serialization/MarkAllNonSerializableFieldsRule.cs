@@ -45,6 +45,8 @@ namespace Gendarme.Rules.Serialization {
 			foreach (FieldDefinition field in type.Fields) {
 				if (!field.IsNotSerialized && !field.IsStatic) { 
 					TypeDefinition fieldType = field.FieldType.Resolve ();
+					if (fieldType == null)
+						continue;
 
 					if (fieldType.IsInterface) {
 						Runner.Report (field, Severity.Critical, Confidence.Low, String.Format ("Serialization of interface {0} as field {1} unknown until runtime", fieldType, field.Name));
