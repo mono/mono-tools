@@ -1,4 +1,7 @@
 2008-08-12  Massimiliano Mantione <massi@ximian.com>
+	* mprof-decoder.in: Fixed for integration into mono-tools;
+
+2008-08-12  Massimiliano Mantione <massi@ximian.com>
 	* Makefile.am: Fixed for integration into mono-tools;
 
 2008-08-04  Massimiliano Mantione <massi@ximian.com>
