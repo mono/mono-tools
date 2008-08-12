@@ -78,7 +78,7 @@ EXTRAS =
 
 REFERENCES =  \
 	System \
-	$(GTK_SHARP_20_LIBS) \
+	$(GTK_SHARP_LIBS) \
 	Mono.Posix
 
 DLL_REFERENCES = 

@@ -102,7 +102,7 @@ EXTRAS = \
 	mprof-heap-viewer.in 
 
 REFERENCES =  \
-	$(GTK_SHARP_20_LIBS) \
+	$(GTK_SHARP_LIBS) \
 	$(GLIB_SHARP_20_LIBS) \
 	$(GLADE_SHARP_20_LIBS) \
 	System \
