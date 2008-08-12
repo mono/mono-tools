@@ -1,3 +1,9 @@
+2008-08-12  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Clean up and
+	optimize some code.  This patch uses a BitArray instead of HashSet, and
+	uses less memory.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesRule.cs: Fix case where we can't 

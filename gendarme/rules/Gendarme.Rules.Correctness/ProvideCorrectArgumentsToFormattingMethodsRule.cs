@@ -27,7 +27,7 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
@@ -40,16 +40,7 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("Pass the correct arguments to the formatting method.")]
 	public class ProvideCorrectArgumentsToFormattingMethodsRule : Rule, IMethodRule {
 		static MethodSignature formatSignature = new MethodSignature ("Format", "System.String");
-		static HashSet<char> results = new HashSet<char> ();
-
-		private static IEnumerable<Instruction> GetCallsToStringFormat (MethodDefinition method)
-		{
-			return from Instruction instruction in method.Body.Instructions
-			where (instruction.OpCode.FlowControl == FlowControl.Call) && 
-				formatSignature.Matches ((MethodReference) instruction.Operand) &&
-				String.Compare ("System.String", ((MethodReference) instruction.Operand).DeclaringType.ToString ()) == 0
-			select instruction;
-		}
+		static BitArray results = new BitArray (16);
 
 		private static Instruction GetLoadStringInstruction (Instruction call)
 		{
@@ -68,16 +59,26 @@ namespace Gendarme.Rules.Correctness {
 			return farest;
 		}
 
-		//TODO: It only works with 0 - 9 digits, no more than 10.
+		//TODO: It only works with 0 - 15 digits, no more than 16.
 		private static int GetExpectedParameters (string loaded)
 		{
-			results.Clear ();
+			results.SetAll (false);
 			for (int index = 0; index < loaded.Length; index++) {
-				if (loaded[index] == '{' && Char.IsDigit (loaded[index + 1]))
-					results.Add (loaded[index]);
+				if (loaded[index] == '{' && Char.IsDigit (loaded[index + 1]))  
+					results.Set (loaded[index + 1] - '0', true);
 			}
 
-			return results.Count;
+			int counter = 0;
+			//TODO: Check the order of the values too, by example
+			// String.Format ("{1} {2}", x, y); <-- with this impl
+			// it would return 0
+			//TODO: {{0 case
+			foreach (bool value in results) {
+				if (value)
+					counter++;
+			}
+
+			return counter;
 		}
 
 		private static int CountElementsInTheStack (MethodDefinition method, Instruction start, Instruction end)
@@ -138,12 +139,18 @@ namespace Gendarme.Rules.Correctness {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			IEnumerable<Instruction> callsToStringFormat = GetCallsToStringFormat (method);	
-			if (callsToStringFormat.Count () == 0)
-				return RuleResult.DoesNotApply;
+			bool formatterCallsFound = false;
+			foreach (Instruction instruction in method.Body.Instructions) {
+				if ((instruction.OpCode.FlowControl == FlowControl.Call) &&
+				 	formatSignature.Matches ((MethodReference) instruction.Operand) &&
+					String.Compare ("System.String", ((MethodReference) instruction.Operand).DeclaringType.ToString ()) == 0) {
+					formatterCallsFound = true;
+					CheckCallToFormatter (instruction, method);
+				}
+			}
 
-			foreach (Instruction call in callsToStringFormat) 
-				CheckCallToFormatter (call, method);
+			if (!formatterCallsFound)
+				return RuleResult.DoesNotApply;
 
 			return Runner.CurrentRuleResult;
 		}
