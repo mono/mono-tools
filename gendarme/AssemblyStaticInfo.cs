@@ -21,3 +21,7 @@ using System.Security.Permissions;
 [assembly: PermissionSet (SecurityAction.RequestMinimum, Unrestricted = true)]
 [assembly: CLSCompliant (false)]
 [assembly: ComVisible (false)]
+
+#if RELEASE
+[assembly: AssemblyVersion ("2.0.0.0")]
+#endif
