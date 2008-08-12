@@ -57,7 +57,7 @@ namespace Gendarme.Rules.Performance {
 				int index = previous_op_code - Code.Ldarg_0;
 				if (!method.IsStatic)
 					index--;
-				name = method.Parameters [index].Name;
+				name = (index >= 0) ? method.Parameters [index].Name : String.Empty;
 				break;
 			case Code.Ldarg:
 			case Code.Ldarg_S:
