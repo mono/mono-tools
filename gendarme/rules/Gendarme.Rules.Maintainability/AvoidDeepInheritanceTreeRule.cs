@@ -60,6 +60,8 @@ namespace Gendarme.Rules.Maintainability {
 			int depth = 0;
 			while (type.BaseType != null) {
 				type = type.BaseType.Resolve ();
+				if (type == null)
+					break;
 				if (countExternalDepth || Runner.Assemblies.Contains (type.Module.Assembly))
 					depth++;
 			}

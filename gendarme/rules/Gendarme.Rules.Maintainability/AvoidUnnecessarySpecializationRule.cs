@@ -201,7 +201,8 @@ namespace Gendarme.Rules.Maintainability {
 					}
 
 					//if the best we could find is object, ignore this round
-					if (currentLeastType.FullName == "System.Object") continue;
+					if ((currentLeastType == null) || (currentLeastType.FullName == "System.Object"))
+						continue;
 
 					needUpdate = true;
 					break;
