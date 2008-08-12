@@ -1,3 +1,10 @@
+2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepInheritanceTreeRule.cs: Fix case where we can't resolve
+	a base type.
+	* AvoidUnnecessarySpecializationRule.cs: Fix case where we can't
+	resolve the least type.
+
 2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Small fixes for self-test
