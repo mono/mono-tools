@@ -8,8 +8,8 @@
     <ProjectGuid>{A2F3E904-8D4E-4C18-A0B9-B2BCBD3A0537}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>Tests.Rules.Maintainability</RootNamespace>
+    <AssemblyName>Tests.Rules.Maintainability</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
