@@ -1,3 +1,9 @@
+2008-08-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsTest.cs: Update unit tests to the new syntax. 
+	Test cases are now reused in both the (old) IL-approximation mode 
+	and the (new) logical source line of code modes.
+
 2008-07-21  Nestor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongMethodsTest.cs: Add test case for a class with readonly
