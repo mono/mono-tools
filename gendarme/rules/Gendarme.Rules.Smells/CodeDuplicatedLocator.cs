@@ -103,7 +103,7 @@ namespace Gendarme.Rules.Smells {
 			return false;
 		}
 
-		internal bool CompareMethodAgainstTypeMethods (Rule rule, MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
+		internal bool CompareMethodAgainstTypeMethods (IRule rule, MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
 		{
 			bool containsDuplicated = false;
 			if (!CheckedTypes.Contains (targetTypeDefinition.Name)) {

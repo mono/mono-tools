@@ -1,3 +1,12 @@
+2008-08-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsRule.cs: Change rule to count logical source line
+	of code by default, i.e. when debugging symbols are available. 
+	Otherwise rule continue to use IL-SLOC approximation.
+	* CodeDuplicatedLocator.cs: Use IRule interface, instead of Rule, 
+	inside CompareMethodAgainstTypeMethods (since rules don't need to be
+	based on the abstract Rule "convenience" class).
+
 2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsRule.cs: Use generic collections.
