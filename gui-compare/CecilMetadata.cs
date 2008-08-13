@@ -99,11 +99,7 @@ namespace GuiCompare {
 						if (!md.Name.StartsWith("op_"))
 							continue;
 					}
-					if (md.IsAssembly)
-						continue;
-					// don't exclude private methods that implements explicit interfaces
-					// note: this also adds explicit implementation of *private* interfaces (should be rare)
-					if (md.IsPrivate && md.Name.IndexOf ('.') < 0)
+					if (md.IsPrivate || md.IsAssembly)
 						continue;
 
 					method_list.Add (new CecilMethod (md));

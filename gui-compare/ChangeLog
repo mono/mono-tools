@@ -1,3 +1,9 @@
+2008-08-13  Chris Toshok  <toshok@ximian.com>
+
+	* CecilMetadata.cs: go back to ignoring all private methods.  if
+	there are missing methods due to this, we need to fix the .xml
+	generation.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CecilMetadata.cs: PrettyPrint nullable types correctly.
