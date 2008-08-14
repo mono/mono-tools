@@ -37,7 +37,7 @@ using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Performance {
+namespace Test.Rules.Concurrency {
 
 	[TestFixture]
 	public class DoNotLockOnWeakIdentityObjectsTest : MethodRuleTestFixture<DoNotLockOnWeakIdentityObjectsRule> {

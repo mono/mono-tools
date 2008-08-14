@@ -1,3 +1,10 @@
+2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesTest.cs: Add test cases for static method
+	locking on type (they can't lock on this). Added test cases when the
+	lock object is inside a base type field and property. Fix namespace.
+	* DoNotLockOnWeakIdentityObjectsTest.cs: Fix namespace.
+
 2008-05-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnThisOrTypesTest.cs: New. Unit tests for 

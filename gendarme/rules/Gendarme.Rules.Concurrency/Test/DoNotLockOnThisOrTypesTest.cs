@@ -35,7 +35,7 @@ using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Performance {
+namespace Test.Rules.Concurrency {
 
 	[TestFixture]
 	public class DoNotLockOnThisOrTypesTest : MethodRuleTestFixture<DoNotLockOnThisOrTypesRule> {
@@ -85,11 +85,42 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<DoNotLockOnThisOrTypesTest> ("LockTypes", 2);
 		}
 
-		static object locker = new object ();
-
-		public bool LockObject (string s)
+		static public bool StaticLockType (string s)
 		{
-			lock (locker) {
+			lock (typeof (DoNotLockOnThisOrTypesTest)) {
+				return cache.ContainsKey (s);
+			}
+		}
+
+		static public bool StaticLockTypes (string s)
+		{
+			lock (typeof (DoNotLockOnThisOrTypesTest)) {
+				lock (s.GetType ()) {
+					return cache.ContainsKey (s);
+				}
+			}
+		}
+
+		[Test]
+		public void StaticType ()
+		{
+			AssertRuleFailure<DoNotLockOnThisOrTypesTest> ("StaticLockType", 1);
+			AssertRuleFailure<DoNotLockOnThisOrTypesTest> ("StaticLockTypes", 2);
+		}
+
+		object instance_locker = new object ();
+		static object static_locker = new object ();
+
+		public bool LockInstanceObject (string s)
+		{
+			lock (instance_locker) {
+				return cache.ContainsKey (s);
+			}
+		}
+
+		public bool LockStaticObject (string s)
+		{
+			lock (static_locker) {
 				return cache.ContainsKey (s);
 			}
 		}
@@ -100,10 +131,70 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		public void Object ()
+		public void Instance ()
 		{
-			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("LockObject");
+			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("LockInstanceObject");
+			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("LockStaticObject");
 			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("NoLock");
+		}
+
+		static public bool StaticLockStaticObject (string s)
+		{
+			lock (static_locker) {
+				return cache.ContainsKey (s);
+			}
+		}
+
+		static public bool StaticNoLock (string s)
+		{
+			return cache.ContainsKey (s);
+		}
+
+		[Test]
+		public void Static ()
+		{
+			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("StaticLockStaticObject");
+			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("StaticNoLock");
+		}
+
+		abstract class Base {
+			protected object locker = new object ();
+
+			public object Locker {
+				get { return locker; }
+			}
+		}
+
+		class Concrete : Base {
+
+			void LockField (string s)
+			{
+				try {
+					lock (base.locker) {
+						Console.WriteLine (s);
+					}
+				}
+				catch {
+				}
+			}
+
+			void LockProperty (string s)
+			{
+				try {
+					lock (base.Locker) {
+						Console.WriteLine (s);
+					}
+				}
+				catch {
+				}
+			}
+		}
+
+		[Test]
+		public void CallingBase ()
+		{
+			AssertRuleSuccess<Concrete> ("LockField");
+			AssertRuleSuccess<Concrete> ("LockProperty");
 		}
 	}
 }
