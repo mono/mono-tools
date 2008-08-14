@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -55,7 +54,7 @@ namespace Gendarme.Rules.Concurrency {
 
 		abstract public void Analyze (MethodDefinition method, Instruction ins);
 
-		public virtual RuleResult CheckMethod (MethodDefinition method)
+		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
@@ -73,59 +72,6 @@ namespace Gendarme.Rules.Concurrency {
 				Analyze (method, ins);
 			}
 			return Runner.CurrentRuleResult;
-		}
-
-		internal static bool IsLoadLoc (Instruction ins)
-		{
-			if (ins == null)
-				return false;
-
-			switch (ins.OpCode.Code) {
-			case Code.Ldloc_0:
-			case Code.Ldloc_1:
-			case Code.Ldloc_2:
-			case Code.Ldloc_3:
-			case Code.Ldloc:
-			case Code.Ldloc_S:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		internal static bool IsStoreLoc (Instruction ins)
-		{
-			if (ins == null)
-				return false;
-
-			switch (ins.OpCode.Code) {
-			case Code.Stloc_0:
-			case Code.Stloc_1:
-			case Code.Stloc_2:
-			case Code.Stloc_3:
-			case Code.Stloc:
-			case Code.Stloc_S:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		internal static VariableDefinition GetVariable (MethodDefinition method, Instruction ins)
-		{
-			switch (ins.OpCode.Code) {
-			case Code.Ldloc_0:
-			case Code.Ldloc_1:
-			case Code.Ldloc_2:
-			case Code.Ldloc_3:
-				int vindex = ins.OpCode.Code - Code.Ldloc_0;
-				return method.Body.Variables [vindex];
-			case Code.Ldloc:
-			case Code.Ldloc_S:
-				return (ins.Operand as VariableDefinition);
-			default:
-				return null;
-			}
 		}
 	}
 }

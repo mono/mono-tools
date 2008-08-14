@@ -1,3 +1,10 @@
+2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesRule.cs: Use TraceBack rocks. Don't ignore
+	the rule on static methods (since they could still lock on a Type).
+	* DoNotLockOnWeakIdentityObjectsRule.cs: Use new rocks.
+	* LockAnalyzerRule.cs: Simplify now that we have InstructionRocks.
+
 2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make
