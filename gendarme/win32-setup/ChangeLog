@@ -1,3 +1,7 @@
+2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* win32-setup.vdproj: Update for preview 2.
+
 2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* banner.jpg: Add setup banner bitmap
