@@ -32,6 +32,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
@@ -44,66 +45,65 @@ namespace Gendarme.Rules.Concurrency {
 
 		public override void Analyze (MethodDefinition method, Instruction ins)
 		{
-			// well original instruction since this is where we will report the defect
-			Instruction call = ins;
-			while (ins.Previous != null) {
-				ins = ins.Previous;
-				switch (ins.OpCode.Code) {
-				case Code.Ldarg_0:
-					Runner.Report (method, Severity.High, Confidence.High, LockThis);
-					return;
-				case Code.Ldarg_1:
-				case Code.Ldarg_2:
-				case Code.Ldarg_3:
-					return;
-				case Code.Ldarg:
-				case Code.Ldarg_S:
-					ParameterDefinition pd = (ins.Operand as ParameterDefinition);
-					if (pd != null && pd.Sequence == 0)
-						Runner.Report (method, call, Severity.High, Confidence.High, LockThis);
-					return;
-				case Code.Ldfld:
-				case Code.Ldsfld:
-					return;
-				case Code.Call:
-				case Code.Callvirt:
-					MethodReference mr = (ins.Operand as MethodReference);
-					if (mr.ReturnType.ReturnType.FullName != "System.Type")
-						continue;
-					
-					string msg;
-					if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {
-						// ldtoken
-						msg = String.Format (LockType, (ins.Previous.Operand as TypeReference).Name);
-					} else {
-						msg = mr.ToString ();
-					}
-					Runner.Report (method, call, Severity.High, Confidence.High, msg);
-					return;
-				default:
-					if (!IsLoadLoc (ins) || !IsStoreLoc (ins.Previous))
-						continue;
-					// [g]mcs commonly do a stloc.x ldloc.x just before a ldarg.0
-					if (GetVariable (method, ins) != GetVariable (method, ins.Previous))
-						continue;
-					if (ins.Previous.Previous == null)
-						continue;
-					if (ins.Previous.Previous.OpCode.Code == Code.Ldarg_0) {
-						Runner.Report (method, call, Severity.High, Confidence.High, LockThis);
-						return;
-					}
-					break;
-				}
-			}
+			Instruction locker = ins.TraceBack (method);
+			if (locker.OpCode.Code == Code.Dup)
+				locker = locker.TraceBack (method);
+
+			string msg = CheckLocker (method, locker);
+			if (msg != null)
+				Runner.Report (method, ins, Severity.High, Confidence.High, msg);
 		}
 
-		public override RuleResult CheckMethod (MethodDefinition method)
+		private static string CheckLocker (MethodDefinition method, Instruction ins)
 		{
-			// can't lock on 'this' inside a static method
-			if (method.IsStatic)
-				return RuleResult.DoesNotApply;
+			string msg = null;
 
-			return base.CheckMethod (method);
+			switch (ins.OpCode.Code) {
+			case Code.Ldarg_0:
+				msg = LockThis;
+				break;
+			case Code.Ldarg:
+			case Code.Ldarg_S:
+				ParameterDefinition pd = (ins.Operand as ParameterDefinition);
+				if ((pd == null) || (pd.Sequence != 0))
+					msg = LockThis;
+				break;
+			case Code.Call:
+			case Code.Callvirt:
+				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr.ReturnType.ReturnType.FullName != "System.Type")
+					return null;
+
+				if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {
+					// ldtoken
+					msg = String.Format (LockType, (ins.Previous.Operand as TypeReference).Name);
+				} else {
+					msg = mr.ToString ();
+				}
+				break;
+			default:
+				// [g]mcs commonly do a stloc.x ldloc.x just before 
+				// (a) an ldarg.0 (for instance methods); or
+				// (b) an ldtoken (for static methods)
+				// and this throws off TraceBack
+				Instruction locker = StoreLoadLocal (method, ins);
+				if (locker == null)
+					return null;
+
+				return CheckLocker (method, locker);
+			}
+			return msg;
+		}
+
+		private static Instruction StoreLoadLocal (MethodDefinition method, Instruction ins)
+		{
+			// check for a STLOC followed by a LDLOC
+			if (!ins.IsLoadLocal () || !ins.Previous.IsStoreLocal ())
+				return null;
+			// make sure it's about the same local variable
+			if (ins.GetVariable (method) != ins.Previous.GetVariable (method))
+				return null;
+			return ins.Previous.Previous;
 		}
 	}
 }

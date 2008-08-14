@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Concurrency {
 
 		private static TypeReference GetType (MethodDefinition method, Instruction ins)
 		{
-			VariableDefinition variable = GetVariable (method, ins);
+			VariableDefinition variable = ins.GetVariable (method);
 			if (variable != null)
 				return variable.VariableType;
 
