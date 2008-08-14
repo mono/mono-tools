@@ -47,3 +47,20 @@ self-test: all
 	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
 		gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
 	cd ..;
+
+# note: this does not bundle Mono.Cecil.Mdb and Mono.Cecil.Pdb (not built outside Windows)
+# unless they are previously (and manually) copied into the bin/ directory
+zip-bin: all
+	mkdir gendarme.$(GENDARME_VERSION); \
+	cp bin/*.exe gendarme.$(GENDARME_VERSION)/; \
+	cp bin/*.dll gendarme.$(GENDARME_VERSION)/; \
+	cp $(CECIL_ASM) gendarme.$(GENDARME_VERSION)/; \
+	cp rules/rules.xml gendarme.$(GENDARME_VERSION)/; \
+	cp man/gendarme.1 gendarme.$(GENDARME_VERSION)/; \
+	cp AUTHORS README MIT.X11 NEWS gendarme.$(GENDARME_VERSION)/; \
+	cd gendarme.$(GENDARME_VERSION); \
+	zip gendarme-$(GENDARME_VERSION)-bin.zip *; \
+	mv *.zip ..; \
+	cd ..; \
+	rm -rf gendarme.$(GENDARME_VERSION);
+

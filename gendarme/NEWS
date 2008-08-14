@@ -1,4 +1,15 @@
-2008-07-14  Version 0.2.0.0
+2008-08-12  Version 2.0.0.0 (2.0 preview 2)
+
+	Rules:
+	* Many false positives were fixed inside several rules. Thanks 
+	to all reporters!
+
+	Wizard Runner:
+	* Now runs correctly under MS Vista OS (workaround MS bug)
+	* Process all elements, visible or not, like the console runner
+	* Better display under high-DPI monitors
+
+2008-07-14  Version 0.2.0.0 (2.0 preview 1)
 
 	This release includes the development results of the last six 
 	months, including some major events like the Novell Hack Week 

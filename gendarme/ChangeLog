@@ -1,3 +1,8 @@
+2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NEWS: Update for preview 2
+	* Makefile.am: Add target to zip all binaries and configuration files
+
 2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NEWS: Update for the next release.
