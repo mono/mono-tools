@@ -122,13 +122,11 @@ namespace GuiCompare {
 		
 		public static bool ShouldSkipAttribute (string name)
 		{
-			switch (name) {
-			case "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute":
-			case "System.NonSerializedAttribute":	// pseudo-attribute (but sadly part of the XML definitions)
+			if (name.StartsWith ("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute")
+			    || name == "System.NonSerializedAttribute")
 				return true;
-			default:
-				return false;
-			}
+				
+			return false;
 		}
 		
 		public static List<CompNamed> GetAttributes (XMLAttributes attributes)

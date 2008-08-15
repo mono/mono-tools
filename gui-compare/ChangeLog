@@ -1,3 +1,11 @@
+2008-08-15  Chris Toshok  <toshok@ximian.com>
+
+	* MasterMetadata.cs (MasterUtils.ShouldSkipAttribute): we can't
+	just use a string comparison here for CodeAnalysis attributes -
+	they contains lots of info in the name string, we only cafe if it
+	starts with
+	"System.Diagnostics.CodeAnalysis.SuppressMessageAttribute".
+
 2008-08-13  Chris Toshok  <toshok@ximian.com>
 
 	* CecilMetadata.cs: go back to ignoring all private methods.  if
