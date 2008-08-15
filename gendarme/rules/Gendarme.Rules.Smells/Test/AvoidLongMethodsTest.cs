@@ -30,13 +30,16 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 using Mono.Cecil;
-using NUnit.Framework;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Smells;
 
-using System.Windows.Forms;
+using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 //Stubs for the Gtk testing.
@@ -65,7 +68,6 @@ namespace Test.Rules.Smells {
 			IList list = new ArrayList ();
 			list.Add ("Foo");
 			list.Add (4);
-			list.Add (6);
 
 			IEnumerator listEnumerator = list.GetEnumerator ();
 			while (listEnumerator.MoveNext ())
@@ -1012,21 +1014,7 @@ namespace Test.Rules.Smells {
 		}
 	}
 
-	[TestFixture]
-	public class AvoidLongMethodsTest {
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private MethodDefinition method;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp () 
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidLongMethodsRule ();
-			runner = new TestRunner (rule);
-		}
+	public class AvoidLongMethodsTest : MethodRuleTestFixture<AvoidLongMethodsRule> {
 
 		public void LongMethod () 
 		{
@@ -1097,10 +1085,6 @@ namespace Test.Rules.Smells {
 				Console.WriteLine (exception.Message);
 				Console.WriteLine (exception);
 			}
-		}
-
-		public void EmptyMethod () 
-		{
 		}
 
 		public void ShortMethod ()
@@ -1257,157 +1241,138 @@ namespace Test.Rules.Smells {
 			}
 		}
 
-		private MethodDefinition GetMethodForTest (string methodName) 
-		{
-			return GetMethodForTestFrom ("Test.Rules.Smells.AvoidLongMethodsTest", methodName);
-		}
-
-		private MethodDefinition GetMethodForTestFrom (string fullTypeName, string methodName) 
-		{
-			TypeDefinition type =  assembly.MainModule.Types[fullTypeName];
-			if (type != null) {
-				foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == methodName)
-					return method;
-				}
-			}
-			return null;
-		}
-
 		[Test]
 		public void LongMethodTest () 
 		{
-			method = GetMethodForTest ("LongMethod");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<AvoidLongMethodsTest> ("LongMethod", 1);
 		}
 
 		[Test]
 		public void EmptyMethodTest () 
 		{
-			method = GetMethodForTest ("EmptyMethod");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess (SimpleMethods.EmptyMethod);
 		}
 
 		[Test]
 		public void ShortMethodTest () 
 		{
-			method = GetMethodForTest ("ShortMethod");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess <AvoidLongMethodsTest> ("ShortMethod");
 		}
 
 		[Test]
 		public void FalseBuildMethodTest ()
 		{
-			method = GetMethodForTest ("Build");
-			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<AvoidLongMethodsTest> ("Build", 1);
 		}
 
 		[Test]
 		public void WidgetBuildMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWidget", "Build");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<MainWidget> ("Build");
 		}
 
 		[Test]
 		public void WidgetInitializeComponentMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWidget", "InitializeComponent");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<MainWidget> ("InitializeComponent", 1);
 		}
 
 		[Test]
 		public void DialogBuildMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainDialog", "Build");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<MainDialog> ("Build");
 		}
 
 		[Test]
 		public void DialogInitializeComponentMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainDialog", "InitializeComponent");
-			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<MainDialog> ("InitializeComponent", 1);
 		}
 
 		[Test]
 		public void WindowBuildMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWindow", "Build");
-			Assert.AreEqual (RuleResult.DoesNotApply ,rule.CheckMethod (method));
+			AssertRuleDoesNotApply<MainWindow> ("Build");
 		}
 
 		[Test]
 		public void WindowInitializeComponentMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainWindow", "InitializeComponent");
-			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<MainWindow> ("InitializeComponent", 1);
 		}
 
 		[Test]
 		public void FalseInitializeComponentTest () 
 		{
-			method = GetMethodForTest ("InitializeComponent");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<AvoidLongMethodsTest> ("InitializeComponent", 1);
 		}
 
 		[Test]
 		public void FormInitializeComponentTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainForm", "InitializeComponent");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<MainForm> ("InitializeComponent");
 		}
 
 		[Test]
 		public void FormBuildMethodTest () 
 		{
-			method = GetMethodForTestFrom ("Test.Rules.Smells.MainForm", "Build");
-			Assert.AreEqual (RuleResult.Failure ,runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<MainForm> ("Build", 1);
 		}
 
 		[Test]
 		public void LongStaticConstructorWithoutFieldsTest () 
 		{
-			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithoutFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (staticConstructor));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<LongStaticConstructorWithoutFields> (".cctor", 1);
 		}
-
 		
 		[Test]
 		public void LongStaticConstructorWithFieldsTest () 
 		{
-			MethodDefinition staticConstructor = assembly.MainModule.Types["Test.Rules.Smells.LongStaticConstructorWithFields"].Constructors.GetConstructor (true,Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (staticConstructor));
+			AssertRuleSuccess<LongStaticConstructorWithFields> (".cctor");
 		}
 
 		[Test]
 		public void LongConstructorWithoutFieldsTest ()
 		{
-			MethodDefinition constructor = assembly.MainModule.Types["Test.Rules.Smells.LongConstructorWithoutFields"].Constructors.GetConstructor (false, Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (constructor));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<LongConstructorWithoutFields> (".ctor", 1);
 		}
 
 		[Test]
 		public void LongConstructorWithFieldsTest ()
 		{
-			MethodDefinition constructor = assembly.MainModule.Types["Test.Rules.Smells.LongConstructorWithFields"].Constructors.GetConstructor (false, Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (constructor));
+			AssertRuleSuccess<LongConstructorWithFields> (".ctor");
 		}
 
 		[Test]
 		public void LongConstructorWithReadonlyFieldsTest ()
 		{
-			MethodDefinition constructor = assembly.MainModule.Types["Test.Rules.Smells.LongConstructorWithReadonlyFields"].Constructors.GetConstructor (false, Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (constructor));
+			AssertRuleSuccess<LongConstructorWithReadonlyFields> (".ctor");
+		}
+	}
+
+	[TestFixture]
+	public class AvoidLongMethods_IlTest : AvoidLongMethodsTest {
+
+		public AvoidLongMethods_IlTest ()
+		{
+			Rule.UseIlApproximation = true;
+		}
+	}
+
+	[TestFixture]
+	public class AvoidLongMethods_SlocTest : AvoidLongMethodsTest {
+
+		public AvoidLongMethods_SlocTest ()
+		{
+			Rule.UseIlApproximation = false;
+		}
+
+		[TestFixtureSetUp]
+		public void FixtureSetUp ()
+		{
+			AssemblyDefinition assembly = DefinitionLoader.GetAssemblyDefinition<AvoidLongMethodsTest> ();
+			if (!assembly.MainModule.HasDebuggingInformation ())
+				Assert.Ignore ("Debugging symbols non-available to compute SLOC.");
 		}
 	}
 }
