@@ -103,9 +103,9 @@ namespace Gendarme.Rules.Smells {
 				Runner.Report (type, Severity.Medium, Confidence.Normal, "This class contains a lot of methods that only delegates the call to other.  This king of Delegation could be a sign for Speculative Generality");
 		}
 
-		private bool AvoidUnusedParametersRuleScheduled ()
+		static bool AvoidUnusedParametersRuleScheduled (IRunner runner)
 		{
-			foreach (IRule rule in Runner.Rules) {
+			foreach (IRule rule in runner.Rules) {
 				// skip rules that are loaded but inactive
 				if (!rule.Active)
 					continue;
@@ -115,12 +115,21 @@ namespace Gendarme.Rules.Smells {
 			return false;
 		}
 
-		private void CheckUnusedParameters (TypeDefinition type)
+		private AvoidUnusedParametersRule avoidUnusedParameters;
+
+		public override void Initialize (IRunner runner)
 		{
-			IMethodRule avoidUnusedParameters = new AvoidUnusedParametersRule ();
-			avoidUnusedParameters.Initialize (Runner);
-			foreach (MethodDefinition method in type.AllMethods ()) {
-				avoidUnusedParameters.CheckMethod (method);
+			base.Initialize (runner);
+
+			// look for AvoidUnusedParametersRule
+			// note: we can be re-initialized multiple time (e.g. wizard runner)
+			bool scheduled = AvoidUnusedParametersRuleScheduled (runner);
+			if (!scheduled) {
+				if (avoidUnusedParameters == null)
+					avoidUnusedParameters = new AvoidUnusedParametersRule ();
+				avoidUnusedParameters.Initialize (Runner);
+			} else {
+				avoidUnusedParameters = null;
 			}
 		}
 
@@ -130,8 +139,11 @@ namespace Gendarme.Rules.Smells {
 				return RuleResult.DoesNotApply;
 
 			CheckAbstractClassWithoutResponsability (type);
-			if (!AvoidUnusedParametersRuleScheduled ())
-				CheckUnusedParameters (type);
+			if (avoidUnusedParameters != null) {
+				foreach (MethodDefinition method in type.AllMethods ()) {
+					avoidUnusedParameters.CheckMethod (method);
+				}
+			}
 
 			CheckUnnecesaryDelegation (type);
 			return Runner.CurrentRuleResult;
