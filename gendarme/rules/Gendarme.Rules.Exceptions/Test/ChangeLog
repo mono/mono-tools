@@ -1,3 +1,8 @@
+2008-08-16  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* InstantiateArgumentExceptionCorrectlyTest.cs: Added a test for the
+	false positive found when the message is loaded from a local.
+
 2008-08-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* InstantiateArgumentExceptionCorrectlyTest.cs: New. Unit tests for

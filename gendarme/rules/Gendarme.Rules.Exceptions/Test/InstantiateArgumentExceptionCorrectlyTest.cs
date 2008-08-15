@@ -397,5 +397,18 @@ namespace Test.Rules.Exceptions {
 		{
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningException");
 		}
+
+		public void MessageLoadedFromLocal (int value)
+		{
+			string msg = "The parameter: {0} is out of range";
+			throw new ArgumentOutOfRangeException ("value", msg);
+		}
+
+		[Test]
+		[Ignore ("Still not caught by rule.")]
+		public void SuccessOnMessageLoadedFromLocalTest ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MessageLoadedFromLocal");
+		}
 	}
 }
