@@ -37,7 +37,7 @@ tests_sources = \
 	AvoidThrowingBasicExceptionsTest.cs \
 	DontDestroyStackTraceTest.cs \
 	DontSwallowErrorsCatchingNonspecificExceptionsTest.cs \
-	DoNotThrowReservedExceptionTest.cs
+	DoNotThrowReservedExceptionTest.cs \
 	ExceptionShouldBeVisibleTest.cs \
 	MissingExceptionConstructorsTest.cs \
 	InstantiateArgumentExceptionCorrectlyTest.cs

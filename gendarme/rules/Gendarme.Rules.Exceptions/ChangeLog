@@ -1,3 +1,7 @@
+2008-08-16  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Build all the tests.
+
 2008-08-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* InstantiateArgumentExceptionCorrectlyRule.cs: New. Rule to check the
