@@ -29,7 +29,8 @@ rules_sources = \
 	Impl/SEHHandlerBlock.cs \
 	MissingExceptionConstructorsRule.cs \
 	NewExceptionRule.cs \
-	SEHHandlerType.cs
+	SEHHandlerType.cs \
+	InstantiateArgumentExceptionCorrectlyRule.cs
 
 tests_sources = \
 	AvoidArgumentExceptionDefaultConstructorTest.cs \
@@ -38,4 +39,5 @@ tests_sources = \
 	DontSwallowErrorsCatchingNonspecificExceptionsTest.cs \
 	DoNotThrowReservedExceptionTest.cs
 	ExceptionShouldBeVisibleTest.cs \
-	MissingExceptionConstructorsTest.cs
+	MissingExceptionConstructorsTest.cs \
+	InstantiateArgumentExceptionCorrectlyTest.cs
