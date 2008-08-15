@@ -1,3 +1,9 @@
+2008-08-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSpeculativeGeneralityRule.cs: Avoid creating an instance of
+	AvoidUnusedParametersRule at each CheckType call if the rule is not
+	already scheduled for execution.
+
 2008-08-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsRule.cs: Change rule to count logical source line
