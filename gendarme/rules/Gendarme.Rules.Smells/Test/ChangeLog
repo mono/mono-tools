@@ -1,3 +1,10 @@
+2008-08-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSpeculativeGeneralityTest.cs: Update unit tests to the new 
+	syntax.
+	* Tests.Rules.Smells.csproj: Add a reference to Mono.Cecil.Pdb.dll
+	to make sure it's available when running unit tests.
+
 2008-08-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsTest.cs: Update unit tests to the new syntax. 
