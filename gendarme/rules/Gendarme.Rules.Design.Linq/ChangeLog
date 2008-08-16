@@ -1,0 +1,5 @@
+2008-08-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidExtensionMethodOnSystemObjectRule.cs: New. Rule to warn if an
+	extension method extends System.Object.
+	* Makefile.am: Main build file
