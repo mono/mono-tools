@@ -1,3 +1,8 @@
+2008-08-17  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AssemblyRuleTestFixture.cs: New.  A test fixture for checking
+	assembly rules.
+
 2008-08-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRuleTestFixture.cs: Add overload accepting a Type. This is
