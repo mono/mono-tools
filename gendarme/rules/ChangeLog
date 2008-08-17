@@ -1,6 +1,8 @@
-2008-08-17  Sebastien Pouliot  <sebastien@ximian.com>
+2008-08-17  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Add Gendarme.Rules.Design.Linq to the build.
+	* rules.xml: Add Gendarme.Rules.Design.Linq to default and into
+	its own category.
 
 2008-07-18  Sebastien Pouliot  <sebastien@ximian.com>
 
