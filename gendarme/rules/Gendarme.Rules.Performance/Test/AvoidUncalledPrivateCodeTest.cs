@@ -46,6 +46,25 @@ namespace Test.Rules.Performance {
 
 #pragma warning disable 169
 
+	// from Mono.Rocks
+	// note: error CS1109: Extension methods must be defined in a top level static class; StaticType is a nested class
+	public static class StaticType {
+		public static IEnumerable<TSource> Repeat<TSource> (this IEnumerable<TSource> self, int number)
+		{
+			//				Check.Self (self);
+
+			return CreateRepeatIterator (self, number);
+		}
+
+		private static IEnumerable<TSource> CreateRepeatIterator<TSource> (IEnumerable<TSource> self, int number)
+		{
+			for (int i = 0; i < number; i++) {
+				foreach (var element in self)
+					yield return element;
+			}
+		}
+	}
+
 	[TestFixture]
 	public class AvoidUncalledPrivateCodeTest : MethodRuleTestFixture<AvoidUncalledPrivateCodeRule> {
 		
@@ -628,7 +647,8 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		[Ignore ("Fails due to mono bug under investigation")]
+		[Ignore ("Mono bug #320901")]
+		// https://bugzilla.novell.com/show_bug.cgi?id=320901
 		public void Generics ()
 		{
 			AssertRuleSuccess<Anculus> ();
@@ -742,6 +762,14 @@ namespace Test.Rules.Performance {
 
 			AssertRuleSuccess<EventCases> ("add_Bar");
 			AssertRuleSuccess<EventCases> ("remove_Bar");
+		}
+
+		[Test]
+		[Ignore ("Mono bug #320901")]
+		// https://bugzilla.novell.com/show_bug.cgi?id=320901
+		public void MonoRocks ()
+		{
+			AssertRuleSuccess (typeof (StaticType), "CreateRepeatIterator");
 		}
 	}
 }
