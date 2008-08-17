@@ -17,7 +17,8 @@ test_sources = \
 	Fixtures/TypeRuleTestFixture.cs \
 	Helpers/AssemblyCache.cs \
 	Helpers/DefinitionLoader.cs \
-	Helpers/TestRunner.cs
+	Helpers/TestRunner.cs \
+	Fixtures/AssemblyRuleTestFixture.cs
 
 $(common_tests): $(test_sources)
 	$(GMCS) -target:library -debug -pkg:mono-nunit -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(test_sources)
