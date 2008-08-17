@@ -74,6 +74,12 @@ namespace Test.Rules.Fixtures {
 		{
 			base.AssertRuleDoesNotApply (DefinitionLoader.GetMethodDefinition<T> (method, parameters));
 		}
+
+		protected void AssertRuleDoesNotApply (Type type, string method)
+		{
+			TypeDefinition td = DefinitionLoader.GetTypeDefinition (type);
+			base.AssertRuleDoesNotApply (DefinitionLoader.GetMethodDefinition (td, method, null));
+		}
 		
 		/// <summary>
 		/// Asserts that the rule has been executed successfully for each method in the type. 
@@ -105,7 +111,13 @@ namespace Test.Rules.Fixtures {
 		{
 			base.AssertRuleSuccess (DefinitionLoader.GetMethodDefinition<T> (method, parameters));
 		}
-		
+
+		protected void AssertRuleSuccess (Type type, string method)
+		{
+			TypeDefinition td = DefinitionLoader.GetTypeDefinition (type);
+			base.AssertRuleSuccess (DefinitionLoader.GetMethodDefinition (td, method, null));
+		}
+
 		/// <summary>
 		/// Asserts that the rule has failed to execute successfully for each method in the type. 
 		/// </summary>
@@ -169,6 +181,12 @@ namespace Test.Rules.Fixtures {
 		protected void AssertRuleFailure<T> (string method, Type [] parameters, int expectedCount)
 		{
 			base.AssertRuleFailure (DefinitionLoader.GetMethodDefinition<T> (method, parameters), expectedCount);
+		}
+
+		protected void AssertRuleFailure (Type type, string method, int expectedCount)
+		{
+			TypeDefinition td = DefinitionLoader.GetTypeDefinition (type);
+			base.AssertRuleFailure (DefinitionLoader.GetMethodDefinition (td, method, null), expectedCount);
 		}
 	}
 }
