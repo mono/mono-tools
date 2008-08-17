@@ -1,6 +1,11 @@
+2008-08-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Rules.Design.Linq to the build.
+
 2008-07-18  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* rules.xml: Add Maintainability rules to "default"
+	* rules.xml: Add Maintainability rules to "default" (found by
+	Richard Birky).
 
 2008-07-10  Sebastien Pouliot  <sebastien@ximian.com>
 

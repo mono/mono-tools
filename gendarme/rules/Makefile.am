@@ -1,11 +1,19 @@
 SUBDIRS= Test.Rules \
-	 Gendarme.Rules.Performance Gendarme.Rules.Security \
-	 Gendarme.Rules.Correctness Gendarme.Rules.Concurrency \
-	 Gendarme.Rules.Portability Gendarme.Rules.Exceptions \
-	 Gendarme.Rules.Ui Gendarme.Rules.Naming Gendarme.Rules.Design \
-	 Gendarme.Rules.Smells Gendarme.Rules.BadPractice \
-	 Gendarme.Rules.Interoperability Gendarme.Rules.Serialization \
-	 Gendarme.Rules.Maintainability
+	 Gendarme.Rules.BadPractice \
+	 Gendarme.Rules.Concurrency \
+	 Gendarme.Rules.Correctness \
+	 Gendarme.Rules.Design \
+	 Gendarme.Rules.Design.Linq \
+	 Gendarme.Rules.Exceptions \
+	 Gendarme.Rules.Interoperability \
+	 Gendarme.Rules.Maintainability \
+	 Gendarme.Rules.Naming \
+	 Gendarme.Rules.Performance \
+	 Gendarme.Rules.Portability \
+	 Gendarme.Rules.Security \
+	 Gendarme.Rules.Serialization \
+	 Gendarme.Rules.Smells \
+	 Gendarme.Rules.Ui
 
 EXTRA_DIST = rules.xml rules.mds tests.mds common.make
 DISTCLEANFILES = Makefile.in
