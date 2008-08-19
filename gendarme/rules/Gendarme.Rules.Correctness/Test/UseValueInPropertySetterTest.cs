@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Runtime.InteropServices;
 
 using Gendarme.Rules.Correctness;
 
@@ -106,6 +107,13 @@ namespace Test.Rules.Correctness {
 
 			public string Empty {
 				set { }
+			}
+
+			public object Marshalled {
+				[param:MarshalAs (UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(object))]
+				set {
+					val = (bool) value;
+				}
 			}
 		}
 
@@ -204,6 +212,13 @@ namespace Test.Rules.Correctness {
 		public void TestThisProperty ()
 		{
 			AssertRuleSuccess<BitVector32> ("set_Item");
+		}
+
+		[Test]
+		public void TestMarshalled ()
+		{
+			// note: with [g]mcs the parameter is not named 'value'
+			AssertRuleSuccess<Item> ("set_Marshalled");
 		}
 	}
 }
