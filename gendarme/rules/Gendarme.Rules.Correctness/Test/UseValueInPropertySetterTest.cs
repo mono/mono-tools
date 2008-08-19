@@ -29,33 +29,40 @@
 //
 
 using System;
-using System.Collections.Specialized;
-using System.Reflection;
-using Gendarme.Framework;
-using Gendarme.Rules.Correctness;
-using Mono.Cecil;
-using NUnit.Framework;
 
-using Test.Rules.Helpers;
+using Gendarme.Rules.Correctness;
+
+using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Correctness {
 
 	[TestFixture]
-	public class UseValueInPropertySetterTest {
+	public class UseValueInPropertySetterTest : MethodRuleTestFixture<UseValueInPropertySetterRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		public class Item {
 
+			// use a filed to avoid potential issue with optimization (resulting in empty setters)
+			bool val;
+
 			public bool UsesValue {
-				set { bool val = value; }
+				set { val = value; }
 			}
 
 			public bool DoesNotUseValue {
-				set { bool val = true; }
+				set { val = true; }
 			}
 
 			public void set_NotAProperty(bool value)
 			{
-				bool val = true;
+				val = true;
 			}
 
 			public int Throw1 {
@@ -73,6 +80,13 @@ namespace Test.Rules.Correctness {
 
 			public int Throw3 {
 				set { throw new NotSupportedException (Translate ("value isn't used here")); }
+			}
+
+			public int CouldThrow {
+				set {
+					if (val)
+						throw new NotSupportedException ();
+				}
 			}
 
 			private static int maxFields = 25;
@@ -133,114 +147,63 @@ namespace Test.Rules.Correctness {
 		}
 
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp()
-		{
-			string unit = Assembly.GetExecutingAssembly().Location;
-			assembly = AssemblyFactory.GetAssembly(unit);
-			module = assembly.MainModule;
-			type = module.Types["Test.Rules.Correctness.UseValueInPropertySetterTest/Item"];
-			rule = new UseValueInPropertySetterRule ();
-			runner = new TestRunner (rule);
-		}
-
-		MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == name)
-					return method;
-
-			return null;
-		}
-
 		[Test]
 		public void TestUsesValue()
 		{
-			MethodDefinition method = GetTest ("set_UsesValue");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Item> ("set_UsesValue");
 		}
 		
 		[Test]
 		public void TestDoesNotUseValue()
 		{
-			MethodDefinition method = GetTest("set_DoesNotUseValue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<Item> ("set_DoesNotUseValue", 1);
 		}
 
 		[Test]
 		public void TestNotAProperty()
 		{
-			MethodDefinition method = GetTest("set_NotAProperty");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<Item> ("set_NotAProperty");
 		}
 
 		[Test]
 		public void ThrowException ()
 		{
-			MethodDefinition method = GetTest ("set_Throw1");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-			method = GetTest ("set_Throw2");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
-			method = GetTest ("set_Throw3");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult3");
-			Assert.AreEqual (0, runner.Defects.Count, "Count3");
+			AssertRuleSuccess<Item> ("set_Throw1");
+			AssertRuleSuccess<Item> ("set_Throw2");
+			AssertRuleSuccess<Item> ("set_Throw3");
+			AssertRuleFailure<Item> ("set_CouldThrow", 1);
 		}
 
 		[Test]
 		public void TestStaticUsesValue ()
 		{
-			MethodDefinition method = GetTest ("set_MaxFields");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Item> ("set_MaxFields");
 		}
 
 		[Test]
 		public void TestStaticDoesNotUseValue ()
 		{
-			MethodDefinition method = GetTest ("set_MinFields");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<Item> ("set_MinFields", 1);
 		}
 
 		[Test]
 		public void TestDateValue ()
 		{
-			MethodDefinition method = GetTest ("set_Time");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Item> ("set_Time");
 		}
 
 		[Test]
 		public void TestEmpty ()
 		{
-			MethodDefinition method = GetTest ("set_Empty");
 			// too many false positive, it seems too common to have empty set to report them
 			// at least for this specific rule
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Item> ("set_Empty");
 		}
 
 		[Test]
 		public void TestThisProperty ()
 		{
-			TypeDefinition type = module.Types ["Test.Rules.Correctness.UseValueInPropertySetterTest/BitVector32"];
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "set_Item") {
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (0, runner.Defects.Count, "Count");
-				}
-			}
+			AssertRuleSuccess<BitVector32> ("set_Item");
 		}
 	}
 }
