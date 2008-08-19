@@ -33,6 +33,7 @@ using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
@@ -44,38 +45,26 @@ namespace Gendarme.Rules.Correctness {
 		// and will work as long as there is a single parameter, whatever the type
 		private static readonly new MethodSignature Equals = new MethodSignature ("Equals", "System.Boolean", new string [1], MethodAttributes.Public);
 
-		private static bool IsPreviousLdnull (Instruction ins)
-		{
-			while (ins.Previous != null) {
-				OpCode oc = ins.Previous.OpCode;
-				if (oc == OpCodes.Ldnull) {
-					return true;
-				} else if ((oc == OpCodes.Constrained) || (oc == OpCodes.Nop)) {
-					ins = ins.Previous;
-				} else {
-					return false;
-				}
-			}
-			return false;
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				// if we're calling bool type.Equals()
 				switch (ins.OpCode.Code) {
 				case Code.Call:
 				case Code.Calli:
 				case Code.Callvirt:
-					if (Equals.Matches (ins.Operand as MethodReference)) {
-						// and that the previous, real, instruction is loading a null value
-						if (IsPreviousLdnull (ins)) {
-							Runner.Report (method, ins, Severity.Low, Confidence.High, String.Empty);
-						}
-					}
+					// if we're calling bool type.Equals({anytype})
+					if (!Equals.Matches (ins.Operand as MethodReference))
+						continue;
+
+					// and that the previous, real, instruction is loading a null value
+					// note: check the first parameter (not the instance)
+					Instruction source = ins.TraceBack (method, -1);
+					if ((source != null) && (source.OpCode.Code == Code.Ldnull))
+						Runner.Report (method, ins, Severity.Low, Confidence.High);
+
 					break;
 				}
 			}

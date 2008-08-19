@@ -1,3 +1,10 @@
+2008-08-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CallingEqualsWithNullArgRule.cs: Use TraceBack rock to reduce (and
+	simplify) source code. Use simpler overload for Report.
+	* UseValueInPropertySetterRule.cs: Use GetParameter rock to (and
+	simplify) source code. Use simpler overload for Report.
+
 2008-08-12  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Clean up and
