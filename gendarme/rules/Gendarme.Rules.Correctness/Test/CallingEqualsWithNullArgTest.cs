@@ -27,20 +27,24 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Correctness;
-using Mono.Cecil;
+
 using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
-using Test.Rules.Helpers;
+namespace Test.Rules.Correctness {
 
-namespace Test.Rules.Correctness
-{
 	[TestFixture]
-	public class CallingEqualsWithNullArgTest {
-		
+	public class CallingEqualsWithNullArgTest : MethodRuleTestFixture<CallingEqualsWithNullArgRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
+
 		public class CallToEqualsWithNullArg
 		{
 			public static void Main (string [] args)
@@ -48,6 +52,12 @@ namespace Test.Rules.Correctness
 				CallToEqualsWithNullArg c = new CallToEqualsWithNullArg ();
 				c.Equals (null);
 			}
+		}
+
+		[Test]
+		public void CallToEqualsWithNullArgTest ()
+		{
+			AssertRuleFailure<CallToEqualsWithNullArg> ("Main", 1);
 		}
 		
 		public class CallingEqualsWithNonNullArg 
@@ -58,6 +68,12 @@ namespace Test.Rules.Correctness
 				CallingEqualsWithNonNullArg c1 = new CallingEqualsWithNonNullArg ();
 				c.Equals (c1);
 			}
+		}
+
+		[Test]
+		public void CallingEqualsWithNonNullArgTest ()
+		{
+			AssertRuleSuccess<CallingEqualsWithNonNullArg> ("Main");
 		}
 		
 		public class CallingEqualsOnEnum
@@ -85,9 +101,16 @@ namespace Test.Rules.Correctness
 				e.Equals (e1);
 			}
 		}
-		
-		public struct structure 
+
+		[Test]
+		public void CallingEqualsOnEnumTest ()
 		{
+			AssertRuleFailure<CallingEqualsOnEnum> ("PassingArgNullInEquals", 1);
+			AssertRuleSuccess<CallingEqualsOnEnum> ("NotPassingNullArgInEquals");
+		}
+
+		struct structure {
+
 			public bool Equals (structure s)
 			{
 				return s.GetType () == typeof (structure);
@@ -109,7 +132,14 @@ namespace Test.Rules.Correctness
 				s.Equals (s1);
 			}
 		}
-		
+
+		[Test]
+		public void CallingEqualsOnStructTest ()
+		{
+			AssertRuleFailure<CallingEqualsOnStruct> ("PassingNullArgument", 1);
+			AssertRuleSuccess<CallingEqualsOnStruct> ("PassingNonNullArg");
+		}
+
 		public class CallingEqualsOnArray
 		{
 			int [] a = new int [] {1, 2, 3};
@@ -134,117 +164,12 @@ namespace Test.Rules.Correctness
 				b.Equals (a);
 			}
 		}
-		
-		private IMethodRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new CallingEqualsWithNullArgRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Correctness.CallingEqualsWithNullArgTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-	
 		[Test]
-		public void callToEqualsWithNullArgTest ()
+		public void CallingEqualsOnArrayTest ()
 		{
-			type = GetTest ("CallToEqualsWithNullArg");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (1, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-		
-		[Test]
-		public void callingEqualsWithNonNullArgTest ()
-		{
-			type = GetTest ("CallingEqualsWithNonNullArg");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-		
-		[Test]
-		public void enumPassingArgNullInEqualsTest ()
-		{
-			type = GetTest ("CallingEqualsOnEnum");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "PassingArgNullInEquals") {
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (1, runner.Defects.Count, "Count");
-				}
-			}
-		}
-		
-		[Test]
-		public void enumNotPassingArgNullInEqualsTest ()
-		{
-			type = GetTest ("CallingEqualsOnEnum");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "NotPassingNullArgInEquals") {
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (0, runner.Defects.Count, "Count");
-				}
-			}
-		}
-		
-		[Test]
-		public void passingNullArgumentThanStructTest ()
-		{
-			type = GetTest ("CallingEqualsOnStruct");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "PassingNullArgument") {
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (1, runner.Defects.Count, "Count");
-				}
-			}
-		}
-				
-		[Test]
-		public void passingNonNullStructArgTest ()
-		{
-			type = GetTest ("CallingEqualsOnStruct");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "PassingNonNullArg") {
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (0, runner.Defects.Count, "Count");
-				}
-			}
-		}
-		
-		[Test]
-		public void passingNullArgumentThanArrayTest ()
-		{
-			type = GetTest ("CallingEqualsOnArray");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "PassingNullArg") {
-					Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (1, runner.Defects.Count, "Count");
-				}
-			}
-		}
-		
-		[Test]
-		public void passingNonNullArrayArgumentTest ()
-		{
-			type = GetTest ("CallingEqualsOnArray");
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == "PassingNonNullArg") {
-					Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (0, runner.Defects.Count, "Count");
-				}
-			}
+			AssertRuleFailure<CallingEqualsOnArray> ("PassingNullArg", 1);
+			AssertRuleSuccess<CallingEqualsOnArray> ("PassingNonNullArg");
 		}
 	}
 }

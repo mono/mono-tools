@@ -1,6 +1,13 @@
+2008-08-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CallingEqualsWithNullArgTest.cs: Convert test to new, simpler, API
+	and cover 100% of the rule.
+	* UseValueInPropertySetterTest.cs: Convert test to new, simpler, API
+	and cover 100% of the rule.
+
 2008-07-24  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* DoNotRoundIntegersTest.cs: Added new test case provied by 
+	* DoNotRoundIntegersTest.cs: Added new test case provided by 
 	Richard Birkby.
 
 2008-07-23  Sebastien Pouliot  <sebastien@ximian.com>
