@@ -57,34 +57,16 @@ namespace Gendarme.Rules.Correctness {
 			bool flow = false;
 			bool empty = true;
 			foreach (Instruction instruction in method.Body.Instructions) {
+
+				ParameterDefinition pd = instruction.GetParameter (method);
+				if (pd != null) {
+					empty = false;
+					if (pd.Sequence == 1) // value
+						return RuleResult.Success;
+					continue;
+				}
+
 				switch (instruction.OpCode.Code) {
-				// check if the IL use value
-				case Code.Ldarg_0:
-					// first argument if property is static
-					if (method.IsStatic)
-						return RuleResult.Success;
-					empty = false;
-					break;
-				case Code.Ldarg_1:
-					// second argument if property is not static (instance)
-					if (!method.IsStatic)
-						return RuleResult.Success;
-					empty = false;
-					break;
-				case Code.Ldarg_2:
-				case Code.Ldarg_3:
-					// this[] properties have multiple parameters
-					int index = instruction.OpCode.Code - Code.Ldarg_1;
-					if (method.Parameters [index].Name == "value")
-						return RuleResult.Success;
-					empty = false;
-					break;
-				case Code.Ldarga:
-				case Code.Ldarga_S:
-					if ((instruction.Operand as ParameterDefinition).Name == "value")
-						return RuleResult.Success;
-					empty = false;
-					break;
 				// check if the IL simply throws an exception
 				case Code.Throw:
 					if (!flow)
@@ -112,7 +94,7 @@ namespace Gendarme.Rules.Correctness {
 			if (empty)
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.High, Confidence.Total, String.Empty);
+			Runner.Report (method, Severity.High, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}
