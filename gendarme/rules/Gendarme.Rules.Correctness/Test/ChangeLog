@@ -1,3 +1,9 @@
+2008-08-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* UseValueInPropertySetterTest.cs: Add an additional test case when
+	[MarshalAs] is used. In this case the parameter is not named value
+	at least not when compiled with [g]mcs (csc seems fine).
+
 2008-08-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CallingEqualsWithNullArgTest.cs: Convert test to new, simpler, API
