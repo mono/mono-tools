@@ -207,12 +207,11 @@ namespace  Mono.Profiler {
 		public override void ClassStartUnload (LoadedClass c, ulong counter) {}
 		public override void ClassEndUnload (LoadedClass c, ulong counter) {}
 		
-		public override void Allocation (LoadedClass c, uint size) {
-			LoadedMethod caller;
-			if ((stack != null) && (stack.StackTop != null)) {
-				caller = stack.StackTop.Method;
-			} else {
-				caller = null;
+		public override void Allocation (LoadedClass c, uint size, LoadedMethod caller, ulong counter) {
+			if (caller == null) {
+				if ((stack != null) && (stack.StackTop != null)) {
+					caller = stack.StackTop.Method;
+				}
 			}
 			c.InstanceCreated (size, caller);
 		}

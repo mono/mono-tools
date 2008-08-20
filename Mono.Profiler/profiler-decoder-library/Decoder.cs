@@ -59,7 +59,8 @@ namespace  Mono.Profiler {
 		EVENTS = 6,
 		STATISTICAL = 7,
 		HEAP_DATA = 8,
-		HEAP_SUMMARY = 9
+		HEAP_SUMMARY = 9,
+		DIRECTIVES = 10
 	}
 	
 	public class BlockData {
@@ -442,9 +443,12 @@ namespace  Mono.Profiler {
 							uint classSize = ReadUint (ref offsetInBlock);
 							classId <<= PACKED_EVENT_DATA_BITS;
 							classId |= (uint) packedData;
-							
-							//LogLine ("BLOCK EVENTS (PACKED:CLASS_ALLOCATION): classId {0}, classSize {1}", classId, classSize);
-							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize);
+							uint callerId = 0;
+							if (handler.Directives.AllocationsCarryCallerMethod) {
+								callerId = ReadUint (ref offsetInBlock);
+							}
+							//LogLine ("BLOCK EVENTS (PACKED:CLASS_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
+							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), 0);
 							break;
 						}
 						case PackedEventCode.CLASS_EVENT: {
@@ -841,8 +845,33 @@ namespace  Mono.Profiler {
 					ulong endTime = ReadUlong (ref offsetInBlock);
 					handler.AllocationSummaryEnd (collection, endCounter, microsecondsFromEpochToDateTime (endTime));
 					//LogLine ("BLOCK HEAP_SUMMARY (END): endCounter {0}, endTime {1}", endCounter, endTime);
-					Console.WriteLine ("BLOCK HEAP_SUMMARY (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), 0);
+					break;
+				}
+				case BlockCode.DIRECTIVES : {
+					ulong startCounter = ReadUlong (ref offsetInBlock);
+					ulong startTime = ReadUlong (ref offsetInBlock);
+					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), 0);
+					
+					//LogLine ("BLOCK DIRECTIVES (START): startCounter {0}, startTime {1}", startCounter, startTime);
+					DirectiveCodes directive = (DirectiveCodes) ReadUint (ref offsetInBlock);
+					while (directive != DirectiveCodes.END) {
+						switch (directive) {
+						case DirectiveCodes.ALLOCATIONS_CARRY_CALLER:
+							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_CARRY_CALLER");
+							handler.Directives.AllocationsCarryCallerMethodReceived ();
+							break;
+						default:
+							throw new DecodingException (this, offsetInBlock, String.Format ("unknown directive {0}", directive));
+						}
+						
+						directive = (DirectiveCodes) ReadUint (ref offsetInBlock);
+					}
+					
+					ulong endCounter = ReadUlong (ref offsetInBlock);
+					ulong endTime = ReadUlong (ref offsetInBlock);
+					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), 0);
+					//LogLine ("BLOCK DIRECTIVES (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					break;
 				}
 				default: {

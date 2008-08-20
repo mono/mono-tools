@@ -100,6 +100,8 @@ namespace Mono.Profiler {
 		HS[] HeapSnapshots {get;}
 	}
 	public interface IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		DirectivesHandler Directives {get;}
+		
 		EH LoadedElements {get;}
 		
 		void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime);
@@ -122,7 +124,7 @@ namespace Mono.Profiler {
 		void ClassStartUnload (LC c, ulong counter);
 		void ClassEndUnload (LC c, ulong counter);
 		
-		void Allocation (LC c, uint size);
+		void Allocation (LC c, uint size, LM caller, ulong counter);
 		void Exception (LC c, ulong counter);
 		
 		void MethodEnter (LM m, ulong counter);
@@ -627,7 +629,36 @@ namespace Mono.Profiler {
 		}
 	}
 	
+	public enum DirectiveCodes {
+		END = 0,
+		ALLOCATIONS_CARRY_CALLER = 1,
+		LAST
+	}
+	
+	public class DirectivesHandler {
+		bool allocationsCarryCallerMethod;
+		public bool AllocationsCarryCallerMethod {
+			get {
+				return allocationsCarryCallerMethod;
+			}
+		}
+		public void AllocationsCarryCallerMethodReceived () {
+			allocationsCarryCallerMethod = true;
+		}
+		
+		public DirectivesHandler () {
+			allocationsCarryCallerMethod = false;
+		}
+	}
+	
 	public class BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		DirectivesHandler directives = new DirectivesHandler ();
+		public DirectivesHandler Directives {
+			get {
+				return directives;
+			}
+		}
+		
 		EH loadedElements;
 		public EH LoadedElements {
 			get {
@@ -659,7 +690,7 @@ namespace Mono.Profiler {
 		public virtual void ClassStartUnload (LC c, ulong counter) {}
 		public virtual void ClassEndUnload (LC c, ulong counter) {}
 		
-		public virtual void Allocation (LC c, uint size) {}
+		public virtual void Allocation (LC c, uint size, LM caller, ulong counter) {}
 		public virtual void Exception (LC c, ulong counter) {}
 		
 		public virtual void MethodEnter (LM m, ulong counter) {}
