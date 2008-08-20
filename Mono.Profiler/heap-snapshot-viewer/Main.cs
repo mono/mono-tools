@@ -44,7 +44,7 @@ namespace Mono.Profiler
 
 			try {
 				reader = new SeekableLogFileReader (args [0]);
-			} catch (IOException e){
+			} catch (IOException){
 				Console.Error.WriteLine ("It was not possible to open the file {0}", args [0]);
 				return;
 			}
