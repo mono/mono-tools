@@ -1,3 +1,6 @@
+2008-08-20  Massimiliano Mantione <massi@ximian.com>
+	* Main.cs: Ignore decoding exceptions but print the stack trace.
+
 2008-08-12  Massimiliano Mantione <massi@ximian.com>
 	* mprof-decoder.in: Fixed for integration into mono-tools;
 

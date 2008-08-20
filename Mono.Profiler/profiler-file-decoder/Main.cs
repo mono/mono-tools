@@ -250,6 +250,9 @@ namespace Mono.Profiler
 					reader.ReadBlock ().Decode (data, reader);
 				} catch (DecodingException e) {
 					Console.WriteLine ("WARNING: DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
+					Console.WriteLine (e.StackTrace);
+					Console.WriteLine ("Original stack trace:");
+					Console.WriteLine (e.InnerException.StackTrace);
 					break;
 				}
 			}
