@@ -58,7 +58,15 @@ namespace Mono.Profiler
 								Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
 								Array.Reverse (allocationsPerMethodArray);
 								foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
-									writer.WriteLine ("        {0} bytes from {1}.{2}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
+									writer.WriteLine ("        {0} bytes ({1} instances) from {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
+								}
+							}
+							if (c.MethodsAtJitTimeCount > 0) {
+								allocationsPerMethodArray = c.MethodsAtJitTime;
+								Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
+								Array.Reverse (allocationsPerMethodArray);
+								foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
+									writer.WriteLine ("                {0} bytes ({1} instances) at JIT time of {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
 								}
 							}
 						}
