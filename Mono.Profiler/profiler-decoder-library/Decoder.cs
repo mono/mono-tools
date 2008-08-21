@@ -248,6 +248,7 @@ namespace  Mono.Profiler {
 			GC_RESIZE = 5,
 			GC_STOP_WORLD = 6,
 			GC_START_WORLD = 7,
+			JIT_TIME_ALLOCATION = 8,
 			MASK = 15
 		}
 		GenericEvent GenericEventFromEventCode (int eventCode) {
@@ -448,7 +449,7 @@ namespace  Mono.Profiler {
 								callerId = ReadUint (ref offsetInBlock);
 							}
 							//LogLine ("BLOCK EVENTS (PACKED:CLASS_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
-							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), 0);
+							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), false, 0);
 							break;
 						}
 						case PackedEventCode.CLASS_EVENT: {
@@ -646,6 +647,17 @@ namespace  Mono.Profiler {
 								} else {
 									handler.ThreadEnd (eventThreadId, baseCounter);
 								}
+								break;
+							}
+							case GenericEvent.JIT_TIME_ALLOCATION: {
+								uint classId = ReadUint (ref offsetInBlock);
+								uint classSize = ReadUint (ref offsetInBlock);
+								uint callerId = 0;
+								if (handler.Directives.AllocationsCarryCallerMethod) {
+									callerId = ReadUint (ref offsetInBlock);
+								}
+								//LogLine ("BLOCK EVENTS (OTHER:JIT_TIME_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
+								handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), true, 0);
 								break;
 							}
 							default: {

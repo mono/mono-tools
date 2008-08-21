@@ -1,3 +1,10 @@
+2008-08-21  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added support for correct accounting of allocations
+	which happened at JIT time.
+	* ObjectModel.cs: Likewise.
+	* Decoder.cs: Likewise.
+	* EventProcessor.cs: Likewise.
+
 2008-08-20  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs: Added support for directives in the log file.
 	* Decoder.cs: Likewise.

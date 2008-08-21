@@ -124,7 +124,7 @@ namespace Mono.Profiler {
 		void ClassStartUnload (LC c, ulong counter);
 		void ClassEndUnload (LC c, ulong counter);
 		
-		void Allocation (LC c, uint size, LM caller, ulong counter);
+		void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter);
 		void Exception (LC c, ulong counter);
 		
 		void MethodEnter (LM m, ulong counter);
@@ -690,7 +690,7 @@ namespace Mono.Profiler {
 		public virtual void ClassStartUnload (LC c, ulong counter) {}
 		public virtual void ClassEndUnload (LC c, ulong counter) {}
 		
-		public virtual void Allocation (LC c, uint size, LM caller, ulong counter) {}
+		public virtual void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter) {}
 		public virtual void Exception (LC c, ulong counter) {}
 		
 		public virtual void MethodEnter (LM m, ulong counter) {}

@@ -47,22 +47,31 @@ namespace  Mono.Profiler {
 			return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
 		};
 		
-		internal void InstanceCreated (uint size, LoadedMethod method) {
+		internal void InstanceCreated (uint size, LoadedMethod method, bool jitTime) {
 			allocatedBytes += size;
 			currentlyAllocatedBytes += size;
 			if (method != null) {
-				if (allocationsPerMethod == null) {
-					allocationsPerMethod = new Dictionary<uint,AllocationsPerMethod> ();
+				Dictionary<uint,AllocationsPerMethod> methods;
+				if (! jitTime) {
+					if (allocationsPerMethod == null) {
+						allocationsPerMethod = new Dictionary<uint,AllocationsPerMethod> ();
+					}
+					methods = allocationsPerMethod;
+				} else {
+					if (allocationsPerMethodAtJitTime == null) {
+						allocationsPerMethodAtJitTime = new Dictionary<uint,AllocationsPerMethod> ();
+					}
+					methods = allocationsPerMethodAtJitTime;
 				}
 				
 				AllocationsPerMethod callerMethod;
-				if (allocationsPerMethod.ContainsKey (method.ID)) {
-					callerMethod = allocationsPerMethod [method.ID];
+				if (methods.ContainsKey (method.ID)) {
+					callerMethod = methods [method.ID];
 				} else {
 					callerMethod = new AllocationsPerMethod (method);
-					allocationsPerMethod.Add (method.ID, callerMethod);
+					methods.Add (method.ID, callerMethod);
 				}
-				callerMethod.AllocatedBytes += size;
+				callerMethod.Allocation (size);
 			}
 		}
 		
@@ -83,12 +92,22 @@ namespace  Mono.Profiler {
 				get {
 					return allocatedBytes;
 				}
-				internal set {
-					allocatedBytes = value;
+			}
+			uint allocatedInstances;
+			public uint AllocatedInstances {
+				get {
+					return allocatedInstances;
 				}
+			}
+			internal void Allocation (uint allocatedBytes) {
+				this.allocatedBytes += allocatedBytes;
+				this.allocatedInstances ++;
 			}
 			public static Comparison<AllocationsPerMethod> CompareByAllocatedBytes = delegate (AllocationsPerMethod a, AllocationsPerMethod b) {
 				return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
+			};
+			public static Comparison<AllocationsPerMethod> CompareByAllocatedInstances = delegate (AllocationsPerMethod a, AllocationsPerMethod b) {
+				return a.AllocatedInstances.CompareTo (b.AllocatedInstances);
 			};
 			
 			public AllocationsPerMethod (LoadedMethod method) {
@@ -106,6 +125,28 @@ namespace  Mono.Profiler {
 					return result;
 				} else {
 					return new AllocationsPerMethod [0];
+				}
+			}
+		}
+		
+		Dictionary<uint,AllocationsPerMethod> allocationsPerMethodAtJitTime;
+		public AllocationsPerMethod[] MethodsAtJitTime {
+			get {
+				if (allocationsPerMethodAtJitTime != null) {
+					AllocationsPerMethod[] result = new AllocationsPerMethod [allocationsPerMethodAtJitTime.Count];
+					allocationsPerMethodAtJitTime.Values.CopyTo (result, 0);
+					return result;
+				} else {
+					return new AllocationsPerMethod [0];
+				}
+			}
+		}
+		public int MethodsAtJitTimeCount {
+			get {
+				if (allocationsPerMethodAtJitTime != null) {
+					return allocationsPerMethodAtJitTime.Values.Count;
+				} else {
+					return 0;
 				}
 			}
 		}
