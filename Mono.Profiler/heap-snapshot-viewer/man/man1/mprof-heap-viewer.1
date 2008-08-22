@@ -1,0 +1,49 @@
+.TH "mprof-heap-viewer" 1
+.SH NAME
+mprof-heap-viewer \- GUI viewer for the logging profiler heap snapshots
+.SH SYNOPSIS
+.B mprof-heap-viewer
+file
+.SH DESCRIPTION
+.B mprof-heap-viewer
+GUI viewer for the logging profiler heap snapshots
+.PP
+WARNING: this application is unfinished and experimental.
+Nevertheless it should work, and bug reports are encouraged.
+.PP
+This program decodes the contents of a logging profiler output file and
+locates all the heap snapshots inside it.
+The user can then select each individual snapshot and decide to load
+it in memory and explore its contents.
+.PP
+The GUI is organized to work on "object sets" (listed in a tree view
+on the left).
+All operations are performed with a popup menu on the choosen set.
+.PP
+Initially the sets are the heap snapshots (of course a heap snapshot
+can be considered a set of objects!).
+For each set the GUI shows on the right a list that breaks it down by
+class (one row for each class).
+.PP
+The user can then refine each set using a "filter", to select a subset.
+Examples of filters are "all objects of class X", or "all objects that
+reference an object of class X".
+This way the user explores the sets breaking them down to subsets
+(each subset in the GUI is a child of its owner set on the tree view).
+.PP
+Moreover the user can issue a "compare" operation between two arbitrary
+sets A and B, which will compute two subsets: "A - B" (the objects of
+A which are not in B, a subsect of A) and "B - A" (the reverse).
+This can help in understanding what changed on the heap between
+garbage collections.
+.SH Options
+.PP
+None
+.SH ENVIRONMENT VARIABLES
+.PP
+None
+.SH SEE ALSO
+mono(1)
+.BR
+.SH COPYRIGHT
+Copyright (C) 2008 Novell, Inc (http://www.novell.com)

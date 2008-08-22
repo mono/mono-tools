@@ -1,0 +1,128 @@
+
+This is the library that should be used to to decode profiler log files.
+
+However, things are not so simple: the decoder must also store the data
+it reads somewhere and process it before showing it to the user.
+Since different profiler front ends will have different needs, and will
+possibly want to design their own object models for the profiler data,
+the system needs to be extensible.
+
+We have identified the following functional areas:
+[1] Actually reading the file, block by block.
+[2] Decode all the raw data found in the blocks.
+[3] Memorize the data in appropriate data structures.
+[4] Process them, to obtain the information that will be displayed.
+
+The implementation of each of these areas should be independent on all
+the others.
+In other words, we can imagine a front end that will use the default
+implementation for all of them, but we can also imagine a front end
+that will want to reimplement only *one* of them.
+The key, here, is allowing it to do so in an easy way without having
+to rewrite the other areas.
+
+Of course, this is possible if each "area" is a software component
+with a specific interface that the other areas use, and this is
+exactly what we did.
+The "downside" is that to understand the decoding library one has to
+understand these interfaces.
+
+So, let's start describing them :-)
+
+[1] The reader (file "Reader.cs")
+
+The reader interface is extremely simple: it provides a "ReadBlock ()"
+method that returns the next raw data block in the file, and a "HasEnded"
+boolean property that is true if it has already found the end block.
+There are two implementations: a trivial, blocking one (done), and a
+non blocking one which uses asynchronous file operation (not done yet).
+Front ends that want to work interactively, while the program is still
+running, are supposed to use the asynchronous one.
+Of course the asynchronous implementation will also provide an additional
+event to signal that a new block is ready to be consumed, but it is
+important that it also implements the basic interface, so that it can
+be used transparently in batch operations when it would be desirable
+that the reading of following blocks (I/O bound) will happen concurrently
+with the processing of the current block (CPU bound).
+
+[2] The decoder (file "Decoder.cs")
+
+We put the decoding algorithm in an instance method of the "Block" class.
+The Block contains the raw data of a file block in a byte array (it is
+the reader that produces blocks).
+The idea is that the "Decode" method gets an "IProfilerEventHandler" as
+input, and invokes the relevant methods for every piece of raw data it
+finds in the block.
+It is the responsibility of the IProfilerEventHandler implementation to
+handle the data in a proper way, typically building the object model that
+will then be processed to produce the output data.
+
+Anyway, implementing the IProfilerEventHandler interface one can handle
+all the profiling events in a custom way.
+
+[3] Memorize the data in appropriate data structures.
+
+This is, obviously, the tricky part of the library.
+The key point in the design is that the decoder (the Decode method) will
+work with any possible object model.
+In order to do so, we define the abstract properties that any model
+should have in base interfaces inside "BaseTypes.cs".
+These are
+- "ILoadedClass": a class of the profiled program.
+- "ILoadedMethod": a method of the profiled program.
+- "IUnmanagedFunction": an unmanaged function of the profiled program.
+- "IExecutableMemoryRegion": a memory region of the profiled program.
+The memory regions are the executable memory sections mapped from a file,
+which can contain unmanaged functions hit by the statistical profiler.
+
+We then have a factory interface, "ILoadedElementFactory", which contains
+methods that are used to build new instances of loaded elements.
+The interface is generic, so that an implementation will produce objects
+of specific types.
+The idea is that when in the decoding process it is necessary to create
+in memory a representation for a loaded item (a class, a method...) the
+appropriate method of the factory will be created.
+This decouples the decoding algorithm from the creation of objects of
+the correct type.
+
+Next in the layered design we have the "ILoadedElementHandler" interface,
+which extends the "ILoadedElementFactory".
+This provides methods to actually "organize" the loaded elements, in
+practice store them in hash tables so that when we want we can retrieve
+an already created one using its numeric ID.
+Again, this is used in the decoder to keep the API at a high level.
+For instance, when the decoder sees that method has been called, it
+directly recovers the appropriate ILoadedMethod and calls the relevant
+method on the event handler passing it as a parameter.
+This keeps the API type safe and makes so that all the "boilerplate"
+code is implemented once, and can be reused in any profiler model.
+
+Finally, the "IProfilerEventHandler" interface defines all the methods
+that "react" to any possible profiler event.
+These are the methods that the Decode method calls.
+An IProfilerEventHandler also owns an ILoadedElementHandler, which is
+used by the Decode method as explained above.
+In short, each profiler front end should provide a complete
+IProfilerEventHandler implementation.
+In the "BaseTypes.cs" there are base implementations for all of these
+interfaces, so that each front end can choose to implement only the
+minimum amount of code needed for its goal.
+
+However, most profilers will want to do the "most obvious" measurements,
+like count time spent in methods, count statistical hits per method,
+allocated bytes per class, and so on.
+Therefore, the "ObjectModel.cs" file contains complete implementations
+for each base class (method, class, function...), with all the reasonable
+counters implemented.
+Moreover, the "EventProcessor.cs" contains an IProfilerEventHandler
+implementation that is complete to work with the default object model.
+The idea is then that every "reasonable" front end will just use the
+classes implemented here. The possibility to implement a customized
+object model exists, but it is not mandatory to do so.
+
+In fact, if one has a look at the simple implementation of the console
+file decoder, he will see that all the data processing is done in the
+object model, and all that is remaining is taking the sorted arrays
+of the objects and displaying them.
+So, point [4] above is also implemented in this library.
+
