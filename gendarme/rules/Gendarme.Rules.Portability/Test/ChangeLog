@@ -1,3 +1,8 @@
+2008-08-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Convert to the new
+	test API. Add a few more cases to get better unit tests coverage.
+
 2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotHardcodePathsTest.cs: Add test case from Richard Birkby 
