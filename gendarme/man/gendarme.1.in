@@ -16,7 +16,7 @@
 Gendarme \- Rule-based code analysis for Mono::
 .SH SYNOPSIS
 .PP
-.B gendarme [--config configfile] [--set ruleset] [--log file | --xml file | --html file] [--quiet] [--debug] assemblies ...
+.B gendarme [--config configfile] [--set ruleset] [--log file | --xml file | --html file] [options] assemblies ...
 .SH DESCRIPTION
 \fIGendarme\fP is a extensible rule-based tool to find problems in .NET 
 applications and libraries. Gendarme inspects programs and libraries that
@@ -40,11 +40,18 @@ Save the output, formatted as XML, to the specified file.
 .I "--html file"
 Save the output, formatted as HTML, to the specified file.
 .TP
+.I "--ignore ignore-file"
+Do not report the known defects that are part of the specified file.
+.TP
 .I "--quiet"
 Display minimal output (results) from the runner.
 .TP
 .I "--v|verbose"
 Enable debugging output. You can supply several -v to augment debugging verbosity.
+.TP
+.I "--version"
+Display Gendarme's version number. This number match the Mono release
+where it was released.
 .TP
 .I "assemblies ..."
 Specify the assemblies to verify. You can specify multiple filenames, 
