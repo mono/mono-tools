@@ -1,3 +1,9 @@
+2008-08-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Override Initialize
+	to be able to detect both Process and Ping. Turn off the rule is both
+	are not used in a module, otherwise just look for the one(s) present.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotHardcodePathsRule.cs: Fix case where we can't resolve the
