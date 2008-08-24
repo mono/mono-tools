@@ -1,3 +1,8 @@
+2008-08-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProblemAttribute.cs, SolutionAttribute.cs: Change Inherited to 
+	true, other wise we would miss some descriptions in a few rules.
+
 2008-08-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Rule.cs: Set default ApplicabilityScope value to All. Otherwise
