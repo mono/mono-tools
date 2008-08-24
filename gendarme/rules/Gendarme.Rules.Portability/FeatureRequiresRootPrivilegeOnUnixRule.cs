@@ -34,6 +34,7 @@ using System.Diagnostics;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Portability {
 
@@ -47,13 +48,29 @@ namespace Gendarme.Rules.Portability {
 
 		// non-localizable
 		private const string Ping = "System.Net.NetworkInformation.Ping";
+		private const string Process = "System.Diagnostics.Process";
+
+		private bool module_has_ping = true;
+		private bool module_has_process = true;
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not reference either Ping or Process
+			// then it's not being used inside it
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				module_has_ping = e.CurrentModule.TypeReferences.ContainsType (Ping);
+				module_has_process = e.CurrentModule.TypeReferences.ContainsType (Process);
+				Active = (module_has_ping || module_has_process);
+			};
+			// note: this ignores on purpose System.dll since there's
+			// no point in reporting the use of both class inside it
+		}
 
 		//Check for usage of System.Diagnostics.Process.set_PriorityClass
 		private static bool CheckProcessSetPriorityClass (Instruction ins)
 		{
-			if (ins.OpCode.FlowControl != FlowControl.Call)
-				return false;
-
 			MethodReference method = (ins.Operand as MethodReference);
 			if ((method == null) || (method.Name != "set_PriorityClass"))
 				return false;
@@ -76,9 +93,6 @@ namespace Gendarme.Rules.Portability {
 
 		private static bool CheckPing (Instruction ins)
 		{
-			if (ins.OpCode.FlowControl != FlowControl.Call)
-				return false;
-
 			MethodReference method = (ins.Operand as MethodReference);
 			return ((method != null) && (method.DeclaringType.FullName == Ping));
 		}
@@ -89,19 +103,20 @@ namespace Gendarme.Rules.Portability {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			// Ping only exists in fx 2.0 and later
-			bool fx20 = (method.DeclaringType.Module.Assembly.Runtime >= TargetRuntime.NET_2_0);
-
 			foreach (Instruction ins in method.Body.Instructions) {
 
+				// check for calls (or newobj)
+				if (ins.OpCode.FlowControl != FlowControl.Call)
+					continue;
+
 				// Check for usage of System.Diagnostics.Process.set_PriorityClass
-				if (CheckProcessSetPriorityClass (ins)) {
+				if (module_has_process && CheckProcessSetPriorityClass (ins)) {
 					// code won't work with default (non-root) users == High
 					Runner.Report (method, ins, Severity.High, Confidence.High, ProcessMessage);
 				}
 
-				// short-circuit
-				if (fx20 && CheckPing (ins)) {
+				// check for use of Ping
+				if (module_has_ping && CheckPing (ins)) {
 					// code won't work with default (non-root) users == High
 					Runner.Report (method, ins, Severity.High, Confidence.High, PingMessage);
 				}
