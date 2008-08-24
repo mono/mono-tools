@@ -29,7 +29,7 @@
 using System;
 
 namespace Gendarme.Framework {
-	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class ProblemAttribute : Attribute {
 		private string problem;
 		
