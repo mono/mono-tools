@@ -1,3 +1,8 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseSTAThreadAttributeOnSWFEntryPointsRule.cs: Add mapping to CA2232
+	using [FxCopCompatibility] attribute.
+
 2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutableTargetRule.cs: Use new overload instead of using a 
