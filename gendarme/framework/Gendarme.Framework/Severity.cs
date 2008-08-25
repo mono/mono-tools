@@ -46,7 +46,14 @@ namespace Gendarme.Framework {
 		Medium,
 		/// <summary>
 		/// The actual code works, fixing the defect doesn't have a big impact.
+		/// By default some runners won't display such low severity issues to keep the number of defects to a reasonable level.
 		/// </summary>
-		Low
+		Low,
+		/// <summary>
+		/// The actual code works but should be reviewed for potential problems.
+		/// Often the code cannot be changed to satisty the rule logic, 
+		/// i.e. the rule will always report it unless the rule or defect is ignored.
+		/// </summary>
+		Audit
 	}
 }
