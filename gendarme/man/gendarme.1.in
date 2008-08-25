@@ -43,6 +43,9 @@ Save the output, formatted as HTML, to the specified file.
 .I "--ignore ignore-file"
 Do not report the known defects that are part of the specified file.
 .TP
+.I "--limit N"
+Stop reporting after N defects are found.
+.TP
 .I "--quiet"
 Display minimal output (results) from the runner.
 .TP
