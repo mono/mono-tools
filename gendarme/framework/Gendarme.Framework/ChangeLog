@@ -1,3 +1,9 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* IRunner.cs: Add DefectsLimit property and TearDown method to 
+	the interface.
+	* Runner.cs: Implement defaults for DefectsLimit and TearDown.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Confidence.cs: Update Low comments.

@@ -41,6 +41,7 @@ namespace Gendarme.Framework {
 	abstract public class Runner : IRunner {
 
 		private Collection<Defect> defect_list = new Collection<Defect> ();
+		private int defects_limit = Int32.MaxValue;
 
 		private Collection<IRule> rules = new Collection<IRule> ();
 		private Collection<AssemblyDefinition> assemblies = new Collection<AssemblyDefinition> ();
@@ -89,6 +90,15 @@ namespace Gendarme.Framework {
 
 		public Collection<Defect> Defects {
 			get { return defect_list; }
+		}
+
+		public int DefectsLimit {
+			get { return defects_limit; }
+			set {
+				if (value < 0)
+					throw new ArgumentException ("Cannot be negative", "DefectsLimit");
+				defects_limit = value;
+			}
 		}
 
 		public int VerbosityLevel {
@@ -178,6 +188,18 @@ namespace Gendarme.Framework {
 				handler (this, e);
 		}
 
+		static bool VisibilityCheck (ApplicabilityScope scope, bool visible)
+		{
+			switch (scope) {
+			case ApplicabilityScope.Visible:
+				return visible;
+			case ApplicabilityScope.NonVisible:
+				return !visible;
+			default:
+				return true;
+			}
+		}
+
 		// protected since a higher-level (e.g. GUI) runner might want to override
 		// them to update it's user interface
 		protected virtual void OnAssembly (RunnerEventArgs e)
@@ -185,10 +207,16 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeAssembly, e);
 
 			foreach (IAssemblyRule rule in assembly_rules) {
+				defectCountBeforeCheck = Defects.Count;
+				// stop if we reach the user defined defect limit
+				if (defectCountBeforeCheck >= DefectsLimit)
+					break;
+
+				// ignore the rule on some user defined assemblies
 				if (IgnoreList.IsIgnored (rule, e.CurrentAssembly))
 					continue;
+
 				currentRule = rule;
-				defectCountBeforeCheck = Defects.Count;
 				rule.CheckAssembly (e.CurrentAssembly);
 			}
 		}
@@ -208,23 +236,21 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeType, e);
 
 			foreach (ITypeRule rule in type_rules) {
+				defectCountBeforeCheck = Defects.Count;
+				// stop if we reach the user defined defect limit
+				if (defectCountBeforeCheck >= DefectsLimit)
+					break;
+
+				// ignore if the visibility does not match user selection 
+				if (!VisibilityCheck (rule.ApplicabilityScope, e.CurrentType.IsVisible ()))
+					continue;
+
+				// ignore the rule on some user defined types
 				if (IgnoreList.IsIgnored (rule, e.CurrentType))
 					continue;
+
 				currentRule = rule;
-				defectCountBeforeCheck = Defects.Count;
-				switch (rule.ApplicabilityScope) {
-				case ApplicabilityScope.Visible:
-					if (e.CurrentType.IsVisible ())
-						rule.CheckType (e.CurrentType);
-					break;
-				case ApplicabilityScope.NonVisible:
-					if (!e.CurrentType.IsVisible ())
-						rule.CheckType (e.CurrentType);
-					break;
-				default:
-					rule.CheckType (e.CurrentType);
-					break;
-				}
+				rule.CheckType (e.CurrentType);
 			}
 		}
 
@@ -233,24 +259,21 @@ namespace Gendarme.Framework {
 			OnEvent (AnalyzeMethod, e);
 
 			foreach (IMethodRule rule in method_rules) {
+				defectCountBeforeCheck = Defects.Count;
+				// stop if we reach the user defined defect limit
+				if (defectCountBeforeCheck >= DefectsLimit)
+					break;
+
+				// ignore if the visibility does not match user selection 
+				if (!VisibilityCheck (rule.ApplicabilityScope, e.CurrentMethod.IsVisible ()))
+					continue;
+
+				// ignore the rule on some user defined methods
 				if (IgnoreList.IsIgnored (rule, e.CurrentMethod))
 					continue;
 
 				currentRule = rule;
-				defectCountBeforeCheck = Defects.Count;
-				switch (rule.ApplicabilityScope) {
-				case ApplicabilityScope.Visible:
-					if (e.CurrentMethod.IsVisible ())
-						rule.CheckMethod (e.CurrentMethod);
-					break;
-				case ApplicabilityScope.NonVisible:
-					if (!e.CurrentMethod.IsVisible ())
-						rule.CheckMethod (e.CurrentMethod);
-					break;
-				default:
-					rule.CheckMethod (e.CurrentMethod);
-					break;
-				}
+				rule.CheckMethod (e.CurrentMethod);
 			}
 		}
 
@@ -301,6 +324,14 @@ namespace Gendarme.Framework {
 			// don't report them if we hit an exception after analysis is completed (e.g. in reporting)
 			currentRule = null;
 			currentTarget = null;
+		}
+
+		public virtual void TearDown ()
+		{
+			// last chance to report defects
+			foreach (Rule rule in rules) {
+				rule.TearDown (this);
+			}
 		}
 	}
 }

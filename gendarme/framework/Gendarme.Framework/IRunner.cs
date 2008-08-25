@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.IRuner interface
+// Gendarme.Framework.IRunner interface
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -54,6 +54,8 @@ namespace Gendarme.Framework {
 		Collection<AssemblyDefinition> Assemblies { get; }
 
 		Collection<Defect> Defects  { get; }
+		int DefectsLimit { get; }
+
 		int VerbosityLevel { get; }
 
 		/// <summary>
@@ -76,5 +78,7 @@ namespace Gendarme.Framework {
 
 		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence);
 		void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message);
+
+		void TearDown ();
 	}
 }
