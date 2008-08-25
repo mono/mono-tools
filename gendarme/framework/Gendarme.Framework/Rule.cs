@@ -160,6 +160,10 @@ namespace Gendarme.Framework {
 			this.runner = runner;
 		}
 
+		public virtual void TearDown (IRunner runner)
+		{
+			// nothing to do (by default) since *most* reporting is better done in the Check* call
+		}
 
 		public ApplicabilityScope ApplicabilityScope {
 			get {

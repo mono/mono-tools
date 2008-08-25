@@ -50,7 +50,8 @@ namespace Gendarme.Framework {
 		Normal,
 		/// <summary>
 		/// The rule doesn't have enough information to be certain about the defect.
-		/// Many of the results are false positives.
+		/// Many of the results are likely to be false positives. 
+		/// By default some runners wont display results if the confidence on the defect is low.
 		/// </summary>
 		Low
 	}

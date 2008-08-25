@@ -1,3 +1,10 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Confidence.cs: Update Low comments.
+	* IRule.cs: Add TearDown(IRunner) to the interface.
+	* Rule.cs: Add default, empty, TearDown implementation.
+	* Severity.cs: Fix typo in comments.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* FxCopCompatibilityAttribute.cs: New. Attribute to map between

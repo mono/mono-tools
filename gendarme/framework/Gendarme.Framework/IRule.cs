@@ -80,6 +80,15 @@ namespace Gendarme.Framework {
 		void Initialize (IRunner runner);
 
 		/// <summary>
+		/// The runner will call TearDown on every rule once the analysis is over. 
+		/// This is the last chance to report defects to the runner and the best place to clean up
+		/// any temporary data (that is not required for reporting).
+		/// This will be called even if Initialize was not called on the rule (e.g. an unused rule).
+		/// </summary>
+		/// <param name="runner">Runner that has executed the rule during analysis.</param>
+		void TearDown (IRunner runner);
+
+		/// <summary>
 		/// Defines the how the rule are going to be applied to a
 		/// target according its visibility modifier.
 		/// </summary>
