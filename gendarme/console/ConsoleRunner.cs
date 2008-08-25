@@ -50,6 +50,7 @@ namespace Gendarme {
 		private string log_file;
 		private string xml_file;
 		private string ignore_file;
+		private string limit;
 		private bool help;
 		private bool quiet;
 		private bool version;
@@ -64,6 +65,7 @@ namespace Gendarme {
 				{ "xml=",	v => xml_file = v },
 				{ "html=",	v => html_file = v },
 				{ "ignore=",	v => ignore_file = v },
+				{ "limit=",	v => limit = v },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "quiet",	v => quiet = v != null },
 				{ "version",	v => version = v != null },
@@ -173,12 +175,20 @@ namespace Gendarme {
 						return result;
 				}
 
+				// if supplied, use the user limit on defects (otherwise 2^31 is used)
+				int defects_limit;
+				if (String.IsNullOrEmpty (limit) || !Int32.TryParse (limit, out defects_limit))
+					defects_limit = Int32.MaxValue;
+				DefectsLimit = defects_limit;
+
 				IgnoreList = new IgnoreFileList (this, ignore_file);
 
 				// now that all rules and assemblies are know, time to initialize
 				Initialize ();
 				// before analizing the assemblies with the rules
 				Run ();
+				// and winding down properly
+				TearDown ();
 
 				return Report ();
 			}

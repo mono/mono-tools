@@ -1,3 +1,8 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Add support for --limit and add support for
+	upcoming rules that will use TearDown.
+
 2008-07-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Better display if no assemblies are specified.
