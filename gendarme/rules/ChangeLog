@@ -1,3 +1,9 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Makefile.am: Add Gendarme.Rules.Security.Cas to the build.
+	* rules.xml: Add Gendarme.Rules.Security.Cas to default and 
+	into its own category.
+
 2008-08-17  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Add Gendarme.Rules.Design.Linq to the build.

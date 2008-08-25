@@ -11,6 +11,7 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Performance \
 	 Gendarme.Rules.Portability \
 	 Gendarme.Rules.Security \
+	 Gendarme.Rules.Security.Cas \
 	 Gendarme.Rules.Serialization \
 	 Gendarme.Rules.Smells \
 	 Gendarme.Rules.Ui

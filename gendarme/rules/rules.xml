@@ -11,6 +11,7 @@
 		<rules include="*" from="Gendarme.Rules.Performance.dll" />
 		<rules include="*" from="Gendarme.Rules.Portability.dll" />
 		<rules include="*" from="Gendarme.Rules.Security.dll" />
+		<rules include="*" from="Gendarme.Rules.Security.Cas.dll" />
 		<rules include="*" from="Gendarme.Rules.Serialization.dll" />
 		<rules include="*" from="Gendarme.Rules.Smells.dll"/>
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
@@ -29,6 +30,7 @@
 		<rules include="*" from="Gendarme.Rules.Performance.dll" />
 		<rules include="*" from="Gendarme.Rules.Portability.dll" />
 		<rules include="*" from="Gendarme.Rules.Security.dll" />
+		<rules include="*" from="Gendarme.Rules.Security.Cas.dll" />
 		<rules include="*" from="Gendarme.Rules.Serialization.dll" />
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
 		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
@@ -61,6 +63,9 @@
 	</ruleset>
 	<ruleset name="security">
 		<rules include="*" from="Gendarme.Rules.Security.dll" />
+	</ruleset>
+	<ruleset name="security-cas">
+		<rules include="*" from="Gendarme.Rules.Security.Cas.dll" />
 	</ruleset>
 	<ruleset name="performance">
 		<rules include="*" from="Gendarme.Rules.Performance.dll" />
