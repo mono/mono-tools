@@ -193,6 +193,8 @@ gendarme/rules/Makefile
 gendarme/rules/Test.Rules/Makefile
 gendarme/rules/Gendarme.Rules.Security/Makefile
 gendarme/rules/Gendarme.Rules.Security/Test/Makefile
+gendarme/rules/Gendarme.Rules.Security.Cas/Makefile
+gendarme/rules/Gendarme.Rules.Security.Cas/Test/Makefile
 gendarme/rules/Gendarme.Rules.Performance/Makefile
 gendarme/rules/Gendarme.Rules.Performance/Test/Makefile
 gendarme/rules/Gendarme.Rules.Concurrency/Makefile

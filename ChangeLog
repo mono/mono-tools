@@ -1,3 +1,7 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Add Gendarme's Security.Cas rules makefile support.
+
 2008-08-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Add Gendarme's Design.Linq rules makefile support.
