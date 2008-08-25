@@ -1,3 +1,8 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FxCopCompatibilityAttribute.cs: New. Attribute to map between
+	the Gendarme rule and one, or many, semi-equivalent FxCop rule.
+
 2008-08-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProblemAttribute.cs, SolutionAttribute.cs: Change Inherited to 
