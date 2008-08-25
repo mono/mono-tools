@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9E180535-E8B7-48B8-80C0-3BBFDAA67403}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -61,15 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyTest.cs" />
-    <Compile Include="MethodCallWithSubsetLinkDemandTest.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleTest.cs" />
-    <Compile Include="NonVirtualMethodWithInheritanceDemandTest.cs" />
-    <Compile Include="SealedTypeWithInheritanceDemandTest.cs" />
-    <Compile Include="SecureGetObjectDataOverridesTest.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateTest.cs" />
-    <Compile Include="TypeExposeFieldsTest.cs" />
-    <Compile Include="TypeIsNotSubsetOfMethodSecurityTest.cs" />
-    <Compile Include="TypeLinkDemandTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
