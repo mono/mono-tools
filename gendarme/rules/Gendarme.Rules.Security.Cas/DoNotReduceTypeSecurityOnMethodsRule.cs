@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.TypeIsNotSubsetOfMethodSecurityRule
+// Gendarme.Rules.Security.Cas.DoNotReduceTypeSecurityOnMethodsRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -27,18 +27,17 @@
 //
 
 using System;
-using System.Collections;
 using System.Security;
-using System.Text;
 
 using Mono.Cecil;
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("This type has declarative security permission that aren't a subset of the security on some of it's methods.")]
 	[Solution ("Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.")]
-	public class TypeIsNotSubsetOfMethodSecurityRule : Rule, ITypeRule {
+	[FxCopCompatibility ("Microsoft.Security", "CA2114:MethodSecurityShouldBeASupersetOfType")]
+	public class DoNotReduceTypeSecurityOnMethodsRule : Rule, ITypeRule {
 
 		private PermissionSet assert;
 		private PermissionSet deny;

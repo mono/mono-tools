@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.SecureGetObjectDataOverridesRule
+// Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -37,7 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("The method is not protected correctly against a serialization attack.")]
 	[Solution ("A security Demand for SerializationFormatter should protect this method.")]

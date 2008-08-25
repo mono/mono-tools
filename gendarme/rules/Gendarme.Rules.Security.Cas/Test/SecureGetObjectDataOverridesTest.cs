@@ -30,13 +30,12 @@ using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
-using Gendarme.Rules.Security;
+using Gendarme.Rules.Security.Cas;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
-namespace Test.Rules.Security {
+namespace Test.Rules.Security.Cas {
 
 	[TestFixture]
 	public class SecureGetObjectDataOverridesTest : TypeRuleTestFixture<SecureGetObjectDataOverridesRule> {

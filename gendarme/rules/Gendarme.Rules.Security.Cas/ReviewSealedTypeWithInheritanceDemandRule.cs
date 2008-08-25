@@ -27,12 +27,11 @@
 //
 
 using System;
-using System.Collections;
 
 using Mono.Cecil;
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("This sealed type has an InheritanceDemand that the runtime will never execute.")]
 	[Solution ("Review the InheritanceDemand on this type and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
@@ -50,7 +49,7 @@ namespace Gendarme.Rules.Security {
 
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
 				if (declsec.Action == SecurityAction.InheritDemand) {
-					Runner.Report (type, Severity.Low, Confidence.Total, String.Empty);
+					Runner.Report (type, Severity.Low, Confidence.Total);
 				}
 			}
 			return Runner.CurrentRuleResult;

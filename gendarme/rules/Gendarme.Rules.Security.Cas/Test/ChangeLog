@@ -1,3 +1,15 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AddMissingTypeInheritanceDemandTest.cs, 
+	DoNotExposeFieldsInSecuredTypeTest.cs, 
+	DoNotExposeMethodsProtectedByLinkDemandTest.cs, 
+	DoNotReduceTypeSecurityOnMethodsTest.cs, 
+	ReviewNonVirtualMethodWithInheritanceDemandTest.cs,
+	ReviewSealedTypeWithInheritanceDemandTest.cs,
+	SecureGetObjectDataOverridesTest.cs: Moved, and renamed, from
+	Gendarme.Rules.Security. Most upgrade to the new syntax for unit
+	tests.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ReviewSuppressUnmanagedCodeSecurityUsageTest.cs: New. Unit tests

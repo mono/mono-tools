@@ -1,3 +1,13 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodCallWithSubsetLinkDemandRule.cs,
+	NonVirtualMethodWithInheritanceDemandRule.cs,
+	SealedTypeWithInheritanceDemandRule.cs,
+	SecureGetObjectDataOverridesRule.cs, TypeExposeFieldsRule.cs,
+	TypeIsNotSubsetOfMethodSecurityRule.cs, TypeLinkDemandRule.cs:
+	All moved into Gendarme.Rules.Security.Cas
+	* Makefile.am: Remove references to moved files.
+
 2008-07-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Start using ../common.make

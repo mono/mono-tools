@@ -1,5 +1,5 @@
 //
-// Unit tests for NonVirtualMethodWithInheritanceDemandRule
+// Unit tests for ReviewNonVirtualMethodWithInheritanceDemandRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -34,15 +34,15 @@ using System.Security.Permissions;
 using SSP = System.Security.Permissions;
 
 using Gendarme.Framework;
-using Gendarme.Rules.Security;
+using Gendarme.Rules.Security.Cas;
 using Mono.Cecil;
 using NUnit.Framework;
 using Test.Rules.Helpers;
 
-namespace Test.Rules.Security {
+namespace Test.Rules.Security.Cas {
 
 	[TestFixture]
-	public class NonVirtualMethodWithInheritanceDemandTest {
+	public class ReviewNonVirtualMethodWithInheritanceDemandTest {
 
 		public abstract class AbstractMethodsClass {
 
@@ -105,13 +105,13 @@ namespace Test.Rules.Security {
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new NonVirtualMethodWithInheritanceDemandRule ();
+			rule = new ReviewNonVirtualMethodWithInheritanceDemandRule ();
 			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest (string name)
 		{
-			string fullname = "Test.Rules.Security.NonVirtualMethodWithInheritanceDemandTest/" + name;
+			string fullname = "Test.Rules.Security.Cas.ReviewNonVirtualMethodWithInheritanceDemandTest/" + name;
 			return assembly.MainModule.Types[fullname];
 		}
 

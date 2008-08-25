@@ -1,3 +1,14 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AddMissingTypeInheritanceDemandRule.cs, 
+	DoNotExposeFieldsInSecuredTypeRule.cs, 
+	DoNotExposeMethodsProtectedByLinkDemandRule.cs, 
+	DoNotReduceTypeSecurityOnMethodsRule.cs, 
+	ReviewNonVirtualMethodWithInheritanceDemandRule.cs,
+	ReviewSealedTypeWithInheritanceDemandRule.cs,
+	SecureGetObjectDataOverridesTest.cs: Moved, and renamed, from
+	Gendarme.Rules.Security
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ReviewSuppressUnmanagedCodeSecurityUsageRule.cs: New. Rule that 

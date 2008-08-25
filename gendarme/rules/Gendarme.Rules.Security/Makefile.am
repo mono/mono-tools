@@ -15,24 +15,10 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Security.xml TestResult.xml
 
 rules_sources = \
 	ArrayFieldsShouldNotBeReadOnlyRule.cs \
-	MethodCallWithSubsetLinkDemandRule.cs \
 	NativeFieldsShouldNotBeVisibleRule.cs \
-	NonVirtualMethodWithInheritanceDemandRule.cs \
-	SealedTypeWithInheritanceDemandRule.cs \
-	SecureGetObjectDataOverridesRule.cs \
-	StaticConstructorsShouldBePrivateRule.cs \
-	TypeExposeFieldsRule.cs \
-	TypeIsNotSubsetOfMethodSecurityRule.cs \
-	TypeLinkDemandRule.cs
+	StaticConstructorsShouldBePrivateRule.cs
 
 tests_sources = \
 	ArrayFieldsShouldNotBeReadOnlyTest.cs \
-	MethodCallWithSubsetLinkDemandTest.cs \
 	NativeFieldsShouldNotBeVisibleTest.cs \
-	NonVirtualMethodWithInheritanceDemandTest.cs \
-	SealedTypeWithInheritanceDemandTest.cs \
-	SecureGetObjectDataOverridesTest.cs \
 	StaticConstructorsShouldBePrivateTest.cs 
-	TypeExposeFieldsTest.cs \
-	TypeIsNotSubsetOfMethodSecurityTest.cs \
-	TypeLinkDemandTest.cs

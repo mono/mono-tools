@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.NonVirtualMethodWithInheritanceDemandRule
+// Gendarme.Rules.Security.Cas.ReviewNonVirtualMethodWithInheritanceDemandRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -32,11 +32,11 @@ using System.Collections;
 using Mono.Cecil;
 using Gendarme.Framework;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("This non-virtual method has an InheritanceDemand that the runtime will never execute.")]
 	[Solution ("Review the InheritanceDemand on this method and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
-	public class NonVirtualMethodWithInheritanceDemandRule : Rule, IMethodRule {
+	public class ReviewNonVirtualMethodWithInheritanceDemandRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -62,7 +62,8 @@ namespace Gendarme.Rules.Security {
 			if (method.IsVirtual)
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.Low, Confidence.Total, String.Empty);
+			// Severity.Low -> code works, it just won't get called. Problematic if the wrong action was choosen
+			Runner.Report (method, Severity.Low, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

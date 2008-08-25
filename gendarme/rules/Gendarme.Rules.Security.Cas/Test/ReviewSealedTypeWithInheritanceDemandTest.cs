@@ -27,19 +27,17 @@
 //
 
 using System;
-using System.Reflection;
 using System.Security.Permissions;
 
-using Gendarme.Framework;
-using Gendarme.Rules.Security;
-using Mono.Cecil;
-using NUnit.Framework;
-using Test.Rules.Helpers;
+using Gendarme.Rules.Security.Cas;
 
-namespace Test.Rules.Security {
+using NUnit.Framework;
+using Test.Rules.Fixtures;
+
+namespace Test.Rules.Security.Cas {
 
 	[TestFixture]
-	public class SealedTypeWithInheritanceDemandTest {
+	public class SealedTypeWithInheritanceDemandTest : TypeRuleTestFixture<SealedTypeWithInheritanceDemandRule> {
 
 		[SecurityPermission (System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted = true)]
 		class NonSealedClass {
@@ -49,11 +47,23 @@ namespace Test.Rules.Security {
 			}
 		}
 
+		[Test]
+		public void NonSealed ()
+		{
+			AssertRuleDoesNotApply<NonSealedClass> ();
+		}
+
 		sealed class SealedClassWithoutSecurity {
 
 			public SealedClassWithoutSecurity ()
 			{
 			}
+		}
+
+		[Test]
+		public void SealedWithoutSecurity ()
+		{
+			AssertRuleDoesNotApply<SealedClassWithoutSecurity> ();
 		}
 
 		[SecurityPermission (System.Security.Permissions.SecurityAction.LinkDemand, Unrestricted = true)]
@@ -64,6 +74,12 @@ namespace Test.Rules.Security {
 			}
 		}
 
+		[Test]
+		public void SealedWithoutInheritanceDemand ()
+		{
+			AssertRuleSuccess<SealedClassWithoutInheritanceDemand> ();
+		}
+
 		[SecurityPermission (System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted = true)]
 		sealed class SealedClassWithInheritanceDemand {
 
@@ -72,51 +88,10 @@ namespace Test.Rules.Security {
 			}
 		}
 
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new SealedTypeWithInheritanceDemandRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Security.SealedTypeWithInheritanceDemandTest/" + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
-		[Test]
-		public void NonSealed ()
-		{
-			TypeDefinition type = GetTest ("NonSealedClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
-		}
-
-		[Test]
-		public void SealedWithoutSecurity ()
-		{
-			TypeDefinition type = GetTest ("SealedClassWithoutSecurity");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
-		}
-
-		[Test]
-		public void SealedWithoutInheritanceDemand ()
-		{
-			TypeDefinition type = GetTest ("SealedClassWithoutInheritanceDemand");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
 		[Test]
 		public void SealedWithInheritanceDemand ()
 		{
-			TypeDefinition type = GetTest ("SealedClassWithInheritanceDemand");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<SealedClassWithInheritanceDemand> (1);
 		}
 	}
 }

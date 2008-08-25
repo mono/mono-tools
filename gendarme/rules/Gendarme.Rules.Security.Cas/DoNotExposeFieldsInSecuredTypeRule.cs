@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.TypeExposeFieldsRule
+// Gendarme.Rules.Security.Cas.DoNotExposeFieldsInSecuredTypeRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -27,19 +27,18 @@
 //
 
 using System;
-using System.Collections;
-using System.Text;
 
 using Mono.Cecil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
-	[Problem ("This type has a LinkDemand but expose some public fields.")]
-	[Solution ("Remove the public fields from the class or change the field visibility.")]
-	public class TypeExposeFieldsRule : Rule, ITypeRule {
+	[Problem ("This type is secured by [Link]Demand but expose some visible fields.")]
+	[Solution ("Remove the (unsecured) visible fields, turn them into (secured) properties or reduce their visibility.")]
+	[FxCopCompatibility ("Microsoft.Security", "CA2112:SecuredTypesShouldNotExposeFields")]
+	public class DoNotExposeFieldsInSecuredTypeRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -68,8 +67,8 @@ namespace Gendarme.Rules.Security {
 
 			// type shouldn't have any public fields
 			foreach (FieldDefinition field in type.Fields) {
-				if (field.IsPublic) {
-					Runner.Report (field, Severity.Critical, Confidence.Total, String.Empty);
+				if (field.IsVisible ()) {
+					Runner.Report (field, Severity.Critical, Confidence.Total);
 				}
 			}
 			return Runner.CurrentRuleResult;

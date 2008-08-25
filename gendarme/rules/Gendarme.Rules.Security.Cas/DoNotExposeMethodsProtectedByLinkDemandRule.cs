@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.MethodCallWithSubsetLinkDemandRule
+// Gendarme.Rules.Security.Cas.DoNotExposeMethodsProtectedByLinkDemandRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -33,12 +33,14 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("This method is less protected than some methods it calls.")]
 	[Solution ("Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.")]
-	public class MethodCallWithSubsetLinkDemandRule : Rule, IMethodRule {
+	[FxCopCompatibility ("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
+	public class DoNotExposeMethodsProtectedByLinkDemandRule : Rule, IMethodRule {
 
 		private static PermissionSet GetLinkDemand (MethodDefinition method)
 		{
@@ -66,14 +68,14 @@ namespace Gendarme.Rules.Security {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// #1 - rule apply to methods are publicly accessible
-			//	note that the type doesn't have to be public (indirect access)
-			if (!method.IsPublic)
-				return RuleResult.DoesNotApply;
-
-			// #2 - rule apply only if the method has a body (e.g. p/invokes, icalls don't)
+			// #1 - rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			//	otherwise we don't know what it's calling
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+			
+			// #2 - rule apply to methods are publicly accessible
+			//	note that the type doesn't have to be public (indirect access)
+			if (!method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
@@ -90,7 +92,7 @@ namespace Gendarme.Rules.Security {
 
 					// 4 - and if it has security, ensure we don't reduce it's strength
 					if ((callee.SecurityDeclarations.Count > 0) && !Check (method, callee)) {
-						Runner.Report (method, ins, Severity.High, Confidence.High, String.Empty);
+						Runner.Report (method, ins, Severity.High, Confidence.High);
 					}
 					break;
 				}

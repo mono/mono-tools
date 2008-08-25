@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Security.TypeLinkDemandRule
+// Gendarme.Rules.Security.Cas.AddMissingTypeInheritanceDemandRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -34,11 +34,12 @@ using Mono.Cecil;
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Security {
+namespace Gendarme.Rules.Security.Cas {
 
 	[Problem ("The type isn't sealed and has a LinkDemand. It should also have an InheritanceDemand for the same permissions.")]
 	[Solution ("Add an InheritanceDemand for the same permissions (as the LinkDemand) or seal the class.")]
-	public class TypeLinkDemandRule : Rule, ITypeRule {
+	[FxCopCompatibility ("Microsoft.Security", "CA2126:TypeLinkDemandsRequireInheritanceDemands")]
+	public class AddMissingTypeInheritanceDemandRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
