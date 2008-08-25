@@ -18,6 +18,7 @@ framework_sources = \
 	Gendarme.Framework/Confidence.cs \
 	Gendarme.Framework/Defect.cs \
 	Gendarme.Framework/DocumentationUriAttribute.cs \
+	Gendarme.Framework/FxCopCompatibilityAttribute.cs \
 	Gendarme.Framework/IAssemblyRule.cs \
 	Gendarme.Framework/IIgnoreList.cs \
 	Gendarme.Framework/IMethodRule.cs \

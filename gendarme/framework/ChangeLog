@@ -1,3 +1,8 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Framework/FxCopCompatibilityAttribute.cs
+	to the build.
+
 2008-07-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Fix Makefile.am not to compile the framework everytime.
