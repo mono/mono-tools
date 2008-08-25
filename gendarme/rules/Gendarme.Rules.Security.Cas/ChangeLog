@@ -1,0 +1,7 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ReviewSuppressUnmanagedCodeSecurityUsageRule.cs: New. Rule that 
+	suggest reviewing type and methods decorated with [SuppressUnmanaged
+	CodeSecurityUsage]. Since this, generally, can't be fixed this rule
+	returns the new Severity.Audit level (i.e. below Low).
+	* Makefile.am: New. Build file.

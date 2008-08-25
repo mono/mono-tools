@@ -1,0 +1,5 @@
+2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ReviewSuppressUnmanagedCodeSecurityUsageTest.cs: New. Unit tests
+	for ReviewSuppressUnmanagedCodeSecurityUsageRule.
+	* Makefile.am: New. Build file.
