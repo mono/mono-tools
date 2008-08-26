@@ -261,8 +261,9 @@ namespace Gendarme {
 			Console.WriteLine ("  --log file\t\tSave the text output to the specified file.");
 			Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
 			Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
+			Console.WriteLine ("  --ignore file\t\tDo not report defects specified inside the file.");
 			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
-			Console.WriteLine ("  --v\t\t\tEnable debugging output (use multiple time to augment verbosity).");
+			Console.WriteLine ("  --v\t\t\tEnable debugging output (can be used multiple times).");
 			Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
 			Console.WriteLine ();
 		}

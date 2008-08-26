@@ -1,3 +1,7 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Update help for --ignore option.
+
 2008-07-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Better display if no assemblies are specified.
