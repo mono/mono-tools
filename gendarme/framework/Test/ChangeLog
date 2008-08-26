@@ -1,3 +1,7 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Test.Framework.mdp: Add BitmaskTest to MD project file
+
 2008-06-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Test.Framework.mdp: Add InstructionRocksTest to MD project file
