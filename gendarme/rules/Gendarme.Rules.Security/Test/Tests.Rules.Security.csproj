@@ -73,9 +73,9 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+    <ProjectReference Include="..\..\Test.Rules\Tests.Rules.csproj">
       <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
-      <Name>Test.Rules</Name>
+      <Name>Tests.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Security.csproj">
       <Project>{DBA3E375-ADF4-4CA3-880F-AF02DD8D5E7E}</Project>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FC889577-F51A-469C-9F30-E967504E9E24}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -59,7 +59,6 @@
     <Compile Include="FinalizersShouldCallBaseClassFinalizerRule.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
-    <Compile Include="ImplementGenericCollectionInterfacesRule.cs" />
     <Compile Include="ImplementIComparableCorreclyRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D6BDE725-945A-4A16-91E2-F1B16C67D93D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -74,9 +74,9 @@
       <Project>{949C4D51-4581-402A-AC18-B1B41F395FDA}</Project>
       <Name>Gendarme.Rules.Ui</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+    <ProjectReference Include="..\..\Test.Rules\Tests.Rules.csproj">
       <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
-      <Name>Test.Rules</Name>
+      <Name>Tests.Rules</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

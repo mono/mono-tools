@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{77ACB4C1-95E3-42DC-980C-9A6FD506F17D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -76,9 +76,9 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+    <ProjectReference Include="..\..\Test.Rules\Tests.Rules.csproj">
       <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
-      <Name>Test.Rules</Name>
+      <Name>Tests.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Concurrency.csproj">
       <Project>{B8EA91A3-27A0-4732-BA90-7B590280FF9F}</Project>
