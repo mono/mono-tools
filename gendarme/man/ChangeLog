@@ -1,3 +1,7 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Document --severity and --confidence options.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Document --limit option.

@@ -46,6 +46,14 @@ Do not report the known defects that are part of the specified file.
 .I "--limit N"
 Stop reporting after N defects are found.
 .TP
+.I "--severity [all | audit[+] | low[+|-] | medium[+|-] | high[+|-] | critical[-]],...
+Filter the reported defects to include the specified severity levels.
+Default is 'medium+' (i.e. low and audit levels are ignored).
+.TP
+.I "--confidence [all | low[+] | normal[+|-] | high[+|-] | total[-]],...
+Filter the reported defects to include the specified confidence levels.
+Default is 'normal+' (i.e. low level is ignored).
+.TP
 .I "--quiet"
 Display minimal output (results) from the runner.
 .TP
