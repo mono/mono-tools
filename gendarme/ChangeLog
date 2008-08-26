@@ -1,3 +1,8 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Change self-test to report all defects (i.e. not
+	to filter out any defect based on severity or confidence).
+
 2008-07-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NEWS: Update for the next release.

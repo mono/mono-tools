@@ -45,5 +45,5 @@ assemble-doc: doc
 self-test: all
 	cd bin;	\
 	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
-		gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
+		--severity=all --confidence=all gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
 	cd ..;
