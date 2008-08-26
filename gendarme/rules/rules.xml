@@ -4,6 +4,7 @@
 		<rules include="*" from="Gendarme.Rules.Concurrency.dll" />
 		<rules include="*" from="Gendarme.Rules.Correctness.dll"/>
 		<rules include="*" from="Gendarme.Rules.Design.dll"/>
+		<rules include="*" from="Gendarme.Rules.Design.Generic.dll"/>
 		<rules include="*" from="Gendarme.Rules.Design.Linq.dll"/>
 		<rules include="*" from="Gendarme.Rules.Exceptions.dll" />
 		<rules include="*" from="Gendarme.Rules.Interoperability.dll"/>
@@ -23,6 +24,7 @@
 		<rules include="*" from="Gendarme.Rules.Concurrency.dll" />
 		<rules include="*" from="Gendarme.Rules.Correctness.dll"/>
 		<rules include="*" from="Gendarme.Rules.Design.dll"/>
+		<rules include="*" from="Gendarme.Rules.Design.Generic.dll"/>
 		<rules include="*" from="Gendarme.Rules.Design.Linq.dll"/>
 		<rules include="*" from="Gendarme.Rules.Exceptions.dll" />
 		<rules include="*" from="Gendarme.Rules.Interoperability.dll"/>
@@ -90,6 +92,9 @@
 	</ruleset>
 	<ruleset name="design">
 		<rules include="*" from="Gendarme.Rules.Design.dll"/>
+	</ruleset>
+	<ruleset name="design-generic">
+		<rules include="*" from="Gendarme.Rules.Design.Generic.dll"/>
 	</ruleset>
 	<ruleset name="design-linq">
 		<rules include="*" from="Gendarme.Rules.Design.Linq.dll"/>

@@ -3,6 +3,7 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Concurrency \
 	 Gendarme.Rules.Correctness \
 	 Gendarme.Rules.Design \
+	 Gendarme.Rules.Design.Generic \
 	 Gendarme.Rules.Design.Linq \
 	 Gendarme.Rules.Exceptions \
 	 Gendarme.Rules.Interoperability \
