@@ -1,3 +1,8 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsRule.cs: Avoid computing the method's CC if 
+	the number of IL instructions is lower than the success threshold.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepInheritanceTreeRule.cs: Fix case where we can't resolve

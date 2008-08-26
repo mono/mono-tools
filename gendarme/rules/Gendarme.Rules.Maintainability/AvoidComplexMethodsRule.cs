@@ -77,6 +77,12 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			//yay! rule do apply!
+
+			// quick optimization: if the number of instructions is lower
+			// than our SuccessThreshold then it cannot be too complex
+			if (method.Body.Instructions.Count < SuccessThreshold)
+				return RuleResult.Success;
+
 			int cc = GetCyclomaticComplexityForMethod(method);
 			if (cc < SuccessThreshold)
 				return RuleResult.Success;
@@ -124,7 +130,7 @@ namespace Gendarme.Rules.Maintainability {
 					continue;
 				}
 
-				if (OpCodes.Switch == inst.OpCode)
+				if (inst.OpCode.Code == Code.Switch)
 				{
 					cc += GetNumberOfSwitchTargets(inst);
 				}
