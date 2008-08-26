@@ -215,6 +215,8 @@ gendarme/rules/Gendarme.Rules.BadPractice/Makefile
 gendarme/rules/Gendarme.Rules.BadPractice/Test/Makefile
 gendarme/rules/Gendarme.Rules.Design/Makefile
 gendarme/rules/Gendarme.Rules.Design/Test/Makefile
+gendarme/rules/Gendarme.Rules.Design.Generic/Makefile
+gendarme/rules/Gendarme.Rules.Design.Generic/Test/Makefile
 gendarme/rules/Gendarme.Rules.Design.Linq/Makefile
 gendarme/rules/Gendarme.Rules.Design.Linq/Test/Makefile
 gendarme/rules/Gendarme.Rules.Interoperability/Makefile
