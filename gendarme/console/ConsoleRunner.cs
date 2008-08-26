@@ -51,10 +51,116 @@ namespace Gendarme {
 		private string xml_file;
 		private string ignore_file;
 		private string limit;
+		private string severity_filter;
+		private string confidence_filter;
 		private bool help;
 		private bool quiet;
 		private bool version;
 		private List<string> assembly_names;
+
+		// parse severity filter
+		// e.g. Audit,High+ == Audit, High and Critical
+		void ParseSeverity ()
+		{
+			SeverityBitmask.ClearAll ();
+			string [] options = severity_filter.ToUpperInvariant ().Split (',');
+			foreach (string option in options) {
+				Severity severity;
+
+				switch (option) {
+				case "AUDIT":
+				case "AUDIT+":
+				case "AUDIT-":
+					severity = Severity.Audit;
+					break;
+				case "LOW":
+				case "LOW+":
+				case "LOW-":
+					severity = Severity.Low;
+					break;
+				case "MEDIUM":
+				case "MEDIUM+":
+				case "MEDIUM-":
+					severity = Severity.Medium;
+					break;
+				case "HIGH":
+				case "HIGH+":
+				case "HIGH-":
+					severity = Severity.High;
+					break;
+				case "CRITICAL":
+				case "CRITICAL+":
+				case "CRITICAL-":
+					severity = Severity.Critical;
+					break;
+				case "ALL":
+				case "*":
+					SeverityBitmask.SetAll ();
+					continue;
+				default:
+					continue;
+				}
+
+				char end = option [option.Length - 1];
+				if (end == '+') {
+					SeverityBitmask.SetDown (severity);
+					Console.WriteLine ("SetDown {0} -> {1}", severity, SeverityBitmask);
+				} else if (end == '-') {
+					SeverityBitmask.SetUp (severity);
+					Console.WriteLine ("SetUp {0} -> {1}", severity, SeverityBitmask);
+				} else {
+					SeverityBitmask.Set (severity);
+					Console.WriteLine ("Set {0} -> {1}", severity, SeverityBitmask);
+				}
+			}
+		}
+
+		void ParseConfidence ()
+		{
+			ConfidenceBitmask.ClearAll ();
+			string [] options = confidence_filter.ToUpperInvariant ().Split (',');
+			foreach (string option in options) {
+				Confidence confidence;
+
+				switch (option) {
+				case "LOW":
+				case "LOW+":
+				case "LOW-":
+					confidence = Confidence.Low;
+					break;
+				case "NORMAL":
+				case "NORMAL+":
+				case "NORMAL-":
+					confidence = Confidence.Normal;
+					break;
+				case "HIGH":
+				case "HIGH+":
+				case "HIGH-":
+					confidence = Confidence.High;
+					break;
+				case "TOTAL":
+				case "TOTAL+":
+				case "TOTAL-":
+					confidence = Confidence.Total;
+					break;
+				case "ALL":
+				case "*":
+					ConfidenceBitmask.SetAll ();
+					continue;
+				default:
+					continue;
+				}
+
+				char end = option [option.Length - 1];
+				if (end == '+') {
+					ConfidenceBitmask.SetDown (confidence);
+				} else if (end == '-') {
+					ConfidenceBitmask.SetUp (confidence);
+				} else {
+					ConfidenceBitmask.Set (confidence);
+				}
+			}
+		}
 
 		byte Parse (string [] args)
 		{
@@ -66,12 +172,38 @@ namespace Gendarme {
 				{ "html=",	v => html_file = v },
 				{ "ignore=",	v => ignore_file = v },
 				{ "limit=",	v => limit = v },
+				{ "severity=",	v => severity_filter = v },
+				{ "confidence=",v => confidence_filter = v },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "quiet",	v => quiet = v != null },
 				{ "version",	v => version = v != null },
 				{ "h|?|help",	v => help = v != null },
 			};
 			assembly_names = p.Parse (args);
+
+			// if supplied, use the user limit on defects (otherwise 2^31 is used)
+			int defects_limit;
+			if (String.IsNullOrEmpty (limit) || !Int32.TryParse (limit, out defects_limit))
+				defects_limit = Int32.MaxValue;
+			DefectsLimit = defects_limit;
+
+			// by default the runner will ignore Audit and Low severity defects
+			if (String.IsNullOrEmpty (severity_filter)) {
+				SeverityBitmask.SetAll ();
+				SeverityBitmask.Clear (Severity.Audit);
+				SeverityBitmask.Clear (Severity.Low);
+			} else {
+				ParseSeverity ();
+			}
+
+			// by default the runner will ignore Low confidence defects
+			if (String.IsNullOrEmpty (confidence_filter)) {
+				ConfidenceBitmask.SetAll ();
+				ConfidenceBitmask.Clear (Confidence.Low);
+			} else {
+				ParseConfidence ();
+			}
+
 			return (byte) ((assembly_names.Count > 0) ? 0 : 1);
 		}
 
@@ -175,17 +307,11 @@ namespace Gendarme {
 						return result;
 				}
 
-				// if supplied, use the user limit on defects (otherwise 2^31 is used)
-				int defects_limit;
-				if (String.IsNullOrEmpty (limit) || !Int32.TryParse (limit, out defects_limit))
-					defects_limit = Int32.MaxValue;
-				DefectsLimit = defects_limit;
-
 				IgnoreList = new IgnoreFileList (this, ignore_file);
 
 				// now that all rules and assemblies are know, time to initialize
 				Initialize ();
-				// before analizing the assemblies with the rules
+				// before analyzing the assemblies with the rules
 				Run ();
 				// and winding down properly
 				TearDown ();
@@ -271,8 +397,16 @@ namespace Gendarme {
 			Console.WriteLine ("  --log file\t\tSave the text output to the specified file.");
 			Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
 			Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
+			Console.WriteLine ("  --ignore file\t\tDo not report defects specified inside the file.");
+			Console.WriteLine ("  --limit N\t\tStop reporting after N defects are found.");
+			Console.WriteLine ("  --severity [all | [[audit | low | medium | high | critical][+|-]]],...");
+			Console.WriteLine ("\t\t\tFilter defects for the specified severity levels.");
+			Console.WriteLine ("\t\t\tDefault is 'medium+'");
+			Console.WriteLine ("  --confidence [all | [[low | normal | high | total][+|-]],...");
+			Console.WriteLine ("\t\t\tFilter defects for the specified confidence levels.");
+			Console.WriteLine ("\t\t\tDefault is 'normal+'");
 			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
-			Console.WriteLine ("  --v\t\t\tEnable debugging output (use multiple time to augment verbosity).");
+			Console.WriteLine ("  --v\t\t\tEnable debugging output (can be used multiple times).");
 			Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
 			Console.WriteLine ();
 		}
