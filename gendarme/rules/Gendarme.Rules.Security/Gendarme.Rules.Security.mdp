@@ -4,23 +4,16 @@
       <Output directory="../../bin" assembly="Gendarme.Rules.Security" />
       <Build debugmode="True" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="/noconfig-" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="../../bin/Release" assembly="Gendarme.Rules.Security" />
       <Build debugmode="False" target="Library" />
       <Execution runwithwarnings="True" consolepause="False" runtime="MsNet" clr-version="Net_2_0" />
-      <CodeGeneration compiler="Csc" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" additionalargs="/noconfig-" ctype="CSharpCompilerParameters" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="MethodCallWithSubsetLinkDemandRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="NonVirtualMethodWithInheritanceDemandRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="SealedTypeWithInheritanceDemandRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="SecureGetObjectDataOverridesRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="TypeExposeFieldsRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="TypeIsNotSubsetOfMethodSecurityRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="TypeLinkDemandRule.cs" subtype="Code" buildaction="Compile" />
     <File name="StaticConstructorsShouldBePrivateRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ArrayFieldsShouldNotBeReadOnlyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="NativeFieldsShouldNotBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
@@ -28,8 +21,8 @@
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=null" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
-  <DeployTargets />
 </Project>
