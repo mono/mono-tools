@@ -1,3 +1,9 @@
+2008-08-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test case from Mono.Rocks
+	that triggers, when compiled under Mono (bug #320901), false 
+	positives.
+
 2008-08-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* RemoveUnusedLocalVariablesTest.cs: Add test case from Richard 

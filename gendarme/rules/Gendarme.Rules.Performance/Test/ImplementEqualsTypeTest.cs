@@ -177,5 +177,29 @@ namespace Test.Rules.Performance {
 
 			AssertRuleSuccess<InterfaceWithBothEquals> ();
 		}
+
+		public class Generic<X> {
+
+			public override bool Equals (object obj)
+			{
+				return base.Equals (obj);
+			}
+
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();
+			}
+
+			public bool Equals (Generic<X> other)
+			{
+				return true;
+			}
+		}
+
+		[Test]
+		public void Generics ()
+		{
+			AssertRuleSuccess<Generic<int>> ();
+		}
 	}
 }
