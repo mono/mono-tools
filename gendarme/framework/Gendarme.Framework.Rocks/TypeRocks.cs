@@ -156,7 +156,7 @@ namespace Gendarme.Framework.Rocks {
 					for (int i = 0; i < parameters.Length; i++) {
 						if (parameters [i] == null)
 							continue;//ignore parameter
-						if (parameters [i] != method.Parameters [i].ParameterType.FullName) {
+						if (parameters [i] != method.Parameters [i].ParameterType.GetOriginalType ().FullName) {
 							parameterError = true;
 							break;
 						}

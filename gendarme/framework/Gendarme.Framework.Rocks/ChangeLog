@@ -1,3 +1,7 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* TypeRocks.cs: Fix parameter type comparison wrt generics.
+
 2008-08-03  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* InstructionRocks.cs: Add an overload to TraceBack that accept an
