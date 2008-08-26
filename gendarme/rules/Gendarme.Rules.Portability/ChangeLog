@@ -1,3 +1,9 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Don't check Ping if
+	Process was found earlier (the call goes to a single place). Rename
+	some variables to please rules (self-test).
+
 2008-08-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Override Initialize

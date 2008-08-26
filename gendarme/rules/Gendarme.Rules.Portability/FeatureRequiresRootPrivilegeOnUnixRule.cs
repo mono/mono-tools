@@ -50,8 +50,8 @@ namespace Gendarme.Rules.Portability {
 		private const string Ping = "System.Net.NetworkInformation.Ping";
 		private const string Process = "System.Diagnostics.Process";
 
-		private bool module_has_ping = true;
-		private bool module_has_process = true;
+		private bool ping_present = true;
+		private bool process_present = true;
 
 		public override void Initialize (IRunner runner)
 		{
@@ -60,9 +60,9 @@ namespace Gendarme.Rules.Portability {
 			// if the module does not reference either Ping or Process
 			// then it's not being used inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				module_has_ping = e.CurrentModule.TypeReferences.ContainsType (Ping);
-				module_has_process = e.CurrentModule.TypeReferences.ContainsType (Process);
-				Active = (module_has_ping || module_has_process);
+				ping_present = e.CurrentModule.TypeReferences.ContainsType (Ping);
+				process_present = e.CurrentModule.TypeReferences.ContainsType (Process);
+				Active = (ping_present || process_present);
 			};
 			// note: this ignores on purpose System.dll since there's
 			// no point in reporting the use of both class inside it
@@ -109,14 +109,11 @@ namespace Gendarme.Rules.Portability {
 				if (ins.OpCode.FlowControl != FlowControl.Call)
 					continue;
 
-				// Check for usage of System.Diagnostics.Process.set_PriorityClass
-				if (module_has_process && CheckProcessSetPriorityClass (ins)) {
+				// Check for usage of Process or Ping based on their presence
+				if (process_present && CheckProcessSetPriorityClass (ins)) {
 					// code won't work with default (non-root) users == High
 					Runner.Report (method, ins, Severity.High, Confidence.High, ProcessMessage);
-				}
-
-				// check for use of Ping
-				if (module_has_ping && CheckPing (ins)) {
+				} else 	if (ping_present && CheckPing (ins)) {
 					// code won't work with default (non-root) users == High
 					Runner.Report (method, ins, Severity.High, Confidence.High, PingMessage);
 				}
