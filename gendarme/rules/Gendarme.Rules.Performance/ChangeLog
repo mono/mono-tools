@@ -1,3 +1,7 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test/ImplementEqualsTypeTest.cs: Add test case with generics.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededUnboxingRule.cs: Fix case for static parameter-less
