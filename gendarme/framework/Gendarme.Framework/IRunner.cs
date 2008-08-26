@@ -55,6 +55,8 @@ namespace Gendarme.Framework {
 
 		Collection<Defect> Defects  { get; }
 		int DefectsLimit { get; }
+		Bitmask<Severity> SeverityBitmask { get; }
+		Bitmask<Confidence> ConfidenceBitmask { get; }
 
 		int VerbosityLevel { get; }
 

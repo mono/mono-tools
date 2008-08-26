@@ -1,3 +1,12 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Bitmask.cs: New. Class to use enums or integral types like a 
+	bitmask.
+	* IRunner.cs: Add bitmasks properties for Severity and Confidence.
+	* Runner.cs: Filter reported defects based on severity and 
+	confidence levels. By default all levels are accepted by the base
+	runner (i.e. identical behavior with earlier code).
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* IRunner.cs: Add DefectsLimit property and TearDown method to 

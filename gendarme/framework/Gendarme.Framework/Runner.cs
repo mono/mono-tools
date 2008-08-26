@@ -42,6 +42,8 @@ namespace Gendarme.Framework {
 
 		private Collection<Defect> defect_list = new Collection<Defect> ();
 		private int defects_limit = Int32.MaxValue;
+		private Bitmask<Severity> severity_bitmask = new Bitmask<Severity> (true);
+		private Bitmask<Confidence> confidence_bitmask = new Bitmask<Confidence> (true);
 
 		private Collection<IRule> rules = new Collection<IRule> ();
 		private Collection<AssemblyDefinition> assemblies = new Collection<AssemblyDefinition> ();
@@ -101,6 +103,14 @@ namespace Gendarme.Framework {
 			}
 		}
 
+		public Bitmask<Severity> SeverityBitmask {
+			get { return severity_bitmask; }
+		}
+
+		public Bitmask<Confidence> ConfidenceBitmask {
+			get { return confidence_bitmask; }
+		}
+
 		public int VerbosityLevel {
 			get { return verbose_level; }
 			set { verbose_level = value; }
@@ -144,34 +154,58 @@ namespace Gendarme.Framework {
 			method_rules = rules.OfType<IMethodRule> ();
 		}
 
+		private bool Filter (Severity severity, Confidence confidence)
+		{
+			return (SeverityBitmask.Get (severity) && ConfidenceBitmask.Get (confidence));
+		}
+
 		public virtual void Report (Defect defect)
 		{
 			if (defect == null)
 				throw new ArgumentNullException ("defect");
+
+			if (!Filter (defect.Severity, defect.Confidence))
+				return;
 
 			defect_list.Add (defect);
 		}
 
 		public void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence)
 		{
+			// check here to avoid creating the Defect object
+			if (!Filter (severity, confidence))
+				return;
+
 			Defect defect = new Defect (currentRule, currentTarget, metadata, severity, confidence);
 			Report (defect);
 		}
 
 		public void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence, string message)
 		{
+			// check here to avoid creating the Defect object
+			if (!Filter (severity, confidence))
+				return;
+
 			Defect defect = new Defect (currentRule, currentTarget, metadata, severity, confidence, message);
 			Report (defect);
 		}
 
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence)
 		{
+			// check here to avoid creating the Defect object
+			if (!Filter (severity, confidence))
+				return;
+
 			Defect defect = new Defect (currentRule, currentTarget, method, ins, severity, confidence);
 			Report (defect);
 		}
 
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
 		{
+			// check here to avoid creating the Defect object
+			if (!Filter (severity, confidence))
+				return;
+
 			Defect defect = new Defect (currentRule, currentTarget, method, ins, severity, confidence, message);
 			Report (defect);
 		}
