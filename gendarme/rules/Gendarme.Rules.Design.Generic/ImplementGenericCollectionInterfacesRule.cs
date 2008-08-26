@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Design.ImplementGenericCollectionInterfacesRule
+// Gendarme.Rules.Design.Generic.ImplementGenericCollectionInterfacesRule
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
@@ -27,18 +27,17 @@
 //
 
 using System;
-using System.Text;
 
 using Mono.Cecil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
-using Gendarme.Framework.Helpers;
 
-namespace Gendarme.Rules.Design {
+namespace Gendarme.Rules.Design.Generic {
 
 	[Problem ("This type implements non-generic IEnumerable interface but does not implement IEnumerable<T> interface that will make your collection type-safe.")]
 	[Solution ("Implement one of generic collection interfaces such as IEnumerable<T>, ICollection<T> or IList<T>.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
 	public class ImplementGenericCollectionInterfacesRule : Rule, ITypeRule {
 
 		public override void Initialize (IRunner runner)

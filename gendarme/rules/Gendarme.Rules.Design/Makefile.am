@@ -45,7 +45,6 @@ rules_sources = \
 	ImplementEqualsAndGetHashCodeInPairRule.cs \
 	EnumsShouldUseInt32Rule.cs \
 	ImplementIComparableCorreclyRule.cs \
-	ImplementGenericCollectionInterfacesRule.cs \
 	ConsiderConvertingFieldToNullableRule.cs \
 	AvoidVisibleNestedTypesRule.cs
 
@@ -80,6 +79,5 @@ tests_sources = \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
 	EnumsShouldUseInt32Test.cs \
 	ImplementIComparableCorreclyTest.cs \
-	ImplementGenericCollectionInterfacesTest.cs \
 	ConsiderConvertingFieldToNullableTest.cs \
 	AvoidVisibleNestedTypesTest.cs

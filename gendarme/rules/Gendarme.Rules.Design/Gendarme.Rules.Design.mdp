@@ -41,7 +41,6 @@
     <File name="OverrideEqualsMethodRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ProvideAlternativeNamesForOperatorOverloadsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ImplementIComparableCorreclyRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="ImplementGenericCollectionInterfacesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleNestedTypesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidRefAndOutParametersRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ConsiderUsingStaticTypeRule.cs" subtype="Code" buildaction="Compile" />
@@ -53,8 +52,8 @@
     <ProjectReference type="Project" localcopy="True" refto="framework" />
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Cecil, Version=0.6.8.8607, Culture=neutral, PublicKeyToken=null" />
   </References>
   <Deployment.LinuxDeployData generatePcFile="False" />
-  <GtkDesignInfo gtkVersion="2.8.4" />
+  <GtkDesignInfo />
 </Project>

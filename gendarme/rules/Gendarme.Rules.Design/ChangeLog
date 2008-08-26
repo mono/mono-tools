@@ -1,3 +1,8 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementGenericCollectionInterfacesRule.cs: Moving to Design.Generic
+	* Makefile.am, Gendarme.Rules.Design.mdp: Remove rule from build files.
+
 2008-08-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AbstractTypesShouldNotHavePublicConstructorsRule.cs, 

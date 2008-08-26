@@ -31,14 +31,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Mono.Cecil;
 
-using Gendarme.Rules.Design;
+using Gendarme.Rules.Design.Generic;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
-namespace Test.Rules.Design {
+namespace Test.Rules.Design.Generic {
 
 	[TestFixture]
 	public class ImplementGenericCollectionInterfacesTest : TypeRuleTestFixture<ImplementGenericCollectionInterfacesRule> {

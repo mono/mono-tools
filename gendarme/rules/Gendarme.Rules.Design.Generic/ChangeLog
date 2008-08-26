@@ -1,0 +1,5 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementGenericCollectionInterfacesRule.cs: Moved from Design.
+	Added FxCopCompatibility attribute.
+	* Makefile.am: New. Build file.

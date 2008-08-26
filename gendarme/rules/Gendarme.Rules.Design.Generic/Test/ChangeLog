@@ -1,0 +1,4 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementGenericCollectionInterfacesTest.cs: Moved from Design.
+	* Makefile.am: New. Build file.

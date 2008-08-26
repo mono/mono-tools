@@ -41,7 +41,6 @@
     <File name="ProvideAlternativeNamesForOperatorOverloadsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="ImplementIComparableCorreclyTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="ImplementGenericCollectionInterfacesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidVisibleNestedTypesTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidRefAndOutParametersTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ConsiderUsingStaticTypeTest.cs" subtype="Code" buildaction="Compile" />
@@ -57,5 +56,5 @@
     <ProjectReference type="Project" localcopy="True" refto="Mono.Cecil" />
     <ProjectReference type="Project" localcopy="True" refto="Test.Rules" />
   </References>
-  <GtkDesignInfo gtkVersion="2.8.4" />
+  <GtkDesignInfo />
 </Project>
