@@ -15,6 +15,7 @@ framework_sources = \
 	../AssemblyStaticInfo.cs \
 	Gendarme.Framework/AssemblyResolver.cs \
 	Gendarme.Framework/BasicIgnoreList.cs \
+	Gendarme.Framework/Bitmask.cs \
 	Gendarme.Framework/Confidence.cs \
 	Gendarme.Framework/Defect.cs \
 	Gendarme.Framework/DocumentationUriAttribute.cs \
@@ -57,6 +58,7 @@ framework_build_sources += $(framework_generated_sources)
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
+	Gendarme.Framework/BitmaskTest.cs \
 	Gendarme.Framework.Helpers/MethodSignatureTest.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysisTest.cs \
 	Gendarme.Framework.Rocks/RocksTest.cs \

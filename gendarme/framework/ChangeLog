@@ -1,3 +1,10 @@
+2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add Gendarme.Framework/Bitmask.cs and it's unit tests
+	to the build.
+	* framework.mdp: Add FxCopCompatibilityAttribute and Bitmask to the
+	MD project file.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Gendarme.Framework/FxCopCompatibilityAttribute.cs
