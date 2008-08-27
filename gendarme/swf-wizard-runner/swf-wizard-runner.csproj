@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -120,6 +120,14 @@
       <Project>{732905E1-1FD4-403A-93DD-EC4CF120091E}</Project>
       <Name>Gendarme.Rules.Correctness</Name>
     </ProjectReference>
+    <ProjectReference Include="..\rules\Gendarme.Rules.Design.Generic\Gendarme.Rules.Design.Generic.csproj">
+      <Project>{5446570C-A304-418D-B908-91ADA51E4F00}</Project>
+      <Name>Gendarme.Rules.Design.Generic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\rules\Gendarme.Rules.Design.Linq\Gendarme.Rules.Design.Linq.csproj">
+      <Project>{EEC7B836-DB9D-4CB3-9829-53C223C9411F}</Project>
+      <Name>Gendarme.Rules.Design.Linq</Name>
+    </ProjectReference>
     <ProjectReference Include="..\rules\Gendarme.Rules.Design\Gendarme.Rules.Design.csproj">
       <Project>{FC889577-F51A-469C-9F30-E967504E9E24}</Project>
       <Name>Gendarme.Rules.Design</Name>
@@ -148,6 +156,10 @@
       <Project>{3A220513-3E53-4E13-B25D-2202F79B4C47}</Project>
       <Name>Gendarme.Rules.Portability</Name>
     </ProjectReference>
+    <ProjectReference Include="..\rules\Gendarme.Rules.Security.Cas\Gendarme.Rules.Security.Cas.csproj">
+      <Project>{237A273E-BCAF-42DB-9DE5-1697B016C648}</Project>
+      <Name>Gendarme.Rules.Security.Cas</Name>
+    </ProjectReference>
     <ProjectReference Include="..\rules\Gendarme.Rules.Security\Gendarme.Rules.Security.csproj">
       <Project>{DBA3E375-ADF4-4CA3-880F-AF02DD8D5E7E}</Project>
       <Name>Gendarme.Rules.Security</Name>
@@ -169,6 +181,7 @@
     <EmbeddedResource Include="..\console\gendarme.xsl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\gendarme.png" />
   </ItemGroup>
   <ItemGroup>
