@@ -28,12 +28,12 @@ namespace Gendarme {
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager (typeof (Wizard));
 			this.wizard_tab_control = new System.Windows.Forms.TabControl ();
-			this.tabPage1 = new System.Windows.Forms.TabPage ();
-			this.welcome_title_label = new System.Windows.Forms.Label ();
-			this.label10 = new System.Windows.Forms.Label ();
+			this.welcome_tab_page = new System.Windows.Forms.TabPage ();
 			this.welcome_gendarme_label = new System.Windows.Forms.Label ();
 			this.label1 = new System.Windows.Forms.Label ();
 			this.welcome_link_label = new System.Windows.Forms.LinkLabel ();
+			this.label10 = new System.Windows.Forms.Label ();
+			this.welcome_title_label = new System.Windows.Forms.Label ();
 			this.addfiles_tab_page = new System.Windows.Forms.TabPage ();
 			this.add_files_count_label = new System.Windows.Forms.Label ();
 			this.label6 = new System.Windows.Forms.Label ();
@@ -41,19 +41,34 @@ namespace Gendarme {
 			this.add_files_button = new System.Windows.Forms.Button ();
 			this.remove_file_button = new System.Windows.Forms.Button ();
 			this.file_list_box = new System.Windows.Forms.ListBox ();
-			this.tabPage3 = new System.Windows.Forms.TabPage ();
+			this.rules_tab_page = new System.Windows.Forms.TabPage ();
 			this.browse_documentation_button = new System.Windows.Forms.Button ();
 			this.rules_count_label = new System.Windows.Forms.Label ();
 			this.label8 = new System.Windows.Forms.Label ();
 			this.label7 = new System.Windows.Forms.Label ();
 			this.rules_tree_view = new System.Windows.Forms.TreeView ();
-			this.analyze_tab_tage = new System.Windows.Forms.TabPage ();
+			this.options_tab_page = new System.Windows.Forms.TabPage ();
+			this.options_save_button = new System.Windows.Forms.Button ();
+			this.options_all_radiobutton = new System.Windows.Forms.RadioButton ();
+			this.options_visible_radiobutton = new System.Windows.Forms.RadioButton ();
+			this.label12 = new System.Windows.Forms.Label ();
+			this.options_notvisible_radiobutton = new System.Windows.Forms.RadioButton ();
+			this.options_severity_combobox = new System.Windows.Forms.ComboBox ();
+			this.options_confidence_combobox = new System.Windows.Forms.ComboBox ();
+			this.options_limit_updown = new System.Windows.Forms.NumericUpDown ();
+			this.options_nolimit_checkbox = new System.Windows.Forms.CheckBox ();
+			this.label11 = new System.Windows.Forms.Label ();
+			this.label9 = new System.Windows.Forms.Label ();
+			this.label4 = new System.Windows.Forms.Label ();
+			this.label3 = new System.Windows.Forms.Label ();
+			this.label2 = new System.Windows.Forms.Label ();
+			this.analyze_tab_page = new System.Windows.Forms.TabPage ();
 			this.analyze_defect_label = new System.Windows.Forms.Label ();
 			this.analyze_title_label = new System.Windows.Forms.Label ();
 			this.analyze_status_label = new System.Windows.Forms.Label ();
 			this.analyze_assembly_label = new System.Windows.Forms.Label ();
 			this.progress_bar = new System.Windows.Forms.ProgressBar ();
-			this.results_tab_Page = new System.Windows.Forms.TabPage ();
+			this.results_tab_page = new System.Windows.Forms.TabPage ();
 			this.view_report_button = new System.Windows.Forms.Button ();
 			this.save_report_button = new System.Windows.Forms.Button ();
 			this.results_title_label = new System.Windows.Forms.Label ();
@@ -66,64 +81,45 @@ namespace Gendarme {
 			this.save_file_dialog = new System.Windows.Forms.SaveFileDialog ();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox ();
 			this.wizard_tab_control.SuspendLayout ();
-			this.tabPage1.SuspendLayout ();
+			this.welcome_tab_page.SuspendLayout ();
 			this.addfiles_tab_page.SuspendLayout ();
-			this.tabPage3.SuspendLayout ();
-			this.analyze_tab_tage.SuspendLayout ();
-			this.results_tab_Page.SuspendLayout ();
+			this.rules_tab_page.SuspendLayout ();
+			this.options_tab_page.SuspendLayout ();
+			((System.ComponentModel.ISupportInitialize) (this.options_limit_updown)).BeginInit ();
+			this.analyze_tab_page.SuspendLayout ();
+			this.results_tab_page.SuspendLayout ();
 			((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).BeginInit ();
 			this.SuspendLayout ();
 			// 
 			// wizard_tab_control
 			// 
 			this.wizard_tab_control.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-			this.wizard_tab_control.Controls.Add (this.tabPage1);
+			this.wizard_tab_control.Controls.Add (this.welcome_tab_page);
 			this.wizard_tab_control.Controls.Add (this.addfiles_tab_page);
-			this.wizard_tab_control.Controls.Add (this.tabPage3);
-			this.wizard_tab_control.Controls.Add (this.analyze_tab_tage);
-			this.wizard_tab_control.Controls.Add (this.results_tab_Page);
+			this.wizard_tab_control.Controls.Add (this.rules_tab_page);
+			this.wizard_tab_control.Controls.Add (this.options_tab_page);
+			this.wizard_tab_control.Controls.Add (this.analyze_tab_page);
+			this.wizard_tab_control.Controls.Add (this.results_tab_page);
 			this.wizard_tab_control.Location = new System.Drawing.Point (133, 0);
 			this.wizard_tab_control.Name = "wizard_tab_control";
 			this.wizard_tab_control.SelectedIndex = 0;
 			this.wizard_tab_control.Size = new System.Drawing.Size (501, 415);
 			this.wizard_tab_control.TabIndex = 0;
 			// 
-			// tabPage1
+			// welcome_tab_page
 			// 
-			this.tabPage1.Controls.Add (this.welcome_gendarme_label);
-			this.tabPage1.Controls.Add (this.label1);
-			this.tabPage1.Controls.Add (this.welcome_link_label);
-			this.tabPage1.Controls.Add (this.label10);
-			this.tabPage1.Controls.Add (this.welcome_title_label);
-			this.tabPage1.Location = new System.Drawing.Point (4, 25);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding (3);
-			this.tabPage1.Size = new System.Drawing.Size (493, 386);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Welcome";
-			// 
-			// welcome_title_label
-			// 
-			this.welcome_title_label.AutoSize = true;
-			this.welcome_title_label.Dock = System.Windows.Forms.DockStyle.Top;
-			this.welcome_title_label.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
-			this.welcome_title_label.Location = new System.Drawing.Point (3, 3);
-			this.welcome_title_label.Margin = new System.Windows.Forms.Padding (0);
-			this.welcome_title_label.Name = "welcome_title_label";
-			this.welcome_title_label.Padding = new System.Windows.Forms.Padding (12, 12, 0, 0);
-			this.welcome_title_label.Size = new System.Drawing.Size (151, 25);
-			this.welcome_title_label.TabIndex = 1;
-			this.welcome_title_label.Text = "Welcome to Gendarme ";
-			// 
-			// label10
-			// 
-			this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label10.Location = new System.Drawing.Point (3, 28);
-			this.label10.Name = "label10";
-			this.label10.Padding = new System.Windows.Forms.Padding (12, 12, 12, 0);
-			this.label10.Size = new System.Drawing.Size (487, 355);
-			this.label10.TabIndex = 5;
-			this.label10.Text = resources.GetString ("label10.Text");
+			this.welcome_tab_page.Controls.Add (this.welcome_gendarme_label);
+			this.welcome_tab_page.Controls.Add (this.label1);
+			this.welcome_tab_page.Controls.Add (this.welcome_link_label);
+			this.welcome_tab_page.Controls.Add (this.label10);
+			this.welcome_tab_page.Controls.Add (this.welcome_title_label);
+			this.welcome_tab_page.Location = new System.Drawing.Point (4, 25);
+			this.welcome_tab_page.Name = "welcome_tab_page";
+			this.welcome_tab_page.Padding = new System.Windows.Forms.Padding (3);
+			this.welcome_tab_page.Size = new System.Drawing.Size (493, 386);
+			this.welcome_tab_page.TabIndex = 0;
+			this.welcome_tab_page.Text = "Welcome";
+			this.welcome_tab_page.UseVisualStyleBackColor = true;
 			// 
 			// welcome_gendarme_label
 			// 
@@ -159,6 +155,29 @@ namespace Gendarme {
 			this.welcome_link_label.TabStop = true;
 			this.welcome_link_label.Text = "http://www.mono-project.com/Gendarme";
 			this.welcome_link_label.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler (this.GendarmeLinkClick);
+			// 
+			// label10
+			// 
+			this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label10.Location = new System.Drawing.Point (3, 28);
+			this.label10.Name = "label10";
+			this.label10.Padding = new System.Windows.Forms.Padding (12, 12, 12, 0);
+			this.label10.Size = new System.Drawing.Size (487, 355);
+			this.label10.TabIndex = 5;
+			this.label10.Text = resources.GetString ("label10.Text");
+			// 
+			// welcome_title_label
+			// 
+			this.welcome_title_label.AutoSize = true;
+			this.welcome_title_label.Dock = System.Windows.Forms.DockStyle.Top;
+			this.welcome_title_label.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.welcome_title_label.Location = new System.Drawing.Point (3, 3);
+			this.welcome_title_label.Margin = new System.Windows.Forms.Padding (0);
+			this.welcome_title_label.Name = "welcome_title_label";
+			this.welcome_title_label.Padding = new System.Windows.Forms.Padding (12, 12, 0, 0);
+			this.welcome_title_label.Size = new System.Drawing.Size (151, 25);
+			this.welcome_title_label.TabIndex = 1;
+			this.welcome_title_label.Text = "Welcome to Gendarme ";
 			// 
 			// addfiles_tab_page
 			// 
@@ -235,19 +254,19 @@ namespace Gendarme {
 			this.file_list_box.Size = new System.Drawing.Size (468, 301);
 			this.file_list_box.TabIndex = 0;
 			// 
-			// tabPage3
+			// rules_tab_page
 			// 
-			this.tabPage3.Controls.Add (this.browse_documentation_button);
-			this.tabPage3.Controls.Add (this.rules_count_label);
-			this.tabPage3.Controls.Add (this.label8);
-			this.tabPage3.Controls.Add (this.label7);
-			this.tabPage3.Controls.Add (this.rules_tree_view);
-			this.tabPage3.Location = new System.Drawing.Point (4, 25);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size (493, 386);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Select Rules";
-			this.tabPage3.UseVisualStyleBackColor = true;
+			this.rules_tab_page.Controls.Add (this.browse_documentation_button);
+			this.rules_tab_page.Controls.Add (this.rules_count_label);
+			this.rules_tab_page.Controls.Add (this.label8);
+			this.rules_tab_page.Controls.Add (this.label7);
+			this.rules_tab_page.Controls.Add (this.rules_tree_view);
+			this.rules_tab_page.Location = new System.Drawing.Point (4, 25);
+			this.rules_tab_page.Name = "rules_tab_page";
+			this.rules_tab_page.Size = new System.Drawing.Size (493, 386);
+			this.rules_tab_page.TabIndex = 2;
+			this.rules_tab_page.Text = "Select Rules";
+			this.rules_tab_page.UseVisualStyleBackColor = true;
 			// 
 			// browse_documentation_button
 			// 
@@ -299,19 +318,204 @@ namespace Gendarme {
 			this.rules_tree_view.TabIndex = 0;
 			this.rules_tree_view.AfterCheck += new System.Windows.Forms.TreeViewEventHandler (this.RulesTreeViewAfterCheck);
 			// 
-			// analyze_tab_tage
+			// options_tab_page
 			// 
-			this.analyze_tab_tage.Controls.Add (this.analyze_defect_label);
-			this.analyze_tab_tage.Controls.Add (this.analyze_title_label);
-			this.analyze_tab_tage.Controls.Add (this.analyze_status_label);
-			this.analyze_tab_tage.Controls.Add (this.analyze_assembly_label);
-			this.analyze_tab_tage.Controls.Add (this.progress_bar);
-			this.analyze_tab_tage.Location = new System.Drawing.Point (4, 25);
-			this.analyze_tab_tage.Name = "analyze_tab_tage";
-			this.analyze_tab_tage.Size = new System.Drawing.Size (493, 386);
-			this.analyze_tab_tage.TabIndex = 3;
-			this.analyze_tab_tage.Text = "Analyze";
-			this.analyze_tab_tage.UseVisualStyleBackColor = true;
+			this.options_tab_page.Controls.Add (this.options_save_button);
+			this.options_tab_page.Controls.Add (this.options_all_radiobutton);
+			this.options_tab_page.Controls.Add (this.options_visible_radiobutton);
+			this.options_tab_page.Controls.Add (this.label12);
+			this.options_tab_page.Controls.Add (this.options_notvisible_radiobutton);
+			this.options_tab_page.Controls.Add (this.options_severity_combobox);
+			this.options_tab_page.Controls.Add (this.options_confidence_combobox);
+			this.options_tab_page.Controls.Add (this.options_limit_updown);
+			this.options_tab_page.Controls.Add (this.options_nolimit_checkbox);
+			this.options_tab_page.Controls.Add (this.label11);
+			this.options_tab_page.Controls.Add (this.label9);
+			this.options_tab_page.Controls.Add (this.label4);
+			this.options_tab_page.Controls.Add (this.label3);
+			this.options_tab_page.Controls.Add (this.label2);
+			this.options_tab_page.Location = new System.Drawing.Point (4, 25);
+			this.options_tab_page.Name = "options_tab_page";
+			this.options_tab_page.Padding = new System.Windows.Forms.Padding (3);
+			this.options_tab_page.Size = new System.Drawing.Size (493, 386);
+			this.options_tab_page.TabIndex = 5;
+			this.options_tab_page.Text = "Options";
+			this.options_tab_page.UseVisualStyleBackColor = true;
+			// 
+			// options_save_button
+			// 
+			this.options_save_button.Location = new System.Drawing.Point (327, 344);
+			this.options_save_button.Name = "options_save_button";
+			this.options_save_button.Size = new System.Drawing.Size (156, 23);
+			this.options_save_button.TabIndex = 31;
+			this.options_save_button.Text = "Save as default";
+			this.options_save_button.UseVisualStyleBackColor = true;
+			this.options_save_button.Click += new System.EventHandler (this.OnOptionsSaveClick);
+			// 
+			// options_all_radiobutton
+			// 
+			this.options_all_radiobutton.AutoSize = true;
+			this.options_all_radiobutton.Location = new System.Drawing.Point (18, 290);
+			this.options_all_radiobutton.Name = "options_all_radiobutton";
+			this.options_all_radiobutton.Size = new System.Drawing.Size (240, 17);
+			this.options_all_radiobutton.TabIndex = 30;
+			this.options_all_radiobutton.Text = "All code, visible or not, outside the assemblies";
+			this.options_all_radiobutton.UseVisualStyleBackColor = true;
+			// 
+			// options_visible_radiobutton
+			// 
+			this.options_visible_radiobutton.AutoSize = true;
+			this.options_visible_radiobutton.Checked = true;
+			this.options_visible_radiobutton.Location = new System.Drawing.Point (18, 267);
+			this.options_visible_radiobutton.Name = "options_visible_radiobutton";
+			this.options_visible_radiobutton.Size = new System.Drawing.Size (210, 17);
+			this.options_visible_radiobutton.TabIndex = 29;
+			this.options_visible_radiobutton.TabStop = true;
+			this.options_visible_radiobutton.Text = "All visible code (outside the assemblies)";
+			this.options_visible_radiobutton.UseVisualStyleBackColor = true;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point (15, 251);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size (43, 13);
+			this.label12.TabIndex = 28;
+			this.label12.Text = "Visibility";
+			// 
+			// options_notvisible_radiobutton
+			// 
+			this.options_notvisible_radiobutton.AutoSize = true;
+			this.options_notvisible_radiobutton.Location = new System.Drawing.Point (18, 313);
+			this.options_notvisible_radiobutton.Name = "options_notvisible_radiobutton";
+			this.options_notvisible_radiobutton.Size = new System.Drawing.Size (238, 17);
+			this.options_notvisible_radiobutton.TabIndex = 27;
+			this.options_notvisible_radiobutton.Text = "Only code not visible outside the assemnblies";
+			this.options_notvisible_radiobutton.UseVisualStyleBackColor = true;
+			// 
+			// options_severity_combobox
+			// 
+			this.options_severity_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.options_severity_combobox.FormattingEnabled = true;
+			this.options_severity_combobox.Items.AddRange (new object [] {
+            "All - Include all defects, including audits",
+            "Low - Include all defects, except audits",
+            "Medium - Include most defects, except minor ones",
+            "High - Only include defects that can have large effects",
+            "Critical - Only include critical defects (few)"});
+			this.options_severity_combobox.Location = new System.Drawing.Point (18, 147);
+			this.options_severity_combobox.Name = "options_severity_combobox";
+			this.options_severity_combobox.Size = new System.Drawing.Size (465, 21);
+			this.options_severity_combobox.TabIndex = 25;
+			// 
+			// options_confidence_combobox
+			// 
+			this.options_confidence_combobox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.options_confidence_combobox.Items.AddRange (new object [] {
+            "All - Include all defects",
+            "Normal - Include all defects except if its confidence level is low",
+            "High - Include only defects where it\'s likely that no false positives are present" +
+                "",
+            "Total - Include only defects where the confidence level is 100%"});
+			this.options_confidence_combobox.Location = new System.Drawing.Point (18, 204);
+			this.options_confidence_combobox.Name = "options_confidence_combobox";
+			this.options_confidence_combobox.Size = new System.Drawing.Size (465, 21);
+			this.options_confidence_combobox.TabIndex = 26;
+			// 
+			// options_limit_updown
+			// 
+			this.options_limit_updown.Increment = new decimal (new int [] {
+            100,
+            0,
+            0,
+            0});
+			this.options_limit_updown.Location = new System.Drawing.Point (18, 95);
+			this.options_limit_updown.Maximum = new decimal (new int [] {
+            1000000,
+            0,
+            0,
+            0});
+			this.options_limit_updown.Minimum = new decimal (new int [] {
+            1,
+            0,
+            0,
+            0});
+			this.options_limit_updown.Name = "options_limit_updown";
+			this.options_limit_updown.Size = new System.Drawing.Size (136, 20);
+			this.options_limit_updown.TabIndex = 18;
+			this.options_limit_updown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.options_limit_updown.Value = global::Gendarme.Properties.Settings.Default.DefectsLimit;
+			// 
+			// options_nolimit_checkbox
+			// 
+			this.options_nolimit_checkbox.AutoSize = true;
+			this.options_nolimit_checkbox.Location = new System.Drawing.Point (165, 98);
+			this.options_nolimit_checkbox.Name = "options_nolimit_checkbox";
+			this.options_nolimit_checkbox.Size = new System.Drawing.Size (64, 17);
+			this.options_nolimit_checkbox.TabIndex = 17;
+			this.options_nolimit_checkbox.Text = "No Limit";
+			this.options_nolimit_checkbox.UseVisualStyleBackColor = true;
+			this.options_nolimit_checkbox.CheckedChanged += new System.EventHandler (this.options_nolimit_checkbox_CheckedChanged);
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point (15, 188);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size (83, 13);
+			this.label11.TabIndex = 15;
+			this.label11.Text = "Confidence filter";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point (15, 131);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size (67, 13);
+			this.label9.TabIndex = 14;
+			this.label9.Text = "Severity filter";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point (28, 26);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size (255, 13);
+			this.label4.TabIndex = 11;
+			this.label4.Text = "Limit and/or filter the defects reported during analysis";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point (15, 77);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size (139, 13);
+			this.label3.TabIndex = 10;
+			this.label3.Text = "Maximum number of defects";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.label2.Location = new System.Drawing.Point (15, 12);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size (50, 13);
+			this.label2.TabIndex = 9;
+			this.label2.Text = "Options";
+			// 
+			// analyze_tab_page
+			// 
+			this.analyze_tab_page.Controls.Add (this.analyze_defect_label);
+			this.analyze_tab_page.Controls.Add (this.analyze_title_label);
+			this.analyze_tab_page.Controls.Add (this.analyze_status_label);
+			this.analyze_tab_page.Controls.Add (this.analyze_assembly_label);
+			this.analyze_tab_page.Controls.Add (this.progress_bar);
+			this.analyze_tab_page.Location = new System.Drawing.Point (4, 25);
+			this.analyze_tab_page.Name = "analyze_tab_page";
+			this.analyze_tab_page.Size = new System.Drawing.Size (493, 386);
+			this.analyze_tab_page.TabIndex = 3;
+			this.analyze_tab_page.Text = "Analyze";
+			this.analyze_tab_page.UseVisualStyleBackColor = true;
 			// 
 			// analyze_defect_label
 			// 
@@ -357,18 +561,18 @@ namespace Gendarme {
 			this.progress_bar.Size = new System.Drawing.Size (465, 23);
 			this.progress_bar.TabIndex = 0;
 			// 
-			// results_tab_Page
+			// results_tab_page
 			// 
-			this.results_tab_Page.Controls.Add (this.view_report_button);
-			this.results_tab_Page.Controls.Add (this.save_report_button);
-			this.results_tab_Page.Controls.Add (this.results_title_label);
-			this.results_tab_Page.Controls.Add (this.report_subtitle_label);
-			this.results_tab_Page.Location = new System.Drawing.Point (4, 25);
-			this.results_tab_Page.Name = "results_tab_Page";
-			this.results_tab_Page.Size = new System.Drawing.Size (493, 386);
-			this.results_tab_Page.TabIndex = 4;
-			this.results_tab_Page.Text = "Results";
-			this.results_tab_Page.UseVisualStyleBackColor = true;
+			this.results_tab_page.Controls.Add (this.view_report_button);
+			this.results_tab_page.Controls.Add (this.save_report_button);
+			this.results_tab_page.Controls.Add (this.results_title_label);
+			this.results_tab_page.Controls.Add (this.report_subtitle_label);
+			this.results_tab_page.Location = new System.Drawing.Point (4, 25);
+			this.results_tab_page.Name = "results_tab_page";
+			this.results_tab_page.Size = new System.Drawing.Size (493, 386);
+			this.results_tab_page.TabIndex = 4;
+			this.results_tab_page.Text = "Results";
+			this.results_tab_page.UseVisualStyleBackColor = true;
 			// 
 			// view_report_button
 			// 
@@ -490,16 +694,19 @@ namespace Gendarme {
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Gendarme";
 			this.wizard_tab_control.ResumeLayout (false);
-			this.tabPage1.ResumeLayout (false);
-			this.tabPage1.PerformLayout ();
+			this.welcome_tab_page.ResumeLayout (false);
+			this.welcome_tab_page.PerformLayout ();
 			this.addfiles_tab_page.ResumeLayout (false);
 			this.addfiles_tab_page.PerformLayout ();
-			this.tabPage3.ResumeLayout (false);
-			this.tabPage3.PerformLayout ();
-			this.analyze_tab_tage.ResumeLayout (false);
-			this.analyze_tab_tage.PerformLayout ();
-			this.results_tab_Page.ResumeLayout (false);
-			this.results_tab_Page.PerformLayout ();
+			this.rules_tab_page.ResumeLayout (false);
+			this.rules_tab_page.PerformLayout ();
+			this.options_tab_page.ResumeLayout (false);
+			this.options_tab_page.PerformLayout ();
+			((System.ComponentModel.ISupportInitialize) (this.options_limit_updown)).EndInit ();
+			this.analyze_tab_page.ResumeLayout (false);
+			this.analyze_tab_page.PerformLayout ();
+			this.results_tab_page.ResumeLayout (false);
+			this.results_tab_page.PerformLayout ();
 			((System.ComponentModel.ISupportInitialize) (this.pictureBox1)).EndInit ();
 			this.ResumeLayout (false);
 
@@ -508,15 +715,15 @@ namespace Gendarme {
 		#endregion
 
 		private System.Windows.Forms.TabControl wizard_tab_control;
-		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage welcome_tab_page;
 		private System.Windows.Forms.TabPage addfiles_tab_page;
 		private System.Windows.Forms.Button help_button;
 		private System.Windows.Forms.Button cancel_button;
 		private System.Windows.Forms.LinkLabel welcome_link_label;
-		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.TabPage rules_tab_page;
 		private System.Windows.Forms.TreeView rules_tree_view;
-		private System.Windows.Forms.TabPage analyze_tab_tage;
-		private System.Windows.Forms.TabPage results_tab_Page;
+		private System.Windows.Forms.TabPage analyze_tab_page;
+		private System.Windows.Forms.TabPage results_tab_page;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label welcome_gendarme_label;
 		private System.Windows.Forms.Button next_button;
@@ -545,6 +752,21 @@ namespace Gendarme {
 		private System.Windows.Forms.ProgressBar progress_bar;
 		private System.Windows.Forms.Label analyze_status_label;
 		private System.Windows.Forms.Label analyze_defect_label;
+		private System.Windows.Forms.TabPage options_tab_page;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.NumericUpDown options_limit_updown;
+		private System.Windows.Forms.CheckBox options_nolimit_checkbox;
+		private System.Windows.Forms.ComboBox options_confidence_combobox;
+		private System.Windows.Forms.ComboBox options_severity_combobox;
+		private System.Windows.Forms.RadioButton options_all_radiobutton;
+		private System.Windows.Forms.RadioButton options_visible_radiobutton;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.RadioButton options_notvisible_radiobutton;
+		private System.Windows.Forms.Button options_save_button;
 	}
 }
 

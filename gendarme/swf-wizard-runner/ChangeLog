@@ -1,3 +1,14 @@
+2008-08-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Page.cs: Add a new Options step to the enum.
+	* Wizard.Designer.cs: Update (vs generated)
+	* Wizard.cs: Add the new Options step to allow users to set
+	a limit to the number of defects reported, to filter based on
+	the severity or the confidence level of the defects and finally
+	on the visibility of the code being analyzed.
+	* Properties/Settings.settings: Update (vs generated)
+	* Properties/Settings.Designer.cs: Update (vs generated)
+
 2008-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: (GetSelectedWriter) Use the index parameter.

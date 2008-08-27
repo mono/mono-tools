@@ -32,6 +32,7 @@ namespace Gendarme {
 		Welcome,
 		AddFiles,
 		SelectRules,
+		Options,	// new in 2.1+
 		Analyze,
 		Report
 	}

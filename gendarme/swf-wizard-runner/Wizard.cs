@@ -33,6 +33,7 @@ using System.IO;
 using System.Windows.Forms;
 
 using Gendarme.Framework;
+using Gendarme.Properties;
 
 using Mono.Cecil;
 
@@ -151,15 +152,18 @@ namespace Gendarme {
 			case Page.SelectRules:
 				Current = Page.AddFiles;
 				break;
+			case Page.Options:
+				Current = Page.SelectRules;
+				break;
 			case Page.Analyze:
 				// then ask confirmation before aborting 
 				// and move back one step
 				if (ConfirmAnalyzeAbort (false))
-					Current = Page.SelectRules;
+					Current = Page.Options;
 				break;
 			case Page.Report:
 				// move two step back (i.e. skip analyze)
-				Current = Page.SelectRules;
+				Current = Page.Options;
 				break;
 			}
 		}
@@ -174,6 +178,10 @@ namespace Gendarme {
 				Current = Page.SelectRules;
 				break;
 			case Page.SelectRules:
+				Current = Page.Options;
+				break;
+			case Page.Options:
+				UpdateOptions ();
 				Current = Page.Analyze;
 				break;
 			case Page.Analyze:
@@ -215,6 +223,9 @@ namespace Gendarme {
 				break;
 			case Page.SelectRules:
 				UpdateSelectRulesUI ();
+				break;
+			case Page.Options:
+				UpdateOptionsUI ();
 				break;
 			case Page.Analyze:
 				UpdateAnalyzeUI ();
@@ -398,6 +409,59 @@ namespace Gendarme {
 
 		#endregion
 
+		#region Options
+
+		private void UpdateOptionsUI ()
+		{
+			options_nolimit_checkbox.Checked = (Settings.Default.DefectsLimit == Int32.MaxValue);
+
+			options_severity_combobox.SelectedIndex = (int) Severity.Audit - Settings.Default.Severity;
+			options_confidence_combobox.SelectedIndex = (int) Confidence.Low - Settings.Default.Confidence;
+
+			switch ((ApplicabilityScope) Settings.Default.Scope) {
+			case ApplicabilityScope.Visible:
+				options_visible_radiobutton.Checked = true;
+				break;
+			case ApplicabilityScope.NonVisible:
+				options_notvisible_radiobutton.Checked = true;
+				break;
+			case ApplicabilityScope.All:
+				options_all_radiobutton.Checked = true;
+				break;
+			}
+		}
+
+		private void options_nolimit_checkbox_CheckedChanged (object sender, EventArgs e)
+		{
+			options_limit_updown.Enabled = !options_nolimit_checkbox.Checked;
+		}
+
+		private void UpdateOptions ()
+		{
+			// 2^31 is close enough "no limit"
+			Settings.Default.DefectsLimit = options_nolimit_checkbox.Checked ? Int32.MaxValue :
+				(int) options_limit_updown.Value;
+
+			// hack, this works right now but won't if we add/remove more options
+			Settings.Default.Severity = (int) Severity.Audit - options_severity_combobox.SelectedIndex;
+			Settings.Default.Confidence = (int) Confidence.Low - options_confidence_combobox.SelectedIndex;
+
+			if (options_visible_radiobutton.Checked)
+				Settings.Default.Scope = (int) ApplicabilityScope.Visible;
+			else if (options_all_radiobutton.Checked)
+				Settings.Default.Scope = (int) ApplicabilityScope.All;
+			else
+				Settings.Default.Scope = (int) ApplicabilityScope.NonVisible;
+		}
+
+		private void OnOptionsSaveClick (object sender, EventArgs e)
+		{
+			UpdateOptions ();
+			Settings.Default.Save ();
+		}
+
+		#endregion
+
 		#region Analyze
 
 		private void UpdateAnalyzeUI ()
@@ -439,8 +503,22 @@ namespace Gendarme {
 		private void Analyze ()
 		{
 			counter = 0;
+
+			// apply settings
+			Runner.DefectsLimit = Settings.Default.DefectsLimit;
+
+			Runner.SeverityBitmask.SetDown ((Severity)Settings.Default.Severity);
+			Runner.ConfidenceBitmask.SetDown ((Confidence)Settings.Default.Confidence);
+
+			// wizard limits this as a "global" (all rule) setting
+			ApplicabilityScope scope = (ApplicabilityScope) Settings.Default.Scope;
+			foreach (IRule rule in Runner.Rules) {
+				rule.ApplicabilityScope = scope; 
+			}
+
 			Runner.Initialize ();
 			Runner.Run ();
+			Runner.TearDown ();
 
 			BeginInvoke ((Action) (() => Current = Page.Report));
 		}
