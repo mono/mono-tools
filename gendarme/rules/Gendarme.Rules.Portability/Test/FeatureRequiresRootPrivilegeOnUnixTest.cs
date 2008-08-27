@@ -27,18 +27,14 @@
 //
 
 using System;
-using System.Reflection;
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Portability;
-using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Portability {
 

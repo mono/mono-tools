@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2006-2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,23 +27,23 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Portability;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Portability {
 
 	[TestFixture]
-	public class NewLineTest {
+	public class NewLineLiteralTest : MethodRuleTestFixture<NewLineLiteralRule> {
 
-		private IMethodRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		public string GetNewLineLiteral_13 ()
 		{
@@ -58,6 +58,14 @@ namespace Test.Rules.Portability {
 		public string GetNewLineLiteral ()
 		{
 			return "Hello Mono\r\n";
+		}
+
+		[Test]
+		public void Bad ()
+		{
+			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral_13", 1);
+			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral_10", 1);
+			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral", 1);
 		}
 
 		public string GetNewLine ()
@@ -75,65 +83,12 @@ namespace Test.Rules.Portability {
 			return "";
 		}
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Portability.NewLineTest"];
-			rule = new NewLineLiteralRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
-			}
-			return null;
-		}
-
 		[Test]
-		public void HasNewLineLiteral_13 ()
+		public void Correct ()
 		{
-			MethodDefinition method = GetTest ("GetNewLineLiteral_13");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void HasNewLineLiteral_10 ()
-		{
-			MethodDefinition method = GetTest ("GetNewLineLiteral_10");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void HasNewLineLiteral ()
-		{
-			MethodDefinition method = GetTest ("GetNewLineLiteral");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void HasNewLine ()
-		{
-			MethodDefinition method = GetTest ("GetNewLine");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void HasNull ()
-		{
-			MethodDefinition method = GetTest ("GetNull");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-		}
-
-		[Test]
-		public void HasEmpty ()
-		{
-			MethodDefinition method = GetTest ("GetEmpty");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess<NewLineLiteralTest> ("GetNewLine");
+			AssertRuleSuccess<NewLineLiteralTest> ("GetNull");
+			AssertRuleSuccess<NewLineLiteralTest> ("GetEmpty");
 		}
 	}
 }
