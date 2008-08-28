@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsEnum || type.IsInterface)
+			if (type.IsEnum || type.IsInterface || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			if (type.HasMethod (MethodSignatures.op_Addition) && type.HasMethod (MethodSignatures.op_Subtraction)) {
