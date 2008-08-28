@@ -455,7 +455,7 @@ namespace Gendarme {
 			this.options_nolimit_checkbox.TabIndex = 17;
 			this.options_nolimit_checkbox.Text = "No Limit";
 			this.options_nolimit_checkbox.UseVisualStyleBackColor = true;
-			this.options_nolimit_checkbox.CheckedChanged += new System.EventHandler (this.options_nolimit_checkbox_CheckedChanged);
+			this.options_nolimit_checkbox.CheckedChanged += new System.EventHandler (this.OptionsNoLimitCheckboxCheckedChanged);
 			// 
 			// label11
 			// 

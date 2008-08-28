@@ -431,7 +431,7 @@ namespace Gendarme {
 			}
 		}
 
-		private void options_nolimit_checkbox_CheckedChanged (object sender, EventArgs e)
+		private void OptionsNoLimitCheckboxCheckedChanged (object sender, EventArgs e)
 		{
 			options_limit_updown.Enabled = !options_nolimit_checkbox.Checked;
 		}
