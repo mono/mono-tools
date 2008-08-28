@@ -33,18 +33,6 @@ namespace Gendarme.Framework.Rocks {
 	public static class AssemblyRocks {
 
 		/// <summary>
-		/// Check if the assembly contains an attribute of a specified type.
-		/// </summary>
-		/// <param name="self">The AssemblyDefinition on which the extension method can be called.</param>
-		/// <param name="attributeName">Full name of the attribute class</param>
-		/// <returns>True if the assembly contains an attribute of the same name,
-		/// False otherwise.</returns>
-		public static bool HasAttribute (this AssemblyDefinition self, string attributeName)
-		{
-			return self.CustomAttributes.ContainsType (attributeName);
-		}
-
-		/// <summary>
 		/// Check if the AssemblyName is reference by the assembly.
 		/// </summary>
 		/// <param name="self">The AssemblyDefinition on which the extension method can be called.</param>

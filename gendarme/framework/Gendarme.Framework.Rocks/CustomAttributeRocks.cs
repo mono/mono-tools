@@ -30,8 +30,8 @@ using Mono.Cecil;
 
 namespace Gendarme.Framework.Rocks {
 
-	// add CustomAttribute[Collection] extensions methods here
-	// only if:
+	// add CustomAttribute[Collection], ICustomAttributeProvider extensions 
+	// methods here only if:
 	// * you supply minimal documentation for them (xml)
 	// * you supply unit tests for them
 	// * they are required somewhere to simplify, even indirectly, the rules
@@ -87,6 +87,19 @@ namespace Gendarme.Framework.Rocks {
 				}
 			}
 			return false;
+		}
+
+		/// <summary>
+		/// Check if the type contains an attribute of a specified type.
+		/// </summary>
+		/// <param name="self">The ICustomAttributeProvider (e.g. AssemblyDefinition, TypeReference, MethodReference,
+		/// FieldReference...) on which the extension method can be called.</param>
+		/// <param name="attributeName">Full name of the attribute class</param>
+		/// <returns>True if the provider contains an attribute of the same name,
+		/// False otherwise.</returns>
+		public static bool HasAttribute (this ICustomAttributeProvider self, string attributeName)
+		{
+			return self.CustomAttributes.ContainsType (attributeName);
 		}
 	}
 }

@@ -53,18 +53,6 @@ namespace Gendarme.Framework.Rocks {
 	public static class MethodRocks {
 
 		/// <summary>
-		/// Check if the method contains an attribute of a specified type.
-		/// </summary>
-		/// <param name="self">The MethodReference on which the extension method can be called.</param>
-		/// <param name="attributeName">Full name of the attribute class</param>
-		/// <returns>True if the method contains an attribute of the same name,
-		/// False otherwise.</returns>
-		public static bool HasAttribute (this MethodReference self, string attributeName)
-		{
-			return self.Resolve ().CustomAttributes.ContainsType (attributeName);
-		}
-
-		/// <summary>
 		/// Check if the MethodReference is defined as the entry point of it's assembly.
 		/// </summary>
 		/// <param name="self">The MethodReference on which the extension method can be called.</param>
