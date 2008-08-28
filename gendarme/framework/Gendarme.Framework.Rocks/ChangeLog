@@ -1,3 +1,12 @@
+2008-08-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyRocks.cs: Remove HasAttribute
+	* CustomAttributeRocks.cs: Add HasAttribute extension method on 
+	ICustomAttributeProvider
+	* FieldRocks.cs: Remove HasAttribute
+	* MethodRocks.cs: Remove HasAttribute
+	* TypeRocks.cs: Remove HasAttribute
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* TypeRocks.cs: Fix parameter type comparison wrt generics.

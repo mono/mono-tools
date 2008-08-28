@@ -233,18 +233,6 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if the type contains an attribute of a specified type.
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <param name="attributeName">Full name of the attribute class</param>
-		/// <returns>True if the type contains an attribute of the same name,
-		/// False otherwise.</returns>
-		public static bool HasAttribute (this TypeReference self, string attributeName)
-		{
-			return self.CustomAttributes.ContainsType (attributeName);
-		}
-
-		/// <summary>
 		/// Checks if at least one Method satisfies a given MethodSignature.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
