@@ -29,25 +29,86 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
-namespace Test.IO {	class Foo {} }
+// no namespace
+class Foo { }
+
+namespace Test.IO { class Foo {} }
 namespace Test.Fa { class Foo {} }
 namespace Test.ASP { class Foo {} class Bar {} }
 namespace Test.A { class Foo {} }
+namespace Test.Rules.ROCKS { class Foo { } }
 
 namespace Test.Rules.Naming {
 
-	public class CorrectCasing {
-	}
+	[TestFixture]
+	public class UseCorrectCasingTypeTest : TypeRuleTestFixture<UseCorrectCasingRule> {
 
-	public class incorrectCasing {
+		[CompilerGenerated]
+		public class GeneratedType {
+		}
+
+		public class CorrectCasing {
+		}
+
+		public class incorrectCasing {
+		}
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply<GeneratedType> ();
+		}
+
+		[Test]
+		public void NamespaceOfLength0 ()
+		{
+			AssertRuleSuccess<Foo> ();
+		}
+
+		[Test]
+		public void NamespaceOfLength1 ()
+		{
+			AssertRuleFailure<Test.A.Foo> (1);
+		}
+
+		[Test]
+		public void NamespaceOfLength2 ()
+		{
+			AssertRuleSuccess<Test.IO.Foo> ();
+			AssertRuleFailure<Test.Fa.Foo> (1);
+		}
+
+		[Test]
+		public void IncorrectNamespaceReportedOnce ()
+		{
+			AssertRuleFailure<Test.ASP.Foo> (1);
+			AssertRuleSuccess<Test.ASP.Bar> ();
+		}
+
+		[Test]
+		public void LongNamespace ()
+		{
+			AssertRuleSuccess<UseCorrectCasingTypeTest> ();
+			AssertRuleFailure<Test.Rules.ROCKS.Foo> (1);
+		}
+
+		[Test]
+		public void Types ()
+		{
+			AssertRuleSuccess<CorrectCasing> ();
+			AssertRuleFailure<incorrectCasing> (1);
+		}
 	}
 
 	public class CasingMethods {
@@ -115,57 +176,6 @@ namespace Test.Rules.Naming {
 			return null;
 		}
 
-		[Test]
-		public void TestCorrectNamespaceOfLength2 ()
-		{
-			type = assembly.MainModule.Types ["Test.IO.Foo"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectNamespaceOfLength2 ()
-		{
-			type = assembly.MainModule.Types ["Test.Fa.Foo"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectNamespaceOfLength1 ()
-		{
-			type = assembly.MainModule.Types ["Test.A.Foo"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectNamespaceIsReportedOnce ()
-		{
-			type = assembly.MainModule.Types ["Test.ASP.Foo"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult #1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count #1");
-
-			type = assembly.MainModule.Types ["Test.ASP.Bar"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult #2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count #2");
-		}
-
-		[Test]
-		public void TestCorrectCasedClass ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectCasing"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectCasedClass ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.incorrectCasing"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
 
 		[Test]
 		public void TestCorrectCasedMethod ()

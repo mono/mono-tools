@@ -1,3 +1,8 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectCasingTest.cs: Convert namespace tests (ITypeRule) to 
+	the new syntax. Add a few more tests for more coverage.
+
 2008-05-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotPrefixEventsWithAfterOrBeforeTest.cs: New. Unit tests for
