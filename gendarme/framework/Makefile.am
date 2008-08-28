@@ -37,6 +37,7 @@ framework_sources = \
 	Gendarme.Framework/ApplicabilityScope.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
 	Gendarme.Framework.Helpers/MethodSignatures.cs \
+	Gendarme.Framework.Helpers/OpCodeBitmask.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \
 	Gendarme.Framework.Helpers/StackEntryUsageResult.cs \
 	Gendarme.Framework.Rocks/AssemblyRocks.cs \
