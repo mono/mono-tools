@@ -1,3 +1,10 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectCasingRule.cs: Simplify the rule a bit. Use a constant
+	for MethodSemanticsAttributes (CheckMethod). Remove unneeded check
+	for <Module> (now handled elsewhere) and unneeded case (3) for 
+	namespaces.
+
 2008-08-05  Peter Johanson  <peter@peterjohanson.com>
 
 	* UseCorrectCasingRule.cs: The casing rule does not apply
