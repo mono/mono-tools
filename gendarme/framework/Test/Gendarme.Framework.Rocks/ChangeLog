@@ -1,3 +1,7 @@
+2008-08-28 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocksTest.cs: Add more test to cover all Is* rocks
+
 2008-06-14 Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocksTest.cs: New. Unit tests for InstructionRocks.

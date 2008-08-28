@@ -131,6 +131,98 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
+		public void IsLoadArgument ()
+		{
+			Instruction ins = null;
+			// that's a funny thing we can do with extention methods and null
+			Assert.IsFalse (ins.IsLoadArgument (), "null");
+			// work around Cecil validations
+			ins = body.CilWorker.Emit (OpCodes.Nop);
+			foreach (Code code in Enum.GetValues (typeof (Code))) {
+				ins.OpCode = OpCodes.GetOpCode (code);
+				switch (code) {
+				case Code.Ldarg_0:
+				case Code.Ldarg_1:
+				case Code.Ldarg_2:
+				case Code.Ldarg_3:
+				case Code.Ldarg:
+				case Code.Ldarg_S:
+				case Code.Ldarga:
+				case Code.Ldarga_S:
+					Assert.IsTrue (ins.IsLoadArgument (), code.ToString ());
+					break;
+				default:
+					Assert.IsFalse (ins.IsLoadArgument (), code.ToString ());
+					break;
+				}
+			}
+		}
+
+		[Test]
+		public void IsLoadElement ()
+		{
+			Instruction ins = null;
+			// that's a funny thing we can do with extention methods and null
+			Assert.IsFalse (ins.IsLoadElement (), "null");
+			// work around Cecil validations
+			ins = body.CilWorker.Emit (OpCodes.Nop);
+			foreach (Code code in Enum.GetValues (typeof (Code))) {
+				ins.OpCode = OpCodes.GetOpCode (code);
+				switch (code) {
+				case Code.Ldelem_Any:
+				case Code.Ldelem_I:
+				case Code.Ldelem_I1:
+				case Code.Ldelem_I2:
+				case Code.Ldelem_I4:
+				case Code.Ldelem_I8:
+				case Code.Ldelem_R4:
+				case Code.Ldelem_R8:
+				case Code.Ldelem_Ref:
+				case Code.Ldelem_U1:
+				case Code.Ldelem_U2:
+				case Code.Ldelem_U4:
+				case Code.Ldelema:
+					Assert.IsTrue (ins.IsLoadElement (), code.ToString ());
+					break;
+				default:
+					Assert.IsFalse (ins.IsLoadElement (), code.ToString ());
+					break;
+				}
+			}
+		}
+
+		[Test]
+		public void IsLoadIndirect ()
+		{
+			Instruction ins = null;
+			// that's a funny thing we can do with extention methods and null
+			Assert.IsFalse (ins.IsLoadIndirect (), "null");
+			// work around Cecil validations
+			ins = body.CilWorker.Emit (OpCodes.Nop);
+			foreach (Code code in Enum.GetValues (typeof (Code))) {
+				ins.OpCode = OpCodes.GetOpCode (code);
+				switch (code) {
+				case Code.Ldind_I:
+				case Code.Ldind_I1:
+				case Code.Ldind_I2:
+				case Code.Ldind_I4:
+				case Code.Ldind_I8:
+				case Code.Ldind_R4:
+				case Code.Ldind_R8:
+				case Code.Ldind_Ref:
+				case Code.Ldind_U1:
+				case Code.Ldind_U2:
+				case Code.Ldind_U4:
+					Assert.IsTrue (ins.IsLoadIndirect (), code.ToString ());
+					break;
+				default:
+					Assert.IsFalse (ins.IsLoadIndirect (), code.ToString ());
+					break;
+				}
+			}
+		}
+
+		[Test]
 		public void IsLoadLocal ()
 		{
 			Instruction ins = null;
@@ -153,6 +245,28 @@ namespace Test.Framework.Rocks {
 					break;
 				default:
 					Assert.IsFalse (ins.IsLoadLocal (), code.ToString ());
+					break;
+				}
+			}
+		}
+
+		[Test]
+		public void IsStoreArgument ()
+		{
+			Instruction ins = null;
+			// that's a funny thing we can do with extention methods and null
+			Assert.IsFalse (ins.IsStoreArgument (), "null");
+			// work around Cecil validations
+			ins = body.CilWorker.Emit (OpCodes.Nop);
+			foreach (Code code in Enum.GetValues (typeof (Code))) {
+				ins.OpCode = OpCodes.GetOpCode (code);
+				switch (code) {
+				case Code.Starg:
+				case Code.Starg_S:
+					Assert.IsTrue (ins.IsStoreArgument (), code.ToString ());
+					break;
+				default:
+					Assert.IsFalse (ins.IsStoreArgument (), code.ToString ());
 					break;
 				}
 			}
