@@ -36,6 +36,8 @@ namespace Gendarme.Rules.Design {
 
 	[Problem ("This method use ref and/or out parameters in a visible API, which should be as simple as possible.")]
 	[Solution ("If multiple return values are needed then refactor the method to return an object that contains them.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1021:AvoidOutParameters")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1045:DoNotPassTypesByReference")]
 	public class AvoidRefAndOutParametersRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
