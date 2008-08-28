@@ -31,6 +31,8 @@ using System;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework.Helpers;
+
 namespace Gendarme.Framework.Rocks {
 
 	// add Instruction extensions methods here
@@ -308,19 +310,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Ldarg_0:
-			case Code.Ldarg_1:
-			case Code.Ldarg_2:
-			case Code.Ldarg_3:
-			case Code.Ldarg:
-			case Code.Ldarg_S:
-			case Code.Ldarga:
-			case Code.Ldarga_S:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.LoadArgument.Get (self.OpCode.Code);
 		}
 
 		/// <summary>
@@ -333,24 +323,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Ldelem_Any:
-			case Code.Ldelem_I:
-			case Code.Ldelem_I1:
-			case Code.Ldelem_I2:
-			case Code.Ldelem_I4:
-			case Code.Ldelem_I8:
-			case Code.Ldelem_R4:
-			case Code.Ldelem_R8:
-			case Code.Ldelem_Ref:
-			case Code.Ldelem_U1:
-			case Code.Ldelem_U2:
-			case Code.Ldelem_U4:
-			case Code.Ldelema:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.LoadElement.Get (self.OpCode.Code);
 		}
 
 		/// <summary>
@@ -363,22 +336,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Ldind_I:
-			case Code.Ldind_I1:
-			case Code.Ldind_I2:
-			case Code.Ldind_I4:
-			case Code.Ldind_I8:
-			case Code.Ldind_R4:
-			case Code.Ldind_R8:
-			case Code.Ldind_Ref:
-			case Code.Ldind_U1:
-			case Code.Ldind_U2:
-			case Code.Ldind_U4:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.LoadIndirect.Get (self.OpCode.Code);
 		}
 
 		/// <summary>
@@ -391,19 +349,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Ldloc_0:
-			case Code.Ldloc_1:
-			case Code.Ldloc_2:
-			case Code.Ldloc_3:
-			case Code.Ldloc:
-			case Code.Ldloc_S:
-			case Code.Ldloca:
-			case Code.Ldloca_S:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.LoadLocal.Get (self.OpCode.Code);
 		}
 
 		/// <summary>
@@ -416,13 +362,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Starg:
-			case Code.Starg_S:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.StoreArgument.Get (self.OpCode.Code);
 		}
 
 		/// <summary>
@@ -435,17 +375,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.OpCode.Code) {
-			case Code.Stloc_0:
-			case Code.Stloc_1:
-			case Code.Stloc_2:
-			case Code.Stloc_3:
-			case Code.Stloc:
-			case Code.Stloc_S:
-				return true;
-			default:
-				return false;
-			}
+			return OpCodeBitmask.StoreLocal.Get (self.OpCode.Code);
 		}
 
 		/// <summary>

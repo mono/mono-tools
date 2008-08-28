@@ -1,3 +1,8 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Simplify some rocks (Is*) by using the new
+	OpCodeBitmask helper class.
+
 2008-08-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyRocks.cs: Remove HasAttribute
