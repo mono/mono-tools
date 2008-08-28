@@ -1,3 +1,8 @@
+2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* OpCodeBitmask.cs: New. Specialized class to handle a bitmask on
+	Cecil's Code enum (which is too large for Bitmask<T>).
+
 2008-07-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Fix case where the LeaveStack is empty,
