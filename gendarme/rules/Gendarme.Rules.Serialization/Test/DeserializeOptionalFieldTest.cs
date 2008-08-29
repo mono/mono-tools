@@ -25,15 +25,12 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Serialization;
 
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Serialization {
 
@@ -97,57 +94,22 @@ namespace Test.Rules.Serialization {
 	}
 
 	[TestFixture]
-	public class DeserializeOptionalFieldTest {
-
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DeserializeOptionalFieldRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Serialization." + name;
-			return assembly.MainModule.Types [fullname];
-		}
+	public class DeserializeOptionalFieldTest : TypeRuleTestFixture<DeserializeOptionalFieldRule> {
 
 		[Test]
 		public void Success ()
 		{
-			TypeDefinition type = GetTest ("ClassWithOptionalFieldAndBothDeserializationAttributes");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "ClassWithOptionalFieldAndBothDeserializationAttributes");
-			Assert.AreEqual (0, runner.Defects.Count, "ClassWithOptionalFieldAndBothDeserializationAttributes-Count");
-
-			type = GetTest ("ClassWithoutOptionalField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "ClassWithoutOptionalField");
-			Assert.AreEqual (0, runner.Defects.Count, "ClassWithoutOptionalField-Count");
+			AssertRuleSuccess<ClassWithOptionalFieldAndBothDeserializationAttributes> ();
+			AssertRuleSuccess<ClassWithoutOptionalField> ();
 		}
 
 		[Test]
 		public void Failure ()
 		{
-			TypeDefinition type = GetTest ("ClassWithOptionalField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithOptionalField");
-			Assert.AreEqual (1, runner.Defects.Count, "ClassWithOptionalField-Count");
-
-			type = GetTest ("ClassWithOptionalFieldAndOnDeserializedAttributes");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithOptionalFieldAndOnDeserializedAttributes");
-			Assert.AreEqual (1, runner.Defects.Count, "ClassWithOptionalFieldAndOnDeserializedAttributes-Count");
-
-			type = GetTest ("ClassWithOptionalFieldAndOnDeserializingAttributes");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithOptionalFieldAndOnDeserializingAttributes");
-			Assert.AreEqual (1, runner.Defects.Count, "ClassWithOptionalFieldAndOnDeserializingAttributes-Count");
-
-			type = GetTest ("NonSerializableClassWithOptionalField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "NonSerializableClassWithOptionalField");
-			Assert.AreEqual (1, runner.Defects.Count, "NonSerializableClassWithOptionalField-Count");
+			AssertRuleFailure<ClassWithOptionalField> (1);
+			AssertRuleFailure<ClassWithOptionalFieldAndOnDeserializedAttributes> (1);
+			AssertRuleFailure<ClassWithOptionalFieldAndOnDeserializingAttributes> (1);
+			AssertRuleFailure<NonSerializableClassWithOptionalField> (1);
 		}
 	}
 }
