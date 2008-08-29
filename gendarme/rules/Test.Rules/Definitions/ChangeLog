@@ -1,3 +1,7 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SimpleTypes.cs: Add SimpleTypes.Delegate to ease testing.
+
 2008-04-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* SimpleMethods.cs: Return MethodDefinition instead of Delegate.

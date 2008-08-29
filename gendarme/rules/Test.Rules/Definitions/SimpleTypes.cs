@@ -76,6 +76,11 @@ namespace Test.Rules.Definitions {
 		interface ILoveBeatles {
 			void Listen (string songName);
 		}
+
+		/// <summary>
+		/// A delegate to be used as the common one.
+		/// </summary>
+		delegate bool Filter (string s);
 		
 		/// <value>
 		/// A simple class definition.
@@ -103,6 +108,13 @@ namespace Test.Rules.Definitions {
 		/// </value>
 		public static TypeDefinition Structure {
 			get { return DefinitionLoader.GetTypeDefinition<Album> (); }
+		}
+
+		/// <value>
+		/// A simple deletage definition.
+		/// </value>
+		public static TypeDefinition Delegate {
+			get { return DefinitionLoader.GetTypeDefinition<Filter> (); }
 		}
 	}
 }
