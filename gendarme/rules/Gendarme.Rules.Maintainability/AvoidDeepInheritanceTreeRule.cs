@@ -37,6 +37,7 @@ namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("This type inheritance tree is more than four levels deep.")]
 	[Solution ("Refactor your class hierarchy to reduce its depth. Consider using extension methods to extend existing types.")]
+	[FxCopCompatibility ("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 	public class AvoidDeepInheritanceTreeRule : Rule, ITypeRule {
 
 		public int MaximumDepth {
@@ -52,9 +53,16 @@ namespace Gendarme.Rules.Maintainability {
 		private bool countExternalDepth = false;
 
 
+		private Severity GetSeverity (int depth)
+		{
+			if (depth < 2 * MaximumDepth)
+				return Severity.Medium;
+			return (depth < 4 * MaximumDepth) ? Severity.High : Severity.Critical;
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsInterface || type.IsValueType)
+			if (type.IsInterface || type.IsValueType || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			int depth = 0;
@@ -69,7 +77,11 @@ namespace Gendarme.Rules.Maintainability {
 			if (depth <= MaximumDepth)
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Medium, Confidence.Total, String.Format ("Inheritance tree depth : {0}.", depth));
+			// Confidence is total unless we count outside the current assembly,
+			// where it's possible we can't resolve up to System.Object
+			Confidence confidence = countExternalDepth ? Confidence.High : Confidence.Total;
+			// Severity is based on the depth
+			Runner.Report (type, GetSeverity (depth), confidence, String.Format ("Inheritance tree depth : {0}.", depth));
 			return RuleResult.Failure;
 		}
 	}

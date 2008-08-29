@@ -1,3 +1,9 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidDeepInheritanceTreeRule.cs: Return DoesNotApply on 
+	delegates. Modulate the severity based on inheritance depth. 
+	Add [FxCopCompatibility] attribute.
+
 2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Allocate arrays for
