@@ -41,8 +41,8 @@ namespace Gendarme.Rules.Maintainability {
 	public class AvoidUnnecessarySpecializationRule : Rule, IMethodRule {
 
 		private StackEntryAnalysis sea;
-		private TypeReference[] types_least;
-		private int[] depths_least;
+		private TypeReference [] types_least = new TypeReference [64];
+		private int[] depths_least = new int [64];
 
 		private static TypeReference GetActualType (TypeReference type)
 		{
@@ -279,8 +279,11 @@ namespace Gendarme.Rules.Maintainability {
 			if (SignatureDictatedByInterface (method))
 				return RuleResult.DoesNotApply;
 
-			types_least = new TypeReference [method.Parameters.Count];
-			depths_least = new int [types_least.Length];
+			if (method.Parameters.Count > types_least.Length) {
+				// that should be quite rare (does not happen for mono 2.0 class libs)
+				types_least = new TypeReference [method.Parameters.Count];
+				depths_least = new int [method.Parameters.Count];
+			}
 
 			//look at each argument usage
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -289,6 +292,9 @@ namespace Gendarme.Rules.Maintainability {
 			}
 
 			CheckParametersSpecializationDelta (method);
+
+			Array.Clear (types_least, 0, types_least.Length);
+			Array.Clear (depths_least, 0, depths_least.Length);
 
 			return Runner.CurrentRuleResult;
 		}
