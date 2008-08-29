@@ -32,6 +32,7 @@ using System.Security.Cryptography;
 using Gendarme.Rules.Maintainability;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Maintainability {
@@ -66,11 +67,10 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void DoesNotApply ()
 		{
-			// value types (primitive, struct)
-			AssertRuleDoesNotApply<int> ();
-			AssertRuleDoesNotApply<DateTime> ();
-			// interfaces
-			AssertRuleDoesNotApply<ICryptoTransform> ();
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 		}
 
 		[Test]

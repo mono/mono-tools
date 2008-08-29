@@ -1,3 +1,8 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepInheritanceTreeTest.cs: Use SimpleTests for DoesNotApply
+	and add one for delegates.
+
 2008-08-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Add a few test cases for
