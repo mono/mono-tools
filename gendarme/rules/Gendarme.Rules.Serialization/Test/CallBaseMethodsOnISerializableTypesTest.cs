@@ -195,5 +195,36 @@ namespace Test.Rules.Serialization {
 		{
 			AssertRuleFailure<GoodDerivedOnlyInGetObjectData> (1);
 		}
+
+		class NoSerializationConstructor : Base {
+			public override void GetObjectData (SerializationInfo info, StreamingContext context)
+			{
+			}
+		}
+
+		[Test]
+		public void NoSerializationConstructorTest ()
+		{
+			AssertRuleFailure<NoSerializationConstructor> (1);
+		}
+
+		class MiddleMan : Base {
+		}
+
+		class Top : MiddleMan {
+			protected Top (SerializationInfo info, StreamingContext context)
+			{
+			}
+
+			public override void GetObjectData (SerializationInfo info, StreamingContext context)
+			{
+			}
+		}
+
+		[Test]
+		public void InheritanceTest ()
+		{
+			AssertRuleFailure<Top> (2);
+		}
 	}
 }
