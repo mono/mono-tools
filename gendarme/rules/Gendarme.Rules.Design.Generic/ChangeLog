@@ -1,3 +1,10 @@
+2008-08-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseGenericEventHandlerRule.cs: New. Rule to promote the use of
+	generic based EventHandler<TEventArg> instead of using delegates 
+	(like fx 1.x required).
+	* Makefile.am: Add new files to the build.
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementGenericCollectionInterfacesRule.cs: Moved from Design.

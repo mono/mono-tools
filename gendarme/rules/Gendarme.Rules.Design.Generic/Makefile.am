@@ -14,7 +14,9 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in TestResult.xml
 
 rules_sources = \
-	ImplementGenericCollectionInterfacesRule.cs
+	ImplementGenericCollectionInterfacesRule.cs \
+	UseGenericEventHandlerRule.cs
 
 tests_sources = \
-	ImplementGenericCollectionInterfacesTest.cs
+	ImplementGenericCollectionInterfacesTest.cs \
+	UseGenericEventHandlerTest.cs
