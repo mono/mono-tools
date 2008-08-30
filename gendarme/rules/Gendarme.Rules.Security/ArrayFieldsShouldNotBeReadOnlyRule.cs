@@ -39,15 +39,15 @@ namespace Gendarme.Rules.Security {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply to interface and enumerations
-			if (type.IsInterface || type.IsEnum)
+			// rule does not apply to interface, enumerations or delegates
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
 				//IsInitOnly == readonly
 				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray ()) {
 					// Medium = this will work as long as no code starts "playing" with the array values
-					Runner.Report (field, Severity.Medium, Confidence.Total, String.Empty);
+					Runner.Report (field, Severity.Medium, Confidence.Total);
 				}
 			}
 
