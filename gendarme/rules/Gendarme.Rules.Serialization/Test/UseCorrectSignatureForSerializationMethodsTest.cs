@@ -1,5 +1,5 @@
 // 
-// Unit tests for ImplementSerializationEventsCorrectlyRule
+// Unit tests for UseCorrectSignatureForSerializationMethodsRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -25,16 +25,12 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Serialization;
 
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Serialization {
 
@@ -98,7 +94,7 @@ namespace Test.Rules.Serialization {
 	}
 
 	[TestFixture]
-	public class UseCorrectSignatureForSerializationMethodsTest {
+	public class UseCorrectSignatureForSerializationMethodsTest : MethodRuleTestFixture<UseCorrectSignatureForSerializationMethodsRule> {
 
 		[OnSerializing]
 		private void Serializing (StreamingContext context)
@@ -106,68 +102,38 @@ namespace Test.Rules.Serialization {
 			// method is ok but it's type is not [Serializable]
 		}
 
-		private IRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UseCorrectSignatureForSerializationMethodsRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string type, string method)
-		{
-			string fullname = "Test.Rules.Serialization." + type;
-			return assembly.MainModule.Types [fullname].GetMethod (method);
+			// constructor (default)
+			AssertRuleDoesNotApply<UseCorrectSignatureForSerializationMethodsTest> (".ctor");
+			// method without a serialization attribute
+			AssertRuleDoesNotApply<UseCorrectSignatureForSerializationMethodsTest> ("DoesNotApply");
 		}
 
 		[Test]
 		public void Ok ()
 		{
-			MethodDefinition method = GetTest ("OkClass", "Lizing");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Lizing-Failure");
-			Assert.AreEqual (0, runner.Defects.Count, "Lizing-Count");
-
-			method = GetTest ("OkClass", "Lized");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Lized-Failure");
-			Assert.AreEqual (0, runner.Defects.Count, "Lized-Count");
+			AssertRuleSuccess<OkClass> ("Lizing");
+			AssertRuleSuccess<OkClass> ("Lized");
 		}
 
 		[Test]
 		public void BadSignatures ()
 		{
-			MethodDefinition method = GetTest ("BadClass", "Serializing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Serializing-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "Serializing-Count");
+			AssertRuleFailure<BadClass> ("Serializing", 1);
 #if false
-			method = GetTest ("BadClass", "Serialized");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Serialized-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "Serialized-Count");
-	
-			method = GetTest ("BadClass", "Deserializing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Deserializing-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "Deserializing-Count");
-
-			method = GetTest ("BadClass", "OnDeserialized");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "OnDeserialized-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "OnDeserialized-Count");
+			AssertRuleFailure<BadClass> ("Serialized", 1);
+			AssertRuleFailure<BadClass> ("Deserializing", 1);
+			AssertRuleFailure<BadClass> ("OnDeserialized", 1);
 #endif
 		}
 
 		[Test]
 		public void NotSerializable ()
 		{
-			MethodDefinition method = GetTest ("NotSerializableClass", "Lizing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Lizing-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "Lizing-Count");
-
-			method = GetTest ("NotSerializableClass", "Lized");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Lized-Failure");
-			Assert.AreEqual (1, runner.Defects.Count, "Lized-Count");
+			AssertRuleFailure<NotSerializableClass> ("Lizing", 1);
+			AssertRuleFailure<NotSerializableClass> ("Lized", 1);
 		}
 	}
 }

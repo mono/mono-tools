@@ -25,15 +25,13 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Serialization;
 
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Serialization {
 
@@ -94,55 +92,30 @@ namespace Test.Rules.Serialization {
 	}
 
 	[TestFixture]
-	public class MissingSerializationConstructorTest {
-
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new MissingSerializationConstructorRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Serialization." + name;
-			return assembly.MainModule.Types [fullname];
-		}
+	public class MissingSerializationConstructorTest : TypeRuleTestFixture<MissingSerializationConstructorRule> {
 
 		[Test]
 		public void DoesNotApply ()
 		{
-			TypeDefinition type = GetTest ("MissingSerializationConstructorTest");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "! ISerializable");
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+
+			AssertRuleDoesNotApply<MissingSerializationConstructorTest> ();
 		}
 
 		[Test]
 		public void Success ()
 		{
-			TypeDefinition type = GetTest ("PerfectUnsealedClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "PerfectUnsealedClass");
-
-			type = GetTest ("PerfectSealedClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "PerfectSealedClass");
+			AssertRuleSuccess<PerfectUnsealedClass> ();
+			AssertRuleSuccess<PerfectSealedClass> ();
 		}
 
 		[Test]
 		public void Failure ()
 		{
-			TypeDefinition type = GetTest ("ClassWithoutConstructor");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithoutConstructor");
-
-			type = GetTest ("UnsealedClassWrongCtorVisibility");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "UnsealedClassWrongCtorVisibility");
-
-			type = GetTest ("SealedClassWrongCtorVisibility");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "SealedClassWrongCtorVisibility");
+			AssertRuleFailure<ClassWithoutConstructor> (1);
+			AssertRuleFailure<UnsealedClassWrongCtorVisibility> (1);
+			AssertRuleFailure<SealedClassWrongCtorVisibility> (1);
 		}
 	}
 }

@@ -1,3 +1,13 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* CallBaseMethodsOnISerializableTypesTest.cs: Add more coverage.
+	* MissingSerializationConstructorTest.cs: Use newer, shorter, 
+	syntax for unit tests. Add more coverage.
+	* MissingSerializableAttributeOnISerializableTypeTest.cs: Use newer, 
+	shorter, syntax for unit tests. Add more coverage.
+	* UseCorrectSignatureForSerializationMethodsTest.cs: Use newer, 
+	shorter, syntax for unit tests. Add more coverage.
+
 2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeserializeOptionalFieldTest.cs: Use newer, shorter, syntax for

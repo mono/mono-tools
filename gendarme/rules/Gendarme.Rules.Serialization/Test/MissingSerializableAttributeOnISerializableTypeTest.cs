@@ -25,16 +25,13 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using System.Runtime.Serialization;
-using System.Threading;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Serialization;
 
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Serialization {
 
@@ -61,60 +58,35 @@ namespace Test.Rules.Serialization {
 	public class InheritFromISerializableClass : ClassWithAttribute {
 	}
 
-	public class ClassWithDelegate {
-		private SendOrPostCallback SubmitResultsOperationCompleted;
+	[Serializable]
+	public class SerializableInheritFromISerializableClass : ClassWithAttribute {
 	}
 
 	[TestFixture]
-	public class MissingSerializableAttributeOnISerializableTypeTest {
-
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new MissingSerializableAttributeOnISerializableTypeRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Serialization." + name;
-			return assembly.MainModule.Types [fullname];
-		}
+	public class MissingSerializableAttributeOnISerializableTypeTest : TypeRuleTestFixture<MissingSerializableAttributeOnISerializableTypeRule> {
 
 		[Test]
 		public void DoesNotApply ()
 		{
-			TypeDefinition type = GetTest ("MissingSerializableAttributeOnISerializableTypeTest");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "NoAttribute No Interface");
-				
-			type = GetTest ("ClassWithAttributeOnly");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "ClassWithAttributeOnly");
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
 
-			type = GetTest ("ClassWithDelegate");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "ClassWithDelegate");
+			AssertRuleDoesNotApply<MissingSerializableAttributeOnISerializableTypeTest> ();
+			AssertRuleDoesNotApply<ClassWithAttributeOnly> ();
 		}
 
 		[Test]
 		public void Success ()
 		{
-			TypeDefinition type = GetTest ("ClassWithAttribute");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "ClassWithAttribute");
+			AssertRuleSuccess<ClassWithAttribute> ();
+			AssertRuleSuccess<SerializableInheritFromISerializableClass> ();
 		}
 
 		[Test]
 		public void Failure ()
 		{
-			TypeDefinition type = GetTest ("ClassWithoutAttribute");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "ClassWithoutAttribute");
-
-			type = GetTest ("InheritFromISerializableClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "InheritFromISerializableClass");
+			AssertRuleFailure<ClassWithoutAttribute> (1);
+			AssertRuleFailure<InheritFromISerializableClass> (1);
 		}
 	}
 }
