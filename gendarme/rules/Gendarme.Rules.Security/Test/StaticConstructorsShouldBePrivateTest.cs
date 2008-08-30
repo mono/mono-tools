@@ -24,14 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 
 using Mono.Cecil;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Security;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Security {
@@ -45,48 +45,40 @@ namespace Test.Rules.Security {
 		}
 	}
 
-	internal interface InterfaceHasNoConstructor {
-		int GetMe { get; }
+	internal class NonPrivateStaticCtorDefinedClass {
+		// will be modified using Cecil
+		static NonPrivateStaticCtorDefinedClass ()
+		{
+		}
 	}
 
 	[TestFixture]
-	public class StaticConstructorsShouldBePrivateTest {
+	public class StaticConstructorsShouldBePrivateTest : TypeRuleTestFixture<StaticConstructorsShouldBePrivateRule> {
 
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new StaticConstructorsShouldBePrivateRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 		}
 
 		[Test]
 		public void TestNoStaticCtorDefinedClass ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<NoStaticCtorDefinedClass> ()));
+			AssertRuleSuccess<NoStaticCtorDefinedClass> ();
 		}
 
 		[Test]
 		public void TestPrivateStaticCtorDefinedClass ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<PrivateStaticCtorDefinedClass> ()));
+			AssertRuleSuccess<PrivateStaticCtorDefinedClass> ();
 		}
 
 		[Test]
 		public void TestNonPrivateStaticCtorDefinedClass ()
 		{
-			TypeDefinition inspectedType = GetTest<PrivateStaticCtorDefinedClass> ();
+			TypeDefinition inspectedType = DefinitionLoader.GetTypeDefinition<NonPrivateStaticCtorDefinedClass> ();
 			MethodDefinition static_ctor = null;
 			foreach (MethodDefinition ctor in inspectedType.Constructors) {
 				if (ctor.IsStatic) {
@@ -94,20 +86,9 @@ namespace Test.Rules.Security {
 					break;
 				}
 			}
-			try {
-				static_ctor.IsPublic = true; // change it from private to public
-				Assert.AreEqual (RuleResult.Failure, runner.CheckType (inspectedType), inspectedType.FullName);
-				Assert.AreEqual (1, runner.Defects.Count, "Count");
-			}
-			finally {
-				static_ctor.IsPublic = false;
-			}
-		}
 
-		[Test]
-		public void TestInterface ()
-		{
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (GetTest<InterfaceHasNoConstructor> ()));
+			static_ctor.IsPublic = true; // change it from private to public
+			AssertRuleFailure (inspectedType, 1);
 		}
 	}
 }

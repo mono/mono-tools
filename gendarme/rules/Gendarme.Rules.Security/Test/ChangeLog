@@ -1,3 +1,10 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ArrayFieldsShouldNotBeReadOnlyTest.cs,
+	NativeFieldsShouldNotBeVisibleTest.cs
+	StaticConstructorsShouldBePrivateTest.cs: Use newer, shorter,
+	syntax for unit tests. A bit more coverage was added.
+
 2008-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StaticConstructorsShouldBePrivateTest.cs: Fix test since Clone is 

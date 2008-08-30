@@ -27,13 +27,11 @@
 //
 
 using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Security;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Security {
 
@@ -73,100 +71,69 @@ namespace Test.Rules.Security {
 		private IntPtr Native;
 	}
 
-	public interface IHaveNativePointerGetter {
-		IntPtr NativePointer { get; }
-	}
-
 	[TestFixture]
-	public class NativeFieldsShouldNotBeVisibleTest {
+	public class NativeFieldsShouldNotBeVisibleTest : TypeRuleTestFixture<NativeFieldsShouldNotBeVisibleRule> {
 
-		private NativeFieldsShouldNotBeVisibleRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new NativeFieldsShouldNotBeVisibleRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			return assembly.MainModule.Types [name];
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 		}
 
 		[Test]
 		public void TestHasPublicNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasPublicNativeField> (1);
 		}
 
 		[Test]
 		public void TestHasProtectedNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasProtectedNativeField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasProtectedNativeField> (1);
 		}
 
 		[Test]
 		public void TestHasInternalNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasInternalNativeField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasInternalNativeField> ();
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyNativeField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPublicReadonlyNativeField> ();
 		}
 
 		[Test]
 		public void TestHasPublicNativeFieldArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeFieldArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasPublicNativeFieldArray> (1);
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyNativeFieldArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyNativeFieldArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasPublicReadonlyNativeFieldArray> (1);
 		}
 
 		[Test]
 		public void TestHasPublicNativeFieldArrayArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNativeFieldArrayArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasPublicNativeFieldArrayArray> (1);
 		}
 
 		[Test]
 		public void TestHasPublicNonNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicNonNativeField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPublicNonNativeField> ();
 		}
 
 		[Test]
 		public void TestHasPrivateNativeField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateNativeField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void TestInterfaceWithPointerGetter ()
-		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.IHaveNativePointerGetter");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleSuccess<HasPrivateNativeField> ();
 		}
 	}
 }
