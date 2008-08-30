@@ -27,17 +27,19 @@
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
 	[Problem ("Static constructors must be private because otherwise they may be called once or multiple times from user code.")]
 	[Solution ("Change the static constructor visibility to private.")]
+	[FxCopCompatibility ("Microsoft.Security", "CA2121:StaticConstructorsShouldBePrivate")]
 	public class StaticConstructorsShouldBePrivateRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply if type has no ctor
-			if (type.Constructors.Count == 0)
+			// rule does not apply to interface, enumerations or delegates
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition private_static_ctor = null;
@@ -51,7 +53,7 @@ namespace Gendarme.Rules.Security {
 			if (private_static_ctor == null)
 				return RuleResult.Success;
 
-			Runner.Report (private_static_ctor, Severity.Critical, Confidence.High, string.Empty);
+			Runner.Report (private_static_ctor, Severity.Critical, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

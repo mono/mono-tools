@@ -35,12 +35,13 @@ namespace Gendarme.Rules.Security {
 
 	[Problem ("This type expose native fields that aren't read-only.")]
 	[Solution ("Native fields are best hidden or, if required, read-only.")]
+	[FxCopCompatibility ("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")]
 	public class NativeFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply to interface and enumerations
-			if (type.IsInterface || type.IsEnum)
+			// rule does not apply to interface, enumerations or delegates
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
@@ -51,7 +52,7 @@ namespace Gendarme.Rules.Security {
 				if ((field.FieldType.IsNative () && !field.IsInitOnly) || 
 					(field.FieldType.IsArray () && field.FieldType.GetOriginalType ().IsNative ())) {
 
-					Runner.Report (field, Severity.Medium, Confidence.Total, String.Empty);
+					Runner.Report (field, Severity.Medium, Confidence.Total);
 				}
 			}
 

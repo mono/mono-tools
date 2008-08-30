@@ -35,19 +35,20 @@ namespace Gendarme.Rules.Security {
 
 	[Problem ("This type contains read-only array(s), however values inside the array(s) are not read-only.")]
 	[Solution ("Replace the array with a method returning a clone of the array or a read-only collection.")]
+	[FxCopCompatibility ("Microsoft.Security", "CA2105:ArrayFieldsShouldNotBeReadOnly")]
 	public class ArrayFieldsShouldNotBeReadOnlyRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply to interface and enumerations
-			if (type.IsInterface || type.IsEnum)
+			// rule does not apply to interface, enumerations or delegates
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
 				//IsInitOnly == readonly
 				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray ()) {
 					// Medium = this will work as long as no code starts "playing" with the array values
-					Runner.Report (field, Severity.Medium, Confidence.Total, String.Empty);
+					Runner.Report (field, Severity.Medium, Confidence.Total);
 				}
 			}
 
