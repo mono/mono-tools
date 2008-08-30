@@ -27,13 +27,11 @@
 //
 
 using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Security;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Security {
 
@@ -94,104 +92,63 @@ namespace Test.Rules.Security {
 		public string [] Array;
 	}
 
-	public interface IHaveArrayGetter {
-		string [] Array { get; }
-	}
-
 	[TestFixture]
-	public class ArrayFieldsShouldNotBeReadOnlyTest {
+	public class ArrayFieldsShouldNotBeReadOnlyTest : TypeRuleTestFixture<ArrayFieldsShouldNotBeReadOnlyRule> {
 
-		private ArrayFieldsShouldNotBeReadOnlyRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new ArrayFieldsShouldNotBeReadOnlyRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			return assembly.MainModule.Types [name];
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 		}
 
 		[Test]
 		public void TestHasStaticPublicReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasStaticPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasStaticPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Struct");
+			AssertRuleFailure<HasStaticPublicReadonlyArray> (1);
+			AssertRuleFailure<StructHasStaticPublicReadonlyArray> (1);
 		}
 
 		[Test]
 		public void TestHasPublicReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasPublicReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Struct");
+			AssertRuleFailure<HasPublicReadonlyArray> (1);
+			AssertRuleFailure<StructHasPublicReadonlyArray> (1);
 		}
 
 		[Test]
 		public void TestHasProtectedReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasProtectedReadonlyArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Type");
+			AssertRuleFailure<HasProtectedReadonlyArray> (1);
 		}
 
 		[Test]
 		public void TestHasInternalReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasInternalReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasInternalReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
+			AssertRuleSuccess<HasInternalReadonlyArray> ();
+			AssertRuleSuccess<StructHasInternalReadonlyArray> ();
 		}
 
 		[Test]
 		public void TestHasPrivateReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasPrivateReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasPrivateReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
+			AssertRuleSuccess<HasPrivateReadonlyArray> ();
+			AssertRuleSuccess<StructHasPrivateReadonlyArray> ();
 		}
 
 		[Test]
 		public void TestHasNoReadonlyArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasNoReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasNoReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
+			AssertRuleSuccess<HasNoReadonlyArray> ();
+			AssertRuleSuccess<StructHasNoReadonlyArray> ();
 		}
 
 		[Test]
 		public void TestHasPublicArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.HasNoReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Type");
-
-			type = GetTest ("Test.Rules.Security.StructHasNoReadonlyArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Struct");
-		}
-
-		[Test]
-		public void DoesNotApply ()
-		{
-			TypeDefinition type = GetTest ("Test.Rules.Security.IHaveArrayGetter");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "Interface");
+			AssertRuleSuccess<HasNoReadonlyArray> ();
+			AssertRuleSuccess<StructHasNoReadonlyArray> ();
 		}
 	}
 }
