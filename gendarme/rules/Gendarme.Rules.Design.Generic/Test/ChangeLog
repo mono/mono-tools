@@ -1,3 +1,8 @@
+2008-08-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseGenericEventHandlerTest.cs: New. Unit tests for
+	UseGenericEventHandlerRule
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementGenericCollectionInterfacesTest.cs: Moved from Design.
