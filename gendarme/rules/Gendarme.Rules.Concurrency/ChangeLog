@@ -1,3 +1,9 @@
+2008-09-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingRule.cs: Current rule logic does not apply for
+	Fx 2.0 and later runtimes, so we limit it for 1.x. A new rule (with
+	shared logic) should be done to handle 2.0 specific stuff.
+
 2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnThisOrTypesRule.cs: Use TraceBack rocks. Don't ignore

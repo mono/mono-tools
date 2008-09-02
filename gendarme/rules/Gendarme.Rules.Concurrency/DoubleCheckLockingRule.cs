@@ -40,8 +40,6 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
-	// FIXME?: see http://groups.google.com/group/gendarme/browse_thread/thread/b46d1ddc3a2d8fb9#msg_9b9c2989cedb4c34
-	
 	// note: the rule only report a single double-lock per method
 
 	[Problem ("This method uses the unreliable double-check locking technique.")]
@@ -54,6 +52,13 @@ namespace Gendarme.Rules.Concurrency {
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
+
+			// we only want to run this on assemblies that use either the
+			// 1.0 or 1.1 runtime - since the memory model, at that time,
+			// was not entirely safe for double check locks
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Runtime < TargetRuntime.NET_2_0);
+			};
 
 			// is this module using Monitor.Enter ? (lock in c#)
 			// if not then this rule does not need to be executed for the module
@@ -91,7 +96,7 @@ namespace Gendarme.Rules.Concurrency {
 							if (insn.Offset >= monitorOffsetList.Peek ())
 								continue;
 
-							Runner.Report (method, insn, Severity.Medium, Confidence.High, String.Empty);
+							Runner.Report (method, insn, Severity.Medium, Confidence.High);
 							return RuleResult.Failure;
 						}
 					}
