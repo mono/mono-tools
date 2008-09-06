@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
-// 	(C) 2008 Néstor Salceda
+// (C) 2008 Néstor Salceda
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,68 +29,30 @@
 //
 
 using System;
-using Gendarme.Framework;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Rocks;
+
 namespace Gendarme.Rules.Exceptions {
+
 	[Problem ("This method throws ArgumentException (or derived) exceptions without specifying an existing parameter name. This can hide useful information to developers.")]
 	[Solution ("Fix the exception parameters to use the correct parameter name (or make sure the parameters are in the right order).")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
 	public class InstantiateArgumentExceptionCorrectlyRule : Rule, IMethodRule {
-		static string[] checkedExceptions = {
-			"System.ArgumentException",
-			"System.ArgumentNullException",
-			"System.ArgumentOutOfRangeException",
-			"System.DuplicateWaitObjectException"
-			};
 
-		public static TypeReference GetArgumentExceptionThrown (Instruction throwInstruction)
+		static bool MatchesAnyParameter (MethodReference method, string operand)
 		{
-			if (throwInstruction.Previous.OpCode == OpCodes.Newobj) {
-				Instruction instantiation = throwInstruction.Previous;
-				MethodReference method = (MethodReference) instantiation.Operand;
-				if (Array.IndexOf (checkedExceptions, method.DeclaringType.FullName) != -1)
-					return method.DeclaringType;
-			}
-			return null;
-		}
+			if (operand == null)
+				return false;
 
-		public static bool ParameterNameIsLastOperand (MethodDefinition method, Instruction throwInstruction, int exceptionParameters)
-		{
-			Instruction current = throwInstruction;
-			while (current != null && exceptionParameters != 0) {
-				if (current.OpCode.Code == OpCodes.Ldstr.Code) {
-					string operand = (string) current.Operand;
-					//The second operand, a parameter name
-					if (exceptionParameters == 2) {
-						if (!MatchesAnyParameter (method, operand))
-							return false;
-					}
-					//The first operand, would be handy to
-					//have a description
-					else {
-						//Where are you calling in order
-						//to get the message
-						if (current.Next != null && current.Next.OpCode.FlowControl == FlowControl.Call) {
-							exceptionParameters--;
-							continue;
-						}
-						if (!operand.Contains (" "))
-							return false;
-					}
-					exceptionParameters--;
-				}
-				current = current.Previous;
-			}
-			return true;
-		}
-
-		static bool MatchesAnyParameter (MethodDefinition method, string operand)
-		{
-			if (method.IsSetter) {
+			if (method.IsProperty ()) {
 				return String.Compare (method.Name.Substring (4), operand) == 0;
-			}
-			else {
+			} else {
 				foreach (ParameterDefinition parameter in method.Parameters) {
 					if (String.Compare (parameter.Name, operand) == 0)
 						return true;
@@ -97,67 +61,76 @@ namespace Gendarme.Rules.Exceptions {
 			return false;
 		}
 
-		public static bool ParameterIsDescription (MethodDefinition method, Instruction throwInstruction)
+		private void CheckArgumentException (MethodReference ctor, Instruction ins, MethodDefinition method)
 		{
-			Instruction current = throwInstruction;
+			int parameters = ctor.Parameters.Count;
+			// OK		public ArgumentException ()
+			// OK		public ArgumentException (string message)
+			if (parameters < 2)
+				return;
 
-			while (current != null) {
-				if (current.OpCode.Code == OpCodes.Ldstr.Code) 
-					return !MatchesAnyParameter (method, (string) current.Operand);
-				current = current.Previous;
-			}
-			return true;
+			// OK		public ArgumentException (string message, Exception innerException)
+			if (ctor.Parameters [1].ParameterType.FullName != "System.String")
+				return;
+
+			// CHECK	public ArgumentException (string message, string paramName)
+			// CHECK	public ArgumentException (string message, string paramName, Exception innerException)
+			Instruction call = ins.TraceBack (method, -1);
+			if (MatchesAnyParameter (method, (call.Operand as string)))
+				return;
+
+			Runner.Report (method, ins, Severity.High, Confidence.Normal);
 		}
 
-		private static bool IsArgumentException (TypeReference exceptionType)
+		// ctors are identical for ArgumentNullException, ArgumentOutOfRangeException and DuplicateWaitObjectException
+		private void CheckOtherExceptions (MethodReference constructor, Instruction ins, MethodDefinition method)
 		{
-			return Array.IndexOf (checkedExceptions, exceptionType.FullName) == 0;
+			int parameters = constructor.Parameters.Count;
+			// OK		public ArgumentNullException ()
+			if (parameters < 1)
+				return;
+
+			// OK		protected ArgumentNullException (SerializationInfo info, StreamingContext context)
+			// OK		public ArgumentNullException (string message, Exception innerException)
+			if ((parameters == 2) && (constructor.Parameters [1].ParameterType.FullName != "System.String"))
+				return;
+
+			// CHECK	public ArgumentNullException (string paramName)
+			// CHECK	public ArgumentNullException (string paramName, string message)
+			Instruction call = ins.TraceBack (method, 0);
+			if (MatchesAnyParameter (method, (call.Operand as string)))
+				return;
+
+			Runner.Report (method, ins, Severity.High, Confidence.Normal);
 		}
-		
-		private static bool ContainsOnlyStringsAsParameters (MethodReference method)
-		{
-			foreach (ParameterDefinition parameter in method.Parameters) {
-				if (parameter.ParameterType.FullName != "System.String")
-					return false;
-			}
-			return true;
-		}
-	
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// if method has no IL, the rule doesn't apply
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// and when the IL contains a NewObj instruction
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Newobj))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction current in method.Body.Instructions) {
-				if (current.OpCode.Code != OpCodes.Throw.Code) 
+				if (current.OpCode.Code != Code.Newobj)
 					continue;
-				
-				TypeReference exceptionType = GetArgumentExceptionThrown (current);
-				if (exceptionType == null)	
+
+				MethodReference ctor = (current.Operand as MethodReference);
+
+				switch (ctor.DeclaringType.FullName) {
+				case "System.ArgumentException":
+					CheckArgumentException (ctor, current, method);
+					break;
+				case "System.ArgumentNullException":
+				case "System.ArgumentOutOfRangeException":
+				case "System.DuplicateWaitObjectException":
+					CheckOtherExceptions (ctor, current, method);
+					break;
+				default:
 					continue;
-				
-				MethodReference constructor = (MethodReference) current.Previous.Operand;
-				if (!ContainsOnlyStringsAsParameters (constructor))
-					continue;
-					
-				int parameters = constructor.Parameters.Count;
-				
-				if (IsArgumentException (exceptionType)) {
-					if (parameters == 1 && !ParameterIsDescription (method, current)) {
-						Runner.Report (method, current, Severity.High, Confidence.Normal, "The parameter for this signature should be a description, not a parameter name.");
-						continue;
-					}
-				
-					if (parameters == 2 && !ParameterNameIsLastOperand (method, current, parameters))
-						Runner.Report (method, current, Severity.High, Confidence.Normal, "The parameter order should be first the description and second the parameter name.");
-				}
-				else {
-					if (parameters == 1 && ParameterIsDescription (method, current)) {
-						Runner.Report (method, current, Severity.High, Confidence.Normal, "The parameter for this signature should be the parameter name.");
-						continue;
-					}
-					if (parameters == 2 && ParameterNameIsLastOperand (method, current, parameters))
-						Runner.Report (method, current, Severity.High, Confidence.Normal, "The parameter order should be first the parameter name and second the description.");
 				}
 			}
 

@@ -36,6 +36,7 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("Not all required constructors for an exception type are present in this type.")]
 	[Solution ("Add the missing constructor(s) for this exception.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
 	public class MissingExceptionConstructorsRule : Rule, ITypeRule {
 
 		// non-localizable

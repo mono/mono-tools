@@ -36,7 +36,8 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("The method catch a nonspecific exception.")]
 	[Solution ("You can rethrow the original exception, to avoid destroying the stacktrace, or you can handle more specific exceptions.")]
-	public class DontSwallowErrorsCatchingNonspecificExceptionsRule : Rule, IMethodRule {
+	[FxCopCompatibility ("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+	public class DoNotSwallowErrorsCatchingNonSpecificExceptionsRule : Rule, IMethodRule {
 
 		//Added System.Object because is the code behind the following block:
 		//try {
@@ -71,14 +72,18 @@ namespace Gendarme.Rules.Exceptions {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// and if the method has, at least one, exception handler(s)
 			ExceptionHandlerCollection exceptionHandlerCollection = method.Body.ExceptionHandlers;
+			if (exceptionHandlerCollection.Count == 0)
+				return RuleResult.DoesNotApply;
+
 			foreach (ExceptionHandler exceptionHandler in exceptionHandlerCollection) {
 				if (exceptionHandler.Type == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {
 						Instruction throw_instruction = ThrowsGeneralException (exceptionHandler);
 						if (throw_instruction != null) {
-							Runner.Report (method, throw_instruction, Severity.Medium, Confidence.High, String.Empty);
+							Runner.Report (method, throw_instruction, Severity.Medium, Confidence.High);
 						}
 					}
 				}

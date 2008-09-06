@@ -32,9 +32,14 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("This method creates (and probably throws) an exception of Exception, ApplicationException or SystemException type.")]
 	[Solution ("Try to use more specific exception types. If none of existing types meet your needs, create custom exception class that inherits from System.Exception or any appropriate descendant of it.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class AvoidThrowingBasicExceptionsRule : NewExceptionsRule {
 
-		static string [] BasicExceptions = { "System.Exception", "System.ApplicationException", "System.SystemException" };
+		static string [] BasicExceptions = { 
+			"System.Exception", 
+			"System.ApplicationException", 
+			"System.SystemException"
+		};
 
 		protected override string [] GetExceptionTypes ()
 		{

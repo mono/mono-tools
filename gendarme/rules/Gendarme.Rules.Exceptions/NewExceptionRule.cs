@@ -32,10 +32,12 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class NewExceptionsRule : Rule, IMethodRule {
 
 		public override void Initialize (IRunner runner)
@@ -56,6 +58,10 @@ namespace Gendarme.Rules.Exceptions {
 		{
 			// if method has no IL, the rule doesn't apply
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// and when the IL contains a NewObj instruction
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Newobj))
 				return RuleResult.DoesNotApply;
 
 			// look for newobj instructions

@@ -35,10 +35,8 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("This exception is not public and it's base class does not provide enough information to be useful.")]
 	[Solution ("Change type visibility to public or inherit from another exception.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
 	public class ExceptionShouldBeVisibleRule : Rule, ITypeRule {
-
-		// non-localizable
-		private const string Exception = "System.Exception";
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -58,7 +56,7 @@ namespace Gendarme.Rules.Exceptions {
 			if (type.IsAbstract || type.IsVisible ())
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.High, Confidence.Total, String.Empty);
+			Runner.Report (type, Severity.High, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

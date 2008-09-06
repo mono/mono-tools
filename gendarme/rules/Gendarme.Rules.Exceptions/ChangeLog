@@ -1,3 +1,29 @@
+2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs: Use 
+	OpCodeEngine to skip methods that don't	use the Newobj instruction.
+	* AvoidThrowingBasicExceptionsRule.cs: Add FxCopCompatibility for
+	CA2201.
+	* DoNotDestroyStackTraceRule.cs: Use OpCodeEngine to skip methods
+	that don't use the Throw instruction. Add FxCopCompatibility for 
+	CA2200. Use shorter Runner.Report override. Remove unneeded 
+	Initialize method.
+	* DoNotThrowReservedExceptionRule.cs: Add FxCopCompatibility for
+	CA2201.
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Add 
+	FxCopCompatibility for CA1031. Use shorter Runner.Report override.
+	Return DoesNotApply if no exception block is present in the method.
+	* ExceptionShouldBeVisibleRule.cs: Add FxCopCompatibility for CA1064.
+	Remove unneeded constant and use shorter Runner.Report override.
+	* InstantiateArgumentExceptionCorrectlyRule.cs: Use OpCodeEngine
+	to skip methods that don't use the Newobj instruction. Change logic 
+	to use TraceBack and work on all constructors. Add FxCopCompatibility
+	for CA2208.
+	* MissingExceptionConstructorsRule.cs: Add FxCopCompatibility for
+	CA1032.
+	* NewExceptionRule.cs: Use OpCodeEngine to skip methods that don't
+	use the Newobj instruction.
+
 2008-08-16  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Build all the tests.

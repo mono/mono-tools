@@ -30,9 +30,15 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException or OutOfMemoryException.")]
 	[Solution ("Select and create a better suited exception type, one that is not reserved by the runtime.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class DoNotThrowReservedExceptionRule : NewExceptionsRule {
 
-		static string [] ReservedExceptions = { "System.ExecutionEngineException", "System.IndexOutOfRangeException", "System.NullReferenceException", "System.OutOfMemoryException" };
+		static string [] ReservedExceptions = { 
+			"System.ExecutionEngineException", 
+			"System.IndexOutOfRangeException", 
+			"System.NullReferenceException", 
+			"System.OutOfMemoryException" 
+		};
 
 		protected override string [] GetExceptionTypes ()
 		{

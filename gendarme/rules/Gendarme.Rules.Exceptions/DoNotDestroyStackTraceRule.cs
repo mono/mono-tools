@@ -30,6 +30,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Exceptions.Impl;
 
@@ -37,26 +38,21 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("A catch block in the method throws back the caught exception which destroys the stack trace.")]
 	[Solution ("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")]
-	public class DoNotDestroyStackTrace : Rule, IMethodRule {
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2200:RethrowToPreserveStackDetails")]
+	public class DoNotDestroyStackTraceRule : Rule, IMethodRule {
 
-		private TypeReference void_reference;
 		private List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 		private List<int> warned_offsets_in_method = new List<int> ();
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				if (void_reference == null)
-					void_reference = e.CurrentModule.Import (typeof (void));
-			};
-		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies to methods with IL
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// and when the IL contains a Throw instruction (Rethrow is fine)
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Throw))
 				return RuleResult.DoesNotApply;
 
 			executionPaths.Clear ();
@@ -119,7 +115,7 @@ namespace Gendarme.Rules.Exceptions {
 						// If our original exception is on top of the stack,
 						// we're rethrowing it.This is deemed naughty...
 						if (!warned_offsets_in_method.Contains (cur.Offset)) {
-							Runner.Report (method, cur, Severity.Critical, Confidence.High, String.Empty);
+							Runner.Report (method, cur, Severity.Critical, Confidence.High);
 							warned_offsets_in_method.Add (cur.Offset);
 						}
 						return;

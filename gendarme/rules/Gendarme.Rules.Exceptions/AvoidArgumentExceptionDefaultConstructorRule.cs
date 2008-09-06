@@ -28,17 +28,24 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("This method create an ArgumentException (or derived) but do not provide any useful information, like the argument, to it.")]
 	[Solution ("Provide more useful details when creating the specified exception.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidArgumentExceptionDefaultConstructorRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule only applies to methods with IL
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// and when the IL contains a NewObj instruction
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Newobj))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
