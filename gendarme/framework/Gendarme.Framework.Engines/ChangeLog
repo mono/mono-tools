@@ -1,0 +1,5 @@
+2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* OpCodeEngine.cs: New. First engine. It constuct a bitmask of 
+	every IL instruction used inside a method. This allows rules to
+	check, quickly, if they need to parse the IL of a method.
