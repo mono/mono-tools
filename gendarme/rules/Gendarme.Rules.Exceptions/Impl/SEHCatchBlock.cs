@@ -6,15 +6,17 @@ namespace Gendarme.Rules.Exceptions {
 	
 	internal sealed class SEHCatchBlock : SEHHandlerBlock {
 	
-		private TypeReference type_reference = null;
-		
 		public SEHCatchBlock ()
 		{
 		}
+
+#if false
+		private TypeReference type_reference = null;
 		
 		public TypeReference ExceptionType {
 			get { return type_reference; }
 			set { type_reference = value; }
-		}		
+		}
+#endif
 	}	
 }

@@ -6,14 +6,15 @@ namespace Gendarme.Rules.Exceptions {
 	
 	internal sealed class SEHGuardedBlock {
 	
-		private Instruction start;
-		private Instruction end;
 		private List<SEHHandlerBlock> handler_blocks;
 		
 		public SEHGuardedBlock ()
 		{
 			handler_blocks = new List<SEHHandlerBlock> ();
 		}
+#if false
+		private Instruction start;
+		private Instruction end;
 
 		public SEHGuardedBlock (Instruction start, Instruction end)
 			: this ()
@@ -21,7 +22,7 @@ namespace Gendarme.Rules.Exceptions {
 			this.start = start;
 			this.end = end;
 		}
-		
+
 		public Instruction Start {
 			get { return start; }
 			set { start = value; }			
@@ -31,7 +32,7 @@ namespace Gendarme.Rules.Exceptions {
 			get { return end; }
 			set { end = value; }
 		}
-
+#endif
 		public ICollection<SEHHandlerBlock> SEHHandlerBlocks {
 			get { return handler_blocks; }
 		}

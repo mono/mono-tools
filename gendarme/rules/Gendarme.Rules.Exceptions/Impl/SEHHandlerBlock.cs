@@ -8,7 +8,6 @@ namespace Gendarme.Rules.Exceptions {
 	
 		private Instruction start = null;
 		private Instruction end = null;
-		private SEHHandlerType type;
 		
 		public SEHHandlerBlock ()
 		{
@@ -23,10 +22,13 @@ namespace Gendarme.Rules.Exceptions {
 			get { return end; }
 			set { end = value; }
 		}
+#if false
+		private SEHHandlerType type;
 		
 		public SEHHandlerType Type {
 			get { return type; }
 			set { type = value; }
 		}
+#endif
 	}
 }

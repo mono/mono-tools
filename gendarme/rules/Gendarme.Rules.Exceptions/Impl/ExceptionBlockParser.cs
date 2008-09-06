@@ -12,7 +12,8 @@ namespace Gendarme.Rules.Exceptions {
 		{
 			SEHGuardedBlock guardedBlock;
 			if (!blocks.TryGetValue (eh.TryStart, out guardedBlock)) {
-				guardedBlock = new SEHGuardedBlock (eh.TryStart, eh.TryEnd);
+//				guardedBlock = new SEHGuardedBlock (eh.TryStart, eh.TryEnd);
+				guardedBlock = new SEHGuardedBlock ();
 				blocks.Add (eh.TryStart, guardedBlock);
 			}
 			return guardedBlock;
@@ -32,10 +33,10 @@ namespace Gendarme.Rules.Exceptions {
 					SEHGuardedBlock guardedBlock = GetGuardedBlock (eh, blockStarts);
 
 					SEHCatchBlock cb = new SEHCatchBlock ();
-					cb.ExceptionType = eh.CatchType;
+//					cb.ExceptionType = eh.CatchType;
 					cb.Start = eh.HandlerStart;
 					cb.End = eh.HandlerEnd;
-					cb.Type = SEHHandlerType.Catch;
+//					cb.Type = SEHHandlerType.Catch;
 					guardedBlock.SEHHandlerBlocks.Add (cb);
 				} else if (eh.Type == ExceptionHandlerType.Finally) {
 					SEHGuardedBlock guardedBlock = GetGuardedBlock (eh, blockStarts);
@@ -43,7 +44,7 @@ namespace Gendarme.Rules.Exceptions {
 					SEHHandlerBlock hb = new SEHHandlerBlock ();
 					hb.Start = eh.HandlerStart;
 					hb.End = eh.HandlerEnd;
-					hb.Type = SEHHandlerType.Finally;
+//					hb.Type = SEHHandlerType.Finally;
 					guardedBlock.SEHHandlerBlocks.Add (hb);
 				}
 			}
