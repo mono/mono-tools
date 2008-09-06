@@ -30,11 +30,14 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("This method does string null and length check which can be harder on code readability/maintainability.")]
 	[Solution ("Replace both checks with a single call to String.IsEmptyOrNull.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class PreferStringIsNullOrEmptyRule : Rule, IMethodRule {
 
 		public override void Initialize (IRunner runner)
@@ -130,25 +133,26 @@ namespace Gendarme.Rules.Maintainability {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// is there any Call or Callvirt instructions in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			// go!
 
 			// we look for a call to String.Length property (since it's much easier 
 			// than checking a string being compared to null)
 			foreach (Instruction current in method.Body.Instructions) {
-				switch (current.OpCode.Code) {
-				case Code.Call:
-				case Code.Calli:
-				case Code.Callvirt:
-					MethodReference mr = (current.Operand as MethodReference);
-					if ((mr != null) && (mr.Name == "get_Length")  && (mr.DeclaringType.FullName == "System.String")) {
-						// now that we found it we check that
-						// 1 - we previously did a check null on the same value (that we already know is a string)
-						// 2 - we compare the return value (length) with 0
-						if (PreLengthCheck (method, current.Previous) && PostLengthCheck (current.Next)) {
-							Runner.Report (method, current, Severity.Medium, Confidence.Total, String.Empty);
-						}
+				if (!OpCodeBitmask.Calls.Get (current.OpCode.Code))
+					continue;
+
+				MethodReference mr = (current.Operand as MethodReference);
+				if ((mr.Name == "get_Length") && (mr.DeclaringType.FullName == "System.String")) {
+					// now that we found it we check that
+					// 1 - we previously did a check null on the same value (that we already know is a string)
+					// 2 - we compare the return value (length) with 0
+					if (PreLengthCheck (method, current.Previous) && PostLengthCheck (current.Next)) {
+						Runner.Report (method, current, Severity.Medium, Confidence.Total);
 					}
-					break;
 				}
 			}
 			return Runner.CurrentRuleResult;

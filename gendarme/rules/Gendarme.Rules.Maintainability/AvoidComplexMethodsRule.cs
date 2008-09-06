@@ -39,7 +39,8 @@ namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("Methods with a cyclomatic complexity equal or greater than 25 are harder to understand and maintain.")]
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
-	public class AvoidComplexMethodsRule : Rule,IMethodRule {
+	[FxCopCompatibility ("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+	public class AvoidComplexMethodsRule : Rule, IMethodRule {
 
 		// defaults match fxcop rule http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1575061&SiteID=1
 		// so people using both tools should not see conflicting results

@@ -1,3 +1,13 @@
+2008-09-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidComplexMethodsRule.cs: Add [FxCopCompatibility] attribute.
+	* AvoidLackOfCohesionOfMethodsRule.cs: Don't apply to delegates.
+	Do not ignore properties (SpecialName). Add a few FIXME.
+	* ConsiderUsingStopwatchRule.cs: Use OpCodeEngine to ensure methods
+	contains call[virt] instructions.
+	* PreferStringIsNullOrEmptyRule.cs: : Use OpCodeEngine to ensure 
+	methods	contains call[virt] instructions.
+
 2008-08-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidDeepInheritanceTreeRule.cs: Return DoesNotApply on 

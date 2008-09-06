@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Mono.Cecil;
@@ -38,7 +37,7 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
-	[Problem ("The methods in this class lacks cohesion. This leads to code harder to understand and maintain.")]
+	[Problem ("The methods in this class lacks cohesion (higher score are better). This leads to code harder to understand and maintain.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule
 	{
@@ -46,7 +45,7 @@ namespace Gendarme.Rules.Maintainability {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//does rule apply?
-			if (type.IsEnum || type.IsInterface || type.IsAbstract || type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsInterface || type.IsAbstract || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			//yay! rule do apply!
@@ -63,20 +62,17 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 
-		private static IEnumerable<MethodDefinition> GetMethods (TypeDefinition type)
-		{
-			return from MethodDefinition met in type.Methods
-				where met.HasBody && !met.IsSpecialName
-				select met; 
-		}
-		
 		public double GetCohesivenessForType (TypeDefinition type)
 		{
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
 			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
 
-			foreach (MethodDefinition method in GetMethods (type)) {
+			// FIXME: check ctors ?
+			// FIXME: split instance and static methods
+			foreach (MethodDefinition method in type.Methods) {
+				if (!method.HasBody)
+					continue;
 
 				//Mset is true if the method has already incremented M
 				bool Mset = false;

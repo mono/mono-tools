@@ -31,6 +31,7 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -41,6 +42,7 @@ namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("This method uses difference between two DateTime.Now calls to retrieve processing time. Developer's intent may not be very clear.")]
 	[Solution ("Use System.Diagnostics.Stopwatch.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ConsiderUsingStopwatchRule : Rule, IMethodRule {
 
 		private const string DateTime = "System.DateTime";
@@ -118,8 +120,12 @@ namespace Gendarme.Rules.Maintainability {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
+			// is there any Call or Callvirt instructions in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.Code != Code.Call)
+				if (!OpCodeBitmask.Calls.Get (ins.OpCode.Code))
 					continue;
 
 				MethodReference calledMethod = (MethodReference) ins.Operand;
