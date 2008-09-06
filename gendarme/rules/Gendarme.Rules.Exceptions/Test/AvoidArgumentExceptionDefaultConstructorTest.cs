@@ -42,14 +42,10 @@ namespace Test.Rules.Exceptions {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
-		}
-
-		[Test]
-		public void NoExceptions ()
-		{
-			AssertRuleSuccess (SimpleMethods.EmptyMethod);
-			AssertRuleSuccess<AvoidArgumentExceptionDefaultConstructorTest> ("DoesNotApply");
+			// no newobj (so no new *Exception possible)
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public void Argument_Single (string s)
@@ -113,7 +109,7 @@ namespace Test.Rules.Exceptions {
 		[Test]
 		public void Arguments ()
 		{
-			AssertRuleSuccess<AvoidArgumentExceptionDefaultConstructorTest> ("Arguments");
+			AssertRuleSuccess<AvoidArgumentExceptionDefaultConstructorTest> ("ThrowArgumentException");
 		}
 
 		public class MyOwnException : ArgumentException {

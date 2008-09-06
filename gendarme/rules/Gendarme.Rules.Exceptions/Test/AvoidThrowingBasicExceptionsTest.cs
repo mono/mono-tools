@@ -97,16 +97,12 @@ namespace Test.Rules.Exceptions {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no newobj (so no new *Exception possible)
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
-		[Test]
-		public void NoExceptions ()
-		{
-			AssertRuleSuccess (SimpleMethods.EmptyMethod);
-			AssertRuleSuccess<AvoidThrowingBasicExceptionsTest> ("NoExceptions");
-		}
-		
 		[Test]
 		public void CreateBasicExceptionsFails ()
 		{

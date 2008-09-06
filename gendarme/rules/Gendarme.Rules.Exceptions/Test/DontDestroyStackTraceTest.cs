@@ -24,90 +24,23 @@
 //
 
 using System;
-using System.Collections;
-using System.Reflection;
-using Gendarme.Framework;
 using Gendarme.Rules.Exceptions;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Exceptions {
 
-	[TestFixture]	
-	public class DoNotDestroyStackTraceTest {
+	[TestFixture]
+	public class DoNotDestroyStackTraceTest : MethodRuleTestFixture<DoNotDestroyStackTraceRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 	
-		private IMethodRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		
-		// Test setup
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DoNotDestroyStackTraceTest"];
-			rule = new DoNotDestroyStackTrace ();
-			runner = new TestRunner (rule);
-		}
-
-		// Test infrastructure
-		private MethodDefinition GetMethodToTest (string name)
-		{
-			return type.Methods.GetMethod (name, new Type [0]);
-		}
-
-		// Individual test cases
-		[Test]
-		public void TestThrowOriginalEx ()
-		{
-			MethodDefinition method = GetMethodToTest ("ThrowOriginalEx");
-			// Should result in 1 warning message
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestThrowOriginalExWithJunk ()
-		{
-			MethodDefinition method = GetMethodToTest ("ThrowOriginalExWithJunk");
-			// Should result in 1 warning message
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestRethrowOriginalEx ()
-		{
-			MethodDefinition method = GetMethodToTest ("RethrowOriginalEx");
-			// Should result in 0 warning messages
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestThrowOriginalExAndRethrowWithJunk ()
-		{
-			MethodDefinition method = GetMethodToTest ("ThrowOriginalExAndRethrowWithJunk");
-			// Should result in one warning message
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestRethrowOriginalExAndThrowWithJunk ()
-		{
-			MethodDefinition method = GetMethodToTest ("RethrowOriginalExAndThrowWithJunk");
-			// Should result in one warning message
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		// Functions whose IL is used by the test cases for the DontDestroyStackTrace rule
-
 		public void ThrowOriginalEx ()
 		{
 			try  {
@@ -118,6 +51,12 @@ namespace Test.Rules.Exceptions {
 				// This should trip the DontDestroyStackTrace rule.
 				throw ex;
 			}
+		}
+
+		[Test]
+		public void TestThrowOriginalEx ()
+		{
+			AssertRuleFailure<DoNotDestroyStackTraceTest> ("ThrowOriginalEx", 1);
 		}
 
 		public void ThrowOriginalExWithJunk ()
@@ -139,6 +78,12 @@ namespace Test.Rules.Exceptions {
 			}
 		}
 
+		[Test]
+		public void TestThrowOriginalExWithJunk ()
+		{
+			AssertRuleFailure<DoNotDestroyStackTraceTest> ("ThrowOriginalExWithJunk", 1);
+		}
+
 		public void RethrowOriginalEx ()
 		{
 			try {
@@ -151,6 +96,13 @@ namespace Test.Rules.Exceptions {
 				// rethrowing the original exception.
 				throw;
 			}
+		}
+
+		[Test]
+		public void TestRethrowOriginalEx ()
+		{
+			// no throw instruction is present in this method (its a rethrow)
+			AssertRuleDoesNotApply<DoNotDestroyStackTraceTest> ("RethrowOriginalEx");
 		}
 
 		public void ThrowOriginalExAndRethrowWithJunk ()
@@ -166,7 +118,7 @@ namespace Test.Rules.Exceptions {
 					j += 10;
 					Console.WriteLine (j);
 					if ((i % 1234) > 56) {
-						// This should trip the DontDestroyStackTrace rule, because we're
+						// This should trip DontDestroyStackTraceRule, because we're
 						// throwing the original exception.
 						throw ex;
 					}
@@ -176,6 +128,12 @@ namespace Test.Rules.Exceptions {
 				// this catch block end up at a throw and a rethrow
 				throw;
 			}
+		}
+
+		[Test]
+		public void TestThrowOriginalExAndRethrowWithJunk ()
+		{
+			AssertRuleFailure<DoNotDestroyStackTraceTest> ("ThrowOriginalExAndRethrowWithJunk", 1);
 		}
 
 		public void RethrowOriginalExAndThrowWithJunk ()
@@ -201,6 +159,30 @@ namespace Test.Rules.Exceptions {
 				// throwing the original exception.
 				throw ex;
 			}
+		}
+
+		[Test]
+		public void TestRethrowOriginalExAndThrowWithJunk ()
+		{
+			AssertRuleFailure<DoNotDestroyStackTraceTest> ("RethrowOriginalExAndThrowWithJunk", 1);
+		}
+
+		public void ThrowNewExceptionUsingSameOldLocal ()
+		{
+			try {
+				Int32.Parse ("Broken!");
+			}
+			catch (Exception ex) {
+				// we deliberately choose to create a new exception
+				ex = new InvalidOperationException ("uho");
+				throw ex;
+			}
+		}
+
+		[Test]
+		public void TestThrowNewExceptionUsingSameOldLocal ()
+		{
+			AssertRuleSuccess<DoNotDestroyStackTraceTest> ("ThrowNewExceptionUsingSameOldLocal");
 		}
 	}
 }

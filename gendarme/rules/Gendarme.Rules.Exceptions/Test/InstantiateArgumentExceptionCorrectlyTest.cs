@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
-// 	(C) 2008 Néstor Salceda
+// (C) 2008 Néstor Salceda
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,25 +30,25 @@
 
 using System;
 using System.Collections;
+
 using Gendarme.Rules.Exceptions;
+
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
 
 namespace Test.Rules.Exceptions {
+
 	[TestFixture]
 	public class InstantiateArgumentExceptionCorrectlyTest : MethodRuleTestFixture<InstantiateArgumentExceptionCorrectlyRule> {
 
 		[Test]
-		public void SkipOnBodylessMethods ()
+		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
-		}
-
-		[Test]
-		public void SuccessOnEmptyMethods ()
-		{
-			AssertRuleSuccess (SimpleMethods.EmptyMethod);
+			// no exception is instantiated
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public void ArgumentExceptionWithTwoParametersInGoodOrder (int parameter)
@@ -145,9 +147,9 @@ namespace Test.Rules.Exceptions {
 		}
 
 		[Test]
-		public void FailOnArgumentExceptionWithOneArgumentTest ()
+		public void SuccessOnArgumentExceptionWithOneArgumentTest ()
 		{
-			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("ArgumentExceptionWithOneArgument", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("ArgumentExceptionWithOneArgument");
 		}
 
 		public void ArgumentExceptionWithOneMessage (int parameter)
@@ -375,40 +377,285 @@ namespace Test.Rules.Exceptions {
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("set_WellNamedPropertyWithArgumentExceptionAndOneParameter");
 		}
 
-		public int BadNamedPropertyWithArgumentExceptionAndOneParameter {
+		public int ArgumentExceptionProperty {
+			get {
+				// public ArgumentException ()
+				// i.e. we don't care about this ctor (no parameter)
+				throw new ArgumentException ("uho");
+			}
 			set {
-				throw new ArgumentException ("BadNamedPropertyWithArgumentExceptionAndOneParameter");
+				// public ArgumentException (string message, string paramName)
+				// i.e. we CARE about this ctor second parameter (paramName)
+				throw new ArgumentException ("ArgumentExceptionProperty", "uho");
+			}
+		}
+
+		public int ArgumentNullExceptionProperty {
+			get {
+				// public ArgumentNullException (string paramName)
+				// i.e. we CARE about this ctor single parameter (paramName)
+				throw new ArgumentNullException ("uho");
+			}
+			set {
+				// public ArgumentNullException (string paramName, string message)
+				// i.e. we CARE about this ctor first parameter (paramName)
+				throw new ArgumentNullException ("ArgumentNullExceptionProperty", "aha");
 			}
 		}
 
 		[Test]
-		public void FailOnBadNamedPropertyWithArgumentExceptionAndOneParameterTest ()
+		public void PropertiesTest ()
 		{
-			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("set_BadNamedPropertyWithArgumentExceptionAndOneParameter", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("get_ArgumentExceptionProperty");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("set_ArgumentExceptionProperty", 1);
+
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("get_ArgumentNullExceptionProperty", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("set_ArgumentNullExceptionProperty");
 		}
 
-		public ArgumentException MethodReturningException (int value)
+		public ArgumentException MethodReturningArgumentException_Empty (int value)
 		{
+			// public ArgumentException ()
+			// i.e. we don't care about this ctor (no parameter)
+			return new ArgumentException ();
+		}
+
+		public ArgumentException MethodReturningArgumentException_String (int value)
+		{
+			// public ArgumentException (string message)
+			// i.e. we don't care about this ctor (no paramName)
 			return new ArgumentException ("value");
 		}
 
-		[Test]
-		public void SkipOnMethodReturningExceptionTest ()
+		public ArgumentException MethodReturningArgumentException_StringException (int value)
 		{
-			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningException");
+			// public ArgumentException (string message, Exception innerException)
+			// i.e. we don't care about this ctor (no paramName)
+			return new ArgumentException ("heho", new Exception ());
+		}
+
+		public ArgumentException MethodReturningArgumentException_StringString_Good (int value)
+		{
+			// public ArgumentException (string message, string paramName)
+			// i.e. we CARE about this ctor second parameter (paramName)
+			return new ArgumentException ("heho", "value");
+		}
+
+		public ArgumentException MethodReturningArgumentException_StringString_Bad (int value)
+		{
+			// public ArgumentException (string message, string paramName)
+			// i.e. we CARE about this ctor second parameter (paramName)
+			return new ArgumentException ("value", "heho");
+		}
+
+		public ArgumentException MethodReturningArgumentException_StringStringException_Good (int value)
+		{
+			// public ArgumentException (string message, string paramName, Exception innerException)
+			// i.e. we CARE about this ctor second parameter (paramName)
+			return new ArgumentException ("heho", "value", new Exception ());
+		}
+
+		public ArgumentException MethodReturningArgumentException_StringStringException_Bad (int value)
+		{
+			// public ArgumentException (string message, string paramName, Exception innerException)
+			// i.e. we CARE about this ctor second parameter (paramName)
+			return new ArgumentException ("value", "heho", new Exception ());
+		}
+
+		[Test]
+		public void MethodReturningArgumentException ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_Empty");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_String");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_StringException");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_StringString_Good");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_StringString_Bad");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_StringStringException_Good");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentException_StringStringException_Bad");
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_Empty (int value)
+		{
+			// public ArgumentNullException ()
+			// i.e. we don't care about this ctor (no parameter)
+			return new ArgumentNullException ();
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_StringOk (int value)
+		{
+			// public ArgumentNullException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new ArgumentNullException ("value");
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_StringBad (int value)
+		{
+			// public ArgumentNullException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new ArgumentNullException ("heho");
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_StringException (int value)
+		{
+			// public ArgumentNullException (string message, Exception innerException)
+			// i.e. we don't care about this ctor (no paramName)
+			return new ArgumentNullException ("heho", new Exception ());
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_StringString_Good (int value)
+		{
+			// public ArgumentNullException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new ArgumentNullException ("value", "heho");
+		}
+
+		public ArgumentNullException MethodReturningArgumentNullException_StringString_Bad (int value)
+		{
+			// public ArgumentNullException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new ArgumentNullException ("heho", "value");
+		}
+
+		[Test]
+		public void MethodReturningArgumentNullException ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_Empty");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringOk");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringBad", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringException");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringString_Good");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringString_Bad", 1);
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_Empty (int value)
+		{
+			// public ArgumentOutOfRangeException ()
+			// i.e. we don't care about this ctor (no parameter)
+			return new ArgumentOutOfRangeException ();
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_StringOk (int value)
+		{
+			// public ArgumentOutOfRangeException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new ArgumentOutOfRangeException ("value");
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_StringBad (int value)
+		{
+			// public ArgumentOutOfRangeException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new ArgumentOutOfRangeException ("heho");
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_StringException (int value)
+		{
+			// public ArgumentOutOfRangeException (string message, Exception innerException)
+			// i.e. we don't care about this ctor (no paramName)
+			return new ArgumentOutOfRangeException ("heho", new Exception ());
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_StringString_Good (int value)
+		{
+			// public ArgumentOutOfRangeException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new ArgumentOutOfRangeException ("value", "heho");
+		}
+
+		public ArgumentOutOfRangeException MethodReturningArgumentOutOfRangeException_StringString_Bad (int value)
+		{
+			// public ArgumentOutOfRangeException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new ArgumentOutOfRangeException ("heho", "value");
+		}
+
+		[Test]
+		public void MethodReturningArgumentOutOfRangeException ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentOutOfRangeException_Empty");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentOutOfRangeException_StringOk");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentOutOfRangeException_StringBad", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentOutOfRangeException_StringException");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentOutOfRangeException_StringString_Good");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningArgumentNullException_StringString_Bad", 1);
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_Empty (int value)
+		{
+			// public DuplicateWaitObjectException ()
+			// i.e. we don't care about this ctor (no parameter)
+			return new DuplicateWaitObjectException ();
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_StringOk (int value)
+		{
+			// public DuplicateWaitObjectException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new DuplicateWaitObjectException ("value");
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_StringBad (int value)
+		{
+			// public DuplicateWaitObjectException (string paramName)
+			// i.e. we CARE about this ctor single parameter (paramName)
+			return new DuplicateWaitObjectException ("heho");
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_StringException (int value)
+		{
+			// public DuplicateWaitObjectException (string message, Exception innerException)
+			// i.e. we don't care about this ctor (no paramName)
+			return new DuplicateWaitObjectException ("heho", new Exception ());
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_StringString_Good (int value)
+		{
+			// public DuplicateWaitObjectException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new DuplicateWaitObjectException ("value", "heho");
+		}
+
+		public DuplicateWaitObjectException MethodReturningDuplicateWaitObjectException_StringString_Bad (int value)
+		{
+			// public DuplicateWaitObjectException (string paramName, string message)
+			// i.e. we CARE about this ctor first parameter (paramName)
+			return new DuplicateWaitObjectException ("heho", "value");
+		}
+
+		[Test]
+		public void MethodReturningDuplicateWaitObjectException ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_Empty");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_StringOk");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_StringBad", 1);
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_StringException");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_StringString_Good");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("MethodReturningDuplicateWaitObjectException_StringString_Bad", 1);
 		}
 
 		public void MessageLoadedFromLocal (int value)
 		{
 			string msg = "The parameter: {0} is out of range";
+			// public ArgumentOutOfRangeException (string paramName, string message)
 			throw new ArgumentOutOfRangeException ("value", msg);
 		}
 
 		[Test]
-		[Ignore ("Still not caught by rule.")]
 		public void SuccessOnMessageLoadedFromLocalTest ()
 		{
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("MessageLoadedFromLocal");
+		}
+
+		public void StringFormatForMessage (int value)
+		{
+			// public ArgumentException (string message, string paramName)
+			throw new ArgumentException (String.Format ("value {0} is bad", value), "value");
+		}
+
+		[Test]
+		public void ArgumentExceptionTest ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("StringFormatForMessage");
 		}
 	}
 }

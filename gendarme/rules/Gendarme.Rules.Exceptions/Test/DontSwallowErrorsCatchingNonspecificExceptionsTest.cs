@@ -27,202 +27,93 @@
 //
 
 using System;
-using System.Collections;
-using System.Reflection;
 using System.IO;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Exceptions;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Exceptions {
 	
 	[TestFixture]
-	public class DontSwallowErrorsCatchingNonspecificExceptionsTest {
-		
-		private IMethodRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private MethodDefinition method;
-		private TypeDefinition type;
-		
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+	public class DoNotSwallowErrorsCatchingNonSpecificExceptionsTest : MethodRuleTestFixture<DoNotSwallowErrorsCatchingNonSpecificExceptionsRule> {
+
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DontSwallowErrorsCatchingNonspecificExceptionsRule ();
-			runner = new TestRunner (rule);
-			type = assembly.MainModule.Types ["Test.Rules.Exceptions.DontSwallowErrorsCatchingNonspecificExceptionsTest"];
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no exception handler
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
+		
+		public void SwallowErrorsCatchingExceptionEmptyCatchBlock ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (Exception exception) {
+			}
 		}
 
 		[Test]
 		public void SwallowErrorsCatchingExceptionsEmptyCatchBlockTest () 
 		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingExceptionEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingExceptionEmptyCatchBlock", 1);
 		}
-		
+
+		public void SwallowErrorsCatchingExceptionNoEmptyCatchBlock ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (Exception exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+		}
+
 		[Test]
 		public void SwallowErrorsCatchingExceptionsNoEmptyCatchBlockTest () 
 		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingExceptionNoEmptyCatchBlock", 1);
 		}
-		
+
+		public void SwallowErrorsCatchingSystemExceptionEmptyCatchBlock ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (SystemException exception) {
+			}
+		}
+
 		[Test]
 		public void SwallowErrorsCatchingSystemExceptionEmptyCatchBlockTest () 
 		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingSystemExceptionEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingSystemExceptionEmptyCatchBlock", 1);
 		}
-		
+
+		public void SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (SystemException exception) {
+				Console.WriteLine (exception.Message);
+				Console.WriteLine (exception);
+			}
+		}
+
 		[Test]
 		public void SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlockTest () 
 		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock", 1);
 		}
-		
-		[Test]
-		public void SwallowErrorsCatchingTypeExceptionEmptyCatchBlockTest () 
-		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingTypeExceptionEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlockTest () 
-		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void SwallowErrorsCatchingAllEmptyCatchBlockTest () 
-		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingAllEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void SwallowErrorsCatchingAllNoEmptyCatchBlockTest () 
-		{
-			method = type.Methods.GetMethod ("SwallowErrorsCatchingAllNoEmptyCatchBlock", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NotSwallowRethrowingExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowRethrowingException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		
-		[Test]
-		public void NotSwallowRethrowingGeneralExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowRethrowingGeneralException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		
-		[Test]
-		public void NotSwallowCatchingSpecificExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowCatchingSpecificException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NotSwallowThrowingANewExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowThrowingANewException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NotSwallowCatchingAllThrowingANewExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowCatchingAllThrowingANewException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NotSwallowCatchingTypeExceptionThrowingANewExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowCatchingTypeExceptionThrowingANewException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NotSwallowCatchingSystemExceptionThrowingANewExceptionTest () 
-		{
-			method = type.Methods.GetMethod ("NotSwallowCatchingSystemExceptionThrowingANewException", Type.EmptyTypes);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		//Methods for make the tests
-		public void SwallowErrorsCatchingExceptionEmptyCatchBlock () 
-		{
-			try { 
-				File.Open ("foo.txt", FileMode.Open);
-			}
-			catch (Exception exception) {
-			}
-		}
-		
-		public void SwallowErrorsCatchingExceptionNoEmptyCatchBlock () 
-		{
-			try { 
-				File.Open ("foo.txt", FileMode.Open);
-			}
-			catch (Exception exception) {
-				Console.WriteLine (exception.Message);
-				Console.WriteLine (exception);
-			}
-		}
-		
-		public void SwallowErrorsCatchingSystemExceptionEmptyCatchBlock () 
-		{
-			try {
-				File.Open ("foo.txt", FileMode.Open);
-			}
-			catch (SystemException exception) {
-			}
-		}
-		
-		public void SwallowErrorsCatchingSystemExceptionNoEmptyCatchBlock () 
-		{
-			try {
-				File.Open ("foo.txt", FileMode.Open);
-			}
-			catch (SystemException exception) {
-				Console.WriteLine (exception.Message);
-				Console.WriteLine (exception);
-			}
-		}
-		
-		public void SwallowErrorsCatchingTypeExceptionEmptyCatchBlock () 
+
+		public void SwallowErrorsCatchingTypeExceptionEmptyCatchBlock ()
 		{
 			try {
 				File.Open ("foo.txt", FileMode.Open);
@@ -231,7 +122,13 @@ namespace Test.Rules.Exceptions {
 			}
 		}
 
-		public void SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlock () 
+		[Test]
+		public void SwallowErrorsCatchingTypeExceptionEmptyCatchBlockTest () 
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingTypeExceptionEmptyCatchBlock", 1);
+		}
+
+		public void SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlock ()
 		{
 			try {
 				File.Open ("foo.txt", FileMode.Open);
@@ -241,27 +138,46 @@ namespace Test.Rules.Exceptions {
 			}
 		}
 		
-		public void SwallowErrorsCatchingAllEmptyCatchBlock () 
+		[Test]
+		public void SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlockTest () 
 		{
-			try { 
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingTypeExceptionNoEmptyCatchBlock", 1);
+		}
+
+		public void SwallowErrorsCatchingAllEmptyCatchBlock ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch {
 			}
 		}
-		
-		public void SwallowErrorsCatchingAllNoEmptyCatchBlock () 
+
+		[Test]
+		public void SwallowErrorsCatchingAllEmptyCatchBlockTest () 
 		{
-			try { 
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingAllEmptyCatchBlock", 1);
+		}
+
+		public void SwallowErrorsCatchingAllNoEmptyCatchBlock ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch {
 				Console.WriteLine ("Has happened an exception.");
 			}
 		}
-		
-		public void NotSwallowRethrowingGeneralException () {
-			try { 
+
+		[Test]
+		public void SwallowErrorsCatchingAllNoEmptyCatchBlockTest () 
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SwallowErrorsCatchingAllNoEmptyCatchBlock", 1);
+		}
+
+		public void NotSwallowRethrowingGeneralException ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch (Exception exception) {
@@ -272,9 +188,16 @@ namespace Test.Rules.Exceptions {
 				Console.WriteLine (exception);
 			}
 		}
+
+		[Test]
+		public void NotSwallowRethrowingGeneralExceptionTest ()
+		{
+			AssertRuleSuccess<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowRethrowingGeneralException");
+		}
 		
-		public void NotSwallowRethrowingException () {
-			try { 
+		public void NotSwallowRethrowingException ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch (Exception exception) {
@@ -285,8 +208,14 @@ namespace Test.Rules.Exceptions {
 				Console.WriteLine (exception);
 			}
 		}
-		
-		public void NotSwallowCatchingSpecificException () 
+
+		[Test]
+		public void NotSwallowRethrowingExceptionTest ()
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowRethrowingException", 1);
+		}
+
+		public void NotSwallowCatchingSpecificException ()
 		{
 			try {
 				File.Open ("foo.txt", FileMode.Open);
@@ -294,45 +223,75 @@ namespace Test.Rules.Exceptions {
 			catch (FileNotFoundException exception) {
 			}
 		}
-		
-		public void NotSwallowThrowingANewException () 
+
+		[Test]
+		public void NotSwallowCatchingSpecificExceptionTest () 
 		{
-			try { 
+			AssertRuleSuccess<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowCatchingSpecificException");
+		}
+
+		public void NotSwallowThrowingANewException ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch (Exception exception) {
 				throw new SystemException ("Message");
 			}
 		}
-		
+
+		[Test]
+		public void NotSwallowThrowingANewExceptionTest () 
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowThrowingANewException", 1);
+		}
+
 		public void NotSwallowCatchingAllThrowingANewException ()
 		{
-			try { 
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch {
 				throw new Exception ("Message");
 			}
 		}
-		
+
+		[Test]
+		public void NotSwallowCatchingAllThrowingANewExceptionTest () 
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowCatchingAllThrowingANewException", 1);
+		}
+
 		public void NotSwallowCatchingTypeExceptionThrowingANewException ()
 		{
-			try { 
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch (Exception) {
 				throw new Exception ("Message");
 			}
 		}
-		
-		public void NotSwallowCatchingSystemExceptionThrowingANewException () 
+
+		[Test]
+		public void NotSwallowCatchingTypeExceptionThrowingANewExceptionTest () 
 		{
-			try { 
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowCatchingTypeExceptionThrowingANewException", 1);
+		}
+
+		public void NotSwallowCatchingSystemExceptionThrowingANewException ()
+		{
+			try {
 				File.Open ("foo.txt", FileMode.Open);
 			}
 			catch (System.Exception exception) {
 				throw new Exception ("Message");
 			}
+		}
+
+		[Test]
+		public void NotSwallowCatchingSystemExceptionThrowingANewExceptionTest () 
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowCatchingSystemExceptionThrowingANewException", 1);
 		}
 	}
 }

@@ -1,3 +1,17 @@
+2008-09-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidArgumentExceptionDefaultConstructorTest.cs: Change result 
+	for methods that do not create objects (DoesNotApply).
+	* AvoidThrowingBasicExceptionsTest.cs: Change result for methods 
+	that do not create objects (DoesNotApply).
+	* DontDestroyStackTraceTest.cs: Update to the new, short, unit 
+	test syntax. Add more tests for better coverage.
+	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs: Update
+	to the new, short, unit test syntax.
+	* InstantiateArgumentExceptionCorrectlyTest.cs: Add test cases 
+	for method returning all targeted exceptions (from all constructors). 
+	Remove Ignore from one test. Add more test for properties.
+
 2008-08-16  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* InstantiateArgumentExceptionCorrectlyTest.cs: Added a test for the
