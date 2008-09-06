@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.RunnerEventArgs
+// Gendarme.Framework.Engine
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -23,20 +23,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//
 
 namespace Gendarme.Framework {
 
-	public class RunnerEventArgs : HierarchicalEventArgs {
+	// FIXME: do a IEngine interface once this is stable
+	abstract public class Engine {
 
-		private IRunner runner;
+		private EngineController controller;
 
-		public RunnerEventArgs (IRunner runner)
+		protected Engine ()
 		{
-			this.runner = runner;
 		}
 
-		public IRunner Runner {
-			get { return runner; }
+		protected EngineController Controller {
+			get { return controller; }
+		}
+
+		/// <summary>
+		/// Override to attach to some of the controller events
+		/// </summary>
+		/// <param name="controller"></param>
+		public virtual void Initialize (EngineController controller)
+		{
+			this.controller = controller;
+		}
+
+		/// <summary>
+		/// Note: TearDown can be called without a call to Engine.Register or 
+		/// Engine.Initialize
+		/// </summary>
+		public virtual void TearDown ()
+		{
+			controller = null;
 		}
 	}
 }

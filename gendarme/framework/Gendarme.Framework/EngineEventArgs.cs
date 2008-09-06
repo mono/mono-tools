@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.RunnerEventArgs
+// Gendarme.Framework.EngineEventArgs
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -26,17 +26,17 @@
 
 namespace Gendarme.Framework {
 
-	public class RunnerEventArgs : HierarchicalEventArgs {
+	public class EngineEventArgs : HierarchicalEventArgs {
 
-		private IRunner runner;
+		private EngineController controller;
 
-		public RunnerEventArgs (IRunner runner)
+		public EngineEventArgs (EngineController controller)
 		{
-			this.runner = runner;
+			this.controller = controller;
 		}
 
-		public IRunner Runner {
-			get { return runner; }
+		public EngineController Controller {
+			get { return controller; }
 		}
 	}
 }

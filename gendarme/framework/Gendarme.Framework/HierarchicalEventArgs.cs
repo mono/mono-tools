@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.RunnerEventArgs
+// Gendarme.Framework.HierarchicalEventArgs
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -23,20 +23,58 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//
+
+using System;
+
+using Mono.Cecil;
 
 namespace Gendarme.Framework {
 
-	public class RunnerEventArgs : HierarchicalEventArgs {
+	abstract public class HierarchicalEventArgs : EventArgs {
 
-		private IRunner runner;
+		private AssemblyDefinition assembly;
+		private ModuleDefinition module;
+		private TypeDefinition type;
+		private MethodDefinition method;
 
-		public RunnerEventArgs (IRunner runner)
-		{
-			this.runner = runner;
+
+		public AssemblyDefinition CurrentAssembly {
+			get { return assembly; }
+			set {
+				if (value != assembly) {
+					assembly = value;
+					module = null;
+					type = null;
+					method = null;
+				}
+			}
 		}
 
-		public IRunner Runner {
-			get { return runner; }
+		public ModuleDefinition CurrentModule {
+			get { return module; }
+			set {
+				if (value != module) {
+					module = value;
+					type = null;
+					method = null;
+				}
+			}
+		}
+
+		public TypeDefinition CurrentType {
+			get { return type; }
+			set {
+				if (value != type) {
+					type = value;
+					method = null;
+				}
+			}
+		}
+
+		public MethodDefinition CurrentMethod {
+			get { return method; }
+			set { method = value; }
 		}
 	}
 }

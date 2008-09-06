@@ -60,6 +60,8 @@ namespace Gendarme.Framework {
 
 		int VerbosityLevel { get; }
 
+		EngineController Engines { get; }
+
 		/// <summary>
 		/// Helper property to avoid each rule having it's own state/logic about 
 		/// the result (RuleResult.Success or RuleResult.Failure) of its analysis

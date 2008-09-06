@@ -116,6 +116,15 @@ namespace Gendarme.Framework {
 			set { verbose_level = value; }
 		}
 
+		private EngineController ec;
+		public EngineController Engines { 
+			get {
+				if (ec == null)
+					ec = new EngineController ();
+				return ec;
+			}
+		}
+
 		// once every assembly are loaded *and* all the rules are known -> we initialized all rules.
 		// this ensure that the list of assemblies is available at rule initialization time
 		// which allows caching information and treating the assemblies as "a set"
@@ -148,6 +157,8 @@ namespace Gendarme.Framework {
 					rule.Active = false;
 				}
 			}
+
+			Engines.Build (assemblies);
 
 			assembly_rules = rules.OfType<IAssemblyRule> ();
 			type_rules = rules.OfType<ITypeRule> ();
@@ -214,6 +225,8 @@ namespace Gendarme.Framework {
 		{
 			defectCountBeforeCheck = 0;
 			Defects.Clear ();
+			SeverityBitmask.SetAll ();
+			ConfidenceBitmask.SetAll ();
 		}
 
 		private void OnEvent (EventHandler<RunnerEventArgs> handler, RunnerEventArgs e)
@@ -366,6 +379,8 @@ namespace Gendarme.Framework {
 			foreach (Rule rule in rules) {
 				rule.TearDown (this);
 			}
+
+			Engines.TearDown ();
 		}
 	}
 }

@@ -128,6 +128,26 @@ namespace Gendarme.Framework {
 			SetRange (bit.ToInt32 (null), 64);
 		}
 
+		/// <summary>
+		/// Does this bitmask intersects with the specified bitmask.
+		/// </summary>
+		/// <param name="bitmask">Bitmask to compare</param>
+		/// <returns>True if the bitmask intersects with the specified bitmask, False otherwise.</returns>
+		public bool Intersect (Bitmask<T> bitmask)
+		{
+			return ((mask & bitmask.mask) != 0);
+		}
+
+		/// <summary>
+		/// Is this bitmask a subset of the specified bitmask.
+		/// </summary>
+		/// <param name="bitmask">Bitmask to compare (potential superset)</param>
+		/// <returns>True if the bitmask is a subset of the specified bitmask, False otherwise.</returns>
+		public bool IsSubsetOf (Bitmask<T> bitmask)
+		{
+			return ((mask & bitmask.mask) == mask);
+		}
+
 		public override bool Equals (object obj)
 		{
 			Bitmask<T> other = (obj as Bitmask<T>);

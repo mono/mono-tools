@@ -45,6 +45,7 @@ namespace Gendarme.Framework {
 		private string url;
 		private Type type;
 		private ApplicabilityScope applicability_scope = ApplicabilityScope.All;
+		private object [] engine_dependencies = null;
 
 		/// <summary>
 		/// Return true if the rule is currently active, false otherwise.
@@ -158,11 +159,28 @@ namespace Gendarme.Framework {
 		public virtual void Initialize (IRunner runner)
 		{
 			this.runner = runner;
+
+			// read attribute only once (e.g. the wizard can initialize multiple times)
+			if (engine_dependencies == null)
+				engine_dependencies = Type.GetCustomAttributes (typeof (EngineDependencyAttribute), true);
+
+			if (engine_dependencies.Length == 0)
+				return;
+
+			// subscribe to each engine the rule depends on
+			foreach (EngineDependencyAttribute eda in engine_dependencies) {
+				runner.Engines.Subscribe (eda.EngineType);
+			}
 		}
 
 		public virtual void TearDown (IRunner runner)
 		{
-			// nothing to do (by default) since *most* reporting is better done in the Check* call
+			if ((engine_dependencies == null) || (engine_dependencies.Length == 0))
+				return;
+
+			foreach (EngineDependencyAttribute eda in engine_dependencies) {
+				runner.Engines.Unsubscribe (eda.EngineType);
+			}
 		}
 
 		public ApplicabilityScope ApplicabilityScope {

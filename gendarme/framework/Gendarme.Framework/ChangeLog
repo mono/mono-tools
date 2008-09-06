@@ -1,3 +1,23 @@
+2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Bitmask.cs: Add Intersect and IsSubsetOf methods.
+	* EngineController.cs: New. Provide the main loop for engines
+	to do their job.
+	* Engine.cs: New. Abstract base class for engines.
+	* EngineDependencyAttribute.cs: New. Attribute that the rules
+	need to use to subscribe to an engine (so that the controller 
+	will execute it).
+	* EngineEventArgs.cs
+	* HierarchicalEventArgs.cs: New. Abstract base class for both 
+	EngineEventArgs and RunnerEventArgs.
+	* IRunner.cs: Add EngineController to the runner definition.
+	* Rule.cs: Add [un]subscribing to engines based on the [Engine
+	Dependency] attribute presence.
+	* Runner.cs: Add calls to EngineController to build any extra
+	stuff required by the rules. Reset SeverityBitmask and Confidence
+	Bitmask to set all bits (when runner is reused).
+	* RunnerEventArgs.cs: Now inherits from HierarchicalEventArgs
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Bitmask.cs: New. Class to use enums or integral types like a 

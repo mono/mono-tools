@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.RunnerEventArgs
+// Gendarme.Framework.EngineDependencyAttribute
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -23,20 +23,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//
+
+using System;
 
 namespace Gendarme.Framework {
 
-	public class RunnerEventArgs : HierarchicalEventArgs {
+	/// <summary>
+	/// This attribute is needed to declare that a rule depends on an a engine.
+	/// This guarantee that the engine will have done it's job prior to the 
+	/// Runner calls into the rules Check* methods
+	/// </summary>
+	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+	public sealed class EngineDependencyAttribute : Attribute {
 
-		private IRunner runner;
-
-		public RunnerEventArgs (IRunner runner)
+		public EngineDependencyAttribute (Type engineType)
 		{
-			this.runner = runner;
+			if (engineType == null)
+				throw new ArgumentNullException ("engineType");
+			EngineType = engineType.FullName;
 		}
 
-		public IRunner Runner {
-			get { return runner; }
+		public EngineDependencyAttribute (string engineType)
+		{
+			if (engineType == null)
+				throw new ArgumentNullException ("engineType");
+			EngineType = engineType;
 		}
+
+		public string EngineType { get; internal set; }
 	}
 }
