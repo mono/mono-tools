@@ -13,13 +13,19 @@ framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
 framework_sources = \
 	../AssemblyStaticInfo.cs \
+	Gendarme.Framework/ApplicabilityScope.cs \
 	Gendarme.Framework/AssemblyResolver.cs \
 	Gendarme.Framework/BasicIgnoreList.cs \
 	Gendarme.Framework/Bitmask.cs \
 	Gendarme.Framework/Confidence.cs \
 	Gendarme.Framework/Defect.cs \
 	Gendarme.Framework/DocumentationUriAttribute.cs \
+	Gendarme.Framework/Engine.cs \
+	Gendarme.Framework/EngineController.cs \
+	Gendarme.Framework/EngineDependencyAttribute.cs \
+	Gendarme.Framework/EngineEventArgs.cs \
 	Gendarme.Framework/FxCopCompatibilityAttribute.cs \
+	Gendarme.Framework/HierarchicalEventArgs.cs \
 	Gendarme.Framework/IAssemblyRule.cs \
 	Gendarme.Framework/IIgnoreList.cs \
 	Gendarme.Framework/IMethodRule.cs \
@@ -34,7 +40,7 @@ framework_sources = \
 	Gendarme.Framework/Severity.cs \
 	Gendarme.Framework/Symbols.cs \
 	Gendarme.Framework/SolutionAttribute.cs \
-	Gendarme.Framework/ApplicabilityScope.cs \
+	Gendarme.Framework.Engines/OpCodeEngine.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
 	Gendarme.Framework.Helpers/MethodSignatures.cs \
 	Gendarme.Framework.Helpers/OpCodeBitmask.cs \
