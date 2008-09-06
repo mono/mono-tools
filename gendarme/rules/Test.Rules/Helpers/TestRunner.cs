@@ -58,9 +58,14 @@ namespace Test.Rules.Helpers {
 		{
 			if (obj == null)
 				throw new ArgumentNullException ("obj", "Cannot check a null object");
+
 			Reset ();
-			Assemblies.Clear ();
-			Assemblies.Add (obj.GetAssembly ());
+			AssemblyDefinition assembly = obj.GetAssembly ();
+			if (!Assemblies.Contains (assembly)) {
+				Assemblies.Clear ();
+				Assemblies.Add (assembly);
+				Engines.Build (Assemblies);
+			}
 			CurrentTarget = obj;
 		}
 
