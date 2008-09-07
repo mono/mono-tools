@@ -1,3 +1,8 @@
+2008-09-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodWithUnusedGenericTypeTest.cs: New. Unit tests for
+	AvoidMethodWithUnusedGenericTypeRule
+
 2008-08-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseGenericEventHandlerTest.cs: New. Unit tests for
