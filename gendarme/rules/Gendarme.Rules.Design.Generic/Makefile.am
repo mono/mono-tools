@@ -14,9 +14,11 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in TestResult.xml
 
 rules_sources = \
+	AvoidMethodWithUnusedGenericTypeRule.cs \
 	ImplementGenericCollectionInterfacesRule.cs \
 	UseGenericEventHandlerRule.cs
 
 tests_sources = \
+	AvoidMethodWithUnusedGenericTypeTest.cs \
 	ImplementGenericCollectionInterfacesTest.cs \
 	UseGenericEventHandlerTest.cs

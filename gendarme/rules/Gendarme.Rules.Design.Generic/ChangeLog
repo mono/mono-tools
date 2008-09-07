@@ -1,3 +1,10 @@
+2008-09-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodWithUnusedGenericTypeRule.cs: New. This rule warns 
+	if some generic parameters types are not being used by the method 
+	parameters.
+	* Makefile.am: Add new files to the build.
+
 2008-08-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseGenericEventHandlerRule.cs: New. Rule to promote the use of
