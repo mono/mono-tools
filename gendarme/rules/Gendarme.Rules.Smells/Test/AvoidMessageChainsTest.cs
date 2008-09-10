@@ -63,35 +63,67 @@ namespace Test.Rules.Smells {
 
 	[TestFixture]
 	public class AvoidMessageChainsTest : MethodRuleTestFixture<AvoidMessageChainsRule> {
-		
-		public void MethodWithoutChain ()
+
+		[Test]
+		public void DoesNotApply ()
 		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
+
+		public void MethodWithSmallChain ()
+		{
+			// 1111111 2222222222222 333333333333333333333333333333333
 			new One ().ReturnTwo (3).ReturnThree ("Avoid chaining me");
 		}
 
-		public void MethodWithArgumentsWithoutChain (string s)
+		public void MethodWithArgumentsWithSmallChain (string s)
 		{
+			//          1111111111 222222222222222 33333333333333333333333333333
 			Four four = new Two ().ReturnThree (s).ReturnFour (new object (), 3);
-
 		}
 
 		[Test]
-		public void MethodWithoutChainTest ()
+		public void MethodWithSmallChainTest ()
 		{
-			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithoutChain");
-			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithArgumentsWithoutChain");
+			// default is 5 so small chains (like 3) are ok
+			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithSmallChain");
+			AssertRuleSuccess<AvoidMessageChainsTest> ("MethodWithArgumentsWithSmallChain");
+		}
+
+		[Test]
+		public void MethodWithSmallChainLowerLimitTest ()
+		{
+			int chain = Rule.MaxChainLength;
+			try {
+				// unless we lower the limit
+				Rule.MaxChainLength = 3;
+				AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithSmallChain", 1);
+				AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithArgumentsWithSmallChain", 1);
+			}
+			finally {
+				Rule.MaxChainLength = 5;
+			}
 		}
 
 		public void MethodWithChain ()
 		{
 			object obj = new object ();
+			// 1111111 2222222222222 333333333333333333333333333333 4444444444444444444 55555555555555 666666666666 777777777777777
 			new One ().ReturnTwo (3).ReturnThree ("Ha ha! Chained").ReturnFour (obj, 5).ReturnFive (3).ReturnSix ().ReturnOne ('a');
+		}
+
+		public void MethodWithChain_Array ()
+		{
+			// 11111111111111  222222222222 33333333 44444444444 5555555555555555555 6666666
+			Console.WriteLine (new byte [5].Clone ().ToString ().ToUpperInvariant ().Trim ());
 		}
 
 		[Test]
 		public void MethodWithChainTest ()
 		{
 			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithChain", 1);
+			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithChain_Array", 1);
 		}
 
 		public void MethodWithVariousChains ()
@@ -110,6 +142,7 @@ namespace Test.Rules.Smells {
 
 		public void MethodWithArgumentsChained (int x, float f)
 		{
+			//11111111 2222222222222 333333333333333333333333333333 44444444444444444444444444444 55555555555555 666666666666 777777777777777
 			new One ().ReturnTwo (x).ReturnThree ("Ha ha! Chained").ReturnFour (new object (), x).ReturnFive (f).ReturnSix ().ReturnOne ('a');
 		}
 
@@ -119,29 +152,11 @@ namespace Test.Rules.Smells {
 			AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithArgumentsChained", 1);
 		}
 
-		[Test]
-		[Ignore ("Still not working.")]
-		public void CanonicalScenariosTest ()
+		public void SmallChainWithTemporaryVariables ()
 		{
-			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
-
-			//When a method is empty, it returns a ret instruction
-			//I wonder if this means some compiler optimization or
-			//anything else
-			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
-		}
-
-		public void ChainWithTemporaryVariables ()
-		{
+			//                11111111111111111111111111111111 2222222222 3333333
 			Version version = Assembly.GetExecutingAssembly ().GetName ().Version;
 			int major = version.Major;
-		}
-
-		[Test]
-		[Ignore ("Uncaught")]
-		public void ChainWithTemporaryVariablesTest ()
-		{
-			AssertRuleFailure<AvoidMessageChainsTest> ("ChainWithTemporaryVariables", 1);
 		}
 
 		public void NoChainWithTemporaryVariables ()
@@ -152,10 +167,22 @@ namespace Test.Rules.Smells {
 		}
 
 		[Test]
-		[Ignore ("Uncaught")]
-		public void NoChainWithTemporaryVariablesTEst ()
+		public void NoChainWithTemporaryVariablesTest ()
 		{
+			AssertRuleSuccess<AvoidMessageChainsTest> ("SmallChainWithTemporaryVariables");
 			AssertRuleSuccess<AvoidMessageChainsTest> ("NoChainWithTemporaryVariables");
+		}
+
+		public bool Compare (int x, long y)
+		{
+			//        11111111111 2222222222222222222 3333333      11111111111 2222222 3333333333333333333
+			return (x.ToString ().ToUpperInvariant ().Trim () == y.ToString ().Trim ().ToLowerInvariant ());
+		}
+
+		[Test]
+		public void CompareTest ()
+		{
+			AssertRuleSuccess<AvoidMessageChainsTest> ("Compare");
 		}
 	}
 }

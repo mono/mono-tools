@@ -1,3 +1,9 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMessageChainsTest.cs: Re-enable some tests and add new ones
+	for better coverage.
+	* Tests.Rules.Smells.csproj: Add tests to MD project file.
+
 2008-08-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSpeculativeGeneralityTest.cs: Update unit tests to the new 
