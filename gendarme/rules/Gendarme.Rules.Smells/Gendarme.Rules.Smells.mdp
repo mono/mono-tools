@@ -25,6 +25,7 @@
     <File name="Utilities.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="ExpressionCollection.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidMessageChainsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

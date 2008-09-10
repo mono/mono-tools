@@ -21,6 +21,7 @@ rules_sources =  \
 	AvoidLargeClassesRule.cs \
 	AvoidLongMethodsRule.cs \
 	AvoidLongParameterListsRule.cs \
+	AvoidMessageChainsRule.cs \
 	AvoidSpeculativeGeneralityRule.cs \
 	CodeDuplicatedLocator.cs \
 	ExpressionCollection.cs \
@@ -35,4 +36,5 @@ tests_sources =  \
 	AvoidLargeClassesTest.cs \
 	AvoidLongMethodsTest.cs \
 	AvoidLongParameterListsTest.cs \
+	AvoidMessageChainsTest.cs \
 	AvoidSpeculativeGeneralityTest.cs
