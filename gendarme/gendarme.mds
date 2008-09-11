@@ -5,7 +5,6 @@
       <Entry build="True" name="console" configuration="Debug" />
       <Entry build="True" name="rules" configuration="Debug" />
       <Entry build="True" name="tests" configuration="Debug" />
-      <Entry build="True" name="Mono.Cecil" configuration="Debug|Any CPU" />
       <Entry build="True" name="swf-wizard-runner" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
@@ -13,7 +12,6 @@
       <Entry build="True" name="console" configuration="Release" />
       <Entry build="True" name="rules" configuration="Release" />
       <Entry build="True" name="tests" configuration="Release" />
-      <Entry build="True" name="Mono.Cecil" configuration="Debug|Any CPU" />
       <Entry build="True" name="swf-wizard-runner" configuration="Release" />
     </Configuration>
   </Configurations>
@@ -22,18 +20,14 @@
     <Execute type="None" entry="console" />
     <Execute type="None" entry="rules" />
     <Execute type="None" entry="tests" />
-    <Execute type="None" entry="Mono.Cecil" />
-    <Execute type="None" entry="Mono.Cecil" />
     <Execute type="None" entry="swf-wizard-runner" />
   </StartMode>
   <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
-  <DeployTargets />
   <Entries>
     <Entry filename="framework/framework.mdp" />
     <Entry filename="console/console.mdp" />
     <Entry filename="rules/rules.mds" />
     <Entry filename="rules/tests.mds" />
-    <Entry filename="../../cecil/lib/Mono.Cecil.csproj" />
     <Entry filename="swf-wizard-runner/swf-wizard-runner.mdp" />
   </Entries>
 </Combine>
