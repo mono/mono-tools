@@ -56,6 +56,13 @@
     <File name="Gendarme.Framework.Rocks/InstructionRocks.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework/Bitmask.cs" subtype="Code" buildaction="Compile" />
     <File name="Gendarme.Framework/FxCopCompatibilityAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/Engine.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/EngineController.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/EngineDependencyAttribute.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/HierarchicalEventArgs.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Engines/OpCodeEngine.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework.Helpers/OpCodeBitmask.cs" subtype="Code" buildaction="Compile" />
+    <File name="Gendarme.Framework/EngineEventArgs.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
