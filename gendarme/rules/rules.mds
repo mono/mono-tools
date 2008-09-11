@@ -15,6 +15,9 @@
       <Entry build="True" name="Gendarme.Rules.Interoperability" configuration="Debug" />
       <Entry build="True" name="Gendarme.Rules.Serialization" configuration="Debug" />
       <Entry build="True" name="Gendarme.Rules.Maintainability" configuration="Debug" />
+      <Entry build="True" name="Gendarme.Rules.Design.Generic" configuration="Debug" />
+      <Entry build="True" name="Gendarme.Rules.Design.Linq" configuration="Debug" />
+      <Entry build="True" name="Gendarme.Rules.Security.Cas" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="Gendarme.Rules.Security" configuration="Release" />
@@ -31,6 +34,9 @@
       <Entry build="True" name="Gendarme.Rules.Interoperability" configuration="Release" />
       <Entry build="True" name="Gendarme.Rules.Serialization" configuration="Release" />
       <Entry build="True" name="Gendarme.Rules.Maintainability" configuration="Release" />
+      <Entry build="True" name="Gendarme.Rules.Design.Generic" configuration="Release" />
+      <Entry build="True" name="Gendarme.Rules.Design.Linq" configuration="Release" />
+      <Entry build="True" name="Gendarme.Rules.Security.Cas" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Gendarme.Rules.Security" single="True">
@@ -48,8 +54,10 @@
     <Execute type="None" entry="Gendarme.Rules.Interoperability" />
     <Execute type="None" entry="Gendarme.Rules.Serialization" />
     <Execute type="None" entry="Gendarme.Rules.Maintainability" />
+    <Execute type="None" entry="Gendarme.Rules.Design.Generic" />
+    <Execute type="None" entry="Gendarme.Rules.Design.Linq" />
+    <Execute type="None" entry="Gendarme.Rules.Security.Cas" />
   </StartMode>
-  <DeployTargets />
   <Entries>
     <Entry filename="Gendarme.Rules.Security/Gendarme.Rules.Security.mdp" />
     <Entry filename="Gendarme.Rules.Portability/Gendarme.Rules.Portability.mdp" />
@@ -65,5 +73,8 @@
     <Entry filename="Gendarme.Rules.Interoperability/Gendarme.Rules.Interoperability.mdp" />
     <Entry filename="Gendarme.Rules.Serialization/Gendarme.Rules.Serialization.mdp" />
     <Entry filename="Gendarme.Rules.Maintainability/Gendarme.Rules.Maintainability.mdp" />
+    <Entry filename="Gendarme.Rules.Design.Generic/Gendarme.Rules.Design.Generic.mdp" />
+    <Entry filename="Gendarme.Rules.Design.Linq/Gendarme.Rules.Design.Linq.mdp" />
+    <Entry filename="Gendarme.Rules.Security.Cas/Gendarme.Rules.Security.Cas.mdp" />
   </Entries>
 </Combine>

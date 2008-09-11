@@ -1,6 +1,7 @@
 <Combine name="tests" fileversion="2.0">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="Test.Framework" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Security" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Portability" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Performance" configuration="Debug" />
@@ -12,13 +13,16 @@
       <Entry build="True" name="Test.Rules.Design" configuration="Debug" />
       <Entry build="True" name="Test.Rules.BadPractice" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Smells" configuration="Debug" />
-      <Entry build="True" name="Test.Framework" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Interoperability" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Serialization" configuration="Debug" />
       <Entry build="True" name="Test.Rules" configuration="Debug" />
       <Entry build="True" name="Test.Rules.Maintainability" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Design.Generic" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Design.Generic" configuration="Debug" />
+      <Entry build="True" name="Test.Rules.Security.Cas" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="Test.Framework" configuration="Release" />
       <Entry build="True" name="Test.Rules.Security" configuration="Release" />
       <Entry build="True" name="Test.Rules.Portability" configuration="Release" />
       <Entry build="True" name="Test.Rules.Performance" configuration="Release" />
@@ -30,14 +34,17 @@
       <Entry build="True" name="Test.Rules.Design" configuration="Release" />
       <Entry build="True" name="Test.Rules.BadPractice" configuration="Release" />
       <Entry build="True" name="Test.Rules.Smells" configuration="Release" />
-      <Entry build="True" name="Test.Framework" configuration="Release" />
       <Entry build="True" name="Test.Rules.Interoperability" configuration="Release" />
       <Entry build="True" name="Test.Rules.Serialization" configuration="Release" />
       <Entry build="True" name="Test.Rules" configuration="Release" />
       <Entry build="True" name="Test.Rules.Maintainability" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Design.Generic" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Design.Generic" configuration="Release" />
+      <Entry build="True" name="Test.Rules.Security.Cas" configuration="Release" />
     </Configuration>
   </Configurations>
-  <StartMode startupentry="Test.Rules.Portability" single="True">
+  <StartMode startupentry="Test.Framework" single="True">
+    <Execute type="None" entry="Test.Framework" />
     <Execute type="None" entry="Test.Rules.Security" />
     <Execute type="None" entry="Test.Rules.Portability" />
     <Execute type="None" entry="Test.Rules.Performance" />
@@ -49,13 +56,14 @@
     <Execute type="None" entry="Test.Rules.Design" />
     <Execute type="None" entry="Test.Rules.BadPractice" />
     <Execute type="None" entry="Test.Rules.Smells" />
-    <Execute type="None" entry="Test.Framework" />
     <Execute type="None" entry="Test.Rules.Interoperability" />
     <Execute type="None" entry="Test.Rules.Serialization" />
     <Execute type="None" entry="Test.Rules" />
     <Execute type="None" entry="Test.Rules.Maintainability" />
+    <Execute type="None" entry="Test.Rules.Design.Generic" />
+    <Execute type="None" entry="Test.Rules.Design.Generic" />
+    <Execute type="None" entry="Test.Rules.Security.Cas" />
   </StartMode>
-  <DeployTargets />
   <Entries>
     <Entry filename="../framework/Test/Test.Framework.mdp" />
     <Entry filename="Gendarme.Rules.Security/Test/Test.Rules.Security.mdp" />
@@ -73,5 +81,8 @@
     <Entry filename="Gendarme.Rules.Serialization/Test/Test.Rules.Serialization.mdp" />
     <Entry filename="Test.Rules/Test.Rules.mdp" />
     <Entry filename="Gendarme.Rules.Maintainability/Test/Test.Rules.Maintainability.mdp" />
+    <Entry filename="Gendarme.Rules.Design.Generic/Test/Test.Rules.Design.Generic.mdp" />
+    <Entry filename="Gendarme.Rules.Design.Linq/Test/Test.Rules.Design.Linq.mdp" />
+    <Entry filename="Gendarme.Rules.Security.Cas/Test/Test.Rules.Security.Cas.mdp" />
   </Entries>
 </Combine>
