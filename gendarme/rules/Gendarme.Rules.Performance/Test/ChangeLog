@@ -1,3 +1,7 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Performance.mdp: Add a reference to System.Xml.dll
+
 2008-08-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Add test case from Mono.Rocks
