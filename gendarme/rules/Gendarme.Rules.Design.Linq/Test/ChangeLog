@@ -1,3 +1,7 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Design.Linq.mdp: New. Add MD project file.
+
 2008-08-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidExtensionMethodOnSystemObjectTest.cs: New. Unit test for 
