@@ -1,3 +1,7 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Gendarme.Rules.Design.Generic.mdp: New. Add MD project file.
+
 2008-09-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodWithUnusedGenericTypeRule.cs: New. This rule warns 
