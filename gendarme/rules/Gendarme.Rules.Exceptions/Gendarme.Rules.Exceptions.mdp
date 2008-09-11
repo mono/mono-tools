@@ -31,6 +31,7 @@
     <File name="NewExceptionRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ExceptionShouldBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
     <File name="MissingExceptionConstructorsRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="InstantiateArgumentExceptionCorrectlyRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
