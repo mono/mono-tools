@@ -1,3 +1,7 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Design.Generic.mdp: New. Add MD project file.
+
 2008-09-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodWithUnusedGenericTypeTest.cs: New. Unit tests for
