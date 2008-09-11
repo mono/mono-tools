@@ -1,3 +1,7 @@
+2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Security.Cas.mdp: New. Add MD project file.
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AddMissingTypeInheritanceDemandTest.cs, 
