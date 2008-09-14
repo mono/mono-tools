@@ -36,6 +36,37 @@ namespace Gendarme.Rules.Design.Linq {
 
 	// ref: http://blogs.msdn.com/mirceat/archive/2008/03/13/linq-framework-design-guidelines.aspx
 
+	/// <summary>
+	/// Extension methods should not be used to extend <c>System.Object</c>.
+	/// Such extension methods cannot be consumed by some languages, like VB.NET,
+	/// which use late-binding on <c>System.Object</c> instances.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public static class Extensions {
+	///	public static string ToDebugString (this object self)
+	///	{
+	///		return String.Format ("'{0}', type '{1}', hashcode: {2}", 
+	///			self.ToString (), self.GetType (), self.GetHashCode ());
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public static class Extensions {
+	///	public static string ToDebugString (this DateTime self)
+	///	{
+	///		return String.Format ("'{0}', type '{1}', hashcode: {2}", 
+	///			self.ToString (), self.GetType (), self.GetHashCode ());
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("This method extends System.Object. This will not work for VB.NET consumer.")]
 	[Solution ("Use of more specialized type to extend.")]
 	public class AvoidExtensionMethodOnSystemObjectRule : Rule, IMethodRule {
