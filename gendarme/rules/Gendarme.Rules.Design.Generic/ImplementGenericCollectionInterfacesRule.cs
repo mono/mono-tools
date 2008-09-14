@@ -35,6 +35,37 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design.Generic {
 
+	/// <summary>
+	/// This rule checks for types that implements non-generic IEnumerable interface but 
+	/// does not implement IEnumerable&lt;T&gt; interface. Implementing the generic version
+	/// of IEnumerable avoids casts, and possibly boxing, when iterating the collection.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class IntEnumerable : IEnumerable {
+	/// 	public IEnumerator GetEnumerator ()
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class IntEnumerable : IEnumerable&lt;int&gt; {
+	///	public IEnumerator&lt;int&gt; GetEnumerator ()
+	///	{
+	///	}
+	///	
+	///	IEnumerator IEnumerable.GetEnumerator ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Design assembly.</remarks>
+
 	[Problem ("This type implements non-generic IEnumerable interface but does not implement IEnumerable<T> interface that will make your collection type-safe.")]
 	[Solution ("Implement one of generic collection interfaces such as IEnumerable<T>, ICollection<T> or IList<T>.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]

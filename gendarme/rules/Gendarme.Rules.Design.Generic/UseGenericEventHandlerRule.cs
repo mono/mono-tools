@@ -36,6 +36,29 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design.Generic {
 
+	/// <summary>
+	/// This rule checks for delegate definitions that are not required when using the
+	/// 2.0 (or later) .NET framework as it can be replaced by using  the generic-based
+	/// <c>System.EventHandler&lt;TEventArgs&gt;</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public delegate void AuthenticityHandler (object sender, AuthenticityEventArgs e);
+	/// 
+	/// public event AuthenticityHandler CheckingAuthenticity;
+	/// public event AuthenticityHandler CheckedAuthenticity;
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public event EventHandler&lt;AuthenticityEventArgs&gt; CheckingAuthenticity;
+	/// public event EventHandler&lt;AuthenticityEventArgs&gt; CheckedAuthenticity;
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("This delegate definition is not needed with FX 2.0 and later runtimes.")]
 	[Solution ("Replace this delegate with a generic based EventHandler<TEventArgs>.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1003:UseGenericEventHandlerInstances")]

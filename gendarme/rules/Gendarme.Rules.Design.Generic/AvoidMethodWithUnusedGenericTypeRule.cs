@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Interoperability.DoNotCastIntPtrToInt32Rule
+// Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -33,6 +33,44 @@ using Mono.Cecil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design.Generic {
+
+	/// <summary>
+	/// This rule checks for method that requires generic parameter types that are not used in
+	/// the method parameters. This results in API that are hard to understand by consumers.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	public string ToString&lt;T&gt; ()
+	///	{
+	///		return typeof (T).ToString ();
+	///	}
+	///	
+	///	static void Main ()
+	///	{
+	///		Console.WriteLine (ToString&lt;int&gt; ());
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	public string ToString&lt;T&gt; (T obj)
+	///	{
+	///		return obj.GetType ().ToString ();
+	///	}
+	///	
+	///	static void Main ()
+	///	{
+	///		Console.WriteLine (ToString (2));
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
 	[Problem ("The method parameters are not using all generic type parameters defined.")]
 	[Solution ("Not infering all generic typers in the method parameters can lead to confusing, hard to use, API definitions.")]
