@@ -31,6 +31,39 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
+	/// <summary>
+	/// To avoid calls from user code, all static constructors must be private. C# allows 
+	/// only private static constructors but some .NET languages (including VB .NET) do 
+	/// permit defining non-private static constructors (Shared in VB.NET), which is not
+	/// a good practice.
+	/// </summary>
+	/// <example>
+	/// Bad example (VB.NET):
+	/// <code>
+	/// Public Class PublicCctor
+	///	Public Shared Sub New ()
+	///	End Sub
+	/// End Class
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (C#):
+	/// <code>
+	/// public class PrivateCctor {
+	///	~PrivateCctor () { } // it is private
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (VB.NET):
+	/// <code>
+	/// Public Class PrivateCctor
+	///    Private Shared Sub New ()
+	///    End Sub
+	/// End Class
+	/// </code>
+	/// </example>
+
 	[Problem ("Static constructors must be private because otherwise they may be called once or multiple times from user code.")]
 	[Solution ("Change the static constructor visibility to private.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2121:StaticConstructorsShouldBePrivate")]

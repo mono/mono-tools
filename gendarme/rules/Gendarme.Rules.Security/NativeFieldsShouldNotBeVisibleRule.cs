@@ -33,6 +33,37 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
+	/// <summary>
+	/// This rule checks if a class exposes native fields. Native fields should not
+	/// be public because you lose control over their lifetime (other code could free
+	/// the memory or use it after it has been freed).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class HasPublicNativeField {
+	///	public IntPtr NativeField;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (hide):
+	/// <code>
+	/// class HasPrivateNativeField {
+	///	private IntPtr NativeField;
+	///	public void DoSomethingWithNativeField ();
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (read-only):
+	/// <code>
+	/// class HasReadOnlyNativeField {
+	///	public readonly IntPtr NativeField;
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type expose native fields that aren't read-only.")]
 	[Solution ("Native fields are best hidden or, if required, read-only.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")]

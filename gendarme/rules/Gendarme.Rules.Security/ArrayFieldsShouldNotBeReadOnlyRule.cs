@@ -33,6 +33,39 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
+	/// <summary>
+	/// This rule warns if a type declares a public <c>readonly</c> array field. 
+	/// Marking a field <c>readonly</c> only prevents the field from being assigned
+	/// a different value, the object itself can still be changed. This means, that
+	/// the elements inside the array can still be changed.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class Bad {
+	///	public readonly string[] Array = new string[] { "A", "B" };
+	/// }
+	/// 
+	/// HasPublicReadonlyArray obj = HasPublicReadonlyArray ();
+	/// obj.Array[0] = "B"; // valid 
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class Good {
+	///	private readonly string[] array = new string[] { "A", "B" };
+	///	public string[] GetArray ()
+	///	{
+	///		return (string []) array.Clone();
+	///	}
+	/// }
+	/// 
+	/// string[] obj = new HasPublicReadonlyArray ().GetArray ();
+	/// obj [0] = "B"; // valid, but has no effect on other users 
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains read-only array(s), however values inside the array(s) are not read-only.")]
 	[Solution ("Replace the array with a method returning a clone of the array or a read-only collection.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2105:ArrayFieldsShouldNotBeReadOnly")]
