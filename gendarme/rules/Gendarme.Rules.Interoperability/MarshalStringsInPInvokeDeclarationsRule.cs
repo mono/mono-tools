@@ -33,8 +33,34 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Interoperability {
 
+	/// <summary>
+	/// This rule warns the developer if the <code>CharSet</code> has not been specified 
+	/// for string parameters of P/Invoke method, unless if they are individually decorated
+	/// with <code>[MarshalAs]</code> attribute. This applies to any <code>System.String</code>
+	/// and <code>System.Text.StringBuilder</code> parameters.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [DllImport("coredll.dll")]
+	/// static extern int SHCreateShortcut (StringBuilder szShortcut, StringBuilder szTarget);
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good examples:
+	/// <code>
+	/// [DllImport("coredll.dll", CharSet = CharSet.Auto)]
+	/// static extern int SHCreateShortcut (StringBuilder szShortcut, StringBuilder szTarget);
+	/// 
+	/// [DllImport("coredll.dll")]
+	/// static extern int SHCreateShortcut ([MarshalAs(UnmanagedType.LPTStr)] StringBuilder szShortcut, 
+	///	[MarshalAs(UnmanagedType.LPTStr)] StringBuilder szTarget);
+	/// </code>
+	/// </example>
+
 	[Problem ("Marshaling information for string types is incomplete and what is required may be different from what you expected the default to be.")]
 	[Solution ("Add [DllImport CharSet=] on the method or [MarshalAs] on the parameter(s)")]
+	[FxCopCompatibility ("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments")]
 	public class MarshalStringsInPInvokeDeclarationsRule : Rule, IMethodRule {
 
 		private static bool IsStringOrSBuilder (TypeReference reference)

@@ -1,3 +1,17 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotCastIntPtrToInt32Rule.cs: Add XML documentation, 
+	the [FxCopCompatibility] attribute and use the OpCodeEngine.
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Add XML 
+	documentation, [FxCopCompatibility] attribute and use the 
+	OpCodeEngine.
+	* MarshalStringsInPInvokeDeclarationsRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* PInvokeShouldNotBeVisibleRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* UseManagedAlternativesToPInvokeRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+
 2008-08-10  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* PInvokeShouldNotBeVisibleRule.cs: Add check for non-static

@@ -32,12 +32,40 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Interoperability {
 
+	/// <summary>
+	/// This rule checks for any cast of <code>IntPtr</code> or <code>UIntPtr</code> into a
+	/// 32bits (or smaller) value. <code>IntPtr</code> are generally used to reference a 
+	/// memory location and downcasting them to 32bits will make the code fail on 64bits CPU.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// int ptr = dest.ToInt32 ();
+	/// for (int i = 0; i &lt; 16; i++) {
+	///	Marshal.StructureToPtr (this, (IntPtr)ptr, false);
+	///	ptr += 4;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// long ptr = dest.ToInt64 ();
+	/// for (int i = 0; i &lt; 16; i++) {
+	///	Marshal.StructureToPtr (this, (IntPtr) ptr, false);
+	///	ptr += IntPtr.Size;
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method cast a [U]IntPtr to a 32 bits value and this won't work on 64 bits architectures.")]
 	[Solution ("You should always use 64 bits integers, signed or unsigned, when computing pointers.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotCastIntPtrToInt32Rule : Rule, IMethodRule {
 
 		private void Report (MethodDefinition method, Instruction ins, string typeName)
@@ -76,6 +104,10 @@ namespace Gendarme.Rules.Interoperability {
 
 			// it's a safe bet that the downsizing of the [U]IntPtr is not a problem inside GetHashCode
 			if (MethodSignatures.GetHashCode.Matches (method))
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {

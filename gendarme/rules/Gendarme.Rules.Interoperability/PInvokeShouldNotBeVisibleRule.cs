@@ -37,8 +37,27 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
+	/// <summary>
+	/// This rule checks for PInvoke declaration methods that are visible outside their assembly.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [DllImport ("user32.dll")]
+	/// public static extern bool MessageBeep (UInt32 beepType);
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [DllImport ("user32.dll")]
+	/// internal static extern bool MessageBeep (UInt32 beepType);
+	/// </code>
+	/// </example>
+	
 	[Problem ("P/Invoke declarations should not be visible outside of the assembly.")]
 	[Solution ("Reduce the visibility of the p/invoke method and make sure its declared as static.")]
+	[FxCopCompatibility ("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible")]
 	public class PInvokeShouldNotBeVisibleRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

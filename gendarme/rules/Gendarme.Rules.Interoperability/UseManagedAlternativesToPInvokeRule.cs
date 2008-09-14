@@ -37,8 +37,35 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Interoperability {
 
+	/// <summary>
+	/// This rule warns the developer if certain external (P/Invoke) methods are being 
+	/// called in case they have managed alternatives provided by the .NET framework
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [DllImport ("kernel32.dll")]
+	/// static extern void Sleep (uint dwMilliseconds);
+	/// 
+	/// public void WaitTwoSeconds ()
+	/// {
+	///	Sleep (2000);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void WaitTwoSeconds ()
+	/// {
+	///	System.Threading.Thread.Sleep (2000);
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("There is a potential managed API for the p/invoke declaration.")]
 	[Solution ("Use the suggested managed alternative to your p/invoke call and remove it's declaration.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api")]
 	public class UseManagedAlternativesToPInvokeRule : Rule, IMethodRule {
 
 		private struct PInvokeCall {

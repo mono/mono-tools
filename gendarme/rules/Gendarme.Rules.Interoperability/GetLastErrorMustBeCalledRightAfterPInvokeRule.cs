@@ -35,13 +35,49 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
+	/// <summary>
+	/// <code>Marshal.GetLastWin32Error()</code>should be called directly after a P/Invoke call. 
+	/// Intermediate method calls, even managed, could overwrite the error code.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void DestroyError ()
+	/// {
+	///	MessageBeep (2);
+	///	Console.WriteLine ("Beep");
+	///	int error = Marshal.GetLastWin32Error ();
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void GetError ()
+	/// {
+	///	MessageBeep (2);
+	///	int error = Marshal.GetLastWin32Error ();
+	///	Console.WriteLine ("Beep");
+	/// }
+	/// 
+	/// public void DontUseGetLastError ()
+	/// {
+	///	MessageBeep (2);
+	///	Console.WriteLine ("Beep");
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("GetLastError() should be called immediately after this the P/Invoke call.")]
 	[Solution ("Move the call to GetLastError just after the P/Invoke call.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Interoperability", "CA1404:CallGetLastErrorImmediatelyAfterPInvoke")]
 	public class GetLastErrorMustBeCalledRightAfterPInvokeRule : Rule, IMethodRule {
 
 		struct Branch {
@@ -159,6 +195,10 @@ namespace Gendarme.Rules.Interoperability {
 		{
 			// rule does not apply if the method has no IL
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
