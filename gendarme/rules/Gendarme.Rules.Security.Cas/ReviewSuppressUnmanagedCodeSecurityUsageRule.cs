@@ -34,6 +34,23 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// This rule warns about any type or method decorated with the <c>[SuppressUnmanagedCodeSecurity]</c>
+	/// attribute. This attribute reduce the security checks done to execute unmanaged code and its
+	/// usage should be reviewed, as needed, to confirm no exploitable security holes are present.
+	/// </summary>
+	/// <example>
+	/// Example:
+	/// <code>
+	/// [SuppressUnmanagedCodeSecurity]
+	/// public class Safe {
+	/// 	[DllImport ("User32.dll")]
+	/// 	static extern Boolean MessageBeep (UInt32 beepType);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This is an Audit rule. As such it does not check for valid or invalid patterns but warns about a specific problem that needs to be reviewed by someone.</remarks>
+
 	[Problem ("This type or method is decorated with [SuppressUnmanagedCodeSecurity] which reduce the number of security checks done to call unmanaged code.")]
 	[Solution ("Ensure the use of this attribute does not compromise the security of the application.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA1021:ReviewSuppressUnmanagedCodeSecurityUsage")]

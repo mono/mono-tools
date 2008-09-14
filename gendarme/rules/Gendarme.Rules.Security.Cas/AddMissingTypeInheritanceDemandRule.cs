@@ -36,6 +36,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// The rule checks for types that are not <c>sealed</c> and that have a <c>LinkDemand</c>.
+	/// In this case the type should also have an <c>InheritanceDemand</c> for the same 
+	/// permissions. An alternative fix is to seal the type.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// public class Bad {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (InheritanceDemand):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// [SecurityPermission (SecurityAction.InheritanceDemand, ControlThread = true)]
+	/// public class Correct {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (sealed):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// public sealed class Correct {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeLinkDemandRule.</remarks>
+
 	[Problem ("The type isn't sealed and has a LinkDemand. It should also have an InheritanceDemand for the same permissions.")]
 	[Solution ("Add an InheritanceDemand for the same permissions (as the LinkDemand) or seal the class.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2126:TypeLinkDemandsRequireInheritanceDemands")]

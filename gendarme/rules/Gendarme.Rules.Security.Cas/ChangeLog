@@ -1,3 +1,18 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AddMissingTypeInheritanceDemandRule.cs: Add XML documentation. 
+	* DoNotExposeFieldsInSecuredTypeRule.cs: Add XML documentation. 
+	* DoNotExposeMethodsProtectedByLinkDemandRule.cs: Use OpCodeEngine.
+	Add XML documentation. 
+	* DoNotExposeMethodsProtectedByLinkDemandTest.cs: Remove.
+	* DoNotReduceTypeSecurityOnMethodsRule.cs: Add XML documentation.
+	* ReviewSealedTypeWithInheritanceDemandRule.cs: Complete rename.
+	Add XML documentation.
+	* ReviewSuppressUnmanagedCodeSecurityUsageRule.cs: Add XML 
+	documentation.
+	* SecureGetObjectDataOverridesRule.cs: Add XML documentation. 
+	Remove unneeded using clauses.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.Rules.Security.Cas.mdp: New. Add MD project file.

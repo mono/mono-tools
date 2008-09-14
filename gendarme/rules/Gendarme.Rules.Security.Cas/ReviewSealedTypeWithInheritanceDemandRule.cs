@@ -33,9 +33,42 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// This rule checks for sealed types that have <c>InheritanceDemand</c> declarative
+	/// security applied on them. Since those types cannot be inherited from the 
+	/// <c>InheritanceDemand</c> will never be executed by the runtime. Check if the permission
+	/// is required and, if so, change the <c>SecurityAction</c> to the correct one. Otherwise
+	/// remove the permission.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [SecurityPermission (SecurityAction.InheritanceDemand, Unrestricted = true)]
+	/// public sealed class Bad {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (non sealed):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.InheritanceDemand, Unrestricted = true)]
+	/// public class Good {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (LinkDemand):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+	/// public sealed class Good {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named SealedTypeWithInheritanceDemandRule.</remarks>
+
 	[Problem ("This sealed type has an InheritanceDemand that the runtime will never execute.")]
 	[Solution ("Review the InheritanceDemand on this type and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
-	public class SealedTypeWithInheritanceDemandRule : Rule, ITypeRule {
+	public class ReviewSealedTypeWithInheritanceDemandRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{

@@ -35,6 +35,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// The rule checks for types that are secured by <c>Demand</c> or <c>LinkDemand</c>
+	/// but also expose visible fields. Access to these fields is not covered by the
+	/// declarative demands, opening potential security holes.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// public class Bad {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (InheritanceDemand):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// [SecurityPermission (SecurityAction.InheritanceDemand, ControlThread = true)]
+	/// public class Correct {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (sealed):
+	/// <code>
+	/// [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+	/// public sealed class Correct {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeExposeFieldsRule.</remarks>
+
 	[Problem ("This type is secured by [Link]Demand but expose some visible fields.")]
 	[Solution ("Remove the (unsecured) visible fields, turn them into (secured) properties or reduce their visibility.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2112:SecuredTypesShouldNotExposeFields")]

@@ -33,12 +33,62 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// This rule checks for visible methods that are less protected (i.e. lower security 
+	/// requirements) than the method they calls. If the called methods are protected by a 
+	/// <c>LinkDemand</c> then the caller can be used to go around its protection.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class BaseClass {
+	///	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+	/// 	public virtual void VirtualMethod ()
+	/// 	{
+	/// 	}
+	/// }
+	/// 
+	/// public class Class : BaseClass  {
+	///	// bad since a caller with only ControlAppDomain will be able to call the base method
+	/// 	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+	///	public override void VirtualMethod ()
+	///	{
+	///		base.VirtualMethod ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (InheritanceDemand):
+	/// <code>
+	/// public class BaseClass {
+	/// 	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+	/// 	public virtual void VirtualMethod ()
+	/// 	{
+	/// 	}
+	/// }
+	/// 
+	/// public class Class : BaseClass  {
+	///	// ok since this permission cover the base class permission
+	///	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+	///	public override void VirtualMethod ()
+	///	{
+	///		base.VirtualMethod ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named MethodCallWithSubsetLinkDemandRule.</remarks>
+
 	[Problem ("This method is less protected than some methods it calls.")]
 	[Solution ("Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
 	public class DoNotExposeMethodsProtectedByLinkDemandRule : Rule, IMethodRule {
 
@@ -78,14 +128,17 @@ namespace Gendarme.Rules.Security.Cas {
 			if (!method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
+			// #3 - avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			// *** ok, the rule applies! ***
 
-			// #3 - look for every method we call
+			// #4 - look for every method we call
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
 				case Code.Callvirt:
-				case Code.Calli:
 					MethodDefinition callee = (ins.Operand as MethodDefinition);
 					if (callee == null)
 						continue;

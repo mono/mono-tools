@@ -27,10 +27,8 @@
 //
 
 using System;
-using System.Collections;
 using System.Security;
 using System.Security.Permissions;
-using System.Text;
 
 using Mono.Cecil;
 using Gendarme.Framework;
@@ -38,6 +36,34 @@ using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
+
+	/// <summary>
+	/// This rule checks for types that implements <c>System.Runtime.Serialization.ISerializable</c>
+	/// to see if the <c>GetObjectData</c> method is protected with a <c>Demand</c> or 
+	/// <c>LinkDemand</c> for <c>SerializationFormatter</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad : ISerializable {
+	/// 	public override void GetObjectData (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good : ISerializable {
+	///	[SecurityPermission (SecurityAction.LinkDemand, SerializationFormatter = true)]
+	/// 	public override void GetObjectData (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security.</remarks>
 
 	[Problem ("The method is not protected correctly against a serialization attack.")]
 	[Solution ("A security Demand for SerializationFormatter should protect this method.")]

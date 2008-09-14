@@ -34,6 +34,36 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	/// <summary>
+	/// This rule checks for types that have declarative security permission that aren't a
+	/// subset of the security permission on some of their methods.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+	/// public class NotSubset {
+	/// 	[EnvironmentPermission (SecurityAction.Assert, Unrestricted = true)]
+	/// 	public void Method ()
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+	/// public class Subset {
+	///	[SecurityPermission (SecurityAction.Assert, Unrestricted = true)]
+	///	public void Method ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeIsNotSubsetOfMethodSecurityRule.</remarks>
+
 	[Problem ("This type has declarative security permission that aren't a subset of the security on some of it's methods.")]
 	[Solution ("Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2114:MethodSecurityShouldBeASupersetOfType")]
