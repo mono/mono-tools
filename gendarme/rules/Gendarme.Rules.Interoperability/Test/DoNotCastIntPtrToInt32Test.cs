@@ -81,7 +81,7 @@ namespace Test.Rules.Interoperability {
 			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastIntPtrToUInt32", 1);
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToInt64");
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToUInt64");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToIntPtr");
+			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("CastIntPtrToIntPtr");
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToVoidPointer");
 		}
 
@@ -122,7 +122,7 @@ namespace Test.Rules.Interoperability {
 			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToUInt32", 1);
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToInt64");
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToUInt64");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToIntPtr");
+			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToIntPtr");
 			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToVoidPointer");
 		}
 

@@ -1,3 +1,9 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotCastIntPtrToInt32Test.cs: Change some results from Success
+	to DoesNotApply since the use of the OpCodeEngine is able to short
+	circuit more cases.
+
 2008-08-10  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* PInvokeShouldNotBeVisibleTest.cs: Convert tests to new syntax.
