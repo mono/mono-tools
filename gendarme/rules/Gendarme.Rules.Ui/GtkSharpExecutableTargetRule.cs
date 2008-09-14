@@ -32,6 +32,20 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.UI {
 
+	/// <summary>
+	/// An executable assembly, i.e. an .exe, refers to the gtk-sharp assembly but isn't 
+	/// compiled using <c>-target:winexe</c>. A console windows will be created and shown 
+	/// under Windows (MS runtime) when the application is executed.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <c>mcs gtk.cs -pkg:gtk-sharp</c>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <c>mcs gtk.cs -pkg:gtk-sharp -target:winexe</c>
+	/// </example>
+
 	[Problem ("The assembly refers to the 'gtk-sharp.dll' assembly but isn't compiled using /target:winexe. A console windows will be shown under Windows.")]
 	public class GtkSharpExecutableTargetRule: ExecutableTargetRule {
 

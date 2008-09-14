@@ -1,3 +1,10 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GtkSharpExecutableTargetRule.cs, 
+	SystemWindowsFormsExecutableTargetRule.cs,
+	UseSTAThreadAttributeOnSWFEntryPointsRule.cs: Add XML documentation 
+	for the rules (then converted into media wiki format).
+
 2008-08-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseSTAThreadAttributeOnSWFEntryPointsRule.cs: Add mapping to CA2232

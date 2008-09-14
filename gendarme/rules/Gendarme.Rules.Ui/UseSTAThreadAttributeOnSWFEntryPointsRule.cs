@@ -35,6 +35,55 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.UI {
 
+	/// <summary>
+	/// This rule checks executable assemblies that reference System.Windows.Forms to 
+	/// ensure that their entry point is decorated with <c>[System.STAThread]</c> attribute 
+	/// and is not decorated with <c>[System.MTAThread]</c> attribute, or otherwise Windows 
+	/// Forms may not work properly.
+	/// </summary>
+	/// <example>
+	/// Bad example #1 (no attributes):
+	/// <code>
+	/// public class WindowsFormsEntryPoint {
+	///	static void Main ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example #2 (MTAThread)
+	/// <code>
+	/// public class WindowsFormsEntryPoint {
+	///	[MTAThread]
+	///	static void Main ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example #1 (STAThread):
+	/// <code>
+	/// public class WindowsFormsEntryPoint {
+	///     [STAThread]
+	///     static void Main ()
+	///     {
+	///     }
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example #2 (not Windows Forms):
+	/// <code>
+	/// public class ConsoleAppEntryPoint {
+	///	static void Main ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The System.Windows.Forms applications entry-point (Main) is missing an [STAThread] attribute.")]
 	[Solution ("Add a [STAThread] attribute to your application Main method.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2232:MarkWindowsFormsEntryPointsWithStaThread")]
