@@ -1,3 +1,7 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewSealedTypeWithInheritanceDemandTest.cs: Complete rename.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Security.Cas.mdp: New. Add MD project file.

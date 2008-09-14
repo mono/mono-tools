@@ -37,7 +37,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Security.Cas {
 
 	[TestFixture]
-	public class SealedTypeWithInheritanceDemandTest : TypeRuleTestFixture<SealedTypeWithInheritanceDemandRule> {
+	public class ReviewSealedTypeWithInheritanceDemandTest : TypeRuleTestFixture<ReviewSealedTypeWithInheritanceDemandRule> {
 
 		[SecurityPermission (System.Security.Permissions.SecurityAction.InheritanceDemand, Unrestricted = true)]
 		class NonSealedClass {
