@@ -60,6 +60,10 @@
     <Compile Include="..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="Gendarme.Framework\Engine.cs" />
+    <Compile Include="Gendarme.Framework.Engines\CommonAttributesEngine.cs" />
+    <Compile Include="Gendarme.Framework.Engines\OpCodeEngine.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\OpCodeBitmask.cs" />
     <Compile Include="Gendarme.Framework.Helpers\StackEntryUsageResult.cs" />
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocks.cs" />
     <Compile Include="Gendarme.Framework.Rocks\CecilRocks.cs" />
@@ -76,7 +80,11 @@
     <Compile Include="Gendarme.Framework\Defect.cs" />
     <Compile Include="Gendarme.Framework\DocumentationUriAttribute.cs" />
     <Compile Include="Gendarme.Framework\Bitmask.cs" />
+    <Compile Include="Gendarme.Framework\EngineController.cs" />
+    <Compile Include="Gendarme.Framework\EngineDependencyAttribute.cs" />
+    <Compile Include="Gendarme.Framework\EngineEventArgs.cs" />
     <Compile Include="Gendarme.Framework\FxCopCompatibilityAttribute.cs" />
+    <Compile Include="Gendarme.Framework\HierarchicalEventArgs.cs" />
     <Compile Include="Gendarme.Framework\IAssemblyRule.cs" />
     <Compile Include="Gendarme.Framework\BasicIgnoreList.cs" />
     <Compile Include="Gendarme.Framework\IIgnoreList.cs" />
