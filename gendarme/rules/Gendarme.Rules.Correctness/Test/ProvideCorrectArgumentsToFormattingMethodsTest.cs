@@ -193,7 +193,55 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void SkipOnMethodCallingEnumFormatTest ()
 		{
-			AssertRuleDoesNotApply<FormattingCases> ("MethodCallingEnumFormat");
+			AssertRuleSuccess<FormattingCases> ("MethodCallingEnumFormat");
+		}
+
+		string InstanceLocalize (string s)
+		{
+			return s;
+		}
+
+		void ParseUsingInstanceMethod ()
+		{
+			try {
+				throw new NotSupportedException ();
+			}
+			catch (Exception e) {
+				throw new FormatException (String.Format (InstanceLocalize ("{0} {1}"), e.Source, e), e);
+			}
+		}
+
+		static string StaticLocalize (string s)
+		{
+			return s;
+		}
+
+		void ParseUsingStaticMethod ()
+		{
+			try {
+				throw new NotSupportedException ();
+			}
+			catch (Exception e) {
+				throw new FormatException (String.Format (StaticLocalize ("{0} {1}"), e.Source, e), e);
+			}
+		}
+
+		[Test]
+		public void NoConstantString ()
+		{
+			AssertRuleSuccess<ProvideCorrectArgumentsToFormattingMethodsTest> ("ParseUsingInstanceMethod");
+			AssertRuleSuccess<ProvideCorrectArgumentsToFormattingMethodsTest> ("ParseUsingStaticMethod");
+		}
+
+		string GetFormat (string a)
+		{
+			return String.Format ("{{0", a);
+		}
+
+		[Test]
+		public void SpecialCase ()
+		{
+			AssertRuleFailure<ProvideCorrectArgumentsToFormattingMethodsTest> ("GetFormat", 1);
 		}
 	}
 }

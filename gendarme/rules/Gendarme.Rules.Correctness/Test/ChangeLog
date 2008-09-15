@@ -1,3 +1,9 @@
+2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Add test 
+	cases for using a method return value as an argument of String.Format
+	and for the special "{{" formatting code.
+
 2008-08-18  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* UseValueInPropertySetterTest.cs: Add an additional test case when
