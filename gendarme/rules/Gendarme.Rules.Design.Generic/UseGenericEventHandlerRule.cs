@@ -82,6 +82,10 @@ namespace Gendarme.Rules.Design.Generic {
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition invoke = type.GetMethod ("Invoke");
+			// this happens for System.MulticastDelegate
+			if (invoke == null)
+				return RuleResult.DoesNotApply;
+
 			if (invoke.ReturnType.ReturnType.FullName != "System.Void")
 				return RuleResult.Success;
 			if (invoke.Parameters.Count != 2)

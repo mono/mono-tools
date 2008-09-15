@@ -88,6 +88,23 @@ namespace Gendarme.Rules.Design.Generic {
 			};
 		}
 
+		static bool FindGenericType (GenericInstanceType git, string fullname)
+		{
+			foreach (object o in git.GenericArguments) {
+				GenericParameter igp = (o as GenericParameter);
+				if (igp != null) {
+					if (igp.FullName == fullname)
+						return true;
+					continue;
+				}
+
+				GenericInstanceType inner = (o as GenericInstanceType);
+				if ((inner != null) && (FindGenericType (inner, fullname)))
+					return true;
+			}
+			return false;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applis only if the method has generic type parameters
@@ -109,11 +126,9 @@ namespace Gendarme.Rules.Design.Generic {
 					if (git == null)
 						continue;
 
-					foreach (GenericParameter igp in git.GenericArguments) {
-						if (igp.FullName == gp.FullName) {
-							found = true;
-							break;
-						}
+					if (FindGenericType (git, gp.FullName)) {
+						found = true;
+						break;
 					}
 				}
 				if (!found) {
