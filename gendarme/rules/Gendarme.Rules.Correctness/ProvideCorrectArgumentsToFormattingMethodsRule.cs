@@ -28,16 +28,20 @@
 
 using System;
 using System.Collections;
-using System.Linq;
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
-using Gendarme.Framework.Helpers;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Rocks;
+using Gendarme.Framework.Helpers;
+
 namespace Gendarme.Rules.Correctness {
+
 	[Problem ("You are calling to a Format method without the correct arguments.  This could throw an unexpected FormatException.")]
 	[Solution ("Pass the correct arguments to the formatting method.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ProvideCorrectArgumentsToFormattingMethodsRule : Rule, IMethodRule {
 		static MethodSignature formatSignature = new MethodSignature ("Format", "System.String");
 		static BitArray results = new BitArray (16);
@@ -47,7 +51,7 @@ namespace Gendarme.Rules.Correctness {
 			Instruction current = call;
 			Instruction farest = null;
 			while (current != null) {
-				if (current.OpCode == OpCodes.Ldstr) {
+				if (current.OpCode.Code == Code.Ldstr) {
 					//skip strings until get a "valid" one
 					if (GetExpectedParameters ((string)current.Operand) != 0)
 						return current;
@@ -64,15 +68,19 @@ namespace Gendarme.Rules.Correctness {
 		{
 			results.SetAll (false);
 			for (int index = 0; index < loaded.Length; index++) {
-				if (loaded[index] == '{' && Char.IsDigit (loaded[index + 1]))  
-					results.Set (loaded[index + 1] - '0', true);
+				if (loaded [index] == '{') {
+					char next = loaded [index + 1];
+					if (Char.IsDigit (next))
+						results.Set (next - '0', true);
+					else if (next == '{')
+						index++; // skip special {{
+				}
 			}
 
 			int counter = 0;
 			//TODO: Check the order of the values too, by example
 			// String.Format ("{1} {2}", x, y); <-- with this impl
 			// it would return 0
-			//TODO: {{0 case
 			foreach (bool value in results) {
 				if (value)
 					counter++;
@@ -100,7 +108,7 @@ namespace Gendarme.Rules.Correctness {
 				}
 				//If there are a newarr we need an special
 				//behaviour
-				if (current.OpCode == OpCodes.Newarr) {
+				if (current.OpCode.Code == Code.Newarr) {
 					newarrDetected = true;
 					counter = 0;
 				}
@@ -115,8 +123,26 @@ namespace Gendarme.Rules.Correctness {
 			if (loadString == null) 
 				return;
 
+			// if it's not a LDSTR (e.g. a return value) then we can't be sure
+			// of the content (and we succeed, well we don't fail/report).
+			string operand = (loadString.Operand as string);
+			if (operand == null)
+				return;
+
+			int elementsPushed;
+
+			// String.Format (string, object) -> 1
+			// String.Format (string, object, object) -> 2
+			// String.Format (string, object, object, object) -> 3
+			// String.Format (string, object[]) -> compute
+			// String.Format (IFormatProvider, string, object[]) -> compute
+			MethodReference mr = (call.Operand as MethodReference);
+			if (mr.Parameters [mr.Parameters.Count - 1].ParameterType.FullName == "System.Object")
+				elementsPushed = mr.Parameters.Count - 1;
+			else
+				elementsPushed = CountElementsInTheStack (method, loadString.Next, call);
+
 			int expectedParameters = GetExpectedParameters ((string) loadString.Operand);
-			int elementsPushed = CountElementsInTheStack (method, loadString.Next, call);
 			
 			//There aren't parameters, and isn't a string with {
 			//characters
@@ -124,7 +150,12 @@ namespace Gendarme.Rules.Correctness {
 				Runner.Report (method, call, Severity.Low, Confidence.Normal, "You are calling String.Format without arguments, you can remove the call to String.Format");
 				return;
 			}
-			
+
+			if ((expectedParameters == 0) && (elementsPushed > 0)) {
+				Runner.Report (method, call, Severity.Medium, Confidence.Normal, "Extra parameters");
+				return;
+			}
+
 			//It's likely you are calling a method for getting the
 			//formatting string.
 			if (expectedParameters == 0)
@@ -136,21 +167,21 @@ namespace Gendarme.Rules.Correctness {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// if method has no IL, the rule doesn't apply
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			bool formatterCallsFound = false;
+			// and when the IL contains a Call[virt] instruction
+			if (!OpCodeEngine.GetBitmask (method).Intersect (OpCodeBitmask.Calls))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction instruction in method.Body.Instructions) {
 				if ((instruction.OpCode.FlowControl == FlowControl.Call) &&
 				 	formatSignature.Matches ((MethodReference) instruction.Operand) &&
 					String.Compare ("System.String", ((MethodReference) instruction.Operand).DeclaringType.ToString ()) == 0) {
-					formatterCallsFound = true;
 					CheckCallToFormatter (instruction, method);
 				}
 			}
-
-			if (!formatterCallsFound)
-				return RuleResult.DoesNotApply;
 
 			return Runner.CurrentRuleResult;
 		}
