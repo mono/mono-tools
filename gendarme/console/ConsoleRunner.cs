@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -330,7 +331,19 @@ namespace Gendarme {
 			}
 		}
 
-		private DateTime timer = DateTime.MinValue;
+		private Stopwatch total = new Stopwatch ();
+		private Stopwatch local = new Stopwatch ();
+
+		public override void Initialize ()
+		{
+			Console.Write ("Initialization");
+			total.Start ();
+			local.Start ();
+			base.Initialize ();
+			local.Stop ();
+			Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
+			local.Reset ();
+		}
 
 		public override void Run ()
 		{
@@ -339,22 +352,27 @@ namespace Gendarme {
 				return;
 			}
 
-			DateTime start = DateTime.UtcNow;
 			base.Run ();
-			DateTime end = DateTime.UtcNow;
-			Console.WriteLine (": {0} seconds.", (end - timer).TotalSeconds);
+			local.Stop ();
+			total.Stop ();
+
+			Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
 			Console.WriteLine ();
 			Console.WriteLine ("{0} assemblies processed in {1} seconds.",
-				Assemblies.Count, (DateTime.UtcNow - start).TotalSeconds);
+				Assemblies.Count, total.Elapsed.TotalSeconds);
 		}
 
 		protected override void OnAssembly (RunnerEventArgs e)
 		{
-			if (timer != DateTime.MinValue)
-				Console.WriteLine (": {0} seconds.", (DateTime.UtcNow - timer).TotalSeconds);
+			if (local.IsRunning) {
+				local.Stop ();
+				Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
+				local.Reset ();
+			}
+
 			// next assembly
 			Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.FullName);
-			timer = DateTime.UtcNow;
+			local.Start ();
 			base.OnAssembly (e);
 		}
 

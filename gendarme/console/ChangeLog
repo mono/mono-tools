@@ -1,3 +1,10 @@
+2008-09-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Override Initialize to start counting the time
+	required to analyze an assembly set. This is required since the 
+	new engines are taking their time before the old counter. Switch
+	to use Stopwatch instead of DateTime calculations.
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Add support for --severity (default to medium+)
