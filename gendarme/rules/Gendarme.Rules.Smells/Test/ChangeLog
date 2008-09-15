@@ -1,3 +1,8 @@
+2008-09-15  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs: Added test for the issue that
+	Alan notified to the group.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMessageChainsTest.cs: Re-enable some tests and add new ones

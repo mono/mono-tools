@@ -4,7 +4,7 @@
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
 //
-// 	(C) 2007 Néstor Salceda
+// 	(C) 2007 - 2008 Néstor Salceda
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,6 +34,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Smells;
 using Mono.Cecil;
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Smells {
@@ -180,36 +181,44 @@ namespace Test.Rules.Smells {
 				myList.Remove ("MoreFoo");
 		}
 	}
+	
+	public class UsingProperties {
+		ArrayList x = new ArrayList ();
+		ArrayList y = new ArrayList ();
+		ArrayList z = new ArrayList ();
 
-	[TestFixture]
-	public class AvoidCodeDuplicatedInSameClassTest {
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidCodeDuplicatedInSameClassRule ();
-			runner = new TestRunner (rule);
+		public int X {
+			get { return x.Count; }
 		}
 
+		public int Y  {
+			get { return y.Count; }
+		}
+
+		public int Z {
+			get { return z.Count; }
+		}
+	}
+	
+
+	[TestFixture]
+	public class AvoidCodeDuplicatedInSameClassTest : TypeRuleTestFixture<AvoidCodeDuplicatedInSameClassRule> {
 		[Test]
 		public void TestClassWithoutCodeDuplicated () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithoutCodeDuplicated"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<ClassWithoutCodeDuplicated> ();
 		}
 		
 		[Test]
 		public void TestClassWithCodeDuplicated () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Smells.ClassWithCodeDuplicated"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (3, runner.Defects.Count);
+			AssertRuleFailure<ClassWithCodeDuplicated> (3);
+		}
+
+		[Test]
+		public void TestUsingProperties ()
+		{
+			AssertRuleSuccess<UsingProperties> ();
 		}
 	}
 }
