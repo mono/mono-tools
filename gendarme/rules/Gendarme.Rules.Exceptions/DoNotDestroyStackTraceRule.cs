@@ -36,6 +36,38 @@ using Gendarme.Rules.Exceptions.Impl;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check method's catch block to see if they are throwing back the caught 
+	/// exception. Doing so would destroy the stack trace of the original exception. If you
+	/// need to (re-)throw the exception caught by the catch block, you should use <c>throw;</c>
+	/// instead of <c>throw ex;</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// try {
+	///	Int32.Parse ("Broken!");
+	/// }
+	/// catch (Exception ex) {
+	///	Assert.IsNotNull (ex);
+	///	throw ex;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// try {
+	///	Int32.Parse ("Broken!");
+	/// }
+	/// catch (Exception ex) {
+	///	Assert.IsNotNull (ex);
+	///	throw;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.0 this rule was named  DontDestroyStackTraceRule.</remarks>
+
 	[Problem ("A catch block in the method throws back the caught exception which destroys the stack trace.")]
 	[Solution ("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")]
 	[EngineDependency (typeof (OpCodeEngine))]

@@ -39,6 +39,41 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check that any <c>System.ArgumentException</c>, 
+	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c> or
+	/// <c>System.DuplicateWaitObjectException</c> exception created to ensure the order of
+	/// their parameters, in particular the position of <c>parameterName</c>, is correct.
+	/// This is a common mistake since the position is not consistent across all exceptions.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Show (string s)
+	/// {
+	///	if (s == null)
+	///		throw new ArgumentNullException ("string is null", "s");
+	///	if (s.Length == 0)
+	///		return new ArgumentException ("s", "string is empty");
+	///	Console.WriteLine (s);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Show (string s)
+	/// {
+	///	if (s == null)
+	///		throw new ArgumentNullException ("s", "string is null");
+	///	if (s.Length == 0)
+	///		return new ArgumentException ("string is empty", "s");
+	///	Console.WriteLine (s);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("This method throws ArgumentException (or derived) exceptions without specifying an existing parameter name. This can hide useful information to developers.")]
 	[Solution ("Fix the exception parameters to use the correct parameter name (or make sure the parameters are in the right order).")]
 	[EngineDependency (typeof (OpCodeEngine))]

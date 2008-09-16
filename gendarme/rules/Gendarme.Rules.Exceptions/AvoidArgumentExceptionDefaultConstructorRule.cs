@@ -33,6 +33,36 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check that any <c>System.ArgumentException</c>, 
+	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c> or
+	/// <c>System.DuplicateWaitObjectException</c> exception created are provided with some
+	/// useful information about the exception being throw, minimally the parameter name.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new ArgumentNullException ();
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new ArgumentNullException ("obj");
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method create an ArgumentException (or derived) but do not provide any useful information, like the argument, to it.")]
 	[Solution ("Provide more useful details when creating the specified exception.")]
 	[EngineDependency (typeof (OpCodeEngine))]

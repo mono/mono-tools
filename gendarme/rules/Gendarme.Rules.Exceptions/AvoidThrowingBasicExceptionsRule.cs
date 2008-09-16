@@ -30,6 +30,36 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check for methods that create basic exceptions like <c>System.Exception</c>,
+	/// <c>System.ApplicationException</c> or <c>System.SystemException</c>. Those exceptions
+	/// do not provide enough information about an error condition to be helpful to the consumer
+	/// of the library.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new Exception ();
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new ArgumentNullException ("obj");
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method creates (and probably throws) an exception of Exception, ApplicationException or SystemException type.")]
 	[Solution ("Try to use more specific exception types. If none of existing types meet your needs, create custom exception class that inherits from System.Exception or any appropriate descendant of it.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]

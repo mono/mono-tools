@@ -33,6 +33,36 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check for non visible exception types that derive directly from
+	/// the most basic exceptions: <c>System.Exception</c>, <c>System.ApplicationException</c>
+	/// or <c>System.SystemException</c>. Those basic exceptions, being visible, will be the 
+	/// only information available to the API consumer - but do not contain enough data to be
+	/// useful.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// internal class GeneralException : Exception {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (visibility):
+	/// <code>
+	/// public class GeneralException : Exception {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (base class):
+	/// <code>
+	/// internal class GeneralException : ArgumentException {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This exception is not public and it's base class does not provide enough information to be useful.")]
 	[Solution ("Change type visibility to public or inherit from another exception.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]

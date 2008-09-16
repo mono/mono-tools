@@ -34,6 +34,46 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check that any exceptions, i.e. types deriving from <c>System.Exception</c>, 
+	/// provide all the necessary constructors that can be expected from consumer or required 
+	/// by the runtime.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class GeneralException : Exception {
+	///	// it should be a default public constructor
+	/// 	private GeneralException ()
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class GeneralException : Exception {
+	/// 	public GeneralException ()
+	/// 	{
+	/// 	}
+	/// 	
+	/// 	public GeneralException (string message)
+	/// 	{
+	/// 	}
+	/// 	
+	/// 	public GeneralException (string message, Exception inner)
+	/// 	{
+	/// 	}
+	/// 	
+	/// 	protected GeneralException (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("Not all required constructors for an exception type are present in this type.")]
 	[Solution ("Add the missing constructor(s) for this exception.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]

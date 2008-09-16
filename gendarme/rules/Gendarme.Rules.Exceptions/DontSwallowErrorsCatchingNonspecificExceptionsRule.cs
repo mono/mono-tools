@@ -34,7 +34,49 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
 
-	[Problem ("The method catch a nonspecific exception.")]
+	/// <summary>
+	/// This rule is used for ensure that methods do not swallow the catched exceptions. 
+	/// If you decide catch a non-specific exception, you should take care, because you 
+	/// wont know exactly what went wrong. You should catch exceptions when you know why
+	/// an exception can be thrown, and you can take a decision based on the failure.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// try {
+	///	File.Open ("foo.txt", FileMode.Open); 
+	/// }
+	/// catch (Exception) {
+	///	//Ooops  what's failed ??? UnauthorizedException, FileNotFoundException ??? 
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (catch a specific exception):
+	/// <code>
+	/// try {
+	///	File.Open ("foo.txt", FileMode.Open);
+	/// }
+	/// catch (FileNotFoundException exception) {
+	///	//I know that the system can't find the file.
+	/// } 
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (catch all and rethrow):
+	/// <code>
+	/// try {
+	///	File.Open ("foo.txt", FileMode.Open);
+	/// }
+	/// catch {
+	///	Console.WriteLine ("An error has happened.");
+	///	throw;  // You don't swallow the error, because you rethrow the original exception.
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.0 this rule was named DontSwallowErrorsCatchingNonspecificExceptionsRule.</remarks>
+
+	[Problem ("The method catch a non-specific exception. This will likely hide the original problem to the callers.")]
 	[Solution ("You can rethrow the original exception, to avoid destroying the stacktrace, or you can handle more specific exceptions.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 	public class DoNotSwallowErrorsCatchingNonSpecificExceptionsRule : Rule, IMethodRule {

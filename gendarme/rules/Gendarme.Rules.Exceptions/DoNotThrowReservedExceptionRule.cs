@@ -28,6 +28,36 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
 
+	/// <summary>
+	/// This rule check for methods that create reserved exceptions like 
+	/// <c>System.ExecutionEngineException</c>, <c>System.IndexOutOfRangeException</c>,
+	/// <c>NullReferenceException</c> or <c>System.OutOfMemoryException</c>. Those exceptions
+	/// should only be thrown by the .NET runtime.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new NullReferenceException ("obj");
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Add (object obj)
+	/// {
+	///	if (obj == null)
+	///		throw new ArgumentNullException ("obj");
+	///	Inner.Add (obj);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException or OutOfMemoryException.")]
 	[Solution ("Select and create a better suited exception type, one that is not reserved by the runtime.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
