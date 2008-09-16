@@ -1,3 +1,14 @@
+2008-09-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs,
+	AvoidThrowingBasicExceptionsRule.cs, DoNotDestroyStackTraceRule.cs,
+	DoNotThrowReservedExceptionRule.cs, 
+	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs,
+	ExceptionShouldBeVisibleRule.cs, 
+	InstantiateArgumentExceptionCorrectlyRule.cs, 
+	MissingExceptionConstructorsRule.cs: Add XML documentation.
+	* SEHHandlerType.cs: Change XML documentation into normal comments.
+
 2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: Use 
