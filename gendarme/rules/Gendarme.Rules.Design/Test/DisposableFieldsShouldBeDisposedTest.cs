@@ -29,43 +29,17 @@
 //
 
 using System;
-using System.Reflection;
+using System.ComponentModel;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Gendarme.Framework.Rocks;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class DisposableFieldsShouldBeDisposedTest {
-
-		private DisposableFieldsShouldBeDisposedRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DisposableFieldsShouldBeDisposedRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			foreach (TypeDefinition type in assembly.MainModule.Types ["Test.Rules.Design.DisposableFieldsShouldBeDisposedTest"].NestedTypes) {
-				if (type.Name == name)
-					return type;
-			}
-			return null;
-		}
-
+	public class DisposableFieldsShouldBeDisposedTest : TypeRuleTestFixture<DisposableFieldsShouldBeDisposedRule> {
 
 		class FalsePositive : IDisposable {
 			int A;
@@ -80,9 +54,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestFalsePositive ()
 		{
-			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<FalsePositive> ();
 		}
 
 
@@ -97,25 +69,20 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposable ()
 		{
-			TypeDefinition type = GetTest ("Disposable");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Disposable> ();
 		}
 
 
 		class ExtendsDispose : Disposable, IDisposable {
 			void Dispose () //warning: should call base
 			{
-
 			}
 		}
 
 		[Test]
 		public void TestExtendsDispose ()
 		{
-			TypeDefinition type = GetTest ("ExtendsDispose");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<ExtendsDispose> (1);
 		}
 		
 
@@ -129,9 +96,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestExtendsDisposeCallsBase ()
 		{
-			TypeDefinition type = GetTest ("ExtendsDisposeCallsBase");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ExtendsDisposeCallsBase> ();
 		}
 
 
@@ -146,9 +111,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestExtendsDispose2 ()
 		{
-			TypeDefinition type = GetTest ("ExtendsDispose2");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<ExtendsDispose2> (1);
 		}
 		
 
@@ -165,9 +128,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsCorrect ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsCorrect");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsCorrect> ();
 		}
 
 
@@ -186,9 +147,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMultipleDisposeableFieldsCorrect ()
 		{
-			TypeDefinition type = GetTest ("MultipleDisposeableFieldsCorrect");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<MultipleDisposeableFieldsCorrect> ();
 		}
 
 		
@@ -206,9 +165,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsIncorrect ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsIncorrect");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DisposeableFieldsIncorrect> (1);
 		}
 		
 
@@ -231,9 +188,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsDisposePattern ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsDisposePattern");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsDisposePattern> ();
 		}
 
 
@@ -251,9 +206,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsExplicit ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsExplicit");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsExplicit> ();
 		}
 
 
@@ -275,9 +228,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsTwoCorrect ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsTwoCorrect");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsTwoCorrect> ();
 		}
 
 		class DisposeableFieldsTwoIncorrect : IDisposable {
@@ -298,9 +249,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsTwoIncorrect ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsTwoIncorrect");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DisposeableFieldsTwoIncorrect> (1);
 		}
 
 
@@ -318,9 +267,59 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsWithStaticExplicit ()
 		{
-			TypeDefinition type = GetTest ("DisposeableFieldsWithStaticExplicit");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsWithStaticExplicit> ();
+		}
+
+		class DelegatedInsideDispose : IDisposable {
+
+			static BackgroundWorker worker = new BackgroundWorker ();
+			Disposable B;
+
+			public DelegatedInsideDispose ()
+			{
+				B = new Disposable ();
+			}
+
+			public void Dispose ()
+			{
+				worker.DoWork += delegate (object o, DoWorkEventArgs e) {
+					B.Dispose ();
+				};
+				worker.RunWorkerAsync ();
+			}
+		}
+
+		[Test]
+		[Ignore ("rule cannot be certain the delegate will be called")]
+		public void TestDelegatedInsideDispose ()
+		{
+			AssertRuleSuccess<DelegatedInsideDispose> ();
+		}
+
+		class DelegatedOutsideDispose : IDisposable {
+
+			static BackgroundWorker worker = new BackgroundWorker ();
+			Disposable B;
+
+			public DelegatedOutsideDispose ()
+			{
+				B = new Disposable ();
+				worker.DoWork += delegate (object o, DoWorkEventArgs e) {
+					B.Dispose ();
+				};
+			}
+
+			public void Dispose ()
+			{
+				worker.RunWorkerAsync ();
+			}
+		}
+
+		[Test]
+		[Ignore ("rule cannot be certain which and if the delegate will be called")]
+		public void TestDelegatedOutsideDispose ()
+		{
+			AssertRuleSuccess<DelegatedOutsideDispose> ();
 		}
 	}
 }
