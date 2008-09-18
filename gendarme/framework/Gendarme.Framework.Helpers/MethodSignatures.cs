@@ -97,5 +97,8 @@ namespace Gendarme.Framework.Helpers {
 		public static readonly MethodSignature op_LessThan = new MethodSignature ("op_LessThan", null, TwoParameters, OperatorAttributes);			// 5 < 5
 		public static readonly MethodSignature op_GreaterThanOrEqual = new MethodSignature ("op_GreaterThanOrEqual", null, TwoParameters, OperatorAttributes);	// 5 >= 5
 		public static readonly MethodSignature op_LessThanOrEqual = new MethodSignature ("op_LessThanOrEqual", null, TwoParameters, OperatorAttributes);	// 5 <= 5
+
+		//Invoke
+		public static readonly MethodSignature Invoke = new MethodSignature ("Invoke");
 	}
 }
