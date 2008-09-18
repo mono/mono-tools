@@ -68,23 +68,35 @@ namespace Test.Rules.Helpers {
 			}
 			CurrentTarget = obj;
 		}
-
+		
+		private RuleResult PostCheck (RuleResult beforeTearingDown)
+		{
+			CurrentRule.TearDown (this);
+			//If current is not the default, and report the greater
+			if (beforeTearingDown == RuleResult.DoesNotApply) 
+				return beforeTearingDown;
+			
+			if (CurrentRuleResult > beforeTearingDown) 
+				return CurrentRuleResult;
+			return beforeTearingDown;	
+		}
+	
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			PreCheck (assembly);
-			return (CurrentRule as IAssemblyRule).CheckAssembly (assembly);
+			return PostCheck ((CurrentRule as IAssemblyRule).CheckAssembly (assembly));
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			PreCheck (type);
-			return (CurrentRule as ITypeRule).CheckType (type);
+			return PostCheck ((CurrentRule as ITypeRule).CheckType (type));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			PreCheck (method);
-			return (CurrentRule as IMethodRule).CheckMethod (method);
+			return PostCheck ((CurrentRule as IMethodRule).CheckMethod (method));
 		}
 
 		// IIgnoreList

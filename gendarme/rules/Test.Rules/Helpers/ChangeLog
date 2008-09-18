@@ -1,3 +1,8 @@
+2008-09-18  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* TestRunner.cs: Added a PostCheck logic so that we are able to tests
+	rules which report defects in the TearDown step.
+
 2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TestRunner.cs: Change PreCheck logic so that engines are called
