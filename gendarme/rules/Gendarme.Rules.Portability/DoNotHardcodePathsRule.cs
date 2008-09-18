@@ -33,12 +33,48 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Portability {
 
+	/// <summary>
+	/// This rule check for strings that contains valid filenames, either under Unix or 
+	/// Windows operating systems file systems. Such filenames are often not portable across 
+	/// operating systems (e.g. different path separators). To ensure correct cross-platform 
+	/// functionality they should be replaced by calls to <c>Path.Combine</c> and/or 
+	/// <c>Environment.GetFolderPath</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// void ReadConfig ()
+	/// {
+	///	using (FileStream fs = File.Open ("~/.local/share/myapp/user.config")) {
+	///		// read configuration
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// void ReadConfig ()
+	/// {
+	///	string config_file = Environment.GetFolderPath (SpecialFolder.LocalApplicationData);
+	///	config_file = Path.Combine (Path.Combine (config_file, "myapp"), "user.config");
+	///	using (FileStream fs = File.Open (config_file)) {
+	///		// read configuration
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This string looks like a path that may become invalid if the code is executed on a different operating system.")]
 	[Solution ("Use System.IO.Path and System.Environment types to generate paths instead of hardcoding them.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotHardcodePathsRule : Rule, IMethodRule {
 
 		// result cache
@@ -432,6 +468,10 @@ namespace Gendarme.Rules.Portability {
 		{
 			// if method has no IL, we don't check it
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// is there any Ldstr instructions in this method
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Ldstr))
 				return RuleResult.DoesNotApply;
 
 			method_body = method.Body;

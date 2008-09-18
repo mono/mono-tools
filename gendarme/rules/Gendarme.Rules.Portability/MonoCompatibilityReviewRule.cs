@@ -33,7 +33,10 @@ using System.Net;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -41,8 +44,27 @@ using MoMA.Analyzer.MoMAWebService;
 
 namespace Gendarme.Rules.Portability {
 
+	/// <summary>
+	/// This rule uses MoMA definition files to analyze assemblies and warns if called methods are:
+	/// <list type="bullet">
+	/// <item>
+	/// <description>marked with a <c>[MonoTODO]</c> attribute;</description>
+	/// </item>
+	/// <item>
+	/// <description>throw a <c>NotImplementedException</c>; or</description>
+	/// </item>
+	/// <item>
+	/// <description>do not exist in the current version of Mono::</description>
+	/// </item>
+	/// </list>
+	/// The rule looks for the definitions in <c>~/.local/share/Gendarme/definitions.zip</c>. 
+	/// If the file is missing it will try to download the latest version.
+	/// </summary>
+	/// <remarks>This rule does not replace MoMA (which is obviously the easiest solution for Windows developers). It's goal is to help analyze multiple portability issues from the Linux side (where Gendarme is most likely being used)</remarks>
+
 	[Problem ("The method has some known limitations when used with the Mono:: runtime.")]
 	[Solution ("Check if this code is critical to your application. Also make sure your definition files are up to date.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class MonoCompatibilityReviewRule : Rule, IMethodRule {
 
 		private const string NotImplementedMessage = "{0} is not implemented.{1}";
@@ -147,13 +169,18 @@ namespace Gendarme.Rules.Portability {
 		private void Check (Dictionary<string, string> dict, MethodDefinition method, Instruction ins, string error, Severity severity)
 		{
 			string callee = ins.Operand.ToString ();
-			if (!dict.ContainsKey (callee))
+			string value;
+
+			if (!dict.TryGetValue (callee, out value))
 				return;
 
-			string message = String.Format (error, callee, dict [callee]);
+			string message = String.Format (error, callee, value);
 			// confidence is Normal since we can't be sure if MoMA data is up to date
 			Runner.Report (method, ins, severity, Confidence.Normal, message);
 		}
+
+		// this correspond to Call, Calli, Callvirt, Newobj, Initobj, Ldftn, Ldvirtftn
+		private static OpCodeBitmask mask = new OpCodeBitmask (0x18000000000, 0x4400000000000, 0x0, 0x40060);
 		
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -161,34 +188,30 @@ namespace Gendarme.Rules.Portability {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// check if any instruction refers to methods or types that MoMA could track
+			if (!mask.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			// rule applies
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Call:
-				case Code.Calli:
-				case Code.Callvirt:
-				case Code.Newobj:
-				case Code.Initobj:
-				case Code.Ldftn:
-				case Code.Ldvirtftn:
-					// calling not implemented method is very likely not to work == High
-					if (NotImplemented != null) {
-						Check (NotImplemented, method, ins, NotImplementedMessage, Severity.High);
-					}
+				// look for any instruction that could use something incomplete
+				if (!mask.Get (ins.OpCode.Code))
+					continue;
 
-					// calling missing methods can't work == Critical
-					if (Missing != null) {
-						Check (Missing, method, ins, MissingMessage, Severity.Critical);
-					}
+				// calling not implemented method is very likely not to work == High
+				if (NotImplemented != null) {
+					Check (NotImplemented, method, ins, NotImplementedMessage, Severity.High);
+				}
 
-					// calling todo methods migh work with some limitations == Medium
-					if (ToDo != null) {
-						Check (ToDo, method, ins, TodoMessage, Severity.Medium);
-					}
-					break;
-				default:
-					break;
+				// calling missing methods can't work == Critical
+				if (Missing != null) {
+					Check (Missing, method, ins, MissingMessage, Severity.Critical);
+				}
+
+				// calling todo methods migh work with some limitations == Medium
+				if (ToDo != null) {
+					Check (ToDo, method, ins, TodoMessage, Severity.Medium);
 				}
 			}
 

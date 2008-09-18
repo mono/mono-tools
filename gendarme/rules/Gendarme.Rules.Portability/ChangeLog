@@ -1,3 +1,19 @@
+2008-09-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Add XML documentation. Use OpCodeEngine
+	to avoid executing the rule unless an LDSTR instruction is present.
+	* ExitCodeIsLimitedOnUnixRule.cs: Add XML documentation. Use 
+	OpCodeEngine to avoid executing the rule unless Call[virt] 
+	instructions are present inside the method.
+	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Add XML documentation.
+	Use OpCodeEngine to avoid executing the rule unless Call[virt] or 
+	NewObj instructions are present inside the method.
+	* MonoCompatibilityReviewRule.cs: Add XML documentation. Use
+	OpCodeEngine to avoid executing the rule unless it can reference
+	a type or method not available, or incomplete, inside Mono.
+	* NewLineLiteralRule.cs: Add XML documentation. Use OpCodeEngine 
+	to avoid executing the rule unless an LDSTR instruction is present.
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FeatureRequiresRootPrivilegeOnUnixRule.cs: Don't check Ping if

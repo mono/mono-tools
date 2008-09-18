@@ -34,13 +34,51 @@ using System.Diagnostics;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Portability {
 
+	/// <summary>
+	/// This rule check usage of features that are, by default, restricted under Unix.
+	/// <list type="bullet">
+	/// <item>
+	/// <description><c>System.Net.NetworkInformation.Ping</c>: This type can only be used
+	/// by root on Unix systems. As an alternative you can execute the ping command and 
+	/// parse it's result.</description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Diagnostics.Process</c>: The PriorityClass property can only
+	/// be set to <c>Normal</c> by non-root users. To avoid this problem you can do a 
+	/// platform check before assigning a priority.</description>
+	/// </item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// process.PriorityClass = ProcessPriorityClass.AboveNormal;
+	/// process.Start ();
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// if (Environment.OSVersion.Platform != PlatformID.Unix) {
+	///	process.PriorityClass = ProcessPriorityClass.AboveNormal;
+	/// }
+	/// process.Start ();
+	/// </code>
+	/// </example>
+
 	[Problem ("The method use some features that requires 'root' priviledge under Unix.")]
 	[Solution ("Make sure your code can work without requiring users to have 'root' priviledge.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class FeatureRequiresRootPrivilegeOnUnixRule : Rule, IMethodRule {
+
+		// includes Call, Callvirt and Newobj
+		private static OpCodeBitmask CallsNew = new OpCodeBitmask (0x8000000000, 0x4400000000000, 0x0, 0x0);
 
 		// localizable
 		private const string ProcessMessage = "Setting Process.PriorityClass to something else than ProcessPriorityClass.Normal requires root privileges.";
@@ -101,6 +139,10 @@ namespace Gendarme.Rules.Portability {
 		{
 			// rule does not apply to methods without IL
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!CallsNew.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {

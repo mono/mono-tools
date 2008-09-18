@@ -30,12 +30,62 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Portability {
 
+	/// <summary>
+	/// This rule applies to all executable (i.e. EXE) assemblies. Something that many Windows 
+	/// developers might not be aware of is that on Unix systems, process exit code must be 
+	/// between zero and 255, unlike in Windows where it can be any valid integer value. 
+	/// This rule warns if the returned value might be out of range either by:
+	/// <list type="bullet">
+	/// <item>
+	/// <description>returning an unknown value from <c>int Main()</c>;</description>
+	/// </item>
+	/// <item>
+	/// <description>setting the <c>Environment.ExitCode</c> property; or</description>
+	/// </item>
+	/// <item>
+	/// <description>calling <c>Environment.Exit(exitCode)</c> method.</description>
+	/// </item>
+	/// </list>
+	/// An error is reported in case number which is definitely out of range is being returned 
+	/// as an exit code. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class MainClass {
+	///	static int Main ()
+	///	{
+	///		Environment.ExitCode = 1000;
+	///		Environment.Exit (512);
+	///		return -1;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class MainClass {
+	///	static int Main ()
+	///	{
+	///		Environment.ExitCode = 42;
+	///		Environment.Exit (100);
+	///		return 1;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The rule detected a value outside the 0-255 range or couldn't be sure of the returned value.")]
 	[Solution ("Review that your return values are all between 0 and 255, this will ensure them to works under both Unix and Windows OS.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ExitCodeIsLimitedOnUnixRule : Rule, IAssemblyRule, IMethodRule {
 
 		private enum InspectionResult {
@@ -151,14 +201,15 @@ namespace Gendarme.Rules.Portability {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			// go!
 			Instruction previous = null;
 			foreach (Instruction current in method.Body.Instructions) {
 				switch (current.OpCode.Code) {
-				case Code.Nop:
-					break;
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					MethodReference calledMethod = (MethodReference) current.Operand;
 					if (calledMethod.Name != "set_ExitCode" && calledMethod.Name != "Exit")
