@@ -1,3 +1,9 @@
+2008-09-18  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* DeclareEventHandlersCorrectlyTest.cs:  New.  Unit tests for
+	DeclareEventHandlersCorrectlyRule.
+	* Test.Rules.Design.mdp: Updated MD project file.
+
 2008-09-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedTest.cs: Add two ignored test
