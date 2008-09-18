@@ -162,6 +162,8 @@ gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
 gui-compare/Makefile
 gui-compare/gui-compare
+mperfmon/Makefile
+mperfmon/mperfmon
 docbrowser/Makefile
 docbrowser/monodoc
 docbrowser/AssemblyInfo.cs

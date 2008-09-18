@@ -1,0 +1,6 @@
+
+Thu Sep 18 18:43:23 CEST 2008 Paolo Molaro <lupus@ximian.com>
+
+	* Initial drop of mperfmon: utility to browse and display
+	performance counters.
+
