@@ -1,3 +1,10 @@
+2008-09-18  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: New.  Rule that check
+	conventions when you are writting events.
+	* Gendarme.Rules.Design.mdp: Updated MD project file.
+	* Makefile.am: Added rule and test to the build.
+
 2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRefAndOutParametersRule.cs: Add the attributes for the two 

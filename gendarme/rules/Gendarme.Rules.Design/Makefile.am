@@ -46,7 +46,8 @@ rules_sources = \
 	EnumsShouldUseInt32Rule.cs \
 	ImplementIComparableCorreclyRule.cs \
 	ConsiderConvertingFieldToNullableRule.cs \
-	AvoidVisibleNestedTypesRule.cs
+	AvoidVisibleNestedTypesRule.cs \
+	DeclareEventHandlersCorrectlyRule.cs
 
 tests_sources = \
 	AvoidMultidimensionalIndexerTest.cs \
@@ -80,4 +81,5 @@ tests_sources = \
 	EnumsShouldUseInt32Test.cs \
 	ImplementIComparableCorreclyTest.cs \
 	ConsiderConvertingFieldToNullableTest.cs \
-	AvoidVisibleNestedTypesTest.cs
+	AvoidVisibleNestedTypesTest.cs \
+	DeclareEventHandlersCorrectlyTest.cs
