@@ -295,7 +295,7 @@ namespace Test.Rules.Portability {
 		[Test]
 		public void TestNoEnvSetExitCode ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("EmptyMethod")));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (GetMethodForEnvSetExitCodeTest ("EmptyMethod")));
 		}
 
 		[Test]
@@ -346,7 +346,7 @@ namespace Test.Rules.Portability {
 		[Test]
 		public void TestNoEnvExit ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetMethodForEnvExitTest ("EmptyMethod")));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (GetMethodForEnvExitTest ("EmptyMethod")));
 		}
 
 		[Test]

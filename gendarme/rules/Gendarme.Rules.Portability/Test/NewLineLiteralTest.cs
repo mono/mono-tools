@@ -80,6 +80,8 @@ namespace Test.Rules.Portability {
 
 		public string GetEmpty ()
 		{
+			// note: this does a LDSTR with CSC and a LDSFLD String.Empty 
+			// with [g]mcs when optimizations are enabled
 			return "";
 		}
 
@@ -87,8 +89,10 @@ namespace Test.Rules.Portability {
 		public void Correct ()
 		{
 			AssertRuleSuccess<NewLineLiteralTest> ("GetNewLine");
-			AssertRuleSuccess<NewLineLiteralTest> ("GetNull");
-			AssertRuleSuccess<NewLineLiteralTest> ("GetEmpty");
+			// see note ^^^
+			// AssertRuleSuccess<NewLineLiteralTest> ("GetEmpty");
+			// no LDSTR instruction (LDNULL is used)
+			AssertRuleDoesNotApply<NewLineLiteralTest> ("GetNull");
 		}
 	}
 }

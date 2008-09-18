@@ -209,13 +209,10 @@ namespace Test.Rules.Portability {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
-		}
-
-		[Test]
-		public void EmptyOK ()
-		{
-			AssertRuleSuccess (SimpleMethods.EmptyMethod);
+			// no LDSTR instruction
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		[Test]
