@@ -10,11 +10,14 @@ using System.Collections;
 using Gtk;
 using Cairo;
 using System.Collections.Generic;
+using mperfmon;
 
 public partial class MainWindow: Gtk.Window
 {
 
 	bool timeout_active = false;
+	uint timeout_ms = 1000;
+	uint timeout_id;
 	ArrayList clist = new ArrayList ();
 
 	public MainWindow (): base (Gtk.WindowType.Toplevel)
@@ -29,7 +32,7 @@ public partial class MainWindow: Gtk.Window
 		clist.Add (d);
 		//Console.WriteLine ("Added: {0}/{1}", cat, counter);
 		if (!timeout_active) {
-			GLib.Timeout.Add (1000, OnTimeout);
+			timeout_id = GLib.Timeout.Add (timeout_ms, OnTimeout);
 			timeout_active = true;
 		}
 	}
@@ -38,6 +41,10 @@ public partial class MainWindow: Gtk.Window
 	{
 		clist.Remove (d);
 		graph_vbox.Remove (d);
+		if (clist.Count == 0 && timeout_active) {
+			timeout_active = false;
+			GLib.Source.Remove (timeout_id);
+		}
 	}
 	
 	bool OnTimeout ()
@@ -57,7 +64,7 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void AddCounter (object sender, System.EventArgs e)
 	{
-		mperfmon.NewCounter cdialog = new mperfmon.NewCounter ();
+		NewCounter cdialog = new NewCounter ();
 		int res = cdialog.Run ();
 
 		if (res == (int)ResponseType.Ok) {
@@ -71,6 +78,23 @@ public partial class MainWindow: Gtk.Window
 	protected virtual void OnQuit (object sender, System.EventArgs e)
 	{
 		Application.Quit ();
+	}
+
+	protected virtual void OnPreferences (object sender, System.EventArgs e)
+	{
+		Preferences prefs = new Preferences ();
+		prefs.Timeout = timeout_ms;
+		int res = prefs.Run ();
+
+		if (res == (int)ResponseType.Ok) {
+			timeout_ms = prefs.Timeout;
+			Console.WriteLine (timeout_ms);
+			if (timeout_active) {
+				GLib.Source.Remove (timeout_id);
+				timeout_id = GLib.Timeout.Add (timeout_ms, OnTimeout);
+			}
+		}
+		prefs.Destroy ();
 	}
 	
 }

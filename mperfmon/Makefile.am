@@ -9,8 +9,10 @@ mperfmon_sources = \
 	$(srcdir)/AssemblyInfo.cs 			\
 	$(srcdir)/MainWindow.cs 			\
 	$(srcdir)/NewCounter.cs 			\
+	$(srcdir)/Preferences.cs 			\
 	$(srcdir)/gtk-gui/generated.cs 			\
 	$(srcdir)/gtk-gui/MainWindow.cs 		\
+	$(srcdir)/gtk-gui/mperfmon.Preferences.cs	\
 	$(srcdir)/gtk-gui/mperfmon.NewCounter.cs
 
 mperfmon_resources = 			\

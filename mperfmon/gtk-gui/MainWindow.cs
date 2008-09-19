@@ -28,11 +28,15 @@ public partial class MainWindow {
     
     private Gtk.Action addAction;
     
+    private Gtk.Action preferencesAction;
+    
     private Gtk.Table table1;
     
-    private Gtk.VBox graph_vbox;
-    
     private Gtk.MenuBar menubar1;
+    
+    private Gtk.ScrolledWindow scrolledwindow1;
+    
+    private Gtk.VBox graph_vbox;
     
     private Gtk.Toolbar toolbar1;
     
@@ -60,6 +64,8 @@ public partial class MainWindow {
         w1.Add(this.quitAction, null);
         this.addAction = new Gtk.Action("addAction", null, null, "gtk-add");
         w1.Add(this.addAction, null);
+        this.preferencesAction = new Gtk.Action("preferencesAction", null, null, "gtk-preferences");
+        w1.Add(this.preferencesAction, null);
         this.UIManager.InsertActionGroup(w1, 0);
         this.AddAccelGroup(this.UIManager.AccelGroup);
         this.Name = "MainWindow";
@@ -71,35 +77,45 @@ public partial class MainWindow {
         this.table1.RowSpacing = ((uint)(6));
         this.table1.ColumnSpacing = ((uint)(6));
         // Container child table1.Gtk.Table+TableChild
-        this.graph_vbox = new Gtk.VBox();
-        this.graph_vbox.Name = "graph_vbox";
-        this.graph_vbox.Spacing = 6;
-        this.table1.Add(this.graph_vbox);
-        Gtk.Table.TableChild w2 = ((Gtk.Table.TableChild)(this.table1[this.graph_vbox]));
-        w2.TopAttach = ((uint)(2));
-        w2.BottomAttach = ((uint)(3));
-        w2.RightAttach = ((uint)(3));
-        w2.XOptions = ((Gtk.AttachOptions)(4));
-        // Container child table1.Gtk.Table+TableChild
         this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AddCounterAction' action='AddCounterAction'/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='HelpAction1' action='HelpAction1'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(this.UIManager.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.table1.Add(this.menubar1);
-        Gtk.Table.TableChild w3 = ((Gtk.Table.TableChild)(this.table1[this.menubar1]));
-        w3.RightAttach = ((uint)(3));
-        w3.YOptions = ((Gtk.AttachOptions)(4));
+        Gtk.Table.TableChild w2 = ((Gtk.Table.TableChild)(this.table1[this.menubar1]));
+        w2.RightAttach = ((uint)(3));
+        w2.YOptions = ((Gtk.AttachOptions)(4));
         // Container child table1.Gtk.Table+TableChild
-        this.UIManager.AddUiFromString("<ui><toolbar name='toolbar1'><toolitem name='quitAction' action='quitAction'/><toolitem name='AddCounterAction' action='AddCounterAction'/></toolbar></ui>");
+        this.scrolledwindow1 = new Gtk.ScrolledWindow();
+        this.scrolledwindow1.CanFocus = true;
+        this.scrolledwindow1.Name = "scrolledwindow1";
+        this.scrolledwindow1.ShadowType = ((Gtk.ShadowType)(1));
+        // Container child scrolledwindow1.Gtk.Container+ContainerChild
+        Gtk.Viewport w3 = new Gtk.Viewport();
+        w3.ShadowType = ((Gtk.ShadowType)(0));
+        // Container child GtkViewport.Gtk.Container+ContainerChild
+        this.graph_vbox = new Gtk.VBox();
+        this.graph_vbox.Name = "graph_vbox";
+        this.graph_vbox.Spacing = 6;
+        w3.Add(this.graph_vbox);
+        this.scrolledwindow1.Add(w3);
+        this.table1.Add(this.scrolledwindow1);
+        Gtk.Table.TableChild w6 = ((Gtk.Table.TableChild)(this.table1[this.scrolledwindow1]));
+        w6.TopAttach = ((uint)(2));
+        w6.BottomAttach = ((uint)(3));
+        w6.RightAttach = ((uint)(3));
+        w6.XOptions = ((Gtk.AttachOptions)(4));
+        // Container child table1.Gtk.Table+TableChild
+        this.UIManager.AddUiFromString("<ui><toolbar name='toolbar1'><toolitem name='quitAction' action='quitAction'/><toolitem name='AddCounterAction' action='AddCounterAction'/><toolitem name='preferencesAction' action='preferencesAction'/></toolbar></ui>");
         this.toolbar1 = ((Gtk.Toolbar)(this.UIManager.GetWidget("/toolbar1")));
         this.toolbar1.Name = "toolbar1";
         this.toolbar1.ShowArrow = false;
         this.toolbar1.ToolbarStyle = ((Gtk.ToolbarStyle)(0));
         this.table1.Add(this.toolbar1);
-        Gtk.Table.TableChild w4 = ((Gtk.Table.TableChild)(this.table1[this.toolbar1]));
-        w4.TopAttach = ((uint)(1));
-        w4.BottomAttach = ((uint)(2));
-        w4.RightAttach = ((uint)(3));
-        w4.YOptions = ((Gtk.AttachOptions)(4));
+        Gtk.Table.TableChild w7 = ((Gtk.Table.TableChild)(this.table1[this.toolbar1]));
+        w7.TopAttach = ((uint)(1));
+        w7.BottomAttach = ((uint)(2));
+        w7.RightAttach = ((uint)(3));
+        w7.YOptions = ((Gtk.AttachOptions)(4));
         this.Add(this.table1);
         if ((this.Child != null)) {
             this.Child.ShowAll();
@@ -110,5 +126,7 @@ public partial class MainWindow {
         this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
         this.AddCounterAction.Activated += new System.EventHandler(this.AddCounter);
         this.QuitAction.Activated += new System.EventHandler(this.OnQuit);
+        this.quitAction.Activated += new System.EventHandler(this.OnQuit);
+        this.preferencesAction.Activated += new System.EventHandler(this.OnPreferences);
     }
 }

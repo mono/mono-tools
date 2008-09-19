@@ -1,4 +1,9 @@
 
+Fri Sep 19 20:56:13 CEST 2008 Paolo Molaro <lupus@ximian.com>
+
+	* Preferences.cs: added preferences dialog to change the update
+	interval.
+
 Thu Sep 18 18:43:23 CEST 2008 Paolo Molaro <lupus@ximian.com>
 
 	* Initial drop of mperfmon: utility to browse and display
