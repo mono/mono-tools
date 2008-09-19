@@ -85,10 +85,10 @@ namespace Gendarme.Rules.Design {
 			}
 			return true;
 		}
-
+		
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.Events.Count == 0)
+			if (type.Events.Count == 0)  
 				return RuleResult.DoesNotApply;
 
 			// Note: this is a bit more complex than it seems at first sight
@@ -103,7 +103,13 @@ namespace Gendarme.Rules.Design {
 					continue;
 
 				TypeDefinition td = tr.Resolve ();
-				if (td == null)
+				if (td == null) 
+					continue;
+				
+				//If we are using the Generic
+				//EventHandler<TEventArgs>, the compiler forces
+				//us to write the correct signature 	
+				if (td.GenericParameters.Count != 0)
 					continue;
 
 				MethodReference invoke = td.GetMethod (MethodSignatures.Invoke);

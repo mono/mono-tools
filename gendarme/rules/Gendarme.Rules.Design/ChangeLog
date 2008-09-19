@@ -1,3 +1,10 @@
+2008-09-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: Fix the false positive found by
+	Sebastien when running the self-test target.  The problem was for the
+	generic EventHandler<TEventArgs>; and use this delegate is correct
+	because the compiler enforces the type safety.
+
 2008-09-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: I misguided Nestor :(
