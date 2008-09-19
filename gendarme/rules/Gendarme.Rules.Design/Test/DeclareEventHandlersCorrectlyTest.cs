@@ -142,9 +142,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void FailOnClassWithTwoFieldsTest ()
 		{
-			//This error should be warn once, because it's the same
-			//delegate.
-			AssertRuleFailure<ClassWithTwoFields> (1);
+			AssertRuleFailure<ClassWithTwoFields> (2);
 		}
 
 		delegate int SampleDelegate ();
