@@ -1,3 +1,10 @@
+2008-09-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: I misguided Nestor :(
+	The logic is now to report against the EventDefinition (in the
+	assembly being analyzed) instead of reporting against the 
+	delegate (which could be outside of the developer's control).
+
 2008-09-18  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: New.  Rule that check
