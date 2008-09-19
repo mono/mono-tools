@@ -27,6 +27,7 @@
 //
 
 using System;
+using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
@@ -155,6 +156,16 @@ namespace Test.Rules.Design {
 		public void SuccessOnClassWithDelegateTest ()
 		{
 			AssertRuleDoesNotApply<ClassWithDelegate> ();
+		}
+		
+		class ClassWithGenericEventHandler {
+			public event EventHandler<RunnerEventArgs> handler;
+		}
+
+		[Test]
+		public void SuccessOnClassWithGenericEventHandlerTest ()
+		{
+			AssertRuleSuccess<ClassWithGenericEventHandler> ();
 		}
 	}
 }

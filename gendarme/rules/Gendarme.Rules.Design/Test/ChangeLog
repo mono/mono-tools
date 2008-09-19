@@ -1,3 +1,9 @@
+2008-09-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* DeclareEventHandlersCorrectlyTest.cs: A little test for the false
+	positive found with EventHandler<TEventArgs>.  The compiler forces us to
+	write a valid signature.
+
 2008-09-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyTest.cs: With the "fixed" logic there
