@@ -83,10 +83,10 @@ namespace Gendarme.Rules.BadPractice {
 	public class ReplaceIncompleteOddnessCheckRule : Rule, IMethodRule {
 
 		// Conv_[Ovf_][I|U][1|2|4|8][_Un] - about all except Conv_R[4|8]
-		public static OpCodeBitmask Conversion = new OpCodeBitmask (0x0, 0x800003C000000000, 0xE07F8000001FF, 0x0);
+		private static OpCodeBitmask Conversion = new OpCodeBitmask (0x0, 0x800003C000000000, 0xE07F8000001FF, 0x0);
 
 		// Rem[_Un]
-		public static OpCodeBitmask Remainder = new OpCodeBitmask (0x0, 0x30000000, 0x0, 0x0);
+		private static OpCodeBitmask Remainder = new OpCodeBitmask (0x0, 0x30000000, 0x0, 0x0);
 
 		// if/when needed this could be refactored (e.g. missing Ldc_I4__#) 
 		// and turned into an InstructionRock

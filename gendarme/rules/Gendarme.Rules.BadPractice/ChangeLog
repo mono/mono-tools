@@ -1,3 +1,8 @@
+2008-09-19  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ReplaceIncompleteOddnessCheckRule.cs: Reduce the OpCodeBitmask
+	properties visibility [self-test]
+
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCallingProblematicMethodsRule.cs: Use OpCodeEngine to
