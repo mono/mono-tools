@@ -53,7 +53,7 @@ namespace Gendarme.Rules.Design {
 			if (invoke.Parameters.Count == 2)
 				return true;
 
-			Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The delegate should have 2 parameters"));
+			Runner.Report (eventType, Severity.Medium, Confidence.High, "The delegate should have 2 parameters");
 			return false;
 		}
 

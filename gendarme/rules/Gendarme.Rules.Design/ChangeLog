@@ -1,3 +1,8 @@
+2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: Remove the unneeded call to
+	String.Format (only a string parameter) [self-test]
+
 2008-09-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: Fix the false positive found by
