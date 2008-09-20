@@ -26,10 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
@@ -37,9 +34,40 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule check that a <c>Clone()</c> method, if existing, never returns a <c>null</c> 
+	/// value.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class MyClass : ICloneable {
+	///	public object Clone ()
+	///	{
+	///		MyClass myClass = new MyClass ();
+	///		// set some internals
+	///		return null;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class MyClass : ICloneable {
+	///	public object Clone ()
+	///	{
+	///		MyClass myClass = new MyClass ();
+	///		// set some internals
+	///		return myClass;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The implementation ICloneable.Clone () seems to return null in some circumstances.")]
 	[Solution ("Return an appropriate object instead of returning null.")]
-	public class CloneMethodShouldNotReturnNullRule: Rule, ITypeRule {
+	public class CloneMethodShouldNotReturnNullRule : ReturnNullRule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -52,47 +80,8 @@ namespace Gendarme.Rules.BadPractice {
 			if ((method == null) || (!method.HasBody))
 				return RuleResult.DoesNotApply;
 
-			// FIXME: still *very* incomplete, but that will handle non-optimized code
-			// from MS CSC where "return null" == "nop | ldnull | stloc.0 | br.s | ldloc.0 | ret"
-			bool return_null = false;
-			Instruction previous = null;
-			foreach (Instruction instruction in method.Body.Instructions) {
-				switch (instruction.OpCode.Code) {
-				case Code.Nop:
-				case Code.Constrained:
-					// don't update previous
-					break;
-				case Code.Ldnull:
-					return_null = true;
-					previous = instruction;
-					break;
-				case Code.Br:
-				case Code.Br_S:
-					// don't update previous if branching to next instruction
-					if (instruction.Operand != instruction.Next)
-						previous = instruction;
-					break;
-				case Code.Ldloc_0:
-					if ((previous != null) && (previous.OpCode.Code == Code.Stloc_0))
-						break;
-					return_null = false;
-					break;
-				case Code.Ret:
-					if (return_null) {
-						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, String.Empty);
-						return RuleResult.Failure;
-					}
-					previous = instruction;
-					break;
-				case Code.Stloc_0:
-					// return_null doesn't change state
-				default:
-					previous = instruction;
-					break;
-				}
-			}
-
-			return RuleResult.Success;
+			// call base class to detect if the method can return null
+			return CheckMethod (method);
 		}
 	}
 }

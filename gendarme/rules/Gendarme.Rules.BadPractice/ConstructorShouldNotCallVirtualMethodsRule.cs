@@ -34,13 +34,90 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule warns the developer if any virtual methods are called in the constructor 
+	/// of non-sealed type. The problem is that the exact method that will be executed is 
+	/// not known before runtime. Also such virtual calls may be executed before the constructor
+	/// of deriving type is called, thus making possible mistakes.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class A {
+	///	public A ()
+	///	{
+	///		this.DoSomething ();
+	///	}
+	///	
+	///	protected virtual void DoSomething ()
+	///	{
+	///	}
+	/// }
+	/// 
+	/// class B : A {
+	///	private int x;
+	///	
+	///	public B ()
+	///	{
+	///		x = 10;
+	///	}
+	///	
+	///	protected override void DoSomething ()
+	///	{
+	///		Console.WriteLine (x);
+	///	}
+	/// }
+	/// 
+	/// B b = new B (); // outputs 0 because B constructor hasn't been called yet 
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class A {
+	///	public void Run ()
+	///	{
+	///		this.DoSomething ();
+	///	}
+	///	
+	///	protected virtual void DoSomething ()
+	///	{
+	///	}
+	/// }
+	/// 
+	/// class B : A {
+	///	private int x;
+	///	
+	///	public B ()
+	///	{
+	///		x = 10;
+	///	}
+	///	
+	///	protected override void DoSomething ()
+	///	{
+	///		Console.WriteLine (x);
+	///	}
+	/// }
+	/// 
+	/// B b = new B ();
+	/// b.Run (); // outputs 10 as intended 
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("Some constructors calls virtual methods which won't be known before runtime.")]
 	[Solution ("Avoid calling virtual methods from constructors or seal the the type.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2114:DoNotCallOverridableMethodsInConstructors")]
 	public class ConstructorShouldNotCallVirtualMethodsRule : Rule, ITypeRule {
+
+		private Stack<string> stack = new Stack<string> ();
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -61,7 +138,7 @@ namespace Gendarme.Rules.BadPractice {
 
 		private void CheckConstructor (MethodDefinition constructor)
 		{
-			Stack<string> stack = new Stack<string> ();
+			stack.Clear ();
 			CheckMethod (constructor, stack);
 		}
 
@@ -115,6 +192,10 @@ namespace Gendarme.Rules.BadPractice {
 			if (!method.HasBody)
 				return;
 
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return;
+
 			string method_name = method.ToString ();
 			// check to avoid constructors calling recursive methods
 			if (stack.Contains (method_name))
@@ -124,7 +205,6 @@ namespace Gendarme.Rules.BadPractice {
 			foreach (Instruction current in method.Body.Instructions) {
 				switch (current.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					// we recurse into normal calls since they might be calling virtual methods
 					MethodDefinition md = (current.Operand as MethodDefinition);

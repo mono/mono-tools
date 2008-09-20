@@ -32,6 +32,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
@@ -39,9 +41,52 @@ namespace Gendarme.Rules.BadPractice {
 	// rule idea credits to FindBug - http://findbugs.sourceforge.net/
 	// IM: Check for oddness that won't work for negative numbers (IM_BAD_CHECK_FOR_ODD)
 
+	/// <summary>
+	/// This rule checks for incomplete oddness checks inside methods. A common approach is
+	/// doing a modulo two (% 2) and comparing the result with one (1). This logic does not 
+	/// work for negative integers (where minus one is returned). A better (and faster)
+	/// approach is to check the least significant bit of the integer.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool IsOdd (int x)
+	/// {
+	/// 	// (x % 2) won't work for negative numbers (returns -1)
+	/// 	return ((x % 2) == 1);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public bool IsOdd (int x)
+	/// {
+	///	return ((x % 2) != 0);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (faster):
+	/// <code>
+	/// public bool IsOdd (int x)
+	/// {
+	///	return ((x &amp; 1) == 1);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method looks like it check if an integer is odd or even but the implementation wont work on negative integers.")]
 	[Solution ("Verify the code logic and, if required, replace the defective logic with one that works with negative values too.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReplaceIncompleteOddnessCheckRule : Rule, IMethodRule {
+
+		// Conv_[Ovf_][I|U][1|2|4|8][_Un] - about all except Conv_R[4|8]
+		public static OpCodeBitmask Conversion = new OpCodeBitmask (0x0, 0x800003C000000000, 0xE07F8000001FF, 0x0);
+
+		// Rem[_Un]
+		public static OpCodeBitmask Remainder = new OpCodeBitmask (0x0, 0x30000000, 0x0, 0x0);
 
 		// if/when needed this could be refactored (e.g. missing Ldc_I4__#) 
 		// and turned into an InstructionRock
@@ -62,22 +107,9 @@ namespace Gendarme.Rules.BadPractice {
 			case Code.Ldc_I8:
 				return ((long) ins.Operand == constant);
 			default:
-				if (IsConvertion (ins))
+				// recurse on integer convertion
+				if (Conversion.Get (ins.OpCode.Code))
 					return IsLoadConstant (ins.Previous, constant);
-				return false;
-			}
-		}
-
-		static bool IsConvertion (Instruction ins)
-		{
-			if (ins == null)
-				return false;
-
-			switch (ins.OpCode.Code) {
-			case Code.Conv_I4:
-			case Code.Conv_I8:
-				return true;
-			default:
 				return false;
 			}
 		}
@@ -85,6 +117,9 @@ namespace Gendarme.Rules.BadPractice {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			if (!Remainder.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -112,7 +147,7 @@ namespace Gendarme.Rules.BadPractice {
 					continue;
 				// using equality
 				Instruction cmp = ins.Next.Next;
-				if (IsConvertion (cmp))
+				if (Conversion.Get (cmp.OpCode.Code))
 					cmp = cmp.Next;
 				if (cmp.OpCode.Code != Code.Ceq)
 					continue;
@@ -121,5 +156,51 @@ namespace Gendarme.Rules.BadPractice {
 			}
 			return Runner.CurrentRuleResult;
 		}
+#if false
+
+		public void BuildRemainder ()
+		{
+			OpCodeBitmask remainder = new OpCodeBitmask ();
+			remainder.Set (Code.Rem);
+			remainder.Set (Code.Rem_Un);
+			Console.WriteLine (remainder);
+		}
+
+		public void BuildConversion ()
+		{
+			OpCodeBitmask convert = new OpCodeBitmask ();
+			convert.Set (Code.Conv_I);
+			convert.Set (Code.Conv_I1);
+			convert.Set (Code.Conv_I2);
+			convert.Set (Code.Conv_I4);
+			convert.Set (Code.Conv_I8);
+			convert.Set (Code.Conv_Ovf_I);
+			convert.Set (Code.Conv_Ovf_I_Un);
+			convert.Set (Code.Conv_Ovf_I1);
+			convert.Set (Code.Conv_Ovf_I1_Un);
+			convert.Set (Code.Conv_Ovf_I2);
+			convert.Set (Code.Conv_Ovf_I2_Un);
+			convert.Set (Code.Conv_Ovf_I4);
+			convert.Set (Code.Conv_Ovf_I4_Un);
+			convert.Set (Code.Conv_Ovf_I8);
+			convert.Set (Code.Conv_Ovf_I8_Un);
+			convert.Set (Code.Conv_Ovf_U);
+			convert.Set (Code.Conv_Ovf_U_Un);
+			convert.Set (Code.Conv_Ovf_U1);
+			convert.Set (Code.Conv_Ovf_U1_Un);
+			convert.Set (Code.Conv_Ovf_U2);
+			convert.Set (Code.Conv_Ovf_U2_Un);
+			convert.Set (Code.Conv_Ovf_U4);
+			convert.Set (Code.Conv_Ovf_U4_Un);
+			convert.Set (Code.Conv_Ovf_U8);
+			convert.Set (Code.Conv_Ovf_U8_Un);
+			convert.Set (Code.Conv_Ovf_U);
+			convert.Set (Code.Conv_Ovf_U1);
+			convert.Set (Code.Conv_Ovf_U2);
+			convert.Set (Code.Conv_Ovf_U4);
+			convert.Set (Code.Conv_Ovf_U8);
+			Console.WriteLine (convert);
+		}
+#endif
 	}
 }

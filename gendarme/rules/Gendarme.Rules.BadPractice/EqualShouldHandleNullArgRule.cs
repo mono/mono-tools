@@ -37,6 +37,33 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule ensures that methods <c>Equals(object)</c> returns <c>false</c> when the 
+	/// object parameter is <c>null</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool Equals (object obj)
+	/// {
+	///	// this would throw a NullReferenceException instead of returning false
+	///	return ToString ().Equals (obj.ToString ());
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public override bool Equals (object obj)
+	/// {
+	///	if (obj == null) {
+	///		return false;
+	///	}
+	///	return ToString ().Equals (obj.ToString ());
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This Equals method does not handle null argument as it should.")]
 	[Solution ("Modify the method implementation to return false if a null argument found.")]
 	public class EqualsShouldHandleNullArgRule : Rule, ITypeRule {
@@ -54,7 +81,7 @@ namespace Gendarme.Rules.BadPractice {
 			if (CheckSequence (method.Body.Instructions [0], type))
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.Medium, Confidence.High, String.Empty);
+			Runner.Report (method, Severity.Medium, Confidence.High);
 			return RuleResult.Failure;
 		}
 

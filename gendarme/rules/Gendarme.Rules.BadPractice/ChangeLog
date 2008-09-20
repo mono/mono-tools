@@ -1,3 +1,50 @@
+2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCallingProblematicMethodsRule.cs: Use OpCodeEngine to
+	analyze only if both a Call or Callvirt are present in the method's
+	IL. Added XML documentation.
+	* AvoidVisibleConstantFieldRule.cs: Added XML documentation.
+	* CheckNewExceptionWithoutThrowingRule.cs: Use OpCodeEngine to 
+	analyze only if a Newobj instruction is present in the method's IL. 
+	Added XML documentation. Use shorter override for Runner.Report.
+	* CheckNewThreadWithoutStartRule.cs: Use OpCodeEngine to analyze 
+	only if a Newobj instruction is present in the method's IL. Added XML
+	documentation.
+	* CloneMethodShouldNotReturnNullRule.cs: Big simplification by 
+	using the new ReturnNullRule. Added XML documentation.
+	* ConstructorShouldNotCallVirtualMethodsRule.cs: Use OpCodeEngine
+	to analyze only if both a Call or Callvirt are present in the 
+	method's IL. Added XML documentation.
+	* DisableDebuggingCodeRule.cs: Use OpCodeEngine to analyze only 
+	if both a Call or Callvirt are present in the method's IL. Added 
+	XML documentation.
+	* DoNotForgetNotImplementedMethodsRule.cs: Use OpCodeEngine to
+	analyze	only if both a Newobj and Throw are present in the method's
+	IL. Change logic to handle more cases (small methods with branches
+	versus large methods without conditional branches). Added XML 
+	documentation.
+	* EqualShouldHandleNullArgRule.cs: Added XML documentation. Use
+	shorter override for Runner.Report.
+	* GetEntryAssemblyMayReturnNullRule.cs: Use OpCodeEngine to
+	analyze	only if both a Call or Callvirt are present in the method's
+	IL. Added XML documentation.
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Added XML documentation.
+	Use shorter override for Runner.Report.
+	* ReplaceIncompleteOddnessCheckRule.cs: Use OpCodeEngine to
+	analyze	only if a Rem or Rem_Un instruction are present in the 
+	method's IL. Use OpCodeBitmask to simplify the rule (and cover more 
+	conversion cases). Added XML documentation.
+	* ReturnNullRule.cs: New. Abstract base class for both
+	CloneMethodShouldNotReturnNullRule and ToStringReturnsNullRule.
+	Use OpCodeEngine and InstructionRocks.TraceBack to to its job. 
+	The later allows CSC non-optimized code to work correctly (no 
+	more false positive) with both rules.
+	* ToStringReturnsNullRule.cs: Big simplification by using the
+	new ReturnNullRule. Added XML documentation.
+	* Makefile.am: Add abstract ReturnNullRule to the build. Compile
+	tests with DEBUG and TRACE defined since the rule return value,
+	Success versus DoesNotApply, now makes a difference.
+
 2008-07-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Speed up rule. Only

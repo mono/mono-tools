@@ -33,12 +33,41 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule warns when an assembly without an entry point (i.e. an EXE) is calling 
+	/// <c>Assembly.GetEntryAssembly()</c>. This call is problematic since it will always 
+	/// return <c>null</c> when called outside the root (main) application domain. This may 
+	/// become a problem inside libraries that can be used, for example, inside ASP.NET
+	/// applications.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // this will throw a NullReferenceException from an ASP.NET page
+	/// Response.WriteLine (Assembly.GetEntryAssembly ().CodeBase);
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class MainClass {
+	///	static void Main ()
+	///	{
+	///		Console.WriteLine (Assembly.GetEntryAssembly ().CodeBase);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method calls Assembly.GetEntryAssembly which may returns null if not called from the root application domain.")]
 	[Solution ("Avoid depending on Assembly.GetEntryAssembly inside reusable code.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class GetEntryAssemblyMayReturnNullRule : Rule, IMethodRule {
 
 		private const string Assembly = "System.Reflection.Assembly";
@@ -70,12 +99,15 @@ namespace Gendarme.Rules.BadPractice {
 			if (method.DeclaringType.Module.Assembly.EntryPoint != null)
 				return RuleResult.DoesNotApply;
 
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			// go!
 
 			foreach (Instruction current in method.Body.Instructions) {
 				switch (current.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					MethodReference mr = (current.Operand as MethodReference);
 					if ((mr != null) && (mr.Name == "GetEntryAssembly")

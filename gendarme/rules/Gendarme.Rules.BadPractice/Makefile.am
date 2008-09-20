@@ -26,7 +26,10 @@ rules_sources = \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
+	ReturnNullRule.cs \
 	ToStringReturnsNullRule.cs 
+
+EXTRA_TESTS_OPTIONS = -d:DEBUG -d:TRACE
 
 tests_sources = \
 	AvoidVisibleConstantFieldTest.cs \

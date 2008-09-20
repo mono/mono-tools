@@ -29,13 +29,68 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
-using Gendarme.Framework;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
+
 namespace Gendarme.Rules.BadPractice {
+
+	/// <summary>
+	/// This rule warns about methods that calls into potentially dangerous API of the .NET
+	/// framework. If possible try to avoid the API (there are generally safer ways to do the
+	/// same) or at least make sure your code can be safely called from others.
+	/// <list type="bullet">
+	/// <item>
+	/// <description><c>System.GC::Collect()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Threading.Thread::Suspend()</c> and <c>Resume()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Reflection.Assembly::LoadFrom()</c>, <c>LoadFile()</c> and 
+	/// <c>LoadWithPartialName()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Type::InvokeMember()</c> when used with 
+	/// <c>BindingFlags.NonPublic</c></description>
+	/// </item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Load (string filename)
+	/// {
+	///	Assembly a = Assembly.LoadFile (filename);
+	///	// ...
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Load (string filename)
+	/// {
+	///	AssemblyName aname = AssemblyName.GetAssemblyName (filename);
+	///	// ensure it's the assembly you expect (e.g. public key, version...)
+	///	Assembly a = Assembly.Load (aname);
+	///	// ...
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("There are potentially dangerous calls into your code.")]
 	[Solution ("You should remove or replace the call to the dangerous method.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods")]
 	public class AvoidCallingProblematicMethodsRule : Rule, IMethodRule {
 
 		sealed class StartWithComparer : IComparer <string> {
@@ -94,7 +149,12 @@ namespace Gendarme.Rules.BadPractice {
 		
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule does not apply if there's no IL code
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {

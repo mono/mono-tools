@@ -33,6 +33,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule warns if any type (including classes, structs, enums, interfaces and 
+	/// delegates), field, property, events, method and constructor are decorated with
+	/// an empty <c>[Obsolete]</c> attribute. Marking anything with obsolete is helpful
+	/// only if it includes some advice for the consumer on how to best deal with the
+	/// situation (e.g. the new recommanded API to use).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Obsolete]
+	/// public byte[] Key {
+	///	get { return (byte[]) key.Clone (); }
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Obsolete ("Use the new GetKey() method since properties should not return arrays.")]
+	/// public byte[] Key {
+	///	get { return (byte[]) key.Clone (); }
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The [Obsolete] attribute was used but no help, alternative or description was provided.")]
 	[Solution ("Provide helpful advice to help developers abandon old features and migrate to newer ones.")]
 	public class ObsoleteMessagesShouldNotBeEmptyRule : Rule, ITypeRule {
@@ -74,32 +100,32 @@ namespace Gendarme.Rules.BadPractice {
 		{
 			// handles AttributeTargets.[Class | Struct | Enum | Interface | Delegate]
 			if (CheckAttributes (type.CustomAttributes))
-				Runner.Report (type, Severity.Medium, Confidence.High, String.Empty);
+				Runner.Report (type, Severity.Medium, Confidence.High);
 
 			// handles AttributeTargets.Property
 			// properties can be obsoleted - but this is different
 			// than the getter/setter that CheckMethod will report
 			foreach (PropertyDefinition property in type.Properties) {
 				if (CheckAttributes (property.CustomAttributes))
-					Runner.Report (property, Severity.Medium, Confidence.High, String.Empty);
+					Runner.Report (property, Severity.Medium, Confidence.High);
 			}
 
 			// handle AttributeTargets.Event
 			foreach (EventDefinition evnt in type.Events) {
 				if (CheckAttributes (evnt.CustomAttributes))
-					Runner.Report (evnt, Severity.Medium, Confidence.High, String.Empty);
+					Runner.Report (evnt, Severity.Medium, Confidence.High);
 			}
 
 			// handle AttributeTargets.Field
 			foreach (FieldDefinition field in type.Fields) {
 				if (CheckAttributes (field.CustomAttributes))
-					Runner.Report (field, Severity.Medium, Confidence.High, String.Empty);
+					Runner.Report (field, Severity.Medium, Confidence.High);
 			}
 
 			// handles AttributeTargets.[Constructor | Method]
 			foreach (MethodDefinition method in type.AllMethods ()) {
 				if (CheckAttributes (method.CustomAttributes))
-					Runner.Report (method, Severity.Medium, Confidence.High, String.Empty);
+					Runner.Report (method, Severity.Medium, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;

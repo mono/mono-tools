@@ -31,6 +31,7 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -39,8 +40,42 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule checks for threads that are created but not started, returned or passed
+	/// to another method as an argument.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// void UnusedThread ()
+	/// {
+	///	Thread thread = new Thread (threadStart);
+	///	thread.Name = "Thread 1";
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good examples:
+	/// <code>
+	/// void Start ()
+	/// {
+	///	Thread thread = new Thread (threadStart);
+	///	thread.Name = "Thread 1";
+	///	thread.Start ();
+	/// }
+	/// 
+	/// Thread InitializeThread ()
+	/// {
+	///	Thread thread = new Thread (threadStart);
+	///	thread.Name = "Thread 1";
+	///	return thread;
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method creates an thread that is never started nor returned to the caller.")]
 	[Solution ("Make sure the thread is required, start it (if it is) or remove it (if not).")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class CheckNewThreadWithoutStartRule : Rule, IMethodRule {
 
 		private static bool CheckUsage (StackEntryUsageResult [] usageResults)
@@ -92,6 +127,10 @@ namespace Gendarme.Rules.BadPractice {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// is there any Newobj instructions in this method
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Newobj))
 				return RuleResult.DoesNotApply;
 
 			StackEntryAnalysis sea = null;

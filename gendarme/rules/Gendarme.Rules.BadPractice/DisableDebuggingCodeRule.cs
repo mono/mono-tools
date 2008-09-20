@@ -28,12 +28,58 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule check if non-console applications are using <c>Console.WriteLine</c> as
+	/// a mean to help debugging issues. While useful the debugging code should, before its
+	/// release be removed, moved inside methods decorated with <c>[Conditional("DEBUG")]</c> or 
+	/// <c>[Conditional("TRACE")]</c> or changed to use the <c>Debug</c> or <c>Trace</c> types.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// private byte[] GenerateKey ()
+	/// {
+	///	byte[] key = new byte[16];
+	///	rng.GetBytes (key);
+	///	Console.WriteLine ("debug key = {0}", BitConverter.ToString (key));
+	///	return key;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (removed):
+	/// <code>
+	/// private byte[] GenerateKey ()
+	/// {
+	///	byte[] key = new byte[16];
+	///	rng.GetBytes (key);
+	///	return key;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (changed):
+	/// <code>
+	/// private byte[] GenerateKey ()
+	/// {
+	///	byte[] key = new byte[16];
+	///	rng.GetBytes (key);
+	///	Debug.WriteLine ("debug key = {0}", BitConverter.ToString (key));
+	///	return key;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method include calls to Console.WriteLine inside an assembly not compiled for console application (e.g. /target:exe).")]
 	[Solution ("If this code is used for debugging purpose then either use the Debug or Trace types or disable the code manually (e.g. using a preprocessor).")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DisableDebuggingCodeRule : Rule, IMethodRule {
 
 		private const string ConditionalAttribute = "System.Diagnostics.ConditionalAttribute";
@@ -81,6 +127,10 @@ namespace Gendarme.Rules.BadPractice {
 		{
 			// rule does not apply if there's no IL code
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			// it's ok if the code is conditionally compiled for DEBUG or TRACE purposes

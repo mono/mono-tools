@@ -32,6 +32,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// This rule looks for constant fields that are visible outside the current assembly.
+	/// Such fields, if used outside the assemblies, will have their value (not the field
+	/// reference) copied into the other assembly. Changing the value will requires to 
+	/// recompile all assemblies in order to have the desired effect. Declaring the field
+	/// as <c>static readonly</c> will have the desired effect (i.e. insert a reference to
+	/// the field in its original assembly).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // if this fields is used inside another assembly then
+	/// // the integer 42, not the field, will be part of it
+	/// public const int MagicNumber = 42;
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// // if this fields is used inside another assembly then
+	/// // the MagicNumber will be referenced
+	/// static public readonly int MagicNumber = 42;
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This type contains visible field constants where the value will be embedded into the assemblies that use it.")]
 	[Solution ("Use a 'static readonly' field (C# syntax) to make sure a reference to the field itself is kept and avoid recompiling all assemblies.")]
 	public class AvoidVisibleConstantFieldRule : Rule, ITypeRule {
