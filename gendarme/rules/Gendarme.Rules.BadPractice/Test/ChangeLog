@@ -1,3 +1,8 @@
+2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidAssemblyVersionMismatchTest.cs: New. Unit tests for 
+	AvoidAssemblyVersionMismatchRule.
+
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCallingProblematicMethodsTest.cs: Add more coverage.
