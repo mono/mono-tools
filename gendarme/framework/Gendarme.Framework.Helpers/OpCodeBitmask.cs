@@ -114,6 +114,20 @@ namespace Gendarme.Framework.Helpers {
 			return ((this.mask [3] & mask.mask [3]) != 0);
 		}
 
+		public bool IsSubsetOf (OpCodeBitmask mask)
+		{
+			if (mask == null)
+				return true;
+
+			if ((this.mask [0] & mask.mask [0]) != this.mask [0])
+				return false;
+			if ((this.mask [1] & mask.mask [1]) != this.mask [1])
+				return false;
+			if ((this.mask [2] & mask.mask [2]) != this.mask [2])
+				return false;
+			return ((this.mask [3] & mask.mask [3]) == this.mask [3]);
+		}
+
 		public override bool Equals (object obj)
 		{
 			OpCodeBitmask set = (obj as OpCodeBitmask);

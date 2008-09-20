@@ -1,3 +1,7 @@
+2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* OpCodeBitmask.cs: Add IsSubsetOf method.
+
 2008-09-18  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* MethodSignatures.cs: Added a new method signature for the delegate
