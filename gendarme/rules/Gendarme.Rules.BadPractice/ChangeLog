@@ -1,3 +1,9 @@
+2008-09-20  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidAssemblyVersionMismatchRule.cs: New. Rule to check if the
+	version numbers in both [AssemblyVersion] and [AssemblyFileVersion]
+	match.
+
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ReplaceIncompleteOddnessCheckRule.cs: Reduce the OpCodeBitmask

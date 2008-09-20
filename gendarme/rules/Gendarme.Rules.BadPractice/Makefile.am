@@ -14,6 +14,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.BadPractice.xml TestResult.xml
 
 rules_sources = \
+	AvoidAssemblyVersionMismatchRule.cs \
 	AvoidCallingProblematicMethodsRule.cs \
 	AvoidVisibleConstantFieldRule.cs \
 	CheckNewExceptionWithoutThrowingRule.cs \
@@ -32,6 +33,7 @@ rules_sources = \
 EXTRA_TESTS_OPTIONS = -d:DEBUG -d:TRACE
 
 tests_sources = \
+	AvoidAssemblyVersionMismatchTest.cs \
 	AvoidVisibleConstantFieldTest.cs \
 	AvoidCallingProblematicMethodsTest.cs \
 	CheckNewExceptionWithoutThrowingTest.cs \
