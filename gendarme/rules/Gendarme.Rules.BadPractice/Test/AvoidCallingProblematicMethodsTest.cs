@@ -44,15 +44,12 @@ namespace Test.Rules.BadPractice {
 	public class AvoidCallingProblematicMethodsTest : MethodRuleTestFixture<AvoidCallingProblematicMethodsRule> {
 
 		[Test]
-		public void MethodsWithoutBodyTest () 
+		public void DoesNotApply () 
 		{
-			AssertRuleDoesNotApply<SimpleMethods> ("strncpy");
-		}
-
-		[Test]
-		public void EmptyMethodsTest ()
-		{
-			AssertRuleSuccess<SimpleMethods> ("DoNothing");
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no CALL[VIRT] instruction
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public void MethodWithGCCall ()

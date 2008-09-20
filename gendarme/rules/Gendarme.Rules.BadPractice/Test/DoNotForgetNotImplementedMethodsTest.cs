@@ -32,6 +32,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
@@ -79,12 +80,49 @@ namespace Test.Rules.BadPractice {
 			return new NotImplementedException ();
 		}
 
-		public void NotFullyImplemented (int x)
+		public Exception Implemented5 (object o)
+		{
+			if (o == null)
+				throw new ArgumentNullException ("o");
+			return new NotImplementedException ();
+		}
+
+		public void NotFullyImplemented_Split (int x)
 		{
 			if (x < 0) {
 				throw new NotImplementedException ("x < 0 has a different behavior which isn't implemented yet.");
 			} else {
 				Implemented2 ();
+			}
+		}
+
+		public void NotFullyImplemented_Check (object o)
+		{
+			if (o == null)
+				throw new ArgumentNullException ("o");
+
+			throw new NotImplementedException ("only basic checks are done");
+		}
+
+		public void NotFullyImplemented_Long (int x)
+		{
+			switch (x) {
+			case 0:
+				break;
+			case 1:
+				Implemented1 ();
+				break;
+			case 2:
+				Implemented2 ();
+				break;
+			case 3:
+				Implemented3 ();
+				break;
+			case 4:
+				Implemented4 ();
+				break;
+			default:
+				throw new NotImplementedException ("only basic checks are done");
 			}
 		}
 	}
@@ -101,9 +139,12 @@ namespace Test.Rules.BadPractice {
 	public class DoNotForgetNotImplementedMethodsTest : MethodRuleTestFixture<DoNotForgetNotImplementedMethodsRule> {
 
 		[Test]
-		public void Empty ()
+		public void DoesNotApply ()
 		{
-			AssertRuleSuccess<ImplementedOrNotMethods> ("Empty");
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no NEWOBJ
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		[Test]
@@ -113,21 +154,27 @@ namespace Test.Rules.BadPractice {
 			AssertRuleFailure<ImplementedOrNotMethods> ("NotImplemented2");
 		}
 
-		//the rule does not currently report the case below
-		//not sure it would be worth the performance penalty (all method body has to be navigated)
 		[Test]
 		public void NotFullyImplementedMethodsTest ()
 		{
-			AssertRuleSuccess<ImplementedOrNotMethods> ("NotFullyImplemented");
+			// there's a branch but the code is too small for a NotImplementedException not to mean something
+			AssertRuleFailure<ImplementedOrNotMethods> ("NotFullyImplemented_Split");
+			AssertRuleFailure<ImplementedOrNotMethods> ("NotFullyImplemented_Check");
+			// in this last case the code is big enough to be judged, partially, useful
+			AssertRuleSuccess<ImplementedOrNotMethods> ("NotFullyImplemented_Long");
 		}
 
 		[Test]
 		public void ImplementedMethods ()
 		{
-			AssertRuleSuccess<ImplementedOrNotMethods> ("Implemented1");
-			AssertRuleSuccess<ImplementedOrNotMethods> ("Implemented2");
+			// no NEWOBJ
+			AssertRuleDoesNotApply<ImplementedOrNotMethods> ("Implemented1");
+			// no NEWOBJ
+			AssertRuleDoesNotApply<ImplementedOrNotMethods> ("Implemented2");
 			AssertRuleSuccess<ImplementedOrNotMethods> ("Implemented3");
-			AssertRuleSuccess<ImplementedOrNotMethods> ("Implemented4");
+			// no THROW
+			AssertRuleDoesNotApply<ImplementedOrNotMethods> ("Implemented4");
+			AssertRuleSuccess<ImplementedOrNotMethods> ("Implemented5");
 		}
 
 		[Test]

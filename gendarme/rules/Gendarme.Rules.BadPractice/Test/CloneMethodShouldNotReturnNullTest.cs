@@ -27,28 +27,40 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.BadPractice;
-using Mono.Cecil;
 using NUnit.Framework;
 
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
-namespace Test.Rules.BadPractice
-{
+namespace Test.Rules.BadPractice {
+
 	[TestFixture]
-	public class CloneMethodShouldNotReturnNullTest {
-		
-		public class CloneMethodReturningNull: ICloneable
+	public class CloneMethodShouldNotReturnNullTest : TypeRuleTestFixture<CloneMethodShouldNotReturnNullRule> {
+
+		abstract class CloneAbstract : ICloneable {
+			public abstract object Clone ();
+		}
+
+		[Test]
+		public void NoIL ()
 		{
+			AssertRuleDoesNotApply<CloneAbstract> ();
+		}
+
+		public class CloneMethodReturningNull: ICloneable {
 			public object Clone ()
 			{
 				return null;
 			}
 		}
-		
+
+		[Test]
+		public void CloneMethodReturningNullTest ()
+		{
+			AssertRuleFailure<CloneMethodReturningNull> (1);
+		}
+
 		public class CloneMethodNotReturningNull: ICloneable
 		{
 			public object Clone ()
@@ -56,7 +68,14 @@ namespace Test.Rules.BadPractice
 				return this.MemberwiseClone ();
 			}
 		}
-		
+
+		[Test]
+		public void CloneMethodNotReturningNullTest ()
+		{
+			// no LDNULL
+			AssertRuleDoesNotApply<CloneMethodNotReturningNull> ();
+		}
+
 		public class NotUsingICloneableClone
 		{
 			public object Clone ()
@@ -64,7 +83,13 @@ namespace Test.Rules.BadPractice
 				return null;
 			}
 		}
-		
+
+		[Test]
+		public void NotUsingICloneableCloneTest ()
+		{
+			AssertRuleDoesNotApply<NotUsingICloneableClone> ();
+		}
+
 		public class CloneWithDifferentArgsReturningNull: ICloneable
 		{
 			public virtual object Clone ()
@@ -77,7 +102,14 @@ namespace Test.Rules.BadPractice
 				return null;
 			}
 		}
-		
+
+		[Test]
+		public void cloneWithDifferentArgsReturningNullTest ()
+		{
+			// no LDNULL
+			AssertRuleDoesNotApply<CloneWithDifferentArgsReturningNull> ();
+		}
+
 		public class CloneReturningNullInSomeConditions: ICloneable
 		{
 			public bool test (int j)
@@ -97,64 +129,10 @@ namespace Test.Rules.BadPractice
 			}
 		}
 			
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new CloneMethodShouldNotReturnNullRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.BadPractice.CloneMethodShouldNotReturnNullTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-			
 		[Test]
-		public void cloneMethodReturningNullTest ()
+		public void CloneReturningNullInSomeConditionsTest ()
 		{
-			type = GetTest ("CloneMethodReturningNull");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void cloneMethodNotReturningNullTest ()
-		{
-			type = GetTest ("CloneMethodNotReturningNull");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void notUsingICloneableCloneTest ()
-		{
-			type = GetTest ("NotUsingICloneableClone");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void cloneWithDifferentArgsReturningNullTest ()
-		{
-			type = GetTest ("CloneWithDifferentArgsReturningNull");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void cloneReturningNullInSomeConditionsTest ()
-		{
-			type = GetTest ("CloneReturningNullInSomeConditions");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<CloneReturningNullInSomeConditions> (1);
 		}
 	}
 }

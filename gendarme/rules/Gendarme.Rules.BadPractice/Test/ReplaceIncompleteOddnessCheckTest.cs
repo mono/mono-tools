@@ -28,10 +28,7 @@
 
 using System;
 
-using Gendarme.Framework;
 using Gendarme.Rules.BadPractice;
-
-using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
@@ -128,7 +125,8 @@ namespace Test.Rules.BadPractice {
 			Assert.IsTrue (IsOddBest (-1), "-1");
 			Assert.IsFalse (IsOddBest (2), "2");
 			Assert.IsFalse (IsOddBest (-2), "-2");
-			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("IsOddBest");
+			// no REM[_UN] instruction is used so the rule does not apply
+			AssertRuleDoesNotApply <ReplaceIncompleteOddnessCheckTest> ("IsOddBest");
 		}
 
 		public bool IsEvenGood (int x)
@@ -171,11 +169,29 @@ namespace Test.Rules.BadPractice {
 			return ((x % 2) >= 1);
 		}
 
+		public bool SByteMax (long x)
+		{
+			return ((x % SByte.MaxValue) == 1);
+		}
+
+		public bool Int64Max (long x)
+		{
+			return ((x % Int64.MaxValue) == 1);
+		}
+
+		public bool Int32Max (int x)
+		{
+			return ((x % Int32.MaxValue) == 1);
+		}
+
 		[Test]
 		public void NonOddnessVariations ()
 		{
 			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("ModuloThree");
 			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("Compare");
+			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("SByteMax");
+			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("Int64Max");
+			AssertRuleSuccess<ReplaceIncompleteOddnessCheckTest> ("Int32Max");
 		}
 	}
 }

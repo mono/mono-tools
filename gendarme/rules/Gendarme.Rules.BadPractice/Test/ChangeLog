@@ -1,3 +1,26 @@
+2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCallingProblematicMethodsTest.cs: Add more coverage.
+	* CheckNewExceptionWithoutThrowingTest.cs: Add more coverage.
+	* CheckNewThreadWithoutStartTest.cs: Add more coverage.
+	* CloneMethodShouldNotReturnNullTest.cs: Update to the new, 
+	shorter, test syntax. Change some Success to DoesNotApply since the
+	rule is now able to skip more cases. Add more coverage.
+	* ConstructorShouldNotCallVirtualMethodsTest.cs: Add more coverage.
+	* DisableDebuggingCodeTest.cs: Update to the new, shorter, test
+	syntax. Add more coverage.
+	* DoNotForgetNotImplementedMethodsTest.cs: Change some Success 
+	to DoesNotApply since the rule is now able to skip more cases. Add 
+	more coverage.
+	* GetEntryAssemblyMayReturnNullTest.cs: Update to the new, 
+	shorter, test syntax. Add more coverage.
+	* ReplaceIncompleteOddnessCheckTest.cs: Change some Success to 
+	DoesNotApply since the rule is now able to skip more cases. Add 
+	more coverage.
+	* ToStringReturnsNullTest.cs: Update to the new, shorter, test
+	syntax. Change some Success to DoesNotApply since the rule is now
+	able to skip more cases. Add more coverage.
+
 2008-07-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotForgetNotImplementedMethodsTest.cs: Test cases for

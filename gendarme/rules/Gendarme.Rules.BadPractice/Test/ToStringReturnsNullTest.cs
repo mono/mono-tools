@@ -26,19 +26,26 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.BadPractice;
-using Mono.Cecil;
 using NUnit.Framework;
 
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
-	public class ToStringReturnsNullTest {
+	public class ToStringReturnsNullTest : TypeRuleTestFixture<ToStringReturnsNullRule> {
+
+		abstract class ToStringAbstract {
+			public abstract override string ToString ();
+		}
+
+		[Test]
+		public void NoIL ()
+		{
+			AssertRuleDoesNotApply<ToStringAbstract> ();
+		}
 
 		public class ToStringReturningNull {
 			public override string ToString ()
@@ -119,90 +126,55 @@ namespace Test.Rules.BadPractice {
 			}
 		}
 		
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new ToStringReturnsNullRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.BadPractice.ToStringReturnsNullTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
 		
 		[Test]
 		public void ReturningNullTest ()
 		{
-			type = GetTest ("ToStringReturningNull");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<ToStringReturningNull> (1);
 		}
 		
 		[Test]
 		public void ReturningEmptyStringTest ()
 		{
-			type = GetTest ("ToStringReturningEmptyString");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningEmptyString> ();
 		}
 		
 		[Test]
 		public void ReturningField ()
 		{
-			type = GetTest ("ToStringReturningField");
 			// there's doubt but it's not easy (i.e. false positives) to be sure
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningField> ();
 		}
 
 		[Test]
 		public void ReturningConstField ()
 		{
-			type = GetTest ("ToStringReturningConstField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningConstField> ();
 		}
 
 		[Test]
 		public void ReturningReadOnlyField ()
 		{
-			type = GetTest ("ToStringReturningReadOnlyField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningReadOnlyField> ();
 		}
 
 		[Test]
 		public void ReturningNewString ()
 		{
-			type = GetTest ("ToStringReturningNewString");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningNewString> ();
 		}
 
 		[Test]
 		public void ReturningStringFormat ()
 		{
-			type = GetTest ("ToStringReturningStringFormat");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningStringFormat> ();
 		}
 		
 		[Test]
 		public void ReturningConvertToStringObject ()
 		{
 			Assert.AreEqual (String.Empty, Convert.ToString ((object) null), "Convert.ToString(object)");
-			type = GetTest ("ToStringReturningConvertToStringObject");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ToStringReturningConvertToStringObject> ();
 		}
 		
 		[Test]
@@ -213,17 +185,13 @@ namespace Test.Rules.BadPractice {
 			// however this is a special case since, most times, we won't know 
 			// if the value passed to Convert.ToString is null or not
 			Assert.IsNull (Convert.ToString ((string) null), "Convert.ToString((string)null)");
-			type = GetTest ("ToStringReturningConvertToStringString");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<ToStringReturningConvertToStringString> (1);
 		}
 
 		[Test]
 		public void ReturningTypeName ()
 		{
-			type = GetTest ("ToStringReturningTypeName");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<ToStringReturningTypeName> ();
 		}
 	}
 }

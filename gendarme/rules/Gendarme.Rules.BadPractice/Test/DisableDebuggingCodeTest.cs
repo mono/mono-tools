@@ -29,18 +29,27 @@ using System.Diagnostics;
 
 using Mono.Cecil;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
 
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
-	public class DisableDebuggingCodeTest {
+	public class DisableDebuggingCodeTest : MethodRuleTestFixture<DisableDebuggingCodeRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no NEWOBJ
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 
 		// note: [Conditional] is usable on type from 2.0 onward but only if it inherit from Attribute
 
@@ -69,6 +78,15 @@ namespace Test.Rules.BadPractice {
 			Console.WriteLine ("debug");
 		}
 
+		[Test]
+		public void Conditional ()
+		{
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalDebug");
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalTrace");
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalMultiple");
+			AssertRuleFailure<DisableDebuggingCodeTest> ("ConditionalOther", 1);
+		}
+
 		public void UsingTrace ()
 		{
 			Trace.WriteLine ("debug");
@@ -85,56 +103,30 @@ namespace Test.Rules.BadPractice {
 			Console.WriteLine ("debug");
 		}
 
-
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DisableDebuggingCodeRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string method)
-		{
-			return assembly.MainModule.Types ["Test.Rules.BadPractice.DisableDebuggingCodeTest"].GetMethod (method);
-		}
-
-		[Test]
-		public void Conditional ()
-		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetTest ("ConditionalDebug")), "ConditionalDebug");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetTest ("ConditionalTrace")), "ConditionalTrace");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetTest ("ConditionalMultiple")), "ConditionalMultiple");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetTest ("ConditionalOther")), "ConditionalOther");
-		}
-
 		[Test]
 		public void NonDebug ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetTest ("UsingDebug")), "UsingDebug");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (GetTest ("UsingTrace")), "UsingTrace");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetTest ("UsingConsole")), "UsingConsole");
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingDebug");
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingTrace");
+			AssertRuleFailure<DisableDebuggingCodeTest> ("UsingConsole", 1);
 		}
 
 		[Test]
 		public void Initialize ()
 		{
-			rule.Active = false;
-			runner.OnAssembly (assembly);
-			Assert.IsFalse (rule.Active, "Default-Active-False");
+			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
+			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
 
-			rule.Active = true;
-			runner.OnAssembly (assembly);
-			Assert.IsTrue (rule.Active, "Assembly-Active-True");
+			Rule.Active = false;
+			(Runner as TestRunner).OnAssembly (assembly);
+			Assert.IsFalse (Rule.Active, "Default-Active-False");
 
-			runner.OnModule (assembly.MainModule);
-			Assert.IsTrue (rule.Active, "Module-Active-True");
+			Rule.Active = true;
+			(Runner as TestRunner).OnAssembly (assembly);
+			Assert.IsTrue (Rule.Active, "Assembly-Active-True");
+
+			(Runner as TestRunner).OnModule (assembly.MainModule);
+			Assert.IsTrue (Rule.Active, "Module-Active-True");
 		}
 	}
 }

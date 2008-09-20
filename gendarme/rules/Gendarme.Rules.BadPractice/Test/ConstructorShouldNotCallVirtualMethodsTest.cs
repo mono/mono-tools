@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Runtime.InteropServices;
 
 using Mono.Cecil;
 
@@ -36,6 +37,8 @@ using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
 
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.BadPractice {
@@ -186,8 +189,12 @@ namespace Test.Rules.BadPractice {
 			NormalMethod ();
 		}
 
+		[DllImport ("liberty.so")]
+		extern static void Erty ();
+
 		public virtual void VirtualMethod ()
 		{
+			Erty ();
 		}
 
 		private void NormalMethod ()
@@ -223,6 +230,7 @@ namespace Test.Rules.BadPractice {
 		private void Method ()
 		{
 			base.VirtualProperty = NonVirtualProperty;
+			Method (); // check recursion
 		}
 	}
 
@@ -238,7 +246,7 @@ namespace Test.Rules.BadPractice {
 	}
 
 	[TestFixture]
-	public class ConstructorShouldNotCallVirtualMethodsTest {
+	public class ConstructorShouldNotCallVirtualMethodsTest : TypeRuleTestFixture<ConstructorShouldNotCallVirtualMethodsRule> {
 
 		private ITypeRule rule;
 		private AssemblyDefinition assembly;

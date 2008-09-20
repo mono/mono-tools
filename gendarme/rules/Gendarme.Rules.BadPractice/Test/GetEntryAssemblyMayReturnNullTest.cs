@@ -36,6 +36,8 @@ using Gendarme.Rules.BadPractice;
 
 using NUnit.Framework;
 
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.BadPractice {
@@ -69,44 +71,39 @@ namespace Test.Rules.BadPractice {
 	}
 
 	[TestFixture]
-	public class GetEntryAssemblyMayReturnNullTest {
+	public class GetEntryAssemblyMayReturnNullTest : MethodRuleTestFixture<GetEntryAssemblyMayReturnNullRule> {
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new GetEntryAssemblyMayReturnNullRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no NEWOBJ
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		[Test]
 		public void TestMethodNotCallingGetEntryAssembly ()
 		{
-			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("NoCalls", new Type [] { });
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ClassCallingGetEntryAssembly> ("NoCalls");
+		}
+
+		private TypeDefinition GetTest<T> (AssemblyDefinition assembly)
+		{
+			return assembly.MainModule.Types [typeof (T).FullName];
 		}
 
 		[Test]
 		public void TestGetEntryAssemblyCallFromExecutable ()
 		{
+			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
+			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
 			try {
-				assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("Main", new Type [] { });
+				assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.GetMethod ("Main", new Type [] { });
 				assembly.Kind = AssemblyKind.Console;
-				MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { });
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
-				Assert.AreEqual (0, runner.Defects.Count, "Count");
+				MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.GetMethod ("ThreeCalls", new Type [] { });
+				Assert.AreEqual (RuleResult.DoesNotApply, (Runner as TestRunner).CheckMethod (method), "RuleResult");
+				Assert.AreEqual (0, Runner.Defects.Count, "Count");
 			}
 			finally {
 				assembly.EntryPoint = null;
@@ -117,17 +114,13 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void TestMethodCallingGetEntryAssemblyOnce ()
 		{
-			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("OneCall", new Type [] { });
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<ClassCallingGetEntryAssembly> ("OneCall", 1);
 		}
 
 		[Test]
 		public void TestMethodCallingGetEntryAssemblyThreeTimes ()
 		{
-			MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> ().Methods.GetMethod ("ThreeCalls", new Type [] { });
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (3, runner.Defects.Count, "Count");
+			AssertRuleFailure<ClassCallingGetEntryAssembly> ("ThreeCalls", 3);
 		}
 	}
 }

@@ -38,12 +38,23 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
 
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
-	public class CheckNewThreadWithoutStartTest {
+	public class CheckNewThreadWithoutStartTest : MethodRuleTestFixture<CheckNewThreadWithoutStartRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no IL
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no NEWOBJ
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
