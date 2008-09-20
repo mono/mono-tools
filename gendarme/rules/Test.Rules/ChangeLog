@@ -1,3 +1,8 @@
+2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add the AssemblyRuleTestFixture to the build (something
+	must have gone wrong in the last commit -or- it has been overwritten)
+
 2008-08-17  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Add the AssemblyRuleTestFixture to the build.

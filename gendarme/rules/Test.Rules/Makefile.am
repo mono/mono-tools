@@ -12,6 +12,7 @@ DISTCLEANFILES = Makefile.in
 test_sources = \
 	Definitions/SimpleMethods.cs \
 	Definitions/SimpleTypes.cs \
+	Fixtures/AssemblyRuleTestFixture.cs \
 	Fixtures/MethodRuleTestFixture.cs \
 	Fixtures/RuleTestFixture.cs \
 	Fixtures/TypeRuleTestFixture.cs \
