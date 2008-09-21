@@ -32,13 +32,42 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule checks for methods that <c>Equals</c> with a <c>null</c> real parameter.
+	/// Such calls should always return <c>false</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void MakeStuff ()
+	/// {
+	///	MyClass myClassInstance = new MyClass ();
+	///	MyClass otherClassInstance = null;
+	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void MakeStuff ()
+	/// {
+	///	MyClass myClassInstance = new MyClass ();
+	///	MyClass otherClassInstance = new MyClass ();
+	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance);
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method calls Equals(object) with a null argument.")]
-	[Solution ("Pass some other appropriate argument than null, as passing null parameter should always return false.")]
+	[Solution ("Pass some other appropriate argument than null, as passing a null parameter should always return false.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class CallingEqualsWithNullArgRule: Rule, IMethodRule {
 
 		// MethodSignatures.Equals check for a System.Object parameter while this rule is more general
@@ -50,10 +79,17 @@ namespace Gendarme.Rules.Correctness {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			// is there any Call or Callvirt instructions in the method ?
+			if (!OpCodeBitmask.Calls.Intersect (bitmask))
+				return RuleResult.DoesNotApply;
+			// is there a Ldnull instruction in the method ?
+			if (!bitmask.Get (Code.Ldnull))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					// if we're calling bool type.Equals({anytype})
 					if (!Equals.Matches (ins.Operand as MethodReference))

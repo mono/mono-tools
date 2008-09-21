@@ -40,6 +40,29 @@ namespace Gendarme.Rules.Correctness {
 	// the correct way of handling this back then). The goal is to make this ctor 
 	// non-visible so people can't instantiate it (e.g. by mistake)
 
+	/// <summary>
+	/// This rule check for types that contains only static members and warn if a visible
+	/// instance constructor is present in it. This was a common mistake in the framework
+	/// 1.x since C# adds a default, public, constructor when none is provided. Code using
+	/// the framework 2.0 (and later) should change this type, if possible, into a static
+	/// type.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// if (typeof (IConvertible).IsAssignableFrom (type))  {
+	///	// then the type can be assigned to IConvertible
+	///	// without a doubt!
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This type (and ancestors) contains only static fields and methods but has a visible, non static, constructor.")]
 	[Solution ("You should remove the visible constructor to make sure this type cannot be instancied, or if using 2.0+, change it to a static type.")]
 	public class AvoidConstructorsInStaticTypesRule : Rule, ITypeRule {

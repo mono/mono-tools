@@ -35,12 +35,41 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule catches a common mistake in programs when a method or property invokes 
+	/// itself recursively in a suspicious way. Usually the developer forgot to return 
+	/// a variable, or call a <c>base</c> method.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// string CurrentDirectory {
+	///	get {
+	///		return CurrentDirectory;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// string CurrentDirectory {
+	///	get {
+	///		return base.CurrentDirectory;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method, or property, invokes itself recursively in a suspicious way.")]
 	[Solution ("Ensure that an exit condition exists to terminate recursion.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class BadRecursiveInvocationRule : Rule, IMethodRule {
 
 		// note: parameter names do not have to match because we can be calling a base class virtual method
@@ -125,7 +154,9 @@ namespace Gendarme.Rules.Correctness {
 				case Code.Ldarg:
 				case Code.Ldarg_S:
 					ParameterDefinition param = (ParameterDefinition) insn.Operand;
-					return ((param.Sequence - 1) == paramNum);
+					if (method.IsStatic)
+						paramNum++;
+					return (param.Sequence == paramNum);
 				case Code.Ldarg_0:
 				case Code.Ldarg_1:
 				case Code.Ldarg_2:
@@ -154,10 +185,16 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
+		OpCodeBitmask CallsNew = new OpCodeBitmask (0x8000000000, 0x4400000000000, 0x0, 0x0);
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applies only if the method has a body
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no Call[virt] or NewObj in the method
+			if (!CallsNew.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			for (int i = 0; i < method.Body.Instructions.Count; i++) {

@@ -1,3 +1,14 @@
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesRule.cs: Add XML documentation.
+	* BadRecursiveInvocationRule.cs: Add OpCodeEngine to require a
+	Call[virt] or Newobj instruction before analyzing a method. Fixed
+	case where a lot of parameters are used. Add XML documentation.
+	* CallingEqualsWithNullArgRule.cs: Add OpCodeEngine to require a
+	Call or Callvirt and a Ldnull instruction before analyzing a method.
+	Add XML documentation.
+	* DoNotRoundIntegersRule.cs: Add XML documentation.
+
 2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Use 

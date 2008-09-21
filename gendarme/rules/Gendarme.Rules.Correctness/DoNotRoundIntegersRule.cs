@@ -40,6 +40,31 @@ namespace Gendarme.Rules.Correctness {
 	// ICAST: int value cast to double and then passed to Math.ceil (ICAST_INT_CAST_TO_DOUBLE_PASSED_TO_CEIL)
 	// ICAST: int value cast to float and then passed to Math.round (ICAST_INT_CAST_TO_FLOAT_PASSED_TO_ROUND)
 
+	/// <summary>
+	/// This rule check for attempts to call <c>Round</c>, <c>Ceiling</c>, <c>Floor</c> or
+	/// <c>Truncate</c> on an integral type. This often indicate a typo in the source code
+	/// (e.g. wrong variable) or simply an unneeded operation.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public decimal Compute (int x)
+	/// {
+	///	return Math.Truncate ((decimal) x);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public decimal Compute (int x)
+	/// {
+	///	return (decimal) x;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method round/ceil/floor/truncate an integer value.")]
 	[Solution ("Verify the code logic. This could be a typo (wrong variable) or an unneeded operation.")]
 	public class DoNotRoundIntegersRule : Rule, IMethodRule {
