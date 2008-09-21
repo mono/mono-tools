@@ -42,7 +42,10 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no CALL[VIRT]
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public class CallToEqualsWithNullArg
@@ -67,6 +70,7 @@ namespace Test.Rules.Correctness {
 				CallingEqualsWithNonNullArg c = new CallingEqualsWithNonNullArg ();
 				CallingEqualsWithNonNullArg c1 = new CallingEqualsWithNonNullArg ();
 				c.Equals (c1);
+				c1 = null; // ensure an LDNULL instruction is inside the method
 			}
 		}
 
@@ -99,6 +103,7 @@ namespace Test.Rules.Correctness {
 				Type e = typeof (Days);
 				Type e1 = typeof (Days);
 				e.Equals (e1);
+				e1 = null; // ensure an LDNULL instruction is inside the method
 			}
 		}
 
@@ -137,7 +142,8 @@ namespace Test.Rules.Correctness {
 		public void CallingEqualsOnStructTest ()
 		{
 			AssertRuleFailure<CallingEqualsOnStruct> ("PassingNullArgument", 1);
-			AssertRuleSuccess<CallingEqualsOnStruct> ("PassingNonNullArg");
+			// there's no LDNULL in the method, so the rule skip the analysis
+			AssertRuleDoesNotApply<CallingEqualsOnStruct> ("PassingNonNullArg");
 		}
 
 		public class CallingEqualsOnArray
@@ -162,6 +168,7 @@ namespace Test.Rules.Correctness {
 			{
 				int [] b = new int [] {1, 2, 3};
 				b.Equals (a);
+				b = null;
 			}
 		}
 

@@ -35,6 +35,7 @@ using Mono.Cecil;
 using Gendarme.Rules.Correctness;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
@@ -43,9 +44,30 @@ namespace Test.Rules.Correctness {
 	[TestFixture]
 	public class AvoidConstructorsInStaticTypesTest : TypeRuleTestFixture<AvoidConstructorsInStaticTypesRule> {
 
-		public class CannotBeMadeStatic {
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
+		}
+
+		public class CannotBeMadeStatic_Method {
 
 			public void Method()
+			{
+			}
+		}
+
+		public class CannotBeMadeStatic_Field {
+
+			private int field = 42;
+		}
+
+		public class CannotBeMadeStatic_Ctor {
+
+			CannotBeMadeStatic_Ctor (int a, int b)
 			{
 			}
 		}
@@ -53,7 +75,9 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void TestClassCannotBeMadeStatic ()
 		{
-			AssertRuleSuccess<CannotBeMadeStatic> ();
+			AssertRuleSuccess<CannotBeMadeStatic_Method> ();
+			AssertRuleSuccess<CannotBeMadeStatic_Field> ();
+			AssertRuleSuccess<CannotBeMadeStatic_Ctor> ();
 		}
 
 		public class CouldBeStatic {

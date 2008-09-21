@@ -49,7 +49,10 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no CALL[VIRT] or NEWOBJ
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		class BadRec {
@@ -162,7 +165,7 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Property ()
 		{
-			AssertRuleSuccess<BadRec> ("get_Bar");
+			AssertRuleDoesNotApply<BadRec> ("get_Bar"); // no method call
 		}
 
 		[Test, Ignore ("uncaught by rule")]
@@ -232,6 +235,7 @@ namespace Test.Rules.Correctness {
 
 			private static T Select<T> ()
 			{
+				Console.WriteLine ();
 				return default (T);
 			}
 
@@ -272,7 +276,8 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Interfaces ()
 		{
-			AssertRuleSuccess<InterfaceCallGood> ();
+			AssertRuleSuccess<InterfaceCallGood> ("OnDeserialization");
+			AssertRuleSuccess<InterfaceCallGood> ("System.Runtime.Serialization.IDeserializationCallback.OnDeserialization");
 			AssertRuleFailure<InterfaceCallBad> ("System.Runtime.Serialization.IDeserializationCallback.OnDeserialization", 1);
 		}
 
@@ -302,9 +307,46 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Dots ()
 		{
-			AssertRuleSuccess<MyObject> (".cctor");
+			AssertRuleDoesNotApply<MyObject> (".cctor"); // no call in method
 			AssertRuleSuccess<MyObject> (".ctor");
 			AssertRuleSuccess<MyObject> ("System.ICloneable.Clone");
+		}
+
+		public class Coverage {
+			public int FewParameters (int a, int b, int c)
+			{
+				return FewParameters (a, b, c);
+			}
+
+			public int ManyParameters (int a, int b, int c, int d, int e)
+			{
+				return ManyParameters (a, b, c, d, e);
+			}
+
+			static int StaticFewParameters (int a, int b, int c)
+			{
+				return StaticFewParameters (a, b, c);
+			}
+
+			static int StaticManyParameters (int a, int b, int c, int d, int e)
+			{
+				return StaticManyParameters (a, b, c, d, e);
+			}
+		}
+
+		[Test]
+		[Ignore ("needs review, this work on MS compiled code!")]
+		public void MoreCoverage_Static ()
+		{
+			AssertRuleFailure<Coverage> ("StaticFewParameters", 1);
+			AssertRuleFailure<Coverage> ("StaticManyParameters", 1);
+		}
+
+		[Test]
+		public void MoreCoverage_Instance ()
+		{
+			AssertRuleFailure<Coverage> ("FewParameters", 1);
+			AssertRuleFailure<Coverage> ("ManyParameters", 1);
 		}
 	}
 }

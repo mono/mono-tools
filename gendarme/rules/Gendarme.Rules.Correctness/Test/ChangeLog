@@ -1,3 +1,13 @@
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesTest.cs: Add more coverage.
+	* BadRecursiveInvocationTest.cs: Add more coverage. Add test
+	cases with many parameters - one of them currently fails on mono
+	compiled assemblies (works when CSC compiles it).
+	* CallingEqualsWithNullArgTest.cs: Add more coverage. Ensure a 
+	LDNULL instruction is present in some test case so the rule does 
+	not ignore them.
+
 2008-09-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Add test 
