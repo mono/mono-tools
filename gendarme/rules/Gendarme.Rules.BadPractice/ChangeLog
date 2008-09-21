@@ -1,8 +1,18 @@
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotUseGetInterfaceToCheckAssignabilityRule.cs: New. Rule to
+	check if Type.GetInterface is being used to defect the presence, or
+	absence, of an interface (wrt getting back a Type instance). There is
+	a better way to check for this when the interface name is known at
+	compile time.
+	* Makefile.am: Add rule/test to the build.
+
 2008-09-20  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidAssemblyVersionMismatchRule.cs: New. Rule to check if the
 	version numbers in both [AssemblyVersion] and [AssemblyFileVersion]
 	match.
+	* Makefile.am: Add rule/test to the build.
 
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com> 
 

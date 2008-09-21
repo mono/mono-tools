@@ -23,6 +23,7 @@ rules_sources = \
 	ConstructorShouldNotCallVirtualMethodsRule.cs \
 	DisableDebuggingCodeRule.cs \
 	DoNotForgetNotImplementedMethodsRule.cs \
+	DoNotUseGetInterfaceToCheckAssignabilityRule.cs \
 	EqualShouldHandleNullArgRule.cs \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
@@ -41,6 +42,7 @@ tests_sources = \
 	CloneMethodShouldNotReturnNullTest.cs \
 	ConstructorShouldNotCallVirtualMethodsTest.cs \
 	DoNotForgetNotImplementedMethodsTest.cs \
+	DoNotUseGetInterfaceToCheckAssignabilityTest.cs \
 	DisableDebuggingCodeTest.cs \
 	EqualShouldHandleNullArgTest.cs \
 	GetEntryAssemblyMayReturnNullTest.cs \
