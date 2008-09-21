@@ -1,3 +1,8 @@
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotUseGetInterfaceToCheckAssignabilityTest.cs: New. Unit 
+	tests for DoNotUseGetInterfaceToCheckAssignabilityRule.
+
 2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidAssemblyVersionMismatchTest.cs: New. Unit tests for 
