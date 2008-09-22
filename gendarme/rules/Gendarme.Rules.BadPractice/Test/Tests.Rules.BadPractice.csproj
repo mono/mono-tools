@@ -38,6 +38,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidAssemblyVersionMismatchTest.cs" />
     <Compile Include="AvoidCallingProblematicMethodsTest.cs" />
     <Compile Include="AvoidVisibleConstantFieldTest.cs" />
     <Compile Include="CheckNewExceptionWithoutThrowingTest.cs" />
@@ -45,6 +46,8 @@
     <Compile Include="CloneMethodShouldNotReturnNullTest.cs" />
     <Compile Include="ConstructorShouldNotCallVirtualMethodsTest.cs" />
     <Compile Include="DisableDebuggingCodeTest.cs" />
+    <Compile Include="DoNotForgetNotImplementedMethodsTest.cs" />
+    <Compile Include="DoNotUseGetInterfaceToCheckAssignabilityTest.cs" />
     <Compile Include="EqualShouldHandleNullArgTest.cs" />
     <Compile Include="GetEntryAssemblyMayReturnNullTest.cs" />
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyTest.cs" />
