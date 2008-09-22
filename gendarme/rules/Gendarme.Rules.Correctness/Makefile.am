@@ -15,6 +15,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Correctness.xml TestResult.xml
 
 rules_sources = \
 	AvoidConstructorsInStaticTypesRule.cs \
+	AvoidFloatingPointEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
 	DontCompareWithNaNRule.cs \
@@ -31,11 +32,11 @@ rules_sources = \
 
 tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
+	AvoidFloatingPointEqualityTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
-	FloatComparisonRuleTest.cs \
 	MethodCanBeMadeStaticTest.cs \
 	ReviewDoubleAssignmentTest.cs \
 	ReviewSelfAssignmentTest.cs \

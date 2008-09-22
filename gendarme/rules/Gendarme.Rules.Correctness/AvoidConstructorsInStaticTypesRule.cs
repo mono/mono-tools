@@ -50,18 +50,30 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
+	/// // it is possible to instantiate this class since the 
+	/// // C# compiler adds a default, public, constructor
+	/// public class Class {
+	///	public static void Method ()
+	///	{
+	///	}
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// if (typeof (IConvertible).IsAssignableFrom (type))  {
-	///	// then the type can be assigned to IConvertible
-	///	// without a doubt!
+	/// public class Class {
+	///	// this class cannot be instantiated
+	///	private Class ()
+	///	{
+	///	}
+	///	
+	///	public static void Method ()
+	///	{
+	///	}
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This type (and ancestors) contains only static fields and methods but has a visible, non static, constructor.")]
 	[Solution ("You should remove the visible constructor to make sure this type cannot be instancied, or if using 2.0+, change it to a static type.")]

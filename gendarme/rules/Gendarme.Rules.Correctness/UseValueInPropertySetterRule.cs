@@ -38,6 +38,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule ensures all setter properties uses the value argument passed to the property.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool Active {
+	///	get {
+	///		return active;
+	///	}
+	///	// this can take a long time to figure out if the default value for active
+	///	// is false (since most people will use the property to set it to true)
+	///	set {
+	///		active = true;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public bool Active {
+	///	get {
+	///		return active;
+	///	}
+	///	set {
+	///		active = value;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This property setter doesn't use 'value'.")]
 	[Solution ("The setter should use 'value' or, if unneeded, you should consider remove the setter to reduce possible confusion.")]
 	public class UseValueInPropertySetterRule : Rule, IMethodRule {

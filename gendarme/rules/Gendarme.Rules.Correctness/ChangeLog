@@ -1,3 +1,20 @@
+2008-09-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConstructorsInStaticTypesRule.cs: Add missing/fix existing
+	code examples.
+	* AvoidFloatingPointEqualityRule.cs: New file for the renamed
+	FloatComparisonRule rule. Now use FloatComparisonRule as it's base
+	class. Add XML documentation.
+	* CallingEqualsWithNullArgRule.cs: Fix missing ')' in XML docs.
+	* DontCompareWithNaNRule.cs: Use FloatComparisonRule as base 
+	class. Add extra bitmask checks for LDC_R[4|8] to ignore more methods.
+	Add XML documentation.
+	* FloatComparisonRule.cs: Now used as a base class for both 
+	AvoidFloatingPointEqualityRule and DoNotCompareWithNaNRule. Make it
+	use the OpCodeEngine to avoid analyzing methods that cannot have
+	defects.
+	* UseValueInPropertySetterRule.cs: Add XML documentation.
+
 2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesRule.cs: Add XML documentation.

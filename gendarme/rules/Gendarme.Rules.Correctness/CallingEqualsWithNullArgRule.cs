@@ -49,7 +49,7 @@ namespace Gendarme.Rules.Correctness {
 	/// {
 	///	MyClass myClassInstance = new MyClass ();
 	///	MyClass otherClassInstance = null;
-	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance);
+	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
 	/// }
 	/// </code>
 	/// </example>
@@ -60,7 +60,7 @@ namespace Gendarme.Rules.Correctness {
 	/// {
 	///	MyClass myClassInstance = new MyClass ();
 	///	MyClass otherClassInstance = new MyClass ();
-	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance);
+	///	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
 	/// }
 	/// </code>
 	/// </example>

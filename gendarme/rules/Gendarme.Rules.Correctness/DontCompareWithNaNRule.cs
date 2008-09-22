@@ -32,31 +32,46 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// As defined in IEEE 754 it's impossible to compare any floating-point value, even 
+	/// another <c>NaN</c>, with <c>NaN</c>. Such comparison will always return <c>false</c>
+	/// (more information on [http://en.wikipedia.org/wiki/NaN wikipedia]). The framework 
+	/// provides methods, <c>Single.IsNaN</c> and <c>Double.IsNaN</c>, to check for 
+	/// <c>NaN</c> values.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// double d = ComplexCalculation ();
+	/// if (d == Double.NaN) {
+	///	// this will never be reached, even if d is NaN
+	///	Console.WriteLine ("No solution exists!");
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// double d = ComplexCalculation ();
+	/// if (Double.IsNaN (d)) {
+	///	Console.WriteLine ("No solution exists!");
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method compares a floating point value with NaN (Not a Number) which always return false, even for (NaN == NaN).")]
 	[Solution ("Replace the code with a call to the appropriate Single.IsNaN(value) or Double.IsNaN(value).")]
-	public class DoNotCompareWithNaNRule : Rule, IMethodRule {
+	[FxCopCompatibility ("Microsoft.Usage", "CA2242:TestForNaNCorrectly")]
+	public class DoNotCompareWithNaNRule : FloatingComparisonRule, IMethodRule {
 
 		private const string EqualityMessage = "A floating point value is compared (== or !=) with [Single|Double].NaN.";
 		private const string EqualsMessage = "[Single|Double].Equals is called using NaN.";
-
-		private static string[] FloatingPointTypes = { "System.Single", "System.Double" };
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// we want to avoid checking all methods if the module doesn't refer to either
-			// System.Single or System.Double (big performance difference)
-			// note: mscorlib.dll is an exception since it defines, not refer, System.Single and Double
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentAssembly.MainModule.TypeReferences.ContainsAnyType (FloatingPointTypes);
-			};
-		}
 
 		private static bool CheckPrevious (InstructionCollection il, int index)
 		{
@@ -86,9 +101,16 @@ namespace Gendarme.Rules.Correctness {
 			return true;
 		}
 
+		// contains LDC_R4 and LDC_R8
+		static OpCodeBitmask Ldc_R = new OpCodeBitmask (0xC00000000, 0x0, 0x0, 0x0);
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasBody)
+			if (!IsApplicable (method))
+				return RuleResult.DoesNotApply;
+
+			// extra check - rule applies only if the method contains Ldc_R4 or Ldc_R8
+			if (!Ldc_R.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			InstructionCollection il = method.Body.Instructions;
@@ -103,7 +125,6 @@ namespace Gendarme.Rules.Correctness {
 					break;
 				// handle calls to [Single|Double].Equals
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					MemberReference callee = ins.Operand as MemberReference;
 					if ((callee != null) && callee.Name.Equals ("Equals") && callee.DeclaringType.IsFloatingPoint ()) {
