@@ -1,5 +1,5 @@
 //
-// Unit test for FloatComparisonRule
+// Unit test for AvoidFloatingPointEqualityRule
 //
 // Authors:
 //	Lukasz Knop <lukasz.knop@gmail.com>
@@ -30,19 +30,27 @@
 
 using System;
 
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Correctness;
-using Mono.Cecil;
-using NUnit.Framework;
 
-using Test.Rules.Helpers;
+using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Correctness {
 
+#pragma warning disable 168, 219
+
 	[TestFixture]
-	public class FloatComparisonRuleTest {
+	public class AvoidFloatingPointEqualityTest : MethodRuleTestFixture<AvoidFloatingPointEqualityRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			AssertRuleDoesNotApply<float> ();
+			AssertRuleDoesNotApply<double> ();
+		}
 
 		public class Double {
 			public double field = 0.0d;
@@ -271,173 +279,92 @@ namespace Test.Rules.Correctness {
 			}
 		}
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new FloatComparisonRule ();
-			runner = new TestRunner (rule);
-		}
-
-		MethodDefinition GetTest (string typeName, string name)
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Correctness.FloatComparisonRuleTest/" + typeName];
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
-			}
-			Assert.Fail ("name '{0}' was not found inside '{1}'.", name, typeName);
-			return null;
-		}
-
 		[Test]
 		public void TestFields ()
 		{
-			MethodDefinition method = GetTest ("Float", "Fields");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (2, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "Fields");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (2, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("Fields", 2);
+			AssertRuleFailure<Double> ("Fields", 2);
 		}
 
 		[Test]
 		public void TestMethodResult ()
 		{
-			MethodDefinition method = GetTest("Float", "MethodResult");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (2, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "MethodResult");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (2, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("MethodResult", 2);
+			AssertRuleFailure<Double> ("MethodResult", 2);
 		}
 		
 		[Test]
 		public void TestParameters ()
 		{
-			MethodDefinition method = GetTest ("Float", "Parameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "Parameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("Parameters", 1);
+			AssertRuleFailure<Double> ("Parameters", 1);
 		}
 
 		[Test]
 		public void TestStaticParameters ()
 		{
-			MethodDefinition method = GetTest ("Float", "StaticParameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "StaticParameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("StaticParameters", 1);
+			AssertRuleFailure<Double> ("StaticParameters", 1);
 		}
 
 		[Test]
 		public void TestLocal ()
 		{
-			MethodDefinition method = GetTest ("Float", "Local");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.IsTrue (runner.Defects.Count >= 2, "Count-Float");
-
-			method = GetTest ("Double", "Local");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.IsTrue (runner.Defects.Count >= 2, "Count-Double");
+			AssertRuleFailure<Float> ("Local");
+			AssertRuleFailure<Double> ("Local");
 		}
 
 		[Test]
 		public void TestLocalAbove4 ()
 		{
-			MethodDefinition method = GetTest ("Float", "LocalAbove4");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.IsTrue (runner.Defects.Count >= 2, "Count-Float");
-
-			method = GetTest ("Double", "LocalAbove4");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.IsTrue (runner.Defects.Count >= 2, "Count-Double");
+			AssertRuleFailure<Float> ("LocalAbove4");
+			AssertRuleFailure<Double> ("LocalAbove4");
 		}
 
 		[Test]
 		public void TestComparisonAfterArithmeticOperation ()
 		{
-			MethodDefinition method = GetTest ("Float", "ComparisonAfterArithmeticOperation");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "ComparisonAfterArithmeticOperation");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("ComparisonAfterArithmeticOperation", 1);
+			AssertRuleFailure<Double> ("ComparisonAfterArithmeticOperation", 1);
 		}
 
 		[Test]
 		public void TestLegalComparisons ()
 		{
-			MethodDefinition method = GetTest("Float", "LegalComparisons");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (0, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "LegalComparisons");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (0, runner.Defects.Count, "Count-Double");
+			AssertRuleSuccess<Float> ("LegalComparisons");
+			AssertRuleSuccess<Double> ("LegalComparisons");
 		}
 
 		[Test]
 		public void TestLegalIntegerComparisons ()
 		{
-			MethodDefinition method = GetTest ("Legal", "IntegerComparisons");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Legal> ("IntegerComparisons");
 		}
 
 		[Test]
 		public void TestEqualsCall ()
 		{
-			MethodDefinition method = GetTest("Float", "EqualsCall");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "EqualsCall");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (3, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("EqualsCall", 1);
+			AssertRuleFailure<Double> ("EqualsCall", 3);
 		}
 		
 		[Test]
 		public void TestNoFloatComparison()
 		{
-			MethodDefinition method = GetTest ("Legal", "NoComparison");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<Legal> ("NoComparison");
 		}
 
 		[Test]
 		public void TestCompareWithArray ()
 		{
-			MethodDefinition method = GetTest ("Float", "CompareWithArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Float");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Float");
-
-			method = GetTest ("Double", "CompareWithArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult-Double");
-			Assert.AreEqual (1, runner.Defects.Count, "Count-Double");
+			AssertRuleFailure<Float> ("CompareWithArray", 1);
+			AssertRuleFailure<Double> ("CompareWithArray", 1);
 		}
 
 		[Test]
 		public void TestLegalStuff ()
 		{
-			MethodDefinition method = GetTest ("Legal", "get_Property");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<Legal> ("get_Property");
 		}
 	}
 }

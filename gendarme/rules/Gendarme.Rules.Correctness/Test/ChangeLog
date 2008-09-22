@@ -1,3 +1,12 @@
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidFloatingPointEqualityTest.cs: New. Updated the old
+	FloatComparisonRuleTest to use the new test syntax and to have
+	better coverage.
+	* FloatComparisonRuleTest.cs: Removed (was renamed from above)
+	* DontCompareWithNaNTest.cs: Use the new test syntax and add
+	more coverage.
+
 2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesTest.cs: Add more coverage.
