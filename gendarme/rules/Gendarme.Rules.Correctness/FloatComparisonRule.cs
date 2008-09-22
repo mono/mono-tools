@@ -39,7 +39,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	[EngineDependency (typeof (OpCodeEngine))]
-	public class FloatingComparisonRule : Rule {
+	abstract public class FloatingComparisonRule : Rule {
 
 		private static string[] FloatingPointTypes = { "System.Single", "System.Double" };
 

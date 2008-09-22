@@ -1,4 +1,9 @@
-2008-09-22  Sebastien Pouliot  <sebastien@ximian.com>
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* FloatComparisonRule.cs: Make it abstract so the non-test runners
+	don't try to use it.
+
+2008-09-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConstructorsInStaticTypesRule.cs: Add missing/fix existing
 	code examples.
