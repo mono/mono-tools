@@ -50,12 +50,55 @@
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-add</property>
+        <property name="Tooltip" translatable="yes">Add a new counter</property>
       </action>
       <action id="preferencesAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-preferences</property>
+        <property name="Tooltip" translatable="yes">Preferences</property>
         <signal name="Activated" handler="OnPreferences" />
+      </action>
+      <action id="stopAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-stop</property>
+      </action>
+      <action id="ClearAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Clear</property>
+        <property name="ShortLabel" translatable="yes">_Clear</property>
+        <property name="StockId">gtk-clear</property>
+        <property name="Tooltip" translatable="yes">Remove all the counters</property>
+        <signal name="Activated" handler="OnClear" />
+      </action>
+      <action id="mediaPauseAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-media-pause</property>
+        <property name="Tooltip" translatable="yes">Stop ccollecting samples</property>
+        <signal name="Activated" handler="OnPause" />
+      </action>
+      <action id="mediaPlayAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-media-play</property>
+        <property name="Tooltip" translatable="yes">Start collecting samples</property>
+        <signal name="Activated" handler="OnPlay" />
+      </action>
+      <action id="SaveAsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Save _As</property>
+        <property name="ShortLabel" translatable="yes">Save _As</property>
+        <property name="StockId">gtk-save-as</property>
+        <signal name="Activated" handler="OnSaveAs" />
+      </action>
+      <action id="AddCounterSetAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add counter set</property>
+        <property name="ShortLabel" translatable="yes">Add counter set</property>
+        <property name="StockId">gtk-add</property>
+        <signal name="Activated" handler="OnAddSet" />
       </action>
     </action-group>
     <property name="MemberName" />
@@ -75,6 +118,8 @@
             <node name="menubar1" type="Menubar">
               <node type="Menu" action="FileAction">
                 <node type="Menuitem" action="AddCounterAction" />
+                <node type="Menuitem" action="AddCounterSetAction" />
+                <node type="Menuitem" action="SaveAsAction" />
                 <node type="Menuitem" action="QuitAction" />
               </node>
               <node type="Menu" action="HelpAction">
@@ -143,6 +188,9 @@
             <node name="toolbar1" type="Toolbar">
               <node type="Toolitem" action="quitAction" />
               <node type="Toolitem" action="AddCounterAction" />
+              <node type="Toolitem" action="ClearAction" />
+              <node type="Toolitem" action="mediaPauseAction" />
+              <node type="Toolitem" action="mediaPlayAction" />
               <node type="Toolitem" action="preferencesAction" />
             </node>
           </widget>
@@ -465,6 +513,139 @@
           <packing>
             <property name="Position">0</property>
             <property name="AutoSize">True</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">2</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonCancel">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-cancel</property>
+            <property name="ResponseId">-6</property>
+            <property name="label">gtk-cancel</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-ok</property>
+            <property name="ResponseId">-5</property>
+            <property name="label">gtk-ok</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Dialog" id="mperfmon.AddSet" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Add a counter set</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Buttons">2</property>
+    <property name="HelpButton">False</property>
+    <property name="HasSeparator">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.Table" id="table1">
+            <property name="MemberName" />
+            <property name="NRows">2</property>
+            <property name="NColumns">2</property>
+            <property name="RowSpacing">6</property>
+            <property name="ColumnSpacing">6</property>
+            <child>
+              <widget class="Gtk.ComboBox" id="counterset">
+                <property name="MemberName" />
+                <property name="IsTextCombo">True</property>
+                <property name="Items" translatable="yes" />
+                <signal name="Changed" handler="OnSetSelected" />
+              </widget>
+              <packing>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+                <property name="MemberName" />
+                <property name="ShadowType">In</property>
+                <child>
+                  <widget class="Gtk.TreeView" id="instances">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="ShowScrollbars">True</property>
+                    <property name="HeadersClickable">True</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="TopAttach">1</property>
+                <property name="BottomAttach">2</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">False</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">True</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Counter set:</property>
+              </widget>
+              <packing>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">False</property>
           </packing>
         </child>
       </widget>

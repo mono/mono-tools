@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mperfmon>
+	<update interval="1000" />
+	<set name="MonoSummary">
+		<counter cat=".NET CLR JIT" name="# of IL Methods JITted"/>
+		<counter cat=".NET CLR Exceptions" name="# of Exceps Thrown"/>
+		<counter cat="Process" name="Private Bytes"/>
+		<counter cat=".NET CLR Memory" name="# Bytes in all Heaps"/>
+		<counter cat=".NET CLR Memory" name="# Gen 0 Collections"/>
+		<counter cat=".NET CLR Memory" name="# GC Handles"/>
+		<counter cat=".NET CLR LocksAndThreads" name="Total # of Contentions"/>
+		<counter cat=".NET CLR Loading" name="Bytes in Loader Heap"/>
+	</set>
+</mperfmon>
+

@@ -1,4 +1,14 @@
 
+Tue Sep 23 18:50:04 CEST 2008 Paolo Molaro <lupus@ximian.com>
+
+	* Added some simple configuration file support.
+	* Added the ability to define performance counter sets (no GUI
+	to edit them yet) and load a set, instead of loading all the
+	counters individually.
+	* Use shorter numeric labels on the graphs.
+	* Added also console usage, try:
+		mperfmon --report=MonoSummary pid_of_mono_process.
+
 Fri Sep 19 20:56:13 CEST 2008 Paolo Molaro <lupus@ximian.com>
 
 	* Preferences.cs: added preferences dialog to change the update

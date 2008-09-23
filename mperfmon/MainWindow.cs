@@ -19,9 +19,12 @@ public partial class MainWindow: Gtk.Window
 	uint timeout_ms = 1000;
 	uint timeout_id;
 	ArrayList clist = new ArrayList ();
+	Config cfg;
 
-	public MainWindow (): base (Gtk.WindowType.Toplevel)
+	public MainWindow (Config config): base (Gtk.WindowType.Toplevel)
 	{
+		cfg = config;
+		timeout_ms = cfg.Timeout;
 		Build ();
 	}
 
@@ -88,13 +91,57 @@ public partial class MainWindow: Gtk.Window
 
 		if (res == (int)ResponseType.Ok) {
 			timeout_ms = prefs.Timeout;
-			Console.WriteLine (timeout_ms);
 			if (timeout_active) {
 				GLib.Source.Remove (timeout_id);
 				timeout_id = GLib.Timeout.Add (timeout_ms, OnTimeout);
 			}
 		}
 		prefs.Destroy ();
+	}
+
+	protected virtual void OnPause (object sender, System.EventArgs e)
+	{
+		if (timeout_active) {
+			GLib.Source.Remove (timeout_id);
+			timeout_active = false;
+		}
+	}
+
+	protected virtual void OnPlay (object sender, System.EventArgs e)
+	{
+		if (!timeout_active) {
+			timeout_active = true;
+			timeout_id = GLib.Timeout.Add (timeout_ms, OnTimeout);
+		}
+	}
+
+	protected virtual void OnClear (object sender, System.EventArgs e)
+	{
+		while (clist.Count > 0) {
+			RemoveCounter (clist [clist.Count -1] as CounterDisplay);
+		}
+	}
+
+	protected virtual void OnSaveAs (object sender, System.EventArgs e)
+	{
+		// save the counters data
+	}
+
+	protected virtual void OnAddSet (object sender, System.EventArgs e)
+	{	
+		AddSet cdialog = new AddSet (cfg);
+		int res = cdialog.Run ();
+
+		if (res == (int)ResponseType.Ok) {
+			CounterSet cset = cfg [cdialog.CounterSet];
+			string instance = cdialog.Instance;
+			List<string> csetcounters = cset.Counters;
+			for (int i =0; i < csetcounters.Count; i += 2) {
+				AddCounter (csetcounters [i], csetcounters [i + 1], instance);
+			}
+		} else {
+		}
+		cdialog.Destroy ();
 	}
 	
 }
@@ -176,6 +223,17 @@ class CounterDrawing : DrawingArea
 		QueueDraw();
 	}
 
+	static string GetLabel (double val)
+	{
+		if (val >= 1000000000)
+			return string.Format ("{0} G", val/1000000000);
+		if (val >= 1000000)
+			return string.Format ("{0} M", val/1000000);
+		if (val >= 1000)
+			return string.Format ("{0} K", val/1000);
+		return string.Format ("{0}", val);
+	}
+	
 	void draw_grid (Cairo.Context gr, int w, int h) {
 		double y_interval, y_spacing;
 		double pixels = 80;
@@ -203,7 +261,7 @@ class CounterDrawing : DrawingArea
 			gr.LineTo (w, i);
 			gr.Stroke ();
 			gr.LineTo (5, i);
-			gr.ShowText (y_label.ToString ());
+			gr.ShowText (GetLabel (y_label));
 			y_label += y_interval;
 		}
 	}

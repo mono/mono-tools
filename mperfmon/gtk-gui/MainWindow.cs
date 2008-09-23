@@ -30,6 +30,18 @@ public partial class MainWindow {
     
     private Gtk.Action preferencesAction;
     
+    private Gtk.Action stopAction;
+    
+    private Gtk.Action ClearAction;
+    
+    private Gtk.Action mediaPauseAction;
+    
+    private Gtk.Action mediaPlayAction;
+    
+    private Gtk.Action SaveAsAction;
+    
+    private Gtk.Action AddCounterSetAction;
+    
     private Gtk.Table table1;
     
     private Gtk.MenuBar menubar1;
@@ -62,10 +74,25 @@ public partial class MainWindow {
         w1.Add(this.HelpAction1, null);
         this.quitAction = new Gtk.Action("quitAction", null, null, "gtk-quit");
         w1.Add(this.quitAction, null);
-        this.addAction = new Gtk.Action("addAction", null, null, "gtk-add");
+        this.addAction = new Gtk.Action("addAction", null, Mono.Unix.Catalog.GetString("Add a new counter"), "gtk-add");
         w1.Add(this.addAction, null);
-        this.preferencesAction = new Gtk.Action("preferencesAction", null, null, "gtk-preferences");
+        this.preferencesAction = new Gtk.Action("preferencesAction", null, Mono.Unix.Catalog.GetString("Preferences"), "gtk-preferences");
         w1.Add(this.preferencesAction, null);
+        this.stopAction = new Gtk.Action("stopAction", null, null, "gtk-stop");
+        w1.Add(this.stopAction, null);
+        this.ClearAction = new Gtk.Action("ClearAction", Mono.Unix.Catalog.GetString("_Clear"), Mono.Unix.Catalog.GetString("Remove all the counters"), "gtk-clear");
+        this.ClearAction.ShortLabel = Mono.Unix.Catalog.GetString("_Clear");
+        w1.Add(this.ClearAction, null);
+        this.mediaPauseAction = new Gtk.Action("mediaPauseAction", null, Mono.Unix.Catalog.GetString("Stop ccollecting samples"), "gtk-media-pause");
+        w1.Add(this.mediaPauseAction, null);
+        this.mediaPlayAction = new Gtk.Action("mediaPlayAction", null, Mono.Unix.Catalog.GetString("Start collecting samples"), "gtk-media-play");
+        w1.Add(this.mediaPlayAction, null);
+        this.SaveAsAction = new Gtk.Action("SaveAsAction", Mono.Unix.Catalog.GetString("Save _As"), null, "gtk-save-as");
+        this.SaveAsAction.ShortLabel = Mono.Unix.Catalog.GetString("Save _As");
+        w1.Add(this.SaveAsAction, null);
+        this.AddCounterSetAction = new Gtk.Action("AddCounterSetAction", Mono.Unix.Catalog.GetString("Add counter set"), null, "gtk-add");
+        this.AddCounterSetAction.ShortLabel = Mono.Unix.Catalog.GetString("Add counter set");
+        w1.Add(this.AddCounterSetAction, null);
         this.UIManager.InsertActionGroup(w1, 0);
         this.AddAccelGroup(this.UIManager.AccelGroup);
         this.Name = "MainWindow";
@@ -77,7 +104,7 @@ public partial class MainWindow {
         this.table1.RowSpacing = ((uint)(6));
         this.table1.ColumnSpacing = ((uint)(6));
         // Container child table1.Gtk.Table+TableChild
-        this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AddCounterAction' action='AddCounterAction'/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='HelpAction1' action='HelpAction1'/></menu></menubar></ui>");
+        this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AddCounterAction' action='AddCounterAction'/><menuitem name='AddCounterSetAction' action='AddCounterSetAction'/><menuitem name='SaveAsAction' action='SaveAsAction'/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='HelpAction1' action='HelpAction1'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(this.UIManager.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.table1.Add(this.menubar1);
@@ -105,7 +132,7 @@ public partial class MainWindow {
         w6.RightAttach = ((uint)(3));
         w6.XOptions = ((Gtk.AttachOptions)(4));
         // Container child table1.Gtk.Table+TableChild
-        this.UIManager.AddUiFromString("<ui><toolbar name='toolbar1'><toolitem name='quitAction' action='quitAction'/><toolitem name='AddCounterAction' action='AddCounterAction'/><toolitem name='preferencesAction' action='preferencesAction'/></toolbar></ui>");
+        this.UIManager.AddUiFromString("<ui><toolbar name='toolbar1'><toolitem name='quitAction' action='quitAction'/><toolitem name='AddCounterAction' action='AddCounterAction'/><toolitem name='ClearAction' action='ClearAction'/><toolitem name='mediaPauseAction' action='mediaPauseAction'/><toolitem name='mediaPlayAction' action='mediaPlayAction'/><toolitem name='preferencesAction' action='preferencesAction'/></toolbar></ui>");
         this.toolbar1 = ((Gtk.Toolbar)(this.UIManager.GetWidget("/toolbar1")));
         this.toolbar1.Name = "toolbar1";
         this.toolbar1.ShowArrow = false;
@@ -128,5 +155,10 @@ public partial class MainWindow {
         this.QuitAction.Activated += new System.EventHandler(this.OnQuit);
         this.quitAction.Activated += new System.EventHandler(this.OnQuit);
         this.preferencesAction.Activated += new System.EventHandler(this.OnPreferences);
+        this.ClearAction.Activated += new System.EventHandler(this.OnClear);
+        this.mediaPauseAction.Activated += new System.EventHandler(this.OnPause);
+        this.mediaPlayAction.Activated += new System.EventHandler(this.OnPlay);
+        this.SaveAsAction.Activated += new System.EventHandler(this.OnSaveAs);
+        this.AddCounterSetAction.Activated += new System.EventHandler(this.OnAddSet);
     }
 }
