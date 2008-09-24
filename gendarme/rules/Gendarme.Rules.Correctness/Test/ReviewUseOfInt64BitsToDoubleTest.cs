@@ -39,13 +39,18 @@ using Test.Rules.Fixtures;
 
 namespace Test.Rules.Correctness {
 
+#pragma warning disable 649
+
 	[TestFixture]
 	public class ReviewUseOfInt64BitsToDoubleTest : MethodRuleTestFixture<ReviewUseOfInt64BitsToDoubleRule> {
 
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no CALL[VIRT]
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public double ParametersBad (int x, int y)
@@ -122,11 +127,13 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Ok ()
 		{
-			AssertRuleSuccess<ReviewUseOfInt64BitsToDoubleTest> ("ParametersGood");
-			AssertRuleSuccess<ReviewUseOfInt64BitsToDoubleTest> ("StaticFieldGood");
-			AssertRuleSuccess<ReviewUseOfInt64BitsToDoubleTest> ("InstanceFieldGood");
+			// no conversion of [u]long
+			AssertRuleDoesNotApply<ReviewUseOfInt64BitsToDoubleTest> ("ParametersGood");
+			AssertRuleDoesNotApply<ReviewUseOfInt64BitsToDoubleTest> ("StaticFieldGood");
+			AssertRuleDoesNotApply<ReviewUseOfInt64BitsToDoubleTest> ("InstanceFieldGood");
+			AssertRuleDoesNotApply<ReviewUseOfInt64BitsToDoubleTest> ("CallGood");
+			// a conversion occurs in this case because the value is assigned from a int (42)
 			AssertRuleSuccess<ReviewUseOfInt64BitsToDoubleTest> ("LocalVariableGood");
-			AssertRuleSuccess<ReviewUseOfInt64BitsToDoubleTest> ("CallGood");
 		}
 	}
 }

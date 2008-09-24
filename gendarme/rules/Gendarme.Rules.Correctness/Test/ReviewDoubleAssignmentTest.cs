@@ -83,7 +83,8 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Fields ()
 		{
-			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignmentOnField");
+			// no DUP instruction
+			AssertRuleDoesNotApply<ReviewDoubleAssignmentTest> ("SingleAssignmentOnField");
 			AssertRuleFailure<ReviewDoubleAssignmentTest> ("DoubleAssignmentOnField", 2);
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentFields");
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentInstanceFields");
@@ -117,7 +118,8 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void StaticFields ()
 		{
-			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignmentOnStaticField");
+			// no DUP instruction
+			AssertRuleDoesNotApply<ReviewDoubleAssignmentTest> ("SingleAssignmentOnStaticField");
 			AssertRuleFailure<ReviewDoubleAssignmentTest> ("DoubleAssignmentOnStaticField", 2);
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentStaticFields");
 		}
@@ -146,7 +148,8 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Locals ()
 		{
-			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignmentOnLocal");
+			// no DUP instruction
+			AssertRuleDoesNotApply<ReviewDoubleAssignmentTest> ("SingleAssignmentOnLocal");
 			AssertRuleFailure<ReviewDoubleAssignmentTest> ("DoubleAssignmentOnLocal", 2);
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentLocals");
 		}
@@ -173,7 +176,8 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void StaticLocals ()
 		{
-			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignmentOnStaticLocal");
+			// no DUP instruction
+			AssertRuleDoesNotApply<ReviewDoubleAssignmentTest> ("SingleAssignmentOnStaticLocal");
 			AssertRuleFailure<ReviewDoubleAssignmentTest> ("DoubleAssignmentOnStaticLocal", 1);
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("DoubleAssignementOnDifferentStaticLocals");
 		}
@@ -206,7 +210,8 @@ namespace Test.Rules.Correctness {
 		public void Others ()
 		{
 			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("MixedDoubleAssignments");
-			AssertRuleSuccess<ReviewDoubleAssignmentTest> ("SingleAssignments");
+			// no DUP instruction
+			AssertRuleDoesNotApply<ReviewDoubleAssignmentTest> ("SingleAssignments");
 		}
 	}
 }

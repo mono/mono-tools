@@ -44,7 +44,10 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no conditional branch
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		public void TypoExtraSemiColumn (int x)

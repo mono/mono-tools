@@ -1,3 +1,16 @@
+2008-09-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewDoubleAssignmentTest.cs: Change from Success to
+	DoesNotApply test cases where no DUP instructions are present.
+	* ReviewUselessControlFlowTest.cs: Add test case where no
+	conditional branches are present in a method (e.g. empty).
+	* ReviewUseOfInt64BitsToDoubleTest.cs: Change from Success
+	to DoesNotApply test cases where no CALL[VIRT] or CONV_[OVF_][I|U]
+	8[_UN] instructions are	present.
+	* ReviewUseOfModuloOneOnIntegersTest.cs: Change from Success
+	to DoesNotApply test cases where no REM[_UN] instructions are
+	present.
+
 2008-09-21  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidFloatingPointEqualityTest.cs: New. Updated the old

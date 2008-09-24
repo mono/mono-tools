@@ -159,8 +159,9 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Decimals ()
 		{
-			AssertRuleSuccess<ReviewUseOfModuloOneOnIntegersTest> ("ModuloOneDecimal");
-			AssertRuleSuccess<ReviewUseOfModuloOneOnIntegersTest> ("ModuloOneDecimalConst");
+			// decimals needs a method call - i.e. it's not handled by Rem[_Un] IL instructions
+			AssertRuleDoesNotApply<ReviewUseOfModuloOneOnIntegersTest> ("ModuloOneDecimal");
+			AssertRuleDoesNotApply<ReviewUseOfModuloOneOnIntegersTest> ("ModuloOneDecimalConst");
 		}
 	}
 }
