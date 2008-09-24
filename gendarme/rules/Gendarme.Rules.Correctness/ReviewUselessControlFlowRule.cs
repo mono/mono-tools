@@ -32,6 +32,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -41,13 +42,50 @@ namespace Gendarme.Rules.Correctness {
 	// UCF: Useless control flow to next line (UCF_USELESS_CONTROL_FLOW_NEXT_LINE)
 	// UCF: Useless control flow (UCF_USELESS_CONTROL_FLOW)
 
+	/// <summary>
+	/// This rule checks for empty blocks that produce uneless control flow inside IL. 
+	/// This usually occurs when a block is left incomplete or when a typo is made.
+	/// </summary>
+	/// <example>
+	/// Bad example (empty):
+	/// <code>
+	/// if (x == 0) {
+	///	// TODO - ever seen such a thing ? ;-)
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (typo):
+	/// <code>
+	/// if (x == 0); {
+	///	Console.WriteLine ("always printed");
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// if (x == 0) {
+	///	Console.WriteLine ("printed only if x == 0");
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method contains useless condition that do not change the execution flow.")]
 	[Solution ("Verify the code logic. This is likely a typo (e.g. an extra ';') or some dead code (empty condition).")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUselessControlFlowRule : Rule, IMethodRule {
+
+		private static OpCodeBitmask Branches = new OpCodeBitmask (0x8704380000000000, 0x0, 0x0, 0x0);
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// exclude methods that don't have any conditional branches
+			if (!Branches.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -84,5 +122,20 @@ namespace Gendarme.Rules.Correctness {
 			}
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask branches = new OpCodeBitmask ();
+			branches.Set (Code.Brfalse);
+			branches.Set (Code.Brfalse_S);
+			branches.Set (Code.Brtrue);
+			branches.Set (Code.Brtrue_S);
+			branches.Set (Code.Bne_Un);
+			branches.Set (Code.Bne_Un_S);
+			branches.Set (Code.Beq);
+			branches.Set (Code.Beq_S);
+			Console.WriteLine (branches);
+		}
+#endif
 	}
 }

@@ -32,6 +32,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
@@ -39,10 +41,40 @@ namespace Gendarme.Rules.Correctness {
 	// rule idea credits to FindBug - http://findbugs.sourceforge.net/
 	// DMI: Double.longBitsToDouble invoked on an int (DMI_LONG_BITS_TO_DOUBLE_INVOKED_ON_INT)
 
+	/// <summary>
+	/// This rule checks for invalid integer to double conversion using the, confusinsly named,
+	/// <c>BitConverter.Int64BitsToDouble</c> method. This methods converts the actual bits,
+	/// i.e. not the value, into a <c>Double</c>. The rule will warn when anything else than an 
+	/// <c>Int64</c> is being used as a parameter to this method.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public double GetRadians (int degrees)
+	/// {
+	///	return BitConverter.Int64BitsToDouble (degrees) * Math.PI / 180.0d;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public double GetRadians (int degree)
+	/// {
+	///	return degrees * Math.PI / 180.0d;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method calls System.BitConverter.Int64BitsToDouble(Int64) in a way that suggest it tries to convert an integer value, not the bits, into a double.")]
 	[Solution ("Verify the code logic. This could be a bad, non-working, convertion from an integer type into a double.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUseOfInt64BitsToDoubleRule : Rule, IMethodRule {
 
+		// Conv_I8, Conv_U8, Conv_Ovf_I8, Conv_Ovf_I8_Un, Conv_Ovf_U8, Conv_Ovf_U8_Un
+		private static OpCodeBitmask Convert8 = new OpCodeBitmask (0x0, 0x220000000000, 0x60000000044, 0x0);
+		
 		private const string BitConverter = "System.BitConverter";
 
 		public override void Initialize (IRunner runner)
@@ -60,6 +92,14 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// exclude methods that don't have calls
+			OpCodeBitmask mask = OpCodeEngine.GetBitmask (method);
+			if (!OpCodeBitmask.Calls.Intersect (mask))
+				return RuleResult.DoesNotApply;
+			// *and* methods that don't convert into an [u]int64
+			if (!Convert8.Intersect (mask))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -87,5 +127,18 @@ namespace Gendarme.Rules.Correctness {
 			}
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Convert ()
+		{
+			OpCodeBitmask Convert8 = new OpCodeBitmask (0x0, 0x0, 0x0, 0x0);
+			Convert8.Set (Code.Conv_I8);
+			Convert8.Set (Code.Conv_U8);
+			Convert8.Set (Code.Conv_Ovf_I8);
+			Convert8.Set (Code.Conv_Ovf_I8_Un);
+			Convert8.Set (Code.Conv_Ovf_U8);
+			Convert8.Set (Code.Conv_Ovf_U8_Un);
+			Console.WriteLine (Convert8);
+		}
+#endif
 	}
 }

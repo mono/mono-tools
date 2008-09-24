@@ -1,3 +1,24 @@
+2008-09-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FloatComparisonRule.cs: Change IsApplicable to static (self-test)
+	* MethodCanBeMadeStaticRule.cs: Add XML documentation. Remove
+	extra cast into a MethodReference in CheckMethod (self-test).
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs
+	* ReviewDoubleAssignmentRule.cs: Add OpCodeEngine to require a 
+	DUP instruction before analyzing a method. Add XML documentation.
+	* ReviewSelfAssignmentRule.cs: Add OpCodeEngine to require a
+	Stfld, Stsfld, Starg or Starg_S instruction before analyzing a 
+	method. Add XML documentation.
+	* ReviewUselessControlFlowRule.cs: Add OpCodeEngine to require a
+	conditional branch instruction before analyzing a method. Add XML 
+	documentation.
+	* ReviewUseOfInt64BitsToDoubleRule.cs: Add OpCodeEngine to 	
+	require a CALL[VIRT] *and* CONV*8* instructions before analyzing 
+	a method. Add XML documentation.
+	* ReviewUseOfModuloOneOnIntegersRule.cs: Add OpCodeEngine to 
+	require a REM[_UN] instruction before analyzing a method. Add XML 
+	documentation.
+
 2008-09-21  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* FloatComparisonRule.cs: Make it abstract so the non-test runners

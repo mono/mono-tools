@@ -56,7 +56,7 @@ namespace Gendarme.Rules.Correctness {
 			};
 		}
 
-		protected bool IsApplicable (MethodDefinition method)
+		static protected bool IsApplicable (MethodDefinition method)
 		{
 			// we only check methods with a body
 			if (!method.HasBody)

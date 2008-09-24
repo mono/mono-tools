@@ -32,12 +32,64 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule checks for methods that do not require anything from the current
+	/// instance. Those methods can be converted into static methods, which helps
+	/// a bit the performance (the hidden <c>this</c> parameter can be omitted),
+	/// and clarify the API.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	private int x, y, z;
+	///	
+	///	bool Valid (int value)
+	///	{
+	///		// the validation has no need to know the instance values
+	///		return (value > 0);
+	///	}
+	///	
+	///	public int X {
+	///		get {
+	///			return x;
+	///		}
+	///		set {
+	///			if (!Valid (value)) {
+	///				throw ArgumentException ("X");
+	///			}
+	///			x = value;
+	///		}
+	///	}
+	///	
+	///	// same for Y and Z
+	///}
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	private int x, y, z;
+	///	
+	///	static bool Valid (int value)
+	///	{
+	///		return (value > 0);
+	///	}
+	///	
+	///	// same X (and Y and Z) as before
+	///}
+	/// </code>
+	/// </example>
+
 	[Problem ("This method does not use any instance fields, properties or methods and can be made static.")]
 	[Solution ("Make this method static.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class MethodCanBeMadeStaticRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -59,12 +111,18 @@ namespace Gendarme.Rules.Correctness {
 			// rule applies
 
 			// if we find a use of the "this" reference, it's ok
+
+			// in most (all?) case "this" is used with the ldarg_0 instruction
+			if (OpCodeEngine.GetBitmask (method).Get (Code.Ldarg_0))
+				return RuleResult.Success;
+
+			// but it's also valid to have an ldarg with a 0 value operand
 			foreach (Instruction instr in method.Body.Instructions) {
-				if (instr.OpCode == OpCodes.Ldarg_0 || (instr.OpCode == OpCodes.Ldarg && (int) instr.Operand == 0))
+				if ((instr.OpCode.Code == Code.Ldarg) && ((int) instr.Operand == 0))
 					return RuleResult.Success;
 			}
 
-			Runner.Report (method, Severity.Low, Confidence.Total, string.Empty);
+			Runner.Report (method, Severity.Low, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

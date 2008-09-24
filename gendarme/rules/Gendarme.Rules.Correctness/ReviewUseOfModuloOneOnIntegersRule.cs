@@ -32,6 +32,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
@@ -39,9 +41,38 @@ namespace Gendarme.Rules.Correctness {
 	// rule idea credits to FindBug - http://findbugs.sourceforge.net/
 	// INT: Integer remainder modulo 1 (INT_BAD_REM_BY_1)
 
+	/// <summary>
+	/// This rule checks for a modulo one (1) operation on an integral type. This is most
+	/// likely a typo since the answer is always 0. This usually happen when someone confuse
+	/// a bitwise operation with a remainder.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool IsOdd (int i)
+	/// {
+	///	return ((i % 1) == 1);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public bool IsOdd (int i)
+	/// {
+	///	return ((i % 2) != 0); // or ((x &amp; 1) == 1)
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method compute the modulo (%) 1 of a integral value. This always evaluate to zero.")]
 	[Solution ("Verify the code logic. The likely logic is probably (i % 2) to separate even/odd or (i & 1) to check the least significant bit.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUseOfModuloOneOnIntegersRule : Rule, IMethodRule {
+
+		// Rem[_Un]
+		private static OpCodeBitmask Remainder = new OpCodeBitmask (0x0, 0x30000000, 0x0, 0x0);
 
 		static bool CheckModuloOne (Instruction ins)
 		{
@@ -65,6 +96,9 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			if (!Remainder.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {

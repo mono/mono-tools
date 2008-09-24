@@ -32,6 +32,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -41,9 +42,47 @@ namespace Gendarme.Rules.Correctness {
 	// SA: Self assignment of field (SA_FIELD_SELF_ASSIGNMENT)
 	// SA: Self assignment of local variable (SA_LOCAL_SELF_ASSIGNMENT)
 
+	/// <summary>
+	/// This rule checks for variables or fields that are assigned to themselves. 
+	/// This never change the value of the variable (or fields) but should be reviewed
+	/// since it could be a typo that hides a real issue in the code.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	private int value;
+	///	
+	///	public Bad (int value)
+	///	{
+	///		// argument is assigned to itself, this.value is unchanged
+	///		value = value;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	private int value;
+	///	
+	///	public Good (int value)
+	///	{
+	///		this.value = value;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method assign the variable or field to itself.")]
 	[Solution ("Verify the code logic. This is likely a typo which result in a wrong assignment.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewSelfAssignmentRule : Rule, IMethodRule {
+
+		// contains Stfld, Stsfld, Starg and Starg_S
+		static OpCodeBitmask mask = new OpCodeBitmask (0x10000, 0x2400000000000000, 0x0, 0x200);
 
 		static bool Compare (Instruction left, Instruction right, MethodDefinition method)
 		{
@@ -72,6 +111,10 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody || method.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
+
+			// exclude methods that don't store fields or arguments
+			if (!mask.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -118,5 +161,23 @@ namespace Gendarme.Rules.Correctness {
 			}
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask mask = new OpCodeBitmask ();
+			mask.Set (Code.Stfld);
+			mask.Set (Code.Stsfld);
+			/* if/when the local variables case is fixed 
+			mask.Set (Code.Stloc_0);
+			mask.Set (Code.Stloc_1);
+			mask.Set (Code.Stloc_2);
+			mask.Set (Code.Stloc_3);
+			mask.Set (Code.Stloc);
+			mask.Set (Code.Stloc_S); */
+			mask.Set (Code.Starg);
+			mask.Set (Code.Starg_S);
+			Console.WriteLine (mask);
+		}
+#endif
 	}
 }

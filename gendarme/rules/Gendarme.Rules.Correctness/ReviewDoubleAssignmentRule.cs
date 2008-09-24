@@ -32,6 +32,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -41,8 +42,46 @@ namespace Gendarme.Rules.Correctness {
 	// SA: Double assignment of field (SA_FIELD_DOUBLE_ASSIGNMENT)
 	// SA: Double assignment of local variable (SA_LOCAL_DOUBLE_ASSIGNMENT)
 
+	/// <summary>
+	/// This rule checks for variables or fields that are assigned multiple times 
+	/// to the same value. This never change the value of the variable (or fields) 
+	/// but should be reviewed since it could be a typo that hides a real issue in
+	/// the code.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	private int x, y;
+	///	
+	///	public Bad (int value)
+	///	{
+	///		// x is assigned twice, but y is not assigned
+	///		x = x = value;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	private int x, y;
+	///	
+	///	public Good (int value)
+	///	{
+	///		// x = y = value; was the original meaning but since it's confusing...
+	///		x = value;
+	///		y = value;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method assign the same value twice to the same variable or field.")]
 	[Solution ("Verify the code logic. This is likely a typo where the second assignment is unneeded or should have been assigned to another variable/field.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewDoubleAssignmentRule : Rule, IMethodRule {
 
 		static string CheckDoubleAssignementOnInstanceFields (MethodDefinition method, Instruction ins, Instruction next)
@@ -114,6 +153,10 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// exclude methods that don't have any DUP instruction
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Dup))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {

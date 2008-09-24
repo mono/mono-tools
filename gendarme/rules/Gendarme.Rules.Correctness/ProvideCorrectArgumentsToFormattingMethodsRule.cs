@@ -39,6 +39,26 @@ using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule checks that the format string provided to <c>String.Format</c> calls
+	/// match with its parameters.
+	/// </summary>
+	/// <example>
+	/// Bad examples:
+	/// <code>
+	///	string s1 = String.Format ("There is nothing to format here!");
+	///	string s2 = String.Format ("Hello {0}!"); // no argument to back {0}
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good examples:
+	/// <code>
+	///	string s1 = "There is nothing to format here!";
+	///	string s2 = String.Format ("Hello {0}!", name);
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("You are calling to a Format method without the correct arguments.  This could throw an unexpected FormatException.")]
 	[Solution ("Pass the correct arguments to the formatting method.")]
 	[EngineDependency (typeof (OpCodeEngine))]
@@ -176,11 +196,12 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if ((instruction.OpCode.FlowControl == FlowControl.Call) &&
-				 	formatSignature.Matches ((MethodReference) instruction.Operand) &&
-					String.Compare ("System.String", ((MethodReference) instruction.Operand).DeclaringType.ToString ()) == 0) {
+				if (instruction.OpCode.FlowControl != FlowControl.Call)
+					continue;
+
+				MethodReference mr = (instruction.Operand as MethodReference);
+				if (formatSignature.Matches (mr) && (mr.DeclaringType.FullName == "System.String"))
 					CheckCallToFormatter (instruction, method);
-				}
 			}
 
 			return Runner.CurrentRuleResult;
