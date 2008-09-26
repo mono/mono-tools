@@ -1,0 +1,36 @@
+.TH "mperfmon" 1
+.SH NAME
+mperfmon \- Mono Performance Counter Monitor
+.SH SYNOPSIS
+.B mperfmon
+[--config=FILE] [--report=REPORT_NAME] [--count=NUM] [pid]
+.SH OPTIONS
+.TP
+.I \-\-config=FILE
+Specifies the configuration file to load instead of the default one
+installed in the same directory as the app.
+.TP
+.I \-\-report=REPORT_NAME
+Instead of showing the GUI, run in console mode and print a report
+of the set of counters specified by REPORT_NAME and described in the
+config file. The report is printed for up to the number of times
+specified with the --count option.
+The \fIpid\fP argument is used as the instance name in the performance
+counters, it is typically the pid of a mono process.
+.TP
+.I \-\-count=NUM
+Sets the number of times a report is printed in console mode.
+The default is 2.
+.PP
+.SH DESCRIPTION
+mperfmon is a tool that allows you to monitor performance counters
+exposed by Mono processes or by the operating system.
+With the --report option it can be used on the console, otherwise
+a GUI is started. In GUI mode each counter added is monitored at
+user-specified time intervals (the default is 1 second) and it is
+shown in a graph as it changes over time.
+.PP
+.SH MAILING LISTS
+Visit http://lists.ximian.com/mailman/listinfo/mono-devel-list for details.
+.SH WEB SITE
+Visit http://www.mono-project.com for details

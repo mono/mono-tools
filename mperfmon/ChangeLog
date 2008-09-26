@@ -1,4 +1,8 @@
 
+Fri Sep 26 17:20:04 CEST 2008 Paolo Molaro <lupus@ximian.com>
+
+	* Makefile.am, mperfmon.1: added man page.
+
 Tue Sep 23 18:50:04 CEST 2008 Paolo Molaro <lupus@ximian.com>
 
 	* Added some simple configuration file support.
