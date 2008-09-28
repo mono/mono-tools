@@ -51,7 +51,6 @@
     <Compile Include="Shell.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="gtk-gui\Mono.CSharp.Gui.MainWindow.cs" />
-    <Compile Include="History.cs" />
     <Compile Include="ProcessSelector.cs" />
     <Compile Include="gtk-gui\Mono.CSharp.Gui.ProcessSelector.cs" />
   </ItemGroup>

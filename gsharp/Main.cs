@@ -14,11 +14,24 @@ namespace Mono.CSharp.Gui
 	class MainClass
 	{
 		public static bool Attached;
+		public static bool HostHasGtkRunning;
 		
 		public static void Main (string[] args)
 		{
 			if (args.Length > 0 && args [0] == "--agent"){
 				Attached = true;
+
+				// First, try to detect if Gtk.Application.Run is running,
+				// to determine whether we need to run a mainloop oursvels or not.
+				//
+				// This test is not bullet proof, its just a simple guess.
+				//
+				// Thanks to Alan McGovern for this brilliant hack. 
+				//
+				ManualResetEvent handle = new ManualResetEvent(false);
+				
+				Gtk.Application.Invoke (delegate { handle.Set (); });
+				HostHasGtkRunning = handle.WaitOne (3000, true);
 				
 				Gtk.Application.Invoke (delegate {
 					try {
@@ -44,7 +57,6 @@ namespace Mono.CSharp.Gui
 				return;
 			}
 			Start ("C# InteractiveBase Shell");
-			Application.Run ();
 		}
 
 		static void AssemblyLoaded (object sender, AssemblyLoadEventArgs e)
@@ -54,10 +66,13 @@ namespace Mono.CSharp.Gui
 				
 		public static void Start (string title)
 		{
-			Application.Init ();
+			if (!HostHasGtkRunning)
+				Application.Init ();
 			MainWindow m = new MainWindow ();
 			m.Title = title;
 			m.ShowAll ();
+			if (!HostHasGtkRunning)
+				Application.Run ();
 		}
 	}
 }

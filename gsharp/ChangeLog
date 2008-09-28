@@ -1,5 +1,12 @@
 2008-09-28  Miguel de Icaza <miguel@novell.com> 
 
+	* History.cs: Remove history, will implement a different system than
+	  the bash-like system.  This model does not match.
+	* Main.cs: Use a cool trick from Alan McGovern to guess whether the
+	  host application had Gtk running or not.
+
+2008-09-28  Miguel de Icaza <miguel@novell.com> 
+
 	* MainWindow.cs: New dialog box, based on Paolo's dialog box.
 	* gtk-gui/Mono.CSharp.Gui.MainWindow.cs: Add support for injecting
 	  ourselves into a process.

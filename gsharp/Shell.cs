@@ -46,7 +46,6 @@ namespace Mono.CSharp.Gui
     {        
         TextMark end_of_last_processing;
         string expr = null;
-		History history;
 		
         public Shell() : base()
         {
@@ -56,9 +55,6 @@ namespace Mono.CSharp.Gui
             Pango.FontDescription font_description = new Pango.FontDescription();
             font_description.Family = "Monospace";
             ModifyFont(font_description);
-
-			history = new History ("gsharp", 300);
-			history.CursorToEnd ();
 			
 			TextIter end = Buffer.EndIter;
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
@@ -146,7 +142,7 @@ namespace Mono.CSharp.Gui
 
 		void HistoryUpdateLine ()
 		{
-			history.Update (GetCurrentExpression ());
+			Console.WriteLine ("ADDED: {0}", GetCurrentExpression ());
 			expr = null;
 		}
 
@@ -170,23 +166,17 @@ namespace Mono.CSharp.Gui
 				string copy;
 				copy = expr = GetCurrentExpression ();
 					
-				if (Evaluate (expr))
-					history.Accept (copy);
-
+				if (Evaluate (expr)){
+				}
+				
                 return true;
 				
 			case Gdk.Key.Up:
-				if (!history.PreviousAvailable ())
-					return true;
-				HistoryUpdateLine ();
-				InputLine = history.Previous ();				
+				
                 return true;
 
 			case Gdk.Key.Down:
-				if (!history.NextAvailable ())
-					return true;
-				HistoryUpdateLine ();
-				InputLine = history.Next ();
+				
                 return true;
 				
 			case Gdk.Key.Left:
@@ -311,18 +301,6 @@ namespace Mono.CSharp.Gui
                 Buffer.Delete(ref start, ref end);
                 start = InputLineBegin;
                 Buffer.Insert(ref start, value);
-            }
-        }
-        
-        private bool InputLineStartsBlock {
-            get {
-                string line = InputLine.Trim();
-                
-                if(line.Length > 0) {
-                    return line.Substring(line.Length - 1) == ":";
-                } 
-                
-                return false;
             }
         }
 
