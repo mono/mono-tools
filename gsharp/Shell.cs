@@ -33,6 +33,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using Gtk;
 using Mono.CSharp;
@@ -62,6 +63,8 @@ namespace Mono.CSharp.Gui
 			TextIter end = Buffer.EndIter;
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
 			ShowPrompt (false);
+
+			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic;");
 		}
 
 		void CreateTags ()
@@ -241,7 +244,9 @@ namespace Mono.CSharp.Gui
 			TextIter end = Buffer.EndIter;
 
 			Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
-			Buffer.InsertWithTagsByName (ref end, res.ToString (), "Stdout");
+			StringWriter pretty = new StringWriter ();
+			PrettyPrint (pretty, res);
+			Buffer.InsertWithTagsByName (ref end, pretty.ToString (), "Stdout");
 		}
 
 		public void ShowError (string err)
@@ -319,5 +324,120 @@ namespace Mono.CSharp.Gui
                 return false;
             }
         }
+
+		static void p (TextWriter output, string s)
+		{
+			output.Write (s);
+		}
+
+		static string EscapeString (string s)
+		{
+			return s.Replace ("\"", "\\\"");
+		}
+
+		static void EscapeChar (TextWriter output, char c)
+		{
+			if (c == '\''){
+				output.Write ("'\\''");
+				return;
+			}
+			if (c > 32){
+				output.Write ("'{0}'", c);
+				return;
+			}
+			switch (c){
+			case '\a':
+				output.Write ("'\\a'");
+				break;
+
+			case '\b':
+				output.Write ("'\\b'");
+				break;
+				
+			case '\n':
+				output.Write ("'\\n'");
+				break;
+				
+			case '\v':
+				output.Write ("'\\v'");
+				break;
+				
+			case '\r':
+				output.Write ("'\\r'");
+				break;
+				
+			case '\f':
+				output.Write ("'\\f'");
+				break;
+				
+			case '\t':
+				output.Write ("'\\t");
+				break;
+
+			default:
+				output.Write ("'\\x{0:x}", (int) c);
+				break;
+			}
+		}
+		
+		internal static void PrettyPrint (TextWriter output, object result)
+		{
+			if (result == null){
+				p (output, "null");
+				return;
+			}
+			
+			if (result is Array){
+				Array a = (Array) result;
+				
+				p (output, "{ ");
+				int top = a.GetUpperBound (0);
+				for (int i = a.GetLowerBound (0); i <= top; i++){
+					PrettyPrint (output, a.GetValue (i));
+					if (i != top)
+						p (output, ", ");
+				}
+				p (output, " }");
+			} else if (result is bool){
+				if ((bool) result)
+					p (output, "true");
+				else
+					p (output, "false");
+			} else if (result is string){
+				p (output, String.Format ("\"{0}\"", EscapeString ((string)result)));
+			} else if (result is IDictionary){
+				IDictionary dict = (IDictionary) result;
+				int top = dict.Count, count = 0;
+				
+				p (output, "{");
+				foreach (DictionaryEntry entry in dict){
+					count++;
+					p (output, "{ ");
+					PrettyPrint (output, entry.Key);
+					p (output, ", ");
+					PrettyPrint (output, entry.Value);
+					if (count != top)
+						p (output, " }, ");
+					else
+						p (output, " }");
+				}
+				p (output, "}");
+			} else if (result is IEnumerable) {
+				int i = 0;
+				p (output, "{ ");
+				foreach (object item in (IEnumerable) result) {
+					if (i++ != 0)
+						p (output, ", ");
+
+					PrettyPrint (output, item);
+				}
+				p (output, " }");
+			} else if (result is char){
+				EscapeChar (output, (char) result);
+			} else {
+				p (output, result.ToString ());
+			}
+		}
+
     }
 }
