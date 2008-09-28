@@ -101,6 +101,7 @@ namespace Mono.CSharp.Gui
 			TextTag comment = new TextTag ("Comment") {
 				Foreground = "#3f7f5f"
 			};
+			Buffer.TagTable.Add (comment);
         }
 
 		//

@@ -19,6 +19,12 @@ namespace Mono.CSharp.Gui {
         
         private Gtk.Action QuitAction;
         
+        private Gtk.Action AttachToProcessAction;
+        
+        private Gtk.Action HelpAction;
+        
+        private Gtk.Action AboutAction;
+        
         private Gtk.VBox vbox1;
         
         private Gtk.MenuBar menubar1;
@@ -36,6 +42,15 @@ namespace Mono.CSharp.Gui {
             this.QuitAction = new Gtk.Action("QuitAction", Mono.Unix.Catalog.GetString("_Quit"), null, "gtk-quit");
             this.QuitAction.ShortLabel = Mono.Unix.Catalog.GetString("_Quit");
             w1.Add(this.QuitAction, null);
+            this.AttachToProcessAction = new Gtk.Action("AttachToProcessAction", Mono.Unix.Catalog.GetString("Attach to Process"), null, null);
+            this.AttachToProcessAction.ShortLabel = Mono.Unix.Catalog.GetString("Attach to Process");
+            w1.Add(this.AttachToProcessAction, null);
+            this.HelpAction = new Gtk.Action("HelpAction", Mono.Unix.Catalog.GetString("Help"), null, null);
+            this.HelpAction.ShortLabel = Mono.Unix.Catalog.GetString("Help");
+            w1.Add(this.HelpAction, null);
+            this.AboutAction = new Gtk.Action("AboutAction", Mono.Unix.Catalog.GetString("About"), null, null);
+            this.AboutAction.ShortLabel = Mono.Unix.Catalog.GetString("About");
+            w1.Add(this.AboutAction, null);
             this.UIManager.InsertActionGroup(w1, 0);
             this.AddAccelGroup(this.UIManager.AccelGroup);
             this.Name = "Mono.CSharp.Gui.MainWindow";
@@ -48,7 +63,7 @@ namespace Mono.CSharp.Gui {
             this.vbox1.Name = "vbox1";
             this.vbox1.Spacing = 6;
             // Container child vbox1.Gtk.Box+BoxChild
-            this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='QuitAction' action='QuitAction'/></menu></menubar></ui>");
+            this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AttachToProcessAction' action='AttachToProcessAction'/><separator/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='AboutAction' action='AboutAction'/></menu></menubar></ui>");
             this.menubar1 = ((Gtk.MenuBar)(this.UIManager.GetWidget("/menubar1")));
             this.menubar1.Name = "menubar1";
             this.vbox1.Add(this.menubar1);
@@ -69,6 +84,8 @@ namespace Mono.CSharp.Gui {
                 this.Child.ShowAll();
             }
             this.Show();
+            this.QuitAction.Activated += new System.EventHandler(this.OnQuitActionActivated);
+            this.AttachToProcessAction.Activated += new System.EventHandler(this.OnAttachToProcessActionActivated);
         }
     }
 }

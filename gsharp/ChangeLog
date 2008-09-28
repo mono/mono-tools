@@ -1,5 +1,12 @@
 2008-09-28  Miguel de Icaza <miguel@novell.com> 
 
+	* MainWindow.cs: New dialog box, based on Paolo's dialog box.
+	* gtk-gui/Mono.CSharp.Gui.MainWindow.cs: Add support for injecting
+	  ourselves into a process.
+	* Main.cs: Add support for injecting the code into the target process.
+
+2008-09-28  Miguel de Icaza <miguel@novell.com> 
+
 	
 
 2008-09-28  Miguel de Icaza <miguel@novell.com> 

@@ -24,12 +24,28 @@
 //
 
 using System;
+using Gtk;
+using Mono.Attach;
 
 namespace Mono.CSharp.Gui
 {
 	public partial class MainWindow : Gtk.Window
 	{
 		Shell shell;
+		
+		
+		protected virtual void OnAttachToProcessActionActivated (object sender, System.EventArgs e)
+		{
+			ProcessSelector p = new ProcessSelector ();
+			int c = p.Run ();
+			if (c == (int) ResponseType.Ok){
+				VirtualMachine vm = new VirtualMachine (p.PID);
+
+				vm.Attach (typeof (MainWindow).Assembly.Location, "--agent");
+			}
+			
+			p.Destroy ();
+		}
 
 		public MainWindow() : base(Gtk.WindowType.Toplevel)
 		{
@@ -41,6 +57,15 @@ namespace Mono.CSharp.Gui
 			
 			sw.Add (shell);
 			Focus = shell;
+		}
+
+		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
+		{
+			if (MainClass.Attached){
+				this.Destroy ();
+			} else {
+				Application.Quit ();
+			}
 		}
 		
 	}
