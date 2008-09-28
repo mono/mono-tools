@@ -37,6 +37,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
+	/// <summary>
+	/// This rule checks every type to see how deep is it's inheritance tree inside
+	/// the analyzed assembly set. By default (configurable) the rule will warn if the
+	/// depth is greater than four levels. Optionally (configurable) it can include any
+	/// resolvable assembly (out of the analyzed assembly set) in the check.
+	/// </summary>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The methods in this class lacks cohesion (higher score are better). This leads to code harder to understand and maintain.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule

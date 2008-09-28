@@ -35,6 +35,39 @@ using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Maintainability {
 
+	/// <summary>
+	/// This rule checks methods for cases where <c>String.IsNullOrEmpty</c> could be
+	/// used instead of doing separate null and length checks. This does not affect
+	/// execution nor (much) performance but it improves source code readability.
+	/// This rule only applies to assemblies compiled with the .NET framework version 
+	/// 2.0 (or later).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool SendMessage (string message)
+	/// {
+	///	if ((message == null) || (message.Length == 0)) {
+	///		return false;
+	///	}
+	///	return SendMessage (Encode (message));
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public bool SendMessage (string message)
+	/// {
+	///	if (String.IsNullOrEmpty (message)) {
+	///		return false;
+	///	}
+	///	return SendMessage (Encode (message));
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method does string null and length check which can be harder on code readability/maintainability.")]
 	[Solution ("Replace both checks with a single call to String.IsEmptyOrNull.")]
 	[EngineDependency (typeof (OpCodeEngine))]

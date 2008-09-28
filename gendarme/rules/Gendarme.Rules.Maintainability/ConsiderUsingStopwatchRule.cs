@@ -40,6 +40,37 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Maintainability {
 
+	/// <summary>
+	/// This rule checks methods for cases where a <c>System.Diagnostics.Stopwatch</c> could be
+	/// used instead of using <c>System.DateTime</c> to compute the time required for an action.
+	/// This does not affect execution nor (much) performance but it improves source 
+	/// code readability. This rule only applies to assemblies compiled with the 
+	/// .NET framework version 2.0 (or later).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public TimeSpan DoLongOperation ()
+	/// {
+	///	DateTime start = DateTime.Now;
+	///	DownloadNewOpenSuseDvdIso ();
+	///	return DateTime.Now - start;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public TimeSpan DoLongOperation ()
+	/// {
+	///	Stopwatch watch = Stopwatch.StartNew ();
+	///	DownloadNewOpenSuseDvdIso ();
+	///	return watch.Elapsed;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method uses difference between two DateTime.Now calls to retrieve processing time. Developer's intent may not be very clear.")]
 	[Solution ("Use System.Diagnostics.Stopwatch.")]
 	[EngineDependency (typeof (OpCodeEngine))]
