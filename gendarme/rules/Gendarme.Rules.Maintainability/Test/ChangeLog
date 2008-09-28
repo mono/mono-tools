@@ -1,3 +1,8 @@
+2008-09-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationTest.cs: Add a test cases for a
+	false positive we get when more than one generic constraint exist.
+
 2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepInheritanceTreeTest.cs: Use SimpleTests for DoesNotApply

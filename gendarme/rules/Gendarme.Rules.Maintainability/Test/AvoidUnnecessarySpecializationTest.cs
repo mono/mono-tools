@@ -443,5 +443,14 @@ namespace Test.Rules.Maintainability {
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("CheckValueType");
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("CheckArray");
 		}
+
+		[Test]
+		[Ignore ("rule is limited to one constraint, there are two in this case: ValueType and IConvertible")]
+		public void GenericParameters ()
+		{
+			// rule suggest IConvertible which is (one of) the constraint on <T>
+			AssertRuleSuccess<Bitmask<Confidence>> ("Get");
+			AssertRuleSuccess<Bitmask<Confidence>> ("Set");
+		}
 	}
 }
