@@ -42,19 +42,19 @@ using System.ComponentModel;
 namespace Mono.CSharp.Gui
 {
 	[ToolboxItem (true)]
-    public class Shell : TextView
-    {        
-        TextMark end_of_last_processing;
-        string expr = null;
+	public class Shell : TextView
+	{        
+		TextMark end_of_last_processing;
+		string expr = null;
 		
-        public Shell() : base()
-        {
-            WrapMode = WrapMode.Word;
-        	CreateTags ();
+		public Shell() : base()
+		{
+			WrapMode = WrapMode.Word;
+			CreateTags ();
 
-            Pango.FontDescription font_description = new Pango.FontDescription();
-            font_description.Family = "Monospace";
-            ModifyFont(font_description);
+			Pango.FontDescription font_description = new Pango.FontDescription();
+			font_description.Family = "Monospace";
+			ModifyFont(font_description);
 			
 			TextIter end = Buffer.EndIter;
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
@@ -65,40 +65,40 @@ namespace Mono.CSharp.Gui
 
 		void CreateTags ()
 		{
-            TextTag freeze_tag = new TextTag("Freezer") {
-            	Editable = false
-			};
-            Buffer.TagTable.Add(freeze_tag);
+			TextTag freeze_tag = new TextTag("Freezer") {
+					Editable = false
+						};
+			Buffer.TagTable.Add(freeze_tag);
 
-            TextTag prompt_tag = new TextTag("Prompt") {
-            	Foreground = "blue",
-            	//Background = "#f8f8f8",
-            	Weight = Pango.Weight.Bold
-			};
-            Buffer.TagTable.Add(prompt_tag);
+			TextTag prompt_tag = new TextTag("Prompt") {
+					Foreground = "blue",
+					//Background = "#f8f8f8",
+						Weight = Pango.Weight.Bold
+						};
+			Buffer.TagTable.Add(prompt_tag);
             
-            TextTag prompt_continuation_tag = new TextTag("PromptContinuation") {
-            	Foreground = "orange",
-            	//Background = "#f8f8f8",
-            	Weight = Pango.Weight.Bold
-			};
-            Buffer.TagTable.Add(prompt_continuation_tag);
+			TextTag prompt_continuation_tag = new TextTag("PromptContinuation") {
+					Foreground = "orange",
+					//Background = "#f8f8f8",
+						Weight = Pango.Weight.Bold
+						};
+			Buffer.TagTable.Add(prompt_continuation_tag);
             
-            TextTag error_tag = new TextTag("Error") {
-            	Foreground = "red"
-			};
-            Buffer.TagTable.Add(error_tag);
+			TextTag error_tag = new TextTag("Error") {
+					Foreground = "red"
+						};
+			Buffer.TagTable.Add(error_tag);
             
-            TextTag stdout_tag = new TextTag("Stdout") {
-            	Foreground = "#006600"
-			};
-            Buffer.TagTable.Add(stdout_tag);
+			TextTag stdout_tag = new TextTag("Stdout") {
+					Foreground = "#006600"
+						};
+			Buffer.TagTable.Add(stdout_tag);
 
 			TextTag comment = new TextTag ("Comment") {
-				Foreground = "#3f7f5f"
-			};
+					Foreground = "#3f7f5f"
+						};
 			Buffer.TagTable.Add (comment);
-        }
+		}
 
 		//
 		// Returns true if the line is complete, so that the line can be entered
@@ -153,12 +153,12 @@ namespace Mono.CSharp.Gui
 			return expr == null ? input : expr + "\n" + input;
 		}
 
-        protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
-        {
-            if(Cursor.Compare (InputLineBegin) < 0) {
-                Buffer.MoveMark(Buffer.SelectionBound, InputLineEnd);
-                Buffer.MoveMark(Buffer.InsertMark, InputLineEnd);
-            }
+		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
+		{
+			if(Cursor.Compare (InputLineBegin) < 0) {
+				Buffer.MoveMark(Buffer.SelectionBound, InputLineEnd);
+				Buffer.MoveMark(Buffer.InsertMark, InputLineEnd);
+			}
 
 			switch (evnt.Key){
 			case Gdk.Key.Return:
@@ -169,66 +169,66 @@ namespace Mono.CSharp.Gui
 				if (Evaluate (expr)){
 				}
 				
-                return true;
+				return true;
 				
 			case Gdk.Key.Up:
 				
-                return true;
+				return true;
 
 			case Gdk.Key.Down:
 				
-                return true;
+				return true;
 				
 			case Gdk.Key.Left:
-                if(Cursor.Compare(InputLineBegin) <= 0) {
-                    return true;
-                }
+				if(Cursor.Compare(InputLineBegin) <= 0) {
+					return true;
+				}
 				break;
 				
 			case Gdk.Key.Home:
-                Buffer.MoveMark(Buffer.InsertMark, InputLineBegin);
-                if((evnt.State & Gdk.ModifierType.ShiftMask) == evnt.State) {
-                    Buffer.MoveMark(Buffer.SelectionBound, InputLineBegin);
-                }
-                return true;
+				Buffer.MoveMark(Buffer.InsertMark, InputLineBegin);
+				if((evnt.State & Gdk.ModifierType.ShiftMask) == evnt.State) {
+					Buffer.MoveMark(Buffer.SelectionBound, InputLineBegin);
+				}
+				return true;
 			default:
 				break;
 			}
 			
-            return base.OnKeyPressEvent(evnt);
-        }
+			return base.OnKeyPressEvent(evnt);
+		}
         
-        public void ShowPrompt(bool newline)
-        {
-            ShowPrompt (newline, false);
-        }
+		public void ShowPrompt(bool newline)
+		{
+			ShowPrompt (newline, false);
+		}
         
-        private void ShowPrompt (bool newline, bool continuation)
-        {
-            TextIter end_iter = Buffer.EndIter;
+		private void ShowPrompt (bool newline, bool continuation)
+		{
+			TextIter end_iter = Buffer.EndIter;
             
-            if(newline) {
-                Buffer.Insert(ref end_iter, "\n");
-            }
+			if(newline) {
+				Buffer.Insert(ref end_iter, "\n");
+			}
 
 			string prompt = continuation ? InteractiveBase.ContinuationPrompt : InteractiveBase.Prompt;
-            Buffer.Insert(ref end_iter, prompt);
+			Buffer.Insert(ref end_iter, prompt);
             
-            Buffer.PlaceCursor(Buffer.EndIter);
-            ScrollMarkOnscreen(Buffer.InsertMark);
+			Buffer.PlaceCursor(Buffer.EndIter);
+			ScrollMarkOnscreen(Buffer.InsertMark);
             
-            end_of_last_processing = Buffer.CreateMark(null, Buffer.EndIter, true);
-            Buffer.ApplyTag(Buffer.TagTable.Lookup("Freezer"), Buffer.StartIter, InputLineBegin);
+			end_of_last_processing = Buffer.CreateMark(null, Buffer.EndIter, true);
+			Buffer.ApplyTag(Buffer.TagTable.Lookup("Freezer"), Buffer.StartIter, InputLineBegin);
             
-            TextIter prompt_start_iter = InputLineBegin;
-            prompt_start_iter.LineIndex -= prompt.Length;
+			TextIter prompt_start_iter = InputLineBegin;
+			prompt_start_iter.LineIndex -= prompt.Length;
             
-            TextIter prompt_end_iter = InputLineBegin;
-            prompt_end_iter.LineIndex -= 1;
+			TextIter prompt_end_iter = InputLineBegin;
+			prompt_end_iter.LineIndex -= 1;
             
-            Buffer.ApplyTag(Buffer.TagTable.Lookup(continuation ? "PromptContinuation" : "Prompt"), 
-                prompt_start_iter, prompt_end_iter);
-        }
+			Buffer.ApplyTag(Buffer.TagTable.Lookup(continuation ? "PromptContinuation" : "Prompt"), 
+					prompt_start_iter, prompt_end_iter);
+		}
 
 		public void ShowResult (object res)
 		{
@@ -247,62 +247,62 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, "\n" + err, "Error");
 		}
 		
-#if false
-        public void SetResult (InterpreterResult result)
-        {
-            if(!IsRealized) {
-                return;
-            }
+		#if false
+			public void SetResult (InterpreterResult result)
+			{
+				if(!IsRealized) {
+					return;
+				}
             
-            TextIter end_iter = Buffer.EndIter;
+				TextIter end_iter = Buffer.EndIter;
             
-            StringBuilder builder = new StringBuilder();
-            if(result.Errors.Count > 0) {
-                foreach(string error in result.Errors) {
-                    builder.Append(error + "\n");
-                }
-            } else if(result.Message == null) {
-                ShowPrompt (true);
-                return;
-            } else {
-                builder.Append(result.Message);
-            }
+				StringBuilder builder = new StringBuilder();
+				if(result.Errors.Count > 0) {
+					foreach(string error in result.Errors) {
+						builder.Append(error + "\n");
+					}
+				} else if(result.Message == null) {
+					ShowPrompt (true);
+					return;
+				} else {
+					builder.Append(result.Message);
+				}
             
-            string str_result = builder.ToString().Trim();
-            Buffer.Insert(ref end_iter, "\n" + str_result);
+				string str_result = builder.ToString().Trim();
+				Buffer.Insert(ref end_iter, "\n" + str_result);
             
-            TextIter start_iter = end_iter;
-            start_iter.Offset -= str_result.Length;
-            Buffer.ApplyTag(Buffer.TagTable.Lookup(result.Errors.Count > 0 ? "Error" : "Stdout"), 
-                start_iter, end_iter);
+				TextIter start_iter = end_iter;
+				start_iter.Offset -= str_result.Length;
+				Buffer.ApplyTag(Buffer.TagTable.Lookup(result.Errors.Count > 0 ? "Error" : "Stdout"), 
+						start_iter, end_iter);
             
-            if(script_lines != null) {
-                ShowPrompt (true);
-            }
-        }
-#endif
-        private TextIter InputLineBegin {
-            get { return Buffer.GetIterAtMark(end_of_last_processing); }
-        }
+				if(script_lines != null) {
+					ShowPrompt (true);
+				}
+			}
+		#endif
+			private TextIter InputLineBegin {
+			get { return Buffer.GetIterAtMark(end_of_last_processing); }
+		}
         
-        private TextIter InputLineEnd {
-            get { return Buffer.EndIter; }
-        }
+		private TextIter InputLineEnd {
+			get { return Buffer.EndIter; }
+		}
         
-        private TextIter Cursor {
-            get { return Buffer.GetIterAtMark(Buffer.InsertMark); }
-        }
+		private TextIter Cursor {
+			get { return Buffer.GetIterAtMark(Buffer.InsertMark); }
+		}
 
-        private string InputLine {
-            get { return Buffer.GetText(InputLineBegin, InputLineEnd, false); }
-            set {
-                TextIter start = InputLineBegin;
-                TextIter end = InputLineEnd;
-                Buffer.Delete(ref start, ref end);
-                start = InputLineBegin;
-                Buffer.Insert(ref start, value);
-            }
-        }
+		private string InputLine {
+			get { return Buffer.GetText(InputLineBegin, InputLineEnd, false); }
+			set {
+				TextIter start = InputLineBegin;
+				TextIter end = InputLineEnd;
+				Buffer.Delete(ref start, ref end);
+				start = InputLineBegin;
+				Buffer.Insert(ref start, value);
+			}
+		}
 
 		static void p (TextWriter output, string s)
 		{
@@ -418,5 +418,5 @@ namespace Mono.CSharp.Gui
 			}
 		}
 
-    }
+	}
 }
