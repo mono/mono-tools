@@ -1,4 +1,4 @@
-EXTRA_DIST = *.cs Test.Rules.Concurrency.mdp Tests.Rules.Concurrency.csproj
+EXTRA_DIST = $(addprefix $(srcdir)/, *.cs) Test.Rules.Concurrency.mdp Tests.Rules.Concurrency.csproj
 DISTCLEANFILES = Makefile.in
 
 all:

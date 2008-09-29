@@ -1,4 +1,4 @@
-EXTRA_DIST = *.cs 
+EXTRA_DIST = $(addprefix $(srcdir)/, *.cs)
 DISTCLEANFILES = Makefile.in
 
 all:

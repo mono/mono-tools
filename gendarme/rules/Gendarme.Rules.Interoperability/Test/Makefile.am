@@ -1,4 +1,4 @@
-EXTRA_DIST = *.cs Test.Rules.Interoperability.mdp
+EXTRA_DIST = $(addprefix $(srcdir)/, *.cs) Test.Rules.Interoperability.mdp Tests.Rules.Interoperability.csproj
 DISTCLEANFILES = Makefile.in 
 
 all:

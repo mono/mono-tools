@@ -21,7 +21,7 @@ EXTRA_DIST = rules.xml rules.mds tests.mds common.make
 DISTCLEANFILES = Makefile.in
 
 install-data-hook:
-	$(INSTALL) -c -m 0644 rules.xml $(DESTDIR)$(prefix)/lib/gendarme;
+	$(INSTALL) -c -m 0644 $(addprefix $(srcdir)/, rules.xml) $(DESTDIR)$(prefix)/lib/gendarme;
 
 uninstall-hook:
 	rm -f $(DESTDIR)$(prefix)/lib/gendarme/`basename rules.xml`;
