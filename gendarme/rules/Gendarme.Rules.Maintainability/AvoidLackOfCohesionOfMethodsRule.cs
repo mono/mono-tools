@@ -58,7 +58,7 @@ namespace Gendarme.Rules.Maintainability {
 
 			//yay! rule do apply!
 			double coh = GetCohesivenessForType (type);
-			if (coh > SuccessLowerLimit)
+			if (coh >= SuccessLowerLimit)
 				return RuleResult.Success;
 			if (0 == coh)
 				return RuleResult.DoesNotApply;
