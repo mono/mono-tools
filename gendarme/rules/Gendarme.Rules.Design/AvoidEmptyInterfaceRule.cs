@@ -32,8 +32,33 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks every interface to ensure they are not empty. Empty interface don't 
+	/// add anything useful and in many case are only used as a marker on a type. For the 
+	/// last case it is more elegant to define and use an attribute.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public interface IMarker {
+	/// }
+	/// 
+	/// public class MyClass : IMarker {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [MarkedByAnAttribute]
+	/// public class MyClass {
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This interface does not define any members. This is generally a sign that the interface is used as a marker.")]
 	[Solution ("Review the interface usage. If used as a marker then see if it could be replaced by using attributes.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1040:AvoidEmptyInterfaces")]
 	public class AvoidEmptyInterfaceRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

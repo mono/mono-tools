@@ -32,8 +32,36 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule ensure that <c>abstract</c> types do not have <c>public</c> constructor 
+	/// since they cannot be instantied by user code. Changing the constructor(s) visibility
+	/// to <c>protected</c> keeps the type functionality identical and makes it clear that
+	/// the type is there to be inherited from.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// abstract public class MyClass {
+	///	public MyClass ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// abstract public class MyClass {
+	///	protected MyClass ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This abstract type provides public constructor(s).")]
 	[Solution ("Change constructor visibility to protected.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
 	public class AbstractTypesShouldNotHavePublicConstructorsRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

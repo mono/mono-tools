@@ -33,23 +33,54 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks every type for externally visible fields. Using a property offers
+	/// much more future freedom to adjust the behavior and validations on a field value
+	/// without breaking binary compatibility.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Foo {
+	///	public int Value;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Foo {
+	///	private int v;
+	///	public int Value {
+	///	get {
+	///		return v;
+	///	}
+	///	set {
+	///		v = value;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.2 this rule was named AvoidPublicInstanceFieldsRule.</remarks>
+
 	[Problem ("This type contains public instance fields.")]
 	[Solution ("If possible change the public fields into properties.")]
-	public class AvoidPublicInstanceFieldsRule : Rule, ITypeRule {
+	[FxCopCompatibility ("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+	public class AvoidVisibleFieldsRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule doesn't apply on enums or to compiler/tools-generated code
+			// rule doesn't apply on enums, interfaces, delegates or to compiler/tools-generated code
 			// e.g. CSC compiles anonymous methods as an inner type that expose public fields
-			if (type.IsEnum || type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsInterface || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 			
-			// rule doesn't apply to private or internal nested types
-			if (type.IsNestedPrivate || type.IsNestedAssembly)
+			// rule doesn't apply to type non (externally) visible
+			if (!type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition fd in type.Fields) {
-				if (!fd.IsPublic || fd.IsSpecialName || fd.IsStatic || fd.HasConstant || fd.IsInitOnly)
+				if (!fd.IsVisible () || fd.IsSpecialName || fd.HasConstant || fd.IsInitOnly)
 					continue;
 
 				if (fd.FieldType.IsArray ()) {
@@ -57,7 +88,7 @@ namespace Gendarme.Rules.Design {
 						fd.Name, Char.ToUpper (fd.Name [0]) + fd.Name.Substring (1));
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				} else {
-					string s = String.Format ("Public instance field '{0}' should probably be a property.", fd.Name);
+					string s = String.Format ("Public instance field '{0}' should be changed into a property.", fd.Name);
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				}
 			}

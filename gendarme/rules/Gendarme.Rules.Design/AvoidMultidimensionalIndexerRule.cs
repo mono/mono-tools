@@ -35,8 +35,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for indexer properties that use more than one index on visible types.
+	/// Such indexers are often confusing to use (e.g. index orders) and are better 
+	/// represented by a method.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public int this [int x, int y] {
+	///	get {
+	///		return 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public int Get (int x, int y)
+	/// {
+	///	return 0;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.02</remarks>
+
 	[Problem ("This indexer use multiple indexes and this limit its usability.")]
 	[Solution ("Convert this indexer into a method.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional")]
 	public class AvoidMultidimensionalIndexerRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

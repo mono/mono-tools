@@ -34,8 +34,65 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule ensure that all parameters passed to an <c>Attribute</c> constructor must 
+	/// be visible through properties with properly cased names.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public sealed class AttributeWithRequiredProperties : Attribute {
+	///	private int storedFoo;
+	///	private string storedBar;
+	///	
+	///	// we have no corresponding property with the name 'Bar' so the rule will fail
+	///	public AttributeWithRequiredProperties (int foo, string bar)
+	///	{
+	///		storedFoo = foo;
+	///		storedBar = bar;
+	///	}
+	///	
+	///	public int Foo {
+	///		get {
+	///			return storedFoo;
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public sealed class AttributeWithRequiredProperties : Attribute {
+	/// 	private int storedFoo;
+	/// 	private string storedBar;
+	/// 	
+	/// 	public AttributeWithRequiredProperties (int foo, string bar)
+	/// 	{
+	/// 		storedFoo = foo;
+	/// 		storedBar = bar;
+	/// 	}
+	/// 	
+	/// 	public int Foo {
+	/// 		get {
+	///			return storedFoo; 
+	/// 		}
+	/// 	}
+	/// 	
+	/// 	public string Bar {
+	/// 		get {
+	/// 			return storedBar;
+	/// 		}
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("All parameter values passed to this type constructors should be visible through read-only properties.")]
 	[Solution ("Add the missing properties getters to this type.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments")]
 	public class AttributeArgumentsShouldHaveAccessorsRule : Rule, ITypeRule {
 
 		private List<string> allProperties = new List<string> ();

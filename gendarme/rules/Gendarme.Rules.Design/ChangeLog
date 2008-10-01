@@ -1,3 +1,18 @@
+2008-09-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute.
+	* AttributeArgumentsShouldHaveAccessorsRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* AvoidEmptyInterfaceRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* AvoidMultidimensionalIndexerRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* AvoidPropertiesWithoutGetAccessorRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* AvoidPublicInstanceFieldsRule.cs: Rename to AvoidVisibleFieldsRule.
+	Add XML documentation and [FxCopCompatibility] attribute.
+
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: Remove the unneeded call to

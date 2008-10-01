@@ -33,8 +33,51 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for indexer properties that use more than one index on visible types.
+	/// Such indexers are often confusing to use (e.g. index orders) and are better 
+	/// represented by a method.
+	/// </summary>
+	/// <example>
+	/// Bad examples:
+	/// <code>
+	/// public double Seed {
+	///	// no get since there's no use case for it
+	///	set {
+	///		seed = value;
+	///	}
+	/// }
+	/// 
+	/// public sting Password {
+	///	// no get as we don't want to expose the password
+	///	set {
+	///		password = value;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good examples:
+	/// <code>
+	/// public double Seed {
+	///	get {
+	///		return seed;
+	///	}
+	///	set {
+	///		seed = value;
+	///	}
+	/// }
+	/// 
+	/// public void SetPassword (string value)
+	/// {
+	///	password = value;
+	/// }	
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains some properties that have only setters.")]
 	[Solution ("Add a getter to the property or change the property into a method.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1044:PropertiesShouldNotBeWriteOnly")]
 	public class AvoidPropertiesWithoutGetAccessorRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
