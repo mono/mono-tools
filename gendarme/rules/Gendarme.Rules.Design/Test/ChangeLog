@@ -1,3 +1,16 @@
+2008-09-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AbstractTypesShouldNotHavePublicConstructorsTest.cs: Convert 
+	to new test syntax. Add more coverage.
+	* AttributeArgumentsShouldHaveAccessorsTest.cs: Convert to new 
+	test syntax.
+	* AvoidEmptyInterfaceTest.cs: Convert to new test syntax.
+	* AvoidMultidimensionalIndexerTest.cs: Remove unneeded "using".
+	* AvoidPropertiesWithoutGetAccessorTest.cs: Convert to new test 
+	syntax.
+	* AvoidPublicInstanceFieldsTest.cs: Convert to new test syntax.
+	Add more coverage. Remove some warnings.
+
 2008-09-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* DeclareEventHandlersCorrectlyTest.cs: A little test for the false

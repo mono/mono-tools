@@ -24,21 +24,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Reflection;
-
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class AvoidEmptyInterfaceTest {
+	public class AvoidEmptyInterfaceTest : TypeRuleTestFixture<AvoidEmptyInterfaceRule> {
 
 		interface IAmEmpty {
 		}
@@ -50,51 +44,23 @@ namespace Test.Rules.Design {
 		interface IImplementSeveralInterfaces : IAmEmpty, IAmNotEmpty {
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidEmptyInterfaceRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.AvoidEmptyInterfaceTest" + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
 		[Test]
 		public void NotAnInterface ()
 		{
-			TypeDefinition type = GetTest (String.Empty);
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<AvoidEmptyInterfaceTest> ();
 		}
 
 		[Test]
 		public void Empty ()
 		{
-			TypeDefinition type = GetTest ("/IAmEmpty");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IAmEmpty> (1);
 		}
 
 		[Test]
 		public void NotEmpty ()
 		{
-			TypeDefinition type = GetTest ("/IAmNotEmpty");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			type = GetTest ("/IImplementSeveralInterfaces");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleSuccess<IAmNotEmpty> ();
+			AssertRuleSuccess<IImplementSeveralInterfaces> ();
 		}
 	}
 }

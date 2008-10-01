@@ -1,5 +1,5 @@
 //
-// Unit tests for AvoidPublicInstanceFieldsRule
+// Unit tests for AvoidVisibleFieldsRule
 //
 // Authors:
 //	Adrian Tsai <adrian_tsai@hotmail.com>
@@ -26,28 +26,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
-	[TestFixture]
-	public class AvoidPublicInstanceFieldsTest {
+#pragma warning disable 169, 649
 
-		public class ShouldBeCaught {
-			public int x;
+	[TestFixture]
+	public class AvoidVisibleFieldsTest : TypeRuleTestFixture<AvoidVisibleFieldsRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+		}
+
+		public class ClassProtectedField {
+			protected int x;
+		}
+
+		public struct StructPublicField {
+			public long y;
+		}
+
+		[Test]
+		public void TestShouldBeCaught ()
+		{
+			AssertRuleFailure<ClassProtectedField> (1);
+			AssertRuleFailure<ClassProtectedField> (1);
 		}
 
 		public class ShouldBeIgnored {
-			protected int y;
+			internal int y;
 			private int z;
+		}
+
+		[Test]
+		public void TestShouldBeIgnored ()
+		{
+			AssertRuleSuccess<ShouldBeIgnored> ();
 		}
 
 		public class ArraySpecialCase {
@@ -55,8 +79,20 @@ namespace Test.Rules.Design {
 			public string [] files;
 		}
 
-		public class StaticSpecialCase {
+		[Test]
+		public void TestArraySpecialCase ()
+		{
+			AssertRuleFailure<ArraySpecialCase> (2);
+		}
+
+		public class StaticFieldCase {
 			public static int x;
+		}
+
+		[Test]
+		public void TestStaticCase ()
+		{
+			AssertRuleFailure<StaticFieldCase> (1);
 		}
 
 		public class ConstSpecialCase {
@@ -67,139 +103,41 @@ namespace Test.Rules.Design {
 			public readonly int x = 1;
 		}
 
-		public class NestedParent {
-			public class NestedPublic {
-				public string name;
-			}
-
-			protected class NestedProtected {
-				public string name;
-			}
-
-			private class NestedPrivate {
-				public string name;
-			}
-
-			internal class NestedInternal {
-				public string name;
-			}
-		}
-
-		public enum Enum {
-			Zero,
-			One
-		}
-
-		[Flags]
-		public enum Flags {
-			One,
-			Two
-		}
-
-
-		private ITypeRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Design.AvoidPublicInstanceFieldsTest"];
-			rule = new AvoidPublicInstanceFieldsRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.AvoidPublicInstanceFieldsTest/" + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
-		[Test]
-		public void TestShouldBeCaught ()
-		{
-			TypeDefinition type = GetTest ("ShouldBeCaught");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestShouldBeIgnored ()
-		{
-			TypeDefinition type = GetTest ("ShouldBeIgnored");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestArraySpecialCase ()
-		{
-			TypeDefinition type = GetTest ("ArraySpecialCase");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestEnum ()
-		{
-			TypeDefinition type = GetTest ("Enum");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestFlags ()
-		{
-			TypeDefinition type = GetTest ("Flags");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestNonPublicNested ()
-		{
-			TypeDefinition type = GetTest ("NestedParent/NestedPublic");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-
-			type = GetTest ("NestedParent/NestedProtected");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-
-			type = GetTest ("NestedParent/NestedPrivate");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult3");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-
-			type = GetTest ("NestedParent/NestedInternal");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult4");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestStaticSpecialCase ()
-		{
-			TypeDefinition type = GetTest ("StaticSpecialCase");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
 		[Test]
 		public void TestConstSpecialCase ()
 		{
-			TypeDefinition type = GetTest ("ConstSpecialCase");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ConstSpecialCase> ();
 		}
 
 		[Test]
 		public void TestReadOnlySpecialCase ()
 		{
-			TypeDefinition type = GetTest ("ReadOnlySpecialCase");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ReadOnlySpecialCase> ();
+		}
+
+		public class NestedPublic {
+			public string name;
+		}
+
+		protected class NestedProtected {
+			public string name;
+		}
+
+		private class NestedPrivate {
+			public string name;
+		}
+
+		internal class NestedInternal {
+			public string name;
+		}
+
+		[Test]
+		public void TestNested ()
+		{
+			AssertRuleFailure<NestedPublic> (1);
+			AssertRuleFailure<NestedProtected> (1);
+			AssertRuleDoesNotApply<NestedPrivate> ();
+			AssertRuleDoesNotApply<NestedInternal> ();
 		}
 	}
 }

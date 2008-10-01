@@ -26,13 +26,10 @@
 
 using System;
 
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 	internal class JustClass {
@@ -199,99 +196,61 @@ namespace Test.Rules.Design {
 		}
 	}
 
-
-
 	[TestFixture]
-	public class AttributeArgumentsShouldHaveAccessorsTest {
-
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AttributeArgumentsShouldHaveAccessorsRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
-		}
+	public class AttributeArgumentsShouldHaveAccessorsTest : TypeRuleTestFixture<AttributeArgumentsShouldHaveAccessorsRule> {
 
 		[Test]
 		public void TestEmptyAttribute ()
 		{
-			TypeDefinition type = GetTest<EmptyAttribute> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<EmptyAttribute> ();
 		}
 
 		[Test]
 		public void TestJustClass ()
 		{
-			TypeDefinition type = GetTest<JustClass> ();
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<JustClass> ();
 		}
 
 		[Test]
 		public void TestMultiConstructorNoAccessorsMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<MultiConstructorNoAccessorsMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<MultiConstructorNoAccessorsMissingAttribute> ();
 		}
 
 		[Test]
 		public void TestMultiConstructorOneAccessorMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<MultiConstructorOneAccessorMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<MultiConstructorOneAccessorMissingAttribute> (1);
 		}
 
 		[Test]
 		public void TestMultiConstructorTwoAccessorsMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<MultiConstructorTwoAccessorsMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure<MultiConstructorTwoAccessorsMissingAttribute> (2);
 		}
 
 		[Test]
 		public void TestNearlyEmptyttribute ()
 		{
-			TypeDefinition type = GetTest<NearlyEmptyAttribute> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NearlyEmptyAttribute> ();
 		}
 
 		[Test]
 		public void TestNoAccessorsMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<NoAccessorsMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NoAccessorsMissingAttribute> ();
 		}
 
 		[Test]
 		public void TestOneAccessorMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<OneAccessorMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<OneAccessorMissingAttribute> (1);
 		}
 
 		[Test]
 		public void TestTwoAccessorsMissingAttribute ()
 		{
-			TypeDefinition type = GetTest<TwoAccessorsMissingAttribute> ();
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure<TwoAccessorsMissingAttribute> (2);
 		}
 	}
 }

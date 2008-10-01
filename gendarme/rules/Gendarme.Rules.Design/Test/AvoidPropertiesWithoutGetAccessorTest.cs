@@ -25,15 +25,11 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
@@ -117,92 +113,40 @@ namespace Test.Rules.Design {
 	}
 
 	[TestFixture]
-	public class AvoidPropertiesWithoutGetAccessorTest {
-
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidPropertiesWithoutGetAccessorRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetType (string name)
-		{
-			string fullname = "Test.Rules.Design." + name;
-			return assembly.MainModule.Types [fullname];
-		}
+	public class AvoidPropertiesWithoutGetAccessorTest : TypeRuleTestFixture<AvoidPropertiesWithoutGetAccessorRule> {
 
 		[Test]
 		public void WithNoProperties ()
 		{
-			TypeDefinition type = GetType ("AvoidPropertiesWithoutGetAccessorTest");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<AvoidPropertiesWithoutGetAccessorTest> ();
 		}
 
 		[Test]
 		public void WithBothGetAndSet ()
 		{
-			TypeDefinition type = GetType ("PublicAbstract");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			type = GetType ("IPublic");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
-
-			type = GetType ("PublicClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult3");
-			Assert.AreEqual (0, runner.Defects.Count, "Count3");
-
-			type = GetType ("PublicClassExplicitInterface");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult4");
-			Assert.AreEqual (0, runner.Defects.Count, "Count4");
-
-			type = GetType ("PublicClassInterface");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult5");
-			Assert.AreEqual (0, runner.Defects.Count, "Count5");
+			AssertRuleSuccess<PublicAbstract> ();
+			AssertRuleSuccess<IPublic> ();
+			AssertRuleSuccess<PublicClass> ();
+			AssertRuleSuccess<PublicClassExplicitInterface> ();
+			AssertRuleSuccess<PublicClassInterface> ();
 		}
 
 		[Test]
 		public void WithOnlyGet ()
 		{
-			TypeDefinition type = GetType ("PublicAbstractGetOnly");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleSuccess<PublicAbstractGetOnly> ();
+			AssertRuleSuccess<IPublicGetOnly> ();
 		}
 
 		[Test]
 		public void WithOnlySet ()
 		{
-			TypeDefinition type = GetType ("PublicAbstractSetOnly");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
+			AssertRuleFailure<PublicAbstractSetOnly> (1);
+			AssertRuleFailure<IPublicSetOnly> (1);
+			AssertRuleFailure<PublicSetOnlyInheritClass> (1);
+			AssertRuleFailure<PublicSetOnlyImplementClass> (1);
 
-			type = GetType ("IPublicSetOnly");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-
-			type = GetType ("PublicSetOnlyInheritClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult3");
-			Assert.AreEqual (1, runner.Defects.Count, "Count3");
-
-			type = GetType ("PublicSetOnlyImplementClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult4");
-			Assert.AreEqual (1, runner.Defects.Count, "Count4");
-
-			type = GetType ("PublicSetIsNotASetterClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult5");
-			Assert.AreEqual (0, runner.Defects.Count, "Count5");
+			AssertRuleDoesNotApply<PublicSetIsNotASetterClass> ();
 		}
 	}
 }
