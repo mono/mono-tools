@@ -47,8 +47,14 @@ namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("The methods in this class lacks cohesion (higher score are better). This leads to code harder to understand and maintain.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
-	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule
-	{
+	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule {
+
+		private double successCoh = 0.5;
+		private double lowCoh = 0.4;
+		private double medCoh = 0.2;
+		private int method_minimum_count = 2;//set at 2 to remove 'uninteresting' types
+		private int field_minimum_count = 1;//set at 1 to remove 'uninteresting' types
+		                                 //this shouldn't be set to another value than MinimumMethodCount/2
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -138,21 +144,18 @@ namespace Gendarme.Rules.Maintainability {
 			get { return successCoh; }
 			set { successCoh = value; }
 		}
-		protected double successCoh = 0.5;
 
 		public double LowSeverityLowerLimit
 		{
 			get { return lowCoh; }
 			set { lowCoh = value; }
 		}
-		protected double lowCoh = 0.4;
 
 		public double MediumSeverityLowerLimit
 		{
 			get { return medCoh; }
 			set { medCoh = value; }
 		}
-		protected double medCoh = 0.2;
 
 		public int MinimumMethodCount
 		{
@@ -163,7 +166,6 @@ namespace Gendarme.Rules.Maintainability {
 				method_minimum_count = value;
 			}
 		}
-		protected int method_minimum_count = 2;//set at 2 to remove 'uninteresting' types
 
 		public int MinimumFieldCount
 		{
@@ -174,8 +176,5 @@ namespace Gendarme.Rules.Maintainability {
 				field_minimum_count = value;
 			}
 		}
-		protected int field_minimum_count = 1;//set at 1 to remove 'uninteresting' types
-		                                 //this shouldn't be set to another value than MinimumMethodCount/2
-
 	}
 }

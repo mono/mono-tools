@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Maintainability {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method uses difference between two DateTime.Now calls to retrieve processing time. Developer's intent may not be very clear.")]
-	[Solution ("Use System.Diagnostics.Stopwatch.")]
+	[Solution ("Use the System.Diagnostics.Stopwatch type to improve code readability.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ConsiderUsingStopwatchRule : Rule, IMethodRule {
 

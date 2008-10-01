@@ -1,3 +1,9 @@
+2008-09-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Change field visibility 
+	to private.
+	* ConsiderUsingStopwatchRule.cs: More explicit solution text.
+
 2008-09-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Be consistent when reporting
