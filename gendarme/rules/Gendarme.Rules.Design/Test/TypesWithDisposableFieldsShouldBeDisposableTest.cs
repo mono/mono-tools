@@ -29,14 +29,12 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
@@ -77,7 +75,6 @@ namespace Test.Rules.Design {
 		Disposable B;
 		public void Dispose (object asd) { B.Dispose (); }
 		public abstract void Dispose ();
-
 	}
 
 	class DisposeableFields : ICloneable {
@@ -111,88 +108,63 @@ namespace Test.Rules.Design {
 	}
 
 	[TestFixture]
-	public class TypesWithDisposableFieldsShouldBeDisposableTest {
+	public class TypesWithDisposableFieldsShouldBeDisposableTest : TypeRuleTestFixture<TypesWithDisposableFieldsShouldBeDisposableRule> {
 
-		private TypesWithDisposableFieldsShouldBeDisposableRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new TypesWithDisposableFieldsShouldBeDisposableRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			return assembly.MainModule.Types [name];
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
 		}
 
 		[Test]
 		public void TestNoDisposeableFields ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NoDisposeableFields");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NoDisposeableFields> ();
 		}
 
 		[Test]
 		public void TestDisposeableFieldsImplementsIDisposeable ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsImplementsIDisposeable");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsImplementsIDisposeable> ();
 		}
 
 		[Test]
 		public void TestDisposeableFieldsExplicit ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsExplicit");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableFieldsExplicit> ();
 		}
 
 		[Test]
 		public void TestDisposeableFieldsImplementsIDisposeableAbstract ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsImplementsIDisposeableAbstract");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure<DisposeableFieldsImplementsIDisposeableAbstract> (2);
 		}
 
 		[Test]
 		public void TestDisposeableFields ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFields");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DisposeableFields> (1);
 		}
 
 		[Test]
 		public void TestDisposeableFieldsArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableFieldsArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<DisposeableFieldsArray> (1);
 		}
 
 		[Test]
 		public void TestStructWithDisposeableFields ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.StructWithDisposeableFields");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<StructWithDisposeableFields> ();
 		}
 
 		[Test]
 		public void TestDisposeableStaticFieldsArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.DisposeableStaticFieldsArray");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<DisposeableStaticFieldsArray> ();
 		}
 	}
 }

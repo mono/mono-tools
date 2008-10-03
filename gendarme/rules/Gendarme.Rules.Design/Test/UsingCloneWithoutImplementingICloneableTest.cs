@@ -1,5 +1,5 @@
 // 
-// Unit tests for UsingCloneWithoutImplementingICloneableRule
+// Unit tests for ImplementICloneableCorrectlyRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -28,11 +28,8 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
@@ -40,7 +37,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Design{
 
 	[TestFixture]
-	public class UsingCloneWithoutImplementingICloneableTest : TypeRuleTestFixture<UsingCloneWithoutImplementingICloneableRule> {
+	public class ImplementICloneableCorrectlyTest : TypeRuleTestFixture<ImplementICloneableCorrectlyRule> {
 
 		public class UsingCloneAndImplementingICloneable: ICloneable
 		{
