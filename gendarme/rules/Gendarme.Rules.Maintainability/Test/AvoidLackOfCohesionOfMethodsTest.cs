@@ -141,7 +141,7 @@ namespace Test.Rules.Smells {
 	}
 
 	[ExpectedCohesiveness(0.5)]
-	public class AverageCohesionBadBecauseOfHighNumberOfMethods
+	public class AverageCohesionLimitBecauseOfHighNumberOfMethods
 	{
 		int x;
 		int y;
@@ -295,12 +295,12 @@ namespace Test.Rules.Smells {
 		{
 			AssertRuleSuccess<PerfectCohesion> ();
 			AssertRuleSuccess<GoodCohesion> ();
+			AssertRuleSuccess<AverageCohesionLimitBecauseOfHighNumberOfMethods> ();
 		}
 
 		[Test]
 		public void BadCohesionsTest ()
 		{
-			AssertRuleFailure<AverageCohesionBadBecauseOfHighNumberOfMethods> ();
 			AssertRuleFailure<BadCohesion> ();
 			AssertRuleFailure<VeryBadCohesion> ();
 			AssertRuleFailure<BadCohesionNotVeryBadBecauseOfInheritance> ();

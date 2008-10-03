@@ -1,3 +1,8 @@
+2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsTest.cs: Adjust test case with the
+	comparison change I made earlier in the rule.
+
 2008-09-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Add a test cases for a
