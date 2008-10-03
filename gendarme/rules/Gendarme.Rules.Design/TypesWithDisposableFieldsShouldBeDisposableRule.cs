@@ -40,8 +40,43 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule inspects all fields inside a type and looks if any of them is from a type
+	/// that implements <c>System.IDisposable</c>. If so the rule warns if the type itself 
+	/// doesn't implement <c>System.IDisposable</c>.
+	/// </summary>
+	/// <example>
+	/// Bad examples:
+	/// <code>
+	/// class DoesNotImplementIDisposable {
+	///	IDisposable field;
+	/// }
+	/// 
+	/// class AbstractDispose : IDisposable {
+	///	IDisposable field;
+	///	
+	///	// the field should be disposed in the type that declares it
+	///	public abstract void Dispose ();
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class Dispose : IDisposable {
+	///	IDisposable field;
+	///	
+	///	public void Dispose ()
+	///	{
+	///		field.Dispose ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains disposable field(s) but doesn't implement IDisposable.")]
 	[Solution ("Implement IDisposable and free the disposable field(s) in its Dispose method.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
 	public class TypesWithDisposableFieldsShouldBeDisposableRule : Rule, ITypeRule {
 
 		private const string AbstractTypeMessage = "Field implement IDisposable. Type should implement a non-abstract Dispose() method";
@@ -50,8 +85,8 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule doesn't apply to enums, interfaces or structs
-			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsGeneratedCode ())
+			// rule doesn't apply to enums, interfaces, structs, delegates or generated code
+			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition explicitDisposeMethod = null;
@@ -89,9 +124,6 @@ namespace Gendarme.Rules.Design {
 			// Warn about possible confusion if the Dispose methods are abstract
 			if (implicitDisposeMethod != null && implicitDisposeMethod.IsAbstract)
 				Runner.Report (implicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
-
-			if (explicitDisposeMethod != null && explicitDisposeMethod.IsAbstract)
-				Runner.Report (explicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
 
 			return Runner.CurrentRuleResult;
 		}

@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Design.UsingCloneWithoutImplementingICloneableRule
+// Gendarme.Rules.Design.ImplementICloneableCorrectlyRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -36,9 +36,56 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule warns every time you implement a <c>object Clone()</c> method without 
+	/// implementing the <c>System.ICloneable</c> interface. Either implement the interface 
+	/// or, if possible, change the return type to the type definition (since can avoid
+	/// unnecessary casts).
+	/// <list type="bullet"><description>Note: Make sure to document the behavior of your
+	/// Clone method since the framework itself is not very clear, or consistent, between 
+	/// shallow and deep cloning.</description></list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class MyClass {
+	///	public object Clone ()
+	///	{
+	///		MyClass myClass = new MyClass ();
+	///		return myClass;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (ICloneable):
+	/// <code>
+	/// public class MyClass : ICloneable {
+	///	public object Clone ()
+	///	{
+	///		MyClass myClass = new MyClass ();
+	///		return myClass;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (not returning object):
+	/// <code>
+	/// public class MyClass {
+	///	public MyClass Clone ()
+	///	{
+	///		MyClass myClass = new MyClass ();
+	///		return myClass;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.2 this rule was named UsingCloneWithoutImplementingICloneableRule</remarks>
+
 	[Problem ("This type provides a Clone() method returning System.Object but does not implement the ICloneable interface.")]
 	[Solution ("Implement the ICloneable interface or change the return type to this type.")]
-	public class UsingCloneWithoutImplementingICloneableRule: Rule, ITypeRule {
+	public class ImplementICloneableCorrectlyRule: Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{

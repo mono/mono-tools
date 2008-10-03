@@ -33,9 +33,36 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule ensure that all visible types are declared inside a namespace. This helps 
+	/// to avoid potential duplicates when several assemblies are used and is less confusing
+	/// for consumer of the API.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// using System;
+	/// 
+	/// public class Configuration {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// using System;
+	/// 
+	/// namespace My.Stuff {
+	///	public class Configuration {
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type is visible outside the assembly so it should be defined inside a namespace to avoid conflicts.")]
 	[Solution ("Move this type inside a namespace or reduce it's visibility (e.g. internal or private).")]
-	public class TypesShouldBeInsideNamespacesRule: Rule, ITypeRule {
+	[FxCopCompatibility ("Microsoft.Design", "CA1050:DeclareTypesInNamespaces")]
+	public class TypesShouldBeInsideNamespacesRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{

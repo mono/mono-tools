@@ -1,3 +1,18 @@
+2008-10-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypesShouldBeInsideNamespacesRule.cs: Add XML documentation.
+	Add [FxCopCompatibility] attribute mapping.
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Add XML 
+	documentation. Add [FxCopCompatibility] attribute mapping. Add more
+	cases where we return DoesNotApply. Remove case for explicit abstract 
+	since this won't compile anyway.
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs: Add XML 
+	documentation. Add [FxCopCompatibility] attribute mapping. Add more
+	cases where we return DoesNotApply. Remove case for explicit abstract 
+	since this won't compile anyway.
+	* UsingCloneWithoutImplementingICloneableRule.cs: Rename rule to 
+	ImplementICloneableCorrectlyRule. Add XML documentation.
+
 2008-09-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AbstractTypesShouldNotHavePublicConstructorsRule.cs: Add XML 
