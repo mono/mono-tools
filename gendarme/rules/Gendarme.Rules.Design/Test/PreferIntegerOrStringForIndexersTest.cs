@@ -28,13 +28,11 @@
 
 using System;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 

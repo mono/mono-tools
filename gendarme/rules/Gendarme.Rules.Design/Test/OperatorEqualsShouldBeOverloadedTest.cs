@@ -26,53 +26,33 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class OperatorEqualsShouldBeOverloadedTest {
+	public class OperatorEqualsShouldBeOverloadedTest : TypeRuleTestFixture<OperatorEqualsShouldBeOverloadedRule> {
 
-		private OperatorEqualsShouldBeOverloadedRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new OperatorEqualsShouldBeOverloadedRule ();
-			runner = new TestRunner (rule);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
 		}
 
-		public TypeDefinition GetTest (string name)
-		{
-			foreach (TypeDefinition type in assembly.MainModule.Types ["Test.Rules.Design.OperatorEqualsShouldBeOverloadedTest"].NestedTypes) {
-				if (type.Name == name)
-					return type;
-			}
-			return null;
-		}
-
-		class FalsePositive {
+		class NoOperator {
 			public void DoStuff () { }
 		}
 
 		[Test]
-		public void TestFalsePositive ()
+		public void TestNoOperator ()
 		{
-			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NoOperator> ();
 		}
 
 		class OnlyOneOperator {
@@ -85,9 +65,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestOnlyOneOperator ()
 		{
-			TypeDefinition type = GetTest ("OnlyOneOperator");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<OnlyOneOperator> ();
 		}
 
 		class EverythingOK {
@@ -115,9 +93,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestEverythingOK ()
 		{
-			TypeDefinition type = GetTest ("EverythingOK");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<EverythingOK> ();
 		}
 
 		class NoEquals {
@@ -135,21 +111,17 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestNoEquals ()
 		{
-			TypeDefinition type = GetTest ("NoEquals");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<NoEquals> (1);
 		}
 
-		struct StructFalsePositive {
+		struct StructNoOperator {
 			public void DoWork () { }
 		}
 
 		[Test]
-		public void TestStructFalsePositive ()
+		public void TestStructNoOperator ()
 		{
-			TypeDefinition type = GetTest ("StructFalsePositive");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<StructNoOperator> ();
 		}
 
 		struct StructNoEquality {
@@ -162,9 +134,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestStructNoEquality ()
 		{
-			TypeDefinition type = GetTest ("StructNoEquality");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<StructNoEquality> (1);
 		}
 	}
 }

@@ -26,54 +26,33 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class ProvideAlternativeNamesForOperatorOverloadsTest {
+	public class ProvideAlternativeNamesForOperatorOverloadsTest : TypeRuleTestFixture<ProvideAlternativeNamesForOperatorOverloadsRule> {
 
-		private ProvideAlternativeNamesForOperatorOverloadsRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new ProvideAlternativeNamesForOperatorOverloadsRule ();
-			runner = new TestRunner (rule);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
 		}
 
-		public TypeDefinition GetTest (string name)
-		{
-			foreach (TypeDefinition type in assembly.MainModule.Types ["Test.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsTest"].NestedTypes) {
-				if (type.Name == name)
-					return type;
-			}
-			return null;
-		}
-
-		class FalsePositive {
+		class NoOperator {
 			public void DoStuff () { }
 		}
 
 		[Test]
-		public void TestFalsePositive ()
+		public void TestNoOperator ()
 		{
-			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NoOperator> ();
 		}
 
 		class EverythingIsThere {
@@ -142,9 +121,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestEverythingIsThere ()
 		{
-			TypeDefinition type = GetTest ("EverythingIsThere");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<EverythingIsThere> ();
 		}
 
 		class MissingCompare {
@@ -159,9 +136,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMissingCompare ()
 		{
-			TypeDefinition type = GetTest ("MissingCompare");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (5, runner.Defects.Count, "Count");
+			AssertRuleFailure<MissingCompare> (5);
 		}
 
 		class MissingUnary {
@@ -179,9 +154,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMissingUnary ()
 		{
-			TypeDefinition type = GetTest ("MissingUnary");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (8, runner.Defects.Count, "Count");
+			AssertRuleFailure<MissingUnary> (8);
 		}
 
 		class MissingBinary {
@@ -202,9 +175,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMissingBinary ()
 		{
-			TypeDefinition type = GetTest ("MissingBinary");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (10, runner.Defects.Count, "Count");
+			AssertRuleFailure<MissingBinary> (10);
 		}
 	}
 }

@@ -1,3 +1,17 @@
+2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MainShouldNotBePublicTest.cs: Use new, shorter, syntax for tests.
+	Add more coverage. Remove unneeded 'using' clauses.
+	* OperatorEqualsShouldBeOverloadedTest.cs: Use new, shorter, 
+	syntax for tests. Add more coverage. Remove unneeded 'using' clauses.
+	* OverrideEqualsMethodTest.cs: Use new, shorter, syntax for tests.
+	Add more coverage. Remove unneeded 'using' clauses.
+	* PreferIntegerOrStringForIndexersTest.cs: Remove unneeded 
+	'using' clauses.
+	* ProvideAlternativeNamesForOperatorOverloadsTest.cs: Use 
+	new, shorter, syntax for tests. Add more coverage. Remove unneeded 
+	'using' clauses.
+
 2008-10-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypesShouldBeInsideNamespacesTest.cs: Use new, shorter, syntax 

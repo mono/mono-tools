@@ -28,30 +28,25 @@ using System;
 
 using Mono.Cecil;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class MainShouldNotBePublicTest {
-
-		private IAssemblyRule rule;
-		private TestRunner runner;
+	public class MainShouldNotBePublicTest : AssemblyRuleTestFixture<MainShouldNotBePublicRule> {
 
 		private AssemblyDefinition goodAssembly;
 		private AssemblyDefinition anotherGoodAssembly;
 		private AssemblyDefinition badAssembly;
+		private AssemblyDefinition vbBadAssembly;
 		private AssemblyDefinition noEntryPointAssembly;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			rule = new MainShouldNotBePublicRule ();
-			runner = new TestRunner (rule);
 			GenerateRequiredAssemblies ();
 		}
 
@@ -81,36 +76,34 @@ namespace Test.Rules.Design {
 			badAssembly.MainModule.Types.Add (badMainClass);
 			badAssembly.EntryPoint = badMain;
 
+			// has a reference to Micrisoft.VisualBasic assembly (i.e. likely compiled VB.NET)
+			vbBadAssembly = AssemblyFactory.DefineAssembly ("BadAssembly", AssemblyKind.Console);
+			vbBadAssembly.MainModule.Types.Add (badMainClass.Clone ());
+			vbBadAssembly.EntryPoint = badMain;
+			vbBadAssembly.MainModule.AssemblyReferences.Add (new AssemblyNameReference ("Microsoft.VisualBasic", "neutral", new Version (1, 0, 0, 0)));
+
 			// no entry point
 			noEntryPointAssembly = AssemblyFactory.DefineAssembly ("NoEntryPointAssembly", AssemblyKind.Dll);
 		}
 
 		[Test]
-		public void TestAnotherGoodAssembly ()
+		public void Success ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (anotherGoodAssembly));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess (goodAssembly);
+			AssertRuleSuccess (anotherGoodAssembly);
 		}
 
 		[Test]
-		public void TestGoodAssembly ()
+		public void Failure ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (goodAssembly));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleFailure (badAssembly, 1);
+			AssertRuleFailure (vbBadAssembly, 1);
 		}
 
 		[Test]
-		public void TestBadAssembly ()
+		public void DoesNotApply ()
 		{
-			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (badAssembly));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestNoEntryPointAssembly ()
-		{
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (noEntryPointAssembly));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply (noEntryPointAssembly);
 		}
 	}
 }
