@@ -33,6 +33,8 @@ using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
@@ -50,7 +52,7 @@ namespace Test.Rules.Design {
 	}
 
 	[TestFixture]
-	public class EnumsShouldDefineAZeroValueTest {
+	public class EnumsShouldDefineAZeroValueTest : TypeRuleTestFixture<EnumsShouldDefineAZeroValueRule> {
 
 		public enum NestedPublicEnumWithZeroValue {
 			Zero
@@ -69,68 +71,39 @@ namespace Test.Rules.Design {
 			ThirdBit = 4
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new EnumsShouldDefineAZeroValueRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design." + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
 		[Test]
-		public void NotAnEnumType ()
+		public void DoesNotApply ()
 		{
-			TypeDefinition type = GetTest ("EnumsShouldDefineAZeroValueTest");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
 		}
 
 		[Test]
 		public void EnumWithZeroValue ()
 		{
-			TypeDefinition type = GetTest ("PrivateEnumWithZeroValue");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			type = GetTest ("EnumsShouldDefineAZeroValueTest/NestedPublicEnumWithZeroValue");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleSuccess<PrivateEnumWithZeroValue> ();
+			AssertRuleSuccess<NestedPublicEnumWithZeroValue> ();
 		}
 
 		[Test]
 		public void EnumWithoutZeroValue ()
 		{
-			TypeDefinition type = GetTest ("InternalEnumWithoutZeroValue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<InternalEnumWithoutZeroValue> ();
 		}
 
 		[Test]
 		public void FlagWithoutZeroValue ()
 		{
-			TypeDefinition type = GetTest ("EnumsShouldDefineAZeroValueTest/NestedPrivateFlagsWithoutZeroValue");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<NestedPrivateFlagsWithoutZeroValue> ();
 		}
 
 		[Test]
 		public void FlagWithZeroValue ()
 		{
 			// flags are ignored by the rule
-			TypeDefinition type = GetTest ("EnumsShouldDefineAZeroValueTest/NestedInternalFlagsWithZeroValue");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<NestedInternalFlagsWithZeroValue> ();
 		}
 	}
 }

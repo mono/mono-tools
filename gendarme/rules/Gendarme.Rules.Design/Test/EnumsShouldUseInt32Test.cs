@@ -24,21 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Reflection;
-
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class EnumsShouldUseInt32Test {
+	public class EnumsShouldUseInt32Test : TypeRuleTestFixture<EnumsShouldUseInt32Rule> {
 
 		public enum DefaultEnum {
 		}
@@ -67,83 +62,39 @@ namespace Test.Rules.Design {
 		public enum UnsignedLongEnum : ulong {
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new EnumsShouldUseInt32Rule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.EnumsShouldUseInt32Test" + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
 		[Test]
 		public void NotAnEnum ()
 		{
-			TypeDefinition type = GetTest (String.Empty);
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
 		}
 
 		[Test]
 		public void Ok ()
 		{
-			TypeDefinition type = GetTest ("/DefaultEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			type = GetTest ("/IntEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleSuccess<DefaultEnum> ();
+			AssertRuleSuccess<IntEnum> ();
 		}
 
 		[Test]
 		public void Bad ()
 		{
 			// CLS compliant types: Byte, Int16 or Int64 (Int32 is CLS but Ok)
-
-			TypeDefinition type = GetTest ("/ByteEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-
-			type = GetTest ("/ShortEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-
-			type = GetTest ("/LongEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult3");
-			Assert.AreEqual (1, runner.Defects.Count, "Count3");
+			AssertRuleFailure<ByteEnum> (1);
+			AssertRuleFailure<ShortEnum> (1);
+			AssertRuleFailure<LongEnum> (1);
 		}
 
 		[Test]
 		public void ReallyBad ()
 		{
 			// i.e. using non-CLS compliant types, SByte, UInt16, UInt32 or UInt64
-
-			TypeDefinition type = GetTest ("/SignedByteEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-
-			type = GetTest ("/UnsignedShortEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-
-			type = GetTest ("/UnsignedIntEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult3");
-			Assert.AreEqual (1, runner.Defects.Count, "Count3");
-
-			type = GetTest ("/UnsignedLongEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult4");
-			Assert.AreEqual (1, runner.Defects.Count, "Count4");
+			AssertRuleFailure<SignedByteEnum> (1);
+			AssertRuleFailure<UnsignedShortEnum> (1);
+			AssertRuleFailure<UnsignedIntEnum> (1);
+			AssertRuleFailure<UnsignedLongEnum> (1);
 		}
 	}
 }

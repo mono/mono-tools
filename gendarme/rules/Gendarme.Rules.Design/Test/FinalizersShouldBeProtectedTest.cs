@@ -1,5 +1,5 @@
 // 
-// Unit tests for FinalizersShouldCallBaseClassFinalizerRule
+// Unit tests for FinalizersShouldBeProtectedRule
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
@@ -24,94 +24,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using Mono.Cecil;
-using Mono.Cecil.Cil;
 
-using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
-	internal class NoFinalizerDefinedClass {
+	internal class NoFinalizerClass {
 	}
 
-	internal class FinalizerCallingBaseFinalizerClass {
-		~FinalizerCallingBaseFinalizerClass ()
-		{
-			// do some stuff
-			int x = 2 + 2;
-			object o = x.ToString ();
-			int y = o.GetHashCode ();
-			x = y;
-
-			// compiler generates here base.Finalize () call that looks like this:
-
-			// call System.Void System.Object::Finalize()
-			// endfinally 
-			// ret 
-		}
+	internal class ProtectedFinalizerClass {
+		~ProtectedFinalizerClass () { }
 	}
 
 	[TestFixture]
-	public class FinalizersShouldCallBaseClassFinalizerTest {
+	public class FinalizersShouldBeProtectedTest : TypeRuleTestFixture<FinalizersShouldBeProtectedRule> {
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
+		private TypeDefinition non_protected_finalizer_class;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new FinalizersShouldCallBaseClassFinalizerRule ();
-			runner = new TestRunner (rule);
-		}
+			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
 
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
-		}
-
-		[Test]
-		public void TestNoFinalizerDefinedClass ()
-		{
-			TypeDefinition type = GetTest<NoFinalizerDefinedClass> ();
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			non_protected_finalizer_class = assembly.MainModule.Types [typeof (FinalizerCallingBaseFinalizerClass).FullName].Clone ();
+			non_protected_finalizer_class.Module = assembly.MainModule;
+			MethodDefinition finalizer = non_protected_finalizer_class.GetMethod (MethodSignatures.Finalize);
+			// make it non-protected (e.g. public)
+			finalizer.IsPublic = true;
 		}
 
 		[Test]
-		public void TestFinalizerCallingBaseFinalizerClass ()
+		public void TestNoFinalizerClass ()
 		{
-			TypeDefinition type = GetTest<FinalizerCallingBaseFinalizerClass> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<NoFinalizerClass>();
 		}
 
 		[Test]
-		public void TestFinalizerNotCallingBaseFinalizerClass ()
+		public void TestProtectedFinalizerClass ()
 		{
-			TypeDefinition typeDefinition = GetTest<FinalizerCallingBaseFinalizerClass> ().Clone () as TypeDefinition;
-			typeDefinition.Module = assembly.MainModule;
-			MethodDefinition finalizer = typeDefinition.Methods.GetMethod ("Finalize") [0];
-			// remove base call
-			foreach (Instruction current in finalizer.Body.Instructions) {
-				if (current.OpCode.Code == Code.Call) { // it's call
-					MethodReference mr = (current.Operand as MethodReference);
-					if (mr != null && mr.Name == "Finalize") { // it's Finalize () call
-						finalizer.Body.CilWorker.Remove (current); // remove it for our test
-						break;
-					}
-				}
-			}
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (typeDefinition), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ProtectedFinalizerClass> ();
+		}
+
+		[Test]
+		public void TestNonProtectedFinalizerDefinedClass ()
+		{
+			AssertRuleFailure (non_protected_finalizer_class, 1);
 		}
 	}
 }

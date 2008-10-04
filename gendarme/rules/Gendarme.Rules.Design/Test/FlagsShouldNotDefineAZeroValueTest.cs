@@ -25,15 +25,12 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
@@ -52,7 +49,7 @@ namespace Test.Rules.Design {
 	}
 
 	[TestFixture]
-	public class FlagsShouldNotDefineAZeroValueTest {
+	public class FlagsShouldNotDefineAZeroValueTest : TypeRuleTestFixture<FlagsShouldNotDefineAZeroValueRule> {
 
 		public enum NestedPublicEnumWithZeroValue {
 			Zero
@@ -70,63 +67,30 @@ namespace Test.Rules.Design {
 			FirstBit,
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new FlagsShouldNotDefineAZeroValueRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design." + name;
-			return assembly.MainModule.Types [fullname];
-		}
-
 		[Test]
-		public void NotAnEnumType ()
+		public void NotAFlag ()
 		{
-			TypeDefinition type = GetTest ("FlagsShouldNotDefineAZeroValueTest");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
 
-		[Test]
-		public void NotAFlags ()
-		{
-			TypeDefinition type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedPublicEnumWithZeroValue");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-
-			type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedPrivateEnumWithoutZeroValue");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			AssertRuleDoesNotApply<FlagsShouldNotDefineAZeroValueTest.NestedPublicEnumWithZeroValue> ();
+			AssertRuleDoesNotApply<FlagsShouldNotDefineAZeroValueTest.NestedPrivateEnumWithoutZeroValue> ();
 		}
 
 		[Test]
 		public void FlagsWithoutZeroValue ()
 		{
-			TypeDefinition type = GetTest ("InternalFlagsWithoutZeroValue");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<InternalFlagsWithoutZeroValue> ();
 		}
 
 		[Test]
 		public void FlagsWithZeroValue ()
 		{
-			TypeDefinition type = GetTest ("PrivateFlagsWithZeroValue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-
-			type = GetTest ("FlagsShouldNotDefineAZeroValueTest/NestedInternalFlagsWithZeroValue");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
+			AssertRuleFailure<PrivateFlagsWithZeroValue> (1);
+			AssertRuleFailure<FlagsShouldNotDefineAZeroValueTest.NestedInternalFlagsWithZeroValue> (1);
 		}
 	}
 }

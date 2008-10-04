@@ -1,5 +1,5 @@
 // 
-// Unit tests for FinalizersShouldBeProtectedRule
+// Unit tests for FinalizersShouldCallBaseClassFinalizerRule
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
@@ -24,76 +24,84 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Helpers;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
-	internal class NoFinalizerClass {
+	internal class NoFinalizerDefinedClass {
 	}
 
-	internal class ProtectedFinalizerClass {
-		~ProtectedFinalizerClass () { }
+	internal class FinalizerCallingBaseFinalizerClass {
+		~FinalizerCallingBaseFinalizerClass ()
+		{
+			// do some stuff
+			int x = 2 + 2;
+			object o = x.ToString ();
+			int y = o.GetHashCode ();
+			x = y;
+
+			// compiler generates here base.Finalize () call that looks like this:
+
+			// call System.Void System.Object::Finalize()
+			// endfinally 
+			// ret 
+		}
 	}
 
 	[TestFixture]
-	public class FinalizersShouldBeProtectedTest {
+	public class FinalizersShouldCallBaseClassFinalizerTest : TypeRuleTestFixture<FinalizersShouldCallBaseClassFinalizerRule> {
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
+		TypeDefinition finalizer_not_calling_base_class; 
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new FinalizersShouldBeProtectedRule ();
-			runner = new TestRunner (rule);
-		}
+			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
 
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
-		}
-
-		[Test]
-		public void TestNoFinalizerClass ()
-		{
-			TypeDefinition type = GetTest<NoFinalizerClass> ();
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestProtectedFinalizerClass ()
-		{
-			TypeDefinition type = GetTest<ProtectedFinalizerClass> ();
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			finalizer_not_calling_base_class =  assembly.MainModule.Types [typeof (FinalizerCallingBaseFinalizerClass).FullName].Clone ();
+			finalizer_not_calling_base_class.Module = assembly.MainModule;
+			MethodDefinition finalizer = finalizer_not_calling_base_class.Methods.GetMethod ("Finalize") [0];
+			// remove base call
+			foreach (Instruction current in finalizer.Body.Instructions) {
+				if (current.OpCode.Code == Code.Call) { // it's call
+					MethodReference mr = (current.Operand as MethodReference);
+					if (mr != null && mr.Name == "Finalize") { // it's Finalize () call
+						finalizer.Body.CilWorker.Remove (current); // remove it for our test
+						break;
+					}
+				}
+			}
 		}
 
 		[Test]
-		public void TestNonProtectedFinalizerDefinedClass ()
+		public void TestNoFinalizerDefinedClass ()
 		{
-			TypeDefinition typeDefinition = GetTest<FinalizerCallingBaseFinalizerClass> ().Clone () as TypeDefinition;
-			typeDefinition.Module = assembly.MainModule;
-			MethodDefinition finalizer = typeDefinition.GetMethod (MethodSignatures.Finalize);
-			// make it non-protected (e.g. public)
-			finalizer.IsPublic = true;
+			AssertRuleDoesNotApply<NoFinalizerDefinedClass> ();
+		}
 
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (typeDefinition), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+		[Test]
+		public void TestFinalizerCallingBaseFinalizerClass ()
+		{
+			AssertRuleSuccess<FinalizerCallingBaseFinalizerClass> ();
+		}
+
+		[Test]
+		public void TestFinalizerNotCallingBaseFinalizerClass ()
+		{
+			AssertRuleFailure (finalizer_not_calling_base_class, 1);
+		}
+
+		[Test]
+		public void NoBaseType ()
+		{
+			AssertRuleDoesNotApply<object> ();
 		}
 	}
 }

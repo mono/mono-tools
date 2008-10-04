@@ -27,26 +27,37 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 	
 	[TestFixture]
-	public class ImplementEqualsAndGetHashCodeInPairTest {
+	public class ImplementEqualsAndGetHashCodeInPairTest : TypeRuleTestFixture<ImplementEqualsAndGetHashCodeInPairRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+		}
 
 		public class ImplementsEqualsButNotGetHashCode {
 			public override bool Equals (Object obj)
 			{
 				return this == obj;
 			}
+		}
+
+		[Test]
+		public void EqualsButNotGetHashCodeTest ()
+		{
+			AssertRuleFailure<ImplementsEqualsButNotGetHashCode> (1);
 		}
 			
 		public class ImplementsGetHashCodeButNotEquals {
@@ -55,13 +66,25 @@ namespace Test.Rules.Design {
 				return 2;
 			}
 		}
+
+		[Test]
+		public void GetHashCodeButNotEqualsTest ()
+		{
+			AssertRuleFailure<ImplementsGetHashCodeButNotEquals> (1);
+		}
 		
 		public class ImplementsNoneOfThem {
 			public void test ()
 			{
 			}
 		}
-		
+
+		[Test]
+		public void NoneOfThemTest ()
+		{
+			AssertRuleSuccess<ImplementsNoneOfThem> ();
+		}
+
 		public class ImplementsBothOfThem {
 			public override int GetHashCode ()
 			{
@@ -71,6 +94,12 @@ namespace Test.Rules.Design {
 			{
 				return this == obj;
 			}
+		}
+
+		[Test]
+		public void BothOfThemTest ()
+		{
+			AssertRuleSuccess<ImplementsBothOfThem> ();
 		}
 
 		public class ImplementsEqualsUsesObjectGetHashCode {
@@ -84,6 +113,12 @@ namespace Test.Rules.Design {
 				ImplementsEqualsUsesObjectGetHashCode i = new ImplementsEqualsUsesObjectGetHashCode ();
 				j = i.GetHashCode ();
 			}
+		}
+
+		[Test]
+		public void ImplementsEqualsUsesObjectGetHashCodeTest ()
+		{
+			AssertRuleFailure<ImplementsEqualsUsesObjectGetHashCode> (1);
 		}
 
 		public class ImplementsEqualsReuseBaseGetHashCode {
@@ -102,7 +137,13 @@ namespace Test.Rules.Design {
 				j = i.GetHashCode ();
 			}
 		}
-		
+
+		[Test]
+		public void ImplementsEqualsReuseBaseGetHashCodeTest ()
+		{
+			AssertRuleSuccess<ImplementsEqualsReuseBaseGetHashCode> ();
+		}
+
 		public class ImplementsGetHashCodeUsesObjectEquals {
 			public override int GetHashCode ()
 			{
@@ -115,110 +156,37 @@ namespace Test.Rules.Design {
 				i.Equals (i1);
 			}
 		}
-			
+
+		[Test]
+		public void ImplementsGetHashCodeUsesObjectEqualsTest ()
+		{
+			AssertRuleFailure<ImplementsGetHashCodeUsesObjectEquals> (1);
+		}
+
 		public class ImplementingEqualsWithTwoArgs {
 			public bool Equals (Object obj1, Object obj2)
 			{
 				return obj1 == obj2;
 			}
 		}
-		
+
+		[Test]
+		public void EqualsWithTwoArgsTest ()
+		{
+			AssertRuleSuccess<ImplementingEqualsWithTwoArgs> ();
+		}
+
 		public class ImplementingGetHashCodeWithOneArg {
 			public int GetHashCode (int j)
 			{
 				return j*2;
 			}
 		}
-		
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new ImplementEqualsAndGetHashCodeInPairRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Design.ImplementEqualsAndGetHashCodeInPairTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-		
-		[Test]
-		public void EqualsButNotGetHashCodeTest ()
-		{ 
-			TypeDefinition type = GetTest ("ImplementsEqualsButNotGetHashCode");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void GetHashCodeButNotEqualsTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsGetHashCodeButNotEquals");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void NoneOfThemTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsNoneOfThem");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void BothOfThemTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsBothOfThem");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void ImplementsEqualsUsesObjectGetHashCodeTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsEqualsUsesObjectGetHashCode");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void ImplementsEqualsReuseBaseGetHashCodeTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsEqualsReuseBaseGetHashCode");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void ImplementsGetHashCodeUsesObjectEqualsTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementsGetHashCodeUsesObjectEquals");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void EqualsWithTwoArgsTest ()
-		{
-			TypeDefinition type = GetTest ("ImplementingEqualsWithTwoArgs");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
 		[Test]
 		public void GetHashCodeWithOneArgTest ()
 		{
-			TypeDefinition type = GetTest ("ImplementingGetHashCodeWithOneArg");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<ImplementingGetHashCodeWithOneArg> ();
 		}
 	}
 }

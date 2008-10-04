@@ -1,3 +1,12 @@
+2008-10-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumsShouldDefineAZeroValueTest.cs, EnumsShouldUseInt32Test.cs,
+	FinalizersShouldBeProtectedTest.cs, 
+	FinalizersShouldCallBaseClassFinalizerTest.cs, 
+	FlagsShouldNotDefineAZeroValueTest.cs, 
+	ImplementEqualsAndGetHashCodeInPairTest.cs: Use new, shorter, syntax 
+	for tests. Add more coverage. Remove unneeded 'using' clauses.
+
 2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MainShouldNotBePublicTest.cs: Use new, shorter, syntax for tests.
