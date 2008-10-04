@@ -33,8 +33,47 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// Enumeration types should avoid specifying a non-default storage type for their values, 
+	/// unless it is used and required for interoperability. In the later case non-CLS compliant 
+	/// types should be avoided to ensure the code can be reused by all CLS-compliant languages.
+	/// </summary>
+	/// <example>
+	/// Bad examples:
+	/// <code>
+	/// public enum SmallEnum : byte {
+	///	Zero,
+	///	One
+	/// }
+	/// 
+	/// [Flags]
+	/// public enum SmallFlag : ushort {
+	///	One = 1,
+	///	// ...
+	///	Sixteen = 1 << 15
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public enum SmallEnum {
+	///	Zero,
+	///	One
+	/// }
+	/// 
+	/// [Flags]
+	/// public enum SmallFlag {
+	///	One = 1,
+	///	// ...
+	///	Sixteen = 1 << 15
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("Unless required for interoperability this enumeration should use Int32 as its underling storage type.")]
 	[Solution ("Remove the extra type from the enumeration declaration (Int32 will be used as default).")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
 	public class EnumsShouldUseInt32Rule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -49,14 +88,13 @@ namespace Gendarme.Rules.Design {
 
 			foreach (FieldDefinition field in type.Fields) {
 				// we looking for the special value__
-				if (field.IsStatic)
-					continue;
-
-				value_type = field.FieldType.FullName;
-				break;
+				if (!field.IsStatic) {
+					value_type = field.FieldType.FullName;
+					break;
+				}
 			}
 
-			Severity severity = Severity.Critical;
+			Severity severity;
 			switch (value_type) {
 			case "System.Int32":
 				return RuleResult.Success;
@@ -67,14 +105,9 @@ namespace Gendarme.Rules.Design {
 				severity = Severity.High;
 				break;
 			// while others are not usable in non-CLS compliant languages
-			case "System.SByte":
-			case "System.UInt16":
-			case "System.UInt32":
-			case "System.UInt64":
+			default: // System.SByte, System.UInt16, System.UInt32, System.UInt64
 				severity = Severity.Critical;
 				break;
-			default:
-				throw new NotSupportedException (value_type + " unexpected as a Enum value type");
 			}
 
 			string text = String.Format ("Enums should use System.Int32 instead of '{0}'.", value_type);

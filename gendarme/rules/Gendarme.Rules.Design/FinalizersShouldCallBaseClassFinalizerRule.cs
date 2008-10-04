@@ -35,8 +35,44 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule is used to warn the developer if a finalizer does not call base class 
+	/// finalizer. In C#, this is enforced by compiler but some .NET languages (like IL)
+	/// may allow such behavior, which should not be allowed.
+	/// </summary>
+	/// <example>
+	/// Bad example (IL):
+	/// <code>
+	/// .assembly extern mscorlib
+	/// {
+	///	.ver 1:0:5000:0
+	///	.publickeytoken = (B7 7A 5C 56 19 34 E0 89 )
+	/// }
+	/// .class public auto ansi beforefieldinit BadFinalizer extends [mscorlib]System.Object
+	/// {
+	///	.method family virtual hidebysig instance void Finalize() cil managed
+	///	{
+	///		// no base call so rule will fire here
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (C#):
+	/// <code>
+	/// public class GoodFinalizer {
+	///	~GoodFinalizer ()
+	///	{
+	///		// C# compiler will insert base.Finalize () call here
+	///		// so any compiler-generated code will be valid
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The finalizer for this type does not call its base class finalizer.")]
 	[Solution ("Since your language does not do this automatically, like C#, add a call to the base type finalizer just before the finalizer exits.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2220:FinalizersShouldCallBaseClassFinalizer")]
 	public class FinalizersShouldCallBaseClassFinalizerRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -61,7 +97,6 @@ namespace Gendarme.Rules.Design {
 			foreach (Instruction current in finalizer.Body.Instructions) {
 				switch (current.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					MethodReference mr = (current.Operand as MethodReference);
 					if ((mr != null) && mr.IsFinalizer ())

@@ -33,8 +33,47 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	[Problem ("This enumeration flag defines a value of 0, which cannot be used as a real value.")]
-	[Solution ("Remove the 0 value from the flag.")]
+	/// <summary>
+	/// This rule ensure that every flags, enumarations decorated with the <c>[System.Flags]</c> 
+	/// attribute, does not contain a <c>0</c> value. This value would not be usable in boolean 
+	/// operations.
+	/// </summary>
+	/// <example>
+	/// Bad example (using 0 for a normal value):
+	/// <code>
+	/// [Flags]
+	/// enum Access {
+	/// 	Read = 0,
+	/// 	Write = 1
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (using None):
+	/// <code>
+	/// [Flags]
+	/// enum Access {
+	///	// this is less severe since the name of the 0 value helps
+	/// 	None = 0,
+	/// 	Read = 1,
+	/// 	Write = 2
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Flags]
+	/// enum Access {
+	///	Read = 1,
+	///	Write = 2
+	/// }
+	/// </code>
+	/// </example>
+
+	[Problem ("This enumeration flag defines a value of 0, which cannot be used in boolean operations.")]
+	[Solution ("Remove the 0 value(s) from the flag.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
 	public class FlagsShouldNotDefineAZeroValueRule : DefineAZeroValueRule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -49,7 +88,9 @@ namespace Gendarme.Rules.Design {
 			if (field == null)
 				return RuleResult.Success;
 
-			Runner.Report (field, Severity.High, Confidence.Total);
+			// it's less likely an error if the field is named "None"
+			Severity s = field.Name == "None" ? Severity.Medium : Severity.High;
+			Runner.Report (field, s, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

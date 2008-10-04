@@ -1,3 +1,20 @@
+2008-10-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumsShouldDefineAZeroValueRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* EnumsShouldUseInt32Rule.cs: Avoid throwing an exception in an 
+	invalid case. Add XML documentation and [FxCopCompatibility] 
+	attribute.
+	* FinalizersShouldBeProtectedRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. 
+	* FinalizersShouldCallBaseClassFinalizerRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute. 
+	* FlagsShouldNotDefineAZeroValueRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Lessen severity if the field is
+	named "None".
+	* ImplementEqualsAndGetHashCodeInPairRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Ignore delegates.
+
 2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ImplementIComparableCorreclyRule.cs: Add XML documentation

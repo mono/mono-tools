@@ -36,8 +36,54 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for types that either overrides the <c>Equals(object)</c> method 
+	/// without overriding <c>GetHashCode()</c> or overrides <c>GetHashCode</c> without
+	/// overriding <c>Equals</c>. In order to work correctly types should always override
+	/// them in pair.
+	/// </summary>
+	/// <example>
+	/// Bad example (missing GetHashCode):
+	/// <code>
+	/// public class MissingGetHashCode {
+	/// 	public override bool Equals (object obj)
+	/// 	{
+	/// 		return this == obj;
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (missing Equals):
+	/// <code>
+	/// public class MissingEquals {
+	/// 	public override int GetHashCode ()
+	/// 	{
+	/// 		return 42;
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	/// 	public override bool Equals (object obj)
+	/// 	{
+	/// 		return this == obj;
+	/// 	}
+	/// 	
+	/// 	public override int GetHashCode ()
+	/// 	{
+	/// 		return 42;
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type only implements one of the Equals(Object) or GetHashCode() methods.")]
 	[Solution ("Implement the missing method.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals")]
 	public class ImplementEqualsAndGetHashCodeInPairRule : Rule, ITypeRule {
 
 		private const string Message = "Type implements '{0}' but is missing '{1}'.";
@@ -45,7 +91,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to interfaces and enums
-			if (type.IsInterface || type.IsEnum)
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			bool equals = type.HasMethod (MethodSignatures.Equals);

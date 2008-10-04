@@ -33,8 +33,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule ensure that every enumeration, that are not flags, contains a <c>0</c> 
+	/// value usable as the default value.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// enum Position {
+	///	First = 1,
+	///	Second
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// enum Position {
+	///	First,
+	///	Second
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This enumeration does not provide a member with a value of 0.")]
 	[Solution ("Add a new member in the enum with a value of 0.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue")]
 	public class EnumsShouldDefineAZeroValueRule : DefineAZeroValueRule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

@@ -36,8 +36,53 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for every finalizers are visible to family only (protected in C#) 
+	/// because otherwise they can be called from the user code. In C# and VB.NET this rule
+	/// is enforced by the compiler, but some languages (like IL) may not have such a 
+	/// restriction, thus making developer able to declare non-family finalizers.
+	/// </summary>
+	/// <example>
+	/// Bad example (IL):
+	/// <code>
+	/// .class family auto ansi beforefieldinit BadPublicFinalizer extends
+	/// [mscorlib]System.Object
+	/// {
+	///	.method public hidebysig instance void Finalize() cil managed
+	///	{
+	///		// ...
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (C#):
+	/// <code>
+	/// public class GoodProtectedFinalizer {
+	///	// compiler makes it protected
+	///	~GoodProtectedFinalizer ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (IL):
+	/// <code>
+	/// .class family auto ansi beforefieldinit GoodProtectedFinalizer extends
+	/// [mscorlib]System.Object
+	/// {
+	///	.method family hidebysig instance void Finalize() cil managed
+	///	{
+	///		// ...
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The finalizer for this type isn't protected (family) and is not callable only from the runtime.")]
 	[Solution ("Change finalizer visibility to protected (family).")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2221:FinalizersShouldBeProtected")]
 	public class FinalizersShouldBeProtectedRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
