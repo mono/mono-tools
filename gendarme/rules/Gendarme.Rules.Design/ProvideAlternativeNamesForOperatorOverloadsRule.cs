@@ -36,8 +36,79 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule ensure that all overloaded operators are also accessible used named 
+	/// alternatives because some languages, like VB.NET, cannot use overloaded operators. 
+	/// For those languages named methods should be implemented that provide the same
+	/// functionality. This rule checks for a named alternative for each overloaded operator.
+	/// <list type="bullet">
+	/// <item>op_UnaryPlus</item><description>Plus</description>
+	/// <item>op_UnaryNegation</item><description>Negate</description>
+	/// <item>op_LogicalNot</item><description>LogicalNot</description>
+	/// <item>op_OnesComplement</item><description>OnesComplement</description>
+	/// </list>
+	/// <list type="bullet">
+	/// <item>op_Increment</item><description>Increment</description>
+	/// <item>op_Decrement</item><description>Decrement</description>
+	/// <item>op_True</item><description>IsTrue</description>
+	/// <item>op_False</item><description>IsFalse</description>
+	/// </list>
+	/// <list type="bullet">
+	/// <item>op_Addition</item><description>Add</description>
+	/// <item>op_Subtraction</item><description>Subtract</description>
+	/// <item>op_Multiply</item><description>Multiply</description>
+	/// <item>op_Division</item><description>Divide</description>
+	/// <item>op_Modulus</item><description>Modulus</description>
+	/// </list>
+	/// <list type="bullet">
+	/// <item>op_BitwiseAnd</item><description>BitwiseAnd</description>
+	/// <item>op_BitwiseOr</item><description>BitwiseOr</description>
+	/// <item>op_ExclusiveOr</item><description>ExclusiveOr</description>
+	/// </list>
+	/// <list type="bullet">
+	/// <item>op_LeftShift</item><description>LeftShift</description>
+	/// <item>op_RightShift</item><description>RightShift</description>
+	/// </list>
+	/// <list type="bullet">
+	/// <item>op_Equality</item><description>Equals</description>
+	/// <item>op_Inequality</item><description>(not) Equals</description>
+	/// <item>op_GreaterThan</item><description>Compare</description>
+	/// <item>op_LessThan</item><description>Compare</description>
+	/// <item>op_GreaterThanOrEqual</item><description>Compare</description>
+	/// <item>op_LessThanOrEqual</item><description>Compare</description>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class DoesNotImplementAlternative {
+	///	public static int operator + (DoesNotOverloadOperatorEquals a, DoesNotOverloadOperatorEquals b)
+	///	{
+	///		return 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class DoesImplementAdd {
+	///	public static int operator + (DoesImplementAdd a, DoesImplementAdd b)
+	///	{
+	///		return 0;
+	///	}
+	///	
+	///	public int Add (DoesImplementAdd a)
+	///	{
+	///		return this + a;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains overloads for some operators but doesn't provide named alternatives.")]
 	[Solution ("Add named methods equivalent to the operators for language that do not support them (e.g. VB.NET).")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates")]
 	public class ProvideAlternativeNamesForOperatorOverloadsRule : Rule, ITypeRule {
 
 		static string [] NoParameter = new string [] { };
@@ -82,7 +153,7 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsEnum || type.IsInterface)
+			if (type.IsEnum || type.IsInterface || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (var kv in AlternativeMethodNames) {

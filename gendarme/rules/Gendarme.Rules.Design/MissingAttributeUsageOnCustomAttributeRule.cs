@@ -33,8 +33,37 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks that every custom attribute, types that inherit from 
+	/// <c>System.Attribute</c>, should be decorated with an <c>[AttributeUsage]</c> 
+	/// attribute to specify which kind of code members the custom attribute can be applied to.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // this applies to everything - but the meaning is not clear
+	/// public sealed class SomeAttribute : Attribute {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good examples:
+	/// <code>
+	/// // this clearly applies to everything
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public sealed class AttributeApplyingToAnything : Attribute {
+	/// }
+	/// 
+	/// // while this applies only to fields
+	/// [AttributeUsage (AttributeTargets.Field)]
+	/// public sealed class AttributeApplyingToFields : Attribute {
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This attribute does not specify on which items it can be used.")]
 	[Solution ("Specify [AttributeUsage] on this attribute type.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage")]
 	public class MissingAttributeUsageOnCustomAttributeRule : Rule, ITypeRule {
 
 		private const string AttributeUsageAttribute = "System.AttributeUsageAttribute";

@@ -37,8 +37,67 @@ using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for types that implements <c>System.IComparable</c> and checks
+	/// if the type overrides the <c>Equals(object)</c> method and overloads the <c>==</c>,
+	/// <c>!=</c>, <c>&lt;</c> and <c>&gt;</c> operators.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public struct Comparable : IComparable {
+	/// 
+	///	private int x;
+	/// 
+	///	public int CompareTo (object obj)
+	///	{
+	///		return x.CompareTo (((Comparable)obj).x);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public struct Comparable : IComparable {
+	/// 
+	///	public int CompareTo (object obj)
+	///	{
+	///		return x.CompareTo (((Comparable)obj).x);
+	///	}
+	///	
+	///	public override bool Equals (object obj)
+	///	{
+	///		return x == ((Comparable) obj).x;
+	///	}
+	///	
+	///	static public bool operator == (Comparable left, Comparable right)
+	///	{
+	///		return (left.x == right.x);
+	///	}
+	///	
+	///	static public bool operator != (Comparable left, Comparable right)
+	///	{
+	///		return (left.x != right.x);
+	///	}
+	///	
+	///	static public bool operator &gt; (Comparable left, Comparable right)
+	///	{
+	///		return (left.x &gt; right.x);
+	///	}
+	///	
+	///	static public bool operator &lt; (Comparable left, Comparable right)
+	///	{
+	///		return (left.x &lt; right.x);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This type implements IComparable so it should override Equals(object) and overloads the ==, !=, < and > operators.")]
 	[Solution ("Implement the suggested method and/or operators.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
 	public class ImplementIComparableCorrectlyRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

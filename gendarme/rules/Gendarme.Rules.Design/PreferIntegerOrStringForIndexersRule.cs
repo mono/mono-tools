@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Design.AvoidMultidimensionalIndexerRule
+// Gendarme.Rules.Design.PreferIntegerOrStringForIndexersRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -35,8 +35,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for indexer properties that use uncommon types as indexes.
+	/// Recommanded types includes <c>Int32</c>, <c>Int64</c> and <c>String</c>.
+	/// Other types are discouraged since they are generally better served using a method.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool this [DateTime date] {
+	///	get {
+	///		return false;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public bool IsSomethingPlanned (DateTime date)
+	/// {
+	///	return false;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This indexer should be using integers or strings for its indexes.")]
 	[Solution ("Convert this indexer into a method if an integer or a string cannot be used.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1043:UseIntegralOrStringArgumentForIndexers")]
 	public class PreferIntegerOrStringForIndexersRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

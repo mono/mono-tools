@@ -34,8 +34,69 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	[Problem ("This type override the Equals method, or overloads + and - operators, but doesn't overload the == operator.")]
+	/// <summary>
+	/// This rule checks if the operators add <c>+</c> and subtract <c>-</c> are overloaded or 
+	/// if a value type overrides <c>Object.Equals</c> and warns if the equals <c>==</c> 
+	/// operator is not overloaded.
+	/// </summary>
+	/// <example>
+	/// Bad example (add/substract):
+	/// <code>
+	/// class DoesNotOverloadOperatorEquals {
+	///	public static int operator + (DoesNotOverloadOperatorEquals a)
+	///	{
+	///		return 0;
+	///	}
+	///	
+	///	public static int operator - (DoesNotOverloadOperatorEquals a)
+	///	{
+	///		return 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (value type):
+	/// <code>
+	/// struct OverridesEquals {
+	///	public override bool Equals (object obj)
+	///	{
+	///		return base.Equals (obj);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// struct OverloadsOperatorEquals {
+	///	public static int operator + (OverloadsOperatorEquals a)
+	///	{
+	///		return 0;
+	///	}
+	///	
+	///	public static int operator - (OverloadsOperatorEquals a)
+	///	{
+	///		return 0;
+	///	}
+	///	
+	///	public static bool operator == (OverloadsOperatorEquals a, OverloadsOperatorEquals b)
+	///	{
+	///		return a.Equals (b);
+	///	}
+	///	
+	///	public override bool Equals (object obj)
+	///	{
+	///		return base.Equals (obj);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
+	[Problem ("This type is a value type and override the Equals method or overloads + and - operators without overloading the == operator.")]
 	[Solution ("Overload the == operator to match the results of the Equals method.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1013:OverloadOperatorEqualsOnOverloadingAddAndSubtract")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2231:OverloadOperatorEqualsOnOverridingValueTypeEquals")]
 	public class OperatorEqualsShouldBeOverloadedRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

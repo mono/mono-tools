@@ -1,3 +1,19 @@
+2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementIComparableCorreclyRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute.
+	* MainShouldNotBePublicRule.cs: Add XML documentation.
+	* MissingAttributeUsageOnCustomAttributeRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute.
+	* OperatorEqualsShouldBeOverloadedRule.cs: Add XML documentation 
+	and two [FxCopCompatibility] attributes. Ignore delegates.
+	* OverrideEqualsMethodRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Ignore delegates.
+	* PreferIntegerOrStringForIndexersRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute.
+	* ProvideAlternativeNamesForOperatorOverloadsRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute. Ignore delegates.
+
 2008-10-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypesShouldBeInsideNamespacesRule.cs: Add XML documentation.
