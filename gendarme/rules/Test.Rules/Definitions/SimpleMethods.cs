@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.CodeDom.Compiler;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -60,8 +61,18 @@ namespace Test.Rules.Definitions {
 		{
 		}
 
+		/// <summary>
+		/// A method decorated with the [GeneratedCode] attribute
+		/// </summary>
+		[GeneratedCode ("Gendarme", "2.2")]
+		private string Generated ()
+		{
+			return String.Empty;
+		}
+
 		private static MethodDefinition external_method;
 		private static MethodDefinition empty_method;
+		private static MethodDefinition generated_method;
 
 		/// <value>
 		/// Gets a MethodDefinition to private and static external method.
@@ -82,6 +93,17 @@ namespace Test.Rules.Definitions {
 				if (empty_method == null)
 					empty_method = DefinitionLoader.GetMethodDefinition<SimpleMethods> ("DoNothing");
 				return empty_method;
+			}
+		}
+
+		/// <value>
+		/// Gets a MethodDefinition to private instance generated method. 
+		/// </value>
+		public static MethodDefinition GeneratedCodeMethod {
+			get {
+				if (generated_method == null)
+					generated_method = DefinitionLoader.GetMethodDefinition<SimpleMethods> ("Generated");
+				return generated_method;
 			}
 		}
 	}

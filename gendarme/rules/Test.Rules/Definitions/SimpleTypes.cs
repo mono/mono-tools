@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.CodeDom.Compiler;
 
 using Test.Rules.Helpers;
 
@@ -81,7 +82,18 @@ namespace Test.Rules.Definitions {
 		/// A delegate to be used as the common one.
 		/// </summary>
 		delegate bool Filter (string s);
-		
+
+		/// <summary>
+		/// A method decorated with the [GeneratedCode] attribute
+		/// </summary>
+		[GeneratedCode ("Gendarme", "2.2")]
+		class Generated {
+			public string GetIt ()
+			{
+				return String.Empty;
+			}
+		}
+
 		/// <value>
 		/// A simple class definition.
 		/// </value>
@@ -115,6 +127,13 @@ namespace Test.Rules.Definitions {
 		/// </value>
 		public static TypeDefinition Delegate {
 			get { return DefinitionLoader.GetTypeDefinition<Filter> (); }
+		}
+
+		/// <value>
+		/// A simple generated type.
+		/// </value>
+		public static TypeDefinition GeneratedType {
+			get { return DefinitionLoader.GetTypeDefinition<Generated> (); }
 		}
 	}
 }
