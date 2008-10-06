@@ -63,7 +63,7 @@ namespace Gendarme.Rules.Concurrency {
 	///		}
 	///		return instance;
 	///	}
-	///}
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
@@ -77,7 +77,7 @@ namespace Gendarme.Rules.Concurrency {
 	///		}
 	///		return instance;
 	///	}
-	///}
+	/// }
 	/// </code>
 	/// </example>
 
