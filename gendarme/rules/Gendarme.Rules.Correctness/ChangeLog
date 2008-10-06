@@ -1,3 +1,10 @@
+2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: New.  Rule for
+	ensuring the correct arguments passed as string to attributes.
+	* Gendarme.Rules.Correctness.mdp: Update MD project file.
+	* Makefile.am: Added the rule and test to the build.
+
 2008-09-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FloatComparisonRule.cs: Change IsApplicable to static (self-test)

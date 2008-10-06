@@ -28,7 +28,8 @@ rules_sources = \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs \
 	UseValueInPropertySetterRule.cs \
-	ProvideCorrectArgumentsToFormattingMethodsRule.cs
+	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
+	AttributeStringLiteralsShouldParseCorrectlyRule.cs
 
 tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
@@ -44,4 +45,5 @@ tests_sources = \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs \
 	UseValueInPropertySetterTest.cs \
-	ProvideCorrectArgumentsToFormattingMethodsTest.cs
+	ProvideCorrectArgumentsToFormattingMethodsTest.cs \
+	AttributeStringLiteralsShouldParseCorrectlyTest.cs	
