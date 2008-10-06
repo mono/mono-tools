@@ -44,6 +44,43 @@ namespace Gendarme.Rules.Concurrency {
 	
 	// note: the rule only report a single double-lock per method
 
+	/// <summary>
+	/// This rule is used to check for the double-check pattern in multi-threaded 
+	/// code and warns of its incorrect usage. For more information about the double
+	/// checking problem, see the next article: 
+	/// http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public static Singleton Instance {
+    	/// 	get {
+	///		if (instance == null) {
+	///			lock (syncRoot) {
+	///				if (instance == null) 
+	///					instance = new Singleton ();
+	///			}
+	///		}
+	///		return instance;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public static Singleton Instance {
+	///	get {
+	///		lock (syncRoot) {
+	///			if (instance == null) 
+	///				instance = new Singleton ();
+	///		}
+	///		return instance;
+	///	}
+	///}
+	/// </code>
+	/// </example>
+
 	[Problem ("This method uses the unreliable double-check locking technique.")]
 	[Solution ("Remove the lock check that occurs outside of the protected region.")]
 	public class DoubleCheckLockingRule : Rule, IMethodRule {

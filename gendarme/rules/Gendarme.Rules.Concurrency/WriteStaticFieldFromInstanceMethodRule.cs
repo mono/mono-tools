@@ -38,6 +38,36 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
+	/// <summary>
+	/// This rule is used to check for instance methods that writes values in static fields.
+	/// This may cause problem when multiple instance of the type exists and when used in 
+	/// multithreaded applications. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// static int default_value;
+ 	///
+	/// public int Value {
+	///	get {
+	///		if (default_value == 0)
+	///   			default_value = -1;
+	/// 		return (value > default_value) ? value : 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// static int default_value = -1;
+ 	///
+	/// public int Value {
+    	/// 	get { return (value > default_value) ? value : 0; }
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This instance method writes to static fields. This may cause problem with multiple instances and in multithreaded applications.")]
 	[Solution ("Move initialization to the static constructor or ensure appropriate locking.")]
 	public class WriteStaticFieldFromInstanceMethodRule : Rule, IMethodRule {

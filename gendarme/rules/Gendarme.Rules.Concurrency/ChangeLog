@@ -1,3 +1,10 @@
+2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* DoubleCheckLockingRule.cs: Added XML documentation.
+	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: Added XML
+	documentation.
+	* WriteStaticFieldFromInstanceMethodRule.cs: Added XML documentation.
+
 2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnThisOrTypesRule.cs: Use TraceBack rocks. Don't ignore

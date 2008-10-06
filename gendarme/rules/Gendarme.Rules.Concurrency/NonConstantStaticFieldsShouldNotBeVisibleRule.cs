@@ -35,6 +35,39 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
+	/// <summary>
+	/// This rule warns if a non constant public static field is detected. 
+	/// In a multi-threaded environment access to those fields needs to be synchronized. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class HasPublicStaticField {
+	/// 	public static ComplexObject Field;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class FieldIsReadonly {
+	/// 	public readonly static ComplexObject Field = new ComplexObject();
+	/// }
+	/// </code>
+	/// <code>
+	/// class UseThreadStatic {
+	///	[ThreadStatic]
+	///	public static ComplexObject Field;
+	/// 
+	///	public static InitializeThread () 
+	///	{
+	///		if (Field == null)
+	///			Field = new ComplexObject ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type has some static fields that are not constant. They may represent problems in multithreaded applications.")]
 	[Solution ("Change the field to read-only, mark it [ThreadStatic] or make it non visible outside the assembly.")]
 	public class NonConstantStaticFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
