@@ -1,3 +1,7 @@
+2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRocks.cs: Add IsOverride rock.
+
 2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Simplify some rocks (Is*) by using the new

@@ -131,6 +131,47 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Check if a method is an override to a virtual method of a base type.
+		/// </summary>
+		/// <param name="self">The MethodReference on which the extension method can be called.</param>
+		/// <returns>True if the method is an override to a virtual method, False otherwise</returns>
+		public static bool IsOverride (this MethodReference self)
+		{
+			MethodDefinition method = self.Resolve ();
+			if ((method == null) || !method.IsVirtual)
+				return false;
+
+			TypeDefinition parent = method.DeclaringType.Resolve ().BaseType.Resolve ();
+			while (parent != null) {
+				string name = method.Name;
+				string retval = method.ReturnType.ReturnType.FullName;
+				int pcount = method.Parameters.Count;
+				foreach (MethodDefinition md in parent.Methods) {
+					if (name != md.Name)
+						continue;
+					if (retval != md.ReturnType.ReturnType.FullName)
+						continue;
+					if (pcount != md.Parameters.Count)
+						continue;
+
+					bool ok = true;
+					for (int i = 0; i < pcount; i++) {
+						if (method.Parameters [i].ParameterType.FullName != md.Parameters [i].ParameterType.FullName) {
+							ok = false;
+							break;
+						}
+					}
+					if (!ok)
+						continue;
+
+					return md.IsVirtual;
+				}
+				parent = parent.BaseType.Resolve ();
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Check if the method corresponds to the get or set operation on a property.
 		/// </summary>
 		/// <param name="self">The MethodReference on which the extension method can be called.</param>
