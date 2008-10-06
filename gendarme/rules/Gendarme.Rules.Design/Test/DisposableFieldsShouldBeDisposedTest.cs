@@ -34,6 +34,7 @@ using System.ComponentModel;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
@@ -41,9 +42,43 @@ namespace Test.Rules.Design {
 	[TestFixture]
 	public class DisposableFieldsShouldBeDisposedTest : TypeRuleTestFixture<DisposableFieldsShouldBeDisposedRule> {
 
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+
+			// SimpleTypes.Class does not implement IDisposable
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+
+			// [GeneratedCode]
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
+		}
+
+		abstract class AbstractDisposable : IDisposable {
+
+			abstract public void Dispose ();
+		}
+
+		abstract class AbstractExplicitDisposable : IDisposable {
+
+			void IDisposable.Dispose ()
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		[Test]
+		public void Abstract ()
+		{
+			AssertRuleSuccess<AbstractDisposable> ();
+			AssertRuleSuccess<AbstractExplicitDisposable> ();
+		}
+
 		class FalsePositive : IDisposable {
 			int A;
-			object b;
+			object[] b;
 
 			public void Dispose () //no warning
 			{

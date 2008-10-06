@@ -29,14 +29,12 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
@@ -80,77 +78,59 @@ namespace Test.Rules.Design {
 		}
 	}
 
-	class NotDisposableBecauseStatic {
+	class NotDisposableBecauseStatic : IDisposable {
 		static IntPtr A;
+
+		public void Dispose ()
+		{
+			throw new NotImplementedException ();
+		}
 	}
 
 	[TestFixture]
-	public class DisposableTypesShouldHaveFinalizerTest {
+	public class DisposableTypesShouldHaveFinalizerTest : TypeRuleTestFixture<DisposableTypesShouldHaveFinalizerRule> {
 
-		private DisposableTypesShouldHaveFinalizerRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DisposableTypesShouldHaveFinalizerRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			return assembly.MainModule.Types [name];
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 		}
 
 		[Test]
 		public void TestHasFinalizer ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.HasFinalizer");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<HasFinalizer> ();
 		}
 
 		[Test]
 		public void TestNoFinalizer ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NoFinalizer");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<NoFinalizer> (1);
 		}
 
 		[Test]
 		public void TestNotDisposable ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NotDisposable");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<NotDisposable> ();
 		}
 
 		[Test]
 		public void TestNoNativeFields ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NoNativeField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NoNativeField> ();
 		}
 
 		[Test]
 		public void TestNativeFieldArray ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NativeFieldArray");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<NativeFieldArray> (1);
 		}
 
 		[Test]
 		public void TestNotDisposableBecauseStatic ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Design.NotDisposableBecauseStatic");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<NotDisposableBecauseStatic> ();
 		}
 	}
 }

@@ -1,11 +1,9 @@
 // 
-// Unit tests for DoNotDeclareProtectedMembersInSealedTypeRule
+// Unit tests for DoNotDeclareVirtualMethodsInSealedTypeRule
 //
 // Authors:
-//	Nidhi Rawal <sonu2404@gmail.com>
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (c) <2007> Nidhi Rawal
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,6 +26,7 @@
 
 using System;
 
+using Mono.Cecil;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
@@ -36,8 +35,29 @@ using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
+	public sealed class SealedClassWithoutVirtualMethods {
+		public int GetInt ()
+		{
+			return 42;
+		}
+	}
+
 	[TestFixture]
-	public class DoNotDeclareProtectedMembersInSealedTypeTest : TypeRuleTestFixture<DoNotDeclareProtectedMembersInSealedTypeRule> {
+	public class DoNotDeclareVirtualMethodsInSealedTypeTest : TypeRuleTestFixture<DoNotDeclareVirtualMethodsInSealedTypeRule> {
+
+		private TypeDefinition sealed_class_with_virtual_method;
+
+		[TestFixtureSetUp]
+		public void FixtureSetUp ()
+		{
+			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
+			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+
+			sealed_class_with_virtual_method = assembly.MainModule.Types [typeof (SealedClassWithoutVirtualMethods).FullName].Clone ();
+			sealed_class_with_virtual_method.Module = assembly.MainModule;
+			MethodDefinition get_int = sealed_class_with_virtual_method.Methods [0];
+			get_int.IsVirtual = true;
+		}
 
 		[Test]
 		public void DoesNotApply ()
@@ -52,61 +72,17 @@ namespace Test.Rules.Design {
 			AssertRuleDoesNotApply (SimpleTypes.Structure);
 		}
 
-		public sealed class SealedClassWithProtectedField {
-			protected int i;
-			protected double d;
-		}
-
 		[Test]
-		public void SealedClassWithProtectedFieldTest ()
+		public void SealedClassWithVirtualMethodTest ()
 		{
-			AssertRuleFailure<SealedClassWithProtectedField> (2);
-		}
-
-		public sealed class SealedClassWithoutProtectedFields {
-			public string s;
-			private float f;
-		}
-		
-		[Test]
-		public void SealedClassWithoutProtectedFieldsTest ()
-		{
-			AssertRuleSuccess<SealedClassWithoutProtectedFields> ();
-		}
-
-		public sealed class SealedClassWithProtectedMethod {
-			protected int GetInt ()
-			{
-				return 42;
-			}
-		}
-
-		[Test]
-		public void SealedClassWithProtectedMethodTest ()
-		{
-			AssertRuleFailure<SealedClassWithProtectedMethod> (1);
-		}
-
-		public sealed class SealedClassWithoutProtectedMethods {
-			public string GetInfo ()
-			{
-				return String.Empty;
-			}
-		}
-
-		[Test]
-		public void SealedClassWithoutProtectedMethodsTest ()
-		{
-			AssertRuleSuccess<SealedClassWithoutProtectedMethods> ();
+			AssertRuleFailure (sealed_class_with_virtual_method, 1);
 		}
 
 		public class UnsealedClass {
-			protected double d;
-			protected int j;
 
-			protected void Show ()
+			public virtual int GetInt ()
 			{
-				Console.WriteLine ("{0} - {1}", j, d);
+				return 42;
 			}
 		}
 
@@ -117,7 +93,7 @@ namespace Test.Rules.Design {
 		}
 
 		public abstract class AbstractClass {
-			protected abstract string GetIt ();
+			public abstract string GetIt ();
 		}
 
 		public sealed class SealedClass : AbstractClass {
@@ -127,7 +103,7 @@ namespace Test.Rules.Design {
 				return 42;
 			}
 
-			protected override string GetIt ()
+			public override string GetIt ()
 			{
 				return String.Empty;
 			}

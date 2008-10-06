@@ -1,3 +1,16 @@
+2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedTest.cs:  Add more coverage.
+	* DisposableTypesShouldHaveFinalizerTest.cs: Use new, shorter, 
+	syntax for tests. Remove unneeded 'using' clauses.
+	* DoNotDeclareVirtualMethodsInSealedTypeTest.cs: New. Unit tests 
+	for DoNotDeclareVirtualMethodsInSealedTypeRule.
+	* DontDeclareProtectedFieldsInSealedClassTest.cs: Use new, shorter,
+	syntax for tests. Add test cases for new features (members) and more 
+	coverage. Remove unneeded 'using' clauses.
+	* EnsureSymmetryForOverloadedOperatorsTest.cs: Use new, shorter, 
+	syntax for tests. Add more coverage. Remove unneeded 'using' clauses.
+
 2008-10-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EnumsShouldDefineAZeroValueTest.cs, EnumsShouldUseInt32Test.cs,

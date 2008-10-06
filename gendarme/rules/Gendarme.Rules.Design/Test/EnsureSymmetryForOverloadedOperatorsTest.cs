@@ -26,24 +26,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
-	public class EnsureSymmetryForOverloadedOperatorsTest {
+	public class EnsureSymmetryForOverloadedOperatorsTest : TypeRuleTestFixture<EnsureSymmetryForOverloadedOperatorsRule> {
 
-		private EnsureSymmetryForOverloadedOperatorsRule rule;
 		private AssemblyDefinition assembly;
 		private TypeDefinition type;
-		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
@@ -51,17 +47,6 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
 			type = assembly.MainModule.Types ["Test.Rules.Design.EnsureSymmetryForOverloadedOperatorsTest"];
-			rule = new EnsureSymmetryForOverloadedOperatorsRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			foreach (TypeDefinition nType in type.NestedTypes) {
-				if (nType.Name == name)
-					return nType;
-			}
-			return null;
 		}
 
 		public TypeDefinition CreateType (string name, string [] methods, int parameterCount)
@@ -78,16 +63,19 @@ namespace Test.Rules.Design {
 			return testType;
 		}
 
-		class FalsePositive {
-			public void DoStuff () { }
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
 		}
 
 		[Test]
-		public void TestFalsePositive ()
+		public void NoOperator ()
 		{
-			TypeDefinition type = GetTest ("FalsePositive");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess (SimpleTypes.Class);
+			AssertRuleSuccess (SimpleTypes.Structure);
 		}
 
 		class EverythingOK {
@@ -110,9 +98,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestEverythingOK ()
 		{
-			TypeDefinition type = GetTest ("EverythingOK");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<EverythingOK> ();
 		}
 
 		class Missing1 {
@@ -123,9 +109,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMissing1 ()
 		{
-			TypeDefinition type = GetTest ("Missing1");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure<Missing1> (2);
 		}
 
 		class Missing2 {
@@ -136,66 +120,57 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestMissing2 ()
 		{
-			TypeDefinition type = GetTest ("Missing2");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (3, runner.Defects.Count, "Count");
 			// divide fires for multiply and modulus
+			AssertRuleFailure<Missing2> (3);
 		}
 
 		[Test]
 		public void TestModulus ()
 		{
 			TypeDefinition type = this.CreateType ("Modulus", new string [] { "op_Modulus" }, 2);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 1);
 		}
 
 		[Test]
 		public void TestGreater ()
 		{
 			TypeDefinition type = this.CreateType ("Greater", new string [] { "op_GreaterThan", "op_GreaterThanOrEqual" }, 2);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 2);
 		}
 
 		[Test]
 		public void TestLess ()
 		{
 			TypeDefinition type = this.CreateType ("Less", new string [] { "op_LessThan", "op_LessThanOrEqual" }, 2);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 2);
 		}
 
 		[Test]
 		public void TestEquality ()
 		{
 			TypeDefinition type = this.CreateType ("Equality", new string [] { "op_Equality" }, 2);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 1);
 		}
 
 		[Test]
 		public void TestInequality ()
 		{
 			TypeDefinition type = this.CreateType ("Inequality", new string [] { "op_Inequality" }, 2);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 1);
 		}
 
 		[Test]
 		public void TestTrue ()
 		{
 			TypeDefinition type = this.CreateType ("True", new string [] { "op_True" }, 1);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 1);
 		}
 
 		[Test]
 		public void TestFalse ()
 		{
 			TypeDefinition type = this.CreateType ("False", new string [] { "op_False" }, 1);
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure (type, 1);
 		}
 	}
 }
