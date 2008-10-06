@@ -37,11 +37,59 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule inspects all fields for disposable types and, if <c>System.IDisposable</c>
+	/// is implemented, check that the type <c>Dispose</c> method does indeed call <c>Dispose</c>
+	/// on all the fields (that implements <c>System.IDisposable</c>).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class DoesNotDisposeMember : IDisposable {
+	///	byte[] buffer;
+	///	IDisposable field;
+	///	
+	///	public void Dispose ()
+	///	{
+	///		buffer = null;
+	///		// field is not disposed
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class DisposePattern : IDisposable {
+	///	byte[] buffer;
+	///	IDisposable field;
+	///	bool disposed;
+	///	
+	///	public void Dispose ()
+	///	{
+	///		Dispose (true);
+	///	}
+	///	
+	///	private void Dispose (bool disposing)
+	///	{
+	///		if (!disposed) {
+	///			if (disposing) {
+	///				field.Dispose ();
+	///			}
+	///			buffer = null;
+	///			disposed = true;
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains disposable field(s) that aren't disposed.")]
 	[Solution ("Ensure that every disposable field(s) are disposed correctly.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed")]
 	public class DisposableFieldsShouldBeDisposedRule : Rule, ITypeRule {
 
-		private static MethodDefinition GetNonAbstractMethod (TypeDefinition type, MethodSignature signature)
+		private static MethodDefinition GetNonAbstractMethod (TypeReference type, MethodSignature signature)
 		{
 			MethodDefinition method = type.GetMethod (signature);
 			if ((method == null) || method.IsAbstract)
@@ -51,6 +99,10 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule applies only to types and structures (value types)
+			if (type.IsEnum || type.IsInterface || type.IsDelegate ())
+				return RuleResult.DoesNotApply;
+
 			// rule doesn't apply to generated code (out of developer control)
 			if (type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
@@ -67,26 +119,7 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.Success;
 
 			//Check for baseDispose
-			TypeDefinition baseType = type;
-			while (baseType.BaseType.FullName != "System.Object") {
-				baseType = baseType.BaseType.Resolve ();
-				if (baseType == null)
-					break;
-				// also checks parents, so no need to search further
-				if (!baseType.Implements ("System.IDisposable"))
-					break;
-				//we just check for Dispose() here
-				MethodDefinition baseDisposeMethod = baseType.GetMethod (MethodSignatures.Dispose); 
-				if (baseDisposeMethod == null)
-					continue; //no dispose method (yet)
-				if (baseDisposeMethod.IsAbstract)
-					break; //abstract
-				if (implicitDisposeMethod != null)
-					CheckIfBaseDisposeIsCalled (implicitDisposeMethod, baseDisposeMethod);
-				if (explicitDisposeMethod != null)
-					CheckIfBaseDisposeIsCalled (explicitDisposeMethod, baseDisposeMethod);
-				break;
-			}
+			CheckBaseDispose (type, implicitDisposeMethod, explicitDisposeMethod);
 
 			//List of disposeableFields
 			List<FieldDefinition> disposeableFields = new List<FieldDefinition> ();
@@ -121,6 +154,30 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
+		private void CheckBaseDispose (TypeDefinition type, MethodDefinition implicitDisposeMethod, MethodDefinition explicitDisposeMethod)
+		{
+			TypeDefinition baseType = type;
+			while (baseType.BaseType.FullName != "System.Object") {
+				baseType = baseType.BaseType.Resolve ();
+				if (baseType == null)
+					break;
+				// also checks parents, so no need to search further
+				if (!baseType.Implements ("System.IDisposable"))
+					break;
+				//we just check for Dispose() here
+				MethodDefinition baseDisposeMethod = baseType.GetMethod (MethodSignatures.Dispose);
+				if (baseDisposeMethod == null)
+					continue; //no dispose method (yet)
+				if (baseDisposeMethod.IsAbstract)
+					break; //abstract
+				if (implicitDisposeMethod != null)
+					CheckIfBaseDisposeIsCalled (implicitDisposeMethod, baseDisposeMethod);
+				if (explicitDisposeMethod != null)
+					CheckIfBaseDisposeIsCalled (explicitDisposeMethod, baseDisposeMethod);
+				break;
+			}
+		}
+
 		private void CheckIfBaseDisposeIsCalled (MethodDefinition method, MethodDefinition baseMethod)
 		{
 			bool found = false;
@@ -132,7 +189,7 @@ namespace Gendarme.Rules.Design {
 				Instruction call = ins.Next; //call baseMethod
 				if (call == null)
 					continue;
-				if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Calli && call.OpCode.Code != Code.Callvirt)
+				if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Callvirt)
 					continue;
 				MethodReference calledMethod = (MethodReference) call.Operand;
 				if (calledMethod.ToString () != baseMethod.ToString ())
@@ -146,7 +203,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 
-		private void CheckIfAllFieldsAreDisposed (MethodDefinition method, List<FieldDefinition> fields)
+		private void CheckIfAllFieldsAreDisposed (MethodDefinition method, ICollection<FieldDefinition> fields)
 		{
 			//Check if Dispose(bool) is called and if all fields are disposed
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -175,7 +232,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 
-		private static void ProcessMethod (MethodDefinition method, List<FieldDefinition> fieldsToDispose)
+		private static void ProcessMethod (MethodDefinition method, ICollection<FieldDefinition> fieldsToDispose)
 		{
 			if (!method.HasBody)
 				return;

@@ -1,11 +1,9 @@
 //
-// Gendarme.Rules.Design.DoNotDeclareProtectedFieldsInSealedTypeRule
+// Gendarme.Rules.Design.DoNotDeclareVirtualMethodsInSealedTypeRule
 //
 // Authors:
-//	Nidhi Rawal <sonu2404@gmail.com>
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (c) <2007> Nidhi Rawal
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,40 +35,15 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule ensure that <c>sealed</c> types (i.e. types that you can't inherit from) 
-	/// do not define family (<c>protected</c> in C#) fields or methods. Such visibility 
-	/// for members would only be useful in sub-types.
+	/// do not define any new <c>virtual</c> methods. Such methods would only be useful in
+	/// sub-types. Note that some compilers, like C# and VB.NET compilers, do not allow you
+	/// to define such methods.
 	/// </summary>
 	/// <example>
-	/// Bad example (field):
+	/// Bad example:
 	/// <code>
 	/// public sealed class MyClass {
-	///	protected int someValue;
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Bad example (method):
-	/// <code>
-	/// public sealed class MyClass {
-	///	protected virtual int GetAnswer ()
-	///	{
-	///		return 42;
-	///	}
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Good example (field):
-	/// <code>
-	/// public sealed class MyClass {
-	///	private int someValue; 
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Good example (method):
-	/// <code>
-	/// public sealed class MyClass {
+	///	// note that C# compilers won't allow this to compile
 	///	public virtual int GetAnswer ()
 	///	{
 	///		return 42;
@@ -78,12 +51,22 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>Prior to Gendarme 2.2 this rule applied only to fields and was named DoNotDeclareProtectedFieldsInSealedClassRule</remarks>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public sealed class MyClass {
+	///	public int GetAnswer ()
+	///	{
+	///		return 42;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
 
-	[Problem ("This sealed type contains family (protected in C#) fields and/or methods.")]
+	[Problem ("This sealed type introduce new virtual methods.")]
 	[Solution ("Change the visibility to public or private to represent its true intended use.")]
-	[FxCopCompatibility ("Microsoft.Design", "CA1047:DoNotDeclareProtectedMembersInSealedTypes")]
-	public class DoNotDeclareProtectedMembersInSealedTypeRule: Rule, ITypeRule {
+	[FxCopCompatibility ("Microsoft.Design", "CA1048:DoNotDeclareVirtualMembersInSealedTypes")]
+	public class DoNotDeclareVirtualMethodsInSealedTypeRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -91,15 +74,10 @@ namespace Gendarme.Rules.Design {
 			if (!type.IsSealed || type.IsEnum || type.IsValueType || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
-			foreach (FieldDefinition field in type.Fields) {
-				if (field.IsFamily) {
-					Runner.Report (field, Severity.Low, Confidence.Total);
-				}
-			}
-
 			foreach (MethodDefinition method in type.Methods) {
-				if (method.IsFamily) {
-					// make sure it's not an override of an ancestor
+				// method is virtual and not final (sealed)
+				if (method.IsVirtual && !method.IsFinal) {
+					// so just make sure it's not an override of an ancestor
 					if (!method.IsOverride ())
 						Runner.Report (method, Severity.Low, Confidence.Total);
 				}

@@ -36,8 +36,51 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for operators that are not overloaded in pairs. Some compilers, like
+	/// the C# compilers, forces you to implement some of the pairs, but other languages might
+	/// not. The following pairs are checked:
+	/// <list>
+	/// <description>Addition and Substraction</description>
+	/// <description>Multiplication and Division</description>
+	/// <description>Division and Modulus</description>
+	/// <description>Equality and Inequality</description>
+	/// <description>True and False</description>
+	/// <description>GreaterThan and LessThan</description>
+	/// <description>GreaterThanOrEqual and LessThanOrEqual</description>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class DoesNotOverloadAdd {
+	///	public static int operator - (DoesNotOverloadAdd left, DoesNotOverloadAdd right)
+	///	{
+	///		return 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class Good {
+	///	public static int operator + (Good right, Good left)
+	///	{
+	///		return 0;
+	///	}
+	///	
+	///	public static int operator - (Good right, Good left)
+	///	{
+	///		return 0;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type should overload operators in symmetry (e.g. == and !=, + and -).")]
 	[Solution ("Add the missing operator and keep the type operators symmetrical.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2226:OperatorsShouldHaveSymmetricalOverloads")]
 	public class EnsureSymmetryForOverloadedOperatorsRule : Rule, ITypeRule {
 
 		private const string Message = "The '{0}' operator is present, for symmetry, the '{1}' operator should be added.";
@@ -56,7 +99,7 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsInterface || type.IsEnum)
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (var kv in SymmetricOperators_Warning)

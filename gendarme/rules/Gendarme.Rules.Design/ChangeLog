@@ -1,3 +1,20 @@
+2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Ignore enums, interfaces and 
+	delegates. Split CheckType and avoid unneeded specialization of some
+	parameters (self-tests).
+	* DisposableTypesShouldHaveFinalizerRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Ignore enums and delegates.
+	* DoNotDeclareVirtualMethodsInSealedTypeRule.cs: New. Rule to 
+	check if sealed types introduce new virtual methods.
+	* DontDeclareProtectedFieldsInSealedClassRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute. Ignore enums, 
+	value types and delegates. Add check for members (not just fields).
+	* EnsureSymmetryForOverloadedOperatorsRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute. Ignore delegates.
+	* Makefile.am: Add new rule and test to the build.
+
 2008-10-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EnumsShouldDefineAZeroValueRule.cs: Add XML documentation 

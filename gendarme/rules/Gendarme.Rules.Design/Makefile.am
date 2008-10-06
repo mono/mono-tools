@@ -18,6 +18,7 @@ rules_sources = \
 	AvoidRefAndOutParametersRule.cs \
 	ConsiderUsingStaticTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
+	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
 	PreferIntegerOrStringForIndexersRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs \
 	DefineAZeroValueRule.cs \
@@ -54,6 +55,7 @@ tests_sources = \
 	AvoidRefAndOutParametersTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
+	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
 	PreferIntegerOrStringForIndexersTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs \
 	EnumsShouldDefineAZeroValueTest.cs \

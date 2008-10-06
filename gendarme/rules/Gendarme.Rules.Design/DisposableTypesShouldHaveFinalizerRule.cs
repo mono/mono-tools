@@ -34,12 +34,45 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule inspects all types that implements <c>System.IDisposable</c> and contains
+	/// fields that use native types, like <c>System.IntPtr</c>, <c>System.UIntPtr</c> or
+	/// <c>System.Runtime.InteropServices.HandleRef</c>. If so the rule will warn unless
+	/// the type provides a finalizer (destructor in C#).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class NoFinalizer {
+	///	IntPtr field;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class HasFinalizer {
+	///	IntPtr field;
+	///	
+	///	~HasFinalizer ()
+	///	{
+	///		UnmanagedFree (field);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains native fields but does not have a finalizer.")]
 	[Solution ("Add a finalizer, calling Dispose(true), to release unmanaged resources.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2216:DisposableTypesShouldDeclareFinalizer")]
 	public class DisposableTypesShouldHaveFinalizerRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
+			// rule applies only to types, interfaces and structures (value types)
+			if (type.IsEnum || type.IsDelegate ())
+				return RuleResult.DoesNotApply;
+
 			// rule onyly applies to type that implements IDisposable
 			if (!type.Implements ("System.IDisposable"))
 				return RuleResult.DoesNotApply;
