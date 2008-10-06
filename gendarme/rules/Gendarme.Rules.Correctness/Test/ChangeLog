@@ -1,3 +1,9 @@
+2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeStringLiteralsShouldParseCorrectlyTest.cs: New.  Unit tests
+	for AttributeStringLiteralsShouldParseCorrectlyRule.
+	* Test.Rules.Correctness.mdp: Updated MD project file.
+
 2008-09-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentTest.cs: Change from Success to
