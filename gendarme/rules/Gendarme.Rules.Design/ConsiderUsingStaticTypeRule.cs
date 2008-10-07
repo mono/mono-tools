@@ -35,6 +35,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule check for types that contains only static members and, if the assembly
+	/// targets the CLR version 2.0 or later, suggest to promote the type to a <c>static</c>
+	/// type. The rule will ignore assemblies targeting earlier versions of the CLR.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Class {
+	///	public static void Method ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public static class Class {
+	///	public static void Method ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type contains only static fields and methods and should be static.")]
 	[Solution ("Change this type into a static type to gain clarity and better error reporting.")]
 	public class ConsiderUsingStaticTypeRule : Rule, ITypeRule {
@@ -54,7 +80,7 @@ namespace Gendarme.Rules.Design {
 		{
 			foreach (MethodDefinition ctor in type.Constructors) {
 				// let's the default ctor pass (since it's always here for 1.x code)
-				if (!ctor.IsStatic && (ctor.Parameters.Count > 1))
+				if (!ctor.IsStatic && (ctor.Parameters.Count > 0))
 					return false;
 			}
 

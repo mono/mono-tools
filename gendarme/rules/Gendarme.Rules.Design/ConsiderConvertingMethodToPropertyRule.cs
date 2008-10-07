@@ -35,8 +35,42 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// The rule looks for methods which definition looks quite similar to a property.
+	/// For example, methods beginning with <c>Is</c>, <c>Get</c> or <c>Set</c> are 
+	/// likely candidates to be promoted into properties.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	int foo;
+	///	
+	///	public int GetFoo ()
+	///	{
+	///		return foo;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	int foo;
+	///	
+	///	public int Foo {
+	///		get {
+	///			return foo;
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method looks like a candidate to be a property.")]
 	[Solution ("If possible change this method into a property, otherwise you can ignore the rule.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public class ConsiderConvertingMethodToPropertyRule : Rule, IMethodRule {
 
 		static readonly string [] whitelist = {	"GetEnumerator",
@@ -65,8 +99,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rules do not apply to constructors, methods returning an array, properties
-			if (method.IsConstructor || method.IsSpecialName ||
-				method.ReturnType.ReturnType.IsArray () || method.IsProperty ())
+			if (method.IsConstructor || method.IsSpecialName || method.ReturnType.ReturnType.IsArray ())
 				return RuleResult.DoesNotApply;
 
 			// we don't apply the rule to overrides since the base method can be

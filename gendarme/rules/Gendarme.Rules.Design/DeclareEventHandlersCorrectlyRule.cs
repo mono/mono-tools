@@ -34,8 +34,44 @@ using Gendarme.Framework.Helpers;
 using Mono.Cecil;
 
 namespace Gendarme.Rules.Design {
+
+	/// <summary>
+	/// The rule inspects all events inside every type and verify if they all have correct
+	/// signatures.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // if miss the second parameter, inheriting from System.EventArgs
+	/// delegate void MyDelegate (int sender);
+	/// 
+	/// class Bad {
+	///	public event MyDelegate CustomEvent;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (delegate):
+	/// <code>
+	/// delegate void MyDelegate (int sender, EventArgs e);
+	/// 
+	/// class Good {
+	///	public event MyDelegate CustomEvent;
+	/// }
+	/// </code>
+	/// </example>
+	/// Good example (generics):
+	/// <code>
+	/// class Good {
+	///	public event EventHandler&lt;EventArgs&gt; CustomEvent;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("The delegate which handles the event haven't the correct signature.")]
 	[Solution ("You should correct the signature, return type, parameter types or parameter names.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
 	public class DeclareEventHandlersCorrectlyRule : Rule, ITypeRule {
 		static IList<TypeReference> valid_event_handler_types = new List<TypeReference> ();
 
@@ -108,25 +144,39 @@ namespace Gendarme.Rules.Design {
 				
 				//If we are using the Generic
 				//EventHandler<TEventArgs>, the compiler forces
-				//us to write the correct signature 	
-				if (td.GenericParameters.Count != 0)
-					continue;
-
-				MethodReference invoke = td.GetMethod (MethodSignatures.Invoke);
-				if (invoke == null)
-					continue;
-
-				bool valid = CheckReturnVoid (td, invoke);
-				valid &= CheckAmountOfParameters (td, invoke);
-				valid &= CheckParameterTypes (td, invoke);
-				valid &= CheckParameterName (td, invoke, 0, "sender");
-				valid &= CheckParameterName (td, invoke, 1, "e");
+				//us to write the correct signature
+				bool valid = (td.GenericParameters.Count == 0) ?
+					CheckDelegate (td) : CheckGenericDelegate (td);
 
 				// avoid re-processing the same *valid* type multiple times
 				if (valid)
 					valid_event_handler_types.Add (tr);
 			}
 			return Runner.CurrentRuleResult;
+		}
+
+		private bool CheckDelegate (TypeDefinition td)
+		{
+			MethodReference invoke = td.GetMethod (MethodSignatures.Invoke);
+			if (invoke == null)
+				return false;
+
+			bool valid = CheckReturnVoid (td, invoke);
+			valid &= CheckAmountOfParameters (td, invoke);
+			valid &= CheckParameterTypes (td, invoke);
+			valid &= CheckParameterName (td, invoke, 0, "sender");
+			valid &= CheckParameterName (td, invoke, 1, "e");
+
+			return valid;
+		}
+
+		private bool CheckGenericDelegate (TypeDefinition td)
+		{
+			if (td.FullName == "System.EventHandler`1")
+				return true;
+
+			Runner.Report (td, Severity.Medium, Confidence.High, "Generic delegates should use EventHandler<TEventArgs>");
+			return false;
 		}
 
 		public override void TearDown (IRunner runner)

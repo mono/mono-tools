@@ -1,3 +1,21 @@
+2008-10-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRefAndOutParametersRule.cs: Add XML documentation and 
+	two [FxCopCompatibility] attributes. Ignore p/invokes since they 
+	often need ref and out but should not be visible (but there's a 
+	specific rule for that). 
+	* AvoidVisibleNestedTypesRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* ConsiderConvertingFieldToNullableRule.cs: Add XML documentation. 
+	Avoid unnecessary specialization in IsHasField (self-test).
+	* ConsiderConvertingMethodToPropertyRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Remove duplicate check.
+	* ConsiderUsingStaticTypeRule.cs: Add XML documentation. Fix 
+	constructor parameter check.
+	* DeclareEventHandlersCorrectlyRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Add more precise handling of 
+	generics.
+
 2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Add XML documentation 

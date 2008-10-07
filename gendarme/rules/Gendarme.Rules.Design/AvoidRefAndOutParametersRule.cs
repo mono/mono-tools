@@ -34,6 +34,45 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for methods that use <c>ref</c> or <c>out</c> parameters. 
+	/// They are powerful features that can easily be misunderstood (by the consumer)
+	/// and misused (by the consumer) to create hard to use API. Avoid them whenever 
+	/// possible or, if needed, provide simpler alternatives coverage most use cases.
+	/// An exception is made, i.e. no defect are reported, for the <c>bool Try*(X out)</c> 
+	/// pattern.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public bool NextJob (ref int id, out string display)
+	/// {
+	///	if (id &lt; 0)
+	///		return false;
+	///	display = String.Format ("Job #{0}", id++);
+	///	return true;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// private int id = 0;
+	/// 
+	/// private int GetNextId ()
+	/// {
+	///	int id = this.id++;
+	///	return id;
+	/// }
+	/// 
+	/// public string NextJob ()
+	/// {
+	///	return String.Format ("Job #{0}", Id);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method use ref and/or out parameters in a visible API, which should be as simple as possible.")]
 	[Solution ("If multiple return values are needed then refactor the method to return an object that contains them.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1021:AvoidOutParameters")]
@@ -42,8 +81,9 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// rule only applies to visible API
-			if (!method.IsVisible ())
+			// rule only applies to visible API 
+			// we also exclude all p/invokes since we have a rule for them not to be visible
+			if (method.IsPInvokeImpl || !method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {

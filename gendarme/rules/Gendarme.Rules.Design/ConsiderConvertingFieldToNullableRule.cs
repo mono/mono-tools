@@ -33,6 +33,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	/// <summary>
+	/// This rule checks for field pairs that are likely trying to provide the same
+	/// functionality as a single nullable field. If the assembly targets version 2.0, 
+	/// or more recent, of the CLR then the rule will warn about the opportunity to use 
+	/// real nullable fields. The rule will ignore assemblies targetting earlier versions
+	/// of the CLR.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	bool hasFoo;
+	///	int foo;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	int? foo;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This field looks like a candidate to be a nullable.")]
 	[Solution ("If possible change this field into a nullable, otherwise you can ignore the rule.")]
 	public class ConsiderConvertingFieldToNullableRule : Rule, ITypeRule {
@@ -52,7 +78,7 @@ namespace Gendarme.Rules.Design {
 			return name.StartsWith (start, true, null);
 		}
 
-		static bool IsHasField (FieldDefinition fd, ref string prefix, ref string suffix)
+		static bool IsHasField (FieldReference fd, ref string prefix, ref string suffix)
 		{
 			if (fd.FieldType.FullName != "System.Boolean")
 				return false;
