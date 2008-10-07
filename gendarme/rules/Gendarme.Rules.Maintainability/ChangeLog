@@ -1,3 +1,9 @@
+2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyRule.cs: Fix typo in [Solution] attribute
+	and downgrade the confidence to High (test case show it's not Total).
+	Both found by Andy Hume.
+
 2008-09-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Change field visibility 

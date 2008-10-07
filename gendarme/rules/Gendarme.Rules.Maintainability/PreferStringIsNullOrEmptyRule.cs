@@ -69,7 +69,7 @@ namespace Gendarme.Rules.Maintainability {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method does string null and length check which can be harder on code readability/maintainability.")]
-	[Solution ("Replace both checks with a single call to String.IsEmptyOrNull.")]
+	[Solution ("Replace both checks with a single call to String.IsNullOrEmpty(string).")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class PreferStringIsNullOrEmptyRule : Rule, IMethodRule {
 
@@ -184,7 +184,7 @@ namespace Gendarme.Rules.Maintainability {
 					// 1 - we previously did a check null on the same value (that we already know is a string)
 					// 2 - we compare the return value (length) with 0
 					if (PreLengthCheck (method, current.Previous) && PostLengthCheck (current.Next)) {
-						Runner.Report (method, current, Severity.Medium, Confidence.Total);
+						Runner.Report (method, current, Severity.Medium, Confidence.High);
 					}
 				}
 			}
