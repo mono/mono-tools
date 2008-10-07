@@ -1,3 +1,9 @@
+2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyTest.cs: Add new test cases from Andy
+	Hume. This returns a defects where none exists since the IL is too
+	similar for the current rule logic.
+
 2008-10-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsTest.cs: Adjust test case with the

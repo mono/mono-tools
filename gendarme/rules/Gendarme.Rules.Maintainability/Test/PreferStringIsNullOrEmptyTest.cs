@@ -172,5 +172,25 @@ namespace Test.Rules.Maintainability {
 			AssertRuleSuccess<PreferStringIsNullOrEmptyTest> ("CommonExceptionPattern");
 			AssertRuleSuccess<PreferStringIsNullOrEmptyTest> ("ConfusingStringInstance");
 		}
+
+		public static bool StringIsStrictlyEmpty (string value)
+		{
+			return value != null && value.Length == 0;
+		}
+
+		public void ThereShouldBeNoStringIsNullOrEmptySuggestionHere (string realm)
+		{
+			if (realm != null && realm.Length == 0)
+				throw new ArgumentException ();
+			Console.WriteLine (realm);
+		}
+
+		[Test]
+		[Ignore ("FIXME: false positive")]
+		public void StrictlyEmpty ()
+		{
+			AssertRuleSuccess<PreferStringIsNullOrEmptyTest> ("StringIsStrictlyEmpty");
+			AssertRuleSuccess<PreferStringIsNullOrEmptyTest> ("ThereShouldBeNoStringIsNullOrEmptySuggestionHere");
+		}
 	}
 }
