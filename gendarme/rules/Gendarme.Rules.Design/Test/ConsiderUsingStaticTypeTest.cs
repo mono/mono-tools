@@ -139,5 +139,22 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleSuccess<ClassWithOnlyMethods> ();
 		}
+
+		public class ClassWithNonDefaultConstructor {
+			public ClassWithNonDefaultConstructor (int x)
+			{
+			}
+
+			static void Show ()
+			{
+				Console.WriteLine ("hello");
+			}
+		}
+
+		[Test]
+		public void NonDefaultConstructor ()
+		{
+			AssertRuleSuccess<ClassWithNonDefaultConstructor> ();
+		}
 	}
 }

@@ -1,3 +1,14 @@
+2008-10-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidVisibleNestedTypesTest.cs: Remove unneeded 'using' clauses.
+	* ConsiderConvertingFieldToNullableTest.cs: Remove unneeded 'using' 
+	clauses.
+	* ConsiderConvertingMethodToPropertyTest.cs: Add more coverage. 
+	Remove unneeded 'using' clauses.
+	* ConsiderUsingStaticTypeTest.cs: Add more coverage.
+	* DeclareEventHandlersCorrectlyTest.cs: Add more coverage. Remove 
+	unneeded 'using' clauses.
+
 2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedTest.cs:  Add more coverage.

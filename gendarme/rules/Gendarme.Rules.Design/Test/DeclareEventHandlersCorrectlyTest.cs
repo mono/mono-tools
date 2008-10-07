@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 using Test.Rules.Fixtures;
@@ -47,7 +48,8 @@ namespace Test.Rules.Design {
 
 		delegate void GoodDelegate (object sender, EventArgs e);
 		class ClassWithGoodDelegate {
-			public event GoodDelegate CustomEvent;
+			public event GoodDelegate CustomEventA;
+			public event GoodDelegate CustomEventB;
 		}
 
 		[Test]
@@ -166,6 +168,23 @@ namespace Test.Rules.Design {
 		public void SuccessOnClassWithGenericEventHandlerTest ()
 		{
 			AssertRuleSuccess<ClassWithGenericEventHandler> ();
+		}
+
+		delegate void DelegateWithGenerics (object obj, List<int> list);
+		class ClassWithGenericDelegate {
+			public event DelegateWithGenerics CustomEvent;
+		}
+
+		public delegate void MyOwnEventHandler<T>(object sender, T e);
+		class ClassWithNonEventHandlerEvent {
+			public event MyOwnEventHandler<int> CustomEvent;
+		}
+
+		[Test]
+		public void FailureOnClassWithBadDelegateUsingGenericsTest ()
+		{
+			AssertRuleFailure<ClassWithGenericDelegate> (3);
+			AssertRuleFailure<ClassWithNonEventHandlerEvent> (1);
 		}
 	}
 }

@@ -26,19 +26,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Reflection;
-
-using Gendarme.Framework;
+using System.Collections;
 using Gendarme.Rules.Design;
-using Mono.Cecil;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
 	public class ConsiderConvertingMethodToPropertyTest : MethodRuleTestFixture<ConsiderConvertingMethodToPropertyRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.GeneratedCodeMethod);
+			AssertRuleDoesNotApply <IEnumerable> ("GetEnumerator");
+		}
 
 		public class ShouldBeCaught {
 			int Foo;

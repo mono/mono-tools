@@ -26,17 +26,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-
 using Mono.Cecil;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
-
 
 namespace Test.Rules.Design {
 
