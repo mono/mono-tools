@@ -1,3 +1,9 @@
+2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: Add
+	the [FxCopCompatibility] attribute and a few minor changes to the 
+	XML documentation.
+
 2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: New.  Rule for
