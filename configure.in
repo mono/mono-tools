@@ -160,6 +160,8 @@ gnunit/art/Makefile
 gnunit/src/Makefile
 gnunit/src/AssemblyInfo.cs
 gnunit/src/catalog.cs
+gsharp/Makefile
+gsharp/gsharp
 gui-compare/Makefile
 gui-compare/gui-compare
 mperfmon/Makefile
