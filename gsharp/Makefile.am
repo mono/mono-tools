@@ -16,9 +16,9 @@ gsharp_sources =                        			\
         $(srcdir)/SysDrawing.cs					\
         $(srcdir)/gtk-gui/generated.cs  			\
         $(srcdir)/gtk-gui/Mono.CSharp.Gui.MainWindow.cs 	\
-        $(srcdir)/gtk-gui/Mono.CSharp.Gui.ProcessSelector.cs	\
+        $(srcdir)/gtk-gui/Mono.CSharp.Gui.ProcessSelector.cs
 
-EXTRA_DIST = $(gsharp_sources)
+EXTRA_DIST = $(gsharp_sources) gsharp.in
 
 gsharp.exe: $(gsharp_sources)
 	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies)
