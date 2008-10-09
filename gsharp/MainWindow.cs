@@ -69,6 +69,12 @@ namespace Mono.CSharp.Gui
 				Application.Quit ();
 			}
 		}
+
+		protected virtual void OnDeleteEvent (object o, Gtk.DeleteEventArgs args)
+		{
+			if (!MainClass.Attached)
+				Application.Quit ();
+		}
 		
 	}
 }

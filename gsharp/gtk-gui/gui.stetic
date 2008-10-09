@@ -2,9 +2,10 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
-    <target-gtk-version>2.12.1</target-gtk-version>
+    <target-gtk-version>2.12.2</target-gtk-version>
   </configuration>
   <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/gsharp.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="Mono.CSharp.Gui.MainWindow" design-size="400 300">
@@ -43,6 +44,7 @@
     <property name="WindowPosition">CenterOnParent</property>
     <property name="DefaultWidth">600</property>
     <property name="DefaultHeight">500</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
       <widget class="Gtk.VBox" id="vbox1">
         <property name="MemberName" />
