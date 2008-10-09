@@ -1,6 +1,5 @@
 gsharpdir = $(prefix)/lib/gsharp
-
-bin_scripts = gsharp
+bin_SCRIPTS = gsharp
 
 gsharp_DATA = gsharp.exe
 

@@ -1,5 +1,9 @@
 2008-10-09 Daniel Nauck <dna@mono-project.de>
 
+        * Makefile.am: fix makefile
+
+2008-10-09 Daniel Nauck <dna@mono-project.de>
+
 	* gsharp.in: add start script
 
 2008-10-09 Daniel Nauck <dna@mono-project.de>
