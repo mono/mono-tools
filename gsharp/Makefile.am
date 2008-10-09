@@ -19,4 +19,4 @@ gsharp_sources =                        			\
 EXTRA_DIST = $(gsharp_sources)
 
 gsharp.exe: $(gsharp_sources)
-        $(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies)
+	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies)
