@@ -1,3 +1,12 @@
+2008-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyTest.cs: Add more test cases to get 
+	better coverage. Add a second test case for the inverted condition,
+	but ignored since it won't work with [g]mcs compiled code. Remove
+	ignore on the false positive StrictlyEmpty test since this is fixed.
+	* Test.Rules.Maintainability.mdp: Add reference to System.Core so 
+	MD will compile the project.
+
 2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyTest.cs: Add new test cases from Andy
