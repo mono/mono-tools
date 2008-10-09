@@ -26,6 +26,7 @@
 using System;
 using Gtk;
 using Mono.Attach;
+using System.Runtime.InteropServices;
 
 namespace Mono.CSharp.Gui
 {
@@ -47,6 +48,7 @@ namespace Mono.CSharp.Gui
 			p.Destroy ();
 		}
 
+		
 		public MainWindow() : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();

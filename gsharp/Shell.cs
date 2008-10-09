@@ -60,7 +60,9 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
 			ShowPrompt (false);
 
-			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic;");
+			Evaluator.InteractiveBaseClass = typeof (InteractiveGraphicsBase);
+			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
+			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
 		}
 
 		void CreateTags ()
@@ -168,7 +170,7 @@ namespace Mono.CSharp.Gui
 					
 				if (Evaluate (expr)){
 				}
-				
+
 				return true;
 				
 			case Gdk.Key.Up:
@@ -235,6 +237,18 @@ namespace Mono.CSharp.Gui
 			TextIter end = Buffer.EndIter;
 
 			Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
+
+			System.Drawing.Bitmap bitmap = res as System.Drawing.Bitmap;
+			if (bitmap != null){
+				TextChildAnchor anchor = Buffer.CreateChildAnchor (ref end);
+				BitmapWidget bw = new BitmapWidget (bitmap);
+				bw.Show ();
+					
+				AddChildAtAnchor (bw, anchor);
+				
+				return;
+			}
+			
 			StringWriter pretty = new StringWriter ();
 			PrettyPrint (pretty, res);
 			Buffer.InsertWithTagsByName (ref end, pretty.ToString (), "Stdout");

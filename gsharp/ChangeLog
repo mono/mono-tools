@@ -1,3 +1,12 @@
+2008-10-08  Miguel de Icaza  <miguel@novell.com>
+
+	* Shell.cs: Loads System.Drawing and special cases rendering of Bitmaps.
+
+	* InteractiveGraphicsBase.cs: A new base class for interactive code,
+	provides a cute and simple Plot() function for interactive use.
+
+	* SysDrawing.cs: Integration between System.Drawing and Gtk#
+
 2008-10-09 Daniel Nauck <dna@mono-project.de>
 
         * Makefile.am: fix makefile

@@ -38,6 +38,7 @@
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.Management" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -53,6 +54,8 @@
     <Compile Include="gtk-gui\Mono.CSharp.Gui.MainWindow.cs" />
     <Compile Include="ProcessSelector.cs" />
     <Compile Include="gtk-gui\Mono.CSharp.Gui.ProcessSelector.cs" />
+    <Compile Include="SysDrawing.cs" />
+    <Compile Include="InteractiveGraphicsBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
