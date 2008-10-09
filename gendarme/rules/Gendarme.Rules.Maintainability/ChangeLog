@@ -1,3 +1,9 @@
+2008-10-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyRule.cs: Fix a false positive that can
+	happen when checking if a string is stricly empty - which generates
+	very similar IL to IsNullOrEmpty.
+
 2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyRule.cs: Fix typo in [Solution] attribute

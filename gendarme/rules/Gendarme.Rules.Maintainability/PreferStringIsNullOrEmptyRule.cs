@@ -32,6 +32,7 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
@@ -99,6 +100,7 @@ namespace Gendarme.Rules.Maintainability {
 				}
 				return method.Parameters [index].Name;
 			case Code.Ldarg:
+			case Code.Ldarg_S:
 			case Code.Ldarga:
 			case Code.Ldarga_S:
 				return (ins.Operand as ParameterDefinition).Name;
@@ -119,45 +121,60 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private static bool PreLengthCheck (MethodDefinition method, Instruction ins)
+		// if a valid check is found then return the instruction where it branch
+		private static Instruction PreLengthCheck (MethodDefinition method, Instruction ins)
 		{
-			if (ins == null)
-				return false;
-
 			string name_length = GetName (method, ins);
 			while (ins.Previous != null) {
 				ins = ins.Previous;
 				switch (ins.OpCode.Code) {
 				case Code.Brfalse:
 				case Code.Brfalse_S:
-					string name_null = GetName (method, ins.Previous);
-					return name_null == name_length;
+					if (name_length == GetName (method, ins.Previous))
+						return (ins.Operand as Instruction);
+					return null;
 				}
 			}
-			return false;
+			return null;
 		}
 
-		private static bool PostLengthCheck (Instruction ins)
+		private static bool PostLengthCheck (Instruction ins, Instruction branch)
 		{
-			if ((ins == null) || (ins.Next == null))
-				return false;
-
 			switch (ins.OpCode.Code) {
 			// e.g. if 
 			case Code.Brtrue:
 			case Code.Brtrue_S:
-				return true;
+				return ((ins.Operand as Instruction).OpCode.Code != branch.OpCode.Code);
 			// e.g. return
-			case Code.Ldc_I4:
-				if ((int) ins.Operand != 0)
+			default:
+				if (!IsOperandZero (ins))
 					return false;
 				break;
-			case Code.Ldc_I4_0:
-				break;
+			}
+
+			ins = ins.Next;
+			switch (ins.OpCode.Code) {
+			case Code.Ceq:
+				return true;
+			case Code.Cgt:
+				return IsOperandZero (ins.Next);
 			default:
 				return false;
 			}
-			return (ins.Next.OpCode.Code == Code.Ceq);
+		}
+
+		private static bool IsOperandZero (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Ldc_I4:
+				return ((int) ins.Operand == 0);
+			case Code.Ldc_I4_S:
+				return ((int) (sbyte) ins.Operand == 0);
+			case Code.Ldc_I4_0:
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -182,8 +199,11 @@ namespace Gendarme.Rules.Maintainability {
 				if ((mr.Name == "get_Length") && (mr.DeclaringType.FullName == "System.String")) {
 					// now that we found it we check that
 					// 1 - we previously did a check null on the same value (that we already know is a string)
+					Instruction branch = PreLengthCheck (method, current.Previous);
+					if ((branch == null) || (branch.OpCode.Code == Code.Ldc_I4_0))
+						continue;
 					// 2 - we compare the return value (length) with 0
-					if (PreLengthCheck (method, current.Previous) && PostLengthCheck (current.Next)) {
+					if (PostLengthCheck (current.Next, branch)) {
 						Runner.Report (method, current, Severity.Medium, Confidence.High);
 					}
 				}
