@@ -5,12 +5,14 @@
       <Entry build="True" name="mprof-decoder" configuration="Debug" />
       <Entry build="True" name="mprof-heap-viewer" configuration="Debug" />
       <Entry build="True" name="mprof-heap-explorer" configuration="Debug" />
+      <Entry build="True" name="mprof-runtime" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="mprof-decoder-library" configuration="Release" />
       <Entry build="True" name="mprof-decoder" configuration="Release" />
       <Entry build="True" name="mprof-heap-viewer" configuration="Release" />
       <Entry build="True" name="mprof-heap-explorer" configuration="Release" />
+      <Entry build="True" name="mprof-runtime" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="mprof-decoder" single="True">
@@ -18,6 +20,7 @@
     <Execute type="None" entry="mprof-decoder" />
     <Execute type="None" entry="mprof-heap-viewer" />
     <Execute type="None" entry="mprof-heap-explorer" />
+    <Execute type="None" entry="mprof-runtime" />
   </StartMode>
   <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
   <Entries>
@@ -25,5 +28,6 @@
     <Entry filename="profiler-file-decoder/profiler-file-decoder.mdp" />
     <Entry filename="heap-snapshot-viewer/heap-snapshot-viewer.mdp" />
     <Entry filename="heap-snapshot-explorer/heap-snapshot-explorer.mdp" />
+    <Entry filename="mprof-runtime/mprof-runtime.mdp" />
   </Entries>
 </Combine>
