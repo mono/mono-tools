@@ -1,3 +1,8 @@
+2008-10-10  Massimiliano Mantione <massi@ximian.com>
+	* Main.cs:
+	- Added support for handling the stack trace of each allocation event.
+	- Transferred handling of decoder bugs to the DebugProfilerEventHandler.
+
 2008-08-21  Massimiliano Mantione <massi@ximian.com>
 	* Main.cs: Added support for correct accounting of allocations
 	which happened at JIT time.

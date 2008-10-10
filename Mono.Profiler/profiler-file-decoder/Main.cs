@@ -35,6 +35,84 @@ namespace Mono.Profiler
 			writer.WriteLine ("\n\n------------------------------------------------");
 		}
 		
+		static void PrintMethodAllocationsPerClass (TextWriter writer, LoadedClass.AllocationsPerMethod allocationsPerMethod, bool JitTime, bool printStackTraces, double stackTraceTreshold) {
+			if (! JitTime) {
+				writer.WriteLine ("        {0} bytes ({1} instances) from {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
+			} else {
+				writer.WriteLine ("                {0} bytes ({1} instances) at JIT time in {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
+			}
+			
+			if (printStackTraces) {
+				LoadedClass.AllocationsPerStackTrace [] stackTraces = allocationsPerMethod.StackTraces;
+				Array.Sort (stackTraces, LoadedClass.AllocationsPerStackTrace.CompareByAllocatedBytes);
+				Array.Reverse (stackTraces);
+				double cumulativeAllocatedBytesPerStackTrace = 0;
+				
+				foreach (LoadedClass.AllocationsPerStackTrace trace in stackTraces) {
+					if (cumulativeAllocatedBytesPerStackTrace / allocationsPerMethod.AllocatedBytes < stackTraceTreshold) {
+						writer.WriteLine ("                {0} bytes ({1} instances) inside", trace.AllocatedBytes, trace.AllocatedInstances);
+						for (StackTrace frame = trace.Trace; frame != null; frame = frame.Caller) {
+							writer.Write ("                        ");
+							if (frame.MethodIsBeingJitted) {
+								writer.Write ("[JIT time]:");
+							}
+							writer.WriteLine ("{0}.{1}", frame.TopMethod.Class.Name, frame.TopMethod.Name);
+						}
+					} else {
+						break;
+					}
+					cumulativeAllocatedBytesPerStackTrace += (double)trace.AllocatedBytes;
+				}
+			}
+		}
+		
+		static void PrintClassAllocationData (TextWriter writer, ProfilerEventHandler data, LoadedClass c, ulong totalAllocatedBytes) {
+			double allocatedBytesPerClass = (double)c.AllocatedBytes;
+			writer.WriteLine ("{0,5:F2}% ({1} bytes) {2}", ((allocatedBytesPerClass / totalAllocatedBytes) * 100), c.AllocatedBytes, c.Name);
+			
+			if (data.Directives.AllocationsHaveStackTrace) {
+				LoadedClass.AllocationsPerMethod[] allocationsPerMethodArray = c.Methods;
+				double cumulativeAllocatedBytesPerMethod = 0;
+				
+				if (c.MethodsAtJitTimeCount > 0) {
+					LoadedClass.AllocationsPerMethod[] allocationsPerMethodAtJitTime = c.MethodsAtJitTime;
+					LoadedClass.AllocationsPerMethod[] totalAllocationsPerMethod = new LoadedClass.AllocationsPerMethod [allocationsPerMethodArray.Length + allocationsPerMethodAtJitTime.Length];
+					Array.Copy (allocationsPerMethodArray, totalAllocationsPerMethod, allocationsPerMethodArray.Length);
+					Array.Copy (allocationsPerMethodAtJitTime, 0, totalAllocationsPerMethod, allocationsPerMethodArray.Length, allocationsPerMethodAtJitTime.Length);
+					allocationsPerMethodArray = totalAllocationsPerMethod;
+				}
+				
+				if (allocationsPerMethodArray.Length != 0) {
+					Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
+					Array.Reverse (allocationsPerMethodArray);
+					
+					foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
+						PrintMethodAllocationsPerClass (writer, allocationsPerMethod, false, cumulativeAllocatedBytesPerMethod < allocatedBytesPerClass * 0.7, 0.7);
+						cumulativeAllocatedBytesPerMethod += (double)allocationsPerMethod.AllocatedBytes;
+					}
+				}
+			} else {
+				LoadedClass.AllocationsPerMethod[] allocationsPerMethodArray = c.Methods;
+				if (allocationsPerMethodArray.Length != 0) {
+					Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
+					Array.Reverse (allocationsPerMethodArray);
+					
+					foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
+						PrintMethodAllocationsPerClass (writer, allocationsPerMethod, false, false, 0);
+					}
+				}
+				if (c.MethodsAtJitTimeCount > 0) {
+					allocationsPerMethodArray = c.MethodsAtJitTime;
+					Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
+					Array.Reverse (allocationsPerMethodArray);
+					foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
+						PrintMethodAllocationsPerClass (writer, allocationsPerMethod, true, false, 0);
+					}
+				}
+			}
+			
+		}
+		
 		static void PrintData (TextWriter writer, ProfilerEventHandler data) {
 			LoadedClass[] classes = data.LoadedElements.Classes;
 			LoadedMethod[] methods = data.LoadedElements.Methods;
@@ -52,23 +130,7 @@ namespace Mono.Profiler
 					writer.WriteLine ("Reporting allocations (on {0} classes)", classes.Length);
 					foreach (LoadedClass c in classes) {
 						if (c.AllocatedBytes > 0) {
-							writer.WriteLine ("{0,5:F2}% ({1} bytes) {2}", ((((double)c.AllocatedBytes) / totalAllocatedBytes) * 100), c.AllocatedBytes, c.Name);
-							LoadedClass.AllocationsPerMethod[] allocationsPerMethodArray = c.Methods;
-							if (allocationsPerMethodArray.Length != 0) {
-								Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
-								Array.Reverse (allocationsPerMethodArray);
-								foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
-									writer.WriteLine ("        {0} bytes ({1} instances) from {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
-								}
-							}
-							if (c.MethodsAtJitTimeCount > 0) {
-								allocationsPerMethodArray = c.MethodsAtJitTime;
-								Array.Sort (allocationsPerMethodArray, LoadedClass.AllocationsPerMethod.CompareByAllocatedBytes);
-								Array.Reverse (allocationsPerMethodArray);
-								foreach (LoadedClass.AllocationsPerMethod allocationsPerMethod in allocationsPerMethodArray) {
-									writer.WriteLine ("                {0} bytes ({1} instances) at JIT time of {2}.{3}", allocationsPerMethod.AllocatedBytes, allocationsPerMethod.AllocatedInstances, allocationsPerMethod.Method.Class.Name, allocationsPerMethod.Method.Name);
-								}
-							}
+							PrintClassAllocationData (writer, data, c, totalAllocatedBytes);
 						}
 					}
 				} else {
@@ -254,13 +316,12 @@ namespace Mono.Profiler
 			ProfilerEventHandler data = new ProfilerEventHandler ();
 			data.LoadedElements.RecordHeapSnapshots = false;
 			while (! reader.HasEnded) {
+				BlockData currentBlock = null;
 				try {
-					reader.ReadBlock ().Decode (data, reader);
+					currentBlock = reader.ReadBlock ();
+					currentBlock.Decode (data, reader);
 				} catch (DecodingException e) {
-					Console.WriteLine ("WARNING: DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
-					Console.WriteLine (e.StackTrace);
-					Console.WriteLine ("Original stack trace:");
-					Console.WriteLine (e.InnerException.StackTrace);
+					Console.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
 					break;
 				}
 			}
