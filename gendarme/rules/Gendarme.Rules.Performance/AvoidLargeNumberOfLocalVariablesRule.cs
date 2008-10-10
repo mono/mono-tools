@@ -25,6 +25,7 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
 using System;
 
 using Mono.Cecil;
@@ -35,8 +36,16 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule warns when the number of local variables exceed a maximum value (default is
+	/// 64). Having a huge amount of local variables makes it hard to generate code that 
+	/// perform well and, likely, makes the code harder to understand.
+	/// </summary>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The number of local variables is too large to allow the JIT to properly allocate registers.")]
 	[Solution ("Refactor your code to reduce the number of variables or split the variables into several methods.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1809:AvoidExcessiveLocals")]
 	public class AvoidLargeNumberOfLocalVariablesRule : Rule, IMethodRule {
 
 		private int max_variables = 64;

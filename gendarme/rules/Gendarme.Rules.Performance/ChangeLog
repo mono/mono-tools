@@ -1,3 +1,17 @@
+2008-10-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeNumberOfLocalVariablesRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute.
+	* AvoidLargeStructureRule.cs: Add XML documentation. Change logic
+	to be easier to test completely.
+	* AvoidRepetitiveCastsRule.cs: Rewrote logic so it is possible
+	to report line numbers with the defects. Add OpCodeEngine to skip 
+	methods	that do not have Castclass or IsInst instructions. Add XML 
+	documentation and [FxCopCompatibility] attribute.
+	* AvoidReturningArraysOnPropertiesRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Return DoesNotApply if the method
+	is not a getter.
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test/ImplementEqualsTypeTest.cs: Add test case with generics.

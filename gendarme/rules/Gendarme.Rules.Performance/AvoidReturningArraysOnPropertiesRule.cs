@@ -32,13 +32,57 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule check properties that returns arrays. Such properties can be dangerous, 
+	/// because the caller doesn't know whether it access the original (internal) array of
+	/// the instance or if it gets a copy (clone) of the original. A solution is to turn
+	/// such properties into methods and always return a copy of the array. Another is to
+	/// use a proerty that returns a read-only collection.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public byte[] Foo {
+	///	get {
+	///		// return the data inside the instance
+	///		return foo;
+	///	}
+	/// }
+	/// 
+	/// public byte[] Bar {
+	///	get {
+	///		// return a copy of the instance's data
+	///		return (byte[]) bar.Clone ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public byte[] GetFoo ()
+	/// {
+	///	return (byte[]) foo.Clone ();
+	/// }
+	/// 
+	/// public byte[] GetFoo ()
+	/// {
+	///	return (byte[]) bar.Clone ();
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("By convention properties should not return arrays.")]
 	[Solution ("Return a read-only collection or replace the property by a method.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
 	public class AvoidReturningArraysOnPropertiesRule : Rule, IMethodRule {
 		
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.IsGetter || !method.ReturnType.ReturnType.IsArray ())
+			if (!method.IsGetter)
+				return RuleResult.DoesNotApply;
+
+			if (!method.ReturnType.ReturnType.IsArray ())
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.Medium, Confidence.Total);

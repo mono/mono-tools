@@ -36,6 +36,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule warns when a structure is larger than a a maximum value (default to
+	/// 16 bytes). Large structure can cause performance problems since they are value types
+	/// and as such are copied by copying the whole value (size dependent) while reference 
+	/// types can be copied by only copying its reference (constant size). If the structure 
+	/// cannot be reduced in size (e.g. by removing calculated fields) then it should be 
+	/// turned into a class.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public struct BigArgb {
+	///	long a, r, g, b;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class BigArgb {
+	///	long a, r, g, b;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This structure is larger than the recommanded size (16 bytes) and this can degrade performance.")]
 	[Solution ("Try to reduce the struct size or change it into a class.")]
 	public class AvoidLargeStructureRule : Rule, ITypeRule {
@@ -73,11 +99,9 @@ namespace Gendarme.Rules.Performance {
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				// we looking for the special value__
-				if (field.IsStatic)
-					continue;
-
 				// padding, if required, will be computed by caller
-				return SizeOf (field.FieldType);
+				if (!field.IsStatic)
+					return SizeOf (field.FieldType);
 			}
 			throw new NotSupportedException (type.ToString () + " should not be usable as an enum type.");
 		}
