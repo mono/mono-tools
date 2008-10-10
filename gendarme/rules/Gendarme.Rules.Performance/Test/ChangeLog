@@ -1,3 +1,15 @@
+2008-10-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeNumberOfLocalVariablesTest.cs: Add test cases to get
+	more coverage.
+	* AvoidLargeStructureTest.cs: Add test cases to get more coverage.
+	* AvoidRepetitiveCastsTest.cs: Adjust results (Success becoming
+	DoesNotApply) since OpCodeEngine can skip them. Remove unneeded 
+	namespaces. Disable warnings.
+	* AvoidReturningArraysOnPropertiesTest.cs: Convert to new, 
+	shorter, syntax for tests. Remove unneeded namespaces. Disable 
+	warnings.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Performance.mdp: Add a reference to System.Xml.dll

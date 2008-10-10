@@ -24,18 +24,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
+#pragma warning disable 649
+
 	[TestFixture]
-	public class AvoidReturningArraysOnPropertiesTest {
+	public class AvoidReturningArraysOnPropertiesTest : MethodRuleTestFixture<AvoidReturningArraysOnPropertiesRule> {
 
 		public class ShouldBeCaught {
 			byte [] foo;
@@ -58,42 +57,23 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void Bad ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			rule = new AvoidReturningArraysOnPropertiesRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Performance.AvoidReturningArraysOnPropertiesTest/" + name;
-			return assembly.MainModule.Types [fullname];
+			AssertRuleFailure<ShouldBeCaught> ("get_Foo", 1);
 		}
 
 		[Test]
-		public void TestShouldBeCaught ()
+		public void Good ()
 		{
-			TypeDefinition type = GetTest ("ShouldBeCaught");
-			foreach (MethodDefinition md in type.Methods)
-				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (md));
+			AssertRuleSuccess<ShouldBeIgnored> ("get_Foo");
 		}
 
 		[Test]
-		public void TestShouldBeIgnored ()
+		public void DoesNotApply ()
 		{
-			TypeDefinition type = GetTest ("ShouldBeIgnored");
-			foreach (MethodDefinition md in type.Methods)
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (md));
+			// not a property
+			AssertRuleDoesNotApply<ShouldBeIgnored> ("Bar");
 		}
 	}
 }

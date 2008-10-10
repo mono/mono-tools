@@ -28,19 +28,18 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 using System.Xml;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
+
+#pragma warning disable 649
 
 	[TestFixture]
 	public class AvoidRepetitiveCastsTest : MethodRuleTestFixture<AvoidRepetitiveCastsRule> {
@@ -160,9 +159,10 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
+		[Ignore ("Cast can optimized by the compiler, only change between Success and DoesNotApply")]
 		public void This ()
 		{
-			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("CheckSelf");
+			AssertRuleDoesNotApply<AvoidRepetitiveCastsTest> ("CheckSelf");
 		}
 
 		private object GuessWhat ()
@@ -203,7 +203,7 @@ namespace Test.Rules.Performance {
 
 		private long RefGood (ref int value)
 		{
-			return (long) value; // actually it's a convertion not a cast
+			return (long) value; // actually it's a conversion not a cast
 		}
 
 		private bool Out (IList list, out IList al)
@@ -216,7 +216,8 @@ namespace Test.Rules.Performance {
 		public void Arguments ()
 		{
 			AssertRuleFailure<AvoidRepetitiveCastsTest> ("RefBad", 1);
-			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("RefGood");
+			// this is a conversion, not a cast
+			AssertRuleDoesNotApply<AvoidRepetitiveCastsTest> ("RefGood");
 			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("Out");
 		}
 

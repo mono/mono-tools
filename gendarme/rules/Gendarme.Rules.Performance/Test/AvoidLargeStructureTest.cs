@@ -30,6 +30,7 @@ using System;
 
 using Mono.Cecil;
 using Mono.Cecil.Metadata;
+using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
@@ -37,6 +38,8 @@ using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
+
+#pragma warning disable 169, 649
 
 	[TestFixture]
 	public class AvoidLargeStructureTest : TypeRuleTestFixture<AvoidLargeStructureRule> {
@@ -306,6 +309,65 @@ namespace Test.Rules.Performance {
 			// note: sizeof (FixedArg) does not work (well compile) because of the array
 			//Assert.AreEqual (sizeof (FixedArg), GetSize (typeof (FixedArg)), "Size");
 			Assert.AreEqual (12, GetSize (typeof (FixedArg)), "Size");
+		}
+
+		struct BunchOfEnums {
+			ConsoleColor cc;
+			ConsoleKey ck;
+			ConsoleModifiers cm;
+			ConsoleSpecialKey csk;
+			DateTimeKind kind;
+			DayOfWeek dow;
+		}
+
+		[Test]
+		public unsafe void Enums ()
+		{
+			AssertRuleFailure<BunchOfEnums> (1);
+			Assert.AreEqual (24, GetSize (typeof (BunchOfEnums)), "Size");
+		}
+
+		struct WithStaticField {
+			static bool init;
+			BunchOfEnums boe1;
+			BunchOfEnums boe2;
+		}
+
+		[Test]
+		public unsafe void Static ()
+		{
+			AssertRuleFailure<WithStaticField> (1);
+			// static does not cound
+			Assert.AreEqual (48, GetSize (typeof (WithStaticField)), "Size");
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "Severity");
+		}
+
+		struct High {
+			WithStaticField wsf1;
+			WithStaticField wsf2;
+		}
+
+		[Test]
+		public unsafe void HighSeverity ()
+		{
+			AssertRuleFailure<High> (1);
+			Assert.AreEqual (96, GetSize (typeof (High)), "Size");
+			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity, "Severity");
+		}
+
+		struct Critical {
+			High wsf1;
+			High wsf2;
+			High wsf3;
+			High wsf4;
+		}
+
+		[Test]
+		public unsafe void CriticalSeverity ()
+		{
+			AssertRuleFailure<Critical> (1);
+			Assert.AreEqual (384, GetSize (typeof (Critical)), "Size");
+			Assert.AreEqual (Severity.Critical, Runner.Defects [0].Severity, "Severity");
 		}
 	}
 }

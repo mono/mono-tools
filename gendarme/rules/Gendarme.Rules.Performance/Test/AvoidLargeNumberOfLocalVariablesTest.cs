@@ -27,13 +27,20 @@
 //
 
 using System;
-using System.Collections;
 
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
+
+namespace System.Windows.Forms {
+	public class Form {
+		public void InitializeComponent ()
+		{
+		}
+	}
+}
 
 namespace Test.Rules.Performance {
 
@@ -44,6 +51,7 @@ namespace Test.Rules.Performance {
 		public void DoesNotApply ()
 		{
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply<System.Windows.Forms.Form> ("InitializeComponent");
 		}
 
 		private void SmallMethod (int a)
@@ -119,6 +127,20 @@ namespace Test.Rules.Performance {
 		{
 			// 65 variables ([g]mcs) and 66 variables (one temp for CSC)
 			AssertRuleFailure<AvoidLargeNumberOfLocalVariablesTest> ("TooLargeMethod", 1);
+		}
+
+		[Test]
+		public void SmallMaximum ()
+		{
+			int max = Rule.MaximumVariables;
+			try {
+				Rule.MaximumVariables = 1;
+				AssertRuleSuccess<AvoidLargeNumberOfLocalVariablesTest> ("SmallMethod");
+				AssertRuleFailure<AvoidLargeNumberOfLocalVariablesTest> ("LargeMethod", 1);
+			}
+			finally {
+				Rule.MaximumVariables = max;
+			}
 		}
 	}
 }
