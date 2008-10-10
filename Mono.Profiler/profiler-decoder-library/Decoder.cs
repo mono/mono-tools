@@ -249,6 +249,7 @@ namespace  Mono.Profiler {
 			GC_STOP_WORLD = 6,
 			GC_START_WORLD = 7,
 			JIT_TIME_ALLOCATION = 8,
+			STACK_SECTION = 9,
 			MASK = 15
 		}
 		GenericEvent GenericEventFromEventCode (int eventCode) {
@@ -296,10 +297,13 @@ namespace  Mono.Profiler {
 		
 		public void Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			uint offsetInBlock = 0;
+			StackSectionElement<LC,LM>[] stackSection = new StackSectionElement<LC,LM> [32];
 			
 			if (data == null) {
 				throw new DecodingException (this, 0, "Decoding used block");
 			}
+			
+			handler.InitializeData (data, 0);
 			
 			try {
 				//LogLine ("   *** DECODING at offset {0} (code {1})", fileOffset, code);
@@ -319,6 +323,7 @@ namespace  Mono.Profiler {
 					//LogLine ("BLOCK INTRO: version {0}, runtimeFile {1}, flags {2}, startCounter {3}, startTime {4}", version, runtimeFile, (ProfilerFlags) flags, startCounter, startTime);
 					
 					handler.Start (version, runtimeFile, (ProfilerFlags) flags, startCounter, microsecondsFromEpochToDateTime (startTime));
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.END : {
@@ -332,6 +337,7 @@ namespace  Mono.Profiler {
 					//LogLine ("BLOCK END: version {0}, endCounter {1}, endTime {2}", version, endCounter, endTime);
 					
 					handler.End (version, endCounter, microsecondsFromEpochToDateTime (endTime));
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.LOADED : {
@@ -348,14 +354,17 @@ namespace  Mono.Profiler {
 					switch ((LoadedItemInfo) kind) {
 					case LoadedItemInfo.APPDOMAIN: {
 						handler.ApplicationDomainLoaded (threadId, startCounter, endCounter, itemName, success);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.ASSEMBLY: {
 						handler.AssemblyLoaded (threadId, startCounter, endCounter, itemName, success);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.MODULE: {
 						handler.ModuleLoaded (threadId, startCounter, endCounter, itemName, success);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					default: {
@@ -376,14 +385,17 @@ namespace  Mono.Profiler {
 					switch ((LoadedItemInfo) kind) {
 					case LoadedItemInfo.APPDOMAIN: {
 						handler.ApplicationDomainUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.ASSEMBLY: {
 						handler.AssemblyUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.MODULE: {
 						handler.ModuleUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					default: {
@@ -400,6 +412,7 @@ namespace  Mono.Profiler {
 					//LogLine ("BLOCK MAPPING (START): startCounter {0}, startTime {1}, threadId {2}", startCounter, startTime, threadId);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), threadId);
 					handler.SetCurrentThread (threadId);
+					handler.DataProcessed (offsetInBlock);
 					
 					uint itemId;
 					for (itemId = ReadUint (ref offsetInBlock); itemId != 0; itemId = ReadUint (ref offsetInBlock)) {
@@ -420,6 +433,7 @@ namespace  Mono.Profiler {
 					
 					//LogLine ("BLOCK MAPPING (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), threadId);
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.EVENTS : {
@@ -430,6 +444,7 @@ namespace  Mono.Profiler {
 					//LogLine ("BLOCK EVENTS (START): startCounter {0}, startTime {1}, threadId {2}", startCounter, startTime, threadId);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), threadId);
 					handler.SetCurrentThread (threadId);
+					handler.DataProcessed (offsetInBlock);
 					
 					ulong baseCounter = ReadUlong (ref offsetInBlock);
 					
@@ -450,6 +465,7 @@ namespace  Mono.Profiler {
 							}
 							//LogLine ("BLOCK EVENTS (PACKED:CLASS_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
 							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), false, 0);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case PackedEventCode.CLASS_EVENT: {
@@ -461,6 +477,7 @@ namespace  Mono.Profiler {
 								baseCounter += counterDelta;
 								//LogLine ("BLOCK EVENTS (CLASS:EXCEPTION): classId {0}, counterDelta {1}", classId, counterDelta);
 								handler.Exception (handler.LoadedElements.GetClass (classId), baseCounter);
+								handler.DataProcessed (offsetInBlock);
 								break;
 							}
 							case ClassEvent.LOAD: {
@@ -471,8 +488,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (CLASS:LOAD): classId {0}, classSize {1}, kind {2}", classId, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.ClassStartLoad (handler.LoadedElements.GetClass (classId), baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.ClassEndLoad (handler.LoadedElements.GetClass (classId), baseCounter, EventSuccessFromEventCode (packedData));
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -484,8 +503,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (CLASS:UNLOAD): classId {0}, counterDelta {1}, kind {2}", classId, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.ClassStartUnload (handler.LoadedElements.GetClass (classId), baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.ClassEndUnload (handler.LoadedElements.GetClass (classId), baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -504,6 +525,7 @@ namespace  Mono.Profiler {
 							
 							//LogLine ("BLOCK EVENTS (PACKED:METHOD_ENTER): methodId {0}, counterDelta {1}", methodId, counterDelta);
 							handler.MethodEnter (handler.LoadedElements.GetMethod (methodId), baseCounter);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case PackedEventCode.METHOD_EXIT_EXPLICIT: {
@@ -515,6 +537,7 @@ namespace  Mono.Profiler {
 							
 							//LogLine ("BLOCK EVENTS (PACKED:METHOD_EXIT_EXPLICIT): methodId {0}, counterDelta {1}", methodId, counterDelta);
 							handler.MethodExit (handler.LoadedElements.GetMethod (methodId), baseCounter);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case PackedEventCode.METHOD_EXIT_IMPLICIT: {
@@ -530,6 +553,7 @@ namespace  Mono.Profiler {
 								baseCounter += counterDelta;
 								//LogLine ("BLOCK EVENTS (METHOD:FREED): methodId {0}, counterDelta {1}", methodId, counterDelta);
 								handler.MethodFreed (handler.LoadedElements.GetMethod (methodId), baseCounter);
+								handler.DataProcessed (offsetInBlock);
 								break;
 							}
 							case MethodEvent.JIT: {
@@ -540,8 +564,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (METHOD:JIT): methodId {0}, counterDelta {1}, kind {2}", methodId, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.MethodJitStart (handler.LoadedElements.GetMethod (methodId), baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.MethodJitEnd (handler.LoadedElements.GetMethod (methodId), baseCounter, EventSuccessFromEventCode (packedData));
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -564,8 +590,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:GC_COLLECTION): generation {0}, counterDelta {1}, kind {2}", generation, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.GarbageCollectionStart (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.GarbageCollectionEnd (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -579,8 +607,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:GC_MARK): generation {0}, counterDelta {1}, kind {2}", generation, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.GarbageCollectionMarkStart (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.GarbageCollectionMarkEnd (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -594,8 +624,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:GC_SWEEP): generation {0}, counterDelta {1}, kind {2}", generation, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.GarbageCollectionSweepStart (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.GarbageCollectionSweepEnd (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -604,6 +636,7 @@ namespace  Mono.Profiler {
 								uint collection = ReadUint (ref offsetInBlock);
 								//LogLine ("BLOCK EVENTS (OTHER:GC_RESIZE): newSize {0}, collection {1}", newSize, collection);
 								handler.GarbageCollectionResize (collection, newSize);
+								handler.DataProcessed (offsetInBlock);
 								break;
 							}
 							case GenericEvent.GC_STOP_WORLD: {
@@ -616,8 +649,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:GC_STOP_WORLD): generation {0}, counterDelta {1}, kind {2}", generation, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.GarbageCollectionStopWorldStart (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.GarbageCollectionStopWorldEnd (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -631,8 +666,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:GC_START_WORLD): generation {0}, counterDelta {1}, kind {2}", generation, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.GarbageCollectionStartWorldStart (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.GarbageCollectionStartWorldEnd (collection, generation, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -644,8 +681,10 @@ namespace  Mono.Profiler {
 								//LogLine ("BLOCK EVENTS (OTHER:THREAD): eventThreadId {0}, counterDelta {1}, kind {2}", eventThreadId, counterDelta, kind);
 								if (kind == EventKind.START) {
 									handler.ThreadStart (eventThreadId, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									handler.ThreadEnd (eventThreadId, baseCounter);
+									handler.DataProcessed (offsetInBlock);
 								}
 								break;
 							}
@@ -658,6 +697,26 @@ namespace  Mono.Profiler {
 								}
 								//LogLine ("BLOCK EVENTS (OTHER:JIT_TIME_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
 								handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), true, 0);
+								handler.DataProcessed (offsetInBlock);
+								break;
+							}
+							case GenericEvent.STACK_SECTION: {
+								uint lastValidFrame = ReadUint (ref offsetInBlock);
+								uint topSectionSize = ReadUint (ref offsetInBlock);
+								
+								if (stackSection.Length < topSectionSize) {
+									stackSection = new StackSectionElement<LC,LM> [topSectionSize * 2];
+								}
+								
+								for (int i = 0; i < topSectionSize; i++) {
+									uint methodId = ReadUint (ref offsetInBlock);
+									stackSection [i].IsBeingJitted = ((methodId & 1) != 0) ? true : false;
+									methodId >>= 1;
+									stackSection [i].Method = handler.LoadedElements.GetMethod (methodId);
+								}
+								
+								handler.AdjustStack (lastValidFrame, topSectionSize, stackSection);
+								handler.DataProcessed (offsetInBlock);
 								break;
 							}
 							default: {
@@ -676,6 +735,7 @@ namespace  Mono.Profiler {
 					ulong endTime = ReadUlong (ref offsetInBlock);
 					//LogLine ("BLOCK EVENTS (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), threadId);
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.STATISTICAL : {
@@ -684,6 +744,7 @@ namespace  Mono.Profiler {
 					
 					//LogLine ("BLOCK STATISTICAL (START): startCounter {0}, startTime {1}", startCounter, startTime);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					
 					uint id;
 					for (id = ReadUint (ref offsetInBlock); id != (uint) StatisticalCode.END; id = ReadUint (ref offsetInBlock)) {
@@ -694,8 +755,10 @@ namespace  Mono.Profiler {
 							//LogLine ("BLOCK STATISTICAL (METHOD): methodId {0}", methodId);
 							if (methodId != 0) {
 								handler.MethodStatisticalHit (handler.LoadedElements.GetMethod (methodId));
+								handler.DataProcessed (offsetInBlock);
 							} else {
 								handler.UnknownMethodStatisticalHit ();
+								handler.DataProcessed (offsetInBlock);
 							}
 							break;
 						}
@@ -703,6 +766,7 @@ namespace  Mono.Profiler {
 							uint functionId = id >> 3;
 							UFI function = handler.LoadedElements.GetUnmanagedFunctionByID (functionId);
 							handler.UnmanagedFunctionStatisticalHit (function);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case StatisticalCode.UNMANAGED_FUNCTION_NEW_ID: {
@@ -712,6 +776,7 @@ namespace  Mono.Profiler {
 							MR region = handler.LoadedElements.GetExecutableMemoryRegion (regionId);
 							UFI function = handler.LoadedElements.NewUnmanagedFunction (functionId, name, region);
 							handler.UnmanagedFunctionStatisticalHit (function);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case StatisticalCode.UNMANAGED_FUNCTION_OFFSET_IN_REGION: {
@@ -723,14 +788,17 @@ namespace  Mono.Profiler {
 								if (function != null) {
 									//LogLine ("BLOCK STATISTICAL (FUNCTION): regionId {0}, offset {1}", regionId, offset);
 									handler.UnmanagedFunctionStatisticalHit (function);
+									handler.DataProcessed (offsetInBlock);
 								} else {
 									//LogLine ("BLOCK STATISTICAL (FUNCTION): regionId {0}, unknown offset {1}", regionId, offset);
 									handler.UnknownUnmanagedFunctionStatisticalHit (region, offset);
+									handler.DataProcessed (offsetInBlock);
 								}
 							} else {
 								ulong address = ReadUlong (ref offsetInBlock);
 								//LogLine ("BLOCK STATISTICAL (FUNCTION): unknown address {0}", address);
 								handler.UnknownUnmanagedFunctionStatisticalHit (address);
+								handler.DataProcessed (offsetInBlock);
 							}
 							break;
 						}
@@ -738,6 +806,7 @@ namespace  Mono.Profiler {
 							uint chainDepth = id >> 3;
 							//LogLine ("BLOCK STATISTICAL (CHAIN): starting chain of depth {0}", chainDepth);
 							handler.StatisticalCallChainStart (chainDepth);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case StatisticalCode.REGIONS: {
@@ -762,6 +831,7 @@ namespace  Mono.Profiler {
 								//}
 							}
 							handler.LoadedElements.SortExecutableMemoryRegions ();
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						}
@@ -782,11 +852,13 @@ namespace  Mono.Profiler {
 					
 					HS snapshot = handler.LoadedElements.NewHeapSnapshot (collection, jobStartCounter, microsecondsFromEpochToDateTime (jobStartTime), jobEndCounter, microsecondsFromEpochToDateTime (jobEndTime), handler.LoadedElements.Classes, handler.LoadedElements.RecordHeapSnapshots);
 					handler.HeapReportStart (snapshot);
+					handler.DataProcessed (offsetInBlock);
 					
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong startTime = ReadUlong (ref offsetInBlock);
 					//LogLine ("BLOCK HEAP_DATA (START): ({0}:{1}-{2}:{3}) startCounter {4}, startTime {5}", jobStartCounter, jobStartTime, jobEndCounter, jobEndTime, startCounter, startTime);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					
 					ulong item;
 					ulong[] references = new ulong [50];
@@ -800,6 +872,7 @@ namespace  Mono.Profiler {
 							LC c = handler.LoadedElements.GetClass (classId);
 							//LogLine ("  Class id {0}, size {1}", classId, size);
 							handler.HeapObjectUnreachable (c, size);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						case HeapSnapshotCode.OBJECT: {
@@ -818,6 +891,7 @@ namespace  Mono.Profiler {
 							LC c = handler.LoadedElements.GetClass (classId);
 							HO o = snapshot.NewHeapObject (objectId, c, size, references, referencesCount);
 							handler.HeapObjectReachable (o);
+							handler.DataProcessed (offsetInBlock);
 							break;
 						}
 						default: {
@@ -826,11 +900,13 @@ namespace  Mono.Profiler {
 						}
 					}
 					handler.HeapReportEnd (snapshot);
+					handler.DataProcessed (offsetInBlock);
 					
 					ulong endCounter = ReadUlong (ref offsetInBlock);
 					ulong endTime = ReadUlong (ref offsetInBlock);
 					//LogLine ("BLOCK HEAP_DATA (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.HEAP_SUMMARY : {
@@ -841,6 +917,7 @@ namespace  Mono.Profiler {
 					//LogLine ("BLOCK HEAP_SUMMARY (START): ([]{0}:{1}) startCounter {4}, startTime {5}", collection, startCounter, startTime);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), 0);
 					handler.AllocationSummaryStart (collection, startCounter, microsecondsFromEpochToDateTime (startTime));
+					handler.DataProcessed (offsetInBlock);
 					
 					uint id;
 					for (id = ReadUint (ref offsetInBlock); id != 0; id = ReadUint (ref offsetInBlock)) {
@@ -851,19 +928,23 @@ namespace  Mono.Profiler {
 						LC c = handler.LoadedElements.GetClass (id);
 						
 						handler.ClassAllocationSummary (c, reachableInstances, reachableBytes, unreachableInstances, unreachableBytes);
+						handler.DataProcessed (offsetInBlock);
 					}
 					
 					ulong endCounter = ReadUlong (ref offsetInBlock);
 					ulong endTime = ReadUlong (ref offsetInBlock);
 					handler.AllocationSummaryEnd (collection, endCounter, microsecondsFromEpochToDateTime (endTime));
+					handler.DataProcessed (offsetInBlock);
 					//LogLine ("BLOCK HEAP_SUMMARY (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					break;
 				}
 				case BlockCode.DIRECTIVES : {
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong startTime = ReadUlong (ref offsetInBlock);
 					handler.StartBlock (startCounter, microsecondsFromEpochToDateTime (startTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					
 					//LogLine ("BLOCK DIRECTIVES (START): startCounter {0}, startTime {1}", startCounter, startTime);
 					DirectiveCodes directive = (DirectiveCodes) ReadUint (ref offsetInBlock);
@@ -872,6 +953,10 @@ namespace  Mono.Profiler {
 						case DirectiveCodes.ALLOCATIONS_CARRY_CALLER:
 							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_CARRY_CALLER");
 							handler.Directives.AllocationsCarryCallerMethodReceived ();
+							break;
+						case DirectiveCodes.ALLOCATIONS_HAVE_STACK:
+							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_HAVE_STACK");
+							handler.Directives.AllocationsHaveStackTraceReceived ();
 							break;
 						default:
 							throw new DecodingException (this, offsetInBlock, String.Format ("unknown directive {0}", directive));
@@ -883,6 +968,7 @@ namespace  Mono.Profiler {
 					ulong endCounter = ReadUlong (ref offsetInBlock);
 					ulong endTime = ReadUlong (ref offsetInBlock);
 					handler.EndBlock (endCounter, microsecondsFromEpochToDateTime (endTime), 0);
+					handler.DataProcessed (offsetInBlock);
 					//LogLine ("BLOCK DIRECTIVES (END): endCounter {0}, endTime {1}", endCounter, endTime);
 					break;
 				}
@@ -895,10 +981,77 @@ namespace  Mono.Profiler {
 					throw new DecodingException (this, offsetInBlock, String.Format ("Block ended at offset {0} but its declared length is {1}", offsetInBlock, length));
 				}
 			} catch (DecodingException e) {
+				if (handleExceptions) {
+					HandleDecodingException<LC,LM,UFR,UFI,MR,EH,HO,HS> (e, offsetInBlock, handler);
+				}
 				throw e;
 			} catch (Exception e) {
+				if (handleExceptions) {
+					HandleRegularException<LC,LM,UFR,UFI,MR,EH,HO,HS> (e, offsetInBlock, handler);
+				}
 				throw new DecodingException(this, offsetInBlock, e.Message, e);
 			}
+		}
+		
+		bool handleExceptions = true;
+		
+		void DumpDebugInformation<LC,LM,UFR,UFI,MR,EH,HO,HS> (uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+			if (debugLog != null) {
+				debugLog.WriteLine ("Attempting to decode data printing block contents...");
+				handleExceptions = false;
+				try {
+					DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> debugHandler =
+						new DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> (handler.LoadedElements, debugLog);
+					debugLog.WriteLine ("Current block of type {0} (file offset {1}, length {2})", Code, FileOffset, Length);
+					Decode (debugHandler);
+					
+				} catch (Exception e) {
+					debugLog.WriteLine ("While attempting decoding, got exception {0}", e.Message);
+					DumpData (data, debugLog, offsetInBlock - 8, offsetInBlock + 24);
+				} finally {
+					handleExceptions = true;
+				}
+			}
+		}
+		void HandleDecodingException<LC,LM,UFR,UFI,MR,EH,HO,HS> (DecodingException e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+			if (debugLog != null) {
+				debugLog.WriteLine ("ERROR: DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
+				debugLog.WriteLine (e.StackTrace);
+				if (e.InnerException != null) {
+					debugLog.WriteLine ("Original stack trace:");
+					debugLog.WriteLine (e.InnerException.StackTrace);
+				}
+				DumpDebugInformation<LC,LM,UFR,UFI,MR,EH,HO,HS> (offsetInBlock, handler);
+			}
+			
+			throw e;
+		}
+		void HandleRegularException<LC,LM,UFR,UFI,MR,EH,HO,HS> (Exception e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+			if (debugLog != null) {
+				debugLog.WriteLine ("ERROR: Exception in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", Code, Length, FileOffset, offsetInBlock, e.Message);
+				debugLog.WriteLine (e.StackTrace);
+				DumpDebugInformation<LC,LM,UFR,UFI,MR,EH,HO,HS> (offsetInBlock, handler);
+			}
+			
+			throw e;
+		}
+		
+		static public void DumpData (byte[] data, TextWriter output, uint startOffset, uint endOffset) {
+			uint currentIndex = 0;
+			while (startOffset < endOffset) {
+				if (currentIndex % 8 == 0) {
+					if ((currentIndex != 0)) {
+						output.WriteLine ();
+					}
+					output.Write ("  [{0}-{1}]", startOffset, startOffset + 7);
+				}
+				output.Write (" ");
+				output.Write (data [startOffset]);
+				
+				startOffset ++;
+				currentIndex ++;
+			}
+			output.WriteLine ();
 		}
 		
 		public BlockData (uint fileOffset, BlockCode code, int length, byte[] data) {

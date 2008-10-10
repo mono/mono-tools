@@ -1,3 +1,11 @@
+2008-10-10  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs:
+	- Added support for handling the stack trace of each allocation event.
+	- Added a DebugProfilerEventHandler which helps detecting decoder bugs.
+	* ObjectModel.cs: Likewise.
+	* ObjectModel.cs: Likewise.
+	* Decoder.cs: Likewise.
+
 2008-09-17  Massimiliano Mantione <massi@ximian.com>
 	* ObjectModel.cs: Add "jit time support" to the call stack.
 	* EventProcessor.cs: Likewise.

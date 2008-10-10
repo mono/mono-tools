@@ -47,7 +47,7 @@ namespace  Mono.Profiler {
 			return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
 		};
 		
-		internal void InstanceCreated (uint size, LoadedMethod method, bool jitTime) {
+		internal void InstanceCreated (uint size, LoadedMethod method, bool jitTime, StackTrace stackTrace) {
 			allocatedBytes += size;
 			currentlyAllocatedBytes += size;
 			if (method != null) {
@@ -71,7 +71,7 @@ namespace  Mono.Profiler {
 					callerMethod = new AllocationsPerMethod (method);
 					methods.Add (method.ID, callerMethod);
 				}
-				callerMethod.Allocation (size);
+				callerMethod.Allocation (size, stackTrace);
 			}
 		}
 		
@@ -79,14 +79,8 @@ namespace  Mono.Profiler {
 			currentlyAllocatedBytes -= size;
 		}
 		
-		public class AllocationsPerMethod {
-			LoadedMethod method;
-			public LoadedMethod Method {
-				get {
-					return method;
-				}
-			}
-			
+		public abstract class AllocationsPerItem<T> {
+			protected T item;
 			uint allocatedBytes;
 			public uint AllocatedBytes {
 				get {
@@ -99,20 +93,86 @@ namespace  Mono.Profiler {
 					return allocatedInstances;
 				}
 			}
-			internal void Allocation (uint allocatedBytes) {
+			protected void InternalAllocation (uint allocatedBytes) {
 				this.allocatedBytes += allocatedBytes;
 				this.allocatedInstances ++;
 			}
-			public static Comparison<AllocationsPerMethod> CompareByAllocatedBytes = delegate (AllocationsPerMethod a, AllocationsPerMethod b) {
+			
+			public static Comparison<AllocationsPerItem<T>> CompareByAllocatedBytes = delegate (AllocationsPerItem<T> a, AllocationsPerItem<T> b) {
 				return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
 			};
-			public static Comparison<AllocationsPerMethod> CompareByAllocatedInstances = delegate (AllocationsPerMethod a, AllocationsPerMethod b) {
+			public static Comparison<AllocationsPerItem<T>> CompareByAllocatedInstances = delegate (AllocationsPerItem<T> a, AllocationsPerItem<T> b) {
 				return a.AllocatedInstances.CompareTo (b.AllocatedInstances);
 			};
 			
-			public AllocationsPerMethod (LoadedMethod method) {
-				this.method = method;
+			protected AllocationsPerItem (T item) {
+				this.item = item;
+				allocatedInstances = 0;
 				allocatedBytes = 0;
+			}
+		}
+		public class AllocationsPerMethod : AllocationsPerItem<LoadedMethod> {
+			public LoadedMethod Method {
+				get {
+					return item;
+				}
+			}
+			
+			Dictionary<uint,AllocationsPerStackTrace> stackTraces;
+			public AllocationsPerStackTrace[] StackTraces {
+				get {
+					if (stackTraces != null) {
+						AllocationsPerStackTrace[] result = new AllocationsPerStackTrace [stackTraces.Count];
+						stackTraces.Values.CopyTo (result, 0);
+						return result;
+					} else {
+						return new AllocationsPerStackTrace [0];
+					}
+				}
+			}
+			public int StackTracesCount {
+				get {
+					if (stackTraces != null) {
+						return stackTraces.Count;
+					} else {
+						return 0;
+					}
+				}
+			}
+			
+			internal void Allocation (uint allocatedBytes, StackTrace stackTrace) {
+				InternalAllocation (allocatedBytes);
+				if (stackTrace != null) {
+					if (stackTraces == null) {
+						stackTraces = new Dictionary<uint,AllocationsPerStackTrace> ();
+					}
+					
+					AllocationsPerStackTrace allocationsPerStackTrace;
+					if (stackTraces.ContainsKey (stackTrace.ID)) {
+						allocationsPerStackTrace = stackTraces [stackTrace.ID];
+					} else {
+						allocationsPerStackTrace = new AllocationsPerStackTrace (stackTrace);
+						stackTraces [stackTrace.ID] = allocationsPerStackTrace;
+					}
+					allocationsPerStackTrace.Allocation (allocatedBytes);
+				}
+			}
+			
+			public AllocationsPerMethod (LoadedMethod method) : base (method) {
+			}
+		}
+		public class AllocationsPerStackTrace : AllocationsPerItem<StackTrace> {
+			public StackTrace Trace {
+				get {
+					return item;
+				}
+			}
+			
+			internal void Allocation (uint allocatedBytes) {
+				InternalAllocation (allocatedBytes);
+			}
+			
+			public AllocationsPerStackTrace (StackTrace trace) : base (trace) {
 			}
 		}
 		
@@ -156,6 +216,114 @@ namespace  Mono.Profiler {
 			currentlyAllocatedBytes = 0;
 			allocationsPerMethod = null;
 		}
+	}
+	
+	public class StackTrace {
+		LoadedMethod topMethod;
+		public LoadedMethod TopMethod {
+			get {
+				return topMethod;
+			}
+		}
+		StackTrace caller;
+		public StackTrace Caller {
+			get {
+				return caller;
+			}
+		}
+		bool methodIsBeingJitted;
+		public bool MethodIsBeingJitted {
+			get {
+				return methodIsBeingJitted;
+			}
+		}
+		uint level;
+		public uint Level {
+			get {
+				return level;
+			}
+		}
+		uint id;
+		public uint ID {
+			get {
+				return id;
+			}
+		}
+		
+		static uint nextFreeId = 1;
+		
+		StackTrace (LoadedMethod topMethod, StackTrace caller, bool methodIsBeingJitted) {
+			this.topMethod = topMethod;
+			this.caller = caller;
+			this.methodIsBeingJitted = methodIsBeingJitted;
+			this.level = caller != null ? caller.level + 1 : 1;
+			this.id = nextFreeId;
+			nextFreeId ++;
+		}
+		
+		bool MatchesCallStack (CallStack.StackFrame stack) {
+			StackTrace currentTrace = this;
+			
+			while ((currentTrace != null) && (stack != null)) {
+				if (currentTrace.TopMethod != stack.Method) {
+					return false;
+				}
+				if (currentTrace.methodIsBeingJitted != stack.IsBeingJitted) {
+					return false;
+				}
+				currentTrace = currentTrace.Caller;
+				stack = stack.Caller;
+			}
+			
+			if ((currentTrace == null) && (stack == null)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		internal static StackTrace NewStackTrace (CallStack stack) {
+			return NewStackTrace (stack.StackTop);
+		}
+		
+		static StackTrace NewStackTrace (CallStack.StackFrame frame) {
+			if (frame == null) {
+				return null;
+			}
+			
+			if (frame.Level> (uint) tracesByLevel.Length) {
+				Dictionary<uint,List<StackTrace>> [] newTracesByLevel = new Dictionary<uint,List<StackTrace>> [frame.Level * 2];
+				Array.Copy (tracesByLevel, newTracesByLevel, tracesByLevel.Length);
+				tracesByLevel = newTracesByLevel;
+			}
+			
+			Dictionary<uint,List<StackTrace>> tracesByMethod = tracesByLevel [frame.Level];
+			if (tracesByLevel [frame.Level] == null) {
+				tracesByMethod = new Dictionary<uint,List<StackTrace>> ();
+				tracesByLevel [frame.Level] = tracesByMethod;
+			}
+			
+			List<StackTrace> traces;
+			if (tracesByMethod.ContainsKey (frame.Method.ID)) {
+				traces = tracesByMethod [frame.Method.ID];
+			} else {
+				traces = new List<StackTrace> ();
+				tracesByMethod [frame.Method.ID] = traces;
+			}
+			
+			foreach (StackTrace trace in traces) {
+				if (trace.MatchesCallStack (frame)) {
+					return trace;
+				}
+			}
+			
+			StackTrace callerTrace = NewStackTrace (frame.Caller);
+			StackTrace result = new StackTrace (frame.Method, callerTrace, frame.IsBeingJitted);
+			traces.Add (result);
+			return result;
+		}
+		
+		static Dictionary<uint,List<StackTrace>> [] tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
 	}
 	
 	class CallStack {
@@ -290,6 +458,21 @@ namespace  Mono.Profiler {
 		}
 		internal void MethodJitEnd (LoadedMethod method, ulong counter) {
 			PopMethod (method, counter, true);
+		}
+		
+		internal void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LoadedClass,LoadedMethod>[] topSection) {
+			if (Depth >= lastValidFrame) {
+				while (Depth > lastValidFrame) {
+					StackFrame lastTop = stackTop;
+					stackTop = stackTop.Caller;
+					StackFrame.FreeFrame (lastTop);
+				}
+				for (int i = (int) topSectionSize - 1; i >= 0; i--) {
+					stackTop = StackFrame.FrameFactory (topSection [i].Method, 0, topSection [i].IsBeingJitted, stackTop);
+				}
+			} else {
+				throw new Exception (String.Format ("Depth is {0} but lastValidFrame is {1}", Depth, lastValidFrame));
+			}
 		}
 		
 		internal CallStack (ulong threadId) {

@@ -208,13 +208,21 @@ namespace  Mono.Profiler {
 		public override void ClassEndUnload (LoadedClass c, ulong counter) {}
 		
 		public override void Allocation (LoadedClass c, uint size, LoadedMethod caller, bool jitTime, ulong counter) {
+			StackTrace trace;
+			
+			if (Directives.AllocationsHaveStackTrace) {
+				trace = StackTrace.NewStackTrace (stack);
+			} else {
+				trace = null;
+			}
+			
 			if (caller == null) {
 				if ((stack != null) && (stack.StackTop != null)) {
 					caller = stack.StackTop.Method;
 					jitTime = stack.StackTop.IsBeingJitted;
 				}
 			}
-			c.InstanceCreated (size, caller, jitTime);
+			c.InstanceCreated (size, caller, jitTime, trace);
 		}
 		
 		public override void Exception (LoadedClass c, ulong counter) {}
@@ -239,6 +247,9 @@ namespace  Mono.Profiler {
 		
 		public override void MethodFreed (LoadedMethod m, ulong counter) {}
 		
+		public override void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LoadedClass,LoadedMethod>[] topSection) {
+			stack.AdjustStack (lastValidFrame, topSectionSize, topSection);
+		}
 		
 		uint remainingCallersInChain;
 		IStatisticalHitItem lastCallee;

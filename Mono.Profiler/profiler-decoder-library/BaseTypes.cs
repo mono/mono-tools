@@ -48,6 +48,26 @@ namespace Mono.Profiler {
 		uint StartOffset {get; set;}
 		uint EndOffset {get; set;}
 	}
+	public struct StackSectionElement<LC,LM> where LC : ILoadedClass where LM : ILoadedMethod<LC> {
+		LM method;
+		public LM Method {
+			get {
+				return method;
+			}
+			set {
+				method = value;
+			}
+		}
+		bool isBeingJitted;
+		public bool IsBeingJitted {
+			get {
+				return isBeingJitted;
+			}
+			set {
+				isBeingJitted = value;
+			}
+		}
+	}
 	public interface IExecutableMemoryRegion<UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion {
 		ulong StartAddress {get;}
 		ulong EndAddress {get;}
@@ -133,6 +153,8 @@ namespace Mono.Profiler {
 		void MethodJitEnd (LM m, ulong counter, bool success);
 		void MethodFreed (LM m, ulong counter);
 		
+		void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LC,LM>[] topSection);
+		
 		void MethodStatisticalHit (LM m);
 		void UnknownMethodStatisticalHit ();
 		void UnmanagedFunctionStatisticalHit (UFR f);
@@ -164,6 +186,9 @@ namespace Mono.Profiler {
 		void AllocationSummaryStart (uint collection, ulong startCounter, DateTime startTime);
 		void ClassAllocationSummary (LC c, uint reachableInstances, uint reachableBytes, uint unreachableInstances, uint unreachableBytes);
 		void AllocationSummaryEnd (uint collection, ulong endCounter, DateTime endTime);
+		
+		void InitializeData (byte[] data, uint currentOffset);
+		void DataProcessed (uint offset);
 	}
 	
 	public class BaseLoadedElement : ILoadedElement {
@@ -632,6 +657,7 @@ namespace Mono.Profiler {
 	public enum DirectiveCodes {
 		END = 0,
 		ALLOCATIONS_CARRY_CALLER = 1,
+		ALLOCATIONS_HAVE_STACK = 2,
 		LAST
 	}
 	
@@ -646,8 +672,19 @@ namespace Mono.Profiler {
 			allocationsCarryCallerMethod = true;
 		}
 		
+		bool allocationsHaveStackTrace;
+		public bool AllocationsHaveStackTrace {
+			get {
+				return allocationsHaveStackTrace;
+			}
+		}
+		public void AllocationsHaveStackTraceReceived () {
+			allocationsHaveStackTrace = true;
+		}
+		
 		public DirectivesHandler () {
 			allocationsCarryCallerMethod = false;
+			allocationsHaveStackTrace = false;
 		}
 	}
 	
@@ -699,6 +736,8 @@ namespace Mono.Profiler {
 		public virtual void MethodJitEnd (LM m, ulong counter, bool success) {}
 		public virtual void MethodFreed (LM m, ulong counter) {}
 		
+		public virtual void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LC,LM>[] topSection) {}
+		
 		public virtual void MethodStatisticalHit (LM m) {}
 		public virtual void UnknownMethodStatisticalHit () {}
 		public virtual void UnmanagedFunctionStatisticalHit (UFR f) {}
@@ -730,6 +769,199 @@ namespace Mono.Profiler {
 		public virtual void AllocationSummaryStart (uint collection, ulong startCounter, DateTime startTime) {}
 		public virtual void ClassAllocationSummary (LC c, uint reachableInstances, uint reachableBytes, uint unreachableInstances, uint unreachableBytes) {}
 		public virtual void AllocationSummaryEnd (uint collection, ulong endCounter, DateTime endTime) {}
+		
+		public virtual void InitializeData (byte[] data, uint currentOffset) {}
+		public virtual void DataProcessed (uint offset) {}
+	}
+
+	public class DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		uint currentOffset;
+		public uint CurrentOffset {
+			get {
+				return currentOffset;
+			}
+		}
+		
+		byte[] data;
+		TextWriter output;
+		
+		public DebugProfilerEventHandler (EH loadedElements, TextWriter output) : base (loadedElements) {
+			this.output = output;
+			this.data = null;
+			this.currentOffset = 0;
+		}
+		
+		public override void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime) {
+			output.WriteLine ("");
+		}
+		public override void End (uint version, ulong endCounter, DateTime endTime) {
+			output.WriteLine ("");
+		}
+		
+		public override void StartBlock (ulong startCounter, DateTime startTime, ulong threadId) {
+			output.WriteLine ("StartBlock: startCounter {0}, startTime {1}, threadId {2}", startCounter, startTime, threadId);
+		}
+		public override void EndBlock (ulong endCounter, DateTime endTime, ulong threadId) {
+			output.WriteLine ("StartBlock: endCounter {0}, endTime {1}, threadId {2}", endCounter, endTime, threadId);
+		}
+		
+		public override void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+			output.WriteLine ("ModuleLoaded");
+		}
+		public override void ModuleUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+			output.WriteLine ("ModuleUnloaded");
+		}
+		public override void AssemblyLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+			output.WriteLine ("AssemblyLoaded");
+		}
+		public override void AssemblyUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+			output.WriteLine ("AssemblyUnloaded");
+		}
+		public override void ApplicationDomainLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+			output.WriteLine ("ApplicationDomainLoaded");
+		}
+		public override void ApplicationDomainUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+			output.WriteLine ("ApplicationDomainUnloaded");
+		}
+		
+		public override void SetCurrentThread (ulong threadId) {
+			output.WriteLine ("SetCurrentThread");
+		}
+		
+		public override void ClassStartLoad (LC c, ulong counter) {
+			output.WriteLine ("ClassStartLoad");
+		}
+		public override void ClassEndLoad (LC c, ulong counter, bool success) {
+			output.WriteLine ("ClassEndLoad");
+		}
+		public override void ClassStartUnload (LC c, ulong counter) {
+			output.WriteLine ("ClassStartUnload");
+		}
+		public override void ClassEndUnload (LC c, ulong counter) {
+			output.WriteLine ("ClassEndUnload");
+		}
+		
+		public override void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter) {
+			output.WriteLine ("Allocation");
+		}
+		public override void Exception (LC c, ulong counter) {
+			output.WriteLine ("Exception");
+		}
+		
+		public override void MethodEnter (LM m, ulong counter) {
+			output.WriteLine ("MethodEnter");
+		}
+		public override void MethodExit (LM m, ulong counter) {
+			output.WriteLine ("MethodExit");
+		}
+		public override void MethodJitStart (LM m, ulong counter) {
+			output.WriteLine ("MethodJitStart");
+		}
+		public override void MethodJitEnd (LM m, ulong counter, bool success) {
+			output.WriteLine ("MethodJitEnd");
+		}
+		public override void MethodFreed (LM m, ulong counter) {
+			output.WriteLine ("MethodFreed");
+		}
+		
+		public override void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LC,LM>[] topSection) {
+			output.WriteLine ("AdjustStack");
+		}
+		
+		public override void MethodStatisticalHit (LM m) {
+			output.WriteLine ("MethodStatisticalHit");
+		}
+		public override void UnknownMethodStatisticalHit () {
+			output.WriteLine ("UnknownMethodStatisticalHit");
+		}
+		public override void UnmanagedFunctionStatisticalHit (UFR f) {
+			output.WriteLine ("UnmanagedFunctionStatisticalHit");
+		}
+		public override void UnmanagedFunctionStatisticalHit (UFI f) {
+			output.WriteLine ("UnmanagedFunctionStatisticalHit");
+		}
+		public override void UnknownUnmanagedFunctionStatisticalHit (MR region, uint offset) {
+			output.WriteLine ("UnknownUnmanagedFunctionStatisticalHit");
+		}
+		public override void UnknownUnmanagedFunctionStatisticalHit (ulong address) {
+			output.WriteLine ("UnknownUnmanagedFunctionStatisticalHit");
+		}
+		public override void StatisticalCallChainStart (uint chainDepth) {
+			output.WriteLine ("StatisticalCallChainStart");
+		}
+		
+		public override void ThreadStart (ulong threadId, ulong counter) {
+			output.WriteLine ("ThreadStart");
+		}
+		public override void ThreadEnd (ulong threadId, ulong counter) {
+			output.WriteLine ("ThreadEnd");
+		}
+		
+		public override void GarbageCollectionStart (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionStart");
+		}
+		public override void GarbageCollectionEnd (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionEnd");
+		}
+		public override void GarbageCollectionMarkStart (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionMarkStart");
+		}
+		public override void GarbageCollectionMarkEnd (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionMarkEnd");
+		}
+		public override void GarbageCollectionSweepStart (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionSweepStart");
+		}
+		public override void GarbageCollectionSweepEnd (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionSweepEnd");
+		}
+		public override void GarbageCollectionResize (uint collection, ulong newSize) {
+			output.WriteLine ("GarbageCollectionResize");
+		}
+		public override void GarbageCollectionStopWorldStart (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionStopWorldStart");
+		}
+		public override void GarbageCollectionStopWorldEnd (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionStopWorldEnd");
+		}
+		public override void GarbageCollectionStartWorldStart (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionStartWorldStart");
+		}
+		public override void GarbageCollectionStartWorldEnd (uint collection, uint generation, ulong counter) {
+			output.WriteLine ("GarbageCollectionStartWorldEnd");
+		}
+		
+		public override void HeapReportStart (HS snapshot) {
+			output.WriteLine ("HeapReportStart");
+		}
+		public override void HeapObjectUnreachable (LC c, uint size) {
+			output.WriteLine ("HeapObjectUnreachable");
+		}
+		public override void HeapObjectReachable (HO o) {
+			output.WriteLine ("HeapObjectReachable");
+		}
+		public override void HeapReportEnd (HS snapshot) {
+			output.WriteLine ("HeapReportEnd");
+		}
+		
+		public override void AllocationSummaryStart (uint collection, ulong startCounter, DateTime startTime) {
+			output.WriteLine ("AllocationSummaryStart");
+		}
+		public override void ClassAllocationSummary (LC c, uint reachableInstances, uint reachableBytes, uint unreachableInstances, uint unreachableBytes) {
+			output.WriteLine ("ClassAllocationSummary");
+		}
+		public override void AllocationSummaryEnd (uint collection, ulong endCounter, DateTime endTime) {
+			output.WriteLine ("AllocationSummaryEnd");
+		}
+		
+		public override void InitializeData (byte[] data, uint currentOffset) {
+			this.data = data;
+			this.currentOffset = currentOffset;
+		}
+		public override void DataProcessed (uint offset) {
+			BlockData.DumpData (data, output, currentOffset, offset);
+			currentOffset = offset;
+		}
 	}
 	
 	public class BaseExecutableMemoryRegion<UFR> : BaseLoadedElement, IExecutableMemoryRegion<UFR> where UFR : IUnmanagedFunctionFromRegion, new() {
