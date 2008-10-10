@@ -1,3 +1,7 @@
+2008-09-17  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: Add "jit time support" to the call stack.
+	* EventProcessor.cs: Likewise.
+
 2008-08-21  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs: Added support for correct accounting of allocations
 	which happened at JIT time.

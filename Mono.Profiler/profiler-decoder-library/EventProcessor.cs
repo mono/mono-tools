@@ -211,6 +211,7 @@ namespace  Mono.Profiler {
 			if (caller == null) {
 				if ((stack != null) && (stack.StackTop != null)) {
 					caller = stack.StackTop.Method;
+					jitTime = stack.StackTop.IsBeingJitted;
 				}
 			}
 			c.InstanceCreated (size, caller, jitTime);
@@ -228,10 +229,12 @@ namespace  Mono.Profiler {
 		
 		public override void MethodJitStart (LoadedMethod m, ulong counter) {
 			m.StartJit = counter;
+			stack.MethodJitStart (m, counter);
 		}
 		
 		public override void MethodJitEnd (LoadedMethod m, ulong counter, bool success) {
 			m.JitClicks += (counter - m.StartJit);
+			stack.MethodJitEnd (m, counter);
 		}
 		
 		public override void MethodFreed (LoadedMethod m, ulong counter) {}

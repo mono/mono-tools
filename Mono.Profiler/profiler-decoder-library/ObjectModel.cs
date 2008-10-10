@@ -178,6 +178,15 @@ namespace  Mono.Profiler {
 					startCounter = value;
 				}
 			}
+			bool isBeingJitted;
+			public bool IsBeingJitted {
+				get {
+					return isBeingJitted;
+				}
+				internal set {
+					isBeingJitted = value;
+				}
+			}
 			StackFrame caller;
 			public StackFrame Caller {
 				get {
@@ -198,25 +207,27 @@ namespace  Mono.Profiler {
 				level = (caller != null) ? (caller.Level + 1) : 1;
 			}
 			
-			internal StackFrame (LoadedMethod method, ulong startCounter, StackFrame caller) {
+			internal StackFrame (LoadedMethod method, ulong startCounter, bool isBeingJitted, StackFrame caller) {
 				this.method = method;
 				this.startCounter = startCounter;
+				this.isBeingJitted = isBeingJitted;
 				this.caller = caller;
 				SetLevel ();
 			}
 			
 			static StackFrame freeFrames = null;
-			internal static StackFrame FrameFactory (LoadedMethod method, ulong startCounter, StackFrame caller) {
+			internal static StackFrame FrameFactory (LoadedMethod method, ulong startCounter, bool isBeingJitted, StackFrame caller) {
 				if (freeFrames != null) {
 					StackFrame result = freeFrames;
 					freeFrames = result.Caller;
 					result.Method = method;
 					result.startCounter = startCounter;
+					result.isBeingJitted = isBeingJitted;
 					result.Caller = caller;
 					result.SetLevel ();
 					return result;
 				} else {
-					return new StackFrame (method, startCounter, caller);
+					return new StackFrame (method, startCounter, isBeingJitted, caller);
 				}
 			}
 			internal static void FreeFrame (StackFrame frame) {
@@ -245,26 +256,40 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		internal void MethodEnter (LoadedMethod method, ulong counter) {
-			stackTop = StackFrame.FrameFactory (method, counter, stackTop);
-		}
-		internal void MethodExit (LoadedMethod method, ulong counter) {
+		void PopMethod (LoadedMethod method, ulong counter, bool isBeingJitted) {
 			while (stackTop != null) {
 				LoadedMethod topMethod = stackTop.Method;
+				bool topMethodIsBeingJitted = stackTop.IsBeingJitted;
 				StackFrame callerFrame = stackTop.Caller;
 				LoadedMethod callerMethod = (callerFrame != null)? callerFrame.Method : null;
 				
-				topMethod.MethodCalled (counter - stackTop.StartCounter, callerMethod);
+				if (! topMethodIsBeingJitted) {
+					topMethod.MethodCalled (counter - stackTop.StartCounter, callerMethod);
+				}
 				
 				StackFrame.FreeFrame (stackTop);
 				stackTop = callerFrame;
-				if (topMethod == method) {
+				if ((topMethod == method) && (topMethodIsBeingJitted == isBeingJitted)) {
 					return;
 				}
 			}
 		}
+		
+		internal void MethodEnter (LoadedMethod method, ulong counter) {
+			stackTop = StackFrame.FrameFactory (method, counter, false, stackTop);
+		}
+		internal void MethodExit (LoadedMethod method, ulong counter) {
+			PopMethod (method, counter, false);
+		}
 		internal void TopMethodExit (ulong counter) {
 			MethodExit (stackTop.Method, counter);
+		}
+		
+		internal void MethodJitStart (LoadedMethod method, ulong counter) {
+			stackTop = StackFrame.FrameFactory (method, counter, true, stackTop);
+		}
+		internal void MethodJitEnd (LoadedMethod method, ulong counter) {
+			PopMethod (method, counter, true);
 		}
 		
 		internal CallStack (ulong threadId) {
