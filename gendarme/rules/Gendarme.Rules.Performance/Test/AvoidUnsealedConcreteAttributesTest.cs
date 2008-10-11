@@ -26,13 +26,10 @@
 
 using System;
 
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
@@ -52,56 +49,36 @@ namespace Test.Rules.Performance {
 	}
 
 	[TestFixture]
-	public class AvoidUnsealedConcreteAttributesTest {
-
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidUnsealedConcreteAttributesRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
-		}
+	public class AvoidUnsealedConcreteAttributesTest : TypeRuleTestFixture<AvoidUnsealedConcreteAttributesRule> {
 
 		[Test]
 		public void TestAbstractAttribute ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<AbstractAttribute> ()));
+			AssertRuleSuccess<AbstractAttribute> ();
 		}
 
 		[Test]
 		public void TestAnAttribute ()
 		{
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<AnAttribute> ()));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<AnAttribute> (1);
 		}
 
 		[Test]
 		public void TestNotAttribute ()
 		{
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (GetTest<NotAttribute> ()));
+			AssertRuleDoesNotApply<NotAttribute> ();
 		}
 
 		[Test]
 		public void TestSealedAttribute ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<SealedAttribute> ()));
+			AssertRuleSuccess<SealedAttribute> ();
 		}
 
 		[Test]
 		public void TestSealedAttributeInheritsAnAttribute ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<SealedAttributeInheritsAnAttribute> ()));
+			AssertRuleSuccess<SealedAttributeInheritsAnAttribute> ();
 		}
 	}
 }

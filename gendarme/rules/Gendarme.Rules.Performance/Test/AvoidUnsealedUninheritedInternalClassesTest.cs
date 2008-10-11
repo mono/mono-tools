@@ -24,15 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
-using Mono.Cecil;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
@@ -53,6 +48,12 @@ namespace Test.Rules.Performance {
 	internal class Concrete : Abstract {
 	}
 
+	internal class Base : Abstract {
+	}
+
+	internal sealed class Final : Base {
+	}
+
 	internal sealed class Sealed {
 	}
 
@@ -60,78 +61,50 @@ namespace Test.Rules.Performance {
 	}
 
 	[TestFixture]
-	public class AvoidUnsealedUninheritedInternalClassesTest {
-
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TestRunner runner;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new AvoidUnsealedUninheritedInternalClassesRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest<T> ()
-		{
-			return assembly.MainModule.Types [typeof (T).FullName];
-		}
-
-		// note: the generic version doesn't work with inner types since Cecil/IL and 
-		// reflection do not use the same naming convention
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Performance." + name;
-			return assembly.MainModule.Types [fullname];
-		}
+	public class AvoidUnsealedUninheritedInternalTypeTest : TypeRuleTestFixture<AvoidUnsealedUninheritedInternalTypeRule>{
 
 		[Test]
 		public void TestVisable ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Visible> ()));
+			AssertRuleSuccess<Visible> ();
 		}
 
 		[Test]
 		public void TestUnsealedInner ()
 		{
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest ("Outer/UnsealedInner")));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<Outer.UnsealedInner> (1);
 		}
 
 		[Test]
 		public void TestSealedInner ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest ("Outer/SealedInner")));
+			AssertRuleSuccess<Outer.SealedInner> ();
 		}
 
 		[Test]
 		public void TestAbstract ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Abstract> ()));
+			AssertRuleSuccess<Abstract> ();
 		}
 
 		[Test]
 		public void TestConcrete ()
 		{
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<Concrete> ()));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<Concrete> (1);
+			AssertRuleSuccess<Base> ();
 		}
 
 		[Test]
 		public void TestSealed ()
 		{
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (GetTest<Sealed> ()));
+			AssertRuleSuccess<Sealed> ();
+			AssertRuleSuccess<Final> ();
 		}
 
 		[Test]
 		public void TestUnsealed ()
 		{
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (GetTest<Unsealed> ()));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<Unsealed> (1);
 		}
 	}
 }

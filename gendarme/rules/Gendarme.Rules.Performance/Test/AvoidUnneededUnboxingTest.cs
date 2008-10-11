@@ -200,8 +200,8 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void NoUnboxing ()
 		{
-			AssertRuleSuccess<Message> ("EqualsNone");
-			AssertRuleSuccess<AvoidUnneededUnboxingTest> ("GetMessage");
+			AssertRuleDoesNotApply<Message> ("EqualsNone");
+			AssertRuleDoesNotApply<AvoidUnneededUnboxingTest> ("GetMessage");
 		}
 	}
 }
