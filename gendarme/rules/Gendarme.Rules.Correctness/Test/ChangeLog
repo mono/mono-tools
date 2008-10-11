@@ -1,3 +1,10 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewCastOnIntegerDivisionTest.cs: New. Unit tests for 
+	ReviewCastOnIntegerDivisionRule.
+	* ReviewCastOnIntegerMultiplicationTest.cs: New. Unit tests for
+	ReviewCastOnIntegerMultiplicationRule.
+
 2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AttributeStringLiteralsShouldParseCorrectlyTest.cs: New.  Unit tests
