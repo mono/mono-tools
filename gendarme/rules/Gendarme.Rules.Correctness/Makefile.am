@@ -22,6 +22,8 @@ rules_sources = \
 	DoNotRoundIntegersRule.cs \
 	FloatComparisonRule.cs \
 	MethodCanBeMadeStaticRule.cs \
+	ReviewCastOnIntegerDivisionRule.cs \
+	ReviewCastOnIntegerMultiplicationRule.cs \
 	ReviewDoubleAssignmentRule.cs \
 	ReviewSelfAssignmentRule.cs \
 	ReviewUselessControlFlowRule.cs \
@@ -39,6 +41,8 @@ tests_sources = \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
 	MethodCanBeMadeStaticTest.cs \
+	ReviewCastOnIntegerDivisionTest.cs \
+	ReviewCastOnIntegerMultiplicationTest.cs \
 	ReviewDoubleAssignmentTest.cs \
 	ReviewSelfAssignmentTest.cs \
 	ReviewUselessControlFlowTest.cs \

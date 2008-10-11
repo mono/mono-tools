@@ -90,6 +90,7 @@ namespace Gendarme.Rules.Correctness {
 	[Problem ("This method does not use any instance fields, properties or methods and can be made static.")]
 	[Solution ("Make this method static.")]
 	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
 	public class MethodCanBeMadeStaticRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

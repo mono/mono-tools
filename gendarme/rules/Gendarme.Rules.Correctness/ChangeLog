@@ -1,3 +1,14 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodCanBeMadeStaticRule.cs: Add [FxCopCompatibility] attribute.
+	* ReviewCastOnIntegerDivisionRule.cs: New. Rule that check for
+	wrong casts when integers are divided, resulting in truncated floating
+	point values.
+	* ReviewCastOnIntegerMultiplicationRule.cs: New. Rule that check
+	for wrong cast when multiplying integers, potentially resulting in an
+	overflow before the cast is done to a larger type.
+	* Makefile.am: Add new rules and tests to the build.
+
 2008-10-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: Add
