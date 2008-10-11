@@ -1,3 +1,16 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnneededUnboxingRule.cs: Add XML documentation. Use 
+	OpCodeEngine to skip methods without Unbox[_Any] instructions.
+	* AvoidUnsealedConcreteAttributesRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Remove unneeded string in Report.
+	* AvoidUnsealedUninheritedInternalClassesRule.cs: Add XML 
+	documentation. Adjust confidence based on the presence (or absence)
+	of [InternalsVisibleTo]. Remove unneeded string in Report.
+	* AvoidUnusedParametersRule.cs: Use OpCodeEngine to find methods
+	that loads another method (delegate) using Ldftn. Add XML 
+	documentation and [FxCopCompatibility] attribute.
+
 2008-10-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidTypeGetTypeForConstantStringsRule.cs: Add XML documentation.

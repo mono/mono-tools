@@ -34,17 +34,58 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	[Problem ("The method contains unused parameters.")]
+	/// <summary>
+	/// This rule is used to ensure that all parameters in a method signature are being used.
+	/// The rule wont report a defect against the following:
+	/// <list>
+	/// <item><description>Methods that are referenced by a delegate;</description></item>
+	/// <item><description>Methods used as event handlers;</description></item>
+	/// <item><description>Abstract methods;</description></item>
+	/// <item><description>Virtual or overriden methods;</description></item>
+	/// <item><description>External methods (e.g. p/invokes)</description></item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void MethodWithUnusedParameters (IEnumerable enumerable, int x)
+	/// {
+	///	foreach (object item in enumerable) {
+	///		Console.WriteLine (item);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void MethodWithUsedParameters (IEnumerable enumerable)
+	/// {
+	///	foreach (object item in enumerable) {
+	///		Console.WriteLine (item);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
+	[Problem ("The method contains one or more unused parameters.")]
 	[Solution ("You should remove or use the unused parameters.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1801:ReviewUnusedParameters")]
 	public class AvoidUnusedParametersRule : Rule, IMethodRule {
 
 		private static bool ContainsReferenceDelegateInstructionFor (MethodDefinition method, MethodDefinition delegateMethod)
 		{
 			if (!method.HasBody)
+				return false;
+
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Ldftn))
 				return false;
 
 			foreach (Instruction instruction in method.Body.Instructions) {

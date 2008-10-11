@@ -32,9 +32,46 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
-	
+
+	/// <summary>
+	/// This rule is used to warn the developer if both unsealed and concrete (not abstract) 
+	/// attribute types are defined in the assembly. If you want other attributes to be able
+	/// to derive from your attribute class, make it <c>abstract</c>. Otherwise, make them
+	/// <c>sealed</c> to improve the performance.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public class BadAttribute : Attribute {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (sealed):
+	/// <code>
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public sealed class SealedAttribute : Attribute {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (abstract and sealed):
+	/// <code>
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public abstract class AbstractAttribute : Attribute {
+	/// }
+	/// 
+	/// [AttributeUsage (AttributeTargets.All)]
+	/// public sealed class ConcreteAttribute : AbstractAttribute {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Before Gendarme 2.0 this rule was named AvoidUnsealedAttributesRule.</remarks>
+
 	[Problem ("Due performance issues, concrete attributes should be sealed.")]
 	[Solution ("Unless you plan to inherit from this attribute you should consider to seal it's type.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]
 	public class AvoidUnsealedConcreteAttributesRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -49,7 +86,7 @@ namespace Gendarme.Rules.Performance {
 			if (type.IsSealed) // it's ok
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Medium, Confidence.High, "Due to performance issues, attributes should all be declared sealed");
+			Runner.Report (type, Severity.Medium, Confidence.High);
 			return RuleResult.Failure;
 		}
 	}

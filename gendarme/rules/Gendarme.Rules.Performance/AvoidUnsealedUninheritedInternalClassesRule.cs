@@ -33,9 +33,40 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// Since a JIT is able to apply more optimization to <c>sealed</c> types this rule checks
+	/// for non-visible (outside the current assembly) and non-sealed types to find the ones 
+	/// that no other types inherit from.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // this one is correct since MyInheritedStuff inherits from this class
+	/// internal class MyBaseStuff {
+	/// }
+	/// 
+	/// // this one is bad, since no other class inherit from MyConcreteStuff
+	/// internal class MyInheritedStuff : MyBaseStuff {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// // this one is correct since the class is abstract
+	/// internal abstract class MyAbstractStuff {
+	/// }
+	/// 
+	/// // this one is correct since the class is sealed
+	/// internal sealed class MyConcreteStuff : MyAbstractStuff {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0 and, before 2.2, was named AvoidUnsealedUninheritedInternalClassesRule</remarks>
+
 	[Problem ("Due to performance issues, types which are not visible outside of the assembly and which have no inherited types within the assembly should be sealed.")]
 	[Solution ("You should seal this type, unless you plan to inherit from this type in the near-future.")]
-	public class AvoidUnsealedUninheritedInternalClassesRule : Rule, ITypeRule {
+	public class AvoidUnsealedUninheritedInternalTypeRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -49,7 +80,10 @@ namespace Gendarme.Rules.Performance {
 				if (type_definition.Inherits (type.FullName))
 					return RuleResult.Success;
 			}
-			Runner.Report (type, Severity.High, Confidence.High, "Types which are not visible outside the assembly and without inherited types within the assembly should be sealed");
+
+			Confidence c = type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute") ?
+				Confidence.High : Confidence.Total;
+			Runner.Report (type, Severity.Medium, Confidence.High);
 			return RuleResult.Failure;
 		}
 	}

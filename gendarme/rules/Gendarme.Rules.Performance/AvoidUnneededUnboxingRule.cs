@@ -33,11 +33,61 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule check methods that unbox several time the same value type. Since each unbox
+	/// operation is costly, as it involves a copy, the code should be rewritten to minimize
+	/// unbox operations. E.g. using a local variable of the right value type should remove
+	/// need for more than one unbox instruction per variable.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public struct Message {
+	///	private int msg;
+	///	private IntPtr hwnd, lParam, wParam, IntPtr result;
+	///	
+	///	public override bool Equals (object o)
+	///	{
+	///		bool result = (this.msg == ((Message) o).msg);
+	///		result &amp;= (this.hwnd == ((Message) o).hwnd);
+	///		result &amp;= (this.lParam == ((Message) o).lParam);
+	///		result &amp;= (this.wParam == ((Message) o).wParam);
+	///		result &amp;= (this.result == ((Message) o).result);
+	///		return result;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public struct Message {
+	///	private int msg;
+	///	private IntPtr hwnd, lParam, wParam, IntPtr result;
+	///	
+	///	public override bool Equals (object o)
+	///	{
+	///		Message msg = (Message) o;
+	///		bool result = (this.msg == msg.msg);
+	///		result &amp;= (this.hwnd == msg.hwnd);
+	///		result &amp;= (this.lParam == msg.lParam);
+	///		result &amp;= (this.wParam == msg.wParam);
+	///		result &amp;= (this.result == msg.result);
+	///		return result;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method unbox (convert from object to a value type) several times the same variable.")]
 	[Solution ("Cast the variable, one time, into a temporary variable and use it afterward.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidUnneededUnboxingRule : Rule, IMethodRule {
 
 		private static string Previous (MethodDefinition method, Instruction ins)
@@ -101,17 +151,18 @@ namespace Gendarme.Rules.Performance {
 			return Severity.High;
 		}
 
-		private Dictionary<string, int> unboxed;
+		static OpCodeBitmask Unbox = new OpCodeBitmask (0x0, 0x40000000000000, 0x400000000, 0x0);
+
+		private Dictionary<string, int> unboxed = new Dictionary<string, int> ();
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			if (unboxed == null)
-				unboxed = new Dictionary<string, int> ();
-			else
-				unboxed.Clear ();
+			// is there any Unbox or Unbox_Any instructions in the method ?
+			if (!Unbox.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
@@ -139,7 +190,18 @@ namespace Gendarme.Rules.Performance {
 				string s = String.Format (kvp.Key, kvp.Value);
 				Runner.Report (method, GetSeverityFromCount (kvp.Value), Confidence.Normal, s);
 			}
+
+			unboxed.Clear ();
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask unbox = new OpCodeBitmask ();
+			unbox.Set (Code.Unbox);
+			unbox.Set (Code.Unbox_Any);
+			Console.WriteLine (unbox);
+		}
+#endif
 	}
 }
