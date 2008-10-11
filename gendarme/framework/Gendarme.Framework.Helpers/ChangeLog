@@ -1,3 +1,9 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PrimitiveReferences.cs: New. Helper class to get, shared, 
+	TypeReference of the primitive types of the framework (expend as
+	needed).
+
 2008-09-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* OpCodeBitmask.cs: Add IsSubsetOf method.
