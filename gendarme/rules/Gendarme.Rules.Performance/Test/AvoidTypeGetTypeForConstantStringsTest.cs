@@ -43,6 +43,8 @@ namespace Test.Rules.Performance {
 		public void DoesNotApply ()
 		{
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no CALL or CALLVIRT
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		// http://lists.ximian.com/archives/public/mono-patches/2008-June/121564.html
@@ -75,16 +77,18 @@ namespace Test.Rules.Performance {
 		public void Cache ()
 		{
 			AssertRuleFailure<AvoidTypeGetTypeForConstantStringsTest> ("CacheTypesBad", 5);
-			AssertRuleSuccess<AvoidTypeGetTypeForConstantStringsTest> ("CacheTypesGood");
+			AssertRuleDoesNotApply<AvoidTypeGetTypeForConstantStringsTest> ("CacheTypesGood");
 		}
 
 		public System.Type GetType0 (string s)
 		{
+			s += "a"; // to get a LDSTR
 			return s.GetType ();
 		}
 
 		public System.Type GetType1 (string s)
 		{
+			s += "a"; // to get a LDSTR
 			return System.Type.GetType (s);
 		}
 
@@ -92,6 +96,7 @@ namespace Test.Rules.Performance {
 
 		public System.Type GetType2 ()
 		{
+			instance_field += "x"; // to get a LDSTR
 			return System.Type.GetType (instance_field, true);
 		}
 
@@ -99,6 +104,7 @@ namespace Test.Rules.Performance {
 
 		public System.Type GetType3 ()
 		{
+			static_field += "x"; // to get a LDSTR
 			return System.Type.GetType (static_field, true, true);
 		}
 

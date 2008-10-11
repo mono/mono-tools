@@ -29,13 +29,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
 
@@ -44,7 +41,7 @@ using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
-#pragma warning disable 169
+#pragma warning disable 169, 414
 
 	// from Mono.Rocks
 	// note: error CS1109: Extension methods must be defined in a top level static class; StaticType is a nested class

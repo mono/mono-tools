@@ -1,3 +1,16 @@
+2008-10-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeGetTypeForConstantStringsTest.cs: Add test case to get 
+	complete coverage. Add some string literals so the rule can apply on
+	all test case (methods needs a LDSTR or it will be ignored).
+	* AvoidUncalledPrivateCodeTest.cs: Remove unneeded namespaces. 
+	Disable warnings for 414 too.
+	* AvoidUninstantiatedInternalClassesTest.cs: Convert to new, 
+	shorter, syntax for tests. Disable warnings for 169, 414. Add test
+	case for EntryPoint (since the type will be used by the runtime).
+	* AvoidUnneededCallsOnStringTest.cs: Convert to new, shorter, 
+	syntax for tests. Remove unneeded namespaces.
+
 2008-10-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeNumberOfLocalVariablesTest.cs: Add test cases to get

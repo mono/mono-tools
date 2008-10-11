@@ -29,19 +29,26 @@
 //
 
 using System;
-using System.Text;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
+#pragma warning disable 649
+
 	[TestFixture]
-	public class AvoidUnneededCallsOnStringTest {
+	public class AvoidUnneededCallsOnStringTest : MethodRuleTestFixture<AvoidUnneededCallsOnStringRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 
 		public class Item {
 
@@ -147,123 +154,92 @@ namespace Test.Rules.Performance {
 			{
 				return String.Empty.Substring (0, 0);
 			}
-		}
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
+			public string Substring (int n)
+			{
+				return String.Empty;
+			}
 
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Performance.AvoidUnneededCallsOnStringTest/Item"];
-			rule = new AvoidUnneededCallsOnStringRule ();
-			runner = new TestRunner (rule);
-		}
-
-		MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == name)
-					return method;
-
-			return null;
+			public void CallSubstring ()
+			{
+				Console.WriteLine (Substring (0));
+			}
 		}
 
 		[Test]
 		public void TestLocalString ()
 		{
-			MethodDefinition method = GetTest ("ToStringOnLocalString");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<Item> ("ToStringOnLocalString", 1);
 		}
 
 		[Test]
 		public void TestParameter ()
 		{
-			MethodDefinition method = GetTest ("ToStringOnParameter");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Instance");
-
-			method = GetTest ("ToStringOnParameterStatic");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Static");
+			AssertRuleFailure<Item> ("ToStringOnParameter", 1);
+			AssertRuleFailure<Item> ("ToStringOnParameterStatic", 1);
 		}
 
 		[Test]
 		public void TestStaticField ()
 		{
-			MethodDefinition method = GetTest ("ToStringOnStaticField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<Item> ("ToStringOnStaticField", 1);
 		}
 
 		[Test]
 		public void TestField ()
 		{
-			MethodDefinition method = GetTest ("ToStringOnField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<Item> ("ToStringOnField", 1);
 		}
 
 		[Test]
 		public void TestMethodResult ()
 		{
-			MethodDefinition method = GetTest ("ToStringOnMethodResult");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<Item> ("ToStringOnMethodResult", 1);
 		}
 
 		[Test]
 		public void TestValidToString ()
 		{
-			MethodDefinition method = GetTest ("ValidToString");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleSuccess<Item> ("ValidToString");
 		}
 
 		[Test]
 		public void ToStringIFormatProvider ()
 		{
-			MethodDefinition method = GetTest ("ToStringIFormatProviderField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Field");
+			AssertRuleFailure<Item> ("ToStringIFormatProviderField", 1);
 		}
 
 		[Test]
 		public void ToStringOk ()
 		{
-			MethodDefinition method = GetTest ("ToStringBadParameterType");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "BadParameterType");
-
-			method = GetTest ("ThisToString");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ThisToString");
+			AssertRuleSuccess<Item> ("ToStringBadParameterType");
+			AssertRuleSuccess<Item> ("ThisToString");
 		}
 
 		[Test]
 		public void Clone ()
 		{
-			MethodDefinition method = GetTest ("CloneField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Field");
+			AssertRuleFailure<Item> ("CloneField", 1);
 		}
 
 		[Test]
 		public void CloneOk ()
 		{
-			MethodDefinition method = GetTest ("ThisClone");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ThisClone");
+			AssertRuleSuccess<Item> ("ThisClone");
 		}
 
 		[Test]
 		public void Substring ()
 		{
-			MethodDefinition method = GetTest ("SubstringZeroField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Field");
+			AssertRuleFailure<Item> ("SubstringZeroField", 1);
 		}
 
 		[Test]
 		public void SubstringOk ()
 		{
-			MethodDefinition method = GetTest ("SubstringOneField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "One");
-
-			method = GetTest ("SubstringIntInt");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "IntInt");
+			AssertRuleSuccess<Item> ("SubstringOneField");
+			AssertRuleSuccess<Item> ("SubstringIntInt");
+			AssertRuleSuccess<Item> ("CallSubstring");
 		}
 	}
 }

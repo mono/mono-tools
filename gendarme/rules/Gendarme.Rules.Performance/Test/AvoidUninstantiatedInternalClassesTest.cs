@@ -32,12 +32,16 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 using Mono.Cecil;
 using NUnit.Framework;
+using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
+
+#pragma warning disable 169, 414
 
 	internal class UninstantiatedInternalClass {
 
@@ -247,22 +251,16 @@ namespace Test.Rules.Performance {
 		}
 	}
 
-
 	[TestFixture]
-	public class AvoidUninstantiatedInternalClassesTest {
+	public class AvoidUninstantiatedInternalClassesTest : TypeRuleTestFixture<AvoidUninstantiatedInternalClassesRule> {
 		
-		private ITypeRule typeRule;
 		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			typeRule = new AvoidUninstantiatedInternalClassesRule ();
-			runner = new TestRunner (typeRule);
 		}
 		
 		private TypeDefinition GetTest (string name)
@@ -274,133 +272,126 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void UninstantiatedInternalClassTest ()
 		{
-			type = GetTest ("UninstantiatedInternalClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<UninstantiatedInternalClass> (1);
 		}
 		
 		[Test]
 		public void InstantiatedInternalClassTest ()
 		{
-			type = GetTest ("InstantiatedInternalClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<InstantiatedInternalClass> ();
 		}
 		
 		[Test]
 		public void NestedInternalUninstantiatedClassTest ()
 		{
-			type = GetTest ("NestedInternalUninstantiatedClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			AssertRuleFailure<NestedInternalUninstantiatedClass> (1);
 		}
 		
 		[Test]
 		public void NestedInternalInstantiatedClassTest ()
 		{
-			type = GetTest ("NestedInternalInstantiatedClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<NestedInternalInstantiatedClass> ();
 		}
 		
 		[Test]
 		public void NonInternalClassNotInstantiatedTest ()
 		{
-			type = GetTest ("NonInternalClassNotInstantiated");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleDoesNotApply<NonInternalClassNotInstantiated> ();
 		}
 
 		[Test]
 		public void InternalSealedClassWithPrivateCtor ()
 		{
-			type = GetTest ("InternalSealedClassWithPrivateCtor");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleDoesNotApply<InternalSealedClassWithPrivateCtor> ();
 		}
 
 		[Test]
 		public void InternalAbstractClassWithPrivateCtorTest ()
 		{
-			type = GetTest ("InternalAbstractClassWithPrivateCtor");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleDoesNotApply<InternalAbstractClassWithPrivateCtor> ();
 		}
 
 		[Test]
 		public void StaticClassTest ()
 		{
-			type = GetTest ("StaticClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleDoesNotApply (GetTest ("StaticClass"));
 		}
 		
 		[Test]
 		public void MethodContainingObjectCallIsNotCalledTest ()
 		{
-			type = GetTest ("MethodContainingObjectCallIsNotCalled");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<MethodContainingObjectCallIsNotCalled> ();
 		}
 		
 		[Test]
 		public void IFaceTest ()
 		{
-			type = GetTest ("IFace");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			AssertRuleDoesNotApply<IFace> ();
 		}
 
 		[Test]
 		public void NestedEnumReturnInstantiated ()
 		{
-			type = GetTest ("NestedEnumReturnInstantiated/PrivateEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("NestedEnumReturnInstantiated/PrivateEnum"));
 		}
 
 		[Test]
 		public void NestedEnumUsingInstantiated ()
 		{
-			type = GetTest ("NestedEnumUsingInstantiated/PrivateEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("NestedEnumUsingInstantiated/PrivateEnum"));
 		}
 
 		[Test]
 		public void NestedEnumExternInstantiated ()
 		{
-			type = GetTest ("NestedEnumExternInstantiated/PrivateEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("NestedEnumExternInstantiated/PrivateEnum"));
 		}
 
 		[Test]
 		public void NestedEnumExternOutInstantiated ()
 		{
-			type = GetTest ("NestedEnumExternOutInstantiated/PrivateEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("NestedEnumExternOutInstantiated/PrivateEnum"));
 		}
 
 		[Test]
 		public void NestedEnumNotInstantiated ()
 		{
-			type = GetTest ("NestedEnumNotInstantiated/PrivateEnum");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure (GetTest ("NestedEnumNotInstantiated/PrivateEnum"), 1);
 		}
 		
 		[Test]
 		public void NestedEnumUsedAsParameter ()
 		{
-			type = GetTest ("NestedEnumUsedAsParameter/PrivateEnum");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("NestedEnumUsedAsParameter/PrivateEnum"));
 		}
 
 		[Test]
 		public void StructExistAsArrayOnly ()
 		{
-			type = GetTest ("ClassWithArray/ExistAsArrayOnly");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess (GetTest ("ClassWithArray/ExistAsArrayOnly"));
 		}
 
 		[Test]
 		public void Generics_ItemT ()
 		{
 			Item<int> item = new Item<int> (1);
-			type = GetTest ("Item`1");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Item<T>");
+			// used just above
+			AssertRuleSuccess <Item<int>> ();
 
-			type = GetTest ("Items`2");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Items<T,V>");
+			AssertRuleFailure<Items<int,int>> (1);
+		}
+
+		[Test]
+		public void EntryPoint ()
+		{
+			MethodDefinition main = DefinitionLoader.GetMethodDefinition<InstantiatedInternalClass> ("Main");
+			try {
+				main.DeclaringType.Module.Assembly.EntryPoint = main;
+				AssertRuleSuccess (main.DeclaringType.Resolve ());
+			}
+			finally {
+				main.DeclaringType.Module.Assembly.EntryPoint = null;
+			}
 		}
 	}
 }
