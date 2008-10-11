@@ -1,3 +1,19 @@
+2008-10-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeGetTypeForConstantStringsRule.cs: Add XML documentation.
+	Use OpCodeEngine to skip methods without Call or Callvirt instructions
+	and without an Ldstr instruction.
+	* AvoidUncalledPrivateCodeRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute.
+	* AvoidUninstantiatedInternalClassesRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Remove CheckSpecialTypes method 
+	since <Module> is now checked by IsGeneratedCode. Base confidence 
+	level on whether the assembly is decorated with [InternalsVisibleTo]
+	or not.
+	* AvoidUnneededCallsOnStringRule.cs: Add XML documentation. Use 
+	OpCodeEngine to skip methods without Call or Callvirt instructions.
+	Split core into separate methods and check more instructions.
+
 2008-10-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeNumberOfLocalVariablesRule.cs: Add XML documentation

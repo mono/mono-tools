@@ -36,10 +36,62 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Performance {
-	
+
+	/// <summary>
+	/// This rule will check for non externally visible methods that are never called. 
+	/// The rule will warn you if a private method isn't called in it's declaring type or 
+	/// if an internal method doesn't have any callers in the assembly or isn't invoked by
+	/// the runtime or a delegate.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class MyClass {
+	///	private void MakeSuff ()
+	///	{
+	///		// ...
+	///	}
+	///	
+	///	public void Method ()
+	///	{
+	///		Console.WriteLine ("Foo");
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (removing unused code):
+	/// <code>
+	/// public class MyClass {
+	///	public void Method ()
+	///	{
+	///		Console.WriteLine ("Foo");
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (use the code):
+	/// <code>
+	/// public class MyClass {
+	///	private void MakeSuff ()
+	///	{
+	///		// ...
+	///	}
+	///	
+	///	public void Method ()
+	///	{
+	///		Console.WriteLine ("Foo");
+	///		MakeSuff ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This private or internal (assembly-level) member does not have callers in the assembly, is not invoked by the common language runtime, and is not invoked by a delegate.")]
 	[Solution ("Remove the non-callable code or add the code that calls it.")]
-	public class AvoidUncalledPrivateCodeRule: Rule, IMethodRule {
+	[FxCopCompatibility ("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+	public class AvoidUncalledPrivateCodeRule : Rule, IMethodRule {
 
 		static string [] ComRegistration = new string[] {
 			"System.Runtime.InteropServices.ComRegisterFunctionAttribute",

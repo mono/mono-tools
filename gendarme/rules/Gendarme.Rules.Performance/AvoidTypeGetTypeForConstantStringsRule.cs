@@ -32,11 +32,33 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule warns when a method use <c>Type.GetType(string)</c> with a constant string.
+	/// Such calls requires reflection in order to return a <c>Type</c> instance and, for 
+	/// known types, can be replaced with a much faster <c>typeof(x)</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// booleanType = Type.GetType ("System.Boolean");
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// booleanType = typeof (bool);
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method calls Type.GetType(string) on a constant string. This call requires reflection in order return an instance of the type.")]
 	[Solution ("For known values it is faster to use typeof(x), C# syntax, to obtain the same result without the reflection penality.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidTypeGetTypeForConstantStringsRule : Rule, IMethodRule {
 
 		// the rule idea came from
@@ -44,7 +66,16 @@ namespace Gendarme.Rules.Performance {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
+			// rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// is there any Call or Callvirt instructions in the method ?
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			if (!OpCodeBitmask.Calls.Intersect (bitmask))
+				return RuleResult.DoesNotApply;
+			// and a call to Ldstr ?
+			if (!bitmask.Get (Code.Ldstr))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
