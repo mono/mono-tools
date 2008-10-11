@@ -1,3 +1,8 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Add GetOperandType rock to be able, quickly,
+	to determine on which type an instruction works.
+
 2008-10-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs: Add IsOverride rock.

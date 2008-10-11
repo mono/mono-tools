@@ -126,6 +126,73 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Return the type associated with the instruction's operand (INCOMPLETE).
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <param name="method">The method inside which the instruction comes from.</param>
+		/// <returns>Return a TypeReference compatible with the instruction operand or null.</returns>
+		public static TypeReference GetOperandType (this Instruction self, MethodDefinition method)
+		{
+			if ((self == null) || (method == null))
+				return null;
+
+			Code code = self.OpCode.Code;
+			switch (code) {
+			case Code.Ldarg_0:
+			case Code.Ldarg_1:
+			case Code.Ldarg_2:
+			case Code.Ldarg_3:
+			case Code.Ldarg:
+			case Code.Ldarg_S:
+			case Code.Ldarga:
+			case Code.Ldarga_S:
+			case Code.Starg:
+			case Code.Starg_S:
+				return self.GetParameter (method).ParameterType;
+			case Code.Conv_R4:
+			case Code.Ldc_R4:
+			case Code.Ldelem_R4:
+			case Code.Ldind_R4:
+			case Code.Stelem_R4:
+			case Code.Stind_R4:
+				return PrimitiveReferences.GetSingle (method.DeclaringType.Module);
+			case Code.Conv_R8:
+			case Code.Ldc_R8:
+			case Code.Ldelem_R8:
+			case Code.Ldind_R8:
+			case Code.Stelem_R8:
+				return PrimitiveReferences.GetDouble (method.DeclaringType.Module);
+			case Code.Ldloc_0:
+			case Code.Ldloc_1:
+			case Code.Ldloc_2:
+			case Code.Ldloc_3:
+			case Code.Ldloc:
+			case Code.Ldloc_S:
+			case Code.Ldloca:
+			case Code.Ldloca_S:
+			case Code.Stloc_0:
+			case Code.Stloc_1:
+			case Code.Stloc_2:
+			case Code.Stloc_3:
+			case Code.Stloc:
+			case Code.Stloc_S:
+				return self.GetVariable (method).VariableType;
+			case Code.Ldfld:
+			case Code.Ldsfld:
+			case Code.Ldsflda:
+			case Code.Stfld:
+			case Code.Stsfld:
+				return self.GetField ().FieldType;
+			case Code.Call:
+			case Code.Callvirt:
+			case Code.Newobj:
+				return (self.Operand as MethodReference).ReturnType.ReturnType;
+			default:
+				return null;
+			}
+		}
+
+		/// <summary>
 		/// Get the ParameterDefinition associated with the Instruction.
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>
