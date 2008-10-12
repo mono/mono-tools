@@ -148,7 +148,9 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Ldarga_S:
 			case Code.Starg:
 			case Code.Starg_S:
-				return self.GetParameter (method).ParameterType;
+				ParameterDefinition pd = self.GetParameter (method);
+				// special case for 'this'
+				return pd == null ? method.DeclaringType : pd.ParameterType;
 			case Code.Conv_R4:
 			case Code.Ldc_R4:
 			case Code.Ldelem_R4:
@@ -417,6 +419,28 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			return OpCodeBitmask.LoadLocal.Get (self.OpCode.Code);
+		}
+
+		/// <summary>
+		/// Determine if the instruction operand contains the constant zero (0).
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <returns>True if the operand contains the constant zero (0), False otherwise</returns>
+		public static bool IsOperandZero (this Instruction self)
+		{
+			if (self == null)
+				return false;
+
+			switch (self.OpCode.Code) {
+			case Code.Ldc_I4:
+				return ((int) self.Operand == 0);
+			case Code.Ldc_I4_S:
+				return ((sbyte) self.Operand == 0);
+			case Code.Ldc_I4_0:
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		/// <summary>

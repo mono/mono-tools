@@ -1,3 +1,8 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* InstructionRocks.cs: Handle 'this' correctly in GetOperandType 
+	rock. Add new rock to check for an operand loading the constant zero.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Add GetOperandType rock to be able, quickly,
