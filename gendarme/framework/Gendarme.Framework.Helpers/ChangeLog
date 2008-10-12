@@ -1,3 +1,10 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MethodSignatures.cs: Prefer a const over a static readonly for the
+	OperatorAttributes private field (self-test).
+	* OpCodeBitmask.cs: Add a bitmask that cover all conversion (Conv_*)
+	instructions.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PrimitiveReferences.cs: New. Helper class to get, shared, 

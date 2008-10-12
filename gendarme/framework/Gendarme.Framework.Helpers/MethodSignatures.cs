@@ -63,7 +63,7 @@ namespace Gendarme.Framework.Helpers {
 		public static readonly MethodSignature SerializationEventHandler = new MethodSignature (null, "System.Void", new string [] { "System.Runtime.Serialization.StreamingContext" }, MethodAttributes.Private);
 
 		// operators
-		private static readonly MethodAttributes OperatorAttributes = MethodAttributes.Static | MethodAttributes.SpecialName;
+		private const MethodAttributes OperatorAttributes = MethodAttributes.Static | MethodAttributes.SpecialName;
 		
 		// unary
 		public static readonly MethodSignature op_UnaryPlus = new MethodSignature ("op_UnaryPlus", null, OneParameter, OperatorAttributes);		// +5

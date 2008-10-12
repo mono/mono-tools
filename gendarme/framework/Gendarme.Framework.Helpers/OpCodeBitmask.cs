@@ -156,6 +156,7 @@ namespace Gendarme.Framework.Helpers {
 		// Common masks
 		private static OpCodeBitmask all;
 		private static OpCodeBitmask calls;
+		private static OpCodeBitmask conversion;
 		private static OpCodeBitmask load_argument;
 		private static OpCodeBitmask load_element;
 		private static OpCodeBitmask load_indirect;
@@ -190,6 +191,55 @@ namespace Gendarme.Framework.Helpers {
 #endif
 				}
 				return calls;
+			}
+		}
+
+		/// <summary>
+		/// Mask that includes Conv_* instructions
+		/// </summary>
+		static public OpCodeBitmask Conversion {
+			get {
+				if (conversion == null) {
+#if false
+					conversion = new OpCodeBitmask (0x0, 0x80203FC000000000, 0x400F87F8000001FF, 0x0);
+#else
+					conversion = new OpCodeBitmask ();
+					conversion.Set (Code.Conv_I);
+					conversion.Set (Code.Conv_I1);
+					conversion.Set (Code.Conv_I2);
+					conversion.Set (Code.Conv_I4);
+					conversion.Set (Code.Conv_I8);
+					conversion.Set (Code.Conv_Ovf_I);
+					conversion.Set (Code.Conv_Ovf_I_Un);
+					conversion.Set (Code.Conv_Ovf_I1);
+					conversion.Set (Code.Conv_Ovf_I1_Un);
+					conversion.Set (Code.Conv_Ovf_I2);
+					conversion.Set (Code.Conv_Ovf_I2_Un);
+					conversion.Set (Code.Conv_Ovf_I4);
+					conversion.Set (Code.Conv_Ovf_I4_Un);
+					conversion.Set (Code.Conv_Ovf_I8);
+					conversion.Set (Code.Conv_Ovf_I8_Un);
+					conversion.Set (Code.Conv_Ovf_U);
+					conversion.Set (Code.Conv_Ovf_U_Un);
+					conversion.Set (Code.Conv_Ovf_U1);
+					conversion.Set (Code.Conv_Ovf_U1_Un);
+					conversion.Set (Code.Conv_Ovf_U2);
+					conversion.Set (Code.Conv_Ovf_U2_Un);
+					conversion.Set (Code.Conv_Ovf_U4);
+					conversion.Set (Code.Conv_Ovf_U4_Un);
+					conversion.Set (Code.Conv_Ovf_U8);
+					conversion.Set (Code.Conv_Ovf_U8_Un);
+					conversion.Set (Code.Conv_R_Un);
+					conversion.Set (Code.Conv_R4);
+					conversion.Set (Code.Conv_R8);
+					conversion.Set (Code.Conv_U);
+					conversion.Set (Code.Conv_U1);
+					conversion.Set (Code.Conv_U2);
+					conversion.Set (Code.Conv_U4);
+					conversion.Set (Code.Conv_U8);
+#endif
+				}
+				return conversion;
 			}
 		}
 
