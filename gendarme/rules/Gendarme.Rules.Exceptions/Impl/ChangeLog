@@ -1,3 +1,8 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionBlock.cs: Don't initialize fields to null inside ctor
+	(self-test).
+
 2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExceptionBlockParser.cs, SEHCatchBlock.cs, SEHGuardedBlock.cs,

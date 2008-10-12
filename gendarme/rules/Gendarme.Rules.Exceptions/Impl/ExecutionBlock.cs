@@ -10,8 +10,6 @@ namespace Gendarme.Rules.Exceptions.Impl {
 
 		public ExecutionBlock ()
 		{
-			firstInstruction = null;
-			lastInstruction = null;
 		}
 
 		public Instruction First {
