@@ -1,3 +1,17 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedPrivateFieldsRule.cs: : Add XML documentation 
+	and [FxCopCompatibility] attribute. Use OpCodeEngine to	skip methods
+	without instruction that involves fields. Ignore delegates.
+	* CompareWithStringEmptyEfficientlyRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Use OpCodeEngine to	skip methods
+	without Call[virt] instruction. Handle the case where Object.Equals
+	is being called (csc).
+	* DontIgnoreMethodResultRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Use OpCodeEngine to	skip methods
+	without Pop instruction.
+	* OverrideValueTypeDefaultsRule.cs: Add XML documentation.
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnneededFieldInitializationRule.cs: New. Rule to check

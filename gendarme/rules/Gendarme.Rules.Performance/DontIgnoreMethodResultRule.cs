@@ -34,12 +34,50 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule detects when some code doesn't use the return value of a method call. 
+	/// Since any returned object potentially requires memory allocations this impacts 
+	/// performance. Furthermore this often indicates that the code might not be doing 
+	/// what is expected. This is seen frequently on <c>string</c> where people forgets 
+	/// their immutability. There are some special cases, e.g. <c>StringBuilder</c>, where 
+	/// some methods returns the current instance (to chain calls). The rule will ignore 
+	/// those well known cases. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void GetName ()
+	/// {
+	///	string name = Console.ReadLine ();
+	///	// a new trimmed string is created by never assigned to anything
+	///	// but name itself is unchanged
+	///	name.Trim ();
+	///	Console.WriteLine ("Name: {0}", name);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void GetName ()
+	/// {
+	///	string name = Console.ReadLine ();
+	///	name = name.Trim ();
+	///	Console.WriteLine ("Name: {0}", name);
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The method ignores the result value from the specified call.")]
 	[Solution ("You shouldn't ignore the result value.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults")]
 	public class DoNotIgnoreMethodResultRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -47,6 +85,10 @@ namespace Gendarme.Rules.Performance {
 			// rule only applies if the method has a body
 			// rule doesn't not apply to generated code (out of developer's control)
 			if (!method.HasBody || method.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
+
+			// check if the method contains a Pop instruction
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Pop))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {

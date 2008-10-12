@@ -32,12 +32,44 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule will check the comparison of a string variable with <c>""</c> or 
+	/// <c>String.Empty</c>. This promote the use of the <c>String.Length</c> property. 
+	/// Another way to check for an empty string (and a null one at the same time) is available
+	/// since the version 2.0 of the framework by using the static method 
+	/// <c>String.IsNullOrEmpty</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void SimpleMethod (string myString)
+	/// {
+	///	if (myString.Equals (String.Empty)) {
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void SimpleMethod (string myString)
+	/// {
+	///	if (myString.Length == 0) {
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method compares a string with an empty string by using the Equals method or the equality (==) or inequality (!=) operators.")]
 	[Solution ("Compare String.Length with 0 instead. The string length is known and it's faster to compare integers than to compare strings.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength")]
 	public class CompareWithEmptyStringEfficientlyRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -46,22 +78,31 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
+			// is there any Call or Callvirt instructions in the method
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			if (!OpCodeBitmask.Calls.Intersect (bitmask))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.FlowControl != FlowControl.Call)
+				Code code = ins.OpCode.Code;
+				if ((code != Code.Call) && (code != Code.Callvirt))
 					continue;
 
 				MethodReference mref = (ins.Operand as MethodReference);
-				if ((mref == null) || (mref.DeclaringType.FullName != "System.String"))
-					continue;
 
 				// covers Equals(string) method and both == != operators
 				switch (mref.Name) {
 				case "Equals":
 					if (mref.Parameters.Count > 1)
 						continue;
+					string tname = mref.DeclaringType.FullName;
+					if ((tname != "System.String") && (tname != "System.Object"))
+						continue;
 					break;
 				case "op_Equality":
 				case "op_Inequality":
+					if (mref.DeclaringType.FullName != "System.String")
+						continue;
 					break;
 				default:
 					continue;
@@ -77,6 +118,7 @@ namespace Gendarme.Rules.Performance {
 					FieldReference field = (prev.Operand as FieldReference);
 					if (field.DeclaringType.FullName != "System.String")
 						continue;
+					// unlikely to be anything else (at least with released fx)
 					if (field.Name != "Empty")
 						continue;
 					break;
