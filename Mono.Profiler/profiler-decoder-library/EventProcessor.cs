@@ -207,7 +207,7 @@ namespace  Mono.Profiler {
 		public override void ClassStartUnload (LoadedClass c, ulong counter) {}
 		public override void ClassEndUnload (LoadedClass c, ulong counter) {}
 		
-		public override void Allocation (LoadedClass c, uint size, LoadedMethod caller, bool jitTime, ulong counter) {
+		public override void Allocation (LoadedClass c, uint size, LoadedMethod caller, bool jitTime, ulong objectId, ulong counter) {
 			StackTrace trace;
 			
 			if (Directives.AllocationsHaveStackTrace) {

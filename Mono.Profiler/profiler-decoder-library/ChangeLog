@@ -1,9 +1,14 @@
+2008-10-12  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added support for object ids in allocation events.
+	* Decoder.cs: Likewise.
+	* EventProcessor.cs: Likewise.
+
 2008-10-10  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs:
 	- Added support for handling the stack trace of each allocation event.
 	- Added a DebugProfilerEventHandler which helps detecting decoder bugs.
 	* ObjectModel.cs: Likewise.
-	* ObjectModel.cs: Likewise.
+	* EventProcessor.cs: Likewise.
 	* Decoder.cs: Likewise.
 
 2008-09-17  Massimiliano Mantione <massi@ximian.com>

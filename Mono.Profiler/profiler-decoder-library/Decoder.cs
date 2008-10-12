@@ -463,8 +463,12 @@ namespace  Mono.Profiler {
 							if (handler.Directives.AllocationsCarryCallerMethod) {
 								callerId = ReadUint (ref offsetInBlock);
 							}
+							ulong objectId = 0;
+							if (handler.Directives.AllocationsCarryId) {
+								objectId = ReadUlong (ref offsetInBlock);
+							}
 							//LogLine ("BLOCK EVENTS (PACKED:CLASS_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
-							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), false, 0);
+							handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), false, objectId, 0);
 							handler.DataProcessed (offsetInBlock);
 							break;
 						}
@@ -695,8 +699,12 @@ namespace  Mono.Profiler {
 								if (handler.Directives.AllocationsCarryCallerMethod) {
 									callerId = ReadUint (ref offsetInBlock);
 								}
+								ulong objectId = 0;
+								if (handler.Directives.AllocationsCarryId) {
+									objectId = ReadUlong (ref offsetInBlock);
+								}
 								//LogLine ("BLOCK EVENTS (OTHER:JIT_TIME_ALLOCATION): classId {0}, classSize {1}, callerId {2}", classId, classSize, callerId);
-								handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), true, 0);
+								handler.Allocation (handler.LoadedElements.GetClass (classId), classSize, (callerId != 0) ? handler.LoadedElements.GetMethod (callerId) : default (LM), true, objectId, 0);
 								handler.DataProcessed (offsetInBlock);
 								break;
 							}
@@ -958,6 +966,10 @@ namespace  Mono.Profiler {
 							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_HAVE_STACK");
 							handler.Directives.AllocationsHaveStackTraceReceived ();
 							break;
+						case DirectiveCodes.ALLOCATIONS_CARRY_ID:
+							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_CARRY_ID");
+							handler.Directives.AllocationsCarryIdReceived ();
+							break;
 						default:
 							throw new DecodingException (this, offsetInBlock, String.Format ("unknown directive {0}", directive));
 						}
@@ -1001,7 +1013,7 @@ namespace  Mono.Profiler {
 				handleExceptions = false;
 				try {
 					DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> debugHandler =
-						new DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> (handler.LoadedElements, debugLog);
+						new DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> (handler, debugLog);
 					debugLog.WriteLine ("Current block of type {0} (file offset {1}, length {2})", Code, FileOffset, Length);
 					Decode (debugHandler);
 					

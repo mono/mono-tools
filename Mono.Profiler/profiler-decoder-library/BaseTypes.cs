@@ -144,7 +144,7 @@ namespace Mono.Profiler {
 		void ClassStartUnload (LC c, ulong counter);
 		void ClassEndUnload (LC c, ulong counter);
 		
-		void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter);
+		void Allocation (LC c, uint size, LM caller, bool jitTime, ulong objectId, ulong counter);
 		void Exception (LC c, ulong counter);
 		
 		void MethodEnter (LM m, ulong counter);
@@ -658,6 +658,7 @@ namespace Mono.Profiler {
 		END = 0,
 		ALLOCATIONS_CARRY_CALLER = 1,
 		ALLOCATIONS_HAVE_STACK = 2,
+		ALLOCATIONS_CARRY_ID = 3,
 		LAST
 	}
 	
@@ -682,14 +683,25 @@ namespace Mono.Profiler {
 			allocationsHaveStackTrace = true;
 		}
 		
+		bool allocationsCarryId;
+		public bool AllocationsCarryId {
+			get {
+				return allocationsCarryId;
+			}
+		}
+		public void AllocationsCarryIdReceived () {
+			allocationsCarryId = true;
+		}
+		
 		public DirectivesHandler () {
 			allocationsCarryCallerMethod = false;
 			allocationsHaveStackTrace = false;
+			allocationsCarryId = false;
 		}
 	}
 	
 	public class BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
-		DirectivesHandler directives = new DirectivesHandler ();
+		DirectivesHandler directives;
 		public DirectivesHandler Directives {
 			get {
 				return directives;
@@ -705,6 +717,11 @@ namespace Mono.Profiler {
 		
 		public BaseProfilerEventHandler (EH loadedElements) {
 			this.loadedElements = loadedElements;
+			this.directives = new DirectivesHandler ();
+		}
+		protected BaseProfilerEventHandler (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> baseHandler) {
+			this.loadedElements = baseHandler.LoadedElements;
+			this.directives = baseHandler.Directives;
 		}
 		
 		public virtual void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime) {}
@@ -727,7 +744,7 @@ namespace Mono.Profiler {
 		public virtual void ClassStartUnload (LC c, ulong counter) {}
 		public virtual void ClassEndUnload (LC c, ulong counter) {}
 		
-		public virtual void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter) {}
+		public virtual void Allocation (LC c, uint size, LM caller, bool jitTime, ulong objectId, ulong counter) {}
 		public virtual void Exception (LC c, ulong counter) {}
 		
 		public virtual void MethodEnter (LM m, ulong counter) {}
@@ -785,7 +802,7 @@ namespace Mono.Profiler {
 		byte[] data;
 		TextWriter output;
 		
-		public DebugProfilerEventHandler (EH loadedElements, TextWriter output) : base (loadedElements) {
+		public DebugProfilerEventHandler (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> baseHandler, TextWriter output) : base (baseHandler) {
 			this.output = output;
 			this.data = null;
 			this.currentOffset = 0;
@@ -841,8 +858,8 @@ namespace Mono.Profiler {
 			output.WriteLine ("ClassEndUnload");
 		}
 		
-		public override void Allocation (LC c, uint size, LM caller, bool jitTime, ulong counter) {
-			output.WriteLine ("Allocation");
+		public override void Allocation (LC c, uint size, LM caller, bool jitTime, ulong objectId, ulong counter) {
+			output.WriteLine ("Allocation [classId {0}({1}), size {2}, callerId {3}), jitTime {4}, counter {5}]", c.ID, c.Name, size, caller != null ? caller.ID : 0, jitTime, counter);
 		}
 		public override void Exception (LC c, ulong counter) {
 			output.WriteLine ("Exception");
