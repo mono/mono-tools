@@ -27,20 +27,26 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
 	public class CompareWithEmptyStringEfficientlyTest : MethodRuleTestFixture<CompareWithEmptyStringEfficientlyRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// has no body
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// has no call to other methods
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 
 		public class UsingStringEquals {
 			string s = "";
@@ -165,13 +171,10 @@ namespace Test.Rules.Performance {
 		}
 
 		[Test]
-		[Ignore ("[g]mcs and csc compile this differently")]
 		public void WrapperEqualsObject ()
 		{
-			// we don't track Object.Equals
 			// [g]mcs emit a "callvirt System.Boolean System.String::Equals(System.Object)"
 			// while csc emits "callvirt System.Boolean System.Object::Equals(System.Object)"
-			// this makes the reports from [g]mcs compiled assembly more accurate ;-)
 			AssertRuleFailure<CompareWithEmptyStringEfficientlyTest> ("WrapperObjectLiteral");
 			AssertRuleFailure<CompareWithEmptyStringEfficientlyTest> ("WrapperObjectEmpty");
 		}
@@ -216,6 +219,33 @@ namespace Test.Rules.Performance {
 
 			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("OperatorEqualsString");
 			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("OperatorInequalsString");
+		}
+
+		public bool TwoParameters ()
+		{
+			return Object.Equals ("", String.Empty);
+		}
+
+		static string static_string;
+		string instance_string;
+
+		public bool Fields ()
+		{
+			return ("".Equals (static_string) || String.Empty.Equals (instance_string));
+		}
+
+		public bool NewobjAndEquality ()
+		{
+			DateTime dt = new DateTime ();
+			return dt == DateTime.UtcNow;
+		}
+
+		[Test]
+		public void BetterCoverage ()
+		{
+			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("TwoParameters");
+			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("Fields");
+			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("NewobjAndEquality");
 		}
 	}
 }

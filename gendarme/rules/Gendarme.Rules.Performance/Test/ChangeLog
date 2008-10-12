@@ -1,3 +1,11 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedPrivateFieldsTest.cs: More coverage.
+	* CompareWithStringEmptyEfficientlyTest.cs: Remove unneeded 
+	namespaces. More coverage. Re-active Object.Equals test.
+	* DontIgnoreMethodResultTest.cs: Convert to new, shorter, syntax
+	for tests. Remove unneeded namespaces. More coverage.
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnneededFieldInitializationTest.cs: New. Unit tests for

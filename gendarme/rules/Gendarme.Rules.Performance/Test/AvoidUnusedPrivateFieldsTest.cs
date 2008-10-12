@@ -28,6 +28,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 
 using Gendarme.Rules.Performance;
 
@@ -51,6 +53,9 @@ namespace Test.Rules.Performance {
 
 		class ClassUnusedStaticPrivateField {
 			private static int x;
+
+			[DllImport ("libc.so")]
+			private static extern void strncpy (StringBuilder dest, string src, uint n);
 		}
 
 		[Test]

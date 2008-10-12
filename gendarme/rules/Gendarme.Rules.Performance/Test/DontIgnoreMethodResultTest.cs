@@ -28,29 +28,36 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
 	public class DoNotIgnoreMethodResultTest : MethodRuleTestFixture<DoNotIgnoreMethodResultRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no body
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no Pop
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			// generated code
+			AssertRuleDoesNotApply (SimpleMethods.GeneratedCodeMethod);
+		}
 
 		public class Item {
 
@@ -138,81 +145,43 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp()
-		{
-			string unit = Assembly.GetExecutingAssembly().Location;
-			assembly = AssemblyFactory.GetAssembly(unit);
-			module = assembly.MainModule;
-			type = module.Types["Test.Rules.Performance.DoNotIgnoreMethodResultTest/Item"];
-			rule = new DoNotIgnoreMethodResultRule();
-			runner = new TestRunner (rule);
-		}
-
-		MethodDefinition GetTest(string name)
-		{
-			foreach (MethodDefinition method in type.Methods)
-				if (method.Name == name)
-					return method;
-
-			return null;
-		}
-
 		[Test]
 		public void TestStringMethods()
 		{
-			MethodDefinition method = GetTest("Violations");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
+			AssertRuleFailure<Item> ("Violations", 2);
 		}
 
 		[Test]
 		public void TestConstructor()
 		{
-			MethodDefinition method = GetTest("CreateItem");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod(method));
+			AssertRuleFailure<Item> ("CreateItem", 1);
 		}
 
 		[Test]
 		public void TestStringBuilder ()
 		{
-			MethodDefinition method = GetTest ("StringBuilderOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
-
-			method = GetTest ("StringBuilderBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
+			AssertRuleSuccess<Item> ("StringBuilderOk");
+			AssertRuleFailure<Item> ("StringBuilderBad", 1);
 		}
 
 		[Test]
 		public void TestDirectory ()
 		{
-			MethodDefinition method = GetTest ("DirectoryOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
-
-			method = GetTest ("DirectoryBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
+			AssertRuleSuccess<Item> ("DirectoryOk");
+			AssertRuleFailure<Item> ("DirectoryBad", 1);
 		}
 
 		[Test]
 		public void TestPermissionSet ()
 		{
-			MethodDefinition method = GetTest ("PermissionSetOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
-
-			method = GetTest ("PermissionSetBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Bad");
+			AssertRuleSuccess<Item> ("PermissionSetOk");
+			AssertRuleFailure<Item> ("PermissionSetBad", 1);
 		}
 
 		[Test]
 		public void TestTimer ()
 		{
-			MethodDefinition method = GetTest ("TimerOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "Ok");
+			AssertRuleSuccess<Item> ("TimerOk");
 		}
 
 		[Test]
