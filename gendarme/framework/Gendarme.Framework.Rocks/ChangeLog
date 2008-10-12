@@ -1,3 +1,9 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Simplify GetField by using OperandType.
+	Simplify getting a FieldType in GetOperandType since there is no
+	need to resolve the field into a FieldDefinition.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* InstructionRocks.cs: Handle 'this' correctly in GetOperandType 

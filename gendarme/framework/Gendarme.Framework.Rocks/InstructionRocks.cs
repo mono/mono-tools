@@ -59,17 +59,10 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return null;
 
-			switch (self.OpCode.Code) {
-			case Code.Ldfld:
-			case Code.Ldflda:
-			case Code.Ldsfld:
-			case Code.Ldsflda:
-			case Code.Stfld:
-			case Code.Stsfld:
+			if (self.OpCode.OperandType == OperandType.InlineField)
 				return (self.Operand as FieldReference).Resolve ();
-			default:
-				return null;
-			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -180,11 +173,12 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Stloc_S:
 				return self.GetVariable (method).VariableType;
 			case Code.Ldfld:
+			case Code.Ldflda:
 			case Code.Ldsfld:
 			case Code.Ldsflda:
 			case Code.Stfld:
 			case Code.Stsfld:
-				return self.GetField ().FieldType;
+				return (self.Operand as FieldReference).FieldType;
 			case Code.Call:
 			case Code.Callvirt:
 			case Code.Newobj:
