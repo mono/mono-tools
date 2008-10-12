@@ -27,18 +27,22 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class UseStringEmptyTest {
+	public class UseStringEmptyTest : MethodRuleTestFixture<UseStringEmptyRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 	
 		public class TestCase {
 		
@@ -87,100 +91,61 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			type = assembly.MainModule.Types["Test.Rules.Performance.UseStringEmptyTest/TestCase"];
-			rule = new UseStringEmptyRule ();
-			runner = new TestRunner (rule);
-		}
-		
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition md in type.Methods) {
-				if (md.Name == name)
-					return md;
-			}
-			foreach (MethodDefinition md in type.Constructors) {
-				if (md.Name == name)
-					return md;
-			}
-			return null;
-		}
-
 		[Test]
 		public void GetConstField ()
 		{
-			MethodDefinition method = GetTest ("GetConstField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<TestCase> ("GetConstField", 1);
 		}
 
 		[Test]
 		public void Append ()
 		{
-			MethodDefinition method = GetTest ("Append");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<TestCase> ("Append", 1);
 		}
 
 		[Test]
 		public void Enclose ()
 		{
-			MethodDefinition method = GetTest ("Enclose");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			// this could be one (csc) or two ([g]mcs) defects depending on how this is compiled
+			AssertRuleFailure<TestCase> ("Enclose");
 		}
 
 		[Test]
 		public void Constructor ()
 		{
 			// the "public_field" field is set to "" in the (hidden) ctor
-			MethodDefinition method = GetTest (".ctor");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<TestCase> (".ctor", 1);
 		}
 
 		[Test]
 		public void StaticConstructor ()
 		{
 			// the "private_static_field" field is set to "" in the (hidden) class ctor
-			MethodDefinition method = GetTest (".cctor");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			AssertRuleFailure<TestCase> (".cctor", 1);
 		}
 
 		[Test]
 		public void GetField ()
 		{
-			MethodDefinition method = GetTest ("GetField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<TestCase> ("GetField");
 		}
 
 		[Test]
 		public void GetStaticField ()
 		{
-			MethodDefinition method = GetTest ("GetStaticField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<TestCase> ("GetStaticField");
 		}
 
 		[Test]
 		public void Prepend ()
 		{
-			MethodDefinition method = GetTest ("Prepend");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<TestCase> ("Prepend");
 		}
 		
 		[Test]
 		public void NoHarm ()
 		{
-			MethodDefinition method = GetTest ("NoStringWereHarmedInThisTestCase");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			AssertRuleDoesNotApply<TestCase> ("NoStringWereHarmedInThisTestCase");
 		}
 	}
 }

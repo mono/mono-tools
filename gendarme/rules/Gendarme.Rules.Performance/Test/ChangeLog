@@ -1,3 +1,14 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MathMinMaxCandidateTest.cs: : Remove unneeded namespaces. More 
+	coverage. Change results checks since rule is smarter to skip methods.
+	* UseIsOperatorTest.cs: Convert to new, shorter, syntax for tests. 
+	Remove unneeded namespaces. More coverage.
+	* UseStringEmptyTest.cs: Convert to new, shorter, syntax for tests. 
+	Remove unneeded namespaces. More coverage.
+	* UseTypeEmptyTypesTest.cs: Remove unneeded namespaces. More 
+	coverage.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededUnboxingTest.cs: Change some results (Success to

@@ -27,18 +27,23 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class UseIsOperatorTest {
+	public class UseIsOperatorTest : MethodRuleTestFixture<UseIsOperatorRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+		}
 
 		private bool ReturnEqualityBad (object value)
 		{
@@ -60,19 +65,13 @@ namespace Test.Rules.Performance {
 			return !(value is UseIsOperatorTest);
 		}
 
-		// [g]mcs compiles this like an 'is', csc does too when compiling with optimizations
-		private void ConditionEqualityBad (object value)
+		[Test]
+		public void Return ()
 		{
-			if ((value as UseIsOperatorTest) == null) {
-				Console.WriteLine ("Bad");
-			}
-		}
-
-		private void ConditionInequalityBad (object value)
-		{
-			if ((value as UseIsOperatorTest) != null) {
-				Console.WriteLine ("Bad");
-			}
+			AssertRuleFailure<UseIsOperatorTest> ("ReturnEqualityBad", 1);
+			AssertRuleFailure<UseIsOperatorTest> ("ReturnInequalityBad", 1);
+			AssertRuleDoesNotApply<UseIsOperatorTest> ("ReturnEqualityOk");
+			AssertRuleSuccess<UseIsOperatorTest> ("ReturnInequalityOk");
 		}
 
 		private void ConditionIsOk (object value)
@@ -91,6 +90,13 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		[Test]
+		public void Conditions ()
+		{
+			AssertRuleDoesNotApply<UseIsOperatorTest> ("ConditionIsOk");
+			AssertRuleDoesNotApply<UseIsOperatorTest> ("ConditionAsOk");
+		}
+
 		private void ConditionSplitBad (object value)
 		{
 			UseIsOperatorTest test = (value as UseIsOperatorTest);
@@ -100,55 +106,19 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		// [g]mcs compiles this like an 'is', csc does too when compiling with optimizations
+		private void ConditionEqualityBad (object value)
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Performance.UseIsOperatorTest"];
-			rule = new UseIsOperatorRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition md in type.Methods) {
-				if (md.Name == name)
-					return md;
+			if ((value as UseIsOperatorTest) == null) {
+				Console.WriteLine ("Bad");
 			}
-			Assert.Fail ("Method '{0}' not found.");
-			return null;
 		}
 
-		[Test]
-		public void Return ()
+		private void ConditionInequalityBad (object value)
 		{
-			MethodDefinition method = GetTest ("ReturnEqualityBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ReturnEqualityBad");
-
-			method = GetTest ("ReturnInequalityBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ReturnInequalityBad");
-
-			method = GetTest ("ReturnEqualityOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ReturnEqualityOk");
-
-			method = GetTest ("ReturnInequalityOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ReturnInequalityOk");
-		}
-
-		[Test]
-		public void Conditions ()
-		{
-			MethodDefinition method = GetTest ("ConditionIsOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ConditionIsOk");
-
-			method = GetTest ("ConditionAsOk");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "ConditionAsOk");
+			if ((value as UseIsOperatorTest) != null) {
+				Console.WriteLine ("Bad");
+			}
 		}
 
 		[Test]
@@ -156,14 +126,22 @@ namespace Test.Rules.Performance {
 		public void ConditionsOptimized ()
 		{
 			// missed opportunities are less problematic than false positives ;-)
-			MethodDefinition method = GetTest ("ConditionEqualityBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionEqualityBad");
+			AssertRuleFailure<UseIsOperatorTest> ("ConditionEqualityBad", 1);
+			AssertRuleFailure<UseIsOperatorTest> ("ConditionInequalityBad", 1);
+			AssertRuleFailure<UseIsOperatorTest> ("ConditionSplitBad", 1);
+		}
 
-			method = GetTest ("ConditionInequalityBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionInequalityBad");
+		private object ReturnEqualityThis (object value)
+		{
+			if ((value as UseIsOperatorTest) == this)
+				return false;
+			return (this == null);
+		}
 
-			method = GetTest ("ConditionSplitBad");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "ConditionSplitBad");
+		[Test]
+		public void BetterCoverage ()
+		{
+			AssertRuleSuccess<UseIsOperatorTest> ("ReturnEqualityThis");
 		}
 	}
 }

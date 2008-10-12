@@ -28,15 +28,11 @@
 
 using System;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
-
-using Mono.Cecil;
-using Gendarme.Framework.Rocks;
 
 namespace Test.Rules.Performance {
 
@@ -46,7 +42,10 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no body
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no greater or lesser than
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		// Decimal is not a primitive type
@@ -64,8 +63,8 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void DecimalNotInlined ()
 		{
-			AssertRuleSuccess<MathMinMaxCandidateTest> ("DecimalMinWithMax");
-			AssertRuleSuccess<MathMinMaxCandidateTest> ("DecimalMaxWithMinusOne");
+			AssertRuleDoesNotApply<MathMinMaxCandidateTest> ("DecimalMinWithMax");
+			AssertRuleDoesNotApply<MathMinMaxCandidateTest> ("DecimalMaxWithMinusOne");
 		}
 
 		byte a, b;
@@ -141,7 +140,7 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void UsingMathMinMax ()
 		{
-			AssertRuleSuccess<MathMinMaxCandidateTest> ("SetFields");
+			AssertRuleDoesNotApply<MathMinMaxCandidateTest> ("SetFields");
 		}
 
 		void UsingCustomMinWithByteFields ()

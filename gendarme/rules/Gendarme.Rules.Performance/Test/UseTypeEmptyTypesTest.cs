@@ -3,6 +3,7 @@
 //
 // Authors:
 //	Jb Evain <jbevain@novell.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
@@ -27,19 +28,26 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
 	public class UseTypeEmptyTypesTest : MethodRuleTestFixture<UseTypeEmptyTypesRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no body
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no newarr 
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 	
 		public class TestCase {
 
@@ -54,6 +62,17 @@ namespace Test.Rules.Performance {
 			public bool CreateNotEmptyTypeArray ()
 			{
 				Type [] array = new Type [42];
+				return (array == null);
+			}
+
+			public byte [] CreateEmptyNonTypeArray ()
+			{
+				return new byte [0];
+			}
+
+			public bool CreateUnknownSizedTypeArray (int x)
+			{
+				Type [] array = new Type [x];
 				return (array == null);
 			}
 		}
@@ -74,6 +93,19 @@ namespace Test.Rules.Performance {
 		public void CreateNotEmptyTypeArray ()
 		{
 			AssertRuleSuccess<TestCase> ("CreateNotEmptyTypeArray");
+		}
+
+		[Test]
+		public void CreateEmptyNonTypeArray ()
+		{
+			AssertRuleSuccess<TestCase> ("CreateEmptyNonTypeArray");
+		}
+
+		[Test]
+		public void CreateUnknownSizedTypeArray ()
+		{
+			// no Ldc_I4[_S|_0]
+			AssertRuleDoesNotApply<TestCase> ("CreateUnknownSizedTypeArray");
 		}
 	}
 }
