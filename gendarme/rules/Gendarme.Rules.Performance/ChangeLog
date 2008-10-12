@@ -1,3 +1,12 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnneededFieldInitializationRule.cs: New. Rule to check
+	if constructor needlessly initialize some fields to their default
+	values.
+	* PreferLiteralOverInitOnlyFieldsRule.cs: New. Rule to check
+	if some "static readonly" fields could be changed into "const".
+	* Makefile.am: add new rules and tests to the build.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnneededCallsOnStringRule.cs: Simplification by using the

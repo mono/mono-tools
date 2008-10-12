@@ -15,6 +15,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Performance.xml TestResult.xml
 
 rules_sources = \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
+	AvoidUnneededFieldInitializationRule.cs \
 	EmptyDestructorRule.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeRule.cs \
 	UseStringEmptyRule.cs \
@@ -38,13 +39,15 @@ rules_sources = \
 	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
 	AvoidRepetitiveCastsRule.cs \
-	AvoidUnusedPrivateFieldsRule.cs
+	AvoidUnusedPrivateFieldsRule.cs \
+	PreferLiteralOverInitOnlyFieldsRule.cs
 
 # turn off optimization for tests since gmcs (unlike MS csc) now turns "" into String.Empty when optimizing is on
 EXTRA_TESTS_OPTIONS = -unsafe -o-
 
 tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \
+	AvoidUnneededFieldInitializationTest.cs \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
@@ -68,4 +71,5 @@ tests_sources = \
 	ConsiderCustomAccessorsForNonVisibleEventsTest.cs \
 	AvoidTypeGetTypeForConstantStringsTest.cs \
 	AvoidRepetitiveCastsTest.cs \
-	AvoidUnusedPrivateFieldsTest.cs
+	AvoidUnusedPrivateFieldsTest.cs \
+	PreferLiteralOverInitOnlyFieldsTest.cs
