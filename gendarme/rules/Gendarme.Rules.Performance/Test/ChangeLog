@@ -1,3 +1,10 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnneededFieldInitializationTest.cs: New. Unit tests for
+	AvoidUnneededFieldInitializationRule.
+	* PreferLiteralOverInitOnlyFieldsTest.cs: New. Unit tests for
+	PreferLiteralOverInitOnlyFieldsRule.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MathMinMaxCandidateTest.cs: : Remove unneeded namespaces. More 
