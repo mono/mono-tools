@@ -1,3 +1,7 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Update (and add) some ignore entries.
+
 2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Change self-test to report all defects (i.e. not

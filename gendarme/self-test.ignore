@@ -6,10 +6,13 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Portability.NewLineLiteralRule::
 R: Gendarme.Rules.Portability.DoNotHardcodePathsRule
 M: System.Void Gendarme.Rules.Portability.DoNotHardcodePathsRule::ProcessUnixProbablyAbsolutePath(System.String)
 
-# OK - in those case the specialization has it's contextual sense and helps readability
+# OK - in those case the specialization has its contextual sense and helps readability
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+M: System.Boolean Gendarme.Framework.Engines.CommonAttributesEngine::HasAttribute(Mono.Cecil.TypeDefinition,Gendarme.Framework.Engines.WellKnownTypeAttribute)
+M: System.Boolean Gendarme.Framework.Engines.CommonAttributesEngine::HasAttribute(Mono.Cecil.FieldDefinition,Gendarme.Framework.Engines.WellKnownFieldAttribute)
 M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsAnyType(Mono.Cecil.CustomAttributeCollection,System.String[])
 M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsType(Mono.Cecil.CustomAttributeCollection,System.String)
+M: System.Boolean Gendarme.Framework.Rocks.ModuleRocks::HasDebuggingInformation(Mono.Cecil.ModuleDefinition)
 M: System.Void Gendarme.Framework.Defect::.ctor(Gendarme.Framework.IRule,Mono.Cecil.IMetadataTokenProvider,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Gendarme.Framework.Severity,Gendarme.Framework.Confidence,System.String)
 
 # OK - the gendarme framework is not a beginner, nor easy, API
@@ -20,17 +23,31 @@ M: Mono.Cecil.Cil.Instruction Gendarme.Framework.Helpers.StackEntryAnalysis::Get
 R: Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule
 T: Gendarme.GuiRunner
 
+# OK - the framework and the console runner each have a global catch all to report errors
+R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
+M: System.Byte Gendarme.ConsoleRunner::Execute(System.String[])
+M: System.Void Gendarme.Framework.Runner::Initialize()
+
+# OK - System.Configuration.ApplicationSettingsBase works enough for Gendarme's Wizard (using Mono 2.1)
+R: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
+T: Gendarme.Properties.Settings
+
+# OK - Version and Guid sadly do not provide a TryParse method
+R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
+M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseVersion(System.String)
+M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseGuid(System.String)
+
 # non-gendarme code / NDesk.Options
-R: Gendarme.Rules.Security.SecureGetObjectDataOverridesRule
+R: Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
 T: NDesk.Options.OptionException
 R: Gendarme.Rules.Exceptions.MissingExceptionConstructorsRule
 T: NDesk.Options.OptionException
 R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
 M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
 M: System.Void NDesk.Options.OptionSet::Invoke(NDesk.Options.OptionContext,System.String,System.String,NDesk.Options.Option)
-R: Gendarme.Rules.Exceptions.DontSwallowErrorsCatchingNonspecificExceptionsRule
+R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
 M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalClassesRule
+R: Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalTypeRule
 T: NDesk.Options.OptionSet/ActionOption
 T: NDesk.Options.OptionSet/ActionOption`1
 T: NDesk.Options.OptionSet/ActionOption`2
@@ -39,7 +56,13 @@ M: System.String[] NDesk.Options.Option::get_ValueSeparators()
 M: System.String[] NDesk.Options.Option::get_Names()
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 T: NDesk.Options.OptionSet
+T: NDesk.Options.OptionContext
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
 R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
 M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
+R: Gendarme.Rules.Exceptions.InstantiateArgumentExceptionCorrectlyRule
+M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
+M: NDesk.Options.OptionValueType NDesk.Options.Option::ParsePrototype()
+R: Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
+M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
