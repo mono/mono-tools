@@ -61,7 +61,6 @@ namespace Gendarme {
 				string color_override = Environment.GetEnvironmentVariable ("GENDARME_COLOR") ?? "dark";
 				switch (color_override.ToLowerInvariant ()) {
 				case "none":
-					color_scheme = ColorScheme.None;
 					break;
 				case "light":
 					color_scheme = ColorScheme.Light;
@@ -72,7 +71,6 @@ namespace Gendarme {
 					break;
 				}
 			} else {
-				color_scheme = ColorScheme.None;
 				writer = new StreamWriter (fileName);
 				need_closing = true;
 			}

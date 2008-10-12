@@ -1,3 +1,8 @@
+2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TextResultWriter.cs: Don't initialize fields to default values
+	inside constructors (self-test).
+
 2008-09-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Override Initialize to start counting the time
