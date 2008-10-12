@@ -77,6 +77,7 @@ namespace Gendarme.Rules.Correctness {
 
 	[Problem ("This type (and ancestors) contains only static fields and methods but has a visible, non static, constructor.")]
 	[Solution ("You should remove the visible constructor to make sure this type cannot be instancied, or if using 2.0+, change it to a static type.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1053:StaticHolderTypesShouldNotHaveConstructors")]
 	public class AvoidConstructorsInStaticTypesRule : Rule, ITypeRule {
 
 		static bool IsAllStatic (TypeDefinition type)
