@@ -32,16 +32,48 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
 	// suggestion from https://bugzilla.novell.com/show_bug.cgi?id=373269
 
+	/// <summary>
+	/// This rule checks methods that seems to include code duplicating <c>Math.Min</c> or 
+	/// <c>Math.Max</c> functionality. The JIT can inline those methods and provide better 
+	/// performance compared to custom, inline, implementations.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// int max = (a > b) ? a : b;
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// int max = Math.Max (a, b);
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This method seems to include code duplicating Math.Min or Math.Max functionality.")]
 	[Solution ("The JIT can inline the Math.Min and Math.Max methods which provides better performance compared to custom, inline, implementations.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class MathMinMaxCandidateRule : Rule, IMethodRule {
+
+		// see inactive code to regenerate the bitmask if needed
+
+		static OpCodeBitmask GreaterOrLesserThan = new OpCodeBitmask (0x787BC00000000000, 0xF, 0x0, 0x0);
+
+		// note: does not include Ldind_Ref
+		static OpCodeBitmask LoadIndirect = new OpCodeBitmask (0x0, 0x7FE0, 0x0, 0x0);
+
+		// note: does not include Ldind_Ref
+		static OpCodeBitmask StoreIndirect = new OpCodeBitmask (0x0, 0x7E0000, 0x2000000000000000, 0x0);
+
 
 		// Math.[Min|Max] has overloads for Byte, Double, Int16, 
 		// Int32, Int64, SByte, Single, UInt16, UInt32 and Uint64
@@ -68,101 +100,19 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		// is it a convertion
-		private static bool IsConvertion (OpCode opcode)
-		{
-			switch (opcode.Code) {
-			case Code.Conv_I:
-			case Code.Conv_I1:
-			case Code.Conv_I2:
-			case Code.Conv_I4:
-			case Code.Conv_I8:
-			case Code.Conv_Ovf_I:
-			case Code.Conv_Ovf_I_Un:
-			case Code.Conv_Ovf_I1:
-			case Code.Conv_Ovf_I1_Un:
-			case Code.Conv_Ovf_I2:
-			case Code.Conv_Ovf_I2_Un:
-			case Code.Conv_Ovf_I4:
-			case Code.Conv_Ovf_I4_Un:
-			case Code.Conv_Ovf_I8:
-			case Code.Conv_Ovf_I8_Un:
-			case Code.Conv_Ovf_U:
-			case Code.Conv_Ovf_U_Un:
-			case Code.Conv_Ovf_U1:
-			case Code.Conv_Ovf_U1_Un:
-			case Code.Conv_Ovf_U2:
-			case Code.Conv_Ovf_U2_Un:
-			case Code.Conv_Ovf_U4:
-			case Code.Conv_Ovf_U4_Un:
-			case Code.Conv_Ovf_U8:
-			case Code.Conv_Ovf_U8_Un:
-			case Code.Conv_R_Un:
-			case Code.Conv_R4:
-			case Code.Conv_R8:
-			case Code.Conv_U:
-			case Code.Conv_U1:
-			case Code.Conv_U2:
-			case Code.Conv_U4:
-			case Code.Conv_U8:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		// indirect load of a integral or fp value (i.e. no Ldind_Ref)
-		// used for ref parameters
-		private static bool IsLoadIndirect (OpCode opcode)
-		{
-			switch (opcode.Code) {
-			case Code.Ldind_I:
-			case Code.Ldind_I1:
-			case Code.Ldind_I2:
-			case Code.Ldind_I4:
-			case Code.Ldind_I8: // same used for U8
-			case Code.Ldind_R4:
-			case Code.Ldind_R8:
-			case Code.Ldind_U1:
-			case Code.Ldind_U2:
-			case Code.Ldind_U4:
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		// indirect store of a integral or fp value (i.e. no Stind_Ref)
-		// used for ref and out parameters
-		private static bool IsStoreIndirect (OpCode opcode)
-		{
-			switch (opcode.Code) {
-			case Code.Stind_I:
-			case Code.Stind_I1:
-			case Code.Stind_I2:
-			case Code.Stind_I4:
-			case Code.Stind_I8:
-			case Code.Stind_R4:
-			case Code.Stind_R8:
-				return true;
-			default:
-				return false;
-			}
-		}
-
 		// we return strings (instead of instructions) since they will be easier
 		// to compare (ldarg_1 is easy but ldfld would need more checks)
 		private static string GetPrevious (MethodDefinition method, ref Instruction ins)
 		{
-			OpCode opcode = ins.OpCode;
+			Code code = ins.OpCode.Code;
 
 			// if the opcode is a Conv_* or a Ldind_* (except for an object reference)
-			if (IsConvertion (opcode) || IsLoadIndirect (opcode)) {
+			if (OpCodeBitmask.Conversion.Get (code) || LoadIndirect.Get (code)) {
 				ins = ins.Previous;
 				return GetPrevious (method, ref ins);
 			}
 
-			switch (opcode.Code) {
+			switch (code) {
 			case Code.Ldarg_0:
 				if (method.HasThis) {
 					ins = ins.Previous;
@@ -174,7 +124,7 @@ namespace Gendarme.Rules.Performance {
 			case Code.Ldarg_1:
 			case Code.Ldarg_2:
 			case Code.Ldarg_3:
-				int index = ins.OpCode.Code - (method.HasThis ? Code.Ldarg_1 : Code.Ldarg_0);
+				int index = code - (method.HasThis ? Code.Ldarg_1 : Code.Ldarg_0);
 				if (IsSupported (method.Parameters [index].ParameterType))
 					return ins.OpCode.Name;
 				break;
@@ -189,13 +139,13 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool IsOk (Instruction ins)
 		{
-			OpCode opcode = ins.OpCode;
+			Code code = ins.OpCode.Code;
 
 			// if the opcode is a Conv_*, a Ldind_* or a Stind_* (except for object references)
-			if (IsConvertion (opcode) || IsLoadIndirect (opcode) || IsStoreIndirect (opcode))
+			if (OpCodeBitmask.Conversion.Get (code) || LoadIndirect.Get (code) || StoreIndirect.Get (code))
 				return IsOk (ins.Next);
 
-			switch (opcode.Code) {
+			switch (code) {
 			case Code.Ret:
 			case Code.Stloc:
 			case Code.Stloc_0:
@@ -237,43 +187,19 @@ namespace Gendarme.Rules.Performance {
 			return null;
 		}
 
-		private static bool GreaterOrLesserThan (OpCode opcode)
-		{
-			switch (opcode.Code) {
-			case Code.Bge:
-			case Code.Bge_S:
-			case Code.Bge_Un:
-			case Code.Bge_Un_S:
-			case Code.Bgt:
-			case Code.Bgt_S:
-			case Code.Bgt_Un:
-			case Code.Bgt_Un_S:
-			case Code.Ble:
-			case Code.Ble_S:
-			case Code.Ble_Un:
-			case Code.Ble_Un_S:
-			case Code.Blt:
-			case Code.Blt_S:
-			case Code.Blt_Un:
-			case Code.Blt_Un_S:
-				return true;
-			default:
-				return false;
-			}
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applies only if the method has a body
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// is there any bge*, bgt*, ble* or blt* instructions in the method ?
+			if (!GreaterOrLesserThan.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			foreach (Instruction ins in method.Body.Instructions) {
-				// skip if this is not a branch
-				if (ins.OpCode.FlowControl != FlowControl.Cond_Branch)
-					continue;
 				// check for specific cases like: '<', '>', '<=', '>='
-				if (!GreaterOrLesserThan (ins.OpCode))
+				if (!GreaterOrLesserThan.Get (ins.OpCode.Code))
 					continue;
 
 				// find the two values on stack
@@ -298,5 +224,51 @@ namespace Gendarme.Rules.Performance {
 
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void BuildBitmask ()
+		{
+			OpCodeBitmask bitmask = new OpCodeBitmask ();
+			bitmask.Set (Code.Ldind_I);
+			bitmask.Set (Code.Ldind_I1);
+			bitmask.Set (Code.Ldind_I2);
+			bitmask.Set (Code.Ldind_I4);
+			bitmask.Set (Code.Ldind_I8);
+			bitmask.Set (Code.Ldind_R4);
+			bitmask.Set (Code.Ldind_R8);
+			bitmask.Set (Code.Ldind_U1);
+			bitmask.Set (Code.Ldind_U2);
+			bitmask.Set (Code.Ldind_U4);
+			Console.WriteLine ("LoadIndirect = {0}", bitmask);
+
+			bitmask.ClearAll ();
+			bitmask.Set (Code.Stind_I);
+			bitmask.Set (Code.Stind_I1);
+			bitmask.Set (Code.Stind_I2);
+			bitmask.Set (Code.Stind_I4);
+			bitmask.Set (Code.Stind_I8);
+			bitmask.Set (Code.Stind_R4);
+			bitmask.Set (Code.Stind_R8);
+			Console.WriteLine ("StoreIndirect = {0}", bitmask);
+
+			bitmask.ClearAll ();
+			bitmask.Set (Code.Bge);
+			bitmask.Set (Code.Bge_S);
+			bitmask.Set (Code.Bge_Un);
+			bitmask.Set (Code.Bge_Un_S);
+			bitmask.Set (Code.Bgt);
+			bitmask.Set (Code.Bgt_S);
+			bitmask.Set (Code.Bgt_Un);
+			bitmask.Set (Code.Bgt_Un_S);
+			bitmask.Set (Code.Ble);
+			bitmask.Set (Code.Ble_S);
+			bitmask.Set (Code.Ble_Un);
+			bitmask.Set (Code.Ble_Un_S);
+			bitmask.Set (Code.Blt);
+			bitmask.Set (Code.Blt_S);
+			bitmask.Set (Code.Blt_Un);
+			bitmask.Set (Code.Blt_Un_S);
+			Console.WriteLine ("GreaterOrLesserThan = {0}", bitmask);
+		}
+#endif
 	}
 }

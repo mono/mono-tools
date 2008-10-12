@@ -40,6 +40,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	// rule idea credits to FindBug - http://findbugs.sourceforge.net/
+	// Dm: Method invokes toString() method on a String (DM_STRING_TOSTRING)
+	// and was later extended to more cases, including one that covers
+	// DMI: Invocation of substring(0), which returns the original value (DMI_USELESS_SUBSTRING)
+
 	/// <summary>
 	/// This rule detects when some methods, like <c>Clone()</c>, <c>Substring(0)</c>, 
 	/// <c>ToString()</c> or <c>ToString(IFormatProvider)</c>, are being called on a 
@@ -119,7 +124,8 @@ namespace Gendarme.Rules.Performance {
 		{
 			if (call.Parameters.Count != 0)
 				return null;
-			if (!CheckStack (ins.Previous, method))
+
+			if (!CheckTypeReference (ins.Previous.GetOperandType (method)))
 				return null;
 
 			return String.Format (MessageString, call.Name, String.Empty);
@@ -133,7 +139,7 @@ namespace Gendarme.Rules.Performance {
 			// ensure it's System.String::Substring(System.Int32) and that it's given 0 as a parameter
 			if (call.Parameters.Count != 1)
 				return null;
-			if (!CheckParam (ins.Previous))
+			if (!ins.Previous.IsOperandZero ())
 				return null;
 
 			return String.Format (MessageString, call.Name, "0");
@@ -151,64 +157,9 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private static bool CheckParam (Instruction instruction)
-		{
-			if (instruction == null)
-				return false;
-
-			switch (instruction.OpCode.Code) {
-			case Code.Ldc_I4_0:
-				return true;
-			case Code.Ldc_I4:
-				return ((int) instruction.Operand == 0);
-			case Code.Ldc_I4_S:
-				return ((sbyte) instruction.Operand == 0);
-			default:
-				return false;
-			}
-		}
-
-		private static bool CheckStack (Instruction instruction, MethodDefinition method)
-		{
-			switch (instruction.OpCode.Code) {
-			case Code.Ldloc_0:
-			case Code.Ldloc_1:
-			case Code.Ldloc_2:
-			case Code.Ldloc_3:
-			case Code.Ldloc:
-			case Code.Ldloc_S:
-			case Code.Ldloca:
-			case Code.Ldloca_S:
-				return CheckTypeReference (instruction.GetVariable (method).VariableType);
-			case Code.Ldarg_0:
-			case Code.Ldarg_1:
-			case Code.Ldarg_2:
-			case Code.Ldarg_3:
-			case Code.Ldarg:
-			case Code.Ldarg_S:
-			case Code.Ldarga:
-			case Code.Ldarga_S:
-				ParameterReference parameter = instruction.GetParameter (method);
-				if (parameter == null)
-					return false;
-				return CheckTypeReference (parameter.ParameterType);
-			case Code.Call:
-			case Code.Callvirt:
-				MethodReference call = instruction.Operand as MethodReference;
-				return CheckTypeReference (call.ReturnType.ReturnType);
-			case Code.Ldfld:
-			case Code.Ldflda:
-			case Code.Ldsfld:
-			case Code.Ldsflda:
-				FieldReference field = instruction.Operand as FieldReference;
-				return CheckTypeReference (field.FieldType);
-			}
-			return false;
-		}
-
 		private static bool CheckTypeReference (TypeReference type)
 		{
-			return (type.FullName == "System.String");
+			return (type == null) ? false : (type.FullName == "System.String");
 		}
 	}
 }

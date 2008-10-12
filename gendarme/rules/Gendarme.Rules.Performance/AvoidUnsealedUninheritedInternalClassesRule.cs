@@ -83,7 +83,7 @@ namespace Gendarme.Rules.Performance {
 
 			Confidence c = type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute") ?
 				Confidence.High : Confidence.Total;
-			Runner.Report (type, Severity.Medium, Confidence.High);
+			Runner.Report (type, Severity.Medium, c);
 			return RuleResult.Failure;
 		}
 	}

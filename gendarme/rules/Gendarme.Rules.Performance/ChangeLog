@@ -1,3 +1,19 @@
+2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnneededCallsOnStringRule.cs: Simplification by using the
+	new Instruction's rocks.
+	* AvoidUnsealedUninheritedInternalClassesRule.cs: Report the 
+	determined confidence level.
+	* MathMinMaxCandidateRule.cs: Add XML documentation. Use 
+	OpCodeEngine and OpCodeBitmask to simplify the rule.
+	* UseIsOperatorRule.cs: Add XML documentation. Use OpCodeEngine to
+	skip methods without a Isinst, Ldnull *and* Ceq instruction.
+	* UseStringEmptyRule.cs: Add XML documentation. Use OpCodeEngine to
+	skip methods without a Ldstr instruction.
+	* UseTypeEmptyTypesRule.cs: Add XML documentation. Use OpCodeEngine
+	to skip methods without a Newarr and Ldc_I4[_S|0] instructions. Use
+	new rock to simplify rule.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnneededUnboxingRule.cs: Add XML documentation. Use 

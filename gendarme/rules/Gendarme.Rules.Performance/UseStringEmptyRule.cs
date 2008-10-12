@@ -32,22 +32,48 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule checks for methods that are using the literal <c>""</c> instead of the
+	/// <c>String.Empty</c> field. You'll get slighly better performance by using 
+	/// <c>String.Empty</c>. Note that in some case, e.g. in a <c>switch/case</c> statement,
+	/// you cannot use a field, so <c>""</c> must be used instead of <c>String.Empty</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// string s = "";
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// string s = String.Empty;
+	/// </code>
+	/// </example>
+
 	[Problem ("The method uses literal \"\" instead of String.Empty.")]
-	[Solution ("Change the empty string for String.Empty.")]
+	[Solution ("Change the empty string literal for String.Empty.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseStringEmptyRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// #1 - rule apply only if the method has a body (e.g. p/invokes, icalls don't)
+			// rule apply only if the method has a body (e.g. p/invokes, icalls don't)
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// check if the method loads some string (Ldstr)
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Ldstr))
 				return RuleResult.DoesNotApply;
 
 			// *** ok, the rule applies! ***
 
-			// #2 - look for string references
+			// look for string references
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.OperandType) {
 				case OperandType.InlineString:

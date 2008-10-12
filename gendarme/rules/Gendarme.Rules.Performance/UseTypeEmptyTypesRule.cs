@@ -32,16 +32,50 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule looks for methods that creates an empty (zero sized) array of <c>System.Type</c>.
+	/// This value is so often required by the framework API that the <c>System.Type</c> includes 
+	/// a <c>EmptyTypes</c> field. Using this field avoids the memory allocation (and GC tracking)
+	/// of your own array.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// ConstructorInfo ci = type.GetConstructor (new Type[0]);
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// ConstructorInfo ci = type.GetConstructor (Type.EmptyTypes);
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The method creates an empty System.Type array instead of using Type.EmptyTypes.")]
 	[Solution ("Change the array creation for Type.EmptyTypes.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseTypeEmptyTypesRule : Rule, IMethodRule {
+
+		static OpCodeBitmask zero = new OpCodeBitmask (0x180400000, 0x0, 0x0, 0x0);
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// check if the method creates array (Newarr)
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			if (!bitmask.Get (Code.Newarr))
+				return RuleResult.DoesNotApply;
+			// check if the method loads the 0 constant
+			if (!bitmask.Intersect (zero))
 				return RuleResult.DoesNotApply;
 
 			// look for array of Type creation
@@ -54,20 +88,21 @@ namespace Gendarme.Rules.Performance {
 				if (type.FullName != Constants.Type)
 					continue;
 
-				var prev = ins.Previous;
-
-				if (prev == null) // extremely unlikely
-					continue;
-
-				if ((prev.OpCode == OpCodes.Ldc_I4_0) ||
-					(prev.OpCode == OpCodes.Ldc_I4 && (int) prev.Operand == (int) 0) ||
-					(prev.OpCode == OpCodes.Ldc_I4_S && (sbyte) prev.Operand == (sbyte) 0)) {
-
-					Runner.Report (method, ins, Severity.Medium, Confidence.High, string.Empty);
-				}
+				if (ins.Previous.IsOperandZero ())
+					Runner.Report (method, ins, Severity.Medium, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask zero = new OpCodeBitmask ();
+			zero.Set (Code.Ldc_I4);
+			zero.Set (Code.Ldc_I4_S);
+			zero.Set (Code.Ldc_I4_0);
+			Console.WriteLine (zero);
+		}
+#endif
 	}
 }

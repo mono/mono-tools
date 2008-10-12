@@ -26,24 +26,54 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule checks each method to look for a complex cast operation (e.g. a <c>as</c>
+	/// with a <c>null</c> check) that could be simplified using the <c>is</c> operator 
+	/// (C# syntax). Note: in some case a compiler, like [g]mcs, can optimize the code and
+	/// generate IL identical to a <c>is</c> operator. In this case the rule will not report 
+	/// an error even if you could see one while looking the at source code.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// bool is_my_type = (my_instance as MyType) != null;
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// bool is_my_type = (my_instance is MyType);
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The method should use the \"is\" operator and avoid the cast and compare to null.")]
 	[Solution ("Replace the cast and compare to null with the simpler \"is\" operator.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseIsOperatorRule : Rule, IMethodRule {
 
-		private const string ErrorText = "Using the 'is' operator would produce better (less) IL and would be easier to understand.";
+		OpCodeBitmask bitmask = new OpCodeBitmask (0x100000, 0x10000000000000, 0x0, 0x1);
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			bool notContainsIsOperator = false;
+			// check if the method contains a Isinst, Ldnull *and* Ceq instruction
+			if (!bitmask.IsSubsetOf (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			InstructionCollection instructions = method.Body.Instructions;
 			int n = instructions.Count - 2;
 			for (int i = 0; i < n; i++) {
@@ -57,11 +87,20 @@ namespace Gendarme.Rules.Performance {
 				if (code2 != Code.Ceq)
 					continue;
 
-				notContainsIsOperator = true;
-				Runner.Report (method, instructions[i], Severity.High, Confidence.High, ErrorText);	
+				Runner.Report (method, instructions[i], Severity.High, Confidence.High);
 			}
 
-			return notContainsIsOperator? RuleResult.Failure : RuleResult.Success;
+			return Runner.CurrentRuleResult;
 		}
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask bitmask = new OpCodeBitmask ();
+			bitmask.Set (Code.Isinst);
+			bitmask.Set (Code.Ldnull);
+			bitmask.Set (Code.Ceq);
+			Console.WriteLine (bitmask);
+		}
+#endif
 	}
 }
