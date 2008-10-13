@@ -1,5 +1,9 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* DoNotLockOnThisOrTypesRule.cs: Added XML documentation.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* DontUseLockedRegionOutsideMethodRule.cs: Append the Rule suffix to the
 	file name, because it's a rule. 
 	* Gendarme.Rules.Concurrency.mdp: Updated MD project file.

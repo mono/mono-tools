@@ -36,6 +36,58 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
+	/// <summary>
+	/// You are asking for concurrency troubles.  If you are locking this,
+	/// you should imagine a third man consuming your class, this man
+	/// doesn't know if your code is locking or not.  And he, could think
+	/// about locking the object (because it needs a thread-safe
+	/// implementation), then this causes a deadlock.
+	/// The second scenario is about locking types.  There are only one Type
+	/// object for each instance of the class.  And this may cause several
+	/// concurrency issues.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void MethodLockingOnThis ()
+	/// {
+	/// 	lock (this) {
+	///		producer++;
+	///     }	
+	/// }
+	/// </code>
+	/// <code>
+	/// public void MethodLockingOnType ()
+	/// {
+	/// 	lock (this.GetType ()) {
+	///		producer++;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// <code>
+	/// class ClassWithALocker {
+	/// 	object locker = new object ();
+	///	int producer = 0;
+	/// 
+	///	public void MethodLockingLocker ()
+	///	{
+	///		lock (locker) {
+	///			producer++;
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// <code>
+	/// [MethodImpl (MethodImplOptions.Synchronized)]
+	/// public void SychronizedMethod ()
+	/// {
+	///	producer++;
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method use a lock(this) or lock(typeof(X)) construct which is often used incorrectly.")]
 	[Solution ("To be safe from outside always lock on something that is totally private to your code.")]
 	public class DoNotLockOnThisOrTypesRule : LockAnalyzerRule {
