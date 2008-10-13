@@ -37,6 +37,61 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
+	/// <summary>
+	/// This rule ensures there aren't locked objects with weak identity.
+	/// An object with weak identity means that it can be accessed across
+	/// different application domains and may cause deadlocks or other
+	/// concurrency issues.
+	/// The following types have a weak identity:
+	/// <list type="bullet"> 
+	/// <item> 
+	/// <description><c>System.MarshalByRefObject</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.OutOfMemoryException</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.Reflection.MemberInfo</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.Reflection.ParameterInfo</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.ExecutionEngineException</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.StackOverflowException</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.String</c></description>
+	/// </item>
+	/// <item> 
+	/// <description><c>System.Threading.Thread</c></description>
+	/// </item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void WeakIdLocked () 
+	/// {
+	/// 	lock ("CustomString") {
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void WeakIdNotLocked ()
+	/// {
+	/// 	Phone phone = new Phone ();
+	///     lock (phone) {
+	///     }
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method use a lock on a object with a weak identity, i.e. accessible across application domains.")]
 	[Solution ("To be safe from outside always lock on something that is totally private to your code.")]
 	public class DoNotLockOnWeakIdentityObjectsRule : LockAnalyzerRule {
