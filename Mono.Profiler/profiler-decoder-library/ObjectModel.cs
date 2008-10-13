@@ -908,7 +908,11 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class HeapSnapshot : BaseHeapSnapshot<HeapObject<LoadedClass>,LoadedClass> {
+	public class HeapObject : BaseHeapObject<HeapObject,LoadedClass> {
+		public HeapObject (ulong ID) : base (ID) {}
+	}
+	
+	public class HeapSnapshot : BaseHeapSnapshot<HeapObject,LoadedClass> {
 		public class AllocationStatisticsPerClass {
 			LoadedClass c;
 			public LoadedClass Class {
@@ -974,7 +978,7 @@ namespace  Mono.Profiler {
 			statisticsPerClass.BytesFreed (size);
 		}
 		
-		public HeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LoadedClass[] initialAllocations, bool recordSnapshot) : base (collection, startCounter, startTime, endCounter, endTime, recordSnapshot) {
+		public HeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LoadedClass[] initialAllocations, bool recordSnapshot) : base (delegate (ulong ID) {return new HeapObject (ID);}, collection, startCounter, startTime, endCounter, endTime, recordSnapshot) {
 			uint maxClassId = 0;
 			foreach (LoadedClass c in initialAllocations) {
 				if (c.ID > maxClassId) {
@@ -993,7 +997,7 @@ namespace  Mono.Profiler {
 		string Description {
 			get;
 		}
-		bool Filter (HeapObject<LoadedClass> heapObject);
+		bool Filter (HeapObject heapObject);
 	}
 	
 	public abstract class FilterHeapObjectByClass : IHeapObjectFilter {
@@ -1004,7 +1008,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public abstract bool Filter (HeapObject<LoadedClass> heapObject);
+		public abstract bool Filter (HeapObject heapObject);
 		
 		string description;
 		public string Description {
@@ -1024,7 +1028,7 @@ namespace  Mono.Profiler {
 			return String.Format ("Object has class {0}", c.Name);
 		}
 		
-		public override bool Filter (HeapObject<LoadedClass> heapObject) {
+		public override bool Filter (HeapObject heapObject) {
 			return heapObject.Class == c;
 		}
 		
@@ -1037,8 +1041,8 @@ namespace  Mono.Profiler {
 			return String.Format ("Object references object of class {0}", c.Name);
 		}
 		
-		public override bool Filter (HeapObject<LoadedClass> heapObject) {
-			foreach (HeapObject<LoadedClass> ho in heapObject.References) {
+		public override bool Filter (HeapObject heapObject) {
+			foreach (HeapObject ho in heapObject.References) {
 				if (ho.Class == c) {
 					return true;
 				}
@@ -1055,8 +1059,8 @@ namespace  Mono.Profiler {
 			return String.Format ("Object is referenced by object of class {0}", c.Name);
 		}
 		
-		public override bool Filter (HeapObject<LoadedClass> heapObject) {
-			foreach (HeapObject<LoadedClass> ho in heapObject.BackReferences) {
+		public override bool Filter (HeapObject heapObject) {
+			foreach (HeapObject ho in heapObject.BackReferences) {
 				if (ho.Class == c) {
 					return true;
 				}
@@ -1069,7 +1073,7 @@ namespace  Mono.Profiler {
 	}
 	
 	public abstract class HeapObjectSet {
-		public static Comparison<HeapObject<LoadedClass>> CompareHeapObjectsByID = delegate (HeapObject<LoadedClass> a, HeapObject<LoadedClass> b) {
+		public static Comparison<HeapObject> CompareHeapObjectsByID = delegate (HeapObject a, HeapObject b) {
 			return a.ID.CompareTo (b.ID);
 		};
 		
@@ -1111,8 +1115,8 @@ namespace  Mono.Profiler {
 				return longDescription;
 			}
 		}
-		HeapObject<LoadedClass>[] heapObjects;
-		public HeapObject<LoadedClass>[] HeapObjects {
+		HeapObject[] heapObjects;
+		public HeapObject[] HeapObjects {
 			get {
 				return heapObjects;
 			}
@@ -1130,7 +1134,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		protected HeapObjectSet (string shortDescription, string longDescription, HeapObject<LoadedClass>[] heapObjects) {
+		protected HeapObjectSet (string shortDescription, string longDescription, HeapObject[] heapObjects) {
 			this.shortDescription = shortDescription;
 			this.longDescription = longDescription;
 			this.heapObjects = heapObjects;
@@ -1139,7 +1143,7 @@ namespace  Mono.Profiler {
 			Array.Sort (this.heapObjects, CompareHeapObjectsByID);
 			
 			Dictionary<ulong,HeapObjectSetClassStatistics> statistics = new Dictionary<ulong,HeapObjectSetClassStatistics> ();
-			foreach (HeapObject<LoadedClass> ho in heapObjects) {
+			foreach (HeapObject ho in heapObjects) {
 				HeapObjectSetClassStatistics cs;
 				if (statistics.ContainsKey (ho.Class.ID)) {
 					cs = statistics [ho.Class.ID];
@@ -1188,14 +1192,14 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		static HeapObject<LoadedClass>[] filterSet (HeapObjectSet baseSet, IHeapObjectFilter filter) {
-			List<HeapObject<LoadedClass>> newSet = new List<HeapObject<LoadedClass>> ();
-			foreach (HeapObject<LoadedClass> ho in baseSet.HeapObjects) {
+		static HeapObject[] filterSet (HeapObjectSet baseSet, IHeapObjectFilter filter) {
+			List<HeapObject> newSet = new List<HeapObject> ();
+			foreach (HeapObject ho in baseSet.HeapObjects) {
 				if (filter.Filter (ho)) {
 					newSet.Add (ho);
 				}
 			}
-			HeapObject<LoadedClass>[] result = new HeapObject<LoadedClass> [newSet.Count];
+			HeapObject[] result = new HeapObject [newSet.Count];
 			newSet.CopyTo (result);
 			return result;
 		}
@@ -1230,13 +1234,13 @@ namespace  Mono.Profiler {
 		}
 		
 		public static void PerformComparison (HeapObjectSet firstSet, HeapObjectSet secondSet, out HeapObjectSet onlyInFirstSet, out HeapObjectSet onlyInSecondSet) {
-			List<HeapObject<LoadedClass>> onlyInFirst = new List<HeapObject<LoadedClass>> ();
-			List<HeapObject<LoadedClass>> onlyInSecond = new List<HeapObject<LoadedClass>> ();
+			List<HeapObject> onlyInFirst = new List<HeapObject> ();
+			List<HeapObject> onlyInSecond = new List<HeapObject> ();
 			
 			int firstIndex = 0;
 			int secondIndex = 0;
-			HeapObject<LoadedClass>[] firstObjects = firstSet.HeapObjects;
-			HeapObject<LoadedClass>[] secondObjects = secondSet.HeapObjects;
+			HeapObject[] firstObjects = firstSet.HeapObjects;
+			HeapObject[] secondObjects = secondSet.HeapObjects;
 			
 			while ((firstIndex < firstObjects.Length) || (secondIndex < secondObjects.Length)) {
 				if (firstIndex >= firstObjects.Length) {
@@ -1250,8 +1254,8 @@ namespace  Mono.Profiler {
 						firstIndex ++;
 					}
 				} else {
-					HeapObject<LoadedClass> firstObject = firstObjects [firstIndex];
-					HeapObject<LoadedClass> secondObject = secondObjects [secondIndex];
+					HeapObject firstObject = firstObjects [firstIndex];
+					HeapObject secondObject = secondObjects [secondIndex];
 					if (firstObject.ID < secondObject.ID) {
 						onlyInFirst.Add (firstObject);
 						firstIndex ++;
@@ -1269,13 +1273,13 @@ namespace  Mono.Profiler {
 			onlyInSecondSet = new HeapObjectSetFromComparison(secondSet, firstSet, onlyInSecond.ToArray ());
 		}
 		
-		HeapObjectSetFromComparison (HeapObjectSet baseSet, HeapObjectSet otherSet, HeapObject<LoadedClass>[] heapObjects): base (buildShortDescription (otherSet), buildLongDescription (otherSet), heapObjects) {
+		HeapObjectSetFromComparison (HeapObjectSet baseSet, HeapObjectSet otherSet, HeapObject[] heapObjects): base (buildShortDescription (otherSet), buildLongDescription (otherSet), heapObjects) {
 			this.baseSet = baseSet;
 			this.otherSet = otherSet;
 		}
 	}
 	
-	public class LoadedElementFactory : ILoadedElementFactory<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject<LoadedClass>,HeapSnapshot> {
+	public class LoadedElementFactory : ILoadedElementFactory<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject,HeapSnapshot> {
 		bool recordHeapSnapshots = true;
 		public bool RecordHeapSnapshots {
 			get {

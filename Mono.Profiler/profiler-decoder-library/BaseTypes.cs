@@ -77,13 +77,16 @@ namespace Mono.Profiler {
 		UFR[] Functions {get;}
 		void SortFunctions ();
 	}
-	public interface IHeapObject<HO,LC> where HO: IHeapObject<HO,LC> where LC : ILoadedClass {
+	public interface IAllocatedObject<LC> where LC : ILoadedClass {
 		ulong ID {get;}
 		LC Class {get;}
 		uint Size {get;}
+	}
+	public interface IHeapObject<HO,LC> : IAllocatedObject<LC> where HO: IHeapObject<HO,LC> where LC : ILoadedClass {
 		HO[] References {get;}
 		HO[] BackReferences {get;}
 	}
+	public delegate HO HeapObjectFactory<HO,LC> (ulong ID) where HO : IHeapObject<HO,LC> where LC : ILoadedClass;
 	public interface IHeapSnapshot<HO,LC> where HO: IHeapObject<HO,LC> where LC : ILoadedClass {
 		uint Collection {get;}
 		ulong StartCounter {get;}
@@ -298,7 +301,7 @@ namespace Mono.Profiler {
 		}
 	}
 	
-	public class HeapObject<LC> : IHeapObject<HeapObject<LC>,LC> where LC : ILoadedClass {
+	public class BaseHeapObject<HO,LC> : IHeapObject<HO,LC> where LC : ILoadedClass where HO : BaseHeapObject<HO,LC> {
 		ulong id;
 		public ulong ID {
 			get {
@@ -325,15 +328,15 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		static HeapObject<LC>[] emptyReferences = new HeapObject<LC> [0];
-		public static HeapObject<LC>[] EmptyReferences {
+		static HO[] emptyReferences = new HO [0];
+		public static HO[] EmptyReferences {
 			get {
 				return emptyReferences;
 			}
 		}
 		
-		HeapObject<LC>[] references;
-		public HeapObject<LC>[] References {
+		HO[] references;
+		public HO[] References {
 			get {
 				return references;
 			}
@@ -342,8 +345,8 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		HeapObject<LC>[] backReferences;
-		public HeapObject<LC>[] BackReferences {
+		HO[] backReferences;
+		public HO[] BackReferences {
 			get {
 				return backReferences;
 			}
@@ -359,16 +362,16 @@ namespace Mono.Profiler {
 		internal void AllocateBackReferences () {
 			if (references != null) {
 				int referencesCount = 0;
-				foreach (HeapObject<LC> reference in references) {
+				foreach (HO reference in references) {
 					if (reference != null) {
 						referencesCount ++;
 					}
 				}
 				if (referencesCount != references.Length) {
 					if (referencesCount > 0) {
-						HeapObject<LC>[] newReferences = new HeapObject<LC> [referencesCount];
+						HO[] newReferences = new HO [referencesCount];
 						referencesCount = 0;
-						foreach (HeapObject<LC> reference in references) {
+						foreach (HO reference in references) {
 							if (reference != null) {
 								newReferences [referencesCount] = reference;
 								referencesCount ++;
@@ -384,26 +387,18 @@ namespace Mono.Profiler {
 			}
 			
 			if (backReferencesCounter > 0) {
-				backReferences = new HeapObject<LC> [backReferencesCounter];
+				backReferences = new HO [backReferencesCounter];
 				backReferencesCounter = 0;
 			} else {
 				references = emptyReferences;
 			}
 		}
-		internal void AddBackReference (HeapObject<LC> heapObject) {
+		internal void AddBackReference (HO heapObject) {
 			backReferences [backReferencesCounter] = heapObject;
 			backReferencesCounter ++;
 		}
 		
-		public HeapObject (ulong id, LC c, uint size, HeapObject<LC>[] references) {
-			this.id = id;
-			this.c = c;
-			this.size = size;
-			this.references = references;
-			this.backReferences = null;
-			this.backReferencesCounter = 0;
-		}
-		public HeapObject (ulong id) {
+		public BaseHeapObject (ulong id) {
 			this.id = id;
 			this.c = default(LC);
 			this.size = 0;
@@ -413,9 +408,10 @@ namespace Mono.Profiler {
 		}
 	}
 	
-	public abstract class BaseHeapSnapshot<HO,LC> : IHeapSnapshot<HeapObject<LC>,LC> where LC : ILoadedClass {
-		Dictionary<ulong,HeapObject<LC>> heap;
+	public abstract class BaseHeapSnapshot<HO,LC> : IHeapSnapshot<HO,LC> where LC : ILoadedClass where HO : BaseHeapObject<HO,LC> {
+		Dictionary<ulong,HO> heap;
 		bool backReferencesInitialized;
+		HeapObjectFactory<HO,LC> heapObjectFactory;
 		
 		uint collection;
 		public uint Collection {
@@ -449,14 +445,14 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public HeapObject<LC> NewHeapObject (ulong id, LC c, uint size, ulong[] referenceIds, int referencesCount) {
+		public HO NewHeapObject (ulong id, LC c, uint size, ulong[] referenceIds, int referencesCount) {
 			if (backReferencesInitialized) {
 				throw new Exception ("Cannot create heap objects after backReferencesInitialized is true");
 			}
 			
 			if (recordSnapshot) {
-				HeapObject<LC>[] references = new HeapObject<LC>[referencesCount];
-				HeapObject<LC> result = GetOrCreateHeapObject (id);
+				HO[] references = new HO [referencesCount];
+				HO result = GetOrCreateHeapObject (id);
 				for (int i = 0; i < references.Length; i++) {
 					references [i] = GetOrCreateHeapObject (referenceIds [i]);
 					references [i].IncrementBackReferences ();
@@ -476,9 +472,9 @@ namespace Mono.Profiler {
 			}
 			
 			//FIXME: Bad objects should not happen anymore...
-			Dictionary<ulong,HeapObject<LC>> badObjects = new Dictionary<ulong,HeapObject<LC>> ();
+			Dictionary<ulong,HO> badObjects = new Dictionary<ulong,HO> ();
 			
-			foreach (HeapObject<LC> heapObject in heap.Values) {
+			foreach (HO heapObject in heap.Values) {
 				if (heapObject.Class != null) {
 					heapObject.AllocateBackReferences ();
 				} else {
@@ -490,8 +486,8 @@ namespace Mono.Profiler {
 				heap.Remove (id);
 			}
 			
-			foreach (HeapObject<LC> heapObject in heap.Values) {
-				foreach (HeapObject<LC> reference in heapObject.References) {
+			foreach (HO heapObject in heap.Values) {
+				foreach (HO reference in heapObject.References) {
 					reference.AddBackReference (heapObject);
 				}
 			}
@@ -499,12 +495,12 @@ namespace Mono.Profiler {
 			backReferencesInitialized = true;
 		}
 		
-		HeapObject<LC> GetOrCreateHeapObject (ulong id) {
+		HO GetOrCreateHeapObject (ulong id) {
 			if (recordSnapshot) {
 				if (heap.ContainsKey (id)) {
 					return heap [id];
 				} else {
-					HeapObject<LC> result = new HeapObject<LC> (id);
+					HO result = heapObjectFactory (id);
 					heap [id] = result;
 					return result;
 				}
@@ -513,13 +509,13 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public HeapObject<LC> GetHeapObject (ulong id) {
+		public HO GetHeapObject (ulong id) {
 			return heap [id];
 		}
 		
-		public HeapObject<LC>[] HeapObjects {
+		public HO[] HeapObjects {
 			get {
-				HeapObject<LC>[] result = new HeapObject<LC> [heap.Values.Count];
+				HO[] result = new HO [heap.Values.Count];
 				heap.Values.CopyTo (result, 0);
 				return result;
 			}
@@ -532,14 +528,15 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public BaseHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, bool recordSnapshot) {
+		public BaseHeapSnapshot (HeapObjectFactory<HO,LC> heapObjectFactory, uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, bool recordSnapshot) {
+			this.heapObjectFactory = heapObjectFactory;
 			this.collection = collection;
 			this.startCounter = startCounter;
 			this.startTime = startTime;
 			this.endCounter = endCounter;
 			this.endTime = endTime;
 			this.recordSnapshot = recordSnapshot;
-			heap = new Dictionary<ulong,HeapObject<LC>> ();
+			heap = new Dictionary<ulong,HO> ();
 			backReferencesInitialized = false;
 		}
 	}

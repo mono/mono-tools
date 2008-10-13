@@ -1,6 +1,13 @@
+2008-10-13  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Turn HeapObject class into generic BaseHeapObject class,
+	and add a new IAllocatedObject interface (this will give more freedom
+	when implementing HeapObject and AllocatedObject separately).
+	* ObjectModel.cs: Derive HeapObject from BaseHeapObject.
+	* EventProcessor.cs: Likewise.
+
 2008-10-12  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs: Added support for object ids in allocation events.
-	* Decoder.cs: Likewise.
+	* ObjectModel.cs: Likewise.
 	* EventProcessor.cs: Likewise.
 
 2008-10-10  Massimiliano Mantione <massi@ximian.com>

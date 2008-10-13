@@ -199,7 +199,7 @@ namespace Mono.Profiler
 			public override void HeapObjectUnreachable (LoadedClass c, uint size) {
 				lastHeapSnapshot.HeapObjectUnreachable (c, size);
 			}
-			public override void HeapObjectReachable (HeapObject<LoadedClass> o) {
+			public override void HeapObjectReachable (HeapObject o) {
 			}
 			public override void HeapReportEnd (HeapSnapshot snapshot) {
 				lastHeapSnapshot.InitializeBackReferences ();

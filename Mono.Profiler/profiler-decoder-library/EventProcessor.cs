@@ -70,7 +70,7 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class ProfilerEventHandler : BaseProfilerEventHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,LoadedElementHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject<LoadedClass>,HeapSnapshot>,HeapObject<LoadedClass>,HeapSnapshot> {
+	public class ProfilerEventHandler : BaseProfilerEventHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,LoadedElementHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject,HeapSnapshot>,HeapObject,HeapSnapshot> {
 		Dictionary<ulong,CallStack> perThreadStacks;
 		CallStack stack;
 		UnknownStatisticalHitsCollector unknownStatisticalHitsCollector;
@@ -544,7 +544,7 @@ namespace  Mono.Profiler {
 			c.InstanceFreed (size);
 			currentHeapSnapshot.HeapObjectUnreachable (c, size);
 		}
-		public override void HeapObjectReachable (HeapObject<LoadedClass> o) {
+		public override void HeapObjectReachable (HeapObject o) {
 		}
 		public override void HeapReportEnd (HeapSnapshot snapshot) {
 			snapshot.InitializeBackReferences ();
@@ -575,7 +575,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public ProfilerEventHandler () : base (new LoadedElementHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject<LoadedClass>,HeapSnapshot> (new LoadedElementFactory ())) {
+		public ProfilerEventHandler () : base (new LoadedElementHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject,HeapSnapshot> (new LoadedElementFactory ())) {
 			perThreadStacks = new Dictionary<ulong,CallStack> ();
 			stack = null;
 			unknownStatisticalHitsCollector = new UnknownStatisticalHitsCollector ();
