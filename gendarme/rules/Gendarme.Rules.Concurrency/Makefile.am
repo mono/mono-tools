@@ -16,7 +16,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Concurrency.xml TestResult.xml
 rules_sources = \
 	DoNotLockOnThisOrTypesRule.cs \
 	DoNotLockOnWeakIdentityObjectsRule.cs \
-	DontUseLockedRegionOutsideMethod.cs \
+	DontUseLockedRegionOutsideMethodRule.cs \
 	DoubleCheckLockingRule.cs \
 	LockAnalyzerRule.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \

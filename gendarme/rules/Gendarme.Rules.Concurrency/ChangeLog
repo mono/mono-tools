@@ -1,5 +1,12 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* DontUseLockedRegionOutsideMethodRule.cs: Append the Rule suffix to the
+	file name, because it's a rule. 
+	* Gendarme.Rules.Concurrency.mdp: Updated MD project file.
+	* Makefile.am: Added the new file name to the build.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* DontUseLockedRegionOutsideMethod.cs: Added XML documentation.
 
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>

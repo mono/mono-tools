@@ -17,7 +17,7 @@
     <File name="DoubleCheckLockingRule.cs" subtype="Code" buildaction="Compile" />
     <File name="WriteStaticFieldFromInstanceMethodRule.cs" subtype="Code" buildaction="Compile" />
     <File name="NonConstantStaticFieldsShouldNotBeVisibleRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="DontUseLockedRegionOutsideMethod.cs" subtype="Code" buildaction="Compile" />
+    <File name="DontUseLockedRegionOutsideMethodRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotLockOnThisOrTypesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotLockOnWeakIdentityObjectsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="LockAnalyzerRule.cs" subtype="Code" buildaction="Compile" />
