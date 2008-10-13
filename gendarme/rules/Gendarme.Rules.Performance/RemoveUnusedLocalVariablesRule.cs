@@ -37,8 +37,47 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule looks for unused local variables inside methods. This can leads to larger 
+	/// code (IL) size and longer JIT time, but note that some compiler while optimizing 
+	/// can remove the locals so they won't be reported even if you can still see them in 
+	/// the source code. This could also be a typo in the source were a value is assigned
+	/// to the wrong variable.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// bool DualCheck ()
+	/// {
+	///	bool b1 = true;
+	///	bool b2 = CheckDetails ();
+	///	if (b2) {
+	///		// typo: a find-replace changed b1 into b2
+	///		b2 = CheckMoreDetails ();
+	///	}
+	///	return b2 &amp;&amp; b2;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// bool DualCheck ()
+	/// {
+	///	bool b1 = true;
+	///	bool b2 = CheckDetails ();
+	///	if (b2) {
+	///		b1 = CheckMoreDetails ();
+	///	}
+	///	return b1 &amp;&amp; b2;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This methods contains unused local variables.")]
 	[Solution ("Remove unused variables to reduce size of methods.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1804:RemoveUnusedLocals")]
 	public class RemoveUnusedLocalVariablesRule : Rule, IMethodRule {
 
 		// it does not make sense to allocate less than 16 bytes, 16 * 8
@@ -58,7 +97,9 @@ namespace Gendarme.Rules.Performance {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasBody)
+			// rule does not apply to external methods (e.g. p/invokes)
+			// and generated code (by compilers or tools)
+			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			int count = method.Body.Variables.Count;
@@ -73,21 +114,9 @@ namespace Gendarme.Rules.Performance {
 			used.SetAll (false);
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Ldloc_0:
-				case Code.Ldloc_1:
-				case Code.Ldloc_2:
-				case Code.Ldloc_3:
-					used [(int) (ins.OpCode.Code - Code.Ldloc_0)] = true;
-					break;
-				case Code.Ldloc_S:
-				case Code.Ldloc:
-				case Code.Ldloca:
-				case Code.Ldloca_S:
-					VariableDefinition vd = (ins.Operand as VariableDefinition);
+				VariableDefinition vd = ins.GetVariable (method);
+				if (vd != null)
 					used [vd.Index] = true;
-					break;
-				}
 			}
 
 			for (int i = 0; i < count; i++) {

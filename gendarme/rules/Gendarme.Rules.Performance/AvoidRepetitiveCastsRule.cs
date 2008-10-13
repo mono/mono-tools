@@ -40,26 +40,31 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule warns when a structure is larger than a a maximum value (default to
-	/// 16 bytes). Large structure can cause performance problems since they are value types
-	/// and as such are copied by copying the whole value (size dependent) while reference 
-	/// types can be copied by only copying its reference (constant size). If the structure 
-	/// cannot be reduced in size (e.g. by removing calculated fields) then it should be 
-	/// turned into a class.
+	/// This rule warns multiple casts are done on the same value, for the same type.
+	/// Casts are expensive so reducing them, by changing the logic or caching the 
+	/// casted value, can help performance.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// public struct BigArgb {
-	///	long a, r, g, b;
+	/// foreach (object o in list) {
+	///	// first cast (is)
+	///	if (o is ICollection) {
+	///		// second cast (as) if item implements ICollection
+	///		Process (o as ICollection);
+	///	}
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public class BigArgb {
-	///	long a, r, g, b;
+	/// foreach (object o in list) {
+	///	// a single cast (as) per item
+	///	ICollection c = (o as ICollection);
+	///	if (c != null) {
+	///		SingleCast (c);
+	///	}
 	/// }
 	/// </code>
 	/// </example>

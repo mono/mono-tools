@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.IDisposableWithDestructorWithoutSuppressFinalizeRule
+// Gendarme.Rules.Performance.UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -32,77 +32,123 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 	
-	[Problem ("The type has a destructor and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside it's Dispose method.")]
-	[Solution ("Add a call to GC.SuppressFinalize inside your Dispose method.")]
-	public class IDisposableWithDestructorWithoutSuppressFinalizeRule : Rule, ITypeRule {
+	/// <summary>
+	/// This rule catches a common problem when a type has a finalizer (called a destructor in C#)
+	/// and implements <c>System.IDisposable</c>. In this case the <c>Dispose</c> method should 
+	/// call <c>System.GC.SuppressFinalize</c> to avoid the finalizer to be, needlessly, called.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class Test: SomeClass, IDisposable {
+	///	~Test ()
+	///	{
+	///		if (ptr != IntPtr.Zero) {
+	///			Free (ptr);
+	///		}
+	///	}
+	///	
+	///	public void Dispose ()
+	///	{
+	///		if (ptr != IntPtr.Zero) {
+	///			Free (ptr);
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class Test: SomeClass, IDisposable {
+	///	~Test ()
+	///	{
+	///		if (ptr != IntPtr.Zero) {
+	///			Free (ptr);
+	///		}
+	///	}
+	///	
+	///	public void Dispose ()
+	///	{
+	///		if (ptr != IntPtr.Zero) {
+	///			Free (ptr);
+	///		}
+	///		GC.SuppressFinalize (this);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.2 this rule was named IDisposableWithDestructorWithoutSuppressFinalizeRule</remarks>
 
-		private static bool MethodMatchNameVoidEmpty (MethodDefinition md, string methodName)
-		{
-			if (md.Name != methodName)
-				return false;
-			if (md.Parameters.Count > 0)
-				return false;
-			return (md.ReturnType.ReturnType.ToString () == "System.Void");
-		}
+	[Problem ("The type has a finalizer and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside Dispose.")]
+	[Solution ("Add a call to GC.SuppressFinalize inside your Dispose method.s")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	public class UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule : Rule, ITypeRule {
 
-		private RuleResult Recurse (MethodDefinition method, int level)
+		private bool Recurse (MethodDefinition method, int level)
 		{
 			// some methods have no body (e.g. p/invokes, icalls)
-			if (!method.HasBody)
-				return RuleResult.Failure;
+			if ((method == null) || !method.HasBody)
+				return false;
+
+			// don't iterate the IL unless we know there are some call[virt] inside them
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return false;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
 					// are we calling GC.SuppressFinalize ?
-					if (ins.Operand.ToString () == "System.Void System.GC::SuppressFinalize(System.Object)")
-						return RuleResult.Success;
-					else if (level < 3) {
-						MethodDefinition callee = (ins.Operand as MethodDefinition);
-						if (callee != null) {
-							if (Recurse (callee, level + 1) == RuleResult.Success)
-								return RuleResult.Success;
-						}
+					MethodReference callee = (ins.Operand as MethodReference);
+					if ((callee.Name == "SuppressFinalize") && (callee.DeclaringType.FullName == "System.GC")) {
+						return true;
+					} else if (level < 3) {
+						if (Recurse (callee.Resolve (), level + 1))
+							return true;
 					}
 					break;
 				}
 			}
-			return RuleResult.Failure;
+			return false;
+		}
+
+		private void CheckDispose (MethodDefinition dispose)
+		{
+			if ((dispose != null) && !Recurse (dispose, 0)) {
+				Runner.Report (dispose, Severity.High, Confidence.Normal);
+			}
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// #1 - does the type implements System.IDisposable ?
+			// rule does not apply to enums, interfaces and delegates
+			if (type.IsEnum || type.IsInterface || type.IsDelegate ())
+				return RuleResult.DoesNotApply;
+
+			// rule applies to types that implements System.IDisposable
 			if (!type.Implements ("System.IDisposable"))
 				return RuleResult.DoesNotApply;
 
-			// #2 - look for the Dispose method
-			MethodDefinition dispose = null;
-			foreach (MethodDefinition md in type.Methods) {
-				if (MethodMatchNameVoidEmpty (md, "Dispose") ||
-					MethodMatchNameVoidEmpty (md, "System.IDisposable.Dispose")) {
-
-					dispose = md;
-					break;
-				}
-			}
-			if (dispose == null)
-				return RuleResult.Success;
-
-			// #3 - look for a destructor
+			// and provide a finalizer
 			if (type.GetMethod (MethodSignatures.Finalize) == null)
-				return RuleResult.Success;
+				return RuleResult.DoesNotApply;
 
-			// #4 - look if GC.SuppressFinalize is being called in the
-			// Dispose method - or one of the method it calls
-			return Recurse (dispose, 0);
+			// rule applies!
+
+			// look if GC.SuppressFinalize is being called in the Dispose methods
+			// or one of the method it calls
+
+			CheckDispose (type.GetMethod (MethodSignatures.Dispose));
+			CheckDispose (type.GetMethod (MethodSignatures.DisposeExplicit));
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

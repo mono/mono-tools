@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.EmptyDestructorRule
+// Gendarme.Rules.Performance.RemoveUnneededFinalizerRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -36,10 +36,56 @@ using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
-	
-	[Problem ("The type has an empty destructor (or Finalize method).")]
-	[Solution ("Remove the empty destructor (or Finalize method) from the class.")]
-	public class EmptyDestructorRule : Rule, ITypeRule {
+
+	// similar to findbugs
+	// FI: Empty finalizer should be deleted (FI_EMPTY)
+	// FI: Finalizer does nothing but call superclass finalizer (FI_USELESS)
+	// FI: Finalizer only nulls fields (FI_FINALIZER_ONLY_NULLS_FIELDS)
+
+	/// <summary>
+	/// This rule looks for types that have empty finalizer (a.k.a. destructor in C# or 
+	/// <c>Finalize</c> method). Finalizer that simply nullify fields are considered as
+	/// empty since this does not help the garbage collection. You should remove the empty 
+	/// finalizer to reduce the GC involvement (and get better performance) when the object 
+	/// instances are freed.
+	/// </summary>
+	/// <example>
+	/// Bad example (empty):
+	/// <code>
+	/// class Bad {
+	///	~Bad ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (only nullify fields):
+	/// <code>
+	/// class Bad {
+	///	object o;
+	///	
+	///	~Bad ()
+	///	{
+	///		o = null;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class Good {
+	///	object o;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.2 this rule was named EmptyDestructorRule</remarks>
+
+	[Problem ("The type has an unrequired (empty or only nullifying fields) finalizer.")]
+	[Solution ("Remove the unneeded finalizer from this type to reduce the GC work.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1821:RemoveEmptyFinalizers")]
+	public class RemoveUnneededFinalizerRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -52,12 +98,12 @@ namespace Gendarme.Rules.Performance {
 
 			// finalizer is present, look if it has any code within it
 			// i.e. look if is does anything else than calling it's base class
+			int nullify_fields = 0;
 			foreach (Instruction ins in finalizer.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
-				case Code.Calli:
 				case Code.Callvirt:
-					// it's empty if we're calling the base class destructor
+					// it's empty if we're calling the base class finalizer
 					MethodReference mr = (ins.Operand as MethodReference);
 					if ((mr == null) || !mr.IsFinalizer ())
 						return RuleResult.Success;
@@ -68,16 +114,26 @@ namespace Gendarme.Rules.Performance {
 				case Code.Ldarg_0:
 				case Code.Endfinally:
 				case Code.Ret:
+				case Code.Ldnull:
 					// ignore
 					break;
+				case Code.Stfld:
+					// considered as empty as long as it's only to nullify them
+					if (ins.Previous.OpCode.Code == Code.Ldnull) {
+						nullify_fields++;
+						continue;
+					}
+					return RuleResult.Success;
 				default:
-					// destructor isn't empty (normal)
+					// finalizer isn't empty (normal)
 					return RuleResult.Success;
 				}
 			}
 
 			// finalizer is empty (bad / useless)
-			Runner.Report (type, Severity.Medium, Confidence.Normal, "The type finalizer is empty and should be removed.");
+			string msg = nullify_fields == 0 ? String.Empty : 
+				String.Format ("Contains {0} fields being nullified needlessly", nullify_fields);
+			Runner.Report (type, Severity.Medium, Confidence.Normal, msg);
 			return RuleResult.Failure;
 		}
 	}

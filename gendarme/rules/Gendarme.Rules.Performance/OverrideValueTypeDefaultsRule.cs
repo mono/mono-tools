@@ -90,6 +90,7 @@ namespace Gendarme.Rules.Performance {
 
 	[Problem ("This type does not override the default ValueType implementation of Equals(object) and GetHashCode() which lacks performance due to their generalized design.")]
 	[Solution ("To avoid performance penalities of the default implementations you should override, or implement, the specified methods.")]
+	[FxCopCompatibility ("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
 	public class OverrideValueTypeDefaultsRule : Rule, ITypeRule {
 
 		private const string MissingImplementationMessage = "Missing type-specific implementation for '{0}'. {1}";

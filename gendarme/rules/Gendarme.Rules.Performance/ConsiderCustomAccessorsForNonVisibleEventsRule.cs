@@ -35,6 +35,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	/// <summary>
+	/// This rule looks for non-visible events to see if their add/remove accessors are
+	/// the default ones. The default, compiler generated, accessor are marked as synchronized
+	/// which means that the runtime will them between <c>Monitor.Enter</c> and 
+	/// <c>Monitor.Exit</c> calls. This is the safest approach unless, for non-visible events,
+	/// you have a performance bottleneck around the events. In this case you should review
+	/// if your code needs the locks or if you can provide some alternatives to them.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// private event EventHandler&lt;TestEventArgs&gt; TimeCritical;
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// static object TimeCriticalEvent = new object ();
+	/// EventHandlerList events = new EventHandlerList ();
+	///
+	/// private event EventHandler&lt;TestEventArgs&gt; TimeCritical {
+	///	add {
+	///		events.AddHandler (TimeCriticalEvent, value);
+	///	}
+	///	remove {
+	///		events.AddHandler (TimeCriticalEvent, value);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The compiler created add/remove event accessors are, by default, synchronized, i.e. the runtime will wrap them inside a Monitor.Enter/Exit.")]
 	[Solution ("For non-visible events looks if your code could work without being synchronized by supplying your own accessor implementations.")]
 	public class ConsiderCustomAccessorsForNonVisibleEventsRule : Rule, ITypeRule {

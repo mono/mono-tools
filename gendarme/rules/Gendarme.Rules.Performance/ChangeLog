@@ -1,3 +1,24 @@
+2008-10-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCastsRule.cs: Fix XML documentation.
+	* ConsiderCustomAccessorsForNonVisibleEventsRule.cs: Add XML
+	documentation.
+	* EmptyDestructorRule.cs: Renamed to RemoveUnneededFinalizerRule.
+	Now consider a finalizer empty if it only nullify fields. Add XML 
+	documentation and [FxCopCompatibility] attribute.
+	* IDisposableWithDestructorWithoutSuppressFinalizeRule.cs:
+	Renamed to UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule. Add 
+	XML documentation. Check both Dipose (implicit and explicit) when the
+	two methods are present. Use OpCodeEngine to skip Dispose that do not
+	contains any call[virt] instructions.
+	* ImplementEqualsTypeRule.cs: Add XML documentation. Under 2.0 or
+	later suggest implementing IEquatable<T> (for the same end result).
+	* OverrideValueTypeDefaultsRule.cs: Add [FxCopCompatibility] 
+	attribute.
+	* RemoveUnusedLocalVariablesRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Use recent GetVariable rock to
+	simplify the logic.
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedPrivateFieldsRule.cs: : Add XML documentation 
