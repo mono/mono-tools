@@ -34,7 +34,6 @@ using Gendarme.Rules.Performance;
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 
@@ -74,13 +73,13 @@ namespace Test.Rules.Performance {
 			static object InternalEvent = new object ();
 			internal event EventHandler Internal {
 				add { events.AddHandler (InternalEvent, value); }
-				remove { events.AddHandler (InternalEvent, value); }
+				remove { events.RemoveHandler (InternalEvent, value); }
 			}
 
 			static object PrivateEvent = new object ();
 			private event EventHandler<TestEventArgs> Private {
 				add { events.AddHandler (PrivateEvent, value); }
-				remove { events.AddHandler (PrivateEvent, value); }
+				remove { events.RemoveHandler (PrivateEvent, value); }
 			}
 		}
 
@@ -101,17 +100,15 @@ namespace Test.Rules.Performance {
 			EventHandlerList events = new EventHandlerList ();
 
 			static object InternalEvent = new object ();
-			internal event EventHandler Internal
-			{
+			internal event EventHandler Internal {
 				add { events.AddHandler (InternalEvent, value); }
-				remove { events.AddHandler (InternalEvent, value); }
+				remove { events.RemoveHandler (InternalEvent, value); }
 			}
 
 			static object PrivateEvent = new object ();
-			private event EventHandler<TestEventArgs> Private
-			{
+			private event EventHandler<TestEventArgs> Private {
 				add { events.AddHandler (PrivateEvent, value); }
-				remove { events.AddHandler (PrivateEvent, value); }
+				remove { events.RemoveHandler (PrivateEvent, value); }
 			}
 		}
 
@@ -135,17 +132,15 @@ namespace Test.Rules.Performance {
 			EventHandlerList events = new EventHandlerList ();
 
 			static object InternalEvent = new object ();
-			internal event EventHandler Internal
-			{
+			internal event EventHandler Internal {
 				add { events.AddHandler (InternalEvent, value); }
-				remove { events.AddHandler (InternalEvent, value); }
+				remove { events.RemoveHandler (InternalEvent, value); }
 			}
 
 			static object PrivateEvent = new object ();
-			private event EventHandler<TestEventArgs> Private
-			{
+			private event EventHandler<TestEventArgs> Private {
 				add { events.AddHandler (PrivateEvent, value); }
-				remove { events.AddHandler (PrivateEvent, value); }
+				remove { events.RemoveHandler (PrivateEvent, value); }
 			}
 		}
 
@@ -171,17 +166,15 @@ namespace Test.Rules.Performance {
 			EventHandlerList events = new EventHandlerList ();
 
 			static object InternalEvent = new object ();
-			internal event EventHandler Internal
-			{
+			internal event EventHandler Internal {
 				add { events.AddHandler (InternalEvent, value); }
-				remove { events.AddHandler (InternalEvent, value); }
+				remove { events.RemoveHandler (InternalEvent, value); }
 			}
 
 			static object PrivateEvent = new object ();
-			private event EventHandler<TestEventArgs> Private
-			{
+			private event EventHandler<TestEventArgs> Private {
 				add { events.AddHandler (PrivateEvent, value); }
-				remove { events.AddHandler (PrivateEvent, value); }
+				remove { events.RemoveHandler (PrivateEvent, value); }
 			}
 		}
 

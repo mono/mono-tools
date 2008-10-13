@@ -1,3 +1,16 @@
+2008-10-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderCustomAccessorsForNonVisibleEventsTest.cs: Remove 
+	unneeded namespace. Fix copy-paste error in tests.
+	* EmptyDestructorTest.cs: Convert to new, shorter, syntax for 
+	tests. Remove unneeded namespaces. More coverage.
+	* IDisposableWithDestructorWithoutSuppressFinalizeTest.cs: 
+	Convert to new, shorter, syntax for tests. Remove unneeded 
+	namespaces. More coverage.
+	* ImplementEqualsTypeTest.cs: More coverage.
+	* RemoveUnusedLocalVariablesTest.cs: Remove unneeded namespaces.
+	More coverage.
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedPrivateFieldsTest.cs: More coverage.

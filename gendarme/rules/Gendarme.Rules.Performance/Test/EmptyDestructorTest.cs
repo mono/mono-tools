@@ -1,10 +1,10 @@
 //
-// Unit tests for EmptyDestructorTest
+// Unit tests for RemoveUnneededFinalizerRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005-2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005-2006, 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,20 +27,23 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class EmptyDestructorTest {
+	public class RemoveUnneededFinalizerTest : TypeRuleTestFixture<RemoveUnneededFinalizerRule> {
 
 		class NoDestructorClass {
+		}
+
+		[Test]
+		public void NoDestructor ()
+		{
+			AssertRuleDoesNotApply<NoDestructorClass> ();
 		}
 
 		class EmptyDestructorClass {
@@ -48,6 +51,12 @@ namespace Test.Rules.Performance {
 			~EmptyDestructorClass ()
 			{
 			}
+		}
+
+		[Test]
+		public void EmptyDestructor ()
+		{
+			AssertRuleFailure<EmptyDestructorClass> (1);
 		}
 
 		class DestructorClass {
@@ -69,46 +78,58 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			rule = new EmptyDestructorRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Performance.EmptyDestructorTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-
-		[Test]
-		public void NoDestructor ()
-		{
-			TypeDefinition type = GetTest ("NoDestructorClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
-		}
-
-		[Test]
-		public void EmptyDestructor ()
-		{
-			TypeDefinition type = GetTest ("EmptyDestructorClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-		}
-
 		[Test]
 		public void Destructor ()
 		{
-			TypeDefinition type = GetTest ("DestructorClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<DestructorClass> ();
+		}
+
+		class NullifyFieldClass : DestructorClass {
+
+			object field;
+
+			~NullifyFieldClass ()
+			{
+				field = null;
+			}
+		}
+
+		[Test]
+		public void NullifyField ()
+		{
+			AssertRuleFailure<NullifyFieldClass> (1);
+		}
+
+		class SettingFieldClass : DestructorClass {
+
+			object field;
+
+			~SettingFieldClass ()
+			{
+				field = this;
+			}
+		}
+
+		class DelegatedCleanupClass : DestructorClass {
+
+			object field;
+
+			~DelegatedCleanupClass ()
+			{
+				Cleanup ();
+			}
+
+			void Cleanup ()
+			{
+				field = null;
+			}
+		}
+
+		[Test]
+		public void MoreCoverage ()
+		{
+			AssertRuleSuccess<SettingFieldClass> ();
+			AssertRuleSuccess<DelegatedCleanupClass> ();
 		}
 	}
 }

@@ -1,10 +1,10 @@
 //
-// Unit tests for IDisposableWithDestructorWithoutSuppressFinalizeRule
+// Unit tests for UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005-2006 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005-2006,2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,20 +27,34 @@
 //
 
 using System;
-using System.Reflection;
+using System.Runtime.InteropServices;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class IDisposableWithDestructorWithoutSuppressFinalizeTest {
+	public class UseSuppressFinalizeOnIDisposableTypeWithFinalizerTest : TypeRuleTestFixture<UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+		}
 
 		class NoDestructorClass {
+		}
+
+		[Test]
+		public void NoDestructor ()
+		{
+			AssertRuleDoesNotApply<NoDestructorClass> ();
 		}
 
 		class DestructorClass {
@@ -62,11 +76,23 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		[Test]
+		public void Destructor ()
+		{
+			AssertRuleDoesNotApply<DestructorClass> ();
+		}
+
 		class IDisposableNoDestructorWithoutSuppressFinalizeClass: IDisposable {
 
 			public void Dispose ()
 			{
 			}
+		}
+
+		[Test]
+		public void IDisposableNoDestructorWithoutSuppressFinalize ()
+		{
+			AssertRuleDoesNotApply<IDisposableNoDestructorWithoutSuppressFinalizeClass> ();
 		}
 
 		class IDisposableNoDestructorWithSuppressFinalizeClass: IDisposable {
@@ -75,6 +101,12 @@ namespace Test.Rules.Performance {
 			{
 				GC.SuppressFinalize (this);
 			}
+		}
+
+		[Test]
+		public void IDisposableNoDestructorWithSuppressFinalize ()
+		{
+			AssertRuleDoesNotApply<IDisposableNoDestructorWithSuppressFinalizeClass> ();
 		}
 
 		class IDisposableDestructorWithoutSuppressFinalizeClass: IDisposable {
@@ -86,6 +118,12 @@ namespace Test.Rules.Performance {
 			public void Dispose ()
 			{
 			}
+		}
+
+		[Test]
+		public void IDisposableDestructorWithoutSuppressFinalize ()
+		{
+			AssertRuleFailure<IDisposableDestructorWithoutSuppressFinalizeClass> (1);
 		}
 
 		class IDisposableDestructorWithSuppressFinalizeClass: IDisposable {
@@ -100,6 +138,12 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		[Test]
+		public void IDisposableDestructorWithSuppressFinalize ()
+		{
+			AssertRuleSuccess<IDisposableDestructorWithSuppressFinalizeClass> ();
+		}
+
 		class ExplicitIDisposableDestructorWithoutSuppressFinalizeClass: IDisposable {
 
 			~ExplicitIDisposableDestructorWithoutSuppressFinalizeClass ()
@@ -109,6 +153,12 @@ namespace Test.Rules.Performance {
 			void IDisposable.Dispose ()
 			{
 			}
+		}
+
+		[Test]
+		public void ExplicitIDisposableDestructorWithoutSuppressFinalize ()
+		{
+			AssertRuleFailure<ExplicitIDisposableDestructorWithoutSuppressFinalizeClass> (1);
 		}
 
 		class ExplicitIDisposableDestructorWithSuppressFinalizeClass: IDisposable {
@@ -123,81 +173,134 @@ namespace Test.Rules.Performance {
 			}
 		}
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private ModuleDefinition module;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			module = assembly.MainModule;
-			rule = new IDisposableWithDestructorWithoutSuppressFinalizeRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Performance.IDisposableWithDestructorWithoutSuppressFinalizeTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-
-		[Test]
-		public void NoDestructor ()
-		{
-			TypeDefinition type = GetTest ("NoDestructorClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
-		}
-
-		[Test]
-		public void Destructor ()
-		{
-			TypeDefinition type = GetTest ("DestructorClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
-		}
-
-		[Test]
-		public void IDisposableNoDestructorWithoutSuppressFinalize ()
-		{
-			TypeDefinition type = GetTest ("IDisposableNoDestructorWithoutSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void IDisposableNoDestructorWithSuppressFinalize ()
-		{
-			TypeDefinition type = GetTest ("IDisposableNoDestructorWithSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void IDisposableDestructorWithoutSuppressFinalize ()
-		{
-			TypeDefinition type = GetTest ("IDisposableDestructorWithoutSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-		}
-
-		[Test]
-		public void IDisposableDestructorWithSuppressFinalize ()
-		{
-			TypeDefinition type = GetTest ("IDisposableDestructorWithSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
-		}
-
-		[Test]
-		public void ExplicitIDisposableDestructorWithoutSuppressFinalize ()
-		{
-			TypeDefinition type = GetTest ("ExplicitIDisposableDestructorWithoutSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-		}
-
 		[Test]
 		public void ExplicitIDisposableDestructorWithSuppressFinalize ()
 		{
-			TypeDefinition type = GetTest ("ExplicitIDisposableDestructorWithSuppressFinalizeClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<ExplicitIDisposableDestructorWithSuppressFinalizeClass> ();
+		}
+
+		class BothIDisposableDestructorWithoutSuppressFinalizeClass : IDisposable {
+
+			~BothIDisposableDestructorWithoutSuppressFinalizeClass ()
+			{
+			}
+
+			void IDisposable.Dispose ()
+			{
+			}
+
+			public void Dispose ()
+			{
+			}
+		}
+
+		[Test]
+		public void BothIDisposableDestructorWithoutSuppressFinalize ()
+		{
+			AssertRuleFailure<BothIDisposableDestructorWithoutSuppressFinalizeClass> (2);
+		}
+
+		class IndirectClass : IDisposable {
+
+			~IndirectClass ()
+			{
+			}
+
+			void IDisposable.Dispose ()
+			{
+				Dispose ();
+			}
+
+			public void Dispose ()
+			{
+				ReallyDispose ();
+			}
+
+			void ReallyDispose ()
+			{
+				GC.SuppressFinalize (this);
+			}
+		}
+
+		[Test]
+		public void Indirect ()
+		{
+			AssertRuleSuccess<IndirectClass> ();
+		}
+
+		class IndirectDeepClass : IDisposable {
+
+			~IndirectDeepClass ()
+			{
+			}
+
+			void IDisposable.Dispose ()
+			{
+				Dispose ();
+			}
+
+			public void Dispose ()
+			{
+				AskForDisposal ();
+			}
+
+			void AskForDisposal ()
+			{
+				CouldDispose ();
+			}
+
+			void CouldDispose ()
+			{
+				ReallyDispose ();
+			}
+
+			void ReallyDispose ()
+			{
+				GC.SuppressFinalize (this);
+			}
+		}
+
+		[Test]
+		public void IndirectDeep ()
+		{
+			// one level too deep for the explicit Dispose method
+			AssertRuleFailure<IndirectDeepClass> (1);
+		}
+
+		abstract class AbstractClass : IDisposable {
+
+			~AbstractClass ()
+			{
+			}
+
+			abstract public void Dispose ();
+		}
+
+		[Test]
+		public void Abstract ()
+		{
+			AssertRuleSuccess<IndirectClass> ();
+		}
+
+		class PInvokeClass : IDisposable {
+
+			~PInvokeClass ()
+			{
+			}
+
+			public void Dispose ()
+			{
+				UnmanagedDispose ();
+			}
+
+			[DllImport ("liberty.so")]
+			static extern void UnmanagedDispose ();
+		}
+
+		[Test]
+		public void PInvoke ()
+		{
+			AssertRuleFailure<PInvokeClass> (1);
 		}
 	}
 }

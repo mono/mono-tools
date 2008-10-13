@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
+
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
@@ -42,6 +44,10 @@ namespace Test.Rules.Performance {
 		{
 			// rule does not apply to enums
 			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			// nor delegates
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			// or generated code
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
 		}
 
 		public struct StructWithoutEqualsObject {
@@ -86,15 +92,34 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		public struct EquatableStructWithBothEquals : IEquatable<EquatableStructWithBothEquals> {
+			public override bool Equals (object obj)
+			{
+				return base.Equals (obj);
+			}
+
+			// only to avoid compiler warnings - not part of the rule/test
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();
+			}
+
+			public bool Equals (EquatableStructWithBothEquals other)
+			{
+				return Equals (other);
+			}
+		}
+
 		[Test]
 		public void Structure ()
 		{
 			AssertRuleDoesNotApply<StructWithoutEqualsObject> ();
 			AssertRuleDoesNotApply<StructWithEqualsType> ();
 
-			AssertRuleFailure<StructWithEqualsObject> ();
+			AssertRuleFailure<StructWithEqualsObject> (1);
+			AssertRuleFailure<StructWithBothEquals> (1);
 
-			AssertRuleSuccess<StructWithBothEquals> ();
+			AssertRuleSuccess<EquatableStructWithBothEquals> ();
 		}
 
 		public class ClassWithoutEqualsObject {
@@ -139,15 +164,34 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		public class EquatableClassWithBothEquals : IEquatable<EquatableClassWithBothEquals> {
+			public override bool Equals (object obj)
+			{
+				return base.Equals (obj);
+			}
+
+			public bool Equals (EquatableClassWithBothEquals type)
+			{
+				return Equals (type);
+			}
+
+			// only to avoid compiler warnings - not part of the rule/test
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();
+			}
+		}
+
 		[Test]
 		public void Class ()
 		{
 			AssertRuleDoesNotApply<ClassWithoutEqualsObject> ();
 			AssertRuleDoesNotApply<ClassWithEqualsType> ();
 
-			AssertRuleFailure<ClassWithEqualsObject> ();
+			AssertRuleFailure<ClassWithEqualsObject> (1);
+			AssertRuleFailure<ClassWithBothEquals> (1);
 
-			AssertRuleSuccess<ClassWithBothEquals> ();
+			AssertRuleSuccess<EquatableClassWithBothEquals> ();
 		}
 
 		public interface InterfaceWithoutEqualsObject {
@@ -167,15 +211,33 @@ namespace Test.Rules.Performance {
 			bool Equals (InterfaceWithBothEquals type);
 		}
 
+		public interface EquatableInterfaceWithBothEquals : IEquatable<EquatableInterfaceWithBothEquals> {
+			bool Equals (object obj);
+		}
+
 		[Test]
 		public void Interface ()
 		{
 			AssertRuleDoesNotApply<InterfaceWithoutEqualsObject> ();
 			AssertRuleDoesNotApply<InterfaceWithEqualsType> ();
 
-			AssertRuleFailure<InterfaceWithEqualsObject> ();
+			AssertRuleFailure<InterfaceWithEqualsObject> (1);
+			AssertRuleFailure<InterfaceWithBothEquals> (1);
 
-			AssertRuleSuccess<InterfaceWithBothEquals> ();
+			AssertRuleSuccess<EquatableInterfaceWithBothEquals> ();
+		}
+
+		public class BadGeneric<X> {
+
+			public override bool Equals (object obj)
+			{
+				return base.Equals (obj);
+			}
+
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();
+			}
 		}
 
 		public class Generic<X> {
@@ -196,10 +258,30 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		public class EquatableGeneric<X> : IEquatable<EquatableGeneric<X>> {
+
+			public override bool Equals (object obj)
+			{
+				return base.Equals (obj);
+			}
+
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();
+			}
+
+			public bool Equals (EquatableGeneric<X> other)
+			{
+				return true;
+			}
+		}
+
 		[Test]
 		public void Generics ()
 		{
-			AssertRuleSuccess<Generic<int>> ();
+			AssertRuleFailure<BadGeneric<int>> (1);
+			AssertRuleFailure<Generic<int>> (1);
+			AssertRuleSuccess<EquatableGeneric<int>> ();
 		}
 	}
 }

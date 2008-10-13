@@ -28,13 +28,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
-using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
@@ -44,6 +39,13 @@ namespace Test.Rules.Performance {
 
 	[TestFixture]
 	public class RemoveUnusedLocalVariablesTest : MethodRuleTestFixture<RemoveUnusedLocalVariablesRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply (SimpleMethods.GeneratedCodeMethod);
+		}
 
 		[Test]
 		public void Empty ()
