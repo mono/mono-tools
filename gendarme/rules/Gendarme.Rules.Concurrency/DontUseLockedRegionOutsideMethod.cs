@@ -38,6 +38,45 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Concurrency {
 
+	/// <summary>
+	/// This rule ensures the method atomicity.  You should put the
+	/// Monitor.Enter and Monitor.Exit call in the same method, otherwise
+	/// may have several headaches related to concurrency issues.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class BadExample {
+	/// 	int producer = 0;
+	///
+	/// 	public void EnteringMethod ()
+	/// 	{
+	///		Monitor.Enter ();
+	///		producer++;
+	///	}
+	///     public void ExitingMethod ()
+	/// 	{
+	///		Monitor.Exit ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class GoodExample {
+	/// 	int producer = 0;
+	///	
+	///	public void AddProducer ()
+	///	{
+	///		Monitor.Enter ();
+	///		producer++;
+	///		Monitor.Exit ();
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	// TODO: do a rule that checks if Monitor.Enter is used *before* Exit (dumb code, I know)
 	// TODO: do a more complex rule that checks that you have used Thread.Monitor.Exit in a finally block
 	[Problem ("This method uses Thread.Monitor.Enter() but doesn't use Thread.Monitor.Exit().")]

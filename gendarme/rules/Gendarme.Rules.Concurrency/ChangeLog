@@ -1,5 +1,9 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* DontUseLockedRegionOutsideMethod.cs: Added XML documentation.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* DoNotLockOnWeakIdentityObjectsRule.cs: Added XML documentation.
 
 2008-10-06  Néstor Salceda  <nestor.salceda@gmail.com>
