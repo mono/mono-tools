@@ -1,5 +1,9 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLargeClassesRule.cs: Added XML documentation.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Added XML documentation.
 
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>

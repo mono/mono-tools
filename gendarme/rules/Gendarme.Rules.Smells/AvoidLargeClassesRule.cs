@@ -34,6 +34,40 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
+
+	/// <summary>
+	/// This rule allows developers to measure the classes size. When a 
+	/// class is trying to doing a lot of work, then you probabily have 
+	/// the Large Class smell.
+	///
+	/// The rule counts all fields and if exists common prefixes in fields
+	/// it could be a point for extract a new class too. It's quite hard 
+	/// determine when a class is doing a lot of work, then in following 
+	/// versions you will can select a maximum number of fields, by 
+	/// default this amount is 25. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class MyClass {
+	///	int x, x1, x2, x3;
+	///	string s, s1, s2, s3;
+	///	DateTime bar, bar1, bar2;
+	///	string[] strings, strings1; 
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class MyClass {
+	/// 	int x;
+	/// 	string s;
+	/// 	DateTime bar; 
+	/// }
+	/// </code>
+	/// </example>
+
 	//SUGGESTION: Public / Private ratios.
 	//SUGGESTION: Lines of Code.
 	//SUGGESTION: Weird distributions.
