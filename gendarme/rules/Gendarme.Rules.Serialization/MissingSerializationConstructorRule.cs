@@ -34,8 +34,58 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
+	/// <summary>
+	/// This rule checks for types that implements <c>System.ISerializable</c> provide a
+	/// serialization constructor, since the interface alone cannot force its presence. 
+	/// The serialization constructor should be <c>private</c> for <c>sealed</c> type, 
+	/// otherwise it should be <c>protected</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Serializable]
+	/// public class Bad : ISerializable {
+	/// 	public void GetObjectData (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (sealed):
+	/// <code>
+	/// [Serializable]
+	/// public sealed class Good : ISerializable {
+	/// 	private ClassWithConstructor (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// 	
+	/// 	public void GetObjectData (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Serializable]
+	/// public class Good : ISerializable {
+	/// 	protected ClassWithConstructor (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// 	
+	/// 	public void GetObjectData (SerializationInfo info, StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The required constructor for ISerializable is not present in this type.")]
 	[Solution ("Add a (private for sealed, protected otherwise) serialization constructor for this type.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2229:ImplementSerializationConstructors")]
 	public class MissingSerializationConstructorRule : Rule, ITypeRule {
 
 		// non-localizable

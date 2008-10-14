@@ -1,3 +1,23 @@
+2008-10-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CallBaseMethodsOnISerializableTypesRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Use OpCodeEngine to avoid processing
+	methods that don't have any call[virt] inside them.
+	* DeserializeOptionalFieldRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* ImplementISerializableCorrectlyRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Rework logic to use the TraceBack
+	rock and to handle all cases when GetObjectData is not present.
+	* MarkAllNonSerializableFieldsRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* MissingSerializableAttributeOnISerializableTypeRule.cs: Add XML
+	documentation and [FxCopCompatibility] attribute. Use shorter overload
+	for Runner.Report.
+	* MissingSerializationConstructorRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* UseCorrectSignatureForSerializationMethodsRule.cs: Add XML
+	documentation and [FxCopCompatibility] attribute.
+
 2008-08-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MarkAllNonSerializableFieldsRule.cs: Fix case where we can't resolve

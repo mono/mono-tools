@@ -33,8 +33,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
+	/// <summary>
+	/// This rule checks for types that implements <c>System.ISerializable</c> but are
+	/// not decorated with the <c>[Serializable]</c> attribute. Implementing 
+	/// <c>System.ISerializable</c> is not enough to make a class serializable as this 
+	/// interface only gives you more control over the basic serialization process. 
+	/// In order for the runtime to know your type is serializable it must have the 
+	/// <c>[Serializable]</c> pseudo-attribute.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// // this type cannot be serialized by the runtime
+	/// public class Bad : ISerializable {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Serializable]
+	/// public class Good : ISerializable {
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The runtime won't consider this type as serializable unless your add the [Serializable] attribute to its definition.")]
-	[Solution ("Add [Serializable] to its definition.")]
+	[Solution ("Add [Serializable] to the type definition.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
 	public class MissingSerializableAttributeOnISerializableTypeRule : Rule, ITypeRule {
 
 		private const string ISerializable = "System.Runtime.Serialization.ISerializable";
@@ -64,7 +91,7 @@ namespace Gendarme.Rules.Serialization {
 			if (type.IsSerializable)
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Critical, Confidence.Total, String.Empty);
+			Runner.Report (type, Severity.Critical, Confidence.Total);
 			return RuleResult.Failure;
 		}
 	}

@@ -25,8 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Mono.Cecil;
 
@@ -35,8 +33,50 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
+	/// <summary>
+	/// This rule checks for types that have field(s) marked with <c>[OptionalField]</c>. 
+	/// Such types should take care of re-computing the value(s) when the data is deserialized 
+	/// using the <c>[OnDeserialized]</c> or <c>[OnDeserializing]</c> attributes on a method.
+	/// This rule only applies to assemblies compiled with the .NET framework version 2.0 
+	/// (or later).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Serializable]
+	/// public class ClassWithOptionalField {
+	///	[OptionalField]
+	///	private int optional;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Serializable]
+	/// public class ClassWithOptionalField {
+	/// 	[OptionalField]
+	/// 	private int optional = 1;
+	/// 	
+	/// 	[OnDeserialized]
+	/// 	private void Deserialized (StreamingContext context)
+	/// 	{
+	/// 		optional = 0;
+	/// 	}
+	/// 	
+	/// 	[OnDeserializing]
+	/// 	private void OnDeserializing (StreamingContext context)
+	/// 	{
+	/// 		optional = 0;
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("Some fields are marked with [OptionalField] but the type does not provide special deserialization routines.")]
 	[Solution ("Add a deserialization routine, marked with [OnDeserialized], and re-compute the correct value for the optional fields.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2239:ProvideDeserializationMethodsForOptionalFields")]
 	public class DeserializeOptionalFieldRule : Rule, ITypeRule {
 
 		private const string MessageOptional = "Optional fields '{0}' is not deserialized.";

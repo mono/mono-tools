@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // 	(C) 2008 Néstor Salceda
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -35,96 +37,180 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Serialization {
+
+	/// <summary>
+	/// This rule checks for types that implements <c>ISerializable</c>. Such types are
+	/// reponsible to serialize their data by implementing <c>GetObjectData</c>. This
+	/// rule checks that every instance fields, not decorated with the <c>[NonSerialized]</c>
+	/// attribute are serialized by the <c>GetObjectData</c> method. This rule will also warn
+	/// if the type is unsealed and the <c>GetObjectData</c> is not <c>virtual</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Serializable]
+	/// public class Bad : ISerializable {
+	///	int foo;
+	///	string bar;
+	///	
+	///	protected Bad (SerializationInfo info, StreamingContext context)
+	///	{
+	///		foo = info.GetInt32 ("foo");
+	///	}
+	///	
+	///	// extensibility is limited since GetObjectData is not virtual, 
+	///	// any type inheriting won't be able to serialized additional fields
+	///	public void GetObjectData (SerializationInfo info, StreamingContext context)
+	///	{
+	///		info.AddValue ("foo", foo);
+	///		// 'bar' is not serialized, if not needed then the field should
+	///		// be decorated with [NotSerialized]
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (virtual and not serialized):
+	/// <code>
+	/// [Serializable]
+	/// public class Good : ISerializable {
+	///	int foo;
+	///	[NotSerialized]
+	///	string bar;
+	///	
+	///	protected Good (SerializationInfo info, StreamingContext context)
+	///	{
+	///		foo = info.GetInt32 ("foo");
+	///	}
+	///	
+	///	public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+	///	{
+	///		info.AddValue ("foo", foo);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (sealed type and serialized):
+	/// <code>
+	/// [Serializable]
+	/// public sealed class Good : ISerializable {
+	///	int foo;
+	///	string bar;
+	///	
+	///	protected Good (SerializationInfo info, StreamingContext context)
+	///	{
+	///		foo = info.GetInt32 ("foo");
+	///	}
+	///	
+	///	public void GetObjectData (SerializationInfo info, StreamingContext context)
+	///	{
+	///		info.AddValue ("foo", foo);
+	///		info.AddValue ("bar", bar);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("Although you are implementing the ISerializable interface, there are some fields that aren't going to be serialized and aren't marked with the [NonSerialized] attribute.")]
 	[Solution ("Mark with the [NonSerialized] attribute the field. This helps developers to understand better your code, and perhaps to discover quickly some errors.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
 	public class ImplementISerializableCorrectlyRule : Rule, ITypeRule {
-		static MethodSignature addValueSignature = new MethodSignature ("AddValue", "System.Void");
-	
-		private static bool IsCallingToSerializationInfoAddValue (Instruction instruction)
+
+		private HashSet<FieldDefinition> fields = new HashSet<FieldDefinition> ();
+
+		static private FieldDefinition CheckProperty (MethodDefinition getter)
 		{
-			if (instruction == null) 
-				return false; 
-			
-			//Advance towards the next call	
-			//Matches the cases of overloaded or boxed instructions
-			Instruction current = (instruction);
-			while (current != null) {
-				if (current.OpCode.FlowControl == FlowControl.Call){
-					MethodReference method = (MethodReference) current.Operand;
-					if (addValueSignature.Matches (method) && String.Compare (method.DeclaringType.FullName, "System.Runtime.Serialization.SerializationInfo") == 0)
-						return true;
-				}
-						
-				current = current.Next;
-			}
-
-			return false;
-		}
-
-		private static FieldReference GetReferenceThroughProperty (TypeReference current, Instruction instruction)
-		{
-			if (instruction.OpCode.FlowControl != FlowControl.Call)
-				return null;
-			
-			MethodDefinition target = instruction.Operand as MethodDefinition;
-			if (target == null)
-				return null;
-
-			if (target.DeclaringType != current || !target.IsGetter || !target.HasBody)
-				return null;//Where are you calling dude?
-
-			int count = target.Body.Instructions.Count;
-			for (int index = count - 1; index >= 0; index--) {
-				if (target.Body.Instructions[index].OpCode == OpCodes.Ldfld)
-					return (FieldReference) target.Body.Instructions[index].Operand;
+			string return_type = getter.ReturnType.ReturnType.FullName;
+			foreach (Instruction ins in getter.Body.Instructions) {
+				if (ins.OpCode.OperandType != OperandType.InlineField)
+					continue;
+				FieldDefinition field = (ins.Operand as FieldDefinition);
+				if ((field != null) && (field.FieldType.FullName == return_type))
+					return field;
 			}
 			return null;
 		}
 
-		private static FieldReference GetFieldReference (Instruction instruction, MethodDefinition method)
+		private void CheckSerializedFields (MethodDefinition method)
 		{
-			if (instruction.OpCode == OpCodes.Ldfld)
-				return (FieldReference) instruction.Operand;
-			return GetReferenceThroughProperty (method.DeclaringType, instruction);
-		}
+			foreach (Instruction ins in method.Body.Instructions) {
+				switch (ins.OpCode.Code) {
+				case Code.Call:
+				case Code.Callvirt:
+					MethodReference mr = ins.Operand as MethodReference;
+					if ((mr.Name != "AddValue") || (mr.Parameters.Count < 2))
+						continue;
+					// type is sealed so this check is ok
+					if (mr.DeclaringType.FullName != "System.Runtime.Serialization.SerializationInfo")
+						continue;
 
-		private static IList<FieldReference> GetFieldsUsedIn (MethodDefinition method)
-		{
-			IList<FieldReference> result = new List<FieldReference> ();
+					// look at the second parameter, which should be (or return) the field
+					Instruction i = ins.TraceBack (method, -2);
+					// if we're boxing then find what's in that box
+					if (i.OpCode.Code == Code.Box)
+						i = i.TraceBack (method);
 
-			foreach (Instruction instruction in method.Body.Instructions) {
-				FieldReference reference = GetFieldReference (instruction, method);
-				if (reference != null && IsCallingToSerializationInfoAddValue (instruction.Next)) 
-					result.Add (reference);
+					FieldDefinition f = (i.Operand as FieldDefinition);
+					if (f != null) {
+						fields.Remove (f);
+						continue;
+					}
+					MethodDefinition md = (i.Operand as MethodDefinition);
+					if ((md != null) && md.IsGetter && md.HasBody) {
+						f = CheckProperty (md);
+						if (f != null)
+							fields.Remove (f);
+					}
+					break;
+				}
 			}
-			return result;
 		}
 
 		private void CheckUnusedFieldsIn (TypeDefinition type, MethodDefinition getObjectData)
 		{
-			IList<FieldReference> fieldsUsed = GetFieldsUsedIn (getObjectData);
-			
+			// build a list of the fields that needs to be serialized
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsNotSerialized && !field.IsStatic && !fieldsUsed.Contains (field))
-					Runner.Report (type, Severity.Medium, Confidence.High, String.Format ("The field '{0}' will not be serialized. For clarity consider marking it with the [NonSerialized] attribute.", field.Name));
+				if (!field.IsNotSerialized && !field.IsStatic)
+					fields.Add (field);
 			}
-		}
 
-		private void CheckExtensibilityFor (TypeDefinition type, MethodDefinition getObjectData)
-		{
-			if (!type.IsSealed && getObjectData.IsFinal)
-				Runner.Report (type, Severity.High, Confidence.Total, "Either seal this type or change GetObjectData method to be virtual");
+			// remove all fields that are serialized
+			CheckSerializedFields (getObjectData);
+
+			// report all fields that have not been serialized
+			foreach (FieldDefinition field in fields) {
+				Runner.Report (field, Severity.Medium, Confidence.Normal);
+			}
+
+			fields.Clear ();
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.IsSerializable || !type.Implements ("System.Runtime.Serialization.ISerializable"))
 				return RuleResult.DoesNotApply;
-			
+
 			MethodDefinition getObjectData = type.GetMethod (MethodSignatures.GetObjectData);
-			if (getObjectData != null) {
-				CheckUnusedFieldsIn (type, getObjectData);
-				CheckExtensibilityFor (type, getObjectData);
+			if (getObjectData == null) {
+				// no GetObjectData means that the type's ancestor does the job but 
+				// are we introducing new instance fields that need to be serialized ?
+				if (type.Fields.Count == 0)
+					return RuleResult.Success;
+				// there are some, but they could be static
+				foreach (FieldDefinition field in type.Fields) {
+					if (!field.IsStatic)
+						Runner.Report (field, Severity.Medium, Confidence.High);
+				}
+			} else {
+				if (type.Fields.Count > 0)
+					CheckUnusedFieldsIn (type, getObjectData);
+
+				if (!type.IsSealed && getObjectData.IsFinal) {
+					string msg = "Either seal this type or change GetObjectData method to be virtual";
+					Runner.Report (getObjectData, Severity.High, Confidence.Total, msg);
+				}
 			}
 			return Runner.CurrentRuleResult;
 		}

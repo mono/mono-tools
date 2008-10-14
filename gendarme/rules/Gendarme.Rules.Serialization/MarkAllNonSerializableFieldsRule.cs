@@ -32,9 +32,46 @@ using Gendarme.Framework.Rocks;
 using Mono.Cecil;
 
 namespace Gendarme.Rules.Serialization {
+
+	/// <summary>
+	/// This rule checks for serializable types, i.e. decorated with the <c>[Serializable]</c>
+	/// attribute, and looks if all its fields are serializable too. If not the rule will 
+	/// warn unless the field itself is decorated with the <c>[NonSerialized]</c> attribute.
+	/// The rule will also warn if the field type is an interface as it is not possible,
+	/// before execution time, to know for certain if the type can be serialized or not.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// class NonSerializableClass {
+	/// }
+	/// 
+	/// [Serializable]
+	/// class SerializableClass {
+	///	NonSerializableClass field;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// class NonSerializableClass {
+	/// }
+	/// 
+	/// [Serializable]
+	/// class SerializableClass {
+	///	[NonSerialized]
+	///	NonSerializableClass field;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("This type is Serializable, but contains fields that aren't serializable and this can drive you to some troubles and SerializationExceptions.")]
 	[Solution ("Make sure you are marking all non serializable fields with the NonSerialized attribute, or implement your custom serialization.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
 	public class MarkAllNonSerializableFieldsRule : Rule, ITypeRule {
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//if isn't serializable or

@@ -34,8 +34,43 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
+	/// <summary>
+	/// This rule checks for methods using the special serialization attributes, 
+	/// <c>[OnSerializing, OnDeserializing, OnSerialized, OnDeserialized]</c>. You must
+	/// ensure that the methods have the correct signature. They should be <c>private</c>, 
+	/// return <c>void</c> and have a single parameter of type <c>StreamingContext</c>. 
+	/// Failure to have the right signature can, in some circumstances, make your assembly
+	/// unusable at runtime.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Serializable]
+	/// public class Bad {
+	/// 	[OnSerializing]
+	/// 	public bool Serializing (StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Serializable]
+	/// public class BadClass {
+	/// 	[OnSerializing]
+	/// 	private void Serializing (StreamingContext context)
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
+
 	[Problem ("The method has the wrong signature, it should return System.Void and have a single parameter of type 'System.Runtime.Serialization.StreamingContext' and be private.")]
 	[Solution ("Fix method signature to match the runtime requirements.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2238:ImplementSerializationMethodsCorrectly")]
 	public class UseCorrectSignatureForSerializationMethodsRule : Rule, IMethodRule {
 
 		private const string NotSerializableText = "The type of this method is not marked as [Serializable].";
