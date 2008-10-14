@@ -1,3 +1,7 @@
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassRule.cs: Added XML documentation.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMessageChainsRule.cs: Use TraceBack rock to fix false 

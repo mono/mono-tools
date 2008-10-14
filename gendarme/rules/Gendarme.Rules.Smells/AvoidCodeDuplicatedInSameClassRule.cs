@@ -34,6 +34,72 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
+	/// <summary>
+	/// This rule checks for duplicated code in the same class.  It ensures
+	/// there aren't duplicated code in methods which belongs to the same
+	/// class.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class MyClass {
+	///	private IList myList;
+	///
+	///	public MyClass () {
+	///	        myList = new ArrayList ();
+	///	        myList.Add ("Foo");
+	///	        myList.Add ("Bar");
+	///	        myList.Add ("Baz");
+	///	}
+	///
+	///	public void MakeStuff () {
+	///	        foreach (string value in myList) {
+	///	                Console.WriteLine (value);
+	///	        }
+	///	        myList.Add ("FooReplied);
+	///	}
+	///
+	///	public void MakeMoreStuff () {
+	///	        foreach (string value in myList) {
+	///	                Console.WriteLine (value);              
+	///	        }
+	///	        myList.Remove ("FooReplied");
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class MyClass {
+	/// 	private IList myList;
+	///
+	/// 	public MyClass () {
+	/// 		myList = new ArrayList ();
+	///		myList.Add ("Foo");
+	///		myList.Add ("Bar");
+	///		myList.Add ("Baz");
+	///	}	
+	///
+	/// 	private void PrintValuesInList () {
+	/// 		foreach (string value in myList) {
+	/// 			Console.WriteLine (value);
+	/// 		}      
+	///	}
+	///
+	/// 	public void MakeStuff () {
+	/// 		PrintValuesInList ();
+	///	        myList.Add ("FooReplied);
+	/// 	}
+	///
+	/// 	public void MakeMoreStuff () {
+	///		PrintValuesInList ();
+	/// 		myList.Remove ("FooReplied");
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("There is similar code in various methods in the same class.  Your code will be better if you can unify them.")]
 	[Solution ("You should apply the Extract Method refactoring and invoke the method from the places.")]
 	public class AvoidCodeDuplicatedInSameClassRule : Rule, ITypeRule {
