@@ -35,6 +35,70 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 
 namespace Gendarme.Rules.Smells {
+	
+	/// <summary>
+	/// This rule allows developers to avoid the Speculative Generality smell. 
+	/// Be carefull if you are developing a new framework or a new library, 
+	/// because this rule only inspect the assembly, then if you provide an 
+	/// abstract base class for extend by thrid party people, then the rule
+	/// can warn you. You can ignore the message in this special case.
+	/// 
+	/// We can detect this kind of smell looking for some points:
+	/// <list type="bullet">
+    	/// <item><description>Abstract classes without responsability</description></item>
+    	/// <item><description>Unnecesary delegation.</description></item>
+	/// <item><description>Unused parameters.</description></item>
+    	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// An abstract class with only one subclass.
+	/// <code>
+	/// public abstract class AbstractClass {
+	/// 	public abstract void MakeStuff ();
+	/// }
+	/// 
+	/// public class OverriderClass : AbstractClass {
+	/// 	public override void MakeStuff ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// If you use Telephone class only in one client, perhaps you don't need this kind of delegation. 
+	/// <code>
+	/// public class Person {
+	///	int age;
+	/// 	string name;
+	///	Telephone phone;
+	/// }
+ 	///
+	/// public class Telephone {
+	/// 	int areaCode;
+	/// 	int phone;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public abstract class OtherAbstractClass{
+	///	public abstract void MakeStuff ();
+	/// }
+	/// 
+	/// public class OtherOverriderClass : OtherAbstractClass {
+	/// 	public override void MakeStuff ()
+	/// 	{
+	/// 	}
+	/// }
+	/// 
+	/// public class YetAnotherOverriderClass : OtherAbstractClass {
+	/// 	public override void MakeStuff ()
+	/// 	{
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("If you will need the feature in the future then you should implement it in the future.")]
 	[Solution ("You can apply various refactorings: Collapse Hierarchy, Inline Class, Remove Parameter or Rename Method.")]
 	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
