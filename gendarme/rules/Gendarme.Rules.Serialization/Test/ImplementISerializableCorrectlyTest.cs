@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // 	(C) 2008 Néstor Salceda
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -226,9 +228,16 @@ namespace Test.Rules.Serialization {
 		class SerializableThroughProperties : ISerializable {
 			int foo;
 
+			public SerializableThroughProperties ()
+			{
+			}
+
 			protected SerializableThroughProperties (SerializationInfo info, StreamingContext context)
 			{
-				foo = info.GetInt32 ("foo");
+				if (info.GetBoolean ("special"))
+					foo = info.GetInt32 ("foo");
+				else
+					foo = 0;
 			}
 			
 			int Foo {
@@ -236,10 +245,15 @@ namespace Test.Rules.Serialization {
 					return foo;
 				}
 			}
+
+			bool Special {
+				get { return true; }
+			}
 			
 			public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
 			{
 				info.AddValue ("foo", Foo);
+				info.AddValue ("special", Special);
 			}
 		}
 
@@ -311,6 +325,29 @@ namespace Test.Rules.Serialization {
 		public void SuccessOnAddValueWithMoreParametersTest ()
 		{
 			AssertRuleSuccess<AddValueWithMoreParameters> ();
+		}
+
+		[Serializable]
+		class InheritWithNewInstanceFields : SerializableThroughProperties {
+			object field_to_be_serialized;
+			int more_field_to_be_serialized;
+		}
+
+		[Serializable]
+		class InheritWithNewStaticFields : SerializableThroughProperties {
+			static InheritWithNewStaticFields Empty;
+		}
+
+		[Serializable]
+		class InheritWithoutNewFields : SerializableThroughProperties {
+		}
+
+		[Test]
+		public void InheritFromISerializableType ()
+		{
+			AssertRuleFailure<InheritWithNewInstanceFields> (2);
+			AssertRuleSuccess<InheritWithNewStaticFields> ();
+			AssertRuleSuccess<InheritWithoutNewFields> ();
 		}
 	}
 }

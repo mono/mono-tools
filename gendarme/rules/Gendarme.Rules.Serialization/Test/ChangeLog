@@ -1,3 +1,10 @@
+2008-10-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ImplementISerializableCorrectlyTest.cs: Add test case when 
+	GetObjectData is not present. This can means new fields were 
+	introduced and needs to be serialized (or not, e.g. no fields or
+	static fields).
+
 2008-08-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* CallBaseMethodsOnISerializableTypesTest.cs: Add more coverage.
