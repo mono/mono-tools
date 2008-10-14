@@ -40,6 +40,30 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
+	/// <summary>
+	/// This rule avoids the Message Chain smell.  This could cause some
+	/// troubles to you, because your code is hardly coupled to the
+	/// navigation structure.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void Method (Person person)
+	/// {
+	///	person.GetPhone ().GetAreaCode ().GetCountry ().Language.ToFrench ("Hello world");
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void Method (Language language)
+	/// {
+	///	language.ToFrench ("Hello world");
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("The code contains long sequences of method calls or temporary variables, this means your code is hardly coupled to the navigation structure.")]
 	[Solution ("You can apply the Hide Delegate refactoring or Extract Method to push down the chain.")]
 	[EngineDependency (typeof (OpCodeEngine))]

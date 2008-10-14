@@ -1,5 +1,9 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidMessageChainsRule.cs: Added XML documentation.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidSpeculativeGeneralityRule.cs: Added XML documentation.
 
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
