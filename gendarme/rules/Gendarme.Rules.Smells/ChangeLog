@@ -1,5 +1,9 @@
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLongParameterListsRule.cs: Added XML documentation.
+
+2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidLongMethodsRule.cs: Added XML documentation.
 
 2008-10-14  Néstor Salceda  <nestor.salceda@gmail.com>

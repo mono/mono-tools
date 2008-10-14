@@ -36,6 +36,38 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 	
+	/// <summary>
+	/// This rule allows developers to measure the parameter list size in a method.
+	/// If you have methods with a lot of parameters, perhaps you have a Long
+	/// Parameter List smell.
+	/// 
+	/// This rule counts the method parameters, and compare against a maximum value. 
+	/// If you have an overloaded method, then the rule will get the shortest overload 
+	/// and compare the shortest overload against the maximum value.
+	///
+	/// Other time, it's quite hard determine a long parameter list. By default, 
+	/// a methods with 6 or more arguments will be notified. 
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f,
+	///                                         float z, double u, short s, int v, string[] array)
+	/// {
+   	/// 	// Method body ... 
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void MethodWithoutLongParameterList (int x, object obj)
+	/// {
+	/// 	// Method body.... 
+	/// }
+	/// </code>
+	/// </example>
+
 	//SUGGESTION: Setting all required properties in a constructor isn't
 	//uncommon.
 	//SUGGESTION: Different value for public / private / protected methods *may*
