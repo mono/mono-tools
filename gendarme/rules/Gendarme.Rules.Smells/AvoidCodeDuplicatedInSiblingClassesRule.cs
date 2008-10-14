@@ -35,6 +35,66 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
+	/// <summary>
+	/// This rule looks for code duplicated in sibling subclasses.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class BaseClassWithCodeDuplicated {
+	///	protected IList list;
+	/// }
+	///
+	/// public class OverriderClassWithCodeDuplicated : BaseClassWithCodeDuplicated {
+	/// 	public void CodeDuplicated ()
+	/// 	{
+	///		foreach (int i in list)
+	///			Console.WriteLine (i);
+	/// 		list.Add (1);
+	/// 	}
+	/// }
+	/// 
+	/// public class OtherOverriderWithCodeDuplicated : BaseClassWithCodeDuplicated {
+	///	public void OtherMethod ()
+	///	{
+	///		foreach (int i in list)
+	///			Console.WriteLine (i);
+	///		list.Remove (1);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class BaseClassWithoutCodeDuplicated {
+	///	protected IList list;
+	/// 
+	///	protected void PrintValuesInList ()
+	///	{
+	///		foreach (int i in list)
+	///			Console.WriteLine (i);
+	///	}
+	/// }
+	/// 
+	/// public class OverriderClassWithoutCodeDuplicated : BaseClassWithoutCodeDuplicated {
+	/// 	public void SomeCode ()
+	///	{
+	///		PrintValuesInList ();
+	///		list.Add (1);
+	///	}
+	/// }
+	/// 
+	/// public class OtherOverriderWithoutCodeDuplicated : BaseClassWithoutCodeDuplicated {
+	/// 	public void MoreCode ()
+	///	{
+	///		PrintValuesInList ();
+	///		list.Remove (1);
+	///	}
+	/// }	
+	/// </code>
+	/// </example>
+
 	[Problem ("There is similar code in various methods in sibling classes.  Your code will be better if you can unify them.")]
 	[Solution ("You can apply the Pull Up Method refactoring.")]
 	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
