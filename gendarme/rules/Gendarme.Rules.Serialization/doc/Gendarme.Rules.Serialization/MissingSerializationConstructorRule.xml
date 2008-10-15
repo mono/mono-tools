@@ -1,0 +1,140 @@
+<Type Name="MissingSerializationConstructorRule" FullName="Gendarme.Rules.Serialization.MissingSerializationConstructorRule">
+  <TypeSignature Language="C#" Value="public class MissingSerializationConstructorRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Serialization</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2229:ImplementSerializationConstructors")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Add a (private for sealed, protected otherwise) serialization constructor for this type.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The required constructor for ISerializable is not present in this type.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that implements <c>System.ISerializable</c> provide a
+            serialization constructor, since the interface alone cannot force its presence.
+            The serialization constructor should be <c>private</c> for <c>sealed</c> type,
+            otherwise it should be <c>protected</c>.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad : ISerializable {
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [Serializable]
+            public sealed class Good : ISerializable {
+            	private ClassWithConstructor (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [Serializable]
+            public class Good : ISerializable {
+            	protected ClassWithConstructor (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad : ISerializable {
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [Serializable]
+            public sealed class Good : ISerializable {
+            	private ClassWithConstructor (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [Serializable]
+            public class Good : ISerializable {
+            	protected ClassWithConstructor (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public MissingSerializationConstructorRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

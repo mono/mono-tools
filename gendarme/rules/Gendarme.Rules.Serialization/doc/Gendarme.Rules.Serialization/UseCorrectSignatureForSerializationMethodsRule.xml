@@ -1,0 +1,132 @@
+<Type Name="UseCorrectSignatureForSerializationMethodsRule" FullName="Gendarme.Rules.Serialization.UseCorrectSignatureForSerializationMethodsRule">
+  <TypeSignature Language="C#" Value="public class UseCorrectSignatureForSerializationMethodsRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Serialization</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2238:ImplementSerializationMethodsCorrectly")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Fix method signature to match the runtime requirements.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The method has the wrong signature, it should return System.Void and have a single parameter of type 'System.Runtime.Serialization.StreamingContext' and be private.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for methods using the special serialization attributes,
+            <c>[OnSerializing, OnDeserializing, OnSerialized, OnDeserialized]</c>. You must
+            ensure that the methods have the correct signature. They should be <c>private</c>,
+            return <c>void</c> and have a single parameter of type <c>StreamingContext</c>.
+            Failure to have the right signature can, in some circumstances, make your assembly
+            unusable at runtime.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad {
+            	[OnSerializing]
+            	public bool Serializing (StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [Serializable]
+            public class BadClass {
+            	[OnSerializing]
+            	private void Serializing (StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad {
+            	[OnSerializing]
+            	public bool Serializing (StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [Serializable]
+            public class BadClass {
+            	[OnSerializing]
+            	private void Serializing (StreamingContext context)
+            	{
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public UseCorrectSignatureForSerializationMethodsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public override void Initialize (Gendarme.Framework.IRunner runner);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="runner" Type="Gendarme.Framework.IRunner" />
+      </Parameters>
+      <Docs>
+        <param name="runner">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

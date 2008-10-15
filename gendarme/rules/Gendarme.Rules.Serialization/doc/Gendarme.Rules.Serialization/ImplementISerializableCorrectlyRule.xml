@@ -1,0 +1,183 @@
+<Type Name="ImplementISerializableCorrectlyRule" FullName="Gendarme.Rules.Serialization.ImplementISerializableCorrectlyRule">
+  <TypeSignature Language="C#" Value="public class ImplementISerializableCorrectlyRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Serialization</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Mark with the [NonSerialized] attribute the field. This helps developers to understand better your code, and perhaps to discover quickly some errors.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Although you are implementing the ISerializable interface, there are some fields that aren't going to be serialized and aren't marked with the [NonSerialized] attribute.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that implements <c>ISerializable</c>. Such types are
+            reponsible to serialize their data by implementing <c>GetObjectData</c>. This
+            rule checks that every instance fields, not decorated with the <c>[NonSerialized]</c>
+            attribute are serialized by the <c>GetObjectData</c> method. This rule will also warn
+            if the type is unsealed and the <c>GetObjectData</c> is not <c>virtual</c>.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad : ISerializable {
+            	int foo;
+            	string bar;
+            	protected Bad (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	// extensibility is limited since GetObjectData is not virtual,
+            	// any type inheriting won't be able to serialized additional fields
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            		// 'bar' is not serialized, if not needed then the field should
+            		// be decorated with [NotSerialized]
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (virtual and not serialized):
+            <code>
+            [Serializable]
+            public class Good : ISerializable {
+            	int foo;
+            	[NotSerialized]
+            	string bar;
+            	protected Good (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (sealed type and serialized):
+            <code>
+            [Serializable]
+            public sealed class Good : ISerializable {
+            	int foo;
+            	string bar;
+            	protected Good (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            		info.AddValue ("bar", bar);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [Serializable]
+            public class Bad : ISerializable {
+            	int foo;
+            	string bar;
+            	protected Bad (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	// extensibility is limited since GetObjectData is not virtual,
+            	// any type inheriting won't be able to serialized additional fields
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            		// 'bar' is not serialized, if not needed then the field should
+            		// be decorated with [NotSerialized]
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (virtual and not serialized):
+            <code>
+            [Serializable]
+            public class Good : ISerializable {
+            	int foo;
+            	[NotSerialized]
+            	string bar;
+            	protected Good (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (sealed type and serialized):
+            <code>
+            [Serializable]
+            public sealed class Good : ISerializable {
+            	int foo;
+            	string bar;
+            	protected Good (SerializationInfo info, StreamingContext context)
+            	{
+            		foo = info.GetInt32 ("foo");
+            	}
+            	public void GetObjectData (SerializationInfo info, StreamingContext context)
+            	{
+            		info.AddValue ("foo", foo);
+            		info.AddValue ("bar", bar);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ImplementISerializableCorrectlyRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
