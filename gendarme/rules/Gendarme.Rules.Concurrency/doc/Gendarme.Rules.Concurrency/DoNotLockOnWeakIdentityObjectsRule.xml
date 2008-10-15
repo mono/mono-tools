@@ -1,0 +1,101 @@
+<Type Name="DoNotLockOnWeakIdentityObjectsRule" FullName="Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule">
+  <TypeSignature Language="C#" Value="public class DoNotLockOnWeakIdentityObjectsRule : Gendarme.Rules.Concurrency.LockAnalyzerRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Concurrency</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Rules.Concurrency.LockAnalyzerRule</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("To be safe from outside always lock on something that is totally private to your code.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method use a lock on a object with a weak identity, i.e. accessible across application domains.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule ensures there aren't locked objects with weak identity.
+            An object with weak identity means that it can be accessed across
+            different application domains and may cause deadlocks or other
+            concurrency issues.
+            The following types have a weak identity:
+            <list type="bullet"><item><description><c>System.MarshalByRefObject</c></description></item><item><description><c>System.OutOfMemoryException</c></description></item><item><description><c>System.Reflection.MemberInfo</c></description></item><item><description><c>System.Reflection.ParameterInfo</c></description></item><item><description><c>System.ExecutionEngineException</c></description></item><item><description><c>System.StackOverflowException</c></description></item><item><description><c>System.String</c></description></item><item><description><c>System.Threading.Thread</c></description></item></list></summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void WeakIdLocked ()
+            {
+            	lock ("CustomString") {
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void WeakIdNotLocked ()
+            {
+            	Phone phone = new Phone ();
+            lock (phone) {
+            }
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void WeakIdLocked ()
+            {
+            	lock ("CustomString") {
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void WeakIdNotLocked ()
+            {
+            	Phone phone = new Phone ();
+            lock (phone) {
+            }
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotLockOnWeakIdentityObjectsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Analyze">
+      <MemberSignature Language="C#" Value="public override void Analyze (Mono.Cecil.MethodDefinition method, Mono.Cecil.Cil.Instruction ins);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+        <Parameter Name="ins" Type="Mono.Cecil.Cil.Instruction" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <param name="ins">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

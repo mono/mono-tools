@@ -1,0 +1,104 @@
+<Type Name="WriteStaticFieldFromInstanceMethodRule" FullName="Gendarme.Rules.Concurrency.WriteStaticFieldFromInstanceMethodRule">
+  <TypeSignature Language="C#" Value="public class WriteStaticFieldFromInstanceMethodRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Concurrency</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Move initialization to the static constructor or ensure appropriate locking.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This instance method writes to static fields. This may cause problem with multiple instances and in multithreaded applications.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule is used to check for instance methods that writes values in static fields.
+            This may cause problem when multiple instance of the type exists and when used in
+            multithreaded applications.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            static int default_value;
+            public int Value {
+            	get {
+            		if (default_value == 0)
+            			default_value = -1;
+            		return (value &gt; default_value) ? value : 0;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            static int default_value = -1;
+            public int Value {
+            	get { return (value &gt; default_value) ? value : 0; }
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            static int default_value;
+            public int Value {
+            	get {
+            		if (default_value == 0)
+            			default_value = -1;
+            		return (value &gt; default_value) ? value : 0;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            static int default_value = -1;
+            public int Value {
+            	get { return (value &gt; default_value) ? value : 0; }
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public WriteStaticFieldFromInstanceMethodRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

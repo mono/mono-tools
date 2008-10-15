@@ -1,0 +1,111 @@
+<Type Name="NonConstantStaticFieldsShouldNotBeVisibleRule" FullName="Gendarme.Rules.Concurrency.NonConstantStaticFieldsShouldNotBeVisibleRule">
+  <TypeSignature Language="C#" Value="public class NonConstantStaticFieldsShouldNotBeVisibleRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Concurrency</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change the field to read-only, mark it [ThreadStatic] or make it non visible outside the assembly.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type has some static fields that are not constant. They may represent problems in multithreaded applications.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns if a non constant public static field is detected.
+            In a multi-threaded environment access to those fields needs to be synchronized.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            class HasPublicStaticField {
+            	public static ComplexObject Field;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class FieldIsReadonly {
+            	public readonly static ComplexObject Field = new ComplexObject();
+            }
+            </code><code>
+            class UseThreadStatic {
+            	[ThreadStatic]
+            	public static ComplexObject Field;
+            	public static InitializeThread ()
+            	{
+            		if (Field == null)
+            			Field = new ComplexObject ();
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            class HasPublicStaticField {
+            	public static ComplexObject Field;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class FieldIsReadonly {
+            	public readonly static ComplexObject Field = new ComplexObject();
+            }
+            </code><code>
+            class UseThreadStatic {
+            	[ThreadStatic]
+            	public static ComplexObject Field;
+            	public static InitializeThread ()
+            	{
+            		if (Field == null)
+            			Field = new ComplexObject ();
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public NonConstantStaticFieldsShouldNotBeVisibleRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
