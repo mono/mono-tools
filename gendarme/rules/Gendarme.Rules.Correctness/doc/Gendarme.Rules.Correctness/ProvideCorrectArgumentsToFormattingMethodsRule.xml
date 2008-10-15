@@ -1,0 +1,90 @@
+<Type Name="ProvideCorrectArgumentsToFormattingMethodsRule" FullName="Gendarme.Rules.Correctness.ProvideCorrectArgumentsToFormattingMethodsRule">
+  <TypeSignature Language="C#" Value="public class ProvideCorrectArgumentsToFormattingMethodsRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Correctness</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Pass the correct arguments to the formatting method.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("You are calling to a Format method without the correct arguments.  This could throw an unexpected FormatException.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks that the format string provided to <c>String.Format</c> calls
+            match with its parameters.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.2</remarks>
+    <example>
+            Bad examples:
+            <code>
+            	string s1 = String.Format ("There is nothing to format here!");
+            	string s2 = String.Format ("Hello {0}!"); // no argument to back {0}
+            </code></example>
+    <example>
+            Good examples:
+            <code>
+            	string s1 = "There is nothing to format here!";
+            	string s2 = String.Format ("Hello {0}!", name);
+            </code></example>
+    <example>
+            Bad examples:
+            <code>
+            	string s1 = String.Format ("There is nothing to format here!");
+            	string s2 = String.Format ("Hello {0}!"); // no argument to back {0}
+            </code></example>
+    <example>
+            Good examples:
+            <code>
+            	string s1 = "There is nothing to format here!";
+            	string s2 = String.Format ("Hello {0}!", name);
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ProvideCorrectArgumentsToFormattingMethodsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,143 @@
+<Type Name="MethodCanBeMadeStaticRule" FullName="Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule">
+  <TypeSignature Language="C#" Value="public class MethodCanBeMadeStaticRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Correctness</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1822:MarkMembersAsStatic")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Make this method static.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method does not use any instance fields, properties or methods and can be made static.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for methods that do not require anything from the current
+            instance. Those methods can be converted into static methods, which helps
+            a bit the performance (the hidden <c>this</c> parameter can be omitted),
+            and clarify the API.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	private int x, y, z;
+            	bool Valid (int value)
+            	{
+            		// the validation has no need to know the instance values
+            		return (value &gt; 0);
+            	}
+            	public int X {
+            		get {
+            			return x;
+            		}
+            		set {
+            			if (!Valid (value)) {
+            				throw ArgumentException ("X");
+            			}
+            			x = value;
+            		}
+            	}
+            	// same for Y and Z
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	private int x, y, z;
+            	static bool Valid (int value)
+            	{
+            		return (value &gt; 0);
+            	}
+            	// same X (and Y and Z) as before
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	private int x, y, z;
+            	bool Valid (int value)
+            	{
+            		// the validation has no need to know the instance values
+            		return (value &gt; 0);
+            	}
+            	public int X {
+            		get {
+            			return x;
+            		}
+            		set {
+            			if (!Valid (value)) {
+            				throw ArgumentException ("X");
+            			}
+            			x = value;
+            		}
+            	}
+            	// same for Y and Z
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	private int x, y, z;
+            	static bool Valid (int value)
+            	{
+            		return (value &gt; 0);
+            	}
+            	// same X (and Y and Z) as before
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public MethodCanBeMadeStaticRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,36 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Correctness" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.Correctness">
+      <Type Name="AttributeStringLiteralsShouldParseCorrectlyRule" Kind="Class" />
+      <Type Name="AvoidConstructorsInStaticTypesRule" Kind="Class" />
+      <Type Name="AvoidFloatingPointEqualityRule" Kind="Class" />
+      <Type Name="BadRecursiveInvocationRule" Kind="Class" />
+      <Type Name="CallingEqualsWithNullArgRule" Kind="Class" />
+      <Type Name="DoNotCompareWithNaNRule" Kind="Class" />
+      <Type Name="DoNotRoundIntegersRule" Kind="Class" />
+      <Type Name="FloatingComparisonRule" Kind="Class" />
+      <Type Name="MethodCanBeMadeStaticRule" Kind="Class" />
+      <Type Name="ProvideCorrectArgumentsToFormattingMethodsRule" Kind="Class" />
+      <Type Name="ReviewCastOnIntegerDivisionRule" Kind="Class" />
+      <Type Name="ReviewCastOnIntegerMultiplicationRule" Kind="Class" />
+      <Type Name="ReviewDoubleAssignmentRule" Kind="Class" />
+      <Type Name="ReviewSelfAssignmentRule" Kind="Class" />
+      <Type Name="ReviewUselessControlFlowRule" Kind="Class" />
+      <Type Name="ReviewUseOfInt64BitsToDoubleRule" Kind="Class" />
+      <Type Name="ReviewUseOfModuloOneOnIntegersRule" Kind="Class" />
+      <Type Name="UseValueInPropertySetterRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Correctness</Title>
+</Overview>

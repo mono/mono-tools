@@ -1,0 +1,141 @@
+<Type Name="AvoidFloatingPointEqualityRule" FullName="Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule">
+  <TypeSignature Language="C#" Value="public class AvoidFloatingPointEqualityRule : Gendarme.Rules.Correctness.FloatingComparisonRule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Correctness</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Rules.Correctness.FloatingComparisonRule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Try comparing the absolute difference between the two floating point values and a small constant value.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method contais some code that performs equality operation between floating points.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            Comparing floating points values isn't easy, because simple values, such as 0.2,
+            cannot be precisely represented. This rule ensures the code doesn't contains
+            floating point [in]equality comparison for <c>Single</c> and <c>Double</c> values.
+            For more information:
+            <list><item><description>[http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm Floating Point Comparison (General Problem)]</description></item><item><description>[http://www.yoda.arachsys.com/csharp/floatingpoint.html Another article about floating point comparison (more .NET adapted)]</description></item></list></summary>
+    <remarks>Prior to Gendarme 2.2 this rule was named FloatComparisonRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            void AMethod ()
+            {
+            	float f1 = 0.1;
+            	float f2 = 0.001 * 100;
+            	if (f1 == f2) {
+            		// ^^^ this equality can be false !
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (delta):
+            <code>
+            const float delta = 0.000001;
+            void AMethod ()
+            {
+            	float f1 = 0.1;
+            	float f2 = 0.001 * 100;
+            	if (Math.Abs (f1 - f2) &lt; delta) {
+            		// this will work with known value but in real-life
+            		// you may hit [Positive|Negative]Infinity and NaN
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (decimal):
+            <code>
+            void BMethod ()
+            {
+            	decimal d1 = 0.1m;
+            	decimal d2 = 0.001m * 100;
+            	// decimals are slower but keep their precision
+            	if (d1 == d2) {
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            void AMethod ()
+            {
+            	float f1 = 0.1;
+            	float f2 = 0.001 * 100;
+            	if (f1 == f2) {
+            		// ^^^ this equality can be false !
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (delta):
+            <code>
+            const float delta = 0.000001;
+            void AMethod ()
+            {
+            	float f1 = 0.1;
+            	float f2 = 0.001 * 100;
+            	if (Math.Abs (f1 - f2) &lt; delta) {
+            		// this will work with known value but in real-life
+            		// you may hit [Positive|Negative]Infinity and NaN
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (decimal):
+            <code>
+            void BMethod ()
+            {
+            	decimal d1 = 0.1m;
+            	decimal d2 = 0.001m * 100;
+            	// decimals are slower but keep their precision
+            	if (d1 == d2) {
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidFloatingPointEqualityRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

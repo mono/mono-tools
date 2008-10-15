@@ -1,0 +1,106 @@
+<Type Name="CallingEqualsWithNullArgRule" FullName="Gendarme.Rules.Correctness.CallingEqualsWithNullArgRule">
+  <TypeSignature Language="C#" Value="public class CallingEqualsWithNullArgRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Correctness</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Pass some other appropriate argument than null, as passing a null parameter should always return false.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method calls Equals(object) with a null argument.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for methods that <c>Equals</c> with a <c>null</c> real parameter.
+            Such calls should always return <c>false</c>.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void MakeStuff ()
+            {
+            	MyClass myClassInstance = new MyClass ();
+            	MyClass otherClassInstance = null;
+            	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void MakeStuff ()
+            {
+            	MyClass myClassInstance = new MyClass ();
+            	MyClass otherClassInstance = new MyClass ();
+            	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void MakeStuff ()
+            {
+            	MyClass myClassInstance = new MyClass ();
+            	MyClass otherClassInstance = null;
+            	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void MakeStuff ()
+            {
+            	MyClass myClassInstance = new MyClass ();
+            	MyClass otherClassInstance = new MyClass ();
+            	Console.WriteLine (myClassInstance.Equals (otherClassInstance));
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public CallingEqualsWithNullArgRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
