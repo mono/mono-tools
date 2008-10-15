@@ -1,0 +1,115 @@
+<Type Name="DoNotDestroyStackTraceRule" FullName="Gendarme.Rules.Exceptions.DoNotDestroyStackTraceRule">
+  <TypeSignature Language="C#" Value="public class DoNotDestroyStackTraceRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Exceptions</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2200:RethrowToPreserveStackDetails")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("A catch block in the method throws back the caught exception which destroys the stack trace.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule check method's catch block to see if they are throwing back the caught
+            exception. Doing so would destroy the stack trace of the original exception. If you
+            need to (re-)throw the exception caught by the catch block, you should use <c>throw;</c>
+            instead of <c>throw ex;</c>.
+            </summary>
+    <remarks>Prior to Gendarme 2.0 this rule was named  DontDestroyStackTraceRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            try {
+            	Int32.Parse ("Broken!");
+            }
+            catch (Exception ex) {
+            	Assert.IsNotNull (ex);
+            	throw ex;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            try {
+            	Int32.Parse ("Broken!");
+            }
+            catch (Exception ex) {
+            	Assert.IsNotNull (ex);
+            	throw;
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            try {
+            	Int32.Parse ("Broken!");
+            }
+            catch (Exception ex) {
+            	Assert.IsNotNull (ex);
+            	throw ex;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            try {
+            	Int32.Parse ("Broken!");
+            }
+            catch (Exception ex) {
+            	Assert.IsNotNull (ex);
+            	throw;
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotDestroyStackTraceRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,116 @@
+<Type Name="DoNotThrowReservedExceptionRule" FullName="Gendarme.Rules.Exceptions.DoNotThrowReservedExceptionRule">
+  <TypeSignature Language="C#" Value="public class DoNotThrowReservedExceptionRule : Gendarme.Rules.Exceptions.NewExceptionsRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Exceptions</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Rules.Exceptions.NewExceptionsRule</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Select and create a better suited exception type, one that is not reserved by the runtime.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException or OutOfMemoryException.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule check for methods that create reserved exceptions like
+            <c>System.ExecutionEngineException</c>, <c>System.IndexOutOfRangeException</c>,
+            <c>NullReferenceException</c> or <c>System.OutOfMemoryException</c>. Those exceptions
+            should only be thrown by the .NET runtime.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void Add (object obj)
+            {
+            	if (obj == null)
+            		throw new NullReferenceException ("obj");
+            	Inner.Add (obj);
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void Add (object obj)
+            {
+            	if (obj == null)
+            		throw new ArgumentNullException ("obj");
+            	Inner.Add (obj);
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void Add (object obj)
+            {
+            	if (obj == null)
+            		throw new NullReferenceException ("obj");
+            	Inner.Add (obj);
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void Add (object obj)
+            {
+            	if (obj == null)
+            		throw new ArgumentNullException ("obj");
+            	Inner.Add (obj);
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotThrowReservedExceptionRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetExceptionTypes">
+      <MemberSignature Language="C#" Value="protected override string[] GetExceptionTypes ();" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String[]</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Severity">
+      <MemberSignature Language="C#" Value="protected override Gendarme.Framework.Severity Severity { get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.Severity</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

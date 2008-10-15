@@ -1,0 +1,53 @@
+<Type Name="ExecutionPathFactory" FullName="Gendarme.Rules.Exceptions.Impl.ExecutionPathFactory">
+  <TypeSignature Language="C#" Value="public class ExecutionPathFactory" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Exceptions</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ExecutionPathFactory (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CreatePaths">
+      <MemberSignature Language="C#" Value="public System.Collections.Generic.IList&lt;Gendarme.Rules.Exceptions.Impl.ExecutionPathCollection&gt; CreatePaths (Mono.Cecil.Cil.Instruction start, Mono.Cecil.Cil.Instruction end);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.IList&lt;Gendarme.Rules.Exceptions.Impl.ExecutionPathCollection&gt;</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="start" Type="Mono.Cecil.Cil.Instruction" />
+        <Parameter Name="end" Type="Mono.Cecil.Cil.Instruction" />
+      </Parameters>
+      <Docs>
+        <param name="start">To be added.</param>
+        <param name="end">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
