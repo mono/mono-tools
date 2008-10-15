@@ -1,0 +1,114 @@
+<Type Name="StaticConstructorsShouldBePrivateRule" FullName="Gendarme.Rules.Security.StaticConstructorsShouldBePrivateRule">
+  <TypeSignature Language="C#" Value="public class StaticConstructorsShouldBePrivateRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2121:StaticConstructorsShouldBePrivate")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change the static constructor visibility to private.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Static constructors must be private because otherwise they may be called once or multiple times from user code.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            To avoid calls from user code, all static constructors must be private. C# allows
+            only private static constructors but some .NET languages (including VB .NET) do
+            permit defining non-private static constructors (Shared in VB.NET), which is not
+            a good practice.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example (VB.NET):
+            <code>
+            Public Class PublicCctor
+            	Public Shared Sub New ()
+            	End Sub
+            End Class
+            </code></example>
+    <example>
+            Good example (C#):
+            <code>
+            public class PrivateCctor {
+            	~PrivateCctor () { } // it is private
+            }
+            </code></example>
+    <example>
+            Good example (VB.NET):
+            <code>
+            Public Class PrivateCctor
+            Private Shared Sub New ()
+            End Sub
+            End Class
+            </code></example>
+    <example>
+            Bad example (VB.NET):
+            <code>
+            Public Class PublicCctor
+            	Public Shared Sub New ()
+            	End Sub
+            End Class
+            </code></example>
+    <example>
+            Good example (C#):
+            <code>
+            public class PrivateCctor {
+            	~PrivateCctor () { } // it is private
+            }
+            </code></example>
+    <example>
+            Good example (VB.NET):
+            <code>
+            Public Class PrivateCctor
+            Private Shared Sub New ()
+            End Sub
+            End Class
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public StaticConstructorsShouldBePrivateRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

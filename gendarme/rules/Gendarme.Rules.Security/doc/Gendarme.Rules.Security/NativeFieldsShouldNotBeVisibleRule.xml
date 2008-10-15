@@ -1,0 +1,111 @@
+<Type Name="NativeFieldsShouldNotBeVisibleRule" FullName="Gendarme.Rules.Security.NativeFieldsShouldNotBeVisibleRule">
+  <TypeSignature Language="C#" Value="public class NativeFieldsShouldNotBeVisibleRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Native fields are best hidden or, if required, read-only.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type expose native fields that aren't read-only.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks if a class exposes native fields. Native fields should not
+            be public because you lose control over their lifetime (other code could free
+            the memory or use it after it has been freed).
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class HasPublicNativeField {
+            	public IntPtr NativeField;
+            }
+            </code></example>
+    <example>
+            Good example (hide):
+            <code>
+            class HasPrivateNativeField {
+            	private IntPtr NativeField;
+            	public void DoSomethingWithNativeField ();
+            }
+            </code></example>
+    <example>
+            Good example (read-only):
+            <code>
+            class HasReadOnlyNativeField {
+            	public readonly IntPtr NativeField;
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class HasPublicNativeField {
+            	public IntPtr NativeField;
+            }
+            </code></example>
+    <example>
+            Good example (hide):
+            <code>
+            class HasPrivateNativeField {
+            	private IntPtr NativeField;
+            	public void DoSomethingWithNativeField ();
+            }
+            </code></example>
+    <example>
+            Good example (read-only):
+            <code>
+            class HasReadOnlyNativeField {
+            	public readonly IntPtr NativeField;
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public NativeFieldsShouldNotBeVisibleRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,112 @@
+<Type Name="ArrayFieldsShouldNotBeReadOnlyRule" FullName="Gendarme.Rules.Security.ArrayFieldsShouldNotBeReadOnlyRule">
+  <TypeSignature Language="C#" Value="public class ArrayFieldsShouldNotBeReadOnlyRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2105:ArrayFieldsShouldNotBeReadOnly")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Replace the array with a method returning a clone of the array or a read-only collection.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type contains read-only array(s), however values inside the array(s) are not read-only.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns if a type declares a public <c>readonly</c> array field.
+            Marking a field <c>readonly</c> only prevents the field from being assigned
+            a different value, the object itself can still be changed. This means, that
+            the elements inside the array can still be changed.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            class Bad {
+            	public readonly string[] Array = new string[] { "A", "B" };
+            }
+            HasPublicReadonlyArray obj = HasPublicReadonlyArray ();
+            obj.Array[0] = "B"; // valid
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class Good {
+            	private readonly string[] array = new string[] { "A", "B" };
+            	public string[] GetArray ()
+            	{
+            		return (string []) array.Clone();
+            	}
+            }
+            string[] obj = new HasPublicReadonlyArray ().GetArray ();
+            obj [0] = "B"; // valid, but has no effect on other users
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            class Bad {
+            	public readonly string[] Array = new string[] { "A", "B" };
+            }
+            HasPublicReadonlyArray obj = HasPublicReadonlyArray ();
+            obj.Array[0] = "B"; // valid
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class Good {
+            	private readonly string[] array = new string[] { "A", "B" };
+            	public string[] GetArray ()
+            	{
+            		return (string []) array.Clone();
+            	}
+            }
+            string[] obj = new HasPublicReadonlyArray ().GetArray ();
+            obj [0] = "B"; // valid, but has no effect on other users
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ArrayFieldsShouldNotBeReadOnlyRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
