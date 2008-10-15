@@ -1,0 +1,105 @@
+<Type Name="ConsiderCustomAccessorsForNonVisibleEventsRule" FullName="Gendarme.Rules.Performance.ConsiderCustomAccessorsForNonVisibleEventsRule">
+  <TypeSignature Language="C#" Value="public class ConsiderCustomAccessorsForNonVisibleEventsRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("For non-visible events looks if your code could work without being synchronized by supplying your own accessor implementations.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The compiler created add/remove event accessors are, by default, synchronized, i.e. the runtime will wrap them inside a Monitor.Enter/Exit.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule looks for non-visible events to see if their add/remove accessors are
+            the default ones. The default, compiler generated, accessor are marked as synchronized
+            which means that the runtime will them between <c>Monitor.Enter</c> and
+            <c>Monitor.Exit</c> calls. This is the safest approach unless, for non-visible events,
+            you have a performance bottleneck around the events. In this case you should review
+            if your code needs the locks or if you can provide some alternatives to them.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            private event EventHandler&lt;TestEventArgs&gt; TimeCritical;
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            static object TimeCriticalEvent = new object ();
+            EventHandlerList events = new EventHandlerList ();
+            private event EventHandler&lt;TestEventArgs&gt; TimeCritical {
+            	add {
+            		events.AddHandler (TimeCriticalEvent, value);
+            	}
+            	remove {
+            		events.AddHandler (TimeCriticalEvent, value);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            private event EventHandler&lt;TestEventArgs&gt; TimeCritical;
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            static object TimeCriticalEvent = new object ();
+            EventHandlerList events = new EventHandlerList ();
+            private event EventHandler&lt;TestEventArgs&gt; TimeCritical {
+            	add {
+            		events.AddHandler (TimeCriticalEvent, value);
+            	}
+            	remove {
+            		events.AddHandler (TimeCriticalEvent, value);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ConsiderCustomAccessorsForNonVisibleEventsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

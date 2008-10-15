@@ -1,0 +1,116 @@
+<Type Name="AvoidUnsealedConcreteAttributesRule" FullName="Gendarme.Rules.Performance.AvoidUnsealedConcreteAttributesRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnsealedConcreteAttributesRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Unless you plan to inherit from this attribute you should consider to seal it's type.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Due performance issues, concrete attributes should be sealed.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule is used to warn the developer if both unsealed and concrete (not abstract)
+            attribute types are defined in the assembly. If you want other attributes to be able
+            to derive from your attribute class, make it <c>abstract</c>. Otherwise, make them
+            <c>sealed</c> to improve the performance.
+            </summary>
+    <remarks>Before Gendarme 2.0 this rule was named AvoidUnsealedAttributesRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public class BadAttribute : Attribute {
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public sealed class SealedAttribute : Attribute {
+            }
+            </code></example>
+    <example>
+            Good example (abstract and sealed):
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public abstract class AbstractAttribute : Attribute {
+            }
+            [AttributeUsage (AttributeTargets.All)]
+            public sealed class ConcreteAttribute : AbstractAttribute {
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public class BadAttribute : Attribute {
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public sealed class SealedAttribute : Attribute {
+            }
+            </code></example>
+    <example>
+            Good example (abstract and sealed):
+            <code>
+            [AttributeUsage (AttributeTargets.All)]
+            public abstract class AbstractAttribute : Attribute {
+            }
+            [AttributeUsage (AttributeTargets.All)]
+            public sealed class ConcreteAttribute : AbstractAttribute {
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnsealedConcreteAttributesRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,114 @@
+<Type Name="AvoidRepetitiveCastsRule" FullName="Gendarme.Rules.Performance.AvoidRepetitiveCastsRule">
+  <TypeSignature Language="C#" Value="public class AvoidRepetitiveCastsRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change the logic to make sure the (somewhat expensive) cast is done a single time.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The method seems to repeat the same cast operation multiple times.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns multiple casts are done on the same value, for the same type.
+            Casts are expensive so reducing them, by changing the logic or caching the
+            casted value, can help performance.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            foreach (object o in list) {
+            	// first cast (is)
+            	if (o is ICollection) {
+            		// second cast (as) if item implements ICollection
+            		Process (o as ICollection);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            foreach (object o in list) {
+            	// a single cast (as) per item
+            	ICollection c = (o as ICollection);
+            	if (c != null) {
+            		SingleCast (c);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            foreach (object o in list) {
+            	// first cast (is)
+            	if (o is ICollection) {
+            		// second cast (as) if item implements ICollection
+            		Process (o as ICollection);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            foreach (object o in list) {
+            	// a single cast (as) per item
+            	ICollection c = (o as ICollection);
+            	if (c != null) {
+            		SingleCast (c);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidRepetitiveCastsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,141 @@
+<Type Name="UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule" FullName="Gendarme.Rules.Performance.UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule">
+  <TypeSignature Language="C#" Value="public class UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Add a call to GC.SuppressFinalize inside your Dispose method.s")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The type has a finalizer and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside Dispose.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule catches a common problem when a type has a finalizer (called a destructor in C#)
+            and implements <c>System.IDisposable</c>. In this case the <c>Dispose</c> method should
+            call <c>System.GC.SuppressFinalize</c> to avoid the finalizer to be, needlessly, called.
+            </summary>
+    <remarks>Prior to Gendarme 2.2 this rule was named IDisposableWithDestructorWithoutSuppressFinalizeRule</remarks>
+    <example>
+            Bad example:
+            <code>
+            class Test: SomeClass, IDisposable {
+            	~Test ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            	public void Dispose ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class Test: SomeClass, IDisposable {
+            	~Test ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            	public void Dispose ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            		GC.SuppressFinalize (this);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            class Test: SomeClass, IDisposable {
+            	~Test ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            	public void Dispose ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class Test: SomeClass, IDisposable {
+            	~Test ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            	}
+            	public void Dispose ()
+            	{
+            		if (ptr != IntPtr.Zero) {
+            			Free (ptr);
+            		}
+            		GC.SuppressFinalize (this);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

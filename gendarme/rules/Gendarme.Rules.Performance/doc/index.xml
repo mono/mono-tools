@@ -1,0 +1,45 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Performance" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.Performance">
+      <Type Name="AvoidLargeNumberOfLocalVariablesRule" Kind="Class" />
+      <Type Name="AvoidLargeStructureRule" Kind="Class" />
+      <Type Name="AvoidRepetitiveCastsRule" Kind="Class" />
+      <Type Name="AvoidReturningArraysOnPropertiesRule" Kind="Class" />
+      <Type Name="AvoidTypeGetTypeForConstantStringsRule" Kind="Class" />
+      <Type Name="AvoidUncalledPrivateCodeRule" Kind="Class" />
+      <Type Name="AvoidUninstantiatedInternalClassesRule" Kind="Class" />
+      <Type Name="AvoidUnneededCallsOnStringRule" Kind="Class" />
+      <Type Name="AvoidUnneededFieldInitializationRule" Kind="Class" />
+      <Type Name="AvoidUnneededUnboxingRule" Kind="Class" />
+      <Type Name="AvoidUnsealedConcreteAttributesRule" Kind="Class" />
+      <Type Name="AvoidUnsealedUninheritedInternalTypeRule" Kind="Class" />
+      <Type Name="AvoidUnusedParametersRule" Kind="Class" />
+      <Type Name="AvoidUnusedPrivateFieldsRule" Kind="Class" />
+      <Type Name="CompareWithEmptyStringEfficientlyRule" Kind="Class" />
+      <Type Name="ConsiderCustomAccessorsForNonVisibleEventsRule" Kind="Class" />
+      <Type Name="DoNotIgnoreMethodResultRule" Kind="Class" />
+      <Type Name="ImplementEqualsTypeRule" Kind="Class" />
+      <Type Name="MathMinMaxCandidateRule" Kind="Class" />
+      <Type Name="OverrideValueTypeDefaultsRule" Kind="Class" />
+      <Type Name="PreferLiteralOverInitOnlyFieldsRule" Kind="Class" />
+      <Type Name="RemoveUnneededFinalizerRule" Kind="Class" />
+      <Type Name="RemoveUnusedLocalVariablesRule" Kind="Class" />
+      <Type Name="UseIsOperatorRule" Kind="Class" />
+      <Type Name="UseStringEmptyRule" Kind="Class" />
+      <Type Name="UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule" Kind="Class" />
+      <Type Name="UseTypeEmptyTypesRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Performance</Title>
+</Overview>

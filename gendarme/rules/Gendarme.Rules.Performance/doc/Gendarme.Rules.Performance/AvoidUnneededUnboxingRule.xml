@@ -1,0 +1,138 @@
+<Type Name="AvoidUnneededUnboxingRule" FullName="Gendarme.Rules.Performance.AvoidUnneededUnboxingRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnneededUnboxingRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Cast the variable, one time, into a temporary variable and use it afterward.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method unbox (convert from object to a value type) several times the same variable.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule check methods that unbox several time the same value type. Since each unbox
+            operation is costly, as it involves a copy, the code should be rewritten to minimize
+            unbox operations. E.g. using a local variable of the right value type should remove
+            need for more than one unbox instruction per variable.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public struct Message {
+            	private int msg;
+            	private IntPtr hwnd, lParam, wParam, IntPtr result;
+            	public override bool Equals (object o)
+            	{
+            		bool result = (this.msg == ((Message) o).msg);
+            		result &amp;= (this.hwnd == ((Message) o).hwnd);
+            		result &amp;= (this.lParam == ((Message) o).lParam);
+            		result &amp;= (this.wParam == ((Message) o).wParam);
+            		result &amp;= (this.result == ((Message) o).result);
+            		return result;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public struct Message {
+            	private int msg;
+            	private IntPtr hwnd, lParam, wParam, IntPtr result;
+            	public override bool Equals (object o)
+            	{
+            		Message msg = (Message) o;
+            		bool result = (this.msg == msg.msg);
+            		result &amp;= (this.hwnd == msg.hwnd);
+            		result &amp;= (this.lParam == msg.lParam);
+            		result &amp;= (this.wParam == msg.wParam);
+            		result &amp;= (this.result == msg.result);
+            		return result;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public struct Message {
+            	private int msg;
+            	private IntPtr hwnd, lParam, wParam, IntPtr result;
+            	public override bool Equals (object o)
+            	{
+            		bool result = (this.msg == ((Message) o).msg);
+            		result &amp;= (this.hwnd == ((Message) o).hwnd);
+            		result &amp;= (this.lParam == ((Message) o).lParam);
+            		result &amp;= (this.wParam == ((Message) o).wParam);
+            		result &amp;= (this.result == ((Message) o).result);
+            		return result;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public struct Message {
+            	private int msg;
+            	private IntPtr hwnd, lParam, wParam, IntPtr result;
+            	public override bool Equals (object o)
+            	{
+            		Message msg = (Message) o;
+            		bool result = (this.msg == msg.msg);
+            		result &amp;= (this.hwnd == msg.hwnd);
+            		result &amp;= (this.lParam == msg.lParam);
+            		result &amp;= (this.wParam == msg.wParam);
+            		result &amp;= (this.result == msg.result);
+            		return result;
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnneededUnboxingRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,104 @@
+<Type Name="AvoidUnsealedUninheritedInternalTypeRule" FullName="Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalTypeRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnsealedUninheritedInternalTypeRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("You should seal this type, unless you plan to inherit from this type in the near-future.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Due to performance issues, types which are not visible outside of the assembly and which have no inherited types within the assembly should be sealed.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            Since a JIT is able to apply more optimization to <c>sealed</c> types this rule checks
+            for non-visible (outside the current assembly) and non-sealed types to find the ones
+            that no other types inherit from.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0 and, before 2.2, was named AvoidUnsealedUninheritedInternalClassesRule</remarks>
+    <example>
+            Bad example:
+            <code>
+            // this one is correct since MyInheritedStuff inherits from this class
+            internal class MyBaseStuff {
+            }
+            // this one is bad, since no other class inherit from MyConcreteStuff
+            internal class MyInheritedStuff : MyBaseStuff {
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            // this one is correct since the class is abstract
+            internal abstract class MyAbstractStuff {
+            }
+            // this one is correct since the class is sealed
+            internal sealed class MyConcreteStuff : MyAbstractStuff {
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            // this one is correct since MyInheritedStuff inherits from this class
+            internal class MyBaseStuff {
+            }
+            // this one is bad, since no other class inherit from MyConcreteStuff
+            internal class MyInheritedStuff : MyBaseStuff {
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            // this one is correct since the class is abstract
+            internal abstract class MyAbstractStuff {
+            }
+            // this one is correct since the class is sealed
+            internal sealed class MyConcreteStuff : MyAbstractStuff {
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnsealedUninheritedInternalTypeRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

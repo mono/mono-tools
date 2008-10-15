@@ -1,0 +1,164 @@
+<Type Name="AvoidUninstantiatedInternalClassesRule" FullName="Gendarme.Rules.Performance.AvoidUninstantiatedInternalClassesRule">
+  <TypeSignature Language="C#" Value="public class AvoidUninstantiatedInternalClassesRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Remove the type or add the code that uses it. If the type contains only static methods then either add the static modifier to the type or add the private construtor to the type to prevent the compiler from emitting a default public instance constructor.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The internal type is not instantiated by code within the assembly.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule will check for all internal types and look if they are being used inside the
+            assembly. Such types are often leftover (dead code) or debugging/testing code and is
+            not required. However in some case the types might by needed, e.g. when accessed thru
+            reflection or if the <c>[InternalsVisibleTo]</c> attribute is used on the assembly.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            // defined, but never instantiated
+            internal class MyInternalClass {
+            	// ...
+            }
+            public class MyClass {
+            	static void Main ()
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            internal class MyInternalClass {
+            	// ...
+            }
+            public class MyClass {
+            	static void Main ()
+            	{
+            		MyInternalClass c = new MyInternalClass ();
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            // defined, but never instantiated
+            internal class MyInternalClass {
+            	// ...
+            }
+            public class MyClass {
+            	static void Main ()
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            internal class MyInternalClass {
+            	// ...
+            }
+            public class MyClass {
+            	static void Main ()
+            	{
+            		MyInternalClass c = new MyInternalClass ();
+            		// ...
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUninstantiatedInternalClassesRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ProcessMethod">
+      <MemberSignature Language="C#" Value="public static void ProcessMethod (Mono.Cecil.MethodDefinition method, System.Collections.Generic.HashSet&lt;Mono.Cecil.TypeReference&gt; typeset);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+        <Parameter Name="typeset" Type="System.Collections.Generic.HashSet&lt;Mono.Cecil.TypeReference&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <param name="typeset">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ProcessType">
+      <MemberSignature Language="C#" Value="public static void ProcessType (Mono.Cecil.TypeDefinition type, System.Collections.Generic.HashSet&lt;Mono.Cecil.TypeReference&gt; typeset);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+        <Parameter Name="typeset" Type="System.Collections.Generic.HashSet&lt;Mono.Cecil.TypeReference&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <param name="typeset">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

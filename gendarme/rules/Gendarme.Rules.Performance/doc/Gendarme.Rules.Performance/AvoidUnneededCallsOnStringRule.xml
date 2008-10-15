@@ -1,0 +1,100 @@
+<Type Name="AvoidUnneededCallsOnStringRule" FullName="Gendarme.Rules.Performance.AvoidUnneededCallsOnStringRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnneededCallsOnStringRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Remove the unneeded call(s) on the string instance.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method needlessly calls some method(s) on a string instance. This may produce some performance penalities.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule detects when some methods, like <c>Clone()</c>, <c>Substring(0)</c>,
+            <c>ToString()</c> or <c>ToString(IFormatProvider)</c>, are being called on a
+            string instance. Since every case returns the exact same reference the extra
+            call(s) only slow downs performance.
+            </summary>
+    <remarks>Prior to Gendarme 2.0 this rule was more limited and named AvoidToStringOnStringsRule</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void PrintName (string name)
+            {
+            	Console.WriteLine ("Name: {0}", name.ToString ());
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void PrintName (string name)
+            {
+            	Console.WriteLine ("Name: {0}", name);
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void PrintName (string name)
+            {
+            	Console.WriteLine ("Name: {0}", name.ToString ());
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void PrintName (string name)
+            {
+            	Console.WriteLine ("Name: {0}", name);
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnneededCallsOnStringRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,125 @@
+<Type Name="AvoidUnneededFieldInitializationRule" FullName="Gendarme.Rules.Performance.AvoidUnneededFieldInitializationRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnneededFieldInitializationRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1805:DoNotInitializeUnnecessarily")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Remove the unneeded initialization from the constructors.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This constructor needlessly initialize some fields to their default value.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule looks for constructors that assign fields to their default value
+            (e.g. 0 for an integer, null for an object or a string). Since the CLR zeroize
+            all values there is no need, under most circumstances, to assign default values.
+            Doing so only adds size to source code and in IL.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.2</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	int i;
+            	string s;
+            	public Bad ()
+            	{
+            		i = 0;
+            		s = null;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	int i;
+            	string s;
+            	public Good ()
+            	{
+            		// don't assign 'i' since it's already 0
+            		// but we might prefer to assign a string to String.Empty
+            		s = String.Empty;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	int i;
+            	string s;
+            	public Bad ()
+            	{
+            		i = 0;
+            		s = null;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	int i;
+            	string s;
+            	public Good ()
+            	{
+            		// don't assign 'i' since it's already 0
+            		// but we might prefer to assign a string to String.Empty
+            		s = String.Empty;
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnneededFieldInitializationRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

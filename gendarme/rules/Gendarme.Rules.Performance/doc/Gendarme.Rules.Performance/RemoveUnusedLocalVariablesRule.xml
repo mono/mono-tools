@@ -1,0 +1,141 @@
+<Type Name="RemoveUnusedLocalVariablesRule" FullName="Gendarme.Rules.Performance.RemoveUnusedLocalVariablesRule">
+  <TypeSignature Language="C#" Value="public class RemoveUnusedLocalVariablesRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Performance</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Performance", "CA1804:RemoveUnusedLocals")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Remove unused variables to reduce size of methods.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This methods contains unused local variables.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule looks for unused local variables inside methods. This can leads to larger
+            code (IL) size and longer JIT time, but note that some compiler while optimizing
+            can remove the locals so they won't be reported even if you can still see them in
+            the source code. This could also be a typo in the source were a value is assigned
+            to the wrong variable.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            bool DualCheck ()
+            {
+            	bool b1 = true;
+            	bool b2 = CheckDetails ();
+            	if (b2) {
+            		// typo: a find-replace changed b1 into b2
+            		b2 = CheckMoreDetails ();
+            	}
+            	return b2 &amp;&amp; b2;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            bool DualCheck ()
+            {
+            	bool b1 = true;
+            	bool b2 = CheckDetails ();
+            	if (b2) {
+            		b1 = CheckMoreDetails ();
+            	}
+            	return b1 &amp;&amp; b2;
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            bool DualCheck ()
+            {
+            	bool b1 = true;
+            	bool b2 = CheckDetails ();
+            	if (b2) {
+            		// typo: a find-replace changed b1 into b2
+            		b2 = CheckMoreDetails ();
+            	}
+            	return b2 &amp;&amp; b2;
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            bool DualCheck ()
+            {
+            	bool b1 = true;
+            	bool b2 = CheckDetails ();
+            	if (b2) {
+            		b1 = CheckMoreDetails ();
+            	}
+            	return b1 &amp;&amp; b2;
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public RemoveUnusedLocalVariablesRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public override void Initialize (Gendarme.Framework.IRunner runner);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="runner" Type="Gendarme.Framework.IRunner" />
+      </Parameters>
+      <Docs>
+        <param name="runner">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
