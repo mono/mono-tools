@@ -102,7 +102,10 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static int GetTypeDepth (TypeReference type)
 		{
-			return GetTypeDepth (GetActualType (type).Resolve ());
+			TypeDefinition typeDef = GetActualType (type).Resolve ();
+			//if we cannot resolve then return depth as 1 by default as it will
+			//be eventually be sorted out by signature matching.
+			return (null == typeDef) ? 1 : GetTypeDepth (typeDef);
 		}
 
 		private static int GetTypeDepth (TypeDefinition type)

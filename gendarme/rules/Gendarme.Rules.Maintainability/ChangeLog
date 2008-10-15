@@ -1,5 +1,11 @@
 2008-10-15  Cedric Vivier  <cedricv@neonux.com>
 
+	* AvoidUnnecessarySpecializationRule.cs: Do something sensible
+	if a resolution fails during the navigation of the depth inheritance.
+	This also fixes GenericAddBar test failure happening since rev.115089.
+
+2008-10-15  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidUnnecessarySpecializationRule.cs: Refactoring to fix
 	FalsePositive test and another cases such as in the new
 	SuggestMethodReferenceInsteadOfIMethodSignature test when
