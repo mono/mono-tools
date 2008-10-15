@@ -1,0 +1,119 @@
+<Type Name="GetLastErrorMustBeCalledRightAfterPInvokeRule" FullName="Gendarme.Rules.Interoperability.GetLastErrorMustBeCalledRightAfterPInvokeRule">
+  <TypeSignature Language="C#" Value="public class GetLastErrorMustBeCalledRightAfterPInvokeRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Interoperability</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Interoperability", "CA1404:CallGetLastErrorImmediatelyAfterPInvoke")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Move the call to GetLastError just after the P/Invoke call.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("GetLastError() should be called immediately after this the P/Invoke call.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+      <code>Marshal.GetLastWin32Error()</code>should be called directly after a P/Invoke call.
+            Intermediate method calls, even managed, could overwrite the error code.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void DestroyError ()
+            {
+            	MessageBeep (2);
+            	Console.WriteLine ("Beep");
+            	int error = Marshal.GetLastWin32Error ();
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void GetError ()
+            {
+            	MessageBeep (2);
+            	int error = Marshal.GetLastWin32Error ();
+            	Console.WriteLine ("Beep");
+            }
+            public void DontUseGetLastError ()
+            {
+            	MessageBeep (2);
+            	Console.WriteLine ("Beep");
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void DestroyError ()
+            {
+            	MessageBeep (2);
+            	Console.WriteLine ("Beep");
+            	int error = Marshal.GetLastWin32Error ();
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void GetError ()
+            {
+            	MessageBeep (2);
+            	int error = Marshal.GetLastWin32Error ();
+            	Console.WriteLine ("Beep");
+            }
+            public void DontUseGetLastError ()
+            {
+            	MessageBeep (2);
+            	Console.WriteLine ("Beep");
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public GetLastErrorMustBeCalledRightAfterPInvokeRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
