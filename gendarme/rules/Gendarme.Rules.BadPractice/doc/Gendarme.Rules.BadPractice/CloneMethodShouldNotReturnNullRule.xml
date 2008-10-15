@@ -1,0 +1,111 @@
+<Type Name="CloneMethodShouldNotReturnNullRule" FullName="Gendarme.Rules.BadPractice.CloneMethodShouldNotReturnNullRule">
+  <TypeSignature Language="C#" Value="public class CloneMethodShouldNotReturnNullRule : Gendarme.Rules.BadPractice.ReturnNullRule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.BadPractice</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Rules.BadPractice.ReturnNullRule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Return an appropriate object instead of returning null.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The implementation ICloneable.Clone () seems to return null in some circumstances.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule check that a <c>Clone()</c> method, if existing, never returns a <c>null</c>
+            value.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class MyClass : ICloneable {
+            	public object Clone ()
+            	{
+            		MyClass myClass = new MyClass ();
+            		// set some internals
+            		return null;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class MyClass : ICloneable {
+            	public object Clone ()
+            	{
+            		MyClass myClass = new MyClass ();
+            		// set some internals
+            		return myClass;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class MyClass : ICloneable {
+            	public object Clone ()
+            	{
+            		MyClass myClass = new MyClass ();
+            		// set some internals
+            		return null;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class MyClass : ICloneable {
+            	public object Clone ()
+            	{
+            		MyClass myClass = new MyClass ();
+            		// set some internals
+            		return myClass;
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public CloneMethodShouldNotReturnNullRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

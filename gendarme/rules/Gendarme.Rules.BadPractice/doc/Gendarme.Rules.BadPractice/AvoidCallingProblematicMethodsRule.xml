@@ -1,0 +1,112 @@
+<Type Name="AvoidCallingProblematicMethodsRule" FullName="Gendarme.Rules.BadPractice.AvoidCallingProblematicMethodsRule">
+  <TypeSignature Language="C#" Value="public class AvoidCallingProblematicMethodsRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.BadPractice</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("You should remove or replace the call to the dangerous method.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("There are potentially dangerous calls into your code.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns about methods that calls into potentially dangerous API of the .NET
+            framework. If possible try to avoid the API (there are generally safer ways to do the
+            same) or at least make sure your code can be safely called from others.
+            <list type="bullet"><item><description><c>System.GC::Collect()</c></description></item><item><description><c>System.Threading.Thread::Suspend()</c> and <c>Resume()</c></description></item><item><description><c>System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()</c></description></item><item><description><c>System.Reflection.Assembly::LoadFrom()</c>, <c>LoadFile()</c> and
+            <c>LoadWithPartialName()</c></description></item><item><description><c>System.Type::InvokeMember()</c> when used with
+            <c>BindingFlags.NonPublic</c></description></item></list></summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void Load (string filename)
+            {
+            	Assembly a = Assembly.LoadFile (filename);
+            	// ...
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void Load (string filename)
+            {
+            	AssemblyName aname = AssemblyName.GetAssemblyName (filename);
+            	// ensure it's the assembly you expect (e.g. public key, version...)
+            	Assembly a = Assembly.Load (aname);
+            	// ...
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void Load (string filename)
+            {
+            	Assembly a = Assembly.LoadFile (filename);
+            	// ...
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void Load (string filename)
+            {
+            	AssemblyName aname = AssemblyName.GetAssemblyName (filename);
+            	// ensure it's the assembly you expect (e.g. public key, version...)
+            	Assembly a = Assembly.Load (aname);
+            	// ...
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidCallingProblematicMethodsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

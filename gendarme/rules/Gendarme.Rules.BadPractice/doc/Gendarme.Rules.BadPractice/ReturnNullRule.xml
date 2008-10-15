@@ -1,0 +1,53 @@
+<Type Name="ReturnNullRule" FullName="Gendarme.Rules.BadPractice.ReturnNullRule">
+  <TypeSignature Language="C#" Value="public abstract class ReturnNullRule : Gendarme.Framework.Rule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.BadPractice</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected ReturnNullRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

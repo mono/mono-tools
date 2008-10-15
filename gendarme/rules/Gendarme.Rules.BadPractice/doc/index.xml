@@ -1,0 +1,34 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.BadPractice" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.BadPractice">
+      <Type Name="AvoidAssemblyVersionMismatchRule" Kind="Class" />
+      <Type Name="AvoidCallingProblematicMethodsRule" Kind="Class" />
+      <Type Name="AvoidVisibleConstantFieldRule" Kind="Class" />
+      <Type Name="CheckNewExceptionWithoutThrowingRule" Kind="Class" />
+      <Type Name="CheckNewThreadWithoutStartRule" Kind="Class" />
+      <Type Name="CloneMethodShouldNotReturnNullRule" Kind="Class" />
+      <Type Name="ConstructorShouldNotCallVirtualMethodsRule" Kind="Class" />
+      <Type Name="DisableDebuggingCodeRule" Kind="Class" />
+      <Type Name="DoNotForgetNotImplementedMethodsRule" Kind="Class" />
+      <Type Name="DoNotUseGetInterfaceToCheckAssignabilityRule" Kind="Class" />
+      <Type Name="EqualsShouldHandleNullArgRule" Kind="Class" />
+      <Type Name="GetEntryAssemblyMayReturnNullRule" Kind="Class" />
+      <Type Name="ObsoleteMessagesShouldNotBeEmptyRule" Kind="Class" />
+      <Type Name="ReplaceIncompleteOddnessCheckRule" Kind="Class" />
+      <Type Name="ReturnNullRule" Kind="Class" />
+      <Type Name="ToStringReturnsNullRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.BadPractice</Title>
+</Overview>

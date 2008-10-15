@@ -1,0 +1,173 @@
+<Type Name="ConstructorShouldNotCallVirtualMethodsRule" FullName="Gendarme.Rules.BadPractice.ConstructorShouldNotCallVirtualMethodsRule">
+  <TypeSignature Language="C#" Value="public class ConstructorShouldNotCallVirtualMethodsRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.BadPractice</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2114:DoNotCallOverridableMethodsInConstructors")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Avoid calling virtual methods from constructors or seal the the type.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Some constructors calls virtual methods which won't be known before runtime.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns the developer if any virtual methods are called in the constructor
+            of non-sealed type. The problem is that the exact method that will be executed is
+            not known before runtime. Also such virtual calls may be executed before the constructor
+            of deriving type is called, thus making possible mistakes.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            class A {
+            	public A ()
+            	{
+            		this.DoSomething ();
+            	}
+            	protected virtual void DoSomething ()
+            	{
+            	}
+            }
+            class B : A {
+            	private int x;
+            	public B ()
+            	{
+            		x = 10;
+            	}
+            	protected override void DoSomething ()
+            	{
+            		Console.WriteLine (x);
+            	}
+            }
+            B b = new B (); // outputs 0 because B constructor hasn't been called yet
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class A {
+            	public void Run ()
+            	{
+            		this.DoSomething ();
+            	}
+            	protected virtual void DoSomething ()
+            	{
+            	}
+            }
+            class B : A {
+            	private int x;
+            	public B ()
+            	{
+            		x = 10;
+            	}
+            	protected override void DoSomething ()
+            	{
+            		Console.WriteLine (x);
+            	}
+            }
+            B b = new B ();
+            b.Run (); // outputs 10 as intended
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            class A {
+            	public A ()
+            	{
+            		this.DoSomething ();
+            	}
+            	protected virtual void DoSomething ()
+            	{
+            	}
+            }
+            class B : A {
+            	private int x;
+            	public B ()
+            	{
+            		x = 10;
+            	}
+            	protected override void DoSomething ()
+            	{
+            		Console.WriteLine (x);
+            	}
+            }
+            B b = new B (); // outputs 0 because B constructor hasn't been called yet
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class A {
+            	public void Run ()
+            	{
+            		this.DoSomething ();
+            	}
+            	protected virtual void DoSomething ()
+            	{
+            	}
+            }
+            class B : A {
+            	private int x;
+            	public B ()
+            	{
+            		x = 10;
+            	}
+            	protected override void DoSomething ()
+            	{
+            		Console.WriteLine (x);
+            	}
+            }
+            B b = new B ();
+            b.Run (); // outputs 10 as intended
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ConstructorShouldNotCallVirtualMethodsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
