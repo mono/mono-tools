@@ -1,3 +1,8 @@
+2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* doc/: Initial import documentation for the rules which belongs to this
+	category.
+
 2008-10-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRefAndOutParametersRule.cs: Add XML documentation and 

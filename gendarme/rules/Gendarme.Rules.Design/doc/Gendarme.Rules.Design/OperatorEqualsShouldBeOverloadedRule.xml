@@ -1,0 +1,162 @@
+<Type Name="OperatorEqualsShouldBeOverloadedRule" FullName="Gendarme.Rules.Design.OperatorEqualsShouldBeOverloadedRule">
+  <TypeSignature Language="C#" Value="public class OperatorEqualsShouldBeOverloadedRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2231:OverloadOperatorEqualsOnOverridingValueTypeEquals")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1013:OverloadOperatorEqualsOnOverloadingAddAndSubtract")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Overload the == operator to match the results of the Equals method.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type is a value type and override the Equals method or overloads + and - operators without overloading the == operator.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks if the operators add <c>+</c> and subtract <c>-</c> are overloaded or
+            if a value type overrides <c>Object.Equals</c> and warns if the equals <c>==</c>
+            operator is not overloaded.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example (add/substract):
+            <code>
+            class DoesNotOverloadOperatorEquals {
+            	public static int operator + (DoesNotOverloadOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static int operator - (DoesNotOverloadOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (value type):
+            <code>
+            struct OverridesEquals {
+            	public override bool Equals (object obj)
+            	{
+            		return base.Equals (obj);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            struct OverloadsOperatorEquals {
+            	public static int operator + (OverloadsOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static int operator - (OverloadsOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static bool operator == (OverloadsOperatorEquals a, OverloadsOperatorEquals b)
+            	{
+            		return a.Equals (b);
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		return base.Equals (obj);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (add/substract):
+            <code>
+            class DoesNotOverloadOperatorEquals {
+            	public static int operator + (DoesNotOverloadOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static int operator - (DoesNotOverloadOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (value type):
+            <code>
+            struct OverridesEquals {
+            	public override bool Equals (object obj)
+            	{
+            		return base.Equals (obj);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            struct OverloadsOperatorEquals {
+            	public static int operator + (OverloadsOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static int operator - (OverloadsOperatorEquals a)
+            	{
+            		return 0;
+            	}
+            	public static bool operator == (OverloadsOperatorEquals a, OverloadsOperatorEquals b)
+            	{
+            		return a.Equals (b);
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		return base.Equals (obj);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public OperatorEqualsShouldBeOverloadedRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

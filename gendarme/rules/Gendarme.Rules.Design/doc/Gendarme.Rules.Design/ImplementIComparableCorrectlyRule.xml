@@ -1,0 +1,149 @@
+<Type Name="ImplementIComparableCorrectlyRule" FullName="Gendarme.Rules.Design.ImplementIComparableCorrectlyRule">
+  <TypeSignature Language="C#" Value="public class ImplementIComparableCorrectlyRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Implement the suggested method and/or operators.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type implements IComparable so it should override Equals(object) and overloads the ==, !=, &lt; and &gt; operators.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that implements <c>System.IComparable</c> and checks
+            if the type overrides the <c>Equals(object)</c> method and overloads the <c>==</c>,
+            <c>!=</c>, <c>&lt;</c> and <c>&gt;</c> operators.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public struct Comparable : IComparable {
+            	private int x;
+            	public int CompareTo (object obj)
+            	{
+            		return x.CompareTo (((Comparable)obj).x);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public struct Comparable : IComparable {
+            	public int CompareTo (object obj)
+            	{
+            		return x.CompareTo (((Comparable)obj).x);
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		return x == ((Comparable) obj).x;
+            	}
+            	static public bool operator == (Comparable left, Comparable right)
+            	{
+            		return (left.x == right.x);
+            	}
+            	static public bool operator != (Comparable left, Comparable right)
+            	{
+            		return (left.x != right.x);
+            	}
+            	static public bool operator &gt; (Comparable left, Comparable right)
+            	{
+            		return (left.x &gt; right.x);
+            	}
+            	static public bool operator &lt; (Comparable left, Comparable right)
+            	{
+            		return (left.x &lt; right.x);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public struct Comparable : IComparable {
+            	private int x;
+            	public int CompareTo (object obj)
+            	{
+            		return x.CompareTo (((Comparable)obj).x);
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public struct Comparable : IComparable {
+            	public int CompareTo (object obj)
+            	{
+            		return x.CompareTo (((Comparable)obj).x);
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		return x == ((Comparable) obj).x;
+            	}
+            	static public bool operator == (Comparable left, Comparable right)
+            	{
+            		return (left.x == right.x);
+            	}
+            	static public bool operator != (Comparable left, Comparable right)
+            	{
+            		return (left.x != right.x);
+            	}
+            	static public bool operator &gt; (Comparable left, Comparable right)
+            	{
+            		return (left.x &gt; right.x);
+            	}
+            	static public bool operator &lt; (Comparable left, Comparable right)
+            	{
+            		return (left.x &lt; right.x);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ImplementIComparableCorrectlyRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

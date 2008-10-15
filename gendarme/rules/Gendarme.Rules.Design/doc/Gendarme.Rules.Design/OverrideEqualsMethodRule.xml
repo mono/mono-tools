@@ -1,0 +1,120 @@
+<Type Name="OverrideEqualsMethodRule" FullName="Gendarme.Rules.Design.OverrideEqualsMethodRule">
+  <TypeSignature Language="C#" Value="public class OverrideEqualsMethodRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2224:OverrideEqualsOnOverloadingOperatorEquals")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Override the Equals method to match the results of the == operator.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type overloads the == operator but doesn't override the Equals method.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns when a type overloads the equality <c>==</c> operator but does not
+            override the <c>Object.Equals</c> method.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            class DoesNotOverrideEquals {
+            	public static bool operator == (DoesNotOverloadOperatorEquals a, DoesNotOverloadOperatorEquals b)
+            	{
+            		return true;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class OverridesEquals {
+            	public static bool operator == (OverridesEquals a, OverridesEquals b)
+            	{
+            		return true;
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		OverridesEquals other = (obj as OverridesEquals);
+            		if (other == null)
+            			return false;
+            		return (this == other);
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            class DoesNotOverrideEquals {
+            	public static bool operator == (DoesNotOverloadOperatorEquals a, DoesNotOverloadOperatorEquals b)
+            	{
+            		return true;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            class OverridesEquals {
+            	public static bool operator == (OverridesEquals a, OverridesEquals b)
+            	{
+            		return true;
+            	}
+            	public override bool Equals (object obj)
+            	{
+            		OverridesEquals other = (obj as OverridesEquals);
+            		if (other == null)
+            			return false;
+            		return (this == other);
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public OverrideEqualsMethodRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

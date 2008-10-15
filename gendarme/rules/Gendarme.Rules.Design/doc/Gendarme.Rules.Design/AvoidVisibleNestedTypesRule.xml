@@ -1,0 +1,123 @@
+<Type Name="AvoidVisibleNestedTypesRule" FullName="Gendarme.Rules.Design.AvoidVisibleNestedTypesRule">
+  <TypeSignature Language="C#" Value="public class AvoidVisibleNestedTypesRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change the nested type to be invisible outside the assembly or un-nest it.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type is nested and visible outside the assembly. Nested types are often confused with namespaces.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for nested types that are externally visible. Such types are often
+            confused with namespaces which makes them more difficult to document and find by
+            developers. In most cases it is possible to do better without them.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class Outer {
+            	public class Inner {
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (visibility):
+            <code>
+            public class Outer {
+            	internal class Inner {
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (unnested):
+            <code>
+            public class Outer {
+            	// ...
+            }
+            public class Inner {
+            	// ...
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class Outer {
+            	public class Inner {
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (visibility):
+            <code>
+            public class Outer {
+            	internal class Inner {
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (unnested):
+            <code>
+            public class Outer {
+            	// ...
+            }
+            public class Inner {
+            	// ...
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidVisibleNestedTypesRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

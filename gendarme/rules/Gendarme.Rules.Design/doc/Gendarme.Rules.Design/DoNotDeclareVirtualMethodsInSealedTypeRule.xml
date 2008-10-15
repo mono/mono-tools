@@ -1,0 +1,110 @@
+<Type Name="DoNotDeclareVirtualMethodsInSealedTypeRule" FullName="Gendarme.Rules.Design.DoNotDeclareVirtualMethodsInSealedTypeRule">
+  <TypeSignature Language="C#" Value="public class DoNotDeclareVirtualMethodsInSealedTypeRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1048:DoNotDeclareVirtualMembersInSealedTypes")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change the visibility to public or private to represent its true intended use.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This sealed type introduce new virtual methods.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule ensure that <c>sealed</c> types (i.e. types that you can't inherit from)
+            do not define any new <c>virtual</c> methods. Such methods would only be useful in
+            sub-types. Note that some compilers, like C# and VB.NET compilers, do not allow you
+            to define such methods.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public sealed class MyClass {
+            	// note that C# compilers won't allow this to compile
+            	public virtual int GetAnswer ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public sealed class MyClass {
+            	public int GetAnswer ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public sealed class MyClass {
+            	// note that C# compilers won't allow this to compile
+            	public virtual int GetAnswer ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public sealed class MyClass {
+            	public int GetAnswer ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotDeclareVirtualMethodsInSealedTypeRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

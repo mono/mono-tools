@@ -1,0 +1,113 @@
+<Type Name="ConsiderConvertingMethodToPropertyRule" FullName="Gendarme.Rules.Design.ConsiderConvertingMethodToPropertyRule">
+  <TypeSignature Language="C#" Value="public class ConsiderConvertingMethodToPropertyRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("If possible change this method into a property, otherwise you can ignore the rule.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method looks like a candidate to be a property.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            The rule looks for methods which definition looks quite similar to a property.
+            For example, methods beginning with <c>Is</c>, <c>Get</c> or <c>Set</c> are
+            likely candidates to be promoted into properties.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	int foo;
+            	public int GetFoo ()
+            	{
+            		return foo;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	int foo;
+            	public int Foo {
+            		get {
+            			return foo;
+            		}
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class Bad {
+            	int foo;
+            	public int GetFoo ()
+            	{
+            		return foo;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	int foo;
+            	public int Foo {
+            		get {
+            			return foo;
+            		}
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ConsiderConvertingMethodToPropertyRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

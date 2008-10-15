@@ -1,0 +1,131 @@
+<Type Name="AvoidPropertiesWithoutGetAccessorRule" FullName="Gendarme.Rules.Design.AvoidPropertiesWithoutGetAccessorRule">
+  <TypeSignature Language="C#" Value="public class AvoidPropertiesWithoutGetAccessorRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1044:PropertiesShouldNotBeWriteOnly")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Add a getter to the property or change the property into a method.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type contains some properties that have only setters.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for indexer properties that use more than one index on visible types.
+            Such indexers are often confusing to use (e.g. index orders) and are better
+            represented by a method.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad examples:
+            <code>
+            public double Seed {
+            	// no get since there's no use case for it
+            	set {
+            		seed = value;
+            	}
+            }
+            public sting Password {
+            	// no get as we don't want to expose the password
+            	set {
+            		password = value;
+            	}
+            }
+            </code></example>
+    <example>
+            Good examples:
+            <code>
+            public double Seed {
+            	get {
+            		return seed;
+            	}
+            	set {
+            		seed = value;
+            	}
+            }
+            public void SetPassword (string value)
+            {
+            	password = value;
+            }
+            </code></example>
+    <example>
+            Bad examples:
+            <code>
+            public double Seed {
+            	// no get since there's no use case for it
+            	set {
+            		seed = value;
+            	}
+            }
+            public sting Password {
+            	// no get as we don't want to expose the password
+            	set {
+            		password = value;
+            	}
+            }
+            </code></example>
+    <example>
+            Good examples:
+            <code>
+            public double Seed {
+            	get {
+            		return seed;
+            	}
+            	set {
+            		seed = value;
+            	}
+            }
+            public void SetPassword (string value)
+            {
+            	password = value;
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidPropertiesWithoutGetAccessorRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

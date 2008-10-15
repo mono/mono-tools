@@ -1,0 +1,136 @@
+<Type Name="ImplementEqualsAndGetHashCodeInPairRule" FullName="Gendarme.Rules.Design.ImplementEqualsAndGetHashCodeInPairRule">
+  <TypeSignature Language="C#" Value="public class ImplementEqualsAndGetHashCodeInPairRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Implement the missing method.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type only implements one of the Equals(Object) or GetHashCode() methods.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that either overrides the <c>Equals(object)</c> method
+            without overriding <c>GetHashCode()</c> or overrides <c>GetHashCode</c> without
+            overriding <c>Equals</c>. In order to work correctly types should always override
+            them in pair.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example (missing GetHashCode):
+            <code>
+            public class MissingGetHashCode {
+            	public override bool Equals (object obj)
+            	{
+            		return this == obj;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (missing Equals):
+            <code>
+            public class MissingEquals {
+            	public override int GetHashCode ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	public override bool Equals (object obj)
+            	{
+            		return this == obj;
+            	}
+            	public override int GetHashCode ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (missing GetHashCode):
+            <code>
+            public class MissingGetHashCode {
+            	public override bool Equals (object obj)
+            	{
+            		return this == obj;
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (missing Equals):
+            <code>
+            public class MissingEquals {
+            	public override int GetHashCode ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class Good {
+            	public override bool Equals (object obj)
+            	{
+            		return this == obj;
+            	}
+            	public override int GetHashCode ()
+            	{
+            		return 42;
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ImplementEqualsAndGetHashCodeInPairRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,136 @@
+<Type Name="FinalizersShouldBeProtectedRule" FullName="Gendarme.Rules.Design.FinalizersShouldBeProtectedRule">
+  <TypeSignature Language="C#" Value="public class FinalizersShouldBeProtectedRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Usage", "CA2221:FinalizersShouldBeProtected")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Change finalizer visibility to protected (family).")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("The finalizer for this type isn't protected (family) and is not callable only from the runtime.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for every finalizers are visible to family only (protected in C#)
+            because otherwise they can be called from the user code. In C# and VB.NET this rule
+            is enforced by the compiler, but some languages (like IL) may not have such a
+            restriction, thus making developer able to declare non-family finalizers.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example (IL):
+            <code>
+            .class family auto ansi beforefieldinit BadPublicFinalizer extends
+            [mscorlib]System.Object
+            {
+            	.method public hidebysig instance void Finalize() cil managed
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (C#):
+            <code>
+            public class GoodProtectedFinalizer {
+            	// compiler makes it protected
+            	~GoodProtectedFinalizer ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (IL):
+            <code>
+            .class family auto ansi beforefieldinit GoodProtectedFinalizer extends
+            [mscorlib]System.Object
+            {
+            	.method family hidebysig instance void Finalize() cil managed
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example (IL):
+            <code>
+            .class family auto ansi beforefieldinit BadPublicFinalizer extends
+            [mscorlib]System.Object
+            {
+            	.method public hidebysig instance void Finalize() cil managed
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (C#):
+            <code>
+            public class GoodProtectedFinalizer {
+            	// compiler makes it protected
+            	~GoodProtectedFinalizer ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (IL):
+            <code>
+            .class family auto ansi beforefieldinit GoodProtectedFinalizer extends
+            [mscorlib]System.Object
+            {
+            	.method family hidebysig instance void Finalize() cil managed
+            	{
+            		// ...
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public FinalizersShouldBeProtectedRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
