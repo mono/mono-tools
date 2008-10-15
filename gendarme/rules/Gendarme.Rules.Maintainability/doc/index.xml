@@ -1,0 +1,24 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Maintainability" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.Maintainability">
+      <Type Name="AvoidComplexMethodsRule" Kind="Class" />
+      <Type Name="AvoidDeepInheritanceTreeRule" Kind="Class" />
+      <Type Name="AvoidLackOfCohesionOfMethodsRule" Kind="Class" />
+      <Type Name="AvoidUnnecessarySpecializationRule" Kind="Class" />
+      <Type Name="ConsiderUsingStopwatchRule" Kind="Class" />
+      <Type Name="PreferStringIsNullOrEmptyRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Maintainability</Title>
+</Overview>

@@ -1,0 +1,122 @@
+<Type Name="AvoidUnnecessarySpecializationRule" FullName="Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule">
+  <TypeSignature Language="C#" Value="public class AvoidUnnecessarySpecializationRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Maintainability</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Replace parameter type with the least specialized type necessary, or make use of the specifics of the actual parameter type.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method has a parameter whose type is more specialized than necessary. It can be harder to reuse and/or extend the method in derived types.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks methods for over specialized parameters - i.e. parameter types
+            that are unnecessarily specialized with respect to what the method needs to do
+            its job. This often leads to reduced reusability potential of the method.
+            The rule will suggest the minimal type, or interface, required for the method to
+            work.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.0</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class DefaultEqualityComparer : IEqualityComparer {
+            	public int GetHashCode (object obj)
+            	{
+            		return o.GetHashCode ();
+            	}
+            }
+            public int Bad (DefaultEqualityComparer ec, object o)
+            {
+            	return ec.GetHashCode (o);
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class DefaultEqualityComparer : IEqualityComparer {
+            	public int GetHashCode (object obj)
+            	{
+            		return o.GetHashCode ();
+            	}
+            }
+            public int Good (IEqualityComparer ec, object o)
+            {
+            	return ec.GetHashCode (o);
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class DefaultEqualityComparer : IEqualityComparer {
+            	public int GetHashCode (object obj)
+            	{
+            		return o.GetHashCode ();
+            	}
+            }
+            public int Bad (DefaultEqualityComparer ec, object o)
+            {
+            	return ec.GetHashCode (o);
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class DefaultEqualityComparer : IEqualityComparer {
+            	public int GetHashCode (object obj)
+            	{
+            		return o.GetHashCode ();
+            	}
+            }
+            public int Good (IEqualityComparer ec, object o)
+            {
+            	return ec.GetHashCode (o);
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidUnnecessarySpecializationRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
