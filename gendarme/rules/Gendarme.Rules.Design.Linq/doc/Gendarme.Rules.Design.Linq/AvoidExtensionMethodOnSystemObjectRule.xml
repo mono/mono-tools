@@ -1,0 +1,126 @@
+<Type Name="AvoidExtensionMethodOnSystemObjectRule" FullName="Gendarme.Rules.Design.Linq.AvoidExtensionMethodOnSystemObjectRule">
+  <TypeSignature Language="C#" Value="public class AvoidExtensionMethodOnSystemObjectRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design.Linq</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Use of more specialized type to extend.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method extends System.Object. This will not work for VB.NET consumer.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            Extension methods should not be used to extend <c>System.Object</c>.
+            Such extension methods cannot be consumed by some languages, like VB.NET,
+            which use late-binding on <c>System.Object</c> instances.
+            </summary>
+    <remarks>This rule is available since Gendarme 2.2</remarks>
+    <example>
+            Bad example:
+            <code>
+            public static class Extensions {
+            	public static string ToDebugString (this object self)
+            	{
+            		return String.Format ("'{0}', type '{1}', hashcode: {2}",
+            			self.ToString (), self.GetType (), self.GetHashCode ());
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public static class Extensions {
+            	public static string ToDebugString (this DateTime self)
+            	{
+            		return String.Format ("'{0}', type '{1}', hashcode: {2}",
+            			self.ToString (), self.GetType (), self.GetHashCode ());
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public static class Extensions {
+            	public static string ToDebugString (this object self)
+            	{
+            		return String.Format ("'{0}', type '{1}', hashcode: {2}",
+            			self.ToString (), self.GetType (), self.GetHashCode ());
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public static class Extensions {
+            	public static string ToDebugString (this DateTime self)
+            	{
+            		return String.Format ("'{0}', type '{1}', hashcode: {2}",
+            			self.ToString (), self.GetType (), self.GetHashCode ());
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidExtensionMethodOnSystemObjectRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public override void Initialize (Gendarme.Framework.IRunner runner);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="runner" Type="Gendarme.Framework.IRunner" />
+      </Parameters>
+      <Docs>
+        <param name="runner">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
