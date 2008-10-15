@@ -1,5 +1,10 @@
 2008-10-15  Cedric Vivier  <cedricv@neonux.com>
 
+	* AvoidUnnecessarySpecializationRule.cs: Fix style issues.
+	Remove unnecessary .ToArray()s.
+
+2008-10-15  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidUnnecessarySpecializationRule.cs: Do something sensible
 	if a resolution fails during the navigation of the depth inheritance.
 	This also fixes GenericAddBar test failure happening since rev.115089.

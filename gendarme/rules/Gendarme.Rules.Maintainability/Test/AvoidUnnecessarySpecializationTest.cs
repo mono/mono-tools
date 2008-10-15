@@ -463,7 +463,7 @@ namespace Test.Rules.Maintainability {
 		public void ShouldSuggestMethodReferenceInsteadOfIMethodSignature ()
 		{
 			AssertRuleFailure<AvoidUnnecessarySpecializationTest> ("SuggestMethodReference");
-			Assert.IsTrue(Runner.Defects[0].Text.IndexOf("'Mono.Cecil.MethodReference'") > 0);
+			Assert.IsTrue(Runner.Defects [0].Text.IndexOf ("'Mono.Cecil.MethodReference'") > 0);
 		}
 
 	}
