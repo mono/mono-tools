@@ -1,0 +1,26 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Security.Cas" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.Security.Cas">
+      <Type Name="AddMissingTypeInheritanceDemandRule" Kind="Class" />
+      <Type Name="DoNotExposeFieldsInSecuredTypeRule" Kind="Class" />
+      <Type Name="DoNotExposeMethodsProtectedByLinkDemandRule" Kind="Class" />
+      <Type Name="DoNotReduceTypeSecurityOnMethodsRule" Kind="Class" />
+      <Type Name="ReviewNonVirtualMethodWithInheritanceDemandRule" Kind="Class" />
+      <Type Name="ReviewSealedTypeWithInheritanceDemandRule" Kind="Class" />
+      <Type Name="ReviewSuppressUnmanagedCodeSecurityUsageRule" Kind="Class" />
+      <Type Name="SecureGetObjectDataOverridesRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Security.Cas</Title>
+</Overview>

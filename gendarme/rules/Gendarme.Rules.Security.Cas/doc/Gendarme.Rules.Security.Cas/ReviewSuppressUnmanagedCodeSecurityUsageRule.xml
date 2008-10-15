@@ -1,0 +1,125 @@
+<Type Name="ReviewSuppressUnmanagedCodeSecurityUsageRule" FullName="Gendarme.Rules.Security.Cas.ReviewSuppressUnmanagedCodeSecurityUsageRule">
+  <TypeSignature Language="C#" Value="public class ReviewSuppressUnmanagedCodeSecurityUsageRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security.Cas</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA1021:ReviewSuppressUnmanagedCodeSecurityUsage")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Ensure the use of this attribute does not compromise the security of the application.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type or method is decorated with [SuppressUnmanagedCodeSecurity] which reduce the number of security checks done to call unmanaged code.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule warns about any type or method decorated with the <c>[SuppressUnmanagedCodeSecurity]</c>
+            attribute. This attribute reduce the security checks done to execute unmanaged code and its
+            usage should be reviewed, as needed, to confirm no exploitable security holes are present.
+            </summary>
+    <remarks>This is an Audit rule. As such it does not check for valid or invalid patterns but warns about a specific problem that needs to be reviewed by someone.</remarks>
+    <example>
+            Example:
+            <code>
+            [SuppressUnmanagedCodeSecurity]
+            public class Safe {
+            	[DllImport ("User32.dll")]
+            	static extern Boolean MessageBeep (UInt32 beepType);
+            }
+            </code></example>
+    <example>
+            Example:
+            <code>
+            [SuppressUnmanagedCodeSecurity]
+            public class Safe {
+            	[DllImport ("User32.dll")]
+            	static extern Boolean MessageBeep (UInt32 beepType);
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ReviewSuppressUnmanagedCodeSecurityUsageRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public override void Initialize (Gendarme.Framework.IRunner runner);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="runner" Type="Gendarme.Framework.IRunner" />
+      </Parameters>
+      <Docs>
+        <param name="runner">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

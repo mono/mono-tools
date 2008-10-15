@@ -1,0 +1,111 @@
+<Type Name="DoNotExposeFieldsInSecuredTypeRule" FullName="Gendarme.Rules.Security.Cas.DoNotExposeFieldsInSecuredTypeRule">
+  <TypeSignature Language="C#" Value="public class DoNotExposeFieldsInSecuredTypeRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security.Cas</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2112:SecuredTypesShouldNotExposeFields")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Remove the (unsecured) visible fields, turn them into (secured) properties or reduce their visibility.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type is secured by [Link]Demand but expose some visible fields.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            The rule checks for types that are secured by <c>Demand</c> or <c>LinkDemand</c>
+            but also expose visible fields. Access to these fields is not covered by the
+            declarative demands, opening potential security holes.
+            </summary>
+    <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeExposeFieldsRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            public class Bad {
+            }
+            </code></example>
+    <example>
+            Good example (InheritanceDemand):
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            [SecurityPermission (SecurityAction.InheritanceDemand, ControlThread = true)]
+            public class Correct {
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            public sealed class Correct {
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            public class Bad {
+            }
+            </code></example>
+    <example>
+            Good example (InheritanceDemand):
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            [SecurityPermission (SecurityAction.InheritanceDemand, ControlThread = true)]
+            public class Correct {
+            }
+            </code></example>
+    <example>
+            Good example (sealed):
+            <code>
+            [SecurityPermission (SecurityAction.LinkDemand, ControlThread = true)]
+            public sealed class Correct {
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotExposeFieldsInSecuredTypeRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

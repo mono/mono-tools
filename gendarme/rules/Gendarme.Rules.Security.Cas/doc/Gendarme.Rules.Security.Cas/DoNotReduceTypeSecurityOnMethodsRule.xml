@@ -1,0 +1,110 @@
+<Type Name="DoNotReduceTypeSecurityOnMethodsRule" FullName="Gendarme.Rules.Security.Cas.DoNotReduceTypeSecurityOnMethodsRule">
+  <TypeSignature Language="C#" Value="public class DoNotReduceTypeSecurityOnMethodsRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security.Cas</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2114:MethodSecurityShouldBeASupersetOfType")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type has declarative security permission that aren't a subset of the security on some of it's methods.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that have declarative security permission that aren't a
+            subset of the security permission on some of their methods.
+            </summary>
+    <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeIsNotSubsetOfMethodSecurityRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+            public class NotSubset {
+            	[EnvironmentPermission (SecurityAction.Assert, Unrestricted = true)]
+            	public void Method ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+            public class Subset {
+            	[SecurityPermission (SecurityAction.Assert, Unrestricted = true)]
+            	public void Method ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+            public class NotSubset {
+            	[EnvironmentPermission (SecurityAction.Assert, Unrestricted = true)]
+            	public void Method ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            [SecurityPermission (SecurityAction.Assert, ControlThread = true)]
+            public class Subset {
+            	[SecurityPermission (SecurityAction.Assert, Unrestricted = true)]
+            	public void Method ()
+            	{
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotReduceTypeSecurityOnMethodsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

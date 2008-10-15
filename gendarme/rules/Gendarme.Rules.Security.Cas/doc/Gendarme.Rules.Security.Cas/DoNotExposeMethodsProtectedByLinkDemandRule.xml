@@ -1,0 +1,142 @@
+<Type Name="DoNotExposeMethodsProtectedByLinkDemandRule" FullName="Gendarme.Rules.Security.Cas.DoNotExposeMethodsProtectedByLinkDemandRule">
+  <TypeSignature Language="C#" Value="public class DoNotExposeMethodsProtectedByLinkDemandRule : Gendarme.Framework.Rule, Gendarme.Framework.IMethodRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Security.Cas</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.IMethodRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.EngineDependency(typeof(Gendarme.Framework.Engines.OpCodeEngine))</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This method is less protected than some methods it calls.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for visible methods that are less protected (i.e. lower security
+            requirements) than the method they calls. If the called methods are protected by a
+            <c>LinkDemand</c> then the caller can be used to go around its protection.
+            </summary>
+    <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named MethodCallWithSubsetLinkDemandRule.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class BaseClass {
+            	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+            	public virtual void VirtualMethod ()
+            	{
+            	}
+            }
+            public class Class : BaseClass  {
+            	// bad since a caller with only ControlAppDomain will be able to call the base method
+            	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+            	public override void VirtualMethod ()
+            	{
+            		base.VirtualMethod ();
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (InheritanceDemand):
+            <code>
+            public class BaseClass {
+            	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+            	public virtual void VirtualMethod ()
+            	{
+            	}
+            }
+            public class Class : BaseClass  {
+            	// ok since this permission cover the base class permission
+            	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+            	public override void VirtualMethod ()
+            	{
+            		base.VirtualMethod ();
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class BaseClass {
+            	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+            	public virtual void VirtualMethod ()
+            	{
+            	}
+            }
+            public class Class : BaseClass  {
+            	// bad since a caller with only ControlAppDomain will be able to call the base method
+            	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+            	public override void VirtualMethod ()
+            	{
+            		base.VirtualMethod ();
+            	}
+            }
+            </code></example>
+    <example>
+            Good example (InheritanceDemand):
+            <code>
+            public class BaseClass {
+            	[SecurityPermission (SecurityAction.LinkDemand, ControlAppDomain = true)]
+            	public virtual void VirtualMethod ()
+            	{
+            	}
+            }
+            public class Class : BaseClass  {
+            	// ok since this permission cover the base class permission
+            	[SecurityPermission (SecurityAction.LinkDemand, Unrestricted = true)]
+            	public override void VirtualMethod ()
+            	{
+            		base.VirtualMethod ();
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public DoNotExposeMethodsProtectedByLinkDemandRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckMethod">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckMethod (Mono.Cecil.MethodDefinition method);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="method" Type="Mono.Cecil.MethodDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="method">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
