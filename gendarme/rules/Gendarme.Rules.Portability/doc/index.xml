@@ -1,0 +1,30 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Portability" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.Portability">
+      <Type Name="DoNotHardcodePathsRule" Kind="Class" />
+      <Type Name="ExitCodeIsLimitedOnUnixRule" Kind="Class" />
+      <Type Name="FeatureRequiresRootPrivilegeOnUnixRule" Kind="Class" />
+      <Type Name="MonoCompatibilityReviewRule" Kind="Class" />
+      <Type Name="NewLineLiteralRule" Kind="Class" />
+    </Namespace>
+    <Namespace Name="MoMA.Analyzer.MoMAWebService">
+      <Type Name="GetLatestDefinitionsVersionCompletedEventArgs" Kind="Class" />
+      <Type Name="GetLatestDefinitionsVersionCompletedEventHandler" Kind="Delegate" />
+      <Type Name="MoMASubmit" Kind="Class" />
+      <Type Name="SubmitResultsCompletedEventArgs" Kind="Class" />
+      <Type Name="SubmitResultsCompletedEventHandler" Kind="Delegate" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Portability</Title>
+</Overview>

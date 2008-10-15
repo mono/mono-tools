@@ -1,0 +1,43 @@
+<Type Name="SubmitResultsCompletedEventArgs" FullName="MoMA.Analyzer.MoMAWebService.SubmitResultsCompletedEventArgs">
+  <TypeSignature Language="C#" Value="public class SubmitResultsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Portability</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.ComponentModel.AsyncCompletedEventArgs</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Attributes>
+    <Attribute>
+      <AttributeName>System.ComponentModel.DesignerCategory("code")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>System.Diagnostics.DebuggerStepThrough</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>System.CodeDom.Compiler.GeneratedCode("System.Web.Services", "2.0.50727.42")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks />
+  </Docs>
+  <Members>
+    <Member MemberName="Result">
+      <MemberSignature Language="C#" Value="public bool Result { get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks />
+      </Docs>
+    </Member>
+  </Members>
+</Type>
