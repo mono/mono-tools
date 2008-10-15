@@ -1,0 +1,127 @@
+<Type Name="ImplementGenericCollectionInterfacesRule" FullName="Gendarme.Rules.Design.Generic.ImplementGenericCollectionInterfacesRule">
+  <TypeSignature Language="C#" Value="public class ImplementGenericCollectionInterfacesRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Design.Generic</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.FxCopCompatibility("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("Implement one of generic collection interfaces such as IEnumerable&lt;T&gt;, ICollection&lt;T&gt; or IList&lt;T&gt;.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("This type implements non-generic IEnumerable interface but does not implement IEnumerable&lt;T&gt; interface that will make your collection type-safe.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for types that implements non-generic IEnumerable interface but
+            does not implement IEnumerable&lt;T&gt; interface. Implementing the generic version
+            of IEnumerable avoids casts, and possibly boxing, when iterating the collection.
+            </summary>
+    <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Design assembly.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class IntEnumerable : IEnumerable {
+            	public IEnumerator GetEnumerator ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class IntEnumerable : IEnumerable&lt;int&gt; {
+            	public IEnumerator&lt;int&gt; GetEnumerator ()
+            	{
+            	}
+            	IEnumerator IEnumerable.GetEnumerator ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class IntEnumerable : IEnumerable {
+            	public IEnumerator GetEnumerator ()
+            	{
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class IntEnumerable : IEnumerable&lt;int&gt; {
+            	public IEnumerator&lt;int&gt; GetEnumerator ()
+            	{
+            	}
+            	IEnumerator IEnumerable.GetEnumerator ()
+            	{
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ImplementGenericCollectionInterfacesRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Initialize">
+      <MemberSignature Language="C#" Value="public override void Initialize (Gendarme.Framework.IRunner runner);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="runner" Type="Gendarme.Framework.IRunner" />
+      </Parameters>
+      <Docs>
+        <param name="runner">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
