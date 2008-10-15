@@ -1,0 +1,22 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Gendarme.Rules.Ui" Version="2.1.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Gendarme.Rules.UI">
+      <Type Name="ExecutableTargetRule" Kind="Class" />
+      <Type Name="GtkSharpExecutableTargetRule" Kind="Class" />
+      <Type Name="SystemWindowsFormsExecutableTargetRule" Kind="Class" />
+      <Type Name="UseSTAThreadAttributeOnSWFEntryPointsRule" Kind="Class" />
+    </Namespace>
+  </Types>
+  <Title>Gendarme.Rules.Ui</Title>
+</Overview>
