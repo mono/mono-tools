@@ -9,8 +9,7 @@ rules_build_sources = $(addprefix $(srcdir)/, $(rules_sources))
 rules_build_sources += $(rules_generated_sources)
 
 $(rules_dll): $(rules_build_sources) $(framework)
-	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
-
+	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -doc:$(rules_dll).doc -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 
@@ -23,6 +22,8 @@ test: $(tests_dll)
 run-test: test
 	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 $(tests_dll)
 
-
 self-test: $(rules_dll)
 	mono --debug $(console_runner) $(rules_dll)
+
+doc: $(rules_dll)
+	mdoc update -i $(rules_dll).doc -o doc $(rules_dll)

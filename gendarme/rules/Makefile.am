@@ -48,3 +48,11 @@ self-test: all
 		cd ..;		\
 	done;
 
+doc:
+	for ASM in $(SUBDIRS); do \
+		if [ "$$ASM" != "Test.Rules" ]; then	\
+			cd $$ASM;	\
+			make doc;	\
+			cd ..;		\
+		fi;		\
+	done;
