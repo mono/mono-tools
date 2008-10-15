@@ -1,0 +1,166 @@
+<Type Name="AvoidCodeDuplicatedInSameClassRule" FullName="Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule">
+  <TypeSignature Language="C#" Value="public class AvoidCodeDuplicatedInSameClassRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Smells</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("You should apply the Extract Method refactoring and invoke the method from the places.")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("There is similar code in various methods in the same class.  Your code will be better if you can unify them.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule checks for duplicated code in the same class.  It ensures
+            there aren't duplicated code in methods which belongs to the same
+            class.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public class MyClass {
+            	private IList myList;
+            	public MyClass () {
+            	        myList = new ArrayList ();
+            	        myList.Add ("Foo");
+            	        myList.Add ("Bar");
+            	        myList.Add ("Baz");
+            	}
+            	public void MakeStuff () {
+            	        foreach (string value in myList) {
+            	                Console.WriteLine (value);
+            	        }
+            	        myList.Add ("FooReplied);
+            	}
+            	public void MakeMoreStuff () {
+            	        foreach (string value in myList) {
+            	                Console.WriteLine (value);
+            	        }
+            	        myList.Remove ("FooReplied");
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class MyClass {
+            	private IList myList;
+            	public MyClass () {
+            		myList = new ArrayList ();
+            		myList.Add ("Foo");
+            		myList.Add ("Bar");
+            		myList.Add ("Baz");
+            	}
+            	private void PrintValuesInList () {
+            		foreach (string value in myList) {
+            			Console.WriteLine (value);
+            		}
+            	}
+            	public void MakeStuff () {
+            		PrintValuesInList ();
+            	        myList.Add ("FooReplied);
+            	}
+            	public void MakeMoreStuff () {
+            		PrintValuesInList ();
+            		myList.Remove ("FooReplied");
+            	}
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public class MyClass {
+            	private IList myList;
+            	public MyClass () {
+            	        myList = new ArrayList ();
+            	        myList.Add ("Foo");
+            	        myList.Add ("Bar");
+            	        myList.Add ("Baz");
+            	}
+            	public void MakeStuff () {
+            	        foreach (string value in myList) {
+            	                Console.WriteLine (value);
+            	        }
+            	        myList.Add ("FooReplied);
+            	}
+            	public void MakeMoreStuff () {
+            	        foreach (string value in myList) {
+            	                Console.WriteLine (value);
+            	        }
+            	        myList.Remove ("FooReplied");
+            	}
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public class MyClass {
+            	private IList myList;
+            	public MyClass () {
+            		myList = new ArrayList ();
+            		myList.Add ("Foo");
+            		myList.Add ("Bar");
+            		myList.Add ("Baz");
+            	}
+            	private void PrintValuesInList () {
+            		foreach (string value in myList) {
+            			Console.WriteLine (value);
+            		}
+            	}
+            	public void MakeStuff () {
+            		PrintValuesInList ();
+            	        myList.Add ("FooReplied);
+            	}
+            	public void MakeMoreStuff () {
+            		PrintValuesInList ();
+            		myList.Remove ("FooReplied");
+            	}
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidCodeDuplicatedInSameClassRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

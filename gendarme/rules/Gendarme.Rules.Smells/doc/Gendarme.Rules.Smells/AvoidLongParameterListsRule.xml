@@ -1,0 +1,118 @@
+<Type Name="AvoidLongParameterListsRule" FullName="Gendarme.Rules.Smells.AvoidLongParameterListsRule">
+  <TypeSignature Language="C#" Value="public class AvoidLongParameterListsRule : Gendarme.Framework.Rule, Gendarme.Framework.ITypeRule" />
+  <AssemblyInfo>
+    <AssemblyName>Gendarme.Rules.Smells</AssemblyName>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>Gendarme.Framework.Rule</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>Gendarme.Framework.ITypeRule</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Attributes>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Solution("You should apply the Replace parameter with method refactoring, or preserve whole object or introduce parameter object")</AttributeName>
+    </Attribute>
+    <Attribute>
+      <AttributeName>Gendarme.Framework.Problem("Generally, long parameter lists are hard to understand because they become hard to use and inconsistent.  And you will be forever changing them if you need more data.")</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            This rule allows developers to measure the parameter list size in a method.
+            If you have methods with a lot of parameters, perhaps you have a Long
+            Parameter List smell.
+            This rule counts the method parameters, and compare against a maximum value.
+            If you have an overloaded method, then the rule will get the shortest overload
+            and compare the shortest overload against the maximum value.
+            Other time, it's quite hard determine a long parameter list. By default,
+            a methods with 6 or more arguments will be notified.
+            </summary>
+    <remarks>To be added.</remarks>
+    <example>
+            Bad example:
+            <code>
+            public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f,
+            float z, double u, short s, int v, string[] array)
+            {
+            	// Method body ...
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void MethodWithoutLongParameterList (int x, object obj)
+            {
+            	// Method body....
+            }
+            </code></example>
+    <example>
+            Bad example:
+            <code>
+            public void MethodWithLongParameterList (int x, char c, object obj, bool j, string f,
+            float z, double u, short s, int v, string[] array)
+            {
+            	// Method body ...
+            }
+            </code></example>
+    <example>
+            Good example:
+            <code>
+            public void MethodWithoutLongParameterList (int x, object obj)
+            {
+            	// Method body....
+            }
+            </code></example>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public AvoidLongParameterListsRule ();" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CheckType">
+      <MemberSignature Language="C#" Value="public Gendarme.Framework.RuleResult CheckType (Mono.Cecil.TypeDefinition type);" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Gendarme.Framework.RuleResult</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="type" Type="Mono.Cecil.TypeDefinition" />
+      </Parameters>
+      <Docs>
+        <param name="type">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="MaxParameters">
+      <MemberSignature Language="C#" Value="public int MaxParameters { set; get; }" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.1.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Int32</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
