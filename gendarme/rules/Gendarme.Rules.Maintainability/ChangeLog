@@ -1,3 +1,10 @@
+2008-10-15  Cedric Vivier  <cedricv@neonux.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Refactoring to fix
+	FalsePositive test and another cases such as in the new
+	SuggestMethodReferenceInsteadOfIMethodSignature test when
+	a parameter is used through different interfaces.
+
 2008-10-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyRule.cs: Fix a false positive that can

@@ -34,6 +34,8 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Gendarme.Framework.Helpers;
 
+using System.Collections.Generic;
+
 namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
@@ -113,29 +115,39 @@ namespace Gendarme.Rules.Maintainability {
 			return depth;
 		}
 
-		private static TypeDefinition GetBaseImplementor (TypeReference type, MethodSignature signature)
+		private static bool DoesAllSignaturesMatchType(TypeReference type, MethodSignature[] signatures)
 		{
-			return GetBaseImplementor (type.Resolve(), signature);
+			bool match = true;
+			foreach (MethodSignature signature in signatures) {
+				match &= (null != type.GetMethod (signature));
+			}
+			return match;
 		}
 
-		private static TypeDefinition GetBaseImplementor (TypeDefinition type, MethodSignature signature)
+		private static TypeDefinition GetBaseImplementor (TypeReference type, MethodSignature[] signatures)
+		{
+			return GetBaseImplementor (type.Resolve(), signatures);
+		}
+
+		private static TypeDefinition GetBaseImplementor (TypeDefinition type, MethodSignature[] signatures)
 		{
 			TypeDefinition implementor = type;
 
 			while (null != type && type.IsVisible ()) {
 				//search for matching interface
-				TypeDefinition ifaceDef = GetInterfaceImplementor (type, signature);
+				TypeDefinition ifaceDef = GetInterfaceImplementor (type, signatures);
 				if (null != ifaceDef)
 					implementor = ifaceDef;
-				else if (null != type.GetMethod (signature))
+				else if (DoesAllSignaturesMatchType(type, signatures))
 					implementor = type;
+
 				type = type.BaseType.Resolve ();
 			}
 
 			return implementor;
 		}
 
-		private static TypeDefinition GetInterfaceImplementor (TypeDefinition type, MethodSignature signature)
+		private static TypeDefinition GetInterfaceImplementor (TypeDefinition type, MethodSignature[] signatures)
 		{
 			TypeDefinition ifaceDef = null;
 
@@ -144,8 +156,9 @@ namespace Gendarme.Rules.Maintainability {
 
 				if (!candidate.IsVisible () || candidate.Name.StartsWith("_"))
 					continue; //ignore non-cls-compliant interfaces
-				if (null == candidate.GetMethod (signature))
-					continue; //does not implement
+
+				if (!DoesAllSignaturesMatchType(candidate, signatures))
+					continue;
 
 				if (null == ifaceDef) {
 					ifaceDef = candidate;
@@ -190,6 +203,9 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static bool IsSystemObjectMethod (MethodReference method)
 		{
+			if (method.Name.Length < 6 /*Equals*/ || method.Name.Length > 16 /*EqualityOperator*/)
+				return false; //no need to do the string comparisons
+
 			switch (method.Name) {
 			case "Finalize" :
 			case "GetHashCode" :
@@ -215,9 +231,25 @@ namespace Gendarme.Rules.Maintainability {
 			if (pIndex < 0) throw new InvalidOperationException("parameter.Sequence < 1");
 			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
 
-			TypeReference currentLeastType = null;
 			int currentLeastDepth = 0;
+			TypeReference currentLeastType = null;
+			List<MethodSignature> signatures = new List<MethodSignature>();
 
+			//accumulate all used signatures first
+			foreach (var usage in usageResults) {
+
+				switch (usage.Instruction.OpCode.Code) {
+				case Code.Newobj :
+				case Code.Call :
+				case Code.Callvirt :
+					MethodReference method = (MethodReference) usage.Instruction.Operand;
+					if (IsSystemObjectMethod (method)) continue;
+					signatures.Add(GetSignature(method));
+					break;
+				}
+			}
+
+			//update the result array as in if (needUpdate) block below
 			foreach (var usage in usageResults) {
 				bool needUpdate = false;
 
@@ -230,12 +262,10 @@ namespace Gendarme.Rules.Maintainability {
 					//potential generalization to object does not really make sense
 					//from a readability/maintainability point of view
 					if (IsSystemObjectMethod (method)) continue;
-
 					MethodSignature signature = GetSignature (method);
-
 					if (usage.StackOffset == method.Parameters.Count) {
 						//argument is used as `this` in the call
-						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signature);
+						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signatures.ToArray());
 					} else {
 						//argument is also used as an argument in the call
 						currentLeastType = method.Parameters [method.Parameters.Count - usage.StackOffset - 1].ParameterType;
@@ -269,26 +299,30 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private void CheckParameter (MethodDefinition method, Instruction ins)
+		private void CheckParameter (MethodDefinition method, Instruction[] ldarg)
 		{
-			ParameterDefinition parameter = ins.GetParameter (method);
-			if (null == parameter) //this is `this`, we do not care
-				return;
-			if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
-				return;
-			if (parameter.ParameterType.IsArray () || parameter.ParameterType.IsDelegate ())
-				return; //TODO: these are more complex to handle, not supported for now
+			Dictionary<ParameterDefinition, List<StackEntryUsageResult>> usages = new Dictionary<ParameterDefinition, List<StackEntryUsageResult>>();
 
-			if (null == sea || sea.Method != method)
-				sea = new StackEntryAnalysis (method);
+			foreach (Instruction ins in ldarg)
+			{
+				ParameterDefinition parameter = ins.GetParameter (method);
+				if (null == parameter) //this is `this`, we do not care
+					continue;
+				if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
+					continue;
+				if (parameter.ParameterType.IsArray () || parameter.ParameterType.IsDelegate ())
+					continue; //TODO: these are more complex to handle, not supported for now
 
-			StackEntryUsageResult [] usage = sea.GetStackEntryUsage (ins);
+				if (null == sea || sea.Method != method)
+					sea = new StackEntryAnalysis (method);
 
-			//FIXME: below opt. would require a non-repeating SEA with multiple ldarg
-			//if (null != leastTypes [parameter.Sequence-1]) //already analyzed, next!
-			//	return;
+				if (!usages.ContainsKey(parameter))
+					usages[parameter] = new List<StackEntryUsageResult>();
+				usages[parameter].AddRange(sea.GetStackEntryUsage (ins));
+			}
 
-			UpdateParameterLeastType (parameter, usage);
+			foreach (var usage in usages)
+				UpdateParameterLeastType (usage.Key, usage.Value.ToArray());
 		}
 
 		static bool SignatureDictatedByInterface (MethodReference method)
@@ -326,11 +360,14 @@ namespace Gendarme.Rules.Maintainability {
 				depths_least = new int [method.Parameters.Count];
 			}
 
+			List<Instruction> instructions = new List<Instruction>();
 			//look at each argument usage
 			foreach (Instruction ins in method.Body.Instructions) {
 				if (ins.IsLoadArgument ())
-					CheckParameter (method, ins);
+					instructions.Add(ins);
 			}
+
+			CheckParameter (method, instructions.ToArray());
 
 			CheckParametersSpecializationDelta (method);
 
