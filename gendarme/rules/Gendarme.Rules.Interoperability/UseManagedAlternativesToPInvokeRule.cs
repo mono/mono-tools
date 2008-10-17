@@ -68,7 +68,7 @@ namespace Gendarme.Rules.Interoperability {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api")]
 	public class UseManagedAlternativesToPInvokeRule : Rule, IMethodRule {
 
-		private struct PInvokeCall {
+		private struct PInvokeCall : IEquatable<PInvokeCall> {
 
 			private string module;
 			private string method;

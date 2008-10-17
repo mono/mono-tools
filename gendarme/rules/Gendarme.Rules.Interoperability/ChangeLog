@@ -1,3 +1,10 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Make Branch
+	implement IEquatable<T> (self-test).
+	* UseManagedAlternativesToPInvokeRule.cs: Make PInvokeCall implement
+	IEquatable<T> (self-test).
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this

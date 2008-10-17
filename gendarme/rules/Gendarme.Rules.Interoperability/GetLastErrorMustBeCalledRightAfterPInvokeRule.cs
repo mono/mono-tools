@@ -80,7 +80,7 @@ namespace Gendarme.Rules.Interoperability {
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1404:CallGetLastErrorImmediatelyAfterPInvoke")]
 	public class GetLastErrorMustBeCalledRightAfterPInvokeRule : Rule, IMethodRule {
 
-		struct Branch {
+		struct Branch : IEquatable<Branch> {
 			public readonly Instruction Instruction;
 			public readonly bool DirtyMethodCalled;
 
