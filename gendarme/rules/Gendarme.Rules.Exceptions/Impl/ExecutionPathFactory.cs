@@ -5,13 +5,10 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions.Impl {
 
-	public class ExecutionPathFactory {
+	internal sealed class ExecutionPathFactory {
 	
-		private MethodDefinition method;
-
-		public ExecutionPathFactory (MethodDefinition method)
+		public ExecutionPathFactory ()
 		{
-			this.method = method;
 		}
 
 		public IList<ExecutionPathCollection> CreatePaths (Instruction start, Instruction end)
@@ -20,20 +17,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 				throw new ArgumentNullException ("start");
 			if (end == null)
 				throw new ArgumentNullException ("end");
-#if DEBUG
-			if (!method.Body.Instructions.Contains (start))
-				throw new ArgumentException(
-					"start instruction is not contained in method " + 
-					method.DeclaringType.FullName + "::" + method.Name,
-					"start");
 
-			if (!method.Body.Instructions.Contains (end)) {
-				throw new ArgumentException(
-					"end instruction is not contained in method " + 
-					method.DeclaringType.FullName + "::" + method.Name,
-					"end");
-			}
-#endif
 			List<ExecutionPathCollection> paths = new List<ExecutionPathCollection> ();
 			CreatePathHelper (start, end, new ExecutionPathCollection (), paths);
 			return paths;

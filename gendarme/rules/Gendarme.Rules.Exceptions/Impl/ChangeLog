@@ -1,3 +1,8 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionPathFactory.cs: Seal type. Remove unused (except for
+	debugging) MethodDefinition field (self-test).
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionBlock.cs: Don't initialize fields to null inside ctor
