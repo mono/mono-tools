@@ -1,3 +1,7 @@
+2008-10-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Remove dead code/line.
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this

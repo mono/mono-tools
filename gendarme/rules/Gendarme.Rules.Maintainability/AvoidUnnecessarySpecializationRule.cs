@@ -264,8 +264,8 @@ namespace Gendarme.Rules.Maintainability {
 
 					//potential generalization to object does not really make sense
 					//from a readability/maintainability point of view
-					if (IsSystemObjectMethod (method)) continue;
-					MethodSignature signature = GetSignature (method);
+					if (IsSystemObjectMethod (method))
+						continue;
 					if (usage.StackOffset == method.Parameters.Count) {
 						//argument is used as `this` in the call
 						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signatures);
