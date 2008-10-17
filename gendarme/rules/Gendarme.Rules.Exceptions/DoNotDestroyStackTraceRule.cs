@@ -88,7 +88,7 @@ namespace Gendarme.Rules.Exceptions {
 				return RuleResult.DoesNotApply;
 
 			executionPaths.Clear ();
-			ExecutionPathFactory epf = new ExecutionPathFactory (method);
+			ExecutionPathFactory epf = new ExecutionPathFactory ();
 			foreach (SEHGuardedBlock guardedBlock in ExceptionBlockParser.GetExceptionBlocks (method)) {
 				foreach (SEHHandlerBlock handlerBlock in guardedBlock.SEHHandlerBlocks) {
 					if (handlerBlock is SEHCatchBlock) {
