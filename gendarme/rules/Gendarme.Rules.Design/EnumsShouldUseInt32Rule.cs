@@ -34,7 +34,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// Enumeration types should avoid specifying a non-default storage type for their values, 
+	/// Enumaration types should avoid specifying a non-default storage type for their values, 
 	/// unless it is used and required for interoperability. In the later case non-CLS compliant 
 	/// types should be avoided to ensure the code can be reused by all CLS-compliant languages.
 	/// </summary>
@@ -50,7 +50,7 @@ namespace Gendarme.Rules.Design {
 	/// public enum SmallFlag : ushort {
 	///	One = 1,
 	///	// ...
-	///	Sixteen = 1 << 15
+	///	Sixteen = 1 &lt;&lt; 15
 	/// }
 	/// </code>
 	/// </example>
@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Design {
 	/// public enum SmallFlag {
 	///	One = 1,
 	///	// ...
-	///	Sixteen = 1 << 15
+	///	Sixteen = 1 &lt;&lt; 15
 	/// }
 	/// </code>
 	/// </example>

@@ -60,6 +60,7 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
+	/// <example>
 	/// Good example (generics):
 	/// <code>
 	/// class Good {
