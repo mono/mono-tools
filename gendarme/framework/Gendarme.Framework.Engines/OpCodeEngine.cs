@@ -48,7 +48,7 @@ namespace Gendarme.Framework.Engines {
 		public override void Initialize (EngineController controller)
 		{
 			base.Initialize (controller);
-			controller.MethodBody += new EventHandler<EngineEventArgs> (OnMethodBody);
+			controller.BuildingMethodBody += new EventHandler<EngineEventArgs> (OnMethodBody);
 		}
 
 		void OnMethodBody (object sender, EngineEventArgs e)

@@ -1,3 +1,10 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NamespaceEngine.cs: New. Engine that build a list of all 
+	namespaces. It makes it possible to query all namespaces, namespaces
+	inside an assembly and all types inside a namespace.
+	* OpCodeEngine.cs: Adjust for event rename.
+
 2008-09-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* OpCodeEngine.cs: New. First engine. It constuct a bitmask of 
