@@ -1,3 +1,9 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Bitmask.cs: Implement IEquatable<T> (self-test).
+	* EngineController.cs: Add a new event when it's time to build
+	engine data from a type. Renamed existing events to match.
+
 2008-09-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Runner.cs: Make Initialize method virtual so concrete runners

@@ -58,8 +58,9 @@ namespace Gendarme.Framework {
 			}
 		}
 
-		public event EventHandler<EngineEventArgs> CustomAttributes;
-		public event EventHandler<EngineEventArgs> MethodBody;
+		public event EventHandler<EngineEventArgs> BuildingCustomAttributes;
+		public event EventHandler<EngineEventArgs> BuildingMethodBody;
+		public event EventHandler<EngineEventArgs> BuildingType;
 
 		public void Build (IList<AssemblyDefinition> list)
 		{
@@ -78,6 +79,8 @@ namespace Gendarme.Framework {
 					foreach (TypeDefinition type in module.Types) {
 						e.CurrentType = type;
 
+						if (BuildingType != null)
+							BuildingType (type, e);
 						BuildCustomAttributes (type, e);
 
 						foreach (FieldDefinition field in type.Fields) {
@@ -100,8 +103,8 @@ namespace Gendarme.Framework {
 
 		private void BuildCustomAttributes (ICustomAttributeProvider custom, EngineEventArgs e)
 		{
-			if ((CustomAttributes != null) && (custom.CustomAttributes.Count > 0)) {
-				CustomAttributes (custom, e);
+			if ((BuildingCustomAttributes != null) && (custom.CustomAttributes.Count > 0)) {
+				BuildingCustomAttributes (custom, e);
 			}
 		}
 
@@ -116,15 +119,16 @@ namespace Gendarme.Framework {
 			// TODO check custom attributes (generic parameters)
 			// TODO check custom attributes (return value)
 
-			if (method.HasBody && (MethodBody != null)) {
-				MethodBody (method.Body, e);
+			if (method.HasBody && (BuildingMethodBody != null)) {
+				BuildingMethodBody (method.Body, e);
 			}
 		}
 
 		public void TearDown ()
 		{
-			CustomAttributes = null;
-			MethodBody = null;
+			BuildingCustomAttributes = null;
+			BuildingMethodBody = null;
+			BuildingType = null;
 
 			foreach (Engine engine in engines.Values) {
 				engine.TearDown ();

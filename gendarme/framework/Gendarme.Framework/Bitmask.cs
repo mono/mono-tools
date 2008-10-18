@@ -34,7 +34,7 @@ namespace Gendarme.Framework {
 	/// (sadly this can't be restricted to enums/integral types using 'where').
 	/// </summary>
 	/// <typeparam name="T">Type on which the bitmask is based.</typeparam>
-	public class Bitmask<T> where T : struct, IConvertible {
+	public class Bitmask<T> : IEquatable<Bitmask<T>> where T : struct, IConvertible {
 
 		ulong mask;
 
