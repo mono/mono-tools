@@ -1,3 +1,8 @@
+2008-10-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionBlock.cs, ExecutionPath.cs: Internalize type inside
+	the internal namespace (self-test) and also seal them (2nd self-test)
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionPathFactory.cs: Seal type. Remove unused (except for

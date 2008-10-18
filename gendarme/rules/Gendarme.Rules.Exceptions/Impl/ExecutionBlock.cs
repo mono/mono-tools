@@ -3,7 +3,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions.Impl {
 
-	public class ExecutionBlock {
+	internal sealed class ExecutionBlock {
 	
 		private Instruction firstInstruction;
 		private Instruction lastInstruction;

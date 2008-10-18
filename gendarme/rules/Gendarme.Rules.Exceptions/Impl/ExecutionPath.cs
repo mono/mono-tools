@@ -6,7 +6,7 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Exceptions.Impl {
 
-	public class ExecutionPathCollection : List<ExecutionBlock> {
+	internal sealed class ExecutionPathCollection : List<ExecutionBlock> {
 	
 		public ExecutionPathCollection ()
 		{
