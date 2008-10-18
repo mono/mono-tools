@@ -31,6 +31,8 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
@@ -81,6 +83,7 @@ namespace Gendarme.Rules.Concurrency {
 	// TODO: do a more complex rule that checks that you have used Thread.Monitor.Exit in a finally block
 	[Problem ("This method uses Thread.Monitor.Enter() but doesn't use Thread.Monitor.Exit().")]
 	[Solution ("Rather use the lock{} statement in case your language is C#, or Thread.Monitor.Exit() in other case.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotUseLockedRegionOutsideMethodRule : Rule, IMethodRule {
 
 		public override void Initialize (IRunner runner)
@@ -101,7 +104,11 @@ namespace Gendarme.Rules.Concurrency {
 			// rule doesn't apply if the method has no IL
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
-			
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
 			int enter = 0;
 			int exit = 0;
 			
@@ -119,7 +126,7 @@ namespace Gendarme.Rules.Concurrency {
 			if (enter == exit)
 				return RuleResult.Success;
 
-			Runner.Report (method, Severity.High, Confidence.Normal, String.Empty);
+			Runner.Report (method, Severity.High, Confidence.Normal);
 			return RuleResult.Failure;
 		}
 		

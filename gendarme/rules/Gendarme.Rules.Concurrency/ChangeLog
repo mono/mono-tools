@@ -1,3 +1,21 @@
+2008-10-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnWeakIdentityObjectsRule.cs: Add [FxCopCompatibility]
+	attribute. Use new GetOperandRock to simplify the rule.
+	* DontUseLockedRegionOutsideMethodRule.cs: Use OpCodeEngine to 
+	ignore methods that do not contain call[virt] instructions.
+	* DoubleCheckLockingRule.cs: Only apply rule to assemblies targetting
+	runtimes before 2.0 (i.e. 1.x) Use OpCodeEngine to ignore methods that 
+	do not contain call[virt] instructions. Update and expand the XML 
+	documentation.
+	* LockAnalyzerRule.cs: Use OpCodeEngine to ignore methods that do 
+	not contain call[virt] instructions.
+	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: Ignore 
+	delegates.
+	* WriteStaticFieldFromInstanceMethodRule.cs: Use OpCodeEngine to
+	check for methods that contains Stsfld (store of static fields). Use 
+	Resolve rock on fields.
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this

@@ -32,10 +32,13 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
+	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class LockAnalyzerRule : Rule, IMethodRule {
 
 		public override void Initialize (IRunner runner)
@@ -57,6 +60,10 @@ namespace Gendarme.Rules.Concurrency {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {

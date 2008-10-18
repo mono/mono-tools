@@ -27,7 +27,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -38,11 +37,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule ensures there aren't locked objects with weak identity.
+	/// This rule ensures there are no locks on objects with weak identity.
 	/// An object with weak identity means that it can be accessed across
 	/// different application domains and may cause deadlocks or other
 	/// concurrency issues.
-	/// The following types have a weak identity:
+	/// The following types have a weak identities:
 	/// <list type="bullet"> 
 	/// <item> 
 	/// <description><c>System.MarshalByRefObject</c></description>
@@ -76,6 +75,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// public void WeakIdLocked () 
 	/// {
 	/// 	lock ("CustomString") {
+	///		// ...
 	/// 	}
 	/// }
 	/// </code>
@@ -87,6 +87,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// {
 	/// 	Phone phone = new Phone ();
 	///     lock (phone) {
+	///		// ...
 	///     }
 	/// }
 	/// </code>
@@ -94,39 +95,8 @@ namespace Gendarme.Rules.Concurrency {
 
 	[Problem ("This method use a lock on a object with a weak identity, i.e. accessible across application domains.")]
 	[Solution ("To be safe from outside always lock on something that is totally private to your code.")]
+	[FxCopCompatibility ("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity")]
 	public class DoNotLockOnWeakIdentityObjectsRule : LockAnalyzerRule {
-
-		private static TypeReference GetType (MethodDefinition method, Instruction ins)
-		{
-			VariableDefinition variable = ins.GetVariable (method);
-			if (variable != null)
-				return variable.VariableType;
-
-			switch (ins.OpCode.Code) {
-			case Code.Ldarg_0:
-			case Code.Ldarg_1:
-			case Code.Ldarg_2:
-			case Code.Ldarg_3:
-				int index = (ins.OpCode.Code - Code.Ldarg_0);
-				if (!method.IsStatic) {
-					index--;
-					if (index < 0)
-						return method.DeclaringType; // this
-				}
-				return method.Parameters [index].ParameterType;
-			case Code.Ldarg:
-			case Code.Ldarg_S:
-				return (ins.Operand as ParameterDefinition).ParameterType;
-			case Code.Ldfld:
-			case Code.Ldsfld:
-				return (ins.Operand as FieldReference).FieldType;
-			case Code.Call:
-			case Code.Callvirt:
-				return (ins.Operand as MethodReference).ReturnType.ReturnType;
-			default:
-				return null;
-			}
-		}
 
 		private static string [] unsealed_types = new string[] {
 			"System.MarshalByRefObject",
@@ -141,7 +111,7 @@ namespace Gendarme.Rules.Concurrency {
 			Instruction call = ins;
 			while (ins.Previous != null) {
 				ins = ins.Previous;
-				TypeReference type = GetType (method, ins);
+				TypeReference type = ins.GetOperandType (method);
 				if (type == null)
 					continue;
 

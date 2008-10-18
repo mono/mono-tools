@@ -36,53 +36,104 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
-	// FIXME?: see http://groups.google.com/group/gendarme/browse_thread/thread/b46d1ddc3a2d8fb9#msg_9b9c2989cedb4c34
-	
 	// note: the rule only report a single double-lock per method
 
 	/// <summary>
-	/// This rule is used to check for the double-check pattern in multi-threaded 
-	/// code and warns of its incorrect usage. For more information about the double
-	/// checking problem, see the next article: 
-	/// http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html
+	/// This rule is used to check for the double-check pattern, often used when implementing 
+	/// the singleton pattern (1), and warns of its potential incorrect usage. 
+	/// 
+	/// The original CLR (1.x) could not guarantee that a double-check would work correctly 
+	/// in multithreaded applications. However the technique do work on the x86 architecture, 
+	/// the most common architecture, so the problem is seldom seen (e.g. IA64).
+	/// 
+	/// The CLR 2 and later introduce a strong memory model (2) where a double check for a
+	/// <c>lock</c> is correct (as long as you assign to a <c>volatile</c> variable). This
+	/// rule wont report any defect for assemblies targetting the 2.0 (and later) runtime.
+	/// <list>
+	/// <item><term>1. Implementing Singleton in C#</term><description>
+	/// http://msdn.microsoft.com/en-us/library/ms998558.aspx</description></item>
+	/// <item><term>2. Understand the Impact of Low-Lock Techniques in Multithreaded Apps</term>
+	/// <description>http://msdn.microsoft.com/en-ca/magazine/cc163715.aspx#S5</description></item>
+	/// </list>
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// public static Singleton Instance {
-    	/// 	get {
-	///		if (instance == null) {
-	///			lock (syncRoot) {
-	///				if (instance == null) 
-	///					instance = new Singleton ();
+	/// public class Singleton {
+	///	private static Singleton instance;
+	///	private static object syncRoot = new object ();
+	/// 
+	///	public static Singleton Instance {
+    	/// 		get {
+	///			if (instance == null) {
+	///				lock (syncRoot) {
+	///					if (instance == null) {
+	///						instance = new Singleton ();
+	///					}
+	///				}
 	///			}
+	///			return instance;
 	///		}
-	///		return instance;
 	///	}
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example:
+	/// Good example (for 1.x code avoid using double check):
 	/// <code>
-	/// public static Singleton Instance {
-	///	get {
-	///		lock (syncRoot) {
-	///			if (instance == null) 
-	///				instance = new Singleton ();
+	/// public class Singleton {
+	///	private static Singleton instance;
+	///	private static object syncRoot = new object ();
+	/// 
+	///	public static Singleton Instance {
+	/// 		get {
+	/// 			// do not check instance before the lock
+	/// 			// this will works on all CLR but will affect 
+	/// 			// performance since the lock is always acquired
+	///			lock (syncRoot) {
+	///				if (instance == null) {
+	///					instance = new Singleton ();
+	///				}
+	///			}
+	///			return instance;
 	///		}
-	///		return instance;
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (for 2.x and later):
+	/// <code>
+	/// public class Singleton {
+	///	// by using 'volatile' the double check will work under CLR 2.x
+	///	private static volatile Singleton instance;
+	///	private static object syncRoot = new object ();
+	/// 
+	///	public static Singleton Instance {
+	/// 		get {
+	///			if (instance == null) {
+	///				lock (syncRoot) {
+	///					if (instance == null) {
+	///						instance = new Singleton ();
+	///					}
+	///				}
+	///			}
+	///			return instance;
+	///		}
 	///	}
 	/// }
 	/// </code>
 	/// </example>
 
-	[Problem ("This method uses the unreliable double-check locking technique.")]
-	[Solution ("Remove the lock check that occurs outside of the protected region.")]
+	[Problem ("This method uses the potentially unreliable double-check locking technique.")]
+	[Solution ("Remove the check that occurs outside of the protected region.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoubleCheckLockingRule : Rule, IMethodRule {
 
 		Stack<int> monitorOffsetList = new Stack<int> ();
@@ -91,6 +142,13 @@ namespace Gendarme.Rules.Concurrency {
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
+
+			// we only want to run this on assemblies that use either the
+			// 1.0 or 1.1 runtime - since the memory model, at that time,
+			// was not entirely safe for double check locks
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Runtime < TargetRuntime.NET_2_0);
+			};
 
 			// is this module using Monitor.Enter ? (lock in c#)
 			// if not then this rule does not need to be executed for the module
@@ -105,6 +163,10 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			// rule doesn't apply if the method has no IL
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			comparisons.Clear ();
@@ -128,7 +190,7 @@ namespace Gendarme.Rules.Concurrency {
 							if (insn.Offset >= monitorOffsetList.Peek ())
 								continue;
 
-							Runner.Report (method, insn, Severity.Medium, Confidence.High, String.Empty);
+							Runner.Report (method, insn, Severity.Medium, Confidence.High);
 							return RuleResult.Failure;
 						}
 					}

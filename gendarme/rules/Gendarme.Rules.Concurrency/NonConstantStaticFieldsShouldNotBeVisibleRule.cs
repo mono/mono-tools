@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Concurrency {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to interface and enumerations
-			if (type.IsInterface || type.IsEnum)
+			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {

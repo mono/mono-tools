@@ -37,17 +37,16 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// You are asking for concurrency troubles.  If you are locking this,
-	/// you should imagine a third man consuming your class, this man
-	/// doesn't know if your code is locking or not.  And he, could think
-	/// about locking the object (because it needs a thread-safe
-	/// implementation), then this causes a deadlock.
-	/// The second scenario is about locking types.  There are only one Type
-	/// object for each instance of the class.  And this may cause several
-	/// concurrency issues.
+	/// This rule checks if you're use <c>lock</c> on the current instance (<c>this</c>) or
+	/// on a <c>Type</c>. Doing so means potential concurrency troubles. If you are locking 
+	/// <c>this</c> anyone else, outside your code/control, could be using a <c>lock</c> on 
+	/// your instance causing a deadlock. Locking on types is also bad since there is 
+	/// only one instance of each <c>Type</c>. Again anyone else, outside your code/control,
+	/// could be locking on it. The best locking is to create your own, private, instance
+	/// <c>System.Object</c> and <c>lock</c> on it.
 	/// </summary>
 	/// <example>
-	/// Bad example:
+	/// Bad example (this):
 	/// <code>
 	/// public void MethodLockingOnThis ()
 	/// {
@@ -56,6 +55,9 @@ namespace Gendarme.Rules.Concurrency {
 	///     }	
 	/// }
 	/// </code>
+	/// </example>
+	/// <example>
+	/// Bad example (type):
 	/// <code>
 	/// public void MethodLockingOnType ()
 	/// {
@@ -66,6 +68,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </code>
 	/// </example>
 	/// <example>
+	/// Good example:
 	/// <code>
 	/// class ClassWithALocker {
 	/// 	object locker = new object ();
@@ -77,13 +80,6 @@ namespace Gendarme.Rules.Concurrency {
 	///			producer++;
 	///		}
 	///	}
-	/// }
-	/// </code>
-	/// <code>
-	/// [MethodImpl (MethodImplOptions.Synchronized)]
-	/// public void SychronizedMethod ()
-	/// {
-	///	producer++;
 	/// }
 	/// </code>
 	/// </example>

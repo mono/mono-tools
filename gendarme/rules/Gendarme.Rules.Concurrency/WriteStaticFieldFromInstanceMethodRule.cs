@@ -27,13 +27,13 @@
 //
 
 using System;
-using System.Collections;
-using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
@@ -50,8 +50,9 @@ namespace Gendarme.Rules.Concurrency {
  	///
 	/// public int Value {
 	///	get {
-	///		if (default_value == 0)
+	///		if (default_value == 0) {
 	///   			default_value = -1;
+	///   		}
 	/// 		return (value > default_value) ? value : 0;
 	///	}
 	/// }
@@ -63,13 +64,16 @@ namespace Gendarme.Rules.Concurrency {
 	/// static int default_value = -1;
  	///
 	/// public int Value {
-    	/// 	get { return (value > default_value) ? value : 0; }
+    	/// 	get {
+	/// 		return (value > default_value) ? value : 0;
+	/// 	}
 	/// }
 	/// </code>
 	/// </example>
 
 	[Problem ("This instance method writes to static fields. This may cause problem with multiple instances and in multithreaded applications.")]
 	[Solution ("Move initialization to the static constructor or ensure appropriate locking.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class WriteStaticFieldFromInstanceMethodRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -81,20 +85,21 @@ namespace Gendarme.Rules.Concurrency {
 			if (!method.HasBody || method.IsStatic || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeEngine.GetBitmask (method).Get (Code.Stsfld))
+				return RuleResult.DoesNotApply;
+
 			// *** ok, the rule applies! ***
 
-			// look for stsfld instructions on static fields
-
 			foreach (Instruction ins in method.Body.Instructions) {
-				switch (ins.OpCode.Code) {
-				case Code.Stsfld:
-					FieldDefinition fd = (ins.Operand as FieldDefinition);
+				// look for stsfld instructions
+				if (ins.OpCode.Code == Code.Stsfld) {
+					FieldReference fd = (ins.Operand as FieldReference);
 					// skip instance fields and generated static field (likely by the compiler)
-					if ((fd != null) && fd.IsStatic && !fd.IsGeneratedCode ()) {
+					if ((fd != null) && !fd.IsGeneratedCode ()) {
 						string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fd.Name, fd.FieldType);
 						Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
 					}
-					break;
 				}
 			}
 
