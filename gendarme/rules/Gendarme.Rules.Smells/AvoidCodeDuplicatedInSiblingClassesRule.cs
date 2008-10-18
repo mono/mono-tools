@@ -48,8 +48,9 @@ namespace Gendarme.Rules.Smells {
 	/// public class OverriderClassWithCodeDuplicated : BaseClassWithCodeDuplicated {
 	/// 	public void CodeDuplicated ()
 	/// 	{
-	///		foreach (int i in list)
+	///		foreach (int i in list) {
 	///			Console.WriteLine (i);
+	///		}
 	/// 		list.Add (1);
 	/// 	}
 	/// }
@@ -57,8 +58,9 @@ namespace Gendarme.Rules.Smells {
 	/// public class OtherOverriderWithCodeDuplicated : BaseClassWithCodeDuplicated {
 	///	public void OtherMethod ()
 	///	{
-	///		foreach (int i in list)
+	///		foreach (int i in list) {
 	///			Console.WriteLine (i);
+	///		}
 	///		list.Remove (1);
 	///	}
 	/// }
@@ -72,8 +74,9 @@ namespace Gendarme.Rules.Smells {
 	/// 
 	///	protected void PrintValuesInList ()
 	///	{
-	///		foreach (int i in list)
+	///		foreach (int i in list) {
 	///			Console.WriteLine (i);
+	///		}
 	///	}
 	/// }
 	/// 

@@ -153,7 +153,7 @@ namespace Gendarme.Rules.Smells {
 			return type.Methods.Count != 0;
 		}
 
-		private RuleResult CheckDelegate (TypeDefinition type)
+		private RuleResult CheckDelegate (TypeReference type)
 		{
 			MethodDefinition method = type.GetMethod ("Invoke");
 			// MulticastDelegate inherits from Delegate without overriding Invoke

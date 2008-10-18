@@ -37,7 +37,7 @@ namespace Gendarme.Rules.Smells {
 
 	internal static class Utilities {
 
-		public static ICollection<TypeDefinition> GetInheritedClassesFrom (TypeDefinition baseType)
+		public static ICollection<TypeDefinition> GetInheritedClassesFrom (TypeReference baseType)
 		{
 			List<TypeDefinition> inheritedClasses = new List<TypeDefinition> ();
 			foreach (TypeDefinition type in baseType.Module.Types) {

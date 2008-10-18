@@ -56,7 +56,7 @@ namespace Gendarme.Rules.Smells {
 	///	        foreach (string value in myList) {
 	///	                Console.WriteLine (value);
 	///	        }
-	///	        myList.Add ("FooReplied);
+	///	        myList.Add ("FooReplied");
 	///	}
 	///
 	///	public void MakeMoreStuff () {
@@ -89,7 +89,7 @@ namespace Gendarme.Rules.Smells {
 	///
 	/// 	public void MakeStuff () {
 	/// 		PrintValuesInList ();
-	///	        myList.Add ("FooReplied);
+	///	        myList.Add ("FooReplied");
 	/// 	}
 	///
 	/// 	public void MakeMoreStuff () {

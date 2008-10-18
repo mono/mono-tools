@@ -52,8 +52,8 @@ namespace Gendarme.Rules.Smells {
 	/// </summary>
 	/// <example>
 	/// Bad example:
-	/// An abstract class with only one subclass.
 	/// <code>
+	/// // An abstract class with only one subclass.
 	/// public abstract class AbstractClass {
 	/// 	public abstract void MakeStuff ();
 	/// }

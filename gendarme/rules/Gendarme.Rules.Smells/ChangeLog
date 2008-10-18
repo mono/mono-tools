@@ -1,3 +1,18 @@
+2008-10-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Small changes in 
+	XML documentation to make it render more correctly in the wiki.
+	* AvoidLongMethodsRule.cs: Small changes in XML documentation to
+	make it render more correctly in the wiki. Remove XML doc that is not
+	documenting the I*Rule.
+	* AvoidLongParameterListsRule.cs: Accept a TypeReference (instead 
+	of a definition) in CheckDelegate.
+	* AvoidSpeculativeGeneralityRule.cs: Small changes in XML 
+	documentation to make it render more correctly in the wiki.
+	* ExpressionCollection.cs: Implement IEquatable<T> (self-test)
+	* Utilities.cs: Accept a TypeReference (instead of a definition) in 
+	GetInheritedClassesFrom (self-test).
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this

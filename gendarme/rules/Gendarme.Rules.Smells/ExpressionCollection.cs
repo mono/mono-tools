@@ -37,7 +37,7 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Smells {
 
-	internal sealed class ExpressionCollection : CollectionBase {
+	internal sealed class ExpressionCollection : CollectionBase, IEquatable<ExpressionCollection> {
 
 		public ExpressionCollection () : base () {}
 
