@@ -36,7 +36,7 @@ namespace Gendarme.Framework.Helpers {
 	/// This is a specialized Bitmask class for the Code enumeration. 
 	/// Bitmask`1 can't be used since there are more than 64 opcodes defined.
 	/// </summary>
-	public sealed class OpCodeBitmask {
+	public sealed class OpCodeBitmask : IEquatable<OpCodeBitmask> {
 
 		ulong [] mask = new ulong [4];
 

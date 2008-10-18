@@ -36,7 +36,7 @@ namespace Gendarme.Framework.Helpers {
 	/// <summary>
 	/// Represents a usage of a StackEntry
 	/// </summary>
-	public struct StackEntryUsageResult {
+	public struct StackEntryUsageResult : IEquatable<StackEntryUsageResult> {
 
 		/// <summary>
 		/// The instruction that uses the StackEntry

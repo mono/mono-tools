@@ -58,7 +58,7 @@ namespace Gendarme.Framework.Helpers {
 		/// Saves information about a local variable slot (argument or local variable).
 		/// Used to keep track of assignments.
 		/// </summary>
-		struct StoreSlot {
+		struct StoreSlot : IEquatable<StoreSlot> {
 			public readonly StoreType Type;
 			public readonly int Slot;
 			public StoreSlot (StoreType type, int slot)
@@ -111,7 +111,7 @@ namespace Gendarme.Framework.Helpers {
 		/// Wraps an instruction and a stack of leave statements used to get to this instruction.
 		/// Needed to do correct analysis in finally blocks.
 		/// </summary>
-		struct InstructionWithLeave {
+		struct InstructionWithLeave : IEquatable<InstructionWithLeave> {
 			public static readonly InstructionWithLeave Empty = new InstructionWithLeave ();
 
 			public readonly Instruction Instruction;

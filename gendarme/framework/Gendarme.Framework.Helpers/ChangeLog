@@ -1,3 +1,12 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Namespace.cs: New. Helper class so we can report defects against 
+	namespaces just like any other metadata object.
+	* OpCodeBitmask.cs: Implement IEquatable<T>.
+	* StackEntryAnalysis.cs: Implement IEquatable<T> for StoreSlot and
+	InstructionWithLeave inner structures.
+	* StackEntryUsageResult.cs: Implement IEquatable<T>.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* MethodSignatures.cs: Prefer a const over a static readonly for the
