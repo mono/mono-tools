@@ -40,9 +40,11 @@ framework_sources = \
 	Gendarme.Framework/Severity.cs \
 	Gendarme.Framework/Symbols.cs \
 	Gendarme.Framework/SolutionAttribute.cs \
+	Gendarme.Framework.Engines/NamespaceEngine.cs \
 	Gendarme.Framework.Engines/OpCodeEngine.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
 	Gendarme.Framework.Helpers/MethodSignatures.cs \
+	Gendarme.Framework.Helpers/Namespace.cs \
 	Gendarme.Framework.Helpers/OpCodeBitmask.cs \
 	Gendarme.Framework.Helpers/PrimitiveReferences.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \

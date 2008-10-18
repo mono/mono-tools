@@ -1,3 +1,7 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add NamespaceEngine and Namespace helper to the build.
+
 2008-10-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add PrimitiveReferences to the build.
