@@ -1,3 +1,16 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepNamespaceHierarchyTest.cs: New. Unit tests for 
+	AvoidDeepNamespaceHierarchyRule.
+	* DetectNonAlphaNumericsInTypeNamesTest.cs: Add test cases for
+	namespaces. Convert to new, shorter, syntax.
+	* DoNotPrefixEventsWithAfterOrBeforeTest.cs: Add test cases for 
+	structures.
+	* UseCorrectCasingTest.cs: Add test cases for namespaces. Convert
+	to new, shorter, syntax.
+	* UsePreferredTermsTest.cs: Add test cases for namespaces. Convert
+	to new, shorter, syntax.
+
 2008-08-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectCasingTest.cs: Convert namespace tests (ITypeRule) to 

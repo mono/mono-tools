@@ -33,6 +33,7 @@ using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Naming {
@@ -45,8 +46,8 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void DoesNotApply ()
 		{
-			AssertRuleDoesNotApply<IRule> ();
-			AssertRuleDoesNotApply<int> ();
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
 		}
 
 		public class ClassicBad {
@@ -64,12 +65,22 @@ namespace Test.Rules.Naming {
 			public event EventHandler<RunnerEventArgs> AfterGenerics;
 		}
 
+		public struct StructBad {
+			public event EventHandler Before;
+		}
+
+		public interface IBad {
+			event EventHandler After;
+		}
+
 		[Test]
 		public void Bad ()
 		{
 			AssertRuleFailure<ClassicBad> (2);
 			AssertRuleFailure<CustomBad> (2);
 			AssertRuleFailure<GenericsBad> (2);
+			AssertRuleFailure<StructBad> (1);
+			AssertRuleFailure<IBad> (1);
 		}
 
 		public class ClassicOk {
@@ -88,12 +99,26 @@ namespace Test.Rules.Naming {
 			public event EventHandler<RunnerEventArgs> Genericed;
 		}
 
+		public struct StructOk {
+			public event EventHandler Beforing;
+		}
+
 		[Test]
 		public void Ok ()
 		{
 			AssertRuleSuccess<ClassicOk> ();
 			AssertRuleSuccess<CustomOk> ();
 			AssertRuleSuccess<GenericOk> ();
+			AssertRuleSuccess<StructOk> ();
+		}
+
+		[Test]
+		public void None ()
+		{
+			// no events
+			AssertRuleSuccess (SimpleTypes.Class);
+			AssertRuleSuccess (SimpleTypes.Interface);
+			AssertRuleSuccess (SimpleTypes.Structure);
 		}
 	}
 }

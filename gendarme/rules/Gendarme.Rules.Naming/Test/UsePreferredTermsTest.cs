@@ -3,8 +3,10 @@
 //
 // Authors:
 //      Abramov Daniel <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Abramov Daniel
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,106 +29,122 @@
 //
 
 using System;
-using System.Collections;
 using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
+
+// 5 bad terms are used in this namespace
+// note: ShouldntBe needs to be in one word (no dot) otherwise UseCoorectCasingRule will spot it (same assembly)
+namespace Cancelled.ComPlus.Indices.ShouldntBe.Writeable {
+
+	public class WouldntLogOutOrSignOff {
+
+		public bool WontAllowIt;
+
+		public bool AccessWerentLogged {
+			get { return true; }
+		}
+
+		internal void HadntThinkOfIt ()
+		{
+		}
+
+		void CantArgueAboutThat ()
+		{
+		}
+	}
+
+	abstract public class CouldntLogInOrSignOn {
+
+		WouldntLogOutOrSignOff DoesntMatterAnymore;
+
+		abstract public bool WasntHere { get; }
+
+		internal void DontTryThisAtHome ()
+		{
+		}
+
+		public event EventHandler<EventArgs> HaventVoted;
+	}
+}
 
 namespace Test.Rules.Naming {
-	
-	public class SomeComPlusStuff { // one obsolete term ('ComPlus')
-	}
-	
-	public class SomeComPlusAndIndicesStuff { // two obsolete terms ('ComPlus' and 'Indices')
-	}
-	
-	public class TermsMethodsAndProperties {
 
-		public void SignOn () { } // incorrect
-		public void SignIn () { } // correct
-		
-		public bool Writeable { get { return true; } } // incorrect
-		public bool Writable { get { return true; } } // correct
-	}
-	
 	[TestFixture]
-	public class UsePreferredTermsTest {
-		private UsePreferredTermsRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-	
+	public class UsePreferredTermsAssemblyTest : AssemblyRuleTestFixture<UsePreferredTermsRule> {
+
+		AssemblyDefinition assembly;
+
 		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		public void FixtureSetup ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UsePreferredTermsRule ();
-			runner = new TestRunner (rule);
 		}
-		
-      		private MethodDefinition GetPropertyGetter (string name)
+
+		[Test]
+		public void AssemblyName ()
 		{
-			string get_name = "get_" + name;
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == get_name)
-					return method;
+			string name = assembly.Name.Name;
+			try {
+				assembly.Name.Name = "This.Isnt.A.Nice.Assembly.Name";
+				// bad name and one bad namespace with 5 failures
+				AssertRuleFailure (assembly, 6);
 			}
-			return null;
-		}
-				
-      		private MethodDefinition GetMethod (string name)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
+			finally {
+				assembly.Name.Name = name;
 			}
-			return null;
 		}
-		
+
 		[Test]
-		public void TestOneObsoleteTerm ()
+		public void Namespace ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.SomeComPlusStuff"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			// Type_With_Underscore
+			AssertRuleFailure (assembly, 5);
 		}
-		
+	}
+
+	[TestFixture]
+	public class UsePreferredTermsTypeTest : TypeRuleTestFixture<UsePreferredTermsRule> {
+
 		[Test]
-		public void TestTwoObsoleteTerms ()
+		public void Bad ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.SomeComPlusAndIndicesStuff"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			// 3 failures in the type name, 2 in fields (including one event)
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.CouldntLogInOrSignOn> (5);
+			// 3 failures in the type name, 1 in a field
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> (4);
 		}
-		
+
 		[Test]
-		public void TestCorrectMethodsAndProperties ()
+		public void Good ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.TermsMethodsAndProperties"];
-			MethodDefinition method = GetMethod ("SignIn");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-			method = GetMethod ("get_Writable");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
+			// good type name and good field name
+			AssertRuleSuccess<UsePreferredTermsAssemblyTest> ();
 		}
-		
+	}
+
+	[TestFixture]
+	public class UsePreferredTermsMethodTest : MethodRuleTestFixture<UsePreferredTermsRule> {
+
 		[Test]
-		public void TestIncorrectMethodsAndProperties ()
+		public void Bad ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.TermsMethodsAndProperties"];
-			MethodDefinition method = GetMethod ("SignOn");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-			method = GetMethod ("get_Writeable");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-		}		
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> ("get_AccessWerentLogged", 1);
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> ("HadntThinkOfIt", 1);
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> ("CantArgueAboutThat", 1);
+
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.CouldntLogInOrSignOn> ("DontTryThisAtHome", 1);
+		}
+
+		[Test]
+		public void Good ()
+		{
+			AssertRuleSuccess<UsePreferredTermsMethodTest> ("Bad");
+		}
 	}
 }

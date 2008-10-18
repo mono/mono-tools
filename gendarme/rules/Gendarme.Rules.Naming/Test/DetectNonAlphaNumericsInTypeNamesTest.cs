@@ -1,5 +1,5 @@
 // 
-// Unit tests for DetectNonAlphaNumericsInTypeNamesRule
+// Unit tests for AvoidNonAlphanumericIdentifierRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -30,13 +30,56 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
+
+namespace Test_Rules_Naming {
+
+	public class Type_With_Underscore {
+
+		protected int Field_With_Underscore;
+
+		public void Method_With_Underscore (string param_with_underscore)
+		{
+			Event_With_Underscore += delegate { 
+				Console.WriteLine ("hello");
+			};
+		}
+
+		public event EventHandler<EventArgs> Event_With_Underscore;
+
+		public bool Property_With_Underscore {
+			get { return false; }
+		}
+	}
+
+	public class TypeWithoutUnderscore {
+
+		protected int FieldWithoutUnderscore;
+		private int Field_With_Underscore;	// non-visible
+
+		public void MethodWithoutUnderscore (string paramWithoutUnderscore)
+		{
+			EventWithoutUnderscore += delegate {
+				Console.WriteLine ("hello");
+			};
+		}
+
+		protected event EventHandler<EventArgs> EventWithoutUnderscore;
+
+		public bool PropertyWithoutUnderscore {
+			get { return false; }
+		}
+
+		internal int Property_With_Underscore {
+			get { return 0; }
+		}
+	}
+}
 
 namespace Test.Rules.Naming {
 
@@ -56,288 +99,163 @@ namespace Test.Rules.Naming {
 	[Guid ("809c652e-7396-11d2-9771-00a0c9b4d50c")]
 	[InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
 	[ComVisible (true)]
-	interface IMetaDataDispenser {
+	public interface IMetaDataDispenser {
 		void DefineScope_Placeholder ();
 	}
 
+	public enum PublicEnum_WithUnderscore {
+		Value_WithUnderscore,
+		ValueWithoutUnderscore
+	}
+
 	[TestFixture]
-	public class DetectNonAlphaNumericsInTypeNamesTest {
-			
-		public class ClassContainingProperty {
-			int i=0;
-			public int Property {
-				get {
-					return i;
-				}
-				set {
-					i = value;
-				}
-			}
-		}
-		
-		public class ClassContainingEvent
-		{
-			public event EventHandler MyEvent
-			{
-				add { } 
-				remove { }
-			}
-		}
-	
-		class ClassContainingConversionOperator 
-		{ 
-			private string FullName = "";
-			public ClassContainingConversionOperator (string str) 
-			{ 
-				FullName = str; 
-			} 
-			public static implicit operator ClassContainingConversionOperator (string str) 
-			{ 
-				return new ClassContainingConversionOperator (str); 
-			}
-		}
-			
-		public class ClassContainingPrivateMethodWithUnderscore {
-			private void my_method ()
-			{
-			}
-		}
-		
-		public class ClassContainingPublicMethodWithUnderscore {
-			public void methot_test ()
-			{
-			}
-		}
-			
-		private class NestedPrivateClassName_WithUnderscore {
-		}
+	public class AvoidNonAlphanumericIdentifierAssemblyTest : AssemblyRuleTestFixture<AvoidNonAlphanumericIdentifierRule> {
 
-		public class NestedPublicClassName_WithUnderscore {
-		}
-
-		private interface NestedPrivateInterface_WithUnderscore {
-		}
-
-		public interface NestedPublicInterface_WithUnderscore {
-		}
-			
-		class DefaultPrivate_Class
-		{
-			void DefaultPrivate_Method ()
-			{
-			}
-		}
-		
-		public class ClassWithoutUnderscore 
-		{
-			public void methodWithoutUnderscore ()
-			{
-			}
-		}
-
-		public class ClassWithDelegate {
-
-			public bool MethodDefiningDelegate ()
-			{
-				byte[] array = null;
-				return !Array.Exists (array, delegate (byte value) { return value.Equals (this); });
-			}
-		}
-
-		
-		private IRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
+		AssemblyDefinition assembly;
 
 		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		public void FixtureSetup ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new DetectNonAlphanumericInTypeNamesRule();
-			runner = new TestRunner (rule);
 		}
-		
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Naming.DetectNonAlphaNumericsInTypeNamesTest/" + name;
-			return assembly.MainModule.Types[fullname];
-		}
-		
+
 		[Test]
-		public void propertyTest ()
+		public void AssemblyName ()
 		{
-			type = GetTest ("ClassContainingProperty");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
+			string name = assembly.Name.Name;
+			try {
+				assembly.Name.Name = "My_Assembly";
+				// bad name and bad namespace
+				AssertRuleFailure (assembly, 2);
 			}
-		}
-			
-		[Test]
-		public void eventTest ()
-		{
-			type = GetTest ("ClassContainingEvent");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-			
-		[Test]
-		public void conversionOperatorTest ()
-		{
-			type = GetTest ("ClassContainingConversionOperator");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-		
-		[Test]
-		public void privateMethodWithUnderscoreTest ()
-		{
-			type = GetTest ("ClassContainingPrivateMethodWithUnderscore");
-			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-		
-		[Test]
-		public void publicMethodWithUnderscoreTest ()
-		{
-			type = GetTest ("ClassContainingPublicMethodWithUnderscore");
-			Assert.AreEqual (1, type.Methods.Count, "Methods.Count");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-				Assert.AreEqual (1, runner.Defects.Count, "Count");
-			}
-		}
-		
-		[Test]
-		public void nestedPrivateClassWithUnderscoreTest ()
-		{
-			type = GetTest ("NestedPrivateClassName_WithUnderscore");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void nestedPublicClassWithUnderscoreTest ()
-		{
-			type = GetTest ("NestedPublicClassName_WithUnderscore");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void nestedPrivateInterfaceWithUnderscoreTest ()
-		{
-			type = GetTest ("NestedPrivateInterface_WithUnderscore");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void nestedPublicInterfaceWithUnderscoreTest ()
-		{
-			type = GetTest ("NestedPublicInterface_WithUnderscore");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void defaultPrivateClassTest ()
-		{
-			type = GetTest ("DefaultPrivate_Class");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void defaultPrivateMethodTest ()
-		{
-			type = GetTest ("DefaultPrivate_Class");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
-		}
-		
-		[Test]
-		public void classWithoutUnderscoreTest ()
-		{
-			type = GetTest ("ClassWithoutUnderscore");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void methodWithoutUnderscoreTest ()
-		{
-			type = GetTest ("ClassWithoutUnderscore");
-			foreach (MethodDefinition method in type.Methods) {
-				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
+			finally {
+				assembly.Name.Name = name;
 			}
 		}
 
 		[Test]
-		public void classWithDelegate ()
+		public void Namespace ()
 		{
-			type = GetTest ("ClassWithDelegate");
-			foreach (MethodDefinition method in type.Methods) {
-				RuleResult result = method.IsGeneratedCode () ? RuleResult.DoesNotApply : RuleResult.Success;
-				Assert.AreEqual (result, runner.CheckMethod (method), "RuleResult." + method.Name);
-				Assert.AreEqual (0, runner.Defects.Count, "Count." + method.Name);
-			}
+			// Type_With_Underscore
+			AssertRuleFailure (assembly, 1);
+		}
+	}
+
+	[TestFixture]
+	public class AvoidNonAlphanumericIdentifierTypeTest : TypeRuleTestFixture<AvoidNonAlphanumericIdentifierRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
+			// because they are NOT visible
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
+			AssertRuleDoesNotApply (SimpleTypes.Structure);
+		}
+
+		[Test]
+		public void Enum ()
+		{
+			// the enum itself and one of it's two values
+			AssertRuleFailure<PublicEnum_WithUnderscore> (2);
+		}
+
+		[Test]
+		public void Types ()
+		{
+			// namespace is not consider at type level, but the field is catched here
+			AssertRuleFailure<Test_Rules_Naming.Type_With_Underscore> (2);
+			AssertRuleSuccess<Test_Rules_Naming.TypeWithoutUnderscore> ();
 		}
 
 		[Test]
 		public void InternalClassWithUnderscoreTest ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Naming.InternalClassName_WithUnderscore"];
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<InternalClassName_WithUnderscore> ();
 		}
 
 		[Test]
 		public void PublicClassWithUnderscoreTest ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Naming.PublicClassName_WithUnderscore"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<PublicClassName_WithUnderscore> (1);
 		}
 
 		[Test]
 		public void InternalInterfaceWithUnderscoreTest ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Naming.InternalInterface_WithUnderscore"];
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<InternalInterface_WithUnderscore> ();
 		}
 
 		[Test]
 		public void PublicInterfaceWithUnderscoreTest ()
 		{
-			type = assembly.MainModule.Types["Test.Rules.Naming.PublicInterface_WithUnderscore"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<PublicInterface_WithUnderscore> (1);
 		}
 
 		[Test]
 		public void ComInterop ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IMetaDataDispenser"];
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "Type/RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Type/Count");
+			AssertRuleDoesNotApply<IMetaDataDispenser> ();
+		}
+	}
 
-			MethodDefinition method = type.GetMethod ("DefineScope_Placeholder");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "Method/RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Method/Count");
+	[TestFixture]
+	public class AvoidNonAlphanumericIdentifierMethodTest : MethodRuleTestFixture<AvoidNonAlphanumericIdentifierRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleMethods.GeneratedCodeMethod);
+		}
+
+		[Test]
+		public void Enum ()
+		{
+			AssertRuleFailure<PublicEnum_WithUnderscore> (1);
+		}
+
+		[Test]
+		public void MembersWithoutUnderscoreTest ()
+		{
+			AssertRuleSuccess<Test_Rules_Naming.TypeWithoutUnderscore> ("MethodWithoutUnderscore");
+			AssertRuleSuccess<Test_Rules_Naming.TypeWithoutUnderscore> ("add_EventWithoutUnderscore");
+			AssertRuleSuccess<Test_Rules_Naming.TypeWithoutUnderscore> ("remove_EventWithoutUnderscore");
+			AssertRuleSuccess<Test_Rules_Naming.TypeWithoutUnderscore> ("get_PropertyWithoutUnderscore");
+		}
+
+		[Test]
+		public void MembersWithUnderscoreTest ()
+		{
+			// method and its parameter name contains an underscore
+			AssertRuleFailure<Test_Rules_Naming.Type_With_Underscore> ("Method_With_Underscore", 2);
+			AssertRuleFailure<Test_Rules_Naming.Type_With_Underscore> ("add_Event_With_Underscore", 1);
+			AssertRuleFailure<Test_Rules_Naming.Type_With_Underscore> ("remove_Event_With_Underscore", 1);
+			AssertRuleFailure<Test_Rules_Naming.Type_With_Underscore> ("get_Property_With_Underscore", 1);
+		}
+
+		public class ClassWithAnonymousDelegate {
+
+			public bool MethodDefiningDelegate ()
+			{
+				byte [] array = null;
+				return !Array.Exists (array, delegate (byte value) { return value.Equals (this); });
+			}
+		}
+
+		[Test]
+		public void AnonymousDelegate ()
+		{
+			AssertRuleSuccess<ClassWithAnonymousDelegate> ("MethodDefiningDelegate");
+		}
+
+		[Test]
+		public void ComInterop ()
+		{
+			AssertRuleDoesNotApply<IMetaDataDispenser> ("DefineScope_Placeholder");
 		}
 	}
 }

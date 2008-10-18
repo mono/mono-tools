@@ -27,18 +27,14 @@
 //
 
 using System;
-using System.Collections;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 using Mono.Cecil;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
-using Test.Rules.Helpers;
 
 // no namespace
 class Foo { }
@@ -52,11 +48,22 @@ namespace Test.Rules.ROCKS { class Foo { } }
 namespace Test.Rules.Naming {
 
 	[TestFixture]
-	public class UseCorrectCasingTypeTest : TypeRuleTestFixture<UseCorrectCasingRule> {
+	public class UseCorrectCasingAssemblyTest : AssemblyRuleTestFixture<UseCorrectCasingRule> {
 
-		[CompilerGenerated]
-		public class GeneratedType {
+		[Test]
+		public void Namespaces ()
+		{
+			// 1. Test.A
+			// 2. Test.Fa
+			// 3. Test.ASP
+			// 4. Test.Rules.ROCKS
+			string unit = Assembly.GetExecutingAssembly ().Location;
+			AssertRuleFailure (AssemblyFactory.GetAssembly (unit), 4);
 		}
+	}
+
+	[TestFixture]
+	public class UseCorrectCasingTypeTest : TypeRuleTestFixture<UseCorrectCasingRule> {
 
 		public class CorrectCasing {
 		}
@@ -67,40 +74,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void DoesNotApply ()
 		{
-			AssertRuleDoesNotApply<GeneratedType> ();
-		}
-
-		[Test]
-		public void NamespaceOfLength0 ()
-		{
-			AssertRuleSuccess<Foo> ();
-		}
-
-		[Test]
-		public void NamespaceOfLength1 ()
-		{
-			AssertRuleFailure<Test.A.Foo> (1);
-		}
-
-		[Test]
-		public void NamespaceOfLength2 ()
-		{
-			AssertRuleSuccess<Test.IO.Foo> ();
-			AssertRuleFailure<Test.Fa.Foo> (1);
-		}
-
-		[Test]
-		public void IncorrectNamespaceReportedOnce ()
-		{
-			AssertRuleFailure<Test.ASP.Foo> (1);
-			AssertRuleSuccess<Test.ASP.Bar> ();
-		}
-
-		[Test]
-		public void LongNamespace ()
-		{
-			AssertRuleSuccess<UseCorrectCasingTypeTest> ();
-			AssertRuleFailure<Test.Rules.ROCKS.Foo> (1);
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
 		}
 
 		[Test]
@@ -116,6 +90,10 @@ namespace Test.Rules.Naming {
 		public void incorrectCasing (int foo, string bar) { }
 		public void CorrectCasingWithTwoIncorrectParameters (int Bar, string Foo) { }
 		public void incorrectCasingWithTwoIncorrectParameters (int Bar, string Foo) { }
+
+		public void IncorrectParameter (byte B) { }
+		public void x () { }
+		public void _X (short _S) { }
 	}
 
 	public class MoreComplexCasing {
@@ -143,7 +121,98 @@ namespace Test.Rules.Naming {
 	}
 
 	[TestFixture]
-	public class UseCorrectCasingTest {
+	public class UseCorrectCasingTest : MethodRuleTestFixture<UseCorrectCasingRule> {
+
+		[Test]
+		public void TestCorrectCasedMethod ()
+		{
+			AssertRuleSuccess<CasingMethods> ("CorrectCasing");
+		}
+
+		[Test]
+		public void TestIncorrectCasedMethod ()
+		{
+			AssertRuleFailure<CasingMethods> ("incorrectCasing", 1);
+		}
+
+		[Test]
+		public void TestCorrectCasedMethodWithIncorrectCasedParameters ()
+		{
+			AssertRuleFailure<CasingMethods> ("CorrectCasingWithTwoIncorrectParameters", 2);
+		}
+
+		[Test]
+		public void TestIncorrectCasedMethodWithIncorrectCasedParameters ()
+		{
+			AssertRuleFailure<CasingMethods> ("incorrectCasingWithTwoIncorrectParameters", 3);
+		}
+
+		[Test]
+		public void MoreCoverage ()
+		{
+			// parameter 'B' should be lower case to be CamelCase
+			AssertRuleFailure<CasingMethods> ("IncorrectParameter", 1);
+			// method name should be uppercase to be PascalCase
+			AssertRuleFailure<CasingMethods> ("x", 1);
+			// starts with an underscore for name and parameter, fails both Pascal and Camel checks
+			AssertRuleFailure<CasingMethods> ("_X", 2);
+		}
+
+		[Test]
+		public void TestIgnoringCtor ()
+		{
+			AssertRuleDoesNotApply<MoreComplexCasing> (".cctor");
+			AssertRuleDoesNotApply<MoreComplexCasing> (".ctor");
+		}
+
+		[Test]
+		public void TestGoodProperty ()
+		{
+			AssertRuleSuccess<MoreComplexCasing> ("get_GoodProperty");
+			AssertRuleSuccess<MoreComplexCasing> ("set_GoodProperty");
+		}
+
+		[Test]
+		public void TestBadProperty ()
+		{
+			AssertRuleFailure<MoreComplexCasing> ("get_badProperty", 1);
+			AssertRuleFailure<MoreComplexCasing> ("set_badProperty", 1);
+		}
+
+		[Test]
+		public void TestGoodEventHandler ()
+		{
+			AssertRuleSuccess<MoreComplexCasing> ("add_GoodEvent");
+			AssertRuleSuccess<MoreComplexCasing> ("remove_GoodEvent");
+		}
+
+		[Test]
+		public void TestBadEventHandler ()
+		{
+			AssertRuleFailure<MoreComplexCasing> ("add_badEvent", 1);
+			AssertRuleFailure<MoreComplexCasing> ("remove_badEvent", 1);
+		}
+
+		[Test]
+		public void TestGoodPrivateEvent ()
+		{
+			AssertRuleDoesNotApply<PrivateEventCasing> ("add_good_private_event");
+			AssertRuleDoesNotApply<PrivateEventCasing> ("remove_good_private_event");
+		}
+
+		[Test]
+		public void TestPropertyLikeMethods ()
+		{
+			AssertRuleFailure<MoreComplexCasing> ("get_AccessorLike", 1);
+			AssertRuleFailure<MoreComplexCasing> ("set_AccessorLike", 1);
+		}
+
+		[Test]
+		public void TestIgnoringOperator ()
+		{
+			AssertRuleSuccess<MoreComplexCasing> ("op_Addition");
+		}
+
 		public class AnonymousMethod {
 			private void MethodWithAnonymousMethod ()
 			{
@@ -153,164 +222,23 @@ namespace Test.Rules.Naming {
 			}
 		}
 
-		private UseCorrectCasingRule rule;
 		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
 
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
 			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UseCorrectCasingRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetMethod (string name)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
-			}
-			return null;
-		}
-
-
-		[Test]
-		public void TestCorrectCasedMethod ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			MethodDefinition method = GetMethod ("CorrectCasing");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectCasedMethod ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			MethodDefinition method = GetMethod ("incorrectCasing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestCorrectCasedMethodWithIncorrectCasedParameters ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			MethodDefinition method = GetMethod ("CorrectCasingWithTwoIncorrectParameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectCasedMethodWithIncorrectCasedParameters ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CasingMethods"];
-			MethodDefinition method = GetMethod ("incorrectCasingWithTwoIncorrectParameters");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (3, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIgnoringCtor ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			// .ctor and .cctor
-			foreach (MethodDefinition method in type.Constructors) {
-				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
-				Assert.AreEqual (0, runner.Defects.Count, "Count");
-			}
-		}
-
-		[Test]
-		public void TestGoodProperty ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("get_GoodProperty");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-			method = GetMethod ("set_GoodProperty");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
-		}
-
-		[Test]
-		public void TestBadProperty ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("get_badProperty");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-			method = GetMethod ("set_badProperty");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-		}
-
-		[Test]
-		public void TestGoodEventHandler ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("add_GoodEvent");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (0, runner.Defects.Count, "Count1");
-			method = GetMethod ("remove_GoodEvent");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (0, runner.Defects.Count, "Count2");
-		}
-
-		[Test]
-		public void TestBadEventHandler ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("add_badEvent");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-			method = GetMethod ("remove_badEvent");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-		}
-
-		[Test]
-		public void TestGoodPrivateEvent ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.PrivateEventCasing"];
-			MethodDefinition method = GetMethod ("add_good_private_event");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult1");
-			method = GetMethod ("remove_good_private_event");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult2");
-		}
-
-		[Test]
-		public void TestPropertyLikeMethods ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("get_AccessorLike");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult1");
-			Assert.AreEqual (1, runner.Defects.Count, "Count1");
-			method = GetMethod ("set_AccessorLike");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult2");
-			Assert.AreEqual (1, runner.Defects.Count, "Count2");
-		}
-
-		[Test]
-		public void TestIgnoringOperator ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.MoreComplexCasing"];
-			MethodDefinition method = GetMethod ("op_Addition");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
 		[Test]
 		public void TestAnonymousMethod ()
 		{
 			// compiler generated code is compiler dependant, check for [g]mcs (inner type)
-			type = GetTest ("AnonymousMethod/<>c__CompilerGenerated0");
+			TypeDefinition type = assembly.MainModule.Types ["Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod/<>c__CompilerGenerated0"];
 			// otherwise try for csc (inside same class)
 			if (type == null)
-				type = GetTest ("AnonymousMethod");
+				type = assembly.MainModule.Types  ["Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod"];
 
 			Assert.IsNotNull (type, "type not found");
 			foreach (MethodDefinition method in type.Methods) {
@@ -319,17 +247,10 @@ namespace Test.Rules.Naming {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
-					Assert.AreEqual (0, runner.Defects.Count, "Count");
+					AssertRuleDoesNotApply (method);
 					break;
 				}
 			}
-		}
-
-		private TypeDefinition GetTest (string name)
-		{
-			string fullname = "Test.Rules.Naming.UseCorrectCasingTest/" + name;
-			return assembly.MainModule.Types [fullname];
 		}
 	}
 }
