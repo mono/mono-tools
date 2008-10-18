@@ -28,14 +28,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Concurrency;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Concurrency {
 
@@ -68,74 +65,56 @@ namespace Test.Rules.Concurrency {
 	}
 
 	[TestFixture]
-	public class NonConstantStaticFieldsShouldNotBeVisibleTest {
+	public class NonConstantStaticFieldsShouldNotBeVisibleTest : TypeRuleTestFixture<NonConstantStaticFieldsShouldNotBeVisibleRule> {
 
-		private NonConstantStaticFieldsShouldNotBeVisibleRule rule;
-		private TestRunner runner;
-		private AssemblyDefinition assembly;
-
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new NonConstantStaticFieldsShouldNotBeVisibleRule ();
-			runner = new TestRunner (rule);
-		}
-
-		public TypeDefinition GetTest (string name)
-		{
-			return assembly.MainModule.Types [name];
+			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+			AssertRuleDoesNotApply (SimpleTypes.Enum);
+			AssertRuleDoesNotApply (SimpleTypes.Interface);
 		}
 
 		[Test]
 		public void TestHasPublicConst ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicConst");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPublicConst> ();
 		}
 
 		[Test]
 		public void TestHasPublicNonConstantStaticField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicNonConstantStaticField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasPublicNonConstantStaticField> (1);
 		}
 
 		[Test]
 		public void TestHasProtectedNonConstantStaticField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasProtectedNonConstantStaticField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			AssertRuleFailure<HasProtectedNonConstantStaticField> (1);
 		}
 
 		[Test]
 		public void TestHasInternalNonConstantStaticField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasInternalNonConstantStaticField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasInternalNonConstantStaticField> ();
 		}
 
 		[Test]
 		public void TestHasPublicConstantStaticField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicConstantStaticField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPublicConstantStaticField> ();
 		}
 
 		[Test]
 		public void TestHasPrivateNonConstantStaticField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPrivateNonConstantStaticField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPrivateNonConstantStaticField> ();
 		}
 
 		[Test]
 		public void TestHasPublicNonConstantField ()
 		{
-			TypeDefinition type = GetTest ("Test.Rules.Concurrency.HasPublicNonConstantField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			AssertRuleSuccess<HasPublicNonConstantField> ();
 		}
 	}
 }

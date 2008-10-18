@@ -31,12 +31,22 @@
 using Gendarme.Rules.Concurrency;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Concurrency {
 
 	[TestFixture]
 	public class DoubleCheckLockingTest : MethodRuleTestFixture<DoubleCheckLockingRule> {
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no IL for p/invokes
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no calls[virt]
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
 	
 		public class Singleton {
 		

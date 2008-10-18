@@ -27,18 +27,16 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Concurrency;
-using Mono.Cecil;
+
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Concurrency {
 
 	[TestFixture]
-	public class WriteStaticFieldFromInstanceMethodTest {
+	public class WriteStaticFieldFromInstanceMethodTest : MethodRuleTestFixture<WriteStaticFieldFromInstanceMethodRule> {
 
 		public class TestCase {
 
@@ -92,96 +90,52 @@ namespace Test.Rules.Concurrency {
 			}
 		}
 
-		private IMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types["Test.Rules.Concurrency.WriteStaticFieldFromInstanceMethodTest/TestCase"];
-			rule = new WriteStaticFieldFromInstanceMethodRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition md in type.Methods) {
-				if (md.Name == name)
-					return md;
-			}
-			foreach (MethodDefinition md in type.Constructors) {
-				if (md.Name == name)
-					return md;
-			}
-			return null;
-		}
-
 		[Test]
 		public void GetConstField ()
 		{
-			MethodDefinition method = GetTest ("GetConstField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<TestCase> ("GetConstField");
 		}
 
 		[Test]
 		public void GetStaticField ()
 		{
-			MethodDefinition method = GetTest ("GetStaticField");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<TestCase> ("GetStaticField");
 		}
 
 		[Test]
 		public void SetStaticField ()
 		{
-			MethodDefinition method = GetTest ("SetStaticField");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<TestCase> ("SetStaticField", 1);
 		}
 
 		[Test]
 		public void Append ()
 		{
-			MethodDefinition method = GetTest ("Append");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<TestCase> ("Append");
 		}
 
 		[Test]
 		public void AppendChange ()
 		{
-			MethodDefinition method = GetTest ("AppendChange");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<TestCase> ("AppendChange", 1);
 		}
 
 		[Test]
 		public void MultipleChanges ()
 		{
-			MethodDefinition method = GetTest ("MultipleChanges");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (2, runner.Defects.Count, "Count");
+			AssertRuleFailure<TestCase> ("MultipleChanges", 2);
 		}
 
 		[Test]
 		public void StaticConstructor ()
 		{
-			MethodDefinition method = GetTest (".cctor");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method));
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleDoesNotApply<TestCase> (".cctor");
 		}
 
 		[Test]
 		public void Constructor ()
 		{
-			MethodDefinition method = GetTest (".ctor");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<TestCase> (".ctor", 1);
 		}
 	}
 }

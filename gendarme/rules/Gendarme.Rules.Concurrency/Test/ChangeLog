@@ -1,3 +1,14 @@
+2008-10-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesTest.cs: Add more coverage.
+	* DoNotLockOnWeakIdentityObjectsTest.cs: Add more coverage.
+	* DontUseLockedRegionOutsideMethodTest.cs: Add more coverage.
+	* DoubleCheckLockingTest.cs: Add more coverage.
+	* NonConstantStaticFieldsShouldNotBeVisibleTest.cs: Use newer, 
+	shorter, syntax for tests. Remove unused namespaces.
+	* WriteStaticFieldFromInstanceMethodTest.cs: Use newer, shorter, 
+	syntax for tests. Remove unused namespaces.
+
 2008-08-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnThisOrTypesTest.cs: Add test cases for static method

@@ -45,6 +45,8 @@ namespace Test.Rules.Concurrency {
 		{
 			// no IL for p/invokes
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no calls[virt]
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		static Dictionary<string, Type> cache = new Dictionary<string, Type> ();

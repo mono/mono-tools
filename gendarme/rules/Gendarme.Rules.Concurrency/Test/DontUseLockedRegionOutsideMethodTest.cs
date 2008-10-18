@@ -29,13 +29,23 @@
 using Gendarme.Rules.Concurrency;
 
 using NUnit.Framework;
+using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
 namespace Test.Rules.Concurrency {
 
 	[TestFixture]
 	public class DoNotUseLockedRegionOutsideMethodTest : MethodRuleTestFixture<DoNotUseLockedRegionOutsideMethodRule> {
-	
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			// no IL for p/invokes
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no calls[virt]
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+		}
+
 		public class Monitors {
 
 			private Monitors ()
