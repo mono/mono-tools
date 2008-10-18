@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Naming.DetectNonAlphaNumericInTypeNamesRule
+// Gendarme.Rules.Naming.AvoidNonAlphanumericIdentifierRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -27,33 +27,92 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	[Problem ("This type, or method, name contains underscore(s) in its name.")]
-	[Solution ("Remove the underscore from the name.")]
-	public class DetectNonAlphanumericInTypeNamesRule: Rule, IMethodRule, ITypeRule {
+	/// <summary>
+	/// This rule ensures that identifiers like assembly names, namespaces, types and 
+	/// members names don't have any non-alphanumerical characters inside them. The rule 
+	/// will ignore interfaces used for COM interoperability - i.e. decorated with both 
+	/// <c>[InterfaceType]</c> and <c>[Guid]</c> attributes.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// namespace New_Namespace {
+	/// 
+	///	public class My_Custom_Class {
+	///	
+	///		public int My_Field;
+	/// 
+	///		public void My_Method (string my_string)
+	///		{
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// namespace NewNamespace {
+	/// 
+	///	public class MyCustomClass {
+	/// 
+	///		public int MyField;
+	///		
+	///		public void MyMethod (string myString)
+	///		{
+	///		}
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>Prior to Gendarme 2.2 this rule was named DetectNonAlphanumericInTypeNamesRule</remarks>
+
+	[Problem ("This namespace, type or member name contains underscore(s).")]
+	[Solution ("Remove the underscore from the specified name.")]
+	[EngineDependency (typeof (NamespaceEngine))]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
+	public class AvoidNonAlphanumericIdentifierRule : Rule, IAssemblyRule, IMethodRule, ITypeRule {
 
 		private const string GuidAttribute = "System.Runtime.InteropServices.GuidAttribute";
 		private const string InterfaceTypeAttribute = "System.Runtime.InteropServices.InterfaceTypeAttribute";
 
 		// Compiler generates an error for any other non alpha-numerics than underscore ('_'), 
 		// so we just need to check the presence of underscore in method names
-		private static bool CheckName (string name)
+		private static bool CheckName (string name, bool special)
 		{
-			return (name.IndexOf ("_", StringComparison.Ordinal) == -1);
+			int start = special ? name.IndexOf ("_", StringComparison.Ordinal) + 1: 0;
+			return (name.IndexOf ("_", start, StringComparison.Ordinal) == -1);
 		}
 
 		private static bool UsedForComInterop (TypeDefinition type)
 		{
-			return (type.IsInterface && type.HasAttribute (GuidAttribute) && 
+			return (type.IsInterface && type.HasAttribute (GuidAttribute) &&
 				type.HasAttribute (InterfaceTypeAttribute));
+		}
+
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
+		{
+			if (!CheckName (assembly.Name.Name, false))
+				Runner.Report (assembly, Severity.Medium, Confidence.High);
+
+			// check every namespaces inside the assembly using the NamespaceEngine
+			foreach (string ns in NamespaceEngine.NamespacesInside (assembly)) {
+				if (!CheckName (ns, false))
+					Runner.Report (new Namespace (ns), Severity.Medium, Confidence.High);
+			}
+			return Runner.CurrentRuleResult;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -67,29 +126,48 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			// check the type name
-			if (CheckName (type.Name))
-				return RuleResult.Success;
+			if (!CheckName (type.Name, false)) {
+				Runner.Report (type, Severity.Medium, Confidence.High);
+			}
 
-			Runner.Report (type, Severity.Medium, Confidence.High, String.Empty);
-			return RuleResult.Failure;
+			// CheckMethod covers methods, properties and events (indirectly)
+			// but we still need to cover fields
+			foreach (FieldDefinition field in type.Fields) {
+				if (!field.IsVisible ())
+					continue;
+
+				// ignore "value__" inside every enumeration
+				if (type.IsEnum && !field.IsStatic)
+					continue;
+
+				if (!CheckName (field.Name, false)) {
+					Runner.Report (field, Severity.Medium, Confidence.High);
+				}
+			}
+
+			return Runner.CurrentRuleResult;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// exclude non-public methods and special names (like Getter and Setter)
-			if (!method.IsPublic || method.IsSpecialName || method.IsGeneratedCode ())
+			// exclude constrcutors, non-visible methods and generated code
+			if (method.IsConstructor || !method.IsVisible () || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			// the rule does not apply if the code is an interface to COM objects
-			if (UsedForComInterop (method.DeclaringType.Resolve ()))
+			if (UsedForComInterop (method.DeclaringType as TypeDefinition))
 				return RuleResult.DoesNotApply;
 
 			// check the method name
-			if (CheckName (method.Name))
-				return RuleResult.Success;
+			if (!CheckName (method.Name, method.IsSpecialName))
+				Runner.Report (method, Severity.Medium, Confidence.High);
 
-			Runner.Report (method, Severity.Medium, Confidence.High, String.Empty);
-			return RuleResult.Failure;
+			foreach (ParameterDefinition parameter in method.Parameters) {
+				if (!CheckName (parameter.Name, false))
+					Runner.Report (parameter, Severity.Medium, Confidence.High);
+			}
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

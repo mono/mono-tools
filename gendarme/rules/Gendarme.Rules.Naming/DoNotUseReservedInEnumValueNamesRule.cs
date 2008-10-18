@@ -33,8 +33,37 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule checks for enumerations that contains values named <c>reserved</c>. This
+	/// practice, often seen in C/C++ application, is not needed in .NET since adding new
+	/// values is not a breaking change. However renaming a <c>reserved</c> value to a new
+	/// name would be a breaking change.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public enum Answer {
+	///	Yes,
+	///	No,
+	///	Reserved
+	///	// ^ renaming this to 'Maybe' would be a breaking change
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public enum Answer {
+	///	Yes,
+	///	No
+	///	// we can add Maybe anytime without causing a breaking change
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type is an enumeration that contains value(s) named 'reserved'.")]
 	[Solution ("The 'reserved' value should be removed since there is no need to reserve enums values.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1700:DoNotNameEnumValuesReserved")]
 	public class DoNotUseReservedInEnumValueNamesRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -49,7 +78,7 @@ namespace Gendarme.Rules.Naming {
 
 				if (field.Name.ToUpperInvariant ().Contains ("RESERVED")) {
 					// High since removing/renaming the field can be a breaking change
-					Runner.Report (field, Severity.High, Confidence.High, String.Empty);
+					Runner.Report (field, Severity.High, Confidence.High);
 				}
 			}
 

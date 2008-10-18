@@ -36,6 +36,40 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// The rule is used for ensure that the name of enumerations are in singular form unless 
+	/// the enumeration is used as flags, i.e. decorated with the <c>[Flags]</c> attribute.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public enum MyCustomValues {
+	///	Foo,
+	///	Bar
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (singular):
+	/// <code>
+	/// public enum MyCustomValue {
+	///	Foo,
+	///	Bar 
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example (flags):
+	/// <code>
+	/// [Flags]
+	/// public enum MyCustomValues {
+	///	Foo,
+	///	Bar,
+	///	AllValues = Foo | Bar
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type is an enumeration and by convention it should have a singular name.")]
 	[Solution ("Change the enumeration name from the plural to the singular form.")]
 	public class UseSingularNameInEnumsUnlessAreFlagsRule : Rule, ITypeRule {
@@ -56,7 +90,7 @@ namespace Gendarme.Rules.Naming {
 			if (!IsPlural (type.Name))
 				return RuleResult.Success;
 
-			Runner.Report (type, Severity.Medium, Confidence.Normal, String.Empty);
+			Runner.Report (type, Severity.Medium, Confidence.Normal);
 			return RuleResult.Failure;
 		}
 	}

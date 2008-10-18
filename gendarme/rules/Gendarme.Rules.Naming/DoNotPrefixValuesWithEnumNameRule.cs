@@ -33,8 +33,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule checks for <c>enum</c> values that are prefixed with the enumeration type
+	/// name. This is typical in C/C++ application but unneeded in .NET since the <c>enum</c> 
+	/// type name must be specified anyway when used.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public enum Answer {
+	///	AnswerYes,
+	///	AnswerNo,
+	///	AnswerMaybe,
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public enum Answer {
+	///	Yes,
+	///	No,
+	///	Maybe
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This enumeration contains value names that starts with the enum's name.")]
 	[Solution ("hange the value name(s) not to include the enum's type name.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1712:DoNotPrefixEnumValuesWithTypeName")]
 	public class DoNotPrefixValuesWithEnumNameRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -48,7 +75,7 @@ namespace Gendarme.Rules.Naming {
 					continue;
 
 				if (field.Name.StartsWith (type.Name, StringComparison.OrdinalIgnoreCase)) {
-					Runner.Report (field, Severity.Medium, Confidence.High, String.Empty);
+					Runner.Report (field, Severity.Medium, Confidence.High);
 				}
 			}
 

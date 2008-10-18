@@ -30,24 +30,52 @@ using System;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	[Problem ("This event starts with either After or Before.")]
-	[Solution ("Rename the event to have a correct prefix. E.g. replace After with the future tense, and Before with the past tense.")]
+	/// <summary>
+	/// This rule ensures event names are not prefixed with <c>After</c> or <c>Before</c>.
+	/// The .NET naming convention suggest to name them using a verb in the present and in
+	/// the past tense.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Bad {
+	///	public event ResolveEventHandler BeforeResolve;
+	///	public event ResolveEventHandler AfterResolve;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Good {
+	///	public event ResolveEventHandler Resolving;	// present
+	///	public event ResolveEventHandler Resolved;	// past
+	/// }
+	/// </code>
+	/// </example>
+
+	[Problem ("This type contains event(s) that name starts with either After or Before.")]
+	[Solution ("Rename the event(s) to have a correct prefix. E.g. replace After with the future tense, and Before with the past tense.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1713:EventsShouldNotHaveBeforeOrAfterPrefix")]
 	public class DoNotPrefixEventsWithAfterOrBeforeRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsInterface || type.IsValueType)
+			// rule does not apply to enumerations and delegates
+			if (type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
+			// quick out if there are no fields
 			if (type.Events.Count == 0)
 				return RuleResult.Success;
 
 			foreach (EventDefinition evnt in type.Events) {
 				if (evnt.Name.StartsWith ("After") || evnt.Name.StartsWith ("Before"))
-					Runner.Report (evnt, Severity.Medium, Confidence.Total, String.Empty);
+					Runner.Report (evnt, Severity.Medium, Confidence.Total);
 			}
 
 			return Runner.CurrentRuleResult;

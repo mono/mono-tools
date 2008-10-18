@@ -40,8 +40,45 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule ensure that types that inherit from certain types or implement some interfaces
+	/// are named correctly by appending the right suffix to them. E.g.
+	/// <list>
+	/// <item><description><c>System.Attribute</c> should end with <c>Attribute</c></description></item>
+	/// <item><description><c>System.EventArgs</c> should end with <c>EventArgs</c></description></item>
+	/// <item><description><c>System.Exception</c> should end with <c>Exception</c></description></item>
+	/// <item><description><c>System.Collections.Queue</c> should end with <c>Collection</c> or <c>Queue</c></description></item>
+	/// <item><description><c>System.Collections.Stack</c> should end with <c>Collection</c> or <c>Stack</c></description></item>
+	/// <item><description><c>System.Data.DataSet</c> should end with <c>DataSet</c></description></item>
+	/// <item><description><c>System.Data.DataTable</c> should end with <c>DataTable</c> or <c>Collection</c></description></item>
+	/// <item><description><c>System.IO.Stream</c> should end with <c>Stream</c></description></item>
+	/// <item><description><c>System.Security.IPermission</c> should end with <c>Permission</c></description></item>
+	/// <item><description><c>System.Security.Policy.IMembershipCondition</c> should end with <c>Condition</c></description></item>
+	/// <item><description><c>System.Collections.IDictionary</c> or <c>System.Collections.Generic.IDictionary</c> should end with <c>Dictionary</c></description></item>
+	/// <item><description><c>System.Collections.ICollection</c>, <c>System.Collections.Generic.ICollection</c> or <c>System.Collections.IEnumerable</c> should end with <c>Collection</c></description></item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public sealed class SpecialCode : Attribute {
+	///	// ...
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public sealed class SpecialCodeAttribute : Attribute {
+	///	// ...
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type does not end with the correct suffix. That usually happens when you define a custom attribute or exception and forget appending suffixes like 'Attribute' or 'Exception' to the type name.")]
 	[Solution ("Rename the type and append the correct suffix.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
 	public class UseCorrectSuffixRule : Rule, ITypeRule {
 
 		// keys are base class names, values are arrays of possible suffixes

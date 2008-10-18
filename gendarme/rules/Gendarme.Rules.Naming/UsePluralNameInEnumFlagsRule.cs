@@ -36,8 +36,35 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule ensure that the name of enumeration flags is in plural form.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [Flags]
+	/// public enum MyCustomValue {
+	///	Foo,
+	///	Bar,
+	///	AllValues = Foo | Bar
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Flags]
+	/// public enum MyCustomValues {
+	///	Foo,
+	///	Bar,
+	///	AllValues = Foo | Bar
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type is an enumeration and, by convention, enums should have a singular name.")]
 	[Solution ("Convert this enumeration type name from plural to singular.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1714:FlagsEnumsShouldHavePluralNames")]
 	public class UsePluralNameInEnumFlagsRule : Rule, ITypeRule {
 
 		private static bool IsPlural (string typeName)
@@ -57,7 +84,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.Success;
 
 			// Confidence == Normal because valid names may end with 's'
-			Runner.Report (type, Severity.Low, Confidence.Normal, String.Empty);
+			Runner.Report (type, Severity.Low, Confidence.Normal);
 			return RuleResult.Failure;
 		}
 	}

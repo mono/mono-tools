@@ -14,6 +14,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll)
 DISTCLEANFILES = Makefile.in Gendarme.Rules.Naming.xml TestResult.xml
 
 rules_sources = \
+	AvoidDeepNamespaceHierarchyRule.cs \
 	DetectNonAlphaNumericsInTypeNamesRule.cs \
 	DoNotPrefixEventsWithAfterOrBeforeRule.cs \
 	DoNotPrefixValuesWithEnumNameRule.cs \
@@ -28,6 +29,7 @@ rules_sources = \
 	UsePreferredTermsRule.cs 
 
 tests_sources = \
+	AvoidDeepNamespaceHierarchyTest.cs \
 	DetectNonAlphaNumericsInTypeNamesTest.cs \
 	DoNotPrefixEventsWithAfterOrBeforeTest.cs \
 	DoNotPrefixValuesWithEnumNameTest.cs \

@@ -35,8 +35,44 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule warns if an overriden method's parameter names do not match those of the 
+	/// base class or those of the implemented interface.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public class Base {
+	///	public abstract void Write (string text);
+	/// }
+	/// 
+	/// public class SubType : Base {
+	///	public override void Write (string output)
+	///	{
+	///		//...
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public class Base {
+	///	public abstract void Write (string text);
+	/// }
+	/// 
+	/// class SubType : Base {
+	///	public override void Write (string text)
+	///	{
+	///		//...
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This method overrides (or implement) an existing method but does not use the same parameter names as the original.")]
 	[Solution ("Keep parameter names consistent when overriding a class or implementing an interface.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration")]
 	public class ParameterNamesShouldMatchOverriddenMethodRule : Rule, IMethodRule {
 
 		private static bool SignatureMatches (MethodDefinition method, MethodDefinition baseMethod, bool explicitInterfaceCheck)
@@ -47,7 +83,7 @@ namespace Gendarme.Rules.Naming {
 				if (method.Name != baseMethod.DeclaringType.FullName + "." + baseMethod.Name)
 					return false;
 			}
-			if (method.ReturnType.ToString () != baseMethod.ReturnType.ToString ())
+			if (method.ReturnType.ReturnType.FullName != baseMethod.ReturnType.ReturnType.FullName)
 				return false;
 			if (method.Parameters.Count != baseMethod.Parameters.Count)
 				return false;

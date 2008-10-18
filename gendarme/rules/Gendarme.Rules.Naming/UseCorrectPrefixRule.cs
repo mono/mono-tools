@@ -33,8 +33,35 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule ensure that type are prefixed correctly. E.g. interface should start with a <c>I</c>
+	/// and classes should not start with a <c>C</c> (remainder for MFC folks).
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public interface Phone {
+	/// }
+	/// 
+	/// public class CPhone : Phone {
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public interface IPhone {
+	/// }
+	/// 
+	/// public class Phone : IPhone {
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type starts with an incorrect prefix or does not start with the required one. All interface names should start with the 'I' letter, followed by another capital letter. All other type names should not have any specific prefix.")]
 	[Solution ("Rename the type to have the correct prefix.")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1715:IdentifiersShouldHaveCorrectPrefix")]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1722:IdentifiersShouldNotHaveIncorrectPrefix")]
 	public class UseCorrectPrefixRule : Rule, ITypeRule {
 
 		private static bool IsCorrectTypeName (string name)

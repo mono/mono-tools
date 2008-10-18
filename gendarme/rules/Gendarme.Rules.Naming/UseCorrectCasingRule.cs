@@ -35,15 +35,47 @@ using System.Linq;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	[Problem ("This identifier (namespace, type or method) violates the .NET naming conventions.")]
-	[Solution ("Make all namespace, type and method names pascal-cased (like MyClass), and all parameter names must be camel-cased (like myParameter).")]
-	public class UseCorrectCasingRule : Rule, ITypeRule, IMethodRule {
+	/// <summary>
+	/// This rule ensure that identifier are correctly cased. In particular:
+	/// <list>
+	/// <item><description>namespace names are pascal cased</description></item>
+	/// <item><description>type names are pascal cased</description></item>
+	/// <item><description>method names are pascal cased</description></item>
+	/// <item><description>parameter names are camel cased</description></item>
+	/// </list>
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// namespace A {
+	///	abstract public class myClass {
+	///		abstract public int thisMethod (int ThatParameter);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// namespace Company.Product.Technology {
+	///	abstract public class MyClass {
+	///		abstract public int ThisMethod (int thatParameter);
+	///	}
+	/// }
+	/// </code>
+	/// </example>
 
-		HashSet<string> namespaces = new HashSet<string> ();
+	[Problem ("This identifier (namespace, type or method) violates the .NET naming conventions.")]
+	[Solution ("Change namespace, type and method names to be pascal-cased (like MyClass) and parameter names to be camel-cased (like myParameter).")]
+	[EngineDependency (typeof (NamespaceEngine))]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly")]
+	public class UseCorrectCasingRule : Rule, IAssemblyRule, ITypeRule, IMethodRule {
 
 		// check if name is PascalCased
 		private static bool IsPascalCase (string name)
@@ -98,46 +130,49 @@ namespace Gendarme.Rules.Naming {
 			return (index == s.Length) ? 0 : index;
 		}
 
-		void ReportCasingError (TypeDefinition type, string message)
+		void ReportCasingError (IMetadataTokenProvider metadata, string message)
 		{
-			Runner.Report (type, Severity.Medium, Confidence.High, message);
+			Runner.Report (metadata, Severity.Medium, Confidence.High, message);
 		}
 
-		void CheckNamespace (TypeDefinition type)
+		void CheckNamespace (string nspace)
 		{
-			string nspace = type.Namespace;
-
-			if (string.IsNullOrEmpty (nspace))
+			if (String.IsNullOrEmpty (nspace))
 				return;
-
-			if (namespaces.Contains (nspace))
-				return;
-
-			namespaces.Add (nspace);
 
 			foreach (string ns in nspace.Split ('.')) {
 				switch (ns.Length) {
 				case 1:
-					ReportCasingError (type, string.Format (
+					ReportCasingError (new Namespace (nspace), string.Format (
 						"Use of single character namespace is discouraged. Rename namespace {0}", ns));
 
 					break;
 				case 2:
 					// if the subnamespace is made of 2 chars, each letter have to be uppercase
-					if (ns.Any (c => Char.IsLetter (c) && Char.IsLower (c)))
-						ReportCasingError (type, string.Format (
-							"In namespaces made of two characters, every character have to be upper cased. Rename namespace {0}", ns));
-
+					if (ns.Any (c => Char.IsLetter (c) && Char.IsLower (c))) {
+						string msg = String.Format ("In namespaces made of two characters, both characters should uppercase. Rename namespace '{0}' to '{1}'",
+							ns, ns.ToUpperInvariant ());
+						ReportCasingError (new Namespace (nspace), msg);
+					}
 					break;
 				default:
 					// if the sub namespace is made of 3 or more chars, make sure they're not all uppercase
-					if (!IsPascalCase (ns) || ns.All (c => Char.IsLetter (c) && Char.IsUpper (c)))
-						ReportCasingError (type, string.Format (
-							"Namespaces made of three characters have to be pascal cased. Rename namespace {0}", ns));
-
+					if (!IsPascalCase (ns) || ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
+						string msg = String.Format ("Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
+							ns, PascalCase (ns));
+						ReportCasingError (new Namespace (nspace), msg);
+					}
 					break;
 				}
 			}
+		}
+
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
+		{
+			foreach (string ns in NamespaceEngine.NamespacesInside (assembly)) {
+				CheckNamespace (ns);
+			}
+			return Runner.CurrentRuleResult;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -145,9 +180,6 @@ namespace Gendarme.Rules.Naming {
 			// rule does not apply to generated code (outside developer's control)
 			if (type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
-
-			// ok, rule applies, check namespace first
-			CheckNamespace (type);
 
 			// types should all be PascalCased
 			if (!IsPascalCase (type.Name))
@@ -183,16 +215,16 @@ namespace Gendarme.Rules.Naming {
 
 			// like types, methods/props should all be PascalCased, too
 			if (!IsPascalCase (name)) {
-				string errorMessage = string.Format ("By existing naming conventions, all the method and property names should all be pascal-cased (e.g. MyOperation). Rename '{0}' to '{1}'.",
-								     name, PascalCase (name));
+				string errorMessage = String.Format ("By existing naming conventions, all the method and property names should all be pascal-cased (e.g. MyOperation). Rename '{0}' to '{1}'.",
+					name, PascalCase (name));
 				Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
 			}
 			// check parameters
-			foreach (string param in (from ParameterDefinition p in method.Parameters select p.Name).Distinct ()) {
+			foreach (ParameterDefinition param in method.Parameters) {
 				// params should all be camelCased
-				if (!IsCamelCase (param)) {
-					string errorMessage = string.Format ("By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
-										param, CamelCase (param));
+				if (!IsCamelCase (param.Name)) {
+					string errorMessage = String.Format ("By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
+						param, CamelCase (param.Name));
 					Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
 				}
 			}

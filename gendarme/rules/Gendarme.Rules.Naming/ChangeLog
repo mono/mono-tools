@@ -1,3 +1,41 @@
+2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepNamespaceHierarchyRule.cs: New. Rule to check is a 
+	namespace hierarchy gets longer than four elements, unless the last
+	one is a well-known specialization.
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Rule renamed to
+	AvoidNonAlphanumericIdentifierRule. It now applies to assembly 
+	names (it implements IAssemblyRule), namespaces (using the 
+	NamespaceEngine) and also to fields. Added XML documentation
+	and [FxCopCompatibility] attribute.
+	* DoNotPrefixEventsWithAfterOrBeforeRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Use shorter overload for 
+	Runner.Report. Ignore enums and delegates.
+	* DoNotPrefixValuesWithEnumNameRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Use shorter overload for 
+	Runner.Report.
+	* DoNotUseReservedInEnumValueNamesRule.cs: Add XML documentation
+	and [FxCopCompatibility] attribute. Use shorter overload for 
+	Runner.Report.
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: Add XML 
+	documentation and [FxCopCompatibility] attribute.
+	* UseCorrectCasingRule.cs: Change the way namespace are handled
+	by using the new NamespaceEngine. Add XML documentation 
+	and [FxCopCompatibility] attribute.
+	* UseCorrectPrefixRule.cs: Add XML documentation and 
+	two [FxCopCompatibility] attribute.
+	* UseCorrectSuffixRule.cs: Add XML documentation and 
+	two [FxCopCompatibility] attribute.
+	* UsePluralNameInEnumFlagsRule.cs: Add XML documentation 
+	and [FxCopCompatibility] attribute. Use shorter overload for 
+	Runner.Report.
+	* UsePreferredTermsRule.cs: Rule now applies to assembly names (it
+	implements IAssemblyRule), namespaces (using the NamespaceEngine) and
+	also to fields. Updated the list of preferred terms. Added XML 
+	documentation and [FxCopCompatibility] attribute.
+	* UseSingularNameInEnumsUnlessAreFlagsRule.cs: Add XML 
+	documentation. Use shorter overload for Runner.Report.
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this
