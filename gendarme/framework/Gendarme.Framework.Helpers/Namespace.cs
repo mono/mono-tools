@@ -65,5 +65,30 @@ namespace Gendarme.Framework.Helpers {
 		{
 			return ns;
 		}
+
+
+		static string [] Specializations = { 
+			".Design", 
+			".Interop", 
+			".Permissions"
+		};
+
+		/// <summary>
+		/// Check if the specified namespace is a 'specialized' namespace, i.e. a 
+		/// namespace that the framework suggest you to use.
+		/// </summary>
+		/// <param name="name">Namespace to be verified.</param>
+		/// <returns>True if the namespace is a specialized namespace.</returns>
+		static public bool IsSpecialized (string name)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			foreach (string s in Specializations) {
+				if (name.EndsWith (s))
+					return true;
+			}
+			return false;
+		}
 	}
 }

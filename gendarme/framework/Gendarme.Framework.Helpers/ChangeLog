@@ -1,3 +1,7 @@
+2008-10-19  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Namespace.cs: Add helper method to check for specialized namespaces.
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Namespace.cs: New. Helper class so we can report defects against 
