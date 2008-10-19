@@ -34,7 +34,7 @@ using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Performance {
+namespace Test.Rules.Design {
 
 	[TestFixture]
 	public class PreferIntegerOrStringForIndexersTest : MethodRuleTestFixture<PreferIntegerOrStringForIndexersRule> {

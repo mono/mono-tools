@@ -32,7 +32,7 @@ using Gendarme.Rules.Design;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Performance {
+namespace Test.Rules.Design {
 
 	[TestFixture]
 	public class AvoidVisibleNestedTypesTest : TypeRuleTestFixture<AvoidVisibleNestedTypesRule> {

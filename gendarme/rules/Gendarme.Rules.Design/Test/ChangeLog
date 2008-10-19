@@ -1,3 +1,14 @@
+2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMultidimensionalIndexerTest.cs: Fix namespace.
+	* AvoidSmallNamespaceTest.cs: New. Unit tests for 
+	AvoidSmallNamespaceRule.
+	* AvoidVisibleNestedTypesTest.cs: Fix namespace.
+	* InternalNamespacesShouldNotExposeTypesTest.cs: New. Unit tests for
+	InternalNamespacesShouldNotExposeTypesRule.
+	* PreferIntegerOrStringForIndexersTest.cs: Fix namespace.
+	* Test.Rules.Design.mdp: Add new test to MD project file.
+
 2008-10-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidVisibleNestedTypesTest.cs: Remove unneeded 'using' clauses.
