@@ -1,3 +1,8 @@
+2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.Naming.mdp: Add AvoidDeepNamespaceHierarchyTest to
+	MD project file.
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepNamespaceHierarchyTest.cs: New. Unit tests for 
