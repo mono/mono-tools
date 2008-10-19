@@ -1,3 +1,9 @@
+2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* doc/index.xml, doc/ns-Gendarme.Rules.Design.xml,
+	* doc/Gendarme.Rules.Design: With the new code in the Makefiles we don't
+	need to keep the documentation files in the repository.
+
 2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSmallNamespaceRule.cs: New. Rule to warn about namespaces 
