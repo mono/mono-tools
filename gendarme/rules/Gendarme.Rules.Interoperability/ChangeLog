@@ -1,3 +1,9 @@
+2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* doc/index.xml, doc/ns-Gendarme.Rules.Interoperability.xml,
+	doc/Gendarme.Rules.Interoperability: With the new code in the Makefiles
+	we don't need to keep the documentation files in the repository.
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Make Branch
