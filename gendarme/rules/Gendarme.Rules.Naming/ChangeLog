@@ -1,3 +1,8 @@
+2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepNamespaceHierarchyRule.cs: Use Namespace.IsSpecialized
+	instead of our own list. Throw the right exception message (self-test)
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepNamespaceHierarchyRule.cs: New. Rule to check is a 

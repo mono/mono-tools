@@ -39,7 +39,8 @@ namespace Gendarme.Rules.Naming {
 	/// <summary>
 	/// This rule check the depth of the namespace declared inside an assembly. It will
 	/// warn if the depth is greater then four (default value) unless the fifth (or the
-	/// next) part is one of the specialized name that the framework recommands.
+	/// next) part is one of the specialized name that the framework recommands or an
+	/// named like an internal namespace (something not meant to be seen outside the assembly).
 	/// <list>
 	/// <item><term>Design</term><description>Namespace that provides design-time
 	/// support for its base namespace.</description></item>
@@ -86,21 +87,13 @@ namespace Gendarme.Rules.Naming {
 	[EngineDependency (typeof (NamespaceEngine))]
 	public class AvoidDeepNamespaceHierarchyRule : Rule, IAssemblyRule {
 
-		static string [] Specializations = { 
-			".Design", 
-			".Interop", 
-			".Permissions", 
-			".Impl", 
-			".Internal"
-		};
-
 		private int max_depth = 4; // default value
 
 		public int MaxDepth {
 			get { return max_depth; }
 			set {
 				if (value < 1)
-					throw new ArgumentOutOfRangeException ("Minimum: 1");
+					throw new ArgumentOutOfRangeException ("MaxDepth", "Minimum: 1");
 				max_depth = value;
 			}
 		}
@@ -135,17 +128,14 @@ namespace Gendarme.Rules.Naming {
 					continue;
 
 				// we have some exceptions for namespace specialization
-				// i.e. stuff we often prefer to have in a sub namespace
+				// i.e. stuff we often prefer to have in a sub-namespace
+				// and for internal (non-visible) namespaces
 				if (levels == MaxDepth + 1) {
-					foreach (string s in Specializations) {
-						if (ns.EndsWith (s)) {
-							levels--;
-							break;
-						}
-					}
-					// second chance
-					if (levels == MaxDepth)
+					if (Namespace.IsSpecialized (ns)) {
 						continue;
+					} else if (ns.EndsWith (".Internal") || ns.EndsWith (".Impl")) {
+						continue;
+					}
 				}
 
 				Severity severity = (levels < MaxDepth * 2) ? Severity.Medium : Severity.High;
