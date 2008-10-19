@@ -1,3 +1,9 @@
+2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* doc/index.xml, doc/ns-Gendarme.Rules.Security.Cas.xml,
+	doc/Gendarme.Rules.Security.Cas: With the new code in the Makefiles we
+	don't need to keep the documentation files in the repository.
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* doc/: Initial import documentation for the rules which belongs to this
