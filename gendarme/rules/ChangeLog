@@ -1,3 +1,11 @@
+2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* common.make: Added the targets for generate the documentation from the
+	XML code comments in the source code.  It also packages and make it
+	installable in Monodoc.
+	* Makefile.am: This target is not longer needed because the doc building
+	is integrated in the build process.
+
 2008-10-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Added the doc target in order to update or generate the
