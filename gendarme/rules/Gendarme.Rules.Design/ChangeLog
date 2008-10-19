@@ -1,3 +1,15 @@
+2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSmallNamespaceRule.cs: New. Rule to warn about namespaces 
+	that have very few visible types.
+	* DeclareEventHandlersCorrectlyRule.cs: Reduce long chain (self-test)
+	and avoid unneeded specialized of soem methods (self-test).
+	* InternalNamespacesShouldNotExposeTypesRule.cs: New. Rule to warn 
+	if an internal namespace declare types that are visible outside the
+	assembly, making the namespace itself visible.
+	* Gendarme.Rules.Design.mdp: Add new rule to MD project file.
+	* Makefile.am: Add new rule and test to the build.
+
 2008-10-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs, EnumsShouldUseInt32Rule.cs:

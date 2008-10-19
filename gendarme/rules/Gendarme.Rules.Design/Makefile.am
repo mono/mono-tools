@@ -16,6 +16,7 @@ DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 rules_sources = \
 	AvoidMultidimensionalIndexerRule.cs \
 	AvoidRefAndOutParametersRule.cs \
+	AvoidSmallNamespaceRule.cs \
 	ConsiderUsingStaticTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
@@ -46,6 +47,7 @@ rules_sources = \
 	ImplementEqualsAndGetHashCodeInPairRule.cs \
 	EnumsShouldUseInt32Rule.cs \
 	ImplementIComparableCorreclyRule.cs \
+	InternalNamespacesShouldNotExposeTypesRule.cs \
 	ConsiderConvertingFieldToNullableRule.cs \
 	AvoidVisibleNestedTypesRule.cs \
 	DeclareEventHandlersCorrectlyRule.cs
@@ -53,6 +55,7 @@ rules_sources = \
 tests_sources = \
 	AvoidMultidimensionalIndexerTest.cs \
 	AvoidRefAndOutParametersTest.cs \
+	AvoidSmallNamespaceTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
@@ -82,6 +85,7 @@ tests_sources = \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
 	EnumsShouldUseInt32Test.cs \
 	ImplementIComparableCorreclyTest.cs \
+	InternalNamespacesShouldNotExposeTypesTest.cs \
 	ConsiderConvertingFieldToNullableTest.cs \
 	AvoidVisibleNestedTypesTest.cs \
 	DeclareEventHandlersCorrectlyTest.cs

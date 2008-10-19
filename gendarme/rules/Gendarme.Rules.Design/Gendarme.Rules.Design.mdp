@@ -48,6 +48,8 @@
     <File name="PreferIntegerOrStringForIndexersRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ConsiderConvertingFieldToNullableRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DeclareEventHandlersCorrectlyRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="InternalNamespacesShouldNotExposeTypesRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidSmallNamespaceRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

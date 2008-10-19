@@ -94,17 +94,18 @@ namespace Gendarme.Rules.Design {
 			return false;
 		}
 
-		private bool CheckParameterTypes (TypeReference eventType, MethodReference invoke)
+		private bool CheckParameterTypes (TypeReference eventType, ParameterDefinitionCollection invokeParameters)
 		{
 			bool ok = true;
-			if (invoke.Parameters.Count >= 1) {
-				if (String.Compare (invoke.Parameters[0].ParameterType.FullName, "System.Object") != 0) {
-					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", invoke.Parameters[0].ParameterType.FullName));
+			if (invokeParameters.Count >= 1) {
+				string type_name = invokeParameters [0].ParameterType.FullName;
+				if (String.Compare (type_name, "System.Object") != 0) {
+					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", type_name));
 					ok = false;
 				}
 			}
-			if (invoke.Parameters.Count >= 2) {
-				if (!invoke.Parameters[1].ParameterType.Inherits ("System.EventArgs")) {
+			if (invokeParameters.Count >= 2) {
+				if (!invokeParameters [1].ParameterType.Inherits ("System.EventArgs")) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, "The second parameter should be a subclass of System.EventArgs");
 					ok = false;
 				}
@@ -112,15 +113,13 @@ namespace Gendarme.Rules.Design {
 			return ok;
 		}
 
-		private bool CheckParameterName (TypeReference eventType, MethodReference invoke, int position, string expected)
+		private bool CheckParameterName (TypeReference eventType, ParameterDefinition invokeParameter, string expectedName)
 		{
-			if (invoke.Parameters.Count >= position + 1) {
-				if (String.Compare (invoke.Parameters[position].Name, expected) != 0) {
-					Runner.Report (eventType, Severity.Low, Confidence.High, String.Format ("The expected name is {0}, not {1}", expected, invoke.Parameters[position].Name));
-					return false;
-				}
-			}
-			return true;
+			if (String.Compare (invokeParameter.Name, expectedName) == 0)
+				return true;
+
+			Runner.Report (eventType, Severity.Low, Confidence.High, String.Format ("The expected name is {0}, not {1}", expectedName, invokeParameter.Name));
+			return false;
 		}
 		
 		public RuleResult CheckType (TypeDefinition type)
@@ -156,27 +155,29 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		private bool CheckDelegate (TypeDefinition td)
+		private bool CheckDelegate (TypeReference type)
 		{
-			MethodReference invoke = td.GetMethod (MethodSignatures.Invoke);
+			MethodReference invoke = type.GetMethod (MethodSignatures.Invoke);
 			if (invoke == null)
 				return false;
 
-			bool valid = CheckReturnVoid (td, invoke);
-			valid &= CheckAmountOfParameters (td, invoke);
-			valid &= CheckParameterTypes (td, invoke);
-			valid &= CheckParameterName (td, invoke, 0, "sender");
-			valid &= CheckParameterName (td, invoke, 1, "e");
-
+			// we cannot short-circuit since we would miss reporting some defects
+			bool valid = CheckReturnVoid (type, invoke);
+			valid &= CheckAmountOfParameters (type, invoke);
+			valid &= CheckParameterTypes (type, invoke.Parameters);
+			if (invoke.Parameters.Count > 0)
+				valid &= CheckParameterName (type, invoke.Parameters [0], "sender");
+			if (invoke.Parameters.Count > 1)
+				valid &= CheckParameterName (type, invoke.Parameters [1], "e");
 			return valid;
 		}
 
-		private bool CheckGenericDelegate (TypeDefinition td)
+		private bool CheckGenericDelegate (TypeReference type)
 		{
-			if (td.FullName == "System.EventHandler`1")
+			if (type.FullName == "System.EventHandler`1")
 				return true;
 
-			Runner.Report (td, Severity.Medium, Confidence.High, "Generic delegates should use EventHandler<TEventArgs>");
+			Runner.Report (type, Severity.Medium, Confidence.High, "Generic delegates should use EventHandler<TEventArgs>");
 			return false;
 		}
 
