@@ -1,5 +1,10 @@
 2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* Makefile.am: Added support for generating the documentation files to
+	the build process.
+
+2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* doc/index.xml, doc/ns-Gendarme.Rules.Performance.xml,
 	doc/Gendarme.Rules.Performance: With the new code in the Makefiles we
 	don't need to keep the documentation files in the repository.
