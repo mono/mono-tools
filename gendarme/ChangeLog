@@ -1,3 +1,7 @@
+2008-10-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme-wizard.in: Support MONO_OPTIONS too (like gendarme does)
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Update (and add) some ignore entries.

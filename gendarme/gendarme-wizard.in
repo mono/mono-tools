@@ -1,2 +1,2 @@
 #!/bin/sh
-exec @RUNTIME@ $MONO_EXTRA_ARGS @prefix@/lib/gendarme/gendarme-wizard.exe "$@"
+exec @RUNTIME@ $MONO_OPTIONS $MONO_EXTRA_ARGS @prefix@/lib/gendarme/gendarme-wizard.exe "$@"
