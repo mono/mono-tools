@@ -45,6 +45,8 @@ namespace Gendarme {
 
 	public class XmlResultWriter : ResultWriter, IDisposable {
 
+		private const string AssemblySet = "[across all assemblies analyzed]";
+
 		XmlWriter writer;
 		XElement root;
 
@@ -95,8 +97,7 @@ namespace Gendarme {
 				return "Type";
 			if (rule is IMethodRule)
 				return "Method";
-
-			throw new NotSupportedException ("RuleType not supported: " + rule.GetType ());
+			return "Other";
 		}
 
 		private XElement CreateRules ()
@@ -124,7 +125,7 @@ namespace Gendarme {
 					    Rule = a.Key,
 					    Value = from o in a
 						    group o by o.Target into r
-						    orderby r.Key.GetAssembly ().Name.FullName
+						    orderby (r.Key.GetAssembly () == null ? String.Empty : r.Key.GetAssembly ().Name.FullName)
 						    select new {
 							    Target = r.Key,
 							    Value = r
@@ -153,9 +154,10 @@ namespace Gendarme {
 
 		static XObject [] CreateTargetDetails (IMetadataTokenProvider target)
 		{
+			AssemblyDefinition assembly = target.GetAssembly ();
 			return new XObject [] {
 				new XAttribute ("Name", target.ToString ()),
-				new XAttribute ("Assembly", target.GetAssembly ().Name.FullName) };
+				new XAttribute ("Assembly", assembly == null ? AssemblySet : assembly.Name.FullName) };
 		}
 
 		static XElement CreateDefect (Defect defect)

@@ -1,3 +1,9 @@
+2008-10-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* XmlResultWriter.cs: Fix case where a defect is reported on a
+	namespace (which is not bound to a single assembly like other
+	metadata objects).
+
 2008-10-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: Don't initialize fields to default values
