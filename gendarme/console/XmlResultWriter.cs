@@ -104,6 +104,7 @@ namespace Gendarme {
 		{
 			return new XElement ("rules",
 				from rule in Runner.Rules
+				where rule.Active
 				select CreateRule (rule, GetRuleType (rule)));
 		}
 

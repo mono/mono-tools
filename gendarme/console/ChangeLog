@@ -1,3 +1,13 @@
+2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Reset all (loaded) rules as active to be reported
+	correctly (wrt XmlResultWriter changes). The console runner only loads
+	the rules that will be executed which is why we can activate them all
+	before reporting. This is needed because some rules will turn 
+	themselves off if they cannot be applied to the current analysis.
+	* XmlResultWriter.cs: Only include active rules in the report (since 
+	the wizard loads all rules, then turns off the ones not selected).
+
 2008-10-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* XmlResultWriter.cs: Fix case where a defect is reported on a

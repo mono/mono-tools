@@ -252,6 +252,12 @@ namespace Gendarme {
 
 		byte Report ()
 		{
+			// re-activate all loaded (i.e. selected) rules since some of them could have
+			// turned off themselve while executing but we still want them listed in the report
+			foreach (Rule rule in Rules) {
+				rule.Active = true;
+			}
+
 			// generate text report (default, to console, if xml and html aren't specified)
 			if ((log_file != null) || ((xml_file == null) && (html_file == null))) {
 				using (TextResultWriter writer = new TextResultWriter (this, log_file)) {
