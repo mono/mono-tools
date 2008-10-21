@@ -1,24 +1,4 @@
-SUBDIRS=Test
-
 include ../common.make
-
-rules_dll = ../../bin/Gendarme.Rules.BadPractice.dll
-tests_dll = Test.Rules.BadPractice.dll
-
-rules_doc_source = doc/Gendarme.Rules.BadPractice.source 
-rules_doc_tree = doc/Gendarme.Rules.BadPractice.tree
-rules_doc_zip = doc/Gendarme.Rules.BadPractice.zip
-
-badpractice_rulesdir=$(prefix)/lib/gendarme
-badpractice_rules_SCRIPTS = $(rules_dll)
-badpractice_rules_DATA = 
-
-badpractice_documentationdir=$(prefix)/lib/monodoc/sources
-badpractice_documentation_DATA = $(rules_doc)
-
-EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.BadPractice.mdp Gendarme.Rules.BadPractice.csproj 
-CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(rules_doc) $(rules_dll).doc
-DISTCLEANFILES = Makefile.in Gendarme.Rules.BadPractice.xml TestResult.xml
 
 rules_sources = \
 	AvoidAssemblyVersionMismatchRule.cs \
