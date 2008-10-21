@@ -1,24 +1,4 @@
-SUBDIRS=Test 
-
 include ../common.make
-
-rules_dll = ../../bin/Gendarme.Rules.Design.dll
-tests_dll = Test.Rules.Design.dll
-
-rules_doc_source = doc/Gendarme.Rules.Design.source 
-rules_doc_tree = doc/Gendarme.Rules.Design.tree
-rules_doc_zip = doc/Gendarme.Rules.Design.zip
-
-design_rulesdir=$(prefix)/lib/gendarme
-design_rules_SCRIPTS = $(rules_dll)
-design_rules_DATA = 
-
-design_documentationdir=$(prefix)/lib/monodoc/sources
-design_documentation_DATA = $(rules_doc)
-
-EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Design.mdp Gendarme.Rules.Design.csproj
-CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(rules_doc) $(rules_dll).doc
-DISTCLEANFILES = Makefile.in Gendarme.Rules.Design.xml TestResult.xml
 
 rules_sources = \
 	AvoidMultidimensionalIndexerRule.cs \

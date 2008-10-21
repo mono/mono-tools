@@ -1,3 +1,8 @@
+2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Removed common stuff in order to reduce duplication with
+	other Makefiles.
+
 2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Added support for generating the documentation files to
