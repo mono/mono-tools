@@ -1,5 +1,10 @@
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* common.make: This target is not longer needed, because the artifacts
+	which will be built are placed in the SCRIPTS and DATA.
+
+2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* common.make: Extracted some common code from Makefiles and put in this
 	file.  This reduces the duplication among Makefiles and make it easier
 	to maintain.

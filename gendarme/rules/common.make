@@ -31,8 +31,6 @@ DISTCLEANFILES = Makefile.in $(prefixed_rules_category).xml TestResult.xml
 rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
 generated_doc = doc/generated/**/*.xml
 
-rules_category: $(rules_dll) $(rules_doc)
-
 $(rules_dll): $(rules_build_sources) $(framework)
 	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -doc:$(rules_dll).doc -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
 
