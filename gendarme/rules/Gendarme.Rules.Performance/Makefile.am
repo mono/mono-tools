@@ -1,24 +1,4 @@
-SUBDIRS=Test
-
 include ../common.make
-
-rules_dll = ../../bin/Gendarme.Rules.Performance.dll
-tests_dll = Test.Rules.Performance.dll
-
-rules_doc_source = doc/Gendarme.Rules.Performance.source 
-rules_doc_tree = doc/Gendarme.Rules.Performance.tree
-rules_doc_zip = doc/Gendarme.Rules.Performance.zip
-
-performance_rulesdir=$(prefix)/lib/gendarme
-performance_rules_SCRIPTS = $(rules_dll)
-performance_rules_DATA = 
-
-performance_documentationdir=$(prefix)/lib/monodoc/sources
-performance_documentation_DATA = $(rules_doc)
-
-EXTRA_DIST = $(rules_sources) $(rules_sources_in) Gendarme.Rules.Performance.mdp Gendarme.Rules.Performance.csproj
-CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(rules_doc) $(rules_dll).doc
-DISTCLEANFILES = Makefile.in Gendarme.Rules.Performance.xml TestResult.xml
 
 rules_sources = \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
