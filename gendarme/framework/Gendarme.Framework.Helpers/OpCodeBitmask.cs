@@ -95,6 +95,14 @@ namespace Gendarme.Framework.Helpers {
 			mask [0] = mask [1] = mask [2] = mask [3] = UInt64.MaxValue;
 		}
 
+		public void UnionWith (OpCodeBitmask mask)
+		{
+			this.mask [0] |= mask.mask [0];
+			this.mask [1] |= mask.mask [1];
+			this.mask [2] |= mask.mask [2];
+			this.mask [3] |= mask.mask [3];
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -163,6 +171,10 @@ namespace Gendarme.Framework.Helpers {
 		private static OpCodeBitmask load_local;
 		private static OpCodeBitmask store_argument;
 		private static OpCodeBitmask store_local;
+
+		private static OpCodeBitmask flow_control_branch;
+		private static OpCodeBitmask flow_control_return;
+
 
 		/// <summary>
 		/// Mask with all bits sets so it includes all opcodes (and more)
@@ -368,5 +380,39 @@ namespace Gendarme.Framework.Helpers {
 				return store_local;
 			}
 		}
+
+		static public OpCodeBitmask FlowControlBranch {
+			get {
+				if (flow_control_branch == null) {
+#if true
+					flow_control_branch = new OpCodeBitmask (0x80040000000000, 0x0, 0x1800000000000000, 0x1000);
+#else
+					flow_control_branch = new OpCodeBitmask ();
+					flow_control_branch.Set (Code.Br);
+					flow_control_branch.Set (Code.Br_S);
+					flow_control_branch.Set (Code.Leave);
+					flow_control_branch.Set (Code.Leave_S);
+#endif
+				}
+				return flow_control_branch;
+			}
+		}
+
+		static public OpCodeBitmask FlowControlReturn {
+			get {
+				if (flow_control_return == null) {
+#if true
+					flow_control_return = new OpCodeBitmask (0x20000000000, 0x0, 0x400000000000000, 0x4000);
+#else
+					flow_control_return = new OpCodeBitmask ();
+					flow_control_return.Set (Code.Ret);
+					flow_control_return.Set (Code.Endfinally);
+					flow_control_return.Set (Code.Endfilter);
+#endif
+				}
+				return flow_control_return;
+			}
+		}
+
 	}
 }

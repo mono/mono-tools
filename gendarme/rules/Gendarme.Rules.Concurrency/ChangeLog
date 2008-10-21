@@ -1,3 +1,9 @@
+2008-10-21  Cedric Vivier  <cedricv@neonux.com>
+
+	* ReviewLockUsedOnlyForOperationsOnVariables.cs: New.
+	Rule to check if a lock section is only used for operations
+	that could be better handled by System.Threading.Interlocked class.
+
 2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Added support for generating the documentation files to

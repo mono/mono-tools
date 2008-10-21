@@ -1,3 +1,8 @@
+2008-10-21  Cedric Vivier  <cedricv@neonux.com>
+
+	* OpCodeBitmask.cs: Add public method UnionWith.
+	Add FlowControlBranch and FlowControlReturn bitmasks.
+
 2008-10-19  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Namespace.cs: Add helper method to check for specialized namespaces.

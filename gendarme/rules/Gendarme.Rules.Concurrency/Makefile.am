@@ -27,6 +27,7 @@ rules_sources = \
 	DoubleCheckLockingRule.cs \
 	LockAnalyzerRule.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \
+	ReviewLockUsedOnlyForOperationsOnVariablesRule.cs \
 	WriteStaticFieldFromInstanceMethodRule.cs
 
 tests_sources = \
@@ -35,4 +36,6 @@ tests_sources = \
 	DontUseLockedRegionOutsideMethodTest.cs \
 	DoubleCheckLockingTest.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleTest.cs \
+	ReviewLockUsedOnlyForOperationsOnVariablesTest.cs \
 	WriteStaticFieldFromInstanceMethodTest.cs
+
