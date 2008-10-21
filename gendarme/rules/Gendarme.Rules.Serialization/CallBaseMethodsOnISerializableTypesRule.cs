@@ -110,7 +110,7 @@ namespace Gendarme.Rules.Serialization {
 			return InheritsFromISerializableImplementation (current);
 		}
 
-		private void CheckCallingBaseMethod (TypeDefinition type, MethodSignature methodSignature)
+		private void CheckCallingBaseMethod (TypeReference type, MethodSignature methodSignature)
 		{
 			MethodDefinition method = type.GetMethod (methodSignature);
 			if (method == null)
