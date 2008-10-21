@@ -396,14 +396,20 @@ namespace Gendarme {
 
 		private void RulesTreeViewAfterCheck (object sender, TreeViewEventArgs e)
 		{
-			IRule rule = (e.Node.Tag as IRule);
-			if (rule == null) {
+			if (e.Node.Tag == null) {
 				// childs
 				foreach (TreeNode node in e.Node.Nodes) {
 					node.Checked = e.Node.Checked;
 				}
-			} else {
-				rule.Active = e.Node.Checked;
+			}
+		}
+
+		private void UpdateActiveRules ()
+		{
+			foreach (TreeNode assembly in rules_tree_view.Nodes) {
+				foreach (TreeNode rule in assembly.Nodes) {
+					(rule.Tag as Rule).Active = rule.Checked;
+				}
 			}
 		}
 
@@ -516,9 +522,17 @@ namespace Gendarme {
 				rule.ApplicabilityScope = scope; 
 			}
 
+			// activate rules based on user selection
+			UpdateActiveRules ();
+
 			Runner.Initialize ();
 			Runner.Run ();
 			Runner.TearDown ();
+
+			// reset rules as the user selected them (since some rules might have
+			// turned themselves off is they were not needed for the analysis) so
+			// that report used rules correctly
+			UpdateActiveRules ();
 
 			BeginInvoke ((Action) (() => Current = Page.Report));
 		}

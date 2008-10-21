@@ -1,3 +1,10 @@
+2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Change logic to activate rules so it can be reused
+	after the analysis. This makes the before and after states identical
+	and will fix the reporting of rules (along with XmlResultWriter 
+	changes) to include only the one that were selected for the analysis.
+
 2008-08-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Page.cs: Add a new Options step to the enum.
