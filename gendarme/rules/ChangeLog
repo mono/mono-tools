@@ -1,5 +1,12 @@
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* common.make: As we do when we compile, the doc directory is generated
+	if needed. 
+	* Gendarme.Rules.*/doc: We don't need to keep the doc directory for
+	every rule category, because it's created if needed.
+
+2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* common.make: This target is not longer needed, because the artifacts
 	which will be built are placed in the SCRIPTS and DATA.
 
