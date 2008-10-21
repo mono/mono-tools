@@ -1,3 +1,9 @@
+2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* common.make: Extracted some common code from Makefiles and put in this
+	file.  This reduces the duplication among Makefiles and make it easier
+	to maintain.
+
 2008-10-19  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* common.make: Added the targets for generate the documentation from the
