@@ -1,3 +1,10 @@
+2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MoMAWebService.cs:Remove #pragma (even if from generated code) 
+	since I want to enable this across all rules.
+	* MonoCompatibilityReviewRule.cs: Avoid specialization of Read and 
+	Check methods parameters (self-test).
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with
