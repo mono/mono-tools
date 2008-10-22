@@ -32,16 +32,6 @@ run-test: test
 	make run-test;	\
 	cd ..;
 
-clean-local:
-	rm -fr doc
-
-doc: all
-	monodocer -assembly:bin/Gendarme.Framework.dll -importslashdoc:framework/Gendarme.Framework.doc.xml -path:doc
-
-assemble-doc: doc
-	mdassembler --ecma doc -o doc/gendarme; \
-	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<source provider='ecma' basefile='gendarme' path='gendarme'/>\n</monodoc>" > doc/gendarme.source; 
-
 self-test: all
 	cd bin;	\
 	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \

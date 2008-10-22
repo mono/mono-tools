@@ -1,3 +1,8 @@
+2008-10-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: This target is not longer needed because we generate the
+	documentation in the same way than rules.
+
 2008-10-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme-wizard.in: Support MONO_OPTIONS too (like gendarme does)
