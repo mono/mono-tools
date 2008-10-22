@@ -32,7 +32,8 @@ rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
 generated_doc = doc/generated/**/*.xml
 
 $(rules_dll): $(rules_build_sources) $(framework)
-	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -doc:$(rules_dll).doc -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
+	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
+		-r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 

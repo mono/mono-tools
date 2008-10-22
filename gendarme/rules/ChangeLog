@@ -1,3 +1,8 @@
+2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* common.make: Don't warn if XML documentation is incomplete (1591) 
+	since we only document the class (and nothing else) for the wiki.
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* common.make: As we do when we compile, the doc directory is generated
