@@ -1,13 +1,23 @@
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll
 EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
-CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll Gendarme.Framework.doc.xml
+CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll $(framework_SCRIPTS).doc $(framework_doc)
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
 
 pkgconfig_in_files = gendarme-framework.pc.in
 
 pkgconfigdir= $(prefix)/lib/pkgconfig
 pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=.pc)
+
+framework_doc_source = doc/Gendarme.Framework.source
+framework_doc_tree = doc/Gendarme.Framework.tree
+framework_doc_zip = doc/Gendarme.Framework.zip
+
+framework_documentationdir = $(prefix)/lib/monodoc/sources
+framework_documentation_DATA = $(framework_doc)
+
+framework_doc = $(framework_doc_zip) $(framework_doc_source) $(framework_doc_tree)
+generated_doc = doc/generated/**/*.xml
 
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
@@ -64,7 +74,7 @@ framework_build_sources += $(framework_generated_sources)
 
 ../bin/Gendarme.Framework.dll: $(framework_build_sources) $(CECIL_ASM)
 	test -d ../bin || mkdir ../bin
-	$(GMCS) -debug -target:library  -doc:Gendarme.Framework.doc.xml -r:$(CECIL_ASM) \
+	$(GMCS) -debug -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
@@ -89,6 +99,20 @@ test: Test.Framework.dll
 run-test: test
 	MONO_PATH=../bin/:$(MONO_PATH) nunit-console2 Test.Framework.dll
 
-
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)
+
+$(generated_doc): $(framework_SCRIPTS)
+	test -d doc || mkdir doc
+	mdoc update -i $(framework_SCRIPTS).doc -o doc/generated $(framework_SCRIPTS)
+
+$(framework_doc_zip): $(generated_doc)
+	mdoc assemble -f ecma -o doc/Gendarme.Framework doc/generated 
+
+$(framework_doc_tree): $(generated_doc)
+	
+$(framework_doc_source):
+	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<source provider='ecma' basefile='Gendarme.Framework' path='classlib-Gendarme.Framework'/>\n</monodoc>" > $(framework_doc_source) 
+
+clean-local:
+	rm -fr doc/

@@ -1,3 +1,9 @@
+2008-10-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* Makefile.am: Generate the documentation when we compile the framework
+	and put it available for distribute, using the same way we are using for
+	the rules documentation.
+
 2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add NamespaceEngine and Namespace MD project file.
