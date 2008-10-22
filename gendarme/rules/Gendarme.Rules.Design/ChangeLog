@@ -1,3 +1,10 @@
+2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: Avoid specialization of 
+	CheckParameterName parameters (self-test).
+	* EnsureSymmetryForOverloadedOperatorsRule.cs: Avoid specialization 
+	of CheckOperatorPair parameters (self-test).
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with

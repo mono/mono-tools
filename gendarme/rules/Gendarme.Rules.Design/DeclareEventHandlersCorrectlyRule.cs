@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Design {
 			return ok;
 		}
 
-		private bool CheckParameterName (TypeReference eventType, ParameterDefinition invokeParameter, string expectedName)
+		private bool CheckParameterName (TypeReference eventType, ParameterReference invokeParameter, string expectedName)
 		{
 			if (String.Compare (invokeParameter.Name, expectedName) == 0)
 				return true;

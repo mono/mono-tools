@@ -111,7 +111,7 @@ namespace Gendarme.Rules.Design {
 		}
 
 		private void CheckOperatorPair (KeyValuePair<MethodSignature, MethodSignature> pair, 
-			TypeDefinition type, Severity severity)
+			TypeReference type, Severity severity)
 		{
 			MethodDefinition op = type.GetMethod (pair.Key);
 			if (op == null) { //first one not defined
