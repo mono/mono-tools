@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Diagnostics;
 
 using Mono.Cecil;
 
@@ -171,6 +172,13 @@ namespace Test.Rules.Maintainability {
 			end = DateTime.Now;
 			return end - start;
 		}
+
+		public TimeSpan UsingStopwatch ()
+		{
+			Stopwatch watch = new Stopwatch ();
+			// stuff
+			return watch.Elapsed;
+		}
 	}
 	#pragma warning restore 169
 
@@ -202,7 +210,10 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void NotApplicable ()
 		{
+			// no body
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no call[virt] instruction
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		[Test]
@@ -213,6 +224,7 @@ namespace Test.Rules.Maintainability {
 			AssertRuleSuccess<TestClass> ("DateDiff3");
 			AssertRuleSuccess<TestClass> ("DateDiff4");
 			AssertRuleSuccess<TestClass> ("DateDiff5");
+			AssertRuleSuccess<TestClass> ("UsingStopwatch");
 		}
 
 		[Test]

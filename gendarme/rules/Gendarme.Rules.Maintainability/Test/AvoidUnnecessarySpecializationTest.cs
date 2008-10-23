@@ -444,7 +444,6 @@ namespace Test.Rules.Maintainability {
 		}
 
 		[Test]
-		[Ignore ("rule is limited to one constraint, there are two in this case: ValueType and IConvertible")]
 		public void GenericParameters ()
 		{
 			// rule suggest IConvertible which is (one of) the constraint on <T>
@@ -466,5 +465,44 @@ namespace Test.Rules.Maintainability {
 			Assert.IsTrue(Runner.Defects [0].Text.IndexOf ("'Mono.Cecil.MethodReference'") > 0);
 		}
 
+		// from AvoidUncalledPrivateCodeRule
+		static Dictionary<TypeDefinition, HashSet<uint>> cache;
+
+		private static HashSet<uint> GetCache (TypeDefinition type)
+		{
+			HashSet<uint> methods;
+			if (!cache.TryGetValue (type, out methods)) {
+				methods = new HashSet<uint> ();
+				cache.Add (type, methods);
+				foreach (MethodDefinition md in type.AllMethods ()) {
+					if (!md.HasBody)
+						continue;
+				}
+			}
+			return methods;
+		}
+
+		[Test]
+		[Ignore ("fails")]
+		public void CollectionKey ()
+		{
+			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("GetCache");
+		}
+
+		// from gendarme/rules/Gendarme.Rules.Portability/MonoCompatibilityReviewRule.cs
+		public event EventHandler<EngineEventArgs> BuildingCustomAttributes;
+		private void BuildCustomAttributes (Mono.Cecil.ICustomAttributeProvider custom, EngineEventArgs e)
+		{
+			if ((BuildingCustomAttributes != null) && (custom.CustomAttributes.Count > 0)) {
+				BuildingCustomAttributes (custom, e);
+			}
+		}
+
+		[Test]
+		[Ignore ("fails on MS runtime")]
+		public void Events ()
+		{
+			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
+		}
 	}
 }
