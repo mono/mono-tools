@@ -87,6 +87,7 @@ namespace Gendarme.Rules.Maintainability {
 		private TypeReference [] types_least = new TypeReference [64];
 		private int [] depths_least = new int [64];
 
+		// FIXME: handle more than one constraint
 		private static TypeReference GetActualType (TypeReference type)
 		{
 			GenericParameter gp = (type as GenericParameter);
@@ -189,6 +190,12 @@ namespace Gendarme.Rules.Maintainability {
 			string [] parameters = new string [method.Parameters.Count];
 			for (int i = 0; i < method.Parameters.Count; ++i) {
 				TypeReference pType = method.Parameters [i].ParameterType;
+
+				// handle reference type (ref in C#)
+				ReferenceType ref_type = (pType as ReferenceType);
+				if (ref_type != null)
+					pType = ref_type.ElementType;
+
 				if (pType is GenericParameter)
 					parameters [i] = null; //TODO: constructed mapping?
 				else
@@ -380,14 +387,23 @@ namespace Gendarme.Rules.Maintainability {
 			return Runner.CurrentRuleResult;
 		}
 
-		private void CheckParametersSpecializationDelta (MethodDefinition method)
+		private void CheckParametersSpecializationDelta (MethodReference method)
 		{
-			for (int i = 0; i < method.Parameters.Count; ++i) {
-				if (null == types_least [i]) continue; //argument is not used
+			foreach (ParameterDefinition parameter in method.Parameters){
 
-				ParameterDefinition parameter = method.Parameters [i];
+				int i = parameter.Sequence - 1;
+				if (null == types_least [i])
+					continue; //argument is not used
+
+				// the rule currently does not handle more than one generic constraint
+				// so we prefer skipping them than reporting a bunch of false positives
+				GenericParameter gp = (parameter.ParameterType as GenericParameter);
+				if (gp != null) {
+					if (gp.Constraints.Count > 1)
+						continue;
+				}
+
 				int delta = GetActualTypeDepth (parameter.ParameterType) - depths_least [i];
-
 				if (delta > 0) {
 					string message = GetSuggestionMessage (parameter);
 					Severity sev = (delta < 3) ? Severity.Medium : Severity.High;
@@ -405,12 +421,16 @@ namespace Gendarme.Rules.Maintainability {
 				sb.Append ("' could be constrained to type '");
 			else
 				sb.Append ("' could be of type '");
-			sb.Append (types_least [parameter.Sequence - 1].FullName);
+
+			TypeReference type = types_least [parameter.Sequence - 1];
+			GenericParameter gp = (type as GenericParameter);
+			if (gp != null) {
+				type = (gp.Owner as TypeReference);
+			}
+
+			sb.Append (type.FullName);
 			sb.Append ("'.");
 			return sb.ToString ();
 		}
-
 	}
-
 }
-
