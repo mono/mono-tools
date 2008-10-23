@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 		
-		RuleResult CheckAttributesIn (ICustomAttributeProvider provider) {
+		void CheckAttributesIn (ICustomAttributeProvider provider) {
 			//There isn't a relationship between
 			//IMetadataTokenProvider and ICustomAttributeProvider,
 			//altough a method, or type, implements both interfaces.
@@ -149,14 +149,12 @@ namespace Gendarme.Rules.Correctness {
 	
 			foreach (CustomAttribute attribute in provider.CustomAttributes) 
 				CheckParametersAndValues (metadataProvider, attribute.Constructor, attribute.ConstructorParameters);
-			return Runner.CurrentRuleResult;
 		}
 
-		RuleResult CheckAttributesIn (IEnumerable targets)
+		void CheckAttributesIn (IEnumerable targets)
 		{
 			foreach (ICustomAttributeProvider provider in targets) 
 				CheckAttributesIn (provider);	
-			return Runner.CurrentRuleResult;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

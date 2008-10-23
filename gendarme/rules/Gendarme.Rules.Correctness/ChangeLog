@@ -1,3 +1,9 @@
+2008-10-23  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: Refactored the
+	methods CheckAttributesIn.  Returning a RuleResult doesn't make sense
+	and it introduces a CodeDuplicated in self-test. 
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with
