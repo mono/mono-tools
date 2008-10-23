@@ -37,6 +37,10 @@ R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
 M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseVersion(System.String)
 M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseGuid(System.String)
 
+# OK - MethodSignatures use the CLR names for operators that starts with "op_"
+R: Gendarme.Rules.Naming.AvoidNonAlphanumericIdentifierRule
+T: Gendarme.Framework.Helpers.MethodSignatures
+
 # non-gendarme code / NDesk.Options
 R: Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
 T: NDesk.Options.OptionException

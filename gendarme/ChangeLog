@@ -1,3 +1,9 @@
+2008-10-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Update to add an entry about MethodSignatures
+	readonly fields containing the '_' character (which is "by design" 
+	since the signatures are for operator methods).
+
 2008-10-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: This target is not longer needed because we generate the
