@@ -9,57 +9,53 @@ monodocdir=$prefix/lib/monodoc
 case x$1 in
     x--assemble)
 	shift;
-	echo "--assemble is depreciated. Use mdassembler." 1>&2
+	echo "--assemble is deprecated. Use \`mdoc-assemble'." 1>&2
 	exec mdassembler "$@"
 	;;
     x--get-sourcesdir)
-	echo "--get-sourcesdir is depreciated. Use pkg-config monodoc --variable=sourcesdir." 1>&2
+	echo "--get-sourcesdir is deprecated. Use \`pkg-config monodoc --variable=sourcesdir'." 1>&2
 	exec pkg-config monodoc --variable=sourcesdir
 	;;
     x--normalize)
 	shift;
-	echo "--normalize is depreciated. Use mdnormalizer." 1>&2
-	exec mdnormalizer "$@"
+	echo "--normalize is no longer supported.  Use \`xmllint'." 1>&2
+	exit 1;
 	;;
     x--update)
-	echo "$0 --update does not work.  Use 'monodocer' instead." 1>&2
+	echo "--update does not work.  Use \`mdoc-update' instead." 1>&2
 	exit 1
 	;;
     x--cs-to-ecma)
 	shift;
-	echo "--cs-to-ecma is depreciated. Use mdcs2ecma." 1>&2
-	exec mdcs2ecma "$@"
+	echo "--cs-to-ecma does not work. Use \`mdoc-update' with the \`--import' option." 1>&2
+	exit 1;
 	;;
     x--validate)
 	shift;
-	echo "--validator is depreciated. Use mdvalidater." 1>&2
+	echo "--validate is deprecated. Use \`mdoc-validate'." 1>&2
 	exec mdvalidater "$@"
 	;;
     x--help)
-	echo "Usage is:"
-	echo "monodoc [options]"
+	echo "Usage: monodoc [OPTION]... [TOPIC]"
 	echo ""
-	echo "where [options] is one of the following:"
-	echo "  TOPIC              Start the browser at TOPIC"
-	echo "      (ex. N:System, T:System.Object, M:System.Object.Equals,"
-	echo "      and P: for properties, F: for fields, E: for events, etc.)"
+	echo "Display documentation for TOPIC (or display the default start page"
+	echo "if no TOPIC is provided).  TOPICs are ECMA-334 Annex E.3.1 CREFs, "
+	echo "e.g. N:System, T:System.Object, M:System.Object.Equals, P: for"
+	echo "properties, F: for fields, E: for events, etc.  See mdoc(5) "
+	echo "CREF FORMAT for more details."
+	echo ""
+	echo "OPTION is one of the following:"
 	echo "  --help             	Print this message"
 	echo "  --about            	About the monodoc browser"
 	echo "  --html TOPIC       	Print the HTML contents of TOPIC"
 	echo "  --make-index       	Create the documentation index"
  	echo "  --make-search-index	Create the searchable documentation index"
-	echo "  --engine          	Select a browser backend"
+	echo "  --engine ENGINE   	Select a browser backend"
 	echo "                    	(Gecko, GtkHtml, WebKit, MonoWebBrowser)"
 	echo
 	echo "The following options are available for authoring documentation:"
-	echo "  --assemble         Runs the doc assembler"
-	echo "  --cs-to-ecma DOCFILE ASSEMBLY OUTPUT LIBRARY-NAME"
-	echo "                     Converts C# documentation to Monodoc format"
 	echo "  --edit path        Edit (unassembled) documentation at path"
-	echo "  --get-sourcesdir   Prints the location of monodoc sources"
 	echo "  --merge-changes CHANGE_FILE [TARGET_DIR]"
-	echo "  --normalize        Format a documentation file consistently"
-	echo "  --validate         Validate the XML files"
 	exit 0
 	;;
 esac

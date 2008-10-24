@@ -1,3 +1,11 @@
+2008-10-24  Jonathan Pryor  <jpryor@novell.com>
+
+	* monodoc.in: Update messages to suggest the mdoc equivalents instead
+	  of the older md* programs and/or remove functionality (e.g.
+	  mdnormalize is no longer present, so don't call it).  Update the
+	  --help text, removing all deprecated arguments and improving the
+	  description of the TOPIC string.
+
 2008-07-30  Andreia Gaita <avidigal@novell.com> 
 
 	* browser.cs: Fix loader not to dump an exception when it a backend assembly 
