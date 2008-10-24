@@ -51,10 +51,12 @@ namespace Gendarme.Rules.Exceptions {
 	/// <code>
 	/// public void Show (string s)
 	/// {
-	///	if (s == null)
+	///	if (s == null) {
 	///		throw new ArgumentNullException ("string is null", "s");
-	///	if (s.Length == 0)
+	///	}
+	///	if (s.Length == 0) {
 	///		return new ArgumentException ("s", "string is empty");
+	///	}
 	///	Console.WriteLine (s);
 	/// }
 	/// </code>
@@ -64,10 +66,12 @@ namespace Gendarme.Rules.Exceptions {
 	/// <code>
 	/// public void Show (string s)
 	/// {
-	///	if (s == null)
+	///	if (s == null) {
 	///		throw new ArgumentNullException ("s", "string is null");
-	///	if (s.Length == 0)
+	///	}
+	///	if (s.Length == 0) {
 	///		return new ArgumentException ("string is empty", "s");
+	///	}
 	///	Console.WriteLine (s);
 	/// }
 	/// </code>

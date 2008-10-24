@@ -39,8 +39,9 @@ namespace Gendarme.Rules.Exceptions {
 	/// <code>
 	/// public void Add (object obj)
 	/// {
-	///	if (obj == null)
+	///	if (obj == null) {
 	///		throw new NullReferenceException ("obj");
+	///	}
 	///	Inner.Add (obj);
 	/// }
 	/// </code>
@@ -50,8 +51,9 @@ namespace Gendarme.Rules.Exceptions {
 	/// <code>
 	/// public void Add (object obj)
 	/// {
-	///	if (obj == null)
+	///	if (obj == null) {
 	///		throw new ArgumentNullException ("obj");
+	///	}
 	///	Inner.Add (obj);
 	/// }
 	/// </code>

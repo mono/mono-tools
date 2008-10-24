@@ -42,22 +42,27 @@ namespace Gendarme.Rules.Exceptions {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// public void Add (object obj)
+	/// public void Add (object key, object value)
 	/// {
-	///	if (obj == null)
+	///	if ((obj == null) || (key == null)) {
 	///		throw new ArgumentNullException ();
-	///	Inner.Add (obj);
+	///	}
+	///	Inner.Add (key, value);
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public void Add (object obj)
+	/// public void Add (object key, object value)
 	/// {
-	///	if (obj == null)
-	///		throw new ArgumentNullException ("obj");
-	///	Inner.Add (obj);
+	///	if (key == null) {
+	///		throw new ArgumentNullException ("key");
+	///	}
+	///	if (obj == value) {
+	///		throw new ArgumentNullException ("value");
+	///	}
+	///	Inner.Add (key, value);
 	/// }
 	/// </code>
 	/// </example>
