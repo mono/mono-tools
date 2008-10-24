@@ -3,6 +3,7 @@ include ../common.make
 rules_sources = \
 	DoNotLockOnThisOrTypesRule.cs \
 	DoNotLockOnWeakIdentityObjectsRule.cs \
+	DoNotUseMethodImplOptionsSynchronizedRule.cs \
 	DontUseLockedRegionOutsideMethodRule.cs \
 	DoubleCheckLockingRule.cs \
 	LockAnalyzerRule.cs \
@@ -13,6 +14,7 @@ rules_sources = \
 tests_sources = \
 	DoNotLockOnThisOrTypesTest.cs \
 	DoNotLockOnWeakIdentityObjectsTest.cs \
+	DoNotUseMethodImplOptionsSynchronizedTest.cs \
 	DontUseLockedRegionOutsideMethodTest.cs \
 	DoubleCheckLockingTest.cs \
 	NonConstantStaticFieldsShouldNotBeVisibleTest.cs \
