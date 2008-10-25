@@ -71,7 +71,7 @@ namespace Test.Rules.Helpers {
 		
 		private RuleResult PostCheck (RuleResult beforeTearingDown)
 		{
-			CurrentRule.TearDown (this);
+			CurrentRule.TearDown ();
 			//If current is not the default, and report the greater
 			if (beforeTearingDown == RuleResult.DoesNotApply) 
 				return beforeTearingDown;
