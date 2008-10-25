@@ -1,3 +1,7 @@
+2008-10-25  Cedric Vivier  <cedricv@neonux.com>
+
+	* AvoidVisibleFieldsRule.cs: Change text to reflect the new rule name.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSmallNamespaceRule.cs: Update TearDown call with API change.

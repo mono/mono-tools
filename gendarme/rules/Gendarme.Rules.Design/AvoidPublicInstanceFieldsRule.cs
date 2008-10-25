@@ -63,8 +63,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named AvoidPublicInstanceFieldsRule.</remarks>
 
-	[Problem ("This type contains public instance fields.")]
-	[Solution ("If possible change the public fields into properties.")]
+	[Problem ("This type contains visible instance fields. A field should be a local implementation detail.")]
+	[Solution ("If possible change the field visibility to private or internal.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
 	public class AvoidVisibleFieldsRule : Rule, ITypeRule {
 
@@ -84,11 +84,11 @@ namespace Gendarme.Rules.Design {
 					continue;
 
 				if (fd.FieldType.IsArray ()) {
-					string s = String.Format ("Consider converting the public instance field '{0}' into a private field and add a 'Set{1}' method.", 
+					string s = String.Format ("Consider changing the field '{0}' to a private or internal field and add a 'Set{1}' method.",
 						fd.Name, Char.ToUpper (fd.Name [0]) + fd.Name.Substring (1));
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				} else {
-					string s = String.Format ("Public instance field '{0}' should be changed into a property.", fd.Name);
+					string s = String.Format ("Field '{0}' should be private or internal and its value accessed through a property.", fd.Name);
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				}
 			}
