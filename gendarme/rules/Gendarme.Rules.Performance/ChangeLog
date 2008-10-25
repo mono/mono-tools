@@ -1,3 +1,10 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeStructureRule.cs: Add null check in SizeOfStruct (self
+	test)
+	* AvoidUninstantiatedInternalClassesRule.cs: Change visibility of
+	ProcessType and ProcessMethod to private.
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with

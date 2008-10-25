@@ -106,8 +106,12 @@ namespace Gendarme.Rules.Performance {
 			throw new NotSupportedException (type.ToString () + " should not be usable as an enum type.");
 		}
 
+		// Note: Needs to be public since this is being tested by our unit tests
 		public static long SizeOfStruct (TypeDefinition type)
 		{
+			if (type == null)
+				return 0;
+
 			long total = 0;
 			long largest = ReferenceSize;
 			foreach (FieldDefinition field in type.Fields) {

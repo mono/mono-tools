@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Performance {
 				typeset.Add (type);
 		}
 
-		public static void ProcessType (TypeDefinition type, HashSet<TypeReference> typeset)
+		static void ProcessType (TypeDefinition type, HashSet<TypeReference> typeset)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				TypeReference t = field.FieldType;
@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Performance {
 				ProcessMethod (method, typeset);
 		}
 
-		public static void ProcessMethod (MethodDefinition method, HashSet<TypeReference> typeset)
+		static void ProcessMethod (MethodDefinition method, HashSet<TypeReference> typeset)
 		{
 			// this is needed in case we return an enum, a struct or something mapped
 			// to p/invoke (i.e. no ctor called). We also need to check for arrays.
