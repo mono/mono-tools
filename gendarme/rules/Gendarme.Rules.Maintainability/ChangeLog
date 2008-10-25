@@ -1,3 +1,9 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Revert visibility change for
+	GetCohesivenessForType since it's used in the unit test. Add a null
+	check inside that method (self-test)
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsRule.cs: Add null check in method

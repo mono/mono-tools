@@ -76,8 +76,11 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 
-		private double GetCohesivenessForType (TypeDefinition type)
+		public double GetCohesivenessForType (TypeDefinition type)
 		{
+			if (type == null)
+				return 0.0;
+
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
 			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
