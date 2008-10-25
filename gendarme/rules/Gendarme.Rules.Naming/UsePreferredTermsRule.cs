@@ -151,7 +151,7 @@ namespace Gendarme.Rules.Naming {
 				foreach (KeyValuePair<string, string> pair in preferredTerms) {
 					if (ns.IndexOf (pair.Key, StringComparison.OrdinalIgnoreCase) != -1) {
 						string s = String.Format (Message, pair.Key, pair.Value);
-						Runner.Report (new Namespace (ns), Severity.Medium, Confidence.High, s);
+						Runner.Report (new NamespaceDefinition (ns), Severity.Medium, Confidence.High, s);
 					}
 				}
 			}

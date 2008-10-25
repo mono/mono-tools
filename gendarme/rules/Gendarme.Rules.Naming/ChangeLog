@@ -1,3 +1,9 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeepNamespaceHierarchyRule.cs, 
+	DetectNonAlphaNumericsInTypeNamesRule.cs, UseCorrectCasingRule.cs,
+	UsePreferredTermsRule.cs: Rename Namespace to NamespaceDefinition.
+
 2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ParameterNamesShouldMatchOverridenMethodRule.cs: Avoid 

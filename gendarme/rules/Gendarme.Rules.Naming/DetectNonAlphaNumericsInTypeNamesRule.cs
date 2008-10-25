@@ -110,7 +110,7 @@ namespace Gendarme.Rules.Naming {
 			// check every namespaces inside the assembly using the NamespaceEngine
 			foreach (string ns in NamespaceEngine.NamespacesInside (assembly)) {
 				if (!CheckName (ns, false))
-					Runner.Report (new Namespace (ns), Severity.Medium, Confidence.High);
+					Runner.Report (new NamespaceDefinition (ns), Severity.Medium, Confidence.High);
 			}
 			return Runner.CurrentRuleResult;
 		}

@@ -131,7 +131,7 @@ namespace Gendarme.Rules.Naming {
 				// i.e. stuff we often prefer to have in a sub-namespace
 				// and for internal (non-visible) namespaces
 				if (levels == MaxDepth + 1) {
-					if (Namespace.IsSpecialized (ns)) {
+					if (NamespaceDefinition.IsSpecialized (ns)) {
 						continue;
 					} else if (ns.EndsWith (".Internal") || ns.EndsWith (".Impl")) {
 						continue;
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Naming {
 				}
 
 				Severity severity = (levels < MaxDepth * 2) ? Severity.Medium : Severity.High;
-				Runner.Report (new Namespace (ns), severity, Confidence.High);
+				Runner.Report (new NamespaceDefinition (ns), severity, Confidence.High);
 			}
 			return Runner.CurrentRuleResult;
 		}
