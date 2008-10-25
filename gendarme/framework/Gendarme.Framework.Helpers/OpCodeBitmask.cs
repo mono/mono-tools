@@ -97,6 +97,9 @@ namespace Gendarme.Framework.Helpers {
 
 		public void UnionWith (OpCodeBitmask mask)
 		{
+			if (mask == null)
+				throw new ArgumentNullException ("mask");
+
 			this.mask [0] |= mask.mask [0];
 			this.mask [1] |= mask.mask [1];
 			this.mask [2] |= mask.mask [2];
@@ -138,14 +141,13 @@ namespace Gendarme.Framework.Helpers {
 
 		public override bool Equals (object obj)
 		{
-			OpCodeBitmask set = (obj as OpCodeBitmask);
-			if (set == null)
-				return false;
-			return Equals (set);
+			return Equals (obj as OpCodeBitmask);
 		}
 
 		public bool Equals (OpCodeBitmask set)
 		{
+			if (set == null)
+				return false;
 			return ((mask [0] == set.mask [0]) || (mask [1] == set.mask [1]) ||
 				(mask [2] == set.mask [2]) || (mask [3] == set.mask [3]));
 		}

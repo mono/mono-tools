@@ -1,5 +1,5 @@
 // 
-// Gendarme.Framework.Helpers.Namespace
+// Gendarme.Framework.Helpers.NamespaceDefinition
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -36,11 +36,11 @@ namespace Gendarme.Framework.Helpers {
 	/// Namespaces do not really exists in the CLR, at least not like other first level citizens.
 	/// Since we want to report defects against them we need something to fill this void.
 	/// </summary>
-	public class Namespace : IMetadataTokenProvider {
+	public class NamespaceDefinition : IMetadataTokenProvider {
 
 		private string ns;
 
-		public Namespace (string name)
+		public NamespaceDefinition (string name)
 		{
 			if (name == null)
 				throw new ArgumentNullException ("name");

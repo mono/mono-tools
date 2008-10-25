@@ -1,3 +1,10 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Namespace.cs: Renamed to NamespaceDefinition to better match Cecil
+	names (and void confusing with common keyword).
+	* OpCodeBitmask.cs: Add null checks in Equals(OpCodeBitmap) and
+	UnionWith methods. Refactor Equals(object) wrt change.
+
 2008-10-21  Cedric Vivier  <cedricv@neonux.com>
 
 	* OpCodeBitmask.cs: Add public method UnionWith.
