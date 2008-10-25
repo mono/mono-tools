@@ -1,3 +1,8 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferEventsOverMethodsTest.cs: New. Unit tests for 
+	PreferEventsOverMethodsRule
+
 2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMultidimensionalIndexerTest.cs: Fix namespace.
