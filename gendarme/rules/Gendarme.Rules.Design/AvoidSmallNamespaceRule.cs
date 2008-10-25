@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Design {
 			foreach (string ns in NamespaceEngine.AllNamespaces ()) {
 
 				// skip specialized namespaces
-				if (Namespace.IsSpecialized (ns))
+				if (NamespaceDefinition.IsSpecialized (ns))
 					continue;
 
 				if (ignore.Contains (ns))
@@ -155,7 +155,7 @@ namespace Gendarme.Rules.Design {
 				// don't report namespaces that are not visible outside the assembly
 				// e.g. VS.NET adds a .Properties namespace to SWF apps
 				if ((count > 0) && (count < Minimum)) {
-					Namespace n = new Namespace (ns);
+					NamespaceDefinition n = new NamespaceDefinition (ns);
 					string msg = String.Format ("Only {0} visible types are defined inside this namespace.", count);
 					// overloads of Report cannot be used here since the 'target' has been lost in the runner
 					Runner.Report (new Defect (this, n, n, Severity.Low, Confidence.Total, msg));

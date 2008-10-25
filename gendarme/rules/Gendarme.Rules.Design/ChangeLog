@@ -1,3 +1,7 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSmallNamespaceRule.cs: Rename Namespace to NamespaceDefinition.
+
 2008-10-25  Cedric Vivier  <cedricv@neonux.com>
 
 	* AvoidVisibleFieldsRule.cs: Change text to reflect the new rule name.
