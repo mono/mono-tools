@@ -1,3 +1,8 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CompareWithStringEmptyEfficientlyTest.cs: Add new test case for
+	something that was not a bug after all :)
+
 2008-10-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderCustomAccessorsForNonVisibleEventsTest.cs: Remove 

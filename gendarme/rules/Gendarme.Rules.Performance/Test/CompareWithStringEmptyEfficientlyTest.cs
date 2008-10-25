@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Specialized;
 
 using Gendarme.Rules.Performance;
 
@@ -246,6 +247,34 @@ namespace Test.Rules.Performance {
 			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("TwoParameters");
 			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("Fields");
 			AssertRuleSuccess<CompareWithEmptyStringEfficientlyTest> ("NewobjAndEquality");
+		}
+
+		static bool CheckString (string val)
+		{
+			return (val.Length % 2 == 0);
+		}
+
+		static void ThrowValidationException (string a, string b, string c)
+		{
+		}
+
+		// from mcs/class/System.Web/System.Web/HttpRequest.cs
+		static void ValidateNameValueCollection (string name, NameValueCollection coll)
+		{
+			if (coll == null)
+				return;
+
+			foreach (string key in coll.Keys) {
+				string val = coll [key];
+				if (val != null && val != "" && CheckString (val))
+					ThrowValidationException (name, key, val);
+			}
+		}
+
+		[Test]
+		public void MultipleChecks ()
+		{
+			AssertRuleFailure<CompareWithEmptyStringEfficientlyTest> ("ValidateNameValueCollection", 1);
 		}
 	}
 }
