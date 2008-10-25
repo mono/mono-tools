@@ -549,7 +549,7 @@ namespace Gendarme {
 		/// Update UI before analyzing an assembly.
 		/// </summary>
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
-		public void PreAssemblyUpdate (RunnerEventArgs e)
+		internal void PreAssemblyUpdate (RunnerEventArgs e)
 		{
 			progress_bar.Value = counter++;
 			analyze_status_label.Text = String.Format ("Processing assembly {0} of {1}",
@@ -561,7 +561,7 @@ namespace Gendarme {
 		/// Update UI after analyzing an assembly.
 		/// </summary>
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
-		public void PostTypeUpdate (RunnerEventArgs e)
+		internal void PostTypeUpdate (RunnerEventArgs e)
 		{
 			analyze_defect_label.Text = String.Format ("Defects Found: {0}", e.Runner.Defects.Count);
 		}

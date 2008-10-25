@@ -100,17 +100,17 @@ namespace Gendarme {
 
 		// Ignore List is not supported by the Wizard runner
 
-		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
+		bool IIgnoreList.IsIgnored (IRule rule, AssemblyDefinition assembly)
 		{
 			return !rule.Active;
 		}
 
-		public bool IsIgnored (IRule rule, TypeDefinition type)
+		bool IIgnoreList.IsIgnored (IRule rule, TypeDefinition type)
 		{
 			return !rule.Active;
 		}
 
-		public bool IsIgnored (IRule rule, MethodDefinition method)
+		bool IIgnoreList.IsIgnored (IRule rule, MethodDefinition method)
 		{
 			return !rule.Active;
 		}
