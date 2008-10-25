@@ -271,8 +271,11 @@ namespace Gendarme.Framework.Rocks {
 				string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
 				if (fullname == interfaceName)
 					return true;
+				//if not, then maybe one of its parent interfaces does
+				if (iface.Implements (interfaceName))
+					return true;
 			}
-			
+
 			// if not, then maybe it's parent does
 			TypeReference parent = type.BaseType;
 			if (parent != null)

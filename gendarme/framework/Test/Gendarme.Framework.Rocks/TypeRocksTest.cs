@@ -70,6 +70,22 @@ namespace Test.Framework.Rocks {
 			}
 		}
 
+		interface  IInterface1 {
+		}
+
+		interface IInterface2 : IDeepCloneable {
+		}
+
+		interface IMixinInterface : IInterface1, IInterface2 {
+		}
+
+		class Mixin : IMixinInterface {
+			public object Clone ()
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
 		class NotAttribute {
 		}
 
@@ -201,6 +217,7 @@ namespace Test.Framework.Rocks {
 			Assert.IsTrue (GetType ("/IDeepCloneable").Implements ("System.ICloneable"), "interface inheritance");
 			Assert.IsTrue (GetType ("/Deep").Implements ("Test.Framework.Rocks.TypeRocksTest/IDeepCloneable"), "IDeepCloneable");
 			Assert.IsTrue (GetType ("/Deep").Implements ("System.ICloneable"), "second-level ICloneable");
+			Assert.IsTrue (GetType ("/Mixin").Implements ("Test.Framework.Rocks.TypeRocksTest/IDeepCloneable"), "parent interface inheritance");
 		}
 
 		[Test]
