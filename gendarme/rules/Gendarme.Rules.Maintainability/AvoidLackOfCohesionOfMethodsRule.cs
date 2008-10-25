@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 
-		public double GetCohesivenessForType (TypeDefinition type)
+		private double GetCohesivenessForType (TypeDefinition type)
 		{
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
@@ -131,7 +131,7 @@ namespace Gendarme.Rules.Maintainability {
 			return 0;
 		}
 
-		public Severity GetCohesivenessSeverity (double coh)
+		private Severity GetCohesivenessSeverity (double coh)
 		{
 			if (coh >= LowSeverityLowerLimit) return Severity.Low;
 			if (coh >= MediumSeverityLowerLimit) return Severity.Medium;

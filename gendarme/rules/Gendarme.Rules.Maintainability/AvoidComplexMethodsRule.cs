@@ -122,7 +122,7 @@ namespace Gendarme.Rules.Maintainability {
 
 		public int GetCyclomaticComplexityForMethod (MethodDefinition method)
 		{
-			if (!method.HasBody)
+			if ((method == null) || !method.HasBody)
 				return 1;
 
 			int cc = 1;

@@ -1,3 +1,10 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsRule.cs: Add null check in method
+	GetCyclomaticComplexityForMethod (self-test)
+	* AvoidLackOfCohesionOfMethodsRule.cs: Change visibility of
+	GetCohesivenessForType and GetCohesivenessSeverity to private.
+
 2008-10-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Handle 'ref' parameters
