@@ -36,7 +36,7 @@ namespace Mono.CSharp.Gui {
             // Widget Mono.CSharp.Gui.MainWindow
             this.UIManager = new Gtk.UIManager();
             Gtk.ActionGroup w1 = new Gtk.ActionGroup("Default");
-            this.FileAction = new Gtk.Action("FileAction", Mono.Unix.Catalog.GetString("File"), null, null);
+            this.FileAction = new Gtk.Action("FileAction", Mono.Unix.Catalog.GetString("_File"), null, null);
             this.FileAction.ShortLabel = Mono.Unix.Catalog.GetString("File");
             w1.Add(this.FileAction, null);
             this.QuitAction = new Gtk.Action("QuitAction", Mono.Unix.Catalog.GetString("_Quit"), null, "gtk-quit");
@@ -84,6 +84,7 @@ namespace Mono.CSharp.Gui {
                 this.Child.ShowAll();
             }
             this.Show();
+            this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
             this.QuitAction.Activated += new System.EventHandler(this.OnQuitActionActivated);
             this.AttachToProcessAction.Activated += new System.EventHandler(this.OnAttachToProcessActionActivated);
         }

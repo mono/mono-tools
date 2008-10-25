@@ -55,6 +55,8 @@ namespace Mono.CSharp.Gui
 			Title = "C# Shell";
 
 			shell = new Shell ();
+			shell.QuitRequested += OnQuitActionActivated;
+			
 			shell.ShowAll ();
 			
 			sw.Add (shell);

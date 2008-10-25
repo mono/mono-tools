@@ -34,7 +34,6 @@ namespace Mono.CSharp.Gui
 	public partial class ProcessSelector : Gtk.Dialog
 	{
 		TreeStore procstore;
-		string [] current = new string [0];
 		int pid = -1;
 		
 		public ProcessSelector()

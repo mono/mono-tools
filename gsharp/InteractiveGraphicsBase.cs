@@ -31,7 +31,7 @@ namespace Mono.CSharp.Gui
 {
 	
 	
-	public class InteractiveGraphicsBase : InteractiveBase
+	public class InteractiveGraphicsBase : Mono.CSharp.InteractiveBase
 	{
 		public delegate double DoubleFunc (double a);
 		static int width = 400;
@@ -166,6 +166,7 @@ namespace Mono.CSharp.Gui
 				DrawAxes (g, black, x1, bounds [1].Y, x2, bounds [0].Y);
 
 				int i = 0;
+				g.SmoothingMode = SmoothingMode.AntiAlias;
 				foreach (var func in funcs){
 					Pen p = GetPen (i++);
 					p.Transform = invert;

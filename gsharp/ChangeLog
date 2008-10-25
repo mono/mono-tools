@@ -1,3 +1,7 @@
+2008-10-24  Miguel de Icaza  <miguel@novell.com>
+
+	* Shell.cs: Added history support. 
+
 2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Remove gsharp.exe[.mdb] at clean-time. Fix "make 

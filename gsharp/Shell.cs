@@ -3,6 +3,7 @@
  *
  *  Copyright (C) 2006-2008 Novell, Inc.
  *  Written by Aaron Bockover <aaron@abock.org>.
+ *             Miguel de Icaza (miguel@gnome.org).
  * 
  *  Based on ShellTextView.boo in the MonoDevelop Boo Binding
  *  originally authored by  Peter Johanson <latexer@gentoo.org>
@@ -30,6 +31,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -46,6 +48,9 @@ namespace Mono.CSharp.Gui
 	{        
 		TextMark end_of_last_processing;
 		string expr = null;
+
+		ArrayList history = new ArrayList ();
+		int history_cursor, new_top;
 		
 		public Shell() : base()
 		{
@@ -63,45 +68,49 @@ namespace Mono.CSharp.Gui
 			Evaluator.InteractiveBaseClass = typeof (InteractiveGraphicsBase);
 			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
+
+			history.Add ("");
 		}
 
 		void CreateTags ()
 		{
 			TextTag freeze_tag = new TextTag("Freezer") {
-					Editable = false
-						};
+				Editable = false
+			};
 			Buffer.TagTable.Add(freeze_tag);
 
 			TextTag prompt_tag = new TextTag("Prompt") {
-					Foreground = "blue",
-					//Background = "#f8f8f8",
-						Weight = Pango.Weight.Bold
-						};
+				Foreground = "blue",
+				//Background = "#f8f8f8",
+				Weight = Pango.Weight.Bold
+			};
 			Buffer.TagTable.Add(prompt_tag);
             
 			TextTag prompt_continuation_tag = new TextTag("PromptContinuation") {
-					Foreground = "orange",
-					//Background = "#f8f8f8",
-						Weight = Pango.Weight.Bold
-						};
+				Foreground = "orange",
+				//Background = "#f8f8f8",
+				Weight = Pango.Weight.Bold
+			};
 			Buffer.TagTable.Add(prompt_continuation_tag);
             
 			TextTag error_tag = new TextTag("Error") {
-					Foreground = "red"
-						};
+				Foreground = "red"
+			};
 			Buffer.TagTable.Add(error_tag);
             
 			TextTag stdout_tag = new TextTag("Stdout") {
-					Foreground = "#006600"
-						};
+				Foreground = "#006600"
+			};
 			Buffer.TagTable.Add(stdout_tag);
 
 			TextTag comment = new TextTag ("Comment") {
-					Foreground = "#3f7f5f"
-						};
+				Foreground = "#3f7f5f"
+			};
 			Buffer.TagTable.Add (comment);
 		}
 
+		public event EventHandler QuitRequested;
+		
 		//
 		// Returns true if the line is complete, so that the line can be entered
 		// into the history, false if this was partial
@@ -142,12 +151,6 @@ namespace Mono.CSharp.Gui
 			return true;
 		}
 
-		void HistoryUpdateLine ()
-		{
-			Console.WriteLine ("ADDED: {0}", GetCurrentExpression ());
-			expr = null;
-		}
-
 		string GetCurrentExpression ()
 		{
 			string input = InputLine;
@@ -155,6 +158,16 @@ namespace Mono.CSharp.Gui
 			return expr == null ? input : expr + "\n" + input;
 		}
 
+		[Conditional("DEBUG_HISTORY")]
+		void DumpHistory ()
+		{
+			for (int i = 0; i < history.Count; i++)
+				Console.WriteLine ("{0}  {1}: {2}",
+						   i == history_cursor ? "==>" : "   ",
+						   i, history [i]);
+			Console.WriteLine ("---");
+		}
+		
 		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
 		{
 			if(Cursor.Compare (InputLineBegin) < 0) {
@@ -165,20 +178,46 @@ namespace Mono.CSharp.Gui
 			switch (evnt.Key){
 			case Gdk.Key.Return:
 			case Gdk.Key.KP_Enter:
-				string copy;
-				copy = expr = GetCurrentExpression ();
+				string input_line = InputLine;
+				history [history.Count-1] = input_line;
+				history_cursor = history.Count;
+				
+				string expr_copy = expr = GetCurrentExpression ();
 					
 				if (Evaluate (expr)){
+					if (expr_copy != input_line){
+						history.Add (expr_copy);
+						history_cursor = history.Count;
+					}
 				}
-
+				history.Add ("");
+				DumpHistory ();
+				if (InteractiveBase.QuitRequested && QuitRequested != null)
+					QuitRequested (this, EventArgs.Empty);
 				return true;
 				
 			case Gdk.Key.Up:
-				
+				if (history_cursor == 0){
+					DumpHistory ();
+					return true;
+				}
+				string input = InputLine;
+				if (!String.IsNullOrEmpty (input)){
+					history [history_cursor] = input;
+				}
+				history_cursor--;
+				InputLine = (string) history [history_cursor];
+				DumpHistory ();
 				return true;
 
 			case Gdk.Key.Down:
-				
+				if (history_cursor+1 == history.Count){
+					DumpHistory ();
+					return true;
+				}
+				history_cursor++;
+				InputLine = (string) history [history_cursor];
+				DumpHistory ();
 				return true;
 				
 			case Gdk.Key.Left:
@@ -189,7 +228,7 @@ namespace Mono.CSharp.Gui
 				
 			case Gdk.Key.Home:
 				Buffer.MoveMark(Buffer.InsertMark, InputLineBegin);
-				if((evnt.State & Gdk.ModifierType.ShiftMask) == evnt.State) {
+				if((evnt.State & Gdk.ModifierType.ShiftMask) != Gdk.ModifierType.ShiftMask) {
 					Buffer.MoveMark(Buffer.SelectionBound, InputLineBegin);
 				}
 				return true;
