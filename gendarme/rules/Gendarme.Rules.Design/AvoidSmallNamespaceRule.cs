@@ -133,7 +133,7 @@ namespace Gendarme.Rules.Design {
 			return RuleResult.Success;
 		}
 
-		public override void TearDown (IRunner runner)
+		public override void TearDown ()
 		{
 			// check every namespaces inside the assembly set being analyzed
 			foreach (string ns in NamespaceEngine.AllNamespaces ()) {
@@ -162,7 +162,7 @@ namespace Gendarme.Rules.Design {
 				}
 			}
 			ignore.Clear ();
-			base.TearDown (runner);
+			base.TearDown ();
 		}
 	}
 }

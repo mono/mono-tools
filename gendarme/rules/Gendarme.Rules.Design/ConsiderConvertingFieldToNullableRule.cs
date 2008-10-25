@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Design {
 			return (null != GetValueTypeField (type, name));
 		}
 
-		public static FieldDefinition GetValueTypeField (TypeDefinition type, string name)
+		private static FieldDefinition GetValueTypeField (TypeDefinition type, string name)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.FieldType.IsValueType

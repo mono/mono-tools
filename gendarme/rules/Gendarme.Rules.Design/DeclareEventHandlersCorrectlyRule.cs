@@ -181,10 +181,10 @@ namespace Gendarme.Rules.Design {
 			return false;
 		}
 
-		public override void TearDown (IRunner runner)
+		public override void TearDown ()
 		{
 			valid_event_handler_types.Clear ();
-			base.TearDown (runner);
+			base.TearDown ();
 		}
 	}
 }

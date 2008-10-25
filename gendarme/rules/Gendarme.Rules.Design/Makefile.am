@@ -1,78 +1,80 @@
 include ../common.make
 
 rules_sources = \
+	AbstractTypesShouldNotHavePublicConstructorsRule.cs \
+	AttributeArgumentsShouldHaveAccessorsRule.cs \
+	AvoidEmptyInterfaceRule.cs \
 	AvoidMultidimensionalIndexerRule.cs \
+	AvoidPropertiesWithoutGetAccessorRule.cs \
+	AvoidPublicInstanceFieldsRule.cs \
 	AvoidRefAndOutParametersRule.cs \
 	AvoidSmallNamespaceRule.cs \
-	ConsiderUsingStaticTypeRule.cs \
-	DontDeclareProtectedFieldsInSealedClassRule.cs \
-	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
-	PreferIntegerOrStringForIndexersRule.cs \
-	UsingCloneWithoutImplementingICloneableRule.cs \
-	DefineAZeroValueRule.cs \
-	EnumsShouldDefineAZeroValueRule.cs \
-	FlagsShouldNotDefineAZeroValueRule.cs \
-	AbstractTypesShouldNotHavePublicConstructorsRule.cs \
-	AvoidEmptyInterfaceRule.cs \
-	TypesShouldBeInsideNamespacesRule.cs \
-	AvoidPropertiesWithoutGetAccessorRule.cs \
-	MainShouldNotBePublicRule.cs \
+	AvoidVisibleNestedTypesRule.cs \
+	ConsiderConvertingFieldToNullableRule.cs \
 	ConsiderConvertingMethodToPropertyRule.cs \
-	AvoidPublicInstanceFieldsRule.cs \
-	MissingAttributeUsageOnCustomAttributeRule.cs \
-	AttributeArgumentsShouldHaveAccessorsRule.cs \
-	TypesWithNativeFieldsShouldBeDisposableRule.cs \
-	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
-	DisposableTypesShouldHaveFinalizerRule.cs \
+	ConsiderUsingStaticTypeRule.cs \
+	DeclareEventHandlersCorrectlyRule.cs \
+	DefineAZeroValueRule.cs \
 	DisposableFieldsShouldBeDisposedRule.cs \
+	DisposableTypesShouldHaveFinalizerRule.cs \
+	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
+	DontDeclareProtectedFieldsInSealedClassRule.cs \
+	EnsureSymmetryForOverloadedOperatorsRule.cs \
+	EnumsShouldDefineAZeroValueRule.cs \
+	EnumsShouldUseInt32Rule.cs \
 	FinalizersShouldBeProtectedRule.cs \
 	FinalizersShouldCallBaseClassFinalizerRule.cs \
-	EnsureSymmetryForOverloadedOperatorsRule.cs \
-	OperatorEqualsShouldBeOverloadedRule.cs \
-	OverrideEqualsMethodRule.cs \
-	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
+	FlagsShouldNotDefineAZeroValueRule.cs \
 	ImplementEqualsAndGetHashCodeInPairRule.cs \
-	EnumsShouldUseInt32Rule.cs \
 	ImplementIComparableCorreclyRule.cs \
 	InternalNamespacesShouldNotExposeTypesRule.cs \
-	ConsiderConvertingFieldToNullableRule.cs \
-	AvoidVisibleNestedTypesRule.cs \
-	DeclareEventHandlersCorrectlyRule.cs
+	MainShouldNotBePublicRule.cs \
+	MissingAttributeUsageOnCustomAttributeRule.cs \
+	OperatorEqualsShouldBeOverloadedRule.cs \
+	OverrideEqualsMethodRule.cs \
+	PreferEventsOverMethodsRule.cs \
+	PreferIntegerOrStringForIndexersRule.cs \
+	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
+	TypesShouldBeInsideNamespacesRule.cs \
+	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
+	TypesWithNativeFieldsShouldBeDisposableRule.cs \
+	UsingCloneWithoutImplementingICloneableRule.cs
 
 tests_sources = \
+	AbstractTypesShouldNotHavePublicConstructorsTest.cs \
+	AttributeArgumentsShouldHaveAccessorsTest.cs \
+	AvoidEmptyInterfaceTest.cs \
 	AvoidMultidimensionalIndexerTest.cs \
+	AvoidPropertiesWithoutGetAccessorTest.cs \
+	AvoidPublicInstanceFieldsTest.cs \
 	AvoidRefAndOutParametersTest.cs \
 	AvoidSmallNamespaceTest.cs \
-	ConsiderUsingStaticTypeTest.cs \
-	DontDeclareProtectedFieldsInSealedClassTest.cs \
-	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
-	PreferIntegerOrStringForIndexersTest.cs \
-	UsingCloneWithoutImplementingICloneableTest.cs \
-	EnumsShouldDefineAZeroValueTest.cs \
-	FlagsShouldNotDefineAZeroValueTest.cs \
-	AbstractTypesShouldNotHavePublicConstructorsTest.cs \
-	AvoidEmptyInterfaceTest.cs \
-	TypesShouldBeInsideNamespacesTest.cs \
-	AvoidPropertiesWithoutGetAccessorTest.cs \
-	MainShouldNotBePublicTest.cs \
+	AvoidVisibleNestedTypesTest.cs \
+	ConsiderConvertingFieldToNullableTest.cs \
 	ConsiderConvertingMethodToPropertyTest.cs \
-	AvoidPublicInstanceFieldsTest.cs \
-	MissingAttributeUsageOnCustomAttributeTest.cs \
-	AttributeArgumentsShouldHaveAccessorsTest.cs \
-	TypesWithNativeFieldsShouldBeDisposableTest.cs \
-	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
-	DisposableTypesShouldHaveFinalizerTest.cs \
+	ConsiderUsingStaticTypeTest.cs \
+	DeclareEventHandlersCorrectlyTest.cs \
 	DisposableFieldsShouldBeDisposedTest.cs \
+	DisposableTypesShouldHaveFinalizerTest.cs \
+	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
+	DontDeclareProtectedFieldsInSealedClassTest.cs \
+	EnsureSymmetryForOverloadedOperatorsTest.cs \
+	EnumsShouldDefineAZeroValueTest.cs \
+	EnumsShouldUseInt32Test.cs \
 	FinalizersShouldBeProtectedTest.cs \
 	FinalizersShouldCallBaseClassFinalizerTest.cs \
-	EnsureSymmetryForOverloadedOperatorsTest.cs \
-	OperatorEqualsShouldBeOverloadedTest.cs \
-	OverrideEqualsMethodTest.cs \
-	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
+	FlagsShouldNotDefineAZeroValueTest.cs \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
-	EnumsShouldUseInt32Test.cs \
 	ImplementIComparableCorreclyTest.cs \
 	InternalNamespacesShouldNotExposeTypesTest.cs \
-	ConsiderConvertingFieldToNullableTest.cs \
-	AvoidVisibleNestedTypesTest.cs \
-	DeclareEventHandlersCorrectlyTest.cs
+	MainShouldNotBePublicTest.cs \
+	MissingAttributeUsageOnCustomAttributeTest.cs \
+	OperatorEqualsShouldBeOverloadedTest.cs \
+	OverrideEqualsMethodTest.cs \
+	PreferEventsOverMethodsTest.cs \
+	PreferIntegerOrStringForIndexersTest.cs \
+	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
+	TypesShouldBeInsideNamespacesTest.cs \
+	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
+	TypesWithNativeFieldsShouldBeDisposableTest.cs \
+	UsingCloneWithoutImplementingICloneableTest.cs

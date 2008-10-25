@@ -36,6 +36,9 @@ namespace Gendarme.Rules.Design {
 
 		protected static FieldDefinition GetZeroValueField (TypeDefinition type)
 		{
+			if (type == null)
+				return null;
+
 			foreach (FieldDefinition field in type.Fields) {
 				// the special __value field is not static like the others (user defined)
 				if (field.IsStatic && (field.Constant is int)) {

@@ -1,3 +1,17 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSmallNamespaceRule.cs: Update TearDown call with API change.
+	* ConsiderConvertingFieldToNullableRule.cs: Change GetValueTypeField
+	visibility to private.
+	* DeclareEventHandlersCorrectlyRule.cs: Update TearDown call with 
+	API change.
+	* DefineAZeroValueRule.cs: Add null check in GetZeroValueField 
+	(self-test)
+	* PreferEventsOverMethodsRule.cs: New. Rule to warn about methods
+	that looks like candidates for events.
+	* Makefile.am: Add new rule and test to the build and sort all source
+	filenames
+
 2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: Avoid specialization of 
