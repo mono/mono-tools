@@ -1,3 +1,13 @@
+2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* IRule.cs: Remove IRunner parameter from TearDown as it is
+	not helpful (we already have it as a member) and could be confusing
+	leading to bugs.
+	* Rule.cs: Add a null check in Initialize (self-test). Update 
+	TearDown call with API change.
+	* Runner.cs: Update TearDown call with API change.
+	* Symbols.cs: Add a null check in GetSource (self-test).
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Bitmask.cs: Implement IEquatable<T> (self-test).

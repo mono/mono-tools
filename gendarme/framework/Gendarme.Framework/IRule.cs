@@ -85,8 +85,7 @@ namespace Gendarme.Framework {
 		/// any temporary data (that is not required for reporting).
 		/// This will be called even if Initialize was not called on the rule (e.g. an unused rule).
 		/// </summary>
-		/// <param name="runner">Runner that has executed the rule during analysis.</param>
-		void TearDown (IRunner runner);
+		void TearDown ();
 
 		/// <summary>
 		/// Defines the how the rule are going to be applied to a

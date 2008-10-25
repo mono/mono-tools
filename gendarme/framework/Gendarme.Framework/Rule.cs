@@ -158,6 +158,9 @@ namespace Gendarme.Framework {
 		/// <param name="runner">The runner that will execute this rule.</param>
 		public virtual void Initialize (IRunner runner)
 		{
+			if (runner == null)
+				throw new ArgumentNullException ("runner");
+
 			this.runner = runner;
 
 			// read attribute only once (e.g. the wizard can initialize multiple times)
@@ -173,13 +176,13 @@ namespace Gendarme.Framework {
 			}
 		}
 
-		public virtual void TearDown (IRunner runner)
+		public virtual void TearDown ()
 		{
 			if ((engine_dependencies == null) || (engine_dependencies.Length == 0))
 				return;
 
 			foreach (EngineDependencyAttribute eda in engine_dependencies) {
-				runner.Engines.Unsubscribe (eda.EngineType);
+				Runner.Engines.Unsubscribe (eda.EngineType);
 			}
 		}
 

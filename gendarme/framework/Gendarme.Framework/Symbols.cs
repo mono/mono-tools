@@ -128,6 +128,9 @@ namespace Gendarme.Framework {
 
 		static public string GetSource (Defect defect)
 		{
+			if (defect == null)
+				return String.Empty;
+
 			if (defect.Instruction != null)
 				return GetSource (defect.Instruction);
 

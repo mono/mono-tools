@@ -377,7 +377,7 @@ namespace Gendarme.Framework {
 		{
 			// last chance to report defects
 			foreach (Rule rule in rules) {
-				rule.TearDown (this);
+				rule.TearDown ();
 			}
 
 			Engines.TearDown ();
