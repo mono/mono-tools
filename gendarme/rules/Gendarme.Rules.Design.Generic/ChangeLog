@@ -1,3 +1,11 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferGenericsOverRefObjectRule.cs: New. Rule that check method
+	parameters to look for reference to System.Object that could be, with
+	2.0 and later, replaced by generics.
+	* Makefile.am: Add new rule and test to the build.
+	* Gendarme.Rules.Design.Generic.mdp: Update MD project file.
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with
