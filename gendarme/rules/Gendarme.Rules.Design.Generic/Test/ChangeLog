@@ -1,3 +1,9 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferGenericsOverRefObjectTest.cs: New. Unit tests for
+	PreferGenericsOverRefObjectRule.
+	* Test.Rules.Design.Generic.mdp: Update MD project file.
+
 2008-09-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Design.Generic.mdp: New. Add MD project file.
