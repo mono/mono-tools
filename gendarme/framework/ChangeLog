@@ -1,3 +1,7 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* framework.mdp: Add PrimitiveReferences helpers to the MD project
+
 2008-10-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Generate the documentation when we compile the framework
