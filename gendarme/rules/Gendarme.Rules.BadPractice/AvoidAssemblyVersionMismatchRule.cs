@@ -61,13 +61,6 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("This situation can be confusing once deployed. Make sure both version are identical.")]
 	public class AvoidAssemblyVersionMismatchRule : Rule, IAssemblyRule {
 
-		static bool IsEmpty (Version v)
-		{
-			if (v == null)
-				return true;
-			return ((v.Major == 0) && (v.Minor == 0) && (v.Build == 0) && (v.Revision == 0));
-		}
-
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			if (assembly.CustomAttributes.Count == 0)
@@ -77,7 +70,7 @@ namespace Gendarme.Rules.BadPractice {
 			Version assembly_version = assembly.Name.Version;
 
 			// if only one version is specified then there's no mismatch
-			if (IsEmpty (assembly_version))
+			if (assembly_version.IsEmpty ())
 				return RuleResult.DoesNotApply;
 
 			Version file_version = null;
@@ -90,7 +83,7 @@ namespace Gendarme.Rules.BadPractice {
 			}
 
 			// if only one version is specified then there's no mismatch
-			if (IsEmpty (file_version))
+			if (file_version.IsEmpty ())
 				return RuleResult.DoesNotApply;
 
 			// rule applies since both versions are present
