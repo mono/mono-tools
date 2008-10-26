@@ -1,3 +1,7 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CommonRocks.cs: Add Version.IsEmpty() rock
+
 2008-10-25  Cedric Vivier <cedricv@neonux.com>
 
 	* TypeRocks.cs: Make Implements() look at parent interfaces too.

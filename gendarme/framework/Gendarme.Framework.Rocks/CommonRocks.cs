@@ -55,4 +55,19 @@ namespace Gendarme.Framework.Rocks {
 			}
 		}
 	}
+
+	public static class SystemRocks {
+
+		/// <summary>
+		/// Check if a Version is empty (all zeros).
+		/// </summary>
+		/// <param name="self">The Version to check</param>
+		/// <returns>True if empty, False otherwise.</returns>
+		public static bool IsEmpty (this Version self)
+		{
+			if (self == null)
+				return true;
+			return ((self.Major == 0) && (self.Minor == 0) && (self.Build == 0) && (self.Revision == 0));
+		}
+	}
 }
