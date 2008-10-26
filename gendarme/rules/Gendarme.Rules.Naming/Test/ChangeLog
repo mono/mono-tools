@@ -1,3 +1,8 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* UseCorrectSuffixTest.cs: Convert to new, shorter, syntax. Move 
+	test cases from EnumNotEndsWithEnumOrFlagsSuffixTest here.
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseCorrectPrefixTest.cs: Convert to new, shorter, syntax. Add test

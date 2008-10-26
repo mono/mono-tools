@@ -34,14 +34,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
+using System.Security;
 
-using Gendarme.Framework;
 using Gendarme.Rules.Naming;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Naming {
 
@@ -63,31 +62,23 @@ namespace Test.Rules.Naming {
 	public class OtherClass {
 	}
 	
-	public class YetAnotherClass : System.Random {
+	public class YetAnotherClass : Random {
 	}
 	
-	public class InterfaceImplementer : System.Collections.ICollection {
+	public class InterfaceImplementer : ICollection {
 		
 		public int Count {
-			get {
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 		}
 
 		public bool IsSynchronized {
-			get {
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException (); }
 		}
 
 		public object SyncRoot {
-			get {
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException (); }
 		}
 
-		
-		
 		public IEnumerator GetEnumerator ()
 		{
 			throw new NotImplementedException();
@@ -97,7 +88,6 @@ namespace Test.Rules.Naming {
 		{
 			throw new NotImplementedException();
 		}
-
 	}
 	
 	public class CorrectICollectionCollection : InterfaceImplementer {
@@ -106,23 +96,23 @@ namespace Test.Rules.Naming {
 	public class IncorrectICollectionCol : InterfaceImplementer {
 	}
 	
-	public class MultipleInterfaceImplementer : IEnumerable, System.Security.IPermission {		
+	public class MultipleInterfaceImplementer : IEnumerable, IPermission {		
 		public IEnumerator GetEnumerator ()
 		{
 			throw new NotImplementedException();
 		}
 
-		public void FromXml (System.Security.SecurityElement e)
+		public void FromXml (SecurityElement e)
 		{
 			throw new NotImplementedException();
 		}
 
-		public System.Security.SecurityElement ToXml ()
+		public SecurityElement ToXml ()
 		{
-		throw new NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Copy ()
+		public IPermission Copy ()
 		{
 			throw new NotImplementedException();
 		}
@@ -132,17 +122,17 @@ namespace Test.Rules.Naming {
 			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Intersect (System.Security.IPermission target)
+		public IPermission Intersect (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool IsSubsetOf (System.Security.IPermission target)
+		public bool IsSubsetOf (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Union (System.Security.IPermission target)
+		public IPermission Union (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
@@ -157,24 +147,24 @@ namespace Test.Rules.Naming {
 	public class IncorrectMultipleInterfaceImplementer : MultipleInterfaceImplementer {
 	}
        
-	public class DerivingClassImplementingInterfaces : System.EventArgs, IEnumerable, System.Security.IPermission {		 
+	public class DerivingClassImplementingInterfaces : EventArgs, IEnumerable, IPermission {		 
 		
 		public IEnumerator GetEnumerator ()
 		{
 			throw new NotImplementedException();
 		}
 
-		public void FromXml (System.Security.SecurityElement e)
+		public void FromXml (SecurityElement e)
 		{
 			throw new NotImplementedException();
 		}
 
-		public System.Security.SecurityElement ToXml ()
+		public SecurityElement ToXml ()
 		{
 			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Copy ()
+		public IPermission Copy ()
 		{
 			throw new NotImplementedException();
 		}
@@ -184,17 +174,17 @@ namespace Test.Rules.Naming {
 			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Intersect (System.Security.IPermission target)
+		public IPermission Intersect (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool IsSubsetOf (System.Security.IPermission target)
+		public bool IsSubsetOf (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
 
-		public System.Security.IPermission Union (System.Security.IPermission target)
+		public IPermission Union (IPermission target)
 		{
 			throw new NotImplementedException();
 		}
@@ -222,169 +212,198 @@ namespace Test.Rules.Naming {
 	}
 
 	[TestFixture]
-	public class UseCorrectSuffixTest {
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-	
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+	public class UseCorrectSuffixTest : TypeRuleTestFixture<UseCorrectSuffixRule> {
+
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UseCorrectSuffixRule ();
-			runner = new TestRunner (rule);
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
 		}
-		
+
 		[Test]
 		public void TestOneLevelInheritanceIncorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectAttr"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IncorrectAttr> (1);
 		}
 		
 		[Test]
 		public void TestOneLevelInheritanceCorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectAttribute"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CorrectAttribute> ();
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceCorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherAttribute"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<OtherAttribute> ();
 		}
 		
 		[Test]
 		public void TestVariousLevelInheritanceIncorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherAttr"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<OtherAttr> (1);
 		}
 		
 		[Test]
-		public void TestVariousLevelInheritanceExternalTypeUndetermined () 
+		public void NeedToBeResolvedTypes () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectContextStaticAttribute"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-			//The System.ContextStaticAttribute class inherits from System.Attribute.
-			//But we can retrieve that info from a TypeReference, because now 
-			//Gendarme doesn't support loading assemblies.
-		}
-		
-		[Test]
-		public void TestOneLevelInheritanceExternalTypeNoApplyed () 
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.OtherClass"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-		
-		[Test]
-		public void TestVariousLevelInheritanceExternalTypeNoApplyed () 
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.YetAnotherClass"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-			// The System.Random class doesn't inherit from any defined classes.
-			// But we can retrieve that info from a TypeReference, because now 
-			// Gendarme doesn't support loading assemblies.
+			AssertRuleSuccess<CorrectContextStaticAttribute> ();
+			AssertRuleSuccess<OtherClass> ();
+			AssertRuleSuccess<YetAnotherClass> ();
 		}
 		
 		[Test]
 		public void TestInterfaceImplementerCorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectICollectionCollection"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CorrectICollectionCollection> ();
 		}
 
  		[Test]
 		public void TestInterfaceImplementerIncorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectICollectionCol"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IncorrectICollectionCol> (1);
 		}			       
 		
 		[Test]
 		public void TestMultipleInterfaceImplementerCorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectMultipleInterfaceImplementerPermission"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CorrectMultipleInterfaceImplementerPermission> ();
 		}     
 
 		[Test]
 		public void TestMultipleInterfaceImplementerAnotherCorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectMultipleInterfaceImplementerCollection"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CorrectMultipleInterfaceImplementerCollection> ();
 		}				     
 		
        		[Test]
 		public void TestMultipleInterfaceImplementerIncorrectName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectMultipleInterfaceImplementer"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IncorrectMultipleInterfaceImplementer> (1);
 		}			       
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesCorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectDerivingClassImplementingInterfacesEventArgs"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CorrectDerivingClassImplementingInterfacesEventArgs> ();
 		}      
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesIncorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectDerivingClassImplementingInterfaces"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IncorrectDerivingClassImplementingInterfaces> (1);
 		}      
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesAnotherIncorrectName ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectDerivingClassImplementingInterfacesCollection"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleFailure<IncorrectDerivingClassImplementingInterfacesCollection> (1);
 		}
 
 		[Test]
 		public void GenericCollection ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectCollection`1"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "CorrectCollection<T>/RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "CorrectCollection<T>/Count");
-
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CollectionIncorrect`1"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "CollectionIncorrect<T>/RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "CollectionIncorrect<T>/Count");
+			AssertRuleSuccess<CorrectCollection<int>> ();
+			AssertRuleFailure<CollectionIncorrect<int>> (1);
 		}
 
 		[Test]
 		public void GenericDictionary ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectDictionary`2"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "CorrectCollection<T>/RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "CorrectCollection<T>/Count");
+			AssertRuleSuccess<CorrectDictionary<int,int>> ();
+			AssertRuleFailure<DictionaryIncorrect<int,int>> (1);
+		}
 
-			type = assembly.MainModule.Types ["Test.Rules.Naming.DictionaryIncorrect`2"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "CollectionIncorrect<T>/RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "CollectionIncorrect<T>/Count");
+		class My {
+		}
+
+		class MyDelegate {
+		}
+
+		enum MyEnum {
+		}
+
+		[Flags]
+		enum MyFlags {
+		}
+
+		class MyEx {
+		}
+
+		class MyImpl {
+		}
+
+		[Test]
+		public void CheckShouldNeverBeUsedSuffixes ()
+		{
+			AssertRuleSuccess<My> ();
+			AssertRuleFailure<MyDelegate> (1);
+			AssertRuleFailure<MyEnum> (1);
+			AssertRuleFailure<MyFlags> (1);
+			AssertRuleFailure<MyEx> (1);
+			AssertRuleFailure<MyImpl> (1);
+		}
+
+		class MyCollection : EventArgs {
+		}
+
+		[Test]
+		public void TwiceBadSuffix ()
+		{
+			// 1- "'Collection' should used only for implementing ICollection or IEnumerable or inheriting Queue, Stack, DataSet and DataTable."
+			// 2- "The type name does not end with 'EventArgs' suffix. Append it to the type name."
+			AssertRuleFailure<MyCollection> (2);
+		}
+
+		// from EnumNotEndsWithEnumOrFlagsSuffixTest.cs
+
+		public enum ReturnValue {
+			Foo,
+			Bar
+		}
+
+		public enum ReturnValueEnum {
+			Foo,
+			Bar
+		}
+
+		[Flags]
+		public enum ReturnValues {
+			Foo,
+			Bar
+		}
+
+		[Flags]
+		public enum ReturnValuesFlags {
+			Foo,
+			Bar
+		}
+
+		public enum returnvalueenum {
+			Foo,
+			Bar
+		}
+
+		[Flags]
+		public enum returnvaluesflags {
+			Foo,
+			Bar
+		}
+
+		[Test]
+		public void EnumName ()
+		{
+			AssertRuleSuccess<ReturnValue> ();
+			AssertRuleFailure<ReturnValueEnum> (1);
+			AssertRuleFailure<returnvalueenum> (1);
+		}
+
+		[Test]
+		public void FlagsName ()
+		{
+			AssertRuleSuccess<ReturnValues> ();
+			AssertRuleFailure<ReturnValuesFlags> (1);
+			AssertRuleFailure<returnvaluesflags> (1);
 		}
 	}
 }
