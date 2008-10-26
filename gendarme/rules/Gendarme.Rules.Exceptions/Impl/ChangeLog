@@ -1,3 +1,8 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExecutionPath.cs: Change ctor to accept IEnumerable<ExecutionBlock>
+	instead of ExecutionPathCollection
+
 2008-10-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionBlock.cs, ExecutionPath.cs: Internalize type inside

@@ -12,7 +12,7 @@ namespace Gendarme.Rules.Exceptions.Impl {
 		{
 		}
 
-		private ExecutionPathCollection (ExecutionPathCollection coll)
+		private ExecutionPathCollection (IEnumerable<ExecutionBlock> coll)
 		{
 			foreach (ExecutionBlock block in coll)
 				Add (block.Clone ());
