@@ -1,3 +1,7 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Test.Rules.mdp: Add Fixtures/AssemblyRuleTestFixture.cs
+
 2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add the AssemblyRuleTestFixture to the build (something

@@ -26,6 +26,7 @@
     <File name="Helpers/AssemblyCache.cs" subtype="Code" buildaction="Compile" />
     <File name="Helpers/DefinitionLoader.cs" subtype="Code" buildaction="Compile" />
     <File name="Helpers/TestRunner.cs" subtype="Code" buildaction="Compile" />
+    <File name="Fixtures/AssemblyRuleTestFixture.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
