@@ -6,7 +6,6 @@ rules_sources = \
 	DoNotPrefixEventsWithAfterOrBeforeRule.cs \
 	DoNotPrefixValuesWithEnumNameRule.cs \
 	DoNotUseReservedInEnumValueNamesRule.cs \
-	EnumNotEndsWithEnumOrFlagsSuffixRule.cs \
 	ParameterNamesShouldMatchOverridenMethodRule.cs \
 	UseCorrectCasingRule.cs \
 	UseCorrectPrefixRule.cs \
@@ -21,7 +20,6 @@ tests_sources = \
 	DoNotPrefixEventsWithAfterOrBeforeTest.cs \
 	DoNotPrefixValuesWithEnumNameTest.cs \
 	DoNotUseReservedInEnumValueNamesTest.cs \
-	EnumNotEndsWithEnumOrFlagsSuffixTest.cs \
 	ParameterNamesShouldMatchOverridenMethodTest.cs \
 	UsePluralNameInEnumFlagsTest.cs \
 	UseSingularNameInEnumsUnlessAreFlagsTest.cs \

@@ -1,3 +1,12 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Removed since its logic
+	is now covered inside UseCorrectSuffixRule.
+	* UseCorrectSuffixRule.cs: Now checks if a suffix is misused, not 
+	just missing, on a type.
+	* Makefile.am: Remove EnumNotEndsWithEnumOrFlagsSuffixRule rule and
+	tests source from build.
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Add missing XML doc.

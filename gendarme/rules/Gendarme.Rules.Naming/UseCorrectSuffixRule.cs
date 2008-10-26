@@ -42,7 +42,8 @@ namespace Gendarme.Rules.Naming {
 
 	/// <summary>
 	/// This rule ensure that types that inherit from certain types or implement some interfaces
-	/// are named correctly by appending the right suffix to them. E.g.
+	/// are named correctly by appending the right suffix to them. It also ensure that no other
+	/// types are using the suffixes without inheriting/implementing the types/interfaces. E.g.
 	/// <list>
 	/// <item><description><c>System.Attribute</c> should end with <c>Attribute</c></description></item>
 	/// <item><description><c>System.EventArgs</c> should end with <c>EventArgs</c></description></item>
@@ -81,25 +82,91 @@ namespace Gendarme.Rules.Naming {
 	[FxCopCompatibility ("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
 	public class UseCorrectSuffixRule : Rule, ITypeRule {
 
-		// keys are base class names, values are arrays of possible suffixes
-		private static Dictionary<string, string []> definedSuffixes =
-			new Dictionary<string, string []> () {
-				{ "System.Attribute", new string [] { "Attribute" } },
-				{ "System.EventArgs", new string [] { "EventArgs" } },
-				{ "System.Exception", new string [] { "Exception" } },
-				{ "System.Collections.Queue", new string [] { "Collection", "Queue" } },
-				{ "System.Collections.Stack", new string [] { "Collection", "Stack" } },
-				{ "System.Data.DataSet", new string [] { "DataSet" } },
-				{ "System.Data.DataTable", new string [] { "DataTable", "Collection" } },
-				{ "System.IO.Stream", new string [] { "Stream" } },
-				{ "System.Security.IPermission", new string [] { "Permission" } },
-				{ "System.Security.Policy.IMembershipCondition", new string [] { "Condition" } },
-				{ "System.Collections.IDictionary", new string [] { "Dictionary" } },
-				{ "System.Collections.Generic.IDictionary", new string [] { "Dictionary" } },
-				{ "System.Collections.ICollection", new string [] { "Collection" } },
-				{ "System.Collections.Generic.ICollection", new string [] { "Collection", "Set" } },
-				{ "System.Collections.IEnumerable", new string [] { "Collection" } }
-			};
+		static Dictionary<string, HashSet<string>> definedSuffixes = new Dictionary<string, HashSet<string>> ();
+		static SortedDictionary<string, Func<TypeDefinition, string>> reservedSuffixes = new SortedDictionary<string, Func<TypeDefinition, string>> ();
+
+		static UseCorrectSuffixRule ()
+		{
+			Add ("Attribute", "System.Attribute", true);
+			Add ("Collection", "System.Collections.ICollection", false);
+			Add ("Collection", "System.Collections.IEnumerable", false);
+			Add ("Collection", "System.Collections.Queue", false);
+			Add ("Collection", "System.Collections.Stack", false);
+			Add ("Collection", "System.Collections.Generic.ICollection`1", false);
+			Add ("Collection", "System.Data.DataSet", false);
+			Add ("Collection", "System.Data.DataTable", false);
+			Add ("Condition", "System.Security.Policy.IMembershipCondition", true);
+			Add ("DataSet", "System.Data.DataSet", true);
+			Add ("DataTable", "System.Data.DataTable", true);
+			Add ("Dictionary", "System.Collections.IDictionary", false);
+			Add ("Dictionary", "System.Collections.IDictionary`2", false);
+			Add ("EventArgs", "System.EventArgs", true);
+			Add ("Exception", "System.Exception", true);
+			Add ("Permission", "System.Security.IPermission", true);
+			Add ("Queue", "System.Collections.Queue", true);
+			Add ("Stack", "System.Collections.Stack", true);
+			Add ("Stream", "System.IO.Stream", true);
+
+			// special cases
+			reservedSuffixes.Add ("Collection", message => CheckCollection (message));
+			reservedSuffixes.Add ("Dictionary", message => CheckDictionary (message));
+			reservedSuffixes.Add ("EventHandler", message => CheckEventHandler (message));
+
+			reservedSuffixes.Add ("Delegate", message => "'Delegate' should never be used as a suffix.");
+			reservedSuffixes.Add ("Enum", message => "'Enum' should never be used as a suffix.");
+			reservedSuffixes.Add ("Flags", message => "'Flags' should never be used as a suffix.");
+			reservedSuffixes.Add ("Ex", message => "'Ex' should not be used to create a newer version of an existing type.");
+			reservedSuffixes.Add ("Impl", message => "Use the 'Core' prefix instead of 'Impl'.");
+		}
+
+		static void Add (string suffix, string type, bool reserved)
+		{
+			if (reserved) {
+				reservedSuffixes.Add (suffix, message => InheritsOrImplements (message, type));
+			}
+
+			HashSet<string> set;
+			if (!definedSuffixes.TryGetValue (type, out set)) {
+				set = new HashSet<string> ();
+				definedSuffixes.Add (type, set);
+			}
+			set.Add (suffix);
+		}
+
+		static string InheritsOrImplements (TypeReference type, string subtype)
+		{
+			if (type.Inherits (subtype) || type.Implements (subtype))
+				return null;
+			return String.Format ("'{0}' should only be used for types that inherits or implements {1}.", type.Name, subtype);
+		}
+
+		static string CheckCollection (TypeReference type)
+		{
+			if (type.Implements ("System.Collections.ICollection") ||
+				type.Implements ("System.Collections.IEnumerable") ||
+				type.Implements ("System.Collections.Generic.ICollection`1"))
+				return null;
+
+			if (type.Inherits ("System.Collections.Queue") || type.Inherits ("System.Collections.Stack") || 
+				type.Inherits ("System.Data.DataSet") || type.Inherits ("System.Data.DataTable"))
+				return null;
+
+			return "'Collection' should only be used for implementing ICollection or IEnumerable or inheriting from Queue, Stack, DataSet and DataTable.";
+		}
+
+		static string CheckDictionary (TypeReference type)
+		{
+			if (type.Implements ("System.Collections.IDictionary") || type.Implements ("System.Collections.Generic.IDictionary`2"))
+				return null;
+			return "'Dictionary' should only be used for types implementing IDictionary and IDictionary<TKey,TValue>.";
+		}
+
+		static string CheckEventHandler (TypeReference type)
+		{
+			if (type.IsDelegate ())
+				return null;
+			return "'EventHandler' should only be used for event handler delegates.";
+		}
 
 		// handle types using generics
 		private static string GetFullName (TypeReference type)
@@ -122,7 +189,7 @@ namespace Gendarme.Rules.Naming {
 			while (current != null && current.BaseType != null) {
 				string base_name = GetFullName (current.BaseType);
 
-				string[] candidates;
+				HashSet<string> candidates;
 				if (definedSuffixes.TryGetValue (base_name, out candidates)) {
 					suffixes.AddRangeIfNew (candidates);
 				} else {
@@ -173,13 +240,28 @@ namespace Gendarme.Rules.Naming {
 
 			// ok, rule applies
 
-			proposedSuffixes.Clear ();
-			if (HasRequiredSuffix (type, proposedSuffixes))
-				return RuleResult.Success;
+			// first check if the current suffix is correct
+			// e.g. MyAttribute where the type does not inherit from Attribute
+			foreach (string suffix in reservedSuffixes.Keys) {
+				if (type.Name.EndsWith (suffix, StringComparison.OrdinalIgnoreCase)) {
+					Func<TypeDefinition, string> f;
+					if (reservedSuffixes.TryGetValue (suffix, out f)) {
+						string msg = f (type);
+						if (!String.IsNullOrEmpty (msg))
+							Runner.Report (type, Severity.Medium, Confidence.High, msg);
+					}
+				}
+			}
 
-			// there must be some suffixes defined, but type name doesn't end with any of them
-			Runner.Report (type, Severity.Medium, Confidence.High, ComposeMessage (proposedSuffixes));
-			return RuleResult.Failure;
+			// then check if the type should have a (or one of) specific suffixes
+			// e.g. MyStuff where the type implements ICollection
+			proposedSuffixes.Clear ();
+			if (!HasRequiredSuffix (type, proposedSuffixes)) {
+				// there must be some suffixes defined, but type name doesn't end with any of them
+				Runner.Report (type, Severity.Medium, Confidence.High, ComposeMessage (proposedSuffixes));
+			}
+
+			return Runner.CurrentRuleResult;
 		}
 	}
 }
