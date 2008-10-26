@@ -2,9 +2,10 @@
 // Unit Test for UseCorrectPrefixRule
 //
 // Authors:
-//      Abramov Daniel <ex@vingrad.ru>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
-//  (C) 2007 Abramov Daniel
+//  (C) 2007 Daniel Abramov
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,18 +27,16 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections;
-using System.Reflection;
-
-using Gendarme.Framework;
 using Gendarme.Rules.Naming;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Naming {
+
+	public class C {
+	}
 
 	public class CorrectClass {
 	}
@@ -46,6 +45,9 @@ namespace Test.Rules.Naming {
 	}
 
 	public class CIncorrectClass {
+	}
+
+	public interface I {
 	}
 
 	public interface ICorrectInterface {
@@ -63,85 +65,59 @@ namespace Test.Rules.Naming {
 	public interface ICLSAbbreviation { // ok too
 	}
 
+	public class GoodSingleGenericType<T, V, K> {
+	}
+
+	public class GoodPrefixGenericType<TPrefix> {
+	}
+
+	public class BadCapsGenericType<a, b> {
+	}
+
+	public class BadPrefixGenericType<Prefix> {
+	}
+
 	[TestFixture]
-	public class UseCorrectPrefixTest {
+	public class UseCorrectPrefixTypeTest : TypeRuleTestFixture<UseCorrectPrefixRule> {
 
-		private ITypeRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
+		[Test]
+		public void DoesNotApply ()
 		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			rule = new UseCorrectPrefixRule ();
-			runner = new TestRunner (rule);
+			AssertRuleDoesNotApply (SimpleTypes.GeneratedType);
 		}
 
 		[Test]
-		public void TestCorrectClass ()
+		public void Types ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CorrectClass"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<C> ();
+			AssertRuleSuccess<CorrectClass> ();
+			AssertRuleSuccess<AnotherCorrectClass> ();
+			AssertRuleFailure<CIncorrectClass> (1);
 		}
 
 		[Test]
-		public void TestAnotherCorrectClass ()
+		public void Interfaces ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.AnotherCorrectClass"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleFailure<I> (1);
+			AssertRuleSuccess<ICorrectInterface> ();
+			AssertRuleFailure<IncorrectInterface> (1);
+			AssertRuleFailure<AnotherIncorrectInterface> (1);
 		}
 
 		[Test]
-		public void TestIncorrectClass ()
+		public void Abbreviations ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CIncorrectClass"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleSuccess<CLSAbbreviation> ();
+			AssertRuleSuccess<ICLSAbbreviation> ();
 		}
 
 		[Test]
-		public void TestCorrectInterface ()
+		public void GenericParameters ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.ICorrectInterface"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestIncorrectInterface ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.IncorrectInterface"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestAnotherIncorrectInterface ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.AnotherIncorrectInterface"];
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestClassAbbreviation ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.CLSAbbreviation"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		[Test]
-		public void TestInterfaceAbbreviation ()
-		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.ICLSAbbreviation"];
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
+			AssertRuleSuccess<GoodSingleGenericType<int, int, int>> ();
+			AssertRuleSuccess<GoodPrefixGenericType<int>> ();
+			AssertRuleFailure<BadCapsGenericType<int, int>> (2);
+			AssertRuleFailure<BadPrefixGenericType<int>> (1);
 		}
 	}
 }

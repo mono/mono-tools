@@ -1,3 +1,8 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectPrefixTest.cs: Convert to new, shorter, syntax. Add test
+	cases for generic type parameters.
+
 2008-10-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.Naming.mdp: Add AvoidDeepNamespaceHierarchyTest to
