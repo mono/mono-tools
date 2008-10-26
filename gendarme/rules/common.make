@@ -22,7 +22,7 @@ rules_documentation_DATA = $(rules_doc)
 rules_sources_in = ../../AssemblyInfo.cs.in
 rules_generated_sources = $(rules_sources_in:.in=)
 rules_build_sources = $(addprefix $(srcdir)/, $(rules_sources))
-rules_build_sources += $(rules_generated_sources)
+rules_build_sources += $(rules_generated_sources) ../../AssemblyStaticInfo.cs
 
 EXTRA_DIST = $(rules_sources) $(rules_sources_in) $(prefixed_rules_category).mdp $(prefixed_rules_category).csproj
 CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules_doc) $(rules_dll).doc

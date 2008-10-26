@@ -1,3 +1,8 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* common.make: Make all rule assemblies include AssemblyStaticInfo.cs
+	in its build.
+
 2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* common.make: Don't warn if XML documentation is incomplete (1591) 
