@@ -67,7 +67,7 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (self == null)
 				return true;
-			return ((self.Major == 0) && (self.Minor == 0) && (self.Build == 0) && (self.Revision == 0));
+			return ((self.Major == 0) && (self.Minor == 0) && (self.Build <= 0) && (self.Revision <= 0));
 		}
 	}
 }
