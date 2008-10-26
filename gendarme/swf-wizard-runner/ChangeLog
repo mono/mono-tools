@@ -1,3 +1,7 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Fix typo
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GuiRunner.cs: Implement IIgnoreList explicitly instead of implicitly

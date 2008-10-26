@@ -6,7 +6,7 @@ CLEANFILES = $(wizard_SCRIPTS) $(wizard_SCRIPTS).mdb Wizard.resources Resources.
 DISTCLEANFILES = Makefile.in
 
 wizard_sources_in = ../AssemblyInfo.cs.in
-wizard_generated_sources = $(gendarme_sources_in:.in=)
+wizard_generated_sources = $(wizard_sources_in:.in=)
 wizard_sources = \
 	../AssemblyStaticInfo.cs \
 	Gendarme.cs \
