@@ -36,6 +36,43 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	/// <summary>
+	/// This rule ensure that enumeration type namess do not end with either <c>Enum</c> or
+	/// <c>Flags</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public enum MyCustomValueEnum {
+	///	Foo,
+	///	Bar 
+	/// } 
+	/// 
+	/// [Flags]
+	/// public enum MyCustomValuesFlags {
+	///	Foo,
+	///	Bar,
+	///	AllValues = Foo | Bar 
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public enum MyCustomValue {
+	///	Foo,
+	///	Bar 
+	/// } 
+	/// 
+	/// [Flags]
+	/// public enum MyCustomValues {
+	///	Foo,
+	///	Bar,
+	///	AllValues = Foo | Bar 
+	/// }
+	/// </code>
+	/// </example>
+
 	[Problem ("This type is an enumeration and, by convention, its name should not end with either Enum or Flags.")]
 	[Solution ("Remove the Enum or Flags suffix in enumeration name.")]
 	public class EnumNotEndsWithEnumOrFlagsSuffixRule : Rule, ITypeRule {

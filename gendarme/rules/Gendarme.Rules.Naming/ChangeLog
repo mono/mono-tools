@@ -1,3 +1,9 @@
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Add missing XML doc.
+	* UseCorrectPrefixRule.cs: Add prefix check for generic parameter
+	types.
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeepNamespaceHierarchyRule.cs, 
