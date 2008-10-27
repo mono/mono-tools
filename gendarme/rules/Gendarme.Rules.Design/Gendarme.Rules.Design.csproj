@@ -21,6 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\console\bin\Debug\Gendarme.Rules.Design.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -43,13 +45,16 @@
     <Compile Include="AvoidPropertiesWithoutGetAccessorRule.cs" />
     <Compile Include="AvoidPublicInstanceFieldsRule.cs" />
     <Compile Include="AvoidRefAndOutParametersRule.cs" />
+    <Compile Include="AvoidSmallNamespaceRule.cs" />
     <Compile Include="AvoidVisibleNestedTypesRule.cs" />
     <Compile Include="ConsiderConvertingFieldToNullableRule.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyRule.cs" />
     <Compile Include="ConsiderUsingStaticTypeRule.cs" />
+    <Compile Include="DeclareEventHandlersCorrectlyRule.cs" />
     <Compile Include="DefineAZeroValueRule.cs" />
     <Compile Include="DisposableFieldsShouldBeDisposedRule.cs" />
     <Compile Include="DisposableTypesShouldHaveFinalizerRule.cs" />
+    <Compile Include="DoNotDeclareVirtualMethodsInSealedTypeRule.cs" />
     <Compile Include="DontDeclareProtectedFieldsInSealedClassRule.cs" />
     <Compile Include="AvoidEmptyInterfaceRule.cs" />
     <Compile Include="EnsureSymmetryForOverloadedOperatorsRule.cs" />
@@ -60,10 +65,16 @@
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
     <Compile Include="ImplementIComparableCorreclyRule.cs" />
+    <Compile Include="InternalNamespacesShouldNotExposeTypesRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
+    <Compile Include="MarkAssemblyWithAssemblyVersionRule.cs" />
+    <Compile Include="MarkAssemblyWithAttributeRule.cs" />
+    <Compile Include="MarkAssemblyWithCLSCompliantRule.cs" />
+    <Compile Include="MarkAssemblyWithComVisibleRule.cs" />
     <Compile Include="MissingAttributeUsageOnCustomAttributeRule.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedRule.cs" />
     <Compile Include="OverrideEqualsMethodRule.cs" />
+    <Compile Include="PreferEventsOverMethodsRule.cs" />
     <Compile Include="PreferIntegerOrStringForIndexersRule.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsRule.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
