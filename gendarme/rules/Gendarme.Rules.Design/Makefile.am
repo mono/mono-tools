@@ -15,7 +15,6 @@ rules_sources = \
 	ConsiderUsingStaticTypeRule.cs \
 	DeclareEventHandlersCorrectlyRule.cs \
 	DefineAZeroValueRule.cs \
-	DisposableFieldsShouldBeDisposedRule.cs \
 	DisposableTypesShouldHaveFinalizerRule.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
@@ -29,6 +28,10 @@ rules_sources = \
 	ImplementIComparableCorreclyRule.cs \
 	InternalNamespacesShouldNotExposeTypesRule.cs \
 	MainShouldNotBePublicRule.cs \
+	MarkAssemblyWithAssemblyVersionRule.cs \
+	MarkAssemblyWithAttributeRule.cs \
+	MarkAssemblyWithCLSCompliantRule.cs \
+	MarkAssemblyWithComVisibleRule.cs \
 	MissingAttributeUsageOnCustomAttributeRule.cs \
 	OperatorEqualsShouldBeOverloadedRule.cs \
 	OverrideEqualsMethodRule.cs \
@@ -54,7 +57,6 @@ tests_sources = \
 	ConsiderConvertingMethodToPropertyTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
 	DeclareEventHandlersCorrectlyTest.cs \
-	DisposableFieldsShouldBeDisposedTest.cs \
 	DisposableTypesShouldHaveFinalizerTest.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
@@ -68,6 +70,9 @@ tests_sources = \
 	ImplementIComparableCorreclyTest.cs \
 	InternalNamespacesShouldNotExposeTypesTest.cs \
 	MainShouldNotBePublicTest.cs \
+	MarkAssemblyWithAssemblyVersionTest.cs \
+	MarkAssemblyWithCLSCompliantTest.cs \
+	MarkAssemblyWithComVisibleTest.cs \
 	MissingAttributeUsageOnCustomAttributeTest.cs \
 	OperatorEqualsShouldBeOverloadedTest.cs \
 	OverrideEqualsMethodTest.cs \

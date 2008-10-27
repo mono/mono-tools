@@ -27,7 +27,6 @@
     <File name="AvoidPublicInstanceFieldsRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ConsiderConvertingMethodToPropertyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="MissingAttributeUsageOnCustomAttributeRule.cs" subtype="Code" buildaction="Compile" />
-    <File name="DisposableFieldsShouldBeDisposedRule.cs" subtype="Code" buildaction="Compile" />
     <File name="DisposableTypesShouldHaveFinalizerRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithDisposableFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithNativeFieldsShouldBeDisposableRule.cs" subtype="Code" buildaction="Compile" />
@@ -50,6 +49,10 @@
     <File name="DeclareEventHandlersCorrectlyRule.cs" subtype="Code" buildaction="Compile" />
     <File name="InternalNamespacesShouldNotExposeTypesRule.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidSmallNamespaceRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarkAssemblyWithAssemblyVersionRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarkAssemblyWithAttributeRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarkAssemblyWithCLSCompliantRule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarkAssemblyWithComVisibleRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

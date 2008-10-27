@@ -1,5 +1,21 @@
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* DisposableFieldsShouldBeDisposedRule.cs: Moved to Correctness
+	since this is not (API) design.
+	* MarkAssemblyWithAssemblyVersionRule.cs: New. Rule that checks
+	if the assembly name has a version number.
+	* MarkAssemblyWithAttributeRule.cs: New. Abstract class to check
+	for the presence of a specific attribute in an assembly.
+	* MarkAssemblyWithCLSCompliantRule.cs: New. Rule that checks if
+	the assembly has a [CLSCompliant] attribute.
+	* MarkAssemblyWithComVisibleRule.cs: New. Rule that checks if
+	the assembly has a [ComVisible] attribute.
+	* Gendarme.Rules.Design.mdp: New. Add new rules to the project
+	file and remove the moved one.
+	* Makefile.am: Add(3) and remove(1) rules and tests.
+
+2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+
 	* AvoidSmallNamespaceRule.cs: Rename Namespace to NamespaceDefinition.
 
 2008-10-25  Cedric Vivier  <cedricv@neonux.com>
