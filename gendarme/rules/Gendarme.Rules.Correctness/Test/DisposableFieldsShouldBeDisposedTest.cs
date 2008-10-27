@@ -31,13 +31,13 @@
 using System;
 using System.ComponentModel;
 
-using Gendarme.Rules.Design;
+using Gendarme.Rules.Correctness;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Design {
+namespace Test.Rules.Correctness {
 
 	[TestFixture]
 	public class DisposableFieldsShouldBeDisposedTest : TypeRuleTestFixture<DisposableFieldsShouldBeDisposedRule> {
