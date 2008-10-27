@@ -1,3 +1,16 @@
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarkAssemblyWithAssemblyVersionTest.cs: New. Unit tests for
+	MarkAssemblyWithAssemblyVersionRule.
+	* MarkAssemblyWithCLSCompliantTest.cs: New. Unit tests for
+	MarkAssemblyWithCLSCompliantRule.
+	* MarkAssemblyWithComVisibleTest.cs: New. Unit tests for
+	MarkAssemblyWithComVisibleRule.
+	* DisposableFieldsShouldBeDisposedTest.cs: Moved to Correctness
+	since this is not (API) design.
+	* Test.Rules.Design.mdp: Add new tests and remove the moved test
+	from the MD project file.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferEventsOverMethodsTest.cs: New. Unit tests for 
