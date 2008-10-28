@@ -30,6 +30,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 using Gendarme.Rules.Correctness;
 
@@ -95,7 +96,7 @@ namespace Test.Rules.Correctness {
 
 		class Disposable : IDisposable {
 			public Disposable A;
-			public void Dispose () //no warning
+			public virtual void Dispose () //no warning
 			{
 				A.Dispose ();
 			}
@@ -109,20 +110,47 @@ namespace Test.Rules.Correctness {
 
 
 		class ExtendsDispose : Disposable, IDisposable {
-			void Dispose () //warning: should call base
+			public override void Dispose () //warning: should call base
 			{
 			}
+		}
+
+		class ExtendsExplictDispose : Disposable, IDisposable {
+
+			void IDisposable.Dispose () //warning: should call base
+			{
+			}
+		}
+
+		class ExtendsExternalDispose : Disposable, IDisposable {
+			// can't use DllImport here since we can't declare Dispose as static
+			[MethodImpl (MethodImplOptions.InternalCall)]
+			extern public override void Dispose ();
+		}
+
+		class ExtendsExternalDisposeBool : Disposable, IDisposable {
+			public override void Dispose ()
+			{
+				Dispose (true);
+			}
+
+			// can't use DllImport here since we can't declare Dispose as static
+			[MethodImpl (MethodImplOptions.InternalCall)]
+			extern public void Dispose (bool dispose);
 		}
 
 		[Test]
 		public void TestExtendsDispose ()
 		{
 			AssertRuleFailure<ExtendsDispose> (1);
+			AssertRuleFailure<ExtendsExplictDispose> (1);
+			AssertRuleFailure<ExtendsExternalDispose> (1);
+			AssertRuleFailure<ExtendsExternalDisposeBool> (1);
 		}
 		
 
 		class ExtendsDisposeCallsBase : Disposable, IDisposable {
-			void Dispose () //no warning
+			public override void Dispose () //no warning
 			{
 				base.Dispose ();
 			}

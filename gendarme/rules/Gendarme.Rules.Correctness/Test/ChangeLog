@@ -1,3 +1,11 @@
+2008-10-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedTest.cs: Add more test cases 
+	for better coverage.
+	* FinalizersShouldCallBaseClassFinalizerTest.cs: Moved from 
+	Design.	Updated namespace.
+	* Test.Rules.Correctness.mdp: Add moved rule to the MD project
+
 2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedTest.cs: Moved from Design.

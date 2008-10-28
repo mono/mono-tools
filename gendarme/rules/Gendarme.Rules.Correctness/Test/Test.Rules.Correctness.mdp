@@ -18,7 +18,6 @@
     <File name="MethodCanBeMadeStaticTest.cs" subtype="Code" buildaction="Compile" />
     <File name="CallingEqualsWithNullArgTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AvoidConstructorsInStaticTypesTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="FloatComparisonRuleTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseValueInPropertySetterTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="DontCompareWithNaNTest.cs" subtype="Code" buildaction="Compile" />
@@ -30,6 +29,11 @@
     <File name="ReviewSelfAssignmentTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ProvideCorrectArgumentsToFormattingMethodsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AttributeStringLiteralsShouldParseCorrectlyTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="DisposableFieldsShouldBeDisposedTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="AvoidFloatingPointEqualityTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewCastOnIntegerDivisionTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="ReviewCastOnIntegerMultiplicationTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldCallBaseClassFinalizerTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Correctness" />
