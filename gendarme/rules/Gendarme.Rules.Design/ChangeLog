@@ -1,4 +1,11 @@
-2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
+2008-10-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FinalizersShouldCallBaseClassFinalizerRule.cs: Moved to 
+	Correctness since this is not (API) design.
+	* Gendarme.Rules.Design.mdp: Remove (moved) rule from build.
+	* Makefile.am: Remove (moved) rule and unit test from build.
+
+2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Moved to Correctness
 	since this is not (API) design.

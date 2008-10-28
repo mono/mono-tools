@@ -22,7 +22,6 @@ rules_sources = \
 	EnumsShouldDefineAZeroValueRule.cs \
 	EnumsShouldUseInt32Rule.cs \
 	FinalizersShouldBeProtectedRule.cs \
-	FinalizersShouldCallBaseClassFinalizerRule.cs \
 	FlagsShouldNotDefineAZeroValueRule.cs \
 	ImplementEqualsAndGetHashCodeInPairRule.cs \
 	ImplementIComparableCorreclyRule.cs \
@@ -64,7 +63,6 @@ tests_sources = \
 	EnumsShouldDefineAZeroValueTest.cs \
 	EnumsShouldUseInt32Test.cs \
 	FinalizersShouldBeProtectedTest.cs \
-	FinalizersShouldCallBaseClassFinalizerTest.cs \
 	FlagsShouldNotDefineAZeroValueTest.cs \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
 	ImplementIComparableCorreclyTest.cs \
