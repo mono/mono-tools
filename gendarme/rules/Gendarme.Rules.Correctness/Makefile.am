@@ -8,6 +8,7 @@ rules_sources = \
 	DisposableFieldsShouldBeDisposedRule.cs \
 	DontCompareWithNaNRule.cs \
 	DoNotRoundIntegersRule.cs \
+	FinalizersShouldCallBaseClassFinalizerRule.cs \
 	FloatComparisonRule.cs \
 	MethodCanBeMadeStaticRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
@@ -29,6 +30,7 @@ tests_sources = \
 	DisposableFieldsShouldBeDisposedTest.cs \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
+	FinalizersShouldCallBaseClassFinalizerTest.cs \
 	MethodCanBeMadeStaticTest.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \

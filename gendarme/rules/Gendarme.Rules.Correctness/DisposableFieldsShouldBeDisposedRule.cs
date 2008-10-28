@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,7 +33,9 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
@@ -86,8 +90,11 @@ namespace Gendarme.Rules.Correctness {
 
 	[Problem ("This type contains disposable field(s) that aren't disposed.")]
 	[Solution ("Ensure that every disposable field(s) are disposed correctly.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed")]
 	public class DisposableFieldsShouldBeDisposedRule : Rule, ITypeRule {
+
+		private List<FieldDefinition> disposeableFields = new List<FieldDefinition> ();
 
 		private static MethodDefinition GetNonAbstractMethod (TypeReference type, MethodSignature signature)
 		{
@@ -114,15 +121,18 @@ namespace Gendarme.Rules.Correctness {
 
 			MethodDefinition implicitDisposeMethod = GetNonAbstractMethod (type, MethodSignatures.Dispose);
 			MethodDefinition explicitDisposeMethod = GetNonAbstractMethod (type, MethodSignatures.DisposeExplicit);
+			bool has_implicit = (implicitDisposeMethod != null);
+			bool has_explicit = (explicitDisposeMethod != null);
+
 			// note: handled by TypesWithDisposableFieldsShouldBeDisposableRule
-			if (implicitDisposeMethod == null && explicitDisposeMethod == null) 
+			if (!has_implicit && !has_explicit) 
 				return RuleResult.Success;
 
 			//Check for baseDispose
 			CheckBaseDispose (type, implicitDisposeMethod, explicitDisposeMethod);
 
 			//List of disposeableFields
-			List<FieldDefinition> disposeableFields = new List<FieldDefinition> ();
+			disposeableFields.Clear ();
 			foreach (FieldDefinition field in type.Fields) {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
@@ -139,16 +149,16 @@ namespace Gendarme.Rules.Correctness {
 			List<FieldDefinition> iList;
 			List<FieldDefinition> eList;
 
-			if (implicitDisposeMethod != null && explicitDisposeMethod != null) {
+			if (has_implicit && has_explicit) {
 				iList = disposeableFields;
 				eList = new List<FieldDefinition> (iList);
 			} else {
 				eList = iList = disposeableFields;
 			}
 
-			if (implicitDisposeMethod != null)
+			if (has_implicit)
 				CheckIfAllFieldsAreDisposed (implicitDisposeMethod, iList);
-			if (explicitDisposeMethod != null)
+			if (has_explicit)
 				CheckIfAllFieldsAreDisposed (explicitDisposeMethod, eList);
 
 			return Runner.CurrentRuleResult;
@@ -159,17 +169,15 @@ namespace Gendarme.Rules.Correctness {
 			TypeDefinition baseType = type;
 			while (baseType.BaseType.FullName != "System.Object") {
 				baseType = baseType.BaseType.Resolve ();
-				if (baseType == null)
-					break;
 				// also checks parents, so no need to search further
-				if (!baseType.Implements ("System.IDisposable"))
+				if ((baseType == null) || !baseType.Implements ("System.IDisposable"))
 					break;
+
 				//we just check for Dispose() here
-				MethodDefinition baseDisposeMethod = baseType.GetMethod (MethodSignatures.Dispose);
+				MethodDefinition baseDisposeMethod = GetNonAbstractMethod (baseType, MethodSignatures.Dispose);
 				if (baseDisposeMethod == null)
-					continue; //no dispose method (yet)
-				if (baseDisposeMethod.IsAbstract)
-					break; //abstract
+					continue; // no dispose method (yet) or an abstract one
+
 				if (implicitDisposeMethod != null)
 					CheckIfBaseDisposeIsCalled (implicitDisposeMethod, baseDisposeMethod);
 				if (explicitDisposeMethod != null)
@@ -181,20 +189,27 @@ namespace Gendarme.Rules.Correctness {
 		private void CheckIfBaseDisposeIsCalled (MethodDefinition method, MethodDefinition baseMethod)
 		{
 			bool found = false;
-			//Check for a call to base.Dispose();
-			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.Code != Code.Ldarg_0) //ldarg_0 (this)
-					continue;
 
-				Instruction call = ins.Next; //call baseMethod
-				if (call == null)
-					continue;
-				if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Callvirt)
-					continue;
-				MethodReference calledMethod = (MethodReference) call.Operand;
-				if (calledMethod.ToString () != baseMethod.ToString ())
-					continue;
-				found = true;
+			if (method.HasBody) {
+				OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+				if (bitmask.Get (Code.Ldarg_0) && (OpCodeBitmask.Calls.Intersect (bitmask))) {
+
+					//Check for a call to base.Dispose();
+					foreach (Instruction ins in method.Body.Instructions) {
+						if (ins.OpCode.Code != Code.Ldarg_0) //ldarg_0 (this)
+							continue;
+
+						Instruction call = ins.Next; //call baseMethod
+						if (call == null)
+							continue;
+						if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Callvirt)
+							continue;
+						MethodReference calledMethod = (MethodReference) call.Operand;
+						if (calledMethod.ToString () != baseMethod.ToString ())
+							continue;
+						found = true;
+					}
+				}
 			}
 
 			if (!found) {
@@ -203,35 +218,41 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 
+		static readonly MethodSignature DisposeBool = new MethodSignature ("Dispose", "System.Void", new string [] { "System.Boolean" });
+
 		private void CheckIfAllFieldsAreDisposed (MethodDefinition method, ICollection<FieldDefinition> fields)
 		{
-			//Check if Dispose(bool) is called and if all fields are disposed
-			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.Code != Code.Call && ins.OpCode.Code != Code.Calli && ins.OpCode.Code != Code.Callvirt)
-					continue;
-				MethodDefinition calledMethod = ins.Operand as MethodDefinition;
-				if (calledMethod == null || calledMethod.DeclaringType != method.DeclaringType)
-					continue;
-				if (calledMethod.Name != "Dispose")
-					continue;
-				if (calledMethod.Parameters.Count != 1)
-					continue;
-				if (calledMethod.Parameters [0].ParameterType.FullName != "System.Boolean")
-					continue;
-				ProcessMethod (calledMethod, fields);
-				break;
+			if (method.HasBody) {
+				OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+				if (OpCodeBitmask.Calls.Intersect (bitmask)) {
+					//Check if Dispose(bool) is called and if all fields are disposed
+					foreach (Instruction ins in method.Body.Instructions) {
+						switch (ins.OpCode.Code) {
+						case Code.Call:
+						case Code.Callvirt:
+							MethodDefinition md = (ins.Operand as MethodDefinition);
+							if ((md != null) && DisposeBool.Matches (md))
+								ProcessMethod (md, fields);
+							break;
+						}
+					}
+					// besides the call[virt] if must have a Ldarg0 and Ldfld
+					if (bitmask.Get (Code.Ldarg_0) && bitmask.Get (Code.Ldfld))
+						ProcessMethod (method, fields);
+				}
 			}
-			ProcessMethod (method, fields);
 
 			if (fields.Count == 0)
 				return;
 
 			foreach (FieldDefinition field in fields) {
-				string s = string.Format ("{0} is Disposable. {1}() should call {0}.Dispose()", field.Name, method.Name);
+				string s = string.Format ("Since {0} is Disposable {1}() should call {0}.Dispose()", field.Name, method.Name);
 				Runner.Report (field, Severity.High, Confidence.High, s);
 			}
 		}
 
+		// note: we CANNOT use OpCodeEngine inside this call since it's also used on code
+		// that can resides outside the assembly set (i.e. that the engine did not process)
 		private static void ProcessMethod (MethodDefinition method, ICollection<FieldDefinition> fieldsToDispose)
 		{
 			if (!method.HasBody)
@@ -250,14 +271,9 @@ namespace Gendarme.Rules.Correctness {
 				Instruction call = ldfld.Next; //call Dispose
 				if (call == null)
 					continue;
-				if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Calli && call.OpCode.Code != Code.Callvirt)
+				if (call.OpCode.Code != Code.Call && call.OpCode.Code != Code.Callvirt)
 					continue;
-				MethodReference calledMethod = (MethodReference) call.Operand;
-				if (calledMethod.Name != "Dispose")
-					continue;
-				if (calledMethod.Parameters.Count != 0)
-					continue;
-				if (calledMethod.ReturnType.ReturnType.FullName != "System.Void")
+				if (!MethodSignatures.Dispose.Matches (call.Operand as MethodReference))
 					continue;
 
 				FieldDefinition field = (ldfld.Operand as FieldDefinition);

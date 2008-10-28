@@ -1,3 +1,13 @@
+2008-10-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Changed to use 
+	OpCodeEngine and MethodSignature.
+	* FinalizersShouldCallBaseClassFinalizerRule.cs: Moved from Design.
+	Updated namespace and added support for OpCodeEngine.
+	* FloatComparisonRule.cs: Add null check in IsApplicable method
+	* Gendarme.Rules.Correctness.mdp: Add new rule to MD project file.
+	* Makefile.am: Add moved rule and test to the build.
+
 2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Moved from Design.

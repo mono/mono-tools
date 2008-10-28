@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Correctness {
 		static protected bool IsApplicable (MethodDefinition method)
 		{
 			// we only check methods with a body
-			if (!method.HasBody)
+			if ((method == null) || !method.HasBody)
 				return false;
 
 			// we don't check System.Single and System.Double
