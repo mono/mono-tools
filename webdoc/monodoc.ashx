@@ -175,7 +175,14 @@ namespace Mono.Website.Handlers
 			if (context.Response.StatusCode == 304)
 				return;
 
-			PrintDocs (content, context);
+			PrintDocs (content, context, GetHelpSource (n));
+		}
+
+		HelpSource GetHelpSource (Node n)
+		{
+			if (n != null)
+				return n.tree.HelpSource;
+			return null;
 		}
 		
 		void HandleTreeLink (HttpContext context, string link)
@@ -190,11 +197,13 @@ namespace Mono.Website.Handlers
 			int hsId = int.Parse (lnk [0]);
 			
 			Node n;
-			string content = help_tree.GetHelpSourceFromId (hsId).GetText (lnk [1], out n);
-			if (content == null)
+			HelpSource hs = help_tree.GetHelpSourceFromId (hsId);
+			string content = hs.GetText (lnk [1], out n);
+			if (content == null) {
 				content = help_tree.RenderUrl (lnk [1], out n);
-			PrintDocs (content, context);
-			
+				hs = GetHelpSource (n);
+			}
+			PrintDocs (content, context, hs);
 		}
 
 		void Copy (Stream input, Stream output)
@@ -210,7 +219,7 @@ namespace Mono.Website.Handlers
 		}
 
 		string requestPath;
-		void PrintDocs (string content, HttpContext ctx)
+		void PrintDocs (string content, HttpContext ctx, HelpSource hs)
 		{
 			ctx.Response.Write (@"
 <html>
@@ -267,14 +276,14 @@ function makeLink (link)
 	</script>
 		<title>Mono Documentation</title>
 		");
-		if (EcmaHelpSource.css_ecma_code != null) {
+		if (hs != null && hs.InlineCss != null) {
 			ctx.Response.Write ("<style type=\"text/css\">\n");
-			ctx.Response.Write (EcmaHelpSource.css_ecma_code);
+			ctx.Response.Write (hs.InlineCss);
 			ctx.Response.Write ("</style>\n");
 		}
-		if (EcmaHelpSource.js_code != null) {
+		if (hs != null && hs.InlineJavaScript != null) {
 			ctx.Response.Write ("<script type=\"text/JavaScript\">\n");
-			ctx.Response.Write (EcmaHelpSource.js_code);
+			ctx.Response.Write (hs.InlineJavaScript);
 			ctx.Response.Write ("</script>\n");
 		}
 		ctx.Response.Write (@"

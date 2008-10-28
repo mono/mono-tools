@@ -1,3 +1,12 @@
+2008-10-28  Jonathan Pryor  <jpryor@novell.com>
+
+	* . (svn:ignore): Ignore generated files.
+	* common.css: Fix the .code class, lest it make the C# Language Spec
+	  examples unreadable.  (Really, *really*, unreadable.)
+	* Makefile.am: Deal with change to mono-tools/webdoc directory...
+	* monodoc.ashx: Grab CSS & JavaScript code from the node's
+	  HelpSource, thus allowing the HelpSource to customize output.
+
 2006-11-19  Miguel de Icaza  <miguel@novell.com>
 
 	* monodoc.ashx: Do not rewrite target urls that start with '#'
