@@ -1,3 +1,7 @@
+2008-10-28  Mike Kestner  <mkestner@novell.com>
+
+	* docbrowser/Makefile.am: make admin.exe build conditional on GTKHTML.
+
 2008-10-24  Jonathan Pryor  <jpryor@novell.com>
 
 	* monodoc.in: Update messages to suggest the mdoc equivalents instead

@@ -1,5 +1,8 @@
 monodocdir=$(prefix)/lib/monodoc
+
+if ENABLE_GTKHTML
 noinst_DATA = admin.exe
+endif
 
 
 if ENABLE_GECKO
