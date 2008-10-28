@@ -1,0 +1,23 @@
+Cosas por hacer:
+
+	Despues del login, actualizar el "login" en el frame padre.
+
+	Que use una base de datos para validar el login.
+	
+	Que haya dos clases de usuarios "trusted" y non-trusted,
+	para los trusted, los cambios aparecen en la pagina, para
+	los non-trusted, solamente aparece para ellos.
+
+	En vez de hacer un upload de las contribuciones, darle un hit
+	directo a esta base de datos cuando se aprueban los cambios.
+
+	Cuando se aplican, los cambios deben de removerse del
+	servidor, o moverse a otro sitio.
+
+	exponer esto directamente al cliente de 	
+	Crear el comando SQL para actualizar la tabla para que
+	tenga otro campo "trusted"
+
+	Para que no cargue la base de datos en cada hit, usar un
+	secreto calculado en cada "boot".   Poner un cookie que
+	contenga los datos de la sesion encritados.

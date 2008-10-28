@@ -1,0 +1,31 @@
+2006-11-19  Miguel de Icaza  <miguel@novell.com>
+
+	* monodoc.ashx: Do not rewrite target urls that start with '#'
+	as those are links inside the current page.
+
+2005-02-18 Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* monodoc.ashx: fixed nullrefs for the 'Various' node.
+
+2003-11-16  Gonzalo Paniagua Javier <gonzalo@ximian.com>
+
+	* ptree/tree.js: make mouse selection lose the focus when ENTER is
+	pressed.
+
+2003-10-14  John Luke  <jluke@cfl.rr.com>
+
+	* ptree/tree.css:  change a.hover to look like ndoc
+
+2003-08-22  Piers Haken	<piersh@friskit.com>
+
+	* monodoc.ash: PTree cleanup, keyboard support
+
+2003-08-21  Piers Haken	<piersh@friskit.com>
+
+	* monodoc.ash: add PTree support
+
+2003-08-14  John Luke  <jluke@cfl.rr.com>
+
+	* monodoc.ashx: do not close the XmlTextWriter in 'void
+	HandleTree (HttpContext context, string tree)' (allows the
+	tree to work on IE and moz>=1.4)
