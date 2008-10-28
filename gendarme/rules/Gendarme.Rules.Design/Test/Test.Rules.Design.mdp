@@ -29,8 +29,6 @@
     <File name="DisposableTypesShouldHaveFinalizerTest.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithDisposableFieldsShouldBeDisposableTest.cs" subtype="Code" buildaction="Compile" />
     <File name="TypesWithNativeFieldsShouldBeDisposableTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="FinalizersShouldBeProtectedTest.cs" subtype="Code" buildaction="Compile" />
-    <File name="FinalizersShouldCallBaseClassFinalizerTest.cs" subtype="Code" buildaction="Compile" />
     <File name="AttributeArgumentsShouldHaveAccessorsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="EnsureSymmetryForOverloadedOperatorsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="EnumsShouldUseInt32Test.cs" subtype="Code" buildaction="Compile" />
@@ -54,6 +52,7 @@
     <File name="MarkAssemblyWithCLSCompliantTest.cs" subtype="Code" buildaction="Compile" />
     <File name="MarkAssemblyWithComVisibleTest.cs" subtype="Code" buildaction="Compile" />
     <File name="PreferEventsOverMethodsTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="FinalizersShouldBeProtectedTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="nunit.framework, Version=2.2.0.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />

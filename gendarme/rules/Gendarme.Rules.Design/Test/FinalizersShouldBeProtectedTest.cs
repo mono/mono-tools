@@ -53,7 +53,7 @@ namespace Test.Rules.Design {
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
 			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
 
-			non_protected_finalizer_class = assembly.MainModule.Types [typeof (FinalizerCallingBaseFinalizerClass).FullName].Clone ();
+			non_protected_finalizer_class = assembly.MainModule.Types [typeof (ProtectedFinalizerClass).FullName].Clone ();
 			non_protected_finalizer_class.Module = assembly.MainModule;
 			MethodDefinition finalizer = non_protected_finalizer_class.GetMethod (MethodSignatures.Finalize);
 			// make it non-protected (e.g. public)
