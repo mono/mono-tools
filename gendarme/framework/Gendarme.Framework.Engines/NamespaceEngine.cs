@@ -89,6 +89,9 @@ namespace Gendarme.Framework.Engines {
 		/// <returns>All namespaces defined in the specified assembly</returns>
 		public static IEnumerable<string> NamespacesInside (AssemblyDefinition assembly)
 		{
+			if (assembly == null)
+				throw new ArgumentNullException ("assembly");
+
 			HashSet<string> namespaces = null;
 			if (!assemblies.TryGetValue (assembly, out namespaces))
 				yield return null;
@@ -105,6 +108,9 @@ namespace Gendarme.Framework.Engines {
 		/// <returns>All TypeDefinition defined the the specified namespace</returns>
 		public static IEnumerable<TypeDefinition> TypesInside (string nameSpace)
 		{
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+
 			HashSet<TypeDefinition> types = null;
 			if (!namespaces.TryGetValue (nameSpace, out types))
 				yield return null;

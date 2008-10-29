@@ -1,3 +1,8 @@
+2008-10-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NamespaceEngine.cs: Handle null arguments for [Namespaces|Types]
+	Inside methods (self-test).
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NamespaceEngine.cs: New. Engine that build a list of all 
