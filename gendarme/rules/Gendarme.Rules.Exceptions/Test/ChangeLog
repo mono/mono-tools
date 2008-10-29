@@ -1,3 +1,12 @@
+2008-10-28  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* InstantiateArgumentExceptionCorrectlyTest.cs: Add two test 
+	cases. One where yield/iterator is being used (this construct an 
+	inner type where the exception is throw, based on a field, in a 
+	MoveNext() parameter-less method). Second one where a check is done
+	locally but the exception is throw elsewhere (e.g. to share 
+	localization logic).	
+
 2008-09-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidArgumentExceptionDefaultConstructorTest.cs: Change result 

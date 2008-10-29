@@ -30,12 +30,15 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
+using Mono.Cecil;
 using Gendarme.Rules.Exceptions;
 
 using NUnit.Framework;
-using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Exceptions {
 
@@ -229,7 +232,7 @@ namespace Test.Rules.Exceptions {
 			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("DuplicateWaitObjectExceptionWithOneMessage", 1);
 		}
 
-		public void ArgumentExceptionWithOtherConstructor ()
+		public void ArgumentExceptionWithOtherConstructor (int x)
 		{
 			throw new ArgumentException ("A sample message" , new Exception ("Other message"));
 		}
@@ -656,6 +659,53 @@ namespace Test.Rules.Exceptions {
 		public void ArgumentExceptionTest ()
 		{
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("StringFormatForMessage");
+		}
+
+		// adapted from NamespaceEngine.cs 
+		// gmcs creates an inner type with fields and the exception can be thrown from there (without parameter)
+		class CompilerGeneratedInnerIterator {
+			private static IList<TypeDefinition> types;
+
+			public static IEnumerable<TypeDefinition> TypesInside (string nameSpace)
+			{
+				if (nameSpace == null)
+					throw new ArgumentNullException ("nameSpace");
+
+				foreach (TypeDefinition type in types) {
+					yield return type;
+				}
+			}
+		}
+
+		[Test]
+		public void Yield ()
+		{
+			AssertRuleSuccess<CompilerGeneratedInnerIterator> ("TypesInside");
+			TypeDefinition inner = (DefinitionLoader.GetTypeDefinition<CompilerGeneratedInnerIterator> ().NestedTypes [0] as TypeDefinition);
+			foreach (MethodDefinition method in inner.Methods) {
+				AssertRuleDoesNotApply (method);
+			}
+		}
+
+		public void CallLocalizedThrow ()
+		{
+			throw new ArgumentNullException ("obj", "a localized string");
+		}
+
+		public int DoThis (object obj)
+		{
+			if (obj == null)
+				CallLocalizedThrow ();
+			return obj.GetHashCode ();
+		}
+
+		[Test]
+		public void CheckThenDelegateThrow ()
+		{
+			// no exception throw (or created)
+			AssertRuleDoesNotApply<InstantiateArgumentExceptionCorrectlyTest> ("DoThis");
+			// no parameter to check against
+			AssertRuleDoesNotApply<InstantiateArgumentExceptionCorrectlyTest> ("CallLocalizedThrow");
 		}
 	}
 }
