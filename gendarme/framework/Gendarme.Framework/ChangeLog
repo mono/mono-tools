@@ -1,3 +1,8 @@
+2008-10-29  Jesse Jones  <jesjones@mindspring.com>
+
+	* Bitmask.cs: Added unchecked statement to Bitmask.Clear so that
+	it works when compiling with checked arithmetic.
+
 2008-10-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Bitmask.cs: Handle null correctly to avoid NRE (self-test)

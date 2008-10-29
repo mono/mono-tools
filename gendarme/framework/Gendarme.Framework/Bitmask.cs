@@ -65,7 +65,9 @@ namespace Gendarme.Framework {
 		/// <param name="bit">Value to clear in the bitmask</param>
 		public void Clear (T bit)
 		{
-			mask &= (ulong) ~(1 << bit.ToInt32 (null));
+			unchecked {
+				mask &= (ulong) ~(1 << bit.ToInt32 (null));
+			}
 		}
 
 		/// <summary>
