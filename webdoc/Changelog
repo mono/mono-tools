@@ -1,3 +1,9 @@
+2008-10-29  Jonathan Pryor  <jpryor@novell.com>
+
+	* Makefile.am: Get `make dist`, `make install` working...  We install
+	  to $prefix/lib/monodoc/web, which is where Debian's monodoc-http
+	  package places things...
+
 2008-10-28  Jonathan Pryor  <jpryor@novell.com>
 
 	* . (svn:ignore): Ignore generated files.

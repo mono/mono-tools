@@ -1,3 +1,26 @@
+webdir=$(prefix)/lib/monodoc/web
+
+web_DATA = \
+	common.css \
+	edit.aspx \
+	header.aspx \
+	header.html \
+	index.aspx \
+	index.html \
+	login.aspx \
+	logout.aspx \
+	mono_logo_g.gif \
+	monodoc.ashx \
+	monodoc.asmx \
+	oldposts.xml \
+	server.asmx \
+	server.cs \
+	sidebar.css \
+	sidebar.js \
+	tables.sql \
+	web.config \
+	wiki2ecmahelper.xsl
+
 DISTCLEANFILES = 
 
 .PHONY :  \
@@ -6,35 +29,64 @@ DISTCLEANFILES =
 	dist-hook \
 	web \
 	up
+ 
+EXTRA_DIST = \
+	$(wildcard images/*.gif) \
+	$(wildcard images/*.png) \
+	$(wildcard ptree/tree*) \
+	$(wildcard xtree/*.js) \
+	$(wildcard xtree/*.css) \
+	$(wildcard xtree/images/*.png) \
+	$(wildcard xtree/images/*.png) \
+	$(wildcard xtree/images/clean/*.gif) \
+	$(wildcard xtree/images/msdn/*.gif) \
+	$(wildcard xtree/images/msdn2/*.gif)
+	$(wildcard xtree/images/xp/*.png)
 
-EXTRA_DIST =
+dist-hook:
+	mkdir -p $(distdir)/images
+	mkdir -p $(distdir)/xtree/images/msdn
+	mkdir -p $(distdir)/xtree/images/msdn2
+	mkdir -p $(distdir)/xtree/images/xp
+	mkdir -p $(distdir)/ptree
+	cp $(srcdir)/index.aspx $(srcdir)/monodoc.ashx $(distdir)
+	cp $(srcdir)/header.aspx              $(distdir)
+	cp $(srcdir)/web.config               $(distdir)
+	cp $(srcdir)/common.css               $(distdir)
+	cp $(srcdir)/sidebar.css              $(distdir)
+	cp $(srcdir)/sidebar.js               $(distdir)
+	cp $(srcdir)/images/*gif              $(distdir)/images
+	cp $(srcdir)/images/*png              $(distdir)/images
+	cp $(srcdir)/xtree/images/msdn/*gif   $(distdir)/xtree/images/msdn
+	cp $(srcdir)/xtree/images/msdn2/*gif  $(distdir)/xtree/images/msdn2
+	cp $(srcdir)/xtree/images/xp/*png     $(distdir)/xtree/images/xp
+	cp $(srcdir)/xtree/images/*png        $(distdir)/xtree/images
+	cp $(srcdir)/xtree/*js                $(distdir)/xtree
+	cp $(srcdir)/xtree/*css               $(distdir)/xtree
+	cp $(srcdir)/ptree/*css               $(distdir)/ptree
+	cp $(srcdir)/ptree/*js                $(distdir)/ptree
 
-dist-hook: assembler.exe
-	mkdir -p $(distdir)/web/images
-	mkdir -p $(distdir)/web/xtree/images/msdn
-	mkdir -p $(distdir)/web/xtree/images/msdn2
-	mkdir -p $(distdir)/web/xtree/images/xp
-	mkdir -p $(distdir)/web/ptree
-	cp $(srcdir)/web/index.aspx     $(srcdir)/web/monodoc.ashx $(distdir)/web
-	cp $(srcdir)/web/header.aspx    $(distdir)/web
-	cp $(srcdir)/web/web.config     $(distdir)/web
-	cp $(srcdir)/web/common.css     $(distdir)/web
-	cp $(srcdir)/web/sidebar.css    $(distdir)/web
-	cp $(srcdir)/web/sidebar.js     $(distdir)/web
-	cp $(srcdir)/web/images/*gif  $(distdir)/web/images
-	cp $(srcdir)/web/images/*png    $(distdir)/web/images
-	cp $(srcdir)/web/xtree/images/msdn/*gif $(distdir)/web/xtree/images/msdn
-	cp $(srcdir)/web/xtree/images/msdn2/*gif $(distdir)/web/xtree/images/msdn2
-	cp $(srcdir)/web/xtree/images/xp/*png $(distdir)/web/xtree/images/xp
-	cp $(srcdir)/web/xtree/images/*png $(distdir)/web/xtree/images
-	cp $(srcdir)/web/xtree/*js $(distdir)/web/xtree
-	cp $(srcdir)/web/xtree/*css $(distdir)/web/xtree
-	cp $(srcdir)/web/ptree/*css $(distdir)/web/ptree
-	cp $(srcdir)/web/ptree/*js $(distdir)/web/ptree
+install-data-hook:
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/images
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/ptree
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/xtree
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/xtree/images
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/xtree/images/msdn
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/xtree/images/msdn2
+	-$(mkinstalldirs) $(DESTDIR)$(webdir)/xtree/images/xp
+	$(INSTALL_DATA) $(srcdir)/images/*gif             $(DESTDIR)$(webdir)/images
+	$(INSTALL_DATA) $(srcdir)/images/*png             $(DESTDIR)$(webdir)/images
+	$(INSTALL_DATA) $(srcdir)/xtree/images/msdn/*gif  $(DESTDIR)$(webdir)/xtree/images/msdn
+	$(INSTALL_DATA) $(srcdir)/xtree/images/msdn2/*gif $(DESTDIR)$(webdir)/xtree/images/msdn2
+	$(INSTALL_DATA) $(srcdir)/xtree/images/xp/*png    $(DESTDIR)$(webdir)/xtree/images/xp
+	$(INSTALL_DATA) $(srcdir)/xtree/images/*png       $(DESTDIR)$(webdir)/xtree/images/xp
+	$(INSTALL_DATA) $(srcdir)/xtree/*js               $(DESTDIR)$(webdir)/xtree
+	$(INSTALL_DATA) $(srcdir)/xtree/*css              $(DESTDIR)$(webdir)/xtree
+	$(INSTALL_DATA) $(srcdir)/ptree/*css              $(DESTDIR)$(webdir)/ptree
+	$(INSTALL_DATA) $(srcdir)/ptree/*js               $(DESTDIR)$(webdir)/ptree
 
-
-Monodoc.Contributions.dll: server.cs 
-	mcs -g server.cs -target:library -out:$@ -r:System.Web -r:System.Web.Services -pkg:monodoc -r:System.Data -r:ByteFX.Data
+Monodoc.Contributions.dll: server.cs Makefile.am
+	mcs -debug+ $< -target:library -out:$@ -r:System.Web -r:System.Web.Services -pkg:monodoc -r:System.Data -r:ByteFX.Data
 
 web: Monodoc.Contributions.dll
 	xsp
