@@ -149,6 +149,12 @@ namespace Gendarme.Rules.Exceptions {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
+			// don't process methods without parameters unless it's a special method (e.g. a property)
+			// this cover cases like "if (x == null) CallLocalizedThrow();" and the inner type compilers
+			// generates for yield/iterator (a field is used)
+			if (!method.IsSpecialName && (method.Parameters.Count == 0))
+				return RuleResult.DoesNotApply;
+
 			// and when the IL contains a NewObj instruction
 			if (!OpCodeEngine.GetBitmask (method).Get (Code.Newobj))
 				return RuleResult.DoesNotApply;

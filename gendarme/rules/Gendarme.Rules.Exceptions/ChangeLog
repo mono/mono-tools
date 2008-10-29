@@ -1,3 +1,9 @@
+2008-10-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstantiateArgumentExceptionCorrectlyRule.cs: Ignore method 
+	without	parameters unless it's a special name (e.g. a property). 
+	Fix yield/iterator and "check here delegate throw" cases.
+
 2008-10-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs,
