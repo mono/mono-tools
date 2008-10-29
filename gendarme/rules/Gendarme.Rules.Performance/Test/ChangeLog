@@ -1,3 +1,8 @@
+2008-10-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnneededFieldInitializationTest.cs: Commit the real tests
+	and not a dupe of the rule. Thanks to Jesse for pointing this out.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CompareWithStringEmptyEfficientlyTest.cs: Add new test case for

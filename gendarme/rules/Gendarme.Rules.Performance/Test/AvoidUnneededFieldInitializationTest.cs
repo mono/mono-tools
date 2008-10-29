@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.AvoidUnneededFieldInitializationRule
+// Unit tests for AvoidUnneededFieldInitializationRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -13,10 +13,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,106 +28,131 @@
 
 using System;
 
-using Mono.Cecil;
-using Mono.Cecil.Cil;
+using Gendarme.Rules.Performance;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Engines;
-using Gendarme.Framework.Helpers;
-using Gendarme.Framework.Rocks;
+using NUnit.Framework;
+using Test.Rules.Fixtures;
+using Test.Rules.Definitions;
 
-namespace Gendarme.Rules.Performance {
+namespace Test.Rules.Performance {
 
-	/// <summary>
-	/// This rule looks for constructors that assign fields to their default value
-	/// (e.g. 0 for an integer, null for an object or a string). Since the CLR zeroize
-	/// all values there is no need, under most circumstances, to assign default values.
-	/// Doing so only adds size to source code and in IL.
-	/// </summary>
-	/// <example>
-	/// Bad example:
-	/// <code>
-	/// public class Bad {
-	///	int i;
-	///	string s;
-	///	
-	///	public Bad ()
-	///	{
-	///		i = 0;
-	///		s = null;
-	///	}
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Good example:
-	/// <code>
-	/// public class Good {
-	///	int i;
-	///	string s;
-	///	
-	///	public Good ()
-	///	{
-	///		// don't assign 'i' since it's already 0
-	///		// but we might prefer to assign a string to String.Empty
-	///		s = String.Empty;
-	///	}
-	/// }
-	/// </code>
-	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+	[TestFixture]
+	public class AvoidUnneededFieldInitializationTest : MethodRuleTestFixture<AvoidUnneededFieldInitializationRule> {
 
-	[Problem ("This constructor needlessly initialize some fields to their default value.")]
-	[Solution ("Remove the unneeded initialization from the constructors.")]
-	[EngineDependency (typeof (OpCodeEngine))]
-	[FxCopCompatibility ("Microsoft.Performance", "CA1805:DoNotInitializeUnnecessarily")]
-	public class AvoidUnneededFieldInitializationRule : Rule, IMethodRule {
-
-		// note: it's tempting to use IType rule here, since it would avoid iterating
-		// all non-constructors methods. However the reporting would be less precise
-		// since we want to report which source line inside a ctor is problematic
-
-		public RuleResult CheckMethod (MethodDefinition method)
+		[Test]
+		public void DoesNotApply ()
 		{
-			if (!method.IsConstructor || !method.HasBody || method.IsGeneratedCode ())
-				return RuleResult.DoesNotApply;
+			// no body
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// not ctor
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			// generated code
+			AssertRuleDoesNotApply (SimpleMethods.GeneratedCodeMethod);
+		}
 
-			TypeReference type = method.DeclaringType;
+		class ClassWithBadStaticCtor {
+			public static int i;
+			static object o;
 
-			foreach (Instruction ins in method.Body.Instructions) {
-				// check for assignation on instance or static fields
-				Code code = ins.OpCode.Code;
-				bool is_static = (code == Code.Stsfld);
-				bool is_instance = (code == Code.Stfld);
-				if (!is_static && !is_instance)
-					continue;
-
-				// special case: a struct ctor MUST assign every instance fields
-				if (type.IsValueType && is_instance)
-					continue;
-
-				// make sure we assign to this type (and not another one)
-				FieldReference fr = (ins.Operand as FieldReference);
-				if (fr.DeclaringType != type)
-					continue;
-
-				bool unneeded = false;
-				if (fr.FieldType.IsValueType) {
-					unneeded = ins.Previous.IsOperandZero ();
-				} else {
-					unneeded = ins.Previous.OpCode.Code == Code.Ldnull;
-				}
-
-				if (unneeded) {
-					// we're more confident about the unneeded initialization
-					// on static ctor, since another (previous) ctor, can't set
-					// the values differently
-					Confidence c = method.IsStatic ? Confidence.High : Confidence.Normal;
-					Runner.Report (method, ins, Severity.Medium, c, fr.Name);
-				}
+			static ClassWithBadStaticCtor ()
+			{
+				i = 0;
+				o = null;
 			}
 
-			return Runner.CurrentRuleResult;
+			public ClassWithBadStaticCtor ()
+			{
+				// setting static fields from an instance ctor
+				i = 1;
+				o = null;
+			}
+		}
+
+		class ClassWithGoodStaticCtor {
+			static string s;
+
+			static ClassWithGoodStaticCtor ()
+			{
+				// leave this alone, it's meaning is *very* unclear
+				ClassWithBadStaticCtor.i = 0;
+				s = String.Empty;
+			}
+
+			int i = 0; // ignored by compiler
+
+			public ClassWithGoodStaticCtor ()
+			{
+				// don't touch 'i' inside ctor
+			}
+
+			public override string ToString ()
+			{
+				return String.Format ("{0}: {1}", s, i);
+			}
+		}
+
+		struct StructWithBadStaticCtor {
+			static sbyte i;
+			static string s;
+
+			static StructWithBadStaticCtor ()
+			{
+				i = 0;
+				s = null;
+			}
+
+			public StructWithBadStaticCtor (sbyte sb)
+			{
+				// setting static fields from an instance ctor
+				i = sb;
+				s = String.Empty;
+			}
+		}
+
+		struct StructWithStatic {
+			static string s;
+			DayOfWeek dow;
+
+			public StructWithStatic (string str)
+			{
+				// no point in setting a default value to a static string
+				s = null;
+				// however all struct ctor MUST initialize all instance fields
+				dow = DayOfWeek.Sunday;
+			}
+		}
+
+		struct Struct {
+			string s;
+			DayOfWeek dow;
+
+			public Struct (string str)
+			{
+				s = str;
+				// all struct ctor MUST initialize all instance fields
+				dow = DayOfWeek.Sunday;
+			}
+		}
+
+		[Test]
+		public void Bad ()
+		{
+			AssertRuleFailure<ClassWithBadStaticCtor> (".cctor", 2);
+			AssertRuleFailure<ClassWithBadStaticCtor> (".ctor", 1);
+
+			AssertRuleFailure<StructWithBadStaticCtor> (".cctor", 2);
+
+			AssertRuleFailure<StructWithStatic> (".ctor", 1);
+		}
+
+		[Test]
+		public void Good ()
+		{
+			AssertRuleSuccess<ClassWithGoodStaticCtor> (".cctor");
+			AssertRuleSuccess<ClassWithGoodStaticCtor> (".ctor");
+
+			AssertRuleSuccess<StructWithBadStaticCtor> (".ctor");
+			AssertRuleSuccess<Struct> (".ctor");
 		}
 	}
 }
