@@ -1,3 +1,7 @@
+2008-10-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Bitmask.cs: Handle null correctly to avoid NRE (self-test)
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* IRule.cs: Remove IRunner parameter from TearDown as it is

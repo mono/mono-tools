@@ -135,6 +135,8 @@ namespace Gendarme.Framework {
 		/// <returns>True if the bitmask intersects with the specified bitmask, False otherwise.</returns>
 		public bool Intersect (Bitmask<T> bitmask)
 		{
+			if (bitmask == null)
+				return (mask == 0);
 			return ((mask & bitmask.mask) != 0);
 		}
 
@@ -145,19 +147,21 @@ namespace Gendarme.Framework {
 		/// <returns>True if the bitmask is a subset of the specified bitmask, False otherwise.</returns>
 		public bool IsSubsetOf (Bitmask<T> bitmask)
 		{
+			if (bitmask == null)
+				return false;
 			return ((mask & bitmask.mask) == mask);
 		}
 
 		public override bool Equals (object obj)
 		{
 			Bitmask<T> other = (obj as Bitmask<T>);
-			if (other == null)
-				return false;
-			return (mask == other.mask);
+			return Equals (other);
 		}
 
 		public bool Equals (Bitmask<T> other)
 		{
+			if (other == null)
+				return false;
 			return (mask == other.mask);
 		}
 
