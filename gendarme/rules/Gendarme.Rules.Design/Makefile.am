@@ -10,6 +10,7 @@ rules_sources = \
 	AvoidRefAndOutParametersRule.cs \
 	AvoidSmallNamespaceRule.cs \
 	AvoidVisibleNestedTypesRule.cs \
+	ConsiderAddingInterfaceRule.cs \
 	ConsiderConvertingFieldToNullableRule.cs \
 	ConsiderConvertingMethodToPropertyRule.cs \
 	ConsiderUsingStaticTypeRule.cs \
@@ -52,6 +53,7 @@ tests_sources = \
 	AvoidRefAndOutParametersTest.cs \
 	AvoidSmallNamespaceTest.cs \
 	AvoidVisibleNestedTypesTest.cs \
+	ConsiderAddingInterfaceTest.cs \
 	ConsiderConvertingFieldToNullableTest.cs \
 	ConsiderConvertingMethodToPropertyTest.cs \
 	ConsiderUsingStaticTypeTest.cs \
