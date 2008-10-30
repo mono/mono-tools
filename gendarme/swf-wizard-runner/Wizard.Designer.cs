@@ -80,6 +80,7 @@ namespace Gendarme {
 			this.open_file_dialog = new System.Windows.Forms.OpenFileDialog ();
 			this.save_file_dialog = new System.Windows.Forms.SaveFileDialog ();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox ();
+			this.rules_save_button = new System.Windows.Forms.Button ();
 			this.wizard_tab_control.SuspendLayout ();
 			this.welcome_tab_page.SuspendLayout ();
 			this.addfiles_tab_page.SuspendLayout ();
@@ -141,7 +142,7 @@ namespace Gendarme {
 			this.label1.Padding = new System.Windows.Forms.Padding (12, 0, 0, 1);
 			this.label1.Size = new System.Drawing.Size (265, 14);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Copyright © 2005-2008 Novell, Inc. and contributors";
+			this.label1.Text = "Copyright Â© 2005-2008 Novell, Inc. and contributors";
 			// 
 			// welcome_link_label
 			// 
@@ -256,6 +257,7 @@ namespace Gendarme {
 			// 
 			// rules_tab_page
 			// 
+			this.rules_tab_page.Controls.Add (this.rules_save_button);
 			this.rules_tab_page.Controls.Add (this.browse_documentation_button);
 			this.rules_tab_page.Controls.Add (this.rules_count_label);
 			this.rules_tab_page.Controls.Add (this.label8);
@@ -270,11 +272,11 @@ namespace Gendarme {
 			// 
 			// browse_documentation_button
 			// 
-			this.browse_documentation_button.Location = new System.Drawing.Point (246, 354);
+			this.browse_documentation_button.Location = new System.Drawing.Point (165, 354);
 			this.browse_documentation_button.Name = "browse_documentation_button";
-			this.browse_documentation_button.Size = new System.Drawing.Size (237, 23);
+			this.browse_documentation_button.Size = new System.Drawing.Size (156, 23);
 			this.browse_documentation_button.TabIndex = 5;
-			this.browse_documentation_button.Text = "Browse Rule Documentation...";
+			this.browse_documentation_button.Text = "Documentation...";
 			this.browse_documentation_button.UseVisualStyleBackColor = true;
 			this.browse_documentation_button.Click += new System.EventHandler (this.BrowseDocumentationButtonClick);
 			// 
@@ -674,6 +676,16 @@ namespace Gendarme {
 			this.pictureBox1.TabIndex = 10;
 			this.pictureBox1.TabStop = false;
 			// 
+			// rules_save_button
+			// 
+			this.rules_save_button.Location = new System.Drawing.Point (327, 354);
+			this.rules_save_button.Name = "rules_save_button";
+			this.rules_save_button.Size = new System.Drawing.Size (156, 23);
+			this.rules_save_button.TabIndex = 32;
+			this.rules_save_button.Text = "Save as default";
+			this.rules_save_button.UseVisualStyleBackColor = true;
+			this.rules_save_button.Click += new System.EventHandler (this.SaveRulesButtonClick);
+			// 
 			// Wizard
 			// 
 			this.AcceptButton = this.next_button;
@@ -767,6 +779,7 @@ namespace Gendarme {
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.RadioButton options_notvisible_radiobutton;
 		private System.Windows.Forms.Button options_save_button;
+		private System.Windows.Forms.Button rules_save_button;
 	}
 }
 

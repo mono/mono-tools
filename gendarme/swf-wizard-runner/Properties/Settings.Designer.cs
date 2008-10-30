@@ -70,5 +70,16 @@ namespace Gendarme.Properties {
                 this["Scope"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Rules {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Rules"]));
+            }
+            set {
+                this["Rules"] = value;
+            }
+        }
     }
 }

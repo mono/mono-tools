@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -341,29 +342,38 @@ namespace Gendarme {
 			if (rules_populated)
 				return;
 
+			// if settings are empty (like default) then all rules are active
+			StringCollection rules = Settings.Default.Rules;
+			bool all_rules = ((rules == null) || (rules.Count == 0));
+
 			Dictionary<string, TreeNode> nodes = new Dictionary<string, TreeNode> ();
 
 			rules_tree_view.BeginUpdate ();
+			rules_tree_view.AfterCheck -= RulesTreeViewAfterCheck;
 			foreach (IRule rule in Runner.Rules) {
 				TreeNode parent;
 				string name_space = rule.FullName.Substring (0, rule.FullName.Length - rule.Name.Length - 1);
 				if (!nodes.TryGetValue (name_space, out parent)) {
 					parent = new TreeNode (name_space);
-					parent.Checked = true;
+					parent.Checked = all_rules;
 					nodes.Add (name_space, parent);
 					rules_tree_view.Nodes.Add (parent);
 				}
 
 				TreeNode node = new TreeNode (rule.Name);
-				node.Checked = true;
+				node.Checked = all_rules || rules.Contains (rule.FullName);
 				node.Tag = rule;
 				node.ToolTipText = rule.Problem;
 				parent.Nodes.Add (node);
+				// if we have not already setted parent, then we do it if any node is checked
+				if (!all_rules && node.Checked)
+					parent.Checked = true;
 			}
 			foreach (TreeNode node in rules_tree_view.Nodes) {
 				node.ToolTipText = String.Format ("{0} rules available", node.Nodes.Count);
 			}
 			nodes.Clear ();
+			rules_tree_view.AfterCheck += RulesTreeViewAfterCheck;
 
 			// this extra [End|Begin]Update is brought to you by Vista(tm)
 			// http://forums.msdn.microsoft.com/en-US/netfxbcl/thread/3fd6c4a2-b5c7-4334-b11a-e909b11e8bdc/
@@ -394,6 +404,22 @@ namespace Gendarme {
 			Open (url);
 		}
 
+		private void SaveRulesButtonClick (object sender, EventArgs e)
+		{
+			bool all_active = UpdateActiveRules ();
+			// add rule list only if they are not all active
+			if (!all_active) {
+				StringCollection rules = new StringCollection ();
+
+				foreach (IRule rule in Runner.Rules) {
+					if (rule.Active)
+						rules.Add (rule.FullName);
+				}
+				Settings.Default.Rules = rules;
+			}
+			Settings.Default.Save ();
+		}
+
 		private void RulesTreeViewAfterCheck (object sender, TreeViewEventArgs e)
 		{
 			if (e.Node.Tag == null) {
@@ -404,13 +430,17 @@ namespace Gendarme {
 			}
 		}
 
-		private void UpdateActiveRules ()
+		private bool UpdateActiveRules ()
 		{
+			bool all_active = true;
 			foreach (TreeNode assembly in rules_tree_view.Nodes) {
 				foreach (TreeNode rule in assembly.Nodes) {
+					if (!rule.Checked)
+						all_active = false;
 					(rule.Tag as Rule).Active = rule.Checked;
 				}
 			}
+			return all_active;
 		}
 
 		#endregion
