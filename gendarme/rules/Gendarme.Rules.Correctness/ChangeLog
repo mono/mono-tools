@@ -1,3 +1,16 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* dataflow/*.cs: Tweaked the verbose logging in the NullDerefRule 
+	and associated classes so that the output is easier to parse and 
+	explains where failures occurred.
+	* NullDerefAnalysis.cs: 
+	   - Endfinally should not pop anything off the stack.
+	   - Leave should pop everything off the stack, not one frame.
+	     (This was causing fatal exceptions in self-test).
+	   - Leave should pop everything off the stack.
+	   - Don't report a failure if the this argument to a method call
+	     is Nullity.Unknown.
+
 2008-10-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Changed to use 

@@ -333,7 +333,7 @@ public class CFG : Graph {
         string name = method.DeclaringType.Name + "." + method.Name + ".dot";
         FileMode mode = FileMode.Create;
         StreamWriter writer = new StreamWriter(new FileStream(name, mode));
-	writer.WriteLine ("digraph {0} {", method.Name);
+	writer.WriteLine ("digraph {0} (", method.Name);
         foreach(Node node in Nodes) {
             BasicBlock bb = (BasicBlock)node;
 	    writer.WriteLine ("    \"{0}\" [ label = \"{1}\" ];", bb, bb);
@@ -354,7 +354,7 @@ public class CFG : Graph {
 		    writer.WriteLine (" [ label = \"unknown\" ];");
             }
         }
-        writer.WriteLine ("}");
+        writer.WriteLine (")");
         writer.Close();
     }
 }

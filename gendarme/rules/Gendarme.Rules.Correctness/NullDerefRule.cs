@@ -36,9 +36,11 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			NonNullAttributeCollector nnaCollector = new NonNullAttributeCollector();
-			IDataflowAnalysis analysis = new NullDerefAnalysis (method, nnaCollector, Runner);
+			NullDerefAnalysis analysis = new NullDerefAnalysis (method, nnaCollector, Runner);
+			analysis.Verbose = Runner.VerbosityLevel > 1;
 
 			Dataflow dataflow = new Dataflow (cfg, analysis);
+			dataflow.Verbose = Runner.VerbosityLevel > 1;
 			dataflow.Compute ();
 
 			return Runner.CurrentRuleResult;
