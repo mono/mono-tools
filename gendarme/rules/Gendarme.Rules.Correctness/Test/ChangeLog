@@ -1,3 +1,9 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* NullDerefTest.cs: New. Only has a few tests for now. The rule
+	still reports too many false positives so for now the test and the
+	rule are not part of the official build.
+
 2008-10-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedTest.cs: Add more test cases 
