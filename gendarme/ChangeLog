@@ -1,3 +1,7 @@
+2008-10-30  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AUTHORS: Add Jesse Jones to the list.
+
 2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Update to fix entry for ReturnNullRule versus
