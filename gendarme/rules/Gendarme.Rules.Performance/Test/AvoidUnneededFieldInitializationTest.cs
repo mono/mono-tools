@@ -78,7 +78,7 @@ namespace Test.Rules.Performance {
 				s = String.Empty;
 			}
 
-			int i = 0; // ignored by compiler
+			int i = 0; // ignored by csc, but not [g]mcs
 
 			public ClassWithGoodStaticCtor ()
 			{
@@ -149,7 +149,7 @@ namespace Test.Rules.Performance {
 		public void Good ()
 		{
 			AssertRuleSuccess<ClassWithGoodStaticCtor> (".cctor");
-			AssertRuleSuccess<ClassWithGoodStaticCtor> (".ctor");
+			//AssertRuleSuccess<ClassWithGoodStaticCtor> (".ctor");
 
 			AssertRuleSuccess<StructWithBadStaticCtor> (".ctor");
 			AssertRuleSuccess<Struct> (".ctor");
