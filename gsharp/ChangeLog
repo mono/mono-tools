@@ -1,3 +1,11 @@
+2008-10-31  Sandy Armstrong  <sanfordarmstrong@gmail.com>
+
+	* gsharp.desktop.in: Add .desktop file for gsharp. 
+	Name/Comment/GenericName could use some review, and no Icon is set
+	yet.
+
+	* Makefile.am: Support for .desktop file.
+
 2008-10-24  Miguel de Icaza  <miguel@novell.com>
 
 	* Shell.cs: Added history support. 

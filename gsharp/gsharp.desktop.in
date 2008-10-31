@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=gsharp
+Comment=Write C# in an interactive shell, and inject your code into running Mono processes
+GenericName=Interactive C# Shell
+Exec=@bindir@/gsharp
+#Icon=gnome-terminal
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Development;
