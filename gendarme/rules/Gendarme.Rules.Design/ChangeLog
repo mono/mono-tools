@@ -1,3 +1,10 @@
+2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderAddingInterfaceRule.cs: Fix reporting the issue. This
+	rule analyze interfaces but report defects on types (a bit unusual)
+	so it needs to build its own Defect instance since the Report
+	overloads already have the rule and target set by the runner.
+
 2008-10-30  Cedric Vivier <cedricv@neonux.com>
 
 	* ConsiderAddingInterfaceRule.cs: New.

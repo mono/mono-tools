@@ -95,7 +95,8 @@ namespace Gendarme.Rules.Design {
 				foreach (TypeDefinition type in module.Types) {
 					if (DoesTypeStealthilyImplementInterface (type, iface)) {
 						string msg = string.Format ("Type implements '{0}' interface but does not declare it.", iface);
-						Runner.Report (type, Severity.Medium, Confidence.High, msg);
+						// use our own Defect since the *real* target (of analysis) is 'type' not 'iface'
+						Runner.Report (new Defect (this, type, iface, Severity.Medium, Confidence.High, msg));
 					}
 				}
 			}
