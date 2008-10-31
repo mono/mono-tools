@@ -1,3 +1,8 @@
+FRAMEWORK_OPTIONS := -debug+ -warn:4 -warnaserror+
+TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:4 -warn:0
+
+FRAMEWORK_OPTIONS += -nowarn:1591	# Missing XML comment
+
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll
 EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
@@ -74,7 +79,7 @@ framework_build_sources += $(framework_generated_sources)
 
 ../bin/Gendarme.Framework.dll: $(framework_build_sources) $(CECIL_ASM)
 	test -d ../bin || mkdir ../bin
-	$(GMCS) -debug -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
+	$(GMCS) $(FRAMEWORK_OPTIONS) -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
@@ -91,7 +96,7 @@ framework_test_sources = \
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
 Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(CECIL_ASM)
-	$(GMCS) -debug -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
+	$(GMCS) $(TESTS_OPTIONS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(framework_test_build_sources)
 
 test: Test.Framework.dll
