@@ -30,7 +30,7 @@ rules_sources = \
 	PreferLiteralOverInitOnlyFieldsRule.cs
 
 # turn off optimization for tests since gmcs (unlike MS csc) now turns "" into String.Empty when optimizing is on
-EXTRA_TESTS_OPTIONS = -unsafe -o-
+EXTRA_TESTS_OPTIONS += -unsafe -o-
 
 tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \

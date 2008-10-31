@@ -1,6 +1,6 @@
 include ../common.make
 
-EXTRA_RULES_OPTIONS = -r:ICSharpCode.SharpZipLib.dll -pkg:dotnet
+EXTRA_RULES_OPTIONS += -r:ICSharpCode.SharpZipLib.dll -pkg:dotnet
 
 rules_sources = \
 	DoNotHardcodePathsRule.cs \

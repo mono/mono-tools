@@ -18,8 +18,6 @@ rules_sources = \
 	ReturnNullRule.cs \
 	ToStringReturnsNullRule.cs 
 
-EXTRA_TESTS_OPTIONS = -d:DEBUG -d:TRACE
-
 tests_sources = \
 	AvoidAssemblyVersionMismatchTest.cs \
 	AvoidVisibleConstantFieldTest.cs \

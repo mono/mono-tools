@@ -7,7 +7,7 @@ rules_sources = \
 	PInvokeShouldNotBeVisibleRule.cs \
 	UseManagedAlternativesToPInvokeRule.cs
 
-EXTRA_TESTS_OPTIONS = -unsafe
+EXTRA_TESTS_OPTIONS += -unsafe
 
 tests_sources = \
 	DoNotCastIntPtrToInt32Test.cs \

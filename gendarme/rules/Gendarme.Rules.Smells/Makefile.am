@@ -1,6 +1,6 @@
 include ../common.make
 
-EXTRA_RULES_OPTIONS = -r:../../bin/Gendarme.Rules.Performance.dll
+EXTRA_RULES_OPTIONS += -r:../../bin/Gendarme.Rules.Performance.dll
 
 rules_sources =  \
 	AvoidCodeDuplicatedInSameClassRule.cs \
@@ -15,7 +15,7 @@ rules_sources =  \
 	ExpressionFillerVisitor.cs \
 	Utilities.cs
 
-EXTRA_TESTS_OPTIONS = -r:System.Windows.Forms.dll
+EXTRA_TESTS_OPTIONS += -r:System.Windows.Forms.dll
 
 tests_sources =  \
 	AvoidCodeDuplicatedInSameClassTest.cs \

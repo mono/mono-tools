@@ -1,3 +1,7 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Inherit EXTRA_TESTS_OPTIONS from common.make.
+
 2008-10-21  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* Makefile.am: Removed common stuff in order to reduce duplication with

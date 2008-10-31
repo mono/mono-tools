@@ -1,3 +1,8 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Added TESTS_OPTIONS which defines DEBUG and TRACE
+	and disables warnings.
+
 2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Test.Rules.mdp: Add Fixtures/AssemblyRuleTestFixture.cs

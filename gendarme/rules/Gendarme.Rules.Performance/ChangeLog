@@ -1,3 +1,7 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Append onto the inherited EXTRA_RULES_OPTIONS.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeStructureRule.cs: Add null check in SizeOfStruct (self

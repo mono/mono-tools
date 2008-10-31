@@ -1,3 +1,7 @@
+2008-10-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Append onto the inherited EXTRA_RULES_OPTIONS.
+
 2008-10-26  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidAssemblyVersionMismatchRule.cs: Use the new IsEmpty rock.

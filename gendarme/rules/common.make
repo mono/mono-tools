@@ -1,10 +1,13 @@
 SUBDIRS=Test
 
+EXTRA_RULES_OPTIONS := -debug+ -warn:4 -warnaserror+
+EXTRA_TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:0
+
 console_runner=../../bin/gendarme.exe
 framework=../../bin/Gendarme.Framework.dll
 common_tests=../Test.Rules/Test.Rules.dll
 
-prefixed_rules_category = $(shell expr match "$(PWD)" '.*\(Gendarme.Rules.*\)')
+prefixed_rules_category = $(shell expr "$(PWD)" : '.*\(Gendarme.Rules.*\)')
 rules_category = $(shell echo $(prefixed_rules_category) | cut -c 16-)
 
 rules_dll = ../../bin/$(prefixed_rules_category).dll
@@ -32,13 +35,13 @@ rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
 generated_doc = doc/generated/**/*.xml
 
 $(rules_dll): $(rules_build_sources) $(framework)
-	$(GMCS) -debug -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
+	$(GMCS) -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
 		-r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 
 $(tests_dll): $(test_build_sources) $(rules_dll)
-	$(GMCS) -debug -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
+	$(GMCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
 		-r:$(rules_dll) -r:$(common_tests) -pkg:mono-nunit -out:$@ $(tests_build_sources)
 
 test: $(tests_dll)
