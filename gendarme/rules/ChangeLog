@@ -1,10 +1,15 @@
+2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* config.make: Fix "make distcheck" that I broke when adding
+	AssemblyStaticInfo.cs to every rule assembly.
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
-	* Makefile.am: Added EXTRA_RULES_OPTIONS and EXTRA_TESTS_OPTIONS so that
-    we can build the rules consistently. EXTRA_TESTS_OPTIONS now defines
-    DEBUG and TRACE (which only one rule did before) and disables warnings.
-    EXTRA_RULES_OPTIONS also defines DEBUG and TRACE, enables all warnings,
-    makes warnings errors, and enables checked arithmetic.
+	* Makefile.am: Added EXTRA_RULES_OPTIONS and EXTRA_TESTS_OPTIONS so 
+	that we can build the rules consistently. EXTRA_TESTS_OPTIONS now 
+	defines DEBUG and TRACE (which only one rule did before) and disables
+	warnings. EXTRA_RULES_OPTIONS also defines DEBUG and TRACE, enables 
+	all warnings, makes warnings errors, and enables checked arithmetic.
 
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
