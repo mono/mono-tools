@@ -1,3 +1,8 @@
+2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Update to fix entry for ReturnNullRule versus
+	ConsiderAddingInterfaceRule and add a new one for OptionSet suffix
+
 2008-10-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Update to add an entry about MethodSignatures

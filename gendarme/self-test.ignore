@@ -42,9 +42,8 @@ R: Gendarme.Rules.Naming.AvoidNonAlphanumericIdentifierRule
 T: Gendarme.Framework.Helpers.MethodSignatures
 
 # OK - IMethodRule is not declared on purpose on BadPractice.ReturnNullRule
-# FIXME: we need to be able to ignore a location moreover a target for such kind of rules
 R: Gendarme.Rules.Design.ConsiderAddingInterfaceRule
-T: Gendarme.Framework.IMethodRule
+T: Gendarme.Rules.BadPractice.ReturnNullRule
 
 # non-gendarme code / NDesk.Options
 R: Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
@@ -75,3 +74,5 @@ M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,Sy
 M: NDesk.Options.OptionValueType NDesk.Options.Option::ParsePrototype()
 R: Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
 M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
+R: Gendarme.Rules.Naming.UseCorrectSuffixRule
+T: NDesk.Options.OptionSet
