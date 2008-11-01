@@ -1,3 +1,13 @@
+2008-10-31  Jesse Jones  <jesjones@mindspring.com>
+
+	* common.make: Empty make targets don't seem to build on OS-X which 
+	causes problems when we try to build xml files which aren't there.
+	Fixed this by adding a prereq on the doc directory in addition to
+	the xml files.
+
+	* common.make: tests_dll prereq was completely wrong: it used
+	test_build_sources which was never set instead of tests_build_sources.
+
 2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* config.make: Fix "make distcheck" that I broke when adding

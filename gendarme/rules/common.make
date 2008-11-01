@@ -34,7 +34,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules
 DISTCLEANFILES = Makefile.in $(prefixed_rules_category).xml TestResult.xml
 
 rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
-generated_doc = doc/generated/**/*.xml
+generated_doc = doc doc/generated/**/*.xml
 
 $(rules_dll): $(rules_build_sources) $(framework)
 	$(GMCS) -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
@@ -42,7 +42,7 @@ $(rules_dll): $(rules_build_sources) $(framework)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 
-$(tests_dll): $(test_build_sources) $(rules_dll)
+$(tests_dll): $(tests_build_sources) $(rules_dll)
 	$(GMCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
 		-r:$(rules_dll) -r:$(common_tests) -pkg:mono-nunit -out:$@ $(tests_build_sources)
 
