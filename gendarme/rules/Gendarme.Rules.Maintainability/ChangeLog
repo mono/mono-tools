@@ -1,3 +1,8 @@
+2008-10-31  Jesse Jones  <jesjones@mindspring.com> 
+
+	* AvoidComplexMethodsTest.cs: No longer relies on CustomAttributeCollection
+	returning attributes in the order they were declared in.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Revert visibility change for

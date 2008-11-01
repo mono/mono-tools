@@ -324,11 +324,21 @@ namespace Test.Rules.Maintainability {
 
 			foreach (MethodDefinition method in type.Methods) {
 				actual_cc = Rule.GetCyclomaticComplexityForMethod (method);
-				expected_cc = (int) method.CustomAttributes [0].ConstructorParameters [0];
+				expected_cc = GetExpectedComplexity (method);
 				Assert.AreEqual (actual_cc, expected_cc,
 					"CC for method '{0}' is {1} but should have been {2}.",
 					method.Name, actual_cc, expected_cc);
 			}
+		}
+		
+		private int GetExpectedComplexity(MethodDefinition method)
+		{
+			foreach (CustomAttribute attr in method.CustomAttributes) {
+				if (attr.Constructor.DeclaringType.Name == "ExpectedCCAttribute")
+					return (int) attr.ConstructorParameters [0];
+			}
+			
+			throw new ArgumentException (method + " does not have ExpectedCCAttribute");
 		}
 
 		[Test]
