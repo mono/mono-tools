@@ -22,7 +22,7 @@ framework_documentationdir = $(prefix)/lib/monodoc/sources
 framework_documentation_DATA = $(framework_doc)
 
 framework_doc = $(framework_doc_zip) $(framework_doc_source) $(framework_doc_tree)
-generated_doc = doc/generated/**/*.xml
+generated_doc = doc doc/generated/**/*.xml
 
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)

@@ -1,3 +1,10 @@
+2008-10-31  Jesse Jones  <jesjones@mindspring.com>
+
+	* common.make: Empty make targets don't seem to build on OS-X which 
+	causes problems when we try to build xml files which aren't there.
+	Fixed this by adding a prereq on the doc directory in addition to
+	the xml files.
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: Added FRAMEWORK_OPTIONS and TESTS_OPTIONS. These define
