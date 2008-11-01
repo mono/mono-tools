@@ -1,5 +1,5 @@
 //
-// Unit Tests for DoNotCastIntPtrToInt32Rule.
+// Unit Tests for DoNotAssumeIntPtrSizeRule.
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -42,7 +42,7 @@ using Test.Rules.Definitions;
 namespace Test.Rules.Interoperability {
 	
 	[TestFixture]
-	public unsafe class DoNotCastIntPtrToInt32Test : MethodRuleTestFixture<DoNotCastIntPtrToInt32Rule> {
+	public unsafe class DoNotAssumeIntPtrSizeTest : MethodRuleTestFixture<DoNotAssumeIntPtrSizeRule> {
 
 		private int CastIntPtrToInt32 (IntPtr ptr)
 		{
@@ -77,12 +77,12 @@ namespace Test.Rules.Interoperability {
 		[Test]
 		public void TypeCastIntPtr ()
 		{
-			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastIntPtrToInt32", 1);
-			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastIntPtrToUInt32", 1);
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToInt64");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToUInt64");
-			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("CastIntPtrToIntPtr");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastIntPtrToVoidPointer");
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToInt32", 1);
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToUInt32", 1);
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToInt64");
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToUInt64");
+			AssertRuleDoesNotApply<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToIntPtr");
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastIntPtrToVoidPointer");
 		}
 
 		private int CastUIntPtrToInt32 (UIntPtr ptr)
@@ -118,12 +118,12 @@ namespace Test.Rules.Interoperability {
 		[Test]
 		public void TypeCastUIntPtr ()
 		{
-			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToInt32", 1);
-			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToUInt32", 1);
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToInt64");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToUInt64");
-			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToIntPtr");
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("CastUIntPtrToVoidPointer");
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToInt32", 1);
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToUInt32", 1);
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToInt64");
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToUInt64");
+			AssertRuleDoesNotApply<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToIntPtr");
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("CastUIntPtrToVoidPointer");
 		}
 
 		private void BadLoop (IntPtr dest)
@@ -147,8 +147,8 @@ namespace Test.Rules.Interoperability {
 		[Test]
 		public void Convert ()
 		{
-			AssertRuleFailure<DoNotCastIntPtrToInt32Test> ("BadLoop", 1);
-			AssertRuleSuccess<DoNotCastIntPtrToInt32Test> ("GoodLoop");
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("BadLoop", 1);
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("GoodLoop");
 		}
 
 		public override bool Equals (object obj)
@@ -167,7 +167,66 @@ namespace Test.Rules.Interoperability {
 			// no IL for p/invokes
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
 			// rule does not apply to GetHashCode
-			AssertRuleDoesNotApply<DoNotCastIntPtrToInt32Test> ("GetHashCode");
+			AssertRuleDoesNotApply<DoNotAssumeIntPtrSizeTest> ("GetHashCode");
+		}
+
+		// adapted from System.Drawing/System.Drawing.Printing/PrintingServicesUnix.cs
+		public void ReadInt32 (IntPtr p)
+		{
+			for (int i = 0; i < 1000; i++) {
+				// that won't work on 64 bits platforms
+				p = (IntPtr) Marshal.ReadInt32 (p);
+			}
+		}
+
+		public void ReadInt64 (IntPtr p)
+		{
+			for (int i = 0; i < 1000; i++) {
+				// that won't work on 32 bits platforms
+				p = (IntPtr) Marshal.ReadInt64 (p);
+			}
+		}
+
+		public void ReadIntPtr (IntPtr p)
+		{
+			for (int i = 0; i < 1000; i++) {
+				p = (IntPtr) Marshal.ReadIntPtr (p);
+			}
+		}
+	
+		[Test]
+		public void MarshalRead ()
+		{
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("ReadInt32", 1);
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("ReadInt64", 1);
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("ReadIntPtr");
+		}
+
+		public void WriteInt32 (IntPtr p)
+		{
+			for (int i = 0; i < 1000; i++) {
+				// that won't work on 64 bits platforms
+				Marshal.WriteInt32 (p, (int) p);
+			}
+		}
+
+		public void WriteInt64 (IntPtr p)
+		{
+			// that will work on both 32/64 platform (even if its not the preferred way)
+			Marshal.WriteInt64 (p, (long) p);
+		}
+
+		public void WriteIntPtr (IntPtr p)
+		{
+			Marshal.WriteIntPtr (p, p);
+		}
+
+		[Test]
+		public void MarshalWrite ()
+		{
+			AssertRuleFailure<DoNotAssumeIntPtrSizeTest> ("WriteInt32", 1);
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("WriteInt64");
+			AssertRuleSuccess<DoNotAssumeIntPtrSizeTest> ("WriteIntPtr");
 		}
 	}
 }

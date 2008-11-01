@@ -1,3 +1,9 @@
+2008-11-01  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotCastIntPtrToInt32Test.cs: Add test case for Marshal.
+	ReadInt[32|64] methods casted into IntPtr. Rename fixture to 
+	DoNotAssumeIntPtrSizeTest.
+
 2008-09-14  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotCastIntPtrToInt32Test.cs: Change some results from Success
