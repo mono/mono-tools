@@ -20,6 +20,7 @@
     <File name="MarshalStringsInPInvokeDeclarationsTest.cs" subtype="Code" buildaction="Compile" />
     <File name="UseManagedAlternativesToPInvokeTest.cs" subtype="Code" buildaction="Compile" />
     <File name="DoNotCastIntPtrToInt32Test.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarshalBooleansInPInvokeDeclarationsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />

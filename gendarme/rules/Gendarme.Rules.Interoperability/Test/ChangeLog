@@ -1,3 +1,9 @@
+2008-11-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarshalBooleansInPInvokeDeclarationsTest.cs: New. Unit tests for
+	MarshalBooleansInPInvokeDeclarationsRule
+	* Test.Rules.Interoperability.mdp: Add new test to MD project file
+
 2008-11-01  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotCastIntPtrToInt32Test.cs: Add test case for Marshal.
