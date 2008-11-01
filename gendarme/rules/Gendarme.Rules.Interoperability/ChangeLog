@@ -1,3 +1,11 @@
+2008-11-01  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* MarshalBooleansInPInvokeDeclarationsRule.cs: New. Rule to warn if
+	no marshalling information is given for boolean parameters and return
+	values.
+	* Gendarme.Rules.Interoperability.mdp: Add rule to MD project file.
+	* Makefile.am: Add rule and test to build.
+
 2008-11-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotCastIntPtrToInt32Rule.cs: Now cover the case where Marshal.

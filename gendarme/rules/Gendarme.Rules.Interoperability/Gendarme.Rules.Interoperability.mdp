@@ -20,6 +20,7 @@
     <File name="UseManagedAlternativesToPInvokeRule.cs" subtype="Code" buildaction="Compile" />
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="DoNotCastIntPtrToInt32Rule.cs" subtype="Code" buildaction="Compile" />
+    <File name="MarshalBooleansInPInvokeDeclarationsRule.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="framework" />
