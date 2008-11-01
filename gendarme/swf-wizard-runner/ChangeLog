@@ -1,3 +1,10 @@
+2008-10-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme-wizard.desktop.in: Moved from parent directory. Adjusted
+	local (wrt bindir) and changed icon to our SVN file.
+	* Makefile.am: Generate final .desktop file. Include the .in into
+	the dist and cleanup the generated file.
+
 2008-10-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.Designer.cs: Add button to save the current rules selection
