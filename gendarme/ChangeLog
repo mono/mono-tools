@@ -1,3 +1,8 @@
+2008-10-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme-wizard.desktop: Moved into swf-wizard-runner directory
+	* Makefile.am: Add gendarme.svg to pixmaps
+
 2008-10-30  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AUTHORS: Add Jesse Jones to the list.
