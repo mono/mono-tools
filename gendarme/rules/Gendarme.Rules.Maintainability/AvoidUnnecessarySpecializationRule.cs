@@ -281,8 +281,9 @@ namespace Gendarme.Rules.Maintainability {
 						currentLeastType = method.Parameters [method.Parameters.Count - usage.StackOffset - 1].ParameterType;
 
 						//if parameter type is a generic, find the 'real' constructed type
-						if (currentLeastType is GenericParameter)
-							currentLeastType = GetConstructedGenericType (method, (GenericParameter) currentLeastType);
+						GenericParameter gp = (currentLeastType as GenericParameter);
+						if (gp != null)
+							currentLeastType = GetConstructedGenericType (method, gp);
 					}
 
 					//if the best we could find is object, ignore this round
