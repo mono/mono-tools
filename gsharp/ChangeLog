@@ -1,3 +1,7 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MainWindows.cs: Fix compilation.
+
 2008-11-02  Miguel de Icaza  <miguel@novell.com>
 
 	* InteractiveGraphicsBase.cs (RegisterRenderHandler,

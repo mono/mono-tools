@@ -24,6 +24,7 @@
 //
 
 using System;
+using System.Collections;
 using Gtk;
 using Mono.Attach;
 using System.Runtime.InteropServices;
