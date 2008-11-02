@@ -5,6 +5,7 @@ rules_sources = \
 	AvoidFloatingPointEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
+	CheckParametersNullityInVisibleMethodsRule.cs \
 	DisposableFieldsShouldBeDisposedRule.cs \
 	DontCompareWithNaNRule.cs \
 	DoNotRoundIntegersRule.cs \
@@ -27,6 +28,7 @@ tests_sources = \
 	AvoidFloatingPointEqualityTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \
+	CheckParametersNullityInVisibleMethodsTest.cs \
 	DisposableFieldsShouldBeDisposedTest.cs \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \

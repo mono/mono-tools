@@ -1,3 +1,11 @@
+2008-11-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsRule.cs: New. Simple rule
+	to look for missing null check on method's parameters. Porbably short
+	lived wrt NullDerefRule being worked on actively but still a near-zero
+	false positive solution for 2.2.
+	* Makefile.am: Add moved rule and test to the build.
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* dataflow/*.cs: Tweaked the verbose logging in the NullDerefRule 
