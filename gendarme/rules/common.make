@@ -54,7 +54,7 @@ run-test: test
 self-test: $(rules_dll)
 	mono --debug $(console_runner) $(rules_dll)
 
-$(generated_doc): $(rules_dll)
+$(generated_doc): $(rules_dll).doc
 	test -d doc || mkdir doc
 	mdoc update -i $(rules_dll).doc -o doc/generated $(rules_dll)
 

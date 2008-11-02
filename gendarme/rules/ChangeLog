@@ -1,3 +1,7 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* common.make: Regenerate documentation if the .doc file has changed
+
 2008-10-31  Jesse Jones  <jesjones@mindspring.com>
 
 	* common.make: Empty make targets don't seem to build on OS-X which 
