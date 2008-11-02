@@ -1,5 +1,10 @@
 2008-11-03  Cedric Vivier  <cedricv@neonux.com>
 
+	* AvoidUnnecessarySpecializationRule.cs: Use generic parameter owner
+	instead of genericity of current method (GetConstructedGenericType).
+
+2008-11-03  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidUnnecessarySpecializationRule.cs: Handle correctly generic arguments
 	and/or non-generic arguments used as a generic argument of a generic method.
 	Fixes false positives on such cases and makes the rule suggests a proper

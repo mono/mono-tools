@@ -496,7 +496,6 @@ namespace Test.Rules.Maintainability {
 		}
 
 		[Test]
-		[Ignore ("fails")]
 		public void CollectionKey ()
 		{
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("GetCache");

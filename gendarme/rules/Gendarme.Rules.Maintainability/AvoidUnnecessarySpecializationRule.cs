@@ -433,9 +433,9 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static TypeReference GetConstructedGenericType (MethodReference method, GenericParameter parameter)
 		{
-			if (method is GenericInstanceMethod)
+			if (parameter.Owner is MethodReference)
 				return ((GenericInstanceMethod) method).GenericArguments [parameter.Position];
-			if (method.DeclaringType is GenericInstanceType)
+			if (parameter.Owner is TypeReference)
 				return ((GenericInstanceType) method.DeclaringType).GenericArguments [parameter.Position];
 			return parameter.Owner.GenericParameters [parameter.Position];
 		}
