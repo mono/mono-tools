@@ -423,9 +423,9 @@ namespace Gendarme.Rules.Maintainability {
 				sb.Append ("' could be of type '");
 
 			TypeReference type = types_least [parameter.Sequence - 1];
-			GenericParameter gp = (type as GenericParameter);
-			if (gp != null) {
-				type = (gp.Owner as TypeReference);
+			if (type is GenericParameter) {
+				GenericParameter gp = (GenericParameter) type;
+				type = gp.Owner.GenericParameters [gp.Position];
 			}
 
 			sb.Append (type.FullName);
