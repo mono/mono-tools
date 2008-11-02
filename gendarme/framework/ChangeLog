@@ -1,9 +1,7 @@
-2008-10-31  Jesse Jones  <jesjones@mindspring.com>
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
 
-	* common.make: Empty make targets don't seem to build on OS-X which 
-	causes problems when we try to build xml files which aren't there.
-	Fixed this by adding a prereq on the doc directory in addition to
-	the xml files.
+	* Makefile.am: Regenerate documentation if the .doc file has changed
+	* ChangeLog: Remove duplicate entry (from another dir)
 
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 

@@ -107,7 +107,7 @@ run-test: test
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)
 
-$(generated_doc): $(framework_SCRIPTS)
+$(generated_doc): $(framework_SCRIPTS).doc
 	test -d doc || mkdir doc
 	mdoc update -i $(framework_SCRIPTS).doc -o doc/generated $(framework_SCRIPTS)
 
