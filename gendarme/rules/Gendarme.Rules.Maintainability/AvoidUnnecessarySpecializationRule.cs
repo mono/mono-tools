@@ -279,6 +279,10 @@ namespace Gendarme.Rules.Maintainability {
 					} else {
 						//argument is also used as an argument in the call
 						currentLeastType = method.Parameters [method.Parameters.Count - usage.StackOffset - 1].ParameterType;
+
+						//if parameter type is a generic, find the 'real' constructed type
+						if (currentLeastType is GenericParameter)
+							currentLeastType = GetConstructedGenericType (method, (GenericParameter) currentLeastType);
 					}
 
 					//if the best we could find is object, ignore this round
@@ -422,15 +426,20 @@ namespace Gendarme.Rules.Maintainability {
 			else
 				sb.Append ("' could be of type '");
 
-			TypeReference type = types_least [parameter.Sequence - 1];
-			if (type is GenericParameter) {
-				GenericParameter gp = (GenericParameter) type;
-				type = gp.Owner.GenericParameters [gp.Position];
-			}
-
-			sb.Append (type.FullName);
+			sb.Append (types_least [parameter.Sequence - 1].FullName);
 			sb.Append ("'.");
 			return sb.ToString ();
 		}
+
+		private static TypeReference GetConstructedGenericType (MethodReference method, GenericParameter parameter)
+		{
+			if (method is GenericInstanceMethod)
+				return ((GenericInstanceMethod) method).GenericArguments [parameter.Position];
+			if (method.DeclaringType is GenericInstanceType)
+				return ((GenericInstanceType) method.DeclaringType).GenericArguments [parameter.Position];
+			return parameter.Owner.GenericParameters [parameter.Position];
+		}
+
 	}
 }
+

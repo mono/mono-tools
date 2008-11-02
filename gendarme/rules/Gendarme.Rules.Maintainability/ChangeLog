@@ -1,5 +1,13 @@
 2008-11-03  Cedric Vivier  <cedricv@neonux.com>
 
+	* AvoidUnnecessarySpecializationRule.cs: Handle correctly generic arguments
+	and/or non-generic arguments used as a generic argument of a generic method.
+	Fixes false positives on such cases and makes the rule suggests a proper
+	type instead of the infamous !!0 on real positive cases (such as
+	SpecializedClass.GenericMethodArgument testcase).
+
+2008-11-03  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidUnnecessarySpecializationRule.cs: Fix NRE when gp.Owner is not a TypeReference.
 	Regression tests pending, this needs more investigation.
 

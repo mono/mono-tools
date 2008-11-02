@@ -170,6 +170,12 @@ namespace Test.Rules.Maintainability {
 		{
 			Console.WriteLine (x.Message);
 		}
+
+		public int GenericMethodArgument (Type type)
+		{
+			Type [] types = new Type [0];
+			return Array.IndexOf<Type> (types, type);
+		}
 	}
 
 	public class SpecializedClass {
@@ -251,6 +257,13 @@ namespace Test.Rules.Maintainability {
 		public void GenericMethod<T> (T x) where T : System.ArgumentException
 		{
 			Console.WriteLine (x.Message);
+		}
+
+		//`type` could be MemberInfo
+		public int GenericMethodArgument (Type type)
+		{
+			MemberInfo [] types = new MemberInfo [0];
+			return Array.IndexOf<MemberInfo> (types, type);
 		}
 	}
 
@@ -504,5 +517,14 @@ namespace Test.Rules.Maintainability {
 		{
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
 		}
+
+		[Test]
+		public void GenericMethodArgument ()
+		{
+			AssertRuleSuccess<GeneralizedClass> ("GenericMethodArgument");
+			AssertRuleFailure<SpecializedClass> ("GenericMethodArgument");
+			Assert.IsTrue(Runner.Defects [0].Text.IndexOf ("'System.Reflection.MemberInfo'") > 0);
+		}
+
 	}
 }
