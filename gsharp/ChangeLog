@@ -1,3 +1,7 @@
+2008-11-02  Miguel de Icaza  <miguel@novell.com>
+
+	* Shell.cs: Support multiple data transformations on the result.
+
 2008-11-02  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Makefile.am: Fix typo that broke make distcheck

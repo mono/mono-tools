@@ -65,12 +65,11 @@ namespace Mono.CSharp.Gui
 			Evaluator.ReferenceAssembly (e.LoadedAssembly);
 		}
 
-		internal static Gtk.Widget RenderBitmaps (object o)
+		internal static object RenderBitmaps (object o)
 		{
 			System.Drawing.Bitmap bitmap = o as System.Drawing.Bitmap;
 			if (bitmap == null)
 				return null;
-
 			return new BitmapWidget (bitmap);
 		}
 		
@@ -79,7 +78,7 @@ namespace Mono.CSharp.Gui
 			if (!HostHasGtkRunning)
 				Application.Init ();
 
-			InteractiveGraphicsBase.RegisterRenderHandler (RenderBitmaps);
+			InteractiveGraphicsBase.RegisterTransformHandler (RenderBitmaps);
 			
 			MainWindow m = new MainWindow ();
 			InteractiveGraphicsBase.MainWindow = m;

@@ -289,16 +289,32 @@ namespace Mono.CSharp.Gui
 
 			Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
 
-			foreach (var render_handler in InteractiveGraphicsBase.type_handlers){
-				Gtk.Widget w = render_handler (res);
-				if (w != null){
-					TextChildAnchor anchor = Buffer.CreateChildAnchor (ref end);
-					w.Show ();
-					AddChildAtAnchor (w, anchor);
-					return;
+			var handlers = new List<InteractiveGraphicsBase.TransformHandler> (InteractiveGraphicsBase.type_handlers);
+
+			object original = res;
+			bool retry;
+			do {
+				retry = false;
+				foreach (var render_handler in handlers){
+					object transformed = render_handler (res);
+					if (transformed == null || transformed == res)
+						continue;
+					
+					if (transformed is Gtk.Widget){
+						Gtk.Widget w = (Gtk.Widget) transformed;
+						TextChildAnchor anchor = Buffer.CreateChildAnchor (ref end);
+						w.Show ();
+						AddChildAtAnchor (w, anchor);
+						return;
+					} else {
+						res = transformed;
+						handlers.Remove (render_handler);
+						retry = true;
+						break;
+					}
 				}
-			}
-			
+			} while (retry && handlers.Count > 0);
+
 			StringWriter pretty = new StringWriter ();
 			try {
 				PrettyPrint (pretty, res);

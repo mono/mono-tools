@@ -34,7 +34,7 @@ namespace Mono.CSharp.Gui
 	
 	public class InteractiveGraphicsBase : Mono.CSharp.InteractiveBase
 	{
-		static internal List<RenderHandler> type_handlers = new List<RenderHandler> ();
+		static internal List<TransformHandler> type_handlers = new List<TransformHandler> ();
 		
 		public delegate double DoubleFunc (double a);
 		static int width = 400;
@@ -201,9 +201,9 @@ namespace Mono.CSharp.Gui
 			}
 		}
 
-		public delegate Gtk.Widget RenderHandler (object o);
+		public delegate object TransformHandler (object o);
 		
-		public static void RegisterRenderHandler (RenderHandler o)
+		public static void RegisterTransformHandler (TransformHandler o)
 		{
 			if (o == null)
 				throw new ArgumentException ("parameter is null");
@@ -214,7 +214,7 @@ namespace Mono.CSharp.Gui
 			type_handlers.Insert (0, o);
 		}
 
-		public static void UnregisterRenderHandler (RenderHandler o)
+		public static void UnregisterTransformHandler (TransformHandler o)
 		{
 			if (o == null)
 				return;
