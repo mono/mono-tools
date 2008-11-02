@@ -28,6 +28,7 @@ using System.Collections;
 using Gtk;
 using Mono.Attach;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 namespace Mono.CSharp.Gui
 {
