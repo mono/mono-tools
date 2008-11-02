@@ -22,7 +22,7 @@ gsharp_sources =                        			\
         $(srcdir)/gtk-gui/Mono.CSharp.Gui.ProcessSelector.cs
 
 EXTRA_DIST = $(gsharp_sources) gsharp.in $(desktop_DATA).in
-CLEANFILES = $(gsharp_DATA) $(gsharp_DATA).mdb $(desktop_DATA).in
+CLEANFILES = $(gsharp_DATA) $(gsharp_DATA).mdb $(desktop_DATA)
 
 gsharp.exe: $(gsharp_sources)
 	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies)

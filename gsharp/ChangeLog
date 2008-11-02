@@ -1,5 +1,6 @@
-2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com> 
 
+	* Makefile.am: Fix typo that broke make distcheck
 	* MainWindows.cs: Fix compilation.
 
 2008-11-02  Miguel de Icaza  <miguel@novell.com>
