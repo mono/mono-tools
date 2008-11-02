@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Smells {
 			return Runner.CurrentRuleResult;
 		}
 
-		private bool ValidLink (Instruction ins)
+		static private bool ValidLink (Instruction ins)
 		{
 			bool valid = false;
 			

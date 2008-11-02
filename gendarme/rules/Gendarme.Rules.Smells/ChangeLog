@@ -1,3 +1,7 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMessageChainsRule.cs: Change ValidLink to static (self-test)
+
 2008-11-02  Jesse Jones  <jesjones@mindspring.com>
  
 	* AvoidMessageChainsRule.cs: Clean up the Problem text a bit. When 
