@@ -1,3 +1,9 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: Add a catch-all since we can't catch the
+	MonoSymbolFileException throw for earlier version of the MDB
+	debugging symbols.
+
 2008-10-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CommonRocks.cs: Add Version.IsEmpty() rock
