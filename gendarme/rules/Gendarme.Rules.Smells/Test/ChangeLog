@@ -1,3 +1,9 @@
+2008-11-02  Jesse Jones  <jesjones@mindspring.com.com>
+
+	* AvoidMessageChainsTest.cs: Added two test cases 1) verify that we
+	work if distinct chains are not separated by a non-call 2) verify
+	that a relatively complex linq query does not fail.
+
 2008-09-15  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidCodeDuplicatedInSameClassTest.cs: Added test for the issue that

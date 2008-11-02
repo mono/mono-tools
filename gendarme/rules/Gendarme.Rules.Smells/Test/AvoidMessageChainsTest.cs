@@ -27,6 +27,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using Gendarme.Framework;
@@ -42,14 +44,18 @@ namespace Test.Rules.Smells {
 
 	class One {
 		public Two ReturnTwo (int x) {return null;}
+		public Two Two {get; set;}
 	}
 
 	class Two {
 		public Three ReturnThree (string x) {return null;}
+		public Three Three {get; set;}
+		public object Tag {get; set;}
 	}
 
 	class Three {
 		public Four ReturnFour (object o, int f) {return null;}
+		public Four Four {get; set;}
 	}
 	class Four {
 		public Five ReturnFive (float f) {return null;}
@@ -183,6 +189,50 @@ namespace Test.Rules.Smells {
 		public void CompareTest ()
 		{
 			AssertRuleSuccess<AvoidMessageChainsTest> ("Compare");
+		}
+		
+		private static One Start {get; set;}
+
+		public void StaticProperty ()
+		{
+			One beta = new One();
+
+			// 1 222 333                 11111 222 333
+			beta.Two.Tag = ((PlatformID) Start.Two.Tag);	// because Start is static there's no load instruction between these two lines
+			
+			//                11111 222 333
+			Console.WriteLine(Start.Two.Tag);
+		}
+
+		[Test]
+		public void StaticPropertyTest ()
+		{
+			AssertRuleSuccess<AvoidMessageChainsTest> ("StaticProperty");
+		}
+		
+		public object Linq ()
+		{
+			var query = from n in Runner.Defects
+				    group n by n.Rule into a
+				    orderby a.Key.Name
+				    select new {
+					    Rule = a.Key,
+					    Value = from o in a
+						    group o by o.Target into r
+						    orderby r.ToString()
+						    select new {
+							    Target = r.Key,
+							    Value = r
+						    }
+				    };
+				
+			return query;
+		}
+
+		[Test]
+		public void LinqTest ()
+		{
+			AssertRuleSuccess<AvoidMessageChainsTest> ("Linq");
 		}
 	}
 }
