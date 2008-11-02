@@ -486,8 +486,8 @@ namespace Gendarme.Framework.Rocks {
 		public static Instruction TraceBack (this Instruction self, MethodDefinition method, int offset)
 		{
 			int n = offset + self.GetPopCount (method);
-			self = self.Previous;
-			while (self != null) {
+			while (n > 0 && self.Previous != null) {
+				self = self.Previous;
 				n -= self.GetPushCount ();
 				if (n == 0)
 					return self;
@@ -495,7 +495,6 @@ namespace Gendarme.Framework.Rocks {
 				if (pop == -1)
 					return null; // PopAll
 				n += pop;
-				self = self.Previous;
 			}
 			return null;
 		}

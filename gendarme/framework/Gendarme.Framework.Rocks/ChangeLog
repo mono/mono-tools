@@ -1,3 +1,9 @@
+2008-11-02  Jesse Jones  <jesjones@mindspring.com>
+
+	* InstructionRocks.cs: Fixed TraceBack so that it only goes back
+	if the stack is non empty (the old code had problems with nullary
+	static methods for example).
+
 2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ModuleRocks.cs: Add a catch-all since we can't catch the
