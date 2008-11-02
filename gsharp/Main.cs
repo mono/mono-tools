@@ -32,7 +32,8 @@ namespace Mono.CSharp.Gui
 				
 				Gtk.Application.Invoke (delegate { handle.Set (); });
 				HostHasGtkRunning = handle.WaitOne (3000, true);
-				
+
+				InteractiveGraphicsBase.Attached = true;
 				Gtk.Application.Invoke (delegate {
 					try {
 						Evaluator.Init (new string [0]);
@@ -63,13 +64,27 @@ namespace Mono.CSharp.Gui
 		{
 			Evaluator.ReferenceAssembly (e.LoadedAssembly);
 		}
-				
+
+		internal static Gtk.Widget RenderBitmaps (object o)
+		{
+			System.Drawing.Bitmap bitmap = o as System.Drawing.Bitmap;
+			if (bitmap == null)
+				return null;
+
+			return new BitmapWidget (bitmap);
+		}
+		
 		public static void Start (string title)
 		{
 			if (!HostHasGtkRunning)
 				Application.Init ();
+
+			InteractiveGraphicsBase.RegisterRenderHandler (RenderBitmaps);
+			
 			MainWindow m = new MainWindow ();
+			InteractiveGraphicsBase.MainWindow = m;
 			m.Title = title;
+			m.LoadStartupFiles ();
 			m.ShowAll ();
 			if (!HostHasGtkRunning)
 				Application.Run ();

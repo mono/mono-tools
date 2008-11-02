@@ -1,3 +1,22 @@
+2008-11-02  Miguel de Icaza  <miguel@novell.com>
+
+	* InteractiveGraphicsBase.cs (RegisterRenderHandler,
+	UnregisterRenderHandler): new methods to allow scripts to register
+	their own rendering handlers.
+
+	(Attached): useful property to determine if we are running on an
+	attached process or not.
+
+	(MainWindow): pointer to the current main window.
+	
+	* MainWindow.cs: Add support for loading startup files.
+
+	* Main.cs: Move bitmap rendering here, to split it out from the
+	Shell.
+
+	* Shell.c: Now can use any provided hook to render graphics on the
+	screen. 
+
 2008-10-31  Sandy Armstrong  <sanfordarmstrong@gmail.com>
 
 	* gsharp.desktop.in: Add .desktop file for gsharp. 

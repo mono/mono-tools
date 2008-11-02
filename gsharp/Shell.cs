@@ -40,6 +40,7 @@ using System.IO;
 using Gtk;
 using Mono.CSharp;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Mono.CSharp.Gui
 {
@@ -51,6 +52,7 @@ namespace Mono.CSharp.Gui
 
 		ArrayList history = new ArrayList ();
 		int history_cursor, new_top;
+		TextWriter gui_output;
 		
 		public Shell() : base()
 		{
@@ -70,6 +72,10 @@ namespace Mono.CSharp.Gui
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
 
 			history.Add ("");
+
+			gui_output = new StreamWriter (new GuiStream (this));
+			//Console.SetError (gui_output);
+			//Console.SetOut (gui_output);
 		}
 
 		void CreateTags ()
@@ -115,7 +121,7 @@ namespace Mono.CSharp.Gui
 		// Returns true if the line is complete, so that the line can be entered
 		// into the history, false if this was partial
 		//
-		bool Evaluate (string s)
+		public bool Evaluate (string s)
 		{
 			string res = null;
 			object result;
@@ -271,25 +277,34 @@ namespace Mono.CSharp.Gui
 					prompt_start_iter, prompt_end_iter);
 		}
 
+		public void WriteGui (string s)
+		{
+			ShowResult (s);
+			gui_output.Flush ();
+		}
+		
 		public void ShowResult (object res)
 		{
 			TextIter end = Buffer.EndIter;
 
 			Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
 
-			System.Drawing.Bitmap bitmap = res as System.Drawing.Bitmap;
-			if (bitmap != null){
-				TextChildAnchor anchor = Buffer.CreateChildAnchor (ref end);
-				BitmapWidget bw = new BitmapWidget (bitmap);
-				bw.Show ();
-					
-				AddChildAtAnchor (bw, anchor);
-				
-				return;
+			foreach (var render_handler in InteractiveGraphicsBase.type_handlers){
+				Gtk.Widget w = render_handler (res);
+				if (w != null){
+					TextChildAnchor anchor = Buffer.CreateChildAnchor (ref end);
+					w.Show ();
+					AddChildAtAnchor (w, anchor);
+					return;
+				}
 			}
 			
 			StringWriter pretty = new StringWriter ();
-			PrettyPrint (pretty, res);
+			try {
+				PrettyPrint (pretty, res);
+			} catch (Exception e) {
+				Console.WriteLine (e);
+			}
 			Buffer.InsertWithTagsByName (ref end, pretty.ToString (), "Stdout");
 		}
 
@@ -445,9 +460,17 @@ namespace Mono.CSharp.Gui
 				foreach (DictionaryEntry entry in dict){
 					count++;
 					p (output, "{ ");
-					PrettyPrint (output, entry.Key);
+					try {
+						PrettyPrint (output, entry.Key);
+					} catch {
+						p (output, "<error>");
+					}
 					p (output, ", ");
-					PrettyPrint (output, entry.Value);
+					try {
+						PrettyPrint (output, entry.Value);
+					} catch {
+						p (output, "<error>");
+					}
 					if (count != top)
 						p (output, " }, ");
 					else
@@ -457,19 +480,54 @@ namespace Mono.CSharp.Gui
 			} else if (result is IEnumerable) {
 				int i = 0;
 				p (output, "{ ");
-				foreach (object item in (IEnumerable) result) {
-					if (i++ != 0)
-						p (output, ", ");
-
-					PrettyPrint (output, item);
+				try {
+					foreach (object item in (IEnumerable) result) {
+						if (i++ != 0)
+							p (output, ", ");
+						
+						PrettyPrint (output, item);
+					}
+				} catch {
+					p (output, "<error>");
 				}
 				p (output, " }");
 			} else if (result is char){
 				EscapeChar (output, (char) result);
 			} else {
-				p (output, result.ToString ());
+				try {
+					p (output, result.ToString ());
+				} catch {
+					p (output, "<error>");
+				}
 			}
 		}
+	}
 
+	public class GuiStream : Stream {
+		Shell shell;
+		
+		public GuiStream (Shell s)
+		{
+			shell = s;
+		}
+		
+		public override bool CanRead { get { throw new Exception (); return false; } }
+		public override bool CanSeek { get { return false; } }
+		public override bool CanWrite { get { return true; } }
+
+
+		public override long Length { get { return 0; } } 
+		public override long Position { get { return 0; } set {} }
+		public override void Flush () { Console.WriteLine ("Flush"); }
+		public override int Read  ([In,Out] byte[] buffer, int offset, int count) { return -1; }
+
+		public override long Seek (long offset, SeekOrigin origin) { Console.WriteLine ("Fuck"); return 0; }
+
+		public override void SetLength (long value) { }
+
+		public override void Write (byte[] buffer, int offset, int count) {
+			Console.WriteLine ("WIRING {0}",Encoding.UTF8.GetString (buffer, offset, count));
+			shell.ShowResult (Encoding.UTF8.GetString (buffer, offset, count));
+		}
 	}
 }

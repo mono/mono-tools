@@ -48,7 +48,73 @@ namespace Mono.CSharp.Gui
 			p.Destroy ();
 		}
 
-		
+		delegate string ReadLiner (bool primary);
+
+		public void LoadStartupFiles ()
+		{
+			string dir = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData),
+				"gsharp");
+			if (!System.IO.Directory.Exists (dir))
+				return;
+
+			ArrayList sources = new ArrayList ();
+			ArrayList libraries = new ArrayList ();
+			
+			foreach (string file in System.IO.Directory.GetFiles (dir)){
+				string l = file.ToLower ();
+				
+				if (l.EndsWith (".cs"))
+					sources.Add (file);
+				else if (l.EndsWith (".dll"))
+					libraries.Add (file);
+			}
+
+			foreach (string file in libraries){
+				Evaluator.LoadAssembly (file);
+			}
+			
+			foreach (string file in sources){
+				try {
+					using (System.IO.StreamReader r = System.IO.File.OpenText (file)){
+						ReadEvalPrintLoopWith (p => r.ReadLine ());
+					}
+				} catch {
+				}
+			}
+		}
+	
+		string Evaluate (string input)
+		{
+			bool result_set;
+			object result;
+
+			try {
+				input = Evaluator.Evaluate (input, out result, out result_set);
+			} catch (Exception e){
+				Console.WriteLine (e);
+				return null;
+			}
+			
+			return input;
+		}
+
+		void ReadEvalPrintLoopWith (ReadLiner readline)
+		{
+			string expr = null;
+			while (true){
+				string input = readline (expr == null);
+				if (input == null)
+					return;
+
+				if (input == "")
+					continue;
+
+				expr = expr == null ? input : expr + "\n" + input;
+				
+				expr = Evaluate (expr);
+			} 
+		}
+
 		public MainWindow() : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();

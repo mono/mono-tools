@@ -26,6 +26,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Collections.Generic;
 
 namespace Mono.CSharp.Gui
 {
@@ -33,6 +34,8 @@ namespace Mono.CSharp.Gui
 	
 	public class InteractiveGraphicsBase : Mono.CSharp.InteractiveBase
 	{
+		static internal List<RenderHandler> type_handlers = new List<RenderHandler> ();
+		
 		public delegate double DoubleFunc (double a);
 		static int width = 400;
 		static int height = 350;
@@ -196,6 +199,41 @@ namespace Mono.CSharp.Gui
 				lx = x;
 				ly = y;
 			}
+		}
+
+		public delegate Gtk.Widget RenderHandler (object o);
+		
+		public static void RegisterRenderHandler (RenderHandler o)
+		{
+			if (o == null)
+				throw new ArgumentException ("parameter is null");
+
+			if (type_handlers.Contains (o))
+				return;
+
+			type_handlers.Insert (0, o);
+		}
+
+		public static void UnregisterRenderHandler (RenderHandler o)
+		{
+			if (o == null)
+				return;
+			type_handlers.Remove (o);
+		}
+
+		// Whether this is an attached program or not.
+		
+		static bool attached;
+		public static bool Attached {
+			get { return attached; }
+			internal set { attached = value; }
+		}
+
+		static Gtk.Widget main_window;
+		// A handle to our main window.
+		public static Gtk.Widget MainWindow {
+			get { return main_window; }
+			internal set { main_window = value; }
 		}
 	}
 }
