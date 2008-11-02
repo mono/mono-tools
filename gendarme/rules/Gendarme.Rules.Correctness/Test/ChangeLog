@@ -1,3 +1,8 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsTest.cs: Remove unneeded
+	System.Drawing from the using clauses.
+
 2008-11-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsTest.cs: New. Unit tests
