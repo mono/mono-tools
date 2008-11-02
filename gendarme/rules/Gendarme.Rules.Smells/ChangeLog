@@ -1,3 +1,8 @@
+2008-11-02  Jesse Jones  <jesjones@mindspring.com>
+ 
+	* AvoidMessageChainsRule.cs: Clean up the Problem text a bit. When 
+	working backwards along a chain stop when we reach a static method.
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: Append onto the inherited EXTRA_RULES_OPTIONS.
