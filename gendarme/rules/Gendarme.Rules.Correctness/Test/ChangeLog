@@ -1,3 +1,8 @@
+2008-11-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsTest.cs: New. Unit tests
+	for CheckParametersNullityInVisibleMethodsRule
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* NullDerefTest.cs: New. Only has a few tests for now. The rule
