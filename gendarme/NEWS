@@ -1,3 +1,122 @@
+2008-11-03  Version 2.2
+
+	This release includes the development results of the last four 
+	months, including some major events like the Novell Hack Week 3
+	and the second half of GSoC 2008 work done by Nestor Salceda.
+
+	Major highlights includes:
+
+	* improvement to the framework by the addition of engines that
+	can build extra information to extend the model Cecil gives us
+	to work with.
+
+	* New [FxCopCompatibility] attribute to match between Gendarme
+	and FxCop rules. This will be used to support [SuppressMessage]
+	inside assemblies in a future release.
+
+	* New TearDown capability on rules and runners allow rules to
+	defer the reporting of defects until the analysis is completed.
+
+	* New "Audit" severity. This is used to denotate defects that,
+	too often, can't be fixed (i.e. will always be reported) but 
+	needs to be audited (e.g. security items).
+
+	* By default the console runner now reports only when both
+	  Severity > Low
+		i.e. skipping Low and Audit severity defects
+	  Confidence > Low
+		i.e. skipping Low confidence defects
+
+	This is to help reduce false positives and get smaller reports 
+	with the most important defects. You can override both option, 
+	with lower or higher values, with new command switches. E.g.
+
+		gendarme --severity=audit,critical ...
+		gendarme --confidence=all ...
+
+	* The wizard runner is now, by default, limited to 1000 defects
+	on the visible API and will, like the console runner, report 
+	only defects when both Severity > Low and Confidence > Low. A 
+	new step in the	wizard allow users to change those settings 
+	before the analysis (defaults can be modified and saved).
+
+	* You can now save your rule selection as the new default in 
+	the wizard. The same set will be enable next time you restart
+	the wizard. 
+		* Known issue: does not work under Mono, bug ##439943
+
+	and a lot of new rules including:
+
+	Gendarme.Rules.BadPractice
+	* AvoidAssemblyVersionMismatchRule [Sebastien Pouliot]
+	* DoNotUseGetInterfaceToCheckAssignabilityRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Concurrency
+	* DoNotUseMethodImplOptionsSynchronizedRule [Sebastien Pouliot]
+	* ReviewLockUsedOnlyForOperationsOnVariablesRule [Cedric Vivier]
+
+	Gendarme.Rules.Correctness
+	* AttributeStringLiteralsShouldParseCorrectlyRule [Nestor Salceda]
+	* CheckParametersNullityInVisibleMethodsRule [Sebastien Pouliot]
+	* ProvideCorrectArgumentsToFormattingMethodsRule [Nestor Salceda]
+	* ReviewCastOnIntegerDivisionRule [Sebastien Pouliot]
+	* ReviewCastOnIntegerMultiplicationRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Design
+	* AvoidSmallNamespaceRule [Sebastien Pouliot]
+	* ConsiderAddingInterfaceRule [Cedric Vivier]
+	* DeclareEventHandlersCorrectlyRule [Nestor Salceda]
+	* DoNotDeclareVirtualMethodsInSealedTypeRule [Sebastien Pouliot]
+	* InternalNamespacesShouldNotExposeTypesRule [Sebastien Pouliot]
+	* MarkAssemblyWithAssemblyVersionRule [Sebastien Pouliot]
+	* MarkAssemblyWithCLSCompliantRule [Sebastien Pouliot]
+	* MarkAssemblyWithComVisibleRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Design.Generic
+	* AvoidMethodWithUnusedGenericTypeRule [Sebastien Pouliot]
+	* UseGenericEventHandlerRule [Sebastien Pouliot]
+	* PreferGenericsOverRefObjectRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Design.Linq
+	* AvoidExtensionMethodOnSystemObjectRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Exceptions
+	* InstantiateArgumentExceptionCorrectlyRule [Nestor Salceda]
+
+	Gendarme.Rules.Interoperability
+	* MarshalBooleansInPInvokeDeclarationsRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Naming
+	* AvoidDeepNamespaceHierarchyRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Performance
+	* AvoidUnneededFieldInitializationRule [Sebastien Pouliot]
+	* PreferLiteralOverInitOnlyFieldsRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Security.Cas
+	* ReviewSuppressUnmanagedCodeSecurityUsageRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Smells
+	* AvoidMessageChainsRule [Nestor Salceda]
+
+	Lots of rules have been updated and, in a few cases, renamed or
+	moved, to provide extended functionalities.
+
+	Move/merge changes:
+	* CAS-related Security rules were moved into Security.Cas
+	* DisposableFieldsShouldBeDisposedRule was moved from Design 
+	into Correctness
+	* EnumNotEndsWithEnumOrFlagsSuffixRule was merged with 
+	UseCorrectSuffixRule (Naming)
+	* FinalizersShouldCallBaseClassFinalizerRule was moved from 
+	Design into Correctness
+	* ImplementGenericCollectionInterfacesRule was moved from 
+	Design into Design.Generic
+
+	Contributors for this release are:
+	Peter Johanson, Nestor Salceda, Cedric Vivier, Jesse Jones, 
+	Sebastien Pouliot.
+
 2008-07-14  Version 0.2.0.0
 
 	This release includes the development results of the last six 

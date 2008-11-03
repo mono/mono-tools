@@ -1,3 +1,7 @@
+2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NEWS: Update before 2.2 branch.
+
 2008-11-02  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: Added test1 and help targets. test1 builds just enough
