@@ -34,6 +34,7 @@
     <File name="ReviewCastOnIntegerDivisionTest.cs" subtype="Code" buildaction="Compile" />
     <File name="ReviewCastOnIntegerMultiplicationTest.cs" subtype="Code" buildaction="Compile" />
     <File name="FinalizersShouldCallBaseClassFinalizerTest.cs" subtype="Code" buildaction="Compile" />
+    <File name="CheckParametersNullityInVisibleMethodsTest.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Project" localcopy="True" refto="Gendarme.Rules.Correctness" />
