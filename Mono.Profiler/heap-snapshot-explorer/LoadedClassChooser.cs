@@ -18,7 +18,7 @@ namespace Mono.Profiler
 			}
 		}
 		
-		HeapObjectSet.HeapObjectSetClassStatistics currentSelection;
+		HeapItemSetClassStatistics currentSelection;
 		
 		LoadedClassChooser()
 		{
@@ -38,7 +38,7 @@ namespace Mono.Profiler
 			}
 		}
 		
-		void FillList (HeapObjectSet.HeapObjectSetClassStatistics[] classes) {
+		void FillList (HeapItemSetClassStatistics[] classes) {
 			HeapSnapshotExplorer.FillTreeViewWithClassStatistics (ClassList, classes);
 			currentSelection = null;
 		}
@@ -59,7 +59,7 @@ namespace Mono.Profiler
 		
 		static LoadedClassChooser chooser;
 		
-		public static LoadedClass ChooseClass (HeapObjectSet.HeapObjectSetClassStatistics[] classes) {
+		public static LoadedClass ChooseClass (HeapItemSetClassStatistics[] classes) {
 			LoadedClass result;
 			if (chooser == null) {
 				chooser = new LoadedClassChooser ();

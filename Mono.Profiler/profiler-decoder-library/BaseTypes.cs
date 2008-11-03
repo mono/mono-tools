@@ -93,6 +93,7 @@ namespace Mono.Profiler {
 		DateTime StartTime {get;}
 		ulong EndCounter {get;}
 		DateTime EndTime {get;}
+		TimeSpan HeaderStartTime {get;}
 		HO NewHeapObject (ulong id, LC c, uint size, ulong[] referenceIds, int referencesCount);
 		HO GetHeapObject (ulong id);
 		HO[] HeapObjects {get;}
@@ -104,7 +105,7 @@ namespace Mono.Profiler {
 		LM NewMethod (uint id, LC c, string name);
 		MR NewExecutableMemoryRegion (uint id, string fileName, uint fileOffset, ulong startAddress, ulong endAddress);
 		UFI NewUnmanagedFunction (uint id, string name, MR region);
-		HS NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LC[] initialAllocations, bool recordSnapshot);
+		HS NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, LC[] initialAllocations, bool recordSnapshot);
 		bool RecordHeapSnapshots {get; set;}
 	}
 	
@@ -126,6 +127,8 @@ namespace Mono.Profiler {
 		DirectivesHandler Directives {get;}
 		
 		EH LoadedElements {get;}
+		Double TicksPerCounterUnit {get;}
+		TimeSpan ClicksToTimeSpan (ulong clicks);
 		
 		void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime);
 		void End (uint version, ulong endCounter, DateTime endTime);
@@ -390,7 +393,7 @@ namespace Mono.Profiler {
 				backReferences = new HO [backReferencesCounter];
 				backReferencesCounter = 0;
 			} else {
-				references = emptyReferences;
+				backReferences = emptyReferences;
 			}
 		}
 		internal void AddBackReference (HO heapObject) {
@@ -444,7 +447,13 @@ namespace Mono.Profiler {
 				return endTime;
 			}
 		}
-		
+		TimeSpan headerStartTime;
+		public TimeSpan HeaderStartTime {
+			get {
+				return headerStartTime;
+			}
+		}
+			
 		public HO NewHeapObject (ulong id, LC c, uint size, ulong[] referenceIds, int referencesCount) {
 			if (backReferencesInitialized) {
 				throw new Exception ("Cannot create heap objects after backReferencesInitialized is true");
@@ -528,13 +537,14 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public BaseHeapSnapshot (HeapObjectFactory<HO,LC> heapObjectFactory, uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, bool recordSnapshot) {
+		public BaseHeapSnapshot (HeapObjectFactory<HO,LC> heapObjectFactory, uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, bool recordSnapshot) {
 			this.heapObjectFactory = heapObjectFactory;
 			this.collection = collection;
 			this.startCounter = startCounter;
 			this.startTime = startTime;
 			this.endCounter = endCounter;
 			this.endTime = endTime;
+			this.headerStartTime = headerStartTime;
 			this.recordSnapshot = recordSnapshot;
 			heap = new Dictionary<ulong,HO> ();
 			backReferencesInitialized = false;
@@ -710,6 +720,14 @@ namespace Mono.Profiler {
 			get {
 				return loadedElements;
 			}
+		}
+		public virtual Double TicksPerCounterUnit {
+			get {
+				return 0;
+			}
+		}
+		public virtual TimeSpan ClicksToTimeSpan (ulong clicks) {
+			return TimeSpan.FromTicks (0);
 		}
 		
 		public BaseProfilerEventHandler (EH loadedElements) {
@@ -1212,8 +1230,8 @@ namespace Mono.Profiler {
 		}
 		
 		List<HS> heapSnapshots;
-		public HS NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LC[] initialAllocations, bool recordSnapshot) {
-			HS result = factory.NewHeapSnapshot (collection, startCounter, startTime, endCounter, endTime, initialAllocations, recordSnapshot);
+		public HS NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, LC[] initialAllocations, bool recordSnapshot) {
+			HS result = factory.NewHeapSnapshot (collection, startCounter, startTime, endCounter, endTime, headerStartTime, initialAllocations, recordSnapshot);
 			heapSnapshots.Add (result);
 			return result;
 		}

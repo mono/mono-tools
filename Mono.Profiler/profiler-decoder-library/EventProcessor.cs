@@ -139,26 +139,65 @@ namespace  Mono.Profiler {
 		}
 		
 		double ticksPerCounterUnit;
-		void updateTicksPerCounterUnit () {
+		public override Double TicksPerCounterUnit {
+			get {
+				return ticksPerCounterUnit;
+			}
+		}
+		void UpdateTicksPerCounterUnit () {
 			if (currentCounter > startCounter) {
 				ulong counterSpan = currentCounter - startCounter;
 				TimeSpan timeSpan = currentTime - startTime;
 				ticksPerCounterUnit = ((double)timeSpan.Ticks) / ((double)counterSpan);
 			}
 		}
-		void updateCounterAndTime (ulong currentCounter, DateTime currentTime) {
+		void UpdateCounterAndTime (ulong currentCounter, DateTime currentTime) {
 			this.currentCounter = currentCounter;
 			this.currentTime = currentTime;
-			updateTicksPerCounterUnit ();
+			UpdateTicksPerCounterUnit ();
 		}
-		public DateTime counterToDateTime (ulong counter) {
+		public DateTime CounterToDateTime (ulong counter) {
 			return StartTime + TimeSpan.FromTicks ((long) (ticksPerCounterUnit * (double)(counter - StartCounter)));
 		}
-		public TimeSpan clicksToTimeSpan (ulong clicks) {
+		public override TimeSpan ClicksToTimeSpan (ulong clicks) {
 			return TimeSpan.FromTicks ((long) (ticksPerCounterUnit * (double)clicks));
 		}
-		public double clicksToSeconds (ulong clicks) {
+		public double ClicksToSeconds (ulong clicks) {
 			return (ticksPerCounterUnit * (double)clicks) / TimeSpan.TicksPerSecond;
+		}
+		
+		List<AllocatedObject> allocatedObjects = null;
+		public bool RecordAllocations {
+			get {
+				return allocatedObjects != null;
+			}
+			set {
+				if (value) {
+					if (allocatedObjects != null) {
+						allocatedObjects.Clear ();
+					} else {
+						allocatedObjects = new List<AllocatedObject> ();
+					}
+				} else {
+					allocatedObjects = null;
+				}
+			}
+		}
+		public AllocatedObject[] AllocatedObjects {
+			get {
+				if (RecordAllocations) {
+					AllocatedObject[] result = allocatedObjects.ToArray ();
+					allocatedObjects.Clear ();
+					return result;
+				} else {
+					return null;
+				}
+			}
+		}
+		protected void RecordAllocation (LoadedClass c, ulong objectId, uint size, LoadedMethod caller, bool jitTime, StackTrace trace) {
+			if (RecordAllocations) {
+				allocatedObjects.Add (new AllocatedObject (objectId, c, size, caller, jitTime, trace));
+			}
 		}
 		
 		public override void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime) {
@@ -175,15 +214,15 @@ namespace  Mono.Profiler {
 			}
 			this.endCounter = endCounter;
 			this.endTime = endTime;
-			updateCounterAndTime (endCounter, endTime);
+			UpdateCounterAndTime (endCounter, endTime);
 		}
 		
 		public override void StartBlock (ulong startCounter, DateTime startTime, ulong threadId) {
-			updateCounterAndTime (startCounter, startTime);
+			UpdateCounterAndTime (startCounter, startTime);
 		}
 		
 		public override void EndBlock (ulong endCounter, DateTime endTime, ulong threadId) {
-			updateCounterAndTime (endCounter, endTime);
+			UpdateCounterAndTime (endCounter, endTime);
 		}
 		
 		public override void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
@@ -223,6 +262,7 @@ namespace  Mono.Profiler {
 				}
 			}
 			c.InstanceCreated (size, caller, jitTime, trace);
+			RecordAllocation (c, objectId, size, caller, jitTime, trace);
 		}
 		
 		public override void Exception (LoadedClass c, ulong counter) {}
@@ -427,22 +467,22 @@ namespace  Mono.Profiler {
 			
 			public double Start {
 				get {
-					return data.clicksToSeconds (startCounter - data.StartCounter);
+					return data.ClicksToSeconds (startCounter - data.StartCounter);
 				}
 			}
 			public double Duration {
 				get {
-					return data.clicksToSeconds (endCounter - startCounter);
+					return data.ClicksToSeconds (endCounter - startCounter);
 				}
 			}
 			public double MarkDuration {
 				get {
-					return data.clicksToSeconds (markEndCounter - markStartCounter);
+					return data.ClicksToSeconds (markEndCounter - markStartCounter);
 				}
 			}
 			public double SweepDuration {
 				get {
-					return data.clicksToSeconds (sweepEndCounter - sweepStartCounter);
+					return data.ClicksToSeconds (sweepEndCounter - sweepStartCounter);
 				}
 			}
 			

@@ -49,15 +49,11 @@ namespace Mono.Profiler
 				return;
 			}
 			
-			foreach (SeekableLogFileReader.Block block in reader.Blocks) {
-				Console.WriteLine ("Found block {0} at offset {1} (length {2}, time from start {3})", block.Code, block.FileOffset, block.Length, block.TimeFromStart);
-			}
-			
 			Application.Init ();
 			MainWindow win = new MainWindow ();
 			win.Show ();
 			
-			win.HeapExplorer.Model = new HeapExplorerTreeModel (reader);
+			win.HeapExplorer.Model = new HeapExplorerTreeModel (reader, win.HeapExplorer);
 			win.HeapExplorer.Model.Initialize ();
 			
 			Application.Run ();

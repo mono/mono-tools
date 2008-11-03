@@ -131,6 +131,14 @@ namespace  Mono.Profiler {
 				return length;
 			}
 		}
+		ulong headerStartCounter;
+		public ulong HeaderStartCounter {
+			get {
+				return headerStartCounter;
+			}
+		}
+		
+		
 		
 		byte[] data;
 		public byte Data (uint index) {
@@ -858,7 +866,7 @@ namespace  Mono.Profiler {
 					ulong jobEndTime = ReadUlong (ref offsetInBlock);
 					uint collection = ReadUint (ref offsetInBlock);
 					
-					HS snapshot = handler.LoadedElements.NewHeapSnapshot (collection, jobStartCounter, microsecondsFromEpochToDateTime (jobStartTime), jobEndCounter, microsecondsFromEpochToDateTime (jobEndTime), handler.LoadedElements.Classes, handler.LoadedElements.RecordHeapSnapshots);
+					HS snapshot = handler.LoadedElements.NewHeapSnapshot (collection, jobStartCounter, microsecondsFromEpochToDateTime (jobStartTime), jobEndCounter, microsecondsFromEpochToDateTime (jobEndTime), handler.ClicksToTimeSpan (headerStartCounter), handler.LoadedElements.Classes, handler.LoadedElements.RecordHeapSnapshots);
 					handler.HeapReportStart (snapshot);
 					handler.DataProcessed (offsetInBlock);
 					
@@ -1066,10 +1074,11 @@ namespace  Mono.Profiler {
 			output.WriteLine ();
 		}
 		
-		public BlockData (uint fileOffset, BlockCode code, int length, byte[] data) {
+		public BlockData (uint fileOffset, BlockCode code, int length, ulong headerStartCounter, byte[] data) {
 			this.fileOffset = fileOffset;
 			this.code = code;
 			this.length = length;
+			this.headerStartCounter = headerStartCounter;
 			this.data = data;
 		}
 	}

@@ -28,7 +28,7 @@ namespace Mono.Profiler
 
 		protected virtual void OnLoadData (object sender, System.EventArgs e)
 		{
-			explorer.OnLoadData ();
+			explorer.OnLoadHeapSnapshotData ();
 		}
 	}
 }

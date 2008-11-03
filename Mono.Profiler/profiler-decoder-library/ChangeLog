@@ -1,3 +1,20 @@
+2008-11-03  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added "header start time" property to the event
+	handler, so that there is always a "context" of when the event block
+	happened diring the execution. Added also this time as a parameter to
+	the heap snapshot factory and constructor.
+	* Decoder.cs: Likewise.
+	* Reader.cs: Likewise.
+	* EventProcessor.cs: Likewise. Moreover, fixed case of public
+	properties and added ability to record each allocation individually
+	(up to now the data was only aggregated, see "AllocatedObject").
+	* ObjectModel.cs: Massive refactory of "HeapObjectSet", making it
+	generic so that it can be a set of IHeapItem (which in turn can be a
+	HeapObject or an AllocatedObject).
+	This enables exploring heap snapshots and relating each objectg to its
+	allocation event.
+	Also added filtering based on "references objects in another set".
+
 2008-10-13  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs: Turn HeapObject class into generic BaseHeapObject class,
 	and add a new IAllocatedObject interface (this will give more freedom

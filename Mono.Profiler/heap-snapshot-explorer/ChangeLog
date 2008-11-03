@@ -1,3 +1,12 @@
+2008-11-03  Massimiliano Mantione <massi@ximian.com>
+	* HeapExplorerTreeModel.cs: Massive refactory of "Node" class, making
+	it generic in terms of the node contents (HeapObject-AllocatedObject).
+	Moreover, made so that each node type can choose its own context menu.
+	* HeapSnapshotExplorer.cs: Likewise.
+	* LoadedClassChooser.cs: Likewise.
+	* HeapExplorerActions.cs: Likewise.
+	* gtk-gui/gui.stetic: Likewise.
+
 2008-10-13  Massimiliano Mantione <massi@ximian.com>
 	* HeapExplorerTreeModel.cs: Use new HeapObject non-generic class.
 

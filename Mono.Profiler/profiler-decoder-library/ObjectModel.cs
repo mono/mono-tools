@@ -908,8 +908,59 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class HeapObject : BaseHeapObject<HeapObject,LoadedClass> {
+	public interface IHeapItem : IAllocatedObject<LoadedClass> {
+	}
+	
+	public class HeapObject : BaseHeapObject<HeapObject,LoadedClass>, IHeapItem {
 		public HeapObject (ulong ID) : base (ID) {}
+	}
+	
+	public class AllocatedObject : IHeapItem {
+		ulong id;
+		public ulong ID {
+			get {
+				return id;
+			}
+		}
+		LoadedClass c;
+		public LoadedClass Class {
+			get {
+				return c;
+			}
+		}
+		uint size;
+		public uint Size {
+			get {
+				return size;
+			}
+		}
+		LoadedMethod caller;
+		public LoadedMethod Caller {
+			get {
+				return caller;
+			}
+		}
+		bool jitTime;
+		public bool JitTime {
+			get {
+				return jitTime;
+			}
+		}
+		StackTrace trace;
+		public StackTrace Trace {
+			get {
+				return trace;
+			}
+		}
+		
+		public AllocatedObject (ulong id, LoadedClass c, uint size, LoadedMethod caller, bool jitTime, StackTrace trace) {
+			this.id = id;
+			this.c = c;
+			this.size = size;
+			this.caller = caller;
+			this.jitTime = jitTime;
+			this.trace = trace;
+		}
 	}
 	
 	public class HeapSnapshot : BaseHeapSnapshot<HeapObject,LoadedClass> {
@@ -978,7 +1029,7 @@ namespace  Mono.Profiler {
 			statisticsPerClass.BytesFreed (size);
 		}
 		
-		public HeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LoadedClass[] initialAllocations, bool recordSnapshot) : base (delegate (ulong ID) {return new HeapObject (ID);}, collection, startCounter, startTime, endCounter, endTime, recordSnapshot) {
+		public HeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, LoadedClass[] initialAllocations, bool recordSnapshot) : base (delegate (ulong ID) {return new HeapObject (ID);}, collection, startCounter, startTime, endCounter, endTime, headerStartTime, recordSnapshot) {
 			uint maxClassId = 0;
 			foreach (LoadedClass c in initialAllocations) {
 				if (c.ID > maxClassId) {
@@ -993,14 +1044,18 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public interface IHeapObjectFilter {
+	public interface IHeapItemFilter<HI> where HI : IHeapItem {
 		string Description {
 			get;
 		}
-		bool Filter (HeapObject heapObject);
+		bool Filter (HI heapItem);
+	}
+	public interface IAllocatedObjectFilter : IHeapItemFilter<AllocatedObject> {
+	}
+	public interface IHeapObjectFilter : IHeapItemFilter<HeapObject> {
 	}
 	
-	public abstract class FilterHeapObjectByClass : IHeapObjectFilter {
+	public abstract class FilterHeapItemByClass<HI> : IHeapItemFilter<HI> where HI : IHeapItem {
 		protected LoadedClass c;
 		public LoadedClass Class {
 			get {
@@ -1008,7 +1063,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public abstract bool Filter (HeapObject heapObject);
+		public abstract bool Filter (HI heapItem);
 		
 		string description;
 		public string Description {
@@ -1017,22 +1072,37 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		protected FilterHeapObjectByClass (LoadedClass c, string description) {
+		protected FilterHeapItemByClass (LoadedClass c, string description) {
 			this.c = c;
 			this.description = description;
 		}
 	}
-	
-	public class HeapObjectIsOfClass : FilterHeapObjectByClass {
-		static string BuildDescription (LoadedClass c) {
+
+	public class HeapItemIsOfClass<HI> : FilterHeapItemByClass<HI> where HI : IHeapItem {
+		protected static string BuildDescription (LoadedClass c) {
 			return String.Format ("Object has class {0}", c.Name);
 		}
 		
-		public override bool Filter (HeapObject heapObject) {
-			return heapObject.Class == c;
+		public override bool Filter (HI heapItem) {
+			return heapItem.Class == c;
 		}
 		
-		public HeapObjectIsOfClass (LoadedClass c) : base (c, BuildDescription (c)) {
+		public HeapItemIsOfClass (LoadedClass c) : base (c, BuildDescription (c)) {
+		}
+	}
+	
+	public class HeapObjectIsOfClass : HeapItemIsOfClass<HeapObject>, IHeapObjectFilter {
+		public HeapObjectIsOfClass (LoadedClass c) : base (c) {
+		}
+	}
+	
+	public class AllocatedObjectIsOfClass : HeapItemIsOfClass<AllocatedObject>, IAllocatedObjectFilter {
+		public AllocatedObjectIsOfClass (LoadedClass c) : base (c) {
+		}
+	}
+	
+	public abstract class FilterHeapObjectByClass : FilterHeapItemByClass<HeapObject>, IHeapObjectFilter {
+		protected FilterHeapObjectByClass (LoadedClass c, string description) : base (c, description) {
 		}
 	}
 	
@@ -1072,36 +1142,45 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public abstract class HeapObjectSet {
-		public static Comparison<HeapObject> CompareHeapObjectsByID = delegate (HeapObject a, HeapObject b) {
+	public class HeapItemSetClassStatistics {
+		LoadedClass c;
+		public LoadedClass Class {
+			get {
+				return c;
+			}
+		}
+		uint allocatedBytes;
+		public uint AllocatedBytes {
+			get {
+				return allocatedBytes;
+			}
+			internal set {
+				allocatedBytes = value;
+			}
+		}
+		public HeapItemSetClassStatistics (LoadedClass c, uint allocatedBytes) {
+			this.c = c;
+			this.allocatedBytes = allocatedBytes;
+		}
+		
+		public static Comparison<HeapItemSetClassStatistics> CompareByAllocatedBytes = delegate (HeapItemSetClassStatistics a, HeapItemSetClassStatistics b) {
+			return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
+		};
+	}
+	
+	public interface IHeapItemSet {
+		bool ContainsItem (ulong id);
+		string ShortDescription {get;}
+		string LongDescription {get;}
+		IHeapItem[] Elements {get;}
+		HeapItemSetClassStatistics[] ClassStatistics {get;}
+		uint AllocatedBytes {get;}
+	}
+	
+	public abstract class HeapItemSet<HI> : IHeapItemSet where HI : IHeapItem {
+		public static Comparison<HI> CompareHeapItemsByID = delegate (HI a, HI b) {
 			return a.ID.CompareTo (b.ID);
 		};
-		
-		public class HeapObjectSetClassStatistics {
-			LoadedClass c;
-			public LoadedClass Class {
-				get {
-					return c;
-				}
-			}
-			uint allocatedBytes;
-			public uint AllocatedBytes {
-				get {
-					return allocatedBytes;
-				}
-				internal set {
-					allocatedBytes = value;
-				}
-			}
-			public HeapObjectSetClassStatistics (LoadedClass c, uint allocatedBytes) {
-				this.c = c;
-				this.allocatedBytes = allocatedBytes;
-			}
-			
-			public static Comparison<HeapObjectSetClassStatistics> CompareByAllocatedBytes = delegate (HeapObjectSetClassStatistics a, HeapObjectSetClassStatistics b) {
-				return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
-			};
-		}
 		
 		string shortDescription;
 		public string ShortDescription {
@@ -1115,14 +1194,21 @@ namespace  Mono.Profiler {
 				return longDescription;
 			}
 		}
-		HeapObject[] heapObjects;
-		public HeapObject[] HeapObjects {
+		HI[] elements;
+		public HI[] Elements {
 			get {
-				return heapObjects;
+				return elements;
 			}
 		}
-		HeapObjectSetClassStatistics[] classStatistics;
-		public HeapObjectSetClassStatistics[] ClassStatistics {
+		IHeapItem[] IHeapItemSet.Elements {
+			get {
+				IHeapItem[] result = new IHeapItem [elements.Length];
+				Array.Copy (elements, result, elements.Length);
+				return result;
+			}
+		}
+		HeapItemSetClassStatistics[] classStatistics;
+		public HeapItemSetClassStatistics[] ClassStatistics {
 			get {
 				return classStatistics;
 			}
@@ -1134,34 +1220,73 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		protected HeapObjectSet (string shortDescription, string longDescription, HeapObject[] heapObjects) {
-			this.shortDescription = shortDescription;
-			this.longDescription = longDescription;
-			this.heapObjects = heapObjects;
-			allocatedBytes = 0;
+		public void CompareWithSet<OHI> (HeapItemSet<OHI> otherSet, out HeapItemSet<HI> onlyInThisSet, out HeapItemSet<OHI> onlyInOtherSet) where OHI : IHeapItem  {
+			HeapItemSetFromComparison<HI,OHI>.PerformComparison<HI,OHI> (this, otherSet, out onlyInThisSet, out onlyInOtherSet);
+		}
+		
+		public HeapItemSet<HI> IntersectWithSet<OHI> (HeapItemSet<OHI> otherSet) where OHI : IHeapItem  {
+			return HeapItemSetFromComparison<HI,OHI>.PerformIntersection<HI,OHI> (this, otherSet);
+		}
+		
+		public bool ContainsItem (ulong id) {
+			int lowIndex = -1;
+			int highIndex = elements.Length;
 			
-			Array.Sort (this.heapObjects, CompareHeapObjectsByID);
-			
-			Dictionary<ulong,HeapObjectSetClassStatistics> statistics = new Dictionary<ulong,HeapObjectSetClassStatistics> ();
-			foreach (HeapObject ho in heapObjects) {
-				HeapObjectSetClassStatistics cs;
-				if (statistics.ContainsKey (ho.Class.ID)) {
-					cs = statistics [ho.Class.ID];
-					cs.AllocatedBytes += ho.Size;
-					allocatedBytes += ho.Size;
+			while (true) {
+				int span = (highIndex - lowIndex) / 2;
+				
+				if (span > 0) {
+					int middleIndex = lowIndex + span;
+					HI middleElement = elements [middleIndex];
+					ulong middleID = middleElement.ID;
+					if (middleID > id) {
+						highIndex = middleIndex;
+					} else if (middleID < id) {
+						lowIndex = middleIndex;
+					} else {
+						return true;
+					}
 				} else {
-					cs = new HeapObjectSetClassStatistics (ho.Class, ho.Size);
-					statistics [ho.Class.ID] = cs;
+					return false;
 				}
 			}
-			classStatistics = new HeapObjectSetClassStatistics [statistics.Values.Count];
+		}
+		
+		public HeapItemSet<HeapObject> ObjectsReferencingItemInSet (HeapItemSet<HeapObject> objectSet) {
+			return Mono.Profiler.HeapItemSetFromComparison<HI,HeapObject>.ObjectsReferencingItemInSet (this, objectSet);
+		}
+		public HeapItemSet<HeapObject> ObjectsReferencedByItemInSet (HeapItemSet<HeapObject> objectSet) {
+			return Mono.Profiler.HeapItemSetFromComparison<HI,HeapObject>.ObjectsReferencedByItemInSet (this, objectSet);
+		}
+		
+		protected HeapItemSet (string shortDescription, string longDescription, HI[] elements) {
+			this.shortDescription = shortDescription;
+			this.longDescription = longDescription;
+			this.elements = elements;
+			allocatedBytes = 0;
+			
+			Array.Sort (this.elements, CompareHeapItemsByID);
+			
+			Dictionary<ulong,HeapItemSetClassStatistics> statistics = new Dictionary<ulong,HeapItemSetClassStatistics> ();
+			foreach (HI hi in elements) {
+				HeapItemSetClassStatistics cs;
+				if (statistics.ContainsKey (hi.Class.ID)) {
+					cs = statistics [hi.Class.ID];
+					cs.AllocatedBytes += hi.Size;
+					allocatedBytes += hi.Size;
+				} else {
+					cs = new HeapItemSetClassStatistics (hi.Class, hi.Size);
+					statistics [hi.Class.ID] = cs;
+				}
+			}
+			classStatistics = new HeapItemSetClassStatistics [statistics.Values.Count];
 			statistics.Values.CopyTo (classStatistics, 0);
-			Array.Sort (classStatistics, HeapObjectSetClassStatistics.CompareByAllocatedBytes);
+			Array.Sort (classStatistics, HeapItemSetClassStatistics.CompareByAllocatedBytes);
 			Array.Reverse (classStatistics);
 		}
 	}
 	
-	public class HeapObjectSetFromSnapshot : HeapObjectSet {
+	public class HeapObjectSetFromSnapshot : HeapItemSet<HeapObject> {
 		HeapSnapshot heapSnapshot;
 		public HeapSnapshot HeapSnapshot {
 			get {
@@ -1170,77 +1295,85 @@ namespace  Mono.Profiler {
 		}
 		
 		public HeapObjectSetFromSnapshot (HeapSnapshot heapSnapshot):
-			base (String.Format ("Snapshot done at {0}", heapSnapshot.StartTime),
-			      String.Format ("Snapshot done at {0}", heapSnapshot.StartTime),
+			base (String.Format ("Heap at {0}.{1:000}s", heapSnapshot.HeaderStartTime.Seconds, heapSnapshot.HeaderStartTime.Milliseconds),
+			      String.Format ("Heap snapshot taken at {0}.{1:000}s", heapSnapshot.HeaderStartTime.Seconds, heapSnapshot.HeaderStartTime.Milliseconds),
 			      heapSnapshot.HeapObjects) {
 			this.heapSnapshot = heapSnapshot;
 		}
 	}
 	
-	public class HeapObjectSetFromFilter : HeapObjectSet {
-		HeapObjectSet baseSet;
-		public HeapObjectSet BaseSet {
+	public class AllocatedObjectSetFromEvents : HeapItemSet<AllocatedObject> {
+		public AllocatedObjectSetFromEvents (TimeSpan timeFromStart, AllocatedObject[] allocations):
+			base (String.Format ("Allocations {0}.{1:000}s", timeFromStart.Seconds, timeFromStart.Milliseconds),
+			      String.Format ("Allocations taken from {0}.{1:000}s", timeFromStart.Seconds, timeFromStart.Milliseconds),
+			      allocations) {
+		}
+	}
+	
+	public class HeapItemSetFromFilter<HI> : HeapItemSet<HI> where HI : IHeapItem {
+		HeapItemSet<HI> baseSet;
+		public HeapItemSet<HI> BaseSet {
 			get {
 				return baseSet;
 			}
 		}
 		
-		IHeapObjectFilter filter;
-		public IHeapObjectFilter Filter {
+		IHeapItemFilter<HI> filter;
+		public IHeapItemFilter<HI> Filter {
 			get {
 				return filter;
 			}
 		}
 		
-		static HeapObject[] filterSet (HeapObjectSet baseSet, IHeapObjectFilter filter) {
-			List<HeapObject> newSet = new List<HeapObject> ();
-			foreach (HeapObject ho in baseSet.HeapObjects) {
-				if (filter.Filter (ho)) {
-					newSet.Add (ho);
+		static HI[] filterSet (HeapItemSet<HI> baseSet, IHeapItemFilter<HI> filter) {
+			List<HI> newSet = new List<HI> ();
+			foreach (HI hi in baseSet.Elements) {
+				if (filter.Filter (hi)) {
+					newSet.Add (hi);
 				}
 			}
-			HeapObject[] result = new HeapObject [newSet.Count];
+			HI[] result = new HI [newSet.Count];
 			newSet.CopyTo (result);
 			return result;
 		}
 		
-		public HeapObjectSetFromFilter (HeapObjectSet baseSet, IHeapObjectFilter filter): base (filter.Description, String.Format ("{0} and {1}", filter.Description, baseSet.LongDescription), filterSet (baseSet, filter)) {
+		public HeapItemSetFromFilter (HeapItemSet<HI> baseSet, IHeapItemFilter<HI> filter): base (filter.Description, String.Format ("{0} and {1}", filter.Description, baseSet.LongDescription), filterSet (baseSet, filter)) {
 			this.baseSet = baseSet;
 			this.filter = filter;
 		}
 	}
 	
-	public class HeapObjectSetFromComparison : HeapObjectSet {
-		HeapObjectSet baseSet;
-		public HeapObjectSet BaseSet {
+	public class HeapItemSetFromComparison<HI,OHI> : HeapItemSet<HI> where HI : IHeapItem where OHI : IHeapItem {
+		HeapItemSet<HI> baseSet;
+		public HeapItemSet<HI> BaseSet {
 			get {
 				return baseSet;
 			}
 		}
 		
-		HeapObjectSet otherSet;
-		public HeapObjectSet OtherSet {
+		HeapItemSet<OHI> otherSet;
+		public HeapItemSet<OHI> OtherSet {
 			get {
 				return otherSet;
 			}
 		}
 		
-		static string buildShortDescription (HeapObjectSet otherSet) {
-			return String.Format("Object not in {0}", otherSet.ShortDescription);
+		static string buildShortDescription (HeapItemSet<OHI> otherSet, string relation) {
+			return String.Format("Object {0} in {1}", relation, otherSet.ShortDescription);
 		}
 		
-		static string buildLongDescription (HeapObjectSet otherSet) {
-			return String.Format("Object not in {0}", otherSet.LongDescription);
+		static string buildLongDescription (HeapItemSet<OHI> otherSet, string relation) {
+			return String.Format("Object {0} in {1}", relation, otherSet.LongDescription);
 		}
 		
-		public static void PerformComparison (HeapObjectSet firstSet, HeapObjectSet secondSet, out HeapObjectSet onlyInFirstSet, out HeapObjectSet onlyInSecondSet) {
-			List<HeapObject> onlyInFirst = new List<HeapObject> ();
-			List<HeapObject> onlyInSecond = new List<HeapObject> ();
+		public static void PerformComparison<HI1,HI2> (HeapItemSet<HI1> firstSet, HeapItemSet<HI2> secondSet, out HeapItemSet<HI1> onlyInFirstSet, out HeapItemSet<HI2> onlyInSecondSet) where HI1 : IHeapItem where HI2 : IHeapItem {
+			List<HI1> onlyInFirst = new List<HI1> ();
+			List<HI2> onlyInSecond = new List<HI2> ();
 			
 			int firstIndex = 0;
 			int secondIndex = 0;
-			HeapObject[] firstObjects = firstSet.HeapObjects;
-			HeapObject[] secondObjects = secondSet.HeapObjects;
+			HI1[] firstObjects = firstSet.Elements;
+			HI2[] secondObjects = secondSet.Elements;
 			
 			while ((firstIndex < firstObjects.Length) || (secondIndex < secondObjects.Length)) {
 				if (firstIndex >= firstObjects.Length) {
@@ -1254,8 +1387,8 @@ namespace  Mono.Profiler {
 						firstIndex ++;
 					}
 				} else {
-					HeapObject firstObject = firstObjects [firstIndex];
-					HeapObject secondObject = secondObjects [secondIndex];
+					HI1 firstObject = firstObjects [firstIndex];
+					HI2 secondObject = secondObjects [secondIndex];
 					if (firstObject.ID < secondObject.ID) {
 						onlyInFirst.Add (firstObject);
 						firstIndex ++;
@@ -1269,11 +1402,80 @@ namespace  Mono.Profiler {
 				}
 			}
 			
-			onlyInFirstSet = new HeapObjectSetFromComparison(firstSet, secondSet, onlyInFirst.ToArray ());
-			onlyInSecondSet = new HeapObjectSetFromComparison(secondSet, firstSet, onlyInSecond.ToArray ());
+			onlyInFirstSet = new HeapItemSetFromComparison<HI1,HI2>(firstSet, secondSet, onlyInFirst.ToArray (), "not");
+			onlyInSecondSet = new HeapItemSetFromComparison<HI2,HI1>(secondSet, firstSet, onlyInSecond.ToArray (), "not");
 		}
 		
-		HeapObjectSetFromComparison (HeapObjectSet baseSet, HeapObjectSet otherSet, HeapObject[] heapObjects): base (buildShortDescription (otherSet), buildLongDescription (otherSet), heapObjects) {
+		public static HeapItemSet<HI1> PerformIntersection<HI1,HI2> (HeapItemSet<HI1> firstSet, HeapItemSet<HI2> secondSet) where HI1 : IHeapItem where HI2 : IHeapItem {
+			List<HI1> result = new List<HI1> ();
+			
+			int firstIndex = 0;
+			int secondIndex = 0;
+			HI1[] firstObjects = firstSet.Elements;
+			HI2[] secondObjects = secondSet.Elements;
+			
+			Console.WriteLine ("Inside PerformIntersection...");
+			
+			while ((firstIndex < firstObjects.Length) && (secondIndex < secondObjects.Length)) {
+				HI1 firstObject = firstObjects [firstIndex];
+				HI2 secondObject = secondObjects [secondIndex];
+				if (firstObject.ID < secondObject.ID) {
+					firstIndex ++;
+				} else if (secondObject.ID < firstObject.ID) {
+					secondIndex ++;
+				} else {
+					result.Add (firstObject);
+					firstIndex ++;
+					secondIndex ++;
+				}
+			}
+			
+			return new HeapItemSetFromComparison<HI1,HI2>(firstSet, secondSet, result.ToArray (), "also");
+		}
+		
+		static bool ObjectReferencesItemInSet (HeapItemSet<HI> itemSet, HeapObject o) {
+			foreach (HeapObject reference in o.References) {
+				if (itemSet.ContainsItem (reference.ID)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		public static HeapItemSet<HeapObject> ObjectsReferencingItemInSet (HeapItemSet<HI> itemSet, HeapItemSet<HeapObject> objectSet) {
+			List<HeapObject> result = new List<HeapObject> ();
+			HeapObject[] objects = objectSet.Elements;
+			
+			foreach (HeapObject o in objects) {
+				if (ObjectReferencesItemInSet (itemSet, o)) {
+					result.Add (o);
+				}
+			}
+			
+			return new HeapItemSetFromComparison<HeapObject,HI>(objectSet, itemSet, result.ToArray (), "references item");
+		}
+		
+		static bool ObjectIsReferencedByItemInSet (HeapItemSet<HI> itemSet, HeapObject o) {
+			foreach (HeapObject reference in o.BackReferences) {
+				if (itemSet.ContainsItem (reference.ID)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		public static HeapItemSet<HeapObject> ObjectsReferencedByItemInSet (HeapItemSet<HI> itemSet, HeapItemSet<HeapObject> objectSet) {
+			List<HeapObject> result = new List<HeapObject> ();
+			HeapObject[] objects = objectSet.Elements;
+			
+			foreach (HeapObject o in objects) {
+				if (ObjectIsReferencedByItemInSet (itemSet, o)) {
+					result.Add (o);
+				}
+			}
+			
+			return new HeapItemSetFromComparison<HeapObject,HI>(objectSet, itemSet, result.ToArray (), "references item");
+		}
+		
+		HeapItemSetFromComparison (HeapItemSet<HI> baseSet, HeapItemSet<OHI> otherSet, HI[] heapItems, string relation): base (buildShortDescription (otherSet, relation), buildLongDescription (otherSet, relation), heapItems) {
 			this.baseSet = baseSet;
 			this.otherSet = otherSet;
 		}
@@ -1299,8 +1501,8 @@ namespace  Mono.Profiler {
 		public ExecutableMemoryRegion NewExecutableMemoryRegion (uint id, string fileName, uint fileOffset, ulong startAddress, ulong endAddress) {
 			return new ExecutableMemoryRegion (id, fileName, fileOffset, startAddress, endAddress);
 		}
-		public HeapSnapshot NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, LoadedClass[] initialAllocations, bool recordSnapshots) {
-			return new HeapSnapshot (collection, startCounter, startTime, endCounter, endTime, initialAllocations, recordSnapshots);
+		public HeapSnapshot NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, LoadedClass[] initialAllocations, bool recordSnapshots) {
+			return new HeapSnapshot (collection, startCounter, startTime, endCounter, endTime, headerStartTime, initialAllocations, recordSnapshots);
 		}
 		public UnmanagedFunctionFromID NewUnmanagedFunction (uint id, string name, ExecutableMemoryRegion region) {
 			return new UnmanagedFunctionFromID (id, name, region);

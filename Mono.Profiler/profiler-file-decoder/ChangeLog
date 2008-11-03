@@ -1,3 +1,6 @@
+2008-11-03  Massimiliano Mantione <massi@ximian.com>
+	* Main.cs: Changed clicksToSeconds to ClicksToSeconds after refactoring.
+
 2008-10-10  Massimiliano Mantione <massi@ximian.com>
 	* Main.cs:
 	- Added support for handling the stack trace of each allocation event.

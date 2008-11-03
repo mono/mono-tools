@@ -48,6 +48,7 @@ namespace  Mono.Profiler {
 				return hasEnded;
 			}
 		}
+		ulong counter = 0;
 		
 		byte[] cachedData;
 		public virtual void RecycleData (byte [] data) {
@@ -91,10 +92,11 @@ namespace  Mono.Profiler {
 				if (code == BlockCode.END) {
 					hasEnded = true;
 				}
+				counter += BlockData.DecodeHeaderBlockCounterDelta (header);
 				
 				block = NewData (length);
 				stream.Read (block, 0, length);
-				result =  new BlockData (fileOffset, code, length, block);
+				result =  new BlockData (fileOffset, code, length, counter, block);
 				fileOffset += (uint) length;
 				                         
 				return result;
@@ -247,7 +249,7 @@ namespace  Mono.Profiler {
 			blocks = result.ToArray ();
 			
 			foreach (Block block in blocks) {
-				block.TimeFromStart = eventProcessor.clicksToTimeSpan (block.Counter);
+				block.TimeFromStart = eventProcessor.ClicksToTimeSpan (block.Counter);
 			}
 		}
 		
@@ -255,7 +257,7 @@ namespace  Mono.Profiler {
 			stream.Seek (block.FileOffset, SeekOrigin.Begin);
 			byte[] data = NewData ((int) block.Length);
 			stream.Read (data, 0, (int) block.Length);
-			return new BlockData (block.FileOffset, block.Code, (int) block.Length, data);
+			return new BlockData (block.FileOffset, block.Code, (int) block.Length, block.Counter, data);
 		}
 		
 		public SeekableLogFileReader (System.IO.FileStream stream) {

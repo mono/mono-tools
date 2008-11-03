@@ -5,7 +5,7 @@
     <target-gtk-version>2.12.1</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/heap-snapshot-explorer.dll" internal="true" />
+    <widget-library name="../bin/Debug/mprof-heap-snapshot-explorer.dll" internal="true" />
   </import>
   <action-group name="Mono.Profiler.HeapExplorerActions">
     <action id="loadDataAction">

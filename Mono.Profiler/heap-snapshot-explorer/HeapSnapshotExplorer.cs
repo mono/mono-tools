@@ -22,12 +22,8 @@ namespace Mono.Profiler
 			}
 		}		
 		
-		Menu LoadBlock;
-		Menu FilterSet;
-		Menu CompareSet;
-		
-		HeapExplorerTreeModel.Node currentSelection;
-		public HeapExplorerTreeModel.Node CurrentSelection {
+		HeapExplorerTreeModel.INode currentSelection;
+		public HeapExplorerTreeModel.INode CurrentSelection {
 			get {
 				return currentSelection;
 			}
@@ -35,8 +31,8 @@ namespace Mono.Profiler
 		
 		[Gtk.TreeNode (ListOnly=true)]
 		public class ClassStatisticsNode : Gtk.TreeNode {
-			HeapObjectSet.HeapObjectSetClassStatistics classStatistics;
-			public HeapObjectSet.HeapObjectSetClassStatistics ClassStatistics {
+			HeapItemSetClassStatistics classStatistics;
+			public HeapItemSetClassStatistics ClassStatistics {
 				get {
 					return classStatistics;
 				}
@@ -53,7 +49,7 @@ namespace Mono.Profiler
 				}
 			}
 			
-			public ClassStatisticsNode (HeapObjectSet.HeapObjectSetClassStatistics classStatistics) {
+			public ClassStatisticsNode (HeapItemSetClassStatistics classStatistics) {
 				this.classStatistics = classStatistics;
 			}
 		}
@@ -70,59 +66,230 @@ namespace Mono.Profiler
 			view.NodeStore = new Gtk.NodeStore (typeof (ClassStatisticsNode));
 		}
 		
-		public static void FillTreeViewWithClassStatistics (NodeView view, HeapObjectSet.HeapObjectSetClassStatistics[] classes) {
+		public static void FillTreeViewWithClassStatistics (NodeView view, HeapItemSetClassStatistics[] classes) {
 			view.NodeStore.Clear ();
-			foreach (HeapObjectSet.HeapObjectSetClassStatistics c in classes) {
+			foreach (HeapItemSetClassStatistics c in classes) {
 				view.NodeStore.AddNode (new ClassStatisticsNode (c));
 			}
 		}
 		
-		HeapExplorerTreeModel.Node NodeSelectedForComparison;
+		HeapExplorerTreeModel.Node<HeapObject> markedObjectNode;
+		public HeapExplorerTreeModel.Node<HeapObject> MarkedObjectNode {
+			get {
+				return markedObjectNode;
+			}
+		}
+		HeapExplorerTreeModel.Node<AllocatedObject> markedAllocationNode;
+		public HeapExplorerTreeModel.Node<AllocatedObject> MarkedAllocationNode {
+			get {
+				return markedAllocationNode;
+			}
+		}
+		public bool NodeIsMarked {
+			get {
+				return (markedObjectNode != null) || (markedAllocationNode != null);
+			}
+		}
+		public HeapExplorerTreeModel.INode MarkedNode {
+			get {
+				return (markedObjectNode != null) ? (HeapExplorerTreeModel.INode) markedObjectNode : (markedAllocationNode != null) ? (HeapExplorerTreeModel.INode) markedAllocationNode : null;
+			}
+		}
+		bool markIsForComparison;
+		public bool MarkIsForComparison {
+			get {
+				return markIsForComparison;
+			}
+		}
+		bool markIsForFiltering;
+		public bool MarkIsForFiltering {
+			get {
+				return markIsForFiltering;
+			}
+		}
+		
+		Menu loadHeapSnapshotBlock;
+		public Menu LoadHeapSnapshotBlock {
+			get {
+				return loadHeapSnapshotBlock;
+			}
+		}
+		Menu loadAllocationsBlocks;
+		public Menu LoadAllocationsBlocks {
+			get {
+				return loadAllocationsBlocks;
+			}
+		}
+		Menu filterObjectSet;
+		public Menu FilterObjectSet {
+			get {
+				return filterObjectSet;
+			}
+		}
+		Menu filterAllocationSet;
+		public Menu FilterAllocationSet {
+			get {
+				return filterAllocationSet;
+			}
+		}
+		Menu compareObjectSet;
+		public Menu CompareObjectSet {
+			get {
+				return compareObjectSet;
+			}
+		}
+		Menu compareAllocationSet;
+		public Menu CompareAllocationSet {
+			get {
+				return compareAllocationSet;
+			}
+		}
+		Menu filterObjectSetUsingSelection;
+		public Menu FilterObjectSetUsingSelection {
+			get {
+				return filterObjectSetUsingSelection;
+			}
+		}
+		Menu filterAllocationSetUsingSelection;
+		public Menu FilterAllocationSetUsingSelection {
+			get {
+				return filterAllocationSetUsingSelection;
+			}
+		}
 		
 		public HeapSnapshotExplorer()
 		{
-			this.Build();
+			Build();
+			MenuItem menuItem;
 			
-			LoadBlock = new Menu ();
-			MenuItem loadData = new MenuItem ("Load block data");
-			loadData.Activated += delegate {
-				OnLoadData ();
-			};
-			LoadBlock.Append (loadData);
+			OnClearMark ();
 			
-			FilterSet = new Menu ();
-			MenuItem filterByClass = new MenuItem ("Filter by object class");
-			filterByClass.Activated += delegate {
-				OnFilterByClass ();
+			loadHeapSnapshotBlock = new Menu ();
+			menuItem = new MenuItem ("Load block data");
+			menuItem.Activated += delegate {
+				OnLoadHeapSnapshotData ();
 			};
-			FilterSet.Append (filterByClass);
-			MenuItem filterByReferencesObjectOfClass = new MenuItem ("Filter by \"references object of class\"");
-			filterByReferencesObjectOfClass.Activated += delegate {
+			loadHeapSnapshotBlock.Append (menuItem);
+			
+			loadAllocationsBlocks = new Menu ();
+			menuItem = new MenuItem ("Load block data");
+			menuItem.Activated += delegate {
+				OnLoadAllocationsEventData ();
+			};
+			loadAllocationsBlocks.Append (menuItem);
+			
+			filterObjectSet = new Menu ();
+			menuItem = new MenuItem ("Filter by object class");
+			menuItem.Activated += delegate {
+				OnFilterByClass<HeapObject> ();
+			};
+			filterObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Filter by \"references object of class\"");
+			menuItem.Activated += delegate {
 				OnFilterByReferencesObjectOfClass ();
 			};
-			FilterSet.Append (filterByReferencesObjectOfClass);
-			MenuItem filterByIsReferencedByObjectOfClass = new MenuItem ("Filter by \"is referenced by object of class\"");
-			filterByIsReferencedByObjectOfClass.Activated += delegate {
+			filterObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Filter by \"is referenced by object of class\"");
+			menuItem.Activated += delegate {
 				OnFilterByIsReferencedByObjectOfClass ();
 			};
-			FilterSet.Append (filterByIsReferencedByObjectOfClass);
-			MenuItem markSetForComparison = new MenuItem ("Mark set for comparison");
-			markSetForComparison.Activated += delegate {
-				OnMarkSetForComparison ();
+			filterObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Mark set for comparison");
+			menuItem.Activated += delegate {
+				OnMarkObjectSetForComparison ();
 			};
-			FilterSet.Append (markSetForComparison);
+			filterObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Mark set for \"set reference\" filtering");
+			menuItem.Activated += delegate {
+				OnMarkObjectSetForFiltering ();
+			};
+			filterObjectSet.Append (menuItem);
 			
-			CompareSet = new Menu ();
-			MenuItem performComparison = new MenuItem ("Perform comparison with this set");
-			performComparison.Activated += delegate {
-				OnPerformComparison ();
+			filterAllocationSet = new Menu ();
+			menuItem = new MenuItem ("Filter by object class");
+			menuItem.Activated += delegate {
+				OnFilterByClass<AllocatedObject> ();
 			};
-			CompareSet.Append (performComparison);
-			MenuItem clearSetForComparison = new MenuItem ("Clear selection for comparison");
-			clearSetForComparison.Activated += delegate {
-				OnClearSetForComparison ();
+			filterAllocationSet.Append (menuItem);
+			menuItem = new MenuItem ("Mark set for comparison");
+			menuItem.Activated += delegate {
+				OnMarkAllocationSetForComparison ();
 			};
-			CompareSet.Append (clearSetForComparison);
+			filterAllocationSet.Append (menuItem);
+			// For now no set based filtering for allocations...
+			//menuItem = new MenuItem ("Mark set for filtering");
+			//menuItem.Activated += delegate {
+			//	OnMarkAllocationSetForFiltering ();
+			//};
+			//filterAllocationSet.Append (menuItem);
+			
+			compareObjectSet = new Menu ();
+			menuItem = new MenuItem ("Perform comparison with this set");
+			menuItem.Activated += delegate {
+				OnCompareWithSet<HeapObject> ();
+			};
+			compareObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Perform intersection with this set");
+			menuItem.Activated += delegate {
+				OnIntersectWithSet<HeapObject> ();
+			};
+			compareObjectSet.Append (menuItem);
+			menuItem = new MenuItem ("Clear selection");
+			menuItem.Activated += delegate {
+				OnClearMark ();
+			};
+			compareObjectSet.Append (menuItem);
+			
+			compareAllocationSet = new Menu ();
+			menuItem = new MenuItem ("Perform comparison with this set");
+			menuItem.Activated += delegate {
+				OnCompareWithSet<AllocatedObject> ();
+			};
+			compareAllocationSet.Append (menuItem);
+			menuItem = new MenuItem ("Perform intersection with this set");
+			menuItem.Activated += delegate {
+				OnIntersectWithSet<AllocatedObject> ();
+			};
+			compareAllocationSet.Append (menuItem);
+			menuItem = new MenuItem ("Clear selection");
+			menuItem.Activated += delegate {
+				OnClearMark ();
+			};
+			compareAllocationSet.Append (menuItem);
+			
+			filterObjectSetUsingSelection = new Menu ();
+			menuItem = new MenuItem ("Select objects referencing objects in this set");
+			menuItem.Activated += delegate {
+				OnFilterByReferencesObjectInSet<HeapObject> ();
+			};
+			filterObjectSetUsingSelection.Append (menuItem);
+			menuItem = new MenuItem ("Select objects referenced by objects in this set");
+			menuItem.Activated += delegate {
+				OnFilterByIsReferencedByObjectInSet<HeapObject> ();
+			};
+			filterObjectSetUsingSelection.Append (menuItem);
+			menuItem = new MenuItem ("Clear selection");
+			menuItem.Activated += delegate {
+				OnClearMark ();
+			};
+			filterObjectSetUsingSelection.Append (menuItem);
+			
+			filterAllocationSetUsingSelection = new Menu ();
+			menuItem = new MenuItem ("Select objects referencing objects in this set");
+			menuItem.Activated += delegate {
+				OnFilterByReferencesObjectInSet<AllocatedObject> ();
+			};
+			filterAllocationSetUsingSelection.Append (menuItem);
+			menuItem = new MenuItem ("Select objects referenced by objects in this set");
+			menuItem.Activated += delegate {
+				OnFilterByIsReferencedByObjectInSet<AllocatedObject> ();
+			};
+			filterAllocationSetUsingSelection.Append (menuItem);
+			menuItem = new MenuItem ("Clear selection");
+			menuItem.Activated += delegate {
+				OnClearMark ();
+			};
+			filterAllocationSetUsingSelection.Append (menuItem);
 			
 			PrepareTreeViewForClassStatistics (PerClassStatistics);
 			
@@ -130,10 +297,10 @@ namespace Mono.Profiler
 				TreeSelection selection = (TreeSelection) o;
 				TreeIter iter;
 				if (selection.GetSelected (out iter)) {
-					currentSelection = (HeapExplorerTreeModel.Node) Tree.Model.GetValue (iter, 0);
+					currentSelection = (HeapExplorerTreeModel.INode) Tree.Model.GetValue (iter, 0);
 					if (currentSelection != null) {
-						if (currentSelection.Objects != null) {
-							FillTreeViewWithClassStatistics (PerClassStatistics, currentSelection.Objects.ClassStatistics);
+						if (currentSelection.Items != null) {
+							FillTreeViewWithClassStatistics (PerClassStatistics, currentSelection.Items.ClassStatistics);
 						} else {
 							PerClassStatistics.NodeStore.Clear ();
 						}
@@ -155,30 +322,30 @@ namespace Mono.Profiler
 			bytesColumn.PackStart (bytesCell, true);
 			
 			setColumn.SetCellDataFunc (setCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
-				HeapExplorerTreeModel.Node node = (HeapExplorerTreeModel.Node) model.GetValue (iter, 0);
+				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
 				textCell.Markup = node.Description;
-				if (node != NodeSelectedForComparison) {
+				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
 					textCell.Style = Pango.Style.Italic;
 				}
 			});
 			countColumn.SetCellDataFunc (countCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
-				HeapExplorerTreeModel.Node node = (HeapExplorerTreeModel.Node) model.GetValue (iter, 0);
+				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
 				textCell.Markup = node.Count;
-				if (node != NodeSelectedForComparison) {
+				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
 					textCell.Style = Pango.Style.Italic;
 				}
 			});
 			bytesColumn.SetCellDataFunc (bytesCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
-				HeapExplorerTreeModel.Node node = (HeapExplorerTreeModel.Node) model.GetValue (iter, 0);
+				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
 				textCell.Markup = node.AllocatedBytes;
-				if (node != NodeSelectedForComparison) {
+				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
 					textCell.Style = Pango.Style.Italic;
@@ -193,88 +360,144 @@ namespace Mono.Profiler
 			Tree.AppendColumn (countColumn);
 			Tree.AppendColumn (bytesColumn);
 			
-			LoadBlock.ShowAll ();
-			FilterSet.ShowAll ();
-			CompareSet.ShowAll ();
-			
-			NodeSelectedForComparison = null;
+			loadHeapSnapshotBlock.ShowAll ();
+			loadAllocationsBlocks.ShowAll ();
+			filterObjectSet.ShowAll ();
+			filterAllocationSet.ShowAll ();
+			compareObjectSet.ShowAll ();
+			compareAllocationSet.ShowAll ();
+			filterObjectSetUsingSelection.ShowAll ();
+			filterAllocationSetUsingSelection.ShowAll ();
 		}
 		
-		public void OnLoadData () {
-			if (CurrentSelection != null) {
-				HeapExplorerTreeModel.SnapshotNode snapshotNode = CurrentSelection as HeapExplorerTreeModel.SnapshotNode;
-				if ((snapshotNode != null) && (snapshotNode.Objects == null)) {
-					((HeapExplorerTreeModel.SnapshotNode)CurrentSelection).ReadSnapshot ();
-				}
+		public void OnLoadHeapSnapshotData () {
+			HeapExplorerTreeModel.SnapshotNode node = CurrentSelection as HeapExplorerTreeModel.SnapshotNode;
+			if ((node != null) && (node.Items == null)) {
+				node.ReadSnapshot ();
 			}
 		}
 		
-		public void OnFilterByClass () {
-			if (CurrentSelection != null) {
-				LoadedClass c = LoadedClassChooser.ChooseClass (CurrentSelection.Objects.ClassStatistics);
+		public void OnLoadAllocationsEventData () {
+			HeapExplorerTreeModel.AllocationsNode node = CurrentSelection as HeapExplorerTreeModel.AllocationsNode;
+			if ((node != null) && (node.Items == null)) {
+				node.ReadEvents ();
+			}
+		}
+		
+		public void OnFilterByClass<HI> () where HI : IHeapItem {
+			HeapExplorerTreeModel.Node<HI> node = CurrentSelection as HeapExplorerTreeModel.Node<HI>;
+			if (node != null) {
+				LoadedClass c = LoadedClassChooser.ChooseClass (CurrentSelection.Items.ClassStatistics);
 				if (c != null) {
-					IHeapObjectFilter filter = new HeapObjectIsOfClass (c);
-					CurrentSelection.Filter (filter);
+					HeapItemIsOfClass<HI> filter = new HeapItemIsOfClass<HI> (c);
+					node.Filter (filter);
 				}
 			}
 		}
 		
 		public void OnFilterByReferencesObjectOfClass () {
-			if (CurrentSelection != null) {
-				LoadedClass c = LoadedClassChooser.ChooseClass (CurrentSelection.Root.Objects.ClassStatistics);
+			HeapExplorerTreeModel.Node<HeapObject> node = CurrentSelection as HeapExplorerTreeModel.Node<HeapObject>;
+			if (node!= null) {
+				LoadedClass c = LoadedClassChooser.ChooseClass (node.Root.Items.ClassStatistics);
 				if (c != null) {
-					IHeapObjectFilter filter = new HeapObjectReferencesObjectOfClass (c);
-					CurrentSelection.Filter (filter);
+					HeapObjectReferencesObjectOfClass filter = new HeapObjectReferencesObjectOfClass (c);
+					node.Filter (filter);
 				}
 			}
 		}
 		
 		public void OnFilterByIsReferencedByObjectOfClass () {
-			if (CurrentSelection != null) {
-				LoadedClass c = LoadedClassChooser.ChooseClass (CurrentSelection.Root.Objects.ClassStatistics);
+			HeapExplorerTreeModel.Node<HeapObject> node = CurrentSelection as HeapExplorerTreeModel.Node<HeapObject>;
+			if (node != null) {
+				LoadedClass c = LoadedClassChooser.ChooseClass (node.Root.Items.ClassStatistics);
 				if (c != null) {
 					IHeapObjectFilter filter = new HeapObjectIsReferencedByObjectOfClass (c);
-					CurrentSelection.Filter (filter);
+					node.Filter (filter);
 				}
 			}
 		}
 		
-		public void OnMarkSetForComparison () {
-			if (CurrentSelection != null) {
-				NodeSelectedForComparison = CurrentSelection;
+		public void OnMarkObjectSetForComparison () {
+			markedObjectNode = CurrentSelection as HeapExplorerTreeModel.Node<HeapObject>;
+			markedAllocationNode = null;
+			markIsForComparison = true;
+			markIsForFiltering = false;
+		}
+		
+		public void OnMarkObjectSetForFiltering () {
+			markedObjectNode = CurrentSelection as HeapExplorerTreeModel.Node<HeapObject>;
+			markedAllocationNode = null;
+			markIsForComparison = false;
+			markIsForFiltering = true;
+		}
+		
+		public void OnMarkAllocationSetForComparison () {
+			markedObjectNode = null;
+			markedAllocationNode = CurrentSelection as HeapExplorerTreeModel.Node<AllocatedObject>;
+			markIsForComparison = true;
+			markIsForFiltering = false;
+		}
+		
+		public void OnMarkAllocationSetForFiltering () {
+			markedObjectNode = null;
+			markedAllocationNode = CurrentSelection as HeapExplorerTreeModel.Node<AllocatedObject>;
+			markIsForComparison = false;
+			markIsForFiltering = true;
+		}
+		
+		public void OnClearMark () {
+			markedObjectNode = null;
+			markedAllocationNode = null;
+			markIsForComparison = false;
+			markIsForFiltering = false;
+		}
+		
+		public void OnCompareWithSet<HI> () where HI : IHeapItem {
+			HeapExplorerTreeModel.Node<HI> node = CurrentSelection as HeapExplorerTreeModel.Node<HI>;
+			if (node != null) {
+				if (markedObjectNode != null) {
+					node.CompareWithNode (markedObjectNode);
+				} else if (markedAllocationNode != null) {
+					node.CompareWithNode (markedAllocationNode);
+				}
+				OnClearMark ();
 			}
 		}
 		
-		public void OnClearSetForComparison () {
-			NodeSelectedForComparison = null;
-		}
-		
-		public void OnPerformComparison () {
-			if (CurrentSelection != null) {
-				HeapExplorerTreeModel.SubSetNode firstSubNode;
-				HeapExplorerTreeModel.SubSetNode secondSubNode;
-				HeapExplorerTreeModel.Node.PerformComparison (NodeSelectedForComparison, CurrentSelection, out firstSubNode, out secondSubNode);
-				NodeSelectedForComparison = null;
+		public void OnIntersectWithSet<HI> () where HI : IHeapItem {
+			HeapExplorerTreeModel.Node<HI> node = CurrentSelection as HeapExplorerTreeModel.Node<HI>;
+			if (node != null) {
+				if (markedObjectNode != null) {
+					markedObjectNode.IntersectWithNode (node);
+				} else if (markedAllocationNode != null) {
+					markedAllocationNode.IntersectWithNode (node);
+				}
+				OnClearMark ();
 			}
 		}
 		
+		public void OnFilterByReferencesObjectInSet<HI> () where HI : IHeapItem {
+			HeapExplorerTreeModel.Node<HI> itemNode = CurrentSelection as HeapExplorerTreeModel.Node<HI>;
+			if ((itemNode != null) && (markedObjectNode != null)) {
+				itemNode.SelectObjectsReferencingItem (markedObjectNode);
+				OnClearMark ();
+			}
+		}
 		
+		public void OnFilterByIsReferencedByObjectInSet<HI> () where HI : IHeapItem {
+			HeapExplorerTreeModel.Node<HI> itemNode = CurrentSelection as HeapExplorerTreeModel.Node<HI>;
+			if ((itemNode != null) && (markedObjectNode != null)) {
+				itemNode.SelectObjectsReferencedByItem (markedObjectNode);
+				OnClearMark ();
+			}
+		}
 		
 		[GLib.ConnectBefore]
 		protected virtual void OnTreeButtonPress (object o, Gtk.ButtonPressEventArgs args)
 		{
 			if (args.Event.Button == 3) {
 				if (CurrentSelection != null) {
-					HeapExplorerTreeModel.SnapshotNode snapshotNode = CurrentSelection as HeapExplorerTreeModel.SnapshotNode;
-					if ((snapshotNode != null) && (snapshotNode.Objects == null)) {
-						LoadBlock.Popup ();
-					} else {
-						if (NodeSelectedForComparison == null) {
-							FilterSet.Popup ();
-						} else if (CurrentSelection != NodeSelectedForComparison) {
-							CompareSet.Popup ();
-						}
-					}
+					CurrentSelection.ContextMenu.Popup ();
 				}
 			}
 		}

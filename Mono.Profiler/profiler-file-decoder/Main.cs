@@ -149,7 +149,7 @@ namespace Mono.Profiler
 					writer.WriteLine ("Reporting execution time (on {0} methods)", methods.Length);
 					foreach (LoadedMethod m in methods) {
 						if (m.Clicks > 0) {
-							writer.WriteLine ("{0,5:F2}% ({1:F6}s) {2}.{3}", ((((double)m.Clicks) / totalExecutionClicks) * 100), data.clicksToSeconds (m.Clicks), m.Class.Name, m.Name);
+							writer.WriteLine ("{0,5:F2}% ({1:F6}s) {2}.{3}", ((((double)m.Clicks) / totalExecutionClicks) * 100), data.ClicksToSeconds (m.Clicks), m.Class.Name, m.Name);
 							LoadedMethod.CallsPerCallerMethod[] callsPerCallerMethodArray = m.Callers;
 							if (callsPerCallerMethodArray.Length > 0) {
 								Array.Sort (callsPerCallerMethodArray, LoadedMethod.CallsPerCallerMethod.CompareByCalls);
@@ -176,7 +176,7 @@ namespace Mono.Profiler
 					writer.WriteLine ("Reporting jit time (on {0} methods)", methods.Length);
 					foreach (LoadedMethod m in methods) {
 						if (m.JitClicks > 0) {
-							writer.WriteLine ("{0,5:F2}% ({1:F3}ms) {2}.{3}", ((((double)m.JitClicks) / totalJitClicks) * 100), data.clicksToSeconds (m.JitClicks) * 1000, m.Class.Name, m.Name);
+							writer.WriteLine ("{0,5:F2}% ({1:F3}ms) {2}.{3}", ((((double)m.JitClicks) / totalJitClicks) * 100), data.ClicksToSeconds (m.JitClicks) * 1000, m.Class.Name, m.Name);
 						}
 					}
 				} else {
@@ -220,7 +220,7 @@ namespace Mono.Profiler
 			
 			ProfilerEventHandler.GcStatistics[] gcStatistics = data.GarbageCollectioncStatistics;
 			if (gcStatistics.Length > 0) {
-				double totalTime = data.clicksToSeconds (data.EndCounter - data.StartCounter);
+				double totalTime = data.ClicksToSeconds (data.EndCounter - data.StartCounter);
 				double gcTime = 0;
 				double gcMarkTime = 0;
 				double gcSweepTime = 0;
@@ -246,7 +246,7 @@ namespace Mono.Profiler
 						ulong gcStartClicks = gcs.StartCounter - data.StartCounter;
 						writer.WriteLine ("[{0}] Collection starting at {1:F3}s (generation {2}): duration {3:F3}ms, mark {4:F3}ms, sweep {5:F3}ms",
 						                  gcs.Collection,
-						                  data.clicksToSeconds (gcStartClicks),
+						                  data.ClicksToSeconds (gcStartClicks),
 						                  gcs.Generation,
 						                  gcs.Duration * 1000,
 						                  gcs.MarkDuration * 1000,
@@ -284,8 +284,8 @@ namespace Mono.Profiler
 					HeapSnapshot.AllocationStatisticsPerClass [] allocationStatistics = heapSnapshot.AllocationStatistics;
 					writer.WriteLine ("Heap data collection {0} started at {1} (duration {2:F3}ms)",
 					                  heapSnapshot.Collection,
-					                  data.counterToDateTime (heapSnapshot.StartCounter),
-					                  data.clicksToSeconds (heapSnapshot.EndCounter - heapSnapshot.StartCounter) * 1000);
+					                  data.CounterToDateTime (heapSnapshot.StartCounter),
+					                  data.ClicksToSeconds (heapSnapshot.EndCounter - heapSnapshot.StartCounter) * 1000);
 					if (allocationStatistics.Length > 0) {
 						Array.Sort (allocationStatistics, HeapSnapshot.AllocationStatisticsPerClass.CompareByAllocatedBytes);
 						Array.Reverse (allocationStatistics);

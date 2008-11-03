@@ -32,12 +32,33 @@ using Gtk;
 namespace Mono.Profiler
 {
 	public class HeapExplorerTreeModel {
-		public abstract class Node {
-			public abstract HeapObjectSet Objects {
-				get;
+		public interface INode {
+			IHeapItemSet Items {get;}
+			string Description {get;}
+			TreeIter TreeIter {get;}
+			INode Parent {get;}
+			INode Root {get;}
+			string Count {get;}
+			string AllocatedBytes {get;}
+			Menu ContextMenu {get;}
+		}
+		public interface IRootNode : INode {
+		}
+		
+		public abstract class Node<HI> : INode where HI : IHeapItem {
+			public abstract HeapItemSet<HI> Items {get;}
+			IHeapItemSet INode.Items {
+				get {
+					return Items;
+				}
 			}
-			public abstract string Description {
-				get;
+			
+			protected abstract SubSetNode<HI> NewSubSet (HeapItemSet<HI> items);
+			
+			public virtual string Description {
+				get {
+					return Items.ShortDescription;
+				}
 			}
 			
 			protected HeapExplorerTreeModel model;
@@ -48,14 +69,19 @@ namespace Mono.Profiler
 				}
 			}
 			
-			Node parent;
-			public Node Parent {
+			Node<HI> parent;
+			public Node<HI> Parent {
+				get {
+					return parent;
+				}
+			}
+			INode INode.Parent {
 				get {
 					return parent;
 				}
 			}
 			
-			public Node Root {
+			public Node<HI> Root {
 				get {
 					if (parent != null) {
 						return parent.Root;
@@ -64,11 +90,16 @@ namespace Mono.Profiler
 					}
 				}
 			}
+			INode INode.Root {
+				get {
+					return Root;
+				}
+			}
 			
 			public string Count {
 				get {
-					if (Objects != null) {
-						return Objects.HeapObjects.Length.ToString ();
+					if (Items != null) {
+						return Items.Elements.Length.ToString ();
 					} else {
 						return "";
 					}
@@ -76,8 +107,8 @@ namespace Mono.Profiler
 			}
 			public string AllocatedBytes {
 				get {
-					if (Objects != null) {
-						return Objects.AllocatedBytes.ToString ();
+					if (Items != null) {
+						return Items.AllocatedBytes.ToString ();
 					} else {
 						return "";
 					}
@@ -94,28 +125,42 @@ namespace Mono.Profiler
 				}
 			}
 			
-			public SubSetNode Filter (IHeapObjectFilter filter) {
-				HeapObjectSetFromFilter subSet = new HeapObjectSetFromFilter (Objects, filter);
-				SubSetNode result = new SubSetNode (model, this, subSet);
+			public SubSetNode<HI> Filter (IHeapItemFilter<HI> filter) {
+				HeapItemSetFromFilter<HI> subSet = new HeapItemSetFromFilter<HI> (Items, filter);
+				SubSetNode<HI> result = NewSubSet (subSet);
 				return result;
 			}
 			
-			public static void PerformComparison (Node firstNode, Node secondNode, out SubSetNode onlyInFirstNode, out SubSetNode onlyInSecondNode) {
-				HeapObjectSet onlyInFirstSet;
-				HeapObjectSet onlyInSecondSet;
-				HeapObjectSetFromComparison.PerformComparison (firstNode.Objects, secondNode.Objects, out onlyInFirstSet, out onlyInSecondSet);
-				onlyInFirstNode = new SubSetNode (firstNode.model, firstNode, onlyInFirstSet);
-				onlyInSecondNode = new SubSetNode (secondNode.model, secondNode, onlyInSecondSet);
+			public void CompareWithNode<OHI> (Node<OHI> otherNode) where OHI : IHeapItem {
+				HeapItemSet<HI> onlyInThisSet;
+				HeapItemSet<OHI> onlyInOtherSet;
+				Items.CompareWithSet (otherNode.Items, out onlyInThisSet, out onlyInOtherSet);
+				NewSubSet (onlyInThisSet);
+				otherNode.NewSubSet (onlyInOtherSet);
 			}
 			
-			protected Node (HeapExplorerTreeModel model, Node parent) {
+			public void IntersectWithNode<OHI> (Node<OHI> otherNode) where OHI : IHeapItem {
+				NewSubSet (Items.IntersectWithSet (otherNode.Items));
+			}
+			
+			public void SelectObjectsReferencingItem (Node<HeapObject> objectsNode) {
+				objectsNode.NewSubSet (Items.ObjectsReferencingItemInSet (objectsNode.Items));
+			}
+			
+			public void SelectObjectsReferencedByItem (Node<HeapObject> objectsNode) {
+				objectsNode.NewSubSet (Items.ObjectsReferencedByItemInSet (objectsNode.Items));
+			}
+			
+			public abstract Menu ContextMenu {get;}
+			
+			protected Node (HeapExplorerTreeModel model, Node<HI> parent) {
 				this.model = model;
 				this.parent = parent;
 				this.treeIter = HandleNodeCreation ();
 			}
 		}
 		
-		public class SnapshotNode : Node {
+		public class SnapshotNode : Node<HeapObject>, IRootNode {
 			SeekableLogFileReader.Block heapBlock;
 			
 			HeapSnapshot snapshot;
@@ -125,49 +170,185 @@ namespace Mono.Profiler
 				}
 			}
 			
-			HeapObjectSetFromSnapshot objects;
-			public override HeapObjectSet Objects {
+			HeapObjectSetFromSnapshot items;
+			public override HeapItemSet<HeapObject> Items {
 				get {
-					return objects;
+					return items;
 				}
 			}
 			
 			public void ReadSnapshot () {
-				model.Reader.ReadBlock (heapBlock).Decode (model.heapEventProcessor, model.Reader);
-				snapshot = model.heapEventProcessor.LastHeapSnapshot;
-				objects = new HeapObjectSetFromSnapshot (snapshot);
-				model.Model.SetValue (TreeIter, 0, this);
+				if (items == null) {
+					model.heapEventProcessor.RecordAllocations = true;
+					model.Reader.ReadBlock (heapBlock).Decode (model.heapEventProcessor, model.Reader);
+					snapshot = model.heapEventProcessor.LastHeapSnapshot;
+					items = new HeapObjectSetFromSnapshot (snapshot);
+					model.Model.SetValue (TreeIter, 0, this);
+				}
 			}
 			
 			public override string Description {
 				get {
-					return heapBlock.TimeFromStart.ToString ();
+					if (items != null) {
+						return items.ShortDescription;
+					} else {
+						return String.Format ("Heap block ({0}.{1:000}s)", heapBlock.TimeFromStart.Seconds, heapBlock.TimeFromStart.Milliseconds);
+					}
+				}
+			}
+			
+			protected override SubSetNode<HeapObject> NewSubSet (HeapItemSet<HeapObject> items) {
+				return new HeapObjectSubSetNode (model, this, items);
+			}
+			
+			public override Menu ContextMenu {
+				get {
+					if (items != null) {
+						if (model.Explorer.NodeIsMarked) {
+							if (model.Explorer.MarkIsForComparison) {
+								return model.Explorer.CompareObjectSet;
+							} else if (model.Explorer.MarkIsForFiltering) {
+								return model.Explorer.FilterObjectSetUsingSelection;
+							} else {
+								throw new Exception ("Mark is buggy");
+							}
+						} else {
+							return model.Explorer.FilterObjectSet;
+						}
+					} else {
+						return model.Explorer.LoadHeapSnapshotBlock;
+					}
 				}
 			}
 			
 			public SnapshotNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block heapBlock) : base (model, null) {
 				this.heapBlock = heapBlock;
-				this.objects = null;
+				this.items = null;
 				this.snapshot = null;
 			}
 		}
 		
-		public class SubSetNode : Node {
-			HeapObjectSet objects;
-			public override HeapObjectSet Objects {
+		public class AllocationsNode : Node<AllocatedObject>, IRootNode {
+			SeekableLogFileReader.Block[] eventBlocks;
+			
+			AllocatedObjectSetFromEvents items;
+			public override HeapItemSet<AllocatedObject> Items {
 				get {
-					return objects;
+					return items;
+				}
+			}
+			
+			public void ReadEvents () {
+				if (items == null) {
+					model.heapEventProcessor.RecordAllocations = true;
+					foreach (SeekableLogFileReader.Block eventBlock in eventBlocks) {
+						model.Reader.ReadBlock (eventBlock).Decode (model.heapEventProcessor, model.Reader);
+					}
+					items = new AllocatedObjectSetFromEvents (eventBlocks [0].TimeFromStart, model.heapEventProcessor.AllocatedObjects);
+					model.Model.SetValue (TreeIter, 0, this);
 				}
 			}
 			
 			public override string Description {
 				get {
-					return objects.ShortDescription;
+					if (items != null) {
+						return items.ShortDescription;
+					} else {
+						return String.Format ("Events ({0}.{1:000}s)", eventBlocks [0].TimeFromStart.Seconds, eventBlocks [0].TimeFromStart.Milliseconds);
+					}
 				}
 			}
 			
-			public SubSetNode (HeapExplorerTreeModel model, Node parent, HeapObjectSet objects) : base (model, parent) {
-				this.objects = objects;
+			protected override SubSetNode<AllocatedObject> NewSubSet (HeapItemSet<AllocatedObject> items) {
+				return new AllocatedObjectSubSetNode (model, this, items);
+			}
+			
+			public override Menu ContextMenu {
+				get {
+					if (items != null) {
+						if (model.Explorer.NodeIsMarked) {
+							if (model.Explorer.MarkIsForComparison) {
+								return model.Explorer.CompareAllocationSet;
+							} else if (model.Explorer.MarkIsForFiltering) {
+								return model.Explorer.FilterAllocationSetUsingSelection;
+							} else {
+								throw new Exception ("Mark is buggy");
+							}
+						} else {
+							return model.Explorer.FilterAllocationSet;
+						}
+					} else {
+						return model.Explorer.LoadAllocationsBlocks;
+					}
+				}
+			}
+			
+			public AllocationsNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block[] eventBlocks) : base (model, null) {
+				this.eventBlocks = eventBlocks;
+				this.items = null;
+			}
+		}
+				
+		public abstract class SubSetNode<HI> : Node<HI> where HI : IHeapItem {
+			HeapItemSet<HI> items;
+			public override HeapItemSet<HI> Items {
+				get {
+					return items;
+				}
+			}
+			
+			protected SubSetNode (HeapExplorerTreeModel model, Node<HI> parent, HeapItemSet<HI> items) : base (model, parent) {
+				this.items = items;
+			}
+		}
+		
+		public class HeapObjectSubSetNode : SubSetNode<HeapObject> {
+			protected override SubSetNode<HeapObject> NewSubSet (HeapItemSet<HeapObject> items) {
+				return new HeapObjectSubSetNode (model, this, items);
+			}
+			
+			public override Menu ContextMenu {
+				get {
+					if (model.Explorer.NodeIsMarked) {
+						if (model.Explorer.MarkIsForComparison) {
+							return model.Explorer.CompareObjectSet;
+						} else if (model.Explorer.MarkIsForFiltering) {
+							return model.Explorer.FilterObjectSetUsingSelection;
+						} else {
+							throw new Exception ("Mark is buggy");
+						}
+					} else {
+						return model.Explorer.FilterObjectSet;
+					}
+				}
+			}
+			
+			public HeapObjectSubSetNode (HeapExplorerTreeModel model, Node<HeapObject> parent, HeapItemSet<HeapObject> items) : base (model, parent, items) {
+			}
+		}
+		
+		public class AllocatedObjectSubSetNode : SubSetNode<AllocatedObject> {
+			protected override SubSetNode<AllocatedObject> NewSubSet (HeapItemSet<AllocatedObject> items) {
+				return new AllocatedObjectSubSetNode (model, this, items);
+			}
+			
+			public override Menu ContextMenu {
+				get {
+					if (model.Explorer.NodeIsMarked) {
+						if (model.Explorer.MarkIsForComparison) {
+							return model.Explorer.CompareAllocationSet;
+						} else if (model.Explorer.MarkIsForFiltering) {
+							return model.Explorer.FilterAllocationSetUsingSelection;
+						} else {
+							throw new Exception ("Mark is buggy");
+						}
+					} else {
+						return model.Explorer.FilterAllocationSet;
+					}
+				}
+			}
+			
+			public AllocatedObjectSubSetNode (HeapExplorerTreeModel model, Node<AllocatedObject> parent, HeapItemSet<AllocatedObject> items) : base (model, parent, items) {
 			}
 		}
 		
@@ -207,35 +388,66 @@ namespace Mono.Profiler
 		}
 		protected HeapEventProcessor heapEventProcessor;
 		
-		List<SnapshotNode> rootNodes;
-		public SnapshotNode[] RootNodes {
+		List<IRootNode> rootNodes;
+		public IRootNode[] RootNodes {
 			get {
 				return rootNodes.ToArray ();
 			}
 		}
 		
+		HeapSnapshotExplorer explorer;
+		public HeapSnapshotExplorer Explorer {
+			get {
+				return explorer;
+			}
+		}
+		
+		AllocationsNode CreateAllocationsNode (List<SeekableLogFileReader.Block> eventBlocks) {
+			AllocationsNode node;
+			if (eventBlocks.Count > 0) {
+				node = new AllocationsNode (this, eventBlocks.ToArray ());
+				rootNodes.Add (node);
+			} else {
+				node = null;
+			}
+			eventBlocks.Clear ();
+			return node;
+		}
+		
 		public void Initialize () {
-			Reset ();
+			List<SeekableLogFileReader.Block> eventBlocks = new List<SeekableLogFileReader.Block> ();
 			
+			Reset ();
 			foreach (SeekableLogFileReader.Block block in reader.Blocks) {
 				if (block.Code == BlockCode.HEAP_DATA) {
+					CreateAllocationsNode (eventBlocks);
 					SnapshotNode node = new SnapshotNode (this, block);
 					rootNodes.Add (node);
+				} else if (block.Code == BlockCode.EVENTS) {
+					eventBlocks.Add (block);
+				} else if (block.Code == BlockCode.DIRECTIVES) {
+					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
 				} else if (block.Code == BlockCode.MAPPING) {
+					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
+				} else if (block.Code == BlockCode.INTRO) {
+					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
+				} else if (block.Code == BlockCode.END) {
 					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
 				}
 			}
+			CreateAllocationsNode (eventBlocks);
 		}
 		
 		public void Reset () {
 			model.Clear ();
 		}
 		
-		public HeapExplorerTreeModel (SeekableLogFileReader reader) {
-			model = new TreeStore (new Type [] {typeof (Node)});
+		public HeapExplorerTreeModel (SeekableLogFileReader reader, HeapSnapshotExplorer explorer) {
+			model = new TreeStore (new Type [] {typeof (INode)});
 			heapEventProcessor = new HeapEventProcessor ();
 			this.reader = reader;
-			rootNodes = new List<SnapshotNode> ();
+			this.explorer = explorer;
+			rootNodes = new List<IRootNode> ();
 		}
 	}
 }
