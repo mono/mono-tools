@@ -38,7 +38,7 @@ using Gendarme.Rules.UI;
 using NUnit.Framework;
 using Test.Rules.Helpers;
 
-namespace Test.Rules.UI {
+namespace Test.Rules.Ui {
 	internal class CommonMainClass { }
 
 	internal class NoAttributesMain : CommonMainClass {
