@@ -2,6 +2,7 @@ include ../common.make
 
 rules_sources = \
 	AvoidDeepNamespaceHierarchyRule.cs \
+	AvoidRedundancyInMethodNameRule.cs \
 	DetectNonAlphaNumericsInTypeNamesRule.cs \
 	DoNotPrefixEventsWithAfterOrBeforeRule.cs \
 	DoNotPrefixValuesWithEnumNameRule.cs \
@@ -16,6 +17,7 @@ rules_sources = \
 
 tests_sources = \
 	AvoidDeepNamespaceHierarchyTest.cs \
+	AvoidRedundancyInMethodNameTest.cs \
 	DetectNonAlphaNumericsInTypeNamesTest.cs \
 	DoNotPrefixEventsWithAfterOrBeforeTest.cs \
 	DoNotPrefixValuesWithEnumNameTest.cs \

@@ -1,3 +1,10 @@
+2008-11-03  Cedric Vivier  <cedricv@neonux.com>
+
+	* AvoidRedundancyInMethodNameRule.cs: New.
+	This rule checks if a method is named against its first parameter's type.
+	Usually removing that type name from the method name makes an API less
+	verbose, easier to learn, and more future-proof.
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EnumNotEndsWithEnumOrFlagsSuffixRule.cs: Removed since its logic
