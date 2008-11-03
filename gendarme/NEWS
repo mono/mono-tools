@@ -88,6 +88,7 @@
 
 	Gendarme.Rules.Naming
 	* AvoidDeepNamespaceHierarchyRule [Sebastien Pouliot]
+	* AvoidRedundancyInMethodNameRule [Cedric Vivier]
 
 	Gendarme.Rules.Performance
 	* AvoidUnneededFieldInitializationRule [Sebastien Pouliot]
