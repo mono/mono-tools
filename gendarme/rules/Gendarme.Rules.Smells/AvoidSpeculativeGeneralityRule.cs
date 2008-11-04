@@ -30,7 +30,10 @@ using System;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 
@@ -101,9 +104,10 @@ namespace Gendarme.Rules.Smells {
 
 	[Problem ("If you will need the feature in the future then you should implement it in the future.")]
 	[Solution ("You can apply various refactorings: Collapse Hierarchy, Inline Class, Remove Parameter or Rename Method.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
 
-		public int CountInheritedClassesFrom (TypeDefinition baseType)
+		private int CountInheritedClassesFrom (TypeReference baseType)
 		{
 			int count = 0;
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
@@ -132,10 +136,15 @@ namespace Gendarme.Rules.Smells {
 		{
 			if (!method.HasBody)
 				return false;
+
+			// avoid looping if we're sure there's no call in the method
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return false;
+
 			bool onlyOneCallInstruction = false;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.Code == Code.Call || instruction.OpCode.Code == Code.Calli || instruction.OpCode.Code == Code.Callvirt)
+				if (instruction.OpCode.Code == Code.Call || instruction.OpCode.Code == Code.Callvirt)
 					if (onlyOneCallInstruction)
 						return false;
 					else
