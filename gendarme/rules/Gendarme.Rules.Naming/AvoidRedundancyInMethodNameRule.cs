@@ -194,7 +194,7 @@ namespace Gendarme.Rules.Naming {
 			return false;
 		}
 
-		private bool IsTypeFromAlienNamespace (TypeReference type)
+		static private bool IsTypeFromAlienNamespace (TypeReference type)
 		{
 			foreach (string ns in NamespaceEngine.AllNamespaces ()) {
 				if (ns == type.Namespace)
