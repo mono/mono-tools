@@ -68,8 +68,8 @@ namespace Mono.CSharp.Gui
 			ShowPrompt (false);
 
 			Evaluator.InteractiveBaseClass = typeof (InteractiveGraphicsBase);
-			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
+			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 
 			history.Add ("");
 

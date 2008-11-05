@@ -1,3 +1,8 @@
+2008-11-05  Miguel de Icaza  <miguel@novell.com>
+
+	* Shell.cs: First load the System.Drawing assembly, only then call
+	the using statement on it.
+
 2008-11-02  Miguel de Icaza  <miguel@novell.com>
 
 	* Shell.cs: Support multiple data transformations on the result.
