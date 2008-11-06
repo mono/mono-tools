@@ -359,6 +359,7 @@ namespace Mono.CSharp.Gui
 				Buffer.Delete(ref start, ref end);
 				start = InputLineBegin;
 				Buffer.Insert(ref start, value);
+				ScrollMarkOnscreen(Buffer.InsertMark);
 			}
 		}
 
