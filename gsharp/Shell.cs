@@ -75,7 +75,7 @@ namespace Mono.CSharp.Gui
 			StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
 			gui_output.AutoFlush = true;
 			Console.SetError (gui_output);
-
+			
 			gui_output = new StreamWriter (new GuiStream ("Stdout", this));
 			gui_output.AutoFlush = true;
 			Console.SetOut (gui_output);
@@ -138,23 +138,26 @@ namespace Mono.CSharp.Gui
 			} catch (Exception e){
 				expr = null;
 				ShowError (e.ToString ());
-				ShowPrompt (true, false);
+				ShowPrompt (false, false);
 				return true;
 			}
 
 			// Partial input
 			if (res != null){
-				ShowPrompt (true, true);
+				ShowPrompt (false, true);
 				return false;
 			}
 			string error = errorwriter.ToString ();
 			if (error.Length > 0){
 				ShowError (error);
+				ShowPrompt (false, false);
 			} else {
-				if (result_set)
+				if (result_set){
 					ShowResult (result);
+					ShowPrompt (true, false);
+				} else
+					ShowPrompt (false, false);
 			}
-			ShowPrompt (true, false);
 			expr = null;
 			
 			return true;
@@ -333,44 +336,10 @@ namespace Mono.CSharp.Gui
 		{
 			TextIter end = Buffer.EndIter;
 
-			Buffer.InsertWithTagsByName (ref end, "\n" + err, "Error");
+			Buffer.InsertWithTagsByName (ref end, err, "Error");
 		}
 		
-		#if false
-			public void SetResult (InterpreterResult result)
-			{
-				if(!IsRealized) {
-					return;
-				}
-            
-				TextIter end_iter = Buffer.EndIter;
-            
-				StringBuilder builder = new StringBuilder();
-				if(result.Errors.Count > 0) {
-					foreach(string error in result.Errors) {
-						builder.Append(error + "\n");
-					}
-				} else if(result.Message == null) {
-					ShowPrompt (true);
-					return;
-				} else {
-					builder.Append(result.Message);
-				}
-            
-				string str_result = builder.ToString().Trim();
-				Buffer.Insert(ref end_iter, "\n" + str_result);
-            
-				TextIter start_iter = end_iter;
-				start_iter.Offset -= str_result.Length;
-				Buffer.ApplyTag(Buffer.TagTable.Lookup(result.Errors.Count > 0 ? "Error" : "Stdout"), 
-						start_iter, end_iter);
-            
-				if(script_lines != null) {
-					ShowPrompt (true);
-				}
-			}
-		#endif
-			private TextIter InputLineBegin {
+		private TextIter InputLineBegin {
 			get { return Buffer.GetIterAtMark(end_of_last_processing); }
 		}
         
