@@ -59,18 +59,23 @@ namespace Mono.CSharp.Gui
 			if (!System.IO.Directory.Exists (dir))
 				return;
 
+			LoadFiles (System.IO.Directory.GetFiles (dir), true);
+		}
+
+		public void LoadFiles (IEnumerable list, bool silent)
+		{
 			ArrayList sources = new ArrayList ();
 			ArrayList libraries = new ArrayList ();
-			
-			foreach (string file in System.IO.Directory.GetFiles (dir)){
-				string l = file.ToLower ();
 				
+			foreach (string file in list){
+				string l = file.ToLower ();
+					
 				if (l.EndsWith (".cs"))
 					sources.Add (file);
 				else if (l.EndsWith (".dll"))
 					libraries.Add (file);
 			}
-
+				
 			foreach (string file in libraries){
 				Evaluator.LoadAssembly (file);
 			}
@@ -81,6 +86,8 @@ namespace Mono.CSharp.Gui
 						ReadEvalPrintLoopWith (p => r.ReadLine ());
 					}
 				} catch {
+					if (!silent)
+						throw;
 				}
 			}
 		}

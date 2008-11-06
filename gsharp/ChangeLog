@@ -1,5 +1,7 @@
 2008-11-05  Miguel de Icaza  <miguel@novell.com>
 
+	Add support for loading files specified on the command line.
+	
 	* Shell.cs: History saving and loading.
 
 	* Shell.cs: Hook up the GuiStream, which redirects Console Stdout

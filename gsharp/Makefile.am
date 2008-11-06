@@ -14,6 +14,7 @@ gsharp_sources =                        			\
         $(srcdir)/InteractiveGraphicsBase.cs			\
         $(srcdir)/Main.cs               			\
         $(srcdir)/MainWindow.cs         			\
+	$(srcdir)/Options.cs	         			\
         $(srcdir)/ProcessSelector.cs    			\
         $(srcdir)/Shell.cs              			\
         $(srcdir)/SysDrawing.cs					\
