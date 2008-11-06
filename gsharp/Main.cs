@@ -41,7 +41,7 @@ namespace Mono.CSharp.Gui
 			List<string> extra = null;
 			try {
 				extra = p.Parse (args);
-			} catch (OptionException e) {
+			} catch (OptionException) {
 				ShowHelp (p);
 			}
 			
@@ -113,6 +113,7 @@ namespace Mono.CSharp.Gui
 			
 			MainWindow m = new MainWindow ();
 			InteractiveGraphicsBase.MainWindow = m;
+			InteractiveGraphicsBase.PaneContainer = m.PaneContainer;
 			m.Title = title;
 			m.LoadStartupFiles ();
 			if (files != null)
@@ -132,7 +133,7 @@ namespace Mono.CSharp.Gui
 					};
 					
 					Application.Run ();
-				} catch (Exception e) {
+				} catch (Exception) {
 					Console.SetOut (cout);
 					Console.SetError (cerr);
 

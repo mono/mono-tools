@@ -7,7 +7,7 @@
   <import>
     <widget-library name="../bin/Debug/gsharp.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="Mono.CSharp.Gui.MainWindow" design-size="423 300">
+  <widget class="Gtk.Window" id="Mono.CSharp.Gui.MainWindow" design-size="656 478">
     <action-group name="Default">
       <action id="FileAction">
         <property name="Type">Action</property>
@@ -37,6 +37,18 @@
         <property name="Label" translatable="yes">About</property>
         <property name="ShortLabel" translatable="yes">About</property>
       </action>
+      <action id="ViewAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">View</property>
+        <property name="ShortLabel" translatable="yes">View</property>
+      </action>
+      <action id="gtkpane">
+        <property name="Type">Toggle</property>
+        <property name="Label" translatable="yes">Gtk Pane</property>
+        <property name="ShortLabel" translatable="yes">Gtk Pane</property>
+        <property name="DrawAsRadio">False</property>
+        <property name="Active">False</property>
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -57,6 +69,9 @@
                 <node type="Separator" />
                 <node type="Menuitem" action="QuitAction" />
               </node>
+              <node type="Menu" action="ViewAction">
+                <node type="Menuitem" action="gtkpane" />
+              </node>
               <node type="Menu" action="HelpAction">
                 <node type="Menuitem" action="AboutAction" />
               </node>
@@ -70,18 +85,79 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.ScrolledWindow" id="sw">
+          <widget class="Gtk.Notebook" id="notebook1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="ShadowType">In</property>
+            <property name="CurrentPage">1</property>
+            <property name="ShowBorder">False</property>
+            <property name="ShowTabs">False</property>
             <child>
-              <widget class="Gtk.Viewport" id="GtkViewport">
+              <widget class="Gtk.HPaned" id="hpaned">
                 <property name="MemberName" />
-                <property name="ShadowType">None</property>
+                <property name="CanFocus">True</property>
+                <property name="Position">472</property>
                 <child>
-                  <placeholder />
+                  <widget class="Gtk.EventBox" id="paned_container">
+                    <property name="MemberName" />
+                    <child>
+                      <placeholder />
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Resize">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.EventBox" id="eventbox">
+                    <property name="MemberName" />
+                    <child>
+                      <placeholder />
+                    </child>
+                  </widget>
                 </child>
               </widget>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page1</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.EventBox" id="standalone_container">
+                <property name="MemberName" />
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="sw">
+                    <property name="MemberName" />
+                    <property name="CanFocus">True</property>
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gtk.Viewport" id="GtkViewport">
+                        <property name="MemberName" />
+                        <property name="ShadowType">None</property>
+                        <child>
+                          <placeholder />
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">page2</property>
+              </widget>
+              <packing>
+                <property name="type">tab</property>
+              </packing>
             </child>
           </widget>
           <packing>

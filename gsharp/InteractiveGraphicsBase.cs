@@ -44,7 +44,8 @@ namespace Mono.CSharp.Gui
 			get {
 				return InteractiveBase.help +
 					"  RegisterTransformHandler(object => object)\n" +
-					"  MainWindow - the Gtk# toplevel window\n" + 
+					"  MainWindow    - Gtk# toplevel window\n" +
+					"  PaneContainer - Gtk# pane container\n" + 
 					"\nSome samples:\n" +
 					" Plot(x=>x*x)   - Plots the function\n" +
 					" Image.FromFile (path) - Loads an image\n";
@@ -236,6 +237,12 @@ namespace Mono.CSharp.Gui
 		public static Gtk.Widget MainWindow {
 			get { return main_window; }
 			internal set { main_window = value; }
+		}
+
+		static Gtk.Container pane;
+		public static Gtk.Container PaneContainer {
+			get { return pane; }
+			internal set { pane = value; }
 		}
 	}
 }

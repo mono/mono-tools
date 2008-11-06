@@ -28,14 +28,14 @@ using System.Collections;
 using Gtk;
 using Mono.Attach;
 using System.Runtime.InteropServices;
-using System.Collections;
+using System.Xml.Linq;
 
 namespace Mono.CSharp.Gui
 {
 	public partial class MainWindow : Gtk.Window
 	{
 		Shell shell;
-		
+		bool panevisible;
 		
 		protected virtual void OnAttachToProcessActionActivated (object sender, System.EventArgs e)
 		{
@@ -124,12 +124,139 @@ namespace Mono.CSharp.Gui
 			} 
 		}
 
+		static string settings;
+		
+		static void InitSettings ()
+		{
+			string dir = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "gsharp");
+
+			try {
+				System.IO.Directory.CreateDirectory (dir);
+			} catch {
+				return;
+			}
+			settings = System.IO.Path.Combine (dir, "gsharp.xml");
+		}
+
+		static MainWindow ()
+		{
+			InitSettings ();
+		}
+
+		public void LoadSettings (Shell shell)
+		{
+			if (settings == null){
+				shell.LoadHistory (null);
+				return;
+			}
+
+			XDocument doc;
+			try {
+				doc = XDocument.Load (settings);
+			} catch {
+				shell.LoadHistory (null);
+				return;
+			}
+
+			int width = -1;
+			int height = -1;
+			int position = -1;
+			
+			try {
+				foreach (var e in doc.Root.Elements ()){
+					switch (e.Name.LocalName){
+					case "history":
+						shell.LoadHistory (e.Elements ());
+						break;
+					case "Width":
+						width = Int32.Parse (e.Value);
+						break;
+					case "Height":
+						height = Int32.Parse (e.Value);
+						break;
+					case "PaneVisible":
+						panevisible = Int32.Parse (e.Value) == 1;
+						break;
+					case "PanePosition":
+						position = Int32.Parse (e.Value);
+						break;
+					}
+				}
+			} catch {
+			}
+
+			width = System.Math.Max (width, 200);
+			height = System.Math.Max (height, 120);
+			
+			Resize (width, height);
+			if (position >= 0)
+				hpaned.Position = position;
+		}
+
+		public void SaveSettings ()
+		{
+			if (settings == null)
+				return;
+
+			try {
+				var doc = new XDocument (
+					new XElement ("Root", 
+						      shell.SaveHistory (),
+						      new XElement ("Width", Allocation.Width),
+						      new XElement ("Height", Allocation.Height),
+						      new XElement ("PaneVisible", PaneVisible ? 1 : 0),
+						      new XElement ("PanePosition", hpaned.Position)));
+				doc.Save (settings, SaveOptions.DisableFormatting);
+			} catch (Exception e ) {
+				Console.WriteLine ("oops" + e);
+			}
+		}
+
+		public bool PaneVisible {
+			get {
+				return notebook1.Page == 0;
+			}
+		}
+		
+		//
+		// Keeps track of the helper Gtk Pane used for toying with Gtk# widgets
+		//
+		void SetDisplayPane (bool visible)
+		{
+			if (!(PaneVisible ^ visible))
+				return;
+				
+			if (visible){
+				notebook1.Page = 0;
+				sw.Reparent (paned_container);
+			} else {
+				notebook1.Page = 1;
+				sw.Reparent (standalone_container);
+			}
+		}
+
+		public Container PaneContainer {
+			get {
+				return eventbox;
+			}
+		}
+		
 		public MainWindow() : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();
 			Title = "C# Shell";
 
+			// This is the page with no pane
+			notebook1.Page = 1;
+			gtkpane.Toggled += delegate {
+				SetDisplayPane (gtkpane.Active);
+			};
+			
 			shell = new Shell ();
+			LoadSettings (shell);
+
+			gtkpane.Active = panevisible;
+
 			shell.QuitRequested += OnQuitActionActivated;
 			
 			shell.ShowAll ();
@@ -140,6 +267,8 @@ namespace Mono.CSharp.Gui
 
 		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 		{
+			SaveSettings ();
+			
 			if (MainClass.Attached){
 				this.Destroy ();
 			} else {

@@ -55,23 +55,8 @@ namespace Mono.CSharp.Gui
 		List<string> history = new List<string> ();
 		int history_cursor;
 
-		string histfile;
-		
-		public void InitHistory ()
-		{
-			string dir = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "gsharp");
-
-			try {
-				System.IO.Directory.CreateDirectory (dir);
-			} catch {
-				return;
-			}
-			histfile = System.IO.Path.Combine (dir, "history.xml");
-		}
-		
 		public Shell() : base()
 		{
-			InitHistory ();
 			WrapMode = WrapMode.Word;
 			CreateTags ();
 
@@ -96,8 +81,6 @@ namespace Mono.CSharp.Gui
 				gui_output.AutoFlush = true;
 				Console.SetOut (gui_output);
 			}
-			
-			LoadHistory ();
 		}
 
 		void CreateTags ()
@@ -227,10 +210,8 @@ namespace Mono.CSharp.Gui
 				}
 				history.Add ("");
 				DumpHistory ();
-				if (InteractiveBase.QuitRequested && QuitRequested != null){
-					SaveHistory ();
+				if (InteractiveBase.QuitRequested && QuitRequested != null)
 					QuitRequested (this, EventArgs.Empty);
-				}
 				return true;
 				
 			case Gdk.Key.Up:
@@ -248,7 +229,7 @@ namespace Mono.CSharp.Gui
 				return true;
 
 			case Gdk.Key.Down:
-				if (history_cursor+1 == history.Count){
+				if (history_cursor+1 >= history.Count){
 					DumpHistory ();
 					return true;
 				}
@@ -320,7 +301,7 @@ namespace Mono.CSharp.Gui
 
 			var handlers = new List<InteractiveGraphicsBase.TransformHandler> (InteractiveGraphicsBase.type_handlers);
 
-			object original = res;
+			//object original = res;
 			bool retry;
 			do {
 				retry = false;
@@ -439,32 +420,24 @@ namespace Mono.CSharp.Gui
 			}
 		}
 
-		internal void SaveHistory ()
+		internal XElement SaveHistory ()
 		{
-			var doc = new XDocument (
-				new XElement ("history",
-					      from x in history
-					      select new XElement ("item", x)));
-			try {
-				doc.Save (histfile);
-			} catch {
-			}
+			var doc = new XElement (
+				"history",
+				from x in history
+				select new XElement ("item", x));
+
+			return doc;
 		}
 
-		internal void LoadHistory ()
+		internal void LoadHistory (IEnumerable<XElement> items)
 		{
-			if (histfile == null)
-				return;
-
-			XDocument doc;
-			try {
-				doc = XDocument.Load (histfile);
-			} catch {
+			if (items == null){
 				history.Add ("");
 				return;
 			}
 
-			foreach (var e in doc.Root.Elements ()){
+			foreach (var e in items){
 				string s = e.Value;
 				if (s == null || s.Length == 0)
 					continue;

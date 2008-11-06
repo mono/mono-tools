@@ -1,3 +1,14 @@
+2008-11-06  Miguel de Icaza  <miguel@novell.com>
+
+	* MainWindow.cs: Add support for loading settings (window
+	position, pane display and aggregate history here as well).
+
+	Hook up View/Pane display here.
+
+	* InteractiveGraphicsBase (PaneContainer): Expose a new property,
+	a Gtk.Container that can be used to quickly prototype code by
+	having a handy container in the same space as the shell.
+
 2008-11-05  Miguel de Icaza  <miguel@novell.com>
 
 	Add support for loading files specified on the command line.

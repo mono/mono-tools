@@ -39,6 +39,8 @@
     <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.Management" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -56,6 +58,7 @@
     <Compile Include="gtk-gui\Mono.CSharp.Gui.ProcessSelector.cs" />
     <Compile Include="SysDrawing.cs" />
     <Compile Include="InteractiveGraphicsBase.cs" />
+    <Compile Include="Options.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
