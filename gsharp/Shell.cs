@@ -41,6 +41,8 @@ using Gtk;
 using Mono.CSharp;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
+using System.Linq;
 
 namespace Mono.CSharp.Gui
 {
@@ -50,11 +52,26 @@ namespace Mono.CSharp.Gui
 		TextMark end_of_last_processing;
 		string expr = null;
 
-		ArrayList history = new ArrayList ();
-		int history_cursor, new_top;
+		List<string> history = new List<string> ();
+		int history_cursor;
+
+		string histfile;
+		
+		public void InitHistory ()
+		{
+			string dir = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "gsharp");
+
+			try {
+				System.IO.Directory.CreateDirectory (dir);
+			} catch {
+				return;
+			}
+			histfile = System.IO.Path.Combine (dir, "history.xml");
+		}
 		
 		public Shell() : base()
 		{
+			InitHistory ();
 			WrapMode = WrapMode.Word;
 			CreateTags ();
 
@@ -70,15 +87,15 @@ namespace Mono.CSharp.Gui
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
 			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 
-			history.Add ("");
-
 			StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
 			gui_output.AutoFlush = true;
-			Console.SetError (gui_output);
+			//Console.SetError (gui_output);
 			
 			gui_output = new StreamWriter (new GuiStream ("Stdout", this));
 			gui_output.AutoFlush = true;
-			Console.SetOut (gui_output);
+			//Console.SetOut (gui_output);
+
+			LoadHistory ();
 		}
 
 		void CreateTags ()
@@ -138,7 +155,7 @@ namespace Mono.CSharp.Gui
 			} catch (Exception e){
 				expr = null;
 				ShowError (e.ToString ());
-				ShowPrompt (false, false);
+				ShowPrompt (true, false);
 				return true;
 			}
 
@@ -199,7 +216,7 @@ namespace Mono.CSharp.Gui
 				// Insert a new line before we evaluate.
 				TextIter end = Buffer.EndIter;
 				Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
-					
+
 				if (Evaluate (expr)){
 					if (expr_copy != input_line){
 						history.Add (expr_copy);
@@ -208,8 +225,10 @@ namespace Mono.CSharp.Gui
 				}
 				history.Add ("");
 				DumpHistory ();
-				if (InteractiveBase.QuitRequested && QuitRequested != null)
+				if (InteractiveBase.QuitRequested && QuitRequested != null){
+					SaveHistory ();
 					QuitRequested (this, EventArgs.Empty);
+				}
 				return true;
 				
 			case Gdk.Key.Up:
@@ -416,6 +435,42 @@ namespace Mono.CSharp.Gui
 				output.Write ("'\\x{0:x}", (int) c);
 				break;
 			}
+		}
+
+		internal void SaveHistory ()
+		{
+			var doc = new XDocument (
+				new XElement ("history",
+					      from x in history
+					      select new XElement ("item", x)));
+			try {
+				doc.Save (histfile);
+			} catch {
+			}
+		}
+
+		internal void LoadHistory ()
+		{
+			if (histfile == null)
+				return;
+
+			XDocument doc;
+			try {
+				doc = XDocument.Load (histfile);
+			} catch {
+				history.Add ("");
+				return;
+			}
+
+			foreach (var e in doc.Root.Elements ()){
+				string s = e.Value;
+				if (s == null || s.Length == 0)
+					continue;
+				
+				history.Add (s);
+			}
+			history.Add ("");
+			history_cursor = history.Count;
 		}
 		
 		internal static void PrettyPrint (TextWriter output, object result)

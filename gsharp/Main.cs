@@ -57,6 +57,7 @@ namespace Mono.CSharp.Gui
 				});
 				return;
 			}
+			
 			Start ("C# InteractiveBase Shell");
 		}
 
@@ -85,8 +86,27 @@ namespace Mono.CSharp.Gui
 			m.Title = title;
 			m.LoadStartupFiles ();
 			m.ShowAll ();
-			if (!HostHasGtkRunning)
-				Application.Run ();
+
+			if (!HostHasGtkRunning){
+				System.IO.TextWriter cout = Console.Out;
+				System.IO.TextWriter cerr = Console.Error;
+				
+				try {
+					GLib.ExceptionManager.UnhandledException += delegate (GLib.UnhandledExceptionArgs a) {
+						Console.SetOut (cout);
+						Console.SetError (cerr);
+
+						Console.WriteLine ("Application terminating: " + a.ExceptionObject);
+					};
+					
+					Application.Run ();
+				} catch (Exception e) {
+					Console.SetOut (cout);
+					Console.SetError (cerr);
+
+					throw;
+				}
+			}
 		}
 	}
 }

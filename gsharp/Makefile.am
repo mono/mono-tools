@@ -7,7 +7,7 @@ desktopdir = $(datadir)/applications
 desktop_DATA = gsharp.desktop
 
 packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0
-assemblies = -r:System -r:Mono.CSharp -r:Mono.Management -r:Mono.Posix -r:System.Drawing
+assemblies = -r:System -r:Mono.CSharp -r:Mono.Management -r:Mono.Posix -r:System.Drawing -r:System.Xml.Linq -r:System.Core
 
 gsharp_sources =                        			\
         $(srcdir)/AssemblyInfo.cs       			\

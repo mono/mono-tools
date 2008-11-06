@@ -1,12 +1,14 @@
 2008-11-05  Miguel de Icaza  <miguel@novell.com>
 
-	* Shell.cs: touchups to improve the output.
-	
+	* Shell.cs: History saving and loading.
+
 	* Shell.cs: Hook up the GuiStream, which redirects Console Stdout
 	and Stderr to the GUI Shell.
 	
 	Readline still remains unimplemented.
 
+	touchups to improve the output.
+	
 2008-11-05  Miguel de Icaza  <miguel@novell.com>
 
 	* Shell.cs: First load the System.Drawing assembly, only then call
