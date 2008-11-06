@@ -52,7 +52,6 @@ namespace Mono.CSharp.Gui
 
 		ArrayList history = new ArrayList ();
 		int history_cursor, new_top;
-		TextWriter gui_output;
 		
 		public Shell() : base()
 		{
@@ -73,9 +72,13 @@ namespace Mono.CSharp.Gui
 
 			history.Add ("");
 
-			gui_output = new StreamWriter (new GuiStream (this));
-			//Console.SetError (gui_output);
-			//Console.SetOut (gui_output);
+			StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
+			gui_output.AutoFlush = true;
+			Console.SetError (gui_output);
+
+			gui_output = new StreamWriter (new GuiStream ("Stdout", this));
+			gui_output.AutoFlush = true;
+			Console.SetOut (gui_output);
 		}
 
 		void CreateTags ()
@@ -189,6 +192,10 @@ namespace Mono.CSharp.Gui
 				history_cursor = history.Count;
 				
 				string expr_copy = expr = GetCurrentExpression ();
+
+				// Insert a new line before we evaluate.
+				TextIter end = Buffer.EndIter;
+				Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
 					
 				if (Evaluate (expr)){
 					if (expr_copy != input_line){
@@ -277,17 +284,15 @@ namespace Mono.CSharp.Gui
 					prompt_start_iter, prompt_end_iter);
 		}
 
-		public void WriteGui (string s)
+		public void Output (string kind, string s)
 		{
-			ShowResult (s);
-			gui_output.Flush ();
+			TextIter end = Buffer.EndIter;
+			Buffer.InsertWithTagsByName (ref end, s, kind);
 		}
 		
 		public void ShowResult (object res)
 		{
 			TextIter end = Buffer.EndIter;
-
-			Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
 
 			var handlers = new List<InteractiveGraphicsBase.TransformHandler> (InteractiveGraphicsBase.type_handlers);
 
@@ -521,20 +526,22 @@ namespace Mono.CSharp.Gui
 
 	public class GuiStream : Stream {
 		Shell shell;
+		string kind;
 		
-		public GuiStream (Shell s)
+		public GuiStream (string k, Shell s)
 		{
 			shell = s;
+			kind = k;
 		}
 		
-		public override bool CanRead { get { throw new Exception (); return false; } }
+		public override bool CanRead { get { return false; } }
 		public override bool CanSeek { get { return false; } }
 		public override bool CanWrite { get { return true; } }
 
 
 		public override long Length { get { return 0; } } 
 		public override long Position { get { return 0; } set {} }
-		public override void Flush () { Console.WriteLine ("Flush"); }
+		public override void Flush () { }
 		public override int Read  ([In,Out] byte[] buffer, int offset, int count) { return -1; }
 
 		public override long Seek (long offset, SeekOrigin origin) { Console.WriteLine ("Fuck"); return 0; }
@@ -542,8 +549,7 @@ namespace Mono.CSharp.Gui
 		public override void SetLength (long value) { }
 
 		public override void Write (byte[] buffer, int offset, int count) {
-			Console.WriteLine ("WIRING {0}",Encoding.UTF8.GetString (buffer, offset, count));
-			shell.ShowResult (Encoding.UTF8.GetString (buffer, offset, count));
+			shell.Output (kind, Encoding.UTF8.GetString (buffer, offset, count));
 		}
 	}
 }
