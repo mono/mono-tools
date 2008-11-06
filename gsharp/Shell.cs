@@ -87,14 +87,16 @@ namespace Mono.CSharp.Gui
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
 			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 
-			StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
-			gui_output.AutoFlush = true;
-			//Console.SetError (gui_output);
+			if (!MainClass.Debug){
+				StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
+				gui_output.AutoFlush = true;
+				Console.SetError (gui_output);
+				
+				gui_output = new StreamWriter (new GuiStream ("Stdout", this));
+				gui_output.AutoFlush = true;
+				Console.SetOut (gui_output);
+			}
 			
-			gui_output = new StreamWriter (new GuiStream ("Stdout", this));
-			gui_output.AutoFlush = true;
-			//Console.SetOut (gui_output);
-
 			LoadHistory ();
 		}
 

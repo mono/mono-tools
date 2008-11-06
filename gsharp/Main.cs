@@ -17,7 +17,8 @@ namespace Mono.CSharp.Gui
 	{
 		public static bool Attached;
 		public static bool HostHasGtkRunning;
-
+		public static bool Debug;
+		
 		public static void ShowHelp (OptionSet p)
 		{
 			Console.WriteLine ("Usage it: gsharp [--agent] [file1 [fileN]]");
@@ -28,10 +29,14 @@ namespace Mono.CSharp.Gui
 		public static void Main (string[] args)
 		{
 			bool agent = false;
-			
-			var p = new OptionSet () {
-				{ "--agent", "Start up as an agent", f => agent = f != null },
-					};
+
+			OptionSet p = null;
+
+			p = new OptionSet () {
+				{ "agent", "Start up as an agent", f => agent = f != null },
+				{ "help", "Shows the help", f => { ShowHelp (p); Environment.Exit (0); } },
+				{ "debug", "Runs in debug mode, does not redirect IO to the window", f => Debug = true }
+			};
 
 			List<string> extra = null;
 			try {
