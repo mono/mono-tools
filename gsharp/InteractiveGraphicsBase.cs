@@ -43,6 +43,8 @@ namespace Mono.CSharp.Gui
 		public static new string help {
 			get {
 				return InteractiveBase.help +
+					"  RegisterTransformHandler(object => object)\n" +
+					"  MainWindow - the Gtk# toplevel window\n" + 
 					"\nSome samples:\n" +
 					" Plot(x=>x*x)   - Plots the function\n" +
 					" Image.FromFile (path) - Loads an image\n";
