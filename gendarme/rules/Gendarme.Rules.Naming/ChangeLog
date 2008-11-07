@@ -1,5 +1,14 @@
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 
+    * ParameterNamesShouldMatchOverridenMethodRule.cs: Do not issue false positives
+    on macro-generated boo code.
+
+2008-11-08  Cedric Vivier  <cedricv@neonux.com>
+
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: DoesNotApply if no parameter.
+
+2008-11-08  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidRedundancyInMethodNameRule.cs: Change wording to be consistent
 	with AvoidRedundancyInTypeNameRule.
 

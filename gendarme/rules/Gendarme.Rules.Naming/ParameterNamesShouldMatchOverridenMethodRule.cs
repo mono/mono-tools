@@ -75,6 +75,16 @@ namespace Gendarme.Rules.Naming {
 	[FxCopCompatibility ("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration")]
 	public class ParameterNamesShouldMatchOverriddenMethodRule : Rule, IMethodRule {
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			//check if this is a Boo assembly using macros
+			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
+				IsBooAssemblyUsingMacro = (e.CurrentAssembly.MainModule.TypeReferences.ContainsType (BooMacroStatement));
+			};
+		}
+
 		private static bool SignatureMatches (MethodReference method, MethodReference baseMethod, bool explicitInterfaceCheck)
 		{
 			if (method.Name != baseMethod.Name) {
@@ -144,6 +154,10 @@ namespace Gendarme.Rules.Naming {
 			if (baseMethod == null)
 				return RuleResult.Success;
 
+			//do not trigger false positives on Boo macros
+			if (IsBooAssemblyUsingMacro && IsBooMacroParameter (baseMethod.Parameters [0]))
+				return RuleResult.Success;
+
 			for (int i = 0; i < method.Parameters.Count; i++) {
 				if (method.Parameters [i].Name != baseMethod.Parameters [i].Name) {
 					string s = string.Format (CultureInfo.InstalledUICulture,
@@ -153,6 +167,23 @@ namespace Gendarme.Rules.Naming {
 				}
 			}
 			return Runner.CurrentRuleResult;
+		}
+
+		private const string BooMacroStatement = "Boo.Lang.Compiler.Ast.MacroStatement";
+
+		private bool IsBooAssemblyUsingMacro {
+			get {
+				return isBooAssemblyUsingMacro;
+			}
+			set {
+				isBooAssemblyUsingMacro = value;
+			}
+		}
+		private bool isBooAssemblyUsingMacro;
+
+		private static bool IsBooMacroParameter (ParameterReference p)
+		{
+			return p.Name == "macro" && p.ParameterType.FullName == BooMacroStatement;
 		}
 	}
 }
