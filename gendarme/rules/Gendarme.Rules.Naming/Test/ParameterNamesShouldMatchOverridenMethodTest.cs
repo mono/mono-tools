@@ -200,5 +200,16 @@ namespace Test.Rules.Naming {
 			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
 			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
+
+		void NoParameter ()
+		{
+		}
+
+		[Test]
+		public void TestDoesNotApply ()
+		{
+			MethodDefinition method = GetTest ("NoParameter");
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
+		}
 	}
 }

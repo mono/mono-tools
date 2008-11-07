@@ -133,7 +133,7 @@ namespace Gendarme.Rules.Naming {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.IsVirtual || method.IsGeneratedCode ())
+			if (!method.IsVirtual || method.IsGeneratedCode () || method.Parameters.Count == 0)
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition baseMethod = null;
