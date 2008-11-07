@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	ExecutableTargetRule.cs \
 	GtkSharpExecutableTargetRule.cs \
 	SystemWindowsFormsExecutableTargetRule.cs \

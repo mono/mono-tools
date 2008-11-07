@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidAssemblyVersionMismatchRule.cs \
 	AvoidCallingProblematicMethodsRule.cs \
 	AvoidVisibleConstantFieldRule.cs \

@@ -29,7 +29,7 @@ rules_static_sources = $(addprefix $(srcdir)/, $(rules_static))
 rules_build_sources = $(addprefix $(srcdir)/, $(rules_sources))
 rules_build_sources += $(rules_generated_sources) $(rules_static_sources)
 
-EXTRA_DIST = $(rules_sources) $(rules_sources_in) $(prefixed_rules_category).mdp $(prefixed_rules_category).csproj
+EXTRA_DIST = $(rules_sources) $(rules_sources_in) $(prefixed_rules_category).csproj
 CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules_doc) $(rules_dll).doc
 DISTCLEANFILES = Makefile.in $(prefixed_rules_category).xml TestResult.xml
 

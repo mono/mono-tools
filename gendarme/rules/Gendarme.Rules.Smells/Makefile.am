@@ -8,7 +8,6 @@ rules_sources =  \
 	AvoidLargeClassesRule.cs \
 	AvoidLongMethodsRule.cs \
 	AvoidLongParameterListsRule.cs \
-	AvoidMessageChainsRule.cs \
 	AvoidSpeculativeGeneralityRule.cs \
 	CodeDuplicatedLocator.cs \
 	ExpressionCollection.cs \

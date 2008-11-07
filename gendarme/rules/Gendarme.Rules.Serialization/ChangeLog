@@ -1,3 +1,11 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Makefile.am:
+	* Gendarme.Rules.Serialization.mdp:
+	* Gendarme.Rules.Serialization.csproj: Activate makefile integration for
+	all the rules projects. Remove the old mdp files as they are no
+	longer needed.
+
 2008-10-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CallBaseMethodsOnISerializableTypesRule.cs: Avoid specialization

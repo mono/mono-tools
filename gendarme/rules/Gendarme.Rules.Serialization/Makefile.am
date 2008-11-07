@@ -1,13 +1,13 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	CallBaseMethodsOnISerializableTypesRule.cs \
 	DeserializeOptionalFieldRule.cs \
+	ImplementISerializableCorrectlyRule.cs \
 	MarkAllNonSerializableFieldsRule.cs \
 	MissingSerializableAttributeOnISerializableTypeRule.cs \
 	MissingSerializationConstructorRule.cs \
-	UseCorrectSignatureForSerializationMethodsRule.cs \
-	ImplementISerializableCorrectlyRule.cs
+	UseCorrectSignatureForSerializationMethodsRule.cs
 
 tests_sources = \
 	CallBaseMethodsOnISerializableTypesTest.cs \

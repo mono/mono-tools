@@ -1,16 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gendarme</RootNamespace>
     <AssemblyName>GendarmeWizard</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -37,31 +37,16 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\Reference Assemblies\Microsoft\Framework\v3.5\System.Xml.Linq.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AssemblyStaticInfo.cs">
-      <Link>AssemblyStaticInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\console\Helpers.cs">
-      <Link>Helpers.cs</Link>
-    </Compile>
-    <Compile Include="..\console\HtmlResultWriter.cs">
-      <Link>HtmlResultWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\console\ResultWriter.cs">
-      <Link>ResultWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\console\TextResultWriter.cs">
-      <Link>TextResultWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\console\XmlResultWriter.cs">
-      <Link>XmlResultWriter.cs</Link>
-    </Compile>
+    <Compile Include="..\AssemblyStaticInfo.cs" />
+    <Compile Include="..\console\Helpers.cs" />
+    <Compile Include="..\console\HtmlResultWriter.cs" />
+    <Compile Include="..\console\ResultWriter.cs" />
+    <Compile Include="..\console\TextResultWriter.cs" />
+    <Compile Include="..\console\XmlResultWriter.cs" />
     <Compile Include="GuiRunner.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Wizard.cs">
@@ -76,30 +61,23 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="..\console\gendarme.xsl" />
+    <None Include="app.config" />
+    <None Include="Resources\gendarme.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\cecil\pdb\Mono.Cecil.Pdb\Mono.Cecil.Pdb.csproj">
-      <Project>{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}</Project>
-      <Name>Mono.Cecil.Pdb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
@@ -176,13 +154,6 @@
       <Project>{949C4D51-4581-402A-AC18-B1B41F395FDA}</Project>
       <Name>Gendarme.Rules.Ui</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\console\gendarme.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Resources\gendarme.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\gendarme.ico" />

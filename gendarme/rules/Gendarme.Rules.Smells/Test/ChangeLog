@@ -1,3 +1,9 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Tests.Rules.Smells.csproj: Activate makefile integration for all the
+	rules projects. Remove the old mdp files as they are no longer
+	needed.
+
 2008-11-02  Jesse Jones  <jesjones@mindspring.com.com>
 
 	* AvoidMessageChainsTest.cs: Added two test cases 1) verify that we

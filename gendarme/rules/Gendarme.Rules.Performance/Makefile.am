@@ -1,33 +1,33 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
+	AvoidLargeStructureRule.cs \
+	AvoidRepetitiveCastsRule.cs \
+	AvoidReturningArraysOnPropertiesRule.cs \
+	AvoidTypeGetTypeForConstantStringsRule.cs \
+	AvoidUncalledPrivateCodeRule.cs \
+	AvoidUninstantiatedInternalClassesRule.cs \
+	AvoidUnneededCallsOnStringRule.cs \
 	AvoidUnneededFieldInitializationRule.cs \
+	AvoidUnneededUnboxingRule.cs \
+	AvoidUnsealedConcreteAttributesRule.cs \
+	AvoidUnsealedUninheritedInternalClassesRule.cs \
+	AvoidUnusedParametersRule.cs \
+	AvoidUnusedPrivateFieldsRule.cs \
+	CompareWithStringEmptyEfficientlyRule.cs \
+	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
+	DontIgnoreMethodResultRule.cs \
 	EmptyDestructorRule.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeRule.cs \
-	UseStringEmptyRule.cs \
-	UseTypeEmptyTypesRule.cs \
-	AvoidUnusedParametersRule.cs \
-	AvoidUninstantiatedInternalClassesRule.cs \
-	AvoidUncalledPrivateCodeRule.cs \
-	AvoidUnneededCallsOnStringRule.cs \
-	DontIgnoreMethodResultRule.cs \
-	CompareWithStringEmptyEfficientlyRule.cs \
-	AvoidReturningArraysOnPropertiesRule.cs \
-	AvoidUnsealedConcreteAttributesRule.cs \
-	UseIsOperatorRule.cs \
-	AvoidUnsealedUninheritedInternalClassesRule.cs \
-	OverrideValueTypeDefaultsRule.cs \
 	ImplementEqualsTypeRule.cs \
 	MathMinMaxCandidateRule.cs \
-	AvoidLargeStructureRule.cs \
+	OverrideValueTypeDefaultsRule.cs \
+	PreferLiteralOverInitOnlyFieldsRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
-	AvoidUnneededUnboxingRule.cs \
-	ConsiderCustomAccessorsForNonVisibleEventsRule.cs \
-	AvoidTypeGetTypeForConstantStringsRule.cs \
-	AvoidRepetitiveCastsRule.cs \
-	AvoidUnusedPrivateFieldsRule.cs \
-	PreferLiteralOverInitOnlyFieldsRule.cs
+	UseIsOperatorRule.cs \
+	UseStringEmptyRule.cs \
+	UseTypeEmptyTypesRule.cs
 
 # turn off optimization for tests since gmcs (unlike MS csc) now turns "" into String.Empty when optimizing is on
 EXTRA_TESTS_OPTIONS += -unsafe -o-

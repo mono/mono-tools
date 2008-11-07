@@ -1,3 +1,11 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Makefile.am:
+	* Gendarme.Rules.BadPractice.mdp:
+	* Gendarme.Rules.BadPractice.csproj: Activate makefile integration for
+	all the rules projects. Remove the old mdp files as they are no
+	longer needed.
+
 2008-10-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: Append onto the inherited EXTRA_RULES_OPTIONS.

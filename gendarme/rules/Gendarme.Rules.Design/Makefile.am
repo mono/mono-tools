@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AbstractTypesShouldNotHavePublicConstructorsRule.cs \
 	AttributeArgumentsShouldHaveAccessorsRule.cs \
 	AvoidEmptyInterfaceRule.cs \

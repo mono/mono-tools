@@ -1,3 +1,11 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Makefile.am:
+	* Gendarme.Rules.Design.mdp:
+	* Gendarme.Rules.Design.csproj: Activate makefile integration for all
+	the rules projects. Remove the old mdp files as they are no longer
+	needed.
+
 2008-10-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderAddingInterfaceRule.cs: Fix reporting the issue. This

@@ -2,7 +2,7 @@ include ../common.make
 
 EXTRA_RULES_OPTIONS += -r:ICSharpCode.SharpZipLib.dll -pkg:dotnet
 
-rules_sources = \
+rules_sources =  \
 	DoNotHardcodePathsRule.cs \
 	ExitCodeIsLimitedOnUnixRule.cs \
 	FeatureRequiresRootPrivilegeOnUnixRule.cs \

@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidComplexMethodsRule.cs \
 	AvoidDeepInheritanceTreeRule.cs \
 	AvoidLackOfCohesionOfMethodsRule.cs \

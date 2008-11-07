@@ -1,3 +1,9 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Tests.Rules.Maintainability.csproj: Activate makefile integration for
+	all the rules projects. Remove the old mdp files as they are no
+	longer needed.
+
 2008-11-03  Cedric Vivier  <cedricv@neonux.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Remove [Ignore] from

@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	DoNotCastIntPtrToInt32Rule.cs \
 	GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
 	MarshalBooleansInPInvokeDeclarationsRule.cs \

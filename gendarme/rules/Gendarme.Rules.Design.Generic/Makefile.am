@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidMethodWithUnusedGenericTypeRule.cs \
 	ImplementGenericCollectionInterfacesRule.cs \
 	PreferGenericsOverRefObjectRule.cs \

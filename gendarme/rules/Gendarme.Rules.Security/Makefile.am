@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	ArrayFieldsShouldNotBeReadOnlyRule.cs \
 	NativeFieldsShouldNotBeVisibleRule.cs \
 	StaticConstructorsShouldBePrivateRule.cs

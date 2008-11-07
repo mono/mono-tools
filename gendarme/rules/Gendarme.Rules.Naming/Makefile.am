@@ -1,6 +1,6 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidDeepNamespaceHierarchyRule.cs \
 	AvoidRedundancyInMethodNameRule.cs \
 	DetectNonAlphaNumericsInTypeNamesRule.cs \
@@ -12,8 +12,8 @@ rules_sources = \
 	UseCorrectPrefixRule.cs \
 	UseCorrectSuffixRule.cs \
 	UsePluralNameInEnumFlagsRule.cs \
-	UseSingularNameInEnumsUnlessAreFlagsRule.cs \
-	UsePreferredTermsRule.cs 
+	UsePreferredTermsRule.cs \
+	UseSingularNameInEnumsUnlessAreFlagsRule.cs 
 
 tests_sources = \
 	AvoidDeepNamespaceHierarchyTest.cs \

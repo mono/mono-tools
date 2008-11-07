@@ -1,3 +1,11 @@
+2008-11-07  Alan McGovern  <amcgovern@novell.com>
+
+	* Makefile.am:
+	* Gendarme.Rules.Maintainability.mdp:
+	* Gendarme.Rules.Maintainability.csproj: Activate makefile integration
+	for all the rules projects. Remove the old mdp files as they are no
+	longer needed.
+
 2008-11-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Fix double cast (self-test)

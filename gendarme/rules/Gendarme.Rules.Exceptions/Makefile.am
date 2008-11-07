@@ -1,11 +1,11 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
 	AvoidArgumentExceptionDefaultConstructorRule.cs \
 	AvoidThrowingBasicExceptionsRule.cs \
 	DoNotDestroyStackTraceRule.cs \
-	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
 	DoNotThrowReservedExceptionRule.cs \
+	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
 	ExceptionShouldBeVisibleRule.cs \
 	Impl/ExceptionBlockParser.cs \
 	Impl/ExecutionBlock.cs \
@@ -14,10 +14,10 @@ rules_sources = \
 	Impl/SEHCatchBlock.cs \
 	Impl/SEHGuardedBlock.cs \
 	Impl/SEHHandlerBlock.cs \
+	InstantiateArgumentExceptionCorrectlyRule.cs \
 	MissingExceptionConstructorsRule.cs \
 	NewExceptionRule.cs \
-	SEHHandlerType.cs \
-	InstantiateArgumentExceptionCorrectlyRule.cs
+	SEHHandlerType.cs
 
 tests_sources = \
 	AvoidArgumentExceptionDefaultConstructorTest.cs \

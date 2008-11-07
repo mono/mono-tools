@@ -1,17 +1,19 @@
 include ../common.make
 
-rules_sources = \
+rules_sources =  \
+	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs \
 	AvoidFloatingPointEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
 	CheckParametersNullityInVisibleMethodsRule.cs \
 	DisposableFieldsShouldBeDisposedRule.cs \
-	DontCompareWithNaNRule.cs \
 	DoNotRoundIntegersRule.cs \
+	DontCompareWithNaNRule.cs \
 	FinalizersShouldCallBaseClassFinalizerRule.cs \
 	FloatComparisonRule.cs \
 	MethodCanBeMadeStaticRule.cs \
+	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
 	ReviewCastOnIntegerMultiplicationRule.cs \
 	ReviewDoubleAssignmentRule.cs \
@@ -19,9 +21,7 @@ rules_sources = \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs \
-	UseValueInPropertySetterRule.cs \
-	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
-	AttributeStringLiteralsShouldParseCorrectlyRule.cs
+	UseValueInPropertySetterRule.cs
 
 tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
