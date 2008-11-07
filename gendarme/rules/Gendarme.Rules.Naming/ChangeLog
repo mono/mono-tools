@@ -1,5 +1,10 @@
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 
+	* AvoidRedundancyInMethodNameRule.cs: Change wording to be consistent
+	with AvoidRedundancyInTypeNameRule.
+
+2008-11-08  Cedric Vivier  <cedricv@neonux.com>
+
 	* AvoidRedundancyInTypeNameRule.cs: New.
 	This rule checks if a type is prefixed with the last component of its
 	enclosing namespace, and that removing the prefix would not cause
