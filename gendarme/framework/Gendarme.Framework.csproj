@@ -39,7 +39,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="..\AssemblyStaticInfo.cs" />
     <Compile Include="Gendarme.Framework\Engine.cs" />
-    <Compile Include="Gendarme.Framework.Engines\CommonAttributesEngine.cs" />
     <Compile Include="Gendarme.Framework.Engines\OpCodeEngine.cs" />
     <Compile Include="Gendarme.Framework.Helpers\OpCodeBitmask.cs" />
     <Compile Include="Gendarme.Framework.Helpers\StackEntryUsageResult.cs" />
@@ -102,6 +101,9 @@
     <Compile Include="Gendarme.Framework.Helpers\StackEntryAnalysis.cs" />
     <Compile Include="Gendarme.Framework\SolutionAttribute.cs" />
     <Compile Include="Gendarme.Framework\Symbols.cs" />
+    <Compile Include="Gendarme.Framework.Engines\NamespaceEngine.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\Namespace.cs" />
+    <Compile Include="Gendarme.Framework.Helpers\PrimitiveReferences.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
@@ -131,4 +133,20 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <GtkDesignInfo />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath="../..">
+          <BuildFilesVar Sync="true" Name="framework_sources" />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

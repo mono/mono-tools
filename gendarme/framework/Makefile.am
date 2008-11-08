@@ -26,8 +26,26 @@ generated_doc = doc doc/generated/**/*.xml
 
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
-framework_sources = \
+framework_sources =  \
 	../AssemblyStaticInfo.cs \
+	Gendarme.Framework.Engines/NamespaceEngine.cs \
+	Gendarme.Framework.Engines/OpCodeEngine.cs \
+	Gendarme.Framework.Helpers/MethodSignature.cs \
+	Gendarme.Framework.Helpers/MethodSignatures.cs \
+	Gendarme.Framework.Helpers/Namespace.cs \
+	Gendarme.Framework.Helpers/OpCodeBitmask.cs \
+	Gendarme.Framework.Helpers/PrimitiveReferences.cs \
+	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \
+	Gendarme.Framework.Helpers/StackEntryUsageResult.cs \
+	Gendarme.Framework.Rocks/AssemblyRocks.cs \
+	Gendarme.Framework.Rocks/CecilRocks.cs \
+	Gendarme.Framework.Rocks/CommonRocks.cs \
+	Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
+	Gendarme.Framework.Rocks/FieldRocks.cs \
+	Gendarme.Framework.Rocks/InstructionRocks.cs \
+	Gendarme.Framework.Rocks/MethodRocks.cs \
+	Gendarme.Framework.Rocks/ModuleRocks.cs \
+	Gendarme.Framework.Rocks/TypeRocks.cs \
 	Gendarme.Framework/ApplicabilityScope.cs \
 	Gendarme.Framework/AssemblyResolver.cs \
 	Gendarme.Framework/BasicIgnoreList.cs \
@@ -53,26 +71,8 @@ framework_sources = \
 	Gendarme.Framework/Runner.cs \
 	Gendarme.Framework/RunnerEventArgs.cs \
 	Gendarme.Framework/Severity.cs \
-	Gendarme.Framework/Symbols.cs \
 	Gendarme.Framework/SolutionAttribute.cs \
-	Gendarme.Framework.Engines/NamespaceEngine.cs \
-	Gendarme.Framework.Engines/OpCodeEngine.cs \
-	Gendarme.Framework.Helpers/MethodSignature.cs \
-	Gendarme.Framework.Helpers/MethodSignatures.cs \
-	Gendarme.Framework.Helpers/Namespace.cs \
-	Gendarme.Framework.Helpers/OpCodeBitmask.cs \
-	Gendarme.Framework.Helpers/PrimitiveReferences.cs \
-	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \
-	Gendarme.Framework.Helpers/StackEntryUsageResult.cs \
-	Gendarme.Framework.Rocks/AssemblyRocks.cs \
-	Gendarme.Framework.Rocks/CecilRocks.cs \
-	Gendarme.Framework.Rocks/CommonRocks.cs \
-	Gendarme.Framework.Rocks/CustomAttributeRocks.cs \
-	Gendarme.Framework.Rocks/FieldRocks.cs \
-	Gendarme.Framework.Rocks/InstructionRocks.cs \
-	Gendarme.Framework.Rocks/MethodRocks.cs \
-	Gendarme.Framework.Rocks/ModuleRocks.cs \
-	Gendarme.Framework.Rocks/TypeRocks.cs
+	Gendarme.Framework/Symbols.cs
 
 framework_build_sources = $(addprefix $(srcdir)/, $(framework_sources))
 framework_build_sources += $(framework_generated_sources)

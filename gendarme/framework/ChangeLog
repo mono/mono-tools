@@ -1,3 +1,9 @@
+2008-11-08  Alan McGovern  <alan.mcgovern@gmail.com>
+
+	* Makefile.am:
+	* Gendarme.Framework.csproj: Enable Makefile integration of
+	Gendarme.Framework.csproj
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Gendarme.Framework.csproj: Activate makefile integration for all the
