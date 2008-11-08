@@ -1,3 +1,8 @@
+2008-11-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProtectCallToEventDelegatesTest.cs: New. Unit tests for 
+	ProtectCallToEventDelegatesRule
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Concurrency.csproj: Activate makefile integration for all
