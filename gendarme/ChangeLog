@@ -1,3 +1,8 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Add entry for NDesk.Options.OptionValueType wrt
+	Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
+
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 
 	* NEWS: Add just landed AvoidRedundancyInTypeNameRule to new rules list.

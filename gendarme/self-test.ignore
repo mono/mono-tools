@@ -76,3 +76,5 @@ R: Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
 M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
 R: Gendarme.Rules.Naming.UseCorrectSuffixRule
 T: NDesk.Options.OptionSet
+R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
+T: NDesk.Options.OptionValueType
