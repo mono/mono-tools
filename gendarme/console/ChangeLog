@@ -1,3 +1,8 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TextResultWriter.cs: : Clearly specify [Serializable] on the
+	ColorScheme enum (self-test)
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* gendarme.csproj: Activate makefile integration for all the rules

@@ -41,6 +41,7 @@ namespace Gendarme {
 
 	public class TextResultWriter : ResultWriter, IDisposable {
 
+		[Serializable]
 		enum ColorScheme {
 			None,
 			Light,
