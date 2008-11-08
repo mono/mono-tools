@@ -28,6 +28,7 @@ using System;
 
 namespace Gendarme.Framework {
 
+	[Serializable]
 	public enum RuleResult {
 		/// <summary>
 		/// Rules returns this if the required conditions to execute 

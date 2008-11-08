@@ -32,6 +32,7 @@ namespace Gendarme.Framework {
 	/// The level of confidence about the rule results. The more 
 	/// confidence the less likely the rule will return false positives.
 	/// </summary>
+	[Serializable]
 	public enum Confidence {
 		/// <summary>
 		/// The rule is 100% certain of its result. 

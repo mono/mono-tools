@@ -26,7 +26,11 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
+
 namespace Gendarme.Framework {
+
+	[Serializable]
 	public enum ApplicabilityScope {
 		Visible = 0,
 		NonVisible, 

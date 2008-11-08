@@ -1,3 +1,8 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ApplicabilityScope.cs, Confidence.cs, RuleResult.cs, 
+	Severity.cs: Clearly specify [Serializable] on enums (self-test)
+
 2008-10-29  Jesse Jones  <jesjones@mindspring.com>
 
 	* Bitmask.cs: Added unchecked statement to Bitmask.Clear so that

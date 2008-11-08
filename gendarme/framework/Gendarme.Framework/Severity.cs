@@ -31,6 +31,7 @@ namespace Gendarme.Framework {
 	/// <summary>
 	/// How severe is a defect found by the rule.
 	/// </summary>
+	[Serializable]
 	public enum Severity {
 		/// <summary>
 		/// The code can not work as expected.
