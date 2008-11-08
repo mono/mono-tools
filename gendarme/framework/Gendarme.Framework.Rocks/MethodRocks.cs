@@ -218,7 +218,15 @@ namespace Gendarme.Framework.Rocks {
 		{
 			var parameters = self.Resolve ().Parameters;
 
-			return parameters.Count == 2 && parameters [1].ParameterType.Inherits ("System.EventArgs");
+			if (parameters.Count != 2)
+				return false;
+
+			TypeReference type = parameters [1].ParameterType;
+			GenericParameter gp = (type as GenericParameter);
+			if (gp == null)
+				return type.Inherits ("System.EventArgs");
+
+			return (gp.Constraints.Count == 1) ? (gp.Constraints [0].FullName == "System.EventArgs") : false;
 		}
 	}
 }
