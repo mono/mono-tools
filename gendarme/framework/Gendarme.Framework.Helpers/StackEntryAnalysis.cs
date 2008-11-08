@@ -45,6 +45,7 @@ namespace Gendarme.Framework.Helpers {
 	/// </summary>
 	public class StackEntryAnalysis {
 
+		[Serializable]
 		enum StoreType {
 			None,
 			Local,

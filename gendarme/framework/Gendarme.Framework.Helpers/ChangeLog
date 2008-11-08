@@ -1,3 +1,8 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* StackEntryAnalysis.cs: Clearly specify [Serializable] on 
+	enums (self-test)
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Namespace.cs: Renamed to NamespaceDefinition to better match Cecil
