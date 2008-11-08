@@ -3,6 +3,7 @@ using System;
 namespace Gendarme.Rules.Exceptions {
 
 	// Enumerates the types of SEH handler blocks
+	[Serializable]
 	public enum SEHHandlerType {
 		// An SEH catch block, invoked if an exception is thrown in the
 		// guarded block that matches or descends from a specified class
