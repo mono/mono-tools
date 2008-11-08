@@ -1,3 +1,9 @@
+2008-11-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProtectCallToEventDelegatesRule.cs: New. Rule that checks if calls
+	to event delegates are null-protected and without a race condition.
+	* Makefile.am: Added the new rule and tests to the build.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:
