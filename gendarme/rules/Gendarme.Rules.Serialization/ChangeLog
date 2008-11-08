@@ -1,3 +1,10 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarkEnumerationsAsSerializableRule.cs: New. Rule to suggest to
+	mark all enumerations as serializable (since they are) to improve 
+	source code readability.
+	* Makefile.am: Add rule and tests to the build.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:
