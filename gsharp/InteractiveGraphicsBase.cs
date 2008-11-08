@@ -27,11 +27,10 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
+using Gtk;
 
 namespace Mono.CSharp.Gui
-{
-	
-	
+{	
 	public class InteractiveGraphicsBase : Mono.CSharp.InteractiveBase
 	{
 		static internal List<TransformHandler> type_handlers = new List<TransformHandler> ();
@@ -232,17 +231,30 @@ namespace Mono.CSharp.Gui
 			internal set { attached = value; }
 		}
 
-		static Gtk.Widget main_window;
-		// A handle to our main window.
-		public static Gtk.Widget MainWindow {
+		static MainWindow main_window;
+		// A handle to our main window, the contract is Gtk.Window, internally we know its a MainWindow
+		public static Gtk.Window MainWindow {
 			get { return main_window; }
-			internal set { main_window = value; }
+			internal set { main_window = (MainWindow) value; }
 		}
 
 		static Gtk.Container pane;
 		public static Gtk.Container PaneContainer {
 			get { return pane; }
 			internal set { pane = value; }
+		}
+		
+		static public new string Describe (object x)
+		{
+			if (x == null)
+				return "object is null";
+
+			Type t = x as Type;
+			if (t == null)
+				t = x.GetType ();
+
+			main_window.Describe (t);
+		 	return "Described on separate page";
 		}
 	}
 }

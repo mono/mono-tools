@@ -29,6 +29,10 @@ namespace Mono.CSharp.Gui {
         
         private Gtk.ToggleAction gtkpane;
         
+        private Gtk.Action ToolsAction;
+        
+        private Gtk.Action DescribeTypeAction;
+        
         private Gtk.VBox vbox1;
         
         private Gtk.MenuBar menubar1;
@@ -45,7 +49,11 @@ namespace Mono.CSharp.Gui {
         
         private Gtk.EventBox standalone_container;
         
+        private Gtk.Notebook shellnotebook;
+        
         private Gtk.ScrolledWindow sw;
+        
+        private Gtk.Label label3;
         
         private Gtk.Label label2;
         
@@ -75,6 +83,12 @@ namespace Mono.CSharp.Gui {
             this.gtkpane = new Gtk.ToggleAction("gtkpane", Mono.Unix.Catalog.GetString("Gtk Pane"), null, null);
             this.gtkpane.ShortLabel = Mono.Unix.Catalog.GetString("Gtk Pane");
             w1.Add(this.gtkpane, null);
+            this.ToolsAction = new Gtk.Action("ToolsAction", Mono.Unix.Catalog.GetString("_Tools"), null, null);
+            this.ToolsAction.ShortLabel = Mono.Unix.Catalog.GetString("_Tools");
+            w1.Add(this.ToolsAction, null);
+            this.DescribeTypeAction = new Gtk.Action("DescribeTypeAction", Mono.Unix.Catalog.GetString("Describe Type"), null, null);
+            this.DescribeTypeAction.ShortLabel = Mono.Unix.Catalog.GetString("Describe Type");
+            w1.Add(this.DescribeTypeAction, null);
             this.UIManager.InsertActionGroup(w1, 0);
             this.AddAccelGroup(this.UIManager.AccelGroup);
             this.Name = "Mono.CSharp.Gui.MainWindow";
@@ -87,7 +101,7 @@ namespace Mono.CSharp.Gui {
             this.vbox1.Name = "vbox1";
             this.vbox1.Spacing = 6;
             // Container child vbox1.Gtk.Box+BoxChild
-            this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AttachToProcessAction' action='AttachToProcessAction'/><separator/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='ViewAction' action='ViewAction'><menuitem name='gtkpane' action='gtkpane'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='AboutAction' action='AboutAction'/></menu></menubar></ui>");
+            this.UIManager.AddUiFromString("<ui><menubar name='menubar1'><menu name='FileAction' action='FileAction'><menuitem name='AttachToProcessAction' action='AttachToProcessAction'/><separator/><menuitem name='QuitAction' action='QuitAction'/></menu><menu name='ViewAction' action='ViewAction'><menuitem name='gtkpane' action='gtkpane'/></menu><menu name='ToolsAction' action='ToolsAction'><menuitem name='DescribeTypeAction' action='DescribeTypeAction'/></menu><menu name='HelpAction' action='HelpAction'><menuitem name='AboutAction' action='AboutAction'/></menu></menubar></ui>");
             this.menubar1 = ((Gtk.MenuBar)(this.UIManager.GetWidget("/menubar1")));
             this.menubar1.Name = "menubar1";
             this.vbox1.Add(this.menubar1);
@@ -128,14 +142,28 @@ namespace Mono.CSharp.Gui {
             this.standalone_container = new Gtk.EventBox();
             this.standalone_container.Name = "standalone_container";
             // Container child standalone_container.Gtk.Container+ContainerChild
+            this.shellnotebook = new Gtk.Notebook();
+            this.shellnotebook.CanFocus = true;
+            this.shellnotebook.Name = "shellnotebook";
+            this.shellnotebook.CurrentPage = 0;
+            this.shellnotebook.ShowTabs = false;
+            this.shellnotebook.Scrollable = true;
+            // Container child shellnotebook.Gtk.Notebook+NotebookChild
             this.sw = new Gtk.ScrolledWindow();
             this.sw.CanFocus = true;
             this.sw.Name = "sw";
             this.sw.ShadowType = ((Gtk.ShadowType)(1));
-            this.standalone_container.Add(this.sw);
+            this.shellnotebook.Add(this.sw);
+            // Notebook tab
+            this.label3 = new Gtk.Label();
+            this.label3.Name = "label3";
+            this.label3.LabelProp = Mono.Unix.Catalog.GetString("C#");
+            this.shellnotebook.SetTabLabel(this.sw, this.label3);
+            this.label3.ShowAll();
+            this.standalone_container.Add(this.shellnotebook);
             this.notebook1.Add(this.standalone_container);
-            Gtk.Notebook.NotebookChild w7 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.standalone_container]));
-            w7.Position = 1;
+            Gtk.Notebook.NotebookChild w8 = ((Gtk.Notebook.NotebookChild)(this.notebook1[this.standalone_container]));
+            w8.Position = 1;
             // Notebook tab
             this.label2 = new Gtk.Label();
             this.label2.Name = "label2";
@@ -143,16 +171,16 @@ namespace Mono.CSharp.Gui {
             this.notebook1.SetTabLabel(this.standalone_container, this.label2);
             this.label2.ShowAll();
             this.vbox1.Add(this.notebook1);
-            Gtk.Box.BoxChild w8 = ((Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
-            w8.Position = 1;
+            Gtk.Box.BoxChild w9 = ((Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+            w9.Position = 1;
             this.Add(this.vbox1);
             if ((this.Child != null)) {
                 this.Child.ShowAll();
             }
             this.Show();
-            this.DeleteEvent += new Gtk.DeleteEventHandler(this.OnDeleteEvent);
             this.QuitAction.Activated += new System.EventHandler(this.OnQuitActionActivated);
             this.AttachToProcessAction.Activated += new System.EventHandler(this.OnAttachToProcessActionActivated);
+            this.DescribeTypeAction.Activated += new System.EventHandler(this.OnDescribeTypeActionActivated);
         }
     }
 }

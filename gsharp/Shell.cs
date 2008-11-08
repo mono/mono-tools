@@ -55,8 +55,12 @@ namespace Mono.CSharp.Gui
 		List<string> history = new List<string> ();
 		int history_cursor;
 
-		public Shell() : base()
+		MainWindow container;
+		public MainWindow Container { get { return container; }}
+		
+		public Shell(MainWindow container) : base()
 		{
+			this.container = container;
 			WrapMode = WrapMode.Word;
 			CreateTags ();
 
@@ -73,11 +77,13 @@ namespace Mono.CSharp.Gui
 			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 
 			if (!MainClass.Debug){
-				StreamWriter gui_output = new StreamWriter (new GuiStream ("Error", this));
+				GuiStream error_stream = new GuiStream ("Error", (x, y) => Output (x, y));
+				StreamWriter gui_output = new StreamWriter (error_stream);
 				gui_output.AutoFlush = true;
 				Console.SetError (gui_output);
-				
-				gui_output = new StreamWriter (new GuiStream ("Stdout", this));
+
+				GuiStream stdout_stream = new GuiStream ("Stdout", (x, y) => Output (x, y));
+				gui_output = new StreamWriter (stdout_stream);
 				gui_output.AutoFlush = true;
 				Console.SetOut (gui_output);
 			}
@@ -179,7 +185,7 @@ namespace Mono.CSharp.Gui
 				Console.WriteLine ("{0}  {1}: {2}",
 						   i == history_cursor ? "==>" : "   ",
 						   i, history [i]);
-			Console.WriteLine ("---");
+			Console.WriteLine ("--- {0} --- ", history_cursor);
 		}
 		
 		protected override bool OnKeyPressEvent(Gdk.EventKey evnt)
@@ -221,6 +227,7 @@ namespace Mono.CSharp.Gui
 				}
 				string input = InputLine;
 				if (!String.IsNullOrEmpty (input)){
+					DumpHistory ();
 					history [history_cursor] = input;
 				}
 				history_cursor--;
@@ -445,7 +452,7 @@ namespace Mono.CSharp.Gui
 				history.Add (s);
 			}
 			history.Add ("");
-			history_cursor = history.Count;
+			history_cursor = history.Count-1;
 		}
 		
 		internal static void PrettyPrint (TextWriter output, object result)
@@ -522,16 +529,17 @@ namespace Mono.CSharp.Gui
 				}
 			}
 		}
+
 	}
 
 	public class GuiStream : Stream {
-		Shell shell;
 		string kind;
+		Action<string,string> callback;
 		
-		public GuiStream (string k, Shell s)
+		public GuiStream (string k, Action<string, string> cb)
 		{
-			shell = s;
 			kind = k;
+			callback = cb;
 		}
 		
 		public override bool CanRead { get { return false; } }
@@ -544,12 +552,12 @@ namespace Mono.CSharp.Gui
 		public override void Flush () { }
 		public override int Read  ([In,Out] byte[] buffer, int offset, int count) { return -1; }
 
-		public override long Seek (long offset, SeekOrigin origin) { Console.WriteLine ("Fuck"); return 0; }
+		public override long Seek (long offset, SeekOrigin origin) { return 0; }
 
 		public override void SetLength (long value) { }
 
 		public override void Write (byte[] buffer, int offset, int count) {
-			shell.Output (kind, Encoding.UTF8.GetString (buffer, offset, count));
+			callback (kind, Encoding.UTF8.GetString (buffer, offset, count));
 		}
 	}
 }

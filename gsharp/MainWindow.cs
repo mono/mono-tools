@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Gtk;
 using Mono.Attach;
 using System.Runtime.InteropServices;
@@ -33,9 +34,9 @@ using System.Xml.Linq;
 namespace Mono.CSharp.Gui
 {
 	public partial class MainWindow : Gtk.Window
-	{
-		Shell shell;
+	{		
 		bool panevisible;
+		static Gdk.Pixbuf close_image;
 		
 		protected virtual void OnAttachToProcessActionActivated (object sender, System.EventArgs e)
 		{
@@ -50,6 +51,8 @@ namespace Mono.CSharp.Gui
 			p.Destroy ();
 		}
 
+		public Shell Shell { get; private set; }
+		
 		delegate string ReadLiner (bool primary);
 
 		public void LoadStartupFiles ()
@@ -141,6 +144,7 @@ namespace Mono.CSharp.Gui
 		static MainWindow ()
 		{
 			InitSettings ();
+			close_image = Gdk.Pixbuf.LoadFromResource ("close.png");
 		}
 
 		public void LoadSettings (Shell shell)
@@ -201,7 +205,7 @@ namespace Mono.CSharp.Gui
 			try {
 				var doc = new XDocument (
 					new XElement ("Root", 
-						      shell.SaveHistory (),
+						      Shell.SaveHistory (),
 						      new XElement ("Width", Allocation.Width),
 						      new XElement ("Height", Allocation.Height),
 						      new XElement ("PaneVisible", PaneVisible ? 1 : 0),
@@ -240,7 +244,70 @@ namespace Mono.CSharp.Gui
 				return eventbox;
 			}
 		}
+
+		public Notebook ShellNotebook {
+			get {
+				return shellnotebook;
+			}
+		}
+
+		Dictionary<Type, Widget> pages = new Dictionary<Type,Widget> ();
 		
+		public void AddPage (Type t, Widget w)
+		{
+			pages [t] = w;
+			HBox h = new HBox (false, 0);
+			h.PackStart (new Label (t.ToString ()), false, false, 0);
+			Button b = new Button (new Image (close_image));
+			b.SetSizeRequest (18, 18);
+			
+			b.Clicked += delegate {
+				shellnotebook.Remove (w);
+				pages.Remove (t);
+			};
+			h.PackStart (b, false, false, 0);
+			
+			h.ShowAll ();
+			shellnotebook.Page = shellnotebook.AppendPage (w, h);
+		}
+
+		public bool FindPage (Type t)
+		{
+			if (pages.ContainsKey (t)){
+				Widget w = pages [t];
+				
+				for (int i = 0; i < shellnotebook.NPages; i++){
+					Widget nth = shellnotebook.GetNthPage (i);
+					if (nth == w){
+						shellnotebook.Page = i;
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		
+		public void Describe (Type t)
+		{
+			if (t == null)
+				throw new ArgumentNullException ();
+
+			if (FindPage (t))
+				return;
+			
+			TypeView tv = new TypeView (this);
+			tv.KeyPressEvent += HandleKeyPressEvent;
+			tv.ShowType (t);
+			ScrolledWindow scrolled = new ScrolledWindow ();
+			scrolled.Add (tv);
+
+			scrolled.ShowAll ();
+
+			AddPage (t, scrolled);
+		}
+
 		public MainWindow() : base(Gtk.WindowType.Toplevel)
 		{
 			this.Build();
@@ -251,18 +318,57 @@ namespace Mono.CSharp.Gui
 			gtkpane.Toggled += delegate {
 				SetDisplayPane (gtkpane.Active);
 			};
-			
-			shell = new Shell ();
-			LoadSettings (shell);
+
+			shellnotebook.PageAdded += delegate {
+				shellnotebook.ShowTabs = true;
+			};
+			shellnotebook.PageRemoved += delegate {
+				if (shellnotebook.NPages == 1)
+					shellnotebook.ShowTabs = false;
+			};
+			Shell = new Shell (this);
+			LoadSettings (Shell);
 
 			gtkpane.Active = panevisible;
 
-			shell.QuitRequested += OnQuitActionActivated;
+			Shell.QuitRequested += OnQuitActionActivated;
 			
-			shell.ShowAll ();
+			Shell.ShowAll ();
 			
-			sw.Add (shell);
-			Focus = shell;
+			sw.Add (Shell);
+			Focus = Shell;
+
+			KeyPressEvent += HandleKeyPressEvent;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleKeyPressEvent(object o, KeyPressEventArgs args)
+		{
+				Gdk.EventKey ev = args.Event;
+
+				if ((ev.State & Gdk.ModifierType.ControlMask) == Gdk.ModifierType.ControlMask){
+					switch (ev.Key){
+					case Gdk.Key.Page_Down:
+						if (shellnotebook.Page+1 == shellnotebook.NPages)
+							shellnotebook.Page = 0;
+						else
+							shellnotebook.Page = shellnotebook.Page + 1;
+						args.RetVal = true;
+						return;
+					
+					case Gdk.Key.Page_Up:
+						if (shellnotebook.Page == 0)
+							shellnotebook.Page = shellnotebook.NPages -1;
+						else
+							shellnotebook.Page = shellnotebook.Page - 1;
+						
+						args.RetVal = true;
+						return;
+					
+					default:
+						return;
+					}
+				}
 		}
 
 		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
@@ -280,6 +386,29 @@ namespace Mono.CSharp.Gui
 		{
 			if (!MainClass.Attached)
 				Application.Quit ();
+		}
+
+		protected virtual void OnDescribeTypeActionActivated (object sender, System.EventArgs e)
+		{
+			DescribeType dt = new DescribeType ();
+			
+			int c = dt.Run ();
+			Type t = null;
+			
+			if (c == (int) Gtk.ResponseType.Ok){
+				try {
+					t = System.Type.GetType (dt.TypeName);
+				} catch {
+				}
+			}
+			if (t == null){
+				MessageDialog d = new MessageDialog (this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, false, "The type {0} was not found", dt.TypeName);
+				d.Run ();
+				d.Destroy ();
+			} else
+				Describe (t);
+			
+			dt.Destroy ();
 		}
 		
 	}

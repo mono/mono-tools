@@ -49,13 +49,23 @@
         <property name="DrawAsRadio">False</property>
         <property name="Active">False</property>
       </action>
+      <action id="ToolsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Tools</property>
+        <property name="ShortLabel" translatable="yes">_Tools</property>
+      </action>
+      <action id="DescribeTypeAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Describe Type</property>
+        <property name="ShortLabel" translatable="yes">Describe Type</property>
+        <signal name="Activated" handler="OnDescribeTypeActionActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="DefaultWidth">600</property>
     <property name="DefaultHeight">500</property>
-    <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
       <widget class="Gtk.VBox" id="vbox1">
         <property name="MemberName" />
@@ -71,6 +81,9 @@
               </node>
               <node type="Menu" action="ViewAction">
                 <node type="Menuitem" action="gtkpane" />
+              </node>
+              <node type="Menu" action="ToolsAction">
+                <node type="Menuitem" action="DescribeTypeAction" />
               </node>
               <node type="Menu" action="HelpAction">
                 <node type="Menuitem" action="AboutAction" />
@@ -130,18 +143,36 @@
               <widget class="Gtk.EventBox" id="standalone_container">
                 <property name="MemberName" />
                 <child>
-                  <widget class="Gtk.ScrolledWindow" id="sw">
+                  <widget class="Gtk.Notebook" id="shellnotebook">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
-                    <property name="ShadowType">In</property>
+                    <property name="CurrentPage">0</property>
+                    <property name="ShowTabs">False</property>
+                    <property name="Scrollable">True</property>
                     <child>
-                      <widget class="Gtk.Viewport" id="GtkViewport">
+                      <widget class="Gtk.ScrolledWindow" id="sw">
                         <property name="MemberName" />
-                        <property name="ShadowType">None</property>
+                        <property name="CanFocus">True</property>
+                        <property name="ShadowType">In</property>
                         <child>
-                          <placeholder />
+                          <widget class="Gtk.Viewport" id="GtkViewport">
+                            <property name="MemberName" />
+                            <property name="ShadowType">None</property>
+                            <child>
+                              <placeholder />
+                            </child>
+                          </widget>
                         </child>
                       </widget>
+                    </child>
+                    <child>
+                      <widget class="Gtk.Label" id="label3">
+                        <property name="MemberName" />
+                        <property name="LabelProp" translatable="yes">C#</property>
+                      </widget>
+                      <packing>
+                        <property name="type">tab</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>
@@ -261,6 +292,104 @@
             <property name="Label" translatable="yes">_Attach</property>
             <property name="UseUnderline">True</property>
             <property name="ResponseId">-5</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Dialog" id="Mono.CSharp.Gui.DescribeType" design-size="284 133">
+    <property name="MemberName" />
+    <property name="WindowPosition">CenterOnParent</property>
+    <property name="Buttons">2</property>
+    <property name="HelpButton">False</property>
+    <property name="HasSeparator">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.HBox" id="hbox1">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="Xpad">5</property>
+                <property name="Ypad">15</property>
+                <property name="LabelProp" translatable="yes">Type name:</property>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="entry1">
+                <property name="MemberName" />
+                <property name="CanDefault">True</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+                <signal name="Activated" handler="OnEntry1Activated" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder />
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">6</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">2</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonCancel">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-cancel</property>
+            <property name="ResponseId">-6</property>
+            <property name="label">gtk-cancel</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-ok</property>
+            <property name="ResponseId">-5</property>
+            <property name="label">gtk-ok</property>
           </widget>
           <packing>
             <property name="Position">1</property>

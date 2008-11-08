@@ -114,6 +114,7 @@ namespace Mono.CSharp.Gui
 			MainWindow m = new MainWindow ();
 			InteractiveGraphicsBase.MainWindow = m;
 			InteractiveGraphicsBase.PaneContainer = m.PaneContainer;
+			
 			m.Title = title;
 			m.LoadStartupFiles ();
 			if (files != null)

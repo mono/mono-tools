@@ -46,6 +46,7 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="close.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -59,6 +60,10 @@
     <Compile Include="SysDrawing.cs" />
     <Compile Include="InteractiveGraphicsBase.cs" />
     <Compile Include="Options.cs" />
+    <Compile Include="TypeView.cs" />
+    <Compile Include="outline.cs" />
+    <Compile Include="DescribeType.cs" />
+    <Compile Include="gtk-gui\Mono.CSharp.Gui.DescribeType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
