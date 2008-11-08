@@ -79,8 +79,10 @@ namespace Gendarme.Framework {
 					foreach (TypeDefinition type in module.Types) {
 						e.CurrentType = type;
 
-						if (BuildingType != null)
-							BuildingType (type, e);
+						EventHandler<EngineEventArgs> handler = BuildingType;
+						if (handler != null)
+							handler (type, e);
+
 						BuildCustomAttributes (type, e);
 
 						foreach (FieldDefinition field in type.Fields) {
@@ -103,8 +105,10 @@ namespace Gendarme.Framework {
 
 		private void BuildCustomAttributes (ICustomAttributeProvider custom, EngineEventArgs e)
 		{
-			if ((BuildingCustomAttributes != null) && (custom.CustomAttributes.Count > 0)) {
-				BuildingCustomAttributes (custom, e);
+			if (custom.CustomAttributes.Count > 0) {
+				EventHandler<EngineEventArgs> handler = BuildingCustomAttributes;
+				if (handler != null)
+					handler (custom, e);
 			}
 		}
 
@@ -119,8 +123,10 @@ namespace Gendarme.Framework {
 			// TODO check custom attributes (generic parameters)
 			// TODO check custom attributes (return value)
 
-			if (method.HasBody && (BuildingMethodBody != null)) {
-				BuildingMethodBody (method.Body, e);
+			if (method.HasBody) {
+				EventHandler<EngineEventArgs> handler = BuildingMethodBody;
+				if (handler != null)
+					handler (method.Body, e);
 			}
 		}
 
