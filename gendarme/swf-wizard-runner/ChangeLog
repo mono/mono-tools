@@ -1,3 +1,7 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Page.cs: Clearly specify [Serializable] on the enum (self-test)
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* swf-wizard-runner.csproj: Activate makefile integration for all the
