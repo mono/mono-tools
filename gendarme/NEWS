@@ -1,4 +1,4 @@
-2008-11-03  Version 2.2
+2008-11-10  Version 2.2
 
 	This release includes the development results of the last four 
 	months, including some major events like the Novell Hack Week 3
@@ -43,7 +43,7 @@
 	* You can now save your rule selection as the new default in 
 	the wizard. The same set will be enable next time you restart
 	the wizard. 
-		* Known issue: does not work under Mono, bug ##439943
+		* Known issue: does not work under Mono, bug #439943
 
 	and a lot of new rules including:
 
@@ -54,6 +54,7 @@
 	Gendarme.Rules.Concurrency
 	* DoNotUseMethodImplOptionsSynchronizedRule [Sebastien Pouliot]
 	* ReviewLockUsedOnlyForOperationsOnVariablesRule [Cedric Vivier]
+	* ProtectCallToEventDelegatesRule [Sebastien Pouliot]
 
 	Gendarme.Rules.Correctness
 	* AttributeStringLiteralsShouldParseCorrectlyRule [Nestor Salceda]
@@ -98,6 +99,9 @@
 	Gendarme.Rules.Security.Cas
 	* ReviewSuppressUnmanagedCodeSecurityUsageRule [Sebastien Pouliot]
 
+	Gendarme.Rules.Serialization
+	* MarkEnumerationsAsSerializableRule [Sebastien Pouliot]
+
 	Gendarme.Rules.Smells
 	* AvoidMessageChainsRule [Nestor Salceda]
 
@@ -117,7 +121,7 @@
 
 	Contributors for this release are:
 	Peter Johanson, Nestor Salceda, Cedric Vivier, Jesse Jones, 
-	Sebastien Pouliot.
+	Alan McGovern, Sebastien Pouliot.
 
 2008-07-14  Version 0.2.0.0
 
