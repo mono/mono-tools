@@ -88,6 +88,7 @@ namespace Gendarme.Rules.Portability {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ExitCodeIsLimitedOnUnixRule : Rule, IAssemblyRule, IMethodRule {
 
+		[Serializable]
 		private enum InspectionResult {
 			Good,
 			Bad,

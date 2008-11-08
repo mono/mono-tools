@@ -1,3 +1,8 @@
+2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExitCodeIsLimitedOnUnixRule.cs: Clearly specify [Serializable] on 
+	the InspectionResult enum (self-test)
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:
