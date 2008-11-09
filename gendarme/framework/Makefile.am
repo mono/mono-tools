@@ -1,3 +1,4 @@
+SUBDIRS = Test
 FRAMEWORK_OPTIONS := -debug+ -warn:4 -warnaserror+
 TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:4 -warn:0
 
