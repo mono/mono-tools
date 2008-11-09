@@ -79,8 +79,11 @@ namespace Gendarme.Rules.Concurrency {
 	/// 	EventHandler handler = Loading;
 	/// 	// handler is either null or non-null
 	/// 	if (handler != null) {
-	/// 		// and won't change (safe)
+	/// 		// and won't change (i.e. safe from a NullReferenceException)
 	/// 		handler (this, e);
+	///		// however it is still possible, like the original code, that
+	///		// the Loading method will be removed before, or during its
+	///		// execution. Your code should be safe against such occurance.
 	/// 	}
 	///  }
 	/// </code>
