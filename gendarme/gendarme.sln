@@ -82,6 +82,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cecil", "Cecil", "{10772645
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Cecil", "..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj", "{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Cecil.Pdb", "..\..\cecil\pdb\Mono.Cecil.Pdb\Mono.Cecil.Pdb.csproj", "{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C8664DD7-3314-4932-ADA1-384C62568B59}"
 	ProjectSection(SolutionItems) = preProject
 		AssemblyInfo.cs.in = AssemblyInfo.cs.in
@@ -94,8 +96,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swf-wizard-runner", "swf-wizard-runner\swf-wizard-runner.csproj", "{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Cecil.Pdb", "..\..\cecil\pdb\Mono.Cecil.Pdb\Mono.Cecil.Pdb.csproj", "{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +127,10 @@ Global
 		{44885D5E-B99D-4C56-BC85-F652F11DABDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44885D5E-B99D-4C56-BC85-F652F11DABDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44885D5E-B99D-4C56-BC85-F652F11DABDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5446570C-A304-418D-B908-91ADA51E4F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5446570C-A304-418D-B908-91ADA51E4F00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5446570C-A304-418D-B908-91ADA51E4F00}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -251,10 +255,6 @@ Global
 		{FFB3FC5E-8CC4-4360-87DB-EADC266F82A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFB3FC5E-8CC4-4360-87DB-EADC266F82A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFB3FC5E-8CC4-4360-87DB-EADC266F82A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8EC56425-BA98-4C43-9163-FC18BEDE3FC2}.Debug|Any CPU.ActiveCfg = Debug
 		{8EC56425-BA98-4C43-9163-FC18BEDE3FC2}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
@@ -293,6 +293,7 @@ Global
 		{069148AF-86AB-4EE3-BFB9-429AE722461F} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
 		{A2F3E904-8D4E-4C18-A0B9-B2BCBD3A0537} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
 		{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE} = {10772645-2837-44B1-9CFA-51A0A5CAC635}
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E} = {10772645-2837-44B1-9CFA-51A0A5CAC635}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		name = gendarme

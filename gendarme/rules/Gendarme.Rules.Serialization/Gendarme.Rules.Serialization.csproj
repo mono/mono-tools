@@ -44,6 +44,7 @@
     <Compile Include="UseCorrectSignatureForSerializationMethodsRule.cs" />
     <Compile Include="MissingSerializableAttributeOnISerializableTypeRule.cs" />
     <Compile Include="MissingSerializationConstructorRule.cs" />
+    <Compile Include="MarkEnumerationsAsSerializableRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

@@ -62,6 +62,7 @@
     <Compile Include="DoNotUseMethodImplOptionsSynchronizedRule.cs" />
     <Compile Include="DontUseLockedRegionOutsideMethodRule.cs" />
     <Compile Include="ReviewLockUsedOnlyForOperationsOnVariablesRule.cs" />
+    <Compile Include="ProtectCallToEventDelegatesRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

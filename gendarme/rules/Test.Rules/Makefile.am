@@ -11,7 +11,7 @@ EXTRA_DIST = $(test_sources) Test.Rules.mdp Test.Rules.csproj
 CLEANFILES = Test.Rules.dll Test.Rules.dll.mdb $(common_tests)
 DISTCLEANFILES = Makefile.in
 
-test_sources = \
+test_sources =  \
 	Definitions/SimpleMethods.cs \
 	Definitions/SimpleTypes.cs \
 	Fixtures/AssemblyRuleTestFixture.cs \

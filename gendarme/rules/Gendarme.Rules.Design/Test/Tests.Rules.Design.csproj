@@ -50,7 +50,6 @@
     <Compile Include="ConsiderConvertingMethodToPropertyTest.cs" />
     <Compile Include="ConsiderUsingStaticTypeTest.cs" />
     <Compile Include="DeclareEventHandlersCorrectlyTest.cs" />
-    <Compile Include="DisposableFieldsShouldBeDisposedTest.cs" />
     <Compile Include="DisposableTypesShouldHaveFinalizerTest.cs" />
     <Compile Include="DoNotDeclareVirtualMethodsInSealedTypeTest.cs" />
     <Compile Include="DontDeclareProtectedFieldsInSealedClassTest.cs" />
@@ -59,7 +58,6 @@
     <Compile Include="EnumsShouldDefineAZeroValueTest.cs" />
     <Compile Include="EnumsShouldUseInt32Test.cs" />
     <Compile Include="FinalizersShouldBeProtectedTest.cs" />
-    <Compile Include="FinalizersShouldCallBaseClassFinalizerTest.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueTest.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairTest.cs" />
     <Compile Include="ImplementIComparableCorreclyTest.cs" />
@@ -104,4 +102,20 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <GtkDesignInfo />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" ExecuteTargetName="run-test" IsAutotoolsProject="true" RelativeConfigureInPath="../../../..">
+          <BuildFilesVar />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

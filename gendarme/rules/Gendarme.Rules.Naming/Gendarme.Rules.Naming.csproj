@@ -47,6 +47,7 @@
     <Compile Include="UsePreferredTermsRule.cs" />
     <Compile Include="UseSingularNameInEnumsUnlessAreFlagsRule.cs" />
     <Compile Include="AvoidRedundancyInMethodNameRule.cs" />
+    <Compile Include="AvoidRedundancyInTypeNameRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
