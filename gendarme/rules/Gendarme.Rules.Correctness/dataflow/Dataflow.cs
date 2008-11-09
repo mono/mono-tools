@@ -32,7 +32,7 @@ public class Dataflow {
         this.outFact = new Hashtable();
     }
     
-    public bool Verbose { get; set; }
+	public bool Verbose { get; set; }
 
     /* This only does forward analysis so far. We might need to make it
      * do backward analysis at some point. */
@@ -57,8 +57,8 @@ public class Dataflow {
         bool changed;
         int iteration = 0;
         do {
-			if (Verbose)
-				Console.WriteLine("-------- iteration {0}", iteration);
+        	if (Verbose)
+				Trace.WriteLine(string.Format("-------- iteration {0}", iteration));
 				
             iteration++;
             changed = false;
@@ -83,8 +83,8 @@ public class Dataflow {
          * last iteration, nothing should change during this one. The
          * loop iterates over the nodes in CFG order, rather than DFS
          * order, so that messages will be sorted by location. */
-		if (Verbose)
-			Console.WriteLine("-------- final iteration");
+        if (Verbose)
+			Trace.WriteLine("-------- final iteration");
 				
         foreach(object o in cfg.Nodes) {
             Node node = (Node)o;

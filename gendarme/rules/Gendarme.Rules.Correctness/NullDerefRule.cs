@@ -14,8 +14,10 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
@@ -29,10 +31,14 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			CFG cfg = new CFG (method);
+
 			// requires -v -v
-			if (Runner.VerbosityLevel > 1) {
-				cfg.PrintBasicBlocks ();
-				cfg.PrintDot ();
+			if (Runner.VerbosityLevel > 0) {
+				Trace.WriteLine(string.Empty);
+				Trace.WriteLine("-------------------------------------");
+				Trace.WriteLine(method.ToString());
+				if (Runner.VerbosityLevel > 2)
+					cfg.PrintDot ();
 			}
 
 			NonNullAttributeCollector nnaCollector = new NonNullAttributeCollector();
@@ -40,7 +46,7 @@ namespace Gendarme.Rules.Correctness {
 			analysis.Verbose = Runner.VerbosityLevel > 1;
 
 			Dataflow dataflow = new Dataflow (cfg, analysis);
-			dataflow.Verbose = Runner.VerbosityLevel > 1;
+			analysis.Verbose = Runner.VerbosityLevel > 1;
 			dataflow.Compute ();
 
 			return Runner.CurrentRuleResult;

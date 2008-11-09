@@ -1,3 +1,9 @@
+2008-11-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* NullDerefAnalysis.cs, dataflow/Dataflow.cs: Write debug output 
+	using Trace instead of Console.
+	* NullDerefRule.cs: write the dot file only if triply verbose.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

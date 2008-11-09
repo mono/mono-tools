@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
@@ -111,11 +112,11 @@ namespace Gendarme.Rules.Correctness {
 			NullDerefFrame outFrame = (NullDerefFrame)outFact;
 			VariableDefinitionCollection vars = method.Body.Variables;
 
-			if(Verbose) {
-				Console.WriteLine();
-				Console.WriteLine("Basic block {0}", bb.ToString());
-				Console.WriteLine("Input frame:");
-				Console.Write(outFrame.ToString());
+			if (Verbose) {
+				Trace.WriteLine (string.Empty);
+				Trace.WriteLine (string.Format("Basic block {0}", bb.ToString ()));
+				Trace.WriteLine ("Input frame:");
+				Trace.Write (outFrame.ToString ());
 			}
 
 			for(int i = bb.first; i <= bb.last; i++) {
@@ -123,14 +124,14 @@ namespace Gendarme.Rules.Correctness {
 				OpCode opcode = insn.OpCode;
 
 			if (Verbose) {
-				Console.Write ("   {0}", opcode.Name);
-					if(insn.Operand != null && !(insn.Operand is Instruction)) {
-						Console.WriteLine(" {0}", insn.Operand.ToString());
-					} else if(insn.Operand is Instruction) {
-						Console.WriteLine(" {0}",
-								((Instruction)insn.Operand).Offset.ToString("X4"));
+				Trace.Write (string.Format ("   {0}", opcode.Name));
+					if (insn.Operand != null && !(insn.Operand is Instruction)) {
+						Trace.WriteLine (string.Format (" {0}", insn.Operand.ToString ()));
+					} else if (insn.Operand is Instruction) {
+						Trace.WriteLine (string.Format (" {0}",
+								((Instruction)insn.Operand).Offset.ToString ("X4")));
 					} else {
-						Console.WriteLine();
+						Trace.WriteLine (string.Empty);
 					}
 				}
 
@@ -302,7 +303,7 @@ namespace Gendarme.Rules.Correctness {
 				FieldReference field = (FieldReference)insn.Operand;
 				if (warn && nnaCollector.HasNonNullAttribute (field)) {
 					if (Verbose)
-						Console.WriteLine("FAILURE1: null deref at {0:X2}", insn.Offset);
+						Trace.WriteLine (string.Format ("FAILURE1: null deref at {0:X2}", insn.Offset));
 					if (n == Nullity.Unknown)
 						runner.Report (method, insn, Severity.High, Confidence.Low, "storing possibly null value in field declared non-null");
 					else if (n == Nullity.Null)
@@ -315,7 +316,7 @@ namespace Gendarme.Rules.Correctness {
 				FieldReference field = (FieldReference)insn.Operand;
 				if (warn && nnaCollector.HasNonNullAttribute (field)) {
 					if (Verbose)
-						Console.WriteLine("FAILURE2: null deref at {0:X2}", insn.Offset);
+						Trace.WriteLine (string.Format ("FAILURE2: null deref at {0:X2}", insn.Offset));
 					if (n == Nullity.Unknown)
 						runner.Report (method, insn, Severity.High, Confidence.Low, "storing possibly null value in field declared non-null");
 					else if (n == Nullity.Null)
@@ -345,7 +346,7 @@ namespace Gendarme.Rules.Correctness {
 					Nullity n = outFrame.PopStack();
 					if(nnaCollector.HasNonNullAttribute(method) && warn) {
 						if (Verbose)
-							Console.WriteLine("FAILURE3: null deref at {0:X2}", insn.Offset);
+							Trace.WriteLine (string.Format ("FAILURE3: null deref at {0:X2}", insn.Offset));
 						if(n == Nullity.Null)
 							runner.Report (method, insn, Severity.High, Confidence.Low, "returning null value from method declared non-null");
 						else
@@ -630,15 +631,15 @@ namespace Gendarme.Rules.Correctness {
 				break;
 
 			default:
-				Console.WriteLine("Unknown instruction: {0} {1}",
-						opcode.Name, opcode.Value.ToString("X4"));
+				Trace.WriteLine (string.Format ("Unknown instruction: {0} {1}",
+						opcode.Name, opcode.Value.ToString("X4")));
 				break;
 				} /* switch */
 			} /* for */
 
 			if (Verbose) {
-				Console.WriteLine ("Output frame:");
-				Console.Write (outFrame.ToString ());
+				Trace.WriteLine ("Output frame:");
+				Trace.Write (outFrame.ToString ());
 			}
 		} /* Transfer */
 
@@ -661,7 +662,7 @@ namespace Gendarme.Rules.Correctness {
 			}
 			if(n == Nullity.Null) {
 				if (Verbose)
-					Console.WriteLine("FAILURE5: null deref at {0:X2}", insn.Offset);
+					Trace.WriteLine (string.Format ("FAILURE5: null deref at {0:X2}", insn.Offset));
 				string s = String.Format ("accessing {0} {1} from null object", type, name);
 				runner.Report (method, insn, Severity.High, Confidence.Low, s);
 			}
@@ -676,7 +677,7 @@ namespace Gendarme.Rules.Correctness {
 				Nullity n = frame.PopStack();
 				if(warn && nnaCollector.HasNonNullAttribute(method, param)) {
 					if (Verbose)
-						Console.WriteLine("FAILURE6: null deref at {0:X2}", insn.Offset);
+						Trace.WriteLine (string.Format ("FAILURE6: null deref at {0:X2}", insn.Offset));
 					if(n == Nullity.Null) 
 						runner.Report (method, insn, Severity.High, Confidence.Low, "passing null value as argument declared non-null");
 					else if(n == Nullity.Unknown)
