@@ -1,6 +1,6 @@
 gendarmedir=$(prefix)/lib/gendarme
 gendarme_SCRIPTS = ../bin/gendarme.exe
-EXTRA_DIST = $(gendarme_sources) $(gendarme_sources_in) $(gendarme_resources) console.mdp gendarme.csproj
+EXTRA_DIST = $(gendarme_sources) $(gendarme_sources_in) $(gendarme_resources) gendarme.csproj
 CLEANFILES = $(gendarme_SCRIPTS) $(gendarme_SCRIPTS).mdb
 DISTCLEANFILES = Makefile.in
 

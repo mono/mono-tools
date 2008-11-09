@@ -7,7 +7,7 @@ test_DATA =
 framework=../../bin/Gendarme.Framework.dll
 common_tests=../Test.Rules/Test.Rules.dll
 
-EXTRA_DIST = $(test_sources) Test.Rules.mdp Test.Rules.csproj
+EXTRA_DIST = $(test_sources) Test.Rules.csproj
 CLEANFILES = Test.Rules.dll Test.Rules.dll.mdb $(common_tests)
 DISTCLEANFILES = Makefile.in
 

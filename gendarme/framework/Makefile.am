@@ -6,7 +6,7 @@ FRAMEWORK_OPTIONS += -nowarn:1591	# Missing XML comment
 
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll
-EXTRA_DIST = $(framework_sources) $(framework_sources_in) framework.mdp Gendarme.Framework.csproj gendarme-framework.pc.in
+EXTRA_DIST = $(framework_sources) $(framework_sources_in) Gendarme.Framework.csproj gendarme-framework.pc.in
 CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll $(framework_SCRIPTS).doc $(framework_doc)
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
 

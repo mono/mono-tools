@@ -8,7 +8,7 @@ $(desktop_DATA): $(desktop_DATA).in
 	sed -e "s|\@bindir\@|$(bindir)|" $< > $@
 
 EXTRA_DIST = $(wizard_sources) $(wizard_sources_in) swf-wizard-runner.csproj Wizard.resx Properties/Resources.resx \
-	Resources/gendarme.png $(wizard_icon) swf-wizard-runner.mdp $(desktop_DATA).in
+	Resources/gendarme.png $(wizard_icon) $(desktop_DATA).in
 CLEANFILES = $(wizard_SCRIPTS) $(wizard_SCRIPTS).mdb Wizard.resources Resources.resources Properties/Resources.resources \
 	$(desktop_DATA)
 DISTCLEANFILES = Makefile.in

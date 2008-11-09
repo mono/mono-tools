@@ -17,7 +17,7 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Smells \
 	 Gendarme.Rules.Ui
 
-EXTRA_DIST = rules.xml tests.mds common.make
+EXTRA_DIST = rules.xml common.make
 DISTCLEANFILES = Makefile.in
 
 install-data-hook:
