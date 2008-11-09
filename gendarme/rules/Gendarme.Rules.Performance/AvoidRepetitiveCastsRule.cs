@@ -3,6 +3,7 @@
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
+//	Jesse Jones <jesjones@mindspring.com>
 //
 // Copyright (C) 2008 Novell, Inc (http://www.novell.com)
 //
@@ -71,31 +72,145 @@ namespace Gendarme.Rules.Performance {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("The method seems to repeat the same cast operation multiple times.")]
-	[Solution ("Change the logic to make sure the (somewhat expensive) cast is done a single time.")]
+	[Solution ("Change the logic to ensure the (somewhat expensive) cast is done once.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
 	public class AvoidRepetitiveCastsRule : Rule, IMethodRule {
 
 		List<Instruction> casts = new List<Instruction> ();
 
-		static object GetOrigin (Instruction ins, MethodDefinition method)
-		{
+		static Instruction GetOrigin (Instruction ins, MethodDefinition method)
+		{			
 			Instruction previous = ins.Previous;
+			Instruction origin = previous;
 
-			bool call = (previous.OpCode.FlowControl == FlowControl.Call);
-			if (call) {
+			if (previous.OpCode.FlowControl == FlowControl.Call) {
 				Instruction next = ins.Next;
-				if (next.IsStoreLocal ())
-					return ins.Next.GetOperand (method);
+				if (next.IsStoreLocal ()) 
+					origin = next;	// a duplicate cast which loads this local is an error
 			}
+				
+//			Console.WriteLine("origin of instruction at {0:X4} is at {1:X4}", ins.Offset, origin.Offset);
+			
+			return origin;
+		}
+		
+		static bool LocalsMatch (object operand1, object operand2)
+		{
+			VariableReference v1 = operand1 as VariableReference;
+			VariableReference v2 = operand2 as VariableReference;
+			
+			if (v1 != null && v2 != null)
+				return v1.Index == v2.Index;
+			else if (operand1 != null)
+				return operand1.Equals (operand2);			
+			else
+				return operand2 == null;
+		}
+		
+		static bool IndexesMatch (MethodDefinition method, Instruction lhs, Instruction rhs)
+		{
+			bool match = false;
+			
+			if (lhs.OpCode.Code == rhs.OpCode.Code) {
+				switch (lhs.OpCode.Code) {
+				case Code.Ldc_I4_M1:
+				case Code.Ldc_I4_0:
+				case Code.Ldc_I4_1:
+				case Code.Ldc_I4_2:
+				case Code.Ldc_I4_3:
+				case Code.Ldc_I4_4:
+				case Code.Ldc_I4_5:
+				case Code.Ldc_I4_6:
+				case Code.Ldc_I4_7:
+				case Code.Ldc_I4_8:
+				case Code.Ldc_I4_S:
+				case Code.Ldc_I4:
+					object operand1 = lhs.GetOperand (method);
+					object operand2 = rhs.GetOperand (method);
+					match = operand1.Equals (operand2);
+					break;
+				}
+			}
+			
+			return match;
+		}
+		
+		// stack[0]  == index
+		// stack[-1] == array
+		static bool LoadElementMatch (MethodDefinition method, Instruction lhs, Instruction rhs)
+		{
+			bool match = false;
+			
+			// We only handle simple cases like:
+			//   ldarg.1
+			//   ldc.i4.7
+			//   ldelem.ref
+			Instruction index1 = lhs.Previous;
+			Instruction index2 = rhs.Previous;
+			if (IndexesMatch (method, index1, index2)) {
+				Instruction load1 = index1.Previous;
+				Instruction load2 = index2.Previous;
 
-			if (call || previous.IsLoadElement () || previous.IsLoadIndirect ())
-				return previous.TraceBack (method).GetOperand (method);
+				if (load1.IsLoadArgument () && load2.IsLoadArgument ())
+					match = load1.GetOperand (method).Equals (load2.GetOperand (method));
 
-			return previous.GetOperand (method);
+				else if (load1.IsLoadLocal () && load2.IsLoadLocal ())
+					match = LocalsMatch (load1.GetOperand (method), load2.GetOperand (method));
+			}
+			
+			return match;
+		}
+		
+		// stack[0] == addr
+		static bool LoadIndirectMatch (MethodDefinition method, Instruction lhs, Instruction rhs)
+		{
+			bool match = false;
+			
+			// We only handle simple cases like:
+			//    ldarg.1
+			//    ldind.ref
+			Instruction load1 = lhs.Previous;
+			Instruction load2 = rhs.Previous;
+			if (load1.IsLoadArgument () && load2.IsLoadArgument ())
+				match = load1.GetOperand (method).Equals (load2.GetOperand (method));
+
+			else if (load1.IsLoadLocal () && load2.IsLoadLocal ())
+				match = LocalsMatch (load1.GetOperand (method), load2.GetOperand (method));
+			
+			return match;
+		}
+		
+		static bool OriginsMatch (MethodDefinition method, Instruction lhs, Instruction rhs)
+		{
+			bool match = false;
+			
+			object operand1 = lhs.GetOperand (method);
+			object operand2 = rhs.GetOperand (method);
+			
+			if (lhs.OpCode.Code == rhs.OpCode.Code) {
+				if (lhs.IsLoadArgument ())
+					match = operand1.Equals (operand2);
+
+				else if (lhs.IsLoadElement ())
+					match = LoadElementMatch (method, lhs, rhs);
+
+				else if (lhs.IsLoadIndirect ())
+					match = LoadIndirectMatch (method, lhs, rhs);
+
+				else if (lhs.IsLoadLocal ())
+					match = LocalsMatch (operand1, operand2);
+
+			} else if (lhs.IsStoreLocal () && rhs.IsLoadLocal ())
+				match = LocalsMatch (operand1, operand2);
+
+			else if (lhs.IsLoadLocal () && rhs.IsStoreLocal ()) 
+				match = LocalsMatch (operand1, operand2);
+			
+			return match;
 		}
 
-		private int FindDuplicates (MethodDefinition method, string type, object origin)
+		private int FindDuplicates (MethodDefinition method, string type, Instruction origin)
 		{
 			// we already had our first cast if we got here
 			int count = 1;
@@ -105,7 +220,7 @@ namespace Gendarme.Rules.Performance {
 				Instruction ins = casts [i];
 				if (type != (ins.Operand as TypeReference).FullName)
 					continue;
-				if (origin != GetOrigin (ins, method))
+				if (!OriginsMatch(method, origin, GetOrigin (ins, method)))
 					continue;
 				// we're removing this so we need to adjust the counter
 				// important since we don't want duplicate reports
@@ -128,6 +243,10 @@ namespace Gendarme.Rules.Performance {
 			// is there any IsInst or Castclass instructions in the method ?
 			if (!Casts.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
+			
+//			Console.WriteLine ();
+//			Console.WriteLine ("-----------------------------------------");
+//			Console.WriteLine (new MethodPrinter(method));
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				Code code = ins.OpCode.Code;
@@ -141,12 +260,14 @@ namespace Gendarme.Rules.Performance {
 			while (casts.Count > 1) {
 				Instruction ins = casts [0];
 				string type = (ins.Operand as TypeReference).FullName;
-				object origin = GetOrigin (ins, method);
+				Instruction origin = GetOrigin (ins, method);
 
 				int count = FindDuplicates (method, type, origin);
 				if (count > 1) {
+//					Console.WriteLine ("found {0} duplicates for {1:X4}", count, ins.Offset);
+
 					// rare, but it's possible to cast a null value (ldnull)
-					string name = origin == null ? "Null" : origin.ToString ();
+					object name = origin.GetOperand (method) ?? "Null";
 					string msg = String.Format ("'{0}' is casted {1} times for type '{2}'.", name, count, type);
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 				}

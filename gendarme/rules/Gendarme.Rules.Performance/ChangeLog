@@ -1,3 +1,10 @@
+2008-11-07  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidRepetitiveCastsRule.cs: Fixed three different false positive 
+	cases. Note that we did lose an arguably valid warning in 
+	StackEntryAnalysis which we may be able to recover by doing a 
+	TraceBack on nullary method calls.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:
