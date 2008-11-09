@@ -445,7 +445,8 @@ namespace Gendarme.Rules.Maintainability {
 			else
 				sb.Append ("' could be of type '");
 
-			sb.Append (types_least [parameter.Sequence - 1].FullName);
+			TypeReference type = types_least [parameter.Sequence - 1];
+			AppendPrettyTypeName (sb, type);
 			sb.Append ("'.");
 			return sb.ToString ();
 		}
@@ -459,6 +460,28 @@ namespace Gendarme.Rules.Maintainability {
 			return parameter.Owner.GenericParameters [parameter.Position];
 		}
 
+		private static void AppendPrettyTypeName (StringBuilder sb, TypeReference type)
+		{
+			int nRemoveTrail;
+			if (type.GenericParameters.Count == 0)
+				nRemoveTrail = 0;
+			else if (type.GenericParameters.Count < 10)
+				nRemoveTrail = 2;
+			else
+				nRemoveTrail = 3;
+
+			sb.Append (type.FullName.Substring (0, type.FullName.Length - nRemoveTrail));
+			if (type.GenericParameters.Count > 0) {
+				int n = 0;
+				sb.Append ("<");
+				foreach (GenericParameter gp in type.GenericParameters) {
+					if (n > 0)
+						sb.Append (",");
+					AppendPrettyTypeName (sb, gp);
+					n++;
+				}
+				sb.Append (">");
+			}
+		}
 	}
 }
-

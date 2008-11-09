@@ -367,8 +367,9 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void GenericInterface ()
 		{
-			AssertRuleFailure<SpecializedClass> ("GenericInterface");
 			AssertRuleSuccess<GeneralizedClass> ("GenericInterface");
+			AssertRuleFailure<SpecializedClass> ("GenericInterface");
+			Assert.IsTrue (Runner.Defects [0].Text.IndexOf ("'System.Collections.Generic.IEnumerable<T>'") > 0);
 		}
 
 		[Test]
