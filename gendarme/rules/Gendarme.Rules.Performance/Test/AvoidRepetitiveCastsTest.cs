@@ -117,12 +117,24 @@ namespace Test.Rules.Performance {
 			}
 		}
 
+		/*
+		This rule now checks subscripts to ensure that they match so code like 
+		GoodLoadElement2 below no longer fails. However the rule currently is 
+		only able to match constant integer subscript expressions. This means 
+		the GoodLoadElement2 will no longer be reported as an error. In order 
+		to get this to work we'd have to:
+		1) Compare expressions for equality which probably would not be too 
+		hard for simple cases like the one below.
+		2) Compare locals and arguments used in the expression. This would be
+		pretty difficult and would likely require a custom dataflow analysis
+		routine to do well.
 		private void ArrayElementAsArrayCast (object [] list, int index)
 		{
 			if (list [index * 2 + 1] is object[]) {
 				ArrayElementAsArrayCast (list [index * 2 + 1] as object [], index);
 			}
 		}
+		*/
 
 		private void ArrayGood (object [] list)
 		{
@@ -146,7 +158,6 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleFailure<AvoidRepetitiveCastsTest> ("ArrayCast", 1);
 			AssertRuleFailure<AvoidRepetitiveCastsTest> ("ArrayElementCast", 1);
-			AssertRuleFailure<AvoidRepetitiveCastsTest> ("ArrayElementAsArrayCast", 1);
 
 			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("ArrayGood");
 			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("get_PropertyArrayField");
@@ -280,6 +291,14 @@ namespace Test.Rules.Performance {
 				string d = (string) inst.GetString (2);
 				Console.WriteLine (c, d);
 			}
+
+			static void BadMethods ()
+			{
+				IndexerResultCastTest inst = new IndexerResultCastTest ();
+				object c = (string) inst.GetString (1);
+				string d = (string) c;
+				Console.WriteLine (d + c);
+			}
 		}
 
 		[Test]
@@ -287,6 +306,71 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess<IndexerResultCastTest> ("Indexers");
 			AssertRuleSuccess<IndexerResultCastTest> ("Methods");
+			AssertRuleFailure<IndexerResultCastTest> ("BadMethods");
+		}
+		
+		private sealed class MyInstruction {
+			public object Operand {
+				get { return null; }
+			}
+		}
+		
+		private object ReuseLocal (MyInstruction o)
+		{
+			MyInstruction i = (MyInstruction)  (o.Operand);
+			return (MyInstruction) (i.Operand);
+		}
+
+		[Test]
+		public void ReuseLocalTest ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("ReuseLocal");
+		}
+		
+		private string GoodLoadElement1 (object[] a1, object[] a2)
+		{
+			string s = (string) a1 [7];
+			string t = (string) a2 [7];
+			return s + t;
+		}
+
+		private string GoodLoadElement2 (object[] a1, object[] a2)
+		{
+			string s = (string) a1 [7];
+			string t = (string) a1 [8];
+			return s + t;
+		}
+
+		private string BadLoadElement (object[] a1, object[] a2)
+		{
+			string s = (string) a1 [7];
+			string t = (string) a1 [7];
+			return s + t;
+		}
+
+		[Test]
+		public void LoadElementTest ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("GoodLoadElement1");
+			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("GoodLoadElement2");
+			AssertRuleFailure<AvoidRepetitiveCastsTest> ("BadLoadElement");
+		}
+		
+		private object Compute (int x)
+		{
+			return null;
+		}
+
+		private void MultipleCalls ()
+		{
+			Console.WriteLine ((string) Compute (3));
+			Console.WriteLine ((string) Compute (5));
+		}
+
+		[Test]
+		public void MultipleCallsTest ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCastsTest> ("MultipleCalls");
 		}
 	}
 }
