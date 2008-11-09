@@ -107,7 +107,12 @@ namespace Test.Rules.Maintainability {
 			DerivedBarCouldNotBeGeneralized(dbar);
 		}
 
-		public bool Interface (IEnumerable list, int number)
+		public void Interface (IDisposable stream, int number)
+		{
+			stream.Dispose ();
+		}
+
+		public bool CollectionInterface (IEnumerable list, int number)
 		{
 			foreach (int i in list)
 				if (number == i)
@@ -213,8 +218,14 @@ namespace Test.Rules.Maintainability {
 			return 0;
 		}
 
-		//`list` could be a IEnumerable
-		public bool Interface (ArrayList list, int number)
+		//`stream` could be an IDisposable
+		public void Interface (System.IO.Stream stream, int number)
+		{
+			stream.Dispose ();
+		}
+
+		//`list` could be a IEnumerable, but we ignore the suggestion
+		public bool CollectionInterface (ArrayList list, int number)
 		{
 			foreach (int i in list)
 				if (number == i) return true;
@@ -339,8 +350,18 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void Interface ()
 		{
-			AssertRuleFailure<SpecializedClass> ("Interface");
 			AssertRuleSuccess<GeneralizedClass> ("Interface");
+			AssertRuleFailure<SpecializedClass> ("Interface");
+			Assert.IsTrue (Runner.Defects [0].Text.IndexOf ("'System.IDisposable'") > 0);
+		}
+
+		[Test]
+		public void CollectionInterface ()
+		{
+			//we ignore non-generic collection interface suggestions since
+			//we cannot know if the suggestion would work wrt casts etc...
+			AssertRuleSuccess<SpecializedClass> ("CollectionInterface");
+			AssertRuleSuccess<GeneralizedClass> ("CollectionInterface");
 		}
 
 		[Test]

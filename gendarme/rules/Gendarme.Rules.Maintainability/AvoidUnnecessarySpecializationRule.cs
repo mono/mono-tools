@@ -235,6 +235,18 @@ namespace Gendarme.Rules.Maintainability {
 			return false;
 		}
 
+		private static bool IsNonGenericCollectionMember (IMemberReference method)
+		{
+			return method.DeclaringType.Namespace == "System.Collections" || method.DeclaringType.Namespace == "System.Collections.Specialized";
+		}
+
+		private static bool IsIgnoredSuggestionType (TypeReference type)
+		{
+			return type.FullName == "System.Object"
+				|| type.Namespace == "System.Collections"
+				|| type.Namespace == "System.Collections.Specialized";
+		}
+
 		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
 		{
 			int pIndex = parameter.Sequence - 1;
@@ -253,7 +265,8 @@ namespace Gendarme.Rules.Maintainability {
 				case Code.Call :
 				case Code.Callvirt :
 					MethodReference method = (MethodReference) usage.Instruction.Operand;
-					if (IsSystemObjectMethod (method)) continue;
+					if (IsSystemObjectMethod (method) || IsNonGenericCollectionMember (method))
+						continue;
 					signatures.Add (GetSignature (method));
 					break;
 				}
@@ -273,6 +286,11 @@ namespace Gendarme.Rules.Maintainability {
 					//from a readability/maintainability point of view
 					if (IsSystemObjectMethod (method))
 						continue;
+					//we cannot really know if suggestion would work since the collection
+					//is non-generic thus we ignore it
+					if (IsNonGenericCollectionMember (method))
+						continue;
+
 					if (usage.StackOffset == method.Parameters.Count) {
 						//argument is used as `this` in the call
 						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signatures);
@@ -286,8 +304,8 @@ namespace Gendarme.Rules.Maintainability {
 							currentLeastType = GetConstructedGenericType (method, gp);
 					}
 
-					//if the best we could find is object, ignore this round
-					if ((currentLeastType == null) || (currentLeastType.FullName == "System.Object"))
+					//if the best we could find is object or non-generic collection, ignore this round
+					if (currentLeastType == null || IsIgnoredSuggestionType (currentLeastType))
 						continue;
 
 					needUpdate = true;
