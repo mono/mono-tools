@@ -254,7 +254,35 @@ namespace Test.Rules.Smells {
 		{
 			w = 2;
 		}
+	}
 
+	[ExpectedCohesiveness (0)]
+	public class ClassWithProtectedField {
+		protected int x;
+
+		public void TouchField ()
+		{
+			x = 1;
+		}
+	}
+
+	[ExpectedCohesiveness (0)]
+	public class ClassWithStaticMethod {
+		int x;
+
+		public static void Foo ()
+		{
+		}
+	}
+
+	[ExpectedCohesiveness (0)]
+	public class ClassWithMethodUsingStaticField {
+		static int x;
+
+		public static void TouchStaticField ()
+		{
+			x = 1;
+		}
 	}
 	#pragma warning restore 414, 169
 
@@ -313,9 +341,9 @@ namespace Test.Rules.Smells {
 			AssertRuleDoesNotApply<ClassWithNoField> ();
 			AssertRuleDoesNotApply<ClassWithUnusedField> ();
 			AssertRuleDoesNotApply<AverageCohesionNotBadBecauseOfLowNumberOfMethods> ();
+			AssertRuleDoesNotApply<ClassWithProtectedField> ();
+			AssertRuleDoesNotApply<ClassWithStaticMethod> ();
+			AssertRuleDoesNotApply<ClassWithMethodUsingStaticField> ();
 		}
-
 	}
-
 }
-

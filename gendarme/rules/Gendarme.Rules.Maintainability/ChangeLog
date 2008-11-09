@@ -1,3 +1,8 @@
+2008-11-10  Cedric Vivier  <cedricv@neonux.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Count LCOM correctly wrt
+	static and visible fields.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

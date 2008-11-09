@@ -45,7 +45,7 @@ namespace Gendarme.Rules.Maintainability {
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("The methods in this class lacks cohesion (higher score are better). This leads to code harder to understand and maintain.")]
+	[Problem ("The methods in this class lacks cohesion (higher score is better). This leads to code harder to understand and maintain.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule {
 
@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Maintainability {
 			//how's severity?
 			Severity sev = GetCohesivenessSeverity(coh);
 
-			Runner.Report (type, sev, Confidence.Normal, String.Format ("Type's cohesiveness : {0}.", coh));
+			Runner.Report (type, sev, Confidence.Normal, String.Format ("Type cohesiveness : {0}%", (int) (coh * 100)));
 			return RuleResult.Failure;
 		}
 
@@ -85,10 +85,8 @@ namespace Gendarme.Rules.Maintainability {
 			//F keeps the count of distinct-method accesses to the field
 			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
 
-			// FIXME: check ctors ?
-			// FIXME: split instance and static methods
 			foreach (MethodDefinition method in type.Methods) {
-				if (!method.HasBody)
+				if (!method.HasBody || method.IsStatic)
 					continue;
 
 				//Mset is true if the method has already incremented M
@@ -101,7 +99,9 @@ namespace Gendarme.Rules.Maintainability {
 					if (OperandType.InlineField == inst.OpCode.OperandType)
 					{
 						FieldDefinition fd = inst.Operand as FieldDefinition;
-						if (null != fd && fd.DeclaringType == type && !Fset.Contains(fd))
+						if (null == fd || !fd.IsPrivate || fd.IsStatic)
+							continue; //does not make sense for LCOM calculation
+						if (fd.DeclaringType == type && !Fset.Contains (fd))
 						{
 							if (!Mset) M++;
 							Mset = true;
