@@ -193,6 +193,7 @@ gendarme/man/gendarme.1
 gendarme/console/Makefile
 gendarme/framework/Makefile
 gendarme/framework/gendarme-framework.pc
+gendarme/framework/Test/Makefile
 gendarme/rules/Makefile
 gendarme/rules/Test.Rules/Makefile
 gendarme/rules/Gendarme.Rules.Security/Makefile
