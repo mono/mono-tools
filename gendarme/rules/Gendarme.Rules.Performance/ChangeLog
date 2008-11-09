@@ -1,3 +1,8 @@
+2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCastsRule.cs: Remove unneeded parameter on GetOrigin
+	method (self-test).
+
 2008-11-07  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidRepetitiveCastsRule.cs: Fixed three different false positive 

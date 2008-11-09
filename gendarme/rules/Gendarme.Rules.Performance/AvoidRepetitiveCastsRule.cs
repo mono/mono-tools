@@ -79,7 +79,7 @@ namespace Gendarme.Rules.Performance {
 
 		List<Instruction> casts = new List<Instruction> ();
 
-		static Instruction GetOrigin (Instruction ins, MethodDefinition method)
+		static Instruction GetOrigin (Instruction ins)
 		{			
 			Instruction previous = ins.Previous;
 			Instruction origin = previous;
@@ -220,7 +220,7 @@ namespace Gendarme.Rules.Performance {
 				Instruction ins = casts [i];
 				if (type != (ins.Operand as TypeReference).FullName)
 					continue;
-				if (!OriginsMatch(method, origin, GetOrigin (ins, method)))
+				if (!OriginsMatch(method, origin, GetOrigin (ins)))
 					continue;
 				// we're removing this so we need to adjust the counter
 				// important since we don't want duplicate reports
@@ -260,7 +260,7 @@ namespace Gendarme.Rules.Performance {
 			while (casts.Count > 1) {
 				Instruction ins = casts [0];
 				string type = (ins.Operand as TypeReference).FullName;
-				Instruction origin = GetOrigin (ins, method);
+				Instruction origin = GetOrigin (ins);
 
 				int count = FindDuplicates (method, type, origin);
 				if (count > 1) {
