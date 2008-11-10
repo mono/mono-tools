@@ -1,3 +1,8 @@
+2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Old xml.in files were removed from SVN so there's no
+	need to clean the xml files anymore.
+
 2008-11-09  Andrés G. Aragoneses  <aaragoneses@novell.com>
 
 	* README: More info.

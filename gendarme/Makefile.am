@@ -2,7 +2,7 @@ SUBDIRS = man framework console rules swf-wizard-runner win32-setup
 bin_SCRIPTS = gendarme gendarme-wizard
 EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore gendarme.svg
 
-CLEANFILES = gendarme gendarme-wizard bin/rules.xml bin/Gendarme.Rules.*.xml
+CLEANFILES = gendarme gendarme-wizard bin/rules.xml
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = gendarme.svg
