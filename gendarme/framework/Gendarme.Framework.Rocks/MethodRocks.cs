@@ -216,8 +216,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method has the signature of an event callback.</returns>
 		public static bool IsEventCallback (this MethodReference self)
 		{
-			var parameters = self.Resolve ().Parameters;
+			MethodDefinition method = self.Resolve ();
+			if (method == null)
+				return false;
 
+			ParameterDefinitionCollection parameters = method.Parameters;
 			if (parameters.Count != 2)
 				return false;
 
