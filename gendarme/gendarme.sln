@@ -128,7 +128,6 @@ Global
 		{44885D5E-B99D-4C56-BC85-F652F11DABDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44885D5E-B99D-4C56-BC85-F652F11DABDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5446570C-A304-418D-B908-91ADA51E4F00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -299,6 +298,8 @@ Global
 		name = gendarme
 		version = 0.1
 		StartupItem = rules\Gendarme.Rules.Performance\Gendarme.Rules.Performance.csproj
+		MonoDevelop.ChangeLogAddIn.ChangeLogInfo = $0
+		$0.policy = UpdateNearestChangeLog
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

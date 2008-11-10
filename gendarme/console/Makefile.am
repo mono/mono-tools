@@ -6,15 +6,15 @@ DISTCLEANFILES = Makefile.in
 
 gendarme_sources_in = ../AssemblyInfo.cs.in
 gendarme_generated_sources = $(gendarme_sources_in:.in=)
-gendarme_sources = \
+gendarme_sources =  \
 	../AssemblyStaticInfo.cs \
 	ConsoleRunner.cs \
-	Settings.cs \
 	Helpers.cs \
+	HtmlResultWriter.cs \
 	IgnoreFileList.cs \
 	Options.cs \
 	ResultWriter.cs \
-	HtmlResultWriter.cs \
+	Settings.cs \
 	TextResultWriter.cs \
 	XmlResultWriter.cs
 gendarme_resources = \

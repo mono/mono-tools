@@ -86,74 +86,6 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.BadPractice\Gendarme.Rules.BadPractice.csproj">
-      <Project>{7FF6D373-551E-4C6B-98FA-D1D883FD2502}</Project>
-      <Name>Gendarme.Rules.BadPractice</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Concurrency\Gendarme.Rules.Concurrency.csproj">
-      <Project>{B8EA91A3-27A0-4732-BA90-7B590280FF9F}</Project>
-      <Name>Gendarme.Rules.Concurrency</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Correctness\Gendarme.Rules.Correctness.csproj">
-      <Project>{732905E1-1FD4-403A-93DD-EC4CF120091E}</Project>
-      <Name>Gendarme.Rules.Correctness</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Design.Generic\Gendarme.Rules.Design.Generic.csproj">
-      <Project>{5446570C-A304-418D-B908-91ADA51E4F00}</Project>
-      <Name>Gendarme.Rules.Design.Generic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Design.Linq\Gendarme.Rules.Design.Linq.csproj">
-      <Project>{EEC7B836-DB9D-4CB3-9829-53C223C9411F}</Project>
-      <Name>Gendarme.Rules.Design.Linq</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Design\Gendarme.Rules.Design.csproj">
-      <Project>{FC889577-F51A-469C-9F30-E967504E9E24}</Project>
-      <Name>Gendarme.Rules.Design</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Exceptions\Gendarme.Rules.Exceptions.csproj">
-      <Project>{BDDBA1F9-061B-45BE-86B5-98571F7B0383}</Project>
-      <Name>Gendarme.Rules.Exceptions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Interoperability\Gendarme.Rules.Interoperability.csproj">
-      <Project>{C0E9997F-EA91-4C7A-9702-5F8215574BCA}</Project>
-      <Name>Gendarme.Rules.Interoperability</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Maintainability\Gendarme.Rules.Maintainability.csproj">
-      <Project>{8DB890C9-F9B7-4BEA-9ADE-EF32391363C2}</Project>
-      <Name>Gendarme.Rules.Maintainability</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Naming\Gendarme.Rules.Naming.csproj">
-      <Project>{C57E2A54-3BBF-49D7-B3E5-688EE1F63250}</Project>
-      <Name>Gendarme.Rules.Naming</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Performance\Gendarme.Rules.Performance.csproj">
-      <Project>{7A8D4AE7-66FA-42E0-BDCB-400D8E0ECFA6}</Project>
-      <Name>Gendarme.Rules.Performance</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Portability\Gendarme.Rules.Portability.csproj">
-      <Project>{3A220513-3E53-4E13-B25D-2202F79B4C47}</Project>
-      <Name>Gendarme.Rules.Portability</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Security.Cas\Gendarme.Rules.Security.Cas.csproj">
-      <Project>{237A273E-BCAF-42DB-9DE5-1697B016C648}</Project>
-      <Name>Gendarme.Rules.Security.Cas</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Security\Gendarme.Rules.Security.csproj">
-      <Project>{DBA3E375-ADF4-4CA3-880F-AF02DD8D5E7E}</Project>
-      <Name>Gendarme.Rules.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Serialization\Gendarme.Rules.Serialization.csproj">
-      <Project>{44885D5E-B99D-4C56-BC85-F652F11DABDC}</Project>
-      <Name>Gendarme.Rules.Serialization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Smells\Gendarme.Rules.Smells.csproj">
-      <Project>{CC7BB0B5-094F-42F9-9CE7-1C33EF2B8A20}</Project>
-      <Name>Gendarme.Rules.Smells</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\rules\Gendarme.Rules.Ui\Gendarme.Rules.Ui.csproj">
-      <Project>{949C4D51-4581-402A-AC18-B1B41F395FDA}</Project>
-      <Name>Gendarme.Rules.Ui</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\gendarme.ico" />
@@ -166,4 +98,20 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <GtkDesignInfo />
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath="../..">
+          <BuildFilesVar Sync="true" Name="wizard_sources" />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

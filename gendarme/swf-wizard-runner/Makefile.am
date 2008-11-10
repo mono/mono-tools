@@ -15,20 +15,20 @@ DISTCLEANFILES = Makefile.in
 
 wizard_sources_in = ../AssemblyInfo.cs.in
 wizard_generated_sources = $(wizard_sources_in:.in=)
-wizard_sources = \
+wizard_sources =  \
 	../AssemblyStaticInfo.cs \
+	../console/Helpers.cs \
+	../console/HtmlResultWriter.cs \
+	../console/ResultWriter.cs \
+	../console/TextResultWriter.cs \
+	../console/XmlResultWriter.cs \
 	Gendarme.cs \
 	GuiRunner.cs \
 	Page.cs \
-	Wizard.cs \
-	Wizard.Designer.cs \
 	Properties/Resources.Designer.cs \
 	Properties/Settings.Designer.cs \
-	../console/Helpers.cs \
-	../console/ResultWriter.cs \
-	../console/HtmlResultWriter.cs \
-	../console/TextResultWriter.cs \
-	../console/XmlResultWriter.cs
+	Wizard.cs \
+	Wizard.Designer.cs
 
 wizard_build_sources = $(addprefix $(srcdir)/, $(wizard_sources))
 wizard_build_sources += $(wizard_generated_sources)

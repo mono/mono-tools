@@ -43,6 +43,7 @@
     <Compile Include="Helpers\AssemblyCache.cs" />
     <Compile Include="Helpers\DefinitionLoader.cs" />
     <Compile Include="Helpers\TestRunner.cs" />
+    <Compile Include="Fixtures\AssemblyRuleTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
@@ -53,9 +54,6 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties/" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

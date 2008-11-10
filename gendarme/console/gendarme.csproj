@@ -117,4 +117,19 @@ copy "$(TargetDir)..\..\..\self-test.ignore" "$(TargetDir)"
 copy "$(TargetDir)..\..\..\..\..\cecil\pdb\Mono.Cecil.Pdb\$(OutDir)\Mono.Cecil.Pdb.*" "$(TargetDir)"
 </PostBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <MonoDevelop.Autotools.MakefileInfo IntegrationEnabled="true" RelativeMakefileName="Makefile.am" IsAutotoolsProject="true" RelativeConfigureInPath="../..">
+          <BuildFilesVar Sync="true" Name="gendarme_sources" />
+          <DeployFilesVar />
+          <ResourcesVar />
+          <OthersVar />
+          <GacRefVar />
+          <AsmRefVar />
+          <ProjectRefVar />
+        </MonoDevelop.Autotools.MakefileInfo>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>
