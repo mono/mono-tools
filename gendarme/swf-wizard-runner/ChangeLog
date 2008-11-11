@@ -1,3 +1,8 @@
+2008-11-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.Designer.cs: Fix copyright symbol that probably did not 
+	survive the dos2unix transition.
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Page.cs: Clearly specify [Serializable] on the enum (self-test)
