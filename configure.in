@@ -1,4 +1,4 @@
-AC_INIT([mono-tools], [2.1])
+AC_INIT([mono-tools], [2.2])
 AC_CONFIG_SRCDIR([README])
 AM_INIT_AUTOMAKE([tar-ustar])
 AC_CANONICAL_SYSTEM
