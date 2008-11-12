@@ -1,3 +1,10 @@
+2008-11-12  Jonathan Pryor  <jpryor@novell.com>
+
+	* browser.cs: Probe for MonoWebBrowser before Gecko, as (1) Gecko is
+	  effectively unmaintained, (2) Gecko doesn't work on my machine, and
+	  (3) MonoWebBrowser suffers from neither (1) nor (2) (and it doubles
+	  as using our own dogfood, which is even better).
+
 2008-11-12  Andreia Gaita <shana@jitted.com> 
 
 	* browser.cs: Update usage

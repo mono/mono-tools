@@ -22,7 +22,7 @@ using System.Xml;
 namespace Monodoc {
 class Driver {
 	  
-	public static string[] engines = {"WebKit", "Gecko", "MonoWebBrowser", "GtkHtml"};
+	public static string[] engines = {"WebKit", "MonoWebBrowser", "Gecko", "GtkHtml"};
 	  
 	static int Main (string [] args)
 	{
