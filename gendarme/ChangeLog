@@ -1,3 +1,7 @@
+2008-11-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyStaticInfo.cs: Update "special" (VS setup) version 2.2
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Old xml.in files were removed from SVN so there's no
