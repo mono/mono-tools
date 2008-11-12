@@ -64,8 +64,13 @@ class Driver {
 				return 0;
 
 			case "--help":
-				Console.WriteLine ("Options are:\n"+
-						   "browser [--html TOPIC] [--make-index] [TOPIC] [--merge-changes CHANGE_FILE TARGET_DIR+] [--about]");
+				Console.WriteLine ("Usage:");
+				Console.WriteLine ("browser [--html TOPIC] [--make-index] [--make-search-index] [--merge-changes CHANGE_FILE TARGET_DIR+] [--about] [--edit path] [--remote-mode] [--engine engine] [TOPIC]");
+				Console.WriteLine ("");
+				Console.WriteLine ("--edit path:\t\tEdit a file. Path is the location of Monodoc-format XML documentation files.");
+				Console.WriteLine ("--engine engine:\tChoose a rendering engine. Available engines are: WebKit, Gecko, MonoWebBrowser, GtkHtml.");
+				Console.WriteLine ("\t\t\tIf the chosen engine is not available (or you haven't chosen one), monodoc will fallback to the next one on");
+				Console.WriteLine ("\t\t\tthe list until one is found");
 				return 0;
 			
 			case "--merge-changes":
