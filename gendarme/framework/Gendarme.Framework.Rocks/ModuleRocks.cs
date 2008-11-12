@@ -123,11 +123,13 @@ namespace Gendarme.Framework.Rocks {
 			catch (COMException) {
 				// this happens if a PDB file is missing
 			}
-			catch {
-				// MonoSymbolFileException happens on invalid (earlier) version of debugging symbols
-				// but since we don't directly link with the assembly we can't catch it directly
-				// FIXME: move this catch into Cecil and throw/wrap something better
+			catch (FormatException) {
+				// Mono.Cecil.Mdb wrap MonoSymbolFileException inside a FormatException
+				// This makes it possible to catch such exception without a reference to the
+				// Mono.CompilerServices.SymbolWriter.dll assembly
 			}
+			// in any case (of failure to load symbols) Gendarme can continue its analysis (but some rules
+			// can be affected). The HasDebuggingInformation extension method let them adjust themselves
 		}
 	}
 }

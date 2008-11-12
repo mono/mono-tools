@@ -1,3 +1,8 @@
+2008-11-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: Change the catch-all for a catch(FormatException)
+	since Cecil has been fixed on HEAD.
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs: Make IsEventCallback safe if the method cannot be
