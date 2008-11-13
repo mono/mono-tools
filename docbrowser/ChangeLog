@@ -1,3 +1,7 @@
+2008-11-13  Andreia Gaita <shana@jitted.com> 
+
+	* MonoWebBrowserHtmlRender.cs: Update status bar when hovering over links
+
 2008-11-12  Jonathan Pryor  <jpryor@novell.com>
 
 	* browser.cs: Probe for MonoWebBrowser before Gecko, as (1) Gecko is
