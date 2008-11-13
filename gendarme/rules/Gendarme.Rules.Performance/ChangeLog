@@ -1,3 +1,8 @@
+2008-11-13  Cedric Vivier  <cedricv@neonux.com>
+
+	* AvoidTypeGetTypeForConstantStrings.cs: Do not emit a false positive
+	when using the supported way to detect if running on Mono runtime.
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCastsRule.cs: Remove unneeded parameter on GetOrigin

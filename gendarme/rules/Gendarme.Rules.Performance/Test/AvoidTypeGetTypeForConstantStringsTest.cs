@@ -140,6 +140,11 @@ namespace Test.Rules.Performance {
 			return System.Type.GetType ("System.Drawing.Printing.SysPrn, System.Drawing");
 		}
 
+		private bool IsMonoRuntime ()
+		{
+			return (null != System.Type.GetType ("Mono.Runtime"));
+		}
+
 		[Test]
 		public void GoodReasons ()
 		{
@@ -147,6 +152,8 @@ namespace Test.Rules.Performance {
 			// e.g. loading a non-visible type (not easy to detect)
 			// or more commonly getting a type from an assembly that is not loaded
 			AssertRuleSuccess<AvoidTypeGetTypeForConstantStringsTest> ("GetTypeFromAnotherAssembly");
+			// or the supported way to detect if we are running on mono runtime
+			AssertRuleSuccess<AvoidTypeGetTypeForConstantStringsTest> ("IsMonoRuntime");
 		}
 	}
 }

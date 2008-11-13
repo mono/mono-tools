@@ -96,6 +96,9 @@ namespace Gendarme.Rules.Performance {
 				// one good reason to use this (besides non-visible types) is get a type from an unreferenced assembly
 				if ((type_name == null) || type_name.Contains (", "))
 					continue;
+				// another good reason is the supported way to detect if running on mono runtime
+				if (type_name == "Mono.Runtime")
+					continue;
 
 				string msg = string.Format ("Replace call to Type.GetType(\"{0}\") into typeof({0}).", type_name);
 				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
