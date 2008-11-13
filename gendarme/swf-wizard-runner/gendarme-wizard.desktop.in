@@ -1,6 +1,5 @@
 [Desktop Entry]
 Version=1.0
-Encoding=UTF-8
 Name=Gendarme
 Name[de]=Gendarme
 GenericName=Gendarme Wizard
@@ -8,8 +7,8 @@ GenericName[de]=Gendarme Wizard
 Comment=Inspect your .NET and Mono assemblies
 Comment[de]=Analysiere deine .NET und Mono Assemblies
 Type=Application
-Categories=Application;Development;
+Categories=Development;Profiling;
 Terminal=false
 StartupNotify=true
 Exec=@bindir@/gendarme-wizard
-Icon=gendarme.svg
+Icon=gendarme
