@@ -1,3 +1,7 @@
+2008-11-13  Mike Kestner  <mkestner@novell.com>
+
+	* MainWindow.cs: break a Gtk# 2.10 dependency
+
 2008-11-06  Miguel de Icaza  <miguel@novell.com>
 
 	* MainWindow.cs: Add support for loading settings (window

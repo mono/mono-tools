@@ -264,11 +264,15 @@ namespace Mono.CSharp.Gui
 			b.Clicked += delegate {
 				shellnotebook.Remove (w);
 				pages.Remove (t);
+				if (shellnotebook.NPages == 1)
+					shellnotebook.ShowTabs = false;
 			};
 			h.PackStart (b, false, false, 0);
 			
 			h.ShowAll ();
 			shellnotebook.Page = shellnotebook.AppendPage (w, h);
+			if (shellnotebook.NPages > 1)
+				shellnotebook.ShowTabs = true;
 		}
 
 		public bool FindPage (Type t)
@@ -319,13 +323,6 @@ namespace Mono.CSharp.Gui
 				SetDisplayPane (gtkpane.Active);
 			};
 
-			shellnotebook.PageAdded += delegate {
-				shellnotebook.ShowTabs = true;
-			};
-			shellnotebook.PageRemoved += delegate {
-				if (shellnotebook.NPages == 1)
-					shellnotebook.ShowTabs = false;
-			};
 			Shell = new Shell (this);
 			LoadSettings (Shell);
 
