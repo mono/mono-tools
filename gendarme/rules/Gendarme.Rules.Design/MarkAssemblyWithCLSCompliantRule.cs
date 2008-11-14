@@ -41,6 +41,7 @@ namespace Gendarme.Rules.Design {
 	/// CLS compliant assembly can be reused by any CLS-compliant language. It is a good practice
 	/// to declare your global CLS goal at the assembly level and, if needed, mark some types or
 	/// members that behave differently inside your assembly.
+	/// </summary>
 	/// <example>
 	/// Good example:
 	/// <code>
