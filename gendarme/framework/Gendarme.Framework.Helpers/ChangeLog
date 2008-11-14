@@ -1,3 +1,8 @@
+2008-11-13  Jesse Jones  <jesjones@mindspring.com>
+
+	* MethodPrinter.cs: Added. Used to convert a method body into a
+	string. Factored out of the CFG class.
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Clearly specify [Serializable] on 
