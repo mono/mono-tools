@@ -84,6 +84,14 @@ namespace GuiCompare {
 						continue;
 					interface_list.Add (new CecilInterface (ifc));
 				}
+
+				// Walk the parent hierarchy, we need to gather all the inherited
+				// interfaces as well to avoid false positives in comparison
+				TypeReference base_type = fromDef.BaseType;
+				if (base_type != null) {
+					TypeDefinition base_type_def = CecilUtils.Resolver.Resolve (base_type);
+					PopulateMemberLists (base_type_def, interface_list, null, null, null, null, null);
+				}
 			}
 
 			if (constructor_list != null) {
@@ -99,9 +107,15 @@ namespace GuiCompare {
 						if (!md.Name.StartsWith("op_"))
 							continue;
 					}
-					if (md.IsPrivate || md.IsAssembly)
+					if (md.IsAssembly)
 						continue;
-
+					
+					if (md.IsPrivate) {
+						OverrideCollection overrides = md.Overrides;
+						if (overrides == null || overrides.Count == 0)
+							continue;
+					}
+					
 					method_list.Add (new CecilMethod (md));
 				}
 			}
