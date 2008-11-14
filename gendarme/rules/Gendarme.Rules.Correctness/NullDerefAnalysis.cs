@@ -99,6 +99,14 @@ namespace Gendarme.Rules.Correctness {
 
 		// FIXME: could probably rewrite this to be more reliable using
 		// OpCode.StackBehaviourPop and StackBehaviourPush
+		//
+		// FIXME: This code is simply too naive to work well in the real world.
+		// For example, code that compares a local to null will not work
+		// correctly (we want the local to be null along one branch and non-
+		// null along the other). But this is tricky to do with the textbook
+		// algorithm (note that meet must be commutative). One fix is to 
+		// splice in synthetic blocks and fix the code so that it can handle
+		// zero length blocks.
 		public void Transfer([NonNull] Node node, [NonNull] object inFact,
 				[NonNull] object outFact, bool warn)
 		{
@@ -206,6 +214,9 @@ namespace Gendarme.Rules.Correctness {
 						break;
 			case Code.Ldloca:
 			case Code.Ldloca_S:
+						outFrame.SetLocNullity(
+							vars.IndexOf((VariableDefinition)insn.Operand),
+							Nullity.Unknown);
 						outFrame.PushStack(Nullity.NonNull);
 						break;
 
