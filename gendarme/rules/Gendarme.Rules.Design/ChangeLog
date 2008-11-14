@@ -1,3 +1,14 @@
+2008-11-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMultidimensionalIndexerRule.cs, AvoidSmallNamespaceRule.cs,
+	ConsiderAddingInterfaceRule.cs, DeclareEventHandlersCorrectlyRule.cs,
+	MarkAssemblyWithCLSCompliantRule.cs, 
+	MarkAssemblyWithComVisibleRule.cs, OverrideEqualsMethodRule.cs,
+	PreferEventsOverMethodsRule.cs, 
+	ProvideAlternativeNamesForOperatorOverloadsRule.cs,
+	TypesWithNativeFieldsShouldBeDisposableRule.cs: Small update to XML
+	documentation.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

@@ -42,11 +42,11 @@ namespace Gendarme.Rules.Design {
 	/// <example>
 	/// Bad examples:
 	/// <code>
-	/// class DoesNotImplementIDisposable {
+	/// public class DoesNotImplementIDisposable {
 	///	IntPtr field;
 	/// }
 	/// 
-	/// class AbstractDispose : IDisposable {
+	/// abstract public class AbstractDispose : IDisposable {
 	///	IntPtr field;
 	///	
 	///	// the field should be disposed in the type that declares it
@@ -57,7 +57,7 @@ namespace Gendarme.Rules.Design {
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// class Dispose : IDisposable {
+	/// public class Dispose : IDisposable {
 	///	IDisposable field;
 	///	
 	///	public void Dispose ()

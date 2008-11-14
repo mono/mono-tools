@@ -37,16 +37,15 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule looks at 
-	/// </summary>
-	/// <example>
-	/// Bad example:
-	/// <code>
-	/// </code>
-	/// </example>
+	/// This rule looks at each assembly to see if it contains a <c>[CLSCompliant]</c> attribute. 
+	/// CLS compliant assembly can be reused by any CLS-compliant language. It is a good practice
+	/// to declare your global CLS goal at the assembly level and, if needed, mark some types or
+	/// members that behave differently inside your assembly.
 	/// <example>
 	/// Good example:
 	/// <code>
+	/// // by default everything in this assembly is CLS compliant
+	/// [assembly: CLSCompliant (true)]
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
