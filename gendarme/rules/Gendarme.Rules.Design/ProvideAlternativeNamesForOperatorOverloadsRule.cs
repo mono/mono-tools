@@ -42,40 +42,40 @@ namespace Gendarme.Rules.Design {
 	/// For those languages named methods should be implemented that provide the same
 	/// functionality. This rule checks for a named alternative for each overloaded operator.
 	/// <list type="bullet">
-	/// <item>op_UnaryPlus</item><description>Plus</description></item>
-	/// <item>op_UnaryNegation</item><description>Negate</description></item>
-	/// <item>op_LogicalNot</item><description>LogicalNot</description></item>
-	/// <item>op_OnesComplement</item><description>OnesComplement</description></item>
+	/// <item><term>op_UnaryPlus</term><description>Plus</description></item>
+	/// <item><term>op_UnaryNegation</term><description>Negate</description></item>
+	/// <item><term>op_LogicalNot</term><description>LogicalNot</description></item>
+	/// <item><term>op_OnesComplement</term><description>OnesComplement</description></item>
 	/// </list>
 	/// <list type="bullet">
-	/// <item>op_Increment</item><description>Increment</description></item>
-	/// <item>op_Decrement</item><description>Decrement</description></item>
-	/// <item>op_True</item><description>IsTrue</description></item>
-	/// <item>op_False</item><description>IsFalse</description></item>
+	/// <item><term>op_Increment</term><description>Increment</description></item>
+	/// <item><term>op_Decrement</term><description>Decrement</description></item>
+	/// <item><term>op_True</term><description>IsTrue</description></item>
+	/// <item><term>op_False</term><description>IsFalse</description></item>
 	/// </list>
 	/// <list type="bullet">
-	/// <item>op_Addition</item><description>Add</description></item>
-	/// <item>op_Subtraction</item><description>Subtract</description></item>
-	/// <item>op_Multiply</item><description>Multiply</description></item>
-	/// <item>op_Division</item><description>Divide</description></item>
-	/// <item>op_Modulus</item><description>Modulus</description></item>
+	/// <item><term>op_Addition</term><description>Add</description></item>
+	/// <item><term>op_Subtraction</term><description>Subtract</description></item>
+	/// <item><term>op_Multiply</term><description>Multiply</description></item>
+	/// <item><term>op_Division</term><description>Divide</description></item>
+	/// <item><term>op_Modulus</term><description>Modulus</description></item>
 	/// </list>
 	/// <list type="bullet">
-	/// <item>op_BitwiseAnd</item><description>BitwiseAnd</description></item>
-	/// <item>op_BitwiseOr</item><description>BitwiseOr</description></item>
-	/// <item>op_ExclusiveOr</item><description>ExclusiveOr</description></item>
+	/// <item><term>op_BitwiseAnd</term><description>BitwiseAnd</description></item>
+	/// <item><term>op_BitwiseOr</term><description>BitwiseOr</description></item>
+	/// <item><term>op_ExclusiveOr</term><description>ExclusiveOr</description></item>
 	/// </list>
 	/// <list type="bullet">
-	/// <item>op_LeftShift</item><description>LeftShift</description></item>
-	/// <item>op_RightShift</item><description>RightShift</description></item>
+	/// <item><term>op_LeftShift</term><description>LeftShift</description></item>
+	/// <item><term>op_RightShift</term><description>RightShift</description></item>
 	/// </list>
 	/// <list type="bullet">
-	/// <item>op_Equality</item><description>Equals</description></item>
-	/// <item>op_Inequality</item><description>(not) Equals</description></item>
-	/// <item>op_GreaterThan</item><description>Compare</description></item>
-	/// <item>op_LessThan</item><description>Compare</description></item>
-	/// <item>op_GreaterThanOrEqual</item><description>Compare</description></item>
-	/// <item>op_LessThanOrEqual</item><description>Compare</description></item>
+	/// <item><term>op_Equality</term><description>Equals</description></item>
+	/// <item><term>op_Inequality</term><description>(not) Equals</description></item>
+	/// <item><term>op_GreaterThan</term><description>Compare</description></item>
+	/// <item><term>op_LessThan</term><description>Compare</description></item>
+	/// <item><term>op_GreaterThanOrEqual</term><description>Compare</description></item>
+	/// <item><term>op_LessThanOrEqual</term><description>Compare</description></item>
 	/// </list>
 	/// </summary>
 	/// <example>
