@@ -31,6 +31,7 @@ framework_sources =  \
 	../AssemblyStaticInfo.cs \
 	Gendarme.Framework.Engines/NamespaceEngine.cs \
 	Gendarme.Framework.Engines/OpCodeEngine.cs \
+	Gendarme.Framework.Helpers/MethodPrinter.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
 	Gendarme.Framework.Helpers/MethodSignatures.cs \
 	Gendarme.Framework.Helpers/Namespace.cs \
