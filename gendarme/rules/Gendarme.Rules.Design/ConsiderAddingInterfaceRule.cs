@@ -43,13 +43,13 @@ namespace Gendarme.Rules.Design {
 	/// Bad example:
 	/// <code>
 	/// public interface IDoable {
-	/// public void Do();
-	/// }
+	///	public void Do ();
 	/// }
 	/// 
 	/// public class MyClass {
-	/// public void Do() {
-	/// }
+	///	public void Do ()
+	///	{
+	///	}
 	/// }
 	/// </code>
 	/// </example>
@@ -57,13 +57,13 @@ namespace Gendarme.Rules.Design {
 	/// Good example:
 	/// <code>
 	/// public interface IDoable {
-	/// public void Do();
-	/// }
+	///	public void Do ();
 	/// }
 	/// 
 	/// public class MyClass : IDoable {
-	/// public void Do() {
-	/// }
+	///	public void Do ()
+	///	{
+	///	}
 	/// }
 	/// </code>
 	/// </example>

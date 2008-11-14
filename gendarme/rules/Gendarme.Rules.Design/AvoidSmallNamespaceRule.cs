@@ -47,8 +47,8 @@ namespace Gendarme.Rules.Design {
 	/// <c>*.Interop</c> and <c>*.Permissions</c></description></item>
 	/// <item><term>internal namespaces</term><description>namespaces without any visible 
 	/// (outside the assemble) types</description></item>
-	/// <item><term>small assemblies</term>that contains a single namespace but less than
-	/// the minimal number of types (e.g. addins)</item>
+	/// <item><term>small assemblies</term><description>that contains a single namespace but less than
+	/// the minimal number of types (e.g. addins)</description></item>
 	/// <item><term>assembly entry point</term><description>the namespace of the type being
 	/// used in an assemble (EXE) entry-point</description></item>
 	/// </list>

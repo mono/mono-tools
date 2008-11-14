@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.02</remarks>
+	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This indexer use multiple indexes and this limit its usability.")]
 	[Solution ("Convert this indexer into a method.")]

@@ -42,7 +42,7 @@ namespace Gendarme.Rules.Design {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// // if miss the second parameter, inheriting from System.EventArgs
+	/// // the second parameter, inheriting from System.EventArgs, is missing
 	/// delegate void MyDelegate (int sender);
 	/// 
 	/// class Bad {

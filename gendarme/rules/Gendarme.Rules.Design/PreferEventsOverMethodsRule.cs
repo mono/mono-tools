@@ -79,8 +79,9 @@ namespace Gendarme.Rules.Design {
 	///	{
 	///		switch (msg.Id) {
 	///		case MessageId.MouseUp: {
-	///			if (MouseUp != null) {
-	///				MouseUp (new MessageEvent (msg));
+	///			EventHandler&lt;MessageEvent&gt; handler = MouseUp;
+	///			if (handler != null) {
+	///				handler (new MessageEvent (msg));
 	///			}
 	///			break;
 	///		}

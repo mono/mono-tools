@@ -61,8 +61,9 @@ namespace Gendarme.Rules.Design {
 	///	public override bool Equals (object obj)
 	///	{
 	///		OverridesEquals other = (obj as OverridesEquals);
-	///		if (other == null)
+	///		if (other == null) {
 	///			return false;
+	///		}
 	///		return (this == other);
 	///	}
 	/// }
