@@ -37,7 +37,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule check that the <c>[AssemblyVersion]</c> match the <c>[AssemblyFileVersion]</c>
+	/// This rule check that the <c>[AssemblyVersion]</c> match the <c>[AssemblyFileVersion]</c> 
 	/// when both are present inside an assembly. Having different version numbers in both
 	/// attributes can be confusing once the application is deployed.
 	/// </summary>

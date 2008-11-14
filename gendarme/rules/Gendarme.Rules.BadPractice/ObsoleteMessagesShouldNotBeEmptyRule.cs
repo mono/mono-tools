@@ -45,7 +45,9 @@ namespace Gendarme.Rules.BadPractice {
 	/// <code>
 	/// [Obsolete]
 	/// public byte[] Key {
-	///	get { return (byte[]) key.Clone (); }
+	///	get {
+	///		return (byte[]) key.Clone ();
+	///	}
 	/// }
 	/// </code>
 	/// </example>
@@ -54,7 +56,9 @@ namespace Gendarme.Rules.BadPractice {
 	/// <code>
 	/// [Obsolete ("Use the new GetKey() method since properties should not return arrays.")]
 	/// public byte[] Key {
-	///	get { return (byte[]) key.Clone (); }
+	///	get {
+	///		return (byte[]) key.Clone ();
+	///	}
 	/// }
 	/// </code>
 	/// </example>
