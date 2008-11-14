@@ -6,6 +6,8 @@
 	When populating member lists, check if a method is an explicit
 	interface implementation and, if yes, include it in the list to
 	avoid false negatives.
+	Check if methods with special names are explicit interface
+	implementations and, if yes, include them in comparison.
 
 2008-08-15  Chris Toshok  <toshok@ximian.com>
 
