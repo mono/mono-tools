@@ -30,6 +30,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Schema;
 
 using Gendarme.Framework;
 using Gendarme.Rules.Correctness;
@@ -159,6 +161,22 @@ namespace Test.Rules.Correctness {
 
 			void AddAssembly (string filename)
 			{
+			}
+
+			void Using ()
+			{
+				using (Stream stream = new FileStream ("gendarme.xsd", FileMode.Create)) {
+					using (XmlReader reader = XmlReader.Create ("foo")) {
+						while (reader.Read ()){}
+					}
+				}
+			}
+			
+			void TryGetValue (Dictionary<string, object> d)
+			{
+				object o;
+				if (d.TryGetValue ("hmm", out o))
+					Console.WriteLine (o.ToString ());
 			}
 		}
 		
