@@ -86,7 +86,6 @@ namespace GuiCompare {
 		                                        List<CompNamed> field_list,
 		                                        List<CompNamed> event_list)
 		{
-			bool debug = fromDef.FullName == "System.Web.UI.WebControls.DataPagerField";
 			if (interface_list != null) {
 				foreach (TypeReference ifc in fromDef.Interfaces) {
 					TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
