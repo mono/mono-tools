@@ -1,3 +1,8 @@
+2008-11-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* dataflow/CFG.cs: Extract helper class MethodPrinter. Patch by
+	Jesse Jones
+
 2008-11-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* NullDerefAnalysis.cs, dataflow/Dataflow.cs: Write debug output 
