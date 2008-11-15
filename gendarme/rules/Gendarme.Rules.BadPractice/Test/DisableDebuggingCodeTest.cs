@@ -79,12 +79,18 @@ namespace Test.Rules.BadPractice {
 		}
 
 		[Test]
-		public void Conditional ()
+		public void CommonCheck ()
+		{
+			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalTrace");
+			AssertRuleFailure<DisableDebuggingCodeTest> ("ConditionalOther", 1);
+		}
+
+		[Test]
+		[Conditional ("DEBUG")]
+		public void DebugCheck ()
 		{
 			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalDebug");
-			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalTrace");
 			AssertRuleSuccess<DisableDebuggingCodeTest> ("ConditionalMultiple");
-			AssertRuleFailure<DisableDebuggingCodeTest> ("ConditionalOther", 1);
 		}
 
 		public void UsingTrace ()
@@ -106,7 +112,11 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void NonDebug ()
 		{
-			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingDebug");
+#if DEBUG
+ 			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingDebug"); 
+#else
+			AssertRuleDoesNotApply<DisableDebuggingCodeTest> ("UsingDebug");	// method has no body in release
+#endif
 			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingTrace");
 			AssertRuleFailure<DisableDebuggingCodeTest> ("UsingConsole", 1);
 		}
