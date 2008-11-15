@@ -1,7 +1,9 @@
+include ../../options.make
+
 SUBDIRS=Test
 
-EXTRA_RULES_OPTIONS := -debug+ -warn:4 -warnaserror+
-EXTRA_TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:0
+EXTRA_RULES_OPTIONS := $(GENDARME_OPTIONS)
+EXTRA_TESTS_OPTIONS := $(TESTS_OPTIONS)
 
 console_runner=../../bin/gendarme.exe
 framework=../../bin/Gendarme.Framework.dll
