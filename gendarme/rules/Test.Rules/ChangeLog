@@ -1,3 +1,7 @@
+2008-11-14  Jesse Jones  <jesjones@mindspring.com>
+
+	* common.make: Uses new options.make file.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Test.Rules.csproj: Activate makefile integration for all the rules

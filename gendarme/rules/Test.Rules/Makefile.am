@@ -1,4 +1,4 @@
-TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:0
+include ../../options.make
 
 testdir=.
 test_SCRIPTS = 
