@@ -1,3 +1,9 @@
+2008-11-14  Jesse Jones  <jesjones@mindspring.com>
+
+	* options.make: Added to allow all of our assemblies to be built with
+	a common set of gmcs options
+	* Makefile.am: Added new DEBUG variable to help target.
+
 2008-11-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyStaticInfo.cs: Update "special" (VS setup) version 2.3

@@ -63,5 +63,6 @@ help:
 	@echo "test1      - build and run a single unit test named TEST1"
 	@echo " "
 	@echo "Variables include:"
-	@echo "TEST1      - used with test1 target, should be a unit test class name"
+	@echo "DEBUG  - compile a debug version of the assemblies"
+	@echo "TEST1  - used with test1 target, should be a unit test class name"
 
