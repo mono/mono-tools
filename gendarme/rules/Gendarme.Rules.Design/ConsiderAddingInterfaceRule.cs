@@ -72,25 +72,44 @@ namespace Gendarme.Rules.Design {
 	[Solution ("If the interface matches the semantics of the type, add it to the type.")]
 	public class ConsiderAddingInterfaceRule : Rule, ITypeRule {
 
+		private bool reference_only = true;
+
+		public bool ReferencesOnly {
+			get { return reference_only; }
+			set { reference_only = value; }
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//type does not apply if not an interface or is an empty interface
 			if (!type.IsInterface || type.Methods.Count == 0)
 				return RuleResult.DoesNotApply;
 
-			foreach (AssemblyDefinition assembly in Runner.Assemblies)
-				CheckAssemblyTypes (assembly, type);
+			//TODO: take into account [InternalsVisibleTo] on iface's assembly
+			if (type.IsVisible ()) {
+				// We should not, by default, promote the implementation of interfaces in assemblies that
+				// do not, already, refer to the current one because:
+				// (a) we could be suggesting circular references (solvable, or not, by refactoring)
+				// (b) it has a very HIGH performance cost, with verry LITTLE value (in # of defects)
+				string current_assembly_name = type.Module.Assembly.Name.Name;
+				foreach (AssemblyDefinition assembly in Runner.Assemblies) {
+					// by default only process assemblies (from the set) that refers to the current one
+					// or the current one itself
+					if (!ReferencesOnly || (current_assembly_name == assembly.Name.Name) || 
+						assembly.References (current_assembly_name)) {
+						CheckAssemblyTypes (assembly, type);
+					}
+				}
+			} else {
+				// if the interface is not visible then we only check this assembly
+				CheckAssemblyTypes (type.Module.Assembly, type);
+			}
 
 			return Runner.CurrentRuleResult;
 		}
 
 		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
 		{
-			//return now if iface is an internal interface and we are not on same assenbly
-			//TODO: take into account [InternalsVisibleTo] on iface's assembly
-			if (!iface.IsVisible() && iface.Module.Assembly != assembly)
-				return;
-
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.Types) {
 					if (DoesTypeStealthilyImplementInterface (type, iface)) {
@@ -146,4 +165,3 @@ namespace Gendarme.Rules.Design {
 	}
 
 }
-
