@@ -1,8 +1,6 @@
-SUBDIRS = Test
-FRAMEWORK_OPTIONS := -debug+ -warn:4 -warnaserror+
-TESTS_OPTIONS := -debug+ -d:DEBUG -d:TRACE -warn:4 -warn:0
+include ../options.make
 
-FRAMEWORK_OPTIONS += -nowarn:1591	# Missing XML comment
+SUBDIRS = Test
 
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll
@@ -81,7 +79,7 @@ framework_build_sources += $(framework_generated_sources)
 
 ../bin/Gendarme.Framework.dll: $(framework_build_sources) $(CECIL_ASM)
 	test -d ../bin || mkdir ../bin
-	$(GMCS) $(FRAMEWORK_OPTIONS) -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
+	$(GMCS) $(GENDARME_OPTIONS) -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
