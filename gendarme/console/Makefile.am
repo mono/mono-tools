@@ -1,3 +1,5 @@
+include ../options.make
+
 gendarmedir=$(prefix)/lib/gendarme
 gendarme_SCRIPTS = ../bin/gendarme.exe
 EXTRA_DIST = $(gendarme_sources) $(gendarme_sources_in) $(gendarme_resources) gendarme.csproj
@@ -28,7 +30,7 @@ gendarme_prefix_resources = $(addprefix $(srcdir)/, $(gendarme_resources))
 gendarme_build_resources = $(foreach res,$(gendarme_prefix_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 ../bin/gendarme.exe: $(gendarme_build_sources) $(gendarme_prefix_resources)
-	$(GMCS) -debug -r:$(CECIL_ASM) -r:System.Xml.Linq -r:../bin/Gendarme.Framework.dll \
+	$(GMCS) $(GENDARME_OPTIONS) -r:$(CECIL_ASM) -r:System.Xml.Linq -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(gendarme_build_sources) $(gendarme_build_resources)
 
 self-test: ../bin/gendarme.exe
