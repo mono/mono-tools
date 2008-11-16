@@ -103,7 +103,7 @@ namespace Test.Rules.Correctness {
 
 		public double StaticFieldGood ()
 		{
-			return BitConverter.Int64BitsToDouble ((long)StaticULong);
+			return unchecked (BitConverter.Int64BitsToDouble ((long)StaticULong));
 		}
 
 		long InstanceLong;
