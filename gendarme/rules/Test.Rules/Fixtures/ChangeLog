@@ -1,3 +1,7 @@
+2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
+
+	* MethodRuleTestFixture.cs: Correct typo in the docs.
+
 2008-08-17  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AssemblyRuleTestFixture.cs: New.  A test fixture for checking

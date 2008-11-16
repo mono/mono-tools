@@ -65,7 +65,7 @@ namespace Test.Rules.Fixtures {
 		}
 		
 		/// <summary>
-		/// Asserts that the rule has been executed successfully. 
+		/// Asserts that the rule does not apply to the method. 
 		/// </summary>
 		/// <typeparam name="T">Type containing the method to test.</typeparam>
 		/// <param name="method">Method name.</param>
