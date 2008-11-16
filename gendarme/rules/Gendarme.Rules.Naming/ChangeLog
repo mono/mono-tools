@@ -1,3 +1,8 @@
+2008-11-15  Jesse Jones  <jesjones@mindspring.com>
+
+    * AvoidDeepNamespaceHierarchyRule.cs: Fixed so unit test works with
+    checked math.
+
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 
     * ParameterNamesShouldMatchOverridenMethodRule.cs: Do not issue false positives

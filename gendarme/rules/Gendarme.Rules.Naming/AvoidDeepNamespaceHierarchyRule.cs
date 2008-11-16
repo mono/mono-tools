@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Naming {
 				// shortest invalid namespace would be "a.b.c.d.e"
 				// so we can skip anything less than 2 * MaxDepth
 				// note: overflow does not matter
-				if (ns.Length < MaxDepth + MaxDepth)
+				if (ns.Length < unchecked (MaxDepth + MaxDepth))
 					continue;
 
 				// count the levels (i.e. number of dots + 1)
