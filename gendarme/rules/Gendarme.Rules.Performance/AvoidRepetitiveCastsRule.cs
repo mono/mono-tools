@@ -69,6 +69,33 @@ namespace Gendarme.Rules.Performance {
 	/// }
 	/// </code>
 	/// </example>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	///	// first cast (is):
+	///	if (o is IDictionary) {
+	///		// second cast if item implements IDictionary:
+	///		Process ((IDictionary) o);
+	///	// first cast (is):
+	///	} else if (o is ICollection) {
+	///		// second cast if item implements ICollection:
+	///		Process ((ICollection) o);
+	///	}
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	///	// a single cast (as) per item
+	///	IDictionary dict;
+	///	ICollection col;
+	///	if ((dict = o as IDictionary) != null) {
+	///		SingleCast (dict);
+	///	} else if ((col = o as ICollection) != null) {
+	///		SingleCast (col);
+	///	}
+	/// </code>
+	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("The method seems to repeat the same cast operation multiple times.")]
@@ -251,7 +278,7 @@ namespace Gendarme.Rules.Performance {
 			foreach (Instruction ins in method.Body.Instructions) {
 				Code code = ins.OpCode.Code;
 				// IsInst -> if (t is T) ...
-				//        -> t = t as T;
+				//        -> t = t as T; ...
 				// Castclass -> t = (T) t; ...
 				if ((code == Code.Isinst) || (code == Code.Castclass))
 					casts.Add (ins);

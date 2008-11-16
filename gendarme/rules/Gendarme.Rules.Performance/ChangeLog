@@ -1,5 +1,10 @@
 2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
 
+	* AvoidRepetitiveCastsRule.cs: Adding two more examples (as this rule
+	also warns about normal cast).
+
+2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
+
 	* AvoidRepetitiveCastsRule.cs: Update comment.
 
 2008-11-13  Cedric Vivier  <cedricv@neonux.com>
