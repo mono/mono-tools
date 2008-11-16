@@ -251,6 +251,7 @@ namespace Gendarme.Rules.Performance {
 			foreach (Instruction ins in method.Body.Instructions) {
 				Code code = ins.OpCode.Code;
 				// IsInst -> if (t is T) ...
+				//        -> t = t as T;
 				// Castclass -> t = (T) t; ...
 				if ((code == Code.Isinst) || (code == Code.Castclass))
 					casts.Add (ins);

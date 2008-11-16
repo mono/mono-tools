@@ -1,3 +1,7 @@
+2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
+
+	* AvoidRepetitiveCastsRule.cs: Update comment.
+
 2008-11-13  Cedric Vivier  <cedricv@neonux.com>
 
 	* AvoidTypeGetTypeForConstantStrings.cs: Do not emit a false positive
