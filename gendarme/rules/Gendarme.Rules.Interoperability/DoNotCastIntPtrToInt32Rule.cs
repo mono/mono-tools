@@ -98,16 +98,22 @@ namespace Gendarme.Rules.Interoperability {
 
 			switch (ins.OpCode.Code) {
 			case Code.Conv_I1:
+			case Code.Conv_Ovf_I1:
 				return Constants.SByte;
 			case Code.Conv_U1:
+			case Code.Conv_Ovf_U1:
 				return Constants.Byte;
 			case Code.Conv_I2:
+			case Code.Conv_Ovf_I2:
 				return Constants.Int16;
 			case Code.Conv_U2:
+			case Code.Conv_Ovf_U2:
 				return Constants.UInt16;
 			case Code.Conv_I4:
+			case Code.Conv_Ovf_I4:
 				return Constants.Int32;
 			case Code.Conv_U4:
+			case Code.Conv_Ovf_U4_Un:
 				return Constants.UInt32;
 			default:
 				return String.Empty;
