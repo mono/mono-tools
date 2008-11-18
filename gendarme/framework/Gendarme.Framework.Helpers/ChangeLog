@@ -1,3 +1,7 @@
+2008-11-17  Jesse Jones  <jesjones@mindspring.com>
+
+	* Log.cs: Added.
+
 2008-11-13  Jesse Jones  <jesjones@mindspring.com>
 
 	* MethodPrinter.cs: Added. Used to convert a method body into a
