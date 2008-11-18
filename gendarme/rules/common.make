@@ -32,7 +32,7 @@ rules_build_sources = $(addprefix $(srcdir)/, $(rules_sources))
 rules_build_sources += $(rules_generated_sources) $(rules_static_sources)
 
 EXTRA_DIST = $(rules_sources) $(rules_sources_in) $(prefixed_rules_category).csproj
-CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules_doc) $(rules_dll).doc
+CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules_doc) $(rules_dll).doc $(tests_dll).config
 DISTCLEANFILES = Makefile.in $(prefixed_rules_category).xml TestResult.xml
 
 rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
@@ -51,6 +51,7 @@ $(tests_dll): $(tests_build_sources) $(rules_dll)
 test: $(tests_dll)
 
 run-test: test
+	cp ../../bin/gendarme.exe.config $(tests_dll).config
 	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console2 $(tests_dll)
 
 self-test: $(rules_dll)
