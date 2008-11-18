@@ -1,6 +1,6 @@
 SUBDIRS = man framework console rules swf-wizard-runner win32-setup
 bin_SCRIPTS = gendarme gendarme-wizard
-EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore gendarme.svg
+EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.mds gendarme.sln self-test.ignore gendarme.svg options.make
 
 CLEANFILES = gendarme gendarme-wizard bin/rules.xml
 
@@ -19,7 +19,7 @@ DISTCLEANFILES = \
 	COPYING \
 	missing
 
-test: all
+test: all bin/gendarme.exe.config
 	cd framework;	\
 	make test;	\
 	cd ..;		\
@@ -35,7 +35,8 @@ run-test: test
 	make run-test;	\
 	cd ..;
 
-self-test: all
+self-test: all bin/gendarme.exe.config
+	rm -f gendarme.log; \
 	cd bin;	\
 	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
 		--severity=all --confidence=all gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
@@ -47,12 +48,17 @@ test1_name := $(strip $(shell echo "$(test1_file)" | grep -oE "Gendarme\.Rules\.
 test1_namespace := $(strip $(shell echo "$(test1_name)" | sed "s/Gendarme/Test/"))
 wdir := $(shell pwd)
 
-test1:
+test1: bin/gendarme.exe.config
 	cd framework && make test
 	cd $(wdir)/rules/Test.Rules && make test
 	cd $(wdir)/rules/$(test1_name) && make test
+	rm -f $(wdir)/gendarme.log
+	cp $(wdir)/bin/gendarme.exe.config $(wdir)/rules/$(test1_name)/$(test1_namespace).dll.config
 	cd $(wdir)/rules/$(test1_name) && MONO_PATH=$(wdir)/bin/:$(wdir)/rules/Test.Rules/:$(MONO_PATH) \
 	   nunit-console2 -fixture=$(test1_namespace).$(TEST1) -nologo $(test1_namespace).dll
+
+bin/gendarme.exe.config:
+	cp console/gendarme.exe.config bin/gendarme.exe.config
 
 help:
 	@echo "The targets are:"

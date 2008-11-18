@@ -1,3 +1,8 @@
+2008-11-17  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: If bin/gendarme.exe.config does not exist copy the
+	console/gendarme.exe.config file. Add options.make to EXTRA_DIST.
+
 2008-11-15  Jesse Jones  <jesjones@mindspring.com>
 
 	* options.make: Release and debug now use -checked+.
