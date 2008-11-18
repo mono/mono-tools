@@ -1,3 +1,7 @@
+2008-11-17  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidMessageChainsRule.cs: Use Log instead of Trace.
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.Rules.Smells.csproj: Change AvoidMessageChainsRule to 

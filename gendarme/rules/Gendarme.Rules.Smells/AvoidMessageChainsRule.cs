@@ -92,9 +92,9 @@ namespace Gendarme.Rules.Smells {
 			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			Trace.WriteLine (string.Empty);
-			Trace.WriteLine ("-------------------------------------");
-			Trace.WriteLine (method.ToString ());
+			Log.WriteLine (this);
+			Log.WriteLine (this, "-------------------------------------");
+			Log.WriteLine (this, method);
 			
 			// walk back so we don't process very long chains multiple times
 			// (we don't need to go down to zero since it would not be big enough for a chain to exists)
@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Smells {
 					i = ic.IndexOf (caller);
 					caller = caller.TraceBack (method);
 				}
-				Trace.WriteLine (string.Format ("chain of length {0} at {1:X4}", counter, ins.Offset));
+				Log.WriteLine (this, "chain of length {0} at {1:X4}", counter, ins.Offset);
 
 				if (counter >= MaxChainLength) {
 					string msg = String.Format ("Chain length {0} versus maximum of {1}.", counter, MaxChainLength);
