@@ -1,3 +1,8 @@
+2008-11-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Produce gendarme.exe.config from .in file (modified
+	patch from Jesse Jones).
+
 2008-11-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Bump to 2.3

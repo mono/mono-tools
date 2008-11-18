@@ -191,6 +191,7 @@ gendarme/gendarme-wizard
 gendarme/man/Makefile
 gendarme/man/gendarme.1
 gendarme/console/Makefile
+gendarme/console/gendarme.exe.config
 gendarme/framework/Makefile
 gendarme/framework/gendarme-framework.pc
 gendarme/framework/Test/Makefile
