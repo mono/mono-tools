@@ -1,3 +1,7 @@
+2008-11-17  Jesse Jones  <jesjones@mindspring.com>
+
+	* gendarme.1.in: Document config file.
+
 2008-08-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Document --severity and --confidence options.
