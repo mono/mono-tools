@@ -1,0 +1,15 @@
+<?xml version = "1.0" encoding = "utf-8" ?>
+<configuration>
+	<system.diagnostics>
+		<trace autoflush = "true" indentsize = "4">
+			<listeners>
+				<remove name = "Default"/>
+<!--			<add name = "logger" type = "System.Diagnostics.ConsoleTraceListener"/> -->
+<!--			<add name = "logger" type = "System.Diagnostics.TextWriterTraceListener" initializeData = "@abs_top_builddir@/gendarme/gendarme.log"/> -->
+			</listeners>
+		</trace>
+		<switches>
+			<add name = "AvoidMessageChainsRule" value = "0"/>
+		</switches>
+	</system.diagnostics>
+</configuration>
