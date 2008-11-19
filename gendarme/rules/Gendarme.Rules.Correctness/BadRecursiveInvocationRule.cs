@@ -197,8 +197,9 @@ namespace Gendarme.Rules.Correctness {
 			if (!CallsNew.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			for (int i = 0; i < method.Body.Instructions.Count; i++) {
-				Instruction ins = method.Body.Instructions [i];
+			InstructionCollection instructions = method.Body.Instructions;
+			for (int i = 0; i < instructions.Count; i++) {
+				Instruction ins = instructions [i];
 
 				switch (ins.OpCode.FlowControl) {
 				case FlowControl.Call:
