@@ -118,14 +118,6 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private const string GetLastError = "System.Int32 System.Runtime.InteropServices.Marshal::GetLastWin32Error()";
-
-		static List<string> AllowedCalls = new List<string> () {
-			"System.Boolean System.Runtime.InteropServices.SafeHandle::get_IsInvalid()",
-			"System.Boolean System.IntPtr::op_Inequality(System.IntPtr,System.IntPtr)",
-			"System.Boolean System.IntPtr::op_Equality(System.IntPtr,System.IntPtr)"
-		};
-
 		List<Branch> branches = new List<Branch> ();
 
 		private bool CheckPInvoke (Instruction startInstruction)
@@ -143,21 +135,29 @@ namespace Gendarme.Rules.Interoperability {
 					//check if a method is called
 					if (ins.OpCode.FlowControl == FlowControl.Call) {
 
-						MethodDefinition mDef = ins.Operand as MethodDefinition;
+						MethodDefinition mDef = (ins.Operand as MethodReference).Resolve ();
 						if (mDef != null && mDef.IsPInvokeImpl) { //check if another pinvoke method is called, this counts as "GetLastError not called"
 							break;
 						}
-						string calledMethod = ins.Operand.ToString ();
 
-						if (calledMethod == GetLastError) {
-							getLastErrorFound = true;
+						switch (mDef.DeclaringType.FullName) {
+						case "System.Runtime.InteropServices.Marshal":
+							getLastErrorFound = (mDef.Name == "GetLastWin32Error");
 							break; //found
-						}
-
-						if (!AllowedCalls.Contains (calledMethod)) {
+						case "System.Runtime.InteropServices.SafeHandle":
+							dirty = (mDef.Name != "get_IsInvalid");
+							break;
+						case "System.IntPtr":
+						case "System.UIntPtr":
+							dirty = ((mDef.Name != "op_Inequality") && (mDef.Name != "op_Equality"));
+							break;
+						default:
 							dirty = true;
+							break;
 						}
 
+						if (getLastErrorFound)
+							break;
 					}
 
 					//fetch the next instruction
@@ -225,3 +225,4 @@ namespace Gendarme.Rules.Interoperability {
 		}
 	}
 }
+

@@ -1,3 +1,15 @@
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Avoid calling 
+	ToString on Method[Reference|Definition] since they are rebuilt
+	each time. Accept UIntPtr [in]equality operators.
+	* MarshalBooleansInPInvokeDeclarationsRule.cs: Specify 
+	StringComparison.Ordinal when calling StartsWith.
+	* UseManagedAlternativesToPInvokeRule.cs: Remove PInvokeCall struct
+	since it required an allocation (of a new struct) in order to search
+	alternatives. This is now replaced by using strings and a second
+	check later for the module and runtime version.
+
 2008-11-15  Jesse Jones  <jesjones@mindspring.com>
 
     * DoNotCastIntPtrToInt32Rule.cs: Checks for overflow convert instructions.

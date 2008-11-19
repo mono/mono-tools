@@ -69,7 +69,7 @@ namespace Gendarme.Rules.Interoperability {
 			if (spec.MarshalSpec != null)
 				return true;
 			// using StartsWith to catch references (ref)
-			return !type.FullName.StartsWith ("System.Boolean");
+			return !type.FullName.StartsWith ("System.Boolean", StringComparison.Ordinal);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

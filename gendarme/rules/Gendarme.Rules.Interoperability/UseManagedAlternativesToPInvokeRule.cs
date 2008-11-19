@@ -63,118 +63,53 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 
-	[Problem ("There is a potential managed API for the p/invoke declaration.")]
-	[Solution ("Use the suggested managed alternative to your p/invoke call and remove it's declaration.")]
+	[Problem ("There is a potential managed API for some p/invoke declaration used inside this method.")]
+	[Solution ("Use the suggested managed alternative to replace your p/invoke call and remove its declaration.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api")]
 	public class UseManagedAlternativesToPInvokeRule : Rule, IMethodRule {
 
-		private struct PInvokeCall : IEquatable<PInvokeCall> {
-
-			private string module;
-			private string method;
-
-			public PInvokeCall (string module, string methodName)
-			{
-				this.module = FormatModuleName (module);
-				method = methodName;
-			}
-
-			public string MethodName { 
-				get { return method; }
-			}
-
-			private static string FormatModuleName (string module)
-			{
-				if (string.IsNullOrEmpty (module))
-					return null;
-
-				module = module.ToLower ();
-				if (!module.EndsWith (".dll"))
-					module += ".dll";
-				return module;
-			}
-
-			public override bool Equals (object obj)
-			{
-				if (obj is PInvokeCall)
-					return (this == (PInvokeCall) obj);
-
-				return false;
-			}
-
-			public bool Equals (PInvokeCall pinvoke)
-			{
-				return (this == pinvoke);
-			}
-
-			public static bool operator == (PInvokeCall call1, PInvokeCall call2)
-			{
-				return ((call1.module == call2.module) && (call1.MethodName == call2.MethodName));
-			}
-
-			public static bool operator != (PInvokeCall call1, PInvokeCall call2)
-			{
-				return ((call1.module != call2.module) || (call1.MethodName != call2.MethodName));
-			}
-
-			public override int GetHashCode ()
-			{
-				return (module.GetHashCode () ^ MethodName.GetHashCode ());
-			}
-		}
-
 		private sealed class ManagedAlternatives {
 
-			private List<string> alternatives = new List<string> ();
-			private TargetRuntime runtime;
-
-			public ManagedAlternatives (params string [] alternatives)
+			public ManagedAlternatives (string module, string alternatives)
+				: this (module, alternatives, TargetRuntime.NET_1_1)
 			{
-				runtime = TargetRuntime.NET_1_1;
-				AddAlternatives (alternatives);
 			}
 
-			public ManagedAlternatives (TargetRuntime runtime, params string [] alternatives)
+			public ManagedAlternatives (string module, string alternatives, TargetRuntime runtime)
 			{
-				this.runtime = runtime;
-				AddAlternatives (alternatives);
+				Module = module;
+				Alternatives = alternatives;
+				Runtime = runtime;
 			}
 
-			private void AddAlternatives (IEnumerable<string> alternatives)
-			{
-				foreach (string alternative in alternatives)
-					this.alternatives.Add (alternative);
-			}
+			public string Alternatives { get; set; }
 
-			public TargetRuntime Runtime {
-				get { return runtime; }
-			}
+			public string Module { get; set; }
 
-			public override string ToString ()
-			{
-				return alternatives.Aggregate<string> ((a1, a2) => a1 + ", " + a2); // join 'em
-			}
+			public TargetRuntime Runtime { get; set; }
 		}
 
-		private static Dictionary<PInvokeCall, ManagedAlternatives> managedAlternatives =
-			new Dictionary<PInvokeCall, ManagedAlternatives> () {
-				{ new PInvokeCall ("kernel32.dll", "Sleep"), new ManagedAlternatives ("System.Threading.Thread::Sleep ()") },
-				{ new PInvokeCall ("kernel32.dll", "FindFirstFile"), new ManagedAlternatives ("System.IO.Directory::GetDirectories ()", "System.IO.Directory::GetFiles ()", "System.IO.Directory::GetFileSystemEntries ()") },
-				{ new PInvokeCall ("kernel32.dll", "ReadFile"), new ManagedAlternatives ("System.IO.FileStream") },
-				{ new PInvokeCall ("kernel32.dll", "WaitForMultipleObjects"), new ManagedAlternatives ("System.Threading.WaitHandle::WaitAny ()", "System.Threading.WaitHandle::WaitAll ()") },
-				{ new PInvokeCall ("kernel32.dll", "GetLastError"), new ManagedAlternatives ("System.Runtime.InteropServices.Marshal::GetLastWin32Error ()") },
-				{ new PInvokeCall ("user32.dll", "MessageBox"), new ManagedAlternatives ("System.Windows.Forms.MessageBox::Show ()") },
-				{ new PInvokeCall ("kernel32.dll", "Beep"), new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Console::Beep ()") },
-				{ new PInvokeCall ("winmm.dll", "PlaySound"), new ManagedAlternatives (TargetRuntime.NET_2_0, "System.Media.SoundPlayer") }
+		private static Dictionary<string, ManagedAlternatives> managedAlternatives =
+			new Dictionary<string, ManagedAlternatives> () {
+				{ "Sleep", new ManagedAlternatives ("kernel32.dll", "System.Threading.Thread::Sleep()") },
+				{ "FindFirstFile", new ManagedAlternatives ("kernel32.dll", "System.IO.Directory::GetDirectories(), System.IO.Directory::GetFiles(), System.IO.Directory::GetFileSystemEntries()") },
+				{ "ReadFile", new ManagedAlternatives ("kernel32.dll", "System.IO.FileStream") },
+				{ "WaitForMultipleObjects", new ManagedAlternatives ("kernel32.dll", "System.Threading.WaitHandle::WaitAny(), System.Threading.WaitHandle::WaitAll()") },
+				{ "GetLastError", new ManagedAlternatives ("kernel32.dll", "System.Runtime.InteropServices.Marshal::GetLastWin32Error()") },
+				{ "MessageBox", new ManagedAlternatives ("user32.dll", "System.Windows.Forms.MessageBox::Show()") },
+				{ "Beep", new ManagedAlternatives ("kernel32.dll", "System.Console::Beep()", TargetRuntime.NET_2_0) },
+				{ "PlaySound", new ManagedAlternatives ("winmm.dll", "System.Media.SoundPlayer", TargetRuntime.NET_2_0) }
 			};
 
-		private static ManagedAlternatives GetManagedAlternatives (MethodDefinition method, TargetRuntime runtime)
+		private static ManagedAlternatives GetManagedAlternatives (MethodDefinition method)
 		{
-			string moduleName = method.PInvokeInfo.Module.Name;
-			PInvokeCall callInfo = new PInvokeCall (moduleName, method.Name);
-			if (managedAlternatives.ContainsKey (callInfo)) {
-				ManagedAlternatives alts = managedAlternatives [callInfo];
-				if (runtime >= alts.Runtime)
+			ManagedAlternatives alts;
+			if (managedAlternatives.TryGetValue (method.Name, out alts)) {
+				// can we apply this alternative to the framework being used ?
+				if (method.DeclaringType.Module.Assembly.Runtime < alts.Runtime)
+					return null;
+				// make sure we're talking about the exact same (module-wise) p/invoke declaration
+				if (alts.Module.StartsWith (method.PInvokeInfo.Module.Name, StringComparison.OrdinalIgnoreCase))
 					return alts;
 			}
 			return null;
@@ -188,11 +123,12 @@ namespace Gendarme.Rules.Interoperability {
 
 			// rule apply, looks for alternatives
 
-			ManagedAlternatives alternatives = GetManagedAlternatives (method, method.DeclaringType.Module.Assembly.Runtime);
+			ManagedAlternatives alternatives = GetManagedAlternatives (method);
 			if (alternatives == null)
 				return RuleResult.Success;
 
-			string message = string.Format ("Do not perform platform-dependent call ({0}) if it can be avoided. Use (one of) the following alternative(s) provided by .NET Framework: {1}.", method.Name, alternatives);
+			string message = string.Format ("Try to replace the platform-dependent call '{0}' by (one of) the following alternative(s): {1}.",
+				method.Name, alternatives.Alternatives);
 			Runner.Report (method, Severity.Low, Confidence.High, message);
 			return RuleResult.Failure;
 		}
