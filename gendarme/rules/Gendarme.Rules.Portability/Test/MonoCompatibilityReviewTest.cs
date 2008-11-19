@@ -82,9 +82,9 @@ namespace Test.Rules.Portability {
 		public void SetUp ()
 		{
 			rule.NotImplemented.Clear ();
-			rule.NotImplemented.Add ("System.Int32 System.Object::GetHashCode()", null);
+			rule.NotImplemented.Add ("System.Int32 System.Object::GetHashCode()");
 			rule.Missing.Clear ();
-			rule.Missing.Add ("System.String System.Object::ToString()", null);
+			rule.Missing.Add ("System.String System.Object::ToString()");
 			rule.ToDo.Clear ();
 			rule.ToDo.Add ("System.Type System.Object::GetType()", "TODO");
 		}
@@ -152,7 +152,7 @@ namespace Test.Rules.Portability {
 		}
 
 		[Test]
-		[Ignore ("This test takes a few seconds.")]
+		[Ignore ("This test needs internet access and could be slow.")]
 		public void TestDefinitionDownload ()
 		{
 			DeleteDefinitionData ();
@@ -165,3 +165,4 @@ namespace Test.Rules.Portability {
 		}
 	}
 }
+
