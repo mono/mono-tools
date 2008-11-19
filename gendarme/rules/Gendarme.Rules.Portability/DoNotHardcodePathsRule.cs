@@ -230,21 +230,21 @@ namespace Gendarme.Rules.Portability {
 		void ProcessUnixProbablyAbsolutePath (string path)
 		{
 			// check for common prefixes
-			if (path.StartsWith ("/bin/") ||
-			    path.StartsWith ("/etc/") ||
-			    path.StartsWith ("/sbin/") ||
-			    path.StartsWith ("/dev/") ||
-			    path.StartsWith ("/lib/") ||
-			    path.StartsWith ("/usr/") ||
-			    path.StartsWith ("/tmp/") ||
-			    path.StartsWith ("/proc/") ||
-			    path.StartsWith ("/sys/") ||
-			    path.StartsWith ("/cdrom/") ||
-			    path.StartsWith ("/home/") ||
-			    path.StartsWith ("/media/") ||
-			    path.StartsWith ("/mnt/") ||
-			    path.StartsWith ("/opt/") ||
-			    path.StartsWith ("/var/"))
+			if (path.StartsWith ("/bin/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/etc/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/sbin/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/dev/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/lib/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/usr/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/tmp/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/proc/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/sys/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/cdrom/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/home/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/media/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/mnt/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/opt/", StringComparison.Ordinal) ||
+			    path.StartsWith ("/var/", StringComparison.Ordinal))
 
 				AddPoints (4);
 
@@ -366,16 +366,16 @@ namespace Gendarme.Rules.Portability {
 				string methodName = target.Name;
 				string typeName = target.DeclaringType.FullName;
 
-				if (typeName.StartsWith ("Microsoft.Win32.Registry") // registry keys
-				    || (typeName.StartsWith ("System.Xml") // xpath expressions
-					&& methodName.StartsWith ("Select"))) {
+				if (typeName.StartsWith ("Microsoft.Win32.Registry", StringComparison.Ordinal) // registry keys
+				    || (typeName.StartsWith ("System.Xml", StringComparison.Ordinal) // xpath expressions
+					&& methodName.StartsWith ("Select", StringComparison.Ordinal))) {
 					AddPoints (-42);
 					return true; // handled
 				}
 
 				// see what we can learn
 
-				if (target.Name.StartsWith ("set_") &&
+				if (target.Name.StartsWith ("set_", StringComparison.Ordinal) &&
 				    target.Parameters.Count == 1)
 					// to improve performance, don't Resolve ()
 					// this is a setter (in 99% cases)
