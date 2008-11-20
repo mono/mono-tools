@@ -1,3 +1,8 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NamespaceEngine.cs: Add Exists method to check the existance of
+	a namespace withint the assembly set.
+
 2008-10-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NamespaceEngine.cs: Handle null arguments for [Namespaces|Types]
