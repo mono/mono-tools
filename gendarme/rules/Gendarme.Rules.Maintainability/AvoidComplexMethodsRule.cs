@@ -132,7 +132,8 @@ namespace Gendarme.Rules.Maintainability {
 				if (FlowControl.Branch == inst.OpCode.FlowControl)
 				{
 					//detect ternary pattern
-					if (null != inst && null != inst.Previous && inst.Previous.OpCode.Name.StartsWith("ld"))
+					// FIXME: nice case to look if using a OpCodeBitmask would be faster
+					if (null != inst && null != inst.Previous && inst.Previous.OpCode.Name.StartsWith ("ld", StringComparison.Ordinal))
 						cc++;
 				}
 				if (FlowControl.Cond_Branch != inst.OpCode.FlowControl)

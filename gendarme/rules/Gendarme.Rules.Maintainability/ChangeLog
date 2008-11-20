@@ -1,3 +1,11 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsRule.cs: Specify StringComparison.Ordinal when 
+	calling String.StartsWith.
+	* AvoidUnnecessarySpecializationRule.cs: Specify StringComparison.
+	Ordinal when calling String.StartsWith. Simplify namespace matching
+	method.
+
 2008-11-10  Cedric Vivier  <cedricv@neonux.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Prettify the suggestion by
