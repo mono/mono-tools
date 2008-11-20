@@ -75,6 +75,8 @@ namespace Monodoc
 
 		public void Print (string Html) 
 		{
+			html_panel.browser.ExecuteScript ("print();");
+			return;
 		}
 
 		LoadFinishedEventHandler loadEvent;
