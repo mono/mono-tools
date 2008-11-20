@@ -90,11 +90,13 @@ namespace Gendarme.Rules.Design {
 				string how = null;
 				if (parameter.IsOut) {
 					// out is permitted for the "bool Try* (...)" pattern
-					if ((method.ReturnType.ReturnType.FullName == "System.Boolean") && method.Name.StartsWith ("Try"))
+					if ((method.ReturnType.ReturnType.FullName == "System.Boolean") && 
+						method.Name.StartsWith ("Try", StringComparison.Ordinal)) {
 						continue;
+					}
 
 					how = "out";
-				} else if (parameter.ParameterType.Name.EndsWith ("&")) {
+				} else if (parameter.ParameterType.Name.EndsWith ("&", StringComparison.Ordinal)) {
 					how = "ref";
 				}
 

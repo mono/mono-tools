@@ -113,6 +113,9 @@ namespace Gendarme.Rules.Design {
 				TypeDefinition fieldType = field.FieldType.GetOriginalType ().Resolve ();
 				if (fieldType == null)
 					continue;
+				// enums and primitives don't implement IDisposable
+				if (fieldType.IsEnum || fieldType.IsPrimitive ())
+					continue;
 				if (fieldType.Implements ("System.IDisposable")) {
 					if (abstractWarning)
 						Runner.Report (field, Severity.High, Confidence.High, AbstractTypeMessage);

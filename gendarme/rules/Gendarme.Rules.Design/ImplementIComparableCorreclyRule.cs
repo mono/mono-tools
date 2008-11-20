@@ -107,7 +107,16 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			// rule only applies if the type implements IComparable or IComparable<T>
-			if (!type.Implements ("System.IComparable") && !type.Implements ("System.IComparable`1"))
+			// Note: we do not use Implements rock because we do not want a recursive answer
+			bool icomparable = false;
+			foreach (TypeReference iface in type.Interfaces) {
+				// catch both System.IComparable and System.IComparable`1<X>
+				if (iface.FullName.StartsWith ("System.IComparable", StringComparison.Ordinal)) {
+					icomparable = true;
+					break;
+				}
+			}
+			if (!icomparable)
 				return RuleResult.DoesNotApply;
 
 			// type should override Equals(object)
@@ -138,3 +147,4 @@ namespace Gendarme.Rules.Design {
 		}
 	}
 }
+

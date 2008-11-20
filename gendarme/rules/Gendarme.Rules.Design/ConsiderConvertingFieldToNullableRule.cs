@@ -73,11 +73,6 @@ namespace Gendarme.Rules.Design {
 			};
 		}
 
-		static bool StartsWith (string start, string name)
-		{
-			return name.StartsWith (start, true, null);
-		}
-
 		static bool IsHasField (FieldReference fd, ref string prefix, ref string suffix)
 		{
 			if (fd.FieldType.FullName != "System.Boolean")
@@ -105,7 +100,7 @@ namespace Gendarme.Rules.Design {
 
 		static bool ExtractRemainder (string full, string prefix, ref string suffix)
 		{
-			if (full.Length > prefix.Length && StartsWith(prefix, full)) {
+			if ((full.Length > prefix.Length) && full.StartsWith (prefix, StringComparison.OrdinalIgnoreCase)) {
 				suffix = full.Substring(prefix.Length);
 				return true;
 			}
