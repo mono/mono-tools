@@ -26,6 +26,9 @@
 using System;
 using Mono.WebBrowser;
 using Gtk;
+using System.IO;
+using System.Text;
+using System.Collections;
 
 namespace Monodoc
 {
@@ -33,22 +36,11 @@ namespace Monodoc
 	{
 		BrowserWidget html_panel;
 		RootTree help_tree;
+		bool loaded = false;
 		
 		public MonoWebBrowserHtmlRender (RootTree help_tree)
 		{
-			
-			
 			this.help_tree = help_tree;
-			
-		}
-		
-		public void OnRealized (object sender, EventArgs e)
-		{
-		
-		}
-		
-		public void OnExposed (object sender, ExposeEventArgs e) 
-		{
 		}
 		
 		public event EventHandler OnUrl;
@@ -69,18 +61,12 @@ namespace Monodoc
 		{
 		}
 
-		//Render the HTML code given
-		public void Render (string html_code) 
-		{
-			html_panel.browser.Render (html_code);
-		}
-
-
 		// Variable that handles the info encessary for the events
 		// As every implementation of HtmlRender will have differents events
 		// we try to homogenize them with the variabel
+		string url;
 		public string Url { 
-			get {return html_panel.browser.Document.Url; } 
+			get {return url; }
 		}
 
 		public Widget HtmlPanel { 
@@ -91,10 +77,149 @@ namespace Monodoc
 		{
 		}
 
+		LoadFinishedEventHandler loadEvent;
 		public bool Initialize ()
 		{
 			html_panel = new BrowserWidget ();
+			html_panel.Realized += delegate (object sender, EventArgs e) {
+				html_panel.browser.NavigationRequested += delegate (object sender1, NavigationRequestedEventArgs e1) {
+
+					url = CheckUrl (e1.Uri);
+					// if the file is cached on disk, return
+					if (url.StartsWith ("file:///") || url.StartsWith("javascript:", StringComparison.InvariantCultureIgnoreCase))
+						return;
+
+					if (UrlClicked != null)
+						UrlClicked (this, new EventArgs());
+					e1.Cancel = true;
+				};
+				loadEvent = new LoadFinishedEventHandler (loadFinished);
+				html_panel.browser.LoadFinished += loadEvent;
+			};
+			cache_imgs = new Hashtable();
+			tmpPath = Path.Combine (Path.GetTempPath (), "monodoc");
 			return html_panel.browser.Initialized;
+		}
+
+		void loadFinished (object sender, LoadFinishedEventArgs e) {
+			loaded = true;
+			if (firstLoadPath != null)
+				html_panel.browser.Navigation.Go (firstLoadPath);
+			else if (firstLoadHtml != null)
+				html_panel.browser.Render (firstLoadHtml);
+			html_panel.browser.LoadFinished -= loadEvent;
+			firstLoadPath = null;
+			firstLoadHtml = null;
+		}
+
+		// URL like T:System.Activator are lower cased by gecko to t.;System.Activator
+		// so we revert that
+		string CheckUrl (string u)
+		{
+			if (u.IndexOf (':') == 1)
+				return Char.ToUpper (u[0]) + u.Substring (1);
+			return u;
+		}
+
+		static int tmp_file = 0;
+		string tmpPath;
+		Hashtable cache_imgs;
+		string firstLoadHtml = null;
+		string firstLoadPath = null;
+		public void Render (string html_code)
+		{
+			string r = ProcessImages (html_code);
+			// if the html code is too big, write it down to a tmp file
+			if (((uint) r.Length) > 50000) {
+				string filename = (tmp_file++) + ".html";
+				string filepath = Path.Combine (tmpPath, filename);
+				using (FileStream file = new FileStream (filepath, FileMode.Create)) {
+					StreamWriter sw = new StreamWriter (file);
+					sw.Write (r);
+					sw.Close ();
+				}
+				if (loaded)
+					html_panel.browser.Navigation.Go (filepath);
+				else
+					firstLoadPath = filepath;
+			} else {
+				if (loaded)
+					html_panel.browser.Render (r);
+				else
+					firstLoadHtml = r;
+			}
+
+		}
+
+		// Substitute the src of the images with the appropriate path
+		string ProcessImages (string html_code)
+		{
+			//If there are no Images return fast
+			int pos = html_code.IndexOf ("<img", 0, html_code.Length);
+			if (pos == -1)
+				return html_code;
+
+			StringBuilder html = new StringBuilder ();
+			html.Append (html_code.Substring (0, pos));
+			int srcIni, srcEnd;
+			string Img;
+			Stream s;
+			string path, img_name;
+
+			while (pos != -1) {
+
+				//look for the src of the img
+				srcIni = html_code.IndexOf ("src=\"", pos);
+				srcEnd = html_code.IndexOf ("\"", srcIni+6);
+				Img = html_code.Substring (srcIni+5, srcEnd-srcIni-5);
+
+				path = "NO_IMG";
+				//is the img cached?
+				if (cache_imgs.Contains(Img)) {
+					path = (string) cache_imgs[Img];
+				} else {
+					//obtain the stream from the compressed sources
+					s = help_tree.GetImage (Img);
+					if (s == null) {
+						s = help_tree.GetImage (Img.Substring (Img.LastIndexOf ("/") + 1));
+					}
+					if (s != null) {
+						//write the file to a tmp directory
+						img_name = Img.Substring (Img.LastIndexOf (":")+1);
+						path = Path.Combine (tmpPath, img_name);
+						Directory.CreateDirectory (Path.GetDirectoryName (path));
+						FileStream file = new FileStream (path, FileMode.Create);
+						byte[] buffer = new byte [8192];
+						int n;
+
+						while ((n = s.Read (buffer, 0, 8192)) != 0)
+						        file.Write (buffer, 0, n);
+						file.Flush();
+						file.Close();
+						//Add the image to the cache
+						cache_imgs[Img] = path;
+					}
+				}
+				//Add the html code from <img until src="
+				html.Append (html_code.Substring (pos, srcIni + 5 - pos));
+				//Add the Image path
+				html.Append (path);
+				//Look for the next image
+				pos = html_code.IndexOf ("<img", srcIni);
+
+				if (pos == -1)
+					//Add the rest of the file
+					html.Append (html_code.Substring (srcEnd));
+				else
+					//Add from " to the next <img
+					html.Append (html_code.Substring (srcEnd, pos - srcEnd)); //check this
+			}
+
+			foreach (string cached in cache_imgs.Keys) {
+				html.Replace ("\"" + cached + "\"", "\"" + (string)cache_imgs[cached] + "\"");
+			}
+
+			return html.ToString();
 		}
 
 		public Capabilities Capabilities

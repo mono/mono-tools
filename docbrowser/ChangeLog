@@ -1,3 +1,9 @@
+2008-11-20  Andreia Gaita <shana@jitted.com>
+
+       * browser.cs: Update usage
+       * MonoWebBrowserHtmlRender.cs: Fix click handling, first load, image loading
+       [Backported, r118613]
+
 2008-10-28  Mike Kestner  <mkestner@novell.com>
 
 	* docbrowser/Makefile.am: make admin.exe build conditional on GTKHTML.
