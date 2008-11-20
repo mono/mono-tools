@@ -117,7 +117,7 @@ namespace Gendarme.Rules.Naming {
 			string name = method.Parameters [0].ParameterType.Name;
 
 			//param is out/ref, it is already not obvious (there is a rule for that)
-			if (method.Parameters [0].IsOut || name.EndsWith ("&"))
+			if (method.Parameters [0].IsOut || name.EndsWith ("&", StringComparison.Ordinal))
 				return RuleResult.DoesNotApply;
 
 			if (name.Length == 1 || method.Name.Length <= name.Length)
@@ -131,7 +131,8 @@ namespace Gendarme.Rules.Naming {
 			if (method.ReturnType.ReturnType == method.Parameters [0].ParameterType)
 				return RuleResult.Success;
 
-			if (method.Name.StartsWith (name)) //if starting with name it is most likely on purpose
+			//if starting with name it is most likely on purpose
+			if (method.Name.StartsWith (name, StringComparison.Ordinal))
 				return RuleResult.Success;
 
 			int pos = method.Name.LastIndexOf (name);
@@ -167,11 +168,11 @@ namespace Gendarme.Rules.Naming {
 		private static string GetSuggestionMethodName (MethodReference method, string name, int posFound)
 		{
 			string suggestion = string.Concat (method.Name.Substring (0, posFound), method.Name.Substring (posFound + name.Length));
-			if (suggestion.EndsWith ("In"))
+			if (suggestion.EndsWith ("In", StringComparison.Ordinal))
 				return suggestion.Substring (0, suggestion.Length - 2);
-			if (suggestion.EndsWith ("For"))
+			if (suggestion.EndsWith ("For", StringComparison.Ordinal))
 				return suggestion.Substring (0, suggestion.Length - 3);
-			if (suggestion.EndsWith ("From") || suggestion.EndsWith ("With"))
+			if (suggestion.EndsWith ("From", StringComparison.Ordinal) || suggestion.EndsWith ("With", StringComparison.Ordinal))
 				return suggestion.Substring (0, suggestion.Length - 4);
 			return suggestion;
 		}
@@ -185,25 +186,19 @@ namespace Gendarme.Rules.Naming {
 
 		private static bool IsVaguePrefix (string name)
 		{
-			if (name.StartsWith ("Get"))
+			if (name.StartsWith ("Get", StringComparison.Ordinal))
 				return true;
-			if (name.StartsWith ("Set"))
+			if (name.StartsWith ("Set", StringComparison.Ordinal))
 				return true;
-			if (name.StartsWith ("Is"))
+			if (name.StartsWith ("Is", StringComparison.Ordinal))
 				return true;
 			return false;
 		}
 
 		static private bool IsTypeFromAlienNamespace (TypeReference type)
 		{
-			foreach (string ns in NamespaceEngine.AllNamespaces ()) {
-				if (ns == type.Namespace)
-					return false;
-			}
-			return true;
+			return !NamespaceEngine.Exists (type.Namespace);
 		}
-
 	}
-
 }
 

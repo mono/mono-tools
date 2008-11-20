@@ -1,12 +1,26 @@
+2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRedundancyInMethodNameRule.cs: Specify StringComparison.Ordinal
+	when calling String.[Start|End]sWith. Use the new Exists method
+	from NamespaceEngine.
+	* AvoidRedundancyInTypeNameRule.cs: Specify StringComparison.Ordinal
+	when calling String.[Start|End]sWith.
+	* DoNotPrefixEventsWithAfterOrBeforeRule.cs: Specify 
+	StringComparison.Ordinal when calling String.StartsWith.
+	* DoNotUseReservedInEnumValueNamesRule.cs: Specify StringComparison.
+	Ordinal when calling String.IndexOf.
+	* UseCorrectSuffixRule.cs: Specify StringComparison.Ordinal when 
+	calling String.EndsWith.
+
 2008-11-15  Jesse Jones  <jesjones@mindspring.com>
 
-    * AvoidDeepNamespaceHierarchyRule.cs: Fixed so unit test works with
-    checked math.
+	* AvoidDeepNamespaceHierarchyRule.cs: Fixed so unit test works with
+	checked math.
 
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 
-    * ParameterNamesShouldMatchOverridenMethodRule.cs: Do not issue false positives
-    on macro-generated boo code.
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: Do not issue 
+	false positives on macro-generated boo code.
 
 2008-11-08  Cedric Vivier  <cedricv@neonux.com>
 

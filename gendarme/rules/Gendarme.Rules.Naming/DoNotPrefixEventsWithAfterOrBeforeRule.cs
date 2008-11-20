@@ -74,8 +74,10 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.Success;
 
 			foreach (EventDefinition evnt in type.Events) {
-				if (evnt.Name.StartsWith ("After") || evnt.Name.StartsWith ("Before"))
+				if (evnt.Name.StartsWith ("After", StringComparison.Ordinal) || 
+					evnt.Name.StartsWith ("Before", StringComparison.Ordinal)) {
 					Runner.Report (evnt, Severity.Medium, Confidence.Total);
+				}
 			}
 
 			return Runner.CurrentRuleResult;
