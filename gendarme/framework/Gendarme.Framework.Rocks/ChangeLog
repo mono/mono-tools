@@ -1,3 +1,10 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocks.cs: Make GetMethod smarter and check only the methods
+	or the constructors when possible. Split Implements in two parts
+	to remove some checks when recursion is needed. Also avoid recursion
+	for checking the base types. Add IsPrimitive rock.
+
 2008-11-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ModuleRocks.cs: Change the catch-all for a catch(FormatException)

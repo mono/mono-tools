@@ -31,6 +31,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using Mono.Cecil;
@@ -123,9 +124,31 @@ namespace Gendarme.Framework.Rocks {
 		/// </remarks>
 		public static MethodDefinition GetMethod (this TypeReference self, MethodSignature signature)
 		{
-			foreach (MethodDefinition method in self.AllMethods ()) {
-				if (signature.Matches (method))
-					return method;
+			bool ctors, methods;
+			// method name is optional so we must look in everything
+			if (String.IsNullOrEmpty (signature.Name)) {
+				ctors = true;
+				methods = true;
+			} else {
+				ctors = (signature.Name [0] == '.');
+				methods = !ctors;
+			}
+			
+			TypeDefinition type = self.Resolve ();
+			if (type == null)
+				return null;
+
+			if (ctors) {
+				foreach (MethodDefinition ctor in type.Constructors) {
+					if (signature.Matches (ctor))
+						return ctor;
+				}
+			}
+			if (methods) {
+				foreach (MethodDefinition method in type.Methods) {
+					if (signature.Matches (method))
+						return method;
+				}
 			}
 			return null;
 		}
@@ -244,43 +267,44 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if the type implemented a specified interface. Note that it is possible that
-		/// we might now be able to know all implementations since the assembly where 
-		/// the information resides could be unavailable.
+		/// Recursively check if the type implemented a specified interface. Note that it is possible
+		/// that we might now be able to know everything that a type implements since the assembly 
+		/// where the information resides could be unavailable. False is returned in this case.
 		/// </summary>
 		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
 		/// <param name="interfaceName">Full name of the interface</param>
-		/// <returns>True if the type implements the interface, False otherwise.</returns>
+		/// <returns>True if we found that the type implements the interface, False otherwise (either it
+		/// does not implement it, or we could not find where it does).</returns>
 		public static bool Implements (this TypeReference self, string interfaceName)
 		{
 			if (interfaceName == null)
 				throw new ArgumentNullException ("interfaceName");
 
-			bool generic = (interfaceName.IndexOf ('`') >= 0);
-
 			TypeDefinition type = self.Resolve ();
 			if (type == null)
-				return false;		// could not resolve
+				return false;	// not enough information available
 
 			// special case, check if we implement ourselves
 			if (type.IsInterface && (type.FullName == interfaceName))
 				return true;
 
-			// does the type implements it itself
-			foreach (TypeReference iface in type.Interfaces) {
-				string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
-				if (fullname == interfaceName)
-					return true;
-				//if not, then maybe one of its parent interfaces does
-				if (iface.Implements (interfaceName))
-					return true;
+			return Implements (type, interfaceName, (interfaceName.IndexOf ('`') >= 0));
+		}
+
+		private static bool Implements (TypeDefinition type, string interfaceName, bool generic)
+		{
+			while (type != null) {
+				// does the type implements it itself
+				foreach (TypeReference iface in type.Interfaces) {
+					string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
+					if (fullname == interfaceName)
+						return true;
+					//if not, then maybe one of its parent interfaces does
+					if (Implements (iface.Resolve (), interfaceName, generic))
+						return true;
+				}
+				type = type.BaseType.Resolve ();
 			}
-
-			// if not, then maybe it's parent does
-			TypeReference parent = type.BaseType;
-			if (parent != null)
-				return parent.Implements (interfaceName);
-
 			return false;
 		}
 
@@ -417,6 +441,37 @@ namespace Gendarme.Framework.Rocks {
 			case "System.IntPtr":
 			case "System.UIntPtr":
 			case "System.Runtime.InteropServices.HandleRef":
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		/// <summary>
+		/// Check if the type refers to a primitive type.
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <returns>True if the type is a primitive type, False otherwise</returns>
+		public static bool IsPrimitive (this TypeReference self)
+		{
+			if ((self == null) || (self.Namespace != "System"))
+				return false;
+
+			switch (self.Name) {
+			case "Byte":
+			case "SByte":
+			case "Boolean":
+			case "Int16":
+			case "UInt16":
+			case "Char":
+			case "Int32":
+			case "UInt32":
+			case "Single":
+			case "Int64":
+			case "UInt64":
+			case "Double":
+			case "IntPtr":
+			case "UIntPtr":
 				return true;
 			default:
 				return false;
