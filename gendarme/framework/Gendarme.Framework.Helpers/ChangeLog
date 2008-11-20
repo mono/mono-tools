@@ -1,3 +1,8 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Namespace.cs: Specify StringComparison.Ordinal when calling
+	String.StartsWith.
+
 2008-11-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* Log.cs: Added.
