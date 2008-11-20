@@ -93,6 +93,11 @@ namespace Monodoc
 						UrlClicked (this, new EventArgs());
 					e1.Cancel = true;
 				};
+				html_panel.browser.StatusChanged += delegate (object sender1, StatusChangedEventArgs e1) {
+					url = e1.Message;
+					if (OnUrl != null)
+						OnUrl (this, new EventArgs ());
+				};
 				loadEvent = new LoadFinishedEventHandler (loadFinished);
 				html_panel.browser.LoadFinished += loadEvent;
 			};
