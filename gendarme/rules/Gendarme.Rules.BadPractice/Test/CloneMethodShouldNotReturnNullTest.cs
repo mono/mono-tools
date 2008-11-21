@@ -36,7 +36,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
-	public class CloneMethodShouldNotReturnNullTest : TypeRuleTestFixture<CloneMethodShouldNotReturnNullRule> {
+	public class CloneMethodShouldNotReturnNullTest : MethodRuleTestFixture<CloneMethodShouldNotReturnNullRule> {
 
 		abstract class CloneAbstract : ICloneable {
 			public abstract object Clone ();
@@ -58,7 +58,7 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void CloneMethodReturningNullTest ()
 		{
-			AssertRuleFailure<CloneMethodReturningNull> (1);
+			AssertRuleFailure<CloneMethodReturningNull> ("Clone", 1);
 		}
 
 		public class CloneMethodNotReturningNull: ICloneable
@@ -87,7 +87,7 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void NotUsingICloneableCloneTest ()
 		{
-			AssertRuleDoesNotApply<NotUsingICloneableClone> ();
+			AssertRuleDoesNotApply<NotUsingICloneableClone> ("Clone");
 		}
 
 		public class CloneWithDifferentArgsReturningNull: ICloneable
@@ -106,7 +106,7 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void cloneWithDifferentArgsReturningNullTest ()
 		{
-			// no LDNULL
+			// no LDNULL in Clone() and wrong signature for Clone(int)
 			AssertRuleDoesNotApply<CloneWithDifferentArgsReturningNull> ();
 		}
 
@@ -132,7 +132,8 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void CloneReturningNullInSomeConditionsTest ()
 		{
-			AssertRuleFailure<CloneReturningNullInSomeConditions> (1);
+			AssertRuleFailure<CloneReturningNullInSomeConditions> ("Clone", 1);
 		}
 	}
 }
+
