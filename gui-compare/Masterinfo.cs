@@ -353,7 +353,7 @@ using System.Xml;
 		string layout;
 		public XMLAttributes attributes;
 		public XMLInterfaces interfaces;
-		XMLGenericTypeConstraints genericConstraints;
+		XMLGenericParameters genericParameters;
 		public XMLFields fields;
 		public XMLConstructors constructors;
 		public XMLProperties properties;
@@ -407,9 +407,9 @@ using System.Xml;
 				child = child.NextSibling;
 			}
 
-			if (child != null && child.Name == "generic-type-constraints") {
-				genericConstraints = new XMLGenericTypeConstraints ();
-				genericConstraints.LoadData (child);
+			if (child != null && child.Name == "generic-parameters") {
+				genericParameters = new XMLGenericParameters ();
+				genericParameters.LoadData (child);
 				child = child.NextSibling;
 			}
 
@@ -700,35 +700,39 @@ using System.Xml;
 		}
 	}
 
-	public abstract class XMLGenericGroup : XMLNameGroup
+	public class XMLGenericParameters : XMLNameGroup
 	{
 		string attributes;
+		XMLGenericParameterConstraints constraints;
+
+		public override string GroupName {
+			get { return "generic-parameters"; }
+		}
+
+		public override string Name {
+			get { return "generic-parameters"; }
+		}
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
-			attributes = ((XmlElement) node).GetAttribute ("generic-attribute");
+			attributes = ((XmlElement) node).GetAttribute ("attributes");
+
+			var child = node.FirstChild;
+			if (child != null && child.Name == "generic-parameter-constraints") {
+				constraints = new XMLGenericParameterConstraints ();
+				constraints.LoadData (child);
+			}
 		}
 	}
 
-	public class XMLGenericTypeConstraints : XMLGenericGroup
+	public class XMLGenericParameterConstraints : XMLNameGroup
 	{
 		public override string GroupName {
-			get { return "generic-type-constraints"; }
+			get { return "generic-parameter-constraints"; }
 		}
 
 		public override string Name {
-			get { return "generic-type-constraint"; }
-		}
-	}
-
-	public class XMLGenericMethodConstraints : XMLGenericGroup
-	{
-		public override string GroupName {
-			get { return "generic-method-constraints"; }
-		}
-
-		public override string Name {
-			get { return "generic-method-constraint"; }
+			get { return "generic-parameter-constraint"; }
 		}
 	}
 
@@ -925,7 +929,7 @@ using System.Xml;
 	{
 		public Hashtable returnTypes;
 		public Hashtable parameters;
-		public Hashtable genericConstraints;
+		public Hashtable genericParameters;
 		public Hashtable signatureFlags;
 
 		[Flags]
@@ -974,13 +978,14 @@ using System.Xml;
 				parameters[name] = parms;
 			}
 
-			XmlNode genericNode = node.SelectSingleNode ("generic-method-constraints");
+			XmlNode genericNode = node.SelectSingleNode ("generic-parameters");
 			if (genericNode != null) {
-				if (genericConstraints == null)
-					genericConstraints = new Hashtable ();
-				XMLGenericMethodConstraints csts = new XMLGenericMethodConstraints ();
-				csts.LoadData (genericNode);
-				genericConstraints [name] = csts;
+				if (genericParameters == null)
+					genericParameters = new Hashtable ();
+
+				XMLGenericParameters gparams = new XMLGenericParameters ();
+				gparams.LoadData (genericNode);
+				genericParameters [name] = gparams;
 			}
 
 			base.LoadExtraData (name, node);

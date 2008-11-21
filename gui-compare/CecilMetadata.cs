@@ -11,23 +11,41 @@ using Gtk;
 namespace GuiCompare {
 
 	static class CecilUtils {
-		public static string PrettyType (string type)
+
+		public static string PrettyType (TypeReference type)
 		{
-			/* handle prefixes first, like nullable types, recursively */
-			if (type.StartsWith ("System.Nullable`1<")) {
-				return String.Concat (PrettyType (type.Substring (18, type.Length - 19)), "?");
+			var gen_instance = type as GenericInstanceType;
+			if (gen_instance != null) {
+				if (gen_instance.ElementType.FullName == "System.Nullable`1")
+					return PrettyType (gen_instance.GenericArguments [0]) + "?";
+
+				var signature = new StringBuilder ();
+				signature.Append (PrettyType (gen_instance.ElementType));
+				signature.Append ("<");
+				for (int i = 0; i < gen_instance.GenericArguments.Count; i++) {
+					if (i > 0)
+						signature.Append (",");
+
+					signature.Append (PrettyType (gen_instance.GenericArguments [i]));
+				}
+				signature.Append (">");
+
+				return signature.ToString ();
 			}
 
-			/* then handle suffixes, recursively */
-			if (type.EndsWith ("[]"))
-				return String.Concat (PrettyType (type.Substring (0, type.Length - 2)), "[]");
-			else if (type.EndsWith ("*"))
-				return String.Concat (PrettyType (type.Substring (0, type.Length - 1)), "*");
-			else if (type.EndsWith ("&"))
-				return String.Concat (PrettyType (type.Substring (0, type.Length - 1)), "&");
+			var array = type as ArrayType;
+			if (array != null)
+				return PrettyType (array.ElementType) + "[]";
 
-			/* handle the system types we know about */
-			switch (type) {
+			var reference = type as ReferenceType;
+			if (reference != null)
+				return PrettyType (reference.ElementType) + "&";
+
+			var pointer = type as PointerType;
+			if (pointer != null)
+				return PrettyType (pointer.ElementType) + "*";
+
+			switch (type.FullName) {
 			case "System.Boolean": return "bool";
 			case "System.Byte": return "byte";
 			case "System.Char": return "char";
@@ -46,8 +64,7 @@ namespace GuiCompare {
 			case "System.Void": return "void";
 			}
 
-			/* for other types, just return the type name */
-			return type.Substring (type.LastIndexOf ('.')+1);
+			return type.Name;
 		}
 		
 		// the corcompare xml output uses a different formatting than Cecil.
@@ -61,12 +78,11 @@ namespace GuiCompare {
 		//
 		// so let's just convert everything to corcompare's way of thinking for comparisons.
 		//
-		public static string FormatTypeLikeCorCompare (string type)
+		public static string FormatTypeLikeCorCompare (TypeReference type)
 		{
-			string rv = type.Replace ('/', '+');
-			rv = rv.Replace ('<', '[');
-			rv = rv.Replace ('>', ']');
-			return rv;
+			return type.FullName.Replace ('/', '+')
+				.Replace ('<', '[')
+				.Replace ('>', ']');
 		}
 
 		static bool IsExplicitInterfaceImplementation (MethodDefinition md)
@@ -393,7 +409,7 @@ namespace GuiCompare {
 
 	public class CecilInterface : CompInterface {		
 		public CecilInterface (TypeDefinition type_def)
-			: base (CecilUtils.FormatTypeLikeCorCompare (type_def.Name))
+			: base (type_def.Name)
 		{
 			this.type_def = type_def;
 			
@@ -416,7 +432,7 @@ namespace GuiCompare {
 		}
 		
 		public CecilInterface (TypeReference type_ref)
-			: base (CecilUtils.FormatTypeLikeCorCompare (type_ref.FullName))
+			: base (CecilUtils.FormatTypeLikeCorCompare (type_ref))
 		{
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
@@ -430,7 +446,7 @@ namespace GuiCompare {
 
 		public override string GetBaseType ()
 		{
-			return (type_def == null || type_def.BaseType == null) ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+			return (type_def == null || type_def.BaseType == null) ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 		
 		public override List<CompNamed> GetInterfaces ()
@@ -487,7 +503,7 @@ namespace GuiCompare {
 
 		public override string GetBaseType ()
 		{
-			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 		
 		TypeDefinition type_def;
@@ -514,7 +530,7 @@ namespace GuiCompare {
 
 		public override string GetBaseType ()
 		{
-			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 
  		public override List<CompNamed> GetFields()
@@ -571,7 +587,7 @@ namespace GuiCompare {
 
 		public override string GetBaseType ()
 		{
-			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType.FullName);
+			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 
 		public override List<CompNamed> GetInterfaces ()
@@ -660,7 +676,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType ()
 		{
-			return CecilUtils.FormatTypeLikeCorCompare (field_def.FieldType.FullName);
+			return CecilUtils.FormatTypeLikeCorCompare (field_def.FieldType);
 		}
 		
 		const FieldAttributes masterInfoFieldMask = (FieldAttributes.FieldAccessMask | 
@@ -711,7 +727,7 @@ namespace GuiCompare {
 			if (method_def.IsConstructor)
 				return null;
 			
-			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName);
+			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType);
 		}
 
 		public override bool ThrowsNotImplementedException ()
@@ -758,8 +774,8 @@ namespace GuiCompare {
 			StringBuilder sb = new StringBuilder ();
 			if (!method_def.IsConstructor)
 				sb.Append (beautify
-				           ? CecilUtils.PrettyType (method_def.ReturnType.ReturnType.FullName)
-				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType.FullName));
+				           ? CecilUtils.PrettyType (method_def.ReturnType.ReturnType)
+				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType));
 			sb.Append (" ");
 			if (beautify) {
 				if (method_def.IsSpecialName && method_def.Name.StartsWith ("op_")) {
@@ -813,8 +829,8 @@ namespace GuiCompare {
 				else if (p.IsOut)
 					sb.Append ("out ");
 				sb.Append (beautify
-				           ? CecilUtils.PrettyType (p.ParameterType.FullName)
-				           : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
+				           ? CecilUtils.PrettyType (p.ParameterType)
+				           : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType));
 				if (beautify) {
 					sb.Append (" ");
 					sb.Append (p.Name);
@@ -841,7 +857,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType()
 		{
-			return CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName);
+			return CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType);
 		}
 		
 		public override string GetMemberAccess()
@@ -872,12 +888,12 @@ namespace GuiCompare {
 
 #if INCLUDE_TYPE_IN_PROPERTY_DISPLAYNAME
 			sb.Append (beautify
-				           ? CecilUtils.PrettyType (pd.PropertyType.FullName)
-				           : CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName));
+				           ? CecilUtils.PrettyType (pd.PropertyType)
+				           : CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType));
 			sb.Append (" ");
 #else
 			if (!beautify) {
-				sb.Append (CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType.FullName));
+				sb.Append (CecilUtils.FormatTypeLikeCorCompare (pd.PropertyType));
 				sb.Append (" ");
 			}
 #endif
@@ -891,8 +907,8 @@ namespace GuiCompare {
 						sb.Append (", ");
 					first_p = false;
 					sb.Append (beautify
-						   ? CecilUtils.PrettyType (p.ParameterType.FullName)
-						   : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType.FullName));
+						   ? CecilUtils.PrettyType (p.ParameterType)
+						   : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType));
 					if (beautify) {
 						sb.Append (" ");
 						sb.Append (p.Name);
@@ -919,7 +935,7 @@ namespace GuiCompare {
 
 		public override string GetMemberType()
 		{
-			return CecilUtils.FormatTypeLikeCorCompare (ed.EventType.FullName);
+			return CecilUtils.FormatTypeLikeCorCompare (ed.EventType);
 		}
 		
 		public override string GetMemberAccess()

@@ -137,19 +137,8 @@ namespace GuiCompare
 			//"UIAutomationTypes",
 			//"WindowsFormsIntegration",	
 		};
-		
-		string [] api_sl11 = {
-			"mscorlib",
-			"System.Windows.dll",
-			"Microsoft.VisualBasic",
-			"System",
-			"System.Core",
-			"System.Net",
-			"System.Windows.Browser",
-			"System.Xml.Core",
-		};
 
-		string [] api_sl2_beta = {
+		string [] api_sl2 = {
 			"mscorlib",
 			"System.Windows",
 			"Microsoft.VisualBasic",
@@ -210,107 +199,6 @@ namespace GuiCompare
 			// "System.Management.Instrumentation",
 			"System.Messaging",
 		};
-
-		string [] api_3_5_sp1 = {
-			"mscorlib",
-			"System",
-			"System.AddIn",
-			"System.AddIn.Contract",
-			"System.Configuration",
-			"System.Core", 
-			// "System.Configuration.Install",
-			"System.Data",
-			"System.Data.Linq",
-			"System.Data.OracleClient",
-			"System.DirectoryServices",
-			// "System.DirectoryServices.AccountManagement",
-			// "System.DirectoryServices.Protocols",
-			"System.Drawing",
-			"System.Net",
-			"System.Runtime.Remoting",
-			"System.Security",
-			"System.ServiceProcess",
-			"System.Transactions",
-			"System.Web",
-			"System.Web.Extensions",
-			// "System.Web.Extensions.Design",
-			// "System.Web.Mobile",
-			// "System.Web.RegularExpressions",
-			//
-			"System.Web.Services",
-			"System.Windows.Forms",
-			"System.Xml",
-			"System.Xml.Linq",
-			"",
-			"System.Runtime.Serialization.Formatters.Soap",
-			"cscompmgd",
-			"Microsoft.VisualBasic",
-			"",
-			"Microsoft.Build.Engine",
-			"Microsoft.Build.Framework",
-			"Microsoft.Build.Tasks",
-			"Microsoft.Build.Utilities",
-			"",
-			"System.Configuration.Install",
-			"System.Design",
-			"System.Drawing.Design",
-			"System.EnterpriseServices",
-			"System.Management",
-			// "System.Management.Instrumentation",
-			"System.Messaging",
-		};
-		
-		string [] api_3_5_wxf = {			
-			"PresentationCore",
-			"PresentationFramework",
-			"System.Speech",
-			"WindowsBase",
-			"",
-			"System.IdentityModel",
-			"System.IdentityModel.Selectors",
-			"System.IO.Log",
-			"System.Runtime.Serialization",
-			"System.ServiceModel",
-			"",
-			"System.Workflow.Activities",
-			"System.Workflow.ComponentModel",
-			"System.Workflow.Runtime",
-			"",
-			"PresentationBuildTasks",
-			"",
-			"PresentationFramework.Aero",
-			"PresentationFramework.Classic",
-			"PresentationFramework.Luna",
-			"PresentationFramework.Royale",
-			"ReachFramework",
-			"System.Printing",
-		};
-
-		string [] api_3_5_wxf_sp1 = {			
-			"PresentationCore",
-			"PresentationFramework",
-			"System.Speech",
-			"WindowsBase",
-			"",
-			"System.IdentityModel",
-			"System.IdentityModel.Selectors",
-			"System.IO.Log",
-			"System.Runtime.Serialization",
-			"System.ServiceModel",
-			"",
-			"System.Workflow.Activities",
-			"System.Workflow.ComponentModel",
-			"System.Workflow.Runtime",
-			"",
-			"PresentationBuildTasks",
-			"",
-			"PresentationFramework.Aero",
-			"PresentationFramework.Classic",
-			"PresentationFramework.Luna",
-			"PresentationFramework.Royale",
-			"ReachFramework",
-			"System.Printing",
-		};
 		
 		public static void Init ()
 		{
@@ -343,34 +231,25 @@ namespace GuiCompare
 
 			switch (prof){
 			case "1.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-1.1.tar.gz");
+				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-1.1.tar.gz");
 				break;
 				
 			case "2.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-2.0.tar.gz");
+				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-2.0.tar.gz");
 				break;
 				
 			case "3.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-3.0.tar.gz");
-				break;
-				
-			case "2.1":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl11a-refresh.tar.gz");
-				break;
-
-			case "SL2":
-				//u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl2b1.tar.gz");
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-sl2b2.tar.gz");
+				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-3.0.tar.gz");
 				break;
 				
 			case "3.5":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-3.5.tar.gz");
+				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-3.5.tar.gz");
 				break;
-
-			case "3.5sp1":
-				u = new Uri ("http://mono.ximian.com/masterinfos/masterinfos-3.5-sp1.tar.gz");
+			
+			case "SL2":
+				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-SL2.tar.gz");
 				break;
-				
+			
 			default:
 				main.Status = "Profile is unknown";
 				return;
@@ -642,20 +521,10 @@ namespace GuiCompare
 			sub.Add (separator);
 			
 			Populate (sub, "API 1.1", "1.0", "1.0", api_1_1);
-			Populate (sub, "API 2.0", "2.0", "2.0", api_2_0);
-			Populate (sub, "API 3.5-SP1 Core", "2.0", "3.5sp1", api_3_5_sp1);
-			Populate (sub, "API 3.5-SP1 WxF", "3.0", "3.5sp1", api_3_5_wxf_sp1);
-			Populate (sub, "Silverlight 2.0 (Beta 2)", "2.1", "SL2", api_sl2_beta);
-
-			separator = new SeparatorMenuItem ();
-			separator.ShowAll ();
-			sub.Add (separator);
-			
-			
-			Populate (sub, "API 3.0 (Original WxF only)", "3.0", "3.0", api_3_0);
-			Populate (sub, "API 3.5 Core", "2.0", "3.5", api_3_5);
-			Populate (sub, "API 3.5 WxF", "3.0", "3.5", api_3_5_wxf);
-			Populate (sub, "Silverlight 1.1 (Deprecated)", "2.1", "2.1", api_sl11);
+			Populate (sub, "API 2.0 sp1", "2.0", "2.0", api_2_0);
+			Populate (sub, "API 3.0 sp1", "3.0", "3.0", api_3_0);
+			Populate (sub, "API 3.5 sp1", "2.0", "3.5", api_3_5);
+			Populate (sub, "Silverlight 2.0", "2.1", "SL2", api_sl2);
 		}
 	}
 }

@@ -19,8 +19,8 @@ namespace GuiCompare {
 
 				XMLParameters parameters = (methods.parameters == null ? null
 				                            : (XMLParameters)methods.parameters[key]);
-				XMLGenericMethodConstraints genericConstraints = (methods.genericConstraints == null ? null
-				                                                  : (XMLGenericMethodConstraints)methods.genericConstraints[key]);
+				XMLGenericParameters genericParameters = (methods.genericParameters == null ? null
+				                                                  : (XMLGenericParameters)methods.genericParameters[key]);
 				XMLAttributes attributes = (methods.attributeMap == null ? null
 				                            : (XMLAttributes)methods.attributeMap[key]);
 				string returnType = (methods.returnTypes == null ? null
@@ -29,7 +29,7 @@ namespace GuiCompare {
 				                                   signatureFlags,
 				                                   returnType,
 				                                   parameters,
-				                                   genericConstraints,
+				                                   genericParameters,
 				                                   methods.ConvertToString (Int32.Parse ((string)methods.access[key])),
 				                                   attributes));
 			}
@@ -620,7 +620,7 @@ namespace GuiCompare {
 		                     XMLMethods.SignatureFlags signatureFlags,
 		                     string returnType,
 		                     XMLParameters parameters,
-		                     XMLGenericMethodConstraints genericConstraints,
+		                     XMLGenericParameters genericParameters,
 		                     string methodAccess,
 		                     XMLAttributes attributes)
 			: base (String.Format ("{0} {1}", returnType, name))
@@ -628,7 +628,7 @@ namespace GuiCompare {
 			this.signatureFlags = signatureFlags;
 			this.returnType = returnType;
 			this.parameters = parameters;
-			this.genericConstraints = genericConstraints;
+			this.genericParameters = genericParameters;
 			// we don't care about the Assembly (internal) part
 			this.methodAccess = methodAccess.Replace ("FamORAssem", "Family");
 			this.attributes = attributes;
@@ -657,7 +657,7 @@ namespace GuiCompare {
 		XMLMethods.SignatureFlags signatureFlags;
 		string returnType;
 		XMLParameters parameters;
-		XMLGenericMethodConstraints genericConstraints;
+		XMLGenericParameters genericParameters;
 		string methodAccess;
 		XMLAttributes attributes;
 	}
