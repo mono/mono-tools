@@ -1,3 +1,8 @@
+2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Clear every bits from severity and confidence bitmasks
+	otherwise all defects will be part of the results.
+
 2008-11-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme-wizard.desktop.in: Add an additional category as required
