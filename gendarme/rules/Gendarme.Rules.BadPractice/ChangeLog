@@ -1,3 +1,16 @@
+2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCallingProblematicMethodsRule.cs: Rework SortedDictionary not
+	to require the full name, which avoid calling MethodReference so 
+	many times (each time creating a string).
+	* CloneMethodShouldNotReturnNullRule.cs: Only apply rules if the 
+	module refers to System.ICloneable (only 23 out of 86 assemblies 
+	of Mono 2.0 profile do). Change rule to IMethodRule since calling
+	Implements is rather expensive (recursive).
+	* DisableDebuggingCodeRule.cs: Specify StringComparison.Ordinal when
+	calling String.StartsWith.
+	* ReturnNullRule.cs: Change CheckMethod to virtual.
+
 2008-11-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidAssemblyVersionMismatchRule.cs, 
