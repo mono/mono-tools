@@ -1,3 +1,11 @@
+2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeserializeOptionalFieldRule.cs: Enable the rule only when
+	[OptionalField] is used/referenced inside a module (quite rare).
+	* UseCorrectSignatureForSerializationMethodsRule.cs: Enabled the
+	rule only when one of the On[Des|S]erializ[ed|ing]Attribute type
+	is referenced in the module (quite rare).
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MarkEnumerationsAsSerializableRule.cs: New. Rule to suggest to
