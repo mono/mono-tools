@@ -327,7 +327,7 @@ namespace Gendarme {
 			}
 			catch (Exception e) {
 				Console.WriteLine ();
-				Console.WriteLine ("An uncaught exception occured. Please fill a bug report @ https://bugzilla.novell.com/");
+				Console.WriteLine ("An uncaught exception occured. Please fill a bug report at https://bugzilla.novell.com/");
 				if (CurrentRule != null)
 					Console.WriteLine ("Rule:\t{0}", CurrentRule);
 				if (CurrentTarget != null)
@@ -339,6 +339,14 @@ namespace Gendarme {
 
 		private Stopwatch total = new Stopwatch ();
 		private Stopwatch local = new Stopwatch ();
+		
+		private static string TimeToString (TimeSpan time)
+		{
+			if (time >= TimeSpan.FromMilliseconds (100))
+				return string.Format ("{0:0.0} seconds", time.TotalSeconds);
+			else
+				return "<0.1 seconds";
+		}
 
 		public override void Initialize ()
 		{
@@ -347,7 +355,7 @@ namespace Gendarme {
 			local.Start ();
 			base.Initialize ();
 			local.Stop ();
-			Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
+			Console.WriteLine (": {0}", TimeToString (local.Elapsed));
 			local.Reset ();
 		}
 
@@ -362,22 +370,26 @@ namespace Gendarme {
 			local.Stop ();
 			total.Stop ();
 
-			Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
+			Console.WriteLine (": {0}", TimeToString (local.Elapsed));
 			Console.WriteLine ();
-			Console.WriteLine ("{0} assemblies processed in {1} seconds.",
-				Assemblies.Count, total.Elapsed.TotalSeconds);
+			if (Assemblies.Count == 1)
+				Console.WriteLine ("One assembly processed in {0}.",
+					TimeToString (total.Elapsed));
+			else
+				Console.WriteLine ("{0} assemblies processed in {1}.",
+					Assemblies.Count, TimeToString (total.Elapsed));
 		}
 
 		protected override void OnAssembly (RunnerEventArgs e)
 		{
 			if (local.IsRunning) {
 				local.Stop ();
-				Console.WriteLine (": {0} seconds.", local.Elapsed.TotalSeconds);
+				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
 				local.Reset ();
 			}
 
 			// next assembly
-			Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.FullName);
+			Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.Name);
 			local.Start ();
 			base.OnAssembly (e);
 		}
