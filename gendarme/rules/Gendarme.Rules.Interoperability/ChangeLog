@@ -1,3 +1,8 @@
+2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Fix the case
+	where we can't resolve the method (leading to a NRE).
+
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Avoid calling 
