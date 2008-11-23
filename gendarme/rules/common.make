@@ -36,7 +36,7 @@ CLEANFILES = $(rules_dll) $(rules_dll).mdb $(tests_dll) $(tests_dll).mdb $(rules
 DISTCLEANFILES = Makefile.in $(prefixed_rules_category).xml TestResult.xml
 
 rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
-generated_doc = doc doc/generated/**/*.xml
+generated_doc = doc/generated/index.xml
 
 $(rules_dll): $(rules_build_sources) $(framework)
 	$(GMCS) -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
@@ -57,8 +57,8 @@ run-test: test
 self-test: $(rules_dll)
 	mono --debug $(console_runner) $(rules_dll)
 
-$(generated_doc): $(rules_dll).doc
-	test -d doc || mkdir doc
+$(generated_doc): $(rules_dll)
+	mkdir -p doc
 	mdoc update -i $(rules_dll).doc -o doc/generated $(rules_dll)
 
 $(rules_doc_zip): $(generated_doc)
