@@ -1,3 +1,10 @@
+2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.svg: Update logo.
+	* gendarme.mds: Remove unused MD solution (use gendarme.sln)
+	* Makefile.am: Drop gendarme.mds from dist. Add targets to build
+	the zip of binaries and push to ohloh.
+
 2008-11-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: If bin/gendarme.exe.config does not exist copy the
