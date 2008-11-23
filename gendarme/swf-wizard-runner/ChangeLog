@@ -1,3 +1,10 @@
+2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Resources/gendarme.png: Update with new logo.
+	* gendarme.ico, Resources/gendarme.ico: Stop fighting with VS.NET
+	about the icon location.
+	* Makefile.am: Update icon location.
+
 2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Clear every bits from severity and confidence bitmasks
