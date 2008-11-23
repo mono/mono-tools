@@ -21,7 +21,7 @@ framework_documentationdir = $(prefix)/lib/monodoc/sources
 framework_documentation_DATA = $(framework_doc)
 
 framework_doc = $(framework_doc_zip) $(framework_doc_source) $(framework_doc_tree)
-generated_doc = doc doc/generated/**/*.xml
+generated_doc = doc/generated/index.xml
 
 framework_sources_in = ../AssemblyInfo.cs.in
 framework_generated_sources = $(framework_sources_in:.in=)
@@ -108,8 +108,8 @@ run-test: test
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)
 
-$(generated_doc): $(framework_SCRIPTS).doc
-	test -d doc || mkdir doc
+$(generated_doc): $(framework_SCRIPTS)
+	mkdir -p doc
 	mdoc update -i $(framework_SCRIPTS).doc -o doc/generated $(framework_SCRIPTS)
 
 $(framework_doc_zip): $(generated_doc)

@@ -1,3 +1,9 @@
+2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Avoid re-building documentation needlessly. This
+	fix the case where a make install, under su, would fail to locate
+	mdoc.
+
 2008-11-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am: Added new Log.cs file.
