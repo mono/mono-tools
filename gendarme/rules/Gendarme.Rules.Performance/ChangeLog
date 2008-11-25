@@ -1,3 +1,9 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Simplify call into 
+	CheckAssemblyForMethodUsage
+	[Backport r119885]
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCastsRule.cs: Remove unneeded parameter on GetOrigin

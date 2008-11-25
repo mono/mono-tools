@@ -157,7 +157,7 @@ namespace Gendarme.Rules.Performance {
 			bool need_to_check_assembly = (method.IsAssembly || 
 				((method.IsPublic || method.IsFamily) && !method.DeclaringType.IsVisible ()));
 
-			if (!need_to_check_assembly || CheckAssemblyForMethodUsage (method.DeclaringType.Module.Assembly, method))
+			if (!need_to_check_assembly || CheckAssemblyForMethodUsage (method))
 				return RuleResult.Success;
 
 			// method is unused and unneeded
@@ -224,10 +224,11 @@ namespace Gendarme.Rules.Performance {
 			return MethodSignatures.SerializationConstructor.Matches (method);
 		}
 
-		private static bool CheckAssemblyForMethodUsage (AssemblyDefinition ad, MethodReference method)
+		private static bool CheckAssemblyForMethodUsage (MethodReference method)
 		{
-			// scan each module
-			foreach (ModuleDefinition module in ad.Modules) {
+			// scan each module in the assembly that defines the method
+			AssemblyDefinition assembly = method.DeclaringType.Module.Assembly;
+			foreach (ModuleDefinition module in assembly.Modules) {
 				// scan each type
 				foreach (TypeDefinition type in module.Types) {
 					if (CheckTypeForMethodUsage (type, method))
@@ -292,3 +293,4 @@ namespace Gendarme.Rules.Performance {
 		}
 	}
 }
+
