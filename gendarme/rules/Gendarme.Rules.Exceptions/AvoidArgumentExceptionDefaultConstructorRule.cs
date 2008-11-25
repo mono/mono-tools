@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -103,7 +105,7 @@ namespace Gendarme.Rules.Exceptions {
 					Runner.Report (method, ins, Severity.Medium, Confidence.Total, name);
 					break;
 				default:
-					if (!name.EndsWith ("Exception"))
+					if (!name.EndsWith ("Exception", StringComparison.Ordinal))
 						break;
 					if (ctor.DeclaringType.Inherits ("System.ArgumentException"))
 						Runner.Report (method, ins, Severity.Medium, Confidence.Total, name);

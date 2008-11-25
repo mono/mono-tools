@@ -1,3 +1,9 @@
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs: Specify 
+	StringComparison.Ordinal when calling EndsWith.
+	[Backport of r119253]
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* SEHHandlerType.cs: Clearly specify [Serializable] on enum (self-test)
