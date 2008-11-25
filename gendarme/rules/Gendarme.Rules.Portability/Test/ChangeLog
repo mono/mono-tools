@@ -1,3 +1,8 @@
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewTest.cs: Adjust test wrt rule changes.
+	[Backport of r119257]
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Portability.csproj: Activate makefile integration for all
