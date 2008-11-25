@@ -83,6 +83,19 @@ namespace Gendarme.Framework.Engines {
 		}
 
 		/// <summary>
+		/// Return if a namespace exist inside the assembly set
+		/// </summary>
+		/// <param name="nameSpace">Namespace to confirm existance</param>
+		/// <returns>True if the namespace exists, False otherwise</returns>
+		public static bool Exists (string nameSpace)
+		{
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+
+			return namespaces.ContainsKey (nameSpace);
+		}
+
+		/// <summary>
 		/// Return all namespaces defined inside the specified assembly.
 		/// </summary>
 		/// <param name="assembly">Assembly to search into</param>
