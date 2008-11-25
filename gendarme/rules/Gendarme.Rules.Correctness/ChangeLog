@@ -1,3 +1,10 @@
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BadRecursiveInvocationRule.cs: Avoid calling Body.Instructions 
+	property chain so many times (24% of the calls to get_Body came
+	from here).
+	[Backport of r119252]
+
 2008-11-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* NullDerefAnalysis.cs, dataflow/Dataflow.cs: Write debug output 
