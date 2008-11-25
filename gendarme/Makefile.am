@@ -61,7 +61,38 @@ help:
 	@echo "run-test   - build and run the unit tests"
 	@echo "self-test  - run gendarme on itself, bin/self-test.html will have the results"
 	@echo "test1      - build and run a single unit test named TEST1"
+	@echo "zip-bin    - build then create a ZIP file of the binaries needed to run gendarme"
 	@echo " "
 	@echo "Variables include:"
 	@echo "TEST1      - used with test1 target, should be a unit test class name"
+
+# note: we take care to bundle the version of Mono.Cecil.dll that we compiled against
+extra-bin:
+	mkdir -p extra; \
+	cp -u $(CECIL_ASM) extra;
+
+# note: this does not bundle Mono.Cecil.Mdb.dll and Mono.Cecil.Pdb.dll (not built outside Windows)
+# unless they are previously (and manually) copied into the extra/ directory
+zip-bin: all extra-bin
+	mkdir gendarme.$(GENDARME_VERSION); \
+	cd gendarme.$(GENDARME_VERSION); \
+	cp ../bin/*.exe .; \
+	cp ../bin/*.dll .; \
+	cp ../rules/rules.xml .; \
+	cp ../man/gendarme.1 .; \
+	cp ../AUTHORS ../README ../MIT.X11 ../NEWS .; \
+	cp ../extra/* .; \
+	zip gendarme-$(GENDARME_VERSION)-bin.zip *; \
+	mv *.zip ..; \
+	cd ..; \
+	rm -rf gendarme.$(GENDARME_VERSION);
+
+instruct.xsd:
+	wget http://www.ohloh.net/instruct.xsd
+
+push: instruct.xsd
+	xmllint --schema instruct.xsd gendarme.xml
+#	scp gendarme-2.2preview1-bin.zip $(USER)@upload.ohloh.net:gendarme/files; \
+#	scp gendarme-2.2preview1-win32-setup.zip $(USER)@upload.ohloh.net:gendarme/files; \
+#	scp gendarme.xml $(USER)@upload.ohloh.net:gendarme/instructs
 

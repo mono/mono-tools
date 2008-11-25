@@ -1,4 +1,11 @@
-2008-11-10  Version 2.2
+2008-11-24  Version 2.2
+
+	* Updated logo from Ana Carolia
+	* Fixed Severity/Confidence filter in Wizard
+	* Optimizations (reduced time and memory requirements)
+	* Better workaround for Mono bug #439943
+
+2008-11-10  Version 2.2 (preview 1)
 
 	This release includes the development results of the last four 
 	months, including some major events like the Novell Hack Week 3

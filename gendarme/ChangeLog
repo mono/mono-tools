@@ -1,3 +1,9 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.svg: Update logo
+	* NEWS: Update with changes after preview 1
+	* Makefile.am: Add zip-bin and push targets
+
 2008-11-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyStaticInfo.cs: Update "special" (VS setup) version 2.2
