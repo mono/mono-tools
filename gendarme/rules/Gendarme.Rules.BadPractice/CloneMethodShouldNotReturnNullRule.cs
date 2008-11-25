@@ -65,23 +65,37 @@ namespace Gendarme.Rules.BadPractice {
 	/// </code>
 	/// </example>
 
-	[Problem ("The implementation ICloneable.Clone () seems to return null in some circumstances.")]
+	[Problem ("The implementation ICloneable.Clone() seems to return null in some circumstances.")]
 	[Solution ("Return an appropriate object instead of returning null.")]
-	public class CloneMethodShouldNotReturnNullRule : ReturnNullRule, ITypeRule {
+	public class CloneMethodShouldNotReturnNullRule : ReturnNullRule, IMethodRule {
 
-		public RuleResult CheckType (TypeDefinition type)
+		private const string ICloneable = "System.ICloneable";
+
+		public override void Initialize (IRunner runner)
 		{
-			// rule applies only to types implementing System.ICloneable
-			if (!type.Implements ("System.ICloneable"))
+			base.Initialize (runner);
+
+			// if the module does not reference System.ICloneable then
+			// no type inside will be implementing it
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (ICloneable);
+			};
+		}
+
+		public override RuleResult CheckMethod (MethodDefinition method)
+		{
+			// rule applies only to Clone methods with a body (IL)
+			if (!method.HasBody || !MethodSignatures.Clone.Matches (method))
 				return RuleResult.DoesNotApply;
 
-			// rule applies only if a body is available (e.g. not for pinvokes...)
-			MethodDefinition method = type.GetMethod (MethodSignatures.Clone);
-			if ((method == null) || (!method.HasBody))
+			// where the type implements ICloneable
+			if (!method.DeclaringType.Implements (ICloneable))
 				return RuleResult.DoesNotApply;
 
 			// call base class to detect if the method can return null
-			return CheckMethod (method);
+			return base.CheckMethod (method);
 		}
 	}
 }
+

@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -148,7 +150,7 @@ namespace Gendarme.Rules.BadPractice {
 					continue;
 
 				// ... Write* methods
-				if (mr.Name.StartsWith ("Write"))
+				if (mr.Name.StartsWith ("Write", StringComparison.Ordinal))
 					Runner.Report (method, ins, Severity.Low, Confidence.Normal, mr.ToString ());
 				// Confidence==Normal because we can't be sure if there's some logic to avoid displaying
 				// on the console under normal (non debugging) circumstances

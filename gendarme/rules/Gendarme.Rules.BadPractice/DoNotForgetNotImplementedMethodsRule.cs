@@ -64,6 +64,18 @@ namespace Gendarme.Rules.BadPractice {
 		// contains NEWOBJ and THROW instructions
 		private static OpCodeBitmask bitmask = new OpCodeBitmask (0x0, 0x84000000000000, 0x0, 0x0);
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not reference NotImplementedException then it
+			// is never thrown in the module
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType ("System.NotImplementedException");
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply if there's no IL code

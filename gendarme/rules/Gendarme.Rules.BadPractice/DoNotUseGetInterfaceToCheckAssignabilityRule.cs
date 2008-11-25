@@ -68,6 +68,17 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotUseGetInterfaceToCheckAssignabilityRule : Rule, IMethodRule {
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not reference System.Type::GetInterface then the rule does not apply
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.MemberReferences.ContainsMethod ("System.Type", "GetInterface");
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply if there's no IL code

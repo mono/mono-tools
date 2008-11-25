@@ -44,7 +44,7 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class ReturnNullRule : Rule {
 
-		public RuleResult CheckMethod (MethodDefinition method)
+		public virtual RuleResult CheckMethod (MethodDefinition method)
 		{
 			// is there any Ldnull instructions in this method
 			if (!OpCodeEngine.GetBitmask (method).Get (Code.Ldnull))

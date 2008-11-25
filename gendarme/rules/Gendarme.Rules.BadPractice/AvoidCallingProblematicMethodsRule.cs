@@ -93,28 +93,28 @@ namespace Gendarme.Rules.BadPractice {
 	[FxCopCompatibility ("Microsoft.Reliability", "CA2001:AvoidCallingProblematicMethods")]
 	public class AvoidCallingProblematicMethodsRule : Rule, IMethodRule {
 
-		sealed class StartWithComparer : IComparer <string> {
-
-			public int Compare (string x, string y)
-			{
-				if (x.StartsWith (y))
-					return 0;
-				return String.CompareOrdinal (x, y);
-			}
-		}
-
-		SortedDictionary<string, Func<Instruction, Severity?>> problematicMethods = new SortedDictionary<string, Func<Instruction, Severity?>> (new StartWithComparer ()); 
+		SortedDictionary<string, Func<MethodReference, Instruction, Severity?>> problematicMethods = 
+			new SortedDictionary<string, Func<MethodReference, Instruction, Severity?>> (); 
 
 		public AvoidCallingProblematicMethodsRule ()
 		{
-			problematicMethods.Add ("System.Void System.GC::Collect(", call => Severity.Critical);
-			problematicMethods.Add ("System.Void System.Threading.Thread::Suspend()", call => Severity.Medium);
-			problematicMethods.Add ("System.Void System.Threading.Thread::Resume()", call => Severity.Medium);
-			problematicMethods.Add ("System.IntPtr System.Runtime.InteropServices.SafeHandle::DangerousGetHandle()", call => Severity.Critical);
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFrom(", call => Severity.High);
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadFile(", call => Severity.High);
-			problematicMethods.Add ("System.Reflection.Assembly System.Reflection.Assembly::LoadWithPartialName(", call => Severity.High);
-			problematicMethods.Add ("System.Object System.Type::InvokeMember(", call => IsAccessingWithNonPublicModifiers (call) ? Severity.Critical : (Severity?) null);
+			problematicMethods.Add ("Collect", (m, i) => 
+				(m.DeclaringType.FullName == "System.GC") ? Severity.Critical : (Severity?) null);
+			problematicMethods.Add ("Suspend", (m, i) => 
+				(m.DeclaringType.FullName == "System.Threading.Thread") ? Severity.Medium : (Severity?) null);
+			problematicMethods.Add ("Resume", (m, i) => 
+				(m.DeclaringType.FullName == "System.Threading.Thread") ? Severity.Medium : (Severity?) null);
+			problematicMethods.Add ("DangerousGetHandle", (m, i) => 
+				(m.DeclaringType.FullName == "System.Runtime.InteropServices.SafeHandle") ? Severity.Critical : (Severity?) null);
+			problematicMethods.Add ("LoadFrom", (m, i) => 
+				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+			problematicMethods.Add ("LoadFile", (m, i) => 
+				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+			problematicMethods.Add ("LoadWithPartialName", (m, i) => 
+				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+			problematicMethods.Add ("InvokeMember", (m, i) => 
+				(m.DeclaringType.FullName != "System.Type") ? (Severity?) null :
+				IsAccessingWithNonPublicModifiers (i) ? Severity.Critical : (Severity?) null);
 		}
 
 		private static bool OperandIsNonPublic (BindingFlags operand)
@@ -138,12 +138,14 @@ namespace Gendarme.Rules.BadPractice {
 			return false;
 		}
 
-		private Severity? IsProblematicCall (Instruction call, string operand)
+		private Severity? IsProblematicCall (Instruction call)
 		{
-			Func<Instruction, Severity?> sev;
-			if (problematicMethods.TryGetValue (operand, out sev))
-				return sev (call);
-
+			MethodReference method = (call.Operand as MethodReference);
+			if (method != null) {
+				Func<MethodReference, Instruction, Severity?> sev;
+				if (problematicMethods.TryGetValue (method.Name, out sev))
+					return sev (method, call);
+			}
 			return null;
 		}
 		
@@ -161,10 +163,12 @@ namespace Gendarme.Rules.BadPractice {
 				if (instruction.OpCode.FlowControl != FlowControl.Call)
 					continue;
 
-				string operand = instruction.Operand.ToString ();
-				Severity? severity = IsProblematicCall (instruction, operand);
-				if (severity.HasValue) 
-					Runner.Report (method, instruction, severity.Value, Confidence.High, String.Format ("You are calling to {0}, which is a potentially problematic method", operand));
+				Severity? severity = IsProblematicCall (instruction);
+				if (severity.HasValue) {
+					string msg = String.Format ("You are calling to {0}, which is a potentially problematic method", 
+						instruction.Operand);
+					Runner.Report (method, instruction, severity.Value, Confidence.High, msg);
+				}
 			}	
 
 			return Runner.CurrentRuleResult;
