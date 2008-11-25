@@ -1,3 +1,8 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* banner.jpg: Update with new logo
+	* win32-setup.vdproj: Update with new assemblies.
+
 2008-07-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* banner.jpg: Add setup banner bitmap
