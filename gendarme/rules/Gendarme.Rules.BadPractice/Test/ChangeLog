@@ -1,3 +1,9 @@
+2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullTest.cs: Adjust fixture since the
+	rule now check methods.
+	[Backport of r119556]
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.BadPractice.csproj: Activate makefile integration for all
