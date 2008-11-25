@@ -1,3 +1,7 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.Designer.cs: Adjust UI with new logo
+
 2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Resources/gendarme.png: Update with new logo.

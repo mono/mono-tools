@@ -42,6 +42,7 @@ namespace Gendarme {
 			this.remove_file_button = new System.Windows.Forms.Button ();
 			this.file_list_box = new System.Windows.Forms.ListBox ();
 			this.rules_tab_page = new System.Windows.Forms.TabPage ();
+			this.rules_save_button = new System.Windows.Forms.Button ();
 			this.browse_documentation_button = new System.Windows.Forms.Button ();
 			this.rules_count_label = new System.Windows.Forms.Label ();
 			this.label8 = new System.Windows.Forms.Label ();
@@ -80,7 +81,6 @@ namespace Gendarme {
 			this.open_file_dialog = new System.Windows.Forms.OpenFileDialog ();
 			this.save_file_dialog = new System.Windows.Forms.SaveFileDialog ();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox ();
-			this.rules_save_button = new System.Windows.Forms.Button ();
 			this.wizard_tab_control.SuspendLayout ();
 			this.welcome_tab_page.SuspendLayout ();
 			this.addfiles_tab_page.SuspendLayout ();
@@ -269,6 +269,16 @@ namespace Gendarme {
 			this.rules_tab_page.TabIndex = 2;
 			this.rules_tab_page.Text = "Select Rules";
 			this.rules_tab_page.UseVisualStyleBackColor = true;
+			// 
+			// rules_save_button
+			// 
+			this.rules_save_button.Location = new System.Drawing.Point (327, 354);
+			this.rules_save_button.Name = "rules_save_button";
+			this.rules_save_button.Size = new System.Drawing.Size (156, 23);
+			this.rules_save_button.TabIndex = 32;
+			this.rules_save_button.Text = "Save as default";
+			this.rules_save_button.UseVisualStyleBackColor = true;
+			this.rules_save_button.Click += new System.EventHandler (this.SaveRulesButtonClick);
 			// 
 			// browse_documentation_button
 			// 
@@ -670,21 +680,11 @@ namespace Gendarme {
 			// pictureBox1
 			// 
 			this.pictureBox1.Image = global::Gendarme.Properties.Resources.gendarme;
-			this.pictureBox1.Location = new System.Drawing.Point (12, 14);
+			this.pictureBox1.Location = new System.Drawing.Point (12, 25);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size (134, 202);
+			this.pictureBox1.Size = new System.Drawing.Size (128, 128);
 			this.pictureBox1.TabIndex = 10;
 			this.pictureBox1.TabStop = false;
-			// 
-			// rules_save_button
-			// 
-			this.rules_save_button.Location = new System.Drawing.Point (327, 354);
-			this.rules_save_button.Name = "rules_save_button";
-			this.rules_save_button.Size = new System.Drawing.Size (156, 23);
-			this.rules_save_button.TabIndex = 32;
-			this.rules_save_button.Text = "Save as default";
-			this.rules_save_button.UseVisualStyleBackColor = true;
-			this.rules_save_button.Click += new System.EventHandler (this.SaveRulesButtonClick);
 			// 
 			// Wizard
 			// 
