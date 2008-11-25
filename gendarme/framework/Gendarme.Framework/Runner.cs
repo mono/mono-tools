@@ -289,7 +289,8 @@ namespace Gendarme.Framework {
 					break;
 
 				// ignore if the visibility does not match user selection 
-				if (!VisibilityCheck (rule.ApplicabilityScope, e.CurrentType.IsVisible ()))
+				ApplicabilityScope scope = rule.ApplicabilityScope;
+				if ((scope != ApplicabilityScope.All) && !VisibilityCheck (scope, e.CurrentType.IsVisible ()))
 					continue;
 
 				// ignore the rule on some user defined types
@@ -312,7 +313,8 @@ namespace Gendarme.Framework {
 					break;
 
 				// ignore if the visibility does not match user selection 
-				if (!VisibilityCheck (rule.ApplicabilityScope, e.CurrentMethod.IsVisible ()))
+				ApplicabilityScope scope = rule.ApplicabilityScope;
+				if ((scope != ApplicabilityScope.All) && !VisibilityCheck (scope, e.CurrentMethod.IsVisible ()))
 					continue;
 
 				// ignore the rule on some user defined methods

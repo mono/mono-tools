@@ -1,3 +1,11 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Rule.cs: Do not create a new Uri each time we ask for one (its 
+	not needed as it is read only).
+	* Runner.cs: Avoid needlessly calling IsVisible rock on types and 
+	methods when the runner is analyzing everything.
+	[Backport of r119412]
+
 2008-11-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EngineController.cs: Fix potential (if/when a runner use multiple

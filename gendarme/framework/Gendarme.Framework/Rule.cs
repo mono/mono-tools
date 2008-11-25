@@ -42,7 +42,7 @@ namespace Gendarme.Framework {
 		private string full_name;
 		private string problem;
 		private string solution;
-		private string url;
+		private Uri uri;
 		private Type type;
 		private ApplicabilityScope applicability_scope = ApplicabilityScope.All;
 		private object [] engine_dependencies = null;
@@ -136,17 +136,18 @@ namespace Gendarme.Framework {
 		/// </summary>
 		public virtual Uri Uri {
 			get {
-				if (url == null) {
+				if (uri == null) {
 					object [] attributes = Type.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
+					string url;
 					if (attributes.Length == 0) {
 						url = String.Format (CultureInfo.InvariantCulture, 
 							"http://www.mono-project.com/{0}#{1}", Type.Namespace, Name);
 					} else {
 						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}
+					uri = new Uri (url);
 				}
-				// note: we return a new copy since Uri is not immutable
-				return new Uri (url);
+				return uri;
 			}
 		}
 
