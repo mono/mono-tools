@@ -1,3 +1,8 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Simplify call into 
+	CheckAssemblyForMethodUsage
+
 2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
 
 	* AvoidRepetitiveCastsRule.cs: Adding two more examples (as this rule
