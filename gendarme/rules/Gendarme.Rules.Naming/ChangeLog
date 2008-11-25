@@ -1,3 +1,9 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Move IsEnum check 
+	outside the loop.
+	[Backport r119887]
+
 2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRedundancyInMethodNameRule.cs: Specify StringComparison.Ordinal

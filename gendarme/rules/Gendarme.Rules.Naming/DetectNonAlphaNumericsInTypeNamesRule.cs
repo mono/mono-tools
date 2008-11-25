@@ -132,12 +132,13 @@ namespace Gendarme.Rules.Naming {
 
 			// CheckMethod covers methods, properties and events (indirectly)
 			// but we still need to cover fields
+			bool is_enum = type.IsEnum;
 			foreach (FieldDefinition field in type.Fields) {
 				if (!field.IsVisible ())
 					continue;
 
 				// ignore "value__" inside every enumeration
-				if (type.IsEnum && !field.IsStatic)
+				if (is_enum && !field.IsStatic)
 					continue;
 
 				if (!CheckName (field.Name, false)) {
@@ -171,3 +172,4 @@ namespace Gendarme.Rules.Naming {
 		}
 	}
 }
+
