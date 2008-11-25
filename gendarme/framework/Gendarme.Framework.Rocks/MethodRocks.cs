@@ -36,7 +36,7 @@ using Mono.Cecil;
 
 namespace Gendarme.Framework.Rocks {
 
-	// add CustomAttribute[Collection] extensions methods here
+	// add Method[Reference|Definition][Collection] extensions methods here
 	// only if:
 	// * you supply minimal documentation for them (xml)
 	// * you supply unit tests for them
@@ -51,6 +51,32 @@ namespace Gendarme.Framework.Rocks {
 	/// reach/usability of the code.
 	/// </summary>
 	public static class MethodRocks {
+
+		/// <summary>
+		/// Check if a type reference collection contains a type of a specific name.
+		/// </summary>
+		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>
+		/// <param name="typeName">Full name of the type.</param>
+		/// <param name="methodName">Name of the method.</param>
+		/// <returns>True if the collection contains an type of the same name, False otherwise.</returns>
+		public static bool ContainsMethod (this MemberReferenceCollection self, string typeName, string methodName)
+		{
+			if (typeName == null)
+				throw new ArgumentNullException ("typeName");
+			if (methodName == null)
+				throw new ArgumentNullException ("methodName");
+
+			if (self == null)
+				return false;
+
+			foreach (MemberReference member in self) {
+				if (member.Name != methodName)
+					continue;
+				if (member.DeclaringType.FullName == typeName)
+					return true;
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Check if the MethodReference is defined as the entry point of it's assembly.

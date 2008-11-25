@@ -1,3 +1,11 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TypeRocks.cs: Make GetMethod smarter and check only the methods
+	or the constructors when possible. Split Implements in two parts
+	to remove some checks when recursion is needed. Also avoid recursion
+	for checking the base types. Add IsPrimitive rock.
+	[Backport of 119410]
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs: Make IsEventCallback safe if the method cannot be
