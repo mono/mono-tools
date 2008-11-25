@@ -113,8 +113,9 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			// check if the method name starts with one of the usual suspects
+			string name = method.Name;
 			foreach (string suspect in SuspectPrefixes) {
-				if (method.Name.StartsWith (suspect)) {
+				if (name.StartsWith (suspect, StringComparison.Ordinal)) {
 					Runner.Report (method, Severity.Medium, Confidence.Normal);
 					// won't happen more than once
 					return RuleResult.Failure;

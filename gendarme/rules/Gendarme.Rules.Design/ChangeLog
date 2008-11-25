@@ -1,3 +1,27 @@
+2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRefAndOutParametersRule.cs: Specify StringComparison.Ordinal
+	when calling String.[Starts|Ends]With.
+	* ConsiderConvertingFieldToNullableRule.cs: Specify StringComparison.
+	Ordinal when calling String.EndsWith.
+	* ConsiderConvertingMethodToPropertyRule.cs: Specify 
+	StringComparison.Ordinal when calling String.EndsWith.
+	* ImplementIComparableCorreclyRule.cs: Apply the rule to types that
+	directly implement IComparable.
+	* InternalNamespacesShouldNotExposeTypesRule.cs: Specify 
+	StringComparison.Ordinal when calling String.EndsWith.
+	* PreferEventsOverMethodsRule.cs: Get method name out of the loop.
+	Specify StringComparison.Ordinal when calling String.StartsWith.
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs: Skip fields
+	type that are primitives or enums (as they wont be disposable).
+	[Backport of r119542]
+
+2008-11-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderAddingInterfaceRule.cs: Only check the current assembly 
+	or assemblies (from the set) that refers to the current assembly. 
+	Huge performance boost when a large number of assemblies are used.
+
 2008-11-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMultidimensionalIndexerRule.cs, AvoidSmallNamespaceRule.cs,

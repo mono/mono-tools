@@ -79,8 +79,10 @@ namespace Gendarme.Rules.Design {
 			// check every namespaces inside the assembly using the NamespaceEngine
 			foreach (string ns in NamespaceEngine.NamespacesInside (assembly)) {
 				// rule only apply to "internal" namespaces
-				if (!ns.EndsWith (".Internal") && !ns.EndsWith (".Impl"))
+				if (!ns.EndsWith (".Internal", StringComparison.Ordinal) && 
+					!ns.EndsWith (".Impl", StringComparison.Ordinal)) {
 					continue;
+				}
 
 				foreach (TypeDefinition type in NamespaceEngine.TypesInside (ns)) {
 					// only report for this assembly

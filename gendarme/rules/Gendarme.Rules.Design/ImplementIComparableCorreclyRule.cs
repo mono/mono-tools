@@ -100,6 +100,20 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
 	public class ImplementIComparableCorrectlyRule : Rule, ITypeRule {
 
+		private static string[] IComparable = { "System.IComparable", "System.IComparable`1" };
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not have a reference to System.IComparable (or its
+			// generic version) then nothing will implement it (directly)
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsAnyType (IComparable);
+			};
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to enums, interfaces and to generated code
@@ -107,7 +121,16 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			// rule only applies if the type implements IComparable or IComparable<T>
-			if (!type.Implements ("System.IComparable") && !type.Implements ("System.IComparable`1"))
+			// Note: we do not use Implements rock because we do not want a recursive answer
+			bool icomparable = false;
+			foreach (TypeReference iface in type.Interfaces) {
+				// catch both System.IComparable and System.IComparable`1<X>
+				if (iface.FullName.StartsWith ("System.IComparable", StringComparison.Ordinal)) {
+					icomparable = true;
+					break;
+				}
+			}
+			if (!icomparable)
 				return RuleResult.DoesNotApply;
 
 			// type should override Equals(object)
@@ -138,3 +161,4 @@ namespace Gendarme.Rules.Design {
 		}
 	}
 }
+

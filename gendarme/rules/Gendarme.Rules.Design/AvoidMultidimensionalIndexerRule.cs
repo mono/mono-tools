@@ -69,7 +69,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies to indexers
-			if (method.Name != "get_Item")
+			if (!method.IsSpecialName || (method.Name != "get_Item"))
 				return RuleResult.DoesNotApply;
 
 			// if there is a single argument or if the method is not visible outside the assembly

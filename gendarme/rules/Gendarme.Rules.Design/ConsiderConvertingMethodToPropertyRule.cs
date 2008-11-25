@@ -82,11 +82,6 @@ namespace Gendarme.Rules.Design {
 		private const string Void = "System.Void";
 		string [] parameter = new string [1];
 
-		static bool StartsWith (string start, string name)
-		{
-			return name.StartsWith (start, true, null);
-		}
-
 		// report if there is a SetX (value) that match
 		string ReportAssociatedSetter (MethodDefinition getter)
 		{
@@ -122,9 +117,9 @@ namespace Gendarme.Rules.Design {
 			// rule applies
 
 			// If it starts with "get" or "is" or "has", has no parameters and returns something
-			bool get = StartsWith ("get", method.Name);
-			bool isp = StartsWith ("is", method.Name);
-			bool has = StartsWith ("has", method.Name);
+			bool get = method.Name.StartsWith ("get", StringComparison.OrdinalIgnoreCase);
+			bool isp = method.Name.StartsWith ("is", StringComparison.OrdinalIgnoreCase);
+			bool has = method.Name.StartsWith ("has", StringComparison.OrdinalIgnoreCase);
 			if ((get || isp || has) && (method.Parameters.Count == 0) && (method.ReturnType.ReturnType.FullName != Void)) {
 				// if it's a getter then look for a setter (to complete the report)
 				string msg = get ? ReportAssociatedSetter (method) : String.Empty;
