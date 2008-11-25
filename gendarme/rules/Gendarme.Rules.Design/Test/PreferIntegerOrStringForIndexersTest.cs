@@ -96,5 +96,26 @@ namespace Test.Rules.Design {
 			AssertRuleSuccess<NonVisibleType> ("get_Item", new Type [] { typeof (DateTime) });
 			AssertRuleSuccess<VisibleType> ("get_Item", new Type [] { typeof (DateTime) });
 		}
+
+		public class FakeLooksGood {
+			public string get_Item (int x)
+			{
+				return x.ToString ();
+			}
+		}
+
+		public class FakeLooksBad {
+			public string get_Item (DateTime dt)
+			{
+				return dt.ToString ();
+			}
+		}
+
+		[Test]
+		public void NotSpecialName ()
+		{
+			AssertRuleDoesNotApply<FakeLooksGood> ("get_Item");
+			AssertRuleDoesNotApply<FakeLooksBad> ("get_Item");
+		}
 	}
 }

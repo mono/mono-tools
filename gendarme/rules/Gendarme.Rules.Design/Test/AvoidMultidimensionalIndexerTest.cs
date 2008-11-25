@@ -108,5 +108,26 @@ namespace Test.Rules.Design {
 			AssertRuleSuccess<VisibleType> ("get_Item", intint);
 			AssertRuleSuccess<VisibleType> ("get_Item", stringstring);
 		}
+
+		public class FakeLooksGood {
+			public string get_Item (int x)
+			{
+				return x.ToString ();
+			}
+		}
+
+		public class FakeLooksBad {
+			public string get_Item (int x, int y)
+			{
+				return (x - y).ToString ();
+			}
+		}
+
+		[Test]
+		public void NotSpecialName ()
+		{
+			AssertRuleDoesNotApply<FakeLooksGood> ("get_Item");
+			AssertRuleDoesNotApply<FakeLooksBad> ("get_Item");
+		}
 	}
 }
