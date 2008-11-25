@@ -96,6 +96,13 @@ namespace Gendarme.Rules.Serialization {
 			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
 				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
 			};
+
+			// if the module does not have a reference to System.Runtime.Serialization.OptionalFieldAttribute
+			// then nothing will be reported by this rule
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+					e.CurrentModule.TypeReferences.ContainsType (OptionalFieldAttribute);
+			};
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
