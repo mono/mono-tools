@@ -1,3 +1,22 @@
+2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Fix the case
+	where we can't resolve the method (leading to a NRE).
+	[Backport of r119700]
+
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Avoid calling 
+	ToString on Method[Reference|Definition] since they are rebuilt
+	each time. Accept UIntPtr [in]equality operators.
+	* MarshalBooleansInPInvokeDeclarationsRule.cs: Specify 
+	StringComparison.Ordinal when calling StartsWith.
+	* UseManagedAlternativesToPInvokeRule.cs: Remove PInvokeCall struct
+	since it required an allocation (of a new struct) in order to search
+	alternatives. This is now replaced by using strings and a second
+	check later for the module and runtime version.
+	[Backport of r119268]
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:
