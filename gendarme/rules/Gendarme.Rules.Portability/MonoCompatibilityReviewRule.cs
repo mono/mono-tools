@@ -67,19 +67,19 @@ namespace Gendarme.Rules.Portability {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class MonoCompatibilityReviewRule : Rule, IMethodRule {
 
-		private const string NotImplementedMessage = "{0} is not implemented.{1}";
-		private const string MissingMessage = "{0} is missing from Mono.{1}";
+		private const string NotImplementedMessage = "{0} is not implemented.";
+		private const string MissingMessage = "{0} is missing from Mono.";
 		private const string TodoMessage = "{0} is marked with a [MonoTODO] attribute: {1}.";
 
-		private Dictionary<string, string> NotImplementedInternal; //value is unused
-		private Dictionary<string, string> MissingInternal; //value is unused
+		private HashSet<string> NotImplementedInternal; //value is unused
+		private HashSet<string> MissingInternal; //value is unused
 		private Dictionary<string, string> TodoInternal; //value = TODO Description
 
-		public Dictionary<string, string> NotImplemented {
+		public HashSet<string> NotImplemented {
 			get { return NotImplementedInternal; }
 		}
 
-		public Dictionary<string, string> Missing {
+		public HashSet<string> Missing {
 			get { return MissingInternal; }
 		}
 
@@ -111,13 +111,13 @@ namespace Gendarme.Rules.Portability {
 					while ((ze = zs.GetNextEntry ()) != null) {
 						switch (ze.Name) {
 						case "exception.txt":
-							NotImplementedInternal = Read (new StreamReader (zs), false);
+							NotImplementedInternal = Read (new StreamReader (zs));
 							break;
 						case "missing.txt":
-								MissingInternal = Read (new StreamReader (zs), false);
+							MissingInternal = Read (new StreamReader (zs));
 							break;
 						case "monotodo.txt":
-							TodoInternal = Read (new StreamReader (zs), true);
+							TodoInternal = ReadWithComments (new StreamReader (zs));
 							break;
 						default:
 							break;
@@ -151,32 +151,31 @@ namespace Gendarme.Rules.Portability {
 			return true;
 		}
 
-		private static Dictionary<string, string> Read (TextReader reader, bool split)
+		private static Dictionary<string, string> ReadWithComments (TextReader reader)
 		{
 			Dictionary<string, string> dict = new Dictionary<string, string> ();
 			string line;
 			while ((line = reader.ReadLine ()) != null) {
-				if (split) {
-					string [] parts = line.Split ('-');
-					dict.Add (parts [0], parts [1]);
+				int split = line.IndexOf ('-');
+				string target = line.Substring (0, split);
+				// are there comments ? (many entries don't have any)
+				if (split == line.Length - 1) {
+					dict.Add (target, null);
 				} else {
-					dict.Add (line, null);
+					dict.Add (target, line.Substring (split + 1));
 				}
 			}
 			return dict;
 		}
 
-		private void Check (IDictionary<string, string> dict, MethodDefinition method, Instruction ins, string error, Severity severity)
+		private static HashSet<string> Read (TextReader reader)
 		{
-			string callee = ins.Operand.ToString ();
-			string value;
-
-			if (!dict.TryGetValue (callee, out value))
-				return;
-
-			string message = String.Format (error, callee, value);
-			// confidence is Normal since we can't be sure if MoMA data is up to date
-			Runner.Report (method, ins, severity, Confidence.Normal, message);
+			HashSet<string> set = new HashSet<string> ();
+			string line;
+			while ((line = reader.ReadLine ()) != null) {
+				set.Add (line);
+			}
+			return set;
 		}
 
 		// this correspond to Call, Calli, Callvirt, Newobj, Initobj, Ldftn, Ldvirtftn
@@ -199,19 +198,29 @@ namespace Gendarme.Rules.Portability {
 				if (!mask.Get (ins.OpCode.Code))
 					continue;
 
+				// this (MethodReference.ToString) is costly so we do it once for the three checks
+				string callee = ins.Operand.ToString ();
+
 				// calling not implemented method is very likely not to work == High
-				if (NotImplemented != null) {
-					Check (NotImplemented, method, ins, NotImplementedMessage, Severity.High);
+				if ((NotImplemented != null) && NotImplementedInternal.Contains (callee)) {
+					string message = String.Format (NotImplementedMessage, callee);
+					// confidence is Normal since we can't be sure if MoMA data is up to date
+					Runner.Report (method, ins, Severity.High, Confidence.Normal, message);
 				}
 
 				// calling missing methods can't work == Critical
-				if (Missing != null) {
-					Check (Missing, method, ins, MissingMessage, Severity.Critical);
+				if ((Missing != null) && Missing.Contains (callee)) {
+					string message = String.Format (MissingMessage, callee);
+					Runner.Report (method, ins, Severity.Critical, Confidence.Normal, message);
 				}
 
 				// calling todo methods migh work with some limitations == Medium
 				if (ToDo != null) {
-					Check (ToDo, method, ins, TodoMessage, Severity.Medium);
+					string value;
+					if (ToDo.TryGetValue (callee, out value)) {
+						string message = String.Format (TodoMessage, callee, value);
+						Runner.Report (method, ins,  Severity.Medium, Confidence.Normal, message);
+					}
 				}
 			}
 
@@ -219,3 +228,4 @@ namespace Gendarme.Rules.Portability {
 		}
 	}
 }
+

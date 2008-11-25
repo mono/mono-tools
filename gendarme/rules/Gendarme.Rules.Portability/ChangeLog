@@ -1,3 +1,14 @@
+2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Specify StringComparison.Ordinal when 
+	calling StartsWith.
+	* MonoCompatibilityReviewRule.cs: Use HashSet instead of Dictionnary
+	for both NotImplementedInternal and MissingInternal since there is
+	no second argument (comments). Avoid calling ToString three times
+	(one per list) on MethodReference (which needs to rebuild the string
+	each time).
+	[Backport of 119258]
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExitCodeIsLimitedOnUnixRule.cs: Clearly specify [Serializable] on 
