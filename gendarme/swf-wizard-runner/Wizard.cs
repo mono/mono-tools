@@ -543,8 +543,10 @@ namespace Gendarme {
 			// apply settings
 			Runner.DefectsLimit = Settings.Default.DefectsLimit;
 
+			Runner.SeverityBitmask.ClearAll ();
 			Runner.SeverityBitmask.SetDown ((Severity)Settings.Default.Severity);
-			Runner.ConfidenceBitmask.SetDown ((Confidence)Settings.Default.Confidence);
+			Runner.ConfidenceBitmask.ClearAll ();
+			Runner.ConfidenceBitmask.SetDown ((Confidence) Settings.Default.Confidence);
 
 			// wizard limits this as a "global" (all rule) setting
 			ApplicabilityScope scope = (ApplicabilityScope) Settings.Default.Scope;

@@ -1,3 +1,12 @@
+2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.ico, Resources/gendarme.png: Move and update icons
+	* Resources/gendarme.png: Update logo
+	* Wizard.cs: Fix severity/confidence filters
+	* Wizard.Designer.cs: Adjust UI for new logo
+	* swf-wizard-runner.csproj: Update project file
+	* Makefile.am: Change icon location
+
 2008-11-12  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme-wizard.desktop.in: Add an additional category as required

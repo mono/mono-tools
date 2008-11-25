@@ -51,7 +51,7 @@ Properties/Resources.resources: $(wizard_properties_prefix_resx)
 wizard_xsl = ../console/gendarme.xsl
 wizard_build_xsl = $(addprefix $(srcdir)/, $(wizard_xsl))
 
-wizard_icon = gendarme.ico
+wizard_icon = Resources/gendarme.ico
 wizard_build_icon = $(addprefix $(srcdir)/, $(wizard_icon))
 
 ../bin/gendarme-wizard.exe: $(wizard_build_sources) $(wizard_resources) Wizard.resources Properties/Resources.resources $(wizard_build_xsl) $(wizard_build_icon)
