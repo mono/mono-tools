@@ -158,7 +158,7 @@ namespace Gendarme.Rules.Maintainability {
 			foreach (TypeReference iface in type.Interfaces) {
 				TypeDefinition candidate = iface.Resolve ();
 
-				if (!candidate.IsVisible () || candidate.Name.StartsWith ("_"))
+				if (!candidate.IsVisible () || candidate.Name.StartsWith ("_", StringComparison.Ordinal))
 					continue; //ignore non-cls-compliant interfaces
 
 				if (!DoesAllSignaturesMatchType (candidate, signatures))
@@ -235,16 +235,14 @@ namespace Gendarme.Rules.Maintainability {
 			return false;
 		}
 
-		private static bool IsNonGenericCollectionMember (IMemberReference method)
+		private static bool IsFromNonGenericCollectionNamespace (string nameSpace)
 		{
-			return method.DeclaringType.Namespace == "System.Collections" || method.DeclaringType.Namespace == "System.Collections.Specialized";
+			return ((nameSpace == "System.Collections") || (nameSpace == "System.Collections.Specialized"));
 		}
 
 		private static bool IsIgnoredSuggestionType (TypeReference type)
 		{
-			return type.FullName == "System.Object"
-				|| type.Namespace == "System.Collections"
-				|| type.Namespace == "System.Collections.Specialized";
+			return ((type.FullName == "System.Object") || IsFromNonGenericCollectionNamespace (type.Namespace));
 		}
 
 		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
@@ -265,7 +263,7 @@ namespace Gendarme.Rules.Maintainability {
 				case Code.Call :
 				case Code.Callvirt :
 					MethodReference method = (MethodReference) usage.Instruction.Operand;
-					if (IsSystemObjectMethod (method) || IsNonGenericCollectionMember (method))
+					if (IsSystemObjectMethod (method) || IsFromNonGenericCollectionNamespace (method.DeclaringType.Namespace))
 						continue;
 					signatures.Add (GetSignature (method));
 					break;
@@ -288,7 +286,7 @@ namespace Gendarme.Rules.Maintainability {
 						continue;
 					//we cannot really know if suggestion would work since the collection
 					//is non-generic thus we ignore it
-					if (IsNonGenericCollectionMember (method))
+					if (IsFromNonGenericCollectionNamespace (method.DeclaringType.Namespace))
 						continue;
 
 					if (usage.StackOffset == method.Parameters.Count) {

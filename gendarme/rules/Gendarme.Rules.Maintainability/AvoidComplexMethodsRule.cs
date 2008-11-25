@@ -33,6 +33,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
@@ -50,6 +51,8 @@ namespace Gendarme.Rules.Maintainability {
 	[Solution ("You should apply an Extract Method refactoring, but there are other solutions.")]
 	[FxCopCompatibility ("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
 	public class AvoidComplexMethodsRule : Rule, IMethodRule {
+
+		static OpCodeBitmask load = new OpCodeBitmask (0xFFFF6C3FC, 0x1B0300000000FFE0, 0x400100FFF800, 0xDE0);
 
 		// defaults match fxcop rule http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1575061&SiteID=1
 		// so people using both tools should not see conflicting results
@@ -132,7 +135,7 @@ namespace Gendarme.Rules.Maintainability {
 				if (FlowControl.Branch == inst.OpCode.FlowControl)
 				{
 					//detect ternary pattern
-					if (null != inst && null != inst.Previous && inst.Previous.OpCode.Name.StartsWith("ld"))
+					if ((null != inst) && (null != inst.Previous) && load.Get (inst.Previous.OpCode.Code))
 						cc++;
 				}
 				if (FlowControl.Cond_Branch != inst.OpCode.FlowControl)
@@ -189,7 +192,79 @@ namespace Gendarme.Rules.Maintainability {
 			}
 			return null;
 		}
-
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask mask = new OpCodeBitmask ();
+			mask.Set (Code.Ldarg);
+			mask.Set (Code.Ldarg_S);
+			mask.Set (Code.Ldarg_0);
+			mask.Set (Code.Ldarg_1);
+			mask.Set (Code.Ldarg_2);
+			mask.Set (Code.Ldarg_3);
+			mask.Set (Code.Ldarga);
+			mask.Set (Code.Ldarga_S);
+			mask.Set (Code.Ldc_I4);
+			mask.Set (Code.Ldc_I4_0);
+			mask.Set (Code.Ldc_I4_1);
+			mask.Set (Code.Ldc_I4_2);
+			mask.Set (Code.Ldc_I4_3);
+			mask.Set (Code.Ldc_I4_4);
+			mask.Set (Code.Ldc_I4_5);
+			mask.Set (Code.Ldc_I4_6);
+			mask.Set (Code.Ldc_I4_7);
+			mask.Set (Code.Ldc_I4_8);
+			mask.Set (Code.Ldc_I4_M1);
+			mask.Set (Code.Ldc_I4_S);
+			mask.Set (Code.Ldc_I8);
+			mask.Set (Code.Ldc_R4);
+			mask.Set (Code.Ldc_R8);
+			mask.Set (Code.Ldelem_Any);
+			mask.Set (Code.Ldelem_I);
+			mask.Set (Code.Ldelem_I1);
+			mask.Set (Code.Ldelem_I2);
+			mask.Set (Code.Ldelem_I4);
+			mask.Set (Code.Ldelem_I8);
+			mask.Set (Code.Ldelem_R4);
+			mask.Set (Code.Ldelem_R8);
+			mask.Set (Code.Ldelem_Ref);
+			mask.Set (Code.Ldelem_U1);
+			mask.Set (Code.Ldelem_U2);
+			mask.Set (Code.Ldelem_U4);
+			mask.Set (Code.Ldelema);
+			mask.Set (Code.Ldfld);
+			mask.Set (Code.Ldflda);
+			mask.Set (Code.Ldftn);
+			mask.Set (Code.Ldind_I);
+			mask.Set (Code.Ldind_I1);
+			mask.Set (Code.Ldind_I2);
+			mask.Set (Code.Ldind_I4);
+			mask.Set (Code.Ldind_I8);
+			mask.Set (Code.Ldind_R4);
+			mask.Set (Code.Ldind_R8);
+			mask.Set (Code.Ldind_Ref);
+			mask.Set (Code.Ldind_U1);
+			mask.Set (Code.Ldind_U2);
+			mask.Set (Code.Ldind_U4);
+			mask.Set (Code.Ldlen);
+			mask.Set (Code.Ldloc);
+			mask.Set (Code.Ldloc_0);
+			mask.Set (Code.Ldloc_1);
+			mask.Set (Code.Ldloc_2);
+			mask.Set (Code.Ldloc_3);
+			mask.Set (Code.Ldloc_S);
+			mask.Set (Code.Ldloca);
+			mask.Set (Code.Ldloca_S);
+			mask.Set (Code.Ldnull);
+			mask.Set (Code.Ldobj);
+			mask.Set (Code.Ldsfld);
+			mask.Set (Code.Ldsflda);
+			mask.Set (Code.Ldstr);
+			mask.Set (Code.Ldtoken);
+			mask.Set (Code.Ldvirtftn);
+			Console.WriteLine (mask);
+		}
+#endif
 	}
-
 }
+
