@@ -1,3 +1,9 @@
+2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Namespace.cs: Specify StringComparison.Ordinal when calling
+	String.StartsWith.
+	[Backport r119411]
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* StackEntryAnalysis.cs: Clearly specify [Serializable] on 

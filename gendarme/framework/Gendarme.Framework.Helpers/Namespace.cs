@@ -85,7 +85,7 @@ namespace Gendarme.Framework.Helpers {
 				throw new ArgumentNullException ("name");
 
 			foreach (string s in Specializations) {
-				if (name.EndsWith (s))
+				if (name.EndsWith (s, StringComparison.Ordinal))
 					return true;
 			}
 			return false;
