@@ -61,6 +61,7 @@
     <Compile Include="AvoidRefAndOutParametersTest.cs" />
     <Compile Include="AvoidSmallNamespaceTest.cs" />
     <Compile Include="AvoidVisibleNestedTypesTest.cs" />
+    <Compile Include="ConsiderAddingInterfaceTest.cs" />
     <Compile Include="ConsiderConvertingFieldToNullableTest.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyTest.cs" />
     <Compile Include="ConsiderUsingStaticTypeTest.cs" />
