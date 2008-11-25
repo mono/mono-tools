@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Naming {
 				if (!field.IsStatic)
 					continue;
 
-				if (field.Name.ToUpperInvariant ().Contains ("RESERVED")) {
+				if (field.Name.IndexOf ("RESERVED", StringComparison.OrdinalIgnoreCase) >= 0) {
 					// High since removing/renaming the field can be a breaking change
 					Runner.Report (field, Severity.High, Confidence.High);
 				}

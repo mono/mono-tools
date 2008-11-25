@@ -110,7 +110,7 @@ namespace Gendarme.Rules.Naming {
 
 			string name = type.IsInterface ? type.Name.Substring (1) : type.Name;
 			string lastComponent = type.Namespace.Substring (lastDot + 1);
-			if (!name.StartsWith (lastComponent))
+			if (!name.StartsWith (lastComponent, StringComparison.Ordinal))
 				return RuleResult.Success;
 
 			//if first char of suggestion does not start with a uppercase, can ignore it
@@ -123,7 +123,7 @@ namespace Gendarme.Rules.Naming {
 			//if base type name is or ends with suggestion, likely not clearer if we rename it.
 			//would bring ambiguity or make suggestion looks like base of basetype
 			if (null != type.BaseType) {
-				if (type.BaseType.Name.EndsWith (suggestion))
+				if (type.BaseType.Name.EndsWith (suggestion, StringComparison.Ordinal))
 					return RuleResult.Success;
 
 				//equally, if base type starts with the prefix, it is likely a wanted pattern
@@ -158,7 +158,7 @@ namespace Gendarme.Rules.Naming {
 		//FIXME: share this?
 		private static bool DoesNameStartWithPascalWord (string name, string word)
 		{
-			if (!name.StartsWith (word))
+			if (!name.StartsWith (word, StringComparison.Ordinal))
 				return false;
 			return (name.Length > word.Length && char.IsUpper (name [word.Length]));
 		}

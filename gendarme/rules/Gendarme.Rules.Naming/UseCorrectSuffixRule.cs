@@ -204,7 +204,7 @@ namespace Gendarme.Rules.Naming {
 					// if any suffixes found
 					// check whether type name ends with any of these suffixes
 					return suffixes.Exists (delegate (string suffix) {
-						return GetFullName (type).EndsWith (suffix);
+						return GetFullName (type).EndsWith (suffix, StringComparison.Ordinal);
 					});
 				} else {
 					// inspect base type
