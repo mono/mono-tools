@@ -120,15 +120,18 @@ namespace Gendarme.Rules.Maintainability {
 					prev = prev.Previous;
 				}
 			} else if (ins.OpCode.Code == Code.Ldobj) {
-				prev = ins.Previous;
-				int arg = prev.GetParameter (method).Sequence;
+				prev = ins.TraceBack (method);
+				ParameterDefinition p = prev.GetParameter (method);
+				if (p == null)
+					return false;
+				int arg = p.Sequence;
 				prev = prev.Previous;
 				while (null != prev) {
 					// look for a STOBJ instruction and compare the objects
 					if (prev.OpCode.Code == Code.Stobj) {
-						prev = prev.Previous.Previous;
-						int arg2 = prev.GetParameter (method).Sequence;
-						return (arg == arg2);
+						prev = prev.TraceBack (method);
+						p = prev.GetParameter (method);
+						return (p == null) ? false : (arg == p.Sequence);
 					}
 					prev = prev.Previous;
 				}
