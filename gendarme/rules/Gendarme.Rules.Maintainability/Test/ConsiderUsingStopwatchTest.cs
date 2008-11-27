@@ -179,6 +179,13 @@ namespace Test.Rules.Maintainability {
 			// stuff
 			return watch.Elapsed;
 		}
+
+		private object boxed;
+
+		private bool Box (object a, object b)
+		{
+			return ((DateTime) a - (DateTime) b < (TimeSpan) boxed);
+		}
 	}
 	#pragma warning restore 169
 
@@ -266,6 +273,10 @@ namespace Test.Rules.Maintainability {
 			AssertRuleFailure<TestClass> ("Return", 1);
 			AssertRuleFailure<TestClass> ("Ref", 1);
 			AssertRuleFailure<TestClass> ("Out", 1);
+
+			// boxed substraction without the use of Now
+			AssertRuleSuccess<TestClass> ("Box");
 		}
 	}
 }
+

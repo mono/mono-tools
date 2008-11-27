@@ -1,3 +1,8 @@
+2008-11-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderUsingStopwatchTest.cs: Add test case where the values are
+	boxed (which can cause, using gmcs, an NRE in the rule).
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Maintainability.csproj: Activate makefile integration for
