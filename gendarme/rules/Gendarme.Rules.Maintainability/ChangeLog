@@ -1,3 +1,9 @@
+2008-11-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderUsingStopwatchRule.cs: Use TraceBack rock instead of the
+	Previous property to ensure we get over things like unbox.
+	[Backport of 120113]
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsRule.cs: Specify StringComparison.Ordinal when 
