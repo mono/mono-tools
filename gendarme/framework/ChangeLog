@@ -1,3 +1,8 @@
+2008-11-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Include the framework unit tests in the dist.
+	[Backport of r120197]
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add Test to SUBDIRS to fix make checkdist
