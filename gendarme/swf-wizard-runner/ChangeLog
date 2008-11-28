@@ -1,3 +1,8 @@
+2008-11-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Workaround bug #439943 which is not part of Mono 2.2
+	but is fixed on HEAD
+
 2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.ico, Resources/gendarme.png: Move and update icons

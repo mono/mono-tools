@@ -417,7 +417,7 @@ namespace Gendarme {
 				}
 				Settings.Default.Rules = rules;
 			}
-			Settings.Default.Save ();
+			SaveOptions ();
 		}
 
 		private void RulesTreeViewAfterCheck (object sender, TreeViewEventArgs e)
@@ -493,7 +493,17 @@ namespace Gendarme {
 		private void OnOptionsSaveClick (object sender, EventArgs e)
 		{
 			UpdateOptions ();
-			Settings.Default.Save ();
+			SaveOptions ();
+		}
+
+		private void SaveOptions ()
+		{
+			try {
+				Settings.Default.Save ();
+			}
+			catch (ArgumentNullException) {
+				MessageBox.Show ("Sorry, this feature is presently blocked by Mono bug #439943", "Gendarme");
+			}
 		}
 
 		#endregion
