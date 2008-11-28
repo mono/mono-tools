@@ -4,7 +4,8 @@ SUBDIRS = Test
 
 frameworkdir=$(prefix)/lib/gendarme
 framework_SCRIPTS = ../bin/Gendarme.Framework.dll
-EXTRA_DIST = $(framework_sources) $(framework_sources_in) Gendarme.Framework.csproj gendarme-framework.pc.in
+EXTRA_DIST = $(framework_sources) $(framework_sources_in) $(framework_test_build_sources) \
+	Gendarme.Framework.csproj gendarme-framework.pc.in
 CLEANFILES = $(framework_SCRIPTS) $(framework_SCRIPTS).mdb Test.Framework.dll $(framework_SCRIPTS).doc $(framework_doc)
 DISTCLEANFILES = ../AssemblyInfo.cs Makefile.in gendarme-framework.pc
 
@@ -103,6 +104,7 @@ Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) .
 test: Test.Framework.dll
 
 run-test: test
+	cp ../bin/gendarme.exe.config Test.Framework.dll.config
 	MONO_PATH=../bin/:$(MONO_PATH) nunit-console2 Test.Framework.dll
 
 self-test: $(framework_SCRIPTS)
