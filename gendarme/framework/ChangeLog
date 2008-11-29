@@ -1,3 +1,8 @@
+2008-11-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Use -noshadow on nunit-console2 so the "new" 2.4,
+	now used inside mono, works properly.
+
 2008-11-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Include the framework unit tests in the dist.
