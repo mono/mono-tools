@@ -1,3 +1,8 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodWithUnusedGenericTypeRule.cs: Use HasParameters.
+	* PreferGenericsOverRefObjectRule.cs: Use HasGenericParameters.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

@@ -82,7 +82,7 @@ namespace Gendarme.Rules.Design.Generic {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply to properties, events, without parameters or for generated code
-			if (method.IsSpecialName || (method.Parameters.Count == 0) || method.IsGeneratedCode ())
+			if (method.IsSpecialName || !method.HasParameters || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {
