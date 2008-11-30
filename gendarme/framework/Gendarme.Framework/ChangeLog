@@ -1,3 +1,10 @@
+2008-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyResolver.cs: Use Has{x} to avoid creating fields and 
+	parameters collections while resolving.
+	* EngineController.cs: Use Has{x} whenever possible to avoid the
+	creation of empty collections in Cecil.
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Rule.cs: Do not create a new Uri each time we ask for one (its 

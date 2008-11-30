@@ -85,18 +85,21 @@ namespace Gendarme.Framework {
 
 						BuildCustomAttributes (type, e);
 
-						foreach (FieldDefinition field in type.Fields) {
-							BuildCustomAttributes (field, e);
+						if (type.HasFields) {
+							foreach (FieldDefinition field in type.Fields)
+								BuildCustomAttributes (field, e);
 						}
 
 						// TODO check custom attributes (events)
 						// TODO check custom attributes (properties)
 
-						foreach (MethodDefinition ctor in type.Constructors) {
-							Build (ctor, e);
+						if (type.HasConstructors) {
+							foreach (MethodDefinition ctor in type.Constructors)
+								Build (ctor, e);
 						}
-						foreach (MethodDefinition method in type.Methods) {
-							Build (method, e);
+						if (type.HasMethods) {
+							foreach (MethodDefinition method in type.Methods)
+								Build (method, e);
 						}
 					}
 				}
@@ -105,7 +108,7 @@ namespace Gendarme.Framework {
 
 		private void BuildCustomAttributes (ICustomAttributeProvider custom, EngineEventArgs e)
 		{
-			if (custom.CustomAttributes.Count > 0) {
+			if (custom.HasCustomAttributes) {
 				EventHandler<EngineEventArgs> handler = BuildingCustomAttributes;
 				if (handler != null)
 					handler (custom, e);

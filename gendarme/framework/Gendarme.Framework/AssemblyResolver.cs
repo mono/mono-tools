@@ -102,14 +102,16 @@ namespace Gendarme.Framework {
 			if (type == null)
 				return (field as FieldDefinition);		// could not resolve type
 
-			foreach (FieldDefinition fd in type.Fields) {
-				if (fd.Name != field.Name)
-					continue;
+			if (type.HasFields) {
+				foreach (FieldDefinition fd in type.Fields) {
+					if (fd.Name != field.Name)
+						continue;
 
-				if (!AreSame (fd.FieldType, field.FieldType))
-					continue;
+					if (!AreSame (fd.FieldType, field.FieldType))
+						continue;
 
-				return fd;
+					return fd;
+				}
 			}
 
 			return null;
@@ -158,8 +160,10 @@ namespace Gendarme.Framework {
 				if (!AreSame (meth.ReturnType.ReturnType, reference.ReturnType.ReturnType))
 					continue;
 
-				if (!AreSame (meth.Parameters, reference.Parameters))
-					continue;
+				if (meth.HasParameters) {
+					if (!AreSame (meth.Parameters, reference.Parameters))
+						continue;
+				}
 
 				return meth;
 			}
