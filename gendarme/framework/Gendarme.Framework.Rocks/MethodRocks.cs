@@ -82,10 +82,11 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsGeneratedCode (this MethodReference self)
 		{
 			MethodDefinition method = self.Resolve ();
-			if (method.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
-				return true;
-
-			return method.DeclaringType.IsGeneratedCode ();
+			if ((method != null) && method.HasCustomAttributes) {
+				if (method.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
+					return true;
+			}
+			return self.DeclaringType.IsGeneratedCode ();
 		}
 
 		/// <summary>
@@ -217,7 +218,7 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsEventCallback (this MethodReference self)
 		{
 			MethodDefinition method = self.Resolve ();
-			if (method == null)
+			if ((method == null) || !method.HasParameters)
 				return false;
 
 			ParameterDefinitionCollection parameters = method.Parameters;

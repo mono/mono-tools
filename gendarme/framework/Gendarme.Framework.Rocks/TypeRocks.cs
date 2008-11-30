@@ -386,7 +386,7 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsFlags (this TypeReference self)
 		{
 			TypeDefinition type = self.Resolve ();
-			if (!type.IsEnum)
+			if ((type == null) || !type.IsEnum || !type.HasCustomAttributes)
 				return false;
 
 			return type.HasAttribute ("System.FlagsAttribute");
@@ -411,10 +411,12 @@ namespace Gendarme.Framework.Rocks {
 		/// False otherwise (e.g. compiler or tool generated)</returns>
 		public static bool IsGeneratedCode (this TypeReference self)
 		{
-			// both helpful attributes only exists in 2.0 and more recent frameworks
-			if (self.Module.Assembly.Runtime >= TargetRuntime.NET_2_0) {
-				if (self.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
-					return true;
+			if (self.HasCustomAttributes) {
+				// both helpful attributes only exists in 2.0 and more recent frameworks
+				if (self.Module.Assembly.Runtime >= TargetRuntime.NET_2_0) {
+					if (self.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
+						return true;
+				}
 			}
 
 			// sadly <Module> still shows up for 2.0, so the 1.x logic still applies

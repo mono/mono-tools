@@ -1,3 +1,12 @@
+2008-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* FieldRocks.cs: Use HasCustomAttributes in IsGeneratedCode. Handle
+	unresolvable fields in IsVisible.
+	* MethodRocks.cs: Use HasCustomAttributes in IsGeneratedCode. Use
+	HasParameters in IsEventCallback.
+	* TypeRocks.cs: Use HasCustomAttributes in IsGeneratedCode. Handle
+	unresolvable fields in IsFlag.
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypeRocks.cs: Make GetMethod smarter and check only the methods

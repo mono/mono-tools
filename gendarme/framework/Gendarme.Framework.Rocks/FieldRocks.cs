@@ -42,7 +42,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the field was not added directly by the developer, False otherwise</returns>
 		public static bool IsGeneratedCode (this FieldReference self)
 		{
-			return self.Resolve ().CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes);
+			FieldDefinition field = self.Resolve ();
+			if ((field == null) || !field.HasCustomAttributes)
+				return false;
+			return field.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes);
 		}
 
 		/// <summary>
@@ -53,7 +56,7 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsVisible (this FieldReference self)
 		{
 			FieldDefinition field = self.Resolve ();
-			if (field.IsPrivate || field.IsAssembly)
+			if ((field == null) || field.IsPrivate || field.IsAssembly)
 				return false;
 			return field.DeclaringType.Resolve ().IsVisible ();
 		}
