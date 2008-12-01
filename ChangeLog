@@ -1,3 +1,7 @@
+2008-12-01  Atsushi Enomoto  <atsushi@ximian.com>
+
+	* Makefile.am : remove gnunit. It does not build anymore.
+
 2008-11-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Produce gendarme.exe.config from .in file (modified
