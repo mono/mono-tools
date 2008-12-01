@@ -136,8 +136,10 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			// it's ok if the code is conditionally compiled for DEBUG or TRACE purposes
-			if (HasConditionalAttributeForDebugging (method.CustomAttributes))
-				return RuleResult.Success;
+			if (method.HasCustomAttributes) {
+				if (HasConditionalAttributeForDebugging (method.CustomAttributes))
+					return RuleResult.Success;
+			}
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				// look for a call...

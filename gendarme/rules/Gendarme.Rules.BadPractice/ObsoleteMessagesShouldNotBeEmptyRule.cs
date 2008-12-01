@@ -81,55 +81,69 @@ namespace Gendarme.Rules.BadPractice {
 			};
 		}
 
-		private static bool CheckAttributes (CustomAttributeCollection cac)
+		private void CheckAttributes (ICustomAttributeProvider cap)
 		{
-			foreach (CustomAttribute ca in cac) {
+			if (!cap.HasCustomAttributes)
+				return;
+
+			foreach (CustomAttribute ca in cap.CustomAttributes) {
 				if (ca.Constructor.DeclaringType.FullName != ObsoleteAttribute)
 					continue;
 
-				// no parameter == empty description
 				// note: we don't have to check fields since they cannot be used
 				// (as the Message property isn't read/write it cannot be a named argument)
-				if (ca.ConstructorParameters.Count == 0)
-					return true;
 
-				// Message is the first parameter in both ctors (with params)
-				return String.IsNullOrEmpty ((string) ca.ConstructorParameters [0]);
+				// no parameter == empty description
+				if (ca.ConstructorParameters.Count == 0) {
+					Runner.Report ((IMetadataTokenProvider) cap, Severity.Medium, Confidence.High);
+				} else if (String.IsNullOrEmpty ((string) ca.ConstructorParameters [0])) {
+					// Message is the first parameter in both ctors (with params)
+					Runner.Report ((IMetadataTokenProvider) cap, Severity.Medium, Confidence.High);
+				}
 			}
 			// no System.ObsoleteAttribute found inside the collection
-			return false;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// handles AttributeTargets.[Class | Struct | Enum | Interface | Delegate]
-			if (CheckAttributes (type.CustomAttributes))
-				Runner.Report (type, Severity.Medium, Confidence.High);
+			CheckAttributes (type);
 
 			// handles AttributeTargets.Property
 			// properties can be obsoleted - but this is different
 			// than the getter/setter that CheckMethod will report
-			foreach (PropertyDefinition property in type.Properties) {
-				if (CheckAttributes (property.CustomAttributes))
-					Runner.Report (property, Severity.Medium, Confidence.High);
+			if (type.HasProperties) {
+				foreach (PropertyDefinition property in type.Properties) {
+					CheckAttributes (property);
+				}
 			}
 
 			// handle AttributeTargets.Event
-			foreach (EventDefinition evnt in type.Events) {
-				if (CheckAttributes (evnt.CustomAttributes))
-					Runner.Report (evnt, Severity.Medium, Confidence.High);
+			if (type.HasEvents) {
+				foreach (EventDefinition evnt in type.Events) {
+					CheckAttributes (evnt);
+				}
 			}
 
 			// handle AttributeTargets.Field
-			foreach (FieldDefinition field in type.Fields) {
-				if (CheckAttributes (field.CustomAttributes))
-					Runner.Report (field, Severity.Medium, Confidence.High);
+			if (type.HasFields) {
+				foreach (FieldDefinition field in type.Fields) {
+					CheckAttributes (field);
+				}
 			}
 
-			// handles AttributeTargets.[Constructor | Method]
-			foreach (MethodDefinition method in type.AllMethods ()) {
-				if (CheckAttributes (method.CustomAttributes))
-					Runner.Report (method, Severity.Medium, Confidence.High);
+			// handles AttributeTargets.Constructor
+			if (type.HasConstructors) {
+				foreach (MethodDefinition ctor in type.Constructors) {
+					CheckAttributes (ctor);
+				}
+			}
+
+			// handles AttributeTargets.Method
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods) {
+					CheckAttributes (method);
+				}
 			}
 
 			return Runner.CurrentRuleResult;

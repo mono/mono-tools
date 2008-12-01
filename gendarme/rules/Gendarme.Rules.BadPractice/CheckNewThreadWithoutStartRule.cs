@@ -96,15 +96,15 @@ namespace Gendarme.Rules.BadPractice {
 				case Code.Stfld:
 					return true;
 				case Code.Call: //call (to the thread or as an argument)
-				case Code.Callvirt: {
-						MethodReference calledMethod = (MethodReference) usage.Instruction.Operand;
-						if (calledMethod.Parameters.Count <= usage.StackOffset) {
-							//thread.Method (not used as a parameter)
-							if (calledMethod.Name != "Start")
-								break;
-						}
-						return true;
+				case Code.Callvirt:
+					MethodReference calledMethod = (MethodReference) usage.Instruction.Operand;
+					int pcount = calledMethod.HasParameters ? calledMethod.Parameters.Count : 0;
+					if (pcount <= usage.StackOffset) {
+						//thread.Method (not used as a parameter)
+						if (calledMethod.Name != "Start")
+							break;
 					}
+					return true;
 				}
 			}
 			return false;

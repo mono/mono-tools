@@ -63,7 +63,7 @@ namespace Gendarme.Rules.BadPractice {
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			if (assembly.CustomAttributes.Count == 0)
+			if (!assembly.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
 			// once compiled [AssemblyVersion] is not part of the custom attributes

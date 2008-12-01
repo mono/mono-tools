@@ -128,13 +128,13 @@ namespace Gendarme.Rules.BadPractice {
 					case Code.Calli:
 					case Code.Callvirt:
 					case Code.Newobj:
-					case Code.Initobj: {
-							IMethodSignature calledMethod = (IMethodSignature) usage.Instruction.Operand;
-							if (calledMethod.Parameters.Count <= usage.StackOffset)
-								break; //not used as a parameter
-							exceptionUsed = true;
-							break;
-						}
+					case Code.Initobj:
+						IMethodSignature calledMethod = (IMethodSignature) usage.Instruction.Operand;
+						int pcount = calledMethod.HasParameters ? calledMethod.Parameters.Count : 0;
+						if (pcount <= usage.StackOffset)
+							break; //not used as a parameter
+						exceptionUsed = true;
+						break;
 					}
 					if (exceptionUsed)
 						break;

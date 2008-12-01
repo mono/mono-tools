@@ -1,3 +1,13 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidAssemblyVersionMismatchRule.cs: Use HasCustomAttributes
+	* AvoidVisibleConstantFieldRule.cs: Use HasFields
+	* CheckNewExceptionWithoutThrowingRule.cs: Use HasParameters
+	* CheckNewThreadWithoutStartRule.cs: Use HasParameters
+	* DisableDebuggingCodeRule.cs: Use HasCustomAttributes
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Use HasCustomAttributes,
+	HasEvents, HasFields, HasProperties, HasConstructors and HasMethods
+
 2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCallingProblematicMethodsRule.cs: Rework SortedDictionary not
