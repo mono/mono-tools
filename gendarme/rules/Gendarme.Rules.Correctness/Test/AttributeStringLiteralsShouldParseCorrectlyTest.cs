@@ -62,7 +62,7 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void SkipOnAttributelessMethodsTest ()
 		{
-			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			AssertRuleSuccess (SimpleMethods.EmptyMethod);
 		}
 		
 		[ValidSince ("1.0.0.0")]
@@ -172,7 +172,7 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void SkipOnAttributelessTypesTest ()
 		{
-			AssertRuleDoesNotApply (SimpleTypes.Class);
+			AssertRuleSuccess (SimpleTypes.Class);
 		}
 		
 		[ValidSince ("1.0.0.0")]
