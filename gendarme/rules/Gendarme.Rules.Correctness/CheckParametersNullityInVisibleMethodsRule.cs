@@ -84,7 +84,7 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// p/invoke, abstract methods and method without parameters
-			if (!method.HasBody || (method.Parameters.Count == 0) || !method.IsVisible ())
+			if (!method.HasBody || !method.HasParameters || !method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			has_null_check.ClearAll ();

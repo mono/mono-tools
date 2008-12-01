@@ -1,3 +1,16 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AttributeStringLiteralsShouldParseCorrectlyRule.cs: Use 
+	Has{x} methods to avoid creating empty collections in Cecil. Remove 
+	the checks leading to DoesNotApply since they were too complex to
+	improve readability (with added Has{x} calls) and did not help 
+	performance.
+	* AvoidConstructorsInStaticTypesRule.cs: Use HasConstructors, 
+	HasMethods and HasFields.
+	* CheckParametersNullityInVisibleMethodsRule.cs: Use HasParameters
+	* DisposableFieldsShouldBeDisposedRule.cs: Use HasFields to skip
+	the second half of the rule.
+	
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationRule.cs: Avoid calling Body.Instructions 

@@ -131,6 +131,10 @@ namespace Gendarme.Rules.Correctness {
 			//Check for baseDispose
 			CheckBaseDispose (type, implicitDisposeMethod, explicitDisposeMethod);
 
+			// skip the rest if the type does not provide any fields itself
+			if (!type.HasFields)
+				return Runner.CurrentRuleResult;
+
 			//List of disposeableFields
 			disposeableFields.Clear ();
 			foreach (FieldDefinition field in type.Fields) {

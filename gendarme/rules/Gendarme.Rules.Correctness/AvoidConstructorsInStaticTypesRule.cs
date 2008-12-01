@@ -85,20 +85,26 @@ namespace Gendarme.Rules.Correctness {
 			if (type == null)
 				return false;
 
-			foreach (MethodDefinition ctor in type.Constructors) {
-				// let's the default ctor pass (since it's always here for 1.x code)
-				if (!ctor.IsStatic && (ctor.Parameters.Count > 1))
-					return false;
+			if (type.HasConstructors) {
+				foreach (MethodDefinition ctor in type.Constructors) {
+					// let's the default ctor pass (since it's always here for 1.x code)
+					if (!ctor.IsStatic && ctor.HasParameters)
+						return false;
+				}
 			}
 
-			foreach (MethodDefinition method in type.Methods) {
-				if (!method.IsStatic)
-					return false;
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods) {
+					if (!method.IsStatic)
+						return false;
+				}
 			}
 
-			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsStatic)
-					return false;
+			if (type.HasFields) {
+				foreach (FieldDefinition field in type.Fields) {
+					if (!field.IsStatic)
+						return false;
+				}
 			}
 
 			if (type.BaseType.FullName == "System.Object")

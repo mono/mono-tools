@@ -141,7 +141,11 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 		
-		void CheckAttributesIn (ICustomAttributeProvider provider) {
+		void CheckAttributesIn (ICustomAttributeProvider provider)
+		{
+			if (!provider.HasCustomAttributes)
+				return;
+
 			//There isn't a relationship between
 			//IMetadataTokenProvider and ICustomAttributeProvider,
 			//altough a method, or type, implements both interfaces.
@@ -153,58 +157,39 @@ namespace Gendarme.Rules.Correctness {
 
 		void CheckAttributesIn (IEnumerable targets)
 		{
-			foreach (ICustomAttributeProvider provider in targets) 
-				CheckAttributesIn (provider);	
+			foreach (ICustomAttributeProvider provider in targets)
+				CheckAttributesIn (provider);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (method.CustomAttributes.Count == 0 &&
-				!ContainsCustomAttributes (method.Parameters) &&
-				method.ReturnType.CustomAttributes.Count == 0 &&
-				!ContainsCustomAttributes (method.GenericParameters))
-				return RuleResult.DoesNotApply;
-			
-			CheckAttributesIn (method);		
-			CheckAttributesIn (method.Parameters);
+			CheckAttributesIn (method);
 			CheckAttributesIn (method.ReturnType);
-			CheckAttributesIn (method.GenericParameters);
+			if (method.HasParameters)
+				CheckAttributesIn (method.Parameters);
+			if (method.HasGenericParameters)
+				CheckAttributesIn (method.GenericParameters);
 
 			return Runner.CurrentRuleResult;
 		}
 
-		static bool ContainsCustomAttributes (IEnumerable providers)
-		{
-			foreach (ICustomAttributeProvider provider in providers) {
-				if (provider.CustomAttributes.Count != 0)
-					return true;
-			}
-			return false;
-		}
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.CustomAttributes.Count == 0 &&
-				!ContainsCustomAttributes (type.Fields) &&
-				!ContainsCustomAttributes (type.Properties) &&
-				!ContainsCustomAttributes (type.Events) &&
-				!ContainsCustomAttributes (type.GenericParameters))
-				return RuleResult.DoesNotApply;
-			
 			CheckAttributesIn (type);
-			CheckAttributesIn (type.Fields); 
-			CheckAttributesIn (type.Properties);
-			CheckAttributesIn (type.Events);
-			CheckAttributesIn (type.GenericParameters);
+			if (type.HasFields)
+				CheckAttributesIn (type.Fields); 
+			if (type.HasProperties)
+				CheckAttributesIn (type.Properties);
+			if (type.HasEvents)
+				CheckAttributesIn (type.Events);
+			if (type.HasGenericParameters)
+				CheckAttributesIn (type.GenericParameters);
 
 			return Runner.CurrentRuleResult;
 		}
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			if (assembly.CustomAttributes.Count == 0 && !ContainsCustomAttributes (assembly.Modules))
-				return RuleResult.DoesNotApply;
-			
 			CheckAttributesIn (assembly);
 			CheckAttributesIn (assembly.Modules);
 			
