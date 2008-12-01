@@ -88,7 +88,7 @@ namespace Gendarme.Rules.Design.Generic {
 
 			if (invoke.ReturnType.ReturnType.FullName != "System.Void")
 				return RuleResult.Success;
-			if (invoke.Parameters.Count != 2)
+			if (!invoke.HasParameters || (invoke.Parameters.Count != 2))
 				return RuleResult.Success;
 			if (invoke.Parameters [0].ParameterType.FullName != "System.Object")
 				return RuleResult.Success;
