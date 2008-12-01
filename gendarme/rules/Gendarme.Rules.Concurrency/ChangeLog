@@ -1,3 +1,7 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: Use HasFields
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProtectCallToEventDelegatesRule.cs: Change documentation comments
