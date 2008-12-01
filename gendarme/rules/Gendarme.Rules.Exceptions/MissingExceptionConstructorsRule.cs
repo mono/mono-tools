@@ -128,11 +128,13 @@ namespace Gendarme.Rules.Exceptions {
 				if (ctor.IsStatic)
 					continue;
 
-				switch (ctor.Parameters.Count) {
-				case 0:
+				if (!ctor.HasParameters) {
 					// there can be only one so only it's visibility matters
 					empty_ctor = ctor.IsPublic;
-					break;
+					continue;
+				}
+
+				switch (ctor.Parameters.Count) {
 				case 1:
 					string_ctor |= CheckForStringConstructor (ctor);
 					break;

@@ -1,3 +1,9 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs: Use HasParameters
+	* InstantiateArgumentExceptionCorrectlyRule.cs: Use HasParameters
+	* MissingExceptionConstructorsRule.cs: Use HasParameters
+
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: Specify 

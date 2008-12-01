@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Exceptions {
 
 				// check if the ctor used is the default, parameter-less, one
 				MethodReference ctor = (ins.Operand as MethodReference);
-				if (ctor.Parameters.Count > 0)
+				if (ctor.HasParameters)
 					continue;
 
 				string name = ctor.DeclaringType.FullName;

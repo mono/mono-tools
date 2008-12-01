@@ -90,8 +90,9 @@ namespace Gendarme.Rules.Exceptions {
 				return false;
 
 			if (method.IsProperty ()) {
-				return String.Compare (method.Name.Substring (4), operand) == 0;
+				return String.Compare (method.Name, 4, operand, 0, operand.Length) == 0;
 			} else {
+				// note: we already know there are Parameters for this method is we got here
 				foreach (ParameterDefinition parameter in method.Parameters) {
 					if (String.Compare (parameter.Name, operand) == 0)
 						return true;
@@ -102,10 +103,9 @@ namespace Gendarme.Rules.Exceptions {
 
 		private void CheckArgumentException (MethodReference ctor, Instruction ins, MethodDefinition method)
 		{
-			int parameters = ctor.Parameters.Count;
 			// OK		public ArgumentException ()
 			// OK		public ArgumentException (string message)
-			if (parameters < 2)
+			if (!ctor.HasParameters || (ctor.Parameters.Count < 2))
 				return;
 
 			// OK		public ArgumentException (string message, Exception innerException)
@@ -124,11 +124,11 @@ namespace Gendarme.Rules.Exceptions {
 		// ctors are identical for ArgumentNullException, ArgumentOutOfRangeException and DuplicateWaitObjectException
 		private void CheckOtherExceptions (MethodReference constructor, Instruction ins, MethodDefinition method)
 		{
-			int parameters = constructor.Parameters.Count;
 			// OK		public ArgumentNullException ()
-			if (parameters < 1)
+			if (!constructor.HasParameters)
 				return;
 
+			int parameters = constructor.Parameters.Count;
 			// OK		protected ArgumentNullException (SerializationInfo info, StreamingContext context)
 			// OK		public ArgumentNullException (string message, Exception innerException)
 			if ((parameters == 2) && (constructor.Parameters [1].ParameterType.FullName != "System.String"))
@@ -152,7 +152,7 @@ namespace Gendarme.Rules.Exceptions {
 			// don't process methods without parameters unless it's a special method (e.g. a property)
 			// this cover cases like "if (x == null) CallLocalizedThrow();" and the inner type compilers
 			// generates for yield/iterator (a field is used)
-			if (!method.IsSpecialName && (method.Parameters.Count == 0))
+			if (!method.IsSpecialName && !method.HasParameters)
 				return RuleResult.DoesNotApply;
 
 			// and when the IL contains a NewObj instruction
