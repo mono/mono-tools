@@ -1,3 +1,8 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MarshalBooleansInPInvokeDeclarationsRule.cs: Use HasParameters
+	* MarshalStringsInPInvokeDeclarationsRule.cs: Use HasParameters
+
 2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Fix the case

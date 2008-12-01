@@ -80,7 +80,7 @@ namespace Gendarme.Rules.Interoperability {
 			if (!method.IsPInvokeImpl)
 				return RuleResult.DoesNotApply;
 
-			if (!method.PInvokeInfo.IsCharSetNotSpec)
+			if (!method.PInvokeInfo.IsCharSetNotSpec || !method.HasParameters)
 				return RuleResult.Success;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {

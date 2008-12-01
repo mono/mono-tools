@@ -79,12 +79,14 @@ namespace Gendarme.Rules.Interoperability {
 				return RuleResult.DoesNotApply;
 
 			// check all parameters
-			foreach (ParameterDefinition parameter in method.Parameters) {
-				if (!CheckBooleanMarshalling (parameter, parameter.ParameterType)) {
-					// we can't be sure (confidence) that the MarshalAs is needed
-					// since most of the time the default (4 bytes) is ok - but 
-					// the severity is high because this mess up the stack
-					Runner.Report (parameter, Severity.High, Confidence.Normal);
+			if (method.HasParameters) {
+				foreach (ParameterDefinition parameter in method.Parameters) {
+					if (!CheckBooleanMarshalling (parameter, parameter.ParameterType)) {
+						// we can't be sure (confidence) that the MarshalAs is needed
+						// since most of the time the default (4 bytes) is ok - but 
+						// the severity is high because this mess up the stack
+						Runner.Report (parameter, Severity.High, Confidence.Normal);
+					}
 				}
 			}
 
