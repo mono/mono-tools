@@ -1,3 +1,20 @@
+2008-12-01  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs:
+	- Added interface IHeapItemSetStatisticsSubject to represents criteria
+	by which heap item sets can be examined, implemented by LoadedClass,
+	StackTrace and LoadedMethod.
+	- Added methods to IHeapItem (and implementations) to get the item
+	allocator method and call stack.
+	- Added filter classes (FilterHeapItemByAllocatorMethod,
+	HeapItemWasAllocatedByMethod, FilterHeapItemByAllocationCallStack...)
+	to filter by those criteria.
+	- Added abstract class HeapItemSetStatisticsBySubject to factor the
+	building of statistics (implemented by HeapItemSetClassStatistics,
+	HeapItemSetMethodStatistics and HeapItemSetCallStackStatistics).
+	- Inside HeapItemSet added the BuildStatistics generic method (which
+	works with the previous classes).
+	- Inside HeapItemSet added the FindObjectAllocations functionality.
+
 2008-11-03  Massimiliano Mantione <massi@ximian.com>
 	* BaseTypes.cs: Added "header start time" property to the event
 	handler, so that there is always a "context" of when the event block

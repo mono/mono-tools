@@ -1,3 +1,14 @@
+2008-12-01  Massimiliano Mantione <massi@ximian.com>
+	* HeapExplorerTreeModel.cs: Linked all root nodes n a list, so that it
+	is possible to find the allocation event of a given heap object (now
+	IRootNode implements the ProviderOfPreviousAllocationsSets interface).
+	* HeapSnapshotExplorer.cs: Created class StatisticsNodeMenuHandler
+	(implemented for classes, methods and call stacks) to rationalize the
+	hadling of menus), and turned ClassStatisticsNode into a more general
+	StatisticsNode because now it works with all the three abov concepts.
+	* LoadedClassChooser.cs: Make the dialog work with methods and call
+	stacks instead of just classes.
+
 2008-11-03  Massimiliano Mantione <massi@ximian.com>
 	* HeapExplorerTreeModel.cs: Massive refactory of "Node" class, making
 	it generic in terms of the node contents (HeapObject-AllocatedObject).

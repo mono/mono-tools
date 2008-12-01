@@ -65,6 +65,7 @@
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
                 <property name="HeadersClickable">True</property>
+                <signal name="ButtonPressEvent" handler="OnListButtonPress" />
               </widget>
             </child>
           </widget>
@@ -74,7 +75,7 @@
   </widget>
   <widget class="Gtk.Dialog" id="Mono.Profiler.LoadedClassChooser" design-size="400 300">
     <property name="MemberName" />
-    <property name="Title" translatable="yes">Choose class</property>
+    <property name="Title" translatable="yes">Choose item</property>
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Modal">True</property>
     <property name="Buttons">2</property>

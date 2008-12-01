@@ -63,6 +63,7 @@ namespace Mono.Profiler {
             }
             this.Show();
             this.Tree.ButtonPressEvent += new Gtk.ButtonPressEventHandler(this.OnTreeButtonPress);
+            this.PerClassStatistics.ButtonPressEvent += new Gtk.ButtonPressEventHandler(this.OnListButtonPress);
         }
     }
 }

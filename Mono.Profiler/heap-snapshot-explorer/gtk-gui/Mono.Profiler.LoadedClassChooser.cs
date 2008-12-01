@@ -25,7 +25,7 @@ namespace Mono.Profiler {
             Stetic.Gui.Initialize(this);
             // Widget Mono.Profiler.LoadedClassChooser
             this.Name = "Mono.Profiler.LoadedClassChooser";
-            this.Title = Mono.Unix.Catalog.GetString("Choose class");
+            this.Title = Mono.Unix.Catalog.GetString("Choose item");
             this.WindowPosition = ((Gtk.WindowPosition)(4));
             this.Modal = true;
             this.HasSeparator = false;
