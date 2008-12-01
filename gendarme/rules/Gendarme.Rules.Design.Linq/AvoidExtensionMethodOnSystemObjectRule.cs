@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Design.Linq {
 			if (!method.IsStatic)
 				return false;
 
-			if (method.Parameters.Count < 1)
+			if (!method.HasParameters)
 				return false;
 
 			return method.HasAttribute ("System.Runtime.CompilerServices.ExtensionAttribute");
