@@ -1,3 +1,10 @@
+2008-12-02  Jb Evain  <jbevain@novell.com>
+
+	* AssemblyResolver.cs: backport of r120410.
+	In AreSame(TypeReference,TypeReference), fix the case where we
+	compare two GenericInstanceType of the same element type
+	with differente generic arguments.
+
 2008-11-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Use Has{x} to avoid creating fields and 
