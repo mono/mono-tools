@@ -82,7 +82,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//type does not apply if not an interface or is an empty interface
-			if (!type.IsInterface || type.Methods.Count == 0)
+			if (!type.IsInterface || !type.HasMethods)
 				return RuleResult.DoesNotApply;
 
 			//TODO: take into account [InternalsVisibleTo] on iface's assembly
@@ -128,7 +128,7 @@ namespace Gendarme.Rules.Design {
 				return false;
 
 			//if type has less methods than the interface no need to check further
-			if (type.Methods.Count < iface.Methods.Count)
+			if (!type.HasMethods || (type.Methods.Count < iface.Methods.Count))
 				return false;
 
 			//type already publicly says it implements the interface
@@ -145,13 +145,23 @@ namespace Gendarme.Rules.Design {
 				//ok interesting candidate! let's check if it matches the signature
 				if (!AreSameOriginalTypes (m.ReturnType.ReturnType, candidate.ReturnType.ReturnType))
 					return false;
-				if (m.Parameters.Count != candidate.Parameters.Count)
+
+				int mp_count = m.HasGenericParameters ? m.GenericParameters.Count : 0;
+				int cp_count = candidate.HasGenericParameters ? candidate.GenericParameters.Count : 0;
+				if (mp_count != cp_count)
 					return false;
-				if (m.GenericParameters.Count != candidate.GenericParameters.Count)
+
+				mp_count = m.HasParameters ? m.Parameters.Count : 0;
+				cp_count = candidate.HasParameters ? candidate.Parameters.Count : 0;
+				if (mp_count != cp_count)
 					return false;
-				for (int i = 0; i < m.Parameters.Count; ++i)
-					if (!AreSameOriginalTypes (m.Parameters [i].ParameterType, candidate.Parameters [i].ParameterType))
-						return false;
+
+				if (mp_count > 0) {
+					for (int i = 0; i < mp_count; ++i) {
+						if (!AreSameOriginalTypes (m.Parameters [i].ParameterType, candidate.Parameters [i].ParameterType))
+							return false;
+					}
+				}
 			}
 
 			return true;

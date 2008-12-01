@@ -44,7 +44,7 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			if (assembly.CustomAttributes.Count == 0)
+			if (!assembly.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
 			if (assembly.HasAttribute (AttributeName))

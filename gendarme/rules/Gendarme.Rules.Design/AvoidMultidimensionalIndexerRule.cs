@@ -73,7 +73,7 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			// if there is a single argument or if the method is not visible outside the assembly
-			if ((method.Parameters.Count == 1) || !method.IsVisible ())
+			if ((method.HasParameters && (method.Parameters.Count == 1)) || !method.IsVisible ())
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.Medium, Confidence.Total);

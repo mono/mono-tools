@@ -87,25 +87,25 @@ namespace Gendarme.Rules.Design {
 
 		private bool CheckAmountOfParameters (TypeReference eventType, MethodReference invoke)
 		{
-			if (invoke.Parameters.Count == 2)
+			if (invoke.HasParameters && (invoke.Parameters.Count == 2))
 				return true;
 
 			Runner.Report (eventType, Severity.Medium, Confidence.High, "The delegate should have 2 parameters");
 			return false;
 		}
 
-		private bool CheckParameterTypes (TypeReference eventType, ParameterDefinitionCollection invokeParameters)
+		private bool CheckParameterTypes (TypeReference eventType, MethodReference invoke)
 		{
 			bool ok = true;
-			if (invokeParameters.Count >= 1) {
-				string type_name = invokeParameters [0].ParameterType.FullName;
+			if (invoke.HasParameters && (invoke.Parameters.Count >= 1)) {
+				string type_name = invoke.Parameters [0].ParameterType.FullName;
 				if (String.Compare (type_name, "System.Object") != 0) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", type_name));
 					ok = false;
 				}
 			}
-			if (invokeParameters.Count >= 2) {
-				if (!invokeParameters [1].ParameterType.Inherits ("System.EventArgs")) {
+			if (invoke.HasParameters && (invoke.Parameters.Count >= 2)) {
+				if (!invoke.Parameters [1].ParameterType.Inherits ("System.EventArgs")) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, "The second parameter should be a subclass of System.EventArgs");
 					ok = false;
 				}
@@ -124,7 +124,7 @@ namespace Gendarme.Rules.Design {
 		
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.Events.Count == 0)  
+			if (!type.HasEvents)
 				return RuleResult.DoesNotApply;
 
 			// Note: this is a bit more complex than it seems at first sight
@@ -145,8 +145,7 @@ namespace Gendarme.Rules.Design {
 				//If we are using the Generic
 				//EventHandler<TEventArgs>, the compiler forces
 				//us to write the correct signature
-				bool valid = (td.GenericParameters.Count == 0) ?
-					CheckDelegate (td) : CheckGenericDelegate (td);
+				bool valid = (td.HasGenericParameters) ? CheckGenericDelegate (td) : CheckDelegate (td);
 
 				// avoid re-processing the same *valid* type multiple times
 				if (valid)
@@ -164,7 +163,7 @@ namespace Gendarme.Rules.Design {
 			// we cannot short-circuit since we would miss reporting some defects
 			bool valid = CheckReturnVoid (type, invoke);
 			valid &= CheckAmountOfParameters (type, invoke);
-			valid &= CheckParameterTypes (type, invoke.Parameters);
+			valid &= CheckParameterTypes (type, invoke);
 			if (invoke.Parameters.Count > 0)
 				valid &= CheckParameterName (type, invoke.Parameters [0], "sender");
 			if (invoke.Parameters.Count > 1)

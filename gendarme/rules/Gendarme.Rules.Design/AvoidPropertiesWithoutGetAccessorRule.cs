@@ -83,7 +83,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies to type with properties
-			if (type.Properties.Count == 0)
+			if (!type.HasProperties)
 				return RuleResult.DoesNotApply;
 
 			// rule applies

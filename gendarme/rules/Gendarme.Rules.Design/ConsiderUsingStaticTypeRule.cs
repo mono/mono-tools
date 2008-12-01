@@ -78,32 +78,34 @@ namespace Gendarme.Rules.Design {
 
 		static bool IsAllStatic (TypeDefinition type)
 		{
-			foreach (MethodDefinition ctor in type.Constructors) {
-				// let's the default ctor pass (since it's always here for 1.x code)
-				if (!ctor.IsStatic && (ctor.Parameters.Count > 0))
-					return false;
+			if (type.HasConstructors) {
+				foreach (MethodDefinition ctor in type.Constructors) {
+					// let's the default ctor pass (since it's always here for 1.x code)
+					if (!ctor.IsStatic && ctor.HasParameters)
+						return false;
+				}
 			}
-
-			foreach (MethodDefinition method in type.Methods) {
-				if (!method.IsStatic)
-					return false;
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods) {
+					if (!method.IsStatic)
+						return false;
+				}
 			}
-
-			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsStatic)
-					return false;
+			if (type.HasFields) {
+				foreach (FieldDefinition field in type.Fields) {
+					if (!field.IsStatic)
+						return false;
+				}
 			}
-			
 			return true;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only if the type isn't: an enum, an interface, a struct, a delegate or compiler generated
-			if (type.IsEnum || type.IsInterface || type.IsValueType
-				|| type.IsDelegate () || type.IsGeneratedCode ()
-				|| type.BaseType != null && type.BaseType.FullName != "System.Object" 
-				|| type.Fields.Count == 0 && type.Methods.Count == 0)
+			if (type.IsEnum || type.IsInterface || type.IsValueType || !type.HasFields && !type.HasMethods
+				|| type.IsDelegate () || type.IsGeneratedCode () 
+				|| type.BaseType != null && type.BaseType.FullName != "System.Object")
 				return RuleResult.DoesNotApply;
 			
 			// success if the type is already static

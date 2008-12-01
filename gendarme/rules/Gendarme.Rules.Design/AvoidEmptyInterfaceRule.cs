@@ -70,11 +70,11 @@ namespace Gendarme.Rules.Design {
 			// rule applies!
 
 			// first check if the interface defines it's own members
-			if (type.Methods.Count > 0)
+			if (type.HasMethods)
 				return RuleResult.Success;
 
 			// otherwise it may implement more than one interface itself
-			if (type.Interfaces.Count > 1)
+			if (type.HasInterfaces && (type.Interfaces.Count > 1))
 				return RuleResult.Success;
 
 			Runner.Report (type, Severity.Low, Confidence.Total);

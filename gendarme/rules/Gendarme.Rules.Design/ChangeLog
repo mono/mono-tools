@@ -1,3 +1,17 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidEmptyInterfaceRule.cs: Use HasMethods and HasInterfaces
+	* AvoidMultidimensionalIndexerRule.cs: Use HasParameters
+	* AvoidPropertiesWithoutGetAccessorRule.cs: Use HasProperties
+	* ConsiderAddingInterfaceRule.cs: Use HasMethods, HasParameters and
+	HasGenericParameters.
+	* ConsiderUsingStaticTypeRule.cs: Use HasFields, HasMethods and
+	HasConstructors
+	* DeclareEventHandlersCorrectlyRule.cs: Use HasEvents and 
+	HasParameters
+	* MarkAssemblyWithAttributeRule.cs: Use HasCustomAttributes
+	* UsingCloneWithoutImplementingICloneableRule.cs: Use HasParameters
+
 2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRefAndOutParametersRule.cs: Specify StringComparison.Ordinal

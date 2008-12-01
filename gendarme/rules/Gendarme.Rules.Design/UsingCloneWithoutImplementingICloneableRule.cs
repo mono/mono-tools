@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Design {
 				if (method.Name != "Clone")
 					continue;
 
-				if (method.Parameters.Count > 0)
+				if (method.HasParameters)
 					continue;
 
 				// that return System.Object, e.g. public object Clone()
