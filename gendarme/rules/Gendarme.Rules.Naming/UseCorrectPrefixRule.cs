@@ -118,13 +118,15 @@ namespace Gendarme.Rules.Naming {
 				}
 			}
 
-			// check generic parameters. They are commonly a single letter T, V, K (ok)
-			// but if they are longer (than one char) they should start with a 'T'
-			// e.g. EventHandler<TEventArgs>
-			foreach (GenericParameter parameter in type.GenericParameters) {
-				if (IsCorrectGenericParameterName (parameter.Name)) {
-					string s = String.Format ("The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", parameter.Name);
-					Runner.Report (type, Severity.High, Confidence.High, s);
+			if (type.HasGenericParameters) {
+				// check generic parameters. They are commonly a single letter T, V, K (ok)
+				// but if they are longer (than one char) they should start with a 'T'
+				// e.g. EventHandler<TEventArgs>
+				foreach (GenericParameter parameter in type.GenericParameters) {
+					if (IsCorrectGenericParameterName (parameter.Name)) {
+						string s = String.Format ("The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", parameter.Name);
+						Runner.Report (type, Severity.High, Confidence.High, s);
+					}
 				}
 			}
 			

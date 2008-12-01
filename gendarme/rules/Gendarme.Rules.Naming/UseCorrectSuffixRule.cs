@@ -173,7 +173,7 @@ namespace Gendarme.Rules.Naming {
 		{
 			string name = type.FullName;
 			// handle types using generics
-			if ((type is GenericInstanceType) || (type.GenericParameters.Count > 0)) {
+			if ((type is GenericInstanceType) || type.HasGenericParameters) {
 				int pos = name.IndexOf ('`');
 				name = name.Substring (0, pos);
 			}

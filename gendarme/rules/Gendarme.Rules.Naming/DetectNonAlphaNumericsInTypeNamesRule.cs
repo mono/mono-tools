@@ -132,17 +132,19 @@ namespace Gendarme.Rules.Naming {
 
 			// CheckMethod covers methods, properties and events (indirectly)
 			// but we still need to cover fields
-			bool is_enum = type.IsEnum;
-			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsVisible ())
-					continue;
+			if (type.HasFields) {
+				bool is_enum = type.IsEnum;
+				foreach (FieldDefinition field in type.Fields) {
+					if (!field.IsVisible ())
+						continue;
 
-				// ignore "value__" inside every enumeration
-				if (is_enum && !field.IsStatic)
-					continue;
+					// ignore "value__" inside every enumeration
+					if (is_enum && !field.IsStatic)
+						continue;
 
-				if (!CheckName (field.Name, false)) {
-					Runner.Report (field, Severity.Medium, Confidence.High);
+					if (!CheckName (field.Name, false)) {
+						Runner.Report (field, Severity.Medium, Confidence.High);
+					}
 				}
 			}
 
@@ -163,9 +165,11 @@ namespace Gendarme.Rules.Naming {
 			if (!CheckName (method.Name, method.IsSpecialName))
 				Runner.Report (method, Severity.Medium, Confidence.High);
 
-			foreach (ParameterDefinition parameter in method.Parameters) {
-				if (!CheckName (parameter.Name, false))
-					Runner.Report (parameter, Severity.Medium, Confidence.High);
+			if (method.HasParameters) {
+				foreach (ParameterDefinition parameter in method.Parameters) {
+					if (!CheckName (parameter.Name, false))
+						Runner.Report (parameter, Severity.Medium, Confidence.High);
+				}
 			}
 
 			return Runner.CurrentRuleResult;

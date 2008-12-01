@@ -1,3 +1,15 @@
+2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRedundancyInMethodNameRule.cs: Use HasParameters
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Use HasFields and 
+	HasParameters
+	* DoNotPrefixEventsWithAfterOrBeforeRule.cs: Use HasEvents
+	* ParameterNamesShouldMatchOverridenMethodRule.cs: Use HasParameters
+	* UseCorrectCasingRule.cs: Use HasParameters
+	* UseCorrectPrefixRule.cs: Use HasGenericParameters
+	* UseCorrectSuffixRule.cs: Use HasGenericParameters
+	* UsePreferredTermsRule.cs: Use HasFields
+
 2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DetectNonAlphaNumericsInTypeNamesRule.cs: Move IsEnum check 

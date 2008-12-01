@@ -219,13 +219,16 @@ namespace Gendarme.Rules.Naming {
 					name, PascalCase (name));
 				Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
 			}
+
 			// check parameters
-			foreach (ParameterDefinition param in method.Parameters) {
-				// params should all be camelCased
-				if (!IsCamelCase (param.Name)) {
-					string errorMessage = String.Format ("By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
-						param, CamelCase (param.Name));
-					Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
+			if (method.HasParameters) {
+				foreach (ParameterDefinition param in method.Parameters) {
+					// params should all be camelCased
+					if (!IsCamelCase (param.Name)) {
+						string errorMessage = String.Format ("By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
+							param, CamelCase (param.Name));
+						Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
+					}
 				}
 			}
 

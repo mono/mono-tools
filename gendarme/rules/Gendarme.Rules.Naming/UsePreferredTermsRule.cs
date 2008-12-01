@@ -162,9 +162,11 @@ namespace Gendarme.Rules.Naming {
 		{
 			CheckIdentifier (type, type.Name, type.IsVisible () ? Severity.Medium : Severity.Low);
 
-			// fields should not be visible (in most case) so we always report low
-			foreach (FieldDefinition field in type.Fields)
-				CheckIdentifier (field, field.Name, Severity.Low);
+			if (type.HasFields) {
+				// fields should not be visible (in most case) so we always report low
+				foreach (FieldDefinition field in type.Fields)
+					CheckIdentifier (field, field.Name, Severity.Low);
+			}
 
 			return Runner.CurrentRuleResult;
 		}

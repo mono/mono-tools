@@ -107,7 +107,7 @@ namespace Gendarme.Rules.Naming {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			//does not apply if method has no parameter, is a property, or a p/invoke
-			if (method.Parameters.Count == 0 || method.IsProperty () || method.IsPInvokeImpl)
+			if (!method.HasParameters || method.IsProperty () || method.IsPInvokeImpl)
 				return RuleResult.DoesNotApply;
 
 			//if this is a constructor or override, the method name is dependent

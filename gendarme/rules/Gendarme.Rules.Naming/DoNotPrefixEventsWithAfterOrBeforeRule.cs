@@ -70,7 +70,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			// quick out if there are no fields
-			if (type.Events.Count == 0)
+			if (!type.HasEvents)
 				return RuleResult.Success;
 
 			foreach (EventDefinition evnt in type.Events) {
