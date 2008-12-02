@@ -1,3 +1,11 @@
+2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CustomAttributeRocks.cs: Use HasCustomAttributes
+	* InstructionRocks.cs: Use HasParameters
+	* MethodRocks.cs: Use HasConstraints and HasParameters
+	* TypeRocks.cs: Use HasInterfaces, HasParameters, HasMethods and
+	HasConstructors.
+
 2008-11-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* FieldRocks.cs: Use HasCustomAttributes in IsGeneratedCode. Handle

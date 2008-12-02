@@ -66,10 +66,14 @@ namespace Gendarme.Framework.Rocks {
 		public static IEnumerable<MethodDefinition> AllMethods (this TypeReference self)
 		{
 			TypeDefinition type = self.Resolve ();
-			foreach (MethodDefinition ctor in type.Constructors)
-				yield return ctor;
-			foreach (MethodDefinition method in type.Methods)
-				yield return method;
+			if (type.HasConstructors) {
+				foreach (MethodDefinition ctor in type.Constructors)
+					yield return ctor;
+			}
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods)
+					yield return method;
+			}
 		}
 
 		/// <summary>
@@ -138,13 +142,13 @@ namespace Gendarme.Framework.Rocks {
 			if (type == null)
 				return null;
 
-			if (ctors) {
+			if (ctors && type.HasConstructors) {
 				foreach (MethodDefinition ctor in type.Constructors) {
 					if (signature.Matches (ctor))
 						return ctor;
 				}
 			}
-			if (methods) {
+			if (methods && type.HasMethods) {
 				foreach (MethodDefinition method in type.Methods) {
 					if (signature.Matches (method))
 						return method;
@@ -173,19 +177,23 @@ namespace Gendarme.Framework.Rocks {
 				if (returnType != null && method.ReturnType.ReturnType.FullName != returnType)
 					continue;
 				if (parameters != null) {
-					if (parameters.Length != method.Parameters.Count)
-						continue;
-					bool parameterError = false;
-					for (int i = 0; i < parameters.Length; i++) {
-						if (parameters [i] == null)
-							continue;//ignore parameter
-						if (parameters [i] != method.Parameters [i].ParameterType.GetOriginalType ().FullName) {
-							parameterError = true;
-							break;
+					if (method.HasParameters) {
+						if (parameters.Length != method.Parameters.Count)
+							continue;
+						bool parameterError = false;
+						for (int i = 0; i < parameters.Length; i++) {
+							if (parameters [i] == null)
+								continue;//ignore parameter
+							if (parameters [i] != method.Parameters [i].ParameterType.GetOriginalType ().FullName) {
+								parameterError = true;
+								break;
+							}
 						}
+						if (parameterError)
+							continue; // there could be an overload with the "right" parameters
+					} else if (parameters.Length > 0) {
+						continue;
 					}
-					if (parameterError)
-						continue; // there could be an overload with the "right" parameters
 				}
 				if (customCondition != null && !customCondition (method))
 					continue;
@@ -295,13 +303,15 @@ namespace Gendarme.Framework.Rocks {
 		{
 			while (type != null) {
 				// does the type implements it itself
-				foreach (TypeReference iface in type.Interfaces) {
-					string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
-					if (fullname == interfaceName)
-						return true;
-					//if not, then maybe one of its parent interfaces does
-					if (Implements (iface.Resolve (), interfaceName, generic))
-						return true;
+				if (type.HasInterfaces) {
+					foreach (TypeReference iface in type.Interfaces) {
+						string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
+						if (fullname == interfaceName)
+							return true;
+						//if not, then maybe one of its parent interfaces does
+						if (Implements (iface.Resolve (), interfaceName, generic))
+							return true;
+					}
 				}
 				type = type.BaseType.Resolve ();
 			}

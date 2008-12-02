@@ -213,6 +213,7 @@ namespace Gendarme.Framework.Rocks {
 					if (index < 0)
 						return null;
 				}
+				// will not be reached if no parameters exists (hence it won't allocate empty collections)
 				return method.Parameters [index];
 			case Code.Ldarg:
 			case Code.Ldarg_S:
@@ -269,7 +270,8 @@ namespace Gendarme.Framework.Rocks {
 
 				case FlowControl.Call:
 					IMethodSignature calledMethod = (IMethodSignature) self.Operand;
-					int n = calledMethod.Parameters.Count;
+					// avoid allocating empty ParameterDefinitionCollection
+					int n = calledMethod.HasParameters ? calledMethod.Parameters.Count : 0;
 					if (self.OpCode.Code != Code.Newobj) {
 						if (calledMethod.HasThis)
 							n++;

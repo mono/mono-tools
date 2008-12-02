@@ -99,6 +99,11 @@ namespace Gendarme.Framework.Rocks {
 		/// False otherwise.</returns>
 		public static bool HasAttribute (this ICustomAttributeProvider self, string attributeName)
 		{
+			if (attributeName == null)
+				throw new ArgumentNullException ("attributeName");
+
+			if ((self == null) || !self.HasCustomAttributes)
+				return false;
 			return self.CustomAttributes.ContainsType (attributeName);
 		}
 	}

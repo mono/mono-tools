@@ -36,7 +36,7 @@ using Mono.Cecil;
 
 namespace Gendarme.Framework.Rocks {
 
-	// add CustomAttribute[Collection] extensions methods here
+	// add Method[Reference|Definition][Collection] extensions methods here
 	// only if:
 	// * you supply minimal documentation for them (xml)
 	// * you supply unit tests for them
@@ -69,7 +69,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is a finalizer, False otherwise.</returns>
 		public static bool IsFinalizer (this MethodReference self)
 		{
-			return (self.HasThis && (self.Parameters.Count == 0) && (self.Name == "Finalize") &&
+			return (self.HasThis && !self.HasParameters && (self.Name == "Finalize") &&
 				(self.ReturnType.ReturnType.FullName == "System.Void"));
 		}
 
@@ -119,16 +119,15 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 			}
 
-			switch (method.Parameters.Count) {
-			case 0:
-				// Main (void)
+			// Main (void)
+			if (!method.HasParameters)
 				return true;
-			case 1:
-				// Main (string[] args)
-				return (method.Parameters [0].ParameterType.Name == "String[]");
-			default:
+
+			if (method.Parameters.Count != 1)
 				return false;
-			}
+
+			// Main (string[] args)
+			return (method.Parameters [0].ParameterType.Name == "String[]");
 		}
 
 		/// <summary>
@@ -146,13 +145,13 @@ namespace Gendarme.Framework.Rocks {
 			while (parent != null) {
 				string name = method.Name;
 				string retval = method.ReturnType.ReturnType.FullName;
-				int pcount = method.Parameters.Count;
+				int pcount = method.HasParameters ? method.Parameters.Count : 0;
 				foreach (MethodDefinition md in parent.Methods) {
 					if (name != md.Name)
 						continue;
 					if (retval != md.ReturnType.ReturnType.FullName)
 						continue;
-					if (pcount != md.Parameters.Count)
+					if ((md.HasParameters && (pcount == 0)) || (pcount != md.Parameters.Count))
 						continue;
 
 					bool ok = true;
@@ -230,7 +229,10 @@ namespace Gendarme.Framework.Rocks {
 			if (gp == null)
 				return type.Inherits ("System.EventArgs");
 
-			return (gp.Constraints.Count == 1) ? (gp.Constraints [0].FullName == "System.EventArgs") : false;
+			if (gp.HasConstraints && (gp.Constraints.Count == 1))
+				return (gp.Constraints [0].FullName == "System.EventArgs");
+
+			return false;
 		}
 	}
 }
