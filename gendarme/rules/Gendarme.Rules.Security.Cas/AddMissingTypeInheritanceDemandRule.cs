@@ -76,9 +76,10 @@ namespace Gendarme.Rules.Security.Cas {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only to types that
-			// - are publicly visible
-			// - are not sealed
-			if (type.IsSealed || !type.IsVisible ())
+			// - are not sealed;
+			// - have a LinkDemand (so some security declarations); and
+			// - are visible outside the current assembly
+			if (type.IsSealed || !type.HasSecurityDeclarations || !type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			PermissionSet link = null;

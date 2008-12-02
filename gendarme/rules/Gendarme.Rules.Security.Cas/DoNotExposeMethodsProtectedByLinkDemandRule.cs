@@ -144,7 +144,7 @@ namespace Gendarme.Rules.Security.Cas {
 						continue;
 
 					// 4 - and if it has security, ensure we don't reduce it's strength
-					if ((callee.SecurityDeclarations.Count > 0) && !Check (method, callee)) {
+					if (callee.HasSecurityDeclarations && !Check (method, callee)) {
 						Runner.Report (method, ins, Severity.High, Confidence.High);
 					}
 					break;

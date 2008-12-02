@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Security.Cas {
 			// *** ok, the rule applies! ***
 
 			// is there any security applied ?
-			if (method.SecurityDeclarations.Count < 1) {
+			if (!method.HasSecurityDeclarations) {
 				Runner.Report (method, Severity.High, Confidence.Total, NotFound);
 				return RuleResult.Failure;
 			}

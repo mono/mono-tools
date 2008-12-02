@@ -82,7 +82,7 @@ namespace Gendarme.Rules.Security.Cas {
 			demand = null;
 
 			// #1 - this rules apply if type has security permissions
-			if (type.SecurityDeclarations.Count == 0)
+			if (!type.HasSecurityDeclarations)
 				return false;
 
 			bool apply = false;

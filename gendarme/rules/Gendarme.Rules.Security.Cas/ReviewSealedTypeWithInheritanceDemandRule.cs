@@ -77,7 +77,7 @@ namespace Gendarme.Rules.Security.Cas {
 				return RuleResult.DoesNotApply;
 
 			// 2 - the type must have an InheritanceDemand
-			if (type.SecurityDeclarations.Count == 0)
+			if (!type.HasSecurityDeclarations)
 				return RuleResult.DoesNotApply;
 
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {

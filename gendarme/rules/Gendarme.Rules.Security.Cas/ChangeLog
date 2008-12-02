@@ -1,3 +1,16 @@
+2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AddMissingTypeInheritanceDemandRule.cs: Use HasSecurityDeclarations
+	* DoNotExposeFieldsInSecuredTypeRule.cs: Use HasSecurityDeclarations
+	* DoNotExposeMethodsProtectedByLinkDemandRule.cs: Use 
+	HasSecurityDeclarations
+	* DoNotReduceTypeSecurityOnMethodsRule.cs: Use HasSecurityDeclarations
+	* ReviewNonVirtualMethodWithInheritanceDemandRule.cs: Use 
+	HasSecurityDeclarations
+	* ReviewSealedTypeWithInheritanceDemandRule.cs: Use 
+	HasSecurityDeclarations
+	* SecureGetObjectDataOverridesRule.cs: Use HasSecurityDeclarations
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

@@ -74,12 +74,12 @@ namespace Gendarme.Rules.Security.Cas {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule apply only to visible types
-			if (!type.IsVisible ())
+			// rule apply only to types protected by either a Demand or a LinkDemand
+			if (!type.HasSecurityDeclarations)
 				return RuleResult.DoesNotApply;
 
-			// rule apply only to types protected by either a Demand or a LinkDemand
-			if (type.SecurityDeclarations.Count == 0)
+			// rule apply only to visible types
+			if (!type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			bool demand = false;

@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Security.Cas {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// this rule apply only to methods with an inheritance demand
-			if (method.SecurityDeclarations.Count == 0)
+			if (!method.HasSecurityDeclarations)
 				return RuleResult.DoesNotApply;
 
 			bool inherit = false;
