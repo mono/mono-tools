@@ -264,13 +264,13 @@ namespace GuiCompare {
 				TypeDefinition resolved = CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType);
 
 				if (resolved != null) {
-					if (resolved.IsNotPublic)
-						continue;
-
 					if (IsTODOAttribute (resolved)) {
 						todos.Add (String.Format ("[{0} ({1})]", ca.Constructor.DeclaringType.Name, CecilUtils.GetTODOText (ca)));					
 						continue;
 					}
+
+					if (resolved.IsNotPublic)
+						continue;
 				}
 
 				if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName))

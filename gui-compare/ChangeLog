@@ -1,3 +1,9 @@
+2008-12-02  Chris Toshok  <toshok@ximian.com>
+
+	* CecilMetadata.cs: fix TODO attribute handling.  they aren't
+	public, so we need to handle them before we check for
+	public/private.
+
 2008-11-21  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs: improve pretty printing of Cecil types.
