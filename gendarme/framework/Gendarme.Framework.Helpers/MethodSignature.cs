@@ -118,14 +118,18 @@ namespace Gendarme.Framework.Helpers {
 				return false;
 
 			if (Parameters != null) {
-				if (Parameters.Count != method.Parameters.Count)
-					return false;
-				for (int i = 0; i < Parameters.Count; i++) {
-					if (Parameters [i] == null)
-						continue;//ignore parameter
-					if (Parameters [i] != method.Parameters [i].ParameterType.FullName) {
+				if (method.HasParameters) {
+					if (Parameters.Count != method.Parameters.Count)
 						return false;
+					for (int i = 0; i < Parameters.Count; i++) {
+						if (Parameters [i] == null)
+							continue;//ignore parameter
+						if (Parameters [i] != method.Parameters [i].ParameterType.FullName) {
+							return false;
+						}
 					}
+				} else if (Parameters.Count > 0) {
+					return false;
 				}
 			}
 

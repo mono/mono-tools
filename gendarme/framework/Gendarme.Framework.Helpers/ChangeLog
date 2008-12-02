@@ -1,3 +1,7 @@
+2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs: Use HasParameters
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Namespace.cs: Specify StringComparison.Ordinal when calling
