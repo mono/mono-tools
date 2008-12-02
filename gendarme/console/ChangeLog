@@ -1,3 +1,10 @@
+2008-12-01  Jesse Jones  <jesjones@mindspring.com>
+
+	* TextResultWriter.cs: Added a header and a trailer. Sorted 
+	defects by severity and then rule name. Include source files. 
+	To be consistent with the html "Details: " is now used with 
+	the defect text instead of the severity and confidence.
+
 2008-11-22  Jesse Jones  <jesjones@mindspring.com>
 
 	* ConsoleRunner.cs: Tweaked the status write lines to be less noisy.

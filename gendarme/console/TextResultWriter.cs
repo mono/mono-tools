@@ -80,11 +80,31 @@ namespace Gendarme {
 		protected override void Write ()
 		{
 			var query = from n in Runner.Defects
-				    orderby n.Severity
+				    orderby n.Severity, n.Rule.Name
 				    select n;
-
-			foreach (Defect defect in query)
-				WriteDefect (defect);
+			
+			WriteHeader ();
+			if (query.Any ()) {				
+				string name = string.Empty;
+				string delimiter = new string ('-', 60);
+				foreach (Defect defect in query) {
+					if (defect.Rule.Name != name) {
+						writer.WriteLine (delimiter);
+						name = defect.Rule.Name;
+					}
+					
+					WriteDefect (defect);
+				}
+			}
+			WriteTrailer (query.Count ());
+		}
+		
+		private void WriteHeader ()
+		{
+			writer.WriteLine ("Produced on {0} for:", DateTime.UtcNow);
+			foreach (AssemblyDefinition assembly in Runner.Assemblies)
+				writer.WriteLine ("   {0}", assembly.Name.Name);
+			writer.WriteLine ();
 		}
 
 		private void WriteDefect (Defect defect)
@@ -104,12 +124,14 @@ namespace Gendarme {
 			writer.Write (rule.Problem);
 			writer.WriteLine ();
 
-			writer.WriteLine ("Details [Severity: {0}, Confidence: {1}]", defect.Severity, defect.Confidence);
-			writer.WriteLine ("* Target: {0}", defect.Target);
+			writer.WriteLine ("* Severity: {0}, Confidence: {1}", defect.Severity, defect.Confidence);
+			writer.WriteLine ("* Target:   {0}", defect.Target);
 			if (defect.Location != defect.Target)
-				writer.WriteLine ("* Location: {0}", defect.Location);
+				writer.WriteLine ("* Location: {0}", defect.Location);				
+			if (!String.IsNullOrEmpty (defect.Source))
+				writer.WriteLine ("* Source:   {0}", defect.Source);
 			if (!String.IsNullOrEmpty (defect.Text))
-				writer.WriteLine ("* {0}", defect.Text);
+				writer.WriteLine ("* Details:  {0}", defect.Text);
 			writer.WriteLine ();
 
 			BeginColor (ConsoleColor.DarkGreen);
@@ -121,6 +143,16 @@ namespace Gendarme {
 			writer.WriteLine ("More info available at: {0}", rule.Uri.ToString ());
 			writer.WriteLine ();
 			writer.WriteLine ();
+		}
+
+		private void WriteTrailer (int numDefects)
+		{
+			if (numDefects == 0)
+				writer.WriteLine ("Processed {0} rules, but found no defects.", Runner.Rules.Count);
+			else if (Runner.Rules.Count == 1)
+				writer.WriteLine ("Processed one rule.");	// we don't print the number of defects here because it is listed with the defect
+			else
+				writer.WriteLine ("Processed {0} rules.", Runner.Rules.Count);
 		}
 
 		protected override void Dispose (bool disposing)
