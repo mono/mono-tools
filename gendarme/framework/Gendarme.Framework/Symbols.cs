@@ -91,7 +91,17 @@ namespace Gendarme.Framework {
 		{
 			return FormatSequencePoint (sp.Document.Url, sp.StartLine, sp.StartColumn, exact);
 		}
-
+		
+		// It would probably be a good idea to move this formatting into
+		// the reporting layer. The XML formatter would ideally not do
+		// any formatting at all so that tools could extract the line
+		// and column information without complex parsing.
+		//
+		// We might also want to allow some sort of customization of the
+		// formatting used by the text reporter. For example, most editors
+		// on the Mac have direct support for paths like foo/bar.cs:10 
+		// which include line numbers and foo/bar.cs:10:5 for paths which
+		// include line and column.
 		private static string FormatSequencePoint (string document, int line, int column, bool exact)
 		{
 			string sline = (line == PdbHiddenLine) ? "unavailable" : line.ToString ();
