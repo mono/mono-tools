@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
 
 using Mono.Cecil;
 
@@ -94,12 +95,10 @@ namespace Gendarme.Rules.BadPractice {
 				// (as the Message property isn't read/write it cannot be a named argument)
 
 				// no parameter == empty description
-				if (ca.ConstructorParameters.Count == 0) {
+				// note: Message is the first parameter in both ctors (with params)
+				IList cpc = ca.ConstructorParameters;
+				if ((cpc.Count == 0) || String.IsNullOrEmpty ((string) cpc [0]))
 					Runner.Report ((IMetadataTokenProvider) cap, Severity.Medium, Confidence.High);
-				} else if (String.IsNullOrEmpty ((string) ca.ConstructorParameters [0])) {
-					// Message is the first parameter in both ctors (with params)
-					Runner.Report ((IMetadataTokenProvider) cap, Severity.Medium, Confidence.High);
-				}
 			}
 			// no System.ObsoleteAttribute found inside the collection
 		}
