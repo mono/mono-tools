@@ -117,8 +117,10 @@ namespace Gendarme.Rules.Performance {
 				return false;
 
 			// does not apply if the method is used to register/unregister COM objects
-			if (method.CustomAttributes.ContainsAnyType (ComRegistration))
-				return false;
+			if (method.HasCustomAttributes) {
+				if (method.CustomAttributes.ContainsAnyType (ComRegistration))
+					return false;
+			}
 
 			return true;
 		}
@@ -173,7 +175,7 @@ namespace Gendarme.Rules.Performance {
 				return true;
 
 			// it's ok (used or not) if it's required to implement explicitely an interface
-			if (method.Overrides.Count > 0)
+			if (method.HasOverrides)
 				return true;
 
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
@@ -183,6 +185,9 @@ namespace Gendarme.Rules.Performance {
 				return true;
 
 			// then we must check if this type's nested types (if any) use the private method
+			if (!type.HasNestedTypes)
+				return false;
+
 			foreach (TypeDefinition nested in type.NestedTypes) {
 				if (CheckTypeForMethodUsage (nested, method))
 					return true;
@@ -206,12 +211,14 @@ namespace Gendarme.Rules.Performance {
 
 			// check if this method is needed to satisfy an interface
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
-			foreach (TypeReference tr in type.Interfaces) {
-				TypeDefinition intf = tr.Resolve ();
-				if (intf != null) {
-					foreach (MethodReference member in intf.Methods) {
-						if (method.Name == member.Name)
-							return true;
+			if (type.HasInterfaces) {
+				foreach (TypeReference tr in type.Interfaces) {
+					TypeDefinition intf = tr.Resolve ();
+					if (intf != null) {
+						foreach (MethodReference member in intf.Methods) {
+							if (method.Name == member.Name)
+								return true;
+						}
 					}
 				}
 			}
@@ -247,16 +254,19 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
 		{
-			if (type.GenericParameters.Count > 0)
+			if (type.HasGenericParameters)
 				type = type.GetOriginalType ().Resolve ();
 
 			HashSet<uint> methods = GetCache (type);
 			if (methods.Contains (GetToken (method)))
 				return true;
 
-			foreach (MethodReference mr in method.Resolve ().Overrides) {
-				if (methods.Contains (GetToken (mr)))
-					return true;
+			MethodDefinition md = method.Resolve ();
+			if ((md != null) && md.HasOverrides) {
+				foreach (MethodReference mr in md.Overrides) {
+					if (methods.Contains (GetToken (mr)))
+						return true;
+				}
 			}
 			return false;
 		}
@@ -267,11 +277,19 @@ namespace Gendarme.Rules.Performance {
 			if (!cache.TryGetValue (type, out methods)) {
 				methods = new HashSet<uint> ();
 				cache.Add (type, methods);
-				foreach (MethodDefinition md in type.AllMethods ()) {
-					if (!md.HasBody)
-						continue;
-
-					BuildMethodUsage (methods, md);
+				if (type.HasConstructors) {
+					foreach (MethodDefinition ctor in type.Constructors) {
+						if (!ctor.HasBody)
+							continue;
+						BuildMethodUsage (methods, ctor);
+					}
+				}
+				if (type.HasMethods) {
+					foreach (MethodDefinition md in type.Methods) {
+						if (!md.HasBody)
+							continue;
+						BuildMethodUsage (methods, md);
+					}
 				}
 			}
 			return methods;
@@ -285,7 +303,7 @@ namespace Gendarme.Rules.Performance {
 					continue;
 
 				TypeDefinition type = mr.DeclaringType.Resolve ();
-				if ((type != null) && (type.GenericParameters.Count > 0)) {
+				if ((type != null) && type.HasGenericParameters) {
 					methods.Add (GetToken (type.GetMethod (mr.Name)));
 				}
 				methods.Add (GetToken (mr));

@@ -116,14 +116,13 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// skip methods without parameters
-			int pcount = method.Parameters.Count;
-			if (pcount == 0)
+			if (!method.HasParameters)
 				return RuleResult.DoesNotApply;
 
 			// rule doesn't apply to virtual, overrides or generated code
 
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
-			if (method.IsVirtual || method.Overrides.Count != 0 || method.IsGeneratedCode ())
+			if (method.IsVirtual || method.HasOverrides || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 		
 			// Also EventArgs parameters are often required in method signatures,
@@ -135,6 +134,7 @@ namespace Gendarme.Rules.Performance {
 			// rule applies
 
 			// we limit ourselves to the first 64 parameters
+			int pcount = method.Parameters.Count;
 			if (pcount > 64)
 				pcount = 64;
 			ulong mask = 0;

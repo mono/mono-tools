@@ -73,11 +73,8 @@ namespace Gendarme.Rules.Performance {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule applies only to classes... 
-			if (type.IsEnum || type.IsInterface || type.IsValueType)
-				return RuleResult.DoesNotApply;
-			// ... that defines events
-			if (type.Events.Count == 0)
+			// rule applies only to classes that defines events
+			if (type.IsEnum || type.IsInterface || type.IsValueType || !type.HasEvents)
 				return RuleResult.DoesNotApply;
 
 			// type can be non-visible (private or internal) but still reachable

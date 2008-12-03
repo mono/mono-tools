@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Performance {
 			// rule does not apply to enums, interfaces and delegates
 			// or types and structures without fields
 			// nor does it apply to generated code (quite common for anonymous types)
-			if (type.IsEnum || type.IsInterface || (type.Fields.Count == 0) || type.IsDelegate () || type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsInterface || !type.HasFields || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			// copy all fields into an hashset

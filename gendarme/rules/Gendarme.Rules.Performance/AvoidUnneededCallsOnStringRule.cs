@@ -122,7 +122,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static string CheckClone (MethodReference call, Instruction ins, MethodDefinition method)
 		{
-			if (call.Parameters.Count != 0)
+			if (call.HasParameters)
 				return null;
 
 			if (!CheckTypeReference (ins.Previous.GetOperandType (method)))
@@ -137,7 +137,7 @@ namespace Gendarme.Rules.Performance {
 				return null;
 
 			// ensure it's System.String::Substring(System.Int32) and that it's given 0 as a parameter
-			if (call.Parameters.Count != 1)
+			if (call.HasParameters && (call.Parameters.Count != 1))
 				return null;
 			if (!ins.Previous.IsOperandZero ())
 				return null;
@@ -150,7 +150,7 @@ namespace Gendarme.Rules.Performance {
 			if (CheckTypeReference (call.DeclaringType)) {
 				// most probably ToString(IFormatProvider), possibly ToString()
 				return String.Format (MessageString, call.Name, 
-					(call.Parameters.Count > 1) ? "IFormatProvider" : String.Empty);
+					(call.HasParameters && (call.Parameters.Count > 1)) ? "IFormatProvider" : String.Empty);
 			} else {
 				// signature for Clone is identical (well close enough) to share code
 				return CheckClone (call, ins, method);

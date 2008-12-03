@@ -114,15 +114,22 @@ namespace Gendarme.Rules.Performance {
 
 		static void ProcessType (TypeDefinition type, HashSet<TypeReference> typeset)
 		{
-			foreach (FieldDefinition field in type.Fields) {
-				TypeReference t = field.FieldType;
-				// don't add the type itself (e.g. enums)
-				if (type != t)
-					AddType (typeset, t);
+			if (type.HasFields) {
+				foreach (FieldDefinition field in type.Fields) {
+					TypeReference t = field.FieldType;
+					// don't add the type itself (e.g. enums)
+					if (type != t)
+						AddType (typeset, t);
+				}
 			}
-
-			foreach (MethodDefinition method in type.AllMethods ())
-				ProcessMethod (method, typeset);
+			if (type.HasConstructors) {
+				foreach (MethodDefinition ctor in type.Constructors)
+					ProcessMethod (ctor, typeset);
+			}
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods)
+					ProcessMethod (method, typeset);
+			}
 		}
 
 		static void ProcessMethod (MethodDefinition method, HashSet<TypeReference> typeset)
@@ -132,11 +139,13 @@ namespace Gendarme.Rules.Performance {
 			TypeReference t = method.ReturnType.ReturnType;
 			AddType (typeset, t);
 
-			// an "out" from a p/invoke must be flagged
-			foreach (ParameterDefinition parameter in method.Parameters) {
-				// we don't want the reference (&) on the type
-				t = parameter.ParameterType.GetOriginalType ();
-				AddType (typeset, t);
+			if (method.HasParameters) {
+				// an "out" from a p/invoke must be flagged
+				foreach (ParameterDefinition parameter in method.Parameters) {
+					// we don't want the reference (&) on the type
+					t = parameter.ParameterType.GetOriginalType ();
+					AddType (typeset, t);
+				}
 			}
 
 			if (!method.HasBody)
@@ -173,12 +182,12 @@ namespace Gendarme.Rules.Performance {
 
 		static bool HasSinglePrivateConstructor (TypeDefinition type)
 		{
-			if (type.Constructors.Count != 1)
+			if (!type.HasConstructors || (type.Constructors.Count != 1))
 				return false;
 
 			var constructor = type.Constructors [0];
 
-			return (constructor.IsPrivate && (constructor.Parameters.Count == 0));
+			return (constructor.IsPrivate && !constructor.HasParameters);
 		}
 
 		public RuleResult CheckType (TypeDefinition type)

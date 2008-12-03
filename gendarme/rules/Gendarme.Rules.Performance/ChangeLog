@@ -1,3 +1,16 @@
+2008-12-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeGetTypeForConstantStringsRule.cs: Use HasParameters
+	* AvoidUncalledPrivateCodeRule.cs: Use HasGenericParameters, 
+	HasOverrides, HasInterfaces, HasNestedTypes, HasCustomAttributes,
+	HasMethods and HasConstructors
+	* AvoidUninstantiatedInternalClassesRule.cs: Use HasParameters,
+	HasFields, HasMethods and HasConstructors
+	* AvoidUnneededCallsOnStringRule.cs: Use HasParameters
+	* AvoidUnusedParametersRule.cs: Use HasOverrides and HasParameters
+	* AvoidUnusedPrivateFieldsRule.cs: Use HasFields
+	* ConsiderCustomAccessorsForNonVisibleEventsRule.cs: Use HasEvents
+
 2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Simplify call into 
