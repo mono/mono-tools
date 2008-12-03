@@ -58,7 +58,11 @@ namespace Gendarme.Framework {
 			if ((method == null) || !method.HasBody)
 				return null;
 			Instruction ins = method.Body.Instructions [0];
-			return (ins.SequencePoint != null) ? ins : null;
+			// note that the first instruction often does not have a sequence point
+			while (ins != null && ins.SequencePoint == null)
+				ins = ins.Next;
+				
+			return (ins != null && ins.SequencePoint != null) ? ins : null;
 		}
 
 		private static TypeDefinition FindTypeFromLocation (IMetadataTokenProvider location)
@@ -135,6 +139,16 @@ namespace Gendarme.Framework {
 			// no details, we only have the IL offset to report
 			return String.Format (CultureInfo.InvariantCulture, "debugging symbols unavailable, IL offset 0x{0:x4}", ins.Offset);
 		}
+		
+		static private string FormatSource (Instruction candidate)
+		{
+			int line = candidate.SequencePoint.StartLine;
+			// we approximate (line - 1, no column) to get (closer) to the definition
+			// unless we have the special 0xFEEFEE value (used in PDB for hidden source code)
+			if (line != PdbHiddenLine)
+				line--;
+			return FormatSequencePoint (candidate.SequencePoint.Document.Url, line, 0, false);
+		}
 
 		static public string GetSource (Defect defect)
 		{
@@ -155,14 +169,9 @@ namespace Gendarme.Framework {
 			MethodDefinition method = FindMethodFromLocation (defect.Location);
 			if (method != null) {
 				candidate = ExtractFirst (method);
-				if (candidate != null) {
-					int line = candidate.SequencePoint.StartLine;
-					// we approximate (line - 1, no column) to get (closer) to the definition
-					// unless we have the special 0xFEEFEE value (used in PDB for hidden source code)
-					if (line != PdbHiddenLine)
-						line--;
-					return FormatSequencePoint (candidate.SequencePoint.Document.Url, line, 0, false);
-				}
+				if (candidate != null) 
+					return FormatSource (candidate);
+
 				// we may still be lucky to find the (a) source file for the type itself
 				type = (method.DeclaringType as TypeDefinition);
 			}
@@ -172,10 +181,8 @@ namespace Gendarme.Framework {
 			if (type == null)
 				type = FindTypeFromLocation (defect.Location);
 			candidate = ExtractFirst (type);
-			if (candidate != null) {
-				// we report only the source file of the first ctor (that reported something)
-				return candidate.SequencePoint.Document.Url;
-			}
+			if (candidate != null)
+				return FormatSource (candidate);
 
 			return String.Empty;
 		}

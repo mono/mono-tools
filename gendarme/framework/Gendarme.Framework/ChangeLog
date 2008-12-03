@@ -1,3 +1,9 @@
+2008-12-02  Jesse Jones  <jesjones@mindspring.com>
+
+	* Symbols.cs: Include the source line when GetSource is not called
+	with a method. ExtractFirst now returns the first instruction with
+	a sequence point instead of simply the first instruction.
+
 2008-12-01  Jesse Jones  <jesjones@mindspring.com>
 
 	* Symbols.cs: Added a comment describing some problems with
