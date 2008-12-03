@@ -155,11 +155,6 @@ AC_SUBST(GENDARME_VERSION)
 
 AC_OUTPUT([
 Makefile
-gnunit/Makefile
-gnunit/art/Makefile
-gnunit/src/Makefile
-gnunit/src/AssemblyInfo.cs
-gnunit/src/catalog.cs
 gsharp/Makefile
 gsharp/gsharp
 gui-compare/Makefile

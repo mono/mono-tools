@@ -1,3 +1,8 @@
+2008-12-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Remove AC_OUTPUT on gnunit files since they break
+	make dist
+
 2008-12-01  Atsushi Enomoto  <atsushi@ximian.com>
 
 	* Makefile.am : remove gnunit. It does not build anymore.
