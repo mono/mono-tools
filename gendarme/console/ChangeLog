@@ -1,3 +1,8 @@
+2008-12-03  Jesse Jones  <jesjones@mindspring.com>
+
+	* ConsoleRunner.cs: --help says "assemblies" instead of
+	assembly.
+
 2008-12-01  Jesse Jones  <jesjones@mindspring.com>
 
 	* TextResultWriter.cs: Added a header and a trailer. Sorted 
