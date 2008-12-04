@@ -1,3 +1,9 @@
+2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Fix documentation (wrong rule)
+	* AvoidDeepInheritanceTreeRule.cs: Fix documentation (wrong rule)
+	[Backport of r120667]
+
 2008-11-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderUsingStopwatchRule.cs: Use TraceBack rock instead of the

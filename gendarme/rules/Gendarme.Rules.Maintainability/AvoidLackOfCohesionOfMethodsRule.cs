@@ -38,10 +38,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
-	/// This rule checks every type to see how deep is it's inheritance tree inside
-	/// the analyzed assembly set. By default (configurable) the rule will warn if the
-	/// depth is greater than four levels. Optionally (configurable) it can include any
-	/// resolvable assembly (out of the analyzed assembly set) in the check.
+	/// This rule checks every type to check for lack of cohesion between the fields and the methods. Low cohesion is often
+	/// a sign that a type is doing too many, different an unrelated things. The cohesion score is given for each defect 
+	// (higher is better) and the success threshold can be configured. 
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
