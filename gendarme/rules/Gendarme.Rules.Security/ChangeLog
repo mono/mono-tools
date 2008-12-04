@@ -1,3 +1,9 @@
+2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ArrayFieldsShouldNotBeReadOnlyRule.cs: Use HasFields
+	* NativeFieldsShouldNotBeVisibleRule.cs: Use HasFields
+	* StaticConstructorsShouldBePrivateRule.cs: Use HasConstructors
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Makefile.am:

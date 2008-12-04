@@ -73,8 +73,8 @@ namespace Gendarme.Rules.Security {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule does not apply to interface, enumerations or delegates
-			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
+			// rule does not apply to interface, enumerations and delegates or to types without fields
+			if (type.IsInterface || type.IsEnum || !type.HasFields || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {

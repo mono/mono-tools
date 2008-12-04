@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Security {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to interface, enumerations or delegates
-			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
+			if (type.IsInterface || type.IsEnum || !type.HasConstructors || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition private_static_ctor = null;
