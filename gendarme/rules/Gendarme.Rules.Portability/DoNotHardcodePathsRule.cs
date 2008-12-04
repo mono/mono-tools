@@ -375,15 +375,15 @@ namespace Gendarme.Rules.Portability {
 
 				// see what we can learn
 
-				if (target.Name.StartsWith ("set_", StringComparison.Ordinal) &&
-				    target.Parameters.Count == 1)
-					// to improve performance, don't Resolve ()
+				if (target.HasParameters && (target.Parameters.Count == 1) && 
+					target.Name.StartsWith ("set_", StringComparison.Ordinal)) {
+					// to improve performance, don't Resolve () to call IsSpecialName
 					// this is a setter (in 99% cases)
 					CheckIdentifier (target.Name);
-				else
+				} else {
 					// we can also check parameter name
 					CheckMethodParameterName (target, currentOffset);
-
+				}
 				break;
 
 			case Code.Newobj:
@@ -410,14 +410,14 @@ namespace Gendarme.Rules.Portability {
 			if (method == null)
 				return;
 
-			int parameterIndex = method.Parameters.Count - parameterOffset - 1;
+			int parameterIndex = (method.HasParameters ? method.Parameters.Count : 0) - parameterOffset - 1;
 
 			// to prevent some uncommon situations
-			if (parameterIndex < 0 || parameterIndex >= method.Parameters.Count)
+			if (parameterIndex < 0)
 				return;
 
 			// parameterOffset is distance in instructions between ldstr and call(i|virt)?
-			ParameterDefinition parameter = method.Parameters [method.Parameters.Count - parameterOffset - 1];
+			ParameterDefinition parameter = method.Parameters [parameterIndex];
 
 			// if its name is 'pathy', score some points!
 			CheckIdentifier (parameter.Name);
@@ -432,11 +432,9 @@ namespace Gendarme.Rules.Portability {
 		static bool IdentifierLooksLikePath (string name)
 		{
 			// Console.WriteLine ("// analyzing identifier '{0}'", name);
-
-			name = name.ToLower ();
-			return name.Contains ("file") ||
-				name.Contains ("dir") ||
-				name.Contains ("path");
+			return (name.IndexOf ("file", StringComparison.OrdinalIgnoreCase) >= 0) ||
+				(name.IndexOf ("dir",  StringComparison.OrdinalIgnoreCase) >= 0) ||
+				(name.IndexOf ("path", StringComparison.OrdinalIgnoreCase) >= 0);
 		}
 
 		static int CountOccurences (string str, char c)
@@ -451,8 +449,6 @@ namespace Gendarme.Rules.Portability {
 
 		Confidence? GetConfidence (Instruction ldstr, string candidate)
 		{
-			string str = (string) ldstr.Operand;
-
 			// check if string is already in cache
 			Confidence? result;
 			if (resultCache.TryGetValue (candidate, out result))
@@ -460,7 +456,7 @@ namespace Gendarme.Rules.Portability {
 
 			// process and cache result
 			result = CheckIfStringIsHardcodedPath (ldstr, candidate);
-			resultCache.Add (str, result);
+			resultCache.Add (candidate, result);
 			return result;
 		}
 

@@ -63,11 +63,6 @@ namespace Gendarme.Rules.Portability {
 
 		private static char[] InvalidChar = { '\r', '\n' };
 
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// methods can be empty (e.g. p/invoke declarations)

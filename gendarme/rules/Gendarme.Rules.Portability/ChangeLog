@@ -1,3 +1,9 @@
+2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotHardcodePathsRule.cs: Use HasParameters and avoid calling
+	ToLower before comparing strings.
+	* NewLineLiteralRule.cs: Remove unneeded override on Initialize.
+
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotHardcodePathsRule.cs: Specify StringComparison.Ordinal when 
