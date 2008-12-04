@@ -763,11 +763,6 @@ namespace GuiCompare {
 		{
 			return attributes;
 		}
-
-		void SetDisplayName ()
-		{
-
-		}
 		
 		static string FormatName (MethodDefinition method_def, bool beautify)
 		{

@@ -457,8 +457,6 @@ namespace GuiCompare {
 		public event CompareErrorEventHandler Error;
 		public event EventHandler Finished;
 
-		string masterinfoPath;
-		string assemblyPath;
 		ComparisonNode comparison;
 		Thread t;
 	}

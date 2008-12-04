@@ -32,8 +32,7 @@ using System.Text;
 using GuiCompare;
 
 public partial class MainWindow: Gtk.Window
-{	
-	string monodir;
+{
 	InfoManager info_manager;
 	LoadCompAssembly reference_loader, target_loader;
 	CompareContext context;
