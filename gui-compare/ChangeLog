@@ -1,5 +1,12 @@
 2008-12-04  Jb Evain  <jbevain@novell.com>
 
+	* CompareContext.cs
+	* MainWindow.cs: move the Gtk dependant code from the CompareContext
+	to the MainWindow, so that CompareContext can be used in a non Gtk
+	application.
+
+2008-12-04  Jb Evain  <jbevain@novell.com>
+
 	* AssemblyResolver.cs: update.
 
 2008-12-02  Chris Toshok  <toshok@ximian.com>

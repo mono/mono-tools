@@ -6,7 +6,6 @@ using System.Threading;
 using System.IO;
 using System.Xml;
 using Mono.Cecil;
-using Gtk;
 
 namespace GuiCompare {
 	
@@ -40,29 +39,30 @@ namespace GuiCompare {
 		{
 		}
 
+		bool TryLoad (ref CompAssembly assembly, LoadCompAssembly loader)
+		{
+			try {
+				assembly = loader ();
+				return true;
+			} catch (Exception e) {
+				OnError (e.ToString ());
+				return false;
+			}
+		}
+
 		void CompareThread ()
 		{
-			ProgressOnGuiThread (Double.NaN, "Loading reference...");
+			ProgressChange (Double.NaN, "Loading reference...");
 
-			try {
-				reference = reference_loader ();
-			}
-			catch (Exception e) {
-				ErrorOnGuiThread (e.ToString());
+			if (!TryLoad (ref reference, reference_loader))
 				return;
-			}
 
-			ProgressOnGuiThread (Double.NaN, "Loading target...");
+			ProgressChange (Double.NaN, "Loading target...");
 
-			try {
-				target = target_loader ();
-			}
-			catch (Exception e) {
-				ErrorOnGuiThread (e.ToString());
+			if (!TryLoad (ref target, target_loader))
 				return;
-			}
 
-			ProgressOnGuiThread (0.0, "Comparing...");
+			ProgressChange (0.0, "Comparing...");
 
 			comparison = target.GetComparisonNode ();
 
@@ -75,7 +75,7 @@ namespace GuiCompare {
 
 			CompareAttributes (comparison, reference, target);
 
-			FinishedOnGuiThread ();
+			Finish ();
 		}
 
 		int total_comparisons;
@@ -154,7 +154,7 @@ namespace GuiCompare {
 				comparisons_performed ++;
 				
 				if (c == 0) {
-					ProgressOnGuiThread ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", reference_list[m].Type, reference_list[m].Name));
+					ProgressChange ((double)comparisons_performed / total_comparisons * 100.0, String.Format ("Comparing {0} {1}", reference_list[m].Type, reference_list[m].Name));
 
 					/* the names match, further investigation is required */
 					ComparisonNode comparison = target_list[a].GetComparisonNode();
@@ -435,28 +435,22 @@ namespace GuiCompare {
 		// This is the new API.
 		CompAssembly target;
 
-		void ProgressOnGuiThread (double progress, string message)
+		void ProgressChange (double progress, string message)
 		{
-			Application.Invoke (delegate (object sender, EventArgs e) {
-				if (ProgressChanged != null)
-					ProgressChanged (this, new CompareProgressChangedEventArgs (message, progress));
-			});
+			if (ProgressChanged != null)
+				ProgressChanged (this, new CompareProgressChangedEventArgs (message, progress));
 		}
 
-		void ErrorOnGuiThread (string message)
+		void OnError (string message)
 		{
-			Application.Invoke (delegate (object sender, EventArgs e) {
-				if (Error != null)
-					Error (this, new CompareErrorEventArgs (message));
-			});
+			if (Error != null)
+				Error (this, new CompareErrorEventArgs (message));
 		}
 
-		void FinishedOnGuiThread ()
+		void Finish ()
 		{
-			Application.Invoke (delegate (object sender, EventArgs e) {
-				if (Finished != null)
-					Finished (this, EventArgs.Empty);
-			});
+			if (Finished != null)
+				Finished (this, EventArgs.Empty);
 		}
 
 		public event CompareProgressChangedEventHandler ProgressChanged;
@@ -468,11 +462,6 @@ namespace GuiCompare {
 		ComparisonNode comparison;
 		Thread t;
 	}
-
-
-
-
-
 
 	public delegate void CompareProgressChangedEventHandler (object sender, CompareProgressChangedEventArgs args);
 	public delegate void CompareErrorEventHandler (object sender, CompareErrorEventArgs args);
