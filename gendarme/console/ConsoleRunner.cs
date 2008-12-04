@@ -414,7 +414,7 @@ namespace Gendarme {
 
 		static void Help ()
 		{
-			Console.WriteLine ("Usage: gendarme [--config file] [--set ruleset] [--{log|xml|html} file] assembly");
+			Console.WriteLine ("Usage: gendarme [--config file] [--set ruleset] [--{log|xml|html} file] assemblies");
 			Console.WriteLine ("Where");
 			Console.WriteLine ("  --config file\t\tSpecify the configuration file. Default is 'rules.xml'.");
 			Console.WriteLine ("  --set ruleset\t\tSpecify the set of rules to verify. Default is '*'.");
@@ -431,7 +431,7 @@ namespace Gendarme {
 			Console.WriteLine ("\t\t\tDefault is 'normal+'");
 			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
 			Console.WriteLine ("  --v\t\t\tEnable debugging output (can be used multiple times).");
-			Console.WriteLine ("  assembly\t\tSpecify the assembly to verify.");
+			Console.WriteLine ("  assemblies\t\tSpecify the assemblies to verify.");
 			Console.WriteLine ();
 		}
 

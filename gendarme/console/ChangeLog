@@ -1,3 +1,9 @@
+2008-12-03  Jesse Jones  <jesjones@mindspring.com>
+
+	* ConsoleRunner.cs: --help says "assemblies" instead of
+	assembly.
+	[Backport of r120662]
+
 2008-11-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: : Clearly specify [Serializable] on the
