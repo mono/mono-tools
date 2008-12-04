@@ -1,3 +1,7 @@
+2008-12-04  Jb Evain  <jbevain@novell.com>
+
+	* AssemblyResolver.cs: update.
+
 2008-12-02  Chris Toshok  <toshok@ximian.com>
 
 	* CecilMetadata.cs: fix TODO attribute handling.  they aren't
