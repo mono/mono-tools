@@ -1,3 +1,8 @@
+2008-12-04  Jesse Jones  <jesjones@mindspring.com>
+
+	* ConsoleRunner.cs: Times and copyright info are are no 
+	longer written if --quiet was specified.
+
 2008-12-03  Jesse Jones  <jesjones@mindspring.com>
 
 	* ConsoleRunner.cs: --help says "assemblies" instead of

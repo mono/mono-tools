@@ -350,13 +350,19 @@ namespace Gendarme {
 
 		public override void Initialize ()
 		{
-			Console.Write ("Initialization");
-			total.Start ();
-			local.Start ();
+			if (!quiet) {
+				Console.Write ("Initialization");
+				total.Start ();
+				local.Start ();
+			}
+			
 			base.Initialize ();
-			local.Stop ();
-			Console.WriteLine (": {0}", TimeToString (local.Elapsed));
-			local.Reset ();
+
+			if (!quiet) {
+				local.Stop ();
+				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
+				local.Reset ();
+			}
 		}
 
 		public override void Run ()
@@ -367,30 +373,36 @@ namespace Gendarme {
 			}
 
 			base.Run ();
-			local.Stop ();
-			total.Stop ();
 
-			Console.WriteLine (": {0}", TimeToString (local.Elapsed));
-			Console.WriteLine ();
-			if (Assemblies.Count == 1)
-				Console.WriteLine ("One assembly processed in {0}.",
-					TimeToString (total.Elapsed));
-			else
-				Console.WriteLine ("{0} assemblies processed in {1}.",
-					Assemblies.Count, TimeToString (total.Elapsed));
+			if (!quiet) {
+				local.Stop ();
+				total.Stop ();
+
+				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
+				Console.WriteLine ();
+				if (Assemblies.Count == 1)
+					Console.WriteLine ("One assembly processed in {0}.",
+						TimeToString (total.Elapsed));
+				else
+					Console.WriteLine ("{0} assemblies processed in {1}.",
+						Assemblies.Count, TimeToString (total.Elapsed));
+			}
 		}
 
 		protected override void OnAssembly (RunnerEventArgs e)
 		{
-			if (local.IsRunning) {
-				local.Stop ();
-				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
-				local.Reset ();
+			if (!quiet) {
+				if (local.IsRunning) {
+					local.Stop ();
+					Console.WriteLine (": {0}", TimeToString (local.Elapsed));
+					local.Reset ();
+				}
+			
+				// next assembly
+				Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.Name);
+				local.Start ();
 			}
-
-			// next assembly
-			Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.Name);
-			local.Start ();
+			
 			base.OnAssembly (e);
 		}
 
