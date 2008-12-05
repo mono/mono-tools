@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Xml;
 using System.IO;
+using System.Text;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Gtk;
 
 namespace GuiCompare {
 

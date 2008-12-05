@@ -1,3 +1,12 @@
+2008-12-05  Jb Evain  <jbevain@novell.com>
+
+	* CecilMetadata.cs
+	* CompareContext.cs
+	* Comparison.cs
+	* MasterMetadata.cs
+	* Metadata.cs:
+		cleanup usings.
+
 2008-12-04  Jb Evain  <jbevain@novell.com>
 
 	* CompareContext.cs
