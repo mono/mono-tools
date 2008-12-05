@@ -3,6 +3,17 @@
 	* CecilMetadata.cs
 	* CompareContext.cs
 	* Comparison.cs
+	* Main.cs
+	* MasterMetadata.cs
+	* Masterinfo.cs
+	* Metadata.cs:
+		add license and copyright information.
+
+2008-12-05  Jb Evain  <jbevain@novell.com>
+
+	* CecilMetadata.cs
+	* CompareContext.cs
+	* Comparison.cs
 	* MasterMetadata.cs
 	* Metadata.cs:
 		cleanup usings.
