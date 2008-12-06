@@ -54,11 +54,18 @@ namespace Gendarme.Rules.Maintainability {
 		private int method_minimum_count = 2;//set at 2 to remove 'uninteresting' types
 		private int field_minimum_count = 1;//set at 1 to remove 'uninteresting' types
 		                                 //this shouldn't be set to another value than MinimumMethodCount/2
+		private Dictionary<FieldReference, int> F  = new Dictionary<FieldReference, int>();
+		private List<FieldReference> Fset = new List<FieldReference>();
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			//does rule apply?
 			if (type.IsEnum || type.IsInterface || type.IsAbstract || type.IsDelegate () || type.IsGeneratedCode ())
+				return RuleResult.DoesNotApply;
+
+			if (!type.HasFields || (type.Fields.Count < MinimumFieldCount))
+				return RuleResult.DoesNotApply;
+			if (!type.HasMethods || (type.Methods.Count < MinimumMethodCount))
 				return RuleResult.DoesNotApply;
 
 			//yay! rule do apply!
@@ -82,7 +89,7 @@ namespace Gendarme.Rules.Maintainability {
 
 			int M = 0;//M is the number of methods in the type
 			//F keeps the count of distinct-method accesses to the field
-			Dictionary<FieldReference, int> F = new Dictionary<FieldReference, int>();
+			F.Clear ();
 
 			foreach (MethodDefinition method in type.Methods) {
 				if (!method.HasBody || method.IsStatic)
@@ -91,7 +98,7 @@ namespace Gendarme.Rules.Maintainability {
 				//Mset is true if the method has already incremented M
 				bool Mset = false;
 				//Fset keeps the fields already addressed in the current method
-				List<FieldReference> Fset = new List<FieldReference>();
+				Fset.Clear ();
 
 				foreach (Instruction inst in method.Body.Instructions)
 				{

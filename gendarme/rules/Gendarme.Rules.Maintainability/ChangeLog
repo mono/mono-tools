@@ -1,3 +1,12 @@
+2008-12-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: Use HasMethods and 
+	HasFields to avoid computing cohesion if the minimums are not met.
+	Reuse the same (cleared) collections to reuse memory.
+	* AvoidUnnecessarySpecializationRule.cs: Use Has{x} to avoid 
+	creating empty collections. Moved checks in CheckMethod to start 
+	with the lighter ones (properties) then the more heavy ones (rocks).
+
 2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Fix documentation (wrong rule)

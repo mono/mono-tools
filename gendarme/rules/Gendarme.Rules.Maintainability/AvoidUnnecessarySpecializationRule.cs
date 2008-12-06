@@ -187,6 +187,9 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static MethodSignature GetSignature (MethodReference method)
 		{
+			if (!method.HasParameters)
+				return new MethodSignature (method.Name, GetReturnTypeSignature (method), null);
+
 			string [] parameters = new string [method.Parameters.Count];
 			for (int i = 0; i < method.Parameters.Count; ++i) {
 				TypeReference pType = method.Parameters [i].ParameterType;
@@ -206,7 +209,8 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static string GetReturnTypeSignature (MethodReference method)
 		{
-			if (method.Name == "GetEnumerator" && 0 == method.Parameters.Count) //special exception
+			//special exception
+			if (!method.HasParameters && (method.Name == "GetEnumerator"))
 				return null;
 			return method.ReturnType.ReturnType.FullName;
 		}
@@ -222,15 +226,16 @@ namespace Gendarme.Rules.Maintainability {
 			case "GetType" :
 			case "MemberwiseClone" :
 			case "ToString" :
-				return method.Parameters.Count == 0;
+				return !method.HasParameters;
 			case "Equals" :
-				return method.Parameters.Count == 1 || method.Parameters.Count == 2;
+				return (method.HasParameters && (method.Parameters.Count == 1 || method.Parameters.Count == 2));
 			case "ReferenceEquals" :
-				return method.Parameters.Count == 2;
+				return (method.HasParameters && (method.Parameters.Count == 2));
 
 			//HACK: BOO:
 			case "EqualityOperator" :
-				return method.Parameters.Count == 2 && method.DeclaringType.FullName == "Boo.Lang.Runtime.RuntimeServices";
+				return (method.HasParameters && (method.Parameters.Count == 2) && 
+					(method.DeclaringType.FullName == "Boo.Lang.Runtime.RuntimeServices"));
 			}
 			return false;
 		}
@@ -359,7 +364,7 @@ namespace Gendarme.Rules.Maintainability {
 		static bool SignatureDictatedByInterface (MethodReference method)
 		{
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
-			if (type.Interfaces.Count > 0) {
+			if (type.HasInterfaces) {
 				MethodSignature sig = GetSignature (method);
 				foreach (TypeReference intf_ref in type.Interfaces) {
 					TypeDefinition intr = intf_ref.Resolve ();
@@ -376,9 +381,9 @@ namespace Gendarme.Rules.Maintainability {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasBody || method.IsGeneratedCode () || method.IsCompilerControlled)
+			if (!method.HasBody || !method.HasParameters || method.IsCompilerControlled)
 				return RuleResult.DoesNotApply;
-			if (method.Parameters.Count == 0 || method.IsProperty ())
+			if (method.IsProperty () || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			// we can't change parameter types if they were specified by an interface
