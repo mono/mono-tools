@@ -107,23 +107,30 @@ namespace Gendarme.Rules.Serialization {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// note: we cannot quickly return DoesNotApply since we would miss cases
-			// where [OptionalField] is used on an non-[Serializable] type
+			// [OptionalField] is usable only if the type has fields
+			if (!type.HasFields)
+				return RuleResult.DoesNotApply;
 
 			// look in methods for a deserialization candidates
 			bool deserialized_candidate = false;
 			bool deserializing_candidate = false;
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.CustomAttributes.ContainsType (OnDeserializedAttribute))
-					deserialized_candidate = true;
-				if (method.CustomAttributes.ContainsType (OnDeserializingAttribute))
-					deserializing_candidate = true;
-				if (deserialized_candidate && deserializing_candidate)
-					break;
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods) {
+					if (!method.HasCustomAttributes)
+						continue;
+					if (method.CustomAttributes.ContainsType (OnDeserializedAttribute))
+						deserialized_candidate = true;
+					if (method.CustomAttributes.ContainsType (OnDeserializingAttribute))
+						deserializing_candidate = true;
+					if (deserialized_candidate && deserializing_candidate)
+						break;
+				}
 			}
 
 			// check if we found some optional fields, if none then it's all ok
 			foreach (FieldDefinition field in type.Fields) {
+				if (!field.HasCustomAttributes)
+					continue;
 				if (field.CustomAttributes.ContainsType (OptionalFieldAttribute)) {
 					if (type.IsSerializable) {
 						// report if we didn't find a deserialization method

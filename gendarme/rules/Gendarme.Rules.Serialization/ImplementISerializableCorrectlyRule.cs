@@ -140,7 +140,7 @@ namespace Gendarme.Rules.Serialization {
 				case Code.Call:
 				case Code.Callvirt:
 					MethodReference mr = ins.Operand as MethodReference;
-					if ((mr.Name != "AddValue") || (mr.Parameters.Count < 2))
+					if (!mr.HasParameters || (mr.Name != "AddValue") || (mr.Parameters.Count < 2))
 						continue;
 					// type is sealed so this check is ok
 					if (mr.DeclaringType.FullName != "System.Runtime.Serialization.SerializationInfo")
@@ -196,7 +196,7 @@ namespace Gendarme.Rules.Serialization {
 			if (getObjectData == null) {
 				// no GetObjectData means that the type's ancestor does the job but 
 				// are we introducing new instance fields that need to be serialized ?
-				if (type.Fields.Count == 0)
+				if (!type.HasFields)
 					return RuleResult.Success;
 				// there are some, but they could be static
 				foreach (FieldDefinition field in type.Fields) {
@@ -204,7 +204,7 @@ namespace Gendarme.Rules.Serialization {
 						Runner.Report (field, Severity.Medium, Confidence.High);
 				}
 			} else {
-				if (type.Fields.Count > 0)
+				if (type.HasFields)
 					CheckUnusedFieldsIn (type, getObjectData);
 
 				if (!type.IsSealed && getObjectData.IsFinal) {

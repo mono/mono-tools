@@ -105,7 +105,7 @@ namespace Gendarme.Rules.Serialization {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply to constructor or to methods without custom attributes
-			if (method.IsConstructor || (method.CustomAttributes.Count == 0))
+			if (method.IsConstructor || !method.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
 			// marked with any of On[Des|S]erializ[ed|ing]Attribute ?

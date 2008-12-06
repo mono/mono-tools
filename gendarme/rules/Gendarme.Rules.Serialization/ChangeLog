@@ -1,3 +1,13 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeserializeOptionalFieldRule.cs: Use HasFields, HasMethods and
+	HasCustomAttributes
+	* ImplementISerializableCorrectlyRule.cs: Use HasFields and
+	HasParameters
+	* MarkAllNonSerializableFieldsRule.cs: Use HasFields
+	* UseCorrectSignatureForSerializationMethodsRule.cs: Use 
+	HasCustomAttributes
+
 2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeserializeOptionalFieldRule.cs: Enable the rule only when
