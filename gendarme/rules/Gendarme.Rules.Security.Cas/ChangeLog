@@ -1,3 +1,8 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotExposeFieldsInSecuredTypeRule.cs: Use HasFields
+	* DoNotReduceTypeSecurityOnMethodsRule.cs: Use HasSecurityDeclarations
+
 2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AddMissingTypeInheritanceDemandRule.cs: Use HasSecurityDeclarations

@@ -123,7 +123,7 @@ namespace Gendarme.Rules.Security.Cas {
 			// ensure that method-level security doesn't replace type-level security
 			// with a subset of the original check
 			foreach (MethodDefinition method in type.Methods) {
-				if (method.SecurityDeclarations.Count == 0)
+				if (!method.HasSecurityDeclarations)
 					continue;
 
 				foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {

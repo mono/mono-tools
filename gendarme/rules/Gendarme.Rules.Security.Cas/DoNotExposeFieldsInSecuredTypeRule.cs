@@ -74,12 +74,9 @@ namespace Gendarme.Rules.Security.Cas {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// rule apply only to types protected by either a Demand or a LinkDemand
-			if (!type.HasSecurityDeclarations)
-				return RuleResult.DoesNotApply;
-
-			// rule apply only to visible types
-			if (!type.IsVisible ())
+			// rule apply only to types protected by either a Demand or a LinkDemand (i.e. SecurityDeclaration)
+			// that have fields and are visible outside the assembly
+			if (!type.HasSecurityDeclarations || !type.HasFields || !type.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			bool demand = false;
@@ -97,7 +94,7 @@ namespace Gendarme.Rules.Security.Cas {
 
 			// *** ok, the rule applies! ***
 
-			// type shouldn't have any public fields
+			// type shouldn't have any visible fields
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsVisible ()) {
 					Runner.Report (field, Severity.Critical, Confidence.Total);
