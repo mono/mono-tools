@@ -151,8 +151,11 @@ namespace Gendarme.Rules.Correctness {
 			//altough a method, or type, implements both interfaces.
 			IMetadataTokenProvider metadataProvider = provider as IMetadataTokenProvider;
 	
-			foreach (CustomAttribute attribute in provider.CustomAttributes) 
-				CheckParametersAndValues (metadataProvider, attribute.Constructor, attribute.ConstructorParameters);
+			foreach (CustomAttribute attribute in provider.CustomAttributes) {
+				MethodReference ctor = attribute.Constructor;
+				if (ctor.HasParameters)
+					CheckParametersAndValues (metadataProvider, ctor, attribute.ConstructorParameters);
+			}
 		}
 
 		void CheckAttributesIn (IEnumerable targets)

@@ -122,6 +122,8 @@ namespace Gendarme.Rules.Correctness {
 					// if was pass one of our parameter to another call then
 					// this new call "takes" responsability of the null check
 					// note: not perfect but greatly reduce false positives
+					if (!md.HasParameters)
+						continue;
 					for (int i = 0; i < md.Parameters.Count; i++ ) {
 						Instruction pi = ins.TraceBack (method, -(md.IsStatic ? 0 : 1 + i));
 						if (pi == null)
