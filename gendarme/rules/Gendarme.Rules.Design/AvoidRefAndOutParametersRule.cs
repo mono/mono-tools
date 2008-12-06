@@ -81,9 +81,9 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// rule only applies to visible API 
+			// rule only applies to visible methods with parameters
 			// we also exclude all p/invokes since we have a rule for them not to be visible
-			if (method.IsPInvokeImpl || !method.IsVisible ())
+			if (method.IsPInvokeImpl || !method.HasParameters || !method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {

@@ -109,7 +109,7 @@ namespace Gendarme.Rules.Design {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsEnum || type.IsGeneratedCode ())
+			if (type.IsEnum || !type.HasFields || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			//collect *has* fields

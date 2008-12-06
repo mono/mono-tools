@@ -1,3 +1,8 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRefAndOutParametersRule.cs: Use HasParameters
+	* ConsiderConvertingFieldToNullableRule.cs: Use HasFields
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidEmptyInterfaceRule.cs: Use HasMethods and HasInterfaces
