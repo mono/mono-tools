@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Exceptions {
 	/// {
 	///	if (obj == null) {
 	///		throw new Exception ();
-	//	}
+	///	}
 	///	Inner.Add (obj);
 	/// }
 	/// </code>

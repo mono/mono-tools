@@ -1,3 +1,8 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidThrowingBasicExceptionsRule.cs: CSC dislike (CS1570) mixing //
+	comment, on a new line, inside a block of /// 
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: Use HasParameters
