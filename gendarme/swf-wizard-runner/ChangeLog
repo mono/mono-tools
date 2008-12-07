@@ -1,3 +1,7 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.resx, Resources/gendarme.ico: Update icon
+
 2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.Designer.cs: Adjust UI with new logo
