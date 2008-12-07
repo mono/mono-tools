@@ -1,3 +1,8 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLackOfCohesionOfMethodsRule.cs: CSC dislike (CS1570) mixing //
+	comment, on a new line, inside a block of /// 
+
 2008-12-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Use HasMethods and 

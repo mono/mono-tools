@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Maintainability {
 	/// <summary>
 	/// This rule checks every type to check for lack of cohesion between the fields and the methods. Low cohesion is often
 	/// a sign that a type is doing too many, different an unrelated things. The cohesion score is given for each defect 
-	// (higher is better) and the success threshold can be configured. 
+	/// (higher is better) and the success threshold can be configured. 
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
