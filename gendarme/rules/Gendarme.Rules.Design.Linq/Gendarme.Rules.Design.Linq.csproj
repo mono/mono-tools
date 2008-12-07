@@ -17,24 +17,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\console\bin\%24%28Configuration%29\</OutputPath>
+    <OutputPath>..\..\console\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\console\bin\%24%28Configuration%29\Gendarme.Rules.Design.Linq.xml</DocumentationFile>
+    <DocumentationFile>..\..\console\bin\Debug\Gendarme.Rules.Design.Linq.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <WarningsAsErrors>1570</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\console\bin\%24%28Configuration%29\</OutputPath>
+    <OutputPath>..\..\console\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <WarningsAsErrors>1570</WarningsAsErrors>
-    <DocumentationFile>..\..\console\bin\%24%28Configuration%29\Gendarme.Rules.Design.Linq.xml</DocumentationFile>
+    <DocumentationFile>..\..\console\bin\Release\Gendarme.Rules.Design.Linq.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
