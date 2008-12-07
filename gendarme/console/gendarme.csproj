@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{E95A3AB9-A303-4859-8BCA-458C79496548}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -30,7 +30,7 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>gendarme.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -76,6 +76,10 @@
     <Compile Include="XmlResultWriter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\cecil\pdb\Mono.Cecil.Pdb\Mono.Cecil.Pdb.csproj">
+      <Project>{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}</Project>
+      <Name>Mono.Cecil.Pdb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
@@ -131,5 +135,6 @@ copy "$(TargetDir)..\..\..\..\..\cecil\pdb\Mono.Cecil.Pdb\$(OutDir)\Mono.Cecil.P
         </MonoDevelop.Autotools.MakefileInfo>
       </Properties>
     </MonoDevelop>
+    <VisualStudio />
   </ProjectExtensions>
 </Project>

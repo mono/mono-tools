@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B4E97DE7-FF30-485E-A2D8-7A0C596E6851}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Test</RootNamespace>
     <AssemblyName>Test</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -43,7 +43,6 @@
     <Compile Include="DoNotPrefixEventsWithAfterOrBeforeTest.cs" />
     <Compile Include="DoNotPrefixValuesWithEnumNameTest.cs" />
     <Compile Include="DoNotUseReservedInEnumValueNamesTest.cs" />
-    <Compile Include="EnumNotEndsWithEnumOrFlagsSuffixTest.cs" />
     <Compile Include="ParameterNamesShouldMatchOverridenMethodTest.cs" />
     <Compile Include="UseCorrectCasingTest.cs" />
     <Compile Include="UseCorrectPrefixTest.cs" />
@@ -61,13 +60,17 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
+      <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
+      <Name>Test.Rules</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Naming.csproj">
       <Project>{C57E2A54-3BBF-49D7-B3E5-688EE1F63250}</Project>
       <Name>Gendarme.Rules.Naming</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties/" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -91,5 +94,6 @@
         </MonoDevelop.Autotools.MakefileInfo>
       </Properties>
     </MonoDevelop>
+    <VisualStudio />
   </ProjectExtensions>
 </Project>

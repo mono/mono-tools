@@ -6,21 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rules", "Rules", "{7AECA932
 		rules\rules.xml = rules\rules.xml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{E83F7555-F98B-48D9-8CD6-1E46895F276D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cecil", "Cecil", "{10772645-2837-44B1-9CFA-51A0A5CAC635}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C8664DD7-3314-4932-ADA1-384C62568B59}"
-	ProjectSection(SolutionItems) = preProject
-		AssemblyInfo.cs.in = AssemblyInfo.cs.in
-		AUTHORS = AUTHORS
-		ChangeLog = ChangeLog
-		MIT.X11 = MIT.X11
-		NEWS = NEWS
-		README = README
-		TODO = TODO
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gendarme.Rules.Performance", "rules\Gendarme.Rules.Performance\Gendarme.Rules.Performance.csproj", "{7A8D4AE7-66FA-42E0-BDCB-400D8E0ECFA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gendarme.Rules.Security", "rules\Gendarme.Rules.Security\Gendarme.Rules.Security.csproj", "{DBA3E375-ADF4-4CA3-880F-AF02DD8D5E7E}"
@@ -54,6 +39,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gendarme.Rules.Design.Linq", "rules\Gendarme.Rules.Design.Linq\Gendarme.Rules.Design.Linq.csproj", "{EEC7B836-DB9D-4CB3-9829-53C223C9411F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gendarme.Rules.Security.Cas", "rules\Gendarme.Rules.Security.Cas\Gendarme.Rules.Security.Cas.csproj", "{237A273E-BCAF-42DB-9DE5-1697B016C648}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{E83F7555-F98B-48D9-8CD6-1E46895F276D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Performance", "rules\Gendarme.Rules.Performance\Test\Tests.Rules.Performance.csproj", "{0C697291-D955-43C8-994E-A03B6A77A21A}"
 EndProject
@@ -91,9 +78,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gendarme", "console\gendarm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gendarme.Framework", "framework\Gendarme.Framework.csproj", "{CD6818D5-B398-486C-B180-92A07B143AFD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cecil", "Cecil", "{10772645-2837-44B1-9CFA-51A0A5CAC635}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Cecil", "..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj", "{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Cecil.Pdb", "..\..\cecil\pdb\Mono.Cecil.Pdb\Mono.Cecil.Pdb.csproj", "{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C8664DD7-3314-4932-ADA1-384C62568B59}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.cs.in = AssemblyInfo.cs.in
+		AUTHORS = AUTHORS
+		ChangeLog = ChangeLog
+		MIT.X11 = MIT.X11
+		NEWS = NEWS
+		README = README
+		TODO = TODO
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swf-wizard-runner", "swf-wizard-runner\swf-wizard-runner.csproj", "{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "gendarme-win32-setup", "win32-setup\win32-setup.vdproj", "{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Design.Generic", "rules\Gendarme.Rules.Design.Generic\Test\Tests.Rules.Design.Generic.csproj", "{C3BDA065-4C29-48CA-907A-E35CE92F5F87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Design.Linq", "rules\Gendarme.Rules.Design.Linq\Test\Tests.Rules.Design.Linq.csproj", "{19837D0F-A8ED-4733-97D0-F5EC9991658F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Security.Cas", "rules\Gendarme.Rules.Security.Cas\Test\Tests.Rules.Security.Cas.csproj", "{519B054B-07A5-43B7-9846-DA7C33A09F4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,10 +255,29 @@ Global
 		{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Debug|Any CPU.ActiveCfg = Debug
+		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Debug|Any CPU.Build.0 = Debug
+		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Release|Any CPU.ActiveCfg = Release
+		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Release|Any CPU.Build.0 = Release
+		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19837D0F-A8ED-4733-97D0-F5EC9991658F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19837D0F-A8ED-4733-97D0-F5EC9991658F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19837D0F-A8ED-4733-97D0-F5EC9991658F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19837D0F-A8ED-4733-97D0-F5EC9991658F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{519B054B-07A5-43B7-9846-DA7C33A09F4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{519B054B-07A5-43B7-9846-DA7C33A09F4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{519B054B-07A5-43B7-9846-DA7C33A09F4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{519B054B-07A5-43B7-9846-DA7C33A09F4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,7 +316,11 @@ Global
 		{BC57A292-B4FC-415F-BF9A-714A5E62E0E1} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
 		{069148AF-86AB-4EE3-BFB9-429AE722461F} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
 		{A2F3E904-8D4E-4C18-A0B9-B2BCBD3A0537} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
+		{C3BDA065-4C29-48CA-907A-E35CE92F5F87} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
+		{19837D0F-A8ED-4733-97D0-F5EC9991658F} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
+		{519B054B-07A5-43B7-9846-DA7C33A09F4A} = {E83F7555-F98B-48D9-8CD6-1E46895F276D}
 		{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE} = {10772645-2837-44B1-9CFA-51A0A5CAC635}
+		{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E} = {10772645-2837-44B1-9CFA-51A0A5CAC635}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		name = gendarme
