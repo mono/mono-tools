@@ -79,8 +79,9 @@ namespace Gendarme {
 
 		protected override void Write ()
 		{
+			// casting to Severity int saves a ton of memory since IComparable<T> can be used instead of IComparable
 			var query = from n in Runner.Defects
-				    orderby n.Severity, n.Rule.Name
+				    orderby (int) n.Severity, n.Rule.Name
 				    select n;
 			
 			WriteHeader ();

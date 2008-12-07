@@ -1,3 +1,10 @@
+2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TextResultWriter.cs: Big memory reduction in the LINQ query
+	by casting the IComparable enum into an IComparable<T> Int32. Even
+	bigger now that the query is ordered on two fields. Not sure if
+	this has the same effect on MS LINQ or just on Mono.
+
 2008-12-04  Jesse Jones  <jesjones@mindspring.com>
 
 	* ConsoleRunner.cs: Times and copyright info are are no 
