@@ -4,6 +4,7 @@ rules_sources =  \
 	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs \
 	AvoidFloatingPointEqualityRule.cs \
+	DoNotRecurseInEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
 	CheckParametersNullityInVisibleMethodsRule.cs \
@@ -26,6 +27,7 @@ rules_sources =  \
 tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
 	AvoidFloatingPointEqualityTest.cs \
+	DoNotRecurseInEqualityTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \
 	CheckParametersNullityInVisibleMethodsTest.cs \
