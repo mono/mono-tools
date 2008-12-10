@@ -1,3 +1,8 @@
+2008-12-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidAssemblyVersionMismatchRule.cs: Tweaked the language in the
+	description.
+
 2008-12-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ObsoleteMessagesShouldNotBeEmptyRule.cs: Avoid using two conditions
