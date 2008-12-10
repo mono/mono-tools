@@ -117,12 +117,12 @@ namespace Gendarme.Rules.Performance {
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
-			
-			// It's pretty common for none of the assemblies being checked
-			// to reference SWF so we can avoid the type.Inherits check
-			// below for those assemblies.
+						
+			// If the module does not reference SWF we can skip the type.Inherits 
+			// check below.
 			Runner.AnalyzeModule += (o, e) =>
 			{
+				usesWinForms = false;
 				foreach (AssemblyNameReference name in e.CurrentModule.AssemblyReferences)
 				{
 					if (name.Name == "System.Windows.Forms")
