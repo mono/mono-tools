@@ -1,3 +1,7 @@
+2008-12-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidAlwaysNullFieldTest.cs: Added. 
+
 2008-11-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderUsingStopwatchTest.cs: Add test case where the values are

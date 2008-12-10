@@ -1,6 +1,7 @@
 include ../common.make
 
 rules_sources =  \
+	AvoidAlwaysNullFieldRule.cs \
 	AvoidComplexMethodsRule.cs \
 	AvoidDeepInheritanceTreeRule.cs \
 	AvoidLackOfCohesionOfMethodsRule.cs \
@@ -9,6 +10,7 @@ rules_sources =  \
 	PreferStringIsNullOrEmptyRule.cs
 
 tests_sources = \
+	AvoidAlwaysNullFieldTest.cs \
 	AvoidComplexMethodsTest.cs \
 	AvoidDeepInheritanceTreeTest.cs \
 	AvoidLackOfCohesionOfMethodsTest.cs \

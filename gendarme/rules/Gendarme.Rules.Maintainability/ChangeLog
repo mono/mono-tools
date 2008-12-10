@@ -1,3 +1,7 @@
+2008-12-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidAlwaysNullFieldRule.cs, Makefile.am: Added new rule. 
+
 2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: CSC dislike (CS1570) mixing //
