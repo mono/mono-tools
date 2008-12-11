@@ -40,8 +40,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule will fire if a private field is used, but never assigned 
-	/// a non-null value.
+	/// A type has a private field whose value is always null.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -68,12 +67,13 @@ namespace Gendarme.Rules.Performance {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains private fields which are always null.")]
+	[Problem ("This type has a private field whose value is always null.")]
 	[Solution ("Either remove the field or properly initialize it.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class AvoidAlwaysNullFieldRule : Rule, ITypeRule {
 
 		private HashSet <FieldReference> nullFields = new HashSet <FieldReference>();
+		private HashSet <FieldReference> setFields = new HashSet <FieldReference>();
 		private HashSet <FieldReference> usedFields = new HashSet <FieldReference>();
 		
 		private bool usesWinForms;
@@ -82,8 +82,7 @@ namespace Gendarme.Rules.Performance {
 
 		private void CheckMethod (MethodDefinition method)
 		{
-			Log.WriteLine (this, method);
-			Log.WriteLine (this);
+			Log.WriteLine (this, method);	
 			
 			FieldDefinition field;
 			if (method.HasBody && OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields)) {
@@ -91,16 +90,24 @@ namespace Gendarme.Rules.Performance {
 					switch (ins.OpCode.Code) {
 					case Code.Stfld:
 					case Code.Stsfld:
-					case Code.Ldflda:	// if the field address is taken we have to assume the field has been set
-					case Code.Ldsflda:
 						field = ins.GetField ();
 						
 						// FIXME: we'd catch more cases (and avoid some false positives) 
 						// if we used a null value tracker.
-						if (ins.Previous == null || ins.Previous.OpCode.Code != Code.Ldnull) {
+						if (ins.Previous != null && ins.Previous.OpCode.Code == Code.Ldnull) {
+							setFields.Add (field);
+							Log.WriteLine (this, "{0} is set to null at {1:X4}", field.Name, ins.Offset);
+						} else {
 							nullFields.Remove (field);	
 							Log.WriteLine (this, "{0} is set at {1:X4}", field.Name, ins.Offset);
 						}
+						break;
+
+					case Code.Ldflda:	// if the field address is taken we have to assume the field has been set
+					case Code.Ldsflda:
+						field = ins.GetField ();
+						nullFields.Remove (field);	
+						Log.WriteLine (this, "{0} is set at {1:X4}", field.Name, ins.Offset);
 						break;
 
 					case Code.Ldfld:
@@ -112,6 +119,8 @@ namespace Gendarme.Rules.Performance {
 					}
 				}
 			}
+
+			Log.WriteLine (this);
 		}
 		
 		public override void Initialize (IRunner runner)
@@ -158,8 +167,20 @@ namespace Gendarme.Rules.Performance {
 				for (int i = 0; i < type.Methods.Count && nullFields.Count > 0; ++i)
 					CheckMethod (type.Methods [i]);
 				
-			// Any fields which are both always null and used are bad
-			// guys.
+			// Report a defect if:
+			// 1) The field is explicitly set to null and not used (if 
+			// if is implicitly set to null and not used AvoidUnusedPrivateFieldsRule 
+			// will catch it).
+			setFields.IntersectWith (nullFields);	
+			setFields.ExceptWith (usedFields);	
+			if (setFields.Count > 0) {
+				foreach (FieldDefinition field in setFields) {
+					Log.WriteLine (this, "{0} is always null", field.Name);
+					Runner.Report (field, Severity.Medium, Confidence.High);
+				}
+			}
+
+			// 2) The field is always null and used somewhere.
 			nullFields.IntersectWith (usedFields);
 			if (nullFields.Count > 0) {
 				foreach (FieldDefinition field in nullFields) {
@@ -167,8 +188,9 @@ namespace Gendarme.Rules.Performance {
 					Runner.Report (field, Severity.Medium, Confidence.High);
 				}
 			}
-
+			
 			nullFields.Clear ();
+			setFields.Clear ();
 			usedFields.Clear ();
 			
 			return Runner.CurrentRuleResult;

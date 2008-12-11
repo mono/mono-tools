@@ -147,6 +147,22 @@ namespace Test.Rules.Maintainability {
 			}
 		}
 
+		private class Bad4 {
+			private string name1;	
+			private string name2;	
+			
+			public Bad4 ()
+			{
+				name1 = null;	// explictly set to null, but not used
+				name2 = "hey";
+			}
+			
+			public void Write ()
+			{
+				Console.WriteLine (name2);
+			}
+		}
+
 		private class Ignore1 {
 			private string name;	
 			
@@ -184,6 +200,7 @@ namespace Test.Rules.Maintainability {
 			AssertRuleFailure<Bad1> (1);
 			AssertRuleFailure<Bad2> (1);
 			AssertRuleFailure<Bad3> (1);
+			AssertRuleFailure<Bad4> (1);
 		}
 
 		[Test]

@@ -1,5 +1,10 @@
 2008-12-10  Jesse Jones  <jesjones@mindspring.com>
 
+	* AvoidAlwaysNullFieldTest.cs: Also report fields explicitly set
+	to null but not used. 
+
+2008-12-10  Jesse Jones  <jesjones@mindspring.com>
+
 	* AvoidAlwaysNullFieldRule.cs: Improved winforms check slightly. 
 
 2008-12-09  Jesse Jones  <jesjones@mindspring.com>
