@@ -238,10 +238,16 @@ namespace Test.Rules.Correctness {
 			return String.Format ("{{0", a);
 		}
 
+		string End (string a)
+		{
+			return String.Format ("{", a);
+		}
+
 		[Test]
 		public void SpecialCase ()
 		{
 			AssertRuleFailure<ProvideCorrectArgumentsToFormattingMethodsTest> ("GetFormat", 1);
+			AssertRuleFailure<ProvideCorrectArgumentsToFormattingMethodsTest> ("End", 1);
 		}
 	}
 }

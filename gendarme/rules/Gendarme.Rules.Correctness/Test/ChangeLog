@@ -1,3 +1,9 @@
+2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: Add test 
+	case where a string ends with '{'. This is likely what's happening 
+	in #458175
+
 2008-12-07  Jesse Jones  <jesjones@mindspring.com>
  
 	* DoNotRecurseInEqualityTest.cs: Added.
