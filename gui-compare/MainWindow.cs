@@ -555,4 +555,18 @@ public partial class MainWindow: Gtk.Window
 				
 		cc.Destroy ();
 	}
+
+	protected virtual void OnToggleRowExpansion (object sender, System.EventArgs e)
+	{
+		Gtk.TreeIter iter;
+		if (tree.Selection.GetSelected (out iter)) {			
+			Gtk.TreePath path = tree.Model.GetPath(iter);
+			if (path != null) {
+				if (tree.GetRowExpanded (path))
+					tree.CollapseRow (path);
+				else
+					tree.ExpandRow (path, false);
+			}
+		}
+	}
 }

@@ -42,6 +42,8 @@ public partial class MainWindow {
     
     private Gtk.ToggleAction ShowNotImplemented;
     
+    private Gtk.Action ToggleRowExpansionAction;
+    
     private Gtk.VBox vbox1;
     
     private Gtk.MenuBar menubar1;
@@ -120,6 +122,9 @@ public partial class MainWindow {
         this.ShowNotImplemented.Active = true;
         this.ShowNotImplemented.ShortLabel = Mono.Unix.Catalog.GetString("Show NotImplemented");
         w2.Add(this.ShowNotImplemented, null);
+        this.ToggleRowExpansionAction = new Gtk.Action("ToggleRowExpansionAction", Mono.Unix.Catalog.GetString("Toggle Row Expansion"), null, null);
+        this.ToggleRowExpansionAction.ShortLabel = Mono.Unix.Catalog.GetString("Toggle Row Expansion");
+        w2.Add(this.ToggleRowExpansionAction, "<Mod2>space");
         w1.InsertActionGroup(w2, 0);
         this.AddAccelGroup(w1.AccelGroup);
         this.Name = "MainWindow";
@@ -130,7 +135,7 @@ public partial class MainWindow {
         this.vbox1.Name = "vbox1";
         this.vbox1.Spacing = 6;
         // Container child vbox1.Gtk.Box+BoxChild
-        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menu action='RecentComparisons'/><separator/><menuitem action='Refresh'/><separator/><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowNotImplemented'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/></menu></menubar></ui>");
+        w1.AddUiFromString("<ui><menubar name='menubar1'><menu action='File'><menu action='RecentComparisons'/><separator/><menuitem action='Refresh'/><separator/><menuitem action='quit'/></menu><menu action='Compare'><menuitem action='Custom'/></menu><menu action='View'><menuitem action='ShowErrors'/><menuitem action='ShowMissing'/><menuitem action='ShowNotImplemented'/><menuitem action='ShowExtra'/><menuitem action='ShowTodo'/><menuitem action='ShowPresent'/><separator/><menuitem action='ToggleRowExpansionAction'/></menu></menubar></ui>");
         this.menubar1 = ((Gtk.MenuBar)(w1.GetWidget("/menubar1")));
         this.menubar1.Name = "menubar1";
         this.vbox1.Add(this.menubar1);
@@ -227,5 +232,6 @@ public partial class MainWindow {
         this.Refresh.Activated += new System.EventHandler(this.OnRefreshActivated);
         this.ShowTodo.Toggled += new System.EventHandler(this.OnShowTodoToggled);
         this.ShowNotImplemented.Toggled += new System.EventHandler(this.OnShowNotImplementedToggled);
+        this.ToggleRowExpansionAction.Activated += new System.EventHandler(this.OnToggleRowExpansion);
     }
 }

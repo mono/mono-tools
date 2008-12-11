@@ -108,6 +108,13 @@
         <property name="Active">True</property>
         <signal name="Toggled" handler="OnShowNotImplementedToggled" />
       </action>
+      <action id="ToggleRowExpansionAction">
+        <property name="Type">Action</property>
+        <property name="Accelerator">&lt;Mod2&gt;space</property>
+        <property name="Label" translatable="yes">Toggle Row Expansion</property>
+        <property name="ShortLabel" translatable="yes">Toggle Row Expansion</property>
+        <signal name="Activated" handler="OnToggleRowExpansion" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MainWindow</property>
@@ -138,6 +145,8 @@
                 <node type="Menuitem" action="ShowExtra" />
                 <node type="Menuitem" action="ShowTodo" />
                 <node type="Menuitem" action="ShowPresent" />
+                <node type="Separator" />
+                <node type="Menuitem" action="ToggleRowExpansionAction" />
               </node>
             </node>
           </widget>
