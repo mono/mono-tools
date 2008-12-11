@@ -1,3 +1,10 @@
+2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Don't check
+	the last char of a string for '{' since it's too late to read a digit
+	after it.
+	[Fix #458175]
+
 2008-12-07  Jesse Jones  <jesjones@mindspring.com>
  
 	* DoNotRecurseInEqualityRule.cs, Makefile.am: Added new rule.

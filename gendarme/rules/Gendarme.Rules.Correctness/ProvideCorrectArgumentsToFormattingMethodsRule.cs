@@ -83,11 +83,12 @@ namespace Gendarme.Rules.Correctness {
 			return farest;
 		}
 
-		//TODO: It only works with 0 - 15 digits, no more than 16.
+		//TODO: It only works with 0 - 9 digits
 		private static int GetExpectedParameters (string loaded)
 		{
 			results.SetAll (false);
-			for (int index = 0; index < loaded.Length; index++) {
+			// if last character is { then there's no digit after it
+			for (int index = 0; index < loaded.Length - 1; index++) {
 				if (loaded [index] == '{') {
 					char next = loaded [index + 1];
 					if (Char.IsDigit (next))
