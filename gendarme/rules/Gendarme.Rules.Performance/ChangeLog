@@ -1,3 +1,9 @@
+2008-12-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Array have special methods (e.g. 
+	Address) that cannot be resolved and, if not ignored, would cause NRE
+	[Fix bug #458178]
+
 2008-12-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidTypeGetTypeForConstantStringsRule.cs: Use HasParameters
