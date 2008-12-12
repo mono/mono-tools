@@ -1,3 +1,8 @@
+2008-12-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Add test cases for multidim and
+	jagged arrays. Adapted from test case on bug #458178
+
 2008-11-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidRepetitiveCastsTest.cs: Added some more tests (and removed one)
