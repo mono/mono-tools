@@ -14,12 +14,35 @@
 	  * Change all the ComparisonNode public fields to use CamelCasing.
 	  *  -->
 <head>
+  <script>
+function StopEvent (e)
+{
+	if (e && e.stopPropogation) 
+	   e.stopPropogation();
+	else if (window.event && window.event.cancelBubble)
+	   window.event.cancelBubble = true;
+}
+
+function ApiMessage (t)
+{
+	$.jGrowl (t);
+}
+  </script>
   <style type="text/css">
 .icons {
   width: 12px;
   height: 1em;
   display: inline-block;
   background: no-repeat left bottom;
+}
+
+.creport {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.report {
+	display: inline-block;
 }
 
 .suffix {
@@ -54,21 +77,35 @@
 </head>
 <script runat="server" language="c#">
 
-static string Get (int count, string kind)
+static string Get (int count, string kind, IList comments)
 {
 	if (count == 0)
 		return "";
 	
-	return String.Format ("<div style='display: inline-block;' title='{0} {2}'><div class='icons suffix {1}'></div>{0}</div>", count, kind, kind);
+	string cstring;
+	if (comments != null && comments.Count > 0){
+	   	var sb = new StringBuilder ();
+		foreach (var s in comments)
+			sb.Append (s);
+		cstring = sb.ToString ();
+	} else
+	  	cstring = "";
+
+	return String.Format ("<div class='report' title='{0} {1} {2}'><div class='icons suffix {1}'></div>{0}</div>", count, kind, cstring);
 }
 	  
+static string Get (int count, string kind)
+{
+	return Get (count, kind, null);
+}
+
 static string GetStatus (ComparisonNode n)
 {
 	string status = 
 		Get (n.Missing, "missing") +
 		Get (n.Extra, "extra") +
 		Get (n.Warning, "warning") +
-		Get (n.Todo, "todo") +
+		Get (n.Todo, "todo", n.todos) +
 		Get (n.Niex, "niex");
 
 	if (status != "")
@@ -91,22 +128,22 @@ public void Page_Load ()
 	tree.Nodes.Add (tn);
 }
 
-string Missing (string member)
+static string Missing (string member)
 {
 	return "<img src='sm.gif' border=0 align=absmiddle>" + member;
 }
 
-string Extra (string member)
+static string Extra (string member)
 {
 	return "<img src='sx.gif' border=0 align=absmiddle>" + member;
 }
 
-string Ok (string member)
+static string Ok (string member)
 {
 	return "<img src='sc.gif' border=0 align=absmiddle>" + member;
 }
 
-string Error (string member)
+static string Error (string member)
 {
 	return "<img src='se.gif' border=0 align=absmiddle>" + member;
 }
@@ -119,7 +156,7 @@ string LeafMemberStatus (ComparisonNode cn)
 		return MemberStatus (cn);
 }
 
-string MemberStatus (ComparisonNode cn)
+static string MemberStatus (ComparisonNode cn)
 {
 	switch (cn.status){
 	case ComparisonStatus.None:
@@ -156,6 +193,44 @@ ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 	return null;
 }
 
+// uses for class, struct, enum, interface
+static string GetFQN (ComparisonNode node)
+{
+	if (node.parent == null)
+		return "";
+
+	string n = GetFQN (node.parent);
+	return n == "" ? node.name : n + "." + node.name;
+}
+
+// used for methods
+static string GetMethodFQN (ComparisonNode node)
+{
+	if (node.parent == null)
+		return "";
+
+	int p = node.name.IndexOf ('(');
+	int q = node.name.IndexOf (' ');
+	
+	string name = p == -1 || q == -1 ? node.name : node.name.Substring (q+1, p-q-1);
+	
+	string n = GetFQN (node.parent);
+	return n == "" ? name : n + "." + name;
+}
+
+static string MakeURL (string type)
+{
+	return "http://msdn.microsoft.com/en-us/library/" + type.ToLower () + ".aspx";
+}
+
+static TreeNode MakeContainer (string kind, ComparisonNode node)
+{
+	TreeNode tn = new TreeNode (String.Format ("{0} {1} {2}", MemberStatus (node), kind, GetStatus (node)), node.name);
+	
+	tn.SelectAction = TreeNodeSelectAction.None;
+	return tn;
+}
+
 void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 {
 	Console.WriteLine ("Populating {0}", e.Node.Text);
@@ -172,33 +247,40 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		switch (child.type){
 		case CompType.Namespace:
 			tn = new TreeNode (GetStatus (child), child.name);
+			tn.SelectAction = TreeNodeSelectAction.None;
 			break;
 
 		case CompType.Class:
-			tn = new TreeNode (MemberStatus (child) + " class " + GetStatus (child), child.name);
+		        tn = MakeContainer ("class", child);
 			break;
 
 		case CompType.Struct:
-			tn = new TreeNode (MemberStatus (child) + "struct " + GetStatus (child), child.name);
+		        tn = MakeContainer ("struct", child);
 			break;
 			
 		case CompType.Interface:
-			tn = new TreeNode (MemberStatus (child) + "interface " + GetStatus (child), child.name);
+		        tn = MakeContainer ("interface", child);
 			break;
 			
 		case CompType.Enum:
-			tn = new TreeNode (MemberStatus (child) + "enum " + GetStatus (child), child.name);
+		        tn = MakeContainer ("enum", child);
 			break;
 
 		case CompType.Method:
 			tn = new TreeNode (LeafMemberStatus (child) + child.name, child.name);
+			tn.NavigateUrl = MakeURL (GetMethodFQN (child));
+			tn.Target = "_blank";
 			break;
 			
 		case CompType.Property:
 		case CompType.Field:
 		case CompType.Delegate:
 		case CompType.Event:
-			
+			tn = new TreeNode (MemberStatus (child) + " " + child.type.ToString() + " " + child.name, child.name);
+			tn.NavigateUrl = MakeURL (GetFQN (child));
+			tn.Target = "_blank";
+			break;
+
 		case CompType.Assembly:
 		case CompType.Attribute:
 			tn = new TreeNode (MemberStatus (child) + " " + child.type.ToString() + " " + child.name, child.name);
