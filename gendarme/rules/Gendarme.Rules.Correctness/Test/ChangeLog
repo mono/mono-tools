@@ -1,3 +1,10 @@
+2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: Add test 
+	case where a string ends with '{'. This is likely what's happening 
+	in #458175
+	[Backport of r121270]
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Correctness.csproj: Activate makefile integration for all
