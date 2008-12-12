@@ -768,5 +768,58 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess (typeof (StaticType), "CreateRepeatIterator");
 		}
+
+		// Test cases devired from bug #458178
+
+		void MultidimArray ()
+		{
+			const int LengthA = 2;
+			const int LengthB = 2;
+
+			bool [,] array = new bool [LengthA, LengthB];
+
+			for (int i = 0; i < LengthA; i++) {
+				for (int j = 0; j < LengthB; j++) {
+					array [i, j] = true;
+				}
+			}
+		}
+
+		void JaggedArray ()
+		{
+			const int LengthA = 2;
+			const int LengthB = 2;
+
+			bool [][] array = new bool [LengthA][];
+
+			for (int i = 0; i < LengthA; i++) {
+				for (int j = 0; j < LengthB; j++) {
+					array [i][j] = true;
+				}
+			}
+		}
+
+		void NullableArray ()
+		{
+			const int LengthA = 2;
+			const int LengthB = 2;
+
+			bool? [,] array = new bool? [LengthA, LengthB];
+
+			for (int i = 0; i < LengthA; i++) {
+				for (int j = 0; j < LengthB; j++) {
+					array [i, j] = true;
+				}
+			}
+		}
+
+		[Test]
+		// https://bugzilla.novell.com/show_bug.cgi?id=458178
+		public void Arrays ()
+		{
+			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("MultidimArray", 1);
+			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("JaggedArray", 1);
+			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("NullableArray", 1);
+		}
 	}
 }
