@@ -1,3 +1,10 @@
+2008-12-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Array have special methods (e.g. 
+	Address) that cannot be resolved and, if not ignored, would cause NRE
+	[Fix bug #458178]
+	[Backport of r121396 - without the Has{x} niceness]
+
 2008-11-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Simplify call into 

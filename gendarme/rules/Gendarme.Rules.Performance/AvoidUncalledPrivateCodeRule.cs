@@ -284,9 +284,13 @@ namespace Gendarme.Rules.Performance {
 				if (mr == null)
 					continue;
 
-				TypeDefinition type = mr.DeclaringType.Resolve ();
-				if ((type != null) && (type.GenericParameters.Count > 0)) {
-					methods.Add (GetToken (type.GetMethod (mr.Name)));
+				TypeReference type = mr.DeclaringType;
+				if (!(type is ArrayType)) {
+					// if (type.GetOriginalType ().HasGenericParameters)
+					// the simpler ^^^ does not work under Mono but works on MS
+					type = type.Resolve ();
+					if (type != null && (type.GenericParameters.Count > 0))
+						methods.Add (GetToken (type.GetMethod (mr.Name)));
 				}
 				methods.Add (GetToken (mr));
 			}
