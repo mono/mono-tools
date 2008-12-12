@@ -1,3 +1,11 @@
+2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Don't check
+	the last char of a string for '{' since it's too late to read a digit
+	after it.
+	[Fix #458175]
+	[Backport of r121271]
+
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationRule.cs: Avoid calling Body.Instructions 
