@@ -17,8 +17,8 @@
   <script>
 function StopEvent (e)
 {
-	if (e && e.stopPropogation) 
-	   e.stopPropogation();
+	if (e && e.stopPropagation) 
+	   e.stopPropagation();
 	else if (window.event && window.event.cancelBubble)
 	   window.event.cancelBubble = true;
 }
