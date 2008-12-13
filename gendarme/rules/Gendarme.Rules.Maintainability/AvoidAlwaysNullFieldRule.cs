@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.AvoidAlwaysNullFieldRule
+// Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
@@ -37,7 +37,7 @@ using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Performance {
+namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
 	/// A type has a private field whose value is always null.

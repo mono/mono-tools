@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using Gendarme.Rules.Performance;
+using Gendarme.Rules.Maintainability;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;

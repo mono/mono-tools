@@ -1,3 +1,7 @@
+2008-13-10  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidAlwaysNullFieldTest.cs: Use the correct namespace. 
+
 2008-12-10  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidAlwaysNullFieldTest.cs: Also report fields explicitly set
