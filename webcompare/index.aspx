@@ -326,7 +326,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
         <asp:TreeView ID="tree" Runat="server" OnTreeNodePopulate="TreeNodePopulate"
         EnableClientScript="true"
         PopulateNodesFromClient="true"
-        ExpandDepth="0">
+        ExpandDepth="1">
         </asp:TreeView>
     </div>
     </form>
