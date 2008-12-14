@@ -12,6 +12,7 @@ void Application_Start ()
 					     () => new CecilAssembly ("/mono/lib/mono/2.0/mscorlib.dll"));
 	ManualResetEvent r = new ManualResetEvent (false);
 	CompareContext.Finished += delegate { r.Set (); };
+	Console.WriteLine ("Starting Compare");
 	CompareContext.Compare ();
 	r.WaitOne ();
 	CompareContext.Comparison.PropagateCounts ();

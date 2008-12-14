@@ -1,5 +1,6 @@
 <%@ Page Language="C#" %>
 <%@ Import Namespace="System.Web" %>
+<%@ Import Namespace="System.Collections.Generic" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="GuiCompare" %>
 <!--
@@ -15,20 +16,9 @@
 	  *  -->
 <head>
   <script>
-function StopEvent (e)
-{
-	if (e && e.stopPropagation) 
-	   e.stopPropagation();
-	else if (window.event && window.event.cancelBubble)
-	   window.event.cancelBubble = true;
-}
-
-function ApiMessage (t)
-{
-	$.jGrowl (t);
-}
   </script>
-  <style type="text/css">
+
+<style type="text/css">
 .icons {
   width: 12px;
   height: 1em;
@@ -77,36 +67,33 @@ function ApiMessage (t)
 </head>
 <script runat="server" language="c#">
 
-static string Get (int count, string kind, IList comments)
+const string ImageMissing = "<img src='sm.gif' border=0 align=absmiddle>";
+const string ImageExtra   = "<img src='sx.gif' border=0 align=absmiddle>";
+const string ImageOk      = "<img src='sc.gif' border=0 align=absmiddle>";
+const string ImageError   = "<img src='se.gif' border=0 align=absmiddle>";
+const string ImageWarning = "<img src='mn.gif' border=0 align=absmiddle>";
+
+static string ImageTodo (ComparisonNode cn)
+{
+	return String.Format ("<img src='st.gif' border=0 align=absmiddle title='{0}'>", GetTodo (cn));
+}
+
+static string Get (int count, string kind, string caption)
 {
 	if (count == 0)
 		return "";
 	
-	string cstring;
-	if (comments != null && comments.Count > 0){
-	   	var sb = new StringBuilder ();
-		foreach (var s in comments)
-			sb.Append (s);
-		cstring = sb.ToString ();
-	} else
-	  	cstring = "";
-
-	return String.Format ("<div class='report' title='{0} {1} {2}'><div class='icons suffix {1}'></div>{0}</div>", count, kind, cstring);
+	return String.Format ("<div class='report' title='{0} {2}'><div class='icons suffix {1}'></div>{0}</div>", count, kind, caption);
 }
 	  
-static string Get (int count, string kind)
-{
-	return Get (count, kind, null);
-}
-
 static string GetStatus (ComparisonNode n)
 {
 	string status = 
-		Get (n.Missing, "missing") +
-		Get (n.Extra, "extra") +
-		Get (n.Warning, "warning") +
-		Get (n.Todo, "todo", n.todos) +
-		Get (n.Niex, "niex");
+		Get (n.Missing, "missing", "missing members") +
+		Get (n.Extra, "extra", "extra members") +
+		Get (n.Warning, "warning", "warnings") +
+		Get (n.Todo, "todo", "items with notes") +
+		Get (n.Niex, "niex", "members that throw NotImplementedException");
 
 	if (status != "")
 		return n.name + status;
@@ -128,48 +115,67 @@ public void Page_Load ()
 	tree.Nodes.Add (tn);
 }
 
-static string Missing (string member)
+static string GetTodo (ComparisonNode cn)
 {
-	return "<img src='sm.gif' border=0 align=absmiddle>" + member;
+	StringBuilder sb = new StringBuilder ();
+	foreach (string s in cn.todos){
+		string clean = s.Substring (20, s.Length-22);
+		if (clean == "")
+			sb.Append ("Flagged with TODO");
+		else {
+			sb.Append ("Comment: ");
+			sb.Append (clean);
+			sb.Append ("<br>");
+		}
+	}
+	return sb.ToString ();
 }
 
-static string Extra (string member)
+static string GetMessages (ComparisonNode cn)
 {
-	return "<img src='sx.gif' border=0 align=absmiddle>" + member;
+	StringBuilder sb = new StringBuilder ();
+	foreach (string s in cn.messages){
+		sb.Append (s);
+		sb.Append ("<br>");
+	}
+	return sb.ToString ();
 }
 
-static string Ok (string member)
+static string ImagesFromCounts (ComparisonNode cn)
 {
-	return "<img src='sc.gif' border=0 align=absmiddle>" + member;
-}
-
-static string Error (string member)
-{
-	return "<img src='se.gif' border=0 align=absmiddle>" + member;
-}
-
-string LeafMemberStatus (ComparisonNode cn)
-{
-	if (cn.Niex != 0)
-		return Error ("");
-	else
-		return MemberStatus (cn);
+	int x = (cn.Todo != 0 ? 2 : 0) | (cn.Warning != 0 ? 1 : 0);
+	switch (x){
+        case 0:
+       		return "";
+	case 1:
+		return ImageWarning;
+	case 2:
+	        return ImageTodo (cn);
+	case 4:
+	        return ImageTodo (cn) + ImageWarning;
+	}
+	return "";
 }
 
 static string MemberStatus (ComparisonNode cn)
 {
+	if (cn.Niex != 0)
+		cn.status = ComparisonStatus.Error;
+
+	string counts = ImagesFromCounts (cn);
+
 	switch (cn.status){
 	case ComparisonStatus.None:
-		return Ok ("");
+	        return counts == "" ? ImageOk : ImageOk + counts;
 		
 	case ComparisonStatus.Missing:
-		return Missing ("");
+		return ImageMissing;
 		
 	case ComparisonStatus.Extra:
-		return Extra ("");
+		return counts == "" ? ImageExtra : ImageOk + counts;
 		
 	case ComparisonStatus.Error:
-		return Error ("");
+	        return counts == "" ? ImageError : ImageError + counts;
 
 	default:
 		return "Unknown status: " + cn.status;
@@ -231,10 +237,21 @@ static TreeNode MakeContainer (string kind, ComparisonNode node)
 	return tn;
 }
 
+static void AttachComments (TreeNode tn, ComparisonNode node)
+{
+	if (node.messages.Count != 0){
+		TreeNode m = new TreeNode (GetMessages (node));
+		m.SelectAction = TreeNodeSelectAction.None;
+		tn.ChildNodes.Add (m);
+	}
+	if (node.todos.Count != 0){
+		TreeNode m = new TreeNode (GetTodo (node));
+		tn.ChildNodes.Add (m);
+	}
+}
+
 void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 {
-	Console.WriteLine ("Populating {0}", e.Node.Text);
-	
 	ComparisonNode cn = ComparisonNodeFromTreeNode (e.Node);
 	if (cn == null){
 		Console.WriteLine ("ERROR: Did not find the node");
@@ -267,7 +284,8 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 			break;
 
 		case CompType.Method:
-			tn = new TreeNode (LeafMemberStatus (child) + child.name, child.name);
+			tn = new TreeNode (MemberStatus (child) + child.name, child.name);
+			AttachComments (tn, child);
 			tn.NavigateUrl = MakeURL (GetMethodFQN (child));
 			tn.Target = "_blank";
 			break;
@@ -277,6 +295,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		case CompType.Delegate:
 		case CompType.Event:
 			tn = new TreeNode (MemberStatus (child) + " " + child.type.ToString() + " " + child.name, child.name);
+			AttachComments (tn, child);
 			tn.NavigateUrl = MakeURL (GetFQN (child));
 			tn.Target = "_blank";
 			break;
