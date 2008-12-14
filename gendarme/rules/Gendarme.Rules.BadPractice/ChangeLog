@@ -1,3 +1,12 @@
+2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs, 
+	CloneMethodShouldNotReturnNullRule.cs, 
+	GetEntryAssemblyMayReturnNullRule.cs, 
+	DisableDebuggingCodeRule.cs: Fix AnalyzeModule so that it 
+	activates the rule properly when multiple assemblies or modules are 
+	being checked.
+
 2008-12-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidAssemblyVersionMismatchRule.cs: Tweaked the language in the

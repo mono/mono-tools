@@ -1,3 +1,9 @@
+2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewSuppressUnmanagedCodeSecurityUsageRule.cs: Fix AnalyzeModule
+	so that it activates the rule properly when multiple assemblies or
+	modules are being checked.
+
 2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotExposeFieldsInSecuredTypeRule.cs: Use HasFields

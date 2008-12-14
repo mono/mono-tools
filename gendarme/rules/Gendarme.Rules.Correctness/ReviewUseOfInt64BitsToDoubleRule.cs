@@ -84,7 +84,7 @@ namespace Gendarme.Rules.Correctness {
 			// if the module does not reference System.BitConverter then no
 			// method inside it will be calling any BitConverter.Int64BitsToDouble method
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
 					e.CurrentModule.TypeReferences.ContainsType (BitConverter);
 			};
 		}
@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Correctness {
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
-
+		
 			// exclude methods that don't have calls
 			OpCodeBitmask mask = OpCodeEngine.GetBitmask (method);
 			if (!OpCodeBitmask.Calls.Intersect (mask))

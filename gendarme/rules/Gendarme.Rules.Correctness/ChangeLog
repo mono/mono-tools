@@ -1,3 +1,9 @@
+2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewUseOfInt64BitsToDoubleRule.cs: Fix AnalyzeModule so that it 
+	activates the rule properly when multiple assemblies or modules are 
+	being checked.
+
 2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Don't check

@@ -143,19 +143,18 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			base.Initialize (runner);
 
-			// we only want to run this on assemblies that use either the
-			// 1.0 or 1.1 runtime - since the memory model, at that time,
-			// was not entirely safe for double check locks
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime < TargetRuntime.NET_2_0);
-			};
-
-			// is this module using Monitor.Enter ? (lock in c#)
-			// if not then this rule does not need to be executed for the module
-			// note: mscorlib.dll is an exception since it defines, not refer, System.Threading.Monitor
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType ("System.Threading.Monitor");
+				Active = 
+					// we only want to run this on assemblies that use either the
+					// 1.0 or 1.1 runtime - since the memory model, at that time,
+					// was not entirely safe for double check locks
+					e.CurrentAssembly.Runtime < TargetRuntime.NET_2_0 &&
+					
+					// is this module using Monitor.Enter ? (lock in c#)
+					// if not then this rule does not need to be executed for the module
+					// note: mscorlib.dll is an exception since it defines, not refer, System.Threading.Monitor
+					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
+					e.CurrentModule.TypeReferences.ContainsType ("System.Threading.Monitor"));
 			};
 		}
 

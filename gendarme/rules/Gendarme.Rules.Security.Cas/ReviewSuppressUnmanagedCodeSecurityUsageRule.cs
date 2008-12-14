@@ -65,7 +65,7 @@ namespace Gendarme.Rules.Security.Cas {
 			// if the module does not reference [SuppressUnmanagedCodeSecurityAttribute]
 			// then it's not being used inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib
 					|| e.CurrentModule.TypeReferences.ContainsType (SUCS));
 			};
 		}
