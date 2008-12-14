@@ -71,7 +71,7 @@ const string ImageMissing = "<img src='sm.gif' border=0 align=absmiddle>";
 const string ImageExtra   = "<img src='sx.gif' border=0 align=absmiddle>";
 const string ImageOk      = "<img src='sc.gif' border=0 align=absmiddle>";
 const string ImageError   = "<img src='se.gif' border=0 align=absmiddle>";
-const string ImageWarning = "<img src='mn.gif' border=0 align=absmiddle>";
+const string ImageWarning = "<img src='mn.png' border=0 align=absmiddle>";
 
 static string ImageTodo (ComparisonNode cn)
 {
