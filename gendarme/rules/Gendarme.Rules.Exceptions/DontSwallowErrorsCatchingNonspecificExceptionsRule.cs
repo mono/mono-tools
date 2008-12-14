@@ -101,7 +101,7 @@ namespace Gendarme.Rules.Exceptions {
 
 		private static Instruction ThrowsGeneralException (ExceptionHandler exceptionHandler)
 		{
-			for (Instruction currentInstruction = exceptionHandler.HandlerStart; currentInstruction != exceptionHandler.HandlerEnd; currentInstruction = currentInstruction.Next) {
+			for (Instruction currentInstruction = exceptionHandler.HandlerStart; currentInstruction != exceptionHandler.HandlerEnd && currentInstruction != null; currentInstruction = currentInstruction.Next) {
 				if (currentInstruction.OpCode.Code == Code.Rethrow)
 					return null;
 			}

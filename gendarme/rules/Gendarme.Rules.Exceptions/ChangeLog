@@ -1,3 +1,10 @@
+2008-12-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Patch 
+	received from Gonzalo that fix #458173. No test case yet (for unit
+	tests).
+	[Backport of r121502]
+
 2008-11-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: Specify 
