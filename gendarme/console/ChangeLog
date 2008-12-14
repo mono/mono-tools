@@ -1,3 +1,8 @@
+2008-12-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* XmlResultWriter.cs: Let the XmlWriter encode any non-XML compliant
+	character found in our XText elements (XLinq does not do that).
+
 2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: Big memory reduction in the LINQ query
