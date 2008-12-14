@@ -1,3 +1,9 @@
+2008-12-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* XmlResultWriter.cs: Let the XmlWriter encode any non-XML compliant
+	character found in our XText elements (XLinq does not do that).
+	[Backport of r121499]
+
 2008-12-03  Jesse Jones  <jesjones@mindspring.com>
 
 	* ConsoleRunner.cs: --help says "assemblies" instead of

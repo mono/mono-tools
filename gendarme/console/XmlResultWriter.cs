@@ -55,7 +55,7 @@ namespace Gendarme {
 		{
 			writer = XmlWriter.Create (
 				CreateWriterFor (fileName),
-				new XmlWriterSettings { Indent = true, CloseOutput = true });
+				new XmlWriterSettings { Indent = true, CloseOutput = true, CheckCharacters = false });
 		}
 
 		static TextWriter CreateWriterFor (string fileName)
