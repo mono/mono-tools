@@ -1,3 +1,17 @@
+2008-12-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSameClassRule.cs: Use IsEnum, IsInterface
+	and HasMethods
+	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Use HasMethods,
+	IsEnum and IsInterface
+	* AvoidLargeClassesRule.cs: Use HasFields
+	* AvoidLongMethodsRule.cs: Use HasParameters and HasFields
+	* AvoidLongParameterListsRule.cs: Use HasMethods, HasParameters
+	and HasConstructors
+	* AvoidSpeculativeGeneralityRule.cs: Use HasInterfaces, HasMethods
+	and IsEnum
+	* CodeDuplicatedLocator.cs: Use HasMethods
+
 2008-11-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidMessageChainsRule.cs: Use Log instead of Trace.

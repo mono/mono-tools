@@ -88,24 +88,36 @@ namespace Gendarme.Rules.Smells {
 
 		private static MethodDefinition GetSmallerConstructorFrom (TypeDefinition type)
 		{
+			if (!type.HasConstructors)
+				return null;
+
 			if (type.Constructors.Count == 1)
 				return type.Constructors[0];
 
 			MethodDefinition smallest = null;
+			int scount = 0;
 			foreach (MethodDefinition constructor in type.Constructors) {
 				// skip the static ctor since it will always be the smallest one
 				if (constructor.IsStatic)
 					continue;
 
-				if ((smallest == null) || (smallest.Parameters.Count > constructor.Parameters.Count))
+				if (smallest == null) {
 					smallest = constructor;
+					scount = smallest.HasParameters ? smallest.Parameters.Count : 0;
+				} else {
+					int ccount = constructor.HasParameters ? constructor.Parameters.Count : 0;
+					if (scount > ccount) {
+						smallest = constructor;
+						scount = ccount;
+					}
+				}
 			}
 			return smallest;
 		}
 
 		private bool HasMoreParametersThanAllowed (MethodDefinition method)
 		{
-			return method.Parameters.Count >= MaxParameters;
+			return (method.HasParameters ? method.Parameters.Count : 0) >= MaxParameters;
 		}
 
 		private void CheckConstructor (MethodDefinition constructor)
@@ -115,7 +127,8 @@ namespace Gendarme.Rules.Smells {
 			if (constructor == null) 
 				return;
 			//Skip static constructors
-			if ((constructor.Parameters.Count == 0) && !constructor.IsStatic && constructor.IsVisible ())
+// FIXME: logic does not match previous comment
+			if (!constructor.HasParameters && !constructor.IsStatic && constructor.IsVisible ())
 				return;
 			if (HasMoreParametersThanAllowed (constructor)) 
 				Runner.Report (constructor, Severity.Medium, Confidence.Normal, "This constructor contains a long parameter list.");
@@ -138,8 +151,11 @@ namespace Gendarme.Rules.Smells {
 				if (!possibleOverloaded.ContainsKey (method.Name))
 					possibleOverloaded.Add (method.Name, method);
 				else {
-					if (possibleOverloaded[method.Name].Parameters.Count > method.Parameters.Count)
-						possibleOverloaded[method.Name] = method;
+					MethodDefinition candidate = possibleOverloaded [method.Name];
+					int ccount = candidate.HasParameters ? candidate.Parameters.Count : 0;
+					int mcount = method.HasParameters ? method.Parameters.Count : 0;
+					if (ccount > mcount)
+						possibleOverloaded [method.Name] = method;
 				}
 			}
 			return possibleOverloaded.Values;
@@ -147,10 +163,14 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool OnlyContainsExternalMethods (TypeDefinition type)
 		{
+			if (!type.HasMethods)
+				return false;
+
 			foreach (MethodDefinition method in type.Methods)
 				if (!method.IsPInvokeImpl)
 					return false;
-			return type.Methods.Count != 0;
+			// all methods are p/invoke
+			return true;
 		}
 
 		private RuleResult CheckDelegate (TypeReference type)
@@ -173,9 +193,11 @@ namespace Gendarme.Rules.Smells {
 				return CheckDelegate (type);
 
 			CheckConstructor (GetSmallerConstructorFrom (type));
-			
-			foreach (MethodDefinition method in GetSmallerOverloaded (type)) 
-				CheckMethod (method);
+
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in GetSmallerOverloaded (type)) 
+					CheckMethod (method);
+			}
 
 			return Runner.CurrentRuleResult;
 		}

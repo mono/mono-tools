@@ -156,11 +156,14 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool InheritsOnlyFromObject (TypeDefinition type)
 		{
-			return type.BaseType.FullName == "System.Object" && type.Interfaces.Count == 0;
+			return !type.HasInterfaces && type.BaseType.FullName == "System.Object";
 		}
 
 		private static bool MostlyMethodsDelegatesCall (TypeDefinition type)
 		{
+			if (!type.HasMethods)
+				return false; // 0 / 2 + 1 <= 0
+
 			int delegationCounter = 0;
 			foreach (MethodDefinition method in type.Methods) {
 				if (OnlyDelegatesCall (method))
@@ -208,7 +211,7 @@ namespace Gendarme.Rules.Smells {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			CheckAbstractClassWithoutResponsability (type);

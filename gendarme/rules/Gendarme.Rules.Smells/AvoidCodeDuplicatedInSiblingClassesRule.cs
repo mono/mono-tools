@@ -106,6 +106,9 @@ namespace Gendarme.Rules.Smells {
 
 		private void FindCodeDuplicated (TypeDefinition type, ICollection<TypeDefinition> siblingClasses)
 		{
+			if (!type.HasMethods)
+				return;
+
 			foreach (MethodDefinition method in type.Methods)
 				foreach (TypeDefinition sibling in siblingClasses)
 					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (this, method, sibling);
@@ -121,6 +124,10 @@ namespace Gendarme.Rules.Smells {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
+			// don't analyze cases where no methods (or body) are available
+			if (type.IsEnum || type.IsInterface)
+				return RuleResult.DoesNotApply;
+
 			ICollection<TypeDefinition> siblingClasses = Utilities.GetInheritedClassesFrom (type);
 			if (siblingClasses.Count >= 2) {
 				codeDuplicatedLocator.Clear ();

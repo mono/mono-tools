@@ -106,7 +106,7 @@ namespace Gendarme.Rules.Smells {
 		internal bool CompareMethodAgainstTypeMethods (IRule rule, MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
 		{
 			bool containsDuplicated = false;
-			if (!CheckedTypes.Contains (targetTypeDefinition.Name)) {
+			if (!CheckedTypes.Contains (targetTypeDefinition.Name) && targetTypeDefinition.HasMethods) {
 				foreach (MethodDefinition targetMethod in targetTypeDefinition.Methods) {
 					if (ContainsDuplicatedCode (currentMethod, targetMethod)) {
 						rule.Runner.Report (currentMethod, Severity.High, Confidence.Normal, String.Format ("Duplicate code with {0}", targetMethod));

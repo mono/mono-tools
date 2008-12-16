@@ -191,7 +191,7 @@ namespace Gendarme.Rules.Smells {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsEnum || type.IsGeneratedCode ())
+			if (type.IsEnum || !type.HasFields || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			CheckForClassFields (type);
