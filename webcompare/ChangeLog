@@ -1,5 +1,7 @@
 2008-12-15  Miguel de Icaza  <miguel@novell.com>
 
+	* Global.asax: Load stuff relative to the current directory.
+
 	* index.aspx: From Joseph Hill: add fantastic progress status to
 	show while loading the page. 
 

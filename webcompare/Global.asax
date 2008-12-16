@@ -11,9 +11,11 @@ public class CompareParameters {
         public CompareParameters (NameValueCollection nvc)
 	{
 		Assembly = nvc ["assembly"] ?? "mscorlib";
-		InfoDir  = nvc ["reference"] ?? "";
+		InfoDir  = nvc ["reference"] ?? "3.5";
 		string bdir = nvc ["profile"] ?? "2.0";
-		BinDir = "/mono/lib/mono/" + bdir;
+		Validate (bdir);
+
+		BinDir = "binary/" + bdir;
 	}
 
 	public CompareParameters (string assembly, string infodir, string bindir)
@@ -23,9 +25,31 @@ public class CompareParameters {
 		BinDir = bindir;
 	}
 
-	public string Assembly { get; private set; }
-	public string InfoDir  { get; private set; }
-	public string BinDir   { get; private set; }
+	static void Validate (string s)
+	{
+		if (s.IndexOf ("..") != -1 || s.IndexOf ('/') != -1 || s.IndexOf ('%') != -1 || s.IndexOf (' ') != -1)
+			throw new Exception (String.Format ("Invalid parameter: {0}", s));
+	}
+
+	string assembly;
+	public string Assembly { 
+		get { return assembly; }
+		private set { 
+			Validate (value);
+			assembly = value;
+		}
+	}
+
+	string infodir;
+	public string InfoDir { 
+		get { return infodir; }
+		private set { 
+			Validate (value);
+			infodir = value;
+		}
+	}
+
+	public string BinDir {  get; private set; } 
 
 	public override int GetHashCode ()
 	{
@@ -46,10 +70,18 @@ public class CompareParameters {
 
 	public CompareContext MakeCompareContext ()
 	{
-		Console.WriteLine ("Comparing {0} on {1} with {2}", Assembly, InfoDir, BinDir);
+		string info_file = Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml";
+		string dll_file = Path.Combine (BinDir, Assembly) + ".dll";
+
+		Console.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
+		if (!File.Exists (info_file))
+			throw new Exception (String.Format ("File {0} does not exist", info_file));
+		if (!File.Exists (dll_file))
+			throw new Exception (String.Format ("File {0} does not exist", dll_file));
+
 		CompareContext cc = new CompareContext (
-			() => new MasterAssembly (Path.Combine (Path.Combine (InfoDir, "masterinfos"), Assembly) + ".xml"),
-		     	() => new CecilAssembly (Path.Combine (BinDir, Assembly) + ".dll"));
+			() => new MasterAssembly (info_file),
+		     	() => new CecilAssembly (dll_file));
 		ManualResetEvent r = new ManualResetEvent (false);
 		cc.Finished += delegate { r.Set (); };
 		Console.WriteLine ("Starting Compare");

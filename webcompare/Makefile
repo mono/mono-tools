@@ -20,7 +20,10 @@ get: masterinfos-3.5.tar.gz
 
 masterinfos-3.5.tar.gz:
 	wget http://mono.ximian.com/masterinfos/2.4/masterinfos-3.5.tar.gz
-	
+
 
 run: all
 	xsp2
+
+push: all
+	scp --rsh=ssh -pr bin Global.asax *.gif *.png Web.config status.aspx mono-web@www.go-mono.com:go-mono/status/
