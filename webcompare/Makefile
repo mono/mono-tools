@@ -26,4 +26,4 @@ run: all
 	xsp2
 
 push: all
-	scp --rsh=ssh -pr bin Global.asax *.gif *.png Web.config status.aspx mono-web@www.go-mono.com:go-mono/status/
+	rsync --rsh=ssh -pr bin Global.asax *.gif *.png Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/ 

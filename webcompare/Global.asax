@@ -70,9 +70,14 @@ public class CompareParameters {
 
 	public CompareContext MakeCompareContext ()
 	{
-		string info_file = Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml";
-		string dll_file = Path.Combine (BinDir, Assembly) + ".dll";
+		string info_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml");
+		string dll_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (BinDir, Assembly) + ".dll");
 
+		using (var fs = File.OpenWrite ("/tmp/mylog")){
+		      var sw = new StreamWriter (fs);
+		      sw.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
+		      sw.Flush ();
+		}
 		Console.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
 		if (!File.Exists (info_file))
 			throw new Exception (String.Format ("File {0} does not exist", info_file));
@@ -82,6 +87,9 @@ public class CompareParameters {
 		CompareContext cc = new CompareContext (
 			() => new MasterAssembly (info_file),
 		     	() => new CecilAssembly (dll_file));
+		cc.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs a){
+			Console.Error.WriteLine (a.Message);
+		};
 		ManualResetEvent r = new ManualResetEvent (false);
 		cc.Finished += delegate { r.Set (); };
 		Console.WriteLine ("Starting Compare");
@@ -94,5 +102,9 @@ public class CompareParameters {
 }
 
 public static Dictionary<CompareParameters,CompareContext> CompareCache = new Dictionary<CompareParameters,CompareContext> ();
+
+void Application_Start ()
+{
+}
 
 </script>
