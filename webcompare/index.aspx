@@ -115,11 +115,29 @@ CompareContext GetCompareContext (global_asax.CompareParameters cp)
 	return cc;
 }
 
+public void ShowPleaseWait ()
+{
+	waitdiv.Visible = true;
+	
+	ClientScript.RegisterStartupScript(
+	    this.GetType(),
+	    "postpleasewait",
+	    ClientScript.GetPostBackEventReference(new PostBackOptions (waitdiv)) + ";",
+	    true);
+}
+
 public void Page_Load ()
 {
 	var cp = new global_asax.CompareParameters (Page.Request.QueryString);
+	if (!global_asax.CompareCache.ContainsKey (cp) && !IsPostBack){
+		ShowPleaseWait ();
+		return;
+	}
+
 	compare_context = GetCompareContext (cp);
 	var n = compare_context.Comparison;
+
+	waitdiv.Visible = false;
 
 	//TreeNode tn = new TreeNode ("<img src='sm.gif' border=0 align=absmiddle>" + n.name);
 	//TreeNode tn = new TreeNode (n.name);
@@ -129,6 +147,8 @@ public void Page_Load ()
 	tn.SelectAction = TreeNodeSelectAction.None;
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
+
+	tree.Visible = true;
 }
 
 static string GetTodo (ComparisonNode cn)
@@ -339,11 +359,19 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 
     <form id="form" runat="server">
     <div>
-        <asp:TreeView ID="tree" Runat="server" OnTreeNodePopulate="TreeNodePopulate"
-        EnableClientScript="true"
-        PopulateNodesFromClient="true"
-        ExpandDepth="1">
-        </asp:TreeView>
+        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Always">
+            <ContentTemplate>
+	        <div runat="server" id="waitdiv">
+                  <img src="wait.gif" runat="server" enableviewstate="false" /> Loading and Comparing...
+		</div>
+	        <asp:TreeView ID="tree" Runat="server" OnTreeNodePopulate="TreeNodePopulate"
+	        EnableClientScript="true"
+	        PopulateNodesFromClient="true"
+	        ExpandDepth="1">
+	        </asp:TreeView>
+            </ContentTemplate>   
+        </asp:UpdatePanel>
     </div>
     </form>
 </body>
