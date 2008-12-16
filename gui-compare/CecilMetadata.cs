@@ -107,15 +107,6 @@ namespace GuiCompare {
 				.Replace ('<', '[')
 				.Replace ('>', ']');
 		}
-
-		static bool IsExplicitInterfaceImplementation (MethodDefinition md)
-		{
-			OverrideCollection overrides = md.Overrides;
-			if (overrides == null || overrides.Count == 0)
-				return false;
-
-			return true;
-		}
 		
 		public static void PopulateMemberLists (TypeDefinition fromDef,
 		                                        List<CompNamed> interface_list,
@@ -132,14 +123,6 @@ namespace GuiCompare {
 						continue;
 					interface_list.Add (new CecilInterface (ifc));
 				}
-
-				// Walk the parent hierarchy, we need to gather all the inherited
-				// interfaces as well to avoid false positives in comparison
-				TypeReference base_type = fromDef.BaseType;
-				if (base_type != null) {
-					TypeDefinition base_type_def = CecilUtils.Resolver.Resolve (base_type);
-					PopulateMemberLists (base_type_def, interface_list, null, null, null, null, null);
-				}
 			}
 
 			if (constructor_list != null) {
@@ -152,33 +135,23 @@ namespace GuiCompare {
 			if (method_list != null) {
 				foreach (MethodDefinition md in fromDef.Methods) {
 					if (md.IsSpecialName) {
-						if (!md.Name.StartsWith("op_") && !IsExplicitInterfaceImplementation (md))
-							continue;
-					} else {
-						if (md.IsAssembly)
-							continue;
-					
-						if (md.IsPrivate && !IsExplicitInterfaceImplementation (md))
+						if (!md.Name.StartsWith("op_"))
 							continue;
 					}
-					
+					if (md.IsPrivate || md.IsAssembly)
+						continue;
+
 					method_list.Add (new CecilMethod (md));
 				}
 			}
 			if (property_list != null) {
-				MethodDefinition getMethod, setMethod;
 				foreach (PropertyDefinition pd in fromDef.Properties) {
 					bool include_set = true;
 					bool include_get = true;
-					
-					setMethod = pd.SetMethod;
-					if (setMethod == null || (setMethod.IsPrivate || setMethod.IsAssembly))
+					if (pd.SetMethod == null || (pd.SetMethod.IsPrivate || pd.SetMethod.IsAssembly))
 						include_set = false;
-
-					getMethod = pd.GetMethod;
-					if (getMethod == null || (getMethod.IsPrivate || getMethod.IsAssembly))
+					if (pd.GetMethod == null || (pd.GetMethod.IsPrivate || pd.GetMethod.IsAssembly))
 						include_get = false;
-
 					if (include_set || include_get)
 						property_list.Add (new CecilProperty (pd));
 				}
