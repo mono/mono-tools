@@ -1,0 +1,17 @@
+To try this out:
+
+	* Unpack one of the masterinfos in this directory (this needs
+          to be changed to be versioned later), it should only contain
+	  a directory masterinfos/ here.
+
+	* Run xsp2 on this directory.
+
+	* Visit: http://localhost:8080/index.aspx
+
+	* Edit the Global.asax to replace the hardcoded /mono/lib/mono directory
+	  with your own $prefix/lib/mono directory
+
+To check different assemblies use:
+
+	* http://localhost:8080/index.aspx?assembly=ANAME
+

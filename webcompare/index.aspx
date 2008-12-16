@@ -67,6 +67,8 @@
 </head>
 <script runat="server" language="c#">
 
+public CompareContext compare_context;
+
 const string ImageMissing = "<img src='sm.gif' border=0 align=absmiddle>";
 const string ImageExtra   = "<img src='sx.gif' border=0 align=absmiddle>";
 const string ImageOk      = "<img src='sc.gif' border=0 align=absmiddle>";
@@ -100,10 +102,24 @@ static string GetStatus (ComparisonNode n)
 
 	return n.name;
 }
-	  
+
+CompareContext GetCompareContext (global_asax.CompareParameters cp)
+{
+	CompareContext cc;
+	if (!global_asax.CompareCache.TryGetValue (cp, out cc)){
+		cc = cp.MakeCompareContext ();
+		var copy = new Dictionary<global_asax.CompareParameters,CompareContext> (global_asax.CompareCache);
+		copy [cp] = cc;
+		global_asax.CompareCache = copy;
+	}
+	return cc;
+}
+
 public void Page_Load ()
 {
-	ComparisonNode n = global_asax.CompareContext.Comparison;
+	var cp = new global_asax.CompareParameters (Page.Request.QueryString);
+	compare_context = GetCompareContext (cp);
+	var n = compare_context.Comparison;
 
 	//TreeNode tn = new TreeNode ("<img src='sm.gif' border=0 align=absmiddle>" + n.name);
 	//TreeNode tn = new TreeNode (n.name);
@@ -185,7 +201,7 @@ static string MemberStatus (ComparisonNode cn)
 ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 {
 	if (tn.Parent == null){
-		return global_asax.CompareContext.Comparison;
+		return compare_context.Comparison;
 		return null;
 	}
 	

@@ -1,0 +1,4 @@
+2008-12-15  Miguel de Icaza  <miguel@novell.com>
+
+	* Add support for comparing different assemblies and versions 
+
