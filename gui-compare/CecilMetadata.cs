@@ -232,10 +232,8 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if ((type_def.FullName == "System.MulticastDelegate" ||
-				          type_def.BaseType.FullName == "System.MulticastDelegate")
-				         || (type_def.FullName == "System.Delegate" ||
-				             type_def.BaseType.FullName == "System.Delegate")) {
+				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
+				         || type_def.BaseType.FullName == "System.Delegate") {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -386,10 +384,8 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if ((type_def.FullName == "System.MulticastDelegate" ||
-				          (type_def.BaseType != null && type_def.BaseType.FullName == "System.MulticastDelegate"))
-				         || (type_def.FullName == "System.Delegate" ||
-				             (type_def.BaseType != null && type_def.BaseType.FullName == "System.Delegate"))) {
+				else if ((type_def.BaseType != null && type_def.BaseType.FullName == "System.MulticastDelegate")
+				         || (type_def.BaseType != null && type_def.BaseType.FullName == "System.Delegate")) {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {

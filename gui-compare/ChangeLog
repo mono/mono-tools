@@ -1,3 +1,8 @@
+2008-12-16  Jb Evain  <jbevain@novell.com>
+
+	* CecilMetadata.cs: fix the comparison of the definition
+	of System.Delegate and System.MulticastDelegate.
+
 2008-12-05  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs
