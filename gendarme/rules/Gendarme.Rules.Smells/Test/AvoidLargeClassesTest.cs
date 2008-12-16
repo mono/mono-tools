@@ -100,7 +100,11 @@ namespace Test.Rules.Smells {
 		public readonly double DefaultDouble = 1.0d;
 	}
 
+	public class NoFieldClass {
+	}
+
 	public class NotLargeClass {
+		int a;
 	}
 
 	class AutoImplementedPropertiesClass {
@@ -136,6 +140,9 @@ namespace Test.Rules.Smells {
 		[Test]
 		public void NotLargeClassTest () 
 		{
+			type = assembly.MainModule.Types["Test.Rules.Smells.NoFieldClass"];
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+
 			type = assembly.MainModule.Types["Test.Rules.Smells.NotLargeClass"];
 			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}

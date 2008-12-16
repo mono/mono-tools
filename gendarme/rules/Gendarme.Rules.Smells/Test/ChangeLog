@@ -1,3 +1,8 @@
+2008-12-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeClassesTest.cs: Test for DoesNotApply if a type has no 
+	fields.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Smells.csproj: Activate makefile integration for all the
