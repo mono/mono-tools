@@ -138,6 +138,10 @@ namespace GuiCompare {
 						if (!md.Name.StartsWith("op_"))
 							continue;
 					}
+
+					if (IsFinalizer (md))
+						continue;
+
 					if (md.IsPrivate || md.IsAssembly)
 						continue;
 
@@ -179,6 +183,20 @@ namespace GuiCompare {
 					event_list.Add (new CecilEvent (ed));
 				}
 			}
+		}
+
+		static bool IsFinalizer (MethodDefinition method)
+		{
+			if (method.Name != "Finalize")
+				return false;
+
+			if (!method.IsVirtual)
+				return false;
+
+			if (method.Parameters.Count != 0)
+				return false;
+
+			return true;
 		}
 
 		public static void PopulateTypeLists (TypeDefinition fromDef,

@@ -1,3 +1,8 @@
+2008-12-17  Jb Evain  <jbevain@novell.com>
+
+	* CecilMetadata.cs: treat Finalizers as an implementation detail
+	and ignore it for the comparison.
+
 2008-12-16  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs: fix the comparison of the definition
