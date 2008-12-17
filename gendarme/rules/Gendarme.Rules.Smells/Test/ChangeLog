@@ -1,3 +1,8 @@
+2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs: Added more tests in order to
+	improve the confidence about the code duplicated rules.
+
 2008-12-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeClassesTest.cs: Test for DoesNotApply if a type has no 
