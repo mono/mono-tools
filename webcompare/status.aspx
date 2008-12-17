@@ -221,8 +221,11 @@ static string MemberStatus (ComparisonNode cn)
 ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 {
 	if (tn.Parent == null){
+		// This is needed because the tree loads chunks without calling Page_Load
+		var cp = new global_asax.CompareParameters (Page.Request.QueryString);
+		compare_context = GetCompareContext (cp);
+
 		return compare_context.Comparison;
-		return null;
 	}
 	
 	var match = ComparisonNodeFromTreeNode (tn.Parent);

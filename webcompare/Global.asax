@@ -73,11 +73,10 @@ public class CompareParameters {
 		string info_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml");
 		string dll_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (BinDir, Assembly) + ".dll");
 
-		using (var fs = File.OpenWrite ("/tmp/mylog")){
-		      var sw = new StreamWriter (fs);
-		      sw.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
+		using (var sw = File.AppendText ("/tmp/mylog")){
+		      sw.WriteLine ("{2} Comparing {0} and {1}", info_file, dll_file, DateTime.Now);
 		      sw.Flush ();
-		}
+
 		Console.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
 		if (!File.Exists (info_file))
 			throw new Exception (String.Format ("File {0} does not exist", info_file));
@@ -88,7 +87,8 @@ public class CompareParameters {
 			() => new MasterAssembly (info_file),
 		     	() => new CecilAssembly (dll_file));
 		cc.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs a){
-			Console.Error.WriteLine (a.Message);
+			sw.WriteLine (a.Message);
+sw.Flush ();
 		};
 		ManualResetEvent r = new ManualResetEvent (false);
 		cc.Finished += delegate { r.Set (); };
@@ -97,7 +97,13 @@ public class CompareParameters {
 		r.WaitOne ();
 		cc.Comparison.PropagateCounts ();
 
+
+		      sw.Flush ();
+
 		return cc;
+
+		}
+
 	}
 }
 

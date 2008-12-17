@@ -9,11 +9,14 @@ SOURCES =  \
 	$(base)/Metadata.cs		\
 	$(base)/Masterinfo.cs
 
-all: bin/Mono.API.Compare.dll 
+all: bin/Mono.API.Compare.dll bin/Mono.Cecil.dll
 
-bin/Mono.API.Compare.dll: $(SOURCES) Makefile
+bin/Mono.API.Compare.dll: $(SOURCES) Makefile  bin/Mono.Cecil.dll
 	-mkdir bin
-	gmcs -debug -target:library -out:bin/Mono.API.Compare.dll $(SOURCES) -r:`pkg-config --variable Libraries cecil`
+	gmcs -debug -target:library -out:bin/Mono.API.Compare.dll $(SOURCES) -r:bin/Mono.Cecil.dll
+
+bin/Mono.Cecil.dll:
+	cp `pkg-config --variable Libraries cecil` bin/
 
 get: masterinfos-3.5.tar.gz
 	tar xzvf masterinfos-3.5.tar.gz 

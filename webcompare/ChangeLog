@@ -1,3 +1,11 @@
+2008-12-16  Miguel de Icaza  <miguel@novell.com>
+
+	* index.aspx: add listing of assemblies.
+
+	* status.aspx: do not crash on partial reloads.
+
+	* Bundle our Mono.Cecil.dll to work on the server
+
 2008-12-15  Miguel de Icaza  <miguel@novell.com>
 
 	* Global.asax: Load stuff relative to the current directory.
