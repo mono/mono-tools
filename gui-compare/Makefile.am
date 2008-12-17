@@ -54,7 +54,7 @@ gui_compare_resources = 			\
 EXTRA_DIST = $(gui_compare_sources) $(gui_compare_resources) gui-compare.mds gui-compare.mdp  gui-compare.in
 
 packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0 -pkg:glade-sharp-2.0 -r:Mono.Cecil.dll
-assemblies = -r:System -r:Mono.Posix -r:System.Xml
+assemblies = -r:System -r:System.Core -r:Mono.Posix -r:System.Xml
 ress= $(foreach res,$(gui_compare_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 Mono.Cecil.dll: 
