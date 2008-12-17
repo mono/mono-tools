@@ -1,6 +1,13 @@
 2008-12-17  Jb Evain  <jbevain@novell.com>
 
 	* MainWindow.cs
+	* InfoManager.cs
+	* CompareContext.cs:
+		Avoid defining our own delegate when we can use Func and Action.
+
+2008-12-17  Jb Evain  <jbevain@novell.com>
+
+	* MainWindow.cs
 	* Metadata.cs
 	* Comparison.cs
 	* CompareContext.cs:

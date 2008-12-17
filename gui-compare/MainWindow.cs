@@ -34,7 +34,7 @@ using GuiCompare;
 public partial class MainWindow: Gtk.Window
 {
 	InfoManager info_manager;
-	LoadCompAssembly reference_loader, target_loader;
+	Func<CompAssembly> reference_loader, target_loader;
 	CompareContext context;
 	
 	static Gdk.Pixbuf classPixbuf, delegatePixbuf, enumPixbuf;
@@ -259,12 +259,12 @@ public partial class MainWindow: Gtk.Window
 		}
 	}
 	
-	public void SetTarget (LoadCompAssembly target)
+	public void SetTarget (Func<CompAssembly> target)
 	{
 		target_loader = target;
 	}
 	
-	public void SetReference (LoadCompAssembly reference)
+	public void SetReference (Func<CompAssembly> reference)
 	{
 		reference_loader = reference;
 	}

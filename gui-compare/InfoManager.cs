@@ -211,14 +211,12 @@ namespace GuiCompare
 			infos = Path.Combine (xdg_data_home, "mono-gui-compare");
 			Directory.CreateDirectory (infos);
 		}
-		
-		public delegate void MasterInfoLoaded (string path);
-		
+
 		// 
 		// Ensures that masterinfo file for assembly name @file in @prof profile
 		// is downloaded;   On success, executes the given callback
 		//
-		public void Ensure (string prof, string assemblyname, MasterInfoLoaded done)
+		public void Ensure (string prof, string assemblyname, Action<string> done)
 		{
 			string pdir = Path.Combine (infos, prof);
 			if (!Directory.Exists (pdir)){

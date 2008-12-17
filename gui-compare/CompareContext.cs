@@ -28,15 +28,12 @@ using System.Collections.Generic;
 using System.Threading;
 
 namespace GuiCompare {
-	
-	// A delegate used to load a CompAssembly
-	public delegate CompAssembly LoadCompAssembly ();
-	
+
 	public class CompareContext
 	{
-		LoadCompAssembly reference_loader, target_loader;
+		Func<CompAssembly> reference_loader, target_loader;
 		
-		public CompareContext (LoadCompAssembly reference, LoadCompAssembly target)
+		public CompareContext (Func<CompAssembly> reference, Func<CompAssembly> target)
 		{
 			reference_loader = reference;
 			target_loader = target;
@@ -59,7 +56,7 @@ namespace GuiCompare {
 		{
 		}
 
-		bool TryLoad (ref CompAssembly assembly, LoadCompAssembly loader)
+		bool TryLoad (ref CompAssembly assembly, Func<CompAssembly> loader)
 		{
 			try {
 				assembly = loader ();
