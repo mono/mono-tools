@@ -126,10 +126,6 @@ namespace Gendarme.Rules.Smells {
 			//All stuff that doesn't contain a constructor
 			if (constructor == null) 
 				return;
-			//Skip static constructors
-// FIXME: logic does not match previous comment
-			if (!constructor.HasParameters && !constructor.IsStatic && constructor.IsVisible ())
-				return;
 			if (HasMoreParametersThanAllowed (constructor)) 
 				Runner.Report (constructor, Severity.Medium, Confidence.Normal, "This constructor contains a long parameter list.");
 		}

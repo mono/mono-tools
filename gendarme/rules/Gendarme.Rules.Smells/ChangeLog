@@ -1,5 +1,10 @@
 2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidLongParameterListsRule.cs: Remove the extra checking which only
+	introduces confussion.
+
+2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidCodeDuplicatedInSameClassRule.cs: Use the new nose for its
 	checkings.
 	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Use the new nose for its
