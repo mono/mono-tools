@@ -98,9 +98,9 @@ static string GetStatus (ComparisonNode n)
 		Get (n.Niex, "niex", "members that throw NotImplementedException");
 
 	if (status != "")
-		return n.name + status;
+		return n.Name + status;
 
-	return n.name;
+	return n.Name;
 }
 
 CompareContext GetCompareContext (global_asax.CompareParameters cp)
@@ -143,7 +143,7 @@ public void Page_Load ()
 	//TreeNode tn = new TreeNode (n.name);
 	//TreeNode tn = new TreeNode ("<div class='ok'></div>" + n.name);
 
-	TreeNode tn = new TreeNode (GetStatus (n), n.name);
+	TreeNode tn = new TreeNode (GetStatus (n), n.Name);
 	tn.SelectAction = TreeNodeSelectAction.None;
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
@@ -154,7 +154,7 @@ public void Page_Load ()
 static string GetTodo (ComparisonNode cn)
 {
 	StringBuilder sb = new StringBuilder ();
-	foreach (string s in cn.todos){
+	foreach (string s in cn.Todos){
 		string clean = s.Substring (20, s.Length-22);
 		if (clean == "")
 			sb.Append ("Flagged with TODO");
@@ -170,7 +170,7 @@ static string GetTodo (ComparisonNode cn)
 static string GetMessages (ComparisonNode cn)
 {
 	StringBuilder sb = new StringBuilder ();
-	foreach (string s in cn.messages){
+	foreach (string s in cn.Messages){
 		sb.Append (s);
 		sb.Append ("<br>");
 	}
@@ -196,11 +196,11 @@ static string ImagesFromCounts (ComparisonNode cn)
 static string MemberStatus (ComparisonNode cn)
 {
 	if (cn.Niex != 0)
-		cn.status = ComparisonStatus.Error;
+		cn.Status = ComparisonStatus.Error;
 
 	string counts = ImagesFromCounts (cn);
 
-	switch (cn.status){
+	switch (cn.Status) {
 	case ComparisonStatus.None:
 	        return counts == "" ? ImageOk : ImageOk + counts;
 		
@@ -214,7 +214,7 @@ static string MemberStatus (ComparisonNode cn)
 	        return counts == "" ? ImageError : ImageError + counts;
 
 	default:
-		return "Unknown status: " + cn.status;
+		return "Unknown status: " + cn.Status;
 	}
 }
 
@@ -231,8 +231,8 @@ ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 	var match = ComparisonNodeFromTreeNode (tn.Parent);
 	if (match == null)
 		return null;
-	foreach (var n in match.children){
-		if (n.name == tn.Value)
+	foreach (var n in match.Children){
+		if (n.Name == tn.Value)
 			return n;
 	}
 	return null;
@@ -241,25 +241,25 @@ ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 // uses for class, struct, enum, interface
 static string GetFQN (ComparisonNode node)
 {
-	if (node.parent == null)
+	if (node.Parent == null)
 		return "";
 
-	string n = GetFQN (node.parent);
-	return n == "" ? node.name : n + "." + node.name;
+	string n = GetFQN (node.Parent);
+	return n == "" ? node.Name : n + "." + node.Name;
 }
 
 // used for methods
 static string GetMethodFQN (ComparisonNode node)
 {
-	if (node.parent == null)
+	if (node.Parent == null)
 		return "";
 
-	int p = node.name.IndexOf ('(');
-	int q = node.name.IndexOf (' ');
+	int p = node.Name.IndexOf ('(');
+	int q = node.Name.IndexOf (' ');
 	
-	string name = p == -1 || q == -1 ? node.name : node.name.Substring (q+1, p-q-1);
+	string name = p == -1 || q == -1 ? node.Name : node.Name.Substring (q+1, p-q-1);
 	
-	string n = GetFQN (node.parent);
+	string n = GetFQN (node.Parent);
 	return n == "" ? name : n + "." + name;
 }
 
@@ -270,7 +270,7 @@ static string MakeURL (string type)
 
 static TreeNode MakeContainer (string kind, ComparisonNode node)
 {
-	TreeNode tn = new TreeNode (String.Format ("{0} {1} {2}", MemberStatus (node), kind, GetStatus (node)), node.name);
+	TreeNode tn = new TreeNode (String.Format ("{0} {1} {2}", MemberStatus (node), kind, GetStatus (node)), node.Name);
 	
 	tn.SelectAction = TreeNodeSelectAction.None;
 	return tn;
@@ -278,12 +278,12 @@ static TreeNode MakeContainer (string kind, ComparisonNode node)
 
 static void AttachComments (TreeNode tn, ComparisonNode node)
 {
-	if (node.messages.Count != 0){
+	if (node.Messages.Count != 0){
 		TreeNode m = new TreeNode (GetMessages (node));
 		m.SelectAction = TreeNodeSelectAction.None;
 		tn.ChildNodes.Add (m);
 	}
-	if (node.todos.Count != 0){
+	if (node.Todos.Count != 0){
 		TreeNode m = new TreeNode (GetTodo (node));
 		tn.ChildNodes.Add (m);
 	}
@@ -297,12 +297,12 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		return;
 	}
 
-	foreach (var child in cn.children){
+	foreach (var child in cn.Children){
 		TreeNode tn;
 
-		switch (child.type){
+		switch (child.Type){
 		case CompType.Namespace:
-			tn = new TreeNode (GetStatus (child), child.name);
+			tn = new TreeNode (GetStatus (child), child.Name);
 			tn.SelectAction = TreeNodeSelectAction.None;
 			break;
 
@@ -323,7 +323,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 			break;
 
 		case CompType.Method:
-			tn = new TreeNode (MemberStatus (child) + child.name, child.name);
+			tn = new TreeNode (MemberStatus (child) + child.Name, child.Name);
 			AttachComments (tn, child);
 			tn.NavigateUrl = MakeURL (GetMethodFQN (child));
 			tn.Target = "_blank";
@@ -333,7 +333,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		case CompType.Field:
 		case CompType.Delegate:
 		case CompType.Event:
-			tn = new TreeNode (MemberStatus (child) + " " + child.type.ToString() + " " + child.name, child.name);
+			tn = new TreeNode (MemberStatus (child) + " " + child.Type.ToString() + " " + child.Name, child.Name);
 			AttachComments (tn, child);
 			tn.NavigateUrl = MakeURL (GetFQN (child));
 			tn.Target = "_blank";
@@ -341,15 +341,15 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 
 		case CompType.Assembly:
 		case CompType.Attribute:
-			tn = new TreeNode (MemberStatus (child) + " " + child.type.ToString() + " " + child.name, child.name);
+			tn = new TreeNode (MemberStatus (child) + " " + child.Type.ToString() + " " + child.Name, child.Name);
 			break;
 
 		default:
-			tn = new TreeNode ("Unknown type: " + child.type.ToString());
+			tn = new TreeNode ("Unknown type: " + child.Type.ToString());
 			break;
 		}
 
-		if (child.children.Count != 0)
+		if (child.Children.Count != 0)
 			tn.PopulateOnDemand = true;
 		
 		e.Node.ChildNodes.Add (tn);
