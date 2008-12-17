@@ -1,5 +1,13 @@
 2008-12-17  Jb Evain  <jbevain@novell.com>
 
+	* MainWindow.cs
+	* Metadata.cs
+	* Comparison.cs
+	* CompareContext.cs:
+		PascalCase public fields in Comparison.
+
+2008-12-17  Jb Evain  <jbevain@novell.com>
+
 	* CecilMetadata.cs: treat Finalizers as an implementation detail
 	and ignore it for the comparison.
 

@@ -192,7 +192,7 @@ public partial class MainWindow: Gtk.Window
 				ComparisonNode n = tree.Model.GetValue (iter, (int)TreeCol.Node) as ComparisonNode;
 				StringBuilder sb = new StringBuilder();
 
-				if (n != null) msgs = n.messages;
+				if (n != null) msgs = n.Messages;
 				if (msgs != null && msgs.Count > 0) {
 					sb.Append ("<b>Errors:</b>\n");
 
@@ -201,7 +201,7 @@ public partial class MainWindow: Gtk.Window
 					}
 				}
 				
-				if (n != null) msgs = n.todos;
+				if (n != null) msgs = n.Todos;
 				if (msgs != null && msgs.Count > 0) {
 					sb.Append ("<b>TODO:</b>\n");
 					for (int i = 0; i < msgs.Count; i ++) {
@@ -361,7 +361,7 @@ public partial class MainWindow: Gtk.Window
 	
 	Gdk.Pixbuf TypePixbufFromComparisonNode (ComparisonNode node)
 	{
-		switch (node.type) {
+		switch (node.Type) {
 		case CompType.Assembly: return assemblyPixbuf;
 		case CompType.Namespace: return namespacePixbuf;
 		case CompType.Attribute: return attributePixbuf;
@@ -380,7 +380,7 @@ public partial class MainWindow: Gtk.Window
 	
 	Gdk.Pixbuf StatusPixbufFromComparisonNode (ComparisonNode node)
 	{
-		switch (node.status) {
+		switch (node.Status) {
 		case ComparisonStatus.None: return okPixbuf;
 		case ComparisonStatus.Missing: return missingPixbuf;
 		case ComparisonStatus.Extra: return extraPixbuf;
@@ -391,7 +391,7 @@ public partial class MainWindow: Gtk.Window
 
 	string StatusForegroundFromComparisonNode (ComparisonNode node)
 	{
-		switch (node.status) {
+		switch (node.Status) {
 		case ComparisonStatus.Missing: return "darkred";
 		case ComparisonStatus.Extra: return "green";
 		case ComparisonStatus.Error: return "red";
@@ -404,7 +404,7 @@ public partial class MainWindow: Gtk.Window
 	void PopulateTreeFromComparison (ComparisonNode root)
 	{
 		Gtk.TreeIter iter =
-			treeStore.AppendValues (root.name,
+			treeStore.AppendValues (root.Name,
 			                        TypePixbufFromComparisonNode (root),
 			                        StatusPixbufFromComparisonNode (root),
 			                        root.Missing == 0 ? null : missingPixbuf,
@@ -422,7 +422,7 @@ public partial class MainWindow: Gtk.Window
 		
 		Gtk.TreePath path = treeStore.GetPath (iter);
 		
-		foreach (ComparisonNode n in root.children) {
+		foreach (ComparisonNode n in root.Children) {
 			PopulateTreeFromComparison (iter, n);
 		}
 		
@@ -433,7 +433,7 @@ public partial class MainWindow: Gtk.Window
 	{
 		Gtk.TreeIter citer = 
 			treeStore.AppendValues (iter,
-			                        node.name,
+			                        node.Name,
 			                        TypePixbufFromComparisonNode (node),
 			                        StatusPixbufFromComparisonNode (node),
 			                        node.Missing == 0 ? null : missingPixbuf,
@@ -445,12 +445,12 @@ public partial class MainWindow: Gtk.Window
 			                        node.Todo == 0 ? null : todoPixbuf,
 			                        node.Todo == 0 ? null : String.Format (":{0}", node.Todo),
 			                        node.Niex == 0 ? null : niexPixbuf,
-			                        node.Niex == 0 ? null : ((node.Niex == 1 && node.throws_niex) ? null : String.Format (":{0}", node.Niex)),
+			                        node.Niex == 0 ? null : ((node.Niex == 1 && node.ThrowsNIE) ? null : String.Format (":{0}", node.Niex)),
 			                        node,
 			                        StatusForegroundFromComparisonNode (node));
 
 		
-		foreach (ComparisonNode n in node.children) {
+		foreach (ComparisonNode n in node.Children) {
 			PopulateTreeFromComparison (citer, n);
 		}
 	}
@@ -463,12 +463,12 @@ public partial class MainWindow: Gtk.Window
 		if (n == null)
 			return false;
 		
-		if ((ShowMissing.Active && (n.status == ComparisonStatus.Missing || n.Missing > 0)) ||
-		    (ShowExtra.Active && (n.status == ComparisonStatus.Extra || n.Extra > 0)) ||
-		    (ShowErrors.Active && (n.status == ComparisonStatus.Error || n.Warning > 0)) ||
+		if ((ShowMissing.Active && (n.Status == ComparisonStatus.Missing || n.Missing > 0)) ||
+		    (ShowExtra.Active && (n.Status == ComparisonStatus.Extra || n.Extra > 0)) ||
+		    (ShowErrors.Active && (n.Status == ComparisonStatus.Error || n.Warning > 0)) ||
 		    (ShowTodo.Active && (n.Todo > 0)) ||
 		    (ShowNotImplemented.Active && (n.Niex > 0)) ||
-		    ShowPresent.Active && n.status == ComparisonStatus.None)
+		    ShowPresent.Active && n.Status == ComparisonStatus.None)
 			
 			return true;
 		else

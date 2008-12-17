@@ -336,7 +336,7 @@ namespace GuiCompare {
 
 							comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
 							                                    reference_access, target_access, extra_msg));
-							comparison.status = ComparisonStatus.Error;
+							comparison.Status = ComparisonStatus.Error;
 						}
 					}
 
@@ -344,7 +344,7 @@ namespace GuiCompare {
 						if (((CompMethod)target_list[a]).ThrowsNotImplementedException ()
 						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
 							
-							comparison.throws_niex = true;
+							comparison.ThrowsNIE = true;
 						}
 					}
 
@@ -354,7 +354,7 @@ namespace GuiCompare {
 							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}",
 							                                    ((CompField)reference_list[m]).GetLiteralValue(),
 							                                    ((CompField)target_list[a]).GetLiteralValue()));
-							comparison.status = ComparisonStatus.Error;
+							comparison.Status = ComparisonStatus.Error;
 						}
 					}
 					
@@ -392,7 +392,7 @@ namespace GuiCompare {
 		{
 			ComparisonNode node = item.GetComparisonNode ();
 			parent.AddChild (node);
-			node.status = ComparisonStatus.Extra;
+			node.Status = ComparisonStatus.Extra;
 
 			if (item is ICompTypeContainer) {
 				ICompTypeContainer c = (ICompTypeContainer)item;
@@ -411,7 +411,7 @@ namespace GuiCompare {
 		{
 			ComparisonNode node = item.GetComparisonNode ();
 			parent.AddChild (node);
-			node.status = ComparisonStatus.Missing;
+			node.Status = ComparisonStatus.Missing;
 
 			comparisons_performed ++;
 

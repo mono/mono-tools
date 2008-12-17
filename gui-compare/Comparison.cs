@@ -39,49 +39,49 @@ namespace GuiCompare {
 		public ComparisonNode (CompType type,
 		                       string name)
 		{
-			this.type = type;
-			this.name = name;
-			this.children = new List<ComparisonNode>();
-			this.messages = new List<string>();
-			this.todos = new List<string>();
+			Type = type;
+			Name = name;
+			Children = new List<ComparisonNode>();
+			Messages = new List<string>();
+			Todos = new List<string>();
 		}
 
 		public void AddChild (ComparisonNode node)
 		{
-			children.Add (node);
-			node.parent = this;
+			Children.Add (node);
+			node.Parent = this;
 		}
 
 		public void PropagateCounts ()
 		{
-			Todo = todos.Count;
-			Niex = throws_niex ? 1 : 0;
-			foreach (ComparisonNode n in children) {
+			Todo = Todos.Count;
+			Niex = ThrowsNIE ? 1 : 0;
+			foreach (ComparisonNode n in Children) {
 				n.PropagateCounts ();
-				Extra += n.Extra + (n.status == ComparisonStatus.Extra ? 1 : 0);
-				Missing += n.Missing + (n.status == ComparisonStatus.Missing ? 1 : 0);
+				Extra += n.Extra + (n.Status == ComparisonStatus.Extra ? 1 : 0);
+				Missing += n.Missing + (n.Status == ComparisonStatus.Missing ? 1 : 0);
 				Present += n.Present; // XXX
 				Todo += n.Todo;
 				Niex += n.Niex;
-				Warning += n.Warning + (n.status == ComparisonStatus.Error ? 1 : 0);
+				Warning += n.Warning + (n.Status == ComparisonStatus.Error ? 1 : 0);
 			}
 		}
 
 		public void AddError (string msg)
 		{
-			status = ComparisonStatus.Error;
-			messages.Add (msg);
+			Status = ComparisonStatus.Error;
+			Messages.Add (msg);
 		}
 		
-		public ComparisonStatus status;
-		public CompType type;
+		public ComparisonStatus Status;
+		public readonly CompType Type;
 
-		public ComparisonNode parent;
+		public ComparisonNode Parent;
 
-		public string name;
-		public List<string> messages;
-		public List<string> todos;
-		public bool throws_niex;
+		public readonly string Name;
+		public readonly List<string> Messages;
+		public readonly List<string> Todos;
+		public bool ThrowsNIE;
 		
 		public int Extra;
 		public int Missing;
@@ -90,6 +90,6 @@ namespace GuiCompare {
 		public int Todo;
 		public int Niex;
 
-		public List<ComparisonNode> children;
+		public readonly List<ComparisonNode> Children;
 	}
 }

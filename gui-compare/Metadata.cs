@@ -99,7 +99,7 @@ namespace GuiCompare {
 		public ComparisonNode GetComparisonNode ()
 		{
 			ComparisonNode node = new ComparisonNode (type, DisplayName);
-			node.todos.AddRange (todos);
+			node.Todos.AddRange (todos);
 			return node;
 		}
 
