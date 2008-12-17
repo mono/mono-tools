@@ -102,16 +102,18 @@ namespace Gendarme.Rules.Smells {
 	[Solution ("You can apply the Pull Up Method refactoring.")]
 	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
 
-		private CodeDuplicatedLocator codeDuplicatedLocator = new CodeDuplicatedLocator ();
+		private CodeDuplicatedLocator codeDuplicatedLocator;
+
+		public AvoidCodeDuplicatedInSiblingClassesRule ()
+		{
+			codeDuplicatedLocator = new CodeDuplicatedLocator (this);
+		}
 
 		private void FindCodeDuplicated (TypeDefinition type, ICollection<TypeDefinition> siblingClasses)
 		{
-			if (!type.HasMethods)
-				return;
-
-			foreach (MethodDefinition method in type.Methods)
+			foreach (MethodDefinition method in type.AllMethods ())
 				foreach (TypeDefinition sibling in siblingClasses)
-					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (this, method, sibling);
+					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (method, sibling);
 		}
 
 		private void CompareSiblingClasses (ICollection<TypeDefinition> siblingClasses)

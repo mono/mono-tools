@@ -27,19 +27,25 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
 	internal sealed class CodeDuplicatedLocator {
-		private HashSet<string> methods = new HashSet<string> ();
-		private HashSet<string> types = new HashSet<string> ();
+		HashSet<string> methods = new HashSet<string> ();
+		HashSet<string> types = new HashSet<string> ();
+		Dictionary<MethodDefinition, IList<Pattern>> patternsCached = new Dictionary<MethodDefinition, IList<Pattern>> ();
+		IRule rule;
+
+		internal CodeDuplicatedLocator (IRule rule) 
+		{
+			this.rule = rule;
+		}
 
 		internal ICollection<string> CheckedMethods {
 			get {
@@ -53,68 +59,110 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		public void Clear ()
+		internal void Clear ()
 		{
 			methods.Clear ();
 			types.Clear ();
 		}
 
-		private static bool ExistsExpressionsReplied (ICollection currentExpressions, ICollection targetExpressions)
+		internal void CompareMethodAgainstTypeMethods (MethodDefinition current, TypeDefinition targetType)
 		{
-			IEnumerator currentEnumerator = currentExpressions.GetEnumerator ();
-			IEnumerator targetEnumerator = targetExpressions.GetEnumerator ();
-			bool equality = false;
+			if (CheckedTypes.Contains (targetType.Name)) 
+				return;
+			
+			foreach (MethodDefinition target in targetType.AllMethods()) {
+				Pattern duplicated = GetDuplicatedCode (current, target);
+				if (duplicated != null && duplicated.Count > 0)
+					rule.Runner.Report (current, duplicated[0], Severity.High, Confidence.Normal, String.Format ("Duplicated code with {0}", target));
+			}
+		}
 
-			while (currentEnumerator.MoveNext () & targetEnumerator.MoveNext ()) {
-				ExpressionCollection currentExpression = (ExpressionCollection) currentEnumerator.Current;
-				ExpressionCollection targetExpression = (ExpressionCollection) targetEnumerator.Current;
+		bool CanCompareMethods (MethodDefinition current, MethodDefinition target)
+		{
+			return current.HasBody && target.HasBody &&
+				!CheckedMethods.Contains (target.Name) &&
+				current != target;
+		}
 
-				if (equality && currentExpression.Equals (targetExpression))
-					return true;
-				else {
-					equality = currentExpression.Equals (targetExpression);
+		void WriteToOutput (MethodDefinition current, MethodDefinition target, Pattern found) 
+		{
+			if (rule.Runner.VerbosityLevel > 0) {
+				Console.WriteLine ("Found pattern in {0} and {1}", current, target);
+				Console.WriteLine ("\t Pattern");
+				for (int index = 0; index < found.Count; index++) 
+					Console.WriteLine ("\t\t{0} - {1}",
+						found[index].OpCode.Code,
+						found[index].Operand != null? found[index].Operand : "No operator");
+			}
+		}
+
+		Pattern GetDuplicatedCode (MethodDefinition current, MethodDefinition target)
+		{
+			if (!CanCompareMethods (current, target))
+				return null;
+			
+			InstructionMatcher.Current = current;
+			InstructionMatcher.Target = target;
+
+			foreach (Pattern pattern in GetPatterns (current)) {
+				if (pattern.IsCompilerGeneratedBlock || !pattern.IsExtraibleToMethodBlock)
+					continue;
+
+				if (InstructionMatcher.Match (pattern, target.Body.Instructions)) {
+					if (rule.Runner.VerbosityLevel > 0) 
+						WriteToOutput (current, target, pattern);
+					return pattern;
 				}
 			}
-			return false;
+
+			return null;
 		}
+		
 
-		private static ICollection GetExpressionsFrom (MethodBody methodBody)
+		IList<Pattern> GetPatterns (MethodDefinition method) 
 		{
-			ExpressionFillerVisitor expressionFillerVisitor = new ExpressionFillerVisitor ();
-			methodBody.Accept (expressionFillerVisitor);
-			return expressionFillerVisitor.Expressions;
-		}
-
-		private bool CanCompareMethods (MethodDefinition currentMethod, MethodDefinition targetMethod)
-		{
-			return currentMethod.HasBody && targetMethod.HasBody &&
-				!CheckedMethods.Contains (targetMethod.Name) &&
-				currentMethod != targetMethod;
-		}
-
-		private bool ContainsDuplicatedCode (MethodDefinition currentMethod, MethodDefinition targetMethod)
-		{
-			if (CanCompareMethods (currentMethod, targetMethod)) {
-				ICollection currentExpressions = GetExpressionsFrom (currentMethod.Body);
-				ICollection targetExpressions = GetExpressionsFrom (targetMethod.Body);
-
-				return ExistsExpressionsReplied (currentExpressions, targetExpressions);
+			IList<Pattern> patterns = null;
+			if (!patternsCached.TryGetValue(method, out patterns)) {
+				patterns = GeneratePatterns (method);
+				patternsCached.Add (method, patterns);
 			}
-			return false;
+			return patterns;
 		}
 
-		internal bool CompareMethodAgainstTypeMethods (IRule rule, MethodDefinition currentMethod, TypeDefinition targetTypeDefinition)
+		//TODO: Still needs some testing in order to get the best size
+		//for every case:
+		//  The idea is get two overlapped statements in high level language
+		static IList<Pattern> GeneratePatterns (MethodDefinition method) 
 		{
-			bool containsDuplicated = false;
-			if (!CheckedTypes.Contains (targetTypeDefinition.Name) && targetTypeDefinition.HasMethods) {
-				foreach (MethodDefinition targetMethod in targetTypeDefinition.Methods) {
-					if (ContainsDuplicatedCode (currentMethod, targetMethod)) {
-						rule.Runner.Report (currentMethod, Severity.High, Confidence.Normal, String.Format ("Duplicate code with {0}", targetMethod));
-						containsDuplicated = true;
-					}
+			Stack<Stack<Instruction>> result = new Stack<Stack<Instruction>> ();
+			Stack<Instruction> current = new Stack<Instruction> ();
+			int stackCounter = 0;
+			
+			for (int index = method.Body.Instructions.Count - 1; index >= 0; index--) {
+				Instruction currentInstruction = method.Body.Instructions[index];
+				stackCounter += currentInstruction.GetPushCount ();
+				stackCounter -= currentInstruction.GetPopCount (method);	
+				
+				if (result.Count != 0)
+					result.Peek ().Push (currentInstruction);
+
+				current.Push (currentInstruction);
+
+				if (stackCounter == 0 && current.Count > 1) {//&& currentInstruction.OpCode.FlowControl != FlowControl.Branch) {  
+					result.Push (current);
+					current = new Stack<Instruction> ();
 				}
 			}
-			return containsDuplicated; 
+
+			//We can remove the first ocurrence
+			if (result.Count != 0)
+				result.Pop ();
+
+			IList<Pattern> res = new List<Pattern> ();
+			foreach (Stack<Instruction> stack in result) 
+				res.Add (new Pattern (stack.ToArray ()));
+
+			return res;
 		}
 	}
 }

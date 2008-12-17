@@ -104,7 +104,12 @@ namespace Gendarme.Rules.Smells {
 	[Solution ("You should apply the Extract Method refactoring and invoke the method from the places.")]
 	public class AvoidCodeDuplicatedInSameClassRule : Rule, ITypeRule {
 
-		private CodeDuplicatedLocator locator = new CodeDuplicatedLocator ();
+		private CodeDuplicatedLocator locator;
+
+		public AvoidCodeDuplicatedInSameClassRule ()
+		{
+			locator = new CodeDuplicatedLocator (this);
+		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -117,8 +122,8 @@ namespace Gendarme.Rules.Smells {
 				return RuleResult.DoesNotApply;
 
 			locator.Clear ();
-			foreach (MethodDefinition current in type.Methods) {
-				locator.CompareMethodAgainstTypeMethods (this, current, type);
+			foreach (MethodDefinition current in type.AllMethods ()) {
+				locator.CompareMethodAgainstTypeMethods (current, type);
 				locator.CheckedMethods.AddIfNew (current.Name);
 			}
 

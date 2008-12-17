@@ -1,3 +1,18 @@
+2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidCodeDuplicatedInSameClassRule.cs: Use the new nose for its
+	checkings.
+	* AvoidCodeDuplicatedInSiblingClassesRule.cs: Use the new nose for its
+	checkings.
+	* CodeDuplicatedLocator.cs: Use the new algorithm in this code.
+	* ExpressionCollection.cs: Removed the old system.
+	* ExpressionFillerVisitor.cs: Removed the old system.
+	* InstructionMatcher.cs: The new nose.
+	* Makefile.am: Adjust the changes to the build system.
+	* Pattern.cs: An abstraction for a pattern of instructions.  The common
+	patterns (Disposables, foreach, returns ...) are here in order to check
+	if a pattern can be extracted.
+
 2008-12-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCodeDuplicatedInSameClassRule.cs: Use IsEnum, IsInterface

@@ -10,10 +10,10 @@ rules_sources =  \
 	AvoidLongParameterListsRule.cs \
 	AvoidMessageChainsRule.cs \
 	AvoidSpeculativeGeneralityRule.cs \
+	Utilities.cs \
 	CodeDuplicatedLocator.cs \
-	ExpressionCollection.cs \
-	ExpressionFillerVisitor.cs \
-	Utilities.cs
+	InstructionMatcher.cs \
+	Pattern.cs 
 
 EXTRA_TESTS_OPTIONS += -r:System.Windows.Forms.dll
 
@@ -24,4 +24,4 @@ tests_sources =  \
 	AvoidLongMethodsTest.cs \
 	AvoidLongParameterListsTest.cs \
 	AvoidMessageChainsTest.cs \
-	AvoidSpeculativeGeneralityTest.cs
+	AvoidSpeculativeGeneralityTest.cs 
