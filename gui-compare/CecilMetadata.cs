@@ -117,10 +117,11 @@ namespace GuiCompare {
 		                                        List<CompNamed> event_list)
 		{
 			if (interface_list != null) {
-				foreach (TypeReference ifc in fromDef.Interfaces) {
+				foreach (TypeReference ifc in GetInterfaces (fromDef)) {
 					TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
 					if (ifc_def.IsNotPublic)
 						continue;
+
 					interface_list.Add (new CecilInterface (ifc));
 				}
 			}
@@ -183,6 +184,36 @@ namespace GuiCompare {
 					event_list.Add (new CecilEvent (ed));
 				}
 			}
+		}
+
+		static TypeDefinition Resolve (TypeReference type)
+		{
+			return CecilUtils.Resolver.Resolve (type);
+		}
+
+		static IEnumerable<TypeDefinition> WalkHierarchy (TypeReference type)
+		{
+			for (var definition = Resolve (type); definition != null; definition = GetBaseType (definition))
+				yield return definition;
+		}
+
+		static TypeDefinition GetBaseType (TypeDefinition type)
+		{
+			if (type.BaseType == null)
+				return null;
+
+			return Resolve (type.BaseType);
+		}
+
+		static IEnumerable<TypeReference> GetInterfaces (TypeReference type)
+		{
+			var cache = new Dictionary<string, TypeReference> ();
+
+			foreach (var definition in WalkHierarchy (type))
+				foreach (TypeReference iface in definition.Interfaces)
+					cache [iface.FullName] = iface;
+
+			return cache.Values;
 		}
 
 		static bool IsFinalizer (MethodDefinition method)

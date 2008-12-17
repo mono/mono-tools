@@ -1,5 +1,12 @@
 2008-12-17  Jb Evain  <jbevain@novell.com>
 
+	* CecilMetadata.cs: in the process of fixing our interface story.
+	Always include all the interfaces for a type, by walking down its
+	hierarchy. mono-api-info does the same as well now. This make it easier
+	to compare interface implementation.
+
+2008-12-17  Jb Evain  <jbevain@novell.com>
+
 	* MainWindow.cs
 	* InfoManager.cs
 	* CompareContext.cs:
