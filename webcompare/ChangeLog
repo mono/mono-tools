@@ -1,5 +1,9 @@
 2008-12-18  Jb Evain  <jbevain@novell.com>
 
+	* Global.asax: adjust assembly name to Mono.Api.Compare.
+
+2008-12-18  Jb Evain  <jbevain@novell.com>
+
 	* Makefile: rename Mono.API.Compare to Mono.Api.Compare.
 
 2008-12-16  Miguel de Icaza  <miguel@novell.com>

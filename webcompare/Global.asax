@@ -3,7 +3,7 @@
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Collections.Generic" %>
-<%@ Assembly name="Mono.API.Compare" %>
+<%@ Assembly name="Mono.Api.Compare" %>
 
 <script runat="server" language="c#" >
 
