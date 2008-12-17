@@ -76,16 +76,15 @@ namespace Gendarme.Rules.BadPractice {
 		{
 			base.Initialize (runner);
 
-			// GetEntryAssembly will work inside executables
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.EntryPoint == null);
-			};
-
-			// if the module does not reference System.Reflection.Assembly 
-			// then no method inside it will be calling GetEntryAssembly
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType (Assembly);
+				Active &= 
+					// GetEntryAssembly will work inside executables
+					e.CurrentAssembly.EntryPoint == null &&
+					
+					// if the module does not reference System.Reflection.Assembly 
+					// then no method inside it will be calling GetEntryAssembly
+					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
+					e.CurrentModule.TypeReferences.ContainsType (Assembly));
 			};
 		}
 

@@ -1,3 +1,11 @@
+2008-12-13  Jesse Jones  <jesjones at mindspring.com> 
+ 
+	* UseCorrectSignatureForSerializationMethodsRule.cs,
+	DeserializeOptionalFieldRule.cs: Fix 
+	AnalyzeModule so that it activates the rule properly when 
+	multiple assemblies or modules are being checked.
+	[Backport of r121498]
+
 2008-11-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeserializeOptionalFieldRule.cs: Enable the rule only when

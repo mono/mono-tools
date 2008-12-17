@@ -1,3 +1,13 @@
+2008-12-13  Jesse Jones  <jesjones at mindspring.com> 
+
+	* ObsoleteMessagesShouldNotBeEmptyRule.cs, 
+	CloneMethodShouldNotReturnNullRule.cs, 
+	GetEntryAssemblyMayReturnNullRule.cs, 
+	DisableDebuggingCodeRule.cs: Fix AnalyzeModule so that it 
+	activates the rule properly when multiple assemblies or modules are 
+	being checked.
+	[Backport of r121498]
+
 2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotForgetNotImplementedMethodsRule.cs: Turn off rule unless the

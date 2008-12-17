@@ -110,18 +110,17 @@ namespace Gendarme.Rules.BadPractice {
 		{
 			base.Initialize (runner);
 
-			// using Console.Write* methods is ok if the application is compiled
-			// with /target:exe - but not if it's compiled with /target:winexe or
-			// /target:library
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Kind != AssemblyKind.Console);
-			};
+			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => {
+				Active = 
+					// using Console.Write* methods is ok if the application is compiled
+					// with /target:exe - but not if it's compiled with /target:winexe or
+					// /target:library
+					e.CurrentAssembly.Kind != AssemblyKind.Console && 
 
-			// if the module does not reference System.Console then no
-			// method inside it will be calling any Console.write* methods
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType (Console);
+					// if the module does not reference System.Console then no
+					// method inside it will be calling any Console.write* methods
+					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
+					e.CurrentModule.TypeReferences.ContainsType (Console));
 			};
 		}
 

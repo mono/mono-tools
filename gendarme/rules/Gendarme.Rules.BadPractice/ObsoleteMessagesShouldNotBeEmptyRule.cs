@@ -76,7 +76,7 @@ namespace Gendarme.Rules.BadPractice {
 			// if the module does not have a reference to System.ObsoleteAttribute 
 			// then nothing will be marked as obsolete inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active &= (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
 					e.CurrentModule.TypeReferences.ContainsType (ObsoleteAttribute);
 			};
 		}
