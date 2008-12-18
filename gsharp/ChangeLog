@@ -1,3 +1,8 @@
+2008-12-18  Miguel de Icaza  <miguel@novell.com>
+
+	* gtk-gui/Mono.CSharp.Gui.MainWindow.cs: Change hierarchy so that we can
+	show/hide the Gtk# panel without crashing.
+
 2008-11-13  Mike Kestner  <mkestner@novell.com>
 
 	* MainWindow.cs: break a Gtk# 2.10 dependency
