@@ -140,15 +140,15 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.EventBox" id="standalone_container">
+              <widget class="Gtk.Notebook" id="shellnotebook">
                 <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="CurrentPage">0</property>
+                <property name="ShowTabs">False</property>
+                <property name="Scrollable">True</property>
                 <child>
-                  <widget class="Gtk.Notebook" id="shellnotebook">
+                  <widget class="Gtk.EventBox" id="standalone_container">
                     <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="CurrentPage">0</property>
-                    <property name="ShowTabs">False</property>
-                    <property name="Scrollable">True</property>
                     <child>
                       <widget class="Gtk.ScrolledWindow" id="sw">
                         <property name="MemberName" />
@@ -165,16 +165,16 @@
                         </child>
                       </widget>
                     </child>
-                    <child>
-                      <widget class="Gtk.Label" id="label3">
-                        <property name="MemberName" />
-                        <property name="LabelProp" translatable="yes">C#</property>
-                      </widget>
-                      <packing>
-                        <property name="type">tab</property>
-                      </packing>
-                    </child>
                   </widget>
+                </child>
+                <child>
+                  <widget class="Gtk.Label" id="label3">
+                    <property name="MemberName" />
+                    <property name="LabelProp" translatable="yes">C#</property>
+                  </widget>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
