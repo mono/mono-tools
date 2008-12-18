@@ -1,6 +1,17 @@
 README for VisualStudio.NET users
 
-Gendarme includes a VS.NET solution to build and test itself. 
+Gendarme now includes a two VS.NET solutions.
+
+1. gendarme.sln
+
+This solution is compatible with MonoDevelop and includes the projects
+needed to build/test Gendarme on Linux.
+
+2. gendarme-win.sln
+
+This solution include projects to compile Mono.Cecil.Pdb (instead of 
+Mono.Cecil.Mdb) and to build the win32 installer. Otherwise it's 
+identical to gendarme.sln.
 
 
 \/\/\/ DISCLAIMER \/\/\/
@@ -17,7 +28,10 @@ These are unsupported, for your convenience, files. Use at your own risk!
 Requirements
 
 * The minimal requirements are VS.NET 2008 [2];
-* You need to check out both 'cecil' and 'mono-tools' SVN repositories
+* You need to check some modules from Mono SVN repository
+	* 'mcs' (or mcs/class/Mono.Cecil) to get Mono.Cecil
+	* 'cecil' to get Mono.Cecil.Pdb
+	* 'mono-tools' for Gendarme latest sources
 * You need ICSharpCode.SharpZipLib.dll to compile Gendarme.Rules.Portability [3]
 * You need NUnit 2.4.x to build/run the unit tests
 

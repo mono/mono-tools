@@ -1,3 +1,8 @@
+2008-12-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* README, README.vsnet: Update information about the solution files
+	provided for Gendarme.
+
 2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.svg: Update logo.
