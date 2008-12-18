@@ -653,6 +653,8 @@ namespace Test.Rules.Smells {
 		}
 
 		class CheckingIntegersAndStrings {
+			private IRunner Runner;
+
 			bool CheckParameters (TypeReference eventType, MethodReference invoke) 
 			{
 				if (invoke.Parameters.Count == 2)

@@ -1,3 +1,8 @@
+2008-12-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs: Fix a test case so it 
+	compiles with CSC (mcs bug #460016)
+
 2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidCodeDuplicatedInSameClassTest.cs: Added more tests in order to
