@@ -43,6 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidAssemblyVersionMismatchRule.cs" />
     <Compile Include="AvoidCallingProblematicMethodsRule.cs" />
     <Compile Include="AvoidVisibleConstantFieldRule.cs" />

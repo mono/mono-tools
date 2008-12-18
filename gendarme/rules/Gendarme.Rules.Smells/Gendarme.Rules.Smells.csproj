@@ -43,6 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidCodeDuplicatedInSameClassRule.cs" />
     <Compile Include="AvoidCodeDuplicatedInSiblingClassesRule.cs" />
     <Compile Include="AvoidLargeClassesRule.cs" />
@@ -51,8 +54,8 @@
     <Compile Include="AvoidMessageChainsRule.cs" />
     <Compile Include="AvoidSpeculativeGeneralityRule.cs" />
     <Compile Include="CodeDuplicatedLocator.cs" />
-    <Compile Include="ExpressionCollection.cs" />
-    <Compile Include="ExpressionFillerVisitor.cs" />
+    <Compile Include="InstructionMatcher.cs" />
+    <Compile Include="Pattern.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>

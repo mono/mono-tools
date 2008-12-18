@@ -43,6 +43,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="DoNotCastIntPtrToInt32Rule.cs" />
     <Compile Include="GetLastErrorMustBeCalledRightAfterPInvokeRule.cs" />
     <Compile Include="MarshalStringsInPInvokeDeclarationsRule.cs" />

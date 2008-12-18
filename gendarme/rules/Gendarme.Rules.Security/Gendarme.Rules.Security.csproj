@@ -62,6 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyRule.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleRule.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateRule.cs" />

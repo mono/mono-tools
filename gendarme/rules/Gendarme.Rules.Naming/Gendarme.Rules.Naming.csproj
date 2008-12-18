@@ -37,6 +37,9 @@
     <DocumentationFile>..\..\console\bin\Release\Gendarme.Rules.Naming.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidDeepNamespaceHierarchyRule.cs" />
     <Compile Include="DoNotPrefixEventsWithAfterOrBeforeRule.cs" />
     <Compile Include="DetectNonAlphaNumericsInTypeNamesRule.cs" />
