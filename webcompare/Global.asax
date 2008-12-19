@@ -8,7 +8,17 @@
 <script runat="server" language="c#" >
 
 public class CompareParameters {
-        public CompareParameters (NameValueCollection nvc)
+	static Dictionary<CompareParameters,CompareContext> compare_cache = new Dictionary<CompareParameters,CompareContext> ();
+	static Dictionary<CompareParameters,DateTime> timestamp = new Dictionary<CompareParameters,DateTime> ();
+
+	static public bool InCache (CompareParameters cp)
+	{
+		lock (compare_cache){
+			return compare_cache.ContainsKey (cp);
+		}
+	}
+
+	public CompareParameters (NameValueCollection nvc)
 	{
 		Assembly = nvc ["assembly"] ?? "mscorlib";
 		InfoDir  = nvc ["reference"] ?? "3.5";
@@ -68,46 +78,62 @@ public class CompareParameters {
 		
 	}
 
-	public CompareContext MakeCompareContext ()
+	public CompareContext GetCompareContext ()
+	{
+		CompareContext cc;
+
+		lock (compare_cache){
+			DateTime stamp = new FileInfo (DllFile).LastWriteTimeUtc;
+
+			if (!compare_cache.TryGetValue (this, out cc) || timestamp [this] != stamp){
+				cc = MakeCompareContext ();
+				compare_cache [this] = cc;
+				timestamp [this] = stamp;
+			}
+		}
+		return cc;
+	}
+
+	string DllFile {
+	       	get {
+	       		return Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (BinDir, Assembly) + ".dll");
+		}
+	}
+
+	CompareContext MakeCompareContext ()
 	{
 		string info_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml");
-		string dll_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (BinDir, Assembly) + ".dll");
+		string dll_file = DllFile;
 
 		using (var sw = File.AppendText ("/tmp/mylog")){
-		      sw.WriteLine ("{2} Comparing {0} and {1}", info_file, dll_file, DateTime.Now);
-		      sw.Flush ();
+			sw.WriteLine ("{2} Comparing {0} and {1}", info_file, dll_file, DateTime.Now);
+			sw.Flush ();
 
-		Console.WriteLine ("Comparing {0} and {1}", info_file, dll_file);
-		if (!File.Exists (info_file))
-			throw new Exception (String.Format ("File {0} does not exist", info_file));
-		if (!File.Exists (dll_file))
-			throw new Exception (String.Format ("File {0} does not exist", dll_file));
+			if (!File.Exists (info_file)) 
+				throw new Exception (String.Format ("File {0} does not exist", info_file));
+			if (!File.Exists (dll_file))
+				throw new Exception (String.Format ("File {0} does not exist", dll_file));
+	
+			CompareContext cc = new CompareContext (
+				() => new MasterAssembly (info_file),
+			     	() => new CecilAssembly (dll_file));
 
-		CompareContext cc = new CompareContext (
-			() => new MasterAssembly (info_file),
-		     	() => new CecilAssembly (dll_file));
-		cc.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs a){
-			sw.WriteLine (a.Message);
-sw.Flush ();
-		};
-		ManualResetEvent r = new ManualResetEvent (false);
-		cc.Finished += delegate { r.Set (); };
-		Console.WriteLine ("Starting Compare");
-		cc.Compare ();
-		r.WaitOne ();
-		cc.Comparison.PropagateCounts ();
+			cc.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs a){
+				sw.WriteLine (a.Message);
+				sw.Flush ();
+			};
+			ManualResetEvent r = new ManualResetEvent (false);
+			cc.Finished += delegate { r.Set (); };
+			cc.Compare ();
+			r.WaitOne ();
+			cc.Comparison.PropagateCounts ();
+	
+			sw.Flush ();
 
-
-		      sw.Flush ();
-
-		return cc;
-
+			return cc;
 		}
-
 	}
 }
-
-public static Dictionary<CompareParameters,CompareContext> CompareCache = new Dictionary<CompareParameters,CompareContext> ();
 
 void Application_Start ()
 {

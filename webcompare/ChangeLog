@@ -1,3 +1,7 @@
+2008-12-18  Miguel de Icaza  <miguel@novell.com>
+
+	* Global.asax: Trigger an update if the files change on disk.
+
 2008-12-18  Jb Evain  <jbevain@novell.com>
 
 	* status.aspx: adjust to changes in the public fields names for

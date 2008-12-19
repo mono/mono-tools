@@ -103,18 +103,6 @@ static string GetStatus (ComparisonNode n)
 	return n.Name;
 }
 
-CompareContext GetCompareContext (global_asax.CompareParameters cp)
-{
-	CompareContext cc;
-	if (!global_asax.CompareCache.TryGetValue (cp, out cc)){
-		cc = cp.MakeCompareContext ();
-		var copy = new Dictionary<global_asax.CompareParameters,CompareContext> (global_asax.CompareCache);
-		copy [cp] = cc;
-		global_asax.CompareCache = copy;
-	}
-	return cc;
-}
-
 public void ShowPleaseWait ()
 {
 	waitdiv.Visible = true;
@@ -129,12 +117,12 @@ public void ShowPleaseWait ()
 public void Page_Load ()
 {
 	var cp = new global_asax.CompareParameters (Page.Request.QueryString);
-	if (!global_asax.CompareCache.ContainsKey (cp) && !IsPostBack){
+	if (!global_asax.CompareParameters.InCache (cp) && !IsPostBack){
 		ShowPleaseWait ();
 		return;
 	}
 
-	compare_context = GetCompareContext (cp);
+	compare_context = cp.GetCompareContext ();
 	var n = compare_context.Comparison;
 
 	waitdiv.Visible = false;
@@ -223,7 +211,7 @@ ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 	if (tn.Parent == null){
 		// This is needed because the tree loads chunks without calling Page_Load
 		var cp = new global_asax.CompareParameters (Page.Request.QueryString);
-		compare_context = GetCompareContext (cp);
+		compare_context = cp.GetCompareContext ();
 
 		return compare_context.Comparison;
 	}
