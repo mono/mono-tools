@@ -1,3 +1,7 @@
+2008-12-19  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewInconsistentIdentityRule.cs: Added.
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ReviewUseOfInt64BitsToDoubleRule.cs: Fix AnalyzeModule so that it 

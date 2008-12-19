@@ -13,6 +13,7 @@ rules_sources =  \
 	DontCompareWithNaNRule.cs \
 	FinalizersShouldCallBaseClassFinalizerRule.cs \
 	FloatComparisonRule.cs \
+	ReviewInconsistentIdentityRule.cs \
 	MethodCanBeMadeStaticRule.cs \
 	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
@@ -35,6 +36,7 @@ tests_sources = \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
 	FinalizersShouldCallBaseClassFinalizerTest.cs \
+	ReviewInconsistentIdentityTest.cs \
 	MethodCanBeMadeStaticTest.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \
