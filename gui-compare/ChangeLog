@@ -1,3 +1,8 @@
+2008-12-19  Jb Evain  <jbevain@novell.com>
+
+	* InfoManager.cs: add SL2SDK assemblies: System.Xml.Linq,
+	System.Windows.Controls and System.Windows.Controls.Data.
+
 2008-12-17  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs: in the process of fixing our interface story.

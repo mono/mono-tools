@@ -149,6 +149,11 @@ namespace GuiCompare
 			"System.ServiceModel",
 			"System.Windows.Browser",
 			"System.Xml",
+			"",
+			// sdk assemblies:
+			"System.Xml.Linq",
+			"System.Windows.Controls",
+			"System.Windows.Controls.Data",
 		};
 
 		string [] api_3_5 = {
