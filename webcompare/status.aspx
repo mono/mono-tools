@@ -131,12 +131,25 @@ public void Page_Load ()
 	//TreeNode tn = new TreeNode (n.name);
 	//TreeNode tn = new TreeNode ("<div class='ok'></div>" + n.name);
 
+	tree.Nodes.Clear ();
 	TreeNode tn = new TreeNode (GetStatus (n), n.Name);
 	tn.SelectAction = TreeNodeSelectAction.None;
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
 
-	tree.Visible = true;
+	var diff = DateTime.Now - global_asax.CompareParameters.GetAssemblyTime (cp);
+	string t;
+	if (diff.Days > 1)
+		t = String.Format ("{0} days", diff.Days);
+	else if (diff.Hours > 2)
+		t = String.Format ("{0} hours", diff.Hours);
+	else if (diff.Minutes > 2)
+	        t = String.Format ("{0} minutes", diff.Minutes);
+	else 
+	        t = String.Format ("{0} seconds", diff.Seconds);
+
+	time_label.Text = String.Format ("Assembly last updated: {0} ago", t);
+	activediv.Visible = true;
 }
 
 static string GetTodo (ComparisonNode cn)
@@ -346,8 +359,8 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 </script>
 
 <body>
-    <%=DateTime.Now %>
-
+    Page generated at: <%=DateTime.Now %>
+    <p>
     <form id="form" runat="server">
     <div>
         <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
@@ -356,11 +369,14 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 	        <div runat="server" id="waitdiv">
                   <img src="wait.gif" runat="server" enableviewstate="false" /> Loading and Comparing...
 		</div>
-	        <asp:TreeView ID="tree" Runat="server" OnTreeNodePopulate="TreeNodePopulate"
-	        EnableClientScript="true"
-	        PopulateNodesFromClient="true"
-	        ExpandDepth="1">
-	        </asp:TreeView>
+		<div runat="server" id="activediv" >
+		  <asp:Label id="time_label" runat="server"/>
+	          <asp:TreeView ID="tree" Runat="server" OnTreeNodePopulate="TreeNodePopulate"
+	          EnableClientScript="true"
+	          PopulateNodesFromClient="true"
+	          ExpandDepth="1">
+	          </asp:TreeView>
+		</div>
             </ContentTemplate>   
         </asp:UpdatePanel>
     </div>

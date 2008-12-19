@@ -18,6 +18,11 @@ public class CompareParameters {
 		}
 	}
 
+	static public DateTime GetAssemblyTime (CompareParameters cp)
+	{
+		return timestamp [cp];
+	}
+
 	public CompareParameters (NameValueCollection nvc)
 	{
 		Assembly = nvc ["assembly"] ?? "mscorlib";
