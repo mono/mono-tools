@@ -131,7 +131,6 @@ public void Page_Load ()
 	//TreeNode tn = new TreeNode (n.name);
 	//TreeNode tn = new TreeNode ("<div class='ok'></div>" + n.name);
 
-	tree.Nodes.Clear ();
 	TreeNode tn = new TreeNode (GetStatus (n), n.Name);
 	tn.SelectAction = TreeNodeSelectAction.None;
 	tn.PopulateOnDemand = true;
