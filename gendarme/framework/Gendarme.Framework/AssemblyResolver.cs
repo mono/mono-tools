@@ -160,10 +160,12 @@ namespace Gendarme.Framework {
 				if (!AreSame (meth.ReturnType.ReturnType, reference.ReturnType.ReturnType))
 					continue;
 
-				if (meth.HasParameters) {
-					if (!AreSame (meth.Parameters, reference.Parameters))
-						continue;
-				}
+				if (meth.HasParameters != reference.HasParameters)
+					continue;
+				if (!meth.HasParameters && !reference.HasParameters)
+					return meth; //both have no parameters hence meth is the good one
+				if (!AreSame (meth.Parameters, reference.Parameters))
+					continue;
 
 				return meth;
 			}

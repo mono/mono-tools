@@ -1,3 +1,8 @@
+2008-12-21  Cedric Vivier  <cedricv@neonux.com>
+
+	* AssemblyResolver.cs: Fix bug with method definition resolution on
+	constructors having an overload without parameter.
+
 2008-12-02  Jesse Jones  <jesjones@mindspring.com>
 
 	* Symbols.cs: Include the source line when GetSource is not called
