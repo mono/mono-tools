@@ -1,3 +1,14 @@
+2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Simplify calls into subdirectories for test and 
+	run-test. Remove self-test at this stage (still possible globally
+	or on a specific rule assembly).
+
+2008-12-01  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Added rules target.
+	* common.make: Added rule target.
+
 2008-11-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Avoid re-building documentation needlessly. This

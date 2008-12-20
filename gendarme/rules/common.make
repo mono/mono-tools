@@ -48,6 +48,8 @@ $(tests_dll): $(tests_build_sources) $(rules_dll)
 	$(GMCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
 		-r:$(rules_dll) -r:$(common_tests) -pkg:mono-nunit -out:$@ $(tests_build_sources)
 
+rule: $(rules_dll)
+
 test: $(tests_dll)
 
 run-test: test

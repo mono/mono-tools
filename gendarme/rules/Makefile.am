@@ -1,5 +1,4 @@
-SUBDIRS= Test.Rules \
-	 Gendarme.Rules.BadPractice \
+RULEDIRS= Gendarme.Rules.BadPractice \
 	 Gendarme.Rules.Concurrency \
 	 Gendarme.Rules.Correctness \
 	 Gendarme.Rules.Design \
@@ -16,6 +15,9 @@ SUBDIRS= Test.Rules \
 	 Gendarme.Rules.Serialization \
 	 Gendarme.Rules.Smells \
 	 Gendarme.Rules.Ui
+TESTDIRS = Test.Rules
+
+SUBDIRS = $(TESTDIRS) $(RULEDIRS)
 
 EXTRA_DIST = rules.xml common.make
 DISTCLEANFILES = Makefile.in
@@ -27,23 +29,15 @@ uninstall-hook:
 	rm -f $(DESTDIR)$(prefix)/lib/gendarme/`basename rules.xml`;
 
 test:
-	for ASM in $(SUBDIRS); do \
-		cd $$ASM;	\
-		make test;	\
-		cd ..;		\
+	list='$(SUBDIRS)'; for d in $$list ; do \
+	    (cd $$d && $(MAKE) test) ; \
 	done;
 
 run-test:
-	for ASM in $(SUBDIRS); do \
-		cd $$ASM;	\
-		make run-test;	\
-		cd ..;		\
+	list='$(TESTDIRS)'; for d in $$list ; do \
+	    (cd $$d && $(MAKE) test) ; \
+	done;
+	list='$(RULEDIRS)'; for d in $$list ; do \
+	    (cd $$d && $(MAKE) run-test) ; \
 	done;
 
-self-test: all
-	cp rules.xml ../bin/
-	for ASM in $(SUBDIRS); do \
-		cd $$ASM;	\
-		make self-test;	\
-		cd ..;		\
-	done;
