@@ -66,6 +66,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="ExitCodeIsLimitedOnUnixRule.cs" />
     <Compile Include="DoNotHardcodePathsRule.cs" />
     <Compile Include="FeatureRequiresRootPrivilegeOnUnixRule.cs" />

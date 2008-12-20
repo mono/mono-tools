@@ -60,6 +60,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidRepetitiveCastsRule.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsRule.cs" />
     <Compile Include="AvoidUnneededUnboxingRule.cs" />

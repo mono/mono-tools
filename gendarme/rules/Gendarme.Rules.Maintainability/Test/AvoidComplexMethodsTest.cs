@@ -88,7 +88,7 @@ namespace Test.Rules.Maintainability {
 			return x ?? new object()/*2*/;
 		}
 
-		[ExpectedCC(3)]
+		[ExpectedCC(3)] // can be optimized (e.g. csc) to 2
 		public int TestTernary3(int x)
 		{
 			return (x == 0) ? -1/*2*/ : 1/*3*/;

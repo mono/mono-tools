@@ -12,6 +12,7 @@
     <AssemblyName>Gendarme.Rules.Naming</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>http://localhost/Gendarme.Rules.Naming/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -49,6 +49,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidDeepNamespaceHierarchyRule.cs" />
     <Compile Include="DoNotPrefixEventsWithAfterOrBeforeRule.cs" />
     <Compile Include="DetectNonAlphaNumericsInTypeNamesRule.cs" />

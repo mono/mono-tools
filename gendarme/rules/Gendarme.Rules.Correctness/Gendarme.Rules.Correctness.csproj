@@ -60,6 +60,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidConstructorsInStaticTypesRule.cs" />
     <Compile Include="BadRecursiveInvocationRule.cs" />
     <Compile Include="CallingEqualsWithNullArgRule.cs" />

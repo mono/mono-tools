@@ -106,7 +106,11 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void NonDebug ()
 		{
-			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingDebug");
+#if DEBUG
+ 			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingDebug"); 
+#else
+			AssertRuleDoesNotApply<DisableDebuggingCodeTest> ("UsingDebug");	// method has no body in release
+#endif
 			AssertRuleSuccess<DisableDebuggingCodeTest> ("UsingTrace");
 			AssertRuleFailure<DisableDebuggingCodeTest> ("UsingConsole", 1);
 		}

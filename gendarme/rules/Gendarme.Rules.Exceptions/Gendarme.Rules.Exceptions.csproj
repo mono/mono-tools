@@ -60,6 +60,9 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidArgumentExceptionDefaultConstructorRule.cs" />
     <Compile Include="AvoidThrowingBasicExceptionsRule.cs" />
     <Compile Include="DoNotDestroyStackTraceRule.cs" />

@@ -58,6 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="DoNotLockOnThisOrTypesRule.cs" />
     <Compile Include="DoNotLockOnWeakIdentityObjectsRule.cs" />
     <Compile Include="DoubleCheckLockingRule.cs" />

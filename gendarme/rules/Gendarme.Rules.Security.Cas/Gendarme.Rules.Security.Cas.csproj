@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AddMissingTypeInheritanceDemandRule.cs" />
     <Compile Include="DoNotExposeFieldsInSecuredTypeRule.cs" />
     <Compile Include="DoNotExposeMethodsProtectedByLinkDemandRule.cs" />

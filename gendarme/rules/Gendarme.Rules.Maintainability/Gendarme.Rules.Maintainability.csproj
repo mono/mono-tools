@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidComplexMethodsRule.cs" />
     <Compile Include="AvoidDeepInheritanceTreeRule.cs" />
     <Compile Include="AvoidLackOfCohesionOfMethodsRule.cs" />

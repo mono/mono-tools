@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="CallBaseMethodsOnISerializableTypesRule.cs" />
     <Compile Include="DeserializeOptionalFieldRule.cs" />
     <Compile Include="ImplementISerializableCorrectlyRule.cs" />

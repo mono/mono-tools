@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblyStaticInfo.cs">
+      <Link>AssemblyStaticInfo.cs</Link>
+    </Compile>
     <Compile Include="AvoidCodeDuplicatedInSameClassRule.cs" />
     <Compile Include="AvoidCodeDuplicatedInSiblingClassesRule.cs" />
     <Compile Include="AvoidLargeClassesRule.cs" />
