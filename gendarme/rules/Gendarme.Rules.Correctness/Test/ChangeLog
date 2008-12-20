@@ -1,3 +1,10 @@
+2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsTest.cs: Add test cases
+	where the null check condition is inverted, e.g. (null == obj) instead
+	of the more common (obj == null).
+	[Backport of r121900]
+
 2008-12-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: Add test 

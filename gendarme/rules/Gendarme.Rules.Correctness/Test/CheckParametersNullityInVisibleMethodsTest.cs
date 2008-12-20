@@ -106,6 +106,26 @@ namespace Tests.Rules.Correctness {
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("NotNullStatic");
 		}
 
+		public void InvertedNotNullInstance (object o)
+		{
+			if (null == o)
+				throw new ArgumentNullException ("o");
+		}
+
+		static public void InvertedNotNullStatic (object o)
+		{
+			if (null == o)
+				throw new ArgumentNullException ("o");
+		}
+
+		[Test]
+		public void OnlyCheckInverted ()
+		{
+			// parameter is only checked, never dereferenced
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedNotNullInstance");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedNotNullStatic");
+		}
+
 		public int GoodThrowInstance (object o)
 		{
 			if (o == null)
@@ -140,6 +160,42 @@ namespace Tests.Rules.Correctness {
 			// a null check is done and avoid the dereference
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("GoodAvoidInstance");
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("GoodAvoidStatic");
+		}
+
+		public int InvertedGoodThrowInstance (object o)
+		{
+			if (null == o)
+				throw new ArgumentNullException ("o");
+			return o.GetHashCode ();
+		}
+
+		static public int InvertedGoodThrowStatic (object o)
+		{
+			if (null == o)
+				throw new ArgumentNullException ("o");
+			return o.GetHashCode ();
+		}
+
+		public int InvertedGoodAvoidInstance (object o)
+		{
+			return (null == o) ? 0 : o.GetHashCode ();
+		}
+
+		static public int InvertedGoodAvoidStatic (object o)
+		{
+			return (null == o) ? 0 : o.GetHashCode ();
+		}
+
+		[Test]
+		public void AllInvertedCheck ()
+		{
+			// a null check is done and throws
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedGoodThrowInstance");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedGoodThrowStatic");
+
+			// a null check is done and avoid the dereference
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedGoodAvoidInstance");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InvertedGoodAvoidStatic");
 		}
 
 		public int BadAvoidInstance (object o)
@@ -223,6 +279,15 @@ namespace Tests.Rules.Correctness {
 			}
 		}
 
+		public object ObjectGoodInverted {
+			get { return obj; }
+			set { 
+				obj = value;
+				// value is checked against null before being used
+				code = (null == value) ? 0 : value.GetHashCode ();
+			}
+		}
+
 		public object ObjectBad {
 			get { return obj; }
 			set {
@@ -247,6 +312,7 @@ namespace Tests.Rules.Correctness {
 			// getter does not apply because it has no parameter
 			AssertRuleDoesNotApply<CheckParametersNullityInVisibleMethodsTest> ("get_ObjectGood");
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("set_ObjectGood");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("set_ObjectGoodInverted");
 
 			// getter does not apply because it has no parameter
 			AssertRuleDoesNotApply<CheckParametersNullityInVisibleMethodsTest> ("get_ObjectBad");
@@ -266,6 +332,15 @@ namespace Tests.Rules.Correctness {
 				obj_static = value;
 				// value is checked against null before being used
 				code_static = (value == null) ? 0 : value.GetHashCode ();
+			}
+		}
+
+		static public object StaticObjectGoodInverted {
+			get { return obj_static; }
+			set {
+				obj_static = value;
+				// value is checked against null before being used
+				code_static = (null == value) ? 0 : value.GetHashCode ();
 			}
 		}
 
@@ -293,6 +368,7 @@ namespace Tests.Rules.Correctness {
 			// getter does not apply because it has no parameter
 			AssertRuleDoesNotApply<CheckParametersNullityInVisibleMethodsTest> ("get_StaticObjectGood");
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("set_StaticObjectGood");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("set_StaticObjectGoodInverted");
 
 			// getter does not apply because it has no parameter
 			AssertRuleDoesNotApply<CheckParametersNullityInVisibleMethodsTest> ("get_StaticObjectBad");
@@ -394,6 +470,13 @@ namespace Tests.Rules.Correctness {
 			return array [0].GetHashCode ();
 		}
 
+		public int AccessInstanceArrayGoodInverted (object [] array)
+		{
+			if (null == array)
+				throw new ArgumentNullException ("array");
+			return array [0].GetHashCode ();
+		}
+
 		static public int AccessStaticArrayBad (int [] array)
 		{
 			return array [0] + array [1];
@@ -406,19 +489,35 @@ namespace Tests.Rules.Correctness {
 			return array [0] + array [1];
 		}
 
+		static public int AccessStaticArrayGoodInverted (int [] array)
+		{
+			if (null == array)
+				throw new ArgumentNullException ("array");
+			return array [0] + array [1];
+		}
+
 		[Test]
 		public void Array ()
 		{
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("AccessInstanceArrayGood");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("AccessInstanceArrayGoodInverted");
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("AccessInstanceArrayBad", 1);
 
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("AccessStaticArrayGood");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("AccessStaticArrayGoodInverted");
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("AccessStaticArrayBad", 1);
 		}
 
 		public int InstanceGoodRef (ref object obj)
 		{
 			if (obj == null)
+				throw new ArgumentNullException ("obj");
+			return obj.GetHashCode ();
+		}
+
+		public int InstanceGoodRefInverted (ref object obj)
+		{
+			if (null == obj)
 				throw new ArgumentNullException ("obj");
 			return obj.GetHashCode ();
 		}
@@ -435,6 +534,13 @@ namespace Tests.Rules.Correctness {
 			return obj.GetHashCode ();
 		}
 
+		static public int StaticGoodRefInverted (ref object obj)
+		{
+			if (null == obj)
+				throw new ArgumentNullException ("obj");
+			return obj.GetHashCode ();
+		}
+
 		static public int StaticBadRef (ref object obj)
 		{
 			return obj.GetHashCode ();
@@ -444,9 +550,11 @@ namespace Tests.Rules.Correctness {
 		public void Ref ()
 		{
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InstanceGoodRef");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("InstanceGoodRefInverted");
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("InstanceBadRef", 1);
 
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("StaticGoodRef");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("StaticGoodRefInverted");
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("StaticBadRef", 1);
 		}
 
@@ -457,10 +565,18 @@ namespace Tests.Rules.Correctness {
 				Console.WriteLine (s.GetHashCode ());	
 		}
 
+		public void LateCheckInverted (string s)
+		{
+			Console.WriteLine (s.Length);
+			if (null != s)
+				Console.WriteLine (s.GetHashCode ());
+		}
+
 		[Test]
 		public void Late ()
 		{
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("LateCheck", 1);
+			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("LateCheckInverted", 1);
 		}
 
 		// adapted from GraphicPathIterator
