@@ -143,8 +143,9 @@ namespace GuiCompare {
 		
 		public static bool ShouldSkipAttribute (string name)
 		{
-			if (name.StartsWith ("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute")
-			    || name == "System.NonSerializedAttribute")
+			if (name.StartsWith ("System.Diagnostics.CodeAnalysis.SuppressMessageAttribute") ||
+			    name == "System.NonSerializedAttribute" ||
+			    name == "System.Runtime.CompilerServivces.CompilerGeneratedAttribute")
 				return true;
 				
 			return false;

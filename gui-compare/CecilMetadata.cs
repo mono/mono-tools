@@ -294,7 +294,7 @@ namespace GuiCompare {
 		
 		public static bool ShouldSkipAttribute (string name)
 		{
-			if (name == "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute")
+			if (name == "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" || name == "System.Runtime.CompilerServices.CompilerGeneratedAttribute")
 				return true;
 			
 			return false;
