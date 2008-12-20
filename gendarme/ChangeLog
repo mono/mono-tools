@@ -1,3 +1,11 @@
+2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Avoid depending on targets at the high level, when
+	the lower level also do (which reduce directory traversals time).
+	Add a bin (all binaries) and console (console and dependencies only)
+	to the target list (this part based on a patch from Jesse Jones).
+	Change zip-bin to depend on bin and not all.
+
 2008-12-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* README, README.vsnet: Update information about the solution files

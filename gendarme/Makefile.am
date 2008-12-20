@@ -1,4 +1,5 @@
-SUBDIRS = man framework console rules swf-wizard-runner win32-setup
+TESTDIRS = framework rules
+SUBDIRS = $(TESTDIRS) console swf-wizard-runner man win32-setup
 bin_SCRIPTS = gendarme gendarme-wizard
 EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.sln self-test.ignore gendarme.svg options.make
 
@@ -18,35 +19,37 @@ DISTCLEANFILES = \
 	INSTALL \
 	COPYING \
 	missing
+	
+wdir = $(shell pwd)
 
-test: all bin/gendarme.exe.config
-	cd framework;	\
-	make test;	\
-	cd ..;		\
-	cd rules;	\
-	make test;	\
-	cd ..;
+console:
+	cd framework && make ../bin/Gendarme.Framework.dll
+	cd $(wdir)/console && make ../bin/gendarme.exe
+	cd $(wdir)/rules && make rules
 
-run-test: test
-	cd framework;	\
-	make run-test;	\
-	cd ..;		\
-	cd rules;	\
-	make run-test;	\
-	cd ..;
+bin: console
+	cd $(wdir)/swf-wizard-runner && make ../bin/gendarme-wizard.exe
+
+test:
+	list='$(TESTDIRS)'; for d in $$list ; do \
+	    (cd $$d && $(MAKE) test) ; \
+	done;
+
+run-test: bin/gendarme.exe.config
+	list='$(TESTDIRS)'; for d in $$list ; do \
+	    (cd $$d && $(MAKE) run-test) ; \
+	done;
 
 self-test: all bin/gendarme.exe.config
 	rm -f gendarme.log; \
-	cd bin;	\
-	mono --debug gendarme.exe --config ../rules/rules.xml --set self-test --html self-test.html --ignore=../self-test.ignore \
-		--severity=all --confidence=all gendarme.exe gendarme-wizard.exe Gendarme.*.dll; \
-	cd ..;
+	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --html bin/self-test.html --ignore=self-test.ignore \
+		--severity=all --confidence=all bin/gendarme.exe bin/gendarme-wizard.exe bin/Gendarme.*.dll
+
 	
 TEST1 ?= AvoidVisibleConstantFieldTest
-test1_file := $(shell find rules -name "\.svn" -prune -o  -name "*$(TEST1)*" -print)
-test1_name := $(strip $(shell echo "$(test1_file)" | grep -oE "Gendarme\.Rules\.[^\\/]+"))
-test1_namespace := $(strip $(shell echo "$(test1_name)" | sed "s/Gendarme/Test/"))
-wdir := $(shell pwd)
+test1_file = $(shell find rules -name "\.svn" -prune -o  -name "*$(TEST1)*" -print)
+test1_name = $(strip $(shell echo "$(test1_file)" | grep -oE "Gendarme\.Rules\.[^\\/]+"))
+test1_namespace = $(strip $(shell echo "$(test1_name)" | sed "s/Gendarme/Test/"))
 
 test1: bin/gendarme.exe.config
 	cd framework && make test
@@ -62,7 +65,9 @@ bin/gendarme.exe.config:
 
 help:
 	@echo "The targets are:"
-	@echo "all        - build everything"
+	@echo "all        - build everything, including documentation"
+	@echo "bin        - build all binaries needed to run gendarme"
+	@echo "console    - build everything to execute the console runner"
 	@echo "test       - build the unit test dlls"
 	@echo "run-test   - build and run the unit tests"
 	@echo "self-test  - run gendarme on itself, bin/self-test.html will have the results"
@@ -80,7 +85,7 @@ extra-bin:
 
 # note: this does not bundle Mono.Cecil.Mdb.dll and Mono.Cecil.Pdb.dll (not built outside Windows)
 # unless they are previously (and manually) copied into the extra/ directory
-zip-bin: all extra-bin
+zip-bin: bin extra-bin
 	mkdir gendarme.$(GENDARME_VERSION); \
 	cd gendarme.$(GENDARME_VERSION); \
 	cp ../bin/*.exe .; \
