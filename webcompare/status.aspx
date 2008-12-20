@@ -136,7 +136,7 @@ public void Page_Load ()
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
 
-	var diff = DateTime.Now - global_asax.CompareParameters.GetAssemblyTime (cp);
+	var diff = DateTime.UtcNow - global_asax.CompareParameters.GetAssemblyTime (cp);
 	string t;
 	if (diff.Days > 1)
 		t = String.Format ("{0} days", diff.Days);
