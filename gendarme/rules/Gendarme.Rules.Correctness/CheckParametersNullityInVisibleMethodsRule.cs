@@ -105,9 +105,15 @@ namespace Gendarme.Rules.Correctness {
 						if (null_compare.Get (nc)) {
 							has_null_check.Set (parameter.Sequence);
 						} else {
-							// compare with null
-							if ((nc == Code.Ldnull) && (next.Next.OpCode.Code == Code.Ceq))
-								has_null_check.Set (parameter.Sequence);
+							// compare with null (next or previous to current instruction)
+							// followed by a CEQ instruction
+							if (nc == Code.Ldnull) {
+								if (next.Next.OpCode.Code == Code.Ceq)
+									has_null_check.Set (parameter.Sequence);
+							} else if (nc == Code.Ceq) {
+								if (ins.Previous.OpCode.Code == Code.Ldnull)
+									has_null_check.Set (parameter.Sequence);
+							}
 						}
 					}
 				} else if (OpCodeBitmask.Calls.Get (ins.OpCode.Code)) {
