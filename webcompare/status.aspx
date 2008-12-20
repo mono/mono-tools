@@ -206,7 +206,10 @@ static string GetFQN (ComparisonNode node)
 		return "";
 
 	string n = GetFQN (node.Parent);
-	return n == "" ? node.Name : n + "." + node.Name;
+	int p = node.Name.IndexOf (' ');
+	string name = p == -1 ? node.Name : node.Name.Substring (p+1);
+
+	return n == "" ? name : n + "." + name;
 }
 
 // used for methods
@@ -289,7 +292,15 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		case CompType.Method:
 			tn = new TreeNode (RenderMemberStatus (child, "{0}{1}{2}"), child.Name);
 			AttachComments (tn, child);
-			tn.NavigateUrl = MakeURL (GetMethodFQN (child));
+			switch (cn.Type){
+			case CompType.Property:
+			        tn.NavigateUrl = MakeURL (GetFQN (cn));
+				break;
+
+			default:
+				tn.NavigateUrl = MakeURL (GetMethodFQN (child));
+				break;
+			}
 			tn.Target = "_blank";
 			break;
 			
@@ -299,7 +310,12 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		case CompType.Event:
 			tn = new TreeNode (RenderMemberStatus (child, "{0} {3} {1}{2}"), child.Name);
 			AttachComments (tn, child);
-			tn.NavigateUrl = MakeURL (GetFQN (child));
+
+			// Fields whose parents are an enum are enum definitions, make the link useful
+			if (child.Type == CompType.Field && cn.Type == CompType.Enum){
+			   	tn.NavigateUrl = MakeURL (GetFQN (cn));
+			} else 
+				tn.NavigateUrl = MakeURL (GetFQN (child));
 			tn.Target = "_blank";
 			break;
 
