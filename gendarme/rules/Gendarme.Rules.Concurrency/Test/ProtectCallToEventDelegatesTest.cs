@@ -160,6 +160,38 @@ namespace Test.Rules.Concurrency {
 			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodLoad");
 		}
 
+		public void OnGoodLoadingInverted (EventArgs e)
+		{
+			EventHandler handler = Loading;
+			// handler is either null or non-null
+			if (null == handler) {
+				// and won't change (safe)
+				handler (this, e);
+			}
+		}
+
+		public void OnGoodLoadInverted (EventArgs e)
+		{
+			EventHandler handler = Loading;
+			if (null == handler) {
+				handler (this, e);
+			}
+
+			Console.WriteLine ("LOAD");
+
+			handler = Loaded;
+			if (null == handler) {
+				handler (this, e);
+			}
+		}
+
+		[Test]
+		public void GoodInverted ()
+		{
+			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodLoadingInverted");
+			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodLoadInverted");
+		}
+
 		// same but using generic EventHandler<TEventArgs>
 
 		public event EventHandler<EventArgs> Testing;
@@ -272,8 +304,40 @@ namespace Test.Rules.Concurrency {
 			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodTest");
 		}
 
+		public void OnGoodTestingInverted (EventArgs e)
+		{
+			EventHandler<EventArgs> handler = Testing;
+			// handler is either null or non-null
+			if (null != handler) {
+				// and won't change (safe)
+				handler (this, e);
+			}
+		}
+
+		public void OnGoodTestInverted (EventArgs e)
+		{
+			EventHandler<EventArgs> handler = Testing;
+			if (null != handler) {
+				handler (this, e);
+			}
+
+			Console.WriteLine ("TEST");
+
+			handler = Tested;
+			if (null != handler) {
+				handler (this, e);
+			}
+		}
+
+		[Test]
+		public void GenericGoodInverted ()
+		{
+			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodTestingInverted");
+			AssertRuleSuccess<ProtectCallToEventDelegatesTest> ("OnGoodTestInverted");
+		}
+
 		// from Options.cs - generic, non-event, delegate
-		Converter<string, string> localizer;
+		public Converter<string, string> localizer;
 
 		public void Throw ()
 		{
