@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Concurrency {
 		static private bool CheckNull (Instruction ins)
 		{
 			switch (ins.OpCode.Code) {
-			// csc does a ldnull + ceq
+			// csc does a ldloc.x + ldnull + ceq for: if (variable == null)
 			case Code.Ldnull:
 				return (ins.Next.OpCode.Code == Code.Ceq);
 			// [g]mcs will do a Br[true|false][.s]
@@ -106,6 +106,9 @@ namespace Gendarme.Rules.Concurrency {
 			case Code.Brtrue:
 			case Code.Brtrue_S:
 				return true;
+			case Code.Ceq:
+				// csc does a ldnull + ldloc.x + ceq for: if (null == variable)
+				return (ins.Previous.Previous.OpCode.Code == Code.Ldnull);
 			default:
 				return false;
 			}

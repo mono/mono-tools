@@ -1,3 +1,8 @@
+2008-12-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProtectCallToEventDelegatesRule.cs: Deal with (null != variable)
+	just like we did with (variable != null).
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NonConstantStaticFieldsShouldNotBeVisibleRule.cs: Use HasFields
