@@ -1,5 +1,10 @@
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidSwitchStatementsTest.cs: Added a test for table-driven
+	comparisons, by example with strings.
+
+2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidSwitchStatementsTest.cs: New. Unit tests for
 	AvoidSwitchStatementsRule.
 

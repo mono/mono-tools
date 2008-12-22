@@ -94,5 +94,22 @@ namespace Test.Rules.Smells {
 		{
 			AssertRuleDoesNotApply (Type.GetType ("Test.Rules.Smells.AvoidSwitchStatementsTest+<MethodWithoutSwitchAndGenerator>c__Iterator0"), "MoveNext");
 		}
+
+		void SwitchWithStrings (string sample)
+		{
+			switch (sample) {
+			case "Foo":
+			case "Bar":
+				return;
+			case "Baz":
+				throw new ArgumentException ("sample");	
+			}
+		}
+
+		[Test]
+		public void FailOnSwitchWithStringsTest ()
+		{
+			AssertRuleFailure<AvoidSwitchStatementsTest> ("SwitchWithStrings", 1);
+		}
 	}
 }
