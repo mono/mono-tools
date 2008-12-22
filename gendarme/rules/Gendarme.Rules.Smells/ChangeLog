@@ -1,5 +1,10 @@
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidSwitchStatementsRule.cs: Added the code for handling the
+	table-driven switches.
+
+2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidSwitchStatementsRule.cs: Fix some typos.  Thanks Sebastien !!
 
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>

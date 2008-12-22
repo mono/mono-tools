@@ -107,6 +107,17 @@ namespace Gendarme.Rules.Smells {
 					Runner.Report (method, instruction, Severity.Low, Confidence.Total);
 					return RuleResult.Failure;
 				}
+				
+				//Sometimes the compiler generates a table
+				//driven comparison, there is the code for
+				//handling too.
+				if (instruction.OpCode == OpCodes.Ldsfld) {
+					FieldReference field = (FieldReference) instruction.Operand;
+					if (field.Name.Contains ("switch") && field.IsGeneratedCode ()) {
+						Runner.Report (method, instruction, Severity.Low, Confidence.Total);
+						return RuleResult.Failure;
+					}
+				}
 			}
 
 			return Runner.CurrentRuleResult;
