@@ -1,3 +1,8 @@
+2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidSwitchStatementsTest.cs: New. Unit tests for
+	AvoidSwitchStatementsRule.
+
 2008-12-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCodeDuplicatedInSameClassTest.cs: Fix a test case so it 
