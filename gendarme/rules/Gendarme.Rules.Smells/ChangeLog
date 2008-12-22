@@ -1,3 +1,9 @@
+2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidSwitchStatementsRule.cs: New.  Rule for avoid the switch
+	statments smell.
+	* Makefile.am: Add tests and rule to the build.
+
 2008-12-17  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidLongParameterListsRule.cs: Remove the extra checking which only

@@ -10,6 +10,7 @@ rules_sources =  \
 	AvoidLongParameterListsRule.cs \
 	AvoidMessageChainsRule.cs \
 	AvoidSpeculativeGeneralityRule.cs \
+	AvoidSwitchStatementsRule.cs \
 	Utilities.cs \
 	CodeDuplicatedLocator.cs \
 	InstructionMatcher.cs \
@@ -24,4 +25,5 @@ tests_sources =  \
 	AvoidLongMethodsTest.cs \
 	AvoidLongParameterListsTest.cs \
 	AvoidMessageChainsTest.cs \
-	AvoidSpeculativeGeneralityTest.cs 
+	AvoidSpeculativeGeneralityTest.cs \
+	AvoidSwitchStatementsTest.cs
