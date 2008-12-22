@@ -1,5 +1,9 @@
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
+	* AvoidSwitchStatementsRule.cs: Fix some typos.  Thanks Sebastien !!
+
+2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
+
 	* AvoidSwitchStatementsRule.cs: New.  Rule for avoid the switch
 	statments smell.
 	* Makefile.am: Add tests and rule to the build.

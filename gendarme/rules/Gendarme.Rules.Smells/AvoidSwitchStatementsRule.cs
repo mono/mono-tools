@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Smells {
 	/// could lead your code to duplication, because the same switch could
 	/// be repeated in various places of your program.  Also, if you will
 	/// need to do a little change, you should change every switch
-	/// statement, the OO way is do it with polimorphysm.
+	/// statement, the OO way is do it with polymorphism.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -90,7 +90,7 @@ namespace Gendarme.Rules.Smells {
 	/// </example>
 
 	[Problem ("The problem with switch statements is the duplication.  You may find the same switch in several places.")]
-	[Solution ("You should consider polimorphism.")]
+	[Solution ("You should consider polymorphism.")]
 	public class AvoidSwitchStatementsRule : Rule, IMethodRule {
 		public RuleResult CheckMethod (MethodDefinition method) 
 		{
