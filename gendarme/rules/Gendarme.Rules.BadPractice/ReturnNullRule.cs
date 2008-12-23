@@ -34,12 +34,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	// Notes: 
-	// * We don't implement IMethodRule on purpose since both rules that inherit 
-	//   from us are ITypeRule (that check for a specific method in the type)
-	// * Both rules used Severity.Medium and Confidence.Normal so they are, right
-	//   now, hardcoded. If anyone else needs them they should be made abstract
-	//   properties. Severity is likely to change but Confidence should stay the
-	//   same unless addional logic change it.
+	// * We don't implement IMethodRule on purpose since a rule that inherit
+	//   from us can be an ITypeRule (checking for a specific method in the type)
 
 	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class ReturnNullRule : Rule {
@@ -60,7 +56,7 @@ namespace Gendarme.Rules.BadPractice {
 				while (previous != null) {
 					// most of the time we'll find the null value on the first trace back call
 					if (previous.OpCode.Code == Code.Ldnull) {
-						Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
+						Report (method, ins);
 						break;
 					}
 
@@ -75,6 +71,11 @@ namespace Gendarme.Rules.BadPractice {
 			}
 
 			return Runner.CurrentRuleResult;
+		}
+
+		protected virtual void Report (MethodDefinition method, Instruction ins)
+		{
+			Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
 		}
 	}
 }

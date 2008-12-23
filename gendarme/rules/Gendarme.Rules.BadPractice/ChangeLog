@@ -1,3 +1,9 @@
+2008-12-23  Cedric Vivier  <cedricv@neonux.com>
+
+	* PreferEmptyInstanceOverNullRule.cs: New. This rule checks that
+	methods/properties returning a string, an array, a collection, or
+	an enumerable, do not return null.
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ObsoleteMessagesShouldNotBeEmptyRule.cs, 

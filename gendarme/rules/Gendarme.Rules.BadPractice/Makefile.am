@@ -14,6 +14,7 @@ rules_sources =  \
 	EqualShouldHandleNullArgRule.cs \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
+	PreferEmptyInstanceOverNullRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
 	ReturnNullRule.cs \
 	ToStringReturnsNullRule.cs 
@@ -32,5 +33,6 @@ tests_sources = \
 	EqualShouldHandleNullArgTest.cs \
 	GetEntryAssemblyMayReturnNullTest.cs \
 	ObsoleteMessagesShouldNotBeEmptyTest.cs \
+	PreferEmptyInstanceOverNullTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
 	ToStringReturnsNullTest.cs 
