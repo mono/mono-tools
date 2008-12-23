@@ -1,3 +1,7 @@
+2008-12-23  Cedric Vivier  <cedricv@neonux.com>
+
+	* self-test.ignore: Add entries for ProvideCorrectRegexPatternRule.
+
 2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Avoid depending on targets at the high level, when

@@ -45,6 +45,14 @@ T: Gendarme.Framework.Helpers.MethodSignatures
 R: Gendarme.Rules.Design.ConsiderAddingInterfaceRule
 T: Gendarme.Rules.BadPractice.ReturnNullRule
 
+# OK - RegEx sadly do not provide a TryPattern method
+R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
+M: System.Void Gendarme.Rules.Correctness.ProvideCorrectRegexPatternRule::CheckPattern(Mono.Cecil.Cil.Instruction,System.String)
+
+# OK - The set of potential exceptions of RegEx is unknown
+R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
+M: System.Void Gendarme.Rules.Correctness.ProvideCorrectRegexPatternRule::CheckPattern(Mono.Cecil.Cil.Instruction,System.String)
+
 # non-gendarme code / NDesk.Options
 R: Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
 T: NDesk.Options.OptionException
