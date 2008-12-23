@@ -37,11 +37,10 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks that methods and properties returning a string, an array,
-	/// a collection, or an enumerable, do not return null.
-	/// It is usually easier to use when such methods return an empty instance
-	/// instead, the caller being able to use the result directly without having
-	/// to perform a null-check first.
+	/// This rule checks that no method or property returning a string, an array,
+	/// a collection, or an enumerable, returns <c>null</c>.
+	/// It is usually better to rather return an empty instance, as this allow
+	/// the caller to use the result without having to perform a null-check first.
 	/// </summary>
 	/// <example>
 	/// Bad example (string):
@@ -144,7 +143,7 @@ namespace Gendarme.Rules.BadPractice {
 		protected override void Report (MethodDefinition method, Instruction ins)
 		{
 			string msg = string.Format ("Replace null with {0}.", GetReturnTypeSuggestion ());
-			Runner.Report (method, ins, method.IsVisible () ? Severity.Medium : Severity.Low, Confidence.High, msg);
+			Runner.Report (method, ins, method.IsVisible () ? Severity.Medium : Severity.Low, Confidence.Normal, msg);
 		}
 
 		string GetReturnTypeSuggestion ()

@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
@@ -35,8 +36,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule check that a <c>Clone()</c> method, if existing, never returns a <c>null</c> 
-	/// value.
+	/// This rule checks that no <c>Clone()</c> method returns <c>null</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -65,8 +65,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </code>
 	/// </example>
 
-	[Problem ("The implementation ICloneable.Clone() seems to return null in some circumstances.")]
-	[Solution ("Return an appropriate object instead of returning null.")]
+	[Problem ("This implementation of ICloneable.Clone() could return null in some circumstances.")]
+	[Solution ("Return an appropriate object rather than returning null.")]
 	public class CloneMethodShouldNotReturnNullRule : ReturnNullRule, IMethodRule {
 
 		private const string ICloneable = "System.ICloneable";
@@ -96,6 +96,10 @@ namespace Gendarme.Rules.BadPractice {
 			// call base class to detect if the method can return null
 			return base.CheckMethod (method);
 		}
+
+		protected override void Report (MethodDefinition method, Instruction ins)
+		{
+			Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
+		}
 	}
 }
-

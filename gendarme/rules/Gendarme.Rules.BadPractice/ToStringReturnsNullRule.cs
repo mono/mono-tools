@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.BadPractice.ToStringReturnsNullRule
+// Gendarme.Rules.BadPractice.ToStringShouldNotReturnNullRule
 //
 // Authors:
 //	Nidhi Rawal <sonu2404@gmail.com>
@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Helpers;
@@ -35,8 +36,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule is used for ensure that no overriden <c>ToString()</c> method returns a 
-	/// null value. This makes the value more useful in debugging.
+	/// This rule checks that no overriden <c>ToString()</c> method returns <c>null</c>.
+	/// An appropriately descriptive string, or <c>string.Empty</c>, should be returned
+	/// in order to make the value more useful (especially in debugging).
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -56,10 +58,11 @@ namespace Gendarme.Rules.BadPractice {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>Before Gendarme 2.4 this rule named ToStringReturnsNull.</remarks>
 
-	[Problem ("This type contains a ToString () method that could returns null.")]
-	[Solution ("Return an empty string or other appropriate string rather than returning null.")]
-	public class ToStringReturnsNullRule: ReturnNullRule, ITypeRule {
+	[Problem ("This type contains a ToString() method that could return null.")]
+	[Solution ("Return an appropriately descriptive string or an empty string rather than returning null.")]
+	public class ToStringShouldNotReturnNullRule: ReturnNullRule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -70,6 +73,11 @@ namespace Gendarme.Rules.BadPractice {
 
 			// call base class to detect if the method can return null
 			return CheckMethod (method);
+		}
+
+		protected override void Report (MethodDefinition method, Instruction ins)
+		{
+			Runner.Report (method, ins, Severity.High, Confidence.Normal);
 		}
 	}
 }

@@ -1,5 +1,5 @@
 // 
-// Unit tests for ToStringReturnsNullRule
+// Unit tests for ToStringShouldNotReturnNullRule
 //
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
@@ -35,7 +35,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.BadPractice {
 
 	[TestFixture]
-	public class ToStringReturnsNullTest : TypeRuleTestFixture<ToStringReturnsNullRule> {
+	public class ToStringShouldNotReturnNullTest : TypeRuleTestFixture<ToStringShouldNotReturnNullRule> {
 
 		abstract class ToStringAbstract {
 			public abstract override string ToString ();

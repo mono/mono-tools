@@ -1,5 +1,13 @@
 2008-12-23  Cedric Vivier  <cedricv@neonux.com>
 
+	* CloneMethodShouldNotReturnNull.cs:
+	* ToStringReturnsNullRule.cs:
+	* PreferEmptyInstanceOverNullRule.cs:
+	* ReturnNullRule.cs: Improve text and consistency between ReturnNullRule inheritors.
+	* ToStringReturnsNullRule.cs: Rename to ToStringShouldNotReturnNullRule.
+
+2008-12-23  Cedric Vivier  <cedricv@neonux.com>
+
 	* PreferEmptyInstanceOverNullRule.cs: New. This rule checks that
 	methods/properties returning a string, an array, a collection, or
 	an enumerable, do not return null.

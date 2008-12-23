@@ -73,9 +73,6 @@ namespace Gendarme.Rules.BadPractice {
 			return Runner.CurrentRuleResult;
 		}
 
-		protected virtual void Report (MethodDefinition method, Instruction ins)
-		{
-			Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
-		}
+		protected abstract void Report (MethodDefinition method, Instruction ins);
 	}
 }
