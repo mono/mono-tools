@@ -69,6 +69,21 @@ function expcol (sender, args)
 						border: 1px solid #DDDDDD;
 						padding: 10px;
 					}
+					p.severity-Critical {
+						border-left: 6px solid red;
+					}
+					p.severity-High {
+						border-left: 3px solid red;
+					}
+					p.severity-Medium {
+						border-left: 3px solid yellow;
+					}
+					p.severity-Low {
+						border-left: 3px solid green;
+					}
+					p.severity-Audit {
+						border-left: 3px solid blue;
+					}
 					span.found {
 						margin-left: 10px;
 					}
@@ -83,6 +98,12 @@ function expcol (sender, args)
 						color: #9F75AD;
 						font-weight: bold;
 						text-decoration: none;
+					}
+					a.go-to-rule {
+						float: right;
+						color: gray;
+						font-size: 0.6em;
+						font-weight: normal;
 					}
 				</style>
 				<body>
@@ -156,15 +177,19 @@ function expcol (sender, args)
 								<xsl:value-of select="problem" />
 							</p>
 
-							<b>Found in:</b>
+							<b>Solution:</b>
+							<p class="solution">
+								<xsl:value-of select="solution" />
+							</p>
+
+							<b><xsl:value-of select="count(target/defect)" /> defect(s) found:</b>
 							<xsl:if test="count(target) != 0">
 								<xsl:for-each select="target">
-                  <p class="found">
+                  <p class="found severity-{defect/@Severity}" title="{../@Name}">
 		<b>Target:</b>&#160;<xsl:value-of select="@Name" /><br/>
                   <b>Assembly:</b>&#160;<xsl:value-of select="@Assembly" /><br/>
                     <xsl:for-each select="defect">
-<!-- FIXME: use different color/style for warnings versus errors -->
-                      <span class="found">
+                      <span class="found" title="{../../@Name} on {../@Name}">
                         <br/>
                         <b>Severity:</b>&#160;<xsl:value-of select="@Severity" />&#160;
                         <b>Confidence:</b>&#160;<xsl:value-of select="@Confidence" /><br/>
@@ -179,14 +204,10 @@ function expcol (sender, args)
                         </xsl:if>
                       </span>
                     </xsl:for-each>
+                    <a class="go-to-rule" href="#{../@Name}">Go to <xsl:value-of select="../@Name" /> description</a>
                   </p>
                 </xsl:for-each>
 							</xsl:if>
-
-							<b>Solution:</b>
-							<p class="solution">
-								<xsl:value-of select="solution" />
-							</p>							
 </div>
 						</xsl:for-each>
 					</p>

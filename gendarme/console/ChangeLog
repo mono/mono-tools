@@ -1,3 +1,7 @@
+2008-12-23  Cedric Vivier  <cedricv@neonux.com>
+
+	* gendarme.xsl: Usability improvements to the html report.
+
 2008-12-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* XmlResultWriter.cs: Let the XmlWriter encode any non-XML compliant
