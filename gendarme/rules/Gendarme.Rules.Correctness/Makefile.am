@@ -1,4 +1,5 @@
 include ../common.make
+common_tests=../Test.Rules/Test.Rules.dll,System.Configuration
 
 rules_sources =  \
 	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
@@ -16,6 +17,7 @@ rules_sources =  \
 	ReviewInconsistentIdentityRule.cs \
 	MethodCanBeMadeStaticRule.cs \
 	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
+	ProvideCorrectRegexPatternRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
 	ReviewCastOnIntegerMultiplicationRule.cs \
 	ReviewDoubleAssignmentRule.cs \
@@ -38,6 +40,7 @@ tests_sources = \
 	FinalizersShouldCallBaseClassFinalizerTest.cs \
 	ReviewInconsistentIdentityTest.cs \
 	MethodCanBeMadeStaticTest.cs \
+	ProvideCorrectRegexPatternTest.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \
 	ReviewDoubleAssignmentTest.cs \

@@ -1,3 +1,8 @@
+2008-12-23  Cedric Vivier  <cedricv@neonux.com>
+
+	* ProvideCorrectRegexPatternRule.cs: New. Rule that checks if
+	methods/constructors are provided a valid regular expression pattern.
+
 2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsRule.cs: Make sure (null ==
