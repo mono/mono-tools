@@ -1,3 +1,8 @@
+2008-12-23  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidTypeInterfaceInconsistencyTest: New. Unit tests for 
+	AvoidTypeInterfaceInconsistencyRule
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Naming.csproj: Activate makefile integration for all the
