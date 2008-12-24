@@ -4,6 +4,7 @@ rules_sources =  \
 	AvoidDeepNamespaceHierarchyRule.cs \
 	AvoidRedundancyInMethodNameRule.cs \
 	AvoidRedundancyInTypeNameRule.cs \
+	AvoidTypeInterfaceInconsistencyRule.cs \
 	DetectNonAlphaNumericsInTypeNamesRule.cs \
 	DoNotPrefixEventsWithAfterOrBeforeRule.cs \
 	DoNotPrefixValuesWithEnumNameRule.cs \
@@ -20,6 +21,7 @@ tests_sources = \
 	AvoidDeepNamespaceHierarchyTest.cs \
 	AvoidRedundancyInMethodNameTest.cs \
 	AvoidRedundancyInTypeNameTest.cs \
+	AvoidTypeInterfaceInconsistencyTest.cs \
 	DetectNonAlphaNumericsInTypeNamesTest.cs \
 	DoNotPrefixEventsWithAfterOrBeforeTest.cs \
 	DoNotPrefixValuesWithEnumNameTest.cs \

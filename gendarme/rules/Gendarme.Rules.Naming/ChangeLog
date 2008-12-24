@@ -1,3 +1,10 @@
+2008-12-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidTypeInterfaceInconsistencyRule.cs: New. Rule that checks
+	if typpe Foo implements interface IFoo when both exists in the same 
+	namespace of the same assembly.
+	* Makefile.am: Add new rule and tests to the build
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRedundancyInMethodNameRule.cs: Use HasParameters
