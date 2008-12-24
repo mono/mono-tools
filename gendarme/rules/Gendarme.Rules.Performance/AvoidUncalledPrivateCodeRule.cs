@@ -167,6 +167,14 @@ namespace Gendarme.Rules.Performance {
 			return RuleResult.Failure;
 		}
 
+		public override void TearDown ()
+		{
+			// reusing the cache (e.g. the wizard) is not a good thing if an exception
+			// occured while building it (future analysis results would be bad)
+			cache.Clear ();
+			base.TearDown ();
+		}
+
 		private static bool CheckPrivateMethod (MethodDefinition method)
 		{
 			// it's ok for have unused private ctor (and common before static class were introduced in 2.0)

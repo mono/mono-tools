@@ -1,3 +1,8 @@
+2008-12-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeRule.cs: Clear cache on TearDown so the
+	wizard won't reuse it if executed again (since it could be broken).
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* RemoveUnusedLocalVariablesRule.cs: Fix AnalyzeModule so that it 
