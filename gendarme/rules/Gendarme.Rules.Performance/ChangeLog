@@ -1,3 +1,10 @@
+2008-12-24  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* PreferCharOverloadRule.cs: New. Rule to promote the use of the
+	char-based overload for String.[IndexOf|LastIndexOf|Replace] over
+	the string-based ones (when the string is one character long).
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-12-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeRule.cs: Clear cache on TearDown so the

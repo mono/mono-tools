@@ -23,6 +23,7 @@ rules_sources =  \
 	ImplementEqualsTypeRule.cs \
 	MathMinMaxCandidateRule.cs \
 	OverrideValueTypeDefaultsRule.cs \
+	PreferCharOverloadRule.cs \
 	PreferLiteralOverInitOnlyFieldsRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
 	UseIsOperatorRule.cs \
@@ -59,4 +60,5 @@ tests_sources = \
 	AvoidTypeGetTypeForConstantStringsTest.cs \
 	AvoidRepetitiveCastsTest.cs \
 	AvoidUnusedPrivateFieldsTest.cs \
+	PreferCharOverloadTest.cs \
 	PreferLiteralOverInitOnlyFieldsTest.cs
