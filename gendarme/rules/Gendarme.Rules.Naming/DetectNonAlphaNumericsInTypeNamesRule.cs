@@ -92,8 +92,8 @@ namespace Gendarme.Rules.Naming {
 		// so we just need to check the presence of underscore in method names
 		private static bool CheckName (string name, bool special)
 		{
-			int start = special ? name.IndexOf ("_", StringComparison.Ordinal) + 1: 0;
-			return (name.IndexOf ("_", start, StringComparison.Ordinal) == -1);
+			int start = special ? name.IndexOf ('_') + 1: 0;
+			return (name.IndexOf ('_', start) == -1);
 		}
 
 		private static bool UsedForComInterop (TypeDefinition type)

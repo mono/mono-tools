@@ -1,3 +1,9 @@
+2008-12-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DetectNonAlphaNumericsInTypeNamesRule.cs: Replace IndexOf("_")
+	with IndexOf('_') since it's faster (self-test) but probably not much
+	in this case since we were already using StringComparison.Ordinal.
+
 2008-12-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidTypeInterfaceInconsistencyRule.cs: New. Rule that checks
