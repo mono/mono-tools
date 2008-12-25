@@ -418,11 +418,14 @@ namespace GuiCompare {
 			comparisons_performed ++;
 
 			if (item is ICompHasBaseType) {
-				ComparisonNode baseTypeNode = new ComparisonNode (CompType.Class,
-										  string.Format ("BaseType: {0}",
-												 ((ICompHasBaseType)item).GetBaseType()));
-				baseTypeNode.Status = ComparisonStatus.Missing;
-				node.AddChild (baseTypeNode);
+				string baseTypeName = ((ICompHasBaseType)item).GetBaseType();
+				if (!string.IsNullOrEmpty (baseTypeName)) {
+					ComparisonNode baseTypeNode = new ComparisonNode (CompType.Class,
+											  string.Format ("BaseType: {0}",
+													 baseTypeName));
+					baseTypeNode.Status = ComparisonStatus.Missing;
+					node.AddChild (baseTypeNode);
+				}
 			}
 
 			if (item is ICompTypeContainer) {
