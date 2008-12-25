@@ -204,6 +204,11 @@ namespace GuiCompare {
 						                (ICompMemberContainer)reference_list[m],
 						                (ICompMemberContainer)target_list[a]);
 					}
+					if (reference_list[m] is ICompAttributeContainer && target_list[a] is ICompAttributeContainer) {
+						CompareAttributes (comparison,
+								   (ICompAttributeContainer)reference_list[m],
+								   (ICompAttributeContainer)target_list[a]);
+					}
 
 					m++;
 					a++;

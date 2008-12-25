@@ -1,5 +1,11 @@
 2008-12-25  Chris Toshok  <toshok@ximian.com>
 
+	* CompareContext.cs: Make sure we compare attributes in
+	CompareTypeLists too, otherwise we drop missing attribute nodes if
+	the type is present.
+	
+2008-12-25  Chris Toshok  <toshok@ximian.com>
+
 	* CompareContext.cs: split out the comparison of base types into a
 	separate method.  Also, if we're adding a missing type, add a tree
 	node for the base type.
