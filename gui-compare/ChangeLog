@@ -1,3 +1,9 @@
+2008-12-25  Chris Toshok  <toshok@ximian.com>
+
+	* CompareContext.cs: split out the comparison of base types into a
+	separate method.  Also, if we're adding a missing type, add a tree
+	node for the base type.
+
 2008-12-19  Jb Evain  <jbevain@novell.com>
 
 	* InfoManager.cs: add SL2SDK assemblies: System.Xml.Linq,

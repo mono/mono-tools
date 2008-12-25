@@ -146,6 +146,15 @@ namespace GuiCompare {
 			                  reference_container.GetNestedDelegates(), target_container.GetNestedDelegates());
 		}
 
+		void CompareBaseTypes (ComparisonNode parent, ICompHasBaseType reference_type, ICompHasBaseType target_type)
+		{
+			if (reference_type.GetBaseType() != target_type.GetBaseType()) {
+				parent.AddError (String.Format ("reference has base class of {0}, target has base class of {1}",
+								reference_type.GetBaseType(),
+								target_type.GetBaseType()));
+			}
+		}
+
 		void CompareTypeLists (ComparisonNode parent,
 		                       List<CompNamed> reference_list,
 		                       List<CompNamed> target_list)
@@ -179,13 +188,9 @@ namespace GuiCompare {
 
 					// compare base types
 					if (reference_list[m] is ICompHasBaseType && target_list[a] is ICompHasBaseType) {
-						if (((ICompHasBaseType)reference_list[m]).GetBaseType() !=
-						    ((ICompHasBaseType)target_list[a]).GetBaseType()) {
-							comparison.AddError (String.Format ("reference type {0} has base class of {1}, target has base class of {2}",
-							                                    reference_list[m].Name,
-							                                    ((ICompHasBaseType)reference_list[m]).GetBaseType(),
-							                                    ((ICompHasBaseType)target_list[a]).GetBaseType()));
-						}
+						CompareBaseTypes (comparison,
+								  (ICompHasBaseType)reference_list[m],
+								  (ICompHasBaseType)target_list[a]);
 					}
 					
 					// compare nested types
@@ -411,6 +416,14 @@ namespace GuiCompare {
 			node.Status = ComparisonStatus.Missing;
 
 			comparisons_performed ++;
+
+			if (item is ICompHasBaseType) {
+				ComparisonNode baseTypeNode = new ComparisonNode (CompType.Class,
+										  string.Format ("BaseType: {0}",
+												 ((ICompHasBaseType)item).GetBaseType()));
+				baseTypeNode.Status = ComparisonStatus.Missing;
+				node.AddChild (baseTypeNode);
+			}
 
 			if (item is ICompTypeContainer) {
 				ICompTypeContainer c = (ICompTypeContainer)item;
