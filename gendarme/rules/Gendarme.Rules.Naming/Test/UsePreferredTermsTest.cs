@@ -45,6 +45,8 @@ namespace Cancelled.ComPlus.Indices.ShouldntBe.Writeable {
 
 		public bool WontAllowIt;
 
+		public bool arentBad;
+
 		public bool AccessWerentLogged {
 			get { return true; }
 		}
@@ -78,6 +80,7 @@ namespace Test.Rules.Naming {
 	public class UsePreferredTermsAssemblyTest : AssemblyRuleTestFixture<UsePreferredTermsRule> {
 
 		AssemblyDefinition assembly;
+		bool parentMatches;
 
 		[TestFixtureSetUp]
 		public void FixtureSetup ()
@@ -116,14 +119,14 @@ namespace Test.Rules.Naming {
 		{
 			// 3 failures in the type name, 2 in fields (including one event)
 			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.CouldntLogInOrSignOn> (5);
-			// 3 failures in the type name, 1 in a field
-			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> (4);
+			// 3 failures in the type name, 2 in a field
+			AssertRuleFailure<Cancelled.ComPlus.Indices.ShouldntBe.Writeable.WouldntLogOutOrSignOff> (5);
 		}
 
 		[Test]
 		public void Good ()
 		{
-			// good type name and good field name
+			// good type name and good fields names
 			AssertRuleSuccess<UsePreferredTermsAssemblyTest> ();
 		}
 	}
@@ -145,6 +148,10 @@ namespace Test.Rules.Naming {
 		public void Good ()
 		{
 			AssertRuleSuccess<UsePreferredTermsMethodTest> ("Bad");
+			AssertRuleSuccess<UsePreferredTermsMethodTest> ("GetParentFoo");
+		}
+
+		private void GetParentFoo () {
 		}
 	}
 }

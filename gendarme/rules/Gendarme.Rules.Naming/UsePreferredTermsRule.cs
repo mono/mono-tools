@@ -89,13 +89,13 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("The identifier contains some obsolete terms.")]
-	[Solution ("For consistency replace any obsolete terms with the preferred ones.")]
+	[Problem ("The identifier contains non-recommended term(s).")]
+	[Solution ("For consistency replace any non-recommended term with the preferred one.")]
 	[EngineDependency (typeof (NamespaceEngine))]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1726:UsePreferredTerms")]
 	public class UsePreferredTermsRule : Rule, IAssemblyRule, ITypeRule, IMethodRule {
 
-		private const string Message = "Obsolete term '{0}' should be replaced with '{1}'.";
+		private const string Message = "Term '{0}' should be replaced with '{1}'.";
 
 		// keys are obsolete terms, values are preferred ones
 		// list is based on the FxCop naming rule (as the whole rule is inspired by it)
@@ -127,15 +127,23 @@ namespace Gendarme.Rules.Naming {
 				{ "Writeable", "Writable" }
 			};
 		
-		// common method checking any identifier
+		/// <summary>
+		/// Reports a defect when 'name' contains a non-recommended term.
+		/// </summary>
+		/// <param name="identifier">Metadata token for 'name' or null if it is a namespace.</param>
+		/// <param name="name">Name to check.</param>
+		/// <param name="severity">Severity for the defect to be reported (if any).</param>
 		private void CheckIdentifier (IMetadataTokenProvider identifier, string name, Severity severity)
 		{
 			// scan for any obsolete terms
 			foreach (KeyValuePair<string, string> pair in preferredTerms) {
-				if (name.IndexOf (pair.Key, StringComparison.OrdinalIgnoreCase) != -1) {
-					string s = String.Format (Message, pair.Key, pair.Value);
-					Runner.Report (identifier, severity, Confidence.High, s);
-				}
+				int index = name.IndexOf (pair.Key, StringComparison.OrdinalIgnoreCase);
+				if (index == -1)
+					continue;
+				if (index > 0 && char.IsLetter (name, index - 1) && char.IsLower (name, index))
+					continue; //term is part of a larger word
+				string s = String.Format (Message, pair.Key, pair.Value);
+				Runner.Report (identifier ?? new NamespaceDefinition (name), severity, Confidence.High, s);
 			}
 		}
 
@@ -147,14 +155,9 @@ namespace Gendarme.Rules.Naming {
 			// check every namespaces inside the assembly using the NamespaceEngine
 			// note: we don't reuse CheckIdentifier because we want to avoid 
 			// creating Namespace instance unless necessary
-			foreach (string ns in NamespaceEngine.NamespacesInside (assembly)) {
-				foreach (KeyValuePair<string, string> pair in preferredTerms) {
-					if (ns.IndexOf (pair.Key, StringComparison.OrdinalIgnoreCase) != -1) {
-						string s = String.Format (Message, pair.Key, pair.Value);
-						Runner.Report (new NamespaceDefinition (ns), Severity.Medium, Confidence.High, s);
-					}
-				}
-			}
+			foreach (string ns in NamespaceEngine.NamespacesInside (assembly))
+				CheckIdentifier (null, ns, Severity.Medium);
+
 			return Runner.CurrentRuleResult;
 		}
 

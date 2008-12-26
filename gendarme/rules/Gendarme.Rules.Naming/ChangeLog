@@ -1,3 +1,8 @@
+2008-12-26  Cedric Vivier  <cedricv@neonux.com>
+
+	* UsePreferredTermsRule.cs: Fix false positives when term is part of
+	a larger word. Improve text. Use CheckIdentifier for namespaces too.
+
 2008-12-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DetectNonAlphaNumericsInTypeNamesRule.cs: Replace IndexOf("_")
