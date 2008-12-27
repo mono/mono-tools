@@ -1,3 +1,10 @@
+2008-12-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotShortCircuitCertificateCheckRule.cs: New. Rule to check 
+	ICertificatePolicy and RemoteCertificateValidationCallback 
+	implementations.
+	* Makefile.am: Add new rule and tests to the build.
+
 2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ArrayFieldsShouldNotBeReadOnlyRule.cs: Use HasFields
