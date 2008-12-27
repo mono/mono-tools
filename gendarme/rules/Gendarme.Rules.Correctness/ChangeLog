@@ -1,3 +1,8 @@
+2008-12-27  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewInconsistentIdentityRule.cs: Added an assert to verify that
+	equalityMethods's reserve size is sufficient.
+
 2008-12-23  Cedric Vivier  <cedricv@neonux.com>
 
 	* ProvideCorrectRegexPatternRule.cs: New. Rule that checks if

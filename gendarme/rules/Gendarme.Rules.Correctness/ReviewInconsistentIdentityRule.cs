@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Mono.Cecil;
@@ -61,7 +62,8 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("Equals, relational operator, CompareTo methods should use the same fields and get properties. GetHashCode should use the same fields/properties or a strict subset of them. Clone should use the same fields/properties or a superset of them.")]
 	public sealed class ReviewInconsistentIdentityRule: Rule, ITypeRule {
 	
-		private Dictionary<MethodDefinition, MethodInfo> equalityMethods = new Dictionary<MethodDefinition, MethodInfo> (11);
+		private const int MaxMethodCount = 10;
+		private Dictionary<MethodDefinition, MethodInfo> equalityMethods = new Dictionary<MethodDefinition, MethodInfo> (MaxMethodCount);
 		private MethodDefinition hashMethod;
 		private MethodInfo hashInfo;
 		private MethodDefinition cloneMethod;
@@ -81,11 +83,13 @@ namespace Gendarme.Rules.Correctness {
 				get { return getters; }
 			}
 		}
-		
+				
 		private void AddMethod (MethodDefinition method)
 		{
-			if (method != null)
-				equalityMethods.Add (method, new MethodInfo ());				
+			if (method != null) {
+				equalityMethods.Add (method, new MethodInfo ());
+				Debug.Assert (equalityMethods.Count <= MaxMethodCount, string.Format ("equalityMethods has {0} methods", equalityMethods.Count));
+			}
 		}
 		
 		private string [] args1 = new string [1];
