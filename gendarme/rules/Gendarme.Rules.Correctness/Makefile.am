@@ -12,6 +12,7 @@ rules_sources =  \
 	DisposableFieldsShouldBeDisposedRule.cs \
 	DoNotRoundIntegersRule.cs \
 	DontCompareWithNaNRule.cs \
+	EnsureLocalDisposalRule.cs \
 	FinalizersShouldCallBaseClassFinalizerRule.cs \
 	FloatComparisonRule.cs \
 	ReviewInconsistentIdentityRule.cs \
@@ -37,6 +38,7 @@ tests_sources = \
 	DisposableFieldsShouldBeDisposedTest.cs \
 	DontCompareWithNaNTest.cs \
 	DoNotRoundIntegersTest.cs \
+	EnsureLocalDisposalTest.cs \
 	FinalizersShouldCallBaseClassFinalizerTest.cs \
 	ReviewInconsistentIdentityTest.cs \
 	MethodCanBeMadeStaticTest.cs \
