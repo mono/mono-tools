@@ -88,6 +88,10 @@ namespace Gendarme.Framework {
 			if (parameter != null)
 				return (parameter.Method as MethodDefinition);
 
+			MethodReturnType return_type = (location as MethodReturnType);
+			if (return_type != null)
+				return (return_type.Method as MethodDefinition);
+
 			return (location as MethodDefinition);
 		}
 
