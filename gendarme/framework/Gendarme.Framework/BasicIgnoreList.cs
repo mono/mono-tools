@@ -130,7 +130,9 @@ namespace Gendarme.Framework {
 		protected bool AddAssembly (string rule, string assembly)
 		{
 			foreach (AssemblyDefinition definition in runner.Assemblies) {
-				if (definition.Name.FullName == assembly) {
+				// check either the full name or only the name (as the version number will likely
+				// change and makes the fullname less useful in a separate ignore file)
+				if ((definition.Name.FullName == assembly) || (definition.Name.Name == assembly)) {
 					Add (rule, definition);
 					return true;
 				}
