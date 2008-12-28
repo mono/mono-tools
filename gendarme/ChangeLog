@@ -1,3 +1,9 @@
+2008-12-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Ignore AvoidSwitchStatementsRule on Gendarme
+	assemblies since we're using switch extensively and in a way that 
+	would be hard to OO-ize while keeping performance and readability
+
 2008-12-23  Cedric Vivier  <cedricv@neonux.com>
 
 	* self-test.ignore: Add entries for ProvideCorrectRegexPatternRule.
