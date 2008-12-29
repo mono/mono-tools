@@ -1,3 +1,9 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotExposeNestedGenericSignaturesRule.cs: New. Rule to check
+	if nested generics are being exposed in visible API.
+	* Makefile.am: Add new rule and test to the build.
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidMethodWithUnusedGenericTypeRule.cs: Use HasParameters.
