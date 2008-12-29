@@ -1,3 +1,8 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotExposeNestedGenericSignaturesTest.cs: New. Unit tests for
+	DoNotExposeNestedGenericSignaturesRule
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferGenericsOverRefObjectTest.cs: New. Unit tests for
