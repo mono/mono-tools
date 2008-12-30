@@ -1,3 +1,8 @@
+2008-12-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* StackEntryAnalysis.cs: Changed GetHashCode to use unchecked
+	math.
+
 2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignature.cs: Use HasParameters

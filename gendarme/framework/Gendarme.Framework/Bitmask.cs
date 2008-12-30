@@ -169,7 +169,7 @@ namespace Gendarme.Framework {
 
 		public override int GetHashCode ()
 		{
-			return (int) (mask ^ (mask >> 32));
+			return unchecked ((int) (mask ^ (mask >> 32)));
 		}
 
 		public override string ToString ()

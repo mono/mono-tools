@@ -205,11 +205,16 @@ namespace Gendarme.Framework.Helpers {
 
 			public override int GetHashCode ()
 			{
-				int hc = Instruction.GetHashCode ();
-				if (LeaveStack != null) {
-					foreach (Instruction ins in LeaveStack)
-						hc ^= ins.GetHashCode ();
+				int hc = 0;
+				
+				unchecked {
+					hc ^= Instruction.GetHashCode ();
+					if (LeaveStack != null) {
+						foreach (Instruction ins in LeaveStack)
+							hc ^= ins.GetHashCode ();
+					}
 				}
+				
 				return hc;
 			}
 
