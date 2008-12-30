@@ -1,3 +1,11 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs: Add 
+	a few test cases with goto and conditionals to (unsuccessfully) find
+	a root cause for #458173 (but we already have a workaround in place).
+	* InstantiateArgumentExceptionCorrectlyTest.cs: Add a few test
+	cases to simulate (unsuccessfully again) a reported false positive.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Exceptions.csproj: Activate makefile integration for all

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using Gendarme.Rules.Exceptions;
@@ -292,6 +293,51 @@ namespace Test.Rules.Exceptions {
 		public void NotSwallowCatchingSystemExceptionThrowingANewExceptionTest () 
 		{
 			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("NotSwallowCatchingSystemExceptionThrowingANewException", 1);
+		}
+
+		public void SkipUsingGoto ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (Exception exception) {
+			retry:
+				if (exception == null)
+					throw new Exception (exception.ToString ());
+
+				Console.WriteLine ("Skipped");
+				exception = exception.InnerException;
+				goto retry;
+			}
+		}
+
+		[Test]
+		public void Goto ()
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("SkipUsingGoto", 1);
+		}
+
+		[Conditional ("DONTDEFINE")]
+		public void ConditionWrite (object obj)
+		{
+			Console.WriteLine (obj);
+		}
+
+		public void ExceptionWithConditional ()
+		{
+			try {
+				File.Open ("foo.txt", FileMode.Open);
+			}
+			catch (Exception exception) {
+				ConditionWrite (exception);
+				throw new Exception ("uho", exception);
+			}
+		}
+
+		[Test]
+		public void Conditional ()
+		{
+			AssertRuleFailure<DoNotSwallowErrorsCatchingNonSpecificExceptionsTest> ("ExceptionWithConditional", 1);
 		}
 	}
 }

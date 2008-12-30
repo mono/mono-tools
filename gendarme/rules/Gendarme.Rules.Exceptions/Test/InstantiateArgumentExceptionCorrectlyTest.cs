@@ -707,5 +707,57 @@ namespace Test.Rules.Exceptions {
 			// no parameter to check against
 			AssertRuleDoesNotApply<InstantiateArgumentExceptionCorrectlyTest> ("CallLocalizedThrow");
 		}
+
+		static public int GoodStaticMethod (object obj)
+		{
+			if (obj == null)
+				throw new ArgumentNullException ("obj");
+			return obj.GetHashCode ();
+		}
+
+		static public void GoodStaticMethod2 (object obj, string s)
+		{
+			if (obj == null)
+				throw new ArgumentNullException ("obj");
+			if (String.IsNullOrEmpty (s))
+				throw new ArgumentNullException ("s");
+			Console.WriteLine ("{0}: {1}", s, obj.GetHashCode ());
+		}
+
+		static public int BadStaticMethod (object obj)
+		{
+			if (obj == null)
+				throw new ArgumentNullException ("object");
+			return obj.GetHashCode ();
+		}
+
+		static public void BadStaticMethod2 (object obj, string s)
+		{
+			if (obj == null)
+				throw new ArgumentNullException ("object");
+			if (String.IsNullOrEmpty (s))
+				throw new ArgumentNullException ("string");
+			Console.WriteLine ("{0}: {1}", s, obj.GetHashCode ());
+		}
+
+		static public void BadStaticMethod2half (object objectHash, string stringParameterName)
+		{
+			if (objectHash == null)
+				throw new ArgumentNullException ("objectHash");
+			if (String.IsNullOrEmpty (stringParameterName))
+				throw new ArgumentNullException ("stringParameter");
+			Console.WriteLine ("{0}: {1}", stringParameterName, objectHash.GetHashCode ());
+		}
+
+		[Test]
+		public void StaticMethods ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("GoodStaticMethod");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("BadStaticMethod", 1);
+
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("GoodStaticMethod2");
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("BadStaticMethod2", 2);
+			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("BadStaticMethod2half", 1);
+		}
 	}
 }
