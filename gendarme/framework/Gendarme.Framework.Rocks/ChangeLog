@@ -1,3 +1,9 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRocks.cs (IsProperty, IsVisible): Check that resolved method
+	is non null before continuing. Based on patch from Tamara Roberson.
+	[partial fix for #462925]
+
 2008-12-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CustomAttributeRocks.cs: Use HasCustomAttributes
