@@ -1,3 +1,12 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Move some checks before
+	calling (expensive) Resolve on the interface. Check that resolved
+	interface is non-null before continuing. Based on patch from 
+	Tamara Roberson.
+	[partial fix for #462925]
+	[Backport of r122261]
+
 2008-12-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs: Fix documentation (wrong rule)
