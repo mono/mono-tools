@@ -1,3 +1,9 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewSelfAssignmentTest.cs: Add test cases for chaining with 
+	indexers.
+	[Partial backport of r122214]
+
 2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsTest.cs: Add test cases
