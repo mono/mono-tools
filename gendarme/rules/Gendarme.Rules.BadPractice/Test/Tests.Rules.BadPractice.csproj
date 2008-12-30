@@ -51,6 +51,7 @@
     <Compile Include="EqualShouldHandleNullArgTest.cs" />
     <Compile Include="GetEntryAssemblyMayReturnNullTest.cs" />
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyTest.cs" />
+    <Compile Include="PreferEmptyInstanceOverNullTest.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckTest.cs" />
     <Compile Include="ToStringReturnsNullTest.cs" />
   </ItemGroup>

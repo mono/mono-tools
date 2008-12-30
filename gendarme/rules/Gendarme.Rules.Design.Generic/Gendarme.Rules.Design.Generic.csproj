@@ -47,6 +47,7 @@
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
     <Compile Include="AvoidMethodWithUnusedGenericTypeRule.cs" />
+    <Compile Include="DoNotExposeNestedGenericSignaturesRule.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesRule.cs" />
     <Compile Include="UseGenericEventHandlerRule.cs" />
     <Compile Include="PreferGenericsOverRefObjectRule.cs" />

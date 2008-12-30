@@ -41,6 +41,7 @@
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
     <Compile Include="AvoidDeepNamespaceHierarchyRule.cs" />
+    <Compile Include="AvoidTypeInterfaceInconsistencyRule.cs" />
     <Compile Include="DoNotPrefixEventsWithAfterOrBeforeRule.cs" />
     <Compile Include="DetectNonAlphaNumericsInTypeNamesRule.cs" />
     <Compile Include="DoNotPrefixValuesWithEnumNameRule.cs" />

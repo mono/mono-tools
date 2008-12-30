@@ -61,9 +61,12 @@
   <ItemGroup>
     <Compile Include="DoNotLockOnThisOrTypesTest.cs" />
     <Compile Include="DoNotLockOnWeakIdentityObjectsTest.cs" />
+    <Compile Include="DoNotUseMethodImplOptionsSynchronizedTest.cs" />
     <Compile Include="DontUseLockedRegionOutsideMethodTest.cs" />
     <Compile Include="DoubleCheckLockingTest.cs" />
     <Compile Include="NonConstantStaticFieldsShouldNotBeVisibleTest.cs" />
+    <Compile Include="ProtectCallToEventDelegatesTest.cs" />
+    <Compile Include="ReviewLockUsedOnlyForOperationsOnVariablesTest.cs" />
     <Compile Include="WriteStaticFieldFromInstanceMethodTest.cs" />
   </ItemGroup>
   <ItemGroup>

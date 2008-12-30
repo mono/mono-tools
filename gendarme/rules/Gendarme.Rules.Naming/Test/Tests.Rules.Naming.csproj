@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidDeepNamespaceHierarchyTest.cs" />
+    <Compile Include="AvoidTypeInterfaceInconsistencyTest.cs" />
     <Compile Include="DetectNonAlphaNumericsInTypeNamesTest.cs" />
     <Compile Include="DoNotPrefixEventsWithAfterOrBeforeTest.cs" />
     <Compile Include="DoNotPrefixValuesWithEnumNameTest.cs" />

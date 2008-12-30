@@ -53,6 +53,7 @@
     <Compile Include="AvoidLongParameterListsRule.cs" />
     <Compile Include="AvoidMessageChainsRule.cs" />
     <Compile Include="AvoidSpeculativeGeneralityRule.cs" />
+    <Compile Include="AvoidSwitchStatementsRule.cs" />
     <Compile Include="CodeDuplicatedLocator.cs" />
     <Compile Include="InstructionMatcher.cs" />
     <Compile Include="Pattern.cs" />

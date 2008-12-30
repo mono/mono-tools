@@ -66,6 +66,7 @@
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyRule.cs" />
+    <Compile Include="DoNotShortCircuitCertificateCheckRule.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleRule.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateRule.cs" />
   </ItemGroup>

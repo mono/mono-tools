@@ -57,12 +57,13 @@
     <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidLargeNumberOfLocalVariablesTest.cs" />
+    <Compile Include="AvoidMathCallsOnConstantsTest.cs" />
     <Compile Include="AvoidRepetitiveCastsTest.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsTest.cs" />
     <Compile Include="AvoidUnneededUnboxingTest.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeTest.cs" />
     <Compile Include="ImplementEqualsTypeTest.cs" />
     <Compile Include="MathMinMaxCandidateTest.cs" />
+    <Compile Include="PreferCharOverloadTest.cs" />
     <Compile Include="RemoveUnusedLocalVariablesTest.cs" />
     <Compile Include="UseIsOperatorTest.cs" />
     <Compile Include="UseStringEmptyTest.cs" />

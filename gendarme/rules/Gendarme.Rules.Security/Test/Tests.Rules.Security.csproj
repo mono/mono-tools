@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyTest.cs" />
+    <Compile Include="DoNotShortCircuitCertificateCheckTest.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleTest.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateTest.cs" />
   </ItemGroup>

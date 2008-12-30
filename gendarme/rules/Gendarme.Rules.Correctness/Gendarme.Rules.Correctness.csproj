@@ -75,8 +75,10 @@
     <None Include="dataflow\CFGEdge.cs" />
     <None Include="dataflow\Dataflow.cs" />
     <None Include="dataflow\IDataflowAnalysis.cs" />
+    <Compile Include="DoNotRecurseInEqualityRule.cs" />
     <Compile Include="DoNotRoundIntegersRule.cs" />
     <Compile Include="DontCompareWithNaNRule.cs" />
+    <Compile Include="EnsureLocalDisposalRule.cs" />
     <Compile Include="FloatComparisonRule.cs" />
     <None Include="graph\DFS.cs" />
     <None Include="graph\Edge.cs" />
@@ -93,7 +95,9 @@
     <None Include="NullDerefRule.cs" />
     <None Include="Nullity.cs" />
     <Compile Include="ProvideCorrectArgumentsToFormattingMethodsRule.cs" />
+    <Compile Include="ProvideCorrectRegexPatternRule.cs" />
     <Compile Include="ReviewDoubleAssignmentRule.cs" />
+    <Compile Include="ReviewInconsistentIdentityRule.cs" />
     <Compile Include="ReviewSelfAssignmentRule.cs" />
     <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />
     <Compile Include="ReviewUselessControlFlowRule.cs" />

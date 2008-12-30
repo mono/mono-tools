@@ -49,6 +49,7 @@
     <Compile Include="AvoidLongParameterListsTest.cs" />
     <None Include="AvoidMessageChainsTest.cs" />
     <Compile Include="AvoidSpeculativeGeneralityTest.cs" />
+    <Compile Include="AvoidSwitchStatementsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

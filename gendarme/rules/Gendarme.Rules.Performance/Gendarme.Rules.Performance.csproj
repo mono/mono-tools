@@ -67,6 +67,7 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="AvoidMathCallsOnConstantsRule.cs" />
     <Compile Include="AvoidRepetitiveCastsRule.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsRule.cs" />
     <Compile Include="AvoidUnneededUnboxingRule.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="ImplementEqualsTypeRule.cs" />
     <Compile Include="MathMinMaxCandidateRule.cs" />
     <Compile Include="OverrideValueTypeDefaultsRule.cs" />
+    <Compile Include="PreferCharOverloadRule.cs" />
     <Compile Include="RemoveUnusedLocalVariablesRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
     <Compile Include="UseStringEmptyRule.cs" />

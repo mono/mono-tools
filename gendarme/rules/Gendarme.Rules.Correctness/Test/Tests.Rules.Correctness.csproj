@@ -52,21 +52,34 @@
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.4.3.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttributeStringLiteralsShouldParseCorrectlyTest.cs" />
     <Compile Include="AvoidConstructorsInStaticTypesTest.cs" />
+    <Compile Include="AvoidFloatingPointEqualityTest.cs" />
     <Compile Include="BadRecursiveInvocationTest.cs" />
     <Compile Include="CallingEqualsWithNullArgTest.cs" />
+    <Compile Include="CheckParametersNullityInVisibleMethodsTest.cs" />
+    <Compile Include="DisposableFieldsShouldBeDisposedTest.cs" />
+    <Compile Include="DoNotRecurseInEqualityTest.cs" />
     <Compile Include="DoNotRoundIntegersTest.cs" />
     <Compile Include="DontCompareWithNaNTest.cs" />
+    <Compile Include="EnsureLocalDisposalTest.cs" />
+    <Compile Include="FinalizersShouldCallBaseClassFinalizerTest.cs" />
     <Compile Include="MethodCanBeMadeStaticTest.cs" />
     <Compile Include="ProvideCorrectArgumentsToFormattingMethodsTest.cs" />
+    <Compile Include="ProvideCorrectRegexPatternTest.cs" />
+    <Compile Include="ReviewCastOnIntegerDivisionTest.cs" />
+    <Compile Include="ReviewCastOnIntegerMultiplicationTest.cs" />
     <Compile Include="ReviewDoubleAssignmentTest.cs" />
+    <Compile Include="ReviewInconsistentIdentityTest.cs" />
     <Compile Include="ReviewSelfAssignmentTest.cs" />
     <Compile Include="ReviewUselessControlFlowTest.cs" />
     <Compile Include="ReviewUseOfInt64BitsToDoubleTest.cs" />

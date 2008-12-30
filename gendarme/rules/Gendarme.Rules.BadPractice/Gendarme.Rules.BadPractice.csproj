@@ -59,6 +59,7 @@
     <Compile Include="EqualShouldHandleNullArgRule.cs" />
     <Compile Include="GetEntryAssemblyMayReturnNullRule.cs" />
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyRule.cs" />
+    <Compile Include="PreferEmptyInstanceOverNullRule.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckRule.cs" />
     <Compile Include="ReturnNullRule.cs" />
     <Compile Include="ToStringReturnsNullRule.cs" />
