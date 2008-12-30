@@ -1,3 +1,10 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRocks.cs (IsProperty, IsVisible): Check that resolved method
+	is non null before continuing. Based on patch from Tamara Roberson.
+	[partial fix for #462925]
+	[Backport of 122260]
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TypeRocks.cs: Make GetMethod smarter and check only the methods

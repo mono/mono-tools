@@ -204,7 +204,10 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is a getter or a setter, False otherwise</returns>
 		public static bool IsProperty (this MethodReference self)
 		{
-			return ((self.Resolve ().SemanticsAttributes & (MethodSemanticsAttributes.Getter | MethodSemanticsAttributes.Setter)) != 0);
+			MethodDefinition method = self.Resolve ();
+			if (method == null)
+				return false;
+			return ((method.SemanticsAttributes & (MethodSemanticsAttributes.Getter | MethodSemanticsAttributes.Setter)) != 0);
 		}
 
 		/// <summary>
@@ -215,7 +218,7 @@ namespace Gendarme.Framework.Rocks {
 		public static bool IsVisible (this MethodReference self)
 		{
 			MethodDefinition method = self.Resolve ();
-			if (method.IsPrivate || method.IsAssembly)
+			if ((method == null) || method.IsPrivate || method.IsAssembly)
 				return false;
 			return self.DeclaringType.Resolve ().IsVisible ();
 		}
