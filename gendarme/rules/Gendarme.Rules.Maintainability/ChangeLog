@@ -1,3 +1,11 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Move some checks before
+	calling (expensive) Resolve on the interface. Check that resolved
+	interface is non-null before continuing. Based on patch from 
+	Tamara Roberson.
+	[partial fix for #462925]
+
 2008-13-10  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidAlwaysNullFieldRule.cs: Use the correct namespace. 

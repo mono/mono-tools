@@ -156,10 +156,13 @@ namespace Gendarme.Rules.Maintainability {
 			TypeDefinition ifaceDef = null;
 
 			foreach (TypeReference iface in type.Interfaces) {
-				TypeDefinition candidate = iface.Resolve ();
+				// ignore non-cls-compliant interfaces
+				if (iface.Name.StartsWith ("_", StringComparison.Ordinal))
+					continue;
 
-				if (!candidate.IsVisible () || candidate.Name.StartsWith ("_", StringComparison.Ordinal))
-					continue; //ignore non-cls-compliant interfaces
+				TypeDefinition candidate = iface.Resolve ();
+				if ((candidate == null) || !candidate.IsVisible ())
+					continue; 
 
 				if (!DoesAllSignaturesMatchType (candidate, signatures))
 					continue;
