@@ -44,7 +44,10 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// no IL
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			// no store instruction
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 
 		int x;
@@ -180,7 +183,7 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<ReviewSelfAssignmentTest> ("StaticParameter");
 		}
 
-		struct Link {
+		public struct Link {
 			public int HashCode;
 			public int Next;
 		}
@@ -207,6 +210,40 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<ReviewSelfAssignmentTest> ("HashSetGood");
 			AssertRuleFailure<ReviewSelfAssignmentTest> ("HashSetBad_Parameter");
 			AssertRuleFailure<ReviewSelfAssignmentTest> ("HashSetBad_Value");
+		}
+
+		public class Chain {
+			public Link [] Previous;
+			public Link [] Next;
+		}
+
+		public void Close (Chain c, int pos)
+		{
+			c.Previous [pos].HashCode = c.Next [pos].HashCode;
+		}
+
+		public void CloseBad (Chain c, int pos)
+		{
+			c.Previous [pos].HashCode = c.Previous [pos].HashCode;
+		}
+
+		public void SetLinkChain (Link l, Chain c, int pos)
+		{
+			l.HashCode = c.Previous [pos].HashCode;
+		}
+
+		public void SetChainLink (Link l, Chain c, int pos)
+		{
+			c.Previous [pos].HashCode = l.HashCode;
+		}
+
+		[Test]
+		public void ChainWithIndexer ()
+		{
+			AssertRuleSuccess<ReviewSelfAssignmentTest> ("Close");
+			AssertRuleFailure<ReviewSelfAssignmentTest> ("CloseBad", 1);
+			AssertRuleSuccess<ReviewSelfAssignmentTest> ("SetLinkChain");
+			AssertRuleSuccess<ReviewSelfAssignmentTest> ("SetChainLink");
 		}
 	}
 }

@@ -1,3 +1,11 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewUselessControlFlowTest.cs: Reorder and comment the cases
+	where a compiler (like CSC) can remove/optimize the useless control
+	flow (and making the test case fail).
+	* ReviewSelfAssignmentTest.cs: Add test cases for chaining with 
+	indexers.
+
 2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsTest.cs: Add test cases

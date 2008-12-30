@@ -69,9 +69,11 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void ProbableTypo ()
 		{
-			AssertRuleFailure<ReviewUselessControlFlowTest> ("TypoExtraSemiColumn", 1);
-
 			AssertRuleSuccess<ReviewUselessControlFlowTest> ("CorrectCondition");
+
+			// some compilers (e.g. csc), when optimizing, can remove the condition
+			// so no defect will be found in the IL
+			AssertRuleFailure<ReviewUselessControlFlowTest> ("TypoExtraSemiColumn", 1);
 		}
 
 		public void EmptyCondition (int x)
@@ -97,9 +99,11 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void UnneededCode ()
 		{
-			AssertRuleFailure<ReviewUselessControlFlowTest> ("EmptyCondition", 1);
-
 			AssertRuleSuccess<ReviewUselessControlFlowTest> ("Condition");
+
+			// some compilers (e.g. csc), when optimizing, can remove the condition
+			// so no defect will be found in the IL
+			AssertRuleFailure<ReviewUselessControlFlowTest> ("EmptyCondition", 1);
 		}
 	}
 }
