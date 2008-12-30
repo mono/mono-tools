@@ -1,3 +1,9 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProtectCallToEventDelegatesRule.cs: Deal with (null != variable)
+	just like we did with (variable != null).
+	[Backport of r121962]
+
 2008-11-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProtectCallToEventDelegatesRule.cs: Change documentation comments
