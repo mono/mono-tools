@@ -1,3 +1,7 @@
+2008-12-30  Jesse Jones  <jesjones@mindspring.com> 
+
+	* DoNotThrowInUnexpectedLocationTest.cs: Added.
+
 2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontSwallowErrorsCatchingNonspecificExceptionsTest.cs: Add 

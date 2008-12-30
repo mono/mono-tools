@@ -1,3 +1,7 @@
+2008-12-30  Jesse Jones  <jesjones@mindspring.com> 
+
+	* DoNotThrowInUnexpectedLocationRule.cs: Added.
+
 2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstantiateArgumentExceptionCorrectlyRule.cs: Make sure the 
