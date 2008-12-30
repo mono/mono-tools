@@ -90,11 +90,11 @@ namespace Gendarme.Rules.Exceptions {
 				return false;
 
 			if (method.IsProperty ()) {
-				return String.Compare (method.Name, 4, operand, 0, operand.Length) == 0;
+				return String.Compare (method.Name, 4, operand, 0, operand.Length, StringComparison.Ordinal) == 0;
 			} else {
 				// note: we already know there are Parameters for this method is we got here
 				foreach (ParameterDefinition parameter in method.Parameters) {
-					if (String.Compare (parameter.Name, operand) == 0)
+					if (parameter.Name == operand)
 						return true;
 				}
 			}

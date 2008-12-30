@@ -1,3 +1,9 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstantiateArgumentExceptionCorrectlyRule.cs: Make sure the 
+	strings are always compared ordinally - to remove any culture 
+	specific differences on metadata item names.
+
 2008-12-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Patch 
