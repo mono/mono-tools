@@ -1,3 +1,9 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewSelfAssignmentRule.cs: Fix the check when a call chain
+	containing an indexer is used.
+	[Backport of r122215]
+
 2008-12-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsRule.cs: Make sure (null ==
