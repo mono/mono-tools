@@ -1,3 +1,10 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProtectCallToEventDelegatesTest.cs: Add test cases where the 
+	condition arguments are inverted. Since CSC compiles this differently
+	than [g]mcs so we need to handle this separately.
+	[Backport of r121961]
+
 2008-11-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProtectCallToEventDelegatesTest.cs: New. Unit tests for 
