@@ -86,9 +86,9 @@ namespace Gendarme.Rules.Correctness {
 
 		static bool Compare (Instruction left, Instruction right, MethodDefinition method)
 		{
-			// is it the same field ?
-			FieldDefinition field = right.GetField ();
-			if (field != left.GetField ())
+			if (left == null)
+				return (right == null);
+			else if (right == null)
 				return false;
 
 			// is it on the same instance ?
@@ -96,13 +96,21 @@ namespace Gendarme.Rules.Correctness {
 			Instruction origin_right = right.TraceBack (method);
 
 			// if this is an array access the it must be the same element
-			if (origin_left.IsLoadElement ())
-				origin_left = origin_left.Previous;
-			if (origin_right.IsLoadElement ())
-				origin_right = origin_right.Previous;
+			if (origin_left.IsLoadElement () && origin_right.IsLoadElement ()) {
+				if (!CompareOperand (origin_left.Previous, origin_right.Previous, method))
+					return false;
+			} else {
+				if (!CompareOperand (origin_left, origin_right, method))
+					return false;
+			}
 
-			object operand_left = origin_left.GetOperand (method);
-			object operand_right = origin_right.GetOperand (method);
+			return Compare (origin_left, origin_right, method);
+		}
+
+		static bool CompareOperand (Instruction left, Instruction right, MethodDefinition method)
+		{
+			object operand_left = left.GetOperand (method);
+			object operand_right = right.GetOperand (method);
 			if (operand_left == null)
 				return (operand_right == null);
 			return operand_left.Equals (operand_right);
@@ -125,10 +133,11 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				if (next.OpCode.Code == Code.Stfld) {
-					if (Compare (next, ins, method)) {
-						FieldDefinition field = ins.GetField ();
-						if (field != null) {
-							msg = String.Format ("Instance field '{0}' of type '{1}'.", 
+					// is it the same field ?
+					FieldDefinition field = ins.GetField ();
+					if ((field != null) && (field == next.GetField ())) {
+						if (Compare (next, ins, method)) {
+							msg = String.Format ("Instance field '{0}' of type '{1}'.",
 								field.Name, field.FieldType.FullName);
 						}
 					}

@@ -1,3 +1,8 @@
+2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewSelfAssignmentRule.cs: Fix the check when a call chain
+	containing an indexer is used.
+
 2008-12-28  Cedric Vivier  <cedricv@neonux.com>
 
 	* EnsureLocalDisposalRule.cs: New. Rule that checks if locals
