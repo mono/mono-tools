@@ -149,9 +149,6 @@ namespace Gendarme.Rules.Correctness {
 		{
 			if (null == call) //resolution did not work
 				return;
-			//check only constructors and static non-property methods
-			if (call.Name != MethodDefinition.Ctor && (call.HasThis || call.IsProperty ()))
-				return;
 			if (!call.HasParameters)
 				return;
 			if (call.DeclaringType.FullName != RegexClass && call.DeclaringType.FullName != ValidatorClass)
@@ -159,6 +156,9 @@ namespace Gendarme.Rules.Correctness {
 
 			MethodDefinition mdef = call.Resolve ();
 			if (null == mdef)
+				return;
+			//check only constructors and static non-property methods
+			if (!mdef.IsConstructor && (mdef.HasThis || mdef.IsProperty ()))
 				return;
 
 			foreach (ParameterDefinition p in mdef.Parameters) {

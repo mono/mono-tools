@@ -1,3 +1,12 @@
+2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EnsureLocalDisposalRule.cs: Resolve early (since IsProperty 
+	rock would do it anyway) and use the MethodDefinition afterward.
+	Based on patch from Tamara Roberson.
+	* ProvideCorrectRegexPatternRule.cs: Move some checks after
+	calling Resolve (to avoid calling it twice with IsProperty).
+	[partial fix for #462925]
+
 2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewSelfAssignmentRule.cs: Fix the check when a call chain

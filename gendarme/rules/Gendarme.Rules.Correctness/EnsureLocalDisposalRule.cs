@@ -121,15 +121,17 @@ namespace Gendarme.Rules.Correctness {
 		static bool DoesReturnDisposable (MethodReference call)
 		{
 			//ignore properties (likely not the place where the IDisposable is *created*)
-			if (call.IsProperty ())
+			MethodDefinition method = call.Resolve ();
+			if ((method == null) || call.IsProperty ())
 				return false;
-			if (call.Name == MethodDefinition.Ctor || call.Name == MethodDefinition.Cctor) {
-				if (call.DeclaringType.IsGeneratedCode ())
+
+			if (method.IsConstructor) {
+				if (method.DeclaringType.IsGeneratedCode ())
 					return false; //eg. generators
-				return call.DeclaringType.Implements ("System.IDisposable");
+				return method.DeclaringType.Implements ("System.IDisposable");
 			}
 
-			return call.ReturnType.ReturnType.Implements ("System.IDisposable");
+			return method.ReturnType.ReturnType.Implements ("System.IDisposable");
 		}
 
 		static bool AreBothInstructionsInSameTryFinallyBlock (MethodBody body, Instruction a, Instruction b)
