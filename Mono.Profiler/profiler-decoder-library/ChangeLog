@@ -1,3 +1,6 @@
+2008-12-29  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: fixed call stack array resize condition.
+
 2008-12-01  Massimiliano Mantione <massi@ximian.com>
 	* ObjectModel.cs:
 	- Added interface IHeapItemSetStatisticsSubject to represents criteria

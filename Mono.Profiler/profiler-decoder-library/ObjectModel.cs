@@ -333,7 +333,7 @@ namespace  Mono.Profiler {
 				return null;
 			}
 			
-			if (frame.Level> (uint) tracesByLevel.Length) {
+			if (frame.Level >= (uint) tracesByLevel.Length) {
 				Dictionary<uint,List<StackTrace>> [] newTracesByLevel = new Dictionary<uint,List<StackTrace>> [frame.Level * 2];
 				Array.Copy (tracesByLevel, newTracesByLevel, tracesByLevel.Length);
 				tracesByLevel = newTracesByLevel;
