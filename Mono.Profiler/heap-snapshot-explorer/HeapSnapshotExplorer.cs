@@ -29,47 +29,220 @@ namespace Mono.Profiler
 			}
 		}
 		
-		[Gtk.TreeNode (ListOnly=true)]
-		public class ClassStatisticsNode : Gtk.TreeNode {
-			HeapItemSetClassStatistics classStatistics;
-			public HeapItemSetClassStatistics ClassStatistics {
+		StatisticsNode currentListSelection;
+		public StatisticsNode CurrentListSelection {
+			get {
+				return currentListSelection;
+			}
+		}
+		
+		abstract class StatisticsNodeMenuHandler {
+			HeapSnapshotExplorer explorer;
+			public HeapSnapshotExplorer Explorer {
 				get {
-					return classStatistics;
+					return explorer;
+				}
+			}
+			protected abstract Menu GetContextMenu ();
+			public void ShowContextMenu () {
+				if ((explorer.CurrentSelection != null) && (explorer.CurrentListSelection != null)) {
+					Menu contextMenu = GetContextMenu ();
+					if (contextMenu != null) {
+						contextMenu.Popup ();
+					}
+				}
+			}
+			protected void FilterCurrentSet<HI> (IHeapItemFilter<HI> filter) where HI : IHeapItem {
+				HeapExplorerTreeModel.Node<HI> node = (HeapExplorerTreeModel.Node<HI>) Explorer.CurrentSelection;
+				node.Filter (filter);
+			}
+			protected StatisticsNodeMenuHandler (HeapSnapshotExplorer explorer) {
+				this.explorer = explorer;
+			}
+		}
+		class StatisticsNodeMenuHandlerForClasses : StatisticsNodeMenuHandler {
+			void FilterCurrentSetByCurrentClass () {
+				LoadedClass currentClass = (LoadedClass) Explorer.CurrentListSelection.Statistics.Subject;
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<HeapObject>) {
+					FilterCurrentSet<HeapObject> (new HeapItemIsOfClass<HeapObject> (currentClass));
+				}
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<AllocatedObject>) {
+					FilterCurrentSet<AllocatedObject> (new HeapItemIsOfClass<AllocatedObject> (currentClass));
 				}
 			}
 			
-			public string Name {
+			Menu menu;
+			protected override Menu GetContextMenu () {
+				return menu;
+			}
+			public StatisticsNodeMenuHandlerForClasses (HeapSnapshotExplorer explorer) : base (explorer) {
+				menu = new Menu ();
+				MenuItem menuItem;
+				menuItem = new MenuItem ("Filter current set by this class");
+				menuItem.Activated += delegate {
+					FilterCurrentSetByCurrentClass ();
+				};
+				menu.Add (menuItem);
+				menuItem = new MenuItem ("Show statistics by caller method");
+				menuItem.Activated += delegate {
+					explorer.FillStatisticsListWithMethodData ();
+				};
+				menu.Add (menuItem);
+				menu.ShowAll ();
+			}
+		}
+		class StatisticsNodeMenuHandlerForMethods : StatisticsNodeMenuHandler {
+			void FilterCurrentSetByCurrentMethod () {
+				LoadedMethod currentMethod = (LoadedMethod) Explorer.CurrentListSelection.Statistics.Subject;
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<HeapObject>) {
+					FilterCurrentSet<HeapObject> (new HeapItemWasAllocatedByMethod<HeapObject> (currentMethod));
+				}
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<AllocatedObject>) {
+					FilterCurrentSet<AllocatedObject> (new HeapItemWasAllocatedByMethod<AllocatedObject> (currentMethod));
+				}
+			}
+			
+			Menu menu;
+			protected override Menu GetContextMenu () {
+				return menu;
+			}
+			public StatisticsNodeMenuHandlerForMethods (HeapSnapshotExplorer explorer) : base (explorer) {
+				menu = new Menu ();
+				MenuItem menuItem;
+				menuItem = new MenuItem ("Filter current set by this method");
+				menuItem.Activated += delegate {
+					FilterCurrentSetByCurrentMethod ();
+				};
+				menu.Add (menuItem);
+				menuItem = new MenuItem ("Show statistics by call stack");
+				menuItem.Activated += delegate {
+					explorer.FillStatisticsListWithCallStackData ();
+				};
+				menu.Add (menuItem);
+				menu.ShowAll ();
+			}
+		}
+		class StatisticsNodeMenuHandlerForCallStacks : StatisticsNodeMenuHandler {
+			void FilterCurrentSetByCurrentCallStack () {
+				StackTrace currentCallStack = (StackTrace) Explorer.CurrentListSelection.Statistics.Subject;
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<HeapObject>) {
+					FilterCurrentSet<HeapObject> (new FilterHeapItemByAllocationCallStack<HeapObject> (currentCallStack));
+				}
+				if (Explorer.CurrentSelection is HeapExplorerTreeModel.Node<AllocatedObject>) {
+					FilterCurrentSet<AllocatedObject> (new FilterHeapItemByAllocationCallStack<AllocatedObject> (currentCallStack));
+				}
+			}
+			
+			Menu menu;
+			protected override Menu GetContextMenu () {
+				return menu;
+			}
+			public StatisticsNodeMenuHandlerForCallStacks (HeapSnapshotExplorer explorer) : base (explorer) {
+				menu = new Menu ();
+				MenuItem menuItem;
+				menuItem = new MenuItem ("Filter current set by this call stack");
+				menuItem.Activated += delegate {
+					FilterCurrentSetByCurrentCallStack ();
+				};
+				menu.Add (menuItem);
+				menu.ShowAll ();
+			}
+		}
+		
+		StatisticsNodeMenuHandler currentListMenuHandler;
+		StatisticsNodeMenuHandlerForClasses listMenuHandlerForClasses;
+		StatisticsNodeMenuHandlerForMethods listMenuHandlerForMethods;
+		StatisticsNodeMenuHandlerForCallStacks listMenuHandlerForCallStacks;
+		void FillStatisticsListWithClassData () {
+			currentListMenuHandler = listMenuHandlerForClasses;
+			if (currentSelection != null) {
+				if (currentSelection.Items != null) {
+					FillTreeViewWithStatistics (PerClassStatistics, currentSelection.Items.ClassStatistics);
+				} else {
+					PerClassStatistics.NodeStore.Clear ();
+				}
+			}
+			currentListSelection = null;
+		}
+		void FillStatisticsListWithMethodData () {
+			currentListMenuHandler = listMenuHandlerForMethods;
+			if (currentSelection != null) {
+				if (currentSelection.Items != null) {
+					if (! currentSelection.Items.ObjectAllocationsArePresent) {
+						currentSelection.Items.FindObjectAllocations (currentSelection.Root);
+					}
+					FillTreeViewWithStatistics (PerClassStatistics, currentSelection.Items.AllocatorMethodStatistics);
+				} else {
+					PerClassStatistics.NodeStore.Clear ();
+				}
+			}
+			currentListSelection = null;
+		}
+		void FillStatisticsListWithCallStackData () {
+			currentListMenuHandler = listMenuHandlerForCallStacks;
+			if (currentSelection != null) {
+				if (currentSelection.Items != null) {
+					if (! currentSelection.Items.ObjectAllocationsArePresent) {
+						currentSelection.Items.FindObjectAllocations (currentSelection.Root);
+					}
+					FillTreeViewWithStatistics (PerClassStatistics, currentSelection.Items.AllocationCallStackStatistics);
+				} else {
+					PerClassStatistics.NodeStore.Clear ();
+				}
+			}
+			currentListSelection = null;
+		}
+		
+		[Gtk.TreeNode (ListOnly=true)]
+		public class StatisticsNode : Gtk.TreeNode {
+			IHeapItemSetStatisticsBySubject statistics;
+			public IHeapItemSetStatisticsBySubject Statistics {
 				get {
-					return classStatistics.Class.Name;
+					return statistics;
+				}
+			}
+			
+			public string Description {
+				get {
+					return statistics.Subject.Description;
+				}
+			}
+			public uint ItemsCount {
+				get {
+					return statistics.ItemsCount;
 				}
 			}
 			public uint AllocatedBytes {
 				get {
-					return classStatistics.AllocatedBytes;
+					return statistics.AllocatedBytes;
 				}
 			}
 			
-			public ClassStatisticsNode (HeapItemSetClassStatistics classStatistics) {
-				this.classStatistics = classStatistics;
+			public StatisticsNode (IHeapItemSetStatisticsBySubject statistics) {
+				this.statistics = statistics;
 			}
 		}
 		
-		public static void PrepareTreeViewForClassStatistics (NodeView view) {
-			view.AppendColumn ("Name", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode node) {
-				ClassStatisticsNode classNode = (ClassStatisticsNode) node;
-				((CellRendererText) cell).Markup = classNode.Name;
+		public static void PrepareTreeViewForStatisticsDisplay (NodeView view) {
+			view.AppendColumn ("Description", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
+				StatisticsNode node = (StatisticsNode) treeNode;
+				((CellRendererText) cell).Markup = node.Description;
 			});
-			view.AppendColumn ("Allocated bytes", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode node) {
-				ClassStatisticsNode classNode = (ClassStatisticsNode) node;
-				((CellRendererText) cell).Markup = classNode.AllocatedBytes.ToString ();
+			view.AppendColumn ("Object count", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
+				StatisticsNode node = (StatisticsNode) treeNode;
+				((CellRendererText) cell).Markup = node.ItemsCount.ToString ();
 			});
-			view.NodeStore = new Gtk.NodeStore (typeof (ClassStatisticsNode));
+			view.AppendColumn ("Allocated bytes", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
+				StatisticsNode node = (StatisticsNode) treeNode;
+				((CellRendererText) cell).Markup = node.AllocatedBytes.ToString ();
+			});
+			view.NodeStore = new Gtk.NodeStore (typeof (StatisticsNode));
 		}
 		
-		public static void FillTreeViewWithClassStatistics (NodeView view, HeapItemSetClassStatistics[] classes) {
+		public static void FillTreeViewWithStatistics (NodeView view, IHeapItemSetStatisticsBySubject[] statistics) {
 			view.NodeStore.Clear ();
-			foreach (HeapItemSetClassStatistics c in classes) {
-				view.NodeStore.AddNode (new ClassStatisticsNode (c));
+			foreach (IHeapItemSetStatisticsBySubject s in statistics) {
+				view.NodeStore.AddNode (new StatisticsNode (s));
 			}
 		}
 		
@@ -291,20 +464,20 @@ namespace Mono.Profiler
 			};
 			filterAllocationSetUsingSelection.Append (menuItem);
 			
-			PrepareTreeViewForClassStatistics (PerClassStatistics);
+			PrepareTreeViewForStatisticsDisplay (PerClassStatistics);
+			PerClassStatistics.NodeSelection.Changed += delegate (object o, EventArgs args) {
+				currentListSelection = (StatisticsNode) PerClassStatistics.NodeSelection.SelectedNode;
+			};
+			listMenuHandlerForClasses = new StatisticsNodeMenuHandlerForClasses (this);
+			listMenuHandlerForMethods = new StatisticsNodeMenuHandlerForMethods (this);
+			listMenuHandlerForCallStacks = new StatisticsNodeMenuHandlerForCallStacks (this);
 			
 			Tree.Selection.Changed += delegate (object o, EventArgs args) {
 				TreeSelection selection = (TreeSelection) o;
 				TreeIter iter;
 				if (selection.GetSelected (out iter)) {
 					currentSelection = (HeapExplorerTreeModel.INode) Tree.Model.GetValue (iter, 0);
-					if (currentSelection != null) {
-						if (currentSelection.Items != null) {
-							FillTreeViewWithClassStatistics (PerClassStatistics, currentSelection.Items.ClassStatistics);
-						} else {
-							PerClassStatistics.NodeStore.Clear ();
-						}
-					}
+					FillStatisticsListWithClassData ();
 				}
 			};
 			
@@ -499,6 +672,14 @@ namespace Mono.Profiler
 				if (CurrentSelection != null) {
 					CurrentSelection.ContextMenu.Popup ();
 				}
+			}
+		}
+		
+		[GLib.ConnectBefore]
+		protected virtual void OnListButtonPress (object o, Gtk.ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 3) {
+				currentListMenuHandler.ShowContextMenu ();
 			}
 		}
 	}

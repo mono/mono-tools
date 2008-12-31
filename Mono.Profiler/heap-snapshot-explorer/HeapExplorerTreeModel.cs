@@ -37,12 +37,13 @@ namespace Mono.Profiler
 			string Description {get;}
 			TreeIter TreeIter {get;}
 			INode Parent {get;}
-			INode Root {get;}
+			IRootNode Root {get;}
 			string Count {get;}
 			string AllocatedBytes {get;}
 			Menu ContextMenu {get;}
 		}
-		public interface IRootNode : INode {
+		public interface IRootNode : INode, ProviderOfPreviousAllocationsSets {
+			AllocationsNode PreviousAllocationsNode {get;}
 		}
 		
 		public abstract class Node<HI> : INode where HI : IHeapItem {
@@ -90,9 +91,26 @@ namespace Mono.Profiler
 					}
 				}
 			}
-			INode INode.Root {
+			IRootNode INode.Root {
 				get {
-					return Root;
+					return (IRootNode) Root;
+				}
+			}
+			
+			AllocationsNode previousAllocationsNode;
+			public AllocationsNode PreviousAllocationsNode {
+				get {
+					return previousAllocationsNode;
+				}
+			}
+			public IEnumerable<HeapItemSet<AllocatedObject>> PreviousAllocationsSets () {
+				AllocationsNode currentNode = this.PreviousAllocationsNode;
+				while (currentNode != null) {
+					if (currentNode.Items == null) {
+						currentNode.ReadEvents ();
+					}
+					yield return currentNode.Items;
+					currentNode = currentNode.PreviousAllocationsNode;
 				}
 			}
 			
@@ -153,9 +171,10 @@ namespace Mono.Profiler
 			
 			public abstract Menu ContextMenu {get;}
 			
-			protected Node (HeapExplorerTreeModel model, Node<HI> parent) {
+			protected Node (HeapExplorerTreeModel model, Node<HI> parent, AllocationsNode previousAllocationsNode) {
 				this.model = model;
 				this.parent = parent;
+				this.previousAllocationsNode = previousAllocationsNode;
 				this.treeIter = HandleNodeCreation ();
 			}
 		}
@@ -221,7 +240,7 @@ namespace Mono.Profiler
 				}
 			}
 			
-			public SnapshotNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block heapBlock) : base (model, null) {
+			public SnapshotNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block heapBlock, AllocationsNode previousAllocationsNode) : base (model, null, previousAllocationsNode) {
 				this.heapBlock = heapBlock;
 				this.items = null;
 				this.snapshot = null;
@@ -283,7 +302,7 @@ namespace Mono.Profiler
 				}
 			}
 			
-			public AllocationsNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block[] eventBlocks) : base (model, null) {
+			public AllocationsNode (HeapExplorerTreeModel model, SeekableLogFileReader.Block[] eventBlocks, AllocationsNode previousAllocationsNode) : base (model, null, previousAllocationsNode) {
 				this.eventBlocks = eventBlocks;
 				this.items = null;
 			}
@@ -297,7 +316,7 @@ namespace Mono.Profiler
 				}
 			}
 			
-			protected SubSetNode (HeapExplorerTreeModel model, Node<HI> parent, HeapItemSet<HI> items) : base (model, parent) {
+			protected SubSetNode (HeapExplorerTreeModel model, Node<HI> parent, HeapItemSet<HI> items) : base (model, parent, null) {
 				this.items = items;
 			}
 		}
@@ -402,10 +421,10 @@ namespace Mono.Profiler
 			}
 		}
 		
-		AllocationsNode CreateAllocationsNode (List<SeekableLogFileReader.Block> eventBlocks) {
+		AllocationsNode CreateAllocationsNode (List<SeekableLogFileReader.Block> eventBlocks, AllocationsNode previousAllocationsNode) {
 			AllocationsNode node;
 			if (eventBlocks.Count > 0) {
-				node = new AllocationsNode (this, eventBlocks.ToArray ());
+				node = new AllocationsNode (this, eventBlocks.ToArray (), previousAllocationsNode);
 				rootNodes.Add (node);
 			} else {
 				node = null;
@@ -416,12 +435,13 @@ namespace Mono.Profiler
 		
 		public void Initialize () {
 			List<SeekableLogFileReader.Block> eventBlocks = new List<SeekableLogFileReader.Block> ();
+			AllocationsNode previousAllocationsNode = null;
 			
 			Reset ();
 			foreach (SeekableLogFileReader.Block block in reader.Blocks) {
 				if (block.Code == BlockCode.HEAP_DATA) {
-					CreateAllocationsNode (eventBlocks);
-					SnapshotNode node = new SnapshotNode (this, block);
+					previousAllocationsNode = CreateAllocationsNode (eventBlocks, previousAllocationsNode);
+					SnapshotNode node = new SnapshotNode (this, block, previousAllocationsNode);
 					rootNodes.Add (node);
 				} else if (block.Code == BlockCode.EVENTS) {
 					eventBlocks.Add (block);
@@ -435,7 +455,7 @@ namespace Mono.Profiler
 					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
 				}
 			}
-			CreateAllocationsNode (eventBlocks);
+			CreateAllocationsNode (eventBlocks, previousAllocationsNode);
 		}
 		
 		public void Reset () {

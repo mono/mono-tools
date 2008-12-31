@@ -11,35 +11,35 @@ namespace Mono.Profiler
 {
 	public partial class LoadedClassChooser : Gtk.Dialog
 	{
-		LoadedClass result;
-		public LoadedClass Result {
+		IHeapItemSetStatisticsSubject result;
+		public IHeapItemSetStatisticsSubject Result {
 			get {
 				return result;
 			}
 		}
 		
-		HeapItemSetClassStatistics currentSelection;
+		IHeapItemSetStatisticsBySubject currentSelection;
 		
 		LoadedClassChooser()
 		{
 			this.Build();
-			HeapSnapshotExplorer.PrepareTreeViewForClassStatistics (ClassList);
+			HeapSnapshotExplorer.PrepareTreeViewForStatisticsDisplay (ClassList);
 			ClassList.NodeSelection.Changed += new EventHandler (OnSelectionChanged);
 			currentSelection = null;
 		}
 		
 		void OnSelectionChanged (object o, System.EventArgs args) {
 			Gtk.NodeSelection selection = (Gtk.NodeSelection) o;
-			HeapSnapshotExplorer.ClassStatisticsNode node = (HeapSnapshotExplorer.ClassStatisticsNode) selection.SelectedNode;
+			HeapSnapshotExplorer.StatisticsNode node = (HeapSnapshotExplorer.StatisticsNode) selection.SelectedNode;
 			if (node != null) {
-				currentSelection = node.ClassStatistics;
+				currentSelection = node.Statistics;
 			} else {
 				currentSelection = null;
 			}
 		}
 		
-		void FillList (HeapItemSetClassStatistics[] classes) {
-			HeapSnapshotExplorer.FillTreeViewWithClassStatistics (ClassList, classes);
+		void FillList (IHeapItemSetStatisticsBySubject[] statistics) {
+			HeapSnapshotExplorer.FillTreeViewWithStatistics (ClassList, statistics);
 			currentSelection = null;
 		}
 
@@ -51,7 +51,7 @@ namespace Mono.Profiler
 		protected virtual void OnOK (object sender, System.EventArgs e)
 		{
 			if (currentSelection != null) {
-				result = currentSelection.Class;
+				result = currentSelection.Subject;
 			} else {
 				result = null;
 			}
@@ -59,12 +59,13 @@ namespace Mono.Profiler
 		
 		static LoadedClassChooser chooser;
 		
-		public static LoadedClass ChooseClass (HeapItemSetClassStatistics[] classes) {
-			LoadedClass result;
+		static IHeapItemSetStatisticsSubject ChooseSubject (IHeapItemSetStatisticsBySubject[] subjects, string subjectName) {
+			IHeapItemSetStatisticsSubject result;
 			if (chooser == null) {
 				chooser = new LoadedClassChooser ();
 			}
-			chooser.FillList (classes);
+			chooser.Title = "Choose " + subjectName;
+			chooser.FillList (subjects);
 			ResponseType response = (ResponseType) chooser.Run ();
 			if (response == ResponseType.Ok) {
 				result = chooser.result;
@@ -73,6 +74,18 @@ namespace Mono.Profiler
 			}
 			chooser.Hide ();
 			return result;
+		}
+		public static LoadedClass ChooseClass (IHeapItemSetStatisticsBySubject[] subjects) {
+			IHeapItemSetStatisticsSubject result = ChooseSubject (subjects, "class");
+			return result as LoadedClass;
+		}
+		public static LoadedMethod ChooseMethod (IHeapItemSetStatisticsBySubject[] subjects) {
+			IHeapItemSetStatisticsSubject result = ChooseSubject (subjects, "method");
+			return result as LoadedMethod;
+		}
+		public static StackTrace ChooseCallStack (IHeapItemSetStatisticsBySubject[] subjects) {
+			IHeapItemSetStatisticsSubject result = ChooseSubject (subjects, "call stack");
+			return result as StackTrace;
 		}
 	}
 }

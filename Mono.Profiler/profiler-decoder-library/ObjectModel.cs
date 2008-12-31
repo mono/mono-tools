@@ -30,7 +30,7 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace  Mono.Profiler {
-	public class LoadedClass : BaseLoadedClass {
+	public class LoadedClass : BaseLoadedClass, IHeapItemSetStatisticsSubject {
 		uint allocatedBytes;
 		public uint AllocatedBytes {
 			get {
@@ -46,6 +46,12 @@ namespace  Mono.Profiler {
 		public static Comparison<LoadedClass> CompareByAllocatedBytes = delegate (LoadedClass a, LoadedClass b) {
 			return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
 		};
+		
+		string IHeapItemSetStatisticsSubject.Description {
+			get {
+				return Name;
+			}
+		}
 		
 		internal void InstanceCreated (uint size, LoadedMethod method, bool jitTime, StackTrace stackTrace) {
 			allocatedBytes += size;
@@ -211,6 +217,8 @@ namespace  Mono.Profiler {
 			}
 		}
 		
+		public static readonly LoadedClass LoadedClassUnavailable = new LoadedClass (0, "(CLASS UNAVAILABLE)", 0);
+		
 		public LoadedClass (uint id, string name, uint size): base (id, name, size) {
 			allocatedBytes = 0;
 			currentlyAllocatedBytes = 0;
@@ -218,7 +226,7 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class StackTrace {
+	public class StackTrace : IHeapItemSetStatisticsSubject {
 		LoadedMethod topMethod;
 		public LoadedMethod TopMethod {
 			get {
@@ -250,7 +258,32 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		static uint nextFreeId = 1;
+		public string FullDescription {
+			get {
+				System.Text.StringBuilder sb = new System.Text.StringBuilder ();
+				sb.Append ("CallStack of id ");
+				sb.Append (id);
+				sb.Append ('\n');
+				
+				StackTrace currentFrame = this;
+				while (currentFrame != null) {
+					StackTrace nextFrame = currentFrame.Caller;
+					sb.Append ("    ");
+					sb.Append (currentFrame.TopMethod.Name);
+					if (nextFrame != null) {
+						sb.Append ('\n');
+					}
+					currentFrame = nextFrame;
+				}
+				
+				return sb.ToString ();
+			}
+		}
+		string IHeapItemSetStatisticsSubject.Description {
+			get {
+				return FullDescription;
+			}
+		}
 		
 		StackTrace (LoadedMethod topMethod, StackTrace caller, bool methodIsBeingJitted) {
 			this.topMethod = topMethod;
@@ -286,12 +319,21 @@ namespace  Mono.Profiler {
 			return NewStackTrace (stack.StackTop);
 		}
 		
+		static uint nextFreeId;
+		static Dictionary<uint,List<StackTrace>> [] tracesByLevel;
+		public static readonly StackTrace StackTraceUnavailable;
+		static StackTrace () {
+			nextFreeId = 0;
+			tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
+			StackTraceUnavailable = NewStackTrace (CallStack.StackFrame.StackFrameUnavailable);
+		}
+		
 		static StackTrace NewStackTrace (CallStack.StackFrame frame) {
 			if (frame == null) {
 				return null;
 			}
 			
-			if (frame.Level> (uint) tracesByLevel.Length) {
+			if (frame.Level >= (uint) tracesByLevel.Length) {
 				Dictionary<uint,List<StackTrace>> [] newTracesByLevel = new Dictionary<uint,List<StackTrace>> [frame.Level * 2];
 				Array.Copy (tracesByLevel, newTracesByLevel, tracesByLevel.Length);
 				tracesByLevel = newTracesByLevel;
@@ -322,8 +364,6 @@ namespace  Mono.Profiler {
 			traces.Add (result);
 			return result;
 		}
-		
-		static Dictionary<uint,List<StackTrace>> [] tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
 	}
 	
 	class CallStack {
@@ -374,6 +414,8 @@ namespace  Mono.Profiler {
 			public void SetLevel () {
 				level = (caller != null) ? (caller.Level + 1) : 1;
 			}
+			
+			public static readonly StackFrame StackFrameUnavailable = new StackFrame (LoadedMethod.LoadedMethodForStackTraceUnavailable, 0, false, null);
 			
 			internal StackFrame (LoadedMethod method, ulong startCounter, bool isBeingJitted, StackFrame caller) {
 				this.method = method;
@@ -587,7 +629,7 @@ namespace  Mono.Profiler {
 		StatisticalHitItemCallCounts CallCounts {get;}
 	}
 	
-	public class LoadedMethod : BaseLoadedMethod<LoadedClass>, IStatisticalHitItem {
+	public class LoadedMethod : BaseLoadedMethod<LoadedClass>, IStatisticalHitItem, IHeapItemSetStatisticsSubject {
 		ulong clicks;
 		public ulong Clicks {
 			get {
@@ -603,6 +645,12 @@ namespace  Mono.Profiler {
 		public static Comparison<LoadedMethod> CompareByEffectiveClicks = delegate (LoadedMethod a, LoadedMethod b) {
 			return (a.Clicks - a.CalledClicks).CompareTo (b.Clicks - b.CalledClicks);
 		};
+		
+		string IHeapItemSetStatisticsSubject.Description {
+			get {
+				return Name;
+			}
+		}
 		
 		ulong calledClicks;
 		public ulong CalledClicks {
@@ -785,6 +833,9 @@ namespace  Mono.Profiler {
 			calledClicks += clicks;
 		}
 		
+		public static readonly LoadedMethod LoadedMethodUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, "(METHOD UNAVAILABLE)");
+		public static readonly LoadedMethod LoadedMethodForStackTraceUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, "(CALL STACK UNAVAILABLE)");
+		
 		public LoadedMethod (uint id, LoadedClass c, string name): base (id, c, name) {
 			clicks = 0;
 			calledClicks = 0;
@@ -909,9 +960,47 @@ namespace  Mono.Profiler {
 	}
 	
 	public interface IHeapItem : IAllocatedObject<LoadedClass> {
+		LoadedMethod AllocatorMethod {get;}
+		StackTrace AllocationCallStack {get;}
+		bool AllocationHappenedAtJitTime {get;}
 	}
 	
 	public class HeapObject : BaseHeapObject<HeapObject,LoadedClass>, IHeapItem {
+		AllocatedObject allocation;
+		public AllocatedObject Allocation {
+			get {
+				return allocation;
+			}
+			set {
+				allocation = value;
+				if ((allocation.Class != Class) || (allocation.ID != ID)) {
+					throw new Exception (String.Format ("Cannot accept allocation of class {0} and ID {1} for object of class {2} and ID {3}", allocation.Class, allocation.ID, Class, ID));
+				}
+			}
+		}
+		public void FindAllocation (ProviderOfPreviousAllocationsSets previousSetsProvider) {
+			foreach (HeapItemSet<AllocatedObject> allocations in previousSetsProvider.PreviousAllocationsSets ()) {
+				allocation = allocations [ID];
+				if (allocation != null) {
+					return;
+				}
+			}
+		}
+		public LoadedMethod AllocatorMethod {
+			get {
+				return allocation != null ? allocation.AllocatorMethod : null;
+			}
+		}
+		public StackTrace AllocationCallStack {
+			get {
+				return allocation != null ? allocation.Trace : null;
+			}
+		}
+		public bool AllocationHappenedAtJitTime {
+			get {
+				return allocation != null ? allocation.AllocationHappenedAtJitTime : false;
+			}
+		}
 		public HeapObject (ulong ID) : base (ID) {}
 	}
 	
@@ -940,14 +1029,29 @@ namespace  Mono.Profiler {
 				return caller;
 			}
 		}
+		public LoadedMethod AllocatorMethod {
+			get {
+				return caller;
+			}
+		}
 		bool jitTime;
 		public bool JitTime {
 			get {
 				return jitTime;
 			}
 		}
+		public bool AllocationHappenedAtJitTime {
+			get {
+				return jitTime;
+			}
+		}
 		StackTrace trace;
 		public StackTrace Trace {
+			get {
+				return trace;
+			}
+		}
+		public StackTrace AllocationCallStack {
 			get {
 				return trace;
 			}
@@ -1072,12 +1176,69 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		protected FilterHeapItemByClass (LoadedClass c, string description) {
+		public FilterHeapItemByClass (LoadedClass c, string description) {
 			this.c = c;
 			this.description = description;
 		}
 	}
 
+	public abstract class FilterHeapItemByAllocatorMethod<HI> : IHeapItemFilter<HI> where HI : IHeapItem {
+		protected LoadedMethod allocatorMethod;
+		public LoadedMethod AllocatorMethod {
+			get {
+				return allocatorMethod;
+			}
+		}
+		
+		public abstract bool Filter (HI heapItem);
+		
+		string description;
+		public string Description {
+			get {
+				return description;
+			}
+		}
+		
+		protected FilterHeapItemByAllocatorMethod (LoadedMethod allocatorMethod, string description) {
+			this.allocatorMethod = allocatorMethod;
+			this.description = description;
+		}
+	}
+	
+	public class HeapItemWasAllocatedByMethod<HI> : FilterHeapItemByAllocatorMethod<HI> where HI : IHeapItem {
+		public override bool Filter (HI heapItem) {
+			return heapItem.AllocatorMethod == AllocatorMethod;
+		}
+		
+		public HeapItemWasAllocatedByMethod (LoadedMethod allocatorMethod) : base (allocatorMethod, String.Format ("Object was allocated by {0}", allocatorMethod.Name)) {
+		}
+	}
+	
+	public class FilterHeapItemByAllocationCallStack<HI> : IHeapItemFilter<HI> where HI : IHeapItem {
+		protected StackTrace allocationCallStack;
+		public StackTrace AllocationCallStack {
+			get {
+				return allocationCallStack;
+			}
+		}
+		
+		public bool Filter (HI heapItem) {
+			return heapItem.AllocationCallStack == allocationCallStack;
+		}
+		
+		string description;
+		public string Description {
+			get {
+				return description;
+			}
+		}
+		
+		public FilterHeapItemByAllocationCallStack (StackTrace allocationCallStack) {
+			this.allocationCallStack = allocationCallStack;
+			this.description = String.Format ("Allocation has call stack:\n{0}", allocationCallStack.FullDescription);
+		}
+	}
+	
 	public class HeapItemIsOfClass<HI> : FilterHeapItemByClass<HI> where HI : IHeapItem {
 		protected static string BuildDescription (LoadedClass c) {
 			return String.Format ("Object has class {0}", c.Name);
@@ -1142,30 +1303,101 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class HeapItemSetClassStatistics {
-		LoadedClass c;
-		public LoadedClass Class {
+	public interface IHeapItemSetStatisticsSubject {
+		string Description {get;}
+		uint ID {get;}
+	}
+	public delegate HISSS GetHeapItemStatisticsSubject<HI,HISSS> (HI item) where HI : IHeapItem where HISSS : IHeapItemSetStatisticsSubject;
+	public delegate HISSBS NewHeapItemStatisticsBySubject<HISSBS,HISSS> (HISSS subject) where HISSS : IHeapItemSetStatisticsSubject where HISSBS : HeapItemSetStatisticsBySubject<HISSS>;
+	
+	public interface IHeapItemSetStatisticsBySubject {
+		IHeapItemSetStatisticsSubject Subject {get;}
+		uint ItemsCount {get;}
+		uint AllocatedBytes {get;}
+	}
+	
+	public abstract class HeapItemSetStatisticsBySubject<HISSS> : IHeapItemSetStatisticsBySubject where HISSS : IHeapItemSetStatisticsSubject {
+		HISSS subject;
+		protected HISSS Subject {
 			get {
-				return c;
+				return subject;
 			}
 		}
+		IHeapItemSetStatisticsSubject IHeapItemSetStatisticsBySubject.Subject {
+			get {
+				return subject;
+			}
+		}
+		
+		uint itemsCount;
+		public uint ItemsCount {
+			get {
+				return itemsCount;
+			}
+		}
+		
 		uint allocatedBytes;
 		public uint AllocatedBytes {
 			get {
 				return allocatedBytes;
 			}
-			internal set {
-				allocatedBytes = value;
-			}
-		}
-		public HeapItemSetClassStatistics (LoadedClass c, uint allocatedBytes) {
-			this.c = c;
-			this.allocatedBytes = allocatedBytes;
 		}
 		
-		public static Comparison<HeapItemSetClassStatistics> CompareByAllocatedBytes = delegate (HeapItemSetClassStatistics a, HeapItemSetClassStatistics b) {
+		internal void AddItem (IHeapItem item) {
+			itemsCount ++;
+			allocatedBytes += item.Size;
+		}
+		
+		protected abstract HISSS GetUnavailableSubject ();
+		
+		public HeapItemSetStatisticsBySubject (HISSS subject) {
+			this.subject = subject != null ? subject : GetUnavailableSubject ();
+			this.itemsCount = 0;
+			this.allocatedBytes = 0;
+		}
+		
+		public static Comparison<HeapItemSetStatisticsBySubject<HISSS>> CompareByAllocatedBytes = delegate (HeapItemSetStatisticsBySubject<HISSS> a, HeapItemSetStatisticsBySubject<HISSS> b) {
 			return a.AllocatedBytes.CompareTo (b.AllocatedBytes);
 		};
+	}
+	
+	public class HeapItemSetClassStatistics : HeapItemSetStatisticsBySubject<LoadedClass> {
+		public LoadedClass Class {
+			get {
+				return Subject;
+			}
+		}
+		protected override LoadedClass GetUnavailableSubject () {
+			return LoadedClass.LoadedClassUnavailable;
+		}
+		public HeapItemSetClassStatistics (LoadedClass c) : base (c) {
+		}
+	}
+	
+	public class HeapItemSetMethodStatistics : HeapItemSetStatisticsBySubject<LoadedMethod> {
+		public LoadedMethod Method {
+			get {
+				return Subject;
+			}
+		}
+		protected override LoadedMethod GetUnavailableSubject () {
+			return LoadedMethod.LoadedMethodUnavailable;
+		}
+		public HeapItemSetMethodStatistics (LoadedMethod method) : base (method) {
+		}
+	}
+	
+	public class HeapItemSetCallStackStatistics : HeapItemSetStatisticsBySubject<StackTrace> {
+		public StackTrace CallStack {
+			get {
+				return Subject;
+			}
+		}
+		protected override StackTrace GetUnavailableSubject () {
+			return StackTrace.StackTraceUnavailable;
+		}
+		public HeapItemSetCallStackStatistics (StackTrace callStack) : base (callStack) {
+		}
 	}
 	
 	public interface IHeapItemSet {
@@ -1174,7 +1406,15 @@ namespace  Mono.Profiler {
 		string LongDescription {get;}
 		IHeapItem[] Elements {get;}
 		HeapItemSetClassStatistics[] ClassStatistics {get;}
+		HeapItemSetMethodStatistics[] AllocatorMethodStatistics {get;}
+		HeapItemSetCallStackStatistics[] AllocationCallStackStatistics {get;}
 		uint AllocatedBytes {get;}
+		bool ObjectAllocationsArePresent {get;}
+		void FindObjectAllocations (ProviderOfPreviousAllocationsSets previousSetsProvider);
+	}
+	
+	public interface ProviderOfPreviousAllocationsSets {
+		IEnumerable<HeapItemSet<AllocatedObject>> PreviousAllocationsSets ();
 	}
 	
 	public abstract class HeapItemSet<HI> : IHeapItemSet where HI : IHeapItem {
@@ -1220,6 +1460,73 @@ namespace  Mono.Profiler {
 			}
 		}
 		
+		protected HISSBS[] BuildStatistics<HISSS,HISSBS> (GetHeapItemStatisticsSubject<HI,HISSS> getSubject, NewHeapItemStatisticsBySubject<HISSBS,HISSS> newStatistics) where HISSS : IHeapItemSetStatisticsSubject where HISSBS : HeapItemSetStatisticsBySubject<HISSS> {
+			Dictionary<uint,HISSBS> statistics = new Dictionary<uint,HISSBS> ();
+			
+			foreach (HI hi in elements) {
+				HISSS subject = getSubject (hi);
+				HISSBS s;
+				uint id;
+				if (subject != null) {
+					id = subject.ID;
+				} else {
+					id = 0;;
+				}
+				if (statistics.ContainsKey (id)) {
+					s = statistics [id];
+				} else {
+					s = newStatistics (subject);
+					statistics [id] = s;
+				}
+				s.AddItem (hi);
+			}
+			HISSBS[] result = new HISSBS [statistics.Values.Count];
+			statistics.Values.CopyTo (result, 0);
+			Array.Sort (result, HeapItemSetStatisticsBySubject<HISSS>.CompareByAllocatedBytes);
+			Array.Reverse (result);
+			
+			return result;
+		}
+		
+		HeapItemSetMethodStatistics[] allocatorMethodStatistics;
+		public HeapItemSetMethodStatistics[] AllocatorMethodStatistics {
+			get {
+				if ((allocatorMethodStatistics == null) && ObjectAllocationsArePresent) {
+					allocatorMethodStatistics = BuildStatistics<LoadedMethod,HeapItemSetMethodStatistics> (delegate (HI item) {
+						return item.AllocatorMethod;
+					}, delegate (LoadedMethod m) {
+						return new HeapItemSetMethodStatistics (m);
+					});
+				}
+				return allocatorMethodStatistics;
+			}
+		}
+		public bool HasAllocatorMethodStatistics {
+			get {
+				return allocatorMethodStatistics != null;
+			}
+		}
+		
+		HeapItemSetCallStackStatistics[] allocationCallStackStatistics;
+		public HeapItemSetCallStackStatistics[] AllocationCallStackStatistics {
+			get {
+				if ((allocationCallStackStatistics == null) && ObjectAllocationsArePresent) {
+					allocationCallStackStatistics = BuildStatistics<StackTrace,HeapItemSetCallStackStatistics> (delegate (HI item) {
+						return item.AllocationCallStack;
+					}, delegate (StackTrace s) {
+						return new HeapItemSetCallStackStatistics (s);
+					});
+				}
+				return allocationCallStackStatistics;
+			}
+		}
+		public bool HasAllocationCallStackStatistics {
+			get {
+				return allocationCallStackStatistics != null;
+			}
+		}
+		
+		
 		public void CompareWithSet<OHI> (HeapItemSet<OHI> otherSet, out HeapItemSet<HI> onlyInThisSet, out HeapItemSet<OHI> onlyInOtherSet) where OHI : IHeapItem  {
 			HeapItemSetFromComparison<HI,OHI>.PerformComparison<HI,OHI> (this, otherSet, out onlyInThisSet, out onlyInOtherSet);
 		}
@@ -1228,28 +1535,39 @@ namespace  Mono.Profiler {
 			return HeapItemSetFromComparison<HI,OHI>.PerformIntersection<HI,OHI> (this, otherSet);
 		}
 		
-		public bool ContainsItem (ulong id) {
-			int lowIndex = -1;
-			int highIndex = elements.Length;
-			
-			while (true) {
-				int span = (highIndex - lowIndex) / 2;
+		public HI this [ulong id] {
+			get {
+				int lowIndex = -1;
+				int highIndex = elements.Length;
 				
-				if (span > 0) {
-					int middleIndex = lowIndex + span;
-					HI middleElement = elements [middleIndex];
-					ulong middleID = middleElement.ID;
-					if (middleID > id) {
-						highIndex = middleIndex;
-					} else if (middleID < id) {
-						lowIndex = middleIndex;
+				while (true) {
+					int span = (highIndex - lowIndex) / 2;
+					
+					if (span > 0) {
+						int middleIndex = lowIndex + span;
+						HI middleElement = elements [middleIndex];
+						ulong middleID = middleElement.ID;
+						if (middleID > id) {
+							highIndex = middleIndex;
+						} else if (middleID < id) {
+							lowIndex = middleIndex;
+						} else {
+							return middleElement;
+						}
 					} else {
-						return true;
+						return default (HI);
 					}
-				} else {
-					return false;
 				}
 			}
+		}
+		public HI this [HI item] {
+			get {
+				return this [item.ID];
+			}
+		}
+		
+		public bool ContainsItem (ulong id) {
+			return this [id] != null;
 		}
 		
 		public HeapItemSet<HeapObject> ObjectsReferencingItemInSet (HeapItemSet<HeapObject> objectSet) {
@@ -1259,30 +1577,45 @@ namespace  Mono.Profiler {
 			return Mono.Profiler.HeapItemSetFromComparison<HI,HeapObject>.ObjectsReferencedByItemInSet (this, objectSet);
 		}
 		
-		protected HeapItemSet (string shortDescription, string longDescription, HI[] elements) {
+		static void FindObjectAllocations (HeapItemSet<HeapObject> baseSet, ProviderOfPreviousAllocationsSets previousSetsProvider) {
+			foreach (HeapObject heapObject in baseSet.Elements) {
+				if (heapObject.Allocation == null) {
+					heapObject.FindAllocation (previousSetsProvider);
+				}
+			}
+		}
+		
+		bool objectAllocationsArePresent;
+		public bool ObjectAllocationsArePresent {
+			get {
+				return objectAllocationsArePresent;
+			}
+		}
+		public void FindObjectAllocations (ProviderOfPreviousAllocationsSets previousSetsProvider) {
+			if ((! objectAllocationsArePresent)) {
+				HeapItemSet<HeapObject> baseSet = this as HeapItemSet<HeapObject>;
+				if (baseSet != null) {
+					FindObjectAllocations (baseSet, previousSetsProvider);
+					objectAllocationsArePresent = true;
+				}
+			}
+		}
+		
+		protected HeapItemSet (string shortDescription, string longDescription, HI[] elements, bool objectAllocationsArePresent) {
 			this.shortDescription = shortDescription;
 			this.longDescription = longDescription;
 			this.elements = elements;
+			this.objectAllocationsArePresent = objectAllocationsArePresent;
 			allocatedBytes = 0;
 			
 			Array.Sort (this.elements, CompareHeapItemsByID);
 			
-			Dictionary<ulong,HeapItemSetClassStatistics> statistics = new Dictionary<ulong,HeapItemSetClassStatistics> ();
-			foreach (HI hi in elements) {
-				HeapItemSetClassStatistics cs;
-				if (statistics.ContainsKey (hi.Class.ID)) {
-					cs = statistics [hi.Class.ID];
-					cs.AllocatedBytes += hi.Size;
-					allocatedBytes += hi.Size;
-				} else {
-					cs = new HeapItemSetClassStatistics (hi.Class, hi.Size);
-					statistics [hi.Class.ID] = cs;
-				}
-			}
-			classStatistics = new HeapItemSetClassStatistics [statistics.Values.Count];
-			statistics.Values.CopyTo (classStatistics, 0);
-			Array.Sort (classStatistics, HeapItemSetClassStatistics.CompareByAllocatedBytes);
-			Array.Reverse (classStatistics);
+			classStatistics = BuildStatistics<LoadedClass,HeapItemSetClassStatistics> (delegate (HI item) {
+				allocatedBytes += item.Size;
+				return item.Class;
+			}, delegate (LoadedClass c) {
+				return new HeapItemSetClassStatistics (c);
+			});
 		}
 	}
 	
@@ -1297,7 +1630,7 @@ namespace  Mono.Profiler {
 		public HeapObjectSetFromSnapshot (HeapSnapshot heapSnapshot):
 			base (String.Format ("Heap at {0}.{1:000}s", heapSnapshot.HeaderStartTime.Seconds, heapSnapshot.HeaderStartTime.Milliseconds),
 			      String.Format ("Heap snapshot taken at {0}.{1:000}s", heapSnapshot.HeaderStartTime.Seconds, heapSnapshot.HeaderStartTime.Milliseconds),
-			      heapSnapshot.HeapObjects) {
+			      heapSnapshot.HeapObjects, false) {
 			this.heapSnapshot = heapSnapshot;
 		}
 	}
@@ -1306,7 +1639,7 @@ namespace  Mono.Profiler {
 		public AllocatedObjectSetFromEvents (TimeSpan timeFromStart, AllocatedObject[] allocations):
 			base (String.Format ("Allocations {0}.{1:000}s", timeFromStart.Seconds, timeFromStart.Milliseconds),
 			      String.Format ("Allocations taken from {0}.{1:000}s", timeFromStart.Seconds, timeFromStart.Milliseconds),
-			      allocations) {
+			      allocations, true) {
 		}
 	}
 	
@@ -1337,7 +1670,7 @@ namespace  Mono.Profiler {
 			return result;
 		}
 		
-		public HeapItemSetFromFilter (HeapItemSet<HI> baseSet, IHeapItemFilter<HI> filter): base (filter.Description, String.Format ("{0} and {1}", filter.Description, baseSet.LongDescription), filterSet (baseSet, filter)) {
+		public HeapItemSetFromFilter (HeapItemSet<HI> baseSet, IHeapItemFilter<HI> filter): base (filter.Description, String.Format ("{0} and {1}", filter.Description, baseSet.LongDescription), filterSet (baseSet, filter), baseSet.ObjectAllocationsArePresent) {
 			this.baseSet = baseSet;
 			this.filter = filter;
 		}
@@ -1475,7 +1808,7 @@ namespace  Mono.Profiler {
 			return new HeapItemSetFromComparison<HeapObject,HI>(objectSet, itemSet, result.ToArray (), "references item");
 		}
 		
-		HeapItemSetFromComparison (HeapItemSet<HI> baseSet, HeapItemSet<OHI> otherSet, HI[] heapItems, string relation): base (buildShortDescription (otherSet, relation), buildLongDescription (otherSet, relation), heapItems) {
+		HeapItemSetFromComparison (HeapItemSet<HI> baseSet, HeapItemSet<OHI> otherSet, HI[] heapItems, string relation): base (buildShortDescription (otherSet, relation), buildLongDescription (otherSet, relation), heapItems, baseSet.ObjectAllocationsArePresent) {
 			this.baseSet = baseSet;
 			this.otherSet = otherSet;
 		}
