@@ -38,7 +38,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	[Problem ("A visible method does not check its parameter(s) for null values.")]
-	[Solution ("Since the caller is unkown you should always verify all of your parameters to protect yourself.")]
+	[Solution ("Since the caller is unknown you should always verify all of your parameters to protect yourself.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
 	public class CheckParametersNullityInVisibleMethodsRule : Rule, IMethodRule {
 
@@ -85,6 +85,62 @@ namespace Gendarme.Rules.Correctness {
 			Runner.Report (parameter, s, Confidence.Normal);
 		}
 
+		private void CheckArgument (MethodDefinition method, Instruction ins)
+		{
+			ParameterDefinition parameter = ins.GetParameter (method);
+			if (parameter == null)
+				return;
+
+			Instruction next = ins.Next;
+			Code nc = next.OpCode.Code;
+			// load indirect reference (ref)
+			if (nc == Code.Ldind_Ref) {
+				next = next.Next;
+				nc = next.OpCode.Code;
+			}
+
+			if (null_compare.Get (nc)) {
+				has_null_check.Set (parameter.Sequence);
+			} else {
+				// compare with null (next or previous to current instruction)
+				// followed by a CEQ instruction
+				if (nc == Code.Ldnull) {
+					if (next.Next.OpCode.Code == Code.Ceq)
+						has_null_check.Set (parameter.Sequence);
+				} else if (nc == Code.Ceq) {
+					if (ins.Previous.OpCode.Code == Code.Ldnull)
+						has_null_check.Set (parameter.Sequence);
+				}
+			}
+		}
+
+		private void CheckCall (MethodDefinition method, Instruction ins)
+		{
+			MethodDefinition md = (ins.Operand as MethodReference).Resolve ();
+			if (md == null)
+				return;
+
+			// no dereference possible by calling a static method
+			if (!md.IsStatic) {
+				Instruction instance = ins.TraceBack (method);
+				CheckParameter (instance.GetParameter (method));
+			}
+
+			// if was pass one of our parameter to another call then
+			// this new call "takes" responsability of the null check
+			// note: not perfect but greatly reduce false positives
+			if (!md.HasParameters)
+				return;
+			for (int i = 0; i < md.Parameters.Count; i++) {
+				Instruction pi = ins.TraceBack (method, -(md.IsStatic ? 0 : 1 + i));
+				if (pi == null)
+					continue;
+				ParameterDefinition p = pi.GetParameter (method);
+				if (p != null)
+					has_null_check.Set (p.Sequence);
+			}
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// p/invoke, abstract methods and method without parameters
@@ -96,52 +152,9 @@ namespace Gendarme.Rules.Correctness {
 			// check
 			foreach (Instruction ins in method.Body.Instructions) {
 				if (ins.IsLoadArgument ()) {
-					ParameterDefinition parameter = ins.GetParameter (method);
-					if (parameter != null) {
-						Instruction next = ins.Next;
-						Code nc = next.OpCode.Code;
-						// load indirect reference (ref)
-						if (nc == Code.Ldind_Ref) {
-							next = next.Next;
-							nc = next.OpCode.Code;
-						}
-
-						if (null_compare.Get (nc)) {
-							has_null_check.Set (parameter.Sequence);
-						} else {
-							// compare with null (next or previous to current instruction)
-							// followed by a CEQ instruction
-							if (nc == Code.Ldnull) {
-								if (next.Next.OpCode.Code == Code.Ceq)
-									has_null_check.Set (parameter.Sequence);
-							} else if (nc == Code.Ceq) {
-								if (ins.Previous.OpCode.Code == Code.Ldnull)
-									has_null_check.Set (parameter.Sequence);
-							}
-						}
-					}
+					CheckArgument (method, ins);
 				} else if (OpCodeBitmask.Calls.Get (ins.OpCode.Code)) {
-					MethodDefinition md = (ins.Operand as MethodReference).Resolve ();
-					if (md == null)
-						continue;
-					// no dereference possible by calling a static method
-					if (!md.IsStatic) {
-						Instruction instance = ins.TraceBack (method);
-						CheckParameter (instance.GetParameter (method));
-					}
-					// if was pass one of our parameter to another call then
-					// this new call "takes" responsability of the null check
-					// note: not perfect but greatly reduce false positives
-					if (!md.HasParameters)
-						continue;
-					for (int i = 0; i < md.Parameters.Count; i++ ) {
-						Instruction pi = ins.TraceBack (method, -(md.IsStatic ? 0 : 1 + i));
-						if (pi == null)
-							continue;
-						ParameterDefinition p = pi.GetParameter (method);
-						if (p != null)
-							has_null_check.Set (p.Sequence);
-					}
+					CheckCall (method, ins);
 				} else if (check.Get (ins.OpCode.Code)) {
 					Instruction owner = ins;
 					// fields (no need to check static fields), ldind, ldelem, ldlen
