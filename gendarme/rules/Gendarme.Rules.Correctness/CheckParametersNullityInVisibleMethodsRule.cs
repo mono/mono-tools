@@ -38,7 +38,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	[Problem ("A visible method does not check its parameter(s) for null values.")]
-	[Solution ("Since the caller is unkown you should always verify all of your parameters to protect yourself.")]
+	[Solution ("Since the caller is unknown you should always verify all of your parameters to protect yourself.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
 	public class CheckParametersNullityInVisibleMethodsRule : Rule, IMethodRule {
 
@@ -51,6 +51,10 @@ namespace Gendarme.Rules.Correctness {
 		{
 			// nothing to do if it could not be resolved 
 			if (parameter == null)
+				return;
+
+			// out parameters can't be null
+			if (parameter.IsOut)
 				return;
 
 			// was there a null check done before ?	
