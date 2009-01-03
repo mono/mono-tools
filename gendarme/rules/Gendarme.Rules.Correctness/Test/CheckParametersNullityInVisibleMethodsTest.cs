@@ -595,5 +595,32 @@ namespace Tests.Rules.Correctness {
 		{
 			AssertRuleFailure<CheckParametersNullityInVisibleMethodsTest> ("Enumerate", 2);
 		}
+
+		static public void GetOut (out string s)
+		{
+			s = "Mono";
+		}
+
+		public void ShowOut (out string s)
+		{
+			GetOut (out s);
+			Console.WriteLine (s.Length);
+		}
+
+		public void ArrayOut (out string[] array, int length)
+		{
+			array = new string [length];
+			for (int i = 0; i < length; i++)
+				GetOut (out array [i]);
+			Console.WriteLine (array.Length);
+		}
+
+		[Test]
+		public void OutParameter ()
+		{
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("GetOut");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ShowOut");
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ArrayOut");
+		}
 	}
 }

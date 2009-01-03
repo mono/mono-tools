@@ -1,3 +1,8 @@
+2009-01-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsRule.cs: Add test cases
+	for 'out' parameters.
+
 2008-12-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewUselessControlFlowTest.cs: Reorder and comment the cases
