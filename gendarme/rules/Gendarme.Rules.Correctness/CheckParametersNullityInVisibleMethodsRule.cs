@@ -53,6 +53,10 @@ namespace Gendarme.Rules.Correctness {
 			if (parameter == null)
 				return;
 
+			// out parameters can't be null
+			if (parameter.IsOut)
+				return;
+
 			// was there a null check done before ?	
 			if (has_null_check.Get (parameter.Sequence))
 				return;
