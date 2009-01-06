@@ -833,6 +833,13 @@ namespace GuiCompare {
 					case "op_UnaryPlus": sb.Append ("operator +"); break;
 					case "op_Decrement": sb.Append ("operator --"); break;
 					case "op_Increment": sb.Append ("operator ++"); break;
+					case "op_BitwiseAnd": sb.Append ("operator &"); break;
+					case "op_BitwiseOr": sb.Append ("operator |"); break;
+					case "op_ExclusiveOr": sb.Append ("operator ^"); break;
+					case "op_LogicalNot": sb.Append ("operator !"); break;
+					case "op_OnesComplement": sb.Append ("operator ~"); break;
+					case "op_True": sb.Append ("operator true"); break;
+					case "op_False": sb.Append ("operator false"); break;
 					default: Console.WriteLine ("unhandled operator named {0}", method_def.Name); sb.Append (method_def.Name); break;
 					}
 				}
