@@ -1,0 +1,292 @@
+#!/bin/bash
+
+#
+# Those two are read-only
+#
+NAME="aspnetcheck"
+VERSION="0.0.1"
+
+#
+# No defaults for those. They are set and made read-only in detect_os below
+#
+OS_VENDOR=""
+OS_RELEASE=""
+OS_NAME=""
+OS_ARCH=""
+
+#
+# Directory to be used for temporary files, made read-only after assignment.
+# The entire directory is recursively removed on exit
+#
+TEMP_DIR=`/bin/mktemp -d /tmp/aspnetcheck.XXXXXXXXXX`
+
+#
+# All of them are loaded, if found, in the order given
+#
+CONFIG_LOCATIONS="/etc/aspnetcheck.conf /etc/sysconfig/aspnetcheck.conf /opt/etc/aspnetcheck.conf /opt/etc/sysconfig/aspnetcheck.conf"
+
+#
+# Do not change these two values here, they are defaults.
+# If you need to/want to change them, do it in one of the .conf files
+#
+COPYRIGHT="Copyright (c) 2009 Novell, Inc"
+BUGMAIL="mhabersack@novell.com"
+
+LOG_LOCATION="/var/log/mono/aspnetcheck/checks.log"
+RECOMMENDED_MPM="worker"
+MIN_MONO_VERSION=2.0.1
+
+#
+# This value should ideally be available from the network. For now it is 
+# hard-coded here and can be changed in one of the config files. It should
+# be changed whenever new Mono is released
+#
+CUR_MONO_VERSION=2.0.1
+
+#
+# THIS SHOULD BE COMMENTED OUT IN PRODUCTION
+#
+if [ -n "$SKU_DEBUG" ]; then
+    CONFIG_LOCATIONS="./aspnetcheck.conf $CONFIG_LOCATIONS"
+    LOG_LOCATION="./checks.log"
+fi
+
+#
+# Defaults
+#
+SCRIPTS_DIR=/usr/share/mono/aspnetcheck
+
+#
+# Do not modify those variables
+#
+EXIT_STATUS=0
+
+#
+# Default implementations of output functions
+#
+function message ()
+{
+    echo $*
+}
+
+function die ()
+{
+    message $*
+    EXIT_STATUS=1
+    exit $EXIT_STATUS
+}
+
+function banner ()
+{
+    message ${COLOR_BOLD}${COLOR_WHITE}ASP.NET installation check script v${VERSION}${COLOR_RESET}
+    message ${COLOR_CYAN}${COPYRIGHT}${COLOR_RESET}
+    message ${COLOR_WHITE}Report bugs to: ${COLOR_BOLD}${BUGMAIL}${COLOR_RESET}
+    message
+}
+
+#
+# Trap handlers
+#
+function on_signal ()
+{
+    message Signal received. Aborting script.
+    EXIT_STATUS=1
+    exit $EXIT_STATUS
+}
+
+function __remove_temp_directory ()
+{
+    # An extra check to make sure we're not removing any arbitrary directory
+    if [ "`dirname $TEMP_DIR`" = "/tmp" -a -d "$TEMP_DIR" ]; then
+	rm -rf "$TEMP_DIR"
+    fi
+}
+
+function on_exit ()
+{
+    __remove_temp_directory
+    message Done.
+}
+
+function load_configs ()
+{
+    for cfg in $CONFIG_LOCATIONS; do
+	if [ ! -f $cfg ]; then
+	    continue
+	fi
+	source $cfg
+    done
+}
+
+#
+# Load some scripts, both required and optional
+#
+function load_scripts ()
+{
+    if [ ! -d "$SCRIPTS_DIR" ]; then
+	die Scripts directory not found at $SCRIPTS_DIR
+    fi
+
+    if [ -f "$SCRIPTS_DIR/output.sh" ]; then
+	source "$SCRIPTS_DIR/output.sh"
+    else
+	die Output functions script not found.
+    fi
+
+    if [ -f "$SCRIPTS_DIR/checks_loader.sh" ]; then
+	source "$SCRIPTS_DIR/checks_loader.sh"
+    else
+	die Checks loader script not found.
+    fi
+
+    if [ -f "$SCRIPTS_DIR/checks_runner.sh" ]; then
+	source "$SCRIPTS_DIR/checks_runner.sh"
+    else
+	die Checks runner script not found.
+    fi    
+}
+
+#
+# Load OS-dependent scripts
+#
+function __load_os_scripts_from ()
+{
+    if [ ! -d "$1" ]; then
+	return
+    fi
+
+    for s in "$1"/*.sh; do
+	if [ ! -x "$s" ]; then
+	    continue
+	fi
+
+	source "$s"
+    done
+}
+
+function load_os_scripts ()
+{
+    __load_os_scripts_from "$SCRIPTS_DIR/generic"
+    __load_os_scripts_from "$SCRIPTS_DIR/$OS_VENDOR"
+    __load_os_scripts_from "$SCRIPTS_DIR/$OS_VENDOR/$OS_NAME"
+    __load_os_scripts_from "$SCRIPTS_DIR/$OS_VENDOR/$OS_NAME/$OS_RELEASE"
+}
+
+#
+# Determine the exact OS version we're running
+#
+function __os_set_vendor ()
+{
+    case $1 in
+	SUSE*) OS_VENDOR="suse" ;;
+	*) die "Unable to determine the vendor or vendor is unknown to the script ($1)" ;;
+    esac
+    readonly OS_VENDOR
+}
+
+function __os_set_release ()
+{
+    if [ -z "$1" ]; then
+	die "Unable to determine the OS release version"
+    fi
+    OS_RELEASE="$1"
+    readonly OS_RELEASE
+}
+
+function __os_set_name ()
+{
+    case `echo $1 | tr A-Z a-z` in
+	opensuse) OS_NAME="opensuse" ;;
+	*) die "Unable to determine the OS name or the OS name is unknown to the script" ;;
+    esac
+    readonly OS_NAME
+}
+
+function __os_set_arch ()
+{
+    case $1 in
+	x86_64) OS_ARCH=64 ;;
+	i?86) OS_ARCH=32 ;;
+	*) die "Unable to determine the OS architecture or the architecture is unknown to the script" ;;
+    esac
+    readonly OS_ARCH
+}
+
+function determine_os ()
+{
+    local path
+    local tmp
+
+    #
+    # First try to use the LSB-compliant tools
+    #
+    path="`which lsb_release 2> /dev/null`"
+    if [ -x "$path" ]; then
+	tmp="`$path -i -s`"
+	__os_set_vendor "$tmp"
+
+	tmp="`$path -r -s`"
+	__os_set_release "$tmp"
+
+	tmp=`$path -d -s | tr -d '"' | cut -d ' ' -f 1`
+	__os_set_name "$tmp"
+    else
+	#
+	# Attempt to detect known OS-es using known files
+	#
+	if [ -f /etc/SuSE-brand ]; then
+	    OS_VENDOR="suse"
+	    readonly OS_VENDOR
+
+	    tmp=`grep ^VERSION /etc/SuSE-brand|cut -d ' ' -f 3`
+	    __os_set_release "$tmp"
+
+	    tmp=`head -1 /etc/SuSE-brand`
+	    __os_set_name "$tmp"
+	fi
+    fi
+
+    if [ -z "$OS_VENDOR" -o -z "$OS_NAME" -o -z "$OS_RELEASE" ]; then
+	die Unable to detect the OS. Cannot continue.
+    fi
+
+    #
+    # Get the arch
+    #
+    tmp=""
+    path=`which arch 2> /dev/null`
+    if [ -x "$path" ]; then
+	tmp=`$path`
+    fi
+
+    if [ -z "$tmp" ]; then
+	path=`which uname > /dev/null 2>&1`
+	if [ -x "$path" ]; then
+	    tmp=`$path -m`
+	fi
+    fi
+
+    __os_set_arch "$tmp"
+}
+
+trap on_signal 1 2 3 4 9 15
+trap on_exit 0
+readonly NAME VERSION TEMP_DIR
+readonly -f load_configs load_scripts determine_os __os_set_vendor __os_set_release __os_set_name __os_set_arch load_os_scripts \
+    __load_os_scripts_from __remove_temp_directory
+
+load_configs
+load_scripts
+banner
+init_log
+determine_os
+load_os_scripts
+load_checks
+
+if [ -z "$CHECKS_LIST" ]; then
+    message "No checks defined. Nothing to do."
+    exit 0
+fi
+
+run_checks
+

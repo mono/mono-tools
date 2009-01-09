@@ -1,0 +1,53 @@
+aspnetcheck
+===========
+
+   This is a simple utility to check the correctness of Mono installation and its 
+suitability to run ASP.NET applications. 
+   It is implemented in the bash shell script in the way that makes it possible and
+relatively easy to extend to support various Linux distributions. Currently the only 
+supported distribution is the SuSE Linux family of operating systems.
+   To add checks you need to create a file with the .check extension and put it in the
+scripts/checks/generic (for all operating systems), scripts/checks/suse (for suse) or
+scripts/checks/os_name (where os_name is known to the aspnetcheck script, see the
+determine_os function in that script). All .check files in those directories that have
+the exec bit set will be sourced by the driver script and all the functions named
+check_* will be included in the run. Before running, the check_* functions are sorted 
+using sort (1), alphabetical sort. Check files without the exec bit set will be ignored.
+   To add non-check functions/scripts, put them in the scripts/generic/ (for all operating
+systems), scripts/suse/ (for the SuSE Linux family of systems) or scripts/os_name/ 
+directories and give them names with .sh extension. As with the .check scripts, the .sh files
+need to have the exec bit set in order to be included by the driver script.
+   The scripts/ directory itself is meant to hold only scripts included directly by name from
+the driver script.
+   Both the checks and the scripts directory hierarchy support the following directory structure
+for non-generic checks/scripts:
+
+   TOP_DIR/OS_VENDOR/OS_NAME/OS_RELEASE
+
+where
+
+   TOP_DIR - either 'scripts' or 'scripts/checks'
+   OS_VENDOR - e.g. suse
+   OS_NAME - e.g. opensuse
+   OS_RELEASE - e.g. 11.1
+
+The directory hierarchy is sought for .check and .sh files in the following order
+   
+   TOP_DIR
+   TOP_DIR/generic
+   TOP_DIR/OS_VENDOR
+   TOP_DIR/OS_VENDOR/OS_NAME
+   TOP_DIR/OS_VENDOR/OS_NAME/OS_RELEASE
+
+   This scaffolding allows for easy overloading of check/helper functions defined in the 
+upper level directories (unless the functions are marked readonly in the files loaded prior 
+to the one attempting to override them).
+
+   To test the scripts create an aspnetcheck.conf file in the same directory in which
+the main (aspnetcheck) script lives and put the following line inside:
+
+SCRIPTS_DIR=./scripts
+
+   Then export the SKU_DEBUG=1 environment variable and run ./aspnetcheck
+
+TODO: more documentation
