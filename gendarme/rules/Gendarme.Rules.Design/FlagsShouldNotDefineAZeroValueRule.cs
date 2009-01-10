@@ -34,14 +34,15 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule ensure that every flags, enumarations decorated with the <c>[System.Flags]</c> 
-	/// attribute, does not contain a <c>0</c> value. This value would not be usable in boolean 
-	/// operations.
+	/// This rule ensures that enumerations decorated with the [System.Flags]  
+	/// attribute do not contain a 0 value. This value would not be usable  
+	/// with bitwise operators.
 	/// </summary>
 	/// <example>
 	/// Bad example (using 0 for a normal value):
 	/// <code>
 	/// [Flags]
+	/// [Serializable]
 	/// enum Access {
 	/// 	Read = 0,
 	/// 	Write = 1
@@ -52,6 +53,7 @@ namespace Gendarme.Rules.Design {
 	/// Bad example (using None):
 	/// <code>
 	/// [Flags]
+	/// [Serializable]
 	/// enum Access {
 	///	// this is less severe since the name of the 0 value helps
 	/// 	None = 0,
@@ -64,6 +66,7 @@ namespace Gendarme.Rules.Design {
 	/// Good example:
 	/// <code>
 	/// [Flags]
+	/// [Serializable]
 	/// enum Access {
 	///	Read = 1,
 	///	Write = 2

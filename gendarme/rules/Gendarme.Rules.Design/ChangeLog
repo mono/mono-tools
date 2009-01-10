@@ -1,3 +1,10 @@
+2009-01-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* FlagsShouldNotDefineAZeroValueRule.cs: fixed the description so
+	that it points to bitwise operators instead of boolean operators as
+	being the problem, fixed some misspellings/bad english in the 
+	description, added [Serializable] to example code.
+
 2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRefAndOutParametersRule.cs: Use HasParameters
