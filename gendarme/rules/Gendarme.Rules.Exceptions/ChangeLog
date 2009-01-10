@@ -1,3 +1,9 @@
+2009-01-10  Jesse Jones  <jesjones@mindspring.com> 
+
+	* DoNotThrowInUnexpectedLocationRule.cs: Fixed an assert which
+	broke when the code was switched from Mono.Cecil.Cil.Code.ToString
+	to Mono.Cecil.Cil.OpCode.Name.
+
 2008-12-30  Jesse Jones  <jesjones@mindspring.com> 
 
 	* DoNotThrowInUnexpectedLocationRule.cs: Added.

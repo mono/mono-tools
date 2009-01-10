@@ -284,7 +284,7 @@ namespace Gendarme.Rules.Exceptions {
 				return " (the expression will throw if the value is a NAN or an infinity)";
 				
 			default:
-				Debug.Assert (ins.OpCode.Name.Contains ("_Ovf"), "expected an overflow opcode, not " + ins.OpCode.Code);
+				Debug.Assert (ins.OpCode.Name.Contains (".ovf"), "expected an overflow opcode, not " + ins.OpCode.Name);
 				return " (checked arithmetic is being used)";
 			}
 		}
