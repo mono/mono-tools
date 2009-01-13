@@ -27,6 +27,13 @@ install-data-hook:
 
 uninstall-hook:
 	rm -f $(DESTDIR)$(prefix)/lib/gendarme/`basename rules.xml`;
+ 
+rules:
+	for ASM in $(RULEDIRS); do \
+		cd $$ASM; \
+		make rule; \
+		cd ..;	 \
+	done;
 
 test:
 	list='$(SUBDIRS)'; for d in $$list ; do \

@@ -22,6 +22,9 @@ DISTCLEANFILES = \
 	
 wdir = $(shell pwd)
 
+# Note that PHONY is required on os-x because a directory exists with
+# that name.
+.PHONY: console
 console:
 	cd framework && make ../bin/Gendarme.Framework.dll
 	cd $(wdir)/console && make ../bin/gendarme.exe

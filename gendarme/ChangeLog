@@ -1,3 +1,8 @@
+2009-01-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefike.am: added .PHONY to console target (required on os-x
+	because a console directory exists).
+
 2009-01-03  Jesse Jones  <jesjones@mindspring.com>
 
 	* options.make: use checked math only in debug.
