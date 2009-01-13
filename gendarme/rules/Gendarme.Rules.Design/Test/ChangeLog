@@ -1,3 +1,7 @@
+2009-01-12  Jesse Jones  <jesjones@mindspring.com>
+
+	* UseFlagsAttributeRule.cs: added.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Design.csproj: Activate makefile integration for all the

@@ -1,3 +1,7 @@
+2009-01-12  Jesse Jones  <jesjones@mindspring.com>
+
+	* UseFlagsAttributeRule.cs, Makefile.am: added new rule.
+
 2009-01-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* FlagsShouldNotDefineAZeroValueRule.cs: fixed the description so
