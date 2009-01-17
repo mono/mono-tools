@@ -1,3 +1,9 @@
+2009-01-17  Massimiliano Mantione <massi@ximian.com>
+	* BaseTypes.cs: Added "Region" property to IExecutableMemoryRegion, so
+	that it is possible to set the region when we load the elf file, and
+	use it in "BaseExecutableMemoryRegion.NewFunction".
+	* Decoder.cs, ObjectModel.cs, NativeLibraryReader.cs: Likewise.
+
 2008-12-29  Massimiliano Mantione <massi@ximian.com>
 	* ObjectModel.cs: fixed call stack array resize condition.
 

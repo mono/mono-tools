@@ -60,11 +60,11 @@ namespace  Mono.Profiler {
 		static Regex nmNoSymbols = new Regex ("(.*)nm:(.*)No symbols$");
 		static Regex nmUnknownProblem = new Regex ("(.*)nm:(.*)$");
 		
-		public static void FillFunctions<MR,UFR> (MR region) where UFR : IUnmanagedFunctionFromRegion where MR : IExecutableMemoryRegion <UFR> {
+		public static void FillFunctions<MR,UFR> (MR region) where UFR : IUnmanagedFunctionFromRegion<UFR> where MR : IExecutableMemoryRegion <UFR> {
 			FillFunctionsUsingNm<MR,UFR> (region);
 		}
 		
-		static void FillFunctionsUsingNm<MR,UFR> (MR region) where UFR : IUnmanagedFunctionFromRegion where MR : IExecutableMemoryRegion <UFR> {
+		static void FillFunctionsUsingNm<MR,UFR> (MR region) where UFR : IUnmanagedFunctionFromRegion<UFR> where MR : IExecutableMemoryRegion <UFR> {
 			try {
 				string[] outputLines = RunExternalProcess ("/usr/bin/nm", "-n " + region.Name);
 				if (outputLines.Length == 1) {
@@ -91,7 +91,7 @@ namespace  Mono.Profiler {
 					outputLines = RunExternalProcess ("/usr/bin/nm", "-n -D " + region.Name);
 				}
 				
-				IUnmanagedFunctionFromRegion lastFunction = null;
+				IUnmanagedFunctionFromRegion<UFR> lastFunction = null;
 				foreach (string outputLine in outputLines) {
 					Match m = nmSymbolLine.Match (outputLine);
 					if (m.Success) {

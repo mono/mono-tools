@@ -40,10 +40,11 @@ namespace Mono.Profiler {
 	public interface ILoadedMethod<LC> : ILoadedElement where LC : ILoadedClass {
 		LC Class {get;}
 	}
-	public interface IUnmanagedFunctionFromID<MR,UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion where MR : IExecutableMemoryRegion<UFR> {
+	public interface IUnmanagedFunctionFromID<MR,UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion<UFR> where MR : IExecutableMemoryRegion<UFR> {
 		MR Region {get;}
 	}
-	public interface IUnmanagedFunctionFromRegion {
+	public interface IUnmanagedFunctionFromRegion<UFR> where UFR : IUnmanagedFunctionFromRegion<UFR> {
+		IExecutableMemoryRegion<UFR> Region {get; set;}
 		string Name {get; set;}
 		uint StartOffset {get; set;}
 		uint EndOffset {get; set;}
@@ -68,7 +69,7 @@ namespace Mono.Profiler {
 			}
 		}
 	}
-	public interface IExecutableMemoryRegion<UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion {
+	public interface IExecutableMemoryRegion<UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion<UFR> {
 		ulong StartAddress {get;}
 		ulong EndAddress {get;}
 		uint FileOffset {get;}
@@ -100,7 +101,7 @@ namespace Mono.Profiler {
 		bool RecordSnapshot {get;}
 	}
 	
-	public interface ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public interface ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		LC NewClass (uint id, string name, uint size);
 		LM NewMethod (uint id, LC c, string name);
 		MR NewExecutableMemoryRegion (uint id, string fileName, uint fileOffset, ulong startAddress, ulong endAddress);
@@ -109,7 +110,7 @@ namespace Mono.Profiler {
 		bool RecordHeapSnapshots {get; set;}
 	}
 	
-	public interface ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public interface ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		LC[] Classes {get;}
 		LC GetClass (uint id);
 		LM[] Methods {get;}
@@ -123,7 +124,7 @@ namespace Mono.Profiler {
 		UFI GetUnmanagedFunctionByID (uint id);
 		HS[] HeapSnapshots {get;}
 	}
-	public interface IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public interface IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		DirectivesHandler Directives {get;}
 		
 		EH LoadedElements {get;}
@@ -241,9 +242,9 @@ namespace Mono.Profiler {
 			this.c = c;
 		}
 	}
-	public class BaseUnmanagedFunctionFromRegion : IUnmanagedFunctionFromRegion {
-		IExecutableMemoryRegion<IUnmanagedFunctionFromRegion> region;
-		public IExecutableMemoryRegion<IUnmanagedFunctionFromRegion> Region {
+	public class BaseUnmanagedFunctionFromRegion<UFR> : IUnmanagedFunctionFromRegion<UFR> where UFR : IUnmanagedFunctionFromRegion<UFR> {
+		IExecutableMemoryRegion<UFR> region;
+		public IExecutableMemoryRegion<UFR> Region {
 			get {
 				return region;
 			}
@@ -284,14 +285,14 @@ namespace Mono.Profiler {
 			this.startOffset = 0;
 			this.endOffset = 0;
 		}
-		public BaseUnmanagedFunctionFromRegion (IExecutableMemoryRegion<IUnmanagedFunctionFromRegion> region, string name, uint startOffset, uint endOffset) {
+		public BaseUnmanagedFunctionFromRegion (IExecutableMemoryRegion<UFR> region, string name, uint startOffset, uint endOffset) {
 			this.region = region;
 			this.name = name;
 			this.startOffset = startOffset;
 			this.endOffset = endOffset;
 		}
 	}
-	public class BaseUnmanagedFunctionFromID<MR,UFR>: BaseLoadedElement, IUnmanagedFunctionFromID<MR,UFR>  where UFR : IUnmanagedFunctionFromRegion where MR : IExecutableMemoryRegion<UFR> {
+	public class BaseUnmanagedFunctionFromID<MR,UFR>: BaseLoadedElement, IUnmanagedFunctionFromID<MR,UFR>  where UFR : IUnmanagedFunctionFromRegion<UFR> where MR : IExecutableMemoryRegion<UFR> {
 		MR region;
 		public MR Region {
 			get {
@@ -707,7 +708,7 @@ namespace Mono.Profiler {
 		}
 	}
 	
-	public class BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public class BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		DirectivesHandler directives;
 		public DirectivesHandler Directives {
 			get {
@@ -806,7 +807,7 @@ namespace Mono.Profiler {
 		public virtual void DataProcessed (uint offset) {}
 	}
 
-	public class DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public class DebugProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> : BaseProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		uint currentOffset;
 		public uint CurrentOffset {
 			get {
@@ -996,7 +997,7 @@ namespace Mono.Profiler {
 		}
 	}
 	
-	public class BaseExecutableMemoryRegion<UFR> : BaseLoadedElement, IExecutableMemoryRegion<UFR> where UFR : IUnmanagedFunctionFromRegion, new() {
+	public class BaseExecutableMemoryRegion<UFR> : BaseLoadedElement, IExecutableMemoryRegion<UFR> where UFR : IUnmanagedFunctionFromRegion<UFR>, new() {
 		uint fileOffset;
 		public uint FileOffset {
 			get {
@@ -1025,6 +1026,7 @@ namespace Mono.Profiler {
 			result.Name = name;
 			result.StartOffset = offset;
 			result.EndOffset = offset;
+			result.Region = this;
 			functions.Add (result);
 			return result;
 		}
@@ -1097,7 +1099,7 @@ namespace Mono.Profiler {
 		}
 	}
 	
-	public class LoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+	public class LoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> factory;
 		
 		int loadedClassesCount;

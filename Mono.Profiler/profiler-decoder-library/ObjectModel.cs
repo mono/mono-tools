@@ -881,7 +881,7 @@ namespace  Mono.Profiler {
 		}
 	}
 	
-	public class UnmanagedFunctionFromRegion : BaseUnmanagedFunctionFromRegion, IStatisticalHitItem {
+	public class UnmanagedFunctionFromRegion : BaseUnmanagedFunctionFromRegion<UnmanagedFunctionFromRegion>, IStatisticalHitItem {
 		uint statisticalHits;
 		public uint StatisticalHits {
 			get {
@@ -913,7 +913,7 @@ namespace  Mono.Profiler {
 		
 		string IStatisticalHitItem.Name {
 			get {
-				IExecutableMemoryRegion<IUnmanagedFunctionFromRegion> r = Region;
+				IExecutableMemoryRegion<UnmanagedFunctionFromRegion> r = Region;
 				return String.Format ("[{0}({1}-{2})]{3}", r != null ? r.Name : "NULL", this.StartOffset, this.EndOffset, this.Name);
 			}
 		}

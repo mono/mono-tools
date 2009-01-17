@@ -294,7 +294,7 @@ namespace  Mono.Profiler {
 			generation = eventValue & 0xff;
 		}
 		
-		public void Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler, IDataBlockRecycler blockRecycler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		public void Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler, IDataBlockRecycler blockRecycler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			try {
 				Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (handler);
 			} finally {
@@ -303,7 +303,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public void Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		public void Decode<LC,LM,UFR,UFI,MR,EH,HO,HS> (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			uint offsetInBlock = 0;
 			StackSectionElement<LC,LM>[] stackSection = new StackSectionElement<LC,LM> [32];
 			
@@ -1015,7 +1015,7 @@ namespace  Mono.Profiler {
 		
 		bool handleExceptions = true;
 		
-		void DumpDebugInformation<LC,LM,UFR,UFI,MR,EH,HO,HS> (uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		void DumpDebugInformation<LC,LM,UFR,UFI,MR,EH,HO,HS> (uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			if (debugLog != null) {
 				debugLog.WriteLine ("Attempting to decode data printing block contents...");
 				handleExceptions = false;
@@ -1033,7 +1033,7 @@ namespace  Mono.Profiler {
 				}
 			}
 		}
-		void HandleDecodingException<LC,LM,UFR,UFI,MR,EH,HO,HS> (DecodingException e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		void HandleDecodingException<LC,LM,UFR,UFI,MR,EH,HO,HS> (DecodingException e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			if (debugLog != null) {
 				debugLog.WriteLine ("ERROR: DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
 				debugLog.WriteLine (e.StackTrace);
@@ -1046,7 +1046,7 @@ namespace  Mono.Profiler {
 			
 			throw e;
 		}
-		void HandleRegularException<LC,LM,UFR,UFI,MR,EH,HO,HS> (Exception e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		void HandleRegularException<LC,LM,UFR,UFI,MR,EH,HO,HS> (Exception e, uint offsetInBlock, IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> handler) where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where EH : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 			if (debugLog != null) {
 				debugLog.WriteLine ("ERROR: Exception in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", Code, Length, FileOffset, offsetInBlock, e.Message);
 				debugLog.WriteLine (e.StackTrace);
