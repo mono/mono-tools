@@ -1,3 +1,7 @@
+2009-01-20  Jesse Jones  <jesjones@mindspring.com>
+
+	* PreferSafeHandleTest.cs: Added.
+
 2008-11-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CloneMethodShouldNotReturnNullTest.cs: Adjust fixture since the

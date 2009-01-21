@@ -15,6 +15,7 @@ rules_sources =  \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
 	PreferEmptyInstanceOverNullRule.cs \
+	PreferSafeHandleRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
 	ReturnNullRule.cs \
 	ToStringReturnsNullRule.cs 
@@ -34,5 +35,6 @@ tests_sources = \
 	GetEntryAssemblyMayReturnNullTest.cs \
 	ObsoleteMessagesShouldNotBeEmptyTest.cs \
 	PreferEmptyInstanceOverNullTest.cs \
+	PreferSafeHandleTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
 	ToStringReturnsNullTest.cs 

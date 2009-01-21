@@ -1,3 +1,7 @@
+2009-01-20  Jesse Jones  <jesjones@mindspring.com>
+
+	* PreferSafeHandleRule.cs: Added.
+
 2008-12-23  Cedric Vivier  <cedricv@neonux.com>
 
 	* CloneMethodShouldNotReturnNull.cs:
