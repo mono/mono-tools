@@ -48,7 +48,7 @@ namespace Gendarme.Rules.Design {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// [Serializeable]
+	/// [Serializable]
 	/// enum Options {
 	///		First = 1,
 	///		Second = 2,
@@ -61,7 +61,7 @@ namespace Gendarme.Rules.Design {
 	/// Good example:
 	/// <code>
 	/// [Flags]
-	/// [Serializeable]
+	/// [Serializable]
 	/// enum Options {
 	///		First = 1,
 	///		Second = 2,
@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 
 	[Problem ("The enum seems to be composed of flag values, but is not decorated with [Flags].")]
-	[Solution ("Add [Flags] to the enum or change the values so that they are not powers of two.")]
+	[Solution ("Add [Flags] to the enum,  change the values so that they are not powers of two, or ignore the defect.")]
 	public sealed class UseFlagsAttributeRule : Rule, ITypeRule {
 	
 		private List<ulong> values = new List<ulong> ();

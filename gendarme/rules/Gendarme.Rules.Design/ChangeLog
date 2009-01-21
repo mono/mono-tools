@@ -1,3 +1,8 @@
+2009-01-20  Jesse Jones  <jesjones@mindspring.com>
+
+	* UseFlagsAttributeRule.cs: fixed misspelled "Serializeable", 
+	improved solution text.
+
 2009-01-12  Jesse Jones  <jesjones@mindspring.com>
 
 	* UseFlagsAttributeRule.cs, Makefile.am: added new rule.
