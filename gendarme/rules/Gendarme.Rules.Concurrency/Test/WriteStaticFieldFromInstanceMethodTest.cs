@@ -45,6 +45,9 @@ namespace Test.Rules.Concurrency {
 			private static string private_static_field = String.Empty;
 			public static int private_public_field = 1;
 
+			[ThreadStatic]
+			private static string thread_local_field;
+
 			static TestCase ()
 			{
 				private_static_field = "static";
@@ -88,6 +91,12 @@ namespace Test.Rules.Concurrency {
 				private_public_field = private_public_field + 12;
 				return private_public_field;
 			}
+
+			public string ThreadStatic (string user_value)
+			{
+				thread_local_field = (thread_local_field ?? String.Empty) + user_value;
+				return thread_local_field;
+			}
 		}
 
 		[Test]
@@ -130,6 +139,12 @@ namespace Test.Rules.Concurrency {
 		public void StaticConstructor ()
 		{
 			AssertRuleDoesNotApply<TestCase> (".cctor");
+		}
+
+		[Test]
+		public void ThreadStatic ()
+		{
+			AssertRuleSuccess<TestCase> ("ThreadStatic");
 		}
 
 		[Test]

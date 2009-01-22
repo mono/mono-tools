@@ -1,3 +1,8 @@
+2009-01-21  Jesse Jones  <jesjones@mindspring.com>
+
+	* WriteStaticFieldFromInstanceMethodRule.cs: Ignore fields
+	decorated with [ThreadStatic].
+
 2008-12-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProtectCallToEventDelegatesTest.cs: Add test cases where the 

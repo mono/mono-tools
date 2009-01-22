@@ -76,6 +76,8 @@ namespace Gendarme.Rules.Concurrency {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class WriteStaticFieldFromInstanceMethodRule : Rule, IMethodRule {
 
+		private const string ThreadStaticAttribute = "System.ThreadStaticAttribute";
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply if 
@@ -94,11 +96,16 @@ namespace Gendarme.Rules.Concurrency {
 			foreach (Instruction ins in method.Body.Instructions) {
 				// look for stsfld instructions
 				if (ins.OpCode.Code == Code.Stsfld) {
-					FieldReference fd = (ins.Operand as FieldReference);
+					FieldReference fr = (ins.Operand as FieldReference);
 					// skip instance fields and generated static field (likely by the compiler)
-					if ((fd != null) && !fd.IsGeneratedCode ()) {
-						string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fd.Name, fd.FieldType);
-						Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
+					if ((fr != null) && !fr.IsGeneratedCode ()) {
+						// skip fields decorated with [ThreadStatic] (the runtime will use
+						// thread local storage for these so they are thread safe)
+						FieldDefinition fd = fr.Resolve ();
+						if (fd == null || !fd.CustomAttributes.ContainsType (ThreadStaticAttribute)) {
+							string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fr.Name, fr.FieldType);
+							Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
+						}
 					}
 				}
 			}
