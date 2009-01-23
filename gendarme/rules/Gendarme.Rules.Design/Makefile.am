@@ -41,7 +41,7 @@ rules_sources =  \
 	TypesShouldBeInsideNamespacesRule.cs \
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
 	TypesWithNativeFieldsShouldBeDisposableRule.cs \
-	UseFlagsAttributeRule.cs
+	UseFlagsAttributeRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs
 
 tests_sources = \
@@ -83,5 +83,5 @@ tests_sources = \
 	TypesShouldBeInsideNamespacesTest.cs \
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
 	TypesWithNativeFieldsShouldBeDisposableTest.cs \
-	UseFlagsAttributeTest.cs
+	UseFlagsAttributeTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs

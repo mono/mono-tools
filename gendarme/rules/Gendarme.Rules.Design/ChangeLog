@@ -1,3 +1,7 @@
+2009-01-23  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: fixed line continuations.
+
 2009-01-20  Jesse Jones  <jesjones@mindspring.com>
 
 	* UseFlagsAttributeRule.cs: fixed misspelled "Serializeable", 
