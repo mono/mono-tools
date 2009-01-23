@@ -1,3 +1,7 @@
+2009-01-23  Jesse Jones  <jesjones@mindspring.com>
+
+	* DoNotUseThreadStaticWithInstanceFieldsTest.cs: added new rule.
+
 2009-01-21  Jesse Jones  <jesjones@mindspring.com>
 
 	* WriteStaticFieldFromInstanceMethodRule.cs: Ignore fields
