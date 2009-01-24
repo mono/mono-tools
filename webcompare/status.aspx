@@ -336,8 +336,9 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 	}
 }
 </script>
+<html>
 <head>
-  <title>Mono <%=compare_param.Assembly%>.dll API Compare against <%=compare_param.InfoDir%>
+  <title>Mono <%=compare_param.Assembly%>.dll API Compare against <%=compare_param.InfoDir%></title>
 <style type="text/css">
 .icons {
   width: 12px;
