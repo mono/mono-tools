@@ -32,6 +32,7 @@ using System.Reflection;
 
 using Mono.Cecil;
 
+using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Test.Rules.Helpers {
@@ -53,6 +54,7 @@ namespace Test.Rules.Helpers {
 				return cachedAssemblies [asm];
 			
 			AssemblyDefinition def = AssemblyFactory.GetAssembly (asm.Location);
+			def.Resolver = AssemblyResolver.Resolver;
 			def.MainModule.LoadDebuggingSymbols ();
 			cachedAssemblies [asm] = def;
 			return def;

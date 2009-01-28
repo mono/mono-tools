@@ -1,3 +1,8 @@
+2009-01-28  Jb Evain  <jbevain@novell.com>
+
+	* AssemblyCache.cs: provide the assembly with the gendarme
+	custom assembly resolver.
+
 2008-10-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TestRunner.cs: Update TearDown call with API change.
