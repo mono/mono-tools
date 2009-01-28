@@ -313,7 +313,8 @@ namespace Gendarme.Framework.Rocks {
 							return true;
 					}
 				}
-				type = type.BaseType.Resolve ();
+
+				type = type.BaseType != null ? type.BaseType.Resolve () : null;
 			}
 			return false;
 		}
@@ -521,23 +522,6 @@ namespace Gendarme.Framework.Rocks {
 				type = type.DeclaringType.Resolve ();
 			}
 			return type.IsPublic;
-		}
-
-		/// <summary>
-		/// Resolve a TypeReference into a TypeDefinition.
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>A TypeDefinition if resolved, null otherwise.</returns>
-		public static TypeDefinition Resolve (this TypeReference self)
-		{
-			// this can occurs, e.g. generic parameters that needs recursive resolves
-			if (self == null)
-				return null;
-
-			TypeDefinition type = (self as TypeDefinition);
-			if (type == null)
-				type = AssemblyResolver.Resolver.Resolve (self);
-			return type;
 		}
 	}
 }

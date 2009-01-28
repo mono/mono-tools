@@ -1,3 +1,11 @@
+2009-01-28  Jb Evain  <jbevain@novell.com>
+
+	* TypeRocks.cs: Resolve: remove. Implements: handle types
+	with a null BaseType.
+	* MethodRocks.cs: Resolve: remove. IsOverride: handle types
+	with a null BaseType.
+	* FieldRocks.cs: remove Resolve.
+
 2008-12-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs (IsProperty, IsVisible): Check that resolved method

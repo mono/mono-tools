@@ -141,7 +141,8 @@ namespace Gendarme.Framework.Rocks {
 			if ((method == null) || !method.IsVirtual)
 				return false;
 
-			TypeDefinition parent = method.DeclaringType.Resolve ().BaseType.Resolve ();
+			TypeDefinition declaring = method.DeclaringType;
+			TypeDefinition parent = declaring.BaseType != null ? declaring.BaseType.Resolve () : null;
 			while (parent != null) {
 				string name = method.Name;
 				string retval = method.ReturnType.ReturnType.FullName;
@@ -166,7 +167,7 @@ namespace Gendarme.Framework.Rocks {
 
 					return md.IsVirtual;
 				}
-				parent = parent.BaseType.Resolve ();
+				parent = parent.BaseType != null ? parent.BaseType.Resolve () : null;
 			}
 			return false;
 		}
@@ -195,19 +196,6 @@ namespace Gendarme.Framework.Rocks {
 			if ((method == null) || method.IsPrivate || method.IsAssembly)
 				return false;
 			return self.DeclaringType.Resolve ().IsVisible ();
-		}
-
-		/// <summary>
-		/// Resolve a MethodReference into a MethodDefinition.
-		/// </summary>
-		/// <param name="self">The MethodReference on which the extension method can be called.</param>
-		/// <returns>A MethodDefinition if resolved, null otherwise.</returns>
-		public static MethodDefinition Resolve (this MethodReference self)
-		{
-			MethodDefinition method = (self as MethodDefinition);
-			if (method == null)
-				method = AssemblyResolver.Resolver.Resolve (self);
-			return method;
 		}
 
 		/// <summary>

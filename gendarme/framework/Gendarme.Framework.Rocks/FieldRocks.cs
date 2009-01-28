@@ -60,18 +60,5 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 			return field.DeclaringType.Resolve ().IsVisible ();
 		}
-
-		/// <summary>
-		/// Resolve a FieldReference into a FieldDefinition.
-		/// </summary>
-		/// <param name="self">The FieldReference on which the extension method can be called.</param>
-		/// <returns>A FieldDefinition if resolved, null otherwise.</returns>
-		public static FieldDefinition Resolve (this FieldReference self)
-		{
-			FieldDefinition field = (self as FieldDefinition);
-			if (field == null)
-				field = AssemblyResolver.Resolver.Resolve (self);
-			return field;
-		}
 	}
 }
