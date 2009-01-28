@@ -145,7 +145,7 @@ namespace Gendarme.Rules.Maintainability {
 				else if (DoesAllSignaturesMatchType (type, signatures))
 					implementor = type;
 
-				type = type.BaseType.Resolve ();
+				type = type.BaseType != null ? type.BaseType.Resolve () : null;
 			}
 
 			return implementor;
