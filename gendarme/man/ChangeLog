@@ -1,3 +1,12 @@
+2009-01-27  Jonathan Pryor  <jpryor@novell.com>
+
+	* . (svn:ignore): Ignore generated files.
+	* gendarme.source: Added; Adds the gendarme man page under monodoc's
+	  'Commands and Files/Gendarme' node.
+	* gendarme.config: Added; mdoc-assemble config file to generate
+	  gendarme.tree, gendarme.zip (containing gendarme.1).
+	* Makefile.am: Build and install man pages for monodoc.
+
 2008-11-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* gendarme.1.in: Document config file.

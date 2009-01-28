@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<monodoc>
+  <node label="Gendarme" name="gendarme" parent="man"/>
+  <source provider="man" basefile="gendarme" path="gendarme"/>
+</monodoc>
+

@@ -119,7 +119,7 @@ $(framework_doc_zip): $(generated_doc)
 $(framework_doc_tree): $(generated_doc)
 	
 $(framework_doc_source):
-	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<source provider='ecma' basefile='Gendarme.Framework' path='classlib-Gendarme.Framework'/>\n</monodoc>" > $(framework_doc_source) 
+	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<node label='Gendarme Framework' name='classlib-Gendarme.Framework' parent='libraries' />\n\t<source provider='ecma' basefile='Gendarme.Framework' path='classlib-Gendarme.Framework'/>\n</monodoc>" > $(framework_doc_source) 
 
 clean-local:
 	rm -fr doc/
