@@ -1,3 +1,8 @@
+2009-01-28  Jb Evain  <jbevain@novell.com>
+
+	* AssemblyResolver.cs, CecilMetadata.cs: use directly the new
+	Resolve methods that Cecil now provides.
+
 2009-01-06  Jb Evain  <jbevain@novell.com>
 
 	* CecilMetadata.cs: support some more operators.

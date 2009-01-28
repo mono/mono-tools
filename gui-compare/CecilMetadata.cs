@@ -118,7 +118,7 @@ namespace GuiCompare {
 		{
 			if (interface_list != null) {
 				foreach (TypeReference ifc in GetInterfaces (fromDef)) {
-					TypeDefinition ifc_def = CecilUtils.Resolver.Resolve (ifc);
+					TypeDefinition ifc_def = ifc.Resolve ();
 					if (ifc_def.IsNotPublic)
 						continue;
 
@@ -186,14 +186,9 @@ namespace GuiCompare {
 			}
 		}
 
-		static TypeDefinition Resolve (TypeReference type)
-		{
-			return CecilUtils.Resolver.Resolve (type);
-		}
-
 		static IEnumerable<TypeDefinition> WalkHierarchy (TypeReference type)
 		{
-			for (var definition = Resolve (type); definition != null; definition = GetBaseType (definition))
+			for (var definition = type.Resolve (); definition != null; definition = GetBaseType (definition))
 				yield return definition;
 		}
 
@@ -202,7 +197,7 @@ namespace GuiCompare {
 			if (type.BaseType == null)
 				return null;
 
-			return Resolve (type.BaseType);
+			return type.BaseType.Resolve ();
 		}
 
 		static IEnumerable<TypeReference> GetInterfaces (TypeReference type)
@@ -289,7 +284,7 @@ namespace GuiCompare {
 			if (typedef.BaseType == null)
 				return false;
 			
-			return IsTODOAttribute (CecilUtils.Resolver.Resolve (typedef.BaseType));
+			return IsTODOAttribute (GetBaseType (typedef));
 		}
 		
 		public static bool ShouldSkipAttribute (string name)
@@ -304,7 +299,7 @@ namespace GuiCompare {
 		{
 			List<CompNamed> rv = new List<CompNamed>();
 			foreach (CustomAttribute ca in provider.CustomAttributes) {
-				TypeDefinition resolved = CecilUtils.Resolver.Resolve (ca.Constructor.DeclaringType);
+				TypeDefinition resolved = ca.Constructor.DeclaringType.Resolve ();
 
 				if (resolved != null) {
 					if (IsTODOAttribute (resolved)) {
@@ -330,9 +325,9 @@ namespace GuiCompare {
 		public CecilAssembly (string path)
 			: base (Path.GetFileName (path))
 		{
-			Dictionary<string, Dictionary <string, TypeDefinition>> namespaces = new Dictionary<string, Dictionary <string, TypeDefinition>> ();
+			var namespaces = new Dictionary<string, Dictionary<string, TypeDefinition>> ();
 
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly(path);
+			var assembly = AssemblyFactory.GetAssembly(path);
 
 			foreach (TypeDefinition t in assembly.MainModule.Types) {
 				if (t.Name == "<Module>")
@@ -340,27 +335,30 @@ namespace GuiCompare {
 
 				if (t.IsNotPublic)
 					continue;
-				
+
 				if (t.IsNested)
 					continue;
-				
+
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
 					continue;
 
 				if (CecilUtils.IsTODOAttribute (t))
 					continue;
 
-				if (!namespaces.ContainsKey (t.Namespace))
-					namespaces[t.Namespace] = new Dictionary <string, TypeDefinition> ();
+				Dictionary<string, TypeDefinition> ns;
 
-				namespaces[t.Namespace][t.Name] = t;
+				if (!namespaces.TryGetValue (t.Namespace, out ns)) {
+					ns = new Dictionary<string, TypeDefinition> ();
+					namespaces.Add (t.Namespace, ns);
+				}
+
+				ns [t.Name] = t;
 			}
 
-			namespace_list = new List<CompNamed>();
-			foreach (string ns_name in namespaces.Keys) {
-				namespace_list.Add (new CecilNamespace (ns_name, namespaces[ns_name]));
-			}
-			
+			namespace_list = new List<CompNamed> ();
+			foreach (string ns_name in namespaces.Keys)
+				namespace_list.Add (new CecilNamespace (ns_name, namespaces [ns_name]));
+
 			attributes = CecilUtils.GetCustomAttributes (assembly, todos);
 		}
 
