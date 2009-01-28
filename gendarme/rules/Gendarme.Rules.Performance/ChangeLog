@@ -1,3 +1,7 @@
+2009-01-27  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewLinqMethodRule.cs, Makefile.am: Added new rule.
+
 2008-12-24  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* PreferCharOverloadRule.cs: New. Rule to promote the use of the

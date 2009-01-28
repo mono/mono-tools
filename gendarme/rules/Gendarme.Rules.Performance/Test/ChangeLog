@@ -1,3 +1,7 @@
+2009-01-27  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewLinqMethodTest.cs: Added new rule.
+
 2008-12-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferCharOverloadTest.cs: New. Unit tests for PreferCharOverloadRule

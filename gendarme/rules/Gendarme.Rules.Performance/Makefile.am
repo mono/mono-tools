@@ -26,6 +26,7 @@ rules_sources =  \
 	PreferCharOverloadRule.cs \
 	PreferLiteralOverInitOnlyFieldsRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
+	ReviewLinqMethodRule.cs \
 	UseIsOperatorRule.cs \
 	UseStringEmptyRule.cs \
 	UseTypeEmptyTypesRule.cs
@@ -61,4 +62,5 @@ tests_sources = \
 	AvoidRepetitiveCastsTest.cs \
 	AvoidUnusedPrivateFieldsTest.cs \
 	PreferCharOverloadTest.cs \
-	PreferLiteralOverInitOnlyFieldsTest.cs
+	PreferLiteralOverInitOnlyFieldsTest.cs \
+	ReviewLinqMethodTest.cs
