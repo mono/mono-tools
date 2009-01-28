@@ -101,7 +101,7 @@ namespace Gendarme.Rules.Serialization {
 
 		private static bool InheritsFromISerializableImplementation (TypeDefinition type)
 		{
-			TypeDefinition current = type.BaseType.Resolve ();
+			TypeDefinition current = type.BaseType != null ? type.BaseType.Resolve () : null;
 			if (current == null || current.FullName == "System.Object")
 				return false;
 			if (current.IsSerializable && current.Implements ("System.Runtime.Serialization.ISerializable"))

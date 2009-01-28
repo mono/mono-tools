@@ -1,3 +1,9 @@
+2009-01-28  Jb Evain  <jbevain@novell.com>
+
+	* CallBaseMethodsOnISerializableTypesRule.cs:
+		in InheritsFromISerializableImplementation: handle types
+		with a null BaseType.
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* UseCorrectSignatureForSerializationMethodsRule.cs,
