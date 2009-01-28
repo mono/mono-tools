@@ -1,3 +1,9 @@
+2009-01-28  Jb Evain  <jbevain@novell.com>
+
+	* AssemblyResolver.cs: remove the Resolve methods
+	for types, fields and methods. That's now handled directly
+	by Cecil.
+
 2008-12-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* Bitmask.cs: Changed GetHashCode to use unchecked
