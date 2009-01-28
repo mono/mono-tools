@@ -1,3 +1,8 @@
+2009-01-27  Jonathan Pryor  <jpryor@novell.com>
+
+	* common.make ($(rules_doc_source)): Change the .source file contents 
+	  so that rules are placed under the 'Commands and Files/Gendarme' node.
+
 2009-01-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefike.am: put rules target back in (needed for the new console

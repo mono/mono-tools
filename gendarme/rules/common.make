@@ -69,7 +69,7 @@ $(rules_doc_zip): $(generated_doc)
 $(rules_doc_tree): $(generated_doc)
 	
 $(rules_doc_source):
-	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<source provider='ecma' basefile='$(prefixed_rules_category)' path='ruleslib-$(prefixed_rules_category)'/>\n</monodoc>" > $(rules_doc_source) 
+	echo -e "<?xml version='1.0'?>\n<monodoc>\n\t<node label='Gendarme' name='gendarme' parent='man'/>\n\t<source provider='ecma' basefile='$(prefixed_rules_category)' path='gendarme'/>\n</monodoc>" > $(rules_doc_source) 
 
 clean-local:
 	rm -fr doc
