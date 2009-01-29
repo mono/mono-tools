@@ -1,3 +1,9 @@
+2009-01-29  Andreia Gaita <shana@jitted.com> 
+
+	* MonoWebBrowserHtmlRender.cs: remove first load logic, there is no first
+	load anymore.
+	[Fixes #468694]
+
 2008-11-13  Andreia Gaita <shana@jitted.com> 
 
 	* MonoWebBrowserHtmlRender.cs: Add printing support
