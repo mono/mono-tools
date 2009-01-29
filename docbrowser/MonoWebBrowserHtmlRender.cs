@@ -36,7 +36,6 @@ namespace Monodoc
 	{
 		BrowserWidget html_panel;
 		RootTree help_tree;
-		bool loaded = false;
 		
 		public MonoWebBrowserHtmlRender (RootTree help_tree)
 		{
@@ -100,23 +99,10 @@ namespace Monodoc
 					if (OnUrl != null)
 						OnUrl (this, new EventArgs ());
 				};
-				loadEvent = new LoadFinishedEventHandler (loadFinished);
-				html_panel.browser.LoadFinished += loadEvent;
 			};
 			cache_imgs = new Hashtable();
 			tmpPath = Path.Combine (Path.GetTempPath (), "monodoc");
 			return html_panel.browser.Initialized;
-		}
-
-		void loadFinished (object sender, LoadFinishedEventArgs e) {
-			loaded = true;
-			if (firstLoadPath != null)
-				html_panel.browser.Navigation.Go (firstLoadPath);
-			else if (firstLoadHtml != null)
-				html_panel.browser.Render (firstLoadHtml);
-			html_panel.browser.LoadFinished -= loadEvent;
-			firstLoadPath = null;
-			firstLoadHtml = null;
 		}
 
 		// URL like T:System.Activator are lower cased by gecko to t.;System.Activator
@@ -131,8 +117,7 @@ namespace Monodoc
 		static int tmp_file = 0;
 		string tmpPath;
 		Hashtable cache_imgs;
-		string firstLoadHtml = null;
-		string firstLoadPath = null;
+
 		public void Render (string html_code)
 		{
 			string r = ProcessImages (html_code);
@@ -145,15 +130,9 @@ namespace Monodoc
 					sw.Write (r);
 					sw.Close ();
 				}
-				if (loaded)
-					html_panel.browser.Navigation.Go (filepath);
-				else
-					firstLoadPath = filepath;
+				html_panel.browser.Navigation.Go (filepath);
 			} else {
-				if (loaded)
-					html_panel.browser.Render (r);
-				else
-					firstLoadHtml = r;
+				html_panel.browser.Render (r);
 			}
 
 		}
