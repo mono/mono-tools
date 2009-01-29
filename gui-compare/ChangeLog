@@ -1,3 +1,8 @@
+2009-01-29  Jb Evain  <jbevain@novell.com>
+
+	* Makefile.am: reference directly cecil from the gac as gendarme
+	does instead of copying it locally.
+
 2009-01-28  Jb Evain  <jbevain@novell.com>
 
 	* AssemblyResolver.cs, CecilMetadata.cs: use directly the new
