@@ -1,5 +1,9 @@
 2009-01-30  Jb Evain  <jbevain@novell.com>
 
+	* Makefile.am: add new DoNotUseEnumIsAssignableFrom rule and tests.
+
+2009-01-30  Jb Evain  <jbevain@novell.com>
+
 	* DoNotUseEnumIsAssignableFromRule.cs: add new rule.
 
 2009-01-20  Jesse Jones  <jesjones@mindspring.com>

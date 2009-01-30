@@ -10,6 +10,7 @@ rules_sources =  \
 	ConstructorShouldNotCallVirtualMethodsRule.cs \
 	DisableDebuggingCodeRule.cs \
 	DoNotForgetNotImplementedMethodsRule.cs \
+	DoNotUseEnumIsAssignableFromRule.cs \
 	DoNotUseGetInterfaceToCheckAssignabilityRule.cs \
 	EqualShouldHandleNullArgRule.cs \
 	GetEntryAssemblyMayReturnNullRule.cs \
@@ -29,6 +30,7 @@ tests_sources = \
 	CloneMethodShouldNotReturnNullTest.cs \
 	ConstructorShouldNotCallVirtualMethodsTest.cs \
 	DoNotForgetNotImplementedMethodsTest.cs \
+	DoNotUseEnumIsAssignableFromTest.cs \
 	DoNotUseGetInterfaceToCheckAssignabilityTest.cs \
 	DisableDebuggingCodeTest.cs \
 	EqualShouldHandleNullArgTest.cs \
