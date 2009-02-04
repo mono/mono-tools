@@ -1,6 +1,7 @@
 include ../common.make
 
 rules_sources =  \
+	DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs \
 	DoNotCastIntPtrToInt32Rule.cs \
 	GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
 	MarshalBooleansInPInvokeDeclarationsRule.cs \
@@ -16,4 +17,5 @@ tests_sources = \
 	MarshalBooleansInPInvokeDeclarationsTest.cs \
 	MarshalStringsInPInvokeDeclarationsTest.cs \
 	PInvokeShouldNotBeVisibleTest.cs \
-	UseManagedAlternativesToPInvokeTest.cs
+	UseManagedAlternativesToPInvokeTest.cs	\
+	DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs
