@@ -130,10 +130,29 @@ namespace Gendarme.Rules.Interoperability {
 				int push = ins.GetPushCount ();
 				int pop = ins.GetPopCount (method);
 				
+				if (pop == -1) {
+					// leave or leave.s, they leave the stack empty.
+					stack_count = 0;
+					stack.Clear ();
+					continue; // No need to do anything else here.
+				}
+				
+				if (stack_count == 0) {
+					foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+						if (eh.HandlerStart != null && eh.HandlerStart.Offset == ins.Offset) {
+							// upon entry to a catch handler there is an implicit object on the stack already (the thrown object)
+							stack_count = 1;
+							stack.Add (null);
+							break;
+						}
+					}
+				}
 				// Console.WriteLine ("before {0} + push {1} - pop {2} = after {3} {4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
 				// Console.WriteLine ("{4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
 			
-				if (ins.OpCode.Code == Code.Call) {
+				if (stack_count == 1 && stack [stack_count - 1] == null) {
+					// Don't do anything, this is the implicit exception object passed to a catch handler.
+				} else if (ins.OpCode.Code == Code.Call) {
 					called_method = (ins.Operand as MethodReference).Resolve ();
 					
 					if (called_method != null && called_method.IsPInvokeImpl) {
@@ -207,8 +226,8 @@ namespace Gendarme.Rules.Interoperability {
 				while (stack_count < stack.Count)
 					stack.RemoveAt (stack.Count - 1);
 				
-				for (int i = 0; i < stack_count; i++)
-					stack [i].Last = ins;
+				if (stack_count > 0 && stack [stack_count - 1] != null)
+					stack [stack_count - 1].Last = ins;
 			}
 			
 			// Console.WriteLine ("Checking method: {0} [Done]", method.Name);
