@@ -52,19 +52,25 @@ function expcol (sender, args)
 					</script>
 				</head>
 				<style type="text/css">
+					body {
+						font-family: sans-serif;
+					}
 					h1, h2, h3 {
-						font-family: Verdana;
+						font-size: 1.2em;
 						color: #68892F;
 					}
-					h2 {
-						font-size: 14pt;
+					h1 {
+						font-size: 1.4em;
 					}
-					
+					h2 {
+						font-size: 1.1em;
+					}
+
 					p, li, b {
-						font-family: Verdana;
-						font-size: 11pt;
-					}			
+						font-size: 1em;
+					}
 					p.where, p.problem, p.found, p.solution {
+						font-family: monospace;
 						background-color: #F6F6F6;
 						border: 1px solid #DDDDDD;
 						padding: 10px;
