@@ -1,5 +1,9 @@
 2009-02-12  Cedric Vivier  <cedricv@neonux.com>
 
+	* ConsoleRunner.cs: Return 1 to shell if at least one defect has been found.
+
+2009-02-12  Cedric Vivier  <cedricv@neonux.com>
+
 	* ConsoleRunner.cs: Do not show stacktrace and invitation to report a bug
 	when there is an IOException (unless VerbosityLevel > 0)
 

@@ -278,7 +278,8 @@ namespace Gendarme {
 					writer.Report ();
 				}
 			}
-			return 0;
+
+			return (byte) ((0 == Defects.Count) ? 0 : 1);
 		}
 
 		byte Execute (string [] args)
