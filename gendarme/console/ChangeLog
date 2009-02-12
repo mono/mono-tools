@@ -1,3 +1,8 @@
+2009-02-12  Cedric Vivier  <cedricv@neonux.com>
+
+	* ConsoleRunner.cs: Do not show stacktrace and invitation to report a bug
+	when there is an IOException (unless VerbosityLevel > 0)
+
 2008-12-23  Cedric Vivier  <cedricv@neonux.com>
 
 	* gendarme.xsl: Usability improvements to the html report.

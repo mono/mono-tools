@@ -324,17 +324,31 @@ namespace Gendarme {
 				TearDown ();
 
 				return Report ();
-			}
-			catch (Exception e) {
-				Console.WriteLine ();
-				Console.WriteLine ("An uncaught exception occured. Please fill a bug report at https://bugzilla.novell.com/");
-				if (CurrentRule != null)
-					Console.WriteLine ("Rule:\t{0}", CurrentRule);
-				if (CurrentTarget != null)
-					Console.WriteLine ("Target:\t{0}", CurrentTarget);
-				Console.WriteLine ("Stack trace: {0}", e);
+
+			} catch (IOException e) {
+				if (0 == VerbosityLevel) {
+					Console.Error.WriteLine ("ERROR: {0}", e.Message);
+					return 2;
+				} else {
+					WriteUnhandledExceptionMessage (e);
+					return 4;
+				}
+
+			} catch (Exception e) {
+				WriteUnhandledExceptionMessage (e);
 				return 4;
 			}
+		}
+
+		private void WriteUnhandledExceptionMessage (Exception e)
+		{
+			Console.WriteLine ();
+			Console.WriteLine ("An uncaught exception occured. Please fill a bug report at https://bugzilla.novell.com/");
+			if (CurrentRule != null)
+				Console.WriteLine ("Rule:\t{0}", CurrentRule);
+			if (CurrentTarget != null)
+				Console.WriteLine ("Target:\t{0}", CurrentTarget);
+			Console.WriteLine ("Stack trace: {0}", e);
 		}
 
 		private Stopwatch total = new Stopwatch ();
