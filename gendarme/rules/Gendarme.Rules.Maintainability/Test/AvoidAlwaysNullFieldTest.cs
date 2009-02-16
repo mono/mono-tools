@@ -40,7 +40,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Maintainability {
 
 	[TestFixture]
-	internal sealed class AvoidAlwaysNullFieldTest : TypeRuleTestFixture<AvoidAlwaysNullFieldRule> {
+	public sealed class AvoidAlwaysNullFieldTest : TypeRuleTestFixture<AvoidAlwaysNullFieldRule> {
 
 		private sealed class Good1 {
 			private string name = "hey";	// initialized
