@@ -1,3 +1,46 @@
+2009-01-20  Version 2.4
+
+	This release was the shortest (about 2 months) release cycle ever
+	for Gendarme. Nevertheless it contains a lot of enhancements for
+	rules builders (e.g. logging support, makefile helpers) provided
+	by Jesse Jones.
+
+	This release also includes 12 new rules (195 rules total):
+
+	Gendarme.Rules.BadPractice
+	* PreferEmptyInstanceOverNullRule [Cedric Vivier]
+
+	Gendarme.Rules.Correctness
+	* DoNotRecurseInEqualityRule [Jesse Jones]
+	* EnsureLocalDisposalRule [Cedric Vivier]
+	* ProvideCorrectRegexPatternRule [Cedric Vivier]
+	* ReviewInconsistentIdentityRule [Jesse Jones]
+
+	Gendarme.Rules.Design.Generic
+	* DoNotExposeNestedGenericSignaturesRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Exceptions
+	* DoNotThrowInUnexpectedLocationRule [Jesse Jones]
+
+	Gendarme.Rules.Maintainability
+	* AvoidAlwaysNullFieldRule [Jesse Jones]
+
+	Gendarme.Rules.Naming
+	* AvoidTypeInterfaceInconsistencyRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Performance
+	* PreferCharOverloadRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Security
+	* DoNotShortCircuitCertificateChecksRule [Sebastien Pouliot]
+
+	Gendarme.Rules.Smells
+	* AvoidSwitchStatementsRule [Nestor Salceda]
+
+	Contributors for this release are:
+	Andres G. Aragoneses, Cedric Vivier, JB Evain, Jesse Jones, 
+	Nestor Salceda, Sebastien Pouliot.
+	
 2008-11-10  Version 2.2
 
 	This release includes the development results of the last four 

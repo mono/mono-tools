@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2005-2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005-2009 Novell, Inc (http://www.novell.com)
 //
 
 using System;
@@ -15,7 +15,7 @@ using System.Security.Permissions;
 
 [assembly: AssemblyTitle ("Gendarme")]
 [assembly: AssemblyDescription ("Rule-based assembly analyzer")]
-[assembly: AssemblyCopyright ("Copyright (C) 2005-2008 Novell, Inc. and contributors")]
+[assembly: AssemblyCopyright ("Copyright (C) 2005-2009 Novell, Inc. and contributors")]
 [assembly: AssemblyCompany ("Novell, Inc.")]
 
 [assembly: PermissionSet (SecurityAction.RequestMinimum, Unrestricted = true)]
@@ -23,5 +23,5 @@ using System.Security.Permissions;
 [assembly: ComVisible (false)]
 
 #if RELEASE
-[assembly: AssemblyVersion ("2.3.0.0")]
+[assembly: AssemblyVersion ("2.4.0.0")]
 #endif
