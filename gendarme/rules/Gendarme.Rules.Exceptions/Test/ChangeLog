@@ -1,3 +1,7 @@
+2009-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationTest.cs: TestFixture must be public
+
 2008-12-30  Jesse Jones  <jesjones@mindspring.com> 
 
 	* DoNotThrowInUnexpectedLocationTest.cs: Added.

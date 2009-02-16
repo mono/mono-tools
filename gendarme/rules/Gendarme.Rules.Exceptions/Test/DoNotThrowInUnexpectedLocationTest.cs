@@ -41,7 +41,7 @@ using Test.Rules.Helpers;
 namespace Test.Rules.Exceptions {
 
 	[TestFixture]
-	internal sealed class DoNotThrowInUnexpectedLocationTest : MethodRuleTestFixture<DoNotThrowInUnexpectedLocationRule> {
+	public sealed class DoNotThrowInUnexpectedLocationTest : MethodRuleTestFixture<DoNotThrowInUnexpectedLocationRule> {
 
 		private sealed class Inapplicable {
 			public override string ToString ()
