@@ -1,9 +1,8 @@
 guicomparedir=$(prefix)/lib/gui-compare
 bin_SCRIPTS = gui-compare
-guicompare_DATA = gui-compare.exe Mono.Cecil.dll
+guicompare_DATA = gui-compare.exe
 
-CLEANFILES = gui-compare.exe gui-compare.exe.mdb Mono.Cecil.dll  gui-compare
-
+CLEANFILES = gui-compare.exe gui-compare.exe.mdb gui-compare
 
 gui_compare_sources = \
 	$(srcdir)/gtk-gui/generated.cs 			\
@@ -53,12 +52,9 @@ gui_compare_resources = 			\
 
 EXTRA_DIST = $(gui_compare_sources) $(gui_compare_resources) gui-compare.mds gui-compare.mdp  gui-compare.in
 
-packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0 -pkg:glade-sharp-2.0 -r:Mono.Cecil.dll
+packages = -pkg:gtk-sharp-2.0 -pkg:glib-sharp-2.0 -pkg:glade-sharp-2.0 -r:$(CECIL_ASM)
 assemblies = -r:System -r:System.Core -r:Mono.Posix -r:System.Xml
 ress= $(foreach res,$(gui_compare_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
-Mono.Cecil.dll: 
-	cp $(CECIL_ASM) .
-
-gui-compare.exe: $(gui_compare_sources) $(gui_compare_resources) Mono.Cecil.dll
+gui-compare.exe: $(gui_compare_sources) $(gui_compare_resources)
 	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gui-compare.exe $(gui_compare_sources) $(ress) $(packages) $(assemblies)
