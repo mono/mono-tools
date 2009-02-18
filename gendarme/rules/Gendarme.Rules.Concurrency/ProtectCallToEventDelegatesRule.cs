@@ -41,14 +41,14 @@ namespace Gendarme.Rules.Concurrency {
 	/// <summary>
 	/// This rule checks if the call to an event delegate is safely implemented. This means
 	/// the event field is verified not to be null before its use and that the field is not 
-	/// used directly (for the check and call) since this introduce the possible race condition.
+	/// used directly (for the check and call) since this introduces potential race condition.
 	/// </summary>
 	/// <example>
 	/// Bad example (no check):
 	/// <code>
 	/// public event EventHandler Loading;
 	/// 
-	/// protected void OnLoading (EventArgs e)
+	/// protected void OnLoading (object sender, EventArgs e)
 	/// {
 	///	// Loading field could be null, throwing a NullReferenceException
 	/// 	Loading (this, e);
@@ -60,7 +60,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// <code>
 	/// public event EventHandler Loading;
 	/// 
-	/// protected void OnLoading (EventArgs e)
+	/// protected void OnLoading (object sender, EventArgs e)
 	/// {
 	/// 	// Loading could be non-null here
 	/// 	if (Loading != null) {
@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// Good example:
 	/// <code>
 	/// public event EventHandler Loading;
-	/// protected void OnLoading (EventArgs e)
+	/// protected void OnLoading (object sender, EventArgs e)
 	/// {
 	/// 	EventHandler handler = Loading;
 	/// 	// handler is either null or non-null
@@ -90,7 +90,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </example>
 
 	[Problem ("The use of the event does not seems protected properly against NullReferenceException and/or race conditions.")]
-	[Solution ("Fix the event use to make sure it wont be null nor be susceptible to a race condition.")]
+	[Solution ("Fix the event use to make sure it won't be null nor be susceptible to a race condition.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ProtectCallToEventDelegatesRule : Rule, IMethodRule {
 
