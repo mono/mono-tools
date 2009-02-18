@@ -1,3 +1,7 @@
+2009-02-19  Cedric Vivier  <cedricv@neonux.com>
+
+	* ConsoleRunner.cs: Show defect count and hint about written reports (if any).
+
 2009-02-12  Cedric Vivier  <cedricv@neonux.com>
 
 	* gendarme.xsl: Use user-configured `sans' font and `em' units instead of

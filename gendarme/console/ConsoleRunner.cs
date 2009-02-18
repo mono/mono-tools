@@ -401,6 +401,22 @@ namespace Gendarme {
 				else
 					Console.WriteLine ("{0} assemblies processed in {1}.",
 						Assemblies.Count, TimeToString (total.Elapsed));
+
+				string hint = string.Empty;
+				if (null != log_file || null != xml_file || null != html_file) {
+					List<string> files = new List<string> (new string [] { log_file, xml_file, html_file });
+					files.RemoveAll (string.IsNullOrEmpty);
+					hint = string.Format ("Report{0} written to: {1}.",
+						(files.Count > 1) ? "s": string.Empty,
+						string.Join (",", files.Select (file => string.Format ("`{0}'", file)).ToArray ()));
+				}
+
+				if (Defects.Count == 0)
+					Console.WriteLine ("No defect found. {0}", hint);
+				else if (Defects.Count == 1)
+					Console.WriteLine ("One defect found. {0}", hint);
+				else
+					Console.WriteLine ("{0} defects found. {1}", Defects.Count, hint);
 			}
 		}
 
