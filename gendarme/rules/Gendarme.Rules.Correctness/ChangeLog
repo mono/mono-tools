@@ -1,5 +1,10 @@
 2009-02-19  Cedric Vivier  <cedricv@neonux.com>
 
+	* ProvideCorrectXPathExpressionRule.cs: New. Rule that checks
+	valid XPath expressions are provided to methods.
+
+2009-02-19  Cedric Vivier  <cedricv@neonux.com>
+
 	* ProvideValidXmlStringRule.cs: New. Rule that checks valid XML
 	strings are provided to methods and properties.
 

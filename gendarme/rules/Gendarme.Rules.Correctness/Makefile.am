@@ -20,6 +20,7 @@ rules_sources =  \
 	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
 	ProvideCorrectRegexPatternRule.cs \
 	ProvideValidXmlStringRule.cs \
+	ProvideValidXPathExpressionRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
 	ReviewCastOnIntegerMultiplicationRule.cs \
 	ReviewDoubleAssignmentRule.cs \
@@ -30,6 +31,7 @@ rules_sources =  \
 	UseValueInPropertySetterRule.cs
 
 tests_sources = \
+	AttributeStringLiteralsShouldParseCorrectlyTest.cs \
 	AvoidConstructorsInStaticTypesTest.cs \
 	AvoidFloatingPointEqualityTest.cs \
 	DoNotRecurseInEqualityTest.cs \
@@ -43,8 +45,10 @@ tests_sources = \
 	FinalizersShouldCallBaseClassFinalizerTest.cs \
 	ReviewInconsistentIdentityTest.cs \
 	MethodCanBeMadeStaticTest.cs \
+	ProvideCorrectArgumentsToFormattingMethodsTest.cs \
 	ProvideCorrectRegexPatternTest.cs \
 	ProvideValidXmlStringTest.cs \
+	ProvideValidXPathExpressionTest.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \
 	ReviewDoubleAssignmentTest.cs \
@@ -52,6 +56,4 @@ tests_sources = \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs \
-	UseValueInPropertySetterTest.cs \
-	ProvideCorrectArgumentsToFormattingMethodsTest.cs \
-	AttributeStringLiteralsShouldParseCorrectlyTest.cs	
+	UseValueInPropertySetterTest.cs
