@@ -19,6 +19,7 @@ rules_sources =  \
 	MethodCanBeMadeStaticRule.cs \
 	ProvideCorrectArgumentsToFormattingMethodsRule.cs \
 	ProvideCorrectRegexPatternRule.cs \
+	ProvideValidXmlStringRule.cs \
 	ReviewCastOnIntegerDivisionRule.cs \
 	ReviewCastOnIntegerMultiplicationRule.cs \
 	ReviewDoubleAssignmentRule.cs \
@@ -43,6 +44,7 @@ tests_sources = \
 	ReviewInconsistentIdentityTest.cs \
 	MethodCanBeMadeStaticTest.cs \
 	ProvideCorrectRegexPatternTest.cs \
+	ProvideValidXmlStringTest.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \
 	ReviewDoubleAssignmentTest.cs \

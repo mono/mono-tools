@@ -1,3 +1,8 @@
+2009-02-19  Cedric Vivier  <cedricv@neonux.com>
+
+	* ProvideValidXmlStringRule.cs: New. Rule that checks valid XML
+	strings are provided to methods and properties.
+
 2009-01-03  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* CheckParametersNullityInVisibleMethodsRule.cs: Refactor to
