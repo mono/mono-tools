@@ -1,3 +1,8 @@
+2009-02-17  Jesse Jones  <jesjones@mindspring.com>
+
+	* OnlyUseDisposeForIDisposableTypesRule.cs, Makefile.am: 
+	Added new rule.
+
 2009-01-30  Jb Evain  <jbevain@novell.com>
 
 	* Makefile.am: add new DoNotUseEnumIsAssignableFrom rule and tests.

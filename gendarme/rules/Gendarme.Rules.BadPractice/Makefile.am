@@ -15,6 +15,7 @@ rules_sources =  \
 	EqualShouldHandleNullArgRule.cs \
 	GetEntryAssemblyMayReturnNullRule.cs \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
+	OnlyUseDisposeForIDisposableTypesRule.cs \
 	PreferEmptyInstanceOverNullRule.cs \
 	PreferSafeHandleRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
@@ -36,6 +37,7 @@ tests_sources = \
 	EqualShouldHandleNullArgTest.cs \
 	GetEntryAssemblyMayReturnNullTest.cs \
 	ObsoleteMessagesShouldNotBeEmptyTest.cs \
+	OnlyUseDisposeForIDisposableTypesTest.cs \
 	PreferEmptyInstanceOverNullTest.cs \
 	PreferSafeHandleTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
