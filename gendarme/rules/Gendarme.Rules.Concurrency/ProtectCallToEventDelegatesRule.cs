@@ -48,7 +48,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// <code>
 	/// public event EventHandler Loading;
 	/// 
-	/// protected void OnLoading (object sender, EventArgs e)
+	/// protected void OnLoading (EventArgs e)
 	/// {
 	///	// Loading field could be null, throwing a NullReferenceException
 	/// 	Loading (this, e);
@@ -60,7 +60,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// <code>
 	/// public event EventHandler Loading;
 	/// 
-	/// protected void OnLoading (object sender, EventArgs e)
+	/// protected void OnLoading (EventArgs e)
 	/// {
 	/// 	// Loading could be non-null here
 	/// 	if (Loading != null) {
@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// Good example:
 	/// <code>
 	/// public event EventHandler Loading;
-	/// protected void OnLoading (object sender, EventArgs e)
+	/// protected void OnLoading (EventArgs e)
 	/// {
 	/// 	EventHandler handler = Loading;
 	/// 	// handler is either null or non-null
@@ -85,7 +85,7 @@ namespace Gendarme.Rules.Concurrency {
 	///		// the Loading method will be removed before, or during its
 	///		// execution. Your code should be safe against such occurance.
 	/// 	}
-	///  }
+	/// }
 	/// </code>
 	/// </example>
 
