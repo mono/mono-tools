@@ -1,3 +1,7 @@
+2009-02-21  Jesse Jones  <jesjones@mindspring.com>
+
+	* UseCorrectDisposeSignaturesTest.cs: added new rule.
+
 2009-01-12  Jesse Jones  <jesjones@mindspring.com>
 
 	* UseFlagsAttributeRule.cs: added.
