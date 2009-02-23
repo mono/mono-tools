@@ -1,3 +1,8 @@
+2009-02-23  Néstor Salceda  <nestor.salceda@gmail.com>
+
+	* AvoidSpeculativeGeneralityRule.cs: Fix a typo.  Thanks to Mat
+	Steeples.
+
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidSwitchStatementsRule.cs: Added the code for handling the
