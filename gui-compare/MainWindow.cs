@@ -250,6 +250,15 @@ public partial class MainWindow: Gtk.Window
 		ShowPresent.Active = Config.ShowPresent;
 		ShowTodo.Active = Config.ShowTodo;
 
+		//
+		// Legend
+		//
+		legendImageOK.Pixbuf = okPixbuf;
+		legendImageError.Pixbuf = errorPixbuf;
+		legendImageNIEX.Pixbuf = niexPixbuf;
+		legendImageMissing.Pixbuf = missingPixbuf;
+		legendImageTODO.Pixbuf = todoPixbuf;
+		legendImageExtra.Pixbuf = extraPixbuf;
 	}
 	
 	// A handle to our menu bar

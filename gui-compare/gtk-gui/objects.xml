@@ -1,6 +1,2 @@
-<objects>
-  <object type="guicompare.ProviderSelector" palette-category="gui-compare" allow-children="false" base-type="Gtk.Bin">
-    <itemgroups />
-    <signals />
-  </object>
+<objects attr-sync="on">
 </objects>

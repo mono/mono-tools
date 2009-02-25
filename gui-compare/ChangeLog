@@ -5,6 +5,7 @@
 	to the tree nodes. URLs can be opened in the user's browser by
 	double-clicking on the nodes which, when selected, show an MSDN
 	URL in the status bar.
+	Added a legend.
 
 2009-01-29  Jb Evain  <jbevain@novell.com>
 
