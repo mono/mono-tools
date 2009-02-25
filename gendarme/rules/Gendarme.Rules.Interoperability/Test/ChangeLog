@@ -1,3 +1,9 @@
+2009-02-24  Jesse Jones  <jesjones@mindspring.com>
+
+    * DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs: 
+    Rename a bunch of methods so the test doesn't die with old versions
+    of nunit.
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Rules.Interoperability.csproj: Activate makefile integration for

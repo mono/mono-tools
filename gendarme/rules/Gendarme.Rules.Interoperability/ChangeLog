@@ -1,3 +1,8 @@
+2009-02-24  Jesse Jones  <jesjones@mindspring.com>
+
+    * DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs: 
+    Fix for ldloca instructions.
+
 2008-11-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MarshalBooleansInPInvokeDeclarationsRule.cs: Use HasParameters

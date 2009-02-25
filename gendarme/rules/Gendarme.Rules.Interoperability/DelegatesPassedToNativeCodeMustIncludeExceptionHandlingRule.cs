@@ -449,6 +449,9 @@ namespace Gendarme.Rules.Interoperability {
 			case Code.Ldloc_3: return 3;
 			case Code.Ldloc: // Untested for ldloc
 			case Code.Ldloc_S: return ((VariableDefinition) ins.Operand).Index;
+			case Code.Ldloca: // we don't care about ldloca
+			case Code.Ldloca_S: return int.MaxValue;
+
 			default:
 				throw new Exception (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}

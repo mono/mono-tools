@@ -180,21 +180,21 @@ namespace Test.Rules.Interoperability {
 			return null;
 		}
 		
-		private void TestMethod_OK1 ()
+		private void CheckMethod_OK1 ()
 		{
 			CallbackDelegate c = CallbackFailEmpty;
 			// Create a bad delegate but not pass it to a pinvoke.
 			PInvokeNormal ();
 		}
 
-		private void TestMethod_AnonymousOK1 ()
+		private void CheckMethod_AnonymousOK1 ()
 		{
 			CallbackDelegate c = delegate () {};
 			// Create a bad delegate but not pass it to a pinvoke.
 			PInvokeNormal ();
 		}
 		
-		private void TestMethod_OK2 ()
+		private void CheckMethod_OK2 ()
 		{
 			CallbackDelegate a = CallbackFailEmpty;
 			CallbackDelegate b = CallbackOK1;
@@ -202,7 +202,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate1 (b);
 		}
 		
-		private void TestMethod_AnonymousOK2 ()
+		private void CheckMethod_AnonymousOK2 ()
 		{
 			CallbackDelegate a = delegate () { };
 			CallbackDelegate b = delegate () { try {} catch {} };
@@ -210,7 +210,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate1 (b);
 		}
 		
-		private void TestMethod_CallbackOK1 ()
+		private void CheckMethod_CallbackOK1 ()
 		{
 			CallbackDelegate c = CallbackOK1;
 			
@@ -227,7 +227,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackOK1_Field, null, CallbackOK1_StaticField);
 		}
 		
-		private void TestMethod_CallbackOKStatic ()
+		private void CheckMethod_CallbackOKStatic ()
 		{
 			CallbackDelegate c = CallbackOKStatic;
 			
@@ -243,7 +243,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackOKStatic_Field, null, CallbackOKStatic_StaticField);
 		}
 		
-		private void TestMethod_AnonymousCallbackOK1 ()
+		private void CheckMethod_AnonymousCallbackOK1 ()
 		{
 			// These anonymous delegates will turn out non-static since they access a method variable in outer scope.
 			int o = 7;
@@ -261,7 +261,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackOKStatic_Field, null, CallbackOKStatic_StaticField);
 		}
 		
-		private void TestMethod_AnonymousCallbackOKStatic ()
+		private void CheckMethod_AnonymousCallbackOKStatic ()
 		{
 			// These anonymous delegates will turn out static given that they don't access any class/method variables in outer scope.
 			CallbackDelegate c = delegate () { int a, b; try { a = 1; } catch { b = 2; } };
@@ -279,89 +279,89 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackOK1_Field, null, CallbackOK1_StaticField);
 		}
 		
-		private void TestMethod_CallbackFailEmpty_a ()
+		private void CheckMethod_CallbackFailEmpty_a ()
 		{
 			PInvokeDelegate1 (CallbackFailEmpty);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_a ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_a ()
 		{
 			PInvokeDelegate1 (delegate () {});
 		}
 		
-		private void TestMethod_CallbackFailEmpty_b ()
+		private void CheckMethod_CallbackFailEmpty_b ()
 		{
 			PInvokeDelegate1 (new CallbackDelegate (CallbackFailEmpty));
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_b ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_b ()
 		{
 			PInvokeDelegate1 (new CallbackDelegate (delegate () {}));
 		}
 		
-		private void TestMethod_CallbackFailEmpty_c ()
+		private void CheckMethod_CallbackFailEmpty_c ()
 		{
 			CallbackDelegate c = CallbackFailEmpty;
 			
 			PInvokeDelegate1 (c);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_c ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_c ()
 		{
 			CallbackDelegate c = delegate () {};
 			
 			PInvokeDelegate1 (c);
 		}
 		
-		private void TestMethod_CallbackFailEmpty_d ()
+		private void CheckMethod_CallbackFailEmpty_d ()
 		{			
 			CallbackFailEmptyStatic_Field = CallbackFailEmpty;
 			
 			PInvokeDelegate1 (CallbackFailEmptyStatic_Field);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_d ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_d ()
 		{			
 			CallbackFailEmptyStatic_Field = delegate () {};
 			
 			PInvokeDelegate1 (CallbackFailEmptyStatic_Field);
 		}
 		
-		private void TestMethod_CallbackFailEmpty_e ()
+		private void CheckMethod_CallbackFailEmpty_e ()
 		{
 			CallbackFailEmptyStatic_StaticField = CallbackFailEmpty;
 			
 			PInvokeDelegate1 (CallbackFailEmptyStatic_StaticField);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_e ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_e ()
 		{
 			CallbackFailEmptyStatic_StaticField = delegate () {};
 			
 			PInvokeDelegate1 (CallbackFailEmptyStatic_StaticField);
 		}
 		
-		private void TestMethod_CallbackFailEmpty_f ()
+		private void CheckMethod_CallbackFailEmpty_f ()
 		{
 			PInvokeDelegate2 (null, CallbackFailEmpty);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_f ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_f ()
 		{
 			PInvokeDelegate2 (null, delegate () {});
 		}
 		
-		private void TestMethod_CallbackOKEmpty_g ()
+		private void CheckMethod_CallbackOKEmpty_g ()
 		{
 			PInvokeDelegate2 (new CallbackDelegate (CallbackFailEmpty), null);
 		}
 		
-		private void TestMethod_AnonymousCallbackOKEmpty_g ()
+		private void CheckMethod_AnonymousCallbackOKEmpty_g ()
 		{
 			PInvokeDelegate2 (new CallbackDelegate (delegate () {}), null);
 		}
 		
-		private void TestMethod_CallbackFailEmpty_h ()
+		private void CheckMethod_CallbackFailEmpty_h ()
 		{			
 			CallbackFailEmptyStatic_Field = CallbackFailEmpty;
 			CallbackFailEmptyStatic_StaticField = CallbackFailEmpty;
@@ -369,7 +369,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackFailEmptyStatic_Field, null, CallbackFailEmptyStatic_StaticField);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmpty_h ()
+		private void CheckMethod_AnonymousCallbackFailEmpty_h ()
 		{			
 			CallbackFailEmptyStatic_Field = delegate () {};
 			CallbackFailEmptyStatic_StaticField = delegate () {};
@@ -377,7 +377,7 @@ namespace Test.Rules.Interoperability {
 			PInvokeDelegate3 (CallbackFailEmptyStatic_Field, null, CallbackFailEmptyStatic_StaticField);
 		}
 		
-		class TestClass_InstanceFieldFail {
+		class CheckClass_InstanceFieldFail {
 			private CallbackDelegate field;
 			public void DoBadA ()
 			{
@@ -389,7 +389,7 @@ namespace Test.Rules.Interoperability {
 			}
 		}
 		
-		class TestClass_StaticFieldFail {
+		class CheckClass_StaticFieldFail {
 			private static CallbackDelegate field;
 			public void Set ()
 			{
@@ -402,7 +402,7 @@ namespace Test.Rules.Interoperability {
 			}
 		}
 		
-		class TestClass_AnonymousInstanceFieldFail {
+		class CheckClass_AnonymousInstanceFieldFail {
 			private CallbackDelegate field;
 			public void DoBadA ()
 			{
@@ -414,7 +414,7 @@ namespace Test.Rules.Interoperability {
 			}
 		}
 		
-		class TestClass_AnonymousStaticFieldFail {
+		class CheckClass_AnonymousStaticFieldFail {
 			private static CallbackDelegate field;
 			public void Set ()
 			{
@@ -427,62 +427,62 @@ namespace Test.Rules.Interoperability {
 			}
 		}
 		
-		private void TestMethod_CallbackFailEmptyStatic ()
+		private void CheckMethod_CallbackFailEmptyStatic ()
 		{
 			PInvokeDelegate1 (CallbackFailEmptyStatic);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailEmptyStatic ()
+		private void CheckMethod_AnonymousCallbackFailEmptyStatic ()
 		{
 			PInvokeDelegate1 (delegate () { });
 		}
 		
-		private void TestMethod_CallbackFailNoCatch ()
+		private void CheckMethod_CallbackFailNoCatch ()
 		{
 			PInvokeDelegate1 (CallbackFailNoCatch);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailNoCatch ()
+		private void CheckMethod_AnonymousCallbackFailNoCatch ()
 		{
 			PInvokeDelegate1 (delegate () { try { } finally {} });
 		}
 		
-		private void TestMethod_CallbackFailNoEmptyCatch ()
+		private void CheckMethod_CallbackFailNoEmptyCatch ()
 		{
 			PInvokeDelegate1 (CallbackFailNoEmptyCatch);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailNoEmptyCatch ()
+		private void CheckMethod_AnonymousCallbackFailNoEmptyCatch ()
 		{
 			PInvokeDelegate1 (delegate () { try { } catch (Exception ex) { } });
 		}
 		
-		private void TestMethod_CallbackFailNotEntireMethod1 ()
+		private void CheckMethod_CallbackFailNotEntireMethod1 ()
 		{
 			PInvokeDelegate1 (CallbackFailNotEntireMethod1);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailNotEntireMethod1 ()
+		private void CheckMethod_AnonymousCallbackFailNotEntireMethod1 ()
 		{
 			PInvokeDelegate1 (delegate () { int i = 0; try { } catch { } });
 		}
 		
-		private void TestMethod_CallbackFailNotEntireMethod2 ()
+		private void CheckMethod_CallbackFailNotEntireMethod2 ()
 		{
 			PInvokeDelegate1 (CallbackFailNotEntireMethod2);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailNotEntireMethod2 ()
+		private void CheckMethod_AnonymousCallbackFailNotEntireMethod2 ()
 		{
 			PInvokeDelegate1 (delegate () { int i; try { } catch { } i = 0; } );
 		}
 		
-		private void TestMethod_CallbackFailNoEmptyCatchEntireMethod ()
+		private void CheckMethod_CallbackFailNoEmptyCatchEntireMethod ()
 		{
 			PInvokeDelegate1 (CallbackFailNoEmptyCatchEntireMethod);
 		}
 		
-		private void TestMethod_AnonymousCallbackFailNoEmptyCatchEntireMethod ()
+		private void CheckMethod_AnonymousCallbackFailNoEmptyCatchEntireMethod ()
 		{
 			PInvokeDelegate1 (delegate () { try { int a = 1; try { int b = 2; } catch { int c = 3; } } catch (Exception ex) { int d = 4; } });
 		}
@@ -514,141 +514,141 @@ namespace Test.Rules.Interoperability {
 		[Test]
 		public void Test_OK1 ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_OK2 ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackOK1 ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackOKStatic ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_a ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_b ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_c ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_d ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_e ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_f ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackOKEmpty_g ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmpty_h ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_StaticFieldFail ()
 		{
-			AssertClass<TestClass_StaticFieldFail> ();
-			AssertClass<TestClass_AnonymousStaticFieldFail> ();
+			AssertClass<CheckClass_StaticFieldFail> ();
+			AssertClass<CheckClass_AnonymousStaticFieldFail> ();
 		}
 		
 		[Test]
 		public void Test_InstanceFieldFail ()
 		{
-			AssertClass<TestClass_InstanceFieldFail> ();
-			AssertClass<TestClass_AnonymousInstanceFieldFail> ();
+			AssertClass<CheckClass_InstanceFieldFail> ();
+			AssertClass<CheckClass_AnonymousInstanceFieldFail> ();
 		}
 		
 		[Test]
 		public void Test_CallbackFailEmptyStatic ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailNoCatch ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailNoEmptyCatch ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailNotEntireMethod1 ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailNotEntireMethod2 ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 		[Test]
 		public void Test_CallbackFailNoEmptyCatchEntireMethod ()
 		{
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_"));
-			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "TestMethod_Anonymous"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_"));
+			AssertTest (MethodInfo.GetCurrentMethod ().Name.Replace ("Test_", "CheckMethod_Anonymous"));
 		}
 		
 	}
