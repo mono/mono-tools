@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace GuiCompare {
 
@@ -36,11 +37,16 @@ namespace GuiCompare {
 	}
 
 	public class ComparisonNode {
-		public ComparisonNode (CompType type,
-		                       string name)
+		public ComparisonNode (CompType type, string displayName)
+		: this (type, displayName, null)
+		{
+		}
+		
+		public ComparisonNode (CompType type, string displayName, string typeName)
 		{
 			Type = type;
-			Name = name;
+			Name = displayName;
+			TypeName = typeName;
 			Children = new List<ComparisonNode>();
 			Messages = new List<string>();
 			Todos = new List<string>();
@@ -72,6 +78,60 @@ namespace GuiCompare {
 			Status = ComparisonStatus.Error;
 			Messages.Add (msg);
 		}
+
+		// TODO: detect user's locale and reflect that in the url
+		public string MSDNUrl {
+			get {
+				if (msdnUrl != null)
+					return msdnUrl;
+				
+				if (String.IsNullOrEmpty (TypeName)) {
+					msdnUrl = MSDN_BASE_URL + ConstructMSDNUrl ();
+					return msdnUrl;
+				}
+				
+				if (msdnUrl == null)
+					msdnUrl = MSDN_BASE_URL + TypeName.ToLower () + ".aspx";
+
+				return msdnUrl;
+			}
+		}
+
+		string FormatMyName ()
+		{
+			string name = Name;
+			int start = name.IndexOf (' ') + 1;
+			int end = name.IndexOf ('(');
+			int len = end - start;
+
+			if (len <= 0)
+				return name;
+			
+			return name.Substring (start, end - start).Trim ();
+		}
+		
+		string ConstructMSDNUrl ()
+		{
+			StringBuilder sb = new StringBuilder (Name);
+			ComparisonNode n = Parent;
+			List <string> segments = new List <string> ();
+			string name;
+			
+			segments.Add ("aspx");
+			segments.Insert (0, FormatMyName ().ToLower ());
+			n = Parent;
+			while (n != null) {
+				name = n.Name.ToLower ();
+				if (name.EndsWith (".dll"))
+					break;
+				
+				segments.Insert (0, n.Name.ToLower ());
+				n = n.Parent;
+			}
+
+			string[] path = segments.ToArray ();
+			return String.Join (".", path);
+		}
 		
 		public ComparisonStatus Status;
 		public readonly CompType Type;
@@ -79,6 +139,7 @@ namespace GuiCompare {
 		public ComparisonNode Parent;
 
 		public readonly string Name;
+		public readonly string TypeName;
 		public readonly List<string> Messages;
 		public readonly List<string> Todos;
 		public bool ThrowsNIE;
@@ -91,5 +152,9 @@ namespace GuiCompare {
 		public int Niex;
 
 		public readonly List<ComparisonNode> Children;
+
+		string msdnUrl;
+
+		const string MSDN_BASE_URL = "http://msdn.microsoft.com/en-us/library/";
 	}
 }

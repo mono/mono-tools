@@ -1,3 +1,11 @@
+2009-02-25  Marek Habersack  <mhabersack@novell.com>
+
+	* MainWindow.cs, CecilMetadata.cs, Metadata.cs, CompareContext.cs,
+	Comparison.cs: added support for MSDN documentation URLs attached
+	to the tree nodes. URLs can be opened in the user's browser by
+	double-clicking on the nodes which, when selected, show an MSDN
+	URL in the status bar.
+
 2009-01-29  Jb Evain  <jbevain@novell.com>
 
 	* Makefile.am: reference directly cecil from the gac as gendarme

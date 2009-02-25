@@ -385,7 +385,8 @@ namespace GuiCompare {
  			delegate_list = new List<CompNamed>();
 			interface_list = new List<CompNamed>();
 			struct_list = new List<CompNamed>();
-
+			MemberName = name;
+			
 			foreach (string type_name in type_mapping.Keys) {
 				TypeDefinition type_def = type_mapping[type_name];
 				if (type_def.IsNotPublic)
@@ -458,7 +459,10 @@ namespace GuiCompare {
 			properties = new List<CompNamed>();
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
-
+			if (!type_def.IsNotPublic || type_def.IsPublic || type_def.IsNestedPublic || type_def.IsNestedFamily ||
+			    type_def.IsNestedFamilyAndAssembly || type_def.IsNestedFamilyOrAssembly)
+				MemberName = type_def.FullName;
+			
 			CecilUtils.PopulateMemberLists (type_def,
 			                                interfaces,
 			                                constructors,
@@ -538,6 +542,9 @@ namespace GuiCompare {
 			: base (type_def.Name)
 		{
 			this.type_def = type_def;
+			if (!type_def.IsNotPublic || type_def.IsPublic || type_def.IsNestedPublic || type_def.IsNestedFamily ||
+			    type_def.IsNestedFamilyAndAssembly || type_def.IsNestedFamilyOrAssembly)
+				MemberName = type_def.FullName;
 		}
 
 		public override string GetBaseType ()
@@ -555,7 +562,10 @@ namespace GuiCompare {
 			this.type_def = type_def;
 
 			fields = new List<CompNamed>();
-
+			if (!type_def.IsNotPublic || type_def.IsPublic || type_def.IsNestedPublic || type_def.IsNestedFamily ||
+			    type_def.IsNestedFamilyAndAssembly || type_def.IsNestedFamilyOrAssembly)
+				MemberName = type_def.FullName;
+			
 			CecilUtils.PopulateMemberLists (type_def,
 						   null,
 						   null,
@@ -613,6 +623,10 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 
+			if (!type_def.IsNotPublic || type_def.IsPublic || type_def.IsNestedPublic || type_def.IsNestedFamily ||
+			    type_def.IsNestedFamilyAndAssembly || type_def.IsNestedFamilyOrAssembly)
+				MemberName = type_def.FullName;
+			
 			CecilUtils.PopulateMemberLists (type_def,
 			                           interfaces,
 			                           constructors,
@@ -711,6 +725,11 @@ namespace GuiCompare {
 		{
 			this.field_def = field_def;
 			this.attributes = CecilUtils.GetCustomAttributes (field_def, todos);
+			if (field_def.IsPublic || field_def.IsFamily || field_def.IsFamilyAndAssembly || field_def.IsFamilyOrAssembly) {
+				TypeDefinition declType = field_def.DeclaringType;
+				if (declType != null)
+					MemberName = declType.FullName + "." + field_def.Name;
+			}
 		}
 
 		public override string GetMemberType ()
@@ -759,6 +778,11 @@ namespace GuiCompare {
 			this.method_def = method_def;
 			this.attributes = CecilUtils.GetCustomAttributes (method_def, todos);
 			DisplayName = FormatName (method_def, true);
+			if (method_def.IsFamily || method_def.IsFamilyAndAssembly || method_def.IsFamilyOrAssembly || method_def.IsPublic) {
+				TypeReference declType = method_def.DeclaringType;
+				if (declType != null)
+					MemberName = declType.FullName + "." + method_def.Name;
+			}
 		}
 
 		public override string GetMemberType ()
@@ -894,6 +918,22 @@ namespace GuiCompare {
 			this.pd = pd;
 			this.attributes = CecilUtils.GetCustomAttributes (pd, todos);
 			this.DisplayName = FormatName (pd, true);
+
+			MethodDefinition getMethod = pd.GetMethod, setMethod = pd.SetMethod;			
+			if (getMethod != null || setMethod != null) {
+				bool interesting = false;
+
+				if (getMethod != null && (getMethod.IsPublic || getMethod.IsFamily || getMethod.IsFamilyAndAssembly || getMethod.IsFamilyOrAssembly))
+					interesting = true;
+				else if (setMethod != null && (setMethod.IsPublic || setMethod.IsFamily || setMethod.IsFamilyAndAssembly || setMethod.IsFamilyOrAssembly))
+					interesting = true;
+
+				if (interesting) {
+					TypeDefinition declType = pd.DeclaringType;
+					if (declType != null)
+						MemberName = declType.FullName + "." + pd.Name;
+				}
+			}
 		}
 
 		public override string GetMemberType()
@@ -972,6 +1012,22 @@ namespace GuiCompare {
 		{
 			this.ed = ed;
 			this.attributes = CecilUtils.GetCustomAttributes (ed, todos);
+
+			MethodDefinition addMethod = ed.AddMethod, removeMethod = ed.RemoveMethod;
+			if (addMethod != null || removeMethod != null) {
+				bool interesting = false;
+
+				if (addMethod != null && (addMethod.IsPublic || addMethod.IsFamily || addMethod.IsFamilyAndAssembly || addMethod.IsFamilyOrAssembly))
+					interesting = true;
+				else if (removeMethod != null && (removeMethod.IsPublic || removeMethod.IsFamily || removeMethod.IsFamilyAndAssembly || removeMethod.IsFamilyOrAssembly))
+					interesting = true;
+
+				if (interesting) {
+					TypeDefinition declType = ed.DeclaringType;
+					if (declType != null)
+						MemberName = declType.FullName + "." + ed.Name;
+				}
+			}
 		}
 
 		public override string GetMemberType()

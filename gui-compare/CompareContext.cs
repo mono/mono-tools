@@ -427,7 +427,8 @@ namespace GuiCompare {
 				if (!string.IsNullOrEmpty (baseTypeName)) {
 					ComparisonNode baseTypeNode = new ComparisonNode (CompType.Class,
 											  string.Format ("BaseType: {0}",
-													 baseTypeName));
+													 baseTypeName),
+											  baseTypeName);
 					baseTypeNode.Status = ComparisonStatus.Missing;
 					node.AddChild (baseTypeNode);
 				}

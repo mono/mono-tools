@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Net;
 using Gtk;
+using GLib;
 using System.Threading;
 using System.Text;
 using GuiCompare;
@@ -216,9 +217,30 @@ public partial class MainWindow: Gtk.Window
 				else {
 					summary.Visible = false;
 				}
+
+				string msdnUrl = n != null ? n.MSDNUrl : null;
+				if (!String.IsNullOrEmpty (msdnUrl))
+					Status = msdnUrl;
+				else
+					Status = String.Empty;
 			}
 		};
 
+		tree.RowActivated += delegate (object sender, RowActivatedArgs args) {
+			Gtk.TreeIter iter;
+			if (!tree.Model.GetIter (out iter, args.Path))
+				return;
+
+			ComparisonNode n = tree.Model.GetValue (iter, (int)TreeCol.Node) as ComparisonNode;
+			if (n == null || String.IsNullOrEmpty (n.MSDNUrl))
+				return;
+
+			System.Diagnostics.Process browser = new System.Diagnostics.Process ();
+			browser.StartInfo.FileName = n.MSDNUrl;
+			browser.StartInfo.UseShellExecute = true;
+			browser.Start ();
+		};
+		
 		//
 		// Load configuration
 		//
@@ -397,8 +419,18 @@ public partial class MainWindow: Gtk.Window
 		case ComparisonStatus.Error: return "red";
 		case ComparisonStatus.None:
 		default:
-			return "black";
+			if (String.IsNullOrEmpty (node.MSDNUrl))
+				return "black";
+			else
+				return "navyblue";
 		}
+	}
+
+	bool StatusUnderlineFromComparisonNode (ComparisonNode node)
+	{
+		if (String.IsNullOrEmpty (node.MSDNUrl))
+			return false;
+		return true;
 	}
 	
 	void PopulateTreeFromComparison (ComparisonNode root)
