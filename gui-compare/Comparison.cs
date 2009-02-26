@@ -86,7 +86,7 @@ namespace GuiCompare {
 					return msdnUrl;
 				
 				if (String.IsNullOrEmpty (TypeName)) {
-					msdnUrl = MSDN_BASE_URL + ConstructMSDNUrl ();
+					msdnUrl = ConstructMSDNUrl ();
 					return msdnUrl;
 				}
 				
@@ -102,6 +102,18 @@ namespace GuiCompare {
 			string name = Name;
 			int start = name.IndexOf (' ') + 1;
 			int end = name.IndexOf ('(');
+
+			switch (Type) {
+				case CompType.Method:
+				case CompType.Attribute:
+				case CompType.Delegate:
+					break;
+
+				default:
+					if (end < 0)
+						end = name.Length;
+					break;
+			}
 			int len = end - start;
 
 			if (len <= 0)
@@ -115,10 +127,15 @@ namespace GuiCompare {
 			StringBuilder sb = new StringBuilder (Name);
 			ComparisonNode n = Parent;
 			List <string> segments = new List <string> ();
-			string name;
-			
+			string name = FormatMyName ();			
+
+			if (Type == CompType.Method && Parent.Type == CompType.Property && (name.StartsWith ("get_") || name.StartsWith ("set_")))
+				return null;
+			else if (Type == CompType.Method && Parent.Type == CompType.Event && (name.StartsWith ("add_") || name.StartsWith ("remove_")))
+				return null;
+
 			segments.Add ("aspx");
-			segments.Insert (0, FormatMyName ().ToLower ());
+			segments.Insert (0, name.ToLower ());
 			n = Parent;
 			while (n != null) {
 				name = n.Name.ToLower ();
@@ -130,7 +147,7 @@ namespace GuiCompare {
 			}
 
 			string[] path = segments.ToArray ();
-			return String.Join (".", path);
+			return MSDN_BASE_URL + String.Join (".", path);
 		}
 		
 		public ComparisonStatus Status;

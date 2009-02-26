@@ -1,3 +1,8 @@
+2009-02-26  Marek Habersack  <mhabersack@novell.com>
+
+	* Comparison.cs: better handling of links generation for
+	comparison types other than method, attribute and delegate.
+
 2009-02-25  Marek Habersack  <mhabersack@novell.com>
 
 	* MainWindow.cs, CecilMetadata.cs, Metadata.cs, CompareContext.cs,
