@@ -42,7 +42,7 @@ rules_sources =  \
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
 	TypesWithNativeFieldsShouldBeDisposableRule.cs \
 	UseFlagsAttributeRule.cs \
-	UseCorrectDisposeSignaturesRule.cs
+	UseCorrectDisposeSignaturesRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs
 
 tests_sources = \
@@ -85,5 +85,5 @@ tests_sources = \
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
 	TypesWithNativeFieldsShouldBeDisposableTest.cs \
 	UseFlagsAttributeTest.cs \
-	UseCorrectDisposeSignaturesTest.cs
+	UseCorrectDisposeSignaturesTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs

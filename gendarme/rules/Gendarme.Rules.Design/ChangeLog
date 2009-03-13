@@ -1,3 +1,8 @@
+2009-03-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Fix 'make-clean' (found by dna) and compile all
+	rules (even the last one)
+
 2009-02-21  Jesse Jones  <jesjones@mindspring.com>
 
 	* Makefile.am, UseCorrectDisposeSignaturesRule.cs: added
