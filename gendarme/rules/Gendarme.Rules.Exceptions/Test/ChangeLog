@@ -1,3 +1,7 @@
+2009-03-15  Jesse Jones  <jesjones@mindspring.com> 
+
+	* UseObjectDisposedExceptionTest.cs: Added new rule.
+
 2009-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationTest.cs: TestFixture must be public

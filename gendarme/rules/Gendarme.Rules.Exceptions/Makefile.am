@@ -18,7 +18,8 @@ rules_sources =  \
 	InstantiateArgumentExceptionCorrectlyRule.cs \
 	MissingExceptionConstructorsRule.cs \
 	NewExceptionRule.cs \
-	SEHHandlerType.cs
+	SEHHandlerType.cs \
+	UseObjectDisposedExceptionRule.cs
 
 tests_sources = \
 	AvoidArgumentExceptionDefaultConstructorTest.cs \
@@ -29,4 +30,5 @@ tests_sources = \
 	DoNotThrowReservedExceptionTest.cs \
 	ExceptionShouldBeVisibleTest.cs \
 	MissingExceptionConstructorsTest.cs \
-	InstantiateArgumentExceptionCorrectlyTest.cs
+	InstantiateArgumentExceptionCorrectlyTest.cs \
+	UseObjectDisposedExceptionTest.cs
