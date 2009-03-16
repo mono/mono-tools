@@ -1,3 +1,9 @@
+2009-03-16  Massimiliano Mantione <massi@ximian.com>
+	* HeapSnapshotExplorer.cs: Modified the delegates of the MenuItem
+	actions specifiying the whole signature, otherwise GTK# cannot call
+	them (the parameter marshalling throws an "argument has an incompatible
+	type" exception).
+
 2008-12-01  Massimiliano Mantione <massi@ximian.com>
 	* HeapExplorerTreeModel.cs: Linked all root nodes n a list, so that it
 	is possible to find the allocation event of a given heap object (now

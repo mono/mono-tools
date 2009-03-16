@@ -75,16 +75,17 @@ namespace Mono.Profiler
 			protected override Menu GetContextMenu () {
 				return menu;
 			}
+			
 			public StatisticsNodeMenuHandlerForClasses (HeapSnapshotExplorer explorer) : base (explorer) {
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this class");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentClass ();
 				};
 				menu.Add (menuItem);
 				menuItem = new MenuItem ("Show statistics by caller method");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					explorer.FillStatisticsListWithMethodData ();
 				};
 				menu.Add (menuItem);
@@ -110,12 +111,12 @@ namespace Mono.Profiler
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this method");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentMethod ();
 				};
 				menu.Add (menuItem);
 				menuItem = new MenuItem ("Show statistics by call stack");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					explorer.FillStatisticsListWithCallStackData ();
 				};
 				menu.Add (menuItem);
@@ -141,7 +142,7 @@ namespace Mono.Profiler
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this call stack");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentCallStack ();
 				};
 				menu.Add (menuItem);
