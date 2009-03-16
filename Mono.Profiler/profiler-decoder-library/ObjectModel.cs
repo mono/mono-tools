@@ -1805,7 +1805,7 @@ namespace  Mono.Profiler {
 				}
 			}
 			
-			return new HeapItemSetFromComparison<HeapObject,HI>(objectSet, itemSet, result.ToArray (), "references item");
+			return new HeapItemSetFromComparison<HeapObject,HI>(objectSet, itemSet, result.ToArray (), "is referenced by item");
 		}
 		
 		HeapItemSetFromComparison (HeapItemSet<HI> baseSet, HeapItemSet<OHI> otherSet, HI[] heapItems, string relation): base (buildShortDescription (otherSet, relation), buildLongDescription (otherSet, relation), heapItems, baseSet.ObjectAllocationsArePresent) {
