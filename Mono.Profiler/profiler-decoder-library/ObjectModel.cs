@@ -269,6 +269,8 @@ namespace  Mono.Profiler {
 				while (currentFrame != null) {
 					StackTrace nextFrame = currentFrame.Caller;
 					sb.Append ("    ");
+					sb.Append (currentFrame.TopMethod.Class.Name);
+					sb.Append (".");
 					sb.Append (currentFrame.TopMethod.Name);
 					if (nextFrame != null) {
 						sb.Append ('\n');
@@ -648,7 +650,7 @@ namespace  Mono.Profiler {
 		
 		string IHeapItemSetStatisticsSubject.Description {
 			get {
-				return Name;
+				return Class.Name + "." + Name;
 			}
 		}
 		
