@@ -1,3 +1,7 @@
+2009-03-17  Massimiliano Mantione <massi@ximian.com>
+	* HeapSnapshotExplorer.cs: backport small fixes from trunk (make it
+	like r129643).
+
 2008-12-01  Massimiliano Mantione <massi@ximian.com>
 	* HeapExplorerTreeModel.cs: Linked all root nodes n a list, so that it
 	is possible to find the allocation event of a given heap object (now

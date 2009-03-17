@@ -75,16 +75,17 @@ namespace Mono.Profiler
 			protected override Menu GetContextMenu () {
 				return menu;
 			}
+			
 			public StatisticsNodeMenuHandlerForClasses (HeapSnapshotExplorer explorer) : base (explorer) {
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this class");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentClass ();
 				};
 				menu.Add (menuItem);
 				menuItem = new MenuItem ("Show statistics by caller method");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					explorer.FillStatisticsListWithMethodData ();
 				};
 				menu.Add (menuItem);
@@ -110,12 +111,12 @@ namespace Mono.Profiler
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this method");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentMethod ();
 				};
 				menu.Add (menuItem);
 				menuItem = new MenuItem ("Show statistics by call stack");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					explorer.FillStatisticsListWithCallStackData ();
 				};
 				menu.Add (menuItem);
@@ -141,7 +142,7 @@ namespace Mono.Profiler
 				menu = new Menu ();
 				MenuItem menuItem;
 				menuItem = new MenuItem ("Filter current set by this call stack");
-				menuItem.Activated += delegate {
+				menuItem.Activated += delegate (object sender, EventArgs e) {
 					FilterCurrentSetByCurrentCallStack ();
 				};
 				menu.Add (menuItem);
@@ -226,15 +227,15 @@ namespace Mono.Profiler
 		public static void PrepareTreeViewForStatisticsDisplay (NodeView view) {
 			view.AppendColumn ("Description", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
 				StatisticsNode node = (StatisticsNode) treeNode;
-				((CellRendererText) cell).Markup = node.Description;
+				((CellRendererText) cell).Text = node.Description;
 			});
 			view.AppendColumn ("Object count", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
 				StatisticsNode node = (StatisticsNode) treeNode;
-				((CellRendererText) cell).Markup = node.ItemsCount.ToString ();
+				((CellRendererText) cell).Text = node.ItemsCount.ToString ();
 			});
 			view.AppendColumn ("Allocated bytes", new Gtk.CellRendererText (), delegate (TreeViewColumn column, CellRenderer cell, ITreeNode treeNode) {
 				StatisticsNode node = (StatisticsNode) treeNode;
-				((CellRendererText) cell).Markup = node.AllocatedBytes.ToString ();
+				((CellRendererText) cell).Text = node.AllocatedBytes.ToString ();
 			});
 			view.NodeStore = new Gtk.NodeStore (typeof (StatisticsNode));
 		}
@@ -497,7 +498,7 @@ namespace Mono.Profiler
 			setColumn.SetCellDataFunc (setCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
 				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
-				textCell.Markup = node.Description;
+				textCell.Text = node.Description;
 				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
@@ -507,7 +508,7 @@ namespace Mono.Profiler
 			countColumn.SetCellDataFunc (countCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
 				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
-				textCell.Markup = node.Count;
+				textCell.Text = node.Count;
 				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
@@ -517,7 +518,7 @@ namespace Mono.Profiler
 			bytesColumn.SetCellDataFunc (bytesCell, delegate (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter) {
 				HeapExplorerTreeModel.INode node = (HeapExplorerTreeModel.INode) model.GetValue (iter, 0);
 				CellRendererText textCell = (CellRendererText) cell;
-				textCell.Markup = node.AllocatedBytes;
+				textCell.Text = node.AllocatedBytes;
 				if (node != MarkedNode) {
 					textCell.Style = Pango.Style.Normal;
 				} else {
