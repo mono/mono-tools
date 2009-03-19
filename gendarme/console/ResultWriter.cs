@@ -38,6 +38,7 @@ namespace Gendarme {
 
 		private IRunner runner;
 		private string filename;
+		private bool disposed;
 
 		protected ResultWriter (IRunner runner, string fileName)
 		{
@@ -47,7 +48,8 @@ namespace Gendarme {
 
 		~ResultWriter ()
 		{
-			Dispose (false);
+			if (!disposed)
+				Dispose (false);
 		}
 
 		protected IRunner Runner {
@@ -73,6 +75,9 @@ namespace Gendarme {
 
 		public void Report ()
 		{
+			if (disposed)
+				throw new ObjectDisposedException (GetType ().Name);
+			
 			Start ();
 			Write ();
 			Finish ();
@@ -80,8 +85,12 @@ namespace Gendarme {
 
 		public void Dispose ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
+			if (!disposed) {
+				Dispose (true);
+				GC.SuppressFinalize (this);
+				
+				disposed = true;
+			}
 		}
 
 		protected abstract void Dispose (bool disposing);

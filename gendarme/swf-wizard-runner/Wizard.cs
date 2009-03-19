@@ -309,6 +309,9 @@ namespace Gendarme {
 
 		public void UpdateAssemblies ()
 		{
+			if (IsDisposed)
+				throw new ObjectDisposedException (GetType ().Name);
+			
 			foreach (KeyValuePair<string,AssemblyInfo> kvp in assemblies) {
 				DateTime last_write = File.GetLastWriteTimeUtc (kvp.Key);
 				if ((kvp.Value.Definition == null) || (kvp.Value.Timestamp < last_write)) {

@@ -1,3 +1,7 @@
+2009-03-19  Jesse Jones  <jesjones@mindspring.com>
+
+	* Wizard.cs: Throws ObjectDisposedException.
+
 2008-12-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.resx, Resources/gendarme.ico: Update icon
