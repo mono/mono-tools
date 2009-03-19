@@ -415,6 +415,34 @@ namespace Test.Rules.Correctness {
 			}
 		}
 
+		private sealed class Good11 {
+			private int weight;
+			
+			public override bool Equals (object obj)
+			{
+				Good11 rhs = obj as Good11;
+				if ((object) rhs == null)
+					return false;
+					
+				return this == rhs;
+			}
+			
+			public static bool operator== (Good11 lhs, Good11 rhs)
+			{
+				return lhs.weight == rhs.weight;
+			}
+			
+			public static bool operator!= (Good11 lhs, Good11 rhs)
+			{
+				return lhs.weight != rhs.weight;
+			}
+			
+			public override int GetHashCode ()
+			{
+				return weight.GetHashCode ();
+			}
+		}
+
 		private sealed class Bad1 {
 			private string name;
 			private string address;
@@ -723,6 +751,35 @@ namespace Test.Rules.Correctness {
 			}
 		}
 
+		private sealed class Bad10 {
+			private string name;
+			private string address;
+			
+			public override bool Equals (object obj)
+			{
+				Bad10 rhs = obj as Bad10;
+				if ((object) rhs == null)
+					return false;
+					
+				return this == rhs;
+			}
+			
+			public static bool operator== (Bad10 lhs, Bad10 rhs)
+			{
+				return lhs.name == rhs.name && lhs.address == rhs.address;
+			}
+			
+			public static bool operator!= (Bad10 lhs, Bad10 rhs)
+			{
+				return lhs.name != rhs.name || lhs.address != rhs.address;
+			}
+			
+			public override int GetHashCode ()
+			{
+				return base.GetHashCode ();	// very bad to do this for classes, also bad for structs if all fields don't participate in equality
+			}
+		}
+
 		[Test]
 		public void Check ()
 		{
@@ -740,6 +797,7 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<Good8> ();
 			AssertRuleSuccess<Good9> ();
 			AssertRuleSuccess<Good10> ();
+			AssertRuleSuccess<Good11> ();
 
 			AssertRuleFailure<Bad1> (1);
 			AssertRuleFailure<Bad2> (1);
@@ -750,6 +808,7 @@ namespace Test.Rules.Correctness {
 			AssertRuleFailure<Bad7> (1);
 			AssertRuleFailure<Bad8> (1);
 			AssertRuleFailure<Bad9> (1);
+			AssertRuleFailure<Bad10> (1);
 		}
 	}
 }

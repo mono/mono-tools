@@ -1,3 +1,7 @@
+2008-03-19  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewInconsistentIdentityTest.cs: Updated for rule tweaks.
+
 2009-01-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsTest.cs: Add test cases

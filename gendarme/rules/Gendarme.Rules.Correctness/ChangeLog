@@ -1,3 +1,10 @@
+2008-03-19  Jesse Jones  <jesjones@mindspring.com> 
+
+	* ReviewInconsistentIdentityRule.cs: Handle Ldflda so we notice
+	when value type fields are used. Complain if GetHashCode uses
+	no fields/properties but equality methods do (this catches the
+	important case where GetHashCode code merely calls base).
+
 2009-02-19  Cedric Vivier  <cedricv@neonux.com>
 
 	* ProvideCorrectXPathExpressionRule.cs: New. Rule that checks

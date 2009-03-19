@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Correctness {
 			
 				// If we're loading a field which belongs to our type then
 				// we need to add it to our list of referenced fields.
-				if (ins.OpCode.Code == Code.Ldfld) {
+				if (ins.OpCode.Code == Code.Ldfld || ins.OpCode.Code == Code.Ldflda) {
 					if (method.IsStatic) {
 						if (ins.Previous.IsLoadArgument ()) {
 							ParameterDefinition pd = ins.Previous.GetParameter (method);
@@ -246,12 +246,17 @@ namespace Gendarme.Rules.Correctness {
 			
 			// We also have a problem if GetHashCode does not check a 
 			// subset of the equality state.
-			if (hashMethod != null && !hashInfo.Delegates && (hashInfo.Fields.Count > 0 || hashInfo.Getters.Count > 0)) {
-				// Note that if there are no fields or getters then the 
+			if (hashMethod != null && !hashInfo.Delegates) {
+				// Note that if there are no equality fields or getters then the 
 				// equality methods delegate all of their work so we don't
-				// don't really know which state they are checking.
+				// don't know which state they are checking.
 				if (equalityFields.Count > 0 || equalityGetters.Count > 0) {
-					if (!hashInfo.Fields.IsSubsetOf (equalityFields) || !hashInfo.Getters.IsSubsetOf (equalityGetters)) {
+					if (hashInfo.Fields.Count == 0 && hashInfo.Getters.Count == 0) {
+						string mesg = "GetHashCode does not use any of the fields and/or properties used by the equality methods.";
+						Log.WriteLine (this, mesg);
+						Runner.Report (hashMethod, Severity.High, Confidence.Normal, mesg);
+						
+					} else if (!hashInfo.Fields.IsSubsetOf (equalityFields) || !hashInfo.Getters.IsSubsetOf (equalityGetters)) {
 						hashInfo.Fields.ExceptWith (equalityFields);
 						hashInfo.Getters.ExceptWith (equalityGetters);
 						
