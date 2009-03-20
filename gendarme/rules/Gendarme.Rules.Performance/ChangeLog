@@ -1,3 +1,7 @@
+2009-03-20  Daniel Nauck  <dna@mono-project.de>
+
+        * PreferLiteralOverInitOnlyFieldsRule.cs: Fixed "good example" documentation.
+
 2009-01-27  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ReviewLinqMethodRule.cs, Makefile.am: Added new rule.
