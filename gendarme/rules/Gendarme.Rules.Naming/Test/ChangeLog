@@ -1,3 +1,9 @@
+2009-03-23  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* UseCorrectCasingTest.cs: Add a different test case for a namespace
+	that is not pascal cased.
+	[Backport r130100]
+
 2008-12-23  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidTypeInterfaceInconsistencyTest: New. Unit tests for 
