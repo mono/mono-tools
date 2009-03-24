@@ -1,3 +1,9 @@
+2009-03-23  Daniel Nauck  <dna@mono-project.de>
+
+        * PreferLiteralOverInitOnlyFieldsRule.cs: Fixed "good example" 
+	documentation.
+	[Backport]
+
 2008-12-24  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* PreferCharOverloadRule.cs: New. Rule to promote the use of the

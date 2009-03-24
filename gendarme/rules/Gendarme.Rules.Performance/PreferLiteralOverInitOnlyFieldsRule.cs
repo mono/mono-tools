@@ -57,11 +57,9 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public void MethodWithUsedParameters (IEnumerable enumerable)
+	/// public class ClassWithConst
 	/// {
-	///	foreach (object item in enumerable) {
-	///		Console.WriteLine (item);
-	///	}
+	///	const int One = 1;
 	/// }
 	/// </code>
 	/// </example>
