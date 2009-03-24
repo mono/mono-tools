@@ -67,6 +67,7 @@ namespace Gendarme.Rules.Naming {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("This interface is not implemented by the type of the same name (minus the 'I' prefix).")]
 	[Solution ("Rename either the interface or the type to something else or implement this interface for the type.")]

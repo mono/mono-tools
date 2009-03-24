@@ -1,3 +1,8 @@
+2009-03-23  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidTypeInterfaceInconsistencyRule.cs: Document as added in 2.4
+	* UseCorrectCasingRule.cs: Fix suggestion for uppercased namespaces
+
 2008-12-26  Cedric Vivier  <cedricv@neonux.com>
 
 	* UsePreferredTermsRule.cs: Fix false positives when term is part of
