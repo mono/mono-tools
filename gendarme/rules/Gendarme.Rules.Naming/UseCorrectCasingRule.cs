@@ -157,7 +157,11 @@ namespace Gendarme.Rules.Naming {
 					break;
 				default:
 					// if the sub namespace is made of 3 or more chars, make sure they're not all uppercase
-					if (!IsPascalCase (ns) || ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
+					if (ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
+						string msg = String.Format ("Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}'",
+							ns, ns [0] + ns.Substring (1).ToLowerInvariant ());
+						ReportCasingError (new NamespaceDefinition (nspace), msg);
+					} else if (!IsPascalCase (ns)) {
 						string msg = String.Format ("Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
 							ns, PascalCase (ns));
 						ReportCasingError (new NamespaceDefinition (nspace), msg);
