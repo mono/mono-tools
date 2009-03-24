@@ -44,6 +44,7 @@ namespace Test.Fa { class Foo {} }
 namespace Test.ASP { class Foo {} class Bar {} }
 namespace Test.A { class Foo {} }
 namespace Test.Rules.ROCKS { class Foo { } }
+namespace Test.aSP { class Zoo { } class Yar { } }
 
 namespace Test.Rules.Naming {
 
@@ -57,8 +58,9 @@ namespace Test.Rules.Naming {
 			// 2. Test.Fa
 			// 3. Test.ASP
 			// 4. Test.Rules.ROCKS
+			// 5. Test.aSP
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			AssertRuleFailure (AssemblyFactory.GetAssembly (unit), 4);
+			AssertRuleFailure (AssemblyFactory.GetAssembly (unit), 5);
 		}
 	}
 
