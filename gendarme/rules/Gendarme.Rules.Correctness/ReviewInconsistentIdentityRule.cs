@@ -58,6 +58,8 @@ namespace Gendarme.Rules.Correctness {
 	///    </item>
 	/// </list>
 	/// </summary>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
+
 	[Problem ("The type does not manage identity consistently in its Equals, relational operator, CompareTo, GetHashCode, and Clone methods.")]
 	[Solution ("Equals, relational operator, CompareTo methods should use the same fields and get properties. GetHashCode should use the same fields/properties or a strict subset of them. Clone should use the same fields/properties or a superset of them.")]
 	public sealed class ReviewInconsistentIdentityRule: Rule, ITypeRule {

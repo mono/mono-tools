@@ -47,10 +47,11 @@ namespace Gendarme.Rules.BadPractice {
 	/// <code>
 	/// public string DisplayName {
 	/// 	get {
-	/// 		if (IsAnonymous)
+	/// 		if (IsAnonymous) {
 	/// 			return null;
-	/// 		return name;
 	///		}
+	/// 		return name;
+	///	}
 	/// }
 	/// </code>
 	/// </example>
@@ -59,19 +60,22 @@ namespace Gendarme.Rules.BadPractice {
 	/// <code>
 	/// public string DisplayName {
 	/// 	get {
-	/// 		if (IsAnonymous)
+	/// 		if (IsAnonymous) {
 	/// 			return string.Empty;
-	/// 		return name;
 	///		}
+	/// 		return name;
+	///	}
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Bad example (array):
 	/// <code>
-	/// public int [] GetOffsets () {
-	/// 	if (!store.HasOffsets)
+	/// public int [] GetOffsets ()
+	/// {
+	/// 	if (!store.HasOffsets) {
 	/// 		return null;
+	///	}
 	/// 	store.LoadOffsets ();
 	/// 	return store.Offsets;
 	/// }
@@ -81,9 +85,11 @@ namespace Gendarme.Rules.BadPractice {
 	/// Good example (array):
 	/// <code>
 	/// static const int [] Empty = new int [0];
-	/// public int [] GetOffsets () {
-	/// 	if (!store.HasOffsets)
+	/// public int [] GetOffsets ()
+	/// {
+	/// 	if (!store.HasOffsets) {
 	/// 		return Empty;
+	///	}
 	/// 	store.LoadOffsets ();
 	/// 	return store.Offsets.ToArray ();
 	/// }
@@ -92,9 +98,11 @@ namespace Gendarme.Rules.BadPractice {
 	/// <example>
 	/// Bad example (enumerable):
 	/// <code>
-	/// public IEnumerable&lt;int&gt; GetOffsets () {
-	/// 	if (!store.HasOffsets)
+	/// public IEnumerable&lt;int&gt; GetOffsets ()
+	/// {
+	/// 	if (!store.HasOffsets) {
 	/// 		return null;
+	///	}
 	/// 	store.LoadOffsets ();
 	/// 	return store.Offsets;
 	/// }
@@ -103,15 +111,19 @@ namespace Gendarme.Rules.BadPractice {
 	/// <example>
 	/// Good example (enumerable):
 	/// <code>
-	/// public IEnumerable&lt;int&gt; GetOffsets () {
-	/// 	if (!store.HasOffsets)
+	/// public IEnumerable&lt;int&gt; GetOffsets ()
+	/// {
+	/// 	if (!store.HasOffsets) {
 	/// 		yield break;
+	///	}
 	/// 	store.LoadOffsets ();
-	/// 	foreach (int offset in store.Offsets)
+	/// 	foreach (int offset in store.Offsets) {
 	/// 		yield return offset;
+	///	}
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("This method returns null whereas returning an empty instance would make it easier to use.")]
 	[Solution ("Return an empty instance rather than null.")]

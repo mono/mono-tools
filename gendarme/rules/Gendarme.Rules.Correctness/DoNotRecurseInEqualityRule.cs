@@ -73,6 +73,8 @@ namespace Gendarme.Rules.Correctness {
 	///	}
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
+
 	[Problem ("An operator== or operator!= method is calling itself recursively.")]
 	[Solution ("Fix null argument checks so that they first cast the argument to System.Object.")]
 	[EngineDependency (typeof (OpCodeEngine))]

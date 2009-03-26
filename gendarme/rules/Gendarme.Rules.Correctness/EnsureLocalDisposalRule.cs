@@ -47,7 +47,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example (non-guaranteed disposal):
 	/// <code>
-	/// void DecodeFile (string file) {
+	/// void DecodeFile (string file)
+	/// {
 	/// 	var stream = new StreamReader (file);
 	/// 	DecodeHeader (stream);
 	/// 	if (!DecodedHeader.HasContent) {
@@ -61,7 +62,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Good example (non-guaranteed disposal):
 	/// <code>
-	/// void DecodeFile (string file) {
+	/// void DecodeFile (string file)
+	/// {
 	/// 	using (var stream = new StreamReader (file)) {
 	/// 		DecodeHeader (stream);
 	/// 		if (!DecodedHeader.HasContent) {
@@ -75,7 +77,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example (not disposed of / not locally disposed of):
 	/// <code>
-	/// void DecodeFile (string file) {
+	/// void DecodeFile (string file)
+	/// {
 	/// 	var stream = new StreamReader (file);
 	/// 	Decode (stream);
 	/// }
@@ -90,7 +93,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Good example (not disposed of / not locally disposed of):
 	/// <code>
-	/// void DecodeFile (string file) {
+	/// void DecodeFile (string file)
+	/// {
 	/// 	using (var stream = new StreamReader (file)) {
 	/// 		Decode (stream);
 	/// 	}
@@ -102,6 +106,7 @@ namespace Gendarme.Rules.Correctness {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("This disposable local is not guaranteed to be disposed of before the method returns.")]
 	[Solution ("Use a 'using' statement or surround the local's usage with a try/finally block.")]

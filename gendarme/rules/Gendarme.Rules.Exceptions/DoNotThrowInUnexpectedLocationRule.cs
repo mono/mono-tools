@@ -140,6 +140,7 @@ namespace Gendarme.Rules.Exceptions {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	// http://msdn.microsoft.com/en-us/library/bb386039.aspx
 	[Problem ("A method throws an exception it should not.")]

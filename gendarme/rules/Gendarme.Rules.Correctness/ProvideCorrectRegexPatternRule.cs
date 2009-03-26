@@ -79,6 +79,7 @@ namespace Gendarme.Rules.Correctness {
 	/// return Regex.IsMatch (code, @"(\w)-\1");
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("An invalid regular expression string is provided to a method/constructor.")]
 	[Solution ("Fix the invalid regular expression.")]

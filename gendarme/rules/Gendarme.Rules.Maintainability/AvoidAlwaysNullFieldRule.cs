@@ -66,6 +66,7 @@ namespace Gendarme.Rules.Maintainability {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("This type has a private field whose value is always null.")]
 	[Solution ("Either remove the field or properly initialize it.")]
