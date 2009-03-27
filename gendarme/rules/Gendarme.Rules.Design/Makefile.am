@@ -37,6 +37,7 @@ rules_sources =  \
 	OverrideEqualsMethodRule.cs \
 	PreferEventsOverMethodsRule.cs \
 	PreferIntegerOrStringForIndexersRule.cs \
+	PreferXmlAbstractionsRule.cs \
 	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
 	TypesShouldBeInsideNamespacesRule.cs \
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
@@ -80,6 +81,7 @@ tests_sources = \
 	OverrideEqualsMethodTest.cs \
 	PreferEventsOverMethodsTest.cs \
 	PreferIntegerOrStringForIndexersTest.cs \
+	PreferXmlAbstractionsTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
 	TypesShouldBeInsideNamespacesTest.cs \
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
