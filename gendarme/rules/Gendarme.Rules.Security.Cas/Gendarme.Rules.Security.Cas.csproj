@@ -8,8 +8,8 @@
     <ProjectGuid>{237A273E-BCAF-42DB-9DE5-1697B016C648}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gendarme.Security.Cas</RootNamespace>
-    <AssemblyName>Gendarme.Security.Cas</AssemblyName>
+    <RootNamespace>Gendarme.Rules.Security.Cas</RootNamespace>
+    <AssemblyName>Gendarme.Rules.Security.Cas</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\console\bin\Debug\Gendarme.Security.Cas.xml</DocumentationFile>
+    <DocumentationFile>..\..\console\bin\Debug\Gendarme.Rules.Security.Cas.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <WarningsAsErrors>1570</WarningsAsErrors>
   </PropertyGroup>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <WarningsAsErrors>1570</WarningsAsErrors>
-    <DocumentationFile>..\..\console\bin\Release\Gendarme.Security.Cas.xml</DocumentationFile>
+    <DocumentationFile>..\..\console\bin\Release\Gendarme.Rules.Security.Cas.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
