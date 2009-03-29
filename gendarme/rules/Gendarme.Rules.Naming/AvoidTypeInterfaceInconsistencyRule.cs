@@ -43,12 +43,16 @@ namespace Gendarme.Rules.Naming {
 	/// Bad example:
 	/// <code>
 	/// public interface IMember {
-	///	string Name { get; }
+	///	string Name {
+	///		get;
+	///	}
 	/// }
 	/// 
 	/// public class Member {
 	///	public string Name {
-	///		get { return String.Empty; }
+	///		get {
+	///			return String.Empty;
+	///		}
 	///	}
 	/// }
 	/// </code>
@@ -57,12 +61,16 @@ namespace Gendarme.Rules.Naming {
 	/// Good example:
 	/// <code>
 	/// public interface IMember {
-	///	string Name { get; }
+	///	string Name {
+	///		get;
+	///	}
 	/// }
 	/// 
 	/// public class Member : IMember {
 	///	public string Name {
-	///		get { return String.Empty; }
+	///		get {
+	///			return String.Empty;
+	///		}
 	///	}
 	/// }
 	/// </code>

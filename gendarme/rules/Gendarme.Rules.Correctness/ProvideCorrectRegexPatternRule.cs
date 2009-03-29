@@ -46,7 +46,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// Regex re = new Regex ("^\\"); //Invalid end of pattern
+	/// //Invalid end of pattern
+	/// Regex re = new Regex ("^\\");
 	/// </code>
 	/// </example>
 	/// <example>
@@ -58,7 +59,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// Regex re = new Regex ("([a-z)*"); //Unterminated [] set
+	/// //Unterminated [] set
+	/// Regex re = new Regex ("([a-z)*");
 	/// </code>
 	/// </example>
 	/// <example>
@@ -70,7 +72,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// return Regex.IsMatch (code, @"(\w)-\2"); //Reference to undefined group number 2
+	/// //Reference to undefined group number 2
+	/// return Regex.IsMatch (code, @"(\w)-\2");
 	/// </code>
 	/// </example>
 	/// <example>
@@ -79,6 +82,7 @@ namespace Gendarme.Rules.Correctness {
 	/// return Regex.IsMatch (code, @"(\w)-\1");
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("An invalid regular expression string is provided to a method/constructor.")]
 	[Solution ("Fix the invalid regular expression.")]

@@ -88,6 +88,7 @@ namespace Gendarme.Rules.Smells {
 	/// 	balance += movie.GetPrice ()
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("The problem with switch statements is the duplication.  You may find the same switch in several places.")]
 	[Solution ("You should consider polymorphism.")]
