@@ -81,6 +81,7 @@
     <Compile Include="OverrideEqualsMethodRule.cs" />
     <Compile Include="PreferEventsOverMethodsRule.cs" />
     <Compile Include="PreferIntegerOrStringForIndexersRule.cs" />
+    <Compile Include="PreferXmlAbstractionsRule.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsRule.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />

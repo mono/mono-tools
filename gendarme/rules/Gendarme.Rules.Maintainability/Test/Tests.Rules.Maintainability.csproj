@@ -38,6 +38,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidAlwaysNullFieldTest.cs" />
     <Compile Include="AvoidComplexMethodsTest.cs" />
     <Compile Include="AvoidDeepInheritanceTreeTest.cs" />
     <Compile Include="AvoidLackOfCohesionOfMethodsTest.cs" />

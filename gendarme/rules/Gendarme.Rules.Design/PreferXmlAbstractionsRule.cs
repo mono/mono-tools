@@ -79,6 +79,7 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("This visible method uses XmlDocument, XPathDocument or XmlNode in its signature. This reduces extensibility as it ties your API with a specific implementation.")]
 	[Solution ("Use an abstraction such as IXPathNavigable, XmlReader, XmlWriter, or a subtype of XmlNode instead.")]

@@ -36,6 +36,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractTypesShouldNotHavePublicConstructorsTest.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="OverrideEqualsMethodTest.cs" />
     <Compile Include="PreferEventsOverMethodsTest.cs" />
     <Compile Include="PreferIntegerOrStringForIndexersTest.cs" />
+    <Compile Include="PreferXmlAbstractionsTest.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsTest.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesTest.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
