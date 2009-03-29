@@ -47,7 +47,8 @@ namespace Gendarme.Rules.Correctness {
 	/// Bad examples:
 	/// <code>
 	///	string s1 = String.Format ("There is nothing to format here!");
-	///	string s2 = String.Format ("Hello {0}!"); // no argument to back {0}
+	///	// no argument to back {0}
+	///	string s2 = String.Format ("Hello {0}!");
 	/// </code>
 	/// </example>
 	/// <example>

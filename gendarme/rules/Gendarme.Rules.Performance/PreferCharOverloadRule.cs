@@ -55,15 +55,17 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// if (s.IndexOf (":") == -1)
-	///     Console.WriteLine ("no separator found");
+	/// if (s.IndexOf (":") == -1) {
+	///	Console.WriteLine ("no separator found");
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// if (s.IndexOf (':') == -1)
-	///     Console.WriteLine ("no separator found");
+	/// if (s.IndexOf (':') == -1) {
+	///	Console.WriteLine ("no separator found");
+	/// }
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>

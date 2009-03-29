@@ -49,7 +49,9 @@ namespace Gendarme.Rules.Maintainability {
 	/// 	private List&lt;int&gt; values;
 	/// 	
 	/// 	public List&lt;int&gt; Values {
-	/// 		get { return values; }
+	/// 		get {
+	/// 			return values;
+	/// 		}
 	/// 	}
 	/// }
 	/// </code>
@@ -61,7 +63,9 @@ namespace Gendarme.Rules.Maintainability {
 	/// 	private List&lt;int&gt; values = new List&lt;int&gt;();
 	/// 	
 	/// 	public List&lt;int&gt; Values {
-	/// 		get { return values; }
+	/// 		get {
+	/// 			return values;
+	/// 		}
 	/// 	}
 	/// }
 	/// </code>

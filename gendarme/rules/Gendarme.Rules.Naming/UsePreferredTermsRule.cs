@@ -127,12 +127,7 @@ namespace Gendarme.Rules.Naming {
 				{ "Writeable", "Writable" }
 			};
 		
-		/// <summary>
-		/// Reports a defect when 'name' contains a non-recommended term.
-		/// </summary>
-		/// <param name="identifier">Metadata token for 'name' or null if it is a namespace.</param>
-		/// <param name="name">Name to check.</param>
-		/// <param name="severity">Severity for the defect to be reported (if any).</param>
+		// Reports a defect when 'name' contains a non-recommended term.
 		private void CheckIdentifier (IMetadataTokenProvider identifier, string name, Severity severity)
 		{
 			// scan for any obsolete terms

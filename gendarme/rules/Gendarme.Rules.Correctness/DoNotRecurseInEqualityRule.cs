@@ -48,12 +48,12 @@ namespace Gendarme.Rules.Correctness {
 	/// <code>
 	///	public static bool operator== (Customer lhs, Customer rhs)
 	///	{
-	///		if (object.ReferenceEquals (lhs, rhs))
+	///		if (object.ReferenceEquals (lhs, rhs)) {
 	///			return true;
-	///	
-	///		if (lhs == null || rhs == null)
+	///		}
+	///		if (lhs == null || rhs == null) {
 	///			return false;
-	///	
+	///		}
 	///		return lhs.name == rhs.name &amp;&amp; lhs.address == rhs.address;
 	///	}
 	/// </code>
@@ -63,12 +63,12 @@ namespace Gendarme.Rules.Correctness {
 	/// <code>
 	///	public static bool operator== (Customer lhs, Customer rhs)
 	///	{
-	///		if (object.ReferenceEquals (lhs, rhs))
+	///		if (object.ReferenceEquals (lhs, rhs)) {
 	///			return true;
-	///	
-	///		if ((object) lhs == null || (object) rhs == null)
+	///		}
+	///		if ((object) lhs == null || (object) rhs == null) {
 	///			return false;
-	///	
+	///		}
 	///		return lhs.name == rhs.name &amp;&amp; lhs.address == rhs.address;
 	///	}
 	/// </code>

@@ -44,7 +44,7 @@ namespace Gendarme.Rules.Correctness {
 	/// consistent way. It checks:
 	/// <list type = "bullet">
 	///    <item>
-	///        <description>Equals methods, relational operators and <c>CompareTo</c>
+	///        <description>Equals methods, relational operators and <c>CompareTo</c> 
 	///        must either use the same set of fields and properties or call a
 	///        helper method.</description>
 	///    </item>
