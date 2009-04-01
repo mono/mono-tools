@@ -16,6 +16,7 @@ bin/Mono.Api.Compare.dll: $(SOURCES) Makefile  bin/Mono.Cecil.dll
 	gmcs -debug -target:library -out:bin/Mono.Api.Compare.dll $(SOURCES) -r:bin/Mono.Cecil.dll
 
 bin/Mono.Cecil.dll:
+	-mkdir bin/
 	cp `pkg-config --variable Libraries cecil` bin/
 
 get: masterinfos-3.5.tar.gz
