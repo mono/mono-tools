@@ -880,9 +880,10 @@ namespace GuiCompare {
 		public override string GetNodeKey (string name, XmlNode node)
 		{
 			XmlAttributeCollection atts = node.Attributes;
-			return String.Format ("{0}:{1}:{2}", atts ["name"].Value,
-								atts ["ptype"].Value,
-								atts ["params"].Value);
+			return String.Format ("{0}:{1}:{2}",
+					      atts ["name"].Value,
+					      atts ["ptype"].Value,
+					      atts ["params"] == null ? "" : atts ["params"].Value);
 		}
 
 		public override string GroupName {
