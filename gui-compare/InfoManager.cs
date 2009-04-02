@@ -41,6 +41,9 @@ namespace GuiCompare
 		
 		// The base directory where Mono stores its profile assemblies 
 		string monodir;
+
+		// The base directory where the Moonlight plugin stores its profile assemblies 
+		string moondir;
 		
 		// A handle to our container window
 		MainWindow main;
@@ -416,6 +419,10 @@ namespace GuiCompare
 								break;
 						}
 					}
+					if (!found) {
+						assemblyfile = System.IO.Path.Combine (moondir, e + ".dll");
+						found = System.IO.File.Exists (assemblyfile);
+					}
 
 					if (!found) {
 						Console.WriteLine ("Skipping {0} for profile {1}, could not locate it in profile dir or MONO_GAC_PREFIX", e, pdir);
@@ -478,6 +485,7 @@ namespace GuiCompare
 			
 			string corlibdir = System.IO.Path.GetDirectoryName (typeof (int).Assembly.Location);
 			monodir = System.IO.Path.GetFullPath (System.IO.Path.Combine (corlibdir, "..")); 
+			moondir = System.IO.Path.Combine (monodir, @"../moon/plugin");
 	
 			// Work around limitation in Stetic, there is no way
 			// of getting a handle on the menu (!!!)

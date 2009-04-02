@@ -1,3 +1,8 @@
+2009-04-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InfoManager.cs: Look up the Moonlight assemblies in the plugin
+	directory.
+
 2009-02-26  Marek Habersack  <mhabersack@novell.com>
 
 	* Comparison.cs: better handling of links generation for
