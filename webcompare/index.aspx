@@ -1,4 +1,5 @@
 <%@ Page Language="C#" %>
+<%@ OutputCache Duration="60" VaryByParam="none" %>
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Linq" %>
 <%@ Import Namespace="System.Text" %>
@@ -8,6 +9,7 @@
 <%@ Import Namespace="GuiCompare" %>
 <html>
 <head>
+<title>Mono - Class status pages</title>
 <style type="text/css">
 #col1 {
      width: 24%;

@@ -30,4 +30,4 @@ run: all
 	xsp2
 
 push: all
-	rsync --rsh=ssh -pr bin Global.asax *.gif *.png Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/
+	rsync --rsh=ssh -pr bin images App_Code Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/

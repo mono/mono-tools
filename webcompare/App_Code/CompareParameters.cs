@@ -1,14 +1,14 @@
-<%@ Import Namespace="GuiCompare" %>
-<%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.IO" %>
-<%@ Import Namespace="System.Collections.Specialized" %>
-<%@ Import Namespace="System.Collections.Generic" %>
-<%@ Assembly name="Mono.Api.Compare" %>
-
-<script runat="server" language="c#" >
+using System;
+using System.Threading;
+using System.IO;
+using System.Collections.Specialized;
+using System.Collections.Generic;
+using System.Web;
+using System.Runtime.Serialization.Formatters.Binary;
+using GuiCompare;
 
 public class CompareParameters {
-	static Dictionary<CompareParameters,CompareContext> compare_cache = new Dictionary<CompareParameters,CompareContext> ();
+	static Dictionary<CompareParameters,ComparisonNode> compare_cache = new Dictionary<CompareParameters,ComparisonNode> ();
 	static Dictionary<CompareParameters,DateTime> timestamp = new Dictionary<CompareParameters,DateTime> ();
 
 	static public bool InCache (CompareParameters cp)
@@ -83,15 +83,15 @@ public class CompareParameters {
 		
 	}
 
-	public CompareContext GetCompareContext ()
+	public ComparisonNode GetComparisonNode ()
 	{
-		CompareContext cc;
+		ComparisonNode cc;
 
 		lock (compare_cache){
 			DateTime stamp = new FileInfo (DllFile).LastWriteTimeUtc;
 
 			if (!compare_cache.TryGetValue (this, out cc) || timestamp [this] != stamp){
-				cc = MakeCompareContext ();
+				cc = MakeComparisonNode ();
 				compare_cache [this] = cc;
 				timestamp [this] = stamp;
 			}
@@ -105,7 +105,7 @@ public class CompareParameters {
 		}
 	}
 
-	CompareContext MakeCompareContext ()
+	ComparisonNode MakeComparisonNode ()
 	{
 		string info_file = Path.Combine (HttpRuntime.AppDomainAppPath, Path.Combine (Path.Combine ("masterinfos", InfoDir), Assembly) + ".xml");
 		string dll_file = DllFile;
@@ -135,13 +135,16 @@ public class CompareParameters {
 	
 			sw.Flush ();
 
-			return cc;
+			try {
+			using (var stream = File.Create ("/tmp/test")) {
+				BinaryFormatter bf = new BinaryFormatter ();	
+				bf.Serialize (stream, cc.Comparison);
+			}
+			} catch (Exception shit) {
+				Console.WriteLine (shit);
+			}
+			return cc.Comparison;
 		}
 	}
 }
 
-void Application_Start ()
-{
-}
-
-</script>

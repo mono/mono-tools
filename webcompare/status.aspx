@@ -12,17 +12,17 @@ TODO:
 -->
 <script runat="server" language="c#">
 
-public CompareContext compare_context;
+public ComparisonNode comparison;
 
-const string ImageMissing = "<img src='sm.gif' border=0 align=absmiddle title='Missing'>";
-const string ImageExtra   = "<img src='sx.gif' border=0 align=absmiddle title='Extra'>";
-const string ImageOk      = "<img src='sc.gif' border=0 align=absmiddle>";
-const string ImageError   = "<img src='se.gif' border=0 align=absmiddle title='throw NotImplementedException'>";
-const string ImageWarning = "<img src='mn.png' border=0 align=absmiddle title='warning'>";
+const string ImageMissing = "<img src='images/sm.gif' border=0 align=absmiddle title='Missing'>";
+const string ImageExtra   = "<img src='images/sx.gif' border=0 align=absmiddle title='Extra'>";
+const string ImageOk      = "<img src='images/sc.gif' border=0 align=absmiddle>";
+const string ImageError   = "<img src='images/se.gif' border=0 align=absmiddle title='throw NotImplementedException'>";
+const string ImageWarning = "<img src='images/mn.png' border=0 align=absmiddle title='warning'>";
 
 static string ImageTodo (ComparisonNode cn)
 {
-	return String.Format ("<img src='st.gif' border=0 align=absmiddle title='{0}'>", GetTodo (cn));
+	return String.Format ("<img src='images/st.gif' border=0 align=absmiddle title='{0}'>", GetTodo (cn));
 }
 
 static string Get (int count, string kind, string caption)
@@ -59,23 +59,22 @@ public void ShowPleaseWait ()
 	    true);
 }
 
-global_asax.CompareParameters compare_param;
+CompareParameters compare_param;
 
 public void Page_Load ()
 {
-	var cp = new global_asax.CompareParameters (Page.Request.QueryString);
+	var cp = new CompareParameters (Page.Request.QueryString);
 	compare_param = cp;
-	if (!global_asax.CompareParameters.InCache (cp) && !IsPostBack){
+	if (!CompareParameters.InCache (cp) && !IsPostBack){
 		ShowPleaseWait ();
 		return;
 	}
 
-	compare_context = cp.GetCompareContext ();
-	var n = compare_context.Comparison;
+	var n = cp.GetComparisonNode ();
 
 	waitdiv.Visible = false;
 
-	//TreeNode tn = new TreeNode ("<img src='sm.gif' border=0 align=absmiddle>" + n.name);
+	//TreeNode tn = new TreeNode ("<img src='images/sm.gif' border=0 align=absmiddle>" + n.name);
 	//TreeNode tn = new TreeNode (n.name);
 	//TreeNode tn = new TreeNode ("<div class='ok'></div>" + n.name);
 
@@ -84,7 +83,7 @@ public void Page_Load ()
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
 
-	var diff = DateTime.UtcNow - global_asax.CompareParameters.GetAssemblyTime (cp);
+	var diff = DateTime.UtcNow - CompareParameters.GetAssemblyTime (cp);
 	string t;
 	if (diff.Days > 1)
 		t = String.Format ("{0} days", diff.Days);
@@ -183,16 +182,15 @@ ComparisonNode ComparisonNodeFromTreeNode (TreeNode tn)
 {
 	if (tn.Parent == null){
 		// This is needed because the tree loads chunks without calling Page_Load
-		var cp = new global_asax.CompareParameters (Page.Request.QueryString);
-		compare_context = cp.GetCompareContext ();
-
-		return compare_context.Comparison;
+		var cp = new CompareParameters (Page.Request.QueryString);
+		return  cp.GetComparisonNode ();
 	}
 	
 	var match = ComparisonNodeFromTreeNode (tn.Parent);
 	if (match == null)
 		return null;
 	foreach (var n in match.Children){
+		Console.WriteLine ("name: {0} tn.Value: {1}", n.Name, tn.Value);
 		if (n.Name == tn.Value)
 			return n;
 	}
@@ -361,27 +359,27 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 }
 	  
 .missing {
-	background-image: url(sm.gif);
+	background-image: url(images/sm.gif);
 }
 
 .extra {
-	background-image: url(sx.gif);
+	background-image: url(images/sx.gif);
 }
 
 .ok {
-	background-image: url(sc.gif);
+	background-image: url(images/sc.gif);
 }
 
 .warning {
-	background-image: url(mn.png);
+	background-image: url(images/mn.png);
 }
 
 .niex {
-	background-image: url(se.gif);
+	background-image: url(images/se.gif);
 }
 
 .todo {
-	background-image: url(st.gif);
+	background-image: url(images/st.gif);
 }
 
   </style>
@@ -396,7 +394,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
         <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Always">
             <ContentTemplate>
 	        <div runat="server" id="waitdiv">
-                  <img src="wait.gif" runat="server" enableviewstate="false" /> Loading and Comparing...
+                  <img src="images/wait.gif" runat="server" enableviewstate="false" /> Loading and Comparing...
 		</div>
 		<div runat="server" id="activediv" >
 		  <asp:Label id="time_label" runat="server"/>
