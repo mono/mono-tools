@@ -171,6 +171,8 @@ namespace GuiCompare {
 			: base (path)
 		{
 			masterinfo = XMLAssembly.CreateFromFile (path);
+			if (masterinfo == null)
+				throw new ArgumentException ("Error loading masterinfo from " + path);
 			attributes = MasterUtils.GetAttributes (masterinfo.attributes);
 		}
 

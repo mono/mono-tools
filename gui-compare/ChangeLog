@@ -1,3 +1,9 @@
+2009-04-02 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* CompareContext.cs:
+	* MasterMetadata.cs: deal with errors loading the masterinfo file or
+	any other by raising the Error event and calling Finish.
+
 2009-04-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InfoManager.cs: Look up the Moonlight assemblies in the plugin

@@ -69,30 +69,34 @@ namespace GuiCompare {
 
 		void CompareThread ()
 		{
-			ProgressChange (Double.NaN, "Loading reference...");
+			try {
+				ProgressChange (Double.NaN, "Loading reference...");
 
-			if (!TryLoad (ref reference, reference_loader))
-				return;
+				if (!TryLoad (ref reference, reference_loader))
+					return;
 
-			ProgressChange (Double.NaN, "Loading target...");
+				ProgressChange (Double.NaN, "Loading target...");
 
-			if (!TryLoad (ref target, target_loader))
-				return;
+				if (!TryLoad (ref target, target_loader))
+					return;
 
-			ProgressChange (0.0, "Comparing...");
+				ProgressChange (0.0, "Comparing...");
 
-			comparison = target.GetComparisonNode ();
+				comparison = target.GetComparisonNode ();
 
-			List<CompNamed> ref_namespaces = reference.GetNamespaces();
-			
-			total_comparisons = CountComparisons (ref_namespaces);
-			comparisons_performed = 0;
-			
-			CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
+				List<CompNamed> ref_namespaces = reference.GetNamespaces();
+				
+				total_comparisons = CountComparisons (ref_namespaces);
+				comparisons_performed = 0;
+				
+				CompareTypeLists (comparison, reference.GetNamespaces(), target.GetNamespaces());
 
-			CompareAttributes (comparison, reference, target);
-
-			Finish ();
+				CompareAttributes (comparison, reference, target);
+			} catch (Exception exc) {
+				OnError (exc.Message);
+			} finally {
+				Finish ();
+			}
 		}
 
 		int total_comparisons;
