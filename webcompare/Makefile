@@ -32,7 +32,7 @@ run: all
 	xsp2
 
 push: all
-	rsync --rsh=ssh -pr bin images App_Code Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status-test/
+	rsync --rsh=ssh -pr --exclude=Web.config Web.config-EDITME bin images App_Code index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status-test/
 	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status-test/db/
 
 clean:

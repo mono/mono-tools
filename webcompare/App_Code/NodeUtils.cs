@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Web;
@@ -37,10 +38,12 @@ using GuiCompare;
 using MySql.Data.MySqlClient;
 
 public class NodeUtils {
-	static string cnc_string = "Server=localhost;Database=webcompare;User ID=gonzalo;Password=gonzalo;Pooling=true";
+	static string cnc_string;
 
 	static IDbConnection GetConnection ()
 	{
+		if (String.IsNullOrEmpty (cnc_string))
+			throw new ApplicationException ("DB connection string missing");
 		IDbConnection cnc = new MySqlConnection ();
 		cnc.ConnectionString = cnc_string;
 		cnc.Open ();
@@ -51,6 +54,12 @@ public class NodeUtils {
 	string profile;
 	string assembly;
 	int master_id;
+
+	static NodeUtils ()
+	{
+		NameValueCollection col = ConfigurationManager.AppSettings;
+		cnc_string = col ["WebCompareDB"];
+	}
 
 	public NodeUtils (string reference, string profile, string assembly)
 	{
