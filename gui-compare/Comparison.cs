@@ -124,7 +124,6 @@ namespace GuiCompare {
 		
 		string ConstructMSDNUrl ()
 		{
-			StringBuilder sb = new StringBuilder (Name);
 			ComparisonNode n = Parent;
 			List <string> segments = new List <string> ();
 			string name = FormatMyName ();			
@@ -169,6 +168,9 @@ namespace GuiCompare {
 		public int Niex;
 
 		public readonly List<ComparisonNode> Children;
+		public bool HasChildren; // This is set when lazy-loading from the DB
+		public bool HasMessages; // This is set when lazy-loading from the DB
+		public object InternalID;
 
 		string msdnUrl;
 

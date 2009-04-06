@@ -1,3 +1,8 @@
+2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* Comparison.cs: add properties used by the DB backend of the web
+	application.
+
 2009-04-02 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* CompareContext.cs:
