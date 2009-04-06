@@ -238,6 +238,7 @@ namespace  Mono.Profiler {
 			LOAD = 0,
 			UNLOAD = 1,
 			EXCEPTION = 2,
+			LOCK = 3,
 			MASK = 3
 		}
 		ClassEvent ClassEventFromEventCode (int eventCode) {
@@ -520,6 +521,17 @@ namespace  Mono.Profiler {
 									handler.ClassEndUnload (handler.LoadedElements.GetClass (classId), baseCounter);
 									handler.DataProcessed (offsetInBlock);
 								}
+								break;
+							}
+							case ClassEvent.LOCK: {
+								uint classId = ReadUint (ref offsetInBlock);
+								ulong counterDelta = ReadUlong (ref offsetInBlock);
+								baseCounter += counterDelta;
+								uint lockEvent = ReadUint (ref offsetInBlock);
+								ulong objectId = ReadUlong (ref offsetInBlock);
+								
+								handler.MonitorEvent ((MonitorEvent) lockEvent, handler.LoadedElements.GetClass (classId), objectId, baseCounter);
+								
 								break;
 							}
 							default: {

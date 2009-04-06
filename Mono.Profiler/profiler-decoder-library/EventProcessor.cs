@@ -74,6 +74,13 @@ namespace  Mono.Profiler {
 		Dictionary<ulong,CallStack> perThreadStacks;
 		CallStack stack;
 		UnknownStatisticalHitsCollector unknownStatisticalHitsCollector;
+		GlobalMonitorStatistics globalMonitorStatistics;
+		
+		public GlobalMonitorStatistics GlobalMonitorStatistics {
+			get {
+				return globalMonitorStatistics;
+			}
+		}
 		
 		uint version;
 		public uint Version {
@@ -263,6 +270,16 @@ namespace  Mono.Profiler {
 			}
 			c.InstanceCreated (size, caller, jitTime, trace);
 			RecordAllocation (c, objectId, size, caller, jitTime, trace);
+		}
+		
+		public override void MonitorEvent (MonitorEvent eventCode, LoadedClass c, ulong objectId, ulong counter) {
+			//Console.WriteLine ("MonitorEvent {0} class {1} object {2} counter {3}", eventCode, c.Name, objectId, counter);
+			
+			StackTrace trace = StackTrace.NewStackTrace (stack);
+			if (trace == null ) {
+				trace = StackTrace.StackTraceUnavailable;
+			}
+			globalMonitorStatistics.HandleEvent (stack.ThreadId, eventCode, c, objectId, trace, counter);
 		}
 		
 		public override void Exception (LoadedClass c, ulong counter) {}
@@ -624,6 +641,7 @@ namespace  Mono.Profiler {
 			currentGcStatistics = null;
 			allocationSummaries = new List<AllocationSummary> ();
 			currentAllocationSummary = null;
+			globalMonitorStatistics = new GlobalMonitorStatistics ();
 		}
 	}
 }

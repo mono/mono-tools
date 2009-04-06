@@ -30,6 +30,12 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace Mono.Profiler {
+	public enum MonitorEvent {
+		CONTENTION = 1,
+		DONE = 2,
+		FAIL = 3
+	}
+	
 	public interface ILoadedElement {
 		uint ID {get;}
 		string Name {get;}
@@ -193,6 +199,8 @@ namespace Mono.Profiler {
 		void AllocationSummaryStart (uint collection, ulong startCounter, DateTime startTime);
 		void ClassAllocationSummary (LC c, uint reachableInstances, uint reachableBytes, uint unreachableInstances, uint unreachableBytes);
 		void AllocationSummaryEnd (uint collection, ulong endCounter, DateTime endTime);
+		
+		void MonitorEvent (MonitorEvent eventCode, LC loadedClass, ulong objectId, ulong counter);
 		
 		void InitializeData (byte[] data, uint currentOffset);
 		void DataProcessed (uint offset);
@@ -802,6 +810,8 @@ namespace Mono.Profiler {
 		public virtual void AllocationSummaryStart (uint collection, ulong startCounter, DateTime startTime) {}
 		public virtual void ClassAllocationSummary (LC c, uint reachableInstances, uint reachableBytes, uint unreachableInstances, uint unreachableBytes) {}
 		public virtual void AllocationSummaryEnd (uint collection, ulong endCounter, DateTime endTime) {}
+		
+		public virtual void MonitorEvent (MonitorEvent eventCode, LC loadedClass, ulong objectId, ulong counter) {}
 		
 		public virtual void InitializeData (byte[] data, uint currentOffset) {}
 		public virtual void DataProcessed (uint offset) {}
