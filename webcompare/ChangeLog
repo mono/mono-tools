@@ -1,5 +1,13 @@
 2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
+	* db/webcompare-db.exe.config-EDITME:
+	* db/webcompare-db.cs: read the connection string from the config
+	file.
+	* db/Makefile:
+	* Makefile: do not push the local configuration file.
+
+2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
 	* main.css:
 	* Makefile:
 	* index.aspx:

@@ -1,5 +1,16 @@
 SUBDIRS=db
 base = ../gui-compare
+
+# Do NOT copy your local webcompare-db.exe.config to the server
+DB_SYNCFILES= \
+	db/Makefile \
+	db/init-db.mysql \
+	db/webcompare-db.cs \
+	db/webcompare-db.exe.config-EDITME \
+	db/web.config \
+	db/*.dll \
+	db/*.exe
+
 SOURCES =  \
 	$(base)/Comparison.cs		\
 	$(base)/Metadata.cs
@@ -21,7 +32,8 @@ run: all
 	xsp2
 
 push: all
-	rsync --rsh=ssh -pr db bin images App_Code Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/
+	rsync --rsh=ssh -pr bin images App_Code Web.config index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status-test/
+	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status-test/db/
 
 clean:
 	rm -f rm bin/Mono.Api.CompareMinimal.dll*

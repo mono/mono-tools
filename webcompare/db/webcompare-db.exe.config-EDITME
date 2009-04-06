@@ -1,0 +1,5 @@
+<configuration>
+	<appSettings>
+		<add key="WebCompareDB" value="Server=localhost;Database=webcompare;User ID=webcompare;Password=webcompare;Pooling=true;" />
+	</appSettings>
+</configuration>

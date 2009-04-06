@@ -1,5 +1,35 @@
+//
+// webcompare-db.cs
+//
+// Authors:
+//      Gonzalo Paniagua Javier (gonzalo@novell.com)
+//
+// Copyright (c) Copyright 2009 Novell, Inc
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -28,9 +58,16 @@ class Populate {
 	}
 
 	static string [] default_compares = new string [] { "3.5 2.0", "SL2 2.1", "2.0 2.0", "1.1 1.0" };
+	static string cnc_string;
 
 	static int Main (string [] args)
 	{
+		NameValueCollection col = ConfigurationManager.AppSettings;
+		cnc_string = col ["WebCompareDB"];
+		if (String.IsNullOrEmpty (cnc_string)) {
+			Console.Error.WriteLine ("Missing connection string from configuration file.");
+			return 1;
+		}
 		List<string> compares = new List<string>();
 		foreach (string arg in args) {
 			if (arg == "--help") {
@@ -111,7 +148,7 @@ class Populate {
 	static IDbConnection GetConnection ()
 	{
 		IDbConnection cnc = new MySqlConnection ();
-		cnc.ConnectionString = "Server=localhost;Database=webcompare;User ID=gonzalo;Password=gonzalo;Pooling=true;Min Pool Size=2;";
+		cnc.ConnectionString = cnc_string;
 		cnc.Open ();
 		return cnc;
 	}
