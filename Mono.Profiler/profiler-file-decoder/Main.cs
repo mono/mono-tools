@@ -218,6 +218,12 @@ namespace Mono.Profiler
 				}
 			}
 			
+			if (data.GlobalMonitorStatistics.ContainsData) {
+				PrintSeparator (writer);
+				writer.WriteLine ("Reporting monitor statistics.");
+				data.GlobalMonitorStatistics.WriteStatistics (writer, data);
+			}
+			
 			ProfilerEventHandler.GcStatistics[] gcStatistics = data.GarbageCollectioncStatistics;
 			if (gcStatistics.Length > 0) {
 				double totalTime = data.ClicksToSeconds (data.EndCounter - data.StartCounter);
