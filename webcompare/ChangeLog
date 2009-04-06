@@ -1,3 +1,19 @@
+2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* main.css:
+	* Makefile:
+	* index.aspx:
+	* db: New directory.
+	* db/web.config: blocks access to this directory.
+	* db/init-db.mysql: MySQL table and procedures creation.
+	* db/webcompare-db.cs: compare/insert tool.
+	* db/Makefile:
+	* images/wait.gif: Removed file.
+	* images/header-logo.png: New file.
+	* App_Code/NodeUtils.cs: New file.
+	* App_Code/CompareParameters.cs: add new property.
+	* status.aspx: use the DB backend to populate the nodes.
+
 2008-12-19  Miguel de Icaza  <miguel@novell.com>
 
 	* status.aspx: Display how long ago the assemblies were updated.

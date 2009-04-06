@@ -1,0 +1,88 @@
+USE `mysql`;
+--
+-- Dumping data for table `proc`
+--
+
+LOCK TABLES `proc` WRITE;
+/*!40000 ALTER TABLE `proc` DISABLE KEYS */;
+INSERT INTO `proc` VALUES ('webcompare','get_children','PROCEDURE','get_children','SQL','CONTAINS_SQL','NO','DEFINER','IN master_id INT, IN parent_name VARCHAR(128)','','BEGIN\nSELECT * FROM nodes n WHERE n.master_id = master_id AND n.parent_name = parent_name ORDER BY child_id;\nEND','root@localhost','2009-04-04 10:17:36','2009-04-04 10:17:36','',''),('webcompare','get_messages','PROCEDURE','get_messages','SQL','CONTAINS_SQL','NO','DEFINER','IN master_id INT, IN nodename VARCHAR(128)','','BEGIN\nSELECT m.is_todo, m.message\nFROM messages m\nWHERE m.master_id = master_id AND node_name = nodename;\nEND','root@localhost','2009-04-04 07:10:53','2009-04-04 07:10:53','',''),('webcompare','insert_master','PROCEDURE','insert_master','SQL','CONTAINS_SQL','NO','DEFINER',' IN reference varchar(100), IN profile varchar (100), IN assembly varchar (100), IN last_updated timestamp, OUT id int','','BEGIN\nINSERT INTO master (reference, profile, assembly, last_updated, active) VALUES (reference, profile, assembly, last_updated, FALSE);\nSET id = LAST_INSERT_ID();\nEND','root@localhost','2009-04-04 07:11:23','2009-04-04 07:11:23','',''),('webcompare','update_active_master','PROCEDURE','update_active_master','SQL','CONTAINS_SQL','NO','DEFINER','IN master_id INT','','BEGIN\nDECLARE reference varchar(128);\nDECLARE profile varchar(128);\nDECLARE assembly varchar(128);\n\nSELECT m.reference, m.profile, m.assembly\nFROM master m\nWHERE m.id = master_id\nINTO @reference, @profile, @assembly;\n\nUPDATE master m\nSET m.active = TRUE\nWHERE m.id = master_id;\n\nUPDATE master m\nSET m.active = FALSE\nWHERE m.id <> master_id AND m.reference = @reference AND m.profile = @profile AND m.assembly = @assembly;\nEND','root@localhost','2009-04-04 09:13:03','2009-04-04 09:13:03','',''),('webcompare','get_master_id','PROCEDURE','get_master_id','SQL','CONTAINS_SQL','NO','DEFINER','in reference varchar(100), in profile varchar (100), in assembly varchar(100)','','BEGIN\nSELECT m.id FROM master m\nWHERE m.reference = reference AND m.profile = profile AND m.assembly = assembly\nORDER BY last_updated DESC\nLIMIT 1;\n\nEND','root@localhost','2009-04-04 09:54:13','2009-04-04 09:54:13','',''),('webcompare','get_node_by_name','PROCEDURE','get_node_by_name','SQL','CONTAINS_SQL','NO','DEFINER','in master_id int, in nodename varchar(128)','','BEGIN\nSELECT n.* FROM nodes n\nWHERE n.master_id = master_id AND n.node_name = nodename;\nEND','root@localhost','2009-04-05 12:27:36','2009-04-05 12:27:36','','');
+/*!40000 ALTER TABLE `proc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Current Database: `webcompare`
+--
+
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `webcompare` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+USE `webcompare`;
+
+--
+-- Table structure for table `master`
+--
+
+DROP TABLE IF EXISTS `master`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `master` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `reference` varchar(100) character set utf8 NOT NULL,
+  `profile` varchar(100) character set utf8 NOT NULL,
+  `assembly` varchar(100) character set utf8 NOT NULL,
+  `last_updated` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `active` bit(1) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `master_idx_1` (`reference`,`profile`,`assembly`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `messages` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `node_name` varchar(128) collate utf8_bin NOT NULL,
+  `master_id` int(10) unsigned NOT NULL,
+  `is_todo` bit(1) NOT NULL,
+  `message` varchar(256) collate utf8_bin default NULL,
+  PRIMARY KEY  (`id`),
+  KEY `master_id_msg_idx` (`master_id`),
+  KEY `name_nodename_idx` USING BTREE (`node_name`,`master_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ROW_FORMAT=DYNAMIC;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Table structure for table `nodes`
+--
+
+DROP TABLE IF EXISTS `nodes`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `nodes` (
+  `node_name` varchar(128) character set utf8 collate utf8_bin NOT NULL,
+  `master_id` int(10) unsigned NOT NULL,
+  `child_id` int(11) NOT NULL,
+  `parent_name` varchar(128) character set utf8 collate utf8_bin NOT NULL,
+  `comparison_type` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `extras` int(11) NOT NULL,
+  `missing` int(11) NOT NULL,
+  `present` int(11) NOT NULL,
+  `warning` int(11) NOT NULL,
+  `todo` int(11) NOT NULL,
+  `niex` int(11) NOT NULL,
+  `throwsnie` tinyint(1) NOT NULL,
+  `has_children` tinyint(1) NOT NULL,
+  `has_messages` tinyint(1) NOT NULL,
+  `name` varchar(128) character set utf8 collate utf8_bin default NULL,
+  `typename` varchar(128) character set utf8 collate utf8_bin default NULL,
+  PRIMARY KEY  (`node_name`,`master_id`),
+  KEY `master_id_nodes_idx` (`master_id`),
+  KEY `master_parent_idx` USING BTREE (`parent_name`,`master_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+SET character_set_client = @saved_cs_client;
+
