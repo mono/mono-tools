@@ -32,8 +32,8 @@ run: all
 	xsp2
 
 push: all
-	rsync --rsh=ssh -pr --exclude=Web.config Web.config-EDITME bin images App_Code index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status-test/
-	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status-test/db/
+	rsync --rsh=ssh -pr --exclude=Web.config Web.config-EDITME bin images App_Code index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/
+	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status/db/
 
 clean:
 	rm -f rm bin/Mono.Api.CompareMinimal.dll*
