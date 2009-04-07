@@ -1,3 +1,10 @@
+2009-04-07 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* INSTALL: added deployment instructions.
+	* main.css: fix the logo url.
+	* Makefile: use a variable for the files in the base folder that are
+	pushed to the server.
+
 2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* Web.config: Removed file.

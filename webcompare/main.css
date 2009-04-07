@@ -5,7 +5,7 @@ body { font-size: small; margin: 0; padding: 0; background:#fff; color:#000; fon
 }
 
 #header {
-	background: #4f83c4 url(../images/header-logo.png) no-repeat scroll 0 0;
+	background: #4f83c4 url(images/header-logo.png) no-repeat scroll 0 0;
 	height: 80px;
 	margin: 0;
 	clear: both;

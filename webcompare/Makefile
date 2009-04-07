@@ -11,6 +11,15 @@ DB_SYNCFILES= \
 	db/*.dll \
 	db/*.exe
 
+BASE_FILES= \
+	Web.config-EDITME \
+	README \
+	Makefile \
+	ChangeLog \
+	main.css \
+	index.aspx \
+	status.aspx
+
 SOURCES =  \
 	$(base)/Comparison.cs		\
 	$(base)/Metadata.cs
@@ -32,7 +41,7 @@ run: all
 	xsp2
 
 push: all
-	rsync --rsh=ssh -pr --exclude=Web.config Web.config-EDITME bin images App_Code index.aspx status.aspx mono-web@www.go-mono.com:go-mono/status/
+	rsync --rsh=ssh -pr ${BASE_FILES} bin images App_Code mono-web@www.go-mono.com:go-mono/status/
 	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status/db/
 
 clean:

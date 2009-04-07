@@ -1,0 +1,63 @@
+Install instructions for webcompare 
+=====================================
+
+Directory layout:
+-------------------
+
+	./: the directory in which this file is. It is the base for the web
+	application.
+	AppCode/: source files compiled by ASP.NET at runtime.
+	db/: the web update application.
+	images/: images for the web app.
+
+The web update application relies on you adding two directories to the base
+one:
+	masterinfos/ -> masterinfo files should be copied here into
+			directories with the Mono version name ('2.0', '3.5', ...).
+
+	binary/ -> 	assemblies should be copied here into directories with
+			the MS .NET version name.
+
+
+Prerequisites
+------------
+	* Recent mono
+	* MySQL server version >= 5.0
+	* MySql.Data.dll in bin/ and db/.
+	You can compile one from MySql sources get it from one of the packages
+	at http://dev.mysql.com/downloads/
+
+
+MySQL configuration
+--------------------
+	* Create a database (i.e. 'webcompare').
+	* Create and assign privileges to the web application DB user like:
+  mysql> GRANT SELECT,EXECUTE on `webcompare`.* TO `webcompare`@`localhost`;
+  mysql> GRANT SELECT on `mysql`.`proc` TO `webcompare`@`localhost`;
+  mysql> SET PASSWORD FOR `webcompare`@`localhost` = PASSWORD ('thepassword');
+  	* Create the user for the webcompare-db.exe application:
+  mysql> GRANT ALL on `webcompare`.* TO `dbupdater`@`localhost`;
+  mysql> SET PASSWORD FOR `dbupdater`@`localhost` = PASSWORD ('apassword');
+  mysql> GRANT FILE ON *.* TO `dbupdater`@`localhost`;
+
+
+Web app configuration
+----------------------
+	* Copy the Web.config-EDITME file to web.config.
+	* Edit the existing <appSettings> section to add a value for your connection
+	string. It should be something like:
+
+  "Server=localhost;Database=webcompare;User ID=webcompare;Password=thepassword;Pooling=true;Min Pool Size=4;"
+
+
+DB update app configuration
+----------------------------
+	* Copy db/webcompare-db.exe.config-EDITME to db/webcompare-db.exe.config
+	* Edit the existing appSettings section to set the connection string
+	for the 'dbupdater' user.
+
+And that's it.
+
+You should run the DB update app (db/webcompare-db.exe) whenever you update
+the binary/ folder with new assemblies.
+
