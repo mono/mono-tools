@@ -1,3 +1,8 @@
+2009-04-07  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* InfoManager.cs: Look up the Moonlight assemblies in the 
+	correct plugin directory.
+
 2009-04-06 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* Comparison.cs: add properties used by the DB backend of the web

@@ -485,7 +485,7 @@ namespace GuiCompare
 			
 			string corlibdir = System.IO.Path.GetDirectoryName (typeof (int).Assembly.Location);
 			monodir = System.IO.Path.GetFullPath (System.IO.Path.Combine (corlibdir, "..")); 
-			moondir = System.IO.Path.Combine (monodir, @"../moon/plugin");
+			moondir = System.IO.Path.Combine (monodir, @"../moonlight/plugin");
 	
 			// Work around limitation in Stetic, there is no way
 			// of getting a handle on the menu (!!!)
