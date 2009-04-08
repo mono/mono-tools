@@ -86,3 +86,76 @@ CREATE TABLE `nodes` (
 ) ENGINE=MyISAM DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 SET character_set_client = @saved_cs_client;
 
+#### Changes 1###########3
+ALTER TABLE `webcompare`.`master` ADD COLUMN `detail_level` VARCHAR(25)  NOT NULL AFTER `assembly`,
+DROP INDEX `master_idx_1`,
+ADD INDEX `master_idx_1` USING BTREE(`reference`, `profile`, `assembly`, `detail_level`);
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `webcompare`.`get_master_id`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_master_id`(in reference varchar(100), in profile varchar (100), in assembly varchar(100), in detail_level varchar (25))
+BEGIN
+SELECT m.id FROM master m
+WHERE m.reference = reference AND m.profile = profile AND m.assembly = assembly AND m.detail_level = detail_level
+ORDER BY last_updated DESC
+LIMIT 1;
+
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `webcompare`.`insert_master`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_master`( IN reference varchar(100), IN profile varchar (100), IN assembly varchar (100), IN detail_level VARCHAR(25), IN last_updated timestamp, OUT id int)
+BEGIN
+INSERT INTO master (reference, profile, assembly, detail_level, last_updated, active) VALUES (reference, profile, assembly, detail_level, last_updated, FALSE);
+SET id = LAST_INSERT_ID();
+END$$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `webcompare`.`update_active_master`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_active_master`(IN master_id INT)
+BEGIN
+DECLARE reference varchar(128);
+DECLARE profile varchar(128);
+DECLARE assembly varchar(128);
+DECLARE detail_level varchar(25);
+
+SELECT m.reference, m.profile, m.assembly, m.detail_level
+FROM master m
+WHERE m.id = master_id
+INTO @reference, @profile, @assembly, @detail_level;
+
+UPDATE master m
+SET m.active = TRUE
+WHERE m.id = master_id;
+
+UPDATE master m
+SET m.active = FALSE
+WHERE m.id <> master_id AND m.reference = @reference AND m.profile = @profile AND m.assembly = @assembly AND m.detail_level = @detail_level;
+END$$
+
+DELIMITER ;
+
+CREATE TABLE `webcompare`.`filters` (
+  `id` int  NOT NULL AUTO_INCREMENT,
+  `is_rx` bit  NOT NULL,
+  `name_filter` varchar(100) ,
+  `typename_filter` varchar(100) ,
+  PRIMARY KEY (`id`)
+)
+ENGINE = MyISAM;
+
+INSERT INTO filters (is_rx, name_filter, typename_filter) VALUES
+	(0, 'System.ComponentModel.BrowsableAttribute', NULL),
+        (0, 'System.ComponentModel.EditorBrowsableAttribute', NULL),
+	(0, 'System.ComponentModel.DesignerSerializationVisibilityAttribute', NULL),
+	(0, 'System.ComponentModel.DesignerAttribute', NULL),
+	(1, '^System.Diagnostics.Debug.*', NULL);
+

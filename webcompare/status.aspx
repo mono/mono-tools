@@ -24,7 +24,7 @@ NodeUtils db;
 NodeUtils DB {
 	get {
 		if (db == null)
-			db = new NodeUtils (Parameters.InfoDir, Parameters.Profile, Parameters.Assembly);
+			db = new NodeUtils (Parameters.InfoDir, Parameters.Profile, Parameters.Assembly, Parameters.DetailLevel);
 		return db;
 	}
 }
@@ -32,15 +32,19 @@ NodeUtils DB {
 
 static string ImageTodo (ComparisonNode cn)
 {
-	return String.Format ("<img src='images/st.gif' border=0 align=absmiddle title='{0}'>", GetTodo (cn));
+	string todo = GetTodo (cn);
+	if (!String.IsNullOrEmpty (todo))
+		todo = HttpUtility.HtmlEncode (todo);
+	return String.Format ("<img src='images/st.gif' border=0 align=absmiddle title=\"{0}\">", todo);
 }
 
 static string Get (int count, string kind, string caption)
 {
 	if (count == 0)
 		return "";
-	
-	return String.Format ("<div class='report' title='{0} {2}'><div class='icons suffix {1}'></div>{0}</div>", count, kind, caption);
+
+	caption = HttpUtility.HtmlEncode (caption);
+	return String.Format ("<div class='report' title=\"{0} {2}\"><div class='icons suffix {1}'></div>{0}</div>", count, kind, caption);
 }
 	  
 static string GetStatus (ComparisonNode n)
@@ -63,13 +67,22 @@ public void Page_Load ()
 	if (IsPostBack)
 		return;
 
+	Header.Title = String.Format ("Mono {1} in {0} vs MS.NET {2}", Parameters.InfoDir, Parameters.Assembly, Parameters.Profile);
+	page_header.InnerText = Header.Title;
+
+	string detail = Request.QueryString ["detail_level"];
+	if (String.IsNullOrEmpty (detail) || detail != "detailed")
+		detail = "normal";
+	
+	dlevel.SelectedValue = detail;
 	var cp = Parameters;
 	var n = DB.GetRootNode ();
 	if (n == null) {
 		tree.Visible = false;
 		tree.Enabled = false;
 		time_label.Text = "No data available for " + 
-				String.Format ("Mono <b>{1}</b> in {0} vs MS.NET {2}", Parameters.InfoDir, Parameters.Assembly, Parameters.Profile);
+				HttpUtility.HtmlEncode (String.Format ("Mono <b>{1}</b> in {0} vs MS.NET {2}",
+							Parameters.InfoDir, Parameters.Assembly, Parameters.Profile));
 		return;
 	}
 
@@ -89,9 +102,7 @@ public void Page_Load ()
 	else 
 	        t = String.Format ("{0} seconds", diff.Seconds);
 
-	time_label.Text = String.Format ("Assembly <b>{1}</b> last updated: {0} ago", t, Parameters.Assembly);
-	Header.Title = String.Format ("Mono {1} in {0} vs MS.NET {2}", Parameters.InfoDir, Parameters.Assembly, Parameters.Profile);
-	page_header.InnerText = Header.Title;
+	time_label.Text = String.Format ("Assembly <b>{1}</b> last updated: {0} ago", t, HttpUtility.HtmlEncode (Parameters.Assembly));
 }
 
 static string GetTodo (ComparisonNode cn)
@@ -123,17 +134,19 @@ static string GetMessages (ComparisonNode cn)
 static string ImagesFromCounts (ComparisonNode cn)
 {
 	int x = (cn.Todo != 0 ? 2 : 0) | (cn.Warning != 0 ? 1 : 0);
-	switch (x){
+	switch (x) {
         case 0:
-       		return "";
+       		return null;
 	case 1:
 		return ImageWarning;
 	case 2:
 	        return ImageTodo (cn);
 	case 4:
 	        return ImageTodo (cn) + ImageWarning;
+	default:
+		break;
 	}
-	return "";
+	return null;
 }
 
 static string MemberStatus (ComparisonNode cn)
@@ -145,16 +158,16 @@ static string MemberStatus (ComparisonNode cn)
 
 	switch (cn.Status) {
 	case ComparisonStatus.None:
-	        return counts == "" ? ImageOk : ImageOk + counts;
+	        return ImageOk + counts;
 		
 	case ComparisonStatus.Missing:
 		return ImageMissing;
 		
 	case ComparisonStatus.Extra:
-		return counts == "" ? ImageExtra : ImageOk + counts;
+		return ImageExtra + counts;
 		
 	case ComparisonStatus.Error:
-	        return counts == "" ? ImageError : ImageError + counts;
+	        return ImageError + counts;
 
 	default:
 		return "Unknown status: " + cn.Status;
@@ -311,6 +324,17 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		e.Node.ChildNodes.Add (tn);
 	}
 }
+
+void OnLevelChanged (object sender, EventArgs args)
+{
+	if (dlevel.SelectedIndex < 0)
+		return;
+
+	string url = String.Format ("{0}?reference={1}&profile={2}&assembly={3}&detail_level={4}", Request.FilePath,
+				Parameters.InfoDir, Parameters.Profile, Parameters.Assembly, dlevel.SelectedValue);
+	Response.Redirect (url);
+}
+
 </script>
 <html>
 <head id="head1" runat="server">
@@ -322,21 +346,28 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
     	<h1 runat="server" id="page_header">Mono Class Status Pages</h1>
     </div>
     <form id="form" runat="server">
-        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
 	<div id="content">
-		<br>
-		<asp:Label id="time_label" runat="server"/>
-		<asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Always">
-		<ContentTemplate>
+		<div id="treeview">
+			<br>
+			<asp:Label id="time_label" runat="server"/>
 			<asp:TreeView ID="tree" Runat="server"
 				OnTreeNodePopulate="TreeNodePopulate"
 				EnableClientScript="true"
 				PopulateNodesFromClient="true"
 				ExpandDepth="1">
 			</asp:TreeView>
-		</ContentTemplate>
-		</asp:UpdatePanel>
 		</div>
+		<div id="detaillevel">
+		<div style="font-weight: bold; margin-bottom: 0.5em; text-align: center;">Detail Level</div>
+		<asp:RadioButtonList id="dlevel" runat="server"
+			AutoPostBack="true"
+			RepeatDirection="vertical"
+			OnSelectedIndexChanged="OnLevelChanged">
+			<asp:ListItem Text="Normal" Value="normal" Selected="true" />
+			<asp:ListItem Text="Detailed" Value="detailed" />
+		</asp:RadioButtonList>
+		</div>
+	</div>
     </form>
 </body>
 </html>

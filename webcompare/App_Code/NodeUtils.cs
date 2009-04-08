@@ -54,6 +54,7 @@ public class NodeUtils {
 	string profile;
 	string assembly;
 	int master_id;
+	string detail_level;
 
 	static NodeUtils ()
 	{
@@ -61,7 +62,7 @@ public class NodeUtils {
 		cnc_string = col ["WebCompareDB"];
 	}
 
-	public NodeUtils (string reference, string profile, string assembly)
+	public NodeUtils (string reference, string profile, string assembly, string detail_level)
 	{
 		if (String.IsNullOrEmpty (reference))
 			throw new ArgumentNullException ("reference");
@@ -69,10 +70,16 @@ public class NodeUtils {
 			throw new ArgumentNullException ("profile");
 		if (String.IsNullOrEmpty (assembly))
 			throw new ArgumentNullException ("assembly");
+		if (String.IsNullOrEmpty (detail_level))
+			throw new ArgumentNullException ("detail_level");
+
+		if (detail_level != "normal" && detail_level != "detailed")
+			throw new ArgumentException ("detail_level", "Invalid value");
 
 		this.reference = reference;
 		this.profile = profile;
 		this.assembly = assembly;
+		this.detail_level = detail_level;
 		master_id = -1;
 	}
 
@@ -85,6 +92,7 @@ public class NodeUtils {
 		AddParameter (cmd, "reference", reference);
 		AddParameter (cmd, "profile", profile);
 		AddParameter (cmd, "assembly", assembly);
+		AddParameter (cmd, "detail_level", detail_level);
 		master_id = Convert.ToInt32 (cmd.ExecuteScalar ());
 		return master_id;
 	}

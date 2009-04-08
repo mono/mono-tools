@@ -34,6 +34,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using MySql.Data.MySqlClient;
 using GuiCompare;
@@ -135,6 +136,12 @@ class Populate {
 			state.UpdateLock.WaitOne ();
 			if (state.Root != null) {
 				Console.WriteLine ("Inserting {0} {1} {2}", state.Reference, state.Profile, state.Assembly);
+				state.DetailLevel = "detailed";
+				InsertRoot (state);
+				state.Root.ResetCounts ();
+				FilterRoot (state.Root);
+				state.Root.PropagateCounts ();
+				state.DetailLevel = "normal";
 				InsertRoot (state);
 			} else {
 				Console.WriteLine ("No insertions for {0} {1} {2}", state.Reference, state.Profile, state.Assembly);
@@ -145,7 +152,7 @@ class Populate {
 		}
 	}
 
-	static IDbConnection GetConnection ()
+	public static IDbConnection GetConnection ()
 	{
 		IDbConnection cnc = new MySqlConnection ();
 		cnc.ConnectionString = cnc_string;
@@ -204,6 +211,7 @@ class Populate {
 			AddParameter (cmd, "reference", state.Reference);
 			AddParameter (cmd, "profile", state.Profile);
 			AddParameter (cmd, "assembly", state.Assembly);
+			AddParameter (cmd, "detail_level", state.DetailLevel);
 			AddParameter (cmd, "last_updated", state.AssemblyLastWrite);
 			IDataParameter p = AddOutputParameter (cmd, "id");
 			cmd.ExecuteNonQuery ();
@@ -401,6 +409,44 @@ class Populate {
 			return "\\N";
 		return str.Replace ("\t", "\\\t").Replace ('\n', ' ').Replace ('\r', ' ');
 	}
+
+	static void FilterRoot (ComparisonNode node)
+	{
+		Filters filters = null;
+		using (IDbConnection cnc = Populate.GetConnection ()) {
+			IDbCommand cmd = cnc.CreateCommand ();
+			cmd.CommandText = "SELECT is_rx, name_filter, typename_filter FROM filters";
+			using (IDataReader reader = cmd.ExecuteReader ()) {
+				filters = new Filters (reader);
+			}
+		}
+
+		FilterNode (filters, node);
+	}
+
+	static bool FilterNode (Filters filters, ComparisonNode node)
+	{
+		if (filters.Filter (node.Name, node.TypeName)) {
+			Console.WriteLine ("OUT: '{0}' '{1}'", node.Name, node.TypeName);
+			return true;
+		}
+
+		List<ComparisonNode> removed = null;
+		foreach (ComparisonNode child in node.Children) {
+			if (FilterNode (filters, child)) {
+				if (removed == null)
+					removed = new List<ComparisonNode> ();
+				removed.Add (child);
+			}
+		}
+		if (removed == null)
+			return false;
+
+		foreach (ComparisonNode child in removed)
+			node.Children.Remove (child);
+
+		return false;
+	}
 }
 
 class State {
@@ -422,6 +468,8 @@ class State {
 	public StreamWriter MessagesWriter;
 	public int MasterId;
 
+	public string DetailLevel;
+
 	public State (string reference, string profile, string assembly, string info_file, string dll_file)
 	{
 		Reference = reference;
@@ -436,6 +484,70 @@ class State {
 		File.Delete (NodesFileName);
 		File.Delete (MessagesFileName);
 		AssemblyLastWrite = new FileInfo (dll_file).LastWriteTimeUtc;
+	}
+}
+
+class Filters {
+	const RegexOptions rx_options = RegexOptions.Compiled;
+	// -null matches null
+	// -"*" matches any string, including null
+	List<string []> static_filters;
+
+	// -null matches null
+	List<Regex []> rx_filters;
+
+	public Filters (IDataReader reader)
+	{
+		static_filters = new List<string[]> ();	
+		rx_filters = new List<Regex []> ();
+		while (reader.Read ()) {
+			string name_filter = reader ["name_filter"] as string;
+			string typename_filter = reader ["typename_filter"] as string;
+			if (false == Convert.ToBoolean (reader ["is_rx"]))
+				static_filters.Add (new string [] { name_filter, typename_filter });
+			else {
+				Regex [] rxs = new Regex [2];
+				if (name_filter != null)
+					rxs [0] = new Regex (name_filter, rx_options);
+				if (typename_filter != null)
+					rxs [1] = new Regex (typename_filter, rx_options);
+				rx_filters.Add (rxs);
+			}
+		}
+	}
+
+	public bool Filter (string name, string typename)
+	{
+		bool match = false;
+		foreach (string [] strs in static_filters) {
+			string s1 = strs [0];
+			string s2 = strs [1];
+			if (s2 == "*")
+				match = (s1 == strs [0]);
+			else if (s1 == "*")
+				match = (s2 == strs [1]);
+			else
+				match = (name == s1 && typename == s2);
+
+			if (match)
+				return true;
+		}
+
+		foreach (Regex [] rx in rx_filters) {
+			Regex rx1 = rx [0];
+			Regex rx2 = rx [1];
+			if (rx1 != null && rx2 != null && rx1.IsMatch (name) && rx2.IsMatch (typename))
+				match = true;
+			else if (rx1 != null && typename == null && rx1.IsMatch (name))
+				match = true;
+			else if (rx2 != null && name == null && rx2.IsMatch (typename))
+				match = true;
+
+			if (match)
+				return true;
+		}
+
+		return false;
 	}
 }
 

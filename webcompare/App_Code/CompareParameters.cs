@@ -40,6 +40,7 @@ public class CompareParameters {
 		Assembly = nvc ["assembly"] ?? "mscorlib";
 		InfoDir  = nvc ["reference"] ?? "3.5";
 		profile = nvc ["profile"] ?? "2.0";
+		detail_level = nvc ["detail_level"] ?? "normal";
 		Validate (profile);
 		BinDir = "binary/" + profile;
 	}
@@ -58,6 +59,11 @@ public class CompareParameters {
 	string profile;
 	public string Profile {
 		get { return profile; }
+	}
+
+	string detail_level;
+	public string DetailLevel {
+		get { return detail_level; }
 	}
 
 	string assembly;

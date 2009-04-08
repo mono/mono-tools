@@ -31,14 +31,33 @@ Prerequisites
 MySQL configuration
 --------------------
 	* Create a database (i.e. 'webcompare').
+
+	* Run the init-db.mysql script in MySql:
+	   mysql> source init-db.mysql
+
 	* Create and assign privileges to the web application DB user like:
-  mysql> GRANT SELECT,EXECUTE on `webcompare`.* TO `webcompare`@`localhost`;
-  mysql> GRANT SELECT on `mysql`.`proc` TO `webcompare`@`localhost`;
-  mysql> SET PASSWORD FOR `webcompare`@`localhost` = PASSWORD ('thepassword');
+	   mysql> GRANT SELECT,EXECUTE on `webcompare`.* TO `webcompare`@`localhost`;
+	   mysql> GRANT SELECT on `mysql`.`proc` TO `webcompare`@`localhost`;
+	   mysql> SET PASSWORD FOR `webcompare`@`localhost` = PASSWORD ('thepassword');
+
   	* Create the user for the webcompare-db.exe application:
-  mysql> GRANT ALL on `webcompare`.* TO `dbupdater`@`localhost`;
-  mysql> SET PASSWORD FOR `dbupdater`@`localhost` = PASSWORD ('apassword');
-  mysql> GRANT FILE ON *.* TO `dbupdater`@`localhost`;
+	   mysql> GRANT ALL on `webcompare`.* TO `dbupdater`@`localhost`;
+	   mysql> SET PASSWORD FOR `dbupdater`@`localhost` = PASSWORD ('apassword');
+	   mysql> GRANT FILE ON *.* TO `dbupdater`@`localhost`;
+
+	* Add any filters that you want on the full compare to generate the 'normal' view:
+	mysql> INSERT INTO filters VALUES (NULL, 0, 'name_str', 'typename_str');
+	mysql> INSERT INTO filters VALUES (NULL, 0, 'name_str', NULL);
+	mysql> INSERT INTO filters VALUES (NULL, 0, NULL, 'typename_str');
+	mysql> INSERT INTO filters VALUES (NULL, 1, 'regex_name', 'regex_typename');
+	mysql> INSERT INTO filters VALUES (NULL, 1, 'regex_name', NULL);
+	mysql> INSERT INTO filters VALUES (NULL, 1, NULL, 'regex_typename');
+
+		-The first column should always be inserted as NULL.
+		-The second column is 0 for string and 1 for Regex.
+		-The third column is the string/Regex to match the 'name'
+		-The forth column is the string/Regex to match the 'typename'
+		-A NULL for the 3rd/4rd column matches a NULL in the input data.
 
 
 Web app configuration
