@@ -73,6 +73,19 @@ namespace GuiCompare {
 			}
 		}
 
+		public void ResetCounts ()
+		{
+			foreach (ComparisonNode n in Children)
+				n.ResetCounts ();
+
+			Todo = 0;
+			Niex = 0;
+			Extra = 0;
+			Missing = 0;
+			Present = 0;
+			Warning = 0;
+		}
+
 		public void AddError (string msg)
 		{
 			Status = ComparisonStatus.Error;

@@ -1,3 +1,8 @@
+2009-04-08 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* Comparison.cs: added a Reset() so we're able to recalculate the
+	counts after modifying the tree.
+
 2009-04-07  Rolf Bjarne Kvinge  <RKvinge@novell.com>
 
 	* InfoManager.cs: Look up the Moonlight assemblies in the 
