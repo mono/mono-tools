@@ -427,7 +427,7 @@ class Populate {
 	static bool FilterNode (Filters filters, ComparisonNode node)
 	{
 		if (filters.Filter (node.Name, node.TypeName)) {
-			Console.WriteLine ("OUT: '{0}' '{1}'", node.Name, node.TypeName);
+			//Console.WriteLine ("OUT: '{0}' '{1}'", node.Name, node.TypeName);
 			return true;
 		}
 

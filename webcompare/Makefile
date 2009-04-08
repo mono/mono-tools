@@ -44,6 +44,10 @@ push: all
 	rsync --rsh=ssh -pr ${BASE_FILES} bin images App_Code mono-web@www.go-mono.com:go-mono/status/
 	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status/db/
 
+pushdb: all
+	rsync --rsh=ssh -pr ${DB_SYNCFILES} mono-web@www.go-mono.com:go-mono/status/db/
+
 clean:
 	rm -f rm bin/Mono.Api.CompareMinimal.dll*
 	make -C db clean
+
