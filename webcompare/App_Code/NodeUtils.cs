@@ -155,11 +155,8 @@ public class NodeUtils {
 			using (IDataReader reader = cmd.ExecuteReader ()) {
 				if (reader.Read ()) {
 					CompType comp_type = (CompType) reader ["comparison_type"];
-					string display_name = (string) reader ["name"];
-					string type_name = null;
-					object t = reader ["typename"];
-					if (t != null && t != DBNull.Value)
-						type_name = (string) t;
+					string display_name = reader ["name"] as string;
+					string type_name = reader ["typename"] as string;
 					node = new ComparisonNode (comp_type, display_name, type_name);
 					SetValuesFromReader (reader, node);
 				}
@@ -189,11 +186,8 @@ public class NodeUtils {
 			using (IDataReader reader = cmd.ExecuteReader ()) {
 				while (reader.Read ()) {
 					CompType comp_type = (CompType) reader ["comparison_type"];
-					string display_name = (string) reader ["name"];
-					string type_name = null;
-					object t = reader ["typename"];
-					if (t != null && t != DBNull.Value)
-						type_name = (string) t;
+					string display_name = reader ["name"] as string;
+					string type_name = reader ["typename"] as string;
 					ComparisonNode child = new ComparisonNode (comp_type, display_name, type_name);
 					child.Parent = node;
 					SetValuesFromReader (reader, child);

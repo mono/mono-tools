@@ -1,3 +1,8 @@
+2009-04-08 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* App_Code/NodeUtils.cs: prevent nullref in weird cases when 
+	'name' is null (seen in System.ServiceModel 3.5 2.0).
+
 2009-04-07 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* INSTALL: added deployment instructions.
