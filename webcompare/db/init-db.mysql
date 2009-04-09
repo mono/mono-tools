@@ -159,3 +159,9 @@ INSERT INTO filters (is_rx, name_filter, typename_filter) VALUES
 	(0, 'System.ComponentModel.DesignerAttribute', NULL),
 	(1, '^System.Diagnostics.Debug.*', NULL);
 
+####
+INSERT INTO filters VALUES (NULL, 0, 'System.Runtime.InteropServices.ComVisibleAttribute', NULL);
+
+INSERT INTO filters VALUES (NULL, 0, 'System.Void Finalize()', NULL);
+INSERT INTO filters VALUES (NULL, 0, 'System.ComponentModel.DesignerSerializationVisibilityAttribute', NULL);
+

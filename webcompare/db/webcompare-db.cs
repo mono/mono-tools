@@ -55,6 +55,8 @@ class Populate {
 		Console.WriteLine ();
 		Console.WriteLine ("    --help: displays this help");
 		Console.WriteLine ("    --delete-tables: delete ALL the data in ALL the tables and exits.");
+		Console.WriteLine ("    --assemblies A1[,A2,...]: comma-separated list of assemblies to compare.");
+		Console.WriteLine ("                              All other assemblies are ignored.");
 		Console.WriteLine ();
 	}
 
@@ -70,7 +72,16 @@ class Populate {
 			return 1;
 		}
 		List<string> compares = new List<string>();
+		List<string> include_list = new List<string> ();
+		bool got_assemblies = false;
 		foreach (string arg in args) {
+			if (got_assemblies) {
+				string [] strs = arg.Split (',');
+				foreach (string s in strs)
+					include_list.Add (s);
+				got_assemblies = false;
+				continue;
+			}
 			if (arg == "--help") {
 				Help ();
 				return 0;
@@ -80,6 +91,11 @@ class Populate {
 				Console.WriteLine ("Tables deleted");
 				return 0;
 			}
+			if (arg == "--assemblies") {
+				got_assemblies = true;
+				continue;
+			}
+
 			string [] compare = arg.Split ();
 			if (compare.Length != 2) {
 				Console.Error.WriteLine ("Invalid argument: {0}", arg);
@@ -88,13 +104,18 @@ class Populate {
 			compares.Add (arg);
 		}
 
+		if (got_assemblies) {
+			Console.Error.WriteLine ("Assembly list not provided for --assemblies");
+			return 1;
+		}
+
 		string [] actual_compares = null;
 		if (compares.Count == 0)
 			actual_compares = default_compares;
 		else
 			actual_compares = compares.ToArray ();
 
-		CreateWorkItems (actual_compares);
+		CreateWorkItems (actual_compares, include_list);
 		Thread [] comparers = new Thread [1];
 		for (int i = comparers.Length - 1; i >= 0; i--) {
 			comparers [i]= new Thread (PerformComparison);
@@ -173,7 +194,7 @@ class Populate {
 	}
 
 	static List<State> work_items = new List<State> ();
-	static void CreateWorkItems (string [] compares)
+	static void CreateWorkItems (string [] compares, List<string> include_list)
 	{
 		foreach (string str in compares) {
 			string [] s = str.Split ();
@@ -194,6 +215,8 @@ class Populate {
 				select Path.GetFileNameWithoutExtension (p);
 
 			foreach (var assembly in (from p in infos.Intersect (dlls) orderby p select p)) {
+				if (include_list.Count > 0 && include_list.IndexOf (assembly) == -1)
+					continue;
 				string info_file = Path.Combine (mpath, assembly + ".xml");
 				string dll_file = Path.Combine (bpath, assembly + ".dll");
 				State state = new State (reference, profile, assembly, info_file, dll_file);

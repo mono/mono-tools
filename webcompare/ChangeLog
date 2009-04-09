@@ -1,3 +1,9 @@
+2009-04-09 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* db/init-db.mysql: more stuff to filter out.
+	* db/webcompare-db.cs: added a parameter to support updating only
+	the specified assemblies.
+
 2009-04-08 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* App_Code/NodeUtils.cs: prevent nullref in weird cases when 
