@@ -1,3 +1,9 @@
+2009-04-10 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* index.aspx:
+	* main.css:
+	* status.aspx: make this work in IE7.
+
 2009-04-09 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* db/init-db.mysql: more stuff to filter out.

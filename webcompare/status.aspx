@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="GuiCompare" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <script runat="server" language="c#">
 
 const string ImageMissing = "<img src='images/sm.gif' border=0 align=absmiddle title='Missing'>";
@@ -44,7 +45,7 @@ static string Get (int count, string kind, string caption)
 		return "";
 
 	caption = HttpUtility.HtmlEncode (caption);
-	return String.Format ("<div class='report' title=\"{0} {2}\"><div class='icons suffix {1}'></div>{0}</div>", count, kind, caption);
+	return String.Format ("<span class='report' title=\"{0} {2}\"><span class='icons suffix {1}'></span>{0}</span>", count, kind, caption);
 }
 	  
 static string GetStatus (ComparisonNode n)
