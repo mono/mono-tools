@@ -143,6 +143,16 @@ public class NodeUtils {
 
 	public ComparisonNode GetNodeByName (string node_name)
 	{
+		return GetNodeByName (node_name, true);
+	}
+
+	public ComparisonNode GetNodeByName (string node_name, bool get_children)
+	{
+		return GetNodeByName (node_name, get_children, true);
+	}
+
+	public ComparisonNode GetNodeByName (string node_name, bool get_children, bool get_messages)
+	{
 		if (String.IsNullOrEmpty (node_name))
 			node_name = "0";
 
@@ -163,8 +173,10 @@ public class NodeUtils {
 			}
 			if (node != null) {
 				// Get only this node's messages before calling GetChildren
-				GetMessagesForNodeRecursive (cnc, node);
-				GetChildren (node);
+				if (get_messages)
+					GetMessagesForNodeRecursive (cnc, node);
+				if (get_children)
+					GetChildren (node);
 			}
 		}
 		return node;

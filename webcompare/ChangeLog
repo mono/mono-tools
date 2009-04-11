@@ -1,3 +1,9 @@
+2009-04-11 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* App_Code/NodeUtils.cs: new GetNodeByName overloads.
+	* status.aspx: get all the parent nodes for the one we're populating
+	so that creating the links to MSDN work.
+
 2009-04-10 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* index.aspx:

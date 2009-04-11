@@ -247,11 +247,24 @@ static void AttachComments (TreeNode tn, ComparisonNode node)
 
 void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 {
-	ComparisonNode cn = DB.GetNodeByName (e.Node.Value);
+	string val = e.Node.Value;
+	ComparisonNode cn = DB.GetNodeByName (val);
 	if (cn == null){
 		Console.WriteLine ("ERROR: Did not find the node " + e.Node.Value);
 		e.Node.ChildNodes.Add (new TreeNode ("ERROR: Did not find the node", "Error"));
 		return;
+	}
+
+	ComparisonNode chain = cn;
+	int last = val.LastIndexOf ('-');
+	while (last > 0) {
+		string parent = val.Substring (0, last);
+		ComparisonNode node = DB.GetNodeByName (parent, false, false);
+		if (node == null)
+			break;
+		chain.Parent = node;
+		chain = node;
+		last = parent.LastIndexOf ('-');
 	}
 
 	foreach (var child in cn.Children) {
