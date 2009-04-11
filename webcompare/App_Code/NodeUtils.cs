@@ -55,6 +55,7 @@ public class NodeUtils {
 	string assembly;
 	int master_id;
 	string detail_level;
+	DateTime last_updated;
 
 	static NodeUtils ()
 	{
@@ -81,20 +82,32 @@ public class NodeUtils {
 		this.assembly = assembly;
 		this.detail_level = detail_level;
 		master_id = -1;
+		using (IDbConnection cnc = GetConnection ()) {
+			GetBasicInfo (cnc);
+		}
 	}
 
-	int GetMasterID (IDbConnection cnc)
+	void GetBasicInfo (IDbConnection cnc)
 	{
-		if (master_id >= 0)
-			return master_id;
-
 		IDbCommand cmd = GetCommandForProcedure (cnc, "get_master_id");
 		AddParameter (cmd, "reference", reference);
 		AddParameter (cmd, "profile", profile);
 		AddParameter (cmd, "assembly", assembly);
 		AddParameter (cmd, "detail_level", detail_level);
-		master_id = Convert.ToInt32 (cmd.ExecuteScalar ());
-		return master_id;
+		using (IDataReader reader = cmd.ExecuteReader ()) {
+			if (reader.Read ()) {
+				master_id = Convert.ToInt32 (reader ["id"]);
+				last_updated = Convert.ToDateTime (reader ["last_updated"]);
+			}
+		}
+	}
+
+	public int MasterID {
+		get { return master_id; }
+	}
+
+	public DateTime LastUpdateTime {
+		get { return last_updated; }
 	}
 
 	public ComparisonNode GetRootNode ()
@@ -121,7 +134,7 @@ public class NodeUtils {
 	{
 		if (node.HasMessages) {
 			IDbCommand cmd = GetCommandForProcedure (cnc, "get_messages");
-			AddParameter (cmd, "master_id", GetMasterID (cnc));
+			AddParameter (cmd, "master_id", MasterID);
 			AddParameter (cmd, "nodename", node.InternalID);
 			//Console.WriteLine ("call get_messages('{0}')", node.InternalID);
 			using (IDataReader reader = cmd.ExecuteReader ()) {
@@ -159,7 +172,7 @@ public class NodeUtils {
 		ComparisonNode node = null;
 		using (IDbConnection cnc = GetConnection ()) {
 			IDbCommand cmd = GetCommandForProcedure (cnc, "get_node_by_name");
-			AddParameter (cmd, "master_id", GetMasterID (cnc));
+			AddParameter (cmd, "master_id", MasterID);
 			AddParameter (cmd, "nodename", node_name);
 			//Console.WriteLine ("call get_node_by_name ('{0}')", node_name);
 			using (IDataReader reader = cmd.ExecuteReader ()) {
@@ -192,9 +205,9 @@ public class NodeUtils {
 
 		using (IDbConnection cnc = GetConnection ()) {
 			IDbCommand cmd = GetCommandForProcedure (cnc, "get_children");
-			AddParameter (cmd, "master_id", GetMasterID (cnc));
+			AddParameter (cmd, "master_id", MasterID);
 			AddParameter (cmd, "parent_name", node.InternalID);
-			//Console.WriteLine ("call get_children ({0}, '{1}')", GetMasterID (cnc), node.InternalID);
+			//Console.WriteLine ("call get_children ({0}, '{1}')", MasterID, node.InternalID);
 			using (IDataReader reader = cmd.ExecuteReader ()) {
 				while (reader.Read ()) {
 					CompType comp_type = (CompType) reader ["comparison_type"];

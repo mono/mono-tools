@@ -165,3 +165,19 @@ INSERT INTO filters VALUES (NULL, 0, 'System.Runtime.InteropServices.ComVisibleA
 INSERT INTO filters VALUES (NULL, 0, 'System.Void Finalize()', NULL);
 INSERT INTO filters VALUES (NULL, 0, 'System.ComponentModel.DesignerSerializationVisibilityAttribute', NULL);
 
+
+#### Retrieve last_updated in 'get_master_id'
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `webcompare`.`get_master_id`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_master_id`(in reference varchar(100), in profile varchar (100), in assembly varchar(100), in detail_level varchar (25))
+BEGIN
+SELECT m.id, m.last_updated FROM master m
+WHERE m.reference = reference AND m.profile = profile AND m.assembly = assembly AND m.detail_level = detail_level
+ORDER BY last_updated DESC
+LIMIT 1;
+
+END$$
+
+DELIMITER ;
+

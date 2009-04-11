@@ -92,7 +92,7 @@ public void Page_Load ()
 	tn.PopulateOnDemand = true;
 	tree.Nodes.Add (tn);
 
-	var diff = DateTime.UtcNow - cp.GetAssemblyTime ();
+	var diff = DateTime.UtcNow - DB.LastUpdateTime;
 	string t;
 	if (diff.Days > 1)
 		t = String.Format ("{0} days", diff.Days);
@@ -197,6 +197,9 @@ static string GetFQN (ComparisonNode node)
 	string n = GetFQN (node.Parent);
 	int p = node.Name.IndexOf (' ');
 	string name = p == -1 ? node.Name : node.Name.Substring (p+1);
+	p = name.IndexOf ('<');
+	if (p != -1)
+		name = name.Substring (0, p); // remove generic parameters from URL
 
 	return n == "" ? name : n + "." + name;
 }
@@ -211,6 +214,9 @@ static string GetMethodFQN (ComparisonNode node)
 	int q = node.Name.IndexOf (' ');
 	
 	string name = p == -1 || q == -1 ? node.Name : node.Name.Substring (q+1, p-q-1);
+	p = name.IndexOf ('<');
+	if (p != -1)
+		name = name.Substring (0, p); // remove generic parameters from URL
 	
 	if (name == ".ctor")
 		name = "";
