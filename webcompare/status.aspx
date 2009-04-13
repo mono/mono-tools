@@ -3,7 +3,7 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="GuiCompare" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
 <script runat="server" language="c#">
 
 const string ImageMissing = "<img src='images/sm.gif' border=0 align=absmiddle title='Missing'>";
@@ -82,11 +82,15 @@ public void Page_Load ()
 		tree.Visible = false;
 		tree.Enabled = false;
 		time_label.Text = "No data available for " + 
-				HttpUtility.HtmlEncode (String.Format ("Mono <b>{1}</b> in {0} vs MS.NET {2}",
-							Parameters.InfoDir, Parameters.Assembly, Parameters.Profile));
+				String.Format ("Mono <b>{1}</b> in {0} vs MS.NET {2}",
+							HttpUtility.HtmlEncode (Parameters.InfoDir),
+							HttpUtility.HtmlEncode (Parameters.Assembly),
+							HttpUtility.HtmlEncode (Parameters.Profile));
 		return;
 	}
 
+	tbl_counts.DataSource = GetTotals ();
+	tbl_counts.DataBind ();
 	TreeNode tn = new TreeNode (GetStatus (n), n.InternalID.ToString ());
 	tn.SelectAction = TreeNodeSelectAction.None;
 	tn.PopulateOnDemand = true;
@@ -355,8 +359,37 @@ void OnLevelChanged (object sender, EventArgs args)
 	Response.Redirect (url);
 }
 
+static string GetCompTypeName (int comp_type)
+{
+	switch (comp_type) {
+	case 1: return "Namespaces";
+	case 2: return "Attributes";
+	case 3: return "Interfaces";
+	case 4: return "Classes";
+	case 5: return "Structs";
+	case 6: return "Enums";
+	case 7: return "Methods";
+	case 8: return "Properties";
+	case 9: return "Fields";
+	case 10: return "Delegates";
+	case 11: return "Events";
+	default: return "";
+	}
+}
+
+object [] GetTotals ()
+{
+	List<KeyValuePair<int,int>> kvs = DB.GetTotals ();
+	int count = kvs.Count;
+	object [] result = new object [count - 1];
+	for (int i = 1; i < count; i++) {
+		KeyValuePair<int, int> kv = kvs [i];
+		result [i - 1] = new { Name = GetCompTypeName (kv.Key), Value = kv.Value };
+	}
+	return result;
+}
+
 </script>
-<html>
 <head id="head1" runat="server">
 <title>Mono API Compare</title>
 <link href="main.css" media="screen" type="text/css" rel="stylesheet">
@@ -376,6 +409,32 @@ void OnLevelChanged (object sender, EventArgs args)
 				PopulateNodesFromClient="true"
 				ExpandDepth="1">
 			</asp:TreeView>
+		</div>
+		<div id="counts">
+		<asp:ListView runat="server" id="tbl_counts">
+		<LayoutTemplate>
+			<table border="0" cellpadding="0" cellspacing="0">
+			<caption style="background-color: #4c83c4; color: #fff"><b>Mono Totals<b></caption>
+				<asp:PlaceHolder runat="server" id="itemPlaceholder" />
+			</table>
+		</LayoutTemplate>
+		<ItemTemplate>
+			<tr class="item">
+			<td><%# DataBinder.Eval (Container.DataItem, "Name") %>
+			</td>
+			<td style="text-align: right"><%# DataBinder.Eval (Container.DataItem, "Value") %>
+			</td>
+			</tr>
+		</ItemTemplate>
+		<AlternatingItemTemplate>
+			<tr class="item alternatingitem">
+			<td><%# DataBinder.Eval (Container.DataItem, "Name") %>
+			</td>
+			<td style="text-align: right"><%# DataBinder.Eval (Container.DataItem, "Value") %>
+			</td>
+			</tr>
+		</AlternatingItemTemplate>
+		</asp:ListView>
 		</div>
 		<div id="detaillevel">
 		<div style="font-weight: bold; margin-bottom: 0.5em; text-align: center;">Detail Level</div>

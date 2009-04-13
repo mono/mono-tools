@@ -224,6 +224,21 @@ public class NodeUtils {
 		return node.Children;
 	}
 
+	public List<KeyValuePair<int, int>> GetTotals ()
+	{
+		List<KeyValuePair<int, int>> totals = new List<KeyValuePair<int, int>> ();
+		using (IDbConnection cnc = GetConnection ()) {
+			IDbCommand cmd = cnc.CreateCommand ();
+			cmd.CommandText = "SELECT comparison_type, COUNT(*) FROM nodes WHERE master_id = " + MasterID + " GROUP BY comparison_type ORDER BY comparison_type";
+			using (IDataReader reader = cmd.ExecuteReader ()) {
+				while (reader.Read ()) {
+					totals.Add (new KeyValuePair<int,int> (Convert.ToInt32 (reader [0]), Convert.ToInt32 (reader [1])));
+				}
+			}
+		}
+		return totals;
+	}
+
 	static IDataParameter AddParameter (IDbCommand cmd, string name, object val)
 	{
 		IDataParameter p = cmd.CreateParameter ();

@@ -95,6 +95,7 @@ a:active { color:#ccf; text-decoration: none; }
 #treeview {
 	float: left;
 }
+
 #detaillevel {
 	float: right;
 	margin: 20px 20px 20px 20px;
@@ -106,3 +107,18 @@ a:active { color:#ccf; text-decoration: none; }
 	padding: 1em;
 }
 
+#counts {
+	float: right;
+	margin-top: 20px;
+	border-width: 1px 1px 2px 2px;
+	border-color: #4c83c4;
+	border-style: solid;
+}
+
+.item {
+	background-color: #ddd;
+}
+
+.alternatingitem {
+	background-color: #FFF;
+}
