@@ -6,6 +6,9 @@ DB_SYNCFILES= \
 	db/Makefile \
 	db/init-db.mysql \
 	db/webcompare-db.cs \
+	db/DataAccess.cs		\
+	db/MySqlDataAccess.cs		\
+	db/PostgresDataAccess.cs	\
 	db/webcompare-db.exe.config-EDITME \
 	db/web.config \
 	db/*.dll \
