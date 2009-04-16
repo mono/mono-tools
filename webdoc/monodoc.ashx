@@ -33,9 +33,10 @@ namespace Mono.Website.Handlers
 		
 		static MonodocHandler ()
 		{
-			help_tree = RootTree.LoadTree ();
 			HelpSource.use_css = true;
 			HelpSource.FullHtml = false;
+			HelpSource.UseWebdocCache = true;
+			help_tree = RootTree.LoadTree ();
 			SettingsHandler.Settings.EnableEditing = false;
 		}
 		

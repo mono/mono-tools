@@ -1,5 +1,11 @@
 2008-10-29  Jonathan Pryor  <jpryor@novell.com>
 
+	* monodoc.ashx: Set HelpSource.UseWebdocCache=true so that we use the
+	  'mdoc export-html-webdoc' pre-rendered HTML cache (if present).
+	  Greatly speeds some pages up.
+
+2008-10-29  Jonathan Pryor  <jpryor@novell.com>
+
 	* Makefile.am: Get `make dist`, `make install` working...  We install
 	  to $prefix/lib/monodoc/web, which is where Debian's monodoc-http
 	  package places things...
