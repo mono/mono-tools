@@ -65,6 +65,7 @@
     <Compile Include="AvoidLargeNumberOfLocalVariablesTest.cs" />
     <Compile Include="AvoidRepetitiveCastsTest.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsTest.cs" />
+    <Compile Include="AvoidUnneededFieldInitializationTest.cs" />
     <Compile Include="AvoidUnneededUnboxingTest.cs" />
     <Compile Include="AvoidLargeStructureTest.cs" />
     <Compile Include="AvoidReturningArraysOnPropertiesTest.cs" />
@@ -82,8 +83,11 @@
     <Compile Include="IDisposableWithDestructorWithoutSuppressFinalizeTest.cs" />
     <Compile Include="ImplementEqualsTypeTest.cs" />
     <Compile Include="MathMinMaxCandidateTest.cs" />
+    <Compile Include="OverrideValueTypeDefaultsTest.cs" />
     <Compile Include="PreferCharOverloadTest.cs" />
+    <Compile Include="PreferLiteralOverInitOnlyFieldsTest.cs" />
     <Compile Include="RemoveUnusedLocalVariablesTest.cs" />
+    <Compile Include="ReviewLinqMethodTest.cs" />
     <Compile Include="UseIsOperatorTest.cs" />
     <Compile Include="UseStringEmptyTest.cs" />
     <Compile Include="UseTypeEmptyTypesTest.cs" />

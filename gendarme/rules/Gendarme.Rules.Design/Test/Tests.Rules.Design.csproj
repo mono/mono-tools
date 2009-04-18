@@ -47,6 +47,7 @@
     <Compile Include="AvoidRefAndOutParametersTest.cs" />
     <Compile Include="AvoidSmallNamespaceTest.cs" />
     <Compile Include="AvoidVisibleNestedTypesTest.cs" />
+    <Compile Include="ConsiderAddingInterfaceTest.cs" />
     <Compile Include="ConsiderConvertingFieldToNullableTest.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyTest.cs" />
     <Compile Include="ConsiderUsingStaticTypeTest.cs" />
@@ -77,6 +78,8 @@
     <Compile Include="TypesShouldBeInsideNamespacesTest.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
     <Compile Include="TypesWithNativeFieldsShouldBeDisposableTest.cs" />
+    <Compile Include="UseCorrectDisposeSignaturesTest.cs" />
+    <Compile Include="UseFlagsAttributeTest.cs" />
     <Compile Include="UsingCloneWithoutImplementingICloneableTest.cs" />
   </ItemGroup>
   <ItemGroup>

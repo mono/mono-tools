@@ -55,11 +55,14 @@
     <Compile Include="DoNotForgetNotImplementedMethodsRule.cs" />
     <Compile Include="ConstructorShouldNotCallVirtualMethodsRule.cs" />
     <Compile Include="DisableDebuggingCodeRule.cs" />
+    <Compile Include="DoNotUseEnumIsAssignableFromRule.cs" />
     <Compile Include="DoNotUseGetInterfaceToCheckAssignabilityRule.cs" />
     <Compile Include="EqualShouldHandleNullArgRule.cs" />
     <Compile Include="GetEntryAssemblyMayReturnNullRule.cs" />
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyRule.cs" />
+    <Compile Include="OnlyUseDisposeForIDisposableTypesRule.cs" />
     <Compile Include="PreferEmptyInstanceOverNullRule.cs" />
+    <Compile Include="PreferSafeHandleRule.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckRule.cs" />
     <Compile Include="ReturnNullRule.cs" />
     <Compile Include="ToStringReturnsNullRule.cs" />

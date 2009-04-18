@@ -86,6 +86,8 @@
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />
     <Compile Include="TypesWithNativeFieldsShouldBeDisposableRule.cs" />
+    <Compile Include="UseCorrectDisposeSignaturesRule.cs" />
+    <Compile Include="UseFlagsAttributeRule.cs" />
     <Compile Include="UsingCloneWithoutImplementingICloneableRule.cs" />
     <Compile Include="ConsiderAddingInterfaceRule.cs" />
   </ItemGroup>

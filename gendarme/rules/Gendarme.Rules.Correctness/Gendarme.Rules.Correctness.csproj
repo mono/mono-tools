@@ -60,6 +60,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
@@ -96,6 +97,8 @@
     <None Include="Nullity.cs" />
     <Compile Include="ProvideCorrectArgumentsToFormattingMethodsRule.cs" />
     <Compile Include="ProvideCorrectRegexPatternRule.cs" />
+    <Compile Include="ProvideValidXmlStringRule.cs" />
+    <Compile Include="ProvideValidXPathExpressionRule.cs" />
     <Compile Include="ReviewDoubleAssignmentRule.cs" />
     <Compile Include="ReviewInconsistentIdentityRule.cs" />
     <Compile Include="ReviewSelfAssignmentRule.cs" />

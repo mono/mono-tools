@@ -40,8 +40,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs" />
     <Compile Include="DoNotCastIntPtrToInt32Test.cs" />
     <Compile Include="GetLastErrorMustBeCalledRightAfterPInvokeTest.cs" />
+    <Compile Include="MarshalBooleansInPInvokeDeclarationsTest.cs" />
     <Compile Include="MarshalStringsInPInvokeDeclarationsTest.cs" />
     <Compile Include="PInvokeShouldNotBeVisibleTest.cs" />
     <Compile Include="UseManagedAlternativesToPInvokeTest.cs" />

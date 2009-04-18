@@ -89,6 +89,7 @@
     <Compile Include="OverrideValueTypeDefaultsRule.cs" />
     <Compile Include="PreferCharOverloadRule.cs" />
     <Compile Include="RemoveUnusedLocalVariablesRule.cs" />
+    <Compile Include="ReviewLinqMethodRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
     <Compile Include="UseStringEmptyRule.cs" />
     <Compile Include="CompareWithStringEmptyEfficientlyRule.cs" />

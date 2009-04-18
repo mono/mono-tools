@@ -85,6 +85,7 @@
     <Compile Include="MissingExceptionConstructorsRule.cs" />
     <Compile Include="NewExceptionRule.cs" />
     <Compile Include="SEHHandlerType.cs" />
+    <Compile Include="UseObjectDisposedExceptionRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

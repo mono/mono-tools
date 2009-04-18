@@ -74,8 +74,11 @@
     <Compile Include="EnsureLocalDisposalTest.cs" />
     <Compile Include="FinalizersShouldCallBaseClassFinalizerTest.cs" />
     <Compile Include="MethodCanBeMadeStaticTest.cs" />
+    <None Include="NullDerefTest.cs" />
     <Compile Include="ProvideCorrectArgumentsToFormattingMethodsTest.cs" />
     <Compile Include="ProvideCorrectRegexPatternTest.cs" />
+    <Compile Include="ProvideValidXmlStringTest.cs" />
+    <Compile Include="ProvideValidXPathExpressionTest.cs" />
     <Compile Include="ReviewCastOnIntegerDivisionTest.cs" />
     <Compile Include="ReviewCastOnIntegerMultiplicationTest.cs" />
     <Compile Include="ReviewDoubleAssignmentTest.cs" />
