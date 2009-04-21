@@ -1,3 +1,8 @@
+2009-04-20  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* CecilMetadata.cs: GetLiteralValue: don't crash on null
+	literal values.
+
 2009-04-08 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* Comparison.cs: added a Reset() so we're able to recalculate the

@@ -762,7 +762,7 @@ namespace GuiCompare {
 
 		public override string GetLiteralValue ()
 		{
-			if (field_def.IsLiteral)
+			if (field_def.IsLiteral && field_def.Constant != null)
 				return field_def.Constant.ToString();
 			return null;
 		}
