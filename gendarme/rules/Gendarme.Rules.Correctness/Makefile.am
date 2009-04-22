@@ -5,6 +5,7 @@ rules_sources =  \
 	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs \
 	AvoidFloatingPointEqualityRule.cs \
+	AvoidMethodsWithSideEffectsInConditionalCodeRule.cs \
 	DoNotRecurseInEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
@@ -34,6 +35,7 @@ tests_sources = \
 	AttributeStringLiteralsShouldParseCorrectlyTest.cs \
 	AvoidConstructorsInStaticTypesTest.cs \
 	AvoidFloatingPointEqualityTest.cs \
+	AvoidMethodsWithSideEffectsInConditionalCodeTest.cs \
 	DoNotRecurseInEqualityTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \
