@@ -1,3 +1,10 @@
+2009-04-25  Jonathan Pryor  <jpryor@novell.com>
+
+	* browser.cs: Enable use of the webdoc cache, if present.  This
+	  requires writing the HTML header (style & script information)
+	  instead of letting monodoc.dll generate this, as the cache doesn't
+	  contain <style/> and <script/>.
+
 2009-01-29  Andreia Gaita <shana@jitted.com> 
 
 	* MonoWebBrowserHtmlRender.cs: remove first load logic, there is no first

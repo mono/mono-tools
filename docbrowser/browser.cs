@@ -423,7 +423,7 @@ public class Browser {
 		tabs_nb.CurrentPage = tabs_nb.PageNum (CurrentTab);
 		//Show root node
 		Node match;
-		string s = help_tree.RenderUrl ("root:", out match);
+		string s = Browser.GetHtml ("root:", null, help_tree, out match);
 		if (s != null){
 			Render (s, match, "root:");
 			CurrentTab.history.AppendHistory (new Browser.LinkPageVisit (this, "root:"));
@@ -596,7 +596,7 @@ public class Browser {
 		{
 			Node n;
 			
-			string res = browser.help_tree.RenderUrl (url, out n);
+			string res = Browser.GetHtml (url, null, browser.help_tree, out n);
 			browser.Render (res, n, url);
 		}
 	}
@@ -637,7 +637,7 @@ public class Browser {
 		
 		Console.Error.WriteLine ("Trying: {0}", url);
 		try {
-			string res = help_tree.RenderUrl (url, out node);
+			string res = Browser.GetHtml (url, null, help_tree, out node);
 			if (res != null){
 				Render (res, node, url);
 				CurrentTab.history.AppendHistory (new LinkPageVisit (this, url));
@@ -846,19 +846,7 @@ ExtLoop:
 		 if ((capabilities & Capabilities.Css) != 0)
 		 	HelpSource.use_css = false;
 		 
-		string url = CurrentUrl;
-		string html;
-		Node cur = CurrentTab.CurrentNode;
-		Node n; 
-
-		// deal with the two types of urls
-		if (cur.tree.HelpSource != null) {
-			html = cur.tree.HelpSource.GetText (url, out n);
-			if (html == null)
-				html = help_tree.RenderUrl (url, out n);
-		} else {
-			html = help_tree.RenderUrl (url, out n);
-		}
+		string html = GetHtml (CurrentUrl, CurrentTab.CurrentNode.tree.HelpSource, help_tree);
 
 		// sending Html to be printed. 
 		if (html != null)
@@ -866,6 +854,53 @@ ExtLoop:
 
 		if ((capabilities & Capabilities.Css) != 0)
 			HelpSource.use_css = true;
+	}
+
+	public static string GetHtml (string url, HelpSource help_source, RootTree help_tree)
+	{
+		Node _;
+		return GetHtml (url, help_source, help_tree, out _);
+	}
+
+	public static string GetHtml (string url, HelpSource help_source, RootTree help_tree, out Node match)
+	{
+		match = null;
+		string html_content = null;
+		if (help_source != null)
+			html_content = help_source.GetText (url, out match);
+		if (html_content == null) {
+			html_content = help_tree.RenderUrl (url, out match);
+			if (html_content != null)
+				help_source = match.tree.HelpSource;
+		}
+
+		if (html_content == null)
+			return null;
+
+		var html = new StringWriter ();
+		html.Write ("<html>\n");
+		html.Write ("  <head>\n");
+		html.Write ("    <title>");
+		html.Write (url);
+		html.Write ("</title>\n");
+
+		if (help_source != null && help_source.InlineCss != null) {
+			html.Write ("    <style type=\"text/css\">\n");
+			html.Write (help_source.InlineCss);
+			html.Write ("    </style>\n");
+		}
+		if (help_source != null && help_source.InlineJavaScript != null) {
+			html.Write ("    <script type=\"text/JavaScript\">\n");
+			html.Write (help_source.InlineJavaScript);
+			html.Write ("    </script>\n");
+		}
+
+		html.Write ("  </head>\n");
+		html.Write ("  <body>\n");
+		html.Write (html_content);
+		html.Write ("  </body>\n");
+		html.Write ("</html>");
+		return html.ToString ();
 	}
 
 	void OnCommentsActivate (object o, EventArgs args)
@@ -1850,15 +1885,7 @@ public class TreeBrowser {
 
 		public override void Go ()
 		{
-			string res;
-			Node x;
-			
-			// The root tree has no help source
-			if (n.tree.HelpSource != null)
-				res = n.tree.HelpSource.GetText (url, out x);
-			else
-				res = ((RootTree)n.tree).RenderUrl (url, out x);
-
+			string res = Browser.GetHtml (url, n.tree.HelpSource, (RootTree) n.tree);
 			browser.Render (res, n, url);
 		}
 	}
@@ -1895,7 +1922,7 @@ public class TreeBrowser {
 				// Try the tree-based urls first.
 				//
 				
-				s = n.tree.HelpSource.GetText (url, out match);
+				s = Browser.GetHtml (url, n.tree.HelpSource, help_tree);
 				if (s != null){
 					((Browser)browser).Render (s, n, url);
 					browser.CurrentTab.history.AppendHistory (new NodePageVisit (browser, n, url));
@@ -1906,7 +1933,7 @@ public class TreeBrowser {
 			//
 			// Try the url resolver next
 			//
-			s = help_tree.RenderUrl (url, out match);
+			s = Browser.GetHtml (url, null, help_tree);
 			if (s != null){
 				((Browser)browser).Render (s, n, url);
 				browser.CurrentTab.history.AppendHistory (new Browser.LinkPageVisit (browser, url));
@@ -2366,6 +2393,8 @@ public class Tab : Notebook {
 
 		browser.capabilities = html.Capabilities;
 
+		HelpSource.FullHtml = false;
+		HelpSource.UseWebdocCache = true;
 		if ((html.Capabilities & Capabilities.Css) != 0)
 			HelpSource.use_css = true;
 
