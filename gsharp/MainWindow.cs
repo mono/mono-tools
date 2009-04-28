@@ -379,10 +379,14 @@ namespace Mono.CSharp.Gui
 			}
 		}
 
-		protected virtual void OnDeleteEvent (object o, Gtk.DeleteEventArgs args)
+		protected override bool OnDeleteEvent (Gdk.Event args)
 		{
-			if (!MainClass.Attached)
+			if (!MainClass.Attached){
+				Console.WriteLine ("Quitting");
 				Application.Quit ();
+			}
+
+			return false;
 		}
 
 		protected virtual void OnDescribeTypeActionActivated (object sender, System.EventArgs e)
