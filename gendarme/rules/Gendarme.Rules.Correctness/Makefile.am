@@ -3,6 +3,7 @@ common_tests=../Test.Rules/Test.Rules.dll,System.Configuration
 
 rules_sources =  \
 	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
+	AvoidCodeWithSideEffectsInConditionalCodeRule.cs \
 	AvoidConstructorsInStaticTypesRule.cs \
 	AvoidFloatingPointEqualityRule.cs \
 	AvoidMethodsWithSideEffectsInConditionalCodeRule.cs \
@@ -33,6 +34,7 @@ rules_sources =  \
 
 tests_sources = \
 	AttributeStringLiteralsShouldParseCorrectlyTest.cs \
+	AvoidCodeWithSideEffectsInConditionalCodeTest.cs \
 	AvoidConstructorsInStaticTypesTest.cs \
 	AvoidFloatingPointEqualityTest.cs \
 	AvoidMethodsWithSideEffectsInConditionalCodeTest.cs \

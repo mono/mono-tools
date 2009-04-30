@@ -1,4 +1,4 @@
-2008-04-22  Jesse Jones  <jesjones@mindspring.com> 
+2008-04-30  Jesse Jones  <jesjones@mindspring.com> 
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeTest.cs: 
 	Added new rule.
