@@ -1,3 +1,7 @@
+2009-04-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am: Added VariableDefinitionRocks files.
+
 2009-01-27  Jonathan Pryor  <jpryor@novell.com>
 
 	* Makefile.am ($(framework_doc_source)): Change the .source file 

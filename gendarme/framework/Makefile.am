@@ -48,6 +48,7 @@ framework_sources =  \
 	Gendarme.Framework.Rocks/MethodRocks.cs \
 	Gendarme.Framework.Rocks/ModuleRocks.cs \
 	Gendarme.Framework.Rocks/TypeRocks.cs \
+	Gendarme.Framework.Rocks/VariableDefinitionRocks.cs \
 	Gendarme.Framework/ApplicabilityScope.cs \
 	Gendarme.Framework/AssemblyResolver.cs \
 	Gendarme.Framework/BasicIgnoreList.cs \
@@ -94,6 +95,7 @@ framework_test_sources = \
 	Gendarme.Framework.Rocks/InstructionRocksTest.cs \
 	Gendarme.Framework.Rocks/MethodRocksTest.cs \
 	Gendarme.Framework.Rocks/TypeRocksTest.cs \
+	Gendarme.Framework.Rocks/VariableDefinitionRocksTest.cs \
 	Gendarme.Framework.Rocks/FieldRocksTest.cs
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 

@@ -1,3 +1,8 @@
+2009-04-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* VariableDefinitionRocksTest.cs: Added tests for new
+	 IsGeneratedName rock.
+
 2008-08-28 Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocksTest.cs: Add more test to cover all Is* rocks

@@ -1,3 +1,7 @@
+2009-04-30  Jesse Jones  <jesjones@mindspring.com>
+
+	* VariableDefinitionRocks.cs: Added IsGeneratedName rock.
+
 2009-01-28  Jb Evain  <jbevain@novell.com>
 
 	* TypeRocks.cs: Resolve: remove. Implements: handle types
