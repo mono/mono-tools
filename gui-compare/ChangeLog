@@ -1,3 +1,8 @@
+2009-04-30  Rodrigo Kumpera <rkumpera@novell.com>
+
+	* gtk-gui/GuiCompare.CustomCompare.cs: Make custom compares
+	work again.
+
 2009-04-20  Rolf Bjarne Kvinge  <RKvinge@novell.com>
 
 	* CecilMetadata.cs: GetLiteralValue: don't crash on null
