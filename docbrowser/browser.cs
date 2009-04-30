@@ -1885,7 +1885,7 @@ public class TreeBrowser {
 
 		public override void Go ()
 		{
-			string res = Browser.GetHtml (url, n.tree.HelpSource, (RootTree) n.tree);
+			string res = Browser.GetHtml (url, n.tree.HelpSource, browser.help_tree);
 			browser.Render (res, n, url);
 		}
 	}
