@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?define ProductShortName = "Gendarme" ?>
+<?define ProductVersion = "2.4.0" ?>
+<?define ProductVersionText = "2.4" ?>
+<?define Manufacturer = "Novell" ?>
+<?define UpgradeCode = "d7c83968-def2-4614-81f2-a3eefc9bc6b3" ?>
+
+<?define GendarmeBin=..\console\bin\$(var.Configuration)?>
+<?define GendarmeRoot=..?>
+<?define GendarmeResources=..\console?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="*" Name="$(var.ProductShortName) $(var.ProductVersionText)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
+		<Package Id="*" Compressed="yes" Description="$(var.ProductShortName) $(var.ProductVersionText) ($(var.ProductVersion))" InstallerVersion="200" ShortNames="no" Manufacturer="$(var.Manufacturer)" />
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <!-- Ensure .Net Framework 3.5 is installed -->
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <Condition Message="This setup requires the .NET Framework 3.5 to be installed.">
+      Installed OR NETFRAMEWORK35
+    </Condition>
+
+    <!-- Major upgrade -->
+    <Upgrade Id="$(var.UpgradeCode)">
+      <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+      <UpgradeVersion Minimum="0.0.0" IncludeMinimum="yes" Maximum="$(var.ProductVersion)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="Gendarme">
+          
+					<Component Id="ProductComponent" Guid="93fe542d-d350-4329-ac61-d1bb9c20f26a">
+            <!-- Gendarme files -->
+            <File Name="GendarmeWizard.exe" Source="$(var.GendarmeBin)\GendarmeWizard.exe">
+              <Shortcut Id="gen_shortcut" Directory="ProgramMenuDir" Name="$(var.ProductShortName)" LongName="$(var.ProductShortName) $(var.ProductVersionText)" WorkingDirectory='INSTALLLOCATION' Icon="GendarmeWizard.exe" IconIndex="0" Advertise="yes" />
+            </File>
+            <File Name="gendarme.exe" Source="$(var.GendarmeBin)\gendarme.exe" />
+            <File Name="Gendarme.Framework.dll" Source="$(var.GendarmeBin)\Gendarme.Framework.dll" />
+            <File Name="Mono.Cecil.dll" Source="$(var.GendarmeBin)\Mono.Cecil.dll" />
+            <File Name="Mono.Cecil.Pdb.dll" Source="$(var.GendarmeBin)\Mono.Cecil.Pdb.dll" />
+            <File Name="ICSharpCode.SharpZipLib.dll" Source="Libraries\ICSharpCode.SharpZipLib.dll" />
+
+            <!-- Rules files -->
+            <File Name="Gendarme.Rules.BadPractice.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.BadPractice.dll" />
+            <File Name="Gendarme.Rules.Concurrency.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Concurrency.dll" />
+            <File Name="Gendarme.Rules.Correctness.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Correctness.dll" />
+            <File Name="Gendarme.Rules.Design.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Design.dll" />
+            <File Name="Gendarme.Rules.Design.Generic.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Design.Generic.dll" />
+            <File Name="Gendarme.Rules.Design.Linq.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Design.Linq.dll" />
+            <File Name="Gendarme.Rules.Exceptions.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Exceptions.dll" />
+            <File Name="Gendarme.Rules.Interoperability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Interoperability.dll" />
+            <File Name="Gendarme.Rules.Maintainability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Maintainability.dll" />
+            <File Name="Gendarme.Rules.Naming.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Naming.dll" />
+            <File Name="Gendarme.Rules.Performance.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Performance.dll" />
+            <File Name="Gendarme.Rules.Portability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Portability.dll" />
+            <File Name="Gendarme.Rules.Security.Cas.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Security.Cas.dll" />
+            <File Name="Gendarme.Rules.Security.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Security.dll" />
+            <File Name="Gendarme.Rules.Serialization.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Serialization.dll" />
+            <File Name="Gendarme.Rules.Smells.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Smells.dll" />
+            <File Name="Gendarme.Rules.Ui.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Ui.dll" />
+
+            <!-- Additional files -->
+            <File Name="AUTHORS" Source="$(var.GendarmeRoot)\AUTHORS" />
+            <File Name="MIT.X11" Source="$(var.GendarmeRoot)\MIT.X11" />
+            <File Name="README" Source="$(var.GendarmeRoot)\README" />
+            <File Name="gendarme.xsd" Source="$(var.GendarmeResources)\gendarme.xsd" />
+            <File Name="gendarme.xsl" Source="$(var.GendarmeResources)\gendarme.xsl" />
+
+            <!-- Program Menu Shortcut -->
+            <RemoveFolder Id='ProgramMenuDir' Directory="ProgramMenuDir" On='uninstall' />
+
+          </Component>
+				</Directory>
+			</Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="PMenu">
+        <Directory Id="ProgramMenuDir" Name='$(var.ProductShortName)' />
+      </Directory>
+    </Directory>
+
+    <Feature Id="Feature_Gendarme" Title="Gendarme" Level="1">
+			<ComponentRef Id="ProductComponent" />
+		</Feature>
+    
+    <!-- Sequences -->
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallValidate" />
+    </InstallExecuteSequence>
+
+    <InstallUISequence>
+      <!-- Because we have a launch condition that uses the results of FindRelatedProducts, put it first. -->
+      <LaunchConditions After="FindRelatedProducts" />
+    </InstallUISequence>
+
+    <!-- This enables the license screen and where to install screen -->
+    <Property Id="WIXUI_INSTALLDIR">INSTALLLOCATION</Property>
+    <UIRef Id="WixUI_InstallDir"/>
+    
+    <!-- Specify the license to display and graphics to use in our GUI -->
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\bannrbmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dlgbmp.bmp" />
+
+    <!-- This is for the icon that is shown in the Add/Remove Programs dialog and menu shortcut -->
+    <Icon Id="GendarmeWizard.exe" SourceFile="Bitmaps\gendarme.ico" />
+    <Property Id="ARPPRODUCTICON" Value="GendarmeWizard.exe" />
+  </Product>
+</Wix>
