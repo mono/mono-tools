@@ -1,6 +1,10 @@
+2009-05-14  Jb Evain  <jbevain@novell.com>
+
+	* AvoidMethodWithLargeMaximumStackSize.cs: new rule.
+
 2009-03-20  Daniel Nauck  <dna@mono-project.de>
 
-        * PreferLiteralOverInitOnlyFieldsRule.cs: Fixed "good example" documentation.
+	* PreferLiteralOverInitOnlyFieldsRule.cs: Fixed "good example" documentation.
 
 2009-01-27  Jesse Jones  <jesjones@mindspring.com> 
 

@@ -3,6 +3,7 @@ include ../common.make
 rules_sources =  \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
 	AvoidLargeStructureRule.cs \
+	AvoidMethodWithLargeMaximumStackSize.cs \
 	AvoidRepetitiveCastsRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
@@ -43,6 +44,7 @@ tests_sources = \
 	UseTypeEmptyTypesTest.cs \
 	AvoidUnusedParametersTest.cs \
 	CompareWithStringEmptyEfficientlyTest.cs \
+	AvoidMethodWithLargeMaximumStackSizeTest.cs \
 	AvoidUncalledPrivateCodeTest.cs \
 	AvoidUnneededCallsOnStringTest.cs \
 	AvoidUninstantiatedInternalClassesTest.cs \

@@ -1,3 +1,8 @@
+2009-05-14  Jb Evain  <jbevain@novell.com>
+
+	* AvoidMethodWithLargeMaximumStackSizeTest.cs: added unit tests
+	for the new rule.
+
 2009-01-27  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ReviewLinqMethodTest.cs: Added new rule.
