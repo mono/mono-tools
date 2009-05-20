@@ -1,3 +1,10 @@
+2009-04-25  Jonathan Pryor  <jpryor@novell.com>
+
+	* browser.cs: Browser.GetHtml() needs to cope with
+	  RootTree.RenderUrl() returning a null match node, which can happen
+	  because an EcmaUncompiledHelpSource always sets the match node to
+	  null, but will return a non-null string.  Fixes #505476.
+
 2009-04-30  Marek Habersack  <mhabersack@novell.com>
 
 	* browser.cs: NodePageVisit.Go () - it seems n.tree is almost

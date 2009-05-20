@@ -868,9 +868,9 @@ ExtLoop:
 		string html_content = null;
 		if (help_source != null)
 			html_content = help_source.GetText (url, out match);
-		if (html_content == null) {
+		if (html_content == null && help_tree != null) {
 			html_content = help_tree.RenderUrl (url, out match);
-			if (html_content != null)
+			if (html_content != null && match != null && match.tree != null)
 				help_source = match.tree.HelpSource;
 		}
 
