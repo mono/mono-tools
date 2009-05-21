@@ -1,3 +1,7 @@
+2009-05-21  Mike Kestner <mkestner@novell.com>
+	* *: replace MD 1.0 solution files with 2.0 msbuild files, and turn
+	on makefile synchronization instead of generated makefiles.
+
 2009-03-17  Massimiliano Mantione <massi@ximian.com>
 	* HeapSnapshotExplorer.cs: Use "Text" instead of "Markup" to set
 	the tree and list cells contents.

@@ -40,6 +40,8 @@ AC_SUBST(NUNIT_LIBS)
 
 PKG_CHECK_MODULES(MONODOC, monodoc)
 AC_SUBST(MONODOC_LIBS)
+AC_PATH_PROG(MDOC, mdoc, no)
+AC_SUBST(MDOC)
 
 PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gnome-sharp-2.0 gconf-sharp-2.0)
 #PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp glade-sharp gconf-sharp)
@@ -233,8 +235,12 @@ Mono.Profiler/Makefile
 Mono.Profiler/heap-snapshot-viewer/mprof-heap-viewer
 Mono.Profiler/heap-snapshot-viewer/Makefile
 Mono.Profiler/profiler-decoder-library/Makefile
+Mono.Profiler/profiler-decoder-library/doc/Makefile
 Mono.Profiler/profiler-file-decoder/mprof-decoder
 Mono.Profiler/heap-snapshot-explorer/Makefile
+Mono.Profiler/Mono.Profiler.Widgets/Makefile
+Mono.Profiler/mprof-gui/Makefile
+Mono.Profiler/mprof-gui/emveepee
 ])
 
 echo "---"

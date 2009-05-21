@@ -9,6 +9,7 @@ using Gtk;
 
 namespace Mono.Profiler
 {
+	[System.ComponentModel.ToolboxItem (true)]
 	public partial class HeapSnapshotExplorer : Gtk.Bin
 	{
 		HeapExplorerTreeModel model;

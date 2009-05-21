@@ -1,3 +1,7 @@
+2009-05-21  Mike Kestner <mkestner@novell.com>
+	* *: replace MD 1.0 solution files with 2.0 msbuild files, and turn
+	on makefile synchronization instead of generated makefiles.
+
 2008-11-03  Massimiliano Mantione <massi@ximian.com>
 	* Main.cs: Added "explorer" parameter to the model constructor, and
 	removed debugging code.

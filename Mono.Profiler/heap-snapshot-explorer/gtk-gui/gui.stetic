@@ -2,10 +2,10 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
-    <target-gtk-version>2.12.1</target-gtk-version>
+    <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../bin/Debug/mprof-heap-snapshot-explorer.dll" internal="true" />
+    <widget-library name="../../lib/mprof-heap-snapshot-explorer.dll" internal="true" />
   </import>
   <action-group name="Mono.Profiler.HeapExplorerActions">
     <action id="loadDataAction">
@@ -46,7 +46,6 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
-                <property name="HeadersClickable">True</property>
                 <signal name="ButtonPressEvent" handler="OnTreeButtonPress" />
               </widget>
             </child>
@@ -64,7 +63,6 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="ShowScrollbars">True</property>
-                <property name="HeadersClickable">True</property>
                 <signal name="ButtonPressEvent" handler="OnListButtonPress" />
               </widget>
             </child>

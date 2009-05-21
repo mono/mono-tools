@@ -1,10 +1,3 @@
+SUBDIRS =  profiler-decoder-library profiler-file-decoder heap-snapshot-explorer heap-snapshot-viewer Mono.Profiler.Widgets mprof-gui
 
-
-
-#Warning: This is an automatically generated file, do not edit!
-if ENABLE_DEBUG
- SUBDIRS =  profiler-decoder-library profiler-file-decoder heap-snapshot-explorer heap-snapshot-viewer
-endif
-if ENABLE_RELEASE
- SUBDIRS =  profiler-decoder-library profiler-file-decoder heap-snapshot-explorer heap-snapshot-viewer
-endif
+EXTRA_DIST = Mono.Profiler.sln

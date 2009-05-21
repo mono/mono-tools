@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "profiler-file-decoder", "profiler-file-decoder\profiler-file-decoder.csproj", "{8659A379-FB47-4379-AFD0-53ADB7DA9CED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "heap-snapshot-viewer", "heap-snapshot-viewer\heap-snapshot-viewer.csproj", "{C7CC60B3-F642-4C60-9B6D-14C1F5EEA1F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "heap-snapshot-explorer", "heap-snapshot-explorer\heap-snapshot-explorer.csproj", "{CF955735-EE08-4307-B898-494A3A6391C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mprof-runtime", "mprof-runtime\mprof-runtime.csproj", "{ED16B262-EC68-42FE-9839-E430E61B61CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Profiler.Widgets", "Mono.Profiler.Widgets\Mono.Profiler.Widgets.csproj", "{986423AE-B771-4EB2-8952-AA4C2CBF1313}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mprof-gui", "mprof-gui\mprof-gui.csproj", "{17E3AC3C-F4F1-4686-9770-E72C30A74457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "profiler-decoder-library", "profiler-decoder-library\profiler-decoder-library.csproj", "{3C7942A8-2A4D-4C70-A670-65984F738EBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17E3AC3C-F4F1-4686-9770-E72C30A74457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E3AC3C-F4F1-4686-9770-E72C30A74457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E3AC3C-F4F1-4686-9770-E72C30A74457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E3AC3C-F4F1-4686-9770-E72C30A74457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C7942A8-2A4D-4C70-A670-65984F738EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C7942A8-2A4D-4C70-A670-65984F738EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8659A379-FB47-4379-AFD0-53ADB7DA9CED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8659A379-FB47-4379-AFD0-53ADB7DA9CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8659A379-FB47-4379-AFD0-53ADB7DA9CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8659A379-FB47-4379-AFD0-53ADB7DA9CED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{986423AE-B771-4EB2-8952-AA4C2CBF1313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{986423AE-B771-4EB2-8952-AA4C2CBF1313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{986423AE-B771-4EB2-8952-AA4C2CBF1313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{986423AE-B771-4EB2-8952-AA4C2CBF1313}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7CC60B3-F642-4C60-9B6D-14C1F5EEA1F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7CC60B3-F642-4C60-9B6D-14C1F5EEA1F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7CC60B3-F642-4C60-9B6D-14C1F5EEA1F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7CC60B3-F642-4C60-9B6D-14C1F5EEA1F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF955735-EE08-4307-B898-494A3A6391C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF955735-EE08-4307-B898-494A3A6391C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF955735-EE08-4307-B898-494A3A6391C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF955735-EE08-4307-B898-494A3A6391C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED16B262-EC68-42FE-9839-E430E61B61CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED16B262-EC68-42FE-9839-E430E61B61CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED16B262-EC68-42FE-9839-E430E61B61CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED16B262-EC68-42FE-9839-E430E61B61CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		version = 0.1
+		outputpath = build\bin\
+		StartupItem = profiler-file-decoder\profiler-file-decoder.csproj
+		MonoDevelop.ChangeLogAddIn.ChangeLogInfo = $0
+		$0.policy = UpdateNearestChangeLog
+		name = Mono.Profiler
+	EndGlobalSection
+EndGlobal

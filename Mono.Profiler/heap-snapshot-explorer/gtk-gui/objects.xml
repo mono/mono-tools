@@ -1,5 +1,5 @@
-<objects>
-  <object type="Mono.Profiler.HeapSnapshotExplorer" allow-children="false" base-type="Gtk.Bin" palette-category="mprof-heap-explorer">
+<objects attr-sync="on">
+  <object type="Mono.Profiler.HeapSnapshotExplorer" palette-category="General" allow-children="false" base-type="Gtk.Bin">
     <itemgroups />
     <signals />
   </object>

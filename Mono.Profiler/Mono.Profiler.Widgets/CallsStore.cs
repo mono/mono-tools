@@ -1,0 +1,242 @@
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Gtk;
+using Mono.Profiler;
+
+namespace Mono.Profiler.Widgets {
+	
+	public class CallsStore : GLib.Object, TreeModelImplementor {
+
+		class Node {
+		
+			ulong clicks;
+			Node parent;
+			List<Node> children;
+			LoadedMethod method;
+			GCHandle gch;
+			
+			public Node (Node parent, LoadedMethod method, ulong clicks)
+			{
+				this.parent = parent;
+				this.method = method;
+				this.clicks = clicks;
+				gch = GCHandle.Alloc (this, GCHandleType.Weak);
+			}
+			
+			public List<Node> Children {
+				get {
+					if (children == null) {
+						children = new List<Node> ();
+						foreach (LoadedMethod.ClicksPerCalledMethod clicks in method.Methods)
+							children.Add (new Node (this, clicks.Method, clicks.Clicks));
+					}
+					return children;
+				}
+			}
+			
+			public ulong Clicks {
+				get { return clicks; }
+			}
+			
+			public LoadedMethod Method {
+				get { return method; }
+			}
+			
+			public Node Parent {
+				get { return parent; }
+			}
+			
+			public void Dispose ()
+			{
+				foreach (Node n in Children)
+					n.Dispose ();
+				gch.Free ();
+			}
+			
+			public static explicit operator Node (TreeIter iter)
+			{
+				if (iter.UserData == IntPtr.Zero)
+					return null;
+				
+				GCHandle gch = (GCHandle) iter.UserData;
+				return gch.Target as Node;
+			}
+
+			public static explicit operator TreeIter (Node node)
+			{
+				if (node == null)
+					return TreeIter.Zero;
+				
+				TreeIter result = TreeIter.Zero;
+				result.UserData = (IntPtr) node.gch;
+				return result;
+			}
+		}
+		
+		ProfilerEventHandler data;
+		ulong total_clicks;
+		List<Node> nodes;
+
+		public CallsStore (ProfilerEventHandler data)
+		{
+			this.data = data;
+			if (data == null || (data.Flags & ProfilerFlags.METHOD_EVENTS) == 0)
+				return;
+			
+			nodes = new List<Node> ();
+			foreach (LoadedMethod m in data.LoadedElements.Methods) {
+				total_clicks += m.Clicks;
+				if (m.Callers.Length == 0)
+					nodes.Add (new Node (null, m, m.Clicks));
+			}
+		}
+
+		public override void Dispose ()
+		{
+			foreach (Node n in nodes)
+				n.Dispose ();
+			base.Dispose ();
+		}
+		
+		public TreeModelFlags Flags {
+			get { return TreeModelFlags.ItersPersist; }
+		}
+		
+		public int NColumns {
+			get { return 2; }
+		}
+		
+		public GLib.GType GetColumnType (int idx)
+		{
+			if (idx > 1)
+				return GLib.GType.Invalid;
+			else 
+				return GLib.GType.String;
+		}
+		
+		public bool GetIter (out TreeIter iter, TreePath path)
+		{
+			iter = TreeIter.Zero;
+			if (path.Indices.Length == 0 || nodes.Count <= path.Indices [0])
+				return false;
+			Node node = nodes [path.Indices [0]];
+			if (path.Indices.Length == 1)
+				iter = (TreeIter) node;
+			else {
+				if (node.Children.Count <= path.Indices [1])
+					return false;
+				iter = (TreeIter) node.Children [path.Indices [1]];
+			}
+			return true;
+		}
+		
+		public TreePath GetPath (TreeIter iter)
+		{
+			Node node = (Node) iter;
+			TreePath result = new TreePath ();
+			if (node == null)
+				return result;
+			
+			while (node.Parent != null) {
+				result.PrependIndex (node.Parent.Children.IndexOf (node));
+				node = node.Parent;
+			}
+			result.PrependIndex (nodes.IndexOf (node));
+			return result;
+		}
+		
+		public void GetValue (TreeIter iter, int column, ref GLib.Value val)
+		{
+			Node node = (Node) iter;
+			LoadedMethod m = node.Method;
+			if (column == 0)
+				val = new GLib.Value (m.Class.Name + "." + m.Name);
+			else if (column == 1)
+				val = new GLib.Value (String.Format ("{0,5:F2}% ({1:F6}s)", ((((double)m.Clicks) / total_clicks) * 100), data.ClicksToSeconds (m.Clicks)));
+		}
+		
+		public bool IterChildren (out TreeIter iter, TreeIter parent)
+		{
+			iter = TreeIter.Zero;
+			Node parent_node = (Node) parent;
+			if (parent_node == null) {
+				if (nodes.Count == 0)
+					return false;
+				iter = (TreeIter) nodes [0];
+			} else {
+				if (parent_node.Children.Count == 0)
+					return false;
+				iter = (TreeIter) parent_node.Children [0];
+			}
+			return true;
+		}
+		
+		public bool IterHasChild (TreeIter iter)
+		{
+			Node node = (Node) iter;
+			if (node == null)
+				return nodes.Count > 0;
+			else
+				return node.Children.Count > 0;
+		}
+		
+		public int IterNChildren (TreeIter iter)
+		{
+			Node node = (Node) iter;
+			if (node == null)
+				return nodes.Count;
+			else
+				return node.Children.Count;
+		}
+
+		public bool IterNext (ref TreeIter iter)
+		{
+			Node node = (Node) iter;
+			iter = TreeIter.Zero;
+			if (node == null)
+				return false;
+
+			List<Node> siblings = node.Parent == null ? nodes : node.Parent.Children;
+			int idx = siblings.IndexOf (node);
+			if (idx < 0 || ++idx >= siblings.Count)
+				return false;
+			iter = (TreeIter) siblings [idx];
+			return true;
+		}
+		
+		public bool IterNthChild (out TreeIter iter, TreeIter parent, int n)
+		{
+			Node parent_node = (Node) parent;
+			List<Node> siblings = parent_node == null ? nodes : parent_node.Children;
+			if (siblings.Count == 0 || siblings.Count <= n) {
+				iter = TreeIter.Zero;
+				return false;
+			} else {
+				iter = (TreeIter) siblings [n];
+				return true;
+			}
+		}
+		
+		public bool IterParent (out TreeIter parent, TreeIter iter)
+		{
+			Node node = (Node) iter;
+			if (node == null) {
+				parent = TreeIter.Zero;
+				return false;
+			} else {
+				parent = (TreeIter) node.Parent;
+				return true;
+			}
+		}
+		
+		public void RefNode (TreeIter iter)
+		{
+		}
+		
+		public void UnrefNode (TreeIter iter)
+		{
+		}
+	}
+}
