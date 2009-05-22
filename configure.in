@@ -235,7 +235,6 @@ Mono.Profiler/Makefile
 Mono.Profiler/heap-snapshot-viewer/mprof-heap-viewer
 Mono.Profiler/heap-snapshot-viewer/Makefile
 Mono.Profiler/profiler-decoder-library/Makefile
-Mono.Profiler/profiler-decoder-library/doc/Makefile
 Mono.Profiler/profiler-file-decoder/mprof-decoder
 Mono.Profiler/heap-snapshot-explorer/Makefile
 Mono.Profiler/Mono.Profiler.Widgets/Makefile
