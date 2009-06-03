@@ -1,3 +1,8 @@
+2009-06-03  Jb Evain  <jbevain@novell.com>
+
+	* InfoManager.cs: refactor the code to retrieve masterinfos
+	considering.
+
 2009-04-30  Rodrigo Kumpera <rkumpera@novell.com>
 
 	* gtk-gui/GuiCompare.CustomCompare.cs: Make custom compares

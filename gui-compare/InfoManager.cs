@@ -207,6 +207,13 @@ namespace GuiCompare
 			// "System.Management.Instrumentation",
 			"System.Messaging",
 		};
+
+		const string masterinfos_version = "2.4";
+
+		static Uri GetMasterInfoUri (string file)
+		{
+			return new Uri (string.Format ("http://mono.ximian.com/masterinfos/{0}/{1}", masterinfos_version, file));
+		}
 		
 		public static void Init ()
 		{
@@ -237,23 +244,23 @@ namespace GuiCompare
 
 			switch (prof){
 			case "1.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-1.1.tar.gz");
+				u = GetMasterInfoUri ("masterinfos-1.1.tar.gz");
 				break;
 				
 			case "2.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-2.0.tar.gz");
+				u = GetMasterInfoUri ("masterinfos-2.0.tar.gz");
 				break;
 				
 			case "3.0":
-				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-3.0.tar.gz");
+				u = GetMasterInfoUri ("masterinfos-3.0.tar.gz");
 				break;
 				
 			case "3.5":
-				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-3.5.tar.gz");
+				u = GetMasterInfoUri ("masterinfos-3.5.tar.gz");
 				break;
 			
 			case "SL2":
-				u = new Uri ("http://mono.ximian.com/masterinfos/2.4/masterinfos-SL2.tar.gz");
+				u = GetMasterInfoUri ("masterinfos-SL2.tar.gz");
 				break;
 			
 			default:
