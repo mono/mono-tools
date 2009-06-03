@@ -208,7 +208,121 @@ namespace GuiCompare
 			"System.Messaging",
 		};
 
-		const string masterinfos_version = "2.4";
+		string [] api_4_0 = {
+			"mscorlib",
+			
+			"System.Activities.Core.Design",
+			"System.Activities.Design.Base",
+			"System.Activities.Design",
+			"System.Activities",
+			"System.Activities.Extended",
+			"System.AddIn.Contract",
+			"System.AddIn",
+			"System.Caching",
+			"System.ComponentModel.Composition",
+			"System.ComponentModel.DataAnnotations",
+			"System.configuration",
+		//	"System.Configuration.Install",
+			"System.Core",
+			"System.Data.DataSetExtensions",
+			"System.Data",
+			"System.Data.Entity.Design",
+			"System.Data.Entity",
+			"System.Data.Linq",
+			"System.Data.OracleClient",
+			"System.Data.Services.Client",
+			"System.Data.Services.Design",
+			"System.Data.Services",
+			"System.Data.SqlXml",
+			"System.Deployment",
+			"System.Design",
+		//	"System.DirectoryServices.AccountManagement",
+			"System.DirectoryServices",
+		//	"System.DirectoryServices.Protocols",
+			"System",
+			"System.Drawing.Design",
+			"System.Drawing",
+			"System.Dynamic",
+			"System.EnterpriseServices",
+			"System.EnterpriseServices.Thunk",
+			"System.EnterpriseServices.Wrapper",
+			"System.IdentityModel",
+			"System.IdentityModel.Selectors",
+			"System.IO.Log",
+			"System.Management",
+		//	"System.Management.Instrumentation",
+			"System.Messaging",
+			"System.Net",
+			"System.Printing",
+			"System.Runtime",
+			"System.Runtime.Remoting",
+			"System.Runtime.Serialization",
+			"System.Runtime.Serialization.Formatters.Soap",
+			"System.Security",
+			"System.ServiceModel.Activities",
+			"System.ServiceModel.Channels",
+			"System.ServiceModel.Discovery",
+			"System.ServiceModel",
+			"System.ServiceModel.Routing",
+			"System.ServiceModel.Web",
+			"System.ServiceProcess",
+			"System.Speech",
+			"System.Transactions",
+			"System.Web.Abstractions",
+			"System.Web.DataVisualization.Design",
+			"System.Web.DataVisualization",
+			"System.Web",
+			"System.Web.DynamicData.Design",
+			"System.Web.DynamicData",
+			"System.Web.Entity.Design",
+			"System.Web.Entity",
+		//	"System.Web.Extensions.Design",
+			"System.Web.Extensions",
+		//	"System.Web.Mobile",
+		//	"System.Web.RegularExpressions",
+			"System.Web.Routing",
+			"System.Web.Services",
+			"System.Windows.Forms.DataVisualization.Design",
+			"System.Windows.Forms.DataVisualization",
+			"System.Windows.Forms",
+			"System.Windows.Presentation",
+			"System.Workflow.Activities",
+			"System.Workflow.ComponentModel",
+			"System.Workflow.Runtime",
+			"System.WorkflowServices",
+			"System.Xaml",
+			"System.Xaml.Hosting",
+			"System.XML",
+			"System.Xml.Linq",
+
+			"Microsoft.Build.Conversion.v4.0",
+			"Microsoft.Build",
+			"Microsoft.Build.Engine",
+			"Microsoft.Build.Framework",
+			"Microsoft.Build.Tasks.v4.0",
+			"Microsoft.Build.Utilities.v4.0",
+			"Microsoft.CSharp",
+			"Microsoft.JScript",
+			"Microsoft.VisualBasic.Compatibility.Data",
+			"Microsoft.VisualBasic.Compatibility",
+			"Microsoft.VisualBasic",
+
+			"PresentationBuildTasks",
+			"PresentationCore",
+			"PresentationFramework.Aero",
+			"PresentationFramework.Classic",
+			"PresentationFramework",
+			"PresentationFramework.Luna",
+			"PresentationFramework.Royale",
+
+			"ReachFramework",
+			"ReferenceAssemblyBuildTask",
+
+			"WindowsBase",
+		//	"XamlBuildTask"
+		};
+		
+		const string masterinfos_version = "2.6";
 
 		static Uri GetMasterInfoUri (string file)
 		{
@@ -241,7 +355,7 @@ namespace GuiCompare
 			string target = Path.Combine (infos, "masterinfos-" + prof + ".tar.gz");
 			string masterinfo = Path.Combine (pdir, assemblyname) + ".xml";
 			Uri u = null;
-
+			
 			switch (prof){
 			case "1.0":
 				u = GetMasterInfoUri ("masterinfos-1.1.tar.gz");
@@ -257,6 +371,10 @@ namespace GuiCompare
 				
 			case "3.5":
 				u = GetMasterInfoUri ("masterinfos-3.5.tar.gz");
+				break;
+				
+			case "4.0":
+				u = GetMasterInfoUri ("masterinfos-4.0.tar.gz");			
 				break;
 			
 			case "SL2":
@@ -538,11 +656,21 @@ namespace GuiCompare
 			separator.ShowAll ();
 			sub.Add (separator);
 			
-			Populate (sub, "API 1.1", "1.0", "1.0", api_1_1);
-			Populate (sub, "API 2.0 sp1", "2.0", "2.0", api_2_0);
-			Populate (sub, "API 3.0 sp1", "3.0", "3.0", api_3_0);
-			Populate (sub, "API 3.5 sp1", "2.0", "3.5", api_3_5);
-			Populate (sub, "Silverlight 2.0", "2.1", "SL2", api_sl2);
+			Populate (sub, "API 1.1", GetVersionPath ("1.0", "net_1_1"), "1.0", api_1_1);
+			Populate (sub, "API 2.0 sp1", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
+			Populate (sub, "API 3.0 sp1", GetVersionPath ("3.0", "net_3_0"), "3.0", api_3_0);
+			Populate (sub, "API 3.5 sp1", GetVersionPath ("2.0", "net_2_0"), "3.5", api_3_5);
+			Populate (sub, "API 4.0 beta 1", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
+			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
+		}
+		
+		static string GetVersionPath (string version, string profile)
+		{
+			if (string.IsNullOrEmpty (Environment.GetEnvironmentVariable ("MONO_PATH")))
+				return version;
+
+			// Developer's version pointing to /mcs/class/lib/<profile>/
+			return profile;
 		}
 	}
 }

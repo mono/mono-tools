@@ -1,3 +1,8 @@
+2009-06-03  Marek Safar <marek.safar@gmail.com>
+
+	* InfoManager.cs: Added 4.0 profile assemblies. Look for assemblies
+	in MONO_PATH when specified.
+
 2009-06-03  Jb Evain  <jbevain@novell.com>
 
 	* InfoManager.cs: refactor the code to retrieve masterinfos
