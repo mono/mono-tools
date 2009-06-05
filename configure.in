@@ -240,6 +240,7 @@ Mono.Profiler/heap-snapshot-explorer/Makefile
 Mono.Profiler/Mono.Profiler.Widgets/Makefile
 Mono.Profiler/mprof-gui/Makefile
 Mono.Profiler/mprof-gui/emveepee
+webdoc/Makefile
 ])
 
 echo "---"
