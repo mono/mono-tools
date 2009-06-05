@@ -1,3 +1,7 @@
+2009-06-05  Jonathan Pryor <jpryor@novell.com>
+
+	* configure.in: Fix the build (webdoc needs to be included).
+
 2009-06-03  Jonathan Pryor <jpryor@novell.com>
 
 	* Makefile.am: Add webdoc to the build.

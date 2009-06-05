@@ -235,6 +235,7 @@ Mono.Profiler/heap-snapshot-viewer/Makefile
 Mono.Profiler/profiler-decoder-library/Makefile
 Mono.Profiler/profiler-file-decoder/mprof-decoder
 Mono.Profiler/heap-snapshot-explorer/Makefile
+webdoc/Makefile
 ])
 
 echo "---"
