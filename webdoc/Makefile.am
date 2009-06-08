@@ -49,12 +49,7 @@ dist-hook:
 	mkdir -p $(distdir)/xtree/images/msdn2
 	mkdir -p $(distdir)/xtree/images/xp
 	mkdir -p $(distdir)/ptree
-	cp $(srcdir)/index.aspx $(srcdir)/monodoc.ashx $(distdir)
-	cp $(srcdir)/header.aspx              $(distdir)
-	cp $(srcdir)/web.config               $(distdir)
-	cp $(srcdir)/common.css               $(distdir)
-	cp $(srcdir)/sidebar.css              $(distdir)
-	cp $(srcdir)/sidebar.js               $(distdir)
+	for f in $(web_DATA) ; do cp $(srcdir)/$$f $(distdir) ; done
 	cp $(srcdir)/images/*gif              $(distdir)/images
 	cp $(srcdir)/images/*png              $(distdir)/images
 	cp $(srcdir)/xtree/images/msdn/*gif   $(distdir)/xtree/images/msdn
