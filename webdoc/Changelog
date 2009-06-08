@@ -1,3 +1,8 @@
+2009-06-08  Jonathan Pryor  <jpryor@novell.com>
+
+	* Makefile.am (dist-hook): Copy everything in $(web_DATA) to
+	  $(distdir) (otherwise we'll miss some files).
+
 2008-10-29  Jonathan Pryor  <jpryor@novell.com>
 
 	* Makefile.am: Get `make dist`, `make install` working...  We install
