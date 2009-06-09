@@ -11,17 +11,15 @@ namespace Mono.Profiler.Widgets {
 
 		class Node {
 		
-			ulong clicks;
 			Node parent;
 			List<Node> children;
-			LoadedMethod method;
+			StackTrace frame;
 			GCHandle gch;
 			
-			public Node (Node parent, LoadedMethod method, ulong clicks)
+			public Node (Node parent, StackTrace frame)
 			{
 				this.parent = parent;
-				this.method = method;
-				this.clicks = clicks;
+				this.frame = frame;
 				gch = GCHandle.Alloc (this, GCHandleType.Weak);
 			}
 			
@@ -29,19 +27,19 @@ namespace Mono.Profiler.Widgets {
 				get {
 					if (children == null) {
 						children = new List<Node> ();
-						foreach (LoadedMethod.ClicksPerCalledMethod clicks in method.Methods)
-							children.Add (new Node (this, clicks.Method, clicks.Clicks));
+						foreach (StackTrace child in frame.CalledFrames)
+							children.Add (new Node (this, child));
 					}
 					return children;
 				}
 			}
 			
 			public ulong Clicks {
-				get { return clicks; }
+				get { return frame.Clicks; }
 			}
 			
 			public LoadedMethod Method {
-				get { return method; }
+				get { return frame.TopMethod; }
 			}
 			
 			public Node Parent {
@@ -86,10 +84,9 @@ namespace Mono.Profiler.Widgets {
 				return;
 			
 			nodes = new List<Node> ();
-			foreach (LoadedMethod m in data.LoadedElements.Methods) {
-				total_clicks += m.Clicks;
-				if (m.Callers.Length == 0)
-					nodes.Add (new Node (null, m, m.Clicks));
+			foreach (StackTrace frame in StackTrace.RootFrames) {
+				total_clicks += frame.TopMethod.Clicks;
+				nodes.Add (new Node (null, frame));
 			}
 		}
 
@@ -121,14 +118,14 @@ namespace Mono.Profiler.Widgets {
 			iter = TreeIter.Zero;
 			if (path.Indices.Length == 0 || nodes.Count <= path.Indices [0])
 				return false;
+
 			Node node = nodes [path.Indices [0]];
-			if (path.Indices.Length == 1)
-				iter = (TreeIter) node;
-			else {
-				if (node.Children.Count <= path.Indices [1])
+			for (int i = 1; i < path.Indices.Length; i++) {
+				if (node.Children.Count <= path.Indices [i])
 					return false;
-				iter = (TreeIter) node.Children [path.Indices [1]];
+				node = node.Children [path.Indices [i]];
 			}
+			iter = (TreeIter) node;
 			return true;
 		}
 		

@@ -258,6 +258,66 @@ namespace  Mono.Profiler {
 			}
 		}
 		
+		ulong clicks;
+		public ulong Clicks {
+			get {
+				return clicks;
+			}
+		}
+		uint calls;
+		public ulong Calls {
+			get {
+				return calls;
+			}
+		}
+		
+		public void ResetCalls () {
+			calls = 0;
+			clicks = 0;
+		}
+		public void RegisterCall (ulong clicks) {
+			this.clicks += clicks;
+			calls ++;
+		}
+		
+		static StackTrace[] EmptyCalledFrames = new StackTrace [0];
+		List<StackTrace> calledFrames;
+		public StackTrace[] CalledFrames {
+			get {
+				if (calledFrames != null) {
+					StackTrace[] result = calledFrames.ToArray ();
+					Array.Sort (result, CompareByClicks);
+					Array.Reverse (result);
+					return result;
+				} else {
+					return EmptyCalledFrames;
+				}
+			}
+		}
+		void AddCalledFrame (StackTrace calledFrame) {
+			if (calledFrames == null) {
+				calledFrames = new List<StackTrace> ();
+			}
+			calledFrames.Add (calledFrame);
+		}
+		
+		public static Comparison<StackTrace> CompareByClicks = delegate (StackTrace a, StackTrace b) {
+			return a.Clicks.CompareTo (b.Clicks);
+		};
+		public static Comparison<StackTrace> CompareByCalls = delegate (StackTrace a, StackTrace b) {
+			return a.Calls.CompareTo (b.Calls);
+		};
+		
+		static List<StackTrace> rootFrames;
+		public static StackTrace[] RootFrames {
+			get {
+				StackTrace[] result = rootFrames.ToArray ();
+				Array.Sort (result, CompareByClicks);
+				Array.Reverse (result);
+				return result;
+			}
+		}
+		
 		public void Write (TextWriter writer, int depth, string indentationString) {
 			writer.Write ("CallStack of id ");
 			writer.Write (id);
@@ -307,8 +367,16 @@ namespace  Mono.Profiler {
 		}
 		
 		StackTrace (LoadedMethod topMethod, StackTrace caller, bool methodIsBeingJitted) {
+			this.clicks = 0;
+			this.calls = 0;
+			this.calledFrames = null;
 			this.topMethod = topMethod;
 			this.caller = caller;
+			if (caller != null) {
+				caller.AddCalledFrame (this);
+			} else {
+				rootFrames.Add (this);
+			}
 			this.methodIsBeingJitted = methodIsBeingJitted;
 			this.level = caller != null ? caller.level + 1 : 1;
 			this.id = nextFreeId;
@@ -344,6 +412,7 @@ namespace  Mono.Profiler {
 		static Dictionary<uint,List<StackTrace>> [] tracesByLevel;
 		public static readonly StackTrace StackTraceUnavailable;
 		static StackTrace () {
+			rootFrames = new List<StackTrace> ();
 			nextFreeId = 0;
 			tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
 			StackTraceUnavailable = NewStackTrace (CallStack.StackFrame.StackFrameUnavailable);
@@ -388,7 +457,7 @@ namespace  Mono.Profiler {
 	}
 	
 	class CallStack {
-		internal class StackFrame {
+		public class StackFrame {
 			LoadedMethod method;
 			public LoadedMethod Method {
 				get {
@@ -510,6 +579,10 @@ namespace  Mono.Profiler {
 			stackTop = StackFrame.FrameFactory (method, counter, false, stackTop);
 		}
 		internal void MethodExit (LoadedMethod method, ulong counter) {
+			StackTrace trace = StackTrace.NewStackTrace (this);
+			if (trace != null) {
+				trace.RegisterCall (counter);
+			}
 			PopMethod (method, counter, false);
 		}
 		internal void TopMethodExit (ulong counter) {

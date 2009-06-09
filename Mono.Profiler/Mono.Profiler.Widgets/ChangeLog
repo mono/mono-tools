@@ -1,3 +1,9 @@
+2009-06-09  Mike Kestner <mkestner@novell.com>
+
+	* CallsStore.cs: use StackTrace objects to navigate the call tree
+	and obtain context appropriate clicks info.  Fix a bug in the GetIter
+	path traversal logic for trees deeper than 2 levels.
+
 2009-05-21  Mike Kestner <mkestner@novell.com>
 
 	* *: initial checkin.  beginnings of a widget library for profiler

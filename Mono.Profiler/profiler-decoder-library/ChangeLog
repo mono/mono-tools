@@ -1,3 +1,6 @@
+2009-06-09  Mike Kestner <mkestner@novell.com>
+	* ObjectModel.cs: commit Massi's calls StackTrace logging.
+
 2009-05-21  Mike Kestner <mkestner@novell.com>
 	* *: replace MD 1.0 solution files with 2.0 msbuild files, and turn
 	on makefile synchronization instead of generated makefiles.
