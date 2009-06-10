@@ -1,3 +1,7 @@
+2009-06-10  Jesse Jones  <jesjones@mindspring.com>
+
+	* DecorateThreadsTest.cs: added new rule.
+
 2009-01-23  Jesse Jones  <jesjones@mindspring.com>
 
 	* DoNotUseThreadStaticWithInstanceFieldsTest.cs: added new rule.

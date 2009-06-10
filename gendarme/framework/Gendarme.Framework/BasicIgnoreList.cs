@@ -178,6 +178,10 @@ namespace Gendarme.Framework {
 
 		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
 		{
+			// Note that the Runner tearing_down code may call us with nulls.
+			if (assembly == null)
+				return false;
+				
 			if (CheckRule (rule))
 				return true;
 
@@ -189,6 +193,10 @@ namespace Gendarme.Framework {
 
 		public bool IsIgnored (IRule rule, TypeDefinition type)
 		{
+			// Note that the Runner tearing_down code may call us with nulls.
+			if (type == null)
+				return false;
+				
 			if (CheckRule (rule))
 				return true;
 
@@ -202,6 +210,10 @@ namespace Gendarme.Framework {
 
 		public bool IsIgnored (IRule rule, MethodDefinition method)
 		{
+			// Note that the Runner tearing_down code may call us with nulls.
+			if (method == null)
+				return false;
+				
 			if (CheckRule (rule))
 				return true;
 

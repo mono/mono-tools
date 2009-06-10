@@ -1,3 +1,7 @@
+2009-06-10  Jesse Jones  <jesjones@mindspring.com>
+
+	* TypeRocks.cs: Added AllSuperTypes rock.
+
 2009-04-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* VariableDefinitionRocks.cs: Added IsGeneratedName rock.

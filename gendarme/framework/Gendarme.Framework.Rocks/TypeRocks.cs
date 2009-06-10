@@ -77,6 +77,33 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Returns an IEnumerable that allows a single loop (like a foreach) to
+		/// traverse all base classes and interfaces inherited by the type.
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <returns>An IEnumerable to traverse all base classes and interfaces.</returns>
+		public static IEnumerable<TypeDefinition> AllSuperTypes (this TypeReference self)
+		{
+			var types = new List<TypeReference> ();
+			types.Add (self);
+			
+			int i = 0;
+			while (i < types.Count) {
+				TypeDefinition type = types [i++].Resolve ();
+				if (type != null) {
+					yield return type;
+					
+					foreach (TypeReference super in type.Interfaces) {
+						types.AddIfNew (super);
+					}
+					
+					if (type.BaseType != null)
+						types.AddIfNew (type.BaseType);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Check if a type reference collection contains a type of a specific name.
 		/// </summary>
 		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>

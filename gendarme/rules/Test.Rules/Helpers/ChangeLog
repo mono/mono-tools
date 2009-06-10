@@ -1,3 +1,7 @@
+2009-06-10  Jesse Jones  <jesjones@mindspring.com>
+
+	* TestRunner.cs: ctor updates Rules property.
+
 2009-01-28  Jb Evain  <jbevain@novell.com>
 
 	* AssemblyCache.cs: provide the assembly with the gendarme

@@ -1,6 +1,7 @@
 include ../common.make
 
 rules_sources =  \
+	DecorateThreadsRule.cs \
 	DoNotLockOnThisOrTypesRule.cs \
 	DoNotLockOnWeakIdentityObjectsRule.cs \
 	DoNotUseMethodImplOptionsSynchronizedRule.cs \
@@ -11,9 +12,12 @@ rules_sources =  \
 	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \
 	ProtectCallToEventDelegatesRule.cs \
 	ReviewLockUsedOnlyForOperationsOnVariablesRule.cs \
+	ThreadModel.cs \
+	ThreadRocks.cs \
 	WriteStaticFieldFromInstanceMethodRule.cs
 
 tests_sources = \
+	DecorateThreadsTest.cs \
 	DoNotLockOnThisOrTypesTest.cs \
 	DoNotLockOnWeakIdentityObjectsTest.cs \
 	DoNotUseMethodImplOptionsSynchronizedTest.cs \

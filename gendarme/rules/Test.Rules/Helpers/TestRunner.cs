@@ -50,6 +50,8 @@ namespace Test.Rules.Helpers {
 		{
 			CurrentRule = rule;
 			CurrentRule.Initialize (this);
+			Rules.Clear ();
+			Rules.Add (rule);
 			IgnoreList = this;
 			Initialize ();
 		}

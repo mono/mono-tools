@@ -34,6 +34,7 @@ using System.Runtime.InteropServices;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework {
@@ -57,12 +58,13 @@ namespace Gendarme.Framework {
 		private IMetadataTokenProvider currentTarget;
 		private IIgnoreList ignoreList;
 		private int defectCountBeforeCheck;
+		private bool tearing_down;
 
 		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
 		public event EventHandler<RunnerEventArgs> AnalyzeType;
 		public event EventHandler<RunnerEventArgs> AnalyzeMethod;
-
+		
 		protected IRule CurrentRule {
 			get { return currentRule; }
 			set { currentRule = value; }
@@ -177,6 +179,20 @@ namespace Gendarme.Framework {
 
 			if (!Filter (defect.Severity, defect.Confidence))
 				return;
+				
+			if (tearing_down) {
+				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as MethodDefinition)) {
+					return;
+				}
+				
+				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as TypeDefinition)) {
+					return;
+				}
+				
+				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as AssemblyDefinition)) {
+					return;
+				}
+			}
 
 			defect_list.Add (defect);
 		}
@@ -186,7 +202,7 @@ namespace Gendarme.Framework {
 			// check here to avoid creating the Defect object
 			if (!Filter (severity, confidence))
 				return;
-
+				
 			Defect defect = new Defect (currentRule, currentTarget, metadata, severity, confidence);
 			Report (defect);
 		}
@@ -378,11 +394,22 @@ namespace Gendarme.Framework {
 		public virtual void TearDown ()
 		{
 			// last chance to report defects
+			tearing_down = true;
 			foreach (Rule rule in rules) {
+				currentRule = rule;
 				rule.TearDown ();
 			}
 
+			currentRule = null;
 			Engines.TearDown ();
+		}
+
+		// This is for unit tests.
+		public virtual void TearDown (IRule rule)
+		{
+			currentRule = rule;
+			rule.TearDown ();
+			currentRule = null;
 		}
 	}
 }
