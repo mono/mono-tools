@@ -1,3 +1,8 @@
+2009-06-10  Cedric Vivier <cedricv@neonux.com>
+
+	* BadRecursiveInvocationRule.cs: Catch recursion on static properties/methods
+	when the call is the first instruction (excluding arguments if any).
+
 2008-04-30  Jesse Jones  <jesjones@mindspring.com> 
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: 

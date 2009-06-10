@@ -132,11 +132,10 @@ namespace Gendarme.Rules.Correctness {
 		private static bool CheckForEndlessRecursion (MethodDefinition method, int index)
 		{
 			int pcount = method.Parameters.Count;
-			if (index <= pcount)
-				return false;
-
 			if (!method.HasThis)
 				pcount--;
+			if (index <= pcount)
+				return false;
 
 			for (int i = pcount; i >= 0; i--) {
 				if (!CheckParams (method, ref index, i))

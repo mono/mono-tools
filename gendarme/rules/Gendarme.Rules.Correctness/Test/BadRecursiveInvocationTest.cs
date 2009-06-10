@@ -72,6 +72,10 @@ namespace Test.Rules.Correctness {
 				get { return FooPlusOne + 1; }
 			}
 
+			public static int StaticFooPlusOne {
+				get { return StaticFooPlusOne + 1; }
+			}
+
 			/* correct */
 			public int Bar {
 				get { return -1; }
@@ -96,6 +100,21 @@ namespace Test.Rules.Correctness {
 			public override bool Equals (object obzekt)
 			{
 				return Equals (obzekt);
+			}
+
+			public static int StaticGoodOverload (object obzekt)
+			{
+				return StaticGoodOverload ((string) obzekt);
+			}
+
+			public static int StaticGoodOverload (string s)
+			{
+				return 0;
+			}
+
+			public static int StaticBad (object obzekt)
+			{
+				return StaticBad (obzekt);
 			}
 
 			public static int StaticBadFibo (int n)
@@ -160,6 +179,7 @@ namespace Test.Rules.Correctness {
 			AssertRuleFailure<BadRec> ("get_Foo", 1);
 			AssertRuleFailure<BadRec> ("get_OnePlusFoo", 1);
 			AssertRuleFailure<BadRec> ("get_FooPlusOne", 1);
+			AssertRuleFailure<BadRec> ("get_StaticFooPlusOne", 1);
 		}
 		
 		[Test]
@@ -181,9 +201,10 @@ namespace Test.Rules.Correctness {
 		}
 		
 		[Test]
-		public void BadRecursiveMethod ()
+		public void BadRecursiveMethods ()
 		{
 			AssertRuleFailure<BadRec> ("Equals", 1);
+			AssertRuleFailure<BadRec> ("StaticBad", 1);
 		}
 
 		[Test]
@@ -335,7 +356,6 @@ namespace Test.Rules.Correctness {
 		}
 
 		[Test]
-		[Ignore ("needs review, this work on MS compiled code!")]
 		public void MoreCoverage_Static ()
 		{
 			AssertRuleFailure<Coverage> ("StaticFewParameters", 1);
@@ -347,6 +367,12 @@ namespace Test.Rules.Correctness {
 		{
 			AssertRuleFailure<Coverage> ("FewParameters", 1);
 			AssertRuleFailure<Coverage> ("ManyParameters", 1);
+		}
+
+		[Test]
+		public void StaticGoodOverload ()
+		{
+			AssertRuleSuccess<BadRec> ("StaticGoodOverload", new Type [] { typeof (object) });
 		}
 	}
 }
