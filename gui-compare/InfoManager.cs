@@ -292,7 +292,7 @@ namespace GuiCompare
 			"System.WorkflowServices",
 			"System.Xaml",
 			"System.Xaml.Hosting",
-			"System.XML",
+			"System.Xml",
 			"System.Xml.Linq",
 
 			"Microsoft.Build.Conversion.v4.0",

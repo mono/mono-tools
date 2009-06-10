@@ -1,3 +1,9 @@
+2009-06-10  Marek Safar <marek.safar@gmail.com>
+
+	* Metadata.cs, CecilMetadata.cs, InfoManager.cs, CompareContext.cs,
+	  MasterMetadata.cs, Masterinfo.cs: Some work on generic type
+	  parameter comparison and sealed/abstract/static type modifiers.
+
 2009-06-03  Marek Safar <marek.safar@gmail.com>
 
 	* InfoManager.cs: Added 4.0 profile assemblies. Look for assemblies

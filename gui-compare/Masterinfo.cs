@@ -29,6 +29,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -189,7 +190,7 @@ namespace GuiCompare {
 	public abstract class XMLNameGroup : XMLData
 	{
 		protected XmlNode group;
-		public Hashtable keys;
+		public System.Collections.Specialized.ListDictionary keys;
 
 		public override void LoadData (XmlNode node)
 		{
@@ -199,7 +200,7 @@ namespace GuiCompare {
 			if (node.Name != GroupName)
 				throw new FormatException (String.Format ("Expecting <{0}>", GroupName));
 
-			keys = new Hashtable ();
+			keys = new System.Collections.Specialized.ListDictionary ();
 			foreach (XmlNode n in node.ChildNodes) {
 				string name = n.Attributes ["name"].Value;
 				if (CheckIfAdd (name, n)) {
@@ -347,9 +348,9 @@ namespace GuiCompare {
 		public string name;
 		public string type;
 		public string baseName;
-		bool isSealed;
+		public bool isSealed;
 		bool isSerializable;
-		bool isAbstract;
+		public bool isAbstract;
 		string charSet;
 		string layout;
 		public XMLAttributes attributes;
@@ -466,6 +467,11 @@ namespace GuiCompare {
 			}
 
 			return result;
+		}
+		
+		public List<CompGenericParameter> GetTypeParameters ()
+		{
+			return MasterUtils.GetTypeParameters (genericParameters);
 		}
 
 		public string Name {
@@ -606,6 +612,9 @@ namespace GuiCompare {
 				}
 				return false;
 			}
+			
+			if (MasterUtils.IsImplementationSpecificAttribute (value))
+				return false;
 
 			return true;
 		}
@@ -664,7 +673,10 @@ namespace GuiCompare {
 				}
 				return;
 			}
-
+			
+			if (MasterUtils.IsImplementationSpecificAttribute (name))
+				return;
+			
 			if (pNode != null) {
 				XMLAttributeProperties p = new XMLAttributeProperties (name);
 				p.LoadData (pNode);
@@ -672,7 +684,7 @@ namespace GuiCompare {
 				properties[name] = p;
 			}
 		}
-
+		
 		public override string GroupName {
 			get { return "attributes"; }
 		}
@@ -701,33 +713,44 @@ namespace GuiCompare {
 		}
 	}
 
-	public class XMLGenericParameters : XMLNameGroup
+	public class XMLGenericParameters : XMLMember
 	{
-		string attributes;
-		XMLGenericParameterConstraints constraints;
-
+		public Dictionary<string, XMLGenericParameterConstraints> constraints = new Dictionary<string, XMLGenericParameterConstraints> ();
+		
 		public override string GroupName {
 			get { return "generic-parameters"; }
 		}
 
 		public override string Name {
-			get { return "generic-parameters"; }
+			get { return "generic-parameter"; }
 		}
 
 		protected override void LoadExtraData (string name, XmlNode node)
 		{
-			attributes = ((XmlElement) node).GetAttribute ("attributes");
+			var attributes = ((XmlElement) node).GetAttribute ("attributes");
+			var xml_constraints = new XMLGenericParameterConstraints (attributes);
+			constraints.Add (name, xml_constraints);
+
+			XmlNode orig = node;
 
 			var child = node.FirstChild;
 			if (child != null && child.Name == "generic-parameter-constraints") {
-				constraints = new XMLGenericParameterConstraints ();
-				constraints.LoadData (child);
+				xml_constraints.LoadData (child);
 			}
+			
+			base.LoadExtraData (name, orig);
 		}
 	}
 
 	public class XMLGenericParameterConstraints : XMLNameGroup
 	{
+		public string attributes;
+		
+		public XMLGenericParameterConstraints (string attributes)
+		{
+			this.attributes = attributes;
+		}
+		
 		public override string GroupName {
 			get { return "generic-parameter-constraints"; }
 		}
@@ -824,7 +847,7 @@ namespace GuiCompare {
 			if (node.Name != GroupName)
 				throw new FormatException (String.Format ("Expecting <{0}>", GroupName));
 
-			keys = new Hashtable ();
+			keys = new System.Collections.Specialized.ListDictionary ();
 			foreach (XmlNode n in node.ChildNodes) {
 				string name = n.Attributes["name"].Value;
 				string key = GetNodeKey (name, n);

@@ -157,6 +157,51 @@ namespace GuiCompare {
 								reference_type.GetBaseType(),
 								target_type.GetBaseType()));
 			}
+			
+			if (reference_type.IsAbstract != target_type.IsAbstract) {
+				string ref_mod = (reference_type.IsAbstract && reference_type.IsSealed) ? "static" : "abstract";
+				string tar_mod = (target_type.IsAbstract && target_type.IsSealed) ? "static" : "abstract";
+
+				parent.AddError (String.Format ("reference is {0} {2}, target is {1} {3}",
+								reference_type.IsAbstract ? null : "not", target_type.IsAbstract ? null : "not",
+								ref_mod, tar_mod));
+			} else if (reference_type.IsSealed != target_type.IsSealed) {
+				string ref_mod = (reference_type.IsAbstract && reference_type.IsSealed) ? "static" : "sealed";
+				string tar_mod = (target_type.IsAbstract && target_type.IsSealed) ? "static" : "sealed";
+				
+				parent.AddError (String.Format ("reference is {0} {2}, target is {1} {3}",
+								reference_type.IsSealed ? null : "not", target_type.IsSealed ? null : "not",
+								ref_mod, tar_mod));
+			}
+		}
+		
+		void CompareTypeParameters (ComparisonNode parent, ICompGenericParameter reference, ICompGenericParameter target)
+		{
+			var r = reference.GetTypeParameters ();
+			var t = target.GetTypeParameters ();
+			if (r == null && t == null)
+				return;
+
+			if (r.Count != t.Count) {
+				throw new NotImplementedException (string.Format ("Should never happen with valid data ({0} != {1})", r.Count, t.Count));
+			}
+
+			for (int i = 0; i < r.Count; ++i) {
+				var r_i = r [i];
+				var t_i = t [i];
+				
+				if (r_i.GenericAttributes != t_i.GenericAttributes) {
+					parent.AddError (string.Format ("reference type parameter {2} has {0} generic attributes, target type parameter {3} has {1} generic attributes",
+						CompGenericParameter.GetGenericAttributeDesc (r_i.GenericAttributes),
+						CompGenericParameter.GetGenericAttributeDesc (t_i.GenericAttributes),
+						r_i.Name,
+						t_i.Name));
+				}
+
+				CompareAttributes (parent, r_i, t_i);
+				
+				// TODO: Compare contraints
+			}
 		}
 
 		void CompareTypeLists (ComparisonNode parent,
@@ -195,6 +240,13 @@ namespace GuiCompare {
 						CompareBaseTypes (comparison,
 								  (ICompHasBaseType)reference_list[m],
 								  (ICompHasBaseType)target_list[a]);
+					}
+					
+					// compares generic type parameters
+					if (reference_list[m] is ICompGenericParameter && target_list[a] is ICompGenericParameter) {
+						CompareTypeParameters (comparison,
+								(ICompGenericParameter)reference_list[m],
+								(ICompGenericParameter)target_list[a]);
 					}
 					
 					// compare nested types

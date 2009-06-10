@@ -40,7 +40,8 @@ namespace GuiCompare {
 		Property,
 		Field,
 		Delegate,
-		Event
+		Event,
+		GenericParameter
 	}
 
 	public interface ICompAttributeContainer
@@ -50,7 +51,10 @@ namespace GuiCompare {
 
 	public interface ICompHasBaseType
 	{
-		string GetBaseType();
+		string GetBaseType ();
+
+		bool IsSealed { get; }
+		bool IsAbstract { get; }
 	}
 	
 	public interface ICompTypeContainer
@@ -70,6 +74,11 @@ namespace GuiCompare {
  		List<CompNamed> GetProperties();
  		List<CompNamed> GetFields();
  		List<CompNamed> GetEvents();
+	}
+	
+	public interface ICompGenericParameter
+	{
+		List<CompGenericParameter> GetTypeParameters ();
 	}
 
 	public abstract class CompNamed {
@@ -144,7 +153,7 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetNestedDelegates ();
 	}
 
-	public abstract class CompInterface : CompNamed, ICompAttributeContainer, ICompMemberContainer, ICompHasBaseType {
+	public abstract class CompInterface : CompNamed, ICompAttributeContainer, ICompMemberContainer, ICompHasBaseType, ICompGenericParameter {
 		public CompInterface (string name)
 			: base (name, CompType.Interface)
 		{
@@ -160,6 +169,11 @@ namespace GuiCompare {
  		public abstract List<CompNamed> GetEvents();
 		
 		public abstract string GetBaseType();
+		
+		public bool IsSealed { get { return false; } }
+		public bool IsAbstract { get { return false; } }
+		
+		public abstract List<CompGenericParameter> GetTypeParameters ();
 	}
 
 	public abstract class CompEnum : CompNamed, ICompAttributeContainer, ICompMemberContainer, ICompHasBaseType {
@@ -179,18 +193,28 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetAttributes ();
 		
 		public abstract string GetBaseType();
+		
+		public bool IsSealed { get { return true; } }
+		public bool IsAbstract { get { return false; } }
 	}
 
-	public abstract class CompDelegate : CompNamed, ICompHasBaseType {
+	public abstract class CompDelegate : CompNamed, ICompAttributeContainer, ICompHasBaseType, ICompGenericParameter {
 		public CompDelegate (string name)
 			: base (name, CompType.Delegate)
 		{
 		}
+		
+		public abstract List<CompNamed> GetAttributes ();
 
 		public abstract string GetBaseType();
+		
+		public bool IsSealed { get { return true; } }
+		public bool IsAbstract { get { return false; } }		
+		
+		public abstract List<CompGenericParameter> GetTypeParameters ();
 	}
 
-	public abstract class CompClass : CompNamed, ICompAttributeContainer, ICompTypeContainer, ICompMemberContainer, ICompHasBaseType {
+	public abstract class CompClass : CompNamed, ICompAttributeContainer, ICompTypeContainer, ICompMemberContainer, ICompHasBaseType, ICompGenericParameter {
 		public CompClass (string name, CompType type)
 			: base (name, type)
 		{
@@ -212,6 +236,10 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetNestedDelegates ();
 		
 		public abstract string GetBaseType();
+		public abstract bool IsSealed { get; }
+		public abstract bool IsAbstract { get; }
+		
+		public abstract List<CompGenericParameter> GetTypeParameters ();
 	}
 
 	public abstract class CompMember : CompNamed, ICompAttributeContainer {
@@ -226,13 +254,15 @@ namespace GuiCompare {
 		public abstract List<CompNamed> GetAttributes ();
 	}
 
-	public abstract class CompMethod : CompMember {
+	public abstract class CompMethod : CompMember, ICompGenericParameter {
 		public CompMethod (string name)
 			: base (name, CompType.Method)
 		{
 		}
 
 		public abstract bool ThrowsNotImplementedException ();
+		
+		public abstract List<CompGenericParameter> GetTypeParameters ();
 	}
 
 	public abstract class CompProperty : CompMember, ICompMemberContainer {
@@ -268,6 +298,24 @@ namespace GuiCompare {
 		public CompAttribute (string typename)
 			: base (typename, CompType.Attribute)
 		{
+		}
+	}
+	
+	public abstract class CompGenericParameter : CompNamed, ICompAttributeContainer {
+		
+		public readonly Mono.Cecil.GenericParameterAttributes GenericAttributes;
+		
+		public CompGenericParameter (string name, Mono.Cecil.GenericParameterAttributes attr)
+			: base (name, CompType.GenericParameter)
+		{
+			GenericAttributes = attr;
+		}
+		
+		public abstract List<CompNamed> GetAttributes ();
+		
+		public static string GetGenericAttributeDesc (Mono.Cecil.GenericParameterAttributes ga)
+		{
+			return ga.ToString ();
 		}
 	}
 }

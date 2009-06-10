@@ -90,6 +90,30 @@ namespace GuiCompare {
 			return type.Name;
 		}
 		
+		public static string PrettyTypeDefinition (TypeDefinition td)
+		{
+			if (td.GenericParameters.Count > 0) {
+				int arity_start = td.Name.IndexOf ('`');
+				if (arity_start > 0) {
+					var sb = new StringBuilder (td.Name);
+					sb.Remove (arity_start, td.Name.Length - arity_start);
+					sb.Append ("<");
+					bool first_gp = true;
+					foreach (GenericParameter gp in td.GenericParameters) {
+						if (!first_gp)
+							sb.Append (',');
+						first_gp = false;
+						sb.Append (gp.Name);
+					}
+					sb.Append (">");
+				
+					return sb.ToString ();
+				}
+			}
+			
+			return td.Name;
+		}		
+		
 		// the corcompare xml output uses a different formatting than Cecil.
 		// Cecil uses / for nested classes, ala:
 		//  Namespace.Class/NestedClass
@@ -287,14 +311,6 @@ namespace GuiCompare {
 			return IsTODOAttribute (GetBaseType (typedef));
 		}
 		
-		public static bool ShouldSkipAttribute (string name)
-		{
-			if (name == "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute" || name == "System.Runtime.CompilerServices.CompilerGeneratedAttribute")
-				return true;
-			
-			return false;
-		}
-		
 		public static List<CompNamed> GetCustomAttributes (ICustomAttributeProvider provider, List<string> todos)
 		{
 			List<CompNamed> rv = new List<CompNamed>();
@@ -311,12 +327,26 @@ namespace GuiCompare {
 						continue;
 				}
 
-				if (!ShouldSkipAttribute (ca.Constructor.DeclaringType.FullName))
+				if (!MasterUtils.IsImplementationSpecificAttribute (ca.Constructor.DeclaringType.FullName))
 					rv.Add (new CecilAttribute (ca));
 			}
 			return rv;
 		}
-
+		
+		public static List<CompGenericParameter> GetTypeParameters (IGenericParameterProvider provider)
+		{
+			if (provider.GenericParameters.Count == 0)
+				return null;
+				
+			var l = new List<CompGenericParameter> ();
+			
+			var gparameters = provider.GenericParameters;
+			foreach (GenericParameter gp in gparameters) {
+				l.Add (new CecilGenericParameter (gp));
+			}			
+			
+			return l;			
+		}
 		
 		public static readonly AssemblyResolver Resolver = new AssemblyResolver();
 	}
@@ -452,6 +482,7 @@ namespace GuiCompare {
 			: base (type_def.Name)
 		{
 			this.type_def = type_def;
+			DisplayName = CecilUtils.PrettyTypeDefinition (type_def);
 			
 			interfaces = new List<CompNamed>();
 			constructors = new List<CompNamed>();
@@ -472,8 +503,9 @@ namespace GuiCompare {
 			                                events);
 			
 			attributes = CecilUtils.GetCustomAttributes (type_def, todos);
+			tparams = CecilUtils.GetTypeParameters (type_def);
 		}
-		
+
 		public CecilInterface (TypeReference type_ref)
 			: base (CecilUtils.FormatTypeLikeCorCompare (type_ref))
 		{
@@ -485,6 +517,7 @@ namespace GuiCompare {
 			events = new List<CompNamed>();
 			
 			attributes = new List<CompNamed>();
+			tparams = new List<CompGenericParameter>();
 		}
 
 		public override string GetBaseType ()
@@ -527,6 +560,11 @@ namespace GuiCompare {
 			return attributes;
 		}
 		
+		public override List<CompGenericParameter> GetTypeParameters ()
+		{
+			return tparams;
+		}
+		
 		List<CompNamed> interfaces;
 		List<CompNamed> constructors;
 		List<CompNamed> methods;
@@ -534,6 +572,7 @@ namespace GuiCompare {
 		List<CompNamed> fields;
 		List<CompNamed> events;
 		List<CompNamed> attributes;
+		List<CompGenericParameter> tparams;
 		TypeDefinition type_def;
 	}
 
@@ -542,9 +581,18 @@ namespace GuiCompare {
 			: base (type_def.Name)
 		{
 			this.type_def = type_def;
+			DisplayName = CecilUtils.PrettyTypeDefinition (type_def);
+
 			if (!type_def.IsNotPublic || type_def.IsPublic || type_def.IsNestedPublic || type_def.IsNestedFamily ||
 			    type_def.IsNestedFamilyAndAssembly || type_def.IsNestedFamilyOrAssembly)
 				MemberName = type_def.FullName;
+				
+			attributes = CecilUtils.GetCustomAttributes (type_def, todos);				
+		}
+		
+		public override List<CompNamed> GetAttributes ()
+		{
+			return attributes;
 		}
 
 		public override string GetBaseType ()
@@ -552,7 +600,13 @@ namespace GuiCompare {
 			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 		
+		public override List<CompGenericParameter> GetTypeParameters ()
+		{
+			return CecilUtils.GetTypeParameters (type_def);
+		}
+		
 		TypeDefinition type_def;
+		List<CompNamed> attributes;
 	}
 
 	public class CecilEnum : CompEnum {
@@ -574,7 +628,7 @@ namespace GuiCompare {
 						   fields,
 						   null);
 			
-			attributes = CecilUtils.GetCustomAttributes (type_def, todos); 
+			attributes = CecilUtils.GetCustomAttributes (type_def, todos);
 		}
 
 		public override string GetBaseType ()
@@ -602,6 +656,7 @@ namespace GuiCompare {
 			: base (type_def.Name, type)
 		{
 			this.type_def = type_def;
+			DisplayName = CecilUtils.PrettyTypeDefinition (type_def);
 
 			nested_classes = new List<CompNamed>();
 			nested_enums = new List<CompNamed>();
@@ -642,6 +697,9 @@ namespace GuiCompare {
 		{
 			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
+		
+		public override bool IsAbstract { get { return type_def.IsAbstract; } }
+		public override bool IsSealed { get { return type_def.IsSealed; } }
 
 		public override List<CompNamed> GetInterfaces ()
 		{
@@ -701,6 +759,11 @@ namespace GuiCompare {
 		public override List<CompNamed> GetNestedDelegates ()
 		{
 			return nested_delegates;
+		}
+		
+		public override List<CompGenericParameter> GetTypeParameters ()
+		{
+			return CecilUtils.GetTypeParameters (type_def);
 		}
 
 		TypeDefinition type_def;
@@ -826,6 +889,11 @@ namespace GuiCompare {
 		{
 			return attributes;
 		}
+		
+		public override List<CompGenericParameter> GetTypeParameters ()
+		{
+			return CecilUtils.GetTypeParameters (method_def);
+		}	
 		
 		static string FormatName (MethodDefinition method_def, bool beautify)
 		{
@@ -1054,9 +1122,28 @@ namespace GuiCompare {
 		public CecilAttribute (CustomAttribute ca)
 			: base (ca.Constructor.DeclaringType.FullName)
 		{
-			this.ca = ca;
+		}
+	}
+	
+	public class CecilGenericParameter : CompGenericParameter
+	{
+		List<CompNamed> attributes;		
+		
+		public CecilGenericParameter (GenericParameter gp)
+			: base (gp.Name, gp.Attributes)
+		{
+			attributes = CecilUtils.GetCustomAttributes (gp, todos);
+			
+			var constraints = gp.Constraints;
+			if (constraints.Count == 0)
+				return;
+				
+			// TODO: finish constraints loading
 		}
 		
-		CustomAttribute ca;
+		public override List<CompNamed> GetAttributes ()
+		{
+			return attributes;
+		}
 	}
 }
