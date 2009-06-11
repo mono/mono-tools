@@ -15,7 +15,9 @@ CLEANFILES = $(ASSEMBLY) $(ASSEMBLY_MDB)
 
 FILES =  \
 	AssemblyInfo.cs \
-	CallsStore.cs
+	CallsStore.cs \
+	CallsView.cs \
+	ProfileView.cs
 
 build_sources = $(addprefix $(srcdir)/, $(FILES))
 

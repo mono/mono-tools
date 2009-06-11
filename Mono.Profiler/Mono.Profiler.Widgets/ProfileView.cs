@@ -21,17 +21,46 @@
 
 
 using System;
+using Mono.Profiler;
 
-namespace Mono.Profiler.Gui {
-
-	class MainClass {
-
-		public static void Main (string[] args)
-		{
-			Gtk.Application.Init ();
-			MainWindow win = new MainWindow ();
-			win.Show ();
-			Gtk.Application.Run ();
+namespace Mono.Profiler.Widgets {
+	
+	[System.ComponentModel.ToolboxItem (true)]
+	public class ProfileView : Gtk.ScrolledWindow {
+		
+		string path;
+		
+		public string LogFile {
+			get { return path; }
+			set {
+				path = value;
+				SyncLogFileReader rdr = new SyncLogFileReader (path);
+				ProfilerEventHandler data = new ProfilerEventHandler ();
+				data.LoadedElements.RecordHeapSnapshots = false;
+				while (!rdr.HasEnded) {
+					BlockData current = null;
+					try {
+						current = rdr.ReadBlock ();
+						current.Decode (data, rdr);
+					} catch (DecodingException e) {
+						Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
+						break;
+					}
+				}
+				Gtk.Widget view = new CallsView (data);
+				view.ShowAll ();
+				View = view;
+			}
+		}
+		
+		Gtk.Widget View {
+			get { return Child; }
+			set {
+				if (Child != null)
+					Remove (Child);
+				if (value != null)
+					Add (value);
+			}
 		}
 	}
 }

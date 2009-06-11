@@ -4,66 +4,88 @@ using System.Text;
 using Gtk;
 using Mono.Profiler;
 using Mono.Profiler.Widgets;
+using Mono.Unix;
 
-public partial class MainWindow: Gtk.Window
-{	
-	public MainWindow (): base (Gtk.WindowType.Toplevel)
-	{
-		Build ();
-		view.AppendColumn ("Method", new CellRendererText (), "text", 0);
-		view.AppendColumn ("Cost", new CellRendererText (), "text", 1);
-	}
-	
-	protected override bool OnDeleteEvent (Gdk.Event ev)
-	{
-		Application.Quit ();
-		return true;
-	}
+namespace Mono.Profiler.Gui {
 
-	protected virtual void OnQuitActivated (object sender, System.EventArgs e)
-	{
-		Application.Quit ();
-	}
+	public class MainWindow : Gtk.Window {	
 
-	protected virtual void OnNewActivated (object sender, System.EventArgs e)
-	{
-		FileChooserDialog d = new FileChooserDialog ("Select Application", this, FileChooserAction.Open, Stock.Cancel, ResponseType.Cancel, Stock.Execute, ResponseType.Accept);
-		FileFilter filter = new FileFilter ();
-		filter.AddPattern ("*.exe");
-		d.Filter = filter;
-		if (d.Run () == (int) ResponseType.Accept && !String.IsNullOrEmpty (d.Filename)) {
-			Process proc = new Process ();
-			proc.StartInfo.FileName = "mono";
-			proc.StartInfo.Arguments = "--profile=logging:calls,o=tmp.mprof " + d.Filename;
-			proc.EnableRaisingEvents = true;
-			proc.Exited += delegate {
-				DisplayOutput ();
-			};
-			proc.Start ();
+		ProfileView contents;
+
+		public MainWindow () : base (Gtk.WindowType.Toplevel)
+		{
+			DefaultSize = new Gdk.Size (800, 600);
+			Title = Catalog.GetString ("Mono Visual Profiler");
+			Box box = new Gtk.VBox (false, 6);
+			box.PackStart (BuildMenubar (), false, false, 0);
+			contents = new ProfileView ();
+			box.PackStart (contents, true, true, 0);
+			box.ShowAll ();
+			Add (box);
 		}
-		d.Destroy ();		
-	}
-
 	
-	void DisplayOutput ()
-	{
-		SyncLogFileReader rdr = new SyncLogFileReader ("tmp.mprof");
-		ProfilerEventHandler data = new ProfilerEventHandler ();
-		data.LoadedElements.RecordHeapSnapshots = false;
-		while (!rdr.HasEnded) {
-			BlockData current = null;
-			try {
-				current = rdr.ReadBlock ();
-				current.Decode (data, rdr);
-			} catch (DecodingException e) {
-				Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
-				break;
+		protected override bool OnDeleteEvent (Gdk.Event ev)
+		{
+			Application.Quit ();
+			return true;
+		}
+	
+		void OnNewActivated (object sender, System.EventArgs e)
+		{
+			FileChooserDialog d = new FileChooserDialog ("Select Application", this, FileChooserAction.Open, Stock.Cancel, ResponseType.Cancel, Stock.Execute, ResponseType.Accept);
+			FileFilter filter = new FileFilter ();
+			filter.AddPattern ("*.exe");
+			d.Filter = filter;
+			if (d.Run () == (int) ResponseType.Accept && !String.IsNullOrEmpty (d.Filename)) {
+				Process proc = new Process ();
+				proc.StartInfo.FileName = "mono";
+				proc.StartInfo.Arguments = "--profile=logging:calls,o=tmp.mprof " + d.Filename;
+				proc.EnableRaisingEvents = true;
+				proc.Exited += delegate {
+					Application.Invoke (delegate { contents.LogFile = "tmp.mprof"; });
+				};
+				proc.Start ();
 			}
+			d.Destroy ();		
 		}
-		view.Model = new TreeModelAdapter (new CallsStore (data));
-	}
+
+		void OnQuitActivated (object sender, System.EventArgs e)
+		{
+			Application.Quit ();
+		}
 	
-	protected virtual void OnSaveAsActivated (object sender, System.EventArgs e)
-	{
+		void OnSaveAsActivated (object sender, System.EventArgs e)
+		{
+		}
+
+		const string ui_info = 
+			"<ui>" +
+			"  <menubar name='Menubar'>" +
+			"    <menu action='ProfileMenu'>" +
+			"      <menuitem action='NewAction'/>" +
+			"      <menuitem action='SaveAsAction'/>" +
+			"      <menuitem action='QuitAction'/>" +
+			"    </menu>" +
+			"  </menubar>" +
+			"</ui>";
+
+		Widget BuildMenubar ()
+		{
+			ActionEntry[] actions = new ActionEntry[] {
+				new ActionEntry ("ProfileMenu", null, Catalog.GetString ("_Profile"), null, null, null),
+				new ActionEntry ("NewAction", Stock.New, null, null, Catalog.GetString ("Create New Profile"), new EventHandler (OnNewActivated)),
+				new ActionEntry ("SaveAsAction", Stock.SaveAs, null, null, Catalog.GetString ("Save Profile Data"), new EventHandler (OnSaveAsActivated)),
+				new ActionEntry ("QuitAction", Stock.Quit, null, null, Catalog.GetString ("Quit Profiler"), new EventHandler (OnQuitActivated)),
+			};
+
+                        ActionGroup group = new ActionGroup ("group");
+			group.Add (actions);
+                        UIManager uim = new UIManager ();
+ 
+                        uim.InsertActionGroup (group, (int) uim.NewMergeId ());
+                        uim.AddUiFromString (ui_info);
+			AddAccelGroup (uim.AccelGroup);
+ 			return uim.GetWidget ("/Menubar");
+		}
 	}
 }

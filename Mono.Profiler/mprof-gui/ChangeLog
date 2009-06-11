@@ -1,3 +1,10 @@
+2009-06-11  Mike Kestner <mkestner@novell.com>
+
+	* gtk-gui/* : kill stetic stuff. project is simple enough to avoid it.
+	* Main.cs : add license.
+	* MainWindow.cs : refactor to non-stetic class.  Move profile loading
+	to Widgets.ProfileView. add license.
+
 2009-05-21  Mike Kestner <mkestner@novell.com>
 
 	* *: initial checkin.  beginnings of a visual profiling application

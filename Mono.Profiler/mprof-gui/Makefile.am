@@ -15,14 +15,12 @@ CLEANFILES = $(ASSEMBLY) $(ASSEMBLY_MDB)
 
 FILES =  \
 	AssemblyInfo.cs \
-	gtk-gui/generated.cs \
-	gtk-gui/MainWindow.cs \
 	Main.cs \
 	MainWindow.cs 
 
 build_sources = $(addprefix $(srcdir)/, $(FILES))
 
-RESOURCES = gtk-gui/gui.stetic
+RESOURCES =
 
 build_resources = $(addprefix $(srcdir)/, $(RESOURCES))
 build_resources_args = $(addprefix -resource:, $(build_resources))

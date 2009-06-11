@@ -21,17 +21,18 @@
 
 
 using System;
+using Gtk;
+using Mono.Profiler;
 
-namespace Mono.Profiler.Gui {
-
-	class MainClass {
-
-		public static void Main (string[] args)
+namespace Mono.Profiler.Widgets {
+	
+	internal class CallsView : TreeView {
+		
+		public CallsView (ProfilerEventHandler data) : base ()
 		{
-			Gtk.Application.Init ();
-			MainWindow win = new MainWindow ();
-			win.Show ();
-			Gtk.Application.Run ();
+			AppendColumn ("Method", new CellRendererText (), "text", 0);
+			AppendColumn ("Cost", new CellRendererText (), "text", 1);
+			Model = new TreeModelAdapter (new CallsStore (data));
 		}
 	}
 }
