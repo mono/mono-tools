@@ -1,3 +1,8 @@
+2009-06-12 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* web.config: disable batch compilation to allow the application to
+	work even if edits are not possible.
+
 2009-06-08  Jonathan Pryor  <jpryor@novell.com>
 
 	* Makefile.am (dist-hook): Copy everything in $(web_DATA) to
