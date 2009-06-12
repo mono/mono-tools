@@ -585,10 +585,6 @@ namespace  Mono.Profiler {
 			stackTop = StackFrame.FrameFactory (method, counter, false, stackTop);
 		}
 		internal void MethodExit (LoadedMethod method, ulong counter) {
-			StackTrace trace = StackTrace.NewStackTrace (this);
-			if (trace != null) {
-				trace.RegisterCall (counter);
-			}
 			PopMethod (method, counter, false);
 		}
 		internal void TopMethodExit (ulong counter) {
