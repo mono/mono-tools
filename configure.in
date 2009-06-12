@@ -116,6 +116,16 @@ if test -z "$CONFIG_REQUESTED" ; then
 	enable_debug=yes
 fi
 
+if test `uname -s` = "Darwin"; then
+        LIB_PREFIX=
+        LIB_SUFFIX=.dylib
+else
+        LIB_PREFIX=.so
+        LIB_SUFFIX=
+fi
+AC_SUBST(LIB_PREFIX)
+AC_SUBST(LIB_SUFFIX)
+
 dnl
 dnl I hate PKG_CONFIG_MODULES, that is for the weak
 dnl
@@ -157,6 +167,7 @@ AC_OUTPUT([
 Makefile
 gsharp/Makefile
 gsharp/gsharp
+gsharp/gsharp.exe.config
 gui-compare/Makefile
 gui-compare/gui-compare
 mperfmon/Makefile

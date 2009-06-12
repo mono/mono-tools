@@ -1,7 +1,7 @@
 gsharpdir = $(prefix)/lib/gsharp
 bin_SCRIPTS = gsharp
 
-gsharp_DATA = gsharp.exe
+gsharp_DATA = gsharp.exe gsharp.exe.config
 
 desktopdir = $(datadir)/applications
 desktop_DATA = gsharp.desktop
@@ -26,7 +26,7 @@ gsharp_sources =                        			\
 	$(srcdir)/gtk-gui/Mono.CSharp.Gui.DescribeType.cs	\
 	$(srcdir)/outline.cs
 
-EXTRA_DIST = $(gsharp_sources) gsharp.in $(desktop_DATA).in close.png
+EXTRA_DIST = $(gsharp_sources) gsharp.in $(desktop_DATA).in close.png gsharp.exe.config.in
 CLEANFILES = $(gsharp_DATA) $(gsharp_DATA).mdb $(desktop_DATA)
 
 gsharp.exe: $(gsharp_sources)

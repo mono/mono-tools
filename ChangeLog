@@ -6,6 +6,11 @@
 
 	* Makefile.am: Add webdoc to the build.
 
+2008-12-15  Miguel de Icaza  <miguel@novell.com>
+
+	* configure.in: Detect the proper LIB_PREFIX and LIB_SUFIX to fix
+	the crasher for gsharp when trying to Plot on other systems.
+
 2008-12-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Remove AC_OUTPUT on gnunit files since they break
