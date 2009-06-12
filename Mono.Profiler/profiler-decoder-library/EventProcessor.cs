@@ -82,6 +82,13 @@ namespace  Mono.Profiler {
 			}
 		}
 		
+		StackTrace.Factory stackTraceFactory;
+		public StackTrace[] RootFrames {
+			get {
+				return stackTraceFactory.RootFrames;
+			}
+		}
+
 		uint version;
 		public uint Version {
 			get {
@@ -257,7 +264,7 @@ namespace  Mono.Profiler {
 			StackTrace trace;
 			
 			if (Directives.AllocationsHaveStackTrace) {
-				trace = StackTrace.NewStackTrace (stack);
+				trace = stackTraceFactory.NewStackTrace (stack);
 			} else {
 				trace = null;
 			}
@@ -275,7 +282,7 @@ namespace  Mono.Profiler {
 		public override void MonitorEvent (MonitorEvent eventCode, LoadedClass c, ulong objectId, ulong counter) {
 			//Console.WriteLine ("MonitorEvent {0} class {1} object {2} counter {3}", eventCode, c.Name, objectId, counter);
 			
-			StackTrace trace = StackTrace.NewStackTrace (stack);
+			StackTrace trace = stackTraceFactory.NewStackTrace (stack);
 			if (trace == null ) {
 				trace = StackTrace.StackTraceUnavailable;
 			}
@@ -289,7 +296,7 @@ namespace  Mono.Profiler {
 		}
 		
 		public override void MethodExit (LoadedMethod m, ulong counter) {
-			stack.MethodExit (m, counter);
+			stack.MethodExit (stackTraceFactory, m, counter);
 		}
 		
 		public override void MethodJitStart (LoadedMethod m, ulong counter) {
@@ -299,7 +306,7 @@ namespace  Mono.Profiler {
 		
 		public override void MethodJitEnd (LoadedMethod m, ulong counter, bool success) {
 			m.JitClicks += (counter - m.StartJit);
-			stack.MethodJitEnd (m, counter);
+			stack.MethodJitEnd (stackTraceFactory, m, counter);
 		}
 		
 		public override void MethodFreed (LoadedMethod m, ulong counter) {}
@@ -635,6 +642,7 @@ namespace  Mono.Profiler {
 		public ProfilerEventHandler () : base (new LoadedElementHandler<LoadedClass,LoadedMethod,UnmanagedFunctionFromRegion,UnmanagedFunctionFromID,ExecutableMemoryRegion,HeapObject,HeapSnapshot> (new LoadedElementFactory ())) {
 			perThreadStacks = new Dictionary<ulong,CallStack> ();
 			stack = null;
+			stackTraceFactory = new StackTrace.Factory ();
 			unknownStatisticalHitsCollector = new UnknownStatisticalHitsCollector ();
 			gcStatistics = new List<GcStatistics> ();
 			pendingGcStatistics = new List<GcStatistics> ();

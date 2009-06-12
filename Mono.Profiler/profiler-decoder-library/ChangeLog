@@ -1,4 +1,9 @@
 2009-06-12  Massimiliano Mantione <massi@ximian.com>
+	* EventProcessor.cs, ObjectModel.cs (StackTrace): Got rid of static
+	fields when handling call stack creation, and introduced a proper
+	factory instead.
+
+2009-06-12  Massimiliano Mantione <massi@ximian.com>
 	* ObjectModel.cs (CallStack.MethodExit and CallStack.PopMethod):
 	properly merged the fix for call stack execution time attribution.
 

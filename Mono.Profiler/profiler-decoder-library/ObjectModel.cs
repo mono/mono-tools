@@ -308,16 +308,6 @@ namespace  Mono.Profiler {
 			return a.Calls.CompareTo (b.Calls);
 		};
 		
-		static List<StackTrace> rootFrames;
-		public static StackTrace[] RootFrames {
-			get {
-				StackTrace[] result = rootFrames.ToArray ();
-				Array.Sort (result, CompareByClicks);
-				Array.Reverse (result);
-				return result;
-			}
-		}
-		
 		public void Write (TextWriter writer, int depth, string indentationString) {
 			writer.Write ("CallStack of id ");
 			writer.Write (id);
@@ -366,7 +356,9 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		StackTrace (LoadedMethod topMethod, StackTrace caller, bool methodIsBeingJitted) {
+		public static readonly StackTrace StackTraceUnavailable = new StackTrace (CallStack.StackFrame.StackFrameUnavailable.Method, null, false, 0);
+		
+		StackTrace (LoadedMethod topMethod, StackTrace caller, bool methodIsBeingJitted, uint id) {
 			this.clicks = 0;
 			this.calls = 0;
 			this.calledFrames = null;
@@ -374,13 +366,10 @@ namespace  Mono.Profiler {
 			this.caller = caller;
 			if (caller != null) {
 				caller.AddCalledFrame (this);
-			} else {
-				rootFrames.Add (this);
 			}
 			this.methodIsBeingJitted = methodIsBeingJitted;
 			this.level = caller != null ? caller.level + 1 : 1;
-			this.id = nextFreeId;
-			nextFreeId ++;
+			this.id = id;
 		}
 		
 		bool MatchesCallStack (CallStack.StackFrame stack) {
@@ -404,55 +393,70 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		internal static StackTrace NewStackTrace (CallStack stack) {
-			return NewStackTrace (stack.StackTop);
-		}
-		
-		static uint nextFreeId;
-		static Dictionary<uint,List<StackTrace>> [] tracesByLevel;
-		public static readonly StackTrace StackTraceUnavailable;
-		static StackTrace () {
-			rootFrames = new List<StackTrace> ();
-			nextFreeId = 0;
-			tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
-			StackTraceUnavailable = NewStackTrace (CallStack.StackFrame.StackFrameUnavailable);
-		}
-		
-		static StackTrace NewStackTrace (CallStack.StackFrame frame) {
-			if (frame == null) {
-				return null;
-			}
-			
-			if (frame.Level >= (uint) tracesByLevel.Length) {
-				Dictionary<uint,List<StackTrace>> [] newTracesByLevel = new Dictionary<uint,List<StackTrace>> [frame.Level * 2];
-				Array.Copy (tracesByLevel, newTracesByLevel, tracesByLevel.Length);
-				tracesByLevel = newTracesByLevel;
-			}
-			
-			Dictionary<uint,List<StackTrace>> tracesByMethod = tracesByLevel [frame.Level];
-			if (tracesByLevel [frame.Level] == null) {
-				tracesByMethod = new Dictionary<uint,List<StackTrace>> ();
-				tracesByLevel [frame.Level] = tracesByMethod;
-			}
-			
-			List<StackTrace> traces;
-			if (tracesByMethod.ContainsKey (frame.Method.ID)) {
-				traces = tracesByMethod [frame.Method.ID];
-			} else {
-				traces = new List<StackTrace> ();
-				tracesByMethod [frame.Method.ID] = traces;
-			}
-			
-			foreach (StackTrace trace in traces) {
-				if (trace.MatchesCallStack (frame)) {
-					return trace;
+		internal class Factory {
+			List<StackTrace> rootFrames;
+			public StackTrace[] RootFrames {
+				get {
+					StackTrace[] result = rootFrames.ToArray ();
+					Array.Sort (result, StackTrace.CompareByClicks);
+					Array.Reverse (result);
+					return result;
 				}
 			}
+			uint nextFreeId;
+			Dictionary<uint,List<StackTrace>> [] tracesByLevel;
 			
-			StackTrace callerTrace = NewStackTrace (frame.Caller);
-			StackTrace result = new StackTrace (frame.Method, callerTrace, frame.IsBeingJitted);
-			traces.Add (result);
-			return result;
+			public Factory () {
+				rootFrames = new List<StackTrace> ();
+				// Important: StackTrace.StackTraceUnavailable gets id 0, which must be unique
+				nextFreeId = 1;
+				tracesByLevel = new Dictionary<uint,List<StackTrace>> [64];
+			}
+			
+			public StackTrace NewStackTrace (CallStack.StackFrame frame) {
+				if (frame == null) {
+					return null;
+				}
+				
+				if (frame.Level >= (uint) tracesByLevel.Length) {
+					Dictionary<uint,List<StackTrace>> [] newTracesByLevel = new Dictionary<uint,List<StackTrace>> [frame.Level * 2];
+					Array.Copy (tracesByLevel, newTracesByLevel, tracesByLevel.Length);
+					tracesByLevel = newTracesByLevel;
+				}
+				
+				Dictionary<uint,List<StackTrace>> tracesByMethod = tracesByLevel [frame.Level];
+				if (tracesByLevel [frame.Level] == null) {
+					tracesByMethod = new Dictionary<uint,List<StackTrace>> ();
+					tracesByLevel [frame.Level] = tracesByMethod;
+				}
+				
+				List<StackTrace> traces;
+				if (tracesByMethod.ContainsKey (frame.Method.ID)) {
+					traces = tracesByMethod [frame.Method.ID];
+				} else {
+					traces = new List<StackTrace> ();
+					tracesByMethod [frame.Method.ID] = traces;
+				}
+				
+				foreach (StackTrace trace in traces) {
+					if (trace.MatchesCallStack (frame)) {
+						return trace;
+					}
+				}
+				
+				StackTrace callerTrace = NewStackTrace (frame.Caller);
+				StackTrace result = new StackTrace (frame.Method, callerTrace, frame.IsBeingJitted, nextFreeId);
+				nextFreeId ++;
+				traces.Add (result);
+				if (callerTrace == null) {
+					rootFrames.Add (result);
+				}
+				return result;
+			}
+			
+			public StackTrace NewStackTrace (CallStack stack) {
+				return NewStackTrace (stack.StackTop);
+			}
 		}
 	}
 	
@@ -556,7 +560,7 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		void PopMethod (LoadedMethod method, ulong counter, bool isBeingJitted) {
+		void PopMethod (StackTrace.Factory stackTraceFactory, LoadedMethod method, ulong counter, bool isBeingJitted) {
 			while (stackTop != null) {
 				LoadedMethod topMethod = stackTop.Method;
 				bool topMethodIsBeingJitted = stackTop.IsBeingJitted;
@@ -567,7 +571,7 @@ namespace  Mono.Profiler {
 					ulong delta = counter - stackTop.StartCounter;
 					
 					topMethod.MethodCalled (delta, callerMethod);
-					StackTrace trace = StackTrace.NewStackTrace (this);
+					StackTrace trace = stackTraceFactory.NewStackTrace (this);
 					if (trace != null) {
 						trace.RegisterCall (delta);
 					}
@@ -584,18 +588,18 @@ namespace  Mono.Profiler {
 		internal void MethodEnter (LoadedMethod method, ulong counter) {
 			stackTop = StackFrame.FrameFactory (method, counter, false, stackTop);
 		}
-		internal void MethodExit (LoadedMethod method, ulong counter) {
-			PopMethod (method, counter, false);
+		internal void MethodExit (StackTrace.Factory stackTraceFactory, LoadedMethod method, ulong counter) {
+			PopMethod (stackTraceFactory, method, counter, false);
 		}
-		internal void TopMethodExit (ulong counter) {
-			MethodExit (stackTop.Method, counter);
+		internal void TopMethodExit (StackTrace.Factory stackTraceFactory, ulong counter) {
+			MethodExit (stackTraceFactory, stackTop.Method, counter);
 		}
 		
 		internal void MethodJitStart (LoadedMethod method, ulong counter) {
 			stackTop = StackFrame.FrameFactory (method, counter, true, stackTop);
 		}
-		internal void MethodJitEnd (LoadedMethod method, ulong counter) {
-			PopMethod (method, counter, true);
+		internal void MethodJitEnd (StackTrace.Factory stackTraceFactory, LoadedMethod method, ulong counter) {
+			PopMethod (stackTraceFactory, method, counter, true);
 		}
 		
 		internal void AdjustStack (uint lastValidFrame, uint topSectionSize, StackSectionElement<LoadedClass,LoadedMethod>[] topSection) {
