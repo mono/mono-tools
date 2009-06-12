@@ -1,3 +1,7 @@
+2009-06-12  Massimiliano Mantione <massi@ximian.com>
+	* Main.cs: Also show method execution time grouped by
+	individual stack frames in the call tree
+
 2009-06-09  Mike Kestner <mkestner@novell.com>
 	* Main.cs: commit Massi's new calls profile formatting code.
 

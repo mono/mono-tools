@@ -118,7 +118,7 @@ namespace Mono.Profiler
 				writer.Write ("    ");
 			}
 			LoadedMethod currentMethod = stackFrame.TopMethod;
-			double currentSeconds = data.ClicksToSeconds (stackFrame.TopMethod.Clicks);
+			double currentSeconds = data.ClicksToSeconds (stackFrame.Clicks);
 			writer.WriteLine ("{0,5:F2}% ({1:F6}s, {2} calls) {3}.{4}", ((currentSeconds / callerSeconds) * 100), currentSeconds, stackFrame.Calls, currentMethod.Class.Name, currentMethod.Name);
 			foreach (StackTrace calledFrame in stackFrame.CalledFrames) {
 				PrintExecutionTimeByCallStack (writer, data, calledFrame, currentSeconds, indentationLevel + 1);
@@ -173,7 +173,8 @@ namespace Mono.Profiler
 						}
 					}
 					
-					writer.WriteLine ("Reporting execution time by stack frame (on {0} methods)", methods.Length);
+					PrintSeparator (writer);
+					writer.WriteLine ("Reporting execution time by stack frame");
 					foreach (StackTrace rootFrame in StackTrace.RootFrames) {
 						PrintExecutionTimeByCallStack (writer, data, rootFrame, data.ClicksToSeconds (totalExecutionClicks), 0);
 					}
