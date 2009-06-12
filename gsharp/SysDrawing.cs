@@ -65,10 +65,10 @@ namespace Mono.CSharp.Gui
 
 	public class GraphicsHelper {
 		
-		[DllImport("libgdk-x11-2.0")]
+		[DllImport("libgdk-win32-2.0-0.dll")]
 		internal static extern IntPtr gdk_x11_drawable_get_xdisplay (IntPtr raw);
 		
-		[DllImport("libgdk-x11-2.0")]
+		[DllImport("libgdk-win32-2.0-0.dll")]
 		internal static extern IntPtr gdk_x11_drawable_get_xid (IntPtr raw);
 		
 		public static System.Drawing.Graphics FromDrawable (Gdk.Drawable drawable)
