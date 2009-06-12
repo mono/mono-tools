@@ -105,7 +105,7 @@ namespace Mono.Profiler.Widgets {
 				return;
 			
 			nodes = new List<Node> ();
-			foreach (StackTrace frame in StackTrace.RootFrames) {
+			foreach (StackTrace frame in data.RootFrames) {
 				total_clicks += frame.TopMethod.Clicks;
 				nodes.Add (new Node (null, frame));
 			}
