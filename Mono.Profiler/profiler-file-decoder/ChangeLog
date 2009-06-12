@@ -1,4 +1,7 @@
 2009-06-12  Massimiliano Mantione <massi@ximian.com>
+	* Main.cs: Get the root frames from the event handler now.
+
+2009-06-12  Massimiliano Mantione <massi@ximian.com>
 	* Main.cs: Also show method execution time grouped by
 	individual stack frames in the call tree
 

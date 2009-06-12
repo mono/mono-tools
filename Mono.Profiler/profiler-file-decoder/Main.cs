@@ -175,7 +175,7 @@ namespace Mono.Profiler
 					
 					PrintSeparator (writer);
 					writer.WriteLine ("Reporting execution time by stack frame");
-					foreach (StackTrace rootFrame in StackTrace.RootFrames) {
+					foreach (StackTrace rootFrame in data.RootFrames) {
 						PrintExecutionTimeByCallStack (writer, data, rootFrame, data.ClicksToSeconds (totalExecutionClicks), 0);
 					}
 				} else {
