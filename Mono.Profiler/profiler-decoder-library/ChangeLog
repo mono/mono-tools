@@ -1,3 +1,7 @@
+2009-06-12  Massimiliano Mantione <massi@ximian.com>
+	* ObjectModel.cs: added method execution time accounting on
+	individual stack frames in the call tree.
+
 2009-06-09  Mike Kestner <mkestner@novell.com>
 	* ObjectModel.cs: commit Massi's calls StackTrace logging.
 

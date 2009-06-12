@@ -564,7 +564,13 @@ namespace  Mono.Profiler {
 				LoadedMethod callerMethod = (callerFrame != null)? callerFrame.Method : null;
 				
 				if (! topMethodIsBeingJitted) {
-					topMethod.MethodCalled (counter - stackTop.StartCounter, callerMethod);
+					ulong delta = counter - stackTop.StartCounter;
+					
+					topMethod.MethodCalled (delta, callerMethod);
+					StackTrace trace = StackTrace.NewStackTrace (this);
+					if (trace != null) {
+						trace.RegisterCall (delta);
+					}
 				}
 				
 				StackFrame.FreeFrame (stackTop);
