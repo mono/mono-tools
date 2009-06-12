@@ -1,3 +1,8 @@
+2008-12-15  Miguel de Icaza  <miguel@novell.com>
+
+	* configure.in: Detect the proper LIB_PREFIX and LIB_SUFIX to fix
+	the crasher for gsharp when trying to Plot on other systems.
+
 2009-06-05  Michael Hutchinson  <mhutchinson@novell.com>
 
 	* configure.in: Fix build.
