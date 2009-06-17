@@ -1,3 +1,7 @@
+2009-06-17  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : add accelerators for stock menu items.
+
 2009-06-11  Mike Kestner <mkestner@novell.com>
 
 	* gtk-gui/* : kill stetic stuff. project is simple enough to avoid it.

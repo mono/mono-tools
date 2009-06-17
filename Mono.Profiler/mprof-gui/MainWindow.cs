@@ -73,9 +73,9 @@ namespace Mono.Profiler.Gui {
 		{
 			ActionEntry[] actions = new ActionEntry[] {
 				new ActionEntry ("ProfileMenu", null, Catalog.GetString ("_Profile"), null, null, null),
-				new ActionEntry ("NewAction", Stock.New, null, null, Catalog.GetString ("Create New Profile"), new EventHandler (OnNewActivated)),
-				new ActionEntry ("SaveAsAction", Stock.SaveAs, null, null, Catalog.GetString ("Save Profile Data"), new EventHandler (OnSaveAsActivated)),
-				new ActionEntry ("QuitAction", Stock.Quit, null, null, Catalog.GetString ("Quit Profiler"), new EventHandler (OnQuitActivated)),
+				new ActionEntry ("NewAction", Stock.New, null, "<control>N", Catalog.GetString ("Create New Profile"), new EventHandler (OnNewActivated)),
+				new ActionEntry ("SaveAsAction", Stock.SaveAs, null, "<control>C", Catalog.GetString ("Save Profile Data"), new EventHandler (OnSaveAsActivated)),
+				new ActionEntry ("QuitAction", Stock.Quit, null, "<control>Q", Catalog.GetString ("Quit Profiler"), new EventHandler (OnQuitActivated)),
 			};
 
                         ActionGroup group = new ActionGroup ("group");
