@@ -1,5 +1,11 @@
 2009-06-17  Mike Kestner <mkestner@novell.com>
 
+	* MainWindow.cs : Use new ProfileSetupDialog to configure profile
+	type and assembly target.  Use temp files for the log file to avoid
+	sharing errors on subsequent executions.
+
+2009-06-17  Mike Kestner <mkestner@novell.com>
+
 	* MainWindow.cs : Save is ctrl-s not c.
 
 2009-06-17  Mike Kestner <mkestner@novell.com>

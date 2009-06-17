@@ -1,5 +1,13 @@
 2009-06-17  Mike Kestner <mkestner@novell.com>
 
+	* ProfileSetupDialog.cs: add dialog to begin to add configurability
+	to the profiler invocation.  Supports alloc and calls switches as
+	well as selecting assembly to execute.
+	* ProfileView.cs: add ProfileType prop to support explicit view setup.
+	Conditionally construct child view type when LogFile is set.
+
+2009-06-17  Mike Kestner <mkestner@novell.com>
+
 	* CallsView.cs: Reorder columns to put cost first.
 
 2009-06-17  Mike Kestner <mkestner@novell.com>

@@ -32,17 +32,17 @@ namespace Mono.Profiler.Gui {
 	
 		void OnNewActivated (object sender, System.EventArgs e)
 		{
-			FileChooserDialog d = new FileChooserDialog ("Select Application", this, FileChooserAction.Open, Stock.Cancel, ResponseType.Cancel, Stock.Execute, ResponseType.Accept);
-			FileFilter filter = new FileFilter ();
-			filter.AddPattern ("*.exe");
-			d.Filter = filter;
-			if (d.Run () == (int) ResponseType.Accept && !String.IsNullOrEmpty (d.Filename)) {
+			ProfileSetupDialog d = new ProfileSetupDialog (this);
+			if (d.Run () == (int) ResponseType.Accept && !String.IsNullOrEmpty (d.AssemblyPath)) {
+				contents.ProfileType = d.ProfileType;
+				string log_file = System.IO.Path.GetTempFileName ();
 				Process proc = new Process ();
 				proc.StartInfo.FileName = "mono";
-				proc.StartInfo.Arguments = "--profile=logging:calls,o=tmp.mprof " + d.Filename;
+				string flags = d.ProfileType == ProfileType.Calls ? "calls" : "alloc";
+				proc.StartInfo.Arguments = "--profile=logging:" + flags + ",o=" + log_file + " " + d.AssemblyPath;
 				proc.EnableRaisingEvents = true;
 				proc.Exited += delegate {
-					Application.Invoke (delegate { contents.LogFile = "tmp.mprof"; });
+					Application.Invoke (delegate { contents.LogFile = log_file; });
 				};
 				proc.Start ();
 			}

@@ -29,6 +29,7 @@ namespace Mono.Profiler.Widgets {
 	public class ProfileView : Gtk.ScrolledWindow {
 		
 		string path;
+		ProfileType type;
 		
 		public string LogFile {
 			get { return path; }
@@ -47,10 +48,19 @@ namespace Mono.Profiler.Widgets {
 						break;
 					}
 				}
-				Gtk.Widget view = new CallsView (data);
+				Gtk.Widget view;
+				if (type == ProfileType.Allocations) 
+					view = new AllocationsView (data);
+				else
+					view = new CallsView (data);
 				view.ShowAll ();
 				View = view;
 			}
+		}
+		
+		public ProfileType ProfileType {
+			get { return type; }
+			set { type = value; }
 		}
 		
 		Gtk.Widget View {

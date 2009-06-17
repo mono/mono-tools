@@ -46,6 +46,7 @@
     <Compile Include="ProfileStore.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="AllocationsView.cs" />
+    <Compile Include="ProfileSetupDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
