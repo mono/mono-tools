@@ -42,6 +42,10 @@
     <Compile Include="CallsStore.cs" />
     <Compile Include="CallsView.cs" />
     <Compile Include="ProfileView.cs" />
+    <Compile Include="AllocationsStore.cs" />
+    <Compile Include="ProfileStore.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="AllocationsView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -14,9 +14,13 @@ pkglib_DATA = $(ASSEMBLY) $(ASSEMBLY_MDB)
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY_MDB)
 
 FILES =  \
+	AllocationsStore.cs \
+	AllocationsView.cs \
 	AssemblyInfo.cs \
 	CallsStore.cs \
 	CallsView.cs \
+	Node.cs \
+	ProfileStore.cs \
 	ProfileView.cs
 
 build_sources = $(addprefix $(srcdir)/, $(FILES))

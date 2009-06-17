@@ -26,60 +26,88 @@ using Mono.Profiler;
 
 namespace Mono.Profiler.Widgets {
 	
-	internal class CallsStore : ProfileStore {
+	internal class AllocationsStore : ProfileStore {
 
-		class CallsNode : Node {
+		ulong total_bytes;
+		
+		class ClassNode : Node {
 		
 			List<Node> children;
-			StackTrace frame;
+			LoadedClass instance;
 			
-			public CallsNode (Node parent, StackTrace frame) : base (parent)
+			public ClassNode (Node parent, LoadedClass instance) : base (parent)
 			{
-				this.frame = frame;
+				this.instance = instance;
 			}
 			
 			public override List<Node> Children {
 				get {
 					if (children == null) {
 						children = new List<Node> ();
-						foreach (StackTrace child in frame.CalledFrames)
-							children.Add (new CallsNode (this, child));
+						foreach (LoadedClass.AllocationsPerMethod child in instance.Methods)
+							children.Add (new MethodNode (this, child));
 					}
 					return children;
 				}
 			}
 			
 			public override string Name {
-				get { return frame.TopMethod.Class.Name + "." + frame.TopMethod.Name; }
+				get { return instance.Name; }
 			}
 			
 			public override ulong Value {
-				get { return frame.Clicks; }
+				get { return instance.AllocatedBytes; }
 			}
 		}
 		
-		ulong total_clicks;
-
-		public CallsStore (ProfilerEventHandler data) : base (data)
-		{
-			if (data == null || (data.Flags & ProfilerFlags.METHOD_EVENTS) == 0)
-				return;
+		class MethodNode : Node {
 			
+			List<Node> children = new List<Node> ();
+			LoadedClass.AllocationsPerMethod instance;
+			
+			public MethodNode (Node parent, LoadedClass.AllocationsPerMethod instance) : base (parent)
+			{
+				this.instance = instance;
+			}
+			
+			public override List<Node> Children {
+				get { return children; }
+			}
+
+			public override string Name {
+				get { return instance.Method.Class.Name + "." + instance.Method.Name; }
+			}
+			
+			public override ulong Value {
+				get { return instance.AllocatedBytes; }
+			}
+		}	
+		
+		public AllocationsStore (ProfilerEventHandler data) : base (data)
+		{
+			if (data == null || (data.Flags & ProfilerFlags.CLASS_EVENTS) == 0)
+				return;
+
 			nodes = new List<Node> ();
-			foreach (StackTrace frame in data.RootFrames) {
-				total_clicks += frame.TopMethod.Clicks;
-				nodes.Add (new CallsNode (null, frame));
+			LoadedClass[] classes = data.LoadedElements.Classes;
+			Array.Sort (classes, LoadedClass.CompareByAllocatedBytes);
+			Array.Reverse (classes);
+			foreach (LoadedClass c in classes) {
+				if (c.AllocatedBytes > 0) {
+					total_bytes += c.AllocatedBytes;
+					nodes.Add (new ClassNode (null, c));
+				}
 			}
 		}
-
+		
 		public override void GetValue (Gtk.TreeIter iter, int column, ref GLib.Value val)
 		{
 			Node node = (Node) iter;
 			if (column == 0)
 				val = new GLib.Value (node.Name);
-			else if (column == 1) {
-				double percent = (double) node.Value / (double) total_clicks * 100.0;
-				val = new GLib.Value (String.Format ("{0,5:F2}% ({1:F6}s)", percent, ProfileData.ClicksToSeconds (node.Value)));
+			else {
+				double percent = (double) node.Value / (double) total_bytes * 100.0;
+				val = new GLib.Value (String.Format ("{0,5:F2}% ({1} bytes)", percent, node.Value));
 			}
 		}
 	}
