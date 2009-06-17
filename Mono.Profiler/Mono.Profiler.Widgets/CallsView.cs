@@ -30,9 +30,11 @@ namespace Mono.Profiler.Widgets {
 		
 		public CallsView (ProfilerEventHandler data) : base ()
 		{
-			AppendColumn ("Method", new CellRendererText (), "text", 0);
-			AppendColumn ("Cost", new CellRendererText (), "text", 1);
 			Model = new TreeModelAdapter (new CallsStore (data));
+			AppendColumn ("Cost", new CellRendererText (), "text", 1);
+			TreeViewColumn col = new TreeViewColumn ("Method", new CellRendererText (), "text", 0);
+			AppendColumn (col);
+			ExpanderColumn = col;
 		}
 	}
 }

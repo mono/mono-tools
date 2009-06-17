@@ -1,5 +1,9 @@
 2009-06-17  Mike Kestner <mkestner@novell.com>
 
+	* CallsView.cs: Reorder columns to put cost first.
+
+2009-06-17  Mike Kestner <mkestner@novell.com>
+
 	* AllocationsStore.cs: Allocations subclass of the new ProfileStore.
 	* AllocationsView.cs: new Allocations tree view.
 	* CallsStore.cs: refactor as ProfileStore subclass with CallsNode
