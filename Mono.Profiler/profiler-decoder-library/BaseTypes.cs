@@ -36,15 +36,96 @@ namespace Mono.Profiler {
 		FAIL = 3
 	}
 	
+	public class LoadedAssembly {
+		uint id;
+		public uint ID {
+			get {
+				return id;
+			}
+		}
+		
+		string name;
+		public string Name {
+			get {
+				return name;
+			}
+		}
+		string baseName;
+		public string BaseName {
+			get {
+				return baseName;
+			}
+		}
+		uint major;
+		public uint Major {
+			get {
+				return major;
+			}
+		}
+		uint minor;
+		public uint Minor {
+			get {
+				return minor;
+			}
+		}
+		uint build;
+		public uint Build {
+			get {
+				return build;
+			}
+		}
+		uint revision;
+		public uint Revision {
+			get {
+				return revision;
+			}
+		}
+		string culture;
+		public string Culture {
+			get {
+				return culture;
+			}
+		}
+		string publicKeyToken;
+		public string PublicKeyToken {
+			get {
+				return publicKeyToken;
+			}
+		}
+		bool retargetable;
+		public bool Retargetable {
+			get {
+				return retargetable;
+			}
+		}
+		
+		public static readonly LoadedAssembly Unavailable = new LoadedAssembly (0, "UNAVAILABLE", "UNAVAILABLE", 0, 0, 0, 0, "neutral", "null", false);
+		
+		public LoadedAssembly (uint id, string name, string baseName, uint major, uint minor, uint build, uint revision, string culture, string publicKeyToken, bool retargetable) {
+			this.id = id;
+			this.name = name;
+			this.baseName = baseName;
+			this.major = major;
+			this.minor = minor;
+			this.build = build;
+			this.revision = revision;
+			this.culture = culture;
+			this.publicKeyToken = publicKeyToken;
+			this.retargetable = retargetable;
+		}
+	}
+	
 	public interface ILoadedElement {
 		uint ID {get;}
 		string Name {get;}
 	}
 	public interface ILoadedClass : ILoadedElement {
 		uint Size {get;}
+		LoadedAssembly Assembly {get;}
 	}
 	public interface ILoadedMethod<LC> : ILoadedElement where LC : ILoadedClass {
 		LC Class {get;}
+		bool IsWrapper {get;}
 	}
 	public interface IUnmanagedFunctionFromID<MR,UFR> : ILoadedElement where UFR : IUnmanagedFunctionFromRegion<UFR> where MR : IExecutableMemoryRegion<UFR> {
 		MR Region {get;}
@@ -108,8 +189,9 @@ namespace Mono.Profiler {
 	}
 	
 	public interface ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
-		LC NewClass (uint id, string name, uint size);
-		LM NewMethod (uint id, LC c, string name);
+		LoadedAssembly NewAssembly (uint id, string name, string baseName, uint major, uint minor, uint build, uint revision, string culture, string publicKeyToken, bool retargetable);
+		LC NewClass (uint id, LoadedAssembly assembly, string name, uint size);
+		LM NewMethod (uint id, LC c, bool isWrapper, string name);
 		MR NewExecutableMemoryRegion (uint id, string fileName, uint fileOffset, ulong startAddress, ulong endAddress);
 		UFI NewUnmanagedFunction (uint id, string name, MR region);
 		HS NewHeapSnapshot (uint collection, ulong startCounter, DateTime startTime, ulong endCounter, DateTime endTime, TimeSpan headerStartTime, LC[] initialAllocations, bool recordSnapshot);
@@ -117,6 +199,8 @@ namespace Mono.Profiler {
 	}
 	
 	public interface ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
+		LoadedAssembly[] Assemblies {get;}
+		LoadedAssembly GetAssembly (uint id);
 		LC[] Classes {get;}
 		LC GetClass (uint id);
 		LM[] Methods {get;}
@@ -143,12 +227,12 @@ namespace Mono.Profiler {
 		void StartBlock (ulong startCounter, DateTime startTime, ulong threadId);
 		void EndBlock (ulong endCounter, DateTime endTime, ulong threadId);
 		
-		void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success);
-		void ModuleUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name);
-		void AssemblyLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success);
-		void AssemblyUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name);
-		void ApplicationDomainLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success);
-		void ApplicationDomainUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name);
+		void ModuleLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success);
+		void ModuleUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name);
+		void AssemblyLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success);
+		void AssemblyUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name);
+		void ApplicationDomainLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success);
+		void ApplicationDomainUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name);
 		
 		void SetCurrentThread (ulong threadId);
 		
@@ -227,6 +311,13 @@ namespace Mono.Profiler {
 		}
 	}
 	public class BaseLoadedClass : BaseLoadedElement, ILoadedClass {
+		LoadedAssembly assembly;
+		public LoadedAssembly Assembly {
+			get {
+				return assembly;
+			}
+		}
+		
 		uint size;
 		public uint Size {
 			get {
@@ -234,7 +325,8 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public BaseLoadedClass (uint id, string name, uint size) : base (id, name) {
+		public BaseLoadedClass (uint id, LoadedAssembly assembly, string name, uint size) : base (id, name) {
+			this.assembly = assembly;
 			this.size = size;
 		}
 	}
@@ -246,8 +338,16 @@ namespace Mono.Profiler {
 			}
 		}
 		
-		public BaseLoadedMethod (uint id, LC c, string name) : base (id, name) {
+		bool isWrapper;
+		public bool IsWrapper {
+			get {
+				return isWrapper;
+			}
+		}
+		
+		public BaseLoadedMethod (uint id, LC c, bool isWrapper, string name) : base (id, name) {
 			this.c = c;
+			this.isWrapper = isWrapper;
 		}
 	}
 	public class BaseUnmanagedFunctionFromRegion<UFR> : IUnmanagedFunctionFromRegion<UFR> where UFR : IUnmanagedFunctionFromRegion<UFR> {
@@ -675,6 +775,9 @@ namespace Mono.Profiler {
 		ALLOCATIONS_CARRY_CALLER = 1,
 		ALLOCATIONS_HAVE_STACK = 2,
 		ALLOCATIONS_CARRY_ID = 3,
+		LOADED_ELEMENTS_CARRY_ID = 4,
+		CLASSES_CARRY_ASSEMBLY_ID = 5,
+		METHODS_CARRY_WRAPPER_FLAG = 6,
 		LAST
 	}
 	
@@ -707,6 +810,36 @@ namespace Mono.Profiler {
 		}
 		public void AllocationsCarryIdReceived () {
 			allocationsCarryId = true;
+		}
+		
+		bool loadedElementsCarryId;
+		public bool LoadedElementsCarryId {
+			get {
+				return loadedElementsCarryId;
+			}
+		}
+		public void LoadedElementsCarryIdReceived () {
+			loadedElementsCarryId = true;
+		}
+		
+		bool classesCarryAssemblyId;
+		public bool ClassesCarryAssemblyId {
+			get {
+				return classesCarryAssemblyId;
+			}
+		}
+		public void ClassesCarryAssemblyIdReceived () {
+			classesCarryAssemblyId = true;
+		}
+		
+		bool methodsCarryWrapperFlag;
+		public bool MethodsCarryWrapperFlag {
+			get {
+				return methodsCarryWrapperFlag;
+			}
+		}
+		public void MethodsCarryWrapperFlagReceived () {
+			methodsCarryWrapperFlag = true;
 		}
 		
 		public DirectivesHandler () {
@@ -754,12 +887,12 @@ namespace Mono.Profiler {
 		public virtual void StartBlock (ulong startCounter, DateTime startTime, ulong threadId) {}
 		public virtual void EndBlock (ulong endCounter, DateTime endTime, ulong threadId) {}
 		
-		public virtual void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public virtual void ModuleUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
-		public virtual void AssemblyLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public virtual void AssemblyUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
-		public virtual void ApplicationDomainLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public virtual void ApplicationDomainUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
+		public virtual void ModuleLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public virtual void ModuleUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
+		public virtual void AssemblyLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public virtual void AssemblyUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
+		public virtual void ApplicationDomainLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public virtual void ApplicationDomainUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
 		
 		public virtual void SetCurrentThread (ulong threadId) {}
 		
@@ -848,22 +981,22 @@ namespace Mono.Profiler {
 			output.WriteLine ("StartBlock: endCounter {0}, endTime {1}, threadId {2}", endCounter, endTime, threadId);
 		}
 		
-		public override void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+		public override void ModuleLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {
 			output.WriteLine ("ModuleLoaded");
 		}
-		public override void ModuleUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+		public override void ModuleUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {
 			output.WriteLine ("ModuleUnloaded");
 		}
-		public override void AssemblyLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+		public override void AssemblyLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {
 			output.WriteLine ("AssemblyLoaded");
 		}
-		public override void AssemblyUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+		public override void AssemblyUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {
 			output.WriteLine ("AssemblyUnloaded");
 		}
-		public override void ApplicationDomainLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {
+		public override void ApplicationDomainLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {
 			output.WriteLine ("ApplicationDomainLoaded");
 		}
-		public override void ApplicationDomainUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {
+		public override void ApplicationDomainUnloaded (ulong threadId,uint id,  ulong startCounter, ulong endCounter, string name) {
 			output.WriteLine ("ApplicationDomainUnloaded");
 		}
 		
@@ -1112,6 +1245,27 @@ namespace Mono.Profiler {
 	public class LoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> : ILoadedElementHandler<LC,LM,UFR,UFI,MR,HO,HS> where LC : ILoadedClass where LM : ILoadedMethod<LC> where UFR : IUnmanagedFunctionFromRegion<UFR> where UFI : IUnmanagedFunctionFromID<MR,UFR> where MR : IExecutableMemoryRegion<UFR> where HO: IHeapObject<HO,LC> where HS: IHeapSnapshot<HO,LC> {
 		ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> factory;
 		
+		int loadedAssembliesCount;
+		LoadedAssembly[] loadedAssemblies;
+		public LoadedAssembly[] Assemblies {
+			get {
+				LoadedAssembly[] result = new LoadedAssembly [loadedAssembliesCount];
+				int resultIndex = 0;
+				for (int i = 0; i < loadedAssemblies.Length; i++) {
+					LoadedAssembly c = loadedAssemblies [i];
+					if (c != null) {
+						result [resultIndex] = c;
+						resultIndex ++;
+					}
+				}
+				return result;
+			}
+		}
+		public LoadedAssembly GetAssembly (uint id) {
+			LoadedAssembly result = loadedAssemblies [(int) id];
+			return (result != null) ? result : LoadedAssembly.Unavailable;
+		}
+		
 		int loadedClassesCount;
 		LC[] loadedClasses;
 		public LC[] Classes {
@@ -1210,8 +1364,20 @@ namespace Mono.Profiler {
 				sortedMemoryRegions.Sort (CompareByStartAddress);
 		}
 		
-		public LC NewClass (uint id, string name, uint size) {
-			LC result = factory.NewClass (id, name, size);
+		public LoadedAssembly NewAssembly (uint id, string name, string baseName, uint major, uint minor, uint build, uint revision, string culture, string publicKeyToken, bool retargetable) {
+			LoadedAssembly result = factory.NewAssembly (id, name, baseName, major, minor, build, revision, culture, publicKeyToken, retargetable);
+			if (loadedAssemblies.Length <= id) {
+				LoadedAssembly[] newLoadedAssemblies = new LoadedAssembly [((int) id + 1) * 2];
+				loadedAssemblies.CopyTo (newLoadedAssemblies, 0);
+				loadedAssemblies = newLoadedAssemblies;
+			}
+			loadedAssemblies [(int) id] = result;
+			loadedAssembliesCount ++;
+			return result;
+		}
+		
+		public LC NewClass (uint id, LoadedAssembly assembly, string name, uint size) {
+			LC result = factory.NewClass (id, assembly, name, size);
 			if (loadedClasses.Length <= id) {
 				LC[] newLoadedClasses = new LC [((int) id + 1) * 2];
 				loadedClasses.CopyTo (newLoadedClasses, 0);
@@ -1222,8 +1388,8 @@ namespace Mono.Profiler {
 			return result;
 		}
 		
-		public LM NewMethod (uint id, LC c, string name) {
-			LM result = factory.NewMethod (id, c, name);
+		public LM NewMethod (uint id, LC c, bool isWrapper, string name) {
+			LM result = factory.NewMethod (id, c, isWrapper, name);
 			if (loadedMethods.Length <= id) {
 				LM[] newLoadedMethods = new LM [((int) id + 1) * 2];
 				loadedMethods.CopyTo (newLoadedMethods, 0);
@@ -1297,6 +1463,7 @@ namespace Mono.Profiler {
 		
 		public LoadedElementHandler (ILoadedElementFactory<LC,LM,UFR,UFI,MR,HO,HS> factory) {
 			this.factory = factory;
+			loadedAssemblies = new LoadedAssembly [10];
 			loadedClasses = new LC [1000];
 			loadedClassesCount = 0;
 			loadedMethods = new LM [5000];

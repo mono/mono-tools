@@ -239,12 +239,12 @@ namespace  Mono.Profiler {
 			UpdateCounterAndTime (endCounter, endTime);
 		}
 		
-		public override void ModuleLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public override void ModuleUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
-		public override void AssemblyLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public override void AssemblyUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
-		public override void ApplicationDomainLoaded (ulong threadId, ulong startCounter, ulong endCounter, string name, bool success) {}
-		public override void ApplicationDomainUnloaded (ulong threadId, ulong startCounter, ulong endCounter, string name) {}
+		public override void ModuleLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public override void ModuleUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
+		public override void AssemblyLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public override void AssemblyUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
+		public override void ApplicationDomainLoaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name, bool success) {}
+		public override void ApplicationDomainUnloaded (ulong threadId, uint id, ulong startCounter, ulong endCounter, string name) {}
 		
 		public override void SetCurrentThread (ulong threadId) {
 			if (perThreadStacks.ContainsKey (threadId)) {

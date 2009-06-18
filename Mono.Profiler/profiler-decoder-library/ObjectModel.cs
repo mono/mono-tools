@@ -217,9 +217,9 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public static readonly LoadedClass LoadedClassUnavailable = new LoadedClass (0, "(CLASS UNAVAILABLE)", 0);
+		public static readonly LoadedClass LoadedClassUnavailable = new LoadedClass (0, LoadedAssembly.Unavailable, "(CLASS UNAVAILABLE)", 0);
 		
-		public LoadedClass (uint id, string name, uint size): base (id, name, size) {
+		public LoadedClass (uint id, LoadedAssembly assembly, string name, uint size): base (id, assembly, name, size) {
 			allocatedBytes = 0;
 			currentlyAllocatedBytes = 0;
 			allocationsPerMethod = null;
@@ -933,10 +933,10 @@ namespace  Mono.Profiler {
 			calledClicks += clicks;
 		}
 		
-		public static readonly LoadedMethod LoadedMethodUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, "(METHOD UNAVAILABLE)");
-		public static readonly LoadedMethod LoadedMethodForStackTraceUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, "(CALL STACK UNAVAILABLE)");
+		public static readonly LoadedMethod LoadedMethodUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, false, "(METHOD UNAVAILABLE)");
+		public static readonly LoadedMethod LoadedMethodForStackTraceUnavailable = new LoadedMethod (0, LoadedClass.LoadedClassUnavailable, false, "(CALL STACK UNAVAILABLE)");
 		
-		public LoadedMethod (uint id, LoadedClass c, string name): base (id, c, name) {
+		public LoadedMethod (uint id, LoadedClass c, bool isWrapper, string name): base (id, c, isWrapper, name) {
 			clicks = 0;
 			calledClicks = 0;
 			jitClicks = 0;
@@ -1925,11 +1925,14 @@ namespace  Mono.Profiler {
 			}
 		}
 		
-		public LoadedClass NewClass (uint id, string name, uint size) {
-			return new LoadedClass (id, name, size);
+		public LoadedAssembly NewAssembly (uint id, string name, string baseName, uint major, uint minor, uint build, uint revision, string culture, string publicKeyToken, bool retargetable) {
+			return new LoadedAssembly (id, name, baseName, major, minor, build, revision, culture, publicKeyToken, retargetable);
 		}
-		public LoadedMethod NewMethod (uint id, LoadedClass c, string name) {
-			return new LoadedMethod (id, c, name);
+		public LoadedClass NewClass (uint id, LoadedAssembly assembly,  string name, uint size) {
+			return new LoadedClass (id, assembly, name, size);
+		}
+		public LoadedMethod NewMethod (uint id, LoadedClass c, bool isWrapper, string name) {
+			return new LoadedMethod (id, c, isWrapper, name);
 		}
 		public ExecutableMemoryRegion NewExecutableMemoryRegion (uint id, string fileName, uint fileOffset, ulong startAddress, ulong endAddress) {
 			return new ExecutableMemoryRegion (id, fileName, fileOffset, startAddress, endAddress);

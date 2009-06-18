@@ -354,6 +354,12 @@ namespace  Mono.Profiler {
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong endCounter = ReadUlong (ref offsetInBlock);
 					ulong threadId = ReadUlong (ref offsetInBlock);
+					uint id;
+					if (handler.Directives.LoadedElementsCarryId) {
+						id = ReadUint (ref offsetInBlock);
+					} else {
+						id = 0;
+					}
 					string itemName = ReadString (ref offsetInBlock);
 					
 					bool success = ((kind & (byte)LoadedItemInfo.SUCCESS) != 0);
@@ -362,17 +368,50 @@ namespace  Mono.Profiler {
 					
 					switch ((LoadedItemInfo) kind) {
 					case LoadedItemInfo.APPDOMAIN: {
-						handler.ApplicationDomainLoaded (threadId, startCounter, endCounter, itemName, success);
+						handler.ApplicationDomainLoaded (threadId, id, startCounter, endCounter, itemName, success);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.ASSEMBLY: {
-						handler.AssemblyLoaded (threadId, startCounter, endCounter, itemName, success);
+						string baseName;
+						uint major;
+						uint minor;
+						uint build;
+						uint revision;
+						string culture;
+						string publicKeyToken;
+						bool retargetable;
+						if (handler.Directives.ClassesCarryAssemblyId) {
+							baseName = ReadString (ref offsetInBlock);
+							major = ReadUint (ref offsetInBlock);
+							minor = ReadUint (ref offsetInBlock);
+							build = ReadUint (ref offsetInBlock);
+							revision = ReadUint (ref offsetInBlock);
+							culture = ReadString (ref offsetInBlock);
+							publicKeyToken = ReadString (ref offsetInBlock);
+							retargetable = (ReadUint (ref offsetInBlock) != 0);
+						} else {
+							int commaPosition = itemName.IndexOf (',');
+							if (commaPosition > 0) {
+								baseName = itemName.Substring (0, commaPosition);
+							} else {
+								baseName = "UNKNOWN";
+							}
+							major = 0;
+							minor = 0;
+							build = 0;
+							revision = 0;
+							culture = "neutral";
+							publicKeyToken = "null";
+							retargetable = false;
+						}
+						handler.LoadedElements.NewAssembly (id, itemName, baseName, major, minor, build, revision, culture, publicKeyToken, retargetable);
+						handler.AssemblyLoaded (threadId, id, startCounter, endCounter, itemName, success);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.MODULE: {
-						handler.ModuleLoaded (threadId, startCounter, endCounter, itemName, success);
+						handler.ModuleLoaded (threadId, id, startCounter, endCounter, itemName, success);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
@@ -387,23 +426,29 @@ namespace  Mono.Profiler {
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong endCounter = ReadUlong (ref offsetInBlock);
 					ulong threadId = ReadUlong (ref offsetInBlock);
+					uint id;
+					if (handler.Directives.LoadedElementsCarryId) {
+						id = ReadUint (ref offsetInBlock);
+					} else {
+						id = 0;
+					}
 					string itemName = ReadString (ref offsetInBlock);
 					
 					//LogLine ("BLOCK UNLOADED: kind {0}, startCounter {1}, endCounter {2}, threadId {3}, itemName {4}", (LoadedItemInfo) kind, startCounter, endCounter, threadId, itemName);
 					
 					switch ((LoadedItemInfo) kind) {
 					case LoadedItemInfo.APPDOMAIN: {
-						handler.ApplicationDomainUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.ApplicationDomainUnloaded (threadId, id, startCounter, endCounter, itemName);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.ASSEMBLY: {
-						handler.AssemblyUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.AssemblyUnloaded (threadId, id, startCounter, endCounter, itemName);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
 					case LoadedItemInfo.MODULE: {
-						handler.ModuleUnloaded (threadId, startCounter, endCounter, itemName);
+						handler.ModuleUnloaded (threadId, id, startCounter, endCounter, itemName);
 						handler.DataProcessed (offsetInBlock);
 						break;
 					}
@@ -425,16 +470,29 @@ namespace  Mono.Profiler {
 					
 					uint itemId;
 					for (itemId = ReadUint (ref offsetInBlock); itemId != 0; itemId = ReadUint (ref offsetInBlock)) {
+						uint assemblyId;
+						if (handler.Directives.ClassesCarryAssemblyId) {
+							assemblyId = ReadUint (ref offsetInBlock);
+						} else {
+							assemblyId = 0;
+						}
 						string itemName = ReadString (ref offsetInBlock);
-						//LogLine ("BLOCK MAPPING (CLASS): itemId {0}, itemName {1}, size {2}", itemId, itemName, 0);
-						handler.LoadedElements.NewClass (itemId, itemName, 0);
+						//LogLine ("BLOCK MAPPING (CLASS): itemId {0}, assemblyId = {1}, itemName {2}, size {3}", itemId, assemblyId, itemName, 0);
+						handler.LoadedElements.NewClass (itemId, handler.LoadedElements.GetAssembly (assemblyId), itemName, 0);
 					}
 					
 					for (itemId = ReadUint (ref offsetInBlock); itemId != 0; itemId = ReadUint (ref offsetInBlock)) {
 						uint classId = ReadUint (ref offsetInBlock);
+						uint wrapperValue;
+						if (handler.Directives.MethodsCarryWrapperFlag) {
+							wrapperValue = ReadUint (ref offsetInBlock);
+						} else {
+							wrapperValue = 0;
+						}
+						bool isWrapper = (wrapperValue != 0) ? true : false;
 						string itemName = ReadString (ref offsetInBlock);
 						//LogLine ("BLOCK MAPPING (METHOD): itemId {0}, classId {1}, itemName {2}, size {3}", itemId, classId, itemName, 0);
-						handler.LoadedElements.NewMethod (itemId, handler.LoadedElements.GetClass (classId), itemName);
+						handler.LoadedElements.NewMethod (itemId, handler.LoadedElements.GetClass (classId), isWrapper, itemName);
 					}
 					
 					ulong endCounter = ReadUlong (ref offsetInBlock);
@@ -989,6 +1047,18 @@ namespace  Mono.Profiler {
 						case DirectiveCodes.ALLOCATIONS_CARRY_ID:
 							//LogLine ("BLOCK DIRECTIVES (START): ALLOCATIONS_CARRY_ID");
 							handler.Directives.AllocationsCarryIdReceived ();
+							break;
+						case DirectiveCodes.LOADED_ELEMENTS_CARRY_ID:
+							//LogLine ("BLOCK DIRECTIVES (START): LOADED_ELEMENTS_CARRY_ID");
+							handler.Directives.LoadedElementsCarryIdReceived ();
+							break;
+						case DirectiveCodes.CLASSES_CARRY_ASSEMBLY_ID:
+							//LogLine ("BLOCK DIRECTIVES (START): CLASSES_CARRY_ASSEMBLY_ID");
+							handler.Directives.ClassesCarryAssemblyIdReceived ();
+							break;
+						case DirectiveCodes.METHODS_CARRY_WRAPPER_FLAG:
+							//LogLine ("BLOCK DIRECTIVES (START): METHODS_CARRY_WRAPPER_FLAG");
+							handler.Directives.MethodsCarryWrapperFlagReceived ();
 							break;
 						default:
 							throw new DecodingException (this, offsetInBlock, String.Format ("unknown directive {0}", directive));
