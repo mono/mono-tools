@@ -28,11 +28,13 @@ namespace Mono.Profiler.Widgets {
 	
 	internal abstract class Node {
 		
+		ProfileStore store;
 		Node parent;
 		GCHandle gch;
 		
-		public Node (Node parent)
+		public Node (ProfileStore store, Node parent)
 		{
+			this.store = store;
 			this.parent = parent;
 			gch = GCHandle.Alloc (this, GCHandleType.Weak);
 		}
@@ -45,6 +47,10 @@ namespace Mono.Profiler.Widgets {
 
 		public Node Parent {
 			get { return parent; }
+		}
+
+		protected ProfileStore Store {
+			get { return store; }
 		}
 		
 		public void Dispose ()

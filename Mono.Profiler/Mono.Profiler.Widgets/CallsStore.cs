@@ -33,7 +33,7 @@ namespace Mono.Profiler.Widgets {
 			List<Node> children;
 			StackTrace frame;
 			
-			public CallsNode (Node parent, StackTrace frame) : base (parent)
+			public CallsNode (ProfileStore store, Node parent, StackTrace frame) : base (store, parent)
 			{
 				this.frame = frame;
 			}
@@ -42,11 +42,25 @@ namespace Mono.Profiler.Widgets {
 				get {
 					if (children == null) {
 						children = new List<Node> ();
-						foreach (StackTrace child in frame.CalledFrames)
-							children.Add (new CallsNode (this, child));
+						bool filter = Store.Options.Filters.Contains (frame.TopMethod.Class.Assembly.BaseName);
+						foreach (StackTrace child in frame.CalledFrames) {
+							if (filter)
+								RecursiveAddFilteredChildren (child);
+							else
+								children.Add (new CallsNode (Store, this, child));
+						}
 					}
 					return children;
 				}
+			}
+			
+			void RecursiveAddFilteredChildren (StackTrace trace)
+			{
+				if (Store.Options.Filters.Contains (trace.TopMethod.Class.Assembly.BaseName))
+					foreach (StackTrace child in trace.CalledFrames)
+						RecursiveAddFilteredChildren (child);
+				else
+					children.Add (new CallsNode (Store, this, trace));
 			}
 			
 			public override string Name {
@@ -60,7 +74,7 @@ namespace Mono.Profiler.Widgets {
 		
 		ulong total_clicks;
 
-		public CallsStore (ProfilerEventHandler data) : base (data)
+		public CallsStore (ProfilerEventHandler data, DisplayOptions options) : base (data, options)
 		{
 			if (data == null || (data.Flags & ProfilerFlags.METHOD_EVENTS) == 0)
 				return;
@@ -68,7 +82,7 @@ namespace Mono.Profiler.Widgets {
 			nodes = new List<Node> ();
 			foreach (StackTrace frame in data.RootFrames) {
 				total_clicks += frame.TopMethod.Clicks;
-				nodes.Add (new CallsNode (null, frame));
+				nodes.Add (new CallsNode (this, null, frame));
 			}
 		}
 
@@ -81,6 +95,6 @@ namespace Mono.Profiler.Widgets {
 				double percent = (double) node.Value / (double) total_clicks * 100.0;
 				val = new GLib.Value (String.Format ("{0,5:F2}% ({1:F6}s)", percent, ProfileData.ClicksToSeconds (node.Value)));
 			}
-		}
+		}		
 	}
 }

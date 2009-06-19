@@ -27,44 +27,49 @@ namespace Mono.Profiler.Widgets {
 	
 	[System.ComponentModel.ToolboxItem (true)]
 	public class ProfileView : Gtk.ScrolledWindow {
-		
+
+		DisplayOptions options;
 		string path;
-		ProfileType type;
 		
 		public string LogFile {
 			get { return path; }
-			set {
-				path = value;
-				SyncLogFileReader rdr = new SyncLogFileReader (path);
-				ProfilerEventHandler data = new ProfilerEventHandler ();
-				data.LoadedElements.RecordHeapSnapshots = false;
-				while (!rdr.HasEnded) {
-					BlockData current = null;
-					try {
-						current = rdr.ReadBlock ();
-						current.Decode (data, rdr);
-					} catch (DecodingException e) {
-						Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
-						break;
-					}
+		}
+		
+		public void LoadProfile (string path, ProfileType type)
+		{
+			this.path = path;
+			SyncLogFileReader rdr = new SyncLogFileReader (path);
+			ProfilerEventHandler data = new ProfilerEventHandler ();
+			data.LoadedElements.RecordHeapSnapshots = false;
+			while (!rdr.HasEnded) {
+				BlockData current = null;
+				try {
+					current = rdr.ReadBlock ();
+					current.Decode (data, rdr);
+				} catch (DecodingException e) {
+					Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
+					break;
 				}
-				Gtk.Widget view;
-				if (type == ProfileType.Allocations) 
-					view = new AllocationsView (data);
-				else
-					view = new CallsView (data);
-				view.ShowAll ();
-				View = view;
+			}
+			Gtk.TreeView view;
+			if (type == ProfileType.Allocations) 
+				view = new AllocationsView (data, Options);
+			else
+				view = new CallsView (data, Options);
+			view.ShowAll ();
+			View = view;
+		}
+		
+		public DisplayOptions Options {
+			get { 
+				if (options == null)
+					options = new DisplayOptions ();
+				return options;
 			}
 		}
 		
-		public ProfileType ProfileType {
-			get { return type; }
-			set { type = value; }
-		}
-		
-		Gtk.Widget View {
-			get { return Child; }
+		Gtk.TreeView View {
+			get { return Child as Gtk.TreeView; }
 			set {
 				if (Child != null)
 					Remove (Child);

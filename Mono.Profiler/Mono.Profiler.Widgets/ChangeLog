@@ -1,3 +1,16 @@
+2009-06-19  Mike Kestner <mkestner@novell.com>
+
+	* CallsStore.cs: add child node compression for filtered libraries.
+	Retrieves a list of filtered libraries from the DisplayOptions and 
+	"flattens" library calls within the set to hide internal implementation
+	nodes.  Prunes the tree to better visualize user code.
+	* DisplayOptions.cs: initial pass at a filtering options class. Adds
+	ShowSystemNodes option and first pass at a Filters array for filtered
+	libraries which will be user configurable eventually.
+	* ProfileView.cs: replace Type prop and set_LogFile with a LoadProfile
+	method to make the operation atomic.
+	* *.cs : hooks to enable DisplayOptions.
+
 2009-06-17  Mike Kestner <mkestner@novell.com>
 
 	* ProfileSetupDialog.cs: add dialog to begin to add configurability

@@ -28,13 +28,14 @@ namespace Mono.Profiler.Widgets {
 	
 	internal class CallsView : TreeView {
 		
-		public CallsView (ProfilerEventHandler data) : base ()
+		public CallsView (ProfilerEventHandler data, DisplayOptions options) : base ()
 		{
-			Model = new TreeModelAdapter (new CallsStore (data));
+			Model = new TreeModelAdapter (new CallsStore (data, options));
 			AppendColumn ("Cost", new CellRendererText (), "text", 1);
 			TreeViewColumn col = new TreeViewColumn ("Method", new CellRendererText (), "text", 0);
 			AppendColumn (col);
 			ExpanderColumn = col;
+			options.Changed += delegate { Model = new TreeModelAdapter (new CallsStore (data, options)); };
 		}
 	}
 }

@@ -31,11 +31,13 @@ namespace Mono.Profiler.Widgets {
 	internal abstract class ProfileStore : GLib.Object, TreeModelImplementor {
 
 		ProfilerEventHandler data;
+		DisplayOptions options;
 		protected List<Node> nodes;
 
-		protected ProfileStore (ProfilerEventHandler data)
+		protected ProfileStore (ProfilerEventHandler data, DisplayOptions options)
 		{
 			this.data = data;
+			this.options = options;
 		}
 
 		public override void Dispose ()
@@ -44,7 +46,11 @@ namespace Mono.Profiler.Widgets {
 				n.Dispose ();
 			base.Dispose ();
 		}
-		
+
+		public DisplayOptions Options {
+			get { return options; }
+		}
+				
 		public ProfilerEventHandler ProfileData {
 			get { return data; }
 		}

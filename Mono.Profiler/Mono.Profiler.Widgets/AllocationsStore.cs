@@ -35,7 +35,7 @@ namespace Mono.Profiler.Widgets {
 			List<Node> children;
 			LoadedClass instance;
 			
-			public ClassNode (Node parent, LoadedClass instance) : base (parent)
+			public ClassNode (ProfileStore store, Node parent, LoadedClass instance) : base (store, parent)
 			{
 				this.instance = instance;
 			}
@@ -45,7 +45,7 @@ namespace Mono.Profiler.Widgets {
 					if (children == null) {
 						children = new List<Node> ();
 						foreach (LoadedClass.AllocationsPerMethod child in instance.Methods)
-							children.Add (new MethodNode (this, child));
+							children.Add (new MethodNode (Store, this, child));
 					}
 					return children;
 				}
@@ -65,7 +65,7 @@ namespace Mono.Profiler.Widgets {
 			List<Node> children = new List<Node> ();
 			LoadedClass.AllocationsPerMethod instance;
 			
-			public MethodNode (Node parent, LoadedClass.AllocationsPerMethod instance) : base (parent)
+			public MethodNode (ProfileStore store, Node parent, LoadedClass.AllocationsPerMethod instance) : base (store, parent)
 			{
 				this.instance = instance;
 			}
@@ -83,7 +83,7 @@ namespace Mono.Profiler.Widgets {
 			}
 		}	
 		
-		public AllocationsStore (ProfilerEventHandler data) : base (data)
+		public AllocationsStore (ProfilerEventHandler data, DisplayOptions options) : base (data, options)
 		{
 			if (data == null || (data.Flags & ProfilerFlags.CLASS_EVENTS) == 0)
 				return;
@@ -95,7 +95,7 @@ namespace Mono.Profiler.Widgets {
 			foreach (LoadedClass c in classes) {
 				if (c.AllocatedBytes > 0) {
 					total_bytes += c.AllocatedBytes;
-					nodes.Add (new ClassNode (null, c));
+					nodes.Add (new ClassNode (this, null, c));
 				}
 			}
 		}

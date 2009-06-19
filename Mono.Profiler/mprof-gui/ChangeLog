@@ -1,3 +1,8 @@
+2009-06-19  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : add menu item to show/hide system nodes, hidden by
+	default.  Use new ProfileView.LoadProfile method.
+
 2009-06-17  Mike Kestner <mkestner@novell.com>
 
 	* MainWindow.cs : Use new ProfileSetupDialog to configure profile

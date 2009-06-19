@@ -20,6 +20,7 @@ FILES =  \
 	CallsStore.cs \
 	CallsView.cs \
 	Node.cs \
+	ProfileOptions.cs \
 	ProfileSetupDialog.cs \
 	ProfileStore.cs \
 	ProfileView.cs

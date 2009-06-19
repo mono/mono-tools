@@ -21,20 +21,46 @@
 
 
 using System;
-using Gtk;
-using Mono.Profiler;
+using System.Collections.Generic;
 
 namespace Mono.Profiler.Widgets {
 	
-	internal class AllocationsView : TreeView {
+	public class DisplayOptions	{
+
+		static string[] system_libs = new string[] {
+			"mscorlib", "System", "System.Xml",
+			"glib-sharp", "pango-sharp", "atk-sharp", "gdk-sharp", "gtk-sharp", "glade-sharp", "gtk-dotnet"
+		};
+
+		List<string> filters = new List<string> ();
+		internal List<string> Filters {
+			get {
+				List<string> result = new List<string> ();
+				result.AddRange ((string[])filters.ToArray ());
+				if (!show_system_nodes)
+					result.AddRange (system_libs);
+				return result;
+			}
+		}
+
+		bool show_system_nodes;
+		public bool ShowSystemNodes {
+			get { return show_system_nodes; }
+			set {
+				if (show_system_nodes == value)
+					return;
+				show_system_nodes = value;
+				OnChanged ();
+			}
+		}
 		
-		public AllocationsView (ProfilerEventHandler data, DisplayOptions options) : base ()
+		public event EventHandler Changed;
+		
+		void OnChanged ()
 		{
-			Model = new TreeModelAdapter (new AllocationsStore (data, options));
-			AppendColumn ("Cost", new CellRendererText (), "text", 1);
-			TreeViewColumn col = new TreeViewColumn ("Class/Allocator", new CellRendererText (), "text", 0);
-			AppendColumn (col);
-			ExpanderColumn = col;
+			if (Changed == null)
+				return;
+			Changed (this, EventArgs.Empty);
 		}
 	}
 }
