@@ -317,30 +317,66 @@ namespace  Mono.Profiler {
 		
 		uint remainingCallersInChain;
 		IStatisticalHitItem lastCallee;
+		StatisticalHitItemTreeNode lastCalleeNode;
+		bool eventsArePartOfChain;
+		int currentChainIndex;
+		IStatisticalHitItem[] currentChain;
 		// Returns true if the hit must be counted (this is the first chain item)
 		bool HandleCallChain (IStatisticalHitItem caller) {
-			bool result;
-			
-			if (remainingCallersInChain > 0) {
-				remainingCallersInChain --;
+			if (eventsArePartOfChain) {
+				bool result;
+				
 				if (lastCallee != null) {
-					//Console.WriteLine ("HandleCallChain[{0}]  {1} on {2}", remainingCallersInChain, caller.Name, lastCallee.Name);
 					lastCallee.CallCounts.AddCaller (caller);
 					caller.CallCounts.AddCallee (lastCallee);
 				}
-				result = false;
+				
+				if (lastCalleeNode != null) {
+					lastCalleeNode = lastCalleeNode.AddChild (caller);
+				} else {
+					lastCalleeNode = statisticalItemsByCaller.AddChild (caller);
+				}
+				
+				currentChain [currentChainIndex] = caller;
+				currentChainIndex ++;
+				
+				if (remainingCallersInChain > 0) {
+					//Console.WriteLine ("HandleCallChain[{0}]  {1} on {2}", remainingCallersInChain, caller.Name, lastCallee.Name);
+					remainingCallersInChain --;
+					result = false;
+				} else {
+					//Console.WriteLine ("HandleCallChain[{0}] {1}", remainingCallersInChain, caller.Name);
+					result = true;
+					
+					StatisticalHitItemTreeNode currentNode = statisticalItemsByCallee;
+					while (currentChainIndex > 0) {
+						currentChainIndex --;
+						currentNode = currentNode.AddChild (currentChain [currentChainIndex]);
+					}
+					
+					eventsArePartOfChain = false;
+					Array.Clear (currentChain, 0, currentChain.Length);
+				}
+				
+				lastCallee = caller;
+				
+				return result;
 			} else {
-				//Console.WriteLine ("HandleCallChain[{0}] {1}", remainingCallersInChain, caller.Name);
-				result = true;
+				return true;
 			}
-			
-			lastCallee = caller;
-			
-			return result;
 		}
 		
 		public override void StatisticalCallChainStart (uint chainDepth) {
+			lastCallee = null;
+			lastCalleeNode = null;
 			remainingCallersInChain = chainDepth;
+			eventsArePartOfChain = true;
+			currentChainIndex = 0;
+			if (currentChain != null) {
+				Array.Clear (currentChain, 0, currentChain.Length);
+			} else {
+				currentChain = new IStatisticalHitItem [32];
+			}
 			//Console.WriteLine ("StatisticalCallChainStart ({0})", chainDepth);
 		}
 		
@@ -403,6 +439,19 @@ namespace  Mono.Profiler {
 				result [resultIndex] = unknownStatisticalHitsCollector;
 				
 				return result;
+			}
+		}
+		
+		StatisticalHitItemTreeNode statisticalItemsByCaller = new StatisticalHitItemTreeNode (null);
+		public StatisticalHitItemTreeNode[] StatisticalItemsByCaller {
+			get {
+				return statisticalItemsByCaller.Children;
+			}
+		}
+		StatisticalHitItemTreeNode statisticalItemsByCallee = new StatisticalHitItemTreeNode (null);
+		public StatisticalHitItemTreeNode[] StatisticalItemsByCallee {
+			get {
+				return statisticalItemsByCallee.Children;
 			}
 		}
 		

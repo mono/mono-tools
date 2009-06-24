@@ -729,6 +729,95 @@ namespace  Mono.Profiler {
 		StatisticalHitItemCallCounts CallCounts {get;}
 	}
 	
+	public class StatisticalHitItemTreeNode {
+		IStatisticalHitItem item;
+		public IStatisticalHitItem Item {
+			get {
+				return item;
+			}
+		}
+		
+		public string Name {
+			get {
+				return item.Name;
+			}
+		}
+		
+		uint hitCount;
+		void IncrementHitCount () {
+			hitCount ++;
+		}
+		public uint HitCount {
+			get {
+				return hitCount;
+			}
+		}
+		
+		public static Comparison<StatisticalHitItemTreeNode> CompareByHitCount = delegate (StatisticalHitItemTreeNode a, StatisticalHitItemTreeNode b) {
+			int result = b.HitCount.CompareTo (a.HitCount);
+			if (result == 0) {
+				result = a.Name.CompareTo (b.Name);
+			}
+			return result;
+		};
+		
+		
+		Dictionary<string,StatisticalHitItemTreeNode> children;
+		static StatisticalHitItemTreeNode[] emptyChildren = new StatisticalHitItemTreeNode [0];
+		public int ChildrenCount {
+			get {
+				return (children != null) ? children.Count : 0;
+			}
+		}
+		public StatisticalHitItemTreeNode[] Children {
+			get {
+				if (children != null) {
+					StatisticalHitItemTreeNode[] result = new StatisticalHitItemTreeNode [children.Count];
+					int resultIndex = 0;
+					foreach (StatisticalHitItemTreeNode child in children.Values) {
+						result [resultIndex] = child;
+						resultIndex ++;
+					}
+					Array.Sort (result, CompareByHitCount);
+					return result;
+				} else {
+					return emptyChildren;
+				}
+			}
+		}
+		
+		public StatisticalHitItemTreeNode AddChild (IStatisticalHitItem childItem) {
+			if (children == null) {
+				children = new Dictionary<string, StatisticalHitItemTreeNode> ();
+			}
+			StatisticalHitItemTreeNode child;
+			if (children.ContainsKey (childItem.Name)) {
+				child = children [childItem.Name];
+			} else {
+				child = new StatisticalHitItemTreeNode (childItem);
+				children [childItem.Name] = child;
+			}
+			child.IncrementHitCount ();
+			return child;
+		}
+		
+		public void PrintTree (TextWriter writer, uint fatherHits, int level) {
+			for (int i = 0; i < level; i++) {
+				writer.Write ("    ");
+			}
+			writer.WriteLine ("{0,5:F2}% ({1}) {2}", ((((double) HitCount) / fatherHits) * 100), HitCount, Name);
+			foreach (StatisticalHitItemTreeNode child in Children) {
+				child.PrintTree (writer, HitCount, level + 1);
+			}
+		}
+		
+		public StatisticalHitItemTreeNode (IStatisticalHitItem item) {
+			this.item = item;
+			this.hitCount = 0;
+			this.children = null;
+		}
+	}
+	
 	public class LoadedMethod : BaseLoadedMethod<LoadedClass>, IStatisticalHitItem, IHeapItemSetStatisticsSubject {
 		ulong clicks;
 		public ulong Clicks {
