@@ -207,6 +207,10 @@ namespace MInvoke {
 		}
 
 		public static void Main (string[] args) {
+			if (args.Length != 3) {
+				Console.Error.WriteLine ("usage:  minvoke.exe MapAssemblyName InputAssemblyName OutputAssemblyName");
+				Environment.Exit (1);
+			}
 			string map_assembly_name = args[0];
 			string input_assembly_name = args[1];
 			string output_assembly_name = args[2];
