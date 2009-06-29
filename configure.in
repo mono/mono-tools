@@ -134,7 +134,7 @@ dnl
 if pkg-config --modversion cecil>/dev/null; then
 AC_MSG_RESULT("Found cecil.pc")
 else
-AC_MSG_ERROR([You are missing Cecil (cecil.pc for packageconfig) required for gui-compare])
+AC_MSG_ERROR([You are missing Cecil (cecil.pc for packageconfig) required for gui-compare and minvoke])
 fi
 
 CECIL_ASM=`pkg-config --variable=Libraries cecil`
@@ -172,6 +172,8 @@ gsharp/gsharp
 gsharp/gsharp.exe.config
 gui-compare/Makefile
 gui-compare/gui-compare
+minvoke/Makefile
+minvoke/minvoke
 mperfmon/Makefile
 mperfmon/mperfmon
 docbrowser/Makefile
