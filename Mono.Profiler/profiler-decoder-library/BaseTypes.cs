@@ -221,6 +221,24 @@ namespace Mono.Profiler {
 		Double TicksPerCounterUnit {get;}
 		TimeSpan ClicksToTimeSpan (ulong clicks);
 		
+		/* Properties that state what kind of data has been processed */
+		bool HasAllocationData {get;}
+		void AllocationDataProcessed ();
+		bool HasCallData {get;}
+		void CallDataProcessed ();
+		bool HasStatisticalData {get;}
+		void StatisticalDataProcessed ();
+		bool HasHeapSnapshotData {get;}
+		void HeapSnapshotDataProcessed ();
+		bool HasJitTimeData {get;}
+		void JitTimeDataProcessed ();
+		bool HasGcTimeData {get;}
+		void GcTimeDataProcessed ();
+		bool HasHeapSummaryData {get;}
+		void HeapSummaryDataProcessed ();
+		bool HasLockContentionData {get;}
+		void LockContentionDataProcessed ();
+		
 		void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime);
 		void End (uint version, ulong endCounter, DateTime endTime);
 		
@@ -879,6 +897,86 @@ namespace Mono.Profiler {
 		protected BaseProfilerEventHandler (IProfilerEventHandler<LC,LM,UFR,UFI,MR,EH,HO,HS> baseHandler) {
 			this.loadedElements = baseHandler.LoadedElements;
 			this.directives = baseHandler.Directives;
+		}
+		
+		bool hasAllocationData;
+		public bool HasAllocationData {
+			get {
+				return hasAllocationData;
+			}
+		}
+		public void AllocationDataProcessed () {
+			hasAllocationData = true;
+		}
+		
+		bool hasCallData;
+		public bool HasCallData {
+			get {
+				return hasCallData;
+			}
+		}
+		public void CallDataProcessed () {
+			hasCallData = true;
+		}
+		
+		bool hasStatisticalData;
+		public bool HasStatisticalData {
+			get {
+				return hasStatisticalData;
+			}
+		}
+		public void StatisticalDataProcessed () {
+			hasStatisticalData = true;
+		}
+		
+		bool hasHeapSnapshotData;
+		public bool HasHeapSnapshotData {
+			get {
+				return hasHeapSnapshotData;
+			}
+		}
+		public void HeapSnapshotDataProcessed () {
+			hasHeapSnapshotData = true;
+		}
+		
+		bool hasJitTimeData;
+		public bool HasJitTimeData {
+			get {
+				return hasJitTimeData;
+			}
+		}
+		public void JitTimeDataProcessed () {
+			hasJitTimeData = true;
+		}
+		
+		bool hasGcTimeData;
+		public bool HasGcTimeData {
+			get {
+				return hasGcTimeData;
+			}
+		}
+		public void GcTimeDataProcessed () {
+			hasGcTimeData = true;
+		}
+		
+		bool hasHeapSummaryData;
+		public bool HasHeapSummaryData {
+			get {
+				return hasHeapSummaryData;
+			}
+		}
+		public void HeapSummaryDataProcessed () {
+			hasHeapSummaryData = true;
+		}
+		
+		bool hasLockContentionData;
+		public bool HasLockContentionData {
+			get {
+				return hasLockContentionData;
+			}
+		}
+		public void LockContentionDataProcessed () {
+			hasLockContentionData = true;
 		}
 		
 		public virtual void Start (uint version, string runtimeFile, ProfilerFlags flags, ulong startCounter, DateTime startTime) {}

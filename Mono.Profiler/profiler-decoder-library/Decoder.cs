@@ -522,6 +522,8 @@ namespace  Mono.Profiler {
 						
 						switch (packedCode) {
 						case PackedEventCode.CLASS_ALLOCATION: {
+							handler.AllocationDataProcessed ();
+							
 							uint classId = ReadUint (ref offsetInBlock);
 							uint classSize = ReadUint (ref offsetInBlock);
 							classId <<= PACKED_EVENT_DATA_BITS;
@@ -582,6 +584,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case ClassEvent.LOCK: {
+								handler.LockContentionDataProcessed ();
+								
 								uint classId = ReadUint (ref offsetInBlock);
 								ulong counterDelta = ReadUlong (ref offsetInBlock);
 								baseCounter += counterDelta;
@@ -599,6 +603,8 @@ namespace  Mono.Profiler {
 							break;
 						}
 						case PackedEventCode.METHOD_ENTER: {
+							handler.CallDataProcessed ();
+							
 							uint methodId = ReadUint (ref offsetInBlock);
 							ulong counterDelta = ReadUlong (ref offsetInBlock);
 							baseCounter += counterDelta;
@@ -611,6 +617,8 @@ namespace  Mono.Profiler {
 							break;
 						}
 						case PackedEventCode.METHOD_EXIT_EXPLICIT: {
+							handler.CallDataProcessed ();
+							
 							uint methodId = ReadUint (ref offsetInBlock);
 							ulong counterDelta = ReadUlong (ref offsetInBlock);
 							baseCounter += counterDelta;
@@ -623,6 +631,8 @@ namespace  Mono.Profiler {
 							break;
 						}
 						case PackedEventCode.METHOD_EXIT_IMPLICIT: {
+							handler.CallDataProcessed ();
+							
 							//LogLine ("BLOCK EVENTS (PACKED:METHOD_EXIT_IMPLICIT): counterDelta {0}", 0);
 							throw new DecodingException (this, offsetInBlock, "PackedEventCode.METHOD_EXIT_IMPLICIT unsupported");
 						}
@@ -639,6 +649,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case MethodEvent.JIT: {
+								handler.JitTimeDataProcessed ();
+								
 								uint methodId = ReadUint (ref offsetInBlock);
 								ulong counterDelta = ReadUlong (ref offsetInBlock);
 								baseCounter += counterDelta;
@@ -663,6 +675,8 @@ namespace  Mono.Profiler {
 							GenericEvent genericEventCode = GenericEventFromEventCode (packedData);
 							switch (genericEventCode) {
 							case GenericEvent.GC_COLLECTION: {
+								handler.GcTimeDataProcessed ();
+								
 								uint collection;
 								uint generation;
 								DecodeGarbageCollectionEventValue (ReadUint (ref offsetInBlock), out collection, out generation);
@@ -680,6 +694,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.GC_MARK: {
+								handler.GcTimeDataProcessed ();
+								
 								uint collection;
 								uint generation;
 								DecodeGarbageCollectionEventValue (ReadUint (ref offsetInBlock), out collection, out generation);
@@ -697,6 +713,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.GC_SWEEP: {
+								handler.GcTimeDataProcessed ();
+								
 								uint collection;
 								uint generation;
 								DecodeGarbageCollectionEventValue (ReadUint (ref offsetInBlock), out collection, out generation);
@@ -714,6 +732,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.GC_RESIZE: {
+								handler.GcTimeDataProcessed ();
+								
 								ulong newSize = ReadUlong (ref offsetInBlock);
 								uint collection = ReadUint (ref offsetInBlock);
 								//LogLine ("BLOCK EVENTS (OTHER:GC_RESIZE): newSize {0}, collection {1}", newSize, collection);
@@ -722,6 +742,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.GC_STOP_WORLD: {
+								handler.GcTimeDataProcessed ();
+								
 								uint collection;
 								uint generation;
 								DecodeGarbageCollectionEventValue (ReadUint (ref offsetInBlock), out collection, out generation);
@@ -739,6 +761,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.GC_START_WORLD: {
+								handler.GcTimeDataProcessed ();
+								
 								uint collection;
 								uint generation;
 								DecodeGarbageCollectionEventValue (ReadUint (ref offsetInBlock), out collection, out generation);
@@ -771,6 +795,8 @@ namespace  Mono.Profiler {
 								break;
 							}
 							case GenericEvent.JIT_TIME_ALLOCATION: {
+								handler.AllocationDataProcessed ();
+								
 								uint classId = ReadUint (ref offsetInBlock);
 								uint classSize = ReadUint (ref offsetInBlock);
 								uint callerId = 0;
@@ -825,6 +851,8 @@ namespace  Mono.Profiler {
 					break;
 				}
 				case BlockCode.STATISTICAL : {
+					handler.StatisticalDataProcessed ();
+					
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong startTime = ReadUlong (ref offsetInBlock);
 					
@@ -930,6 +958,8 @@ namespace  Mono.Profiler {
 					break;
 				}
 				case BlockCode.HEAP_DATA : {
+					handler.HeapSnapshotDataProcessed ();
+					
 					ulong jobStartCounter = ReadUlong (ref offsetInBlock);
 					ulong jobStartTime = ReadUlong (ref offsetInBlock);
 					ulong jobEndCounter = ReadUlong (ref offsetInBlock);
@@ -996,6 +1026,8 @@ namespace  Mono.Profiler {
 					break;
 				}
 				case BlockCode.HEAP_SUMMARY : {
+					handler.HeapSummaryDataProcessed ();
+					
 					ulong startCounter = ReadUlong (ref offsetInBlock);
 					ulong startTime = ReadUlong (ref offsetInBlock);
 					uint collection = ReadUint (ref offsetInBlock);
