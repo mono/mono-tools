@@ -33,33 +33,34 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule looks for constant fields that are visible outside the current assembly.
+	/// This rule looks for constant fields which are visible outside the current assembly.
 	/// Such fields, if used outside the assemblies, will have their value (not the field
-	/// reference) copied into the other assembly. Changing the value will requires to 
-	/// recompile all assemblies in order to have the desired effect. Declaring the field
-	/// as <c>static readonly</c> will have the desired effect (i.e. insert a reference to
-	/// the field in its original assembly).
+	/// reference) copied into the other assembly. Changing the field's value requires that all
+	/// assemblies which use the field to be recompiled. Declaring the field
+	/// as <c>static readonly</c>, on the other hand, allows the value to be changed
+	/// without requiring that client assemblies be recompiled.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
 	/// // if this fields is used inside another assembly then
-	/// // the integer 42, not the field, will be part of it
+	/// // the integer 42, not the field, will be baked into it
 	/// public const int MagicNumber = 42;
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// // if this fields is used inside another assembly then
-	/// // the MagicNumber will be referenced
+	/// // if this field is used inside another assembly then
+	/// // that assembly will reference the field instead of
+	/// // embedding the value
 	/// static public readonly int MagicNumber = 42;
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This type contains visible field constants where the value will be embedded into the assemblies that use it.")]
-	[Solution ("Use a 'static readonly' field (C# syntax) to make sure a reference to the field itself is kept and avoid recompiling all assemblies.")]
+	[Problem ("This type contains visible constant fields so the value instead of the field will be embedded into assemblies which use it.")]
+	[Solution ("Use a 'static readonly' field (C# syntax) so that the field's value can be changed without forcing client assemblies to be recompiled.")]
 	public class AvoidVisibleConstantFieldRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

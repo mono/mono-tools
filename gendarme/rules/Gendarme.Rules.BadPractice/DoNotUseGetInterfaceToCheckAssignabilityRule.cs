@@ -38,10 +38,11 @@ namespace Gendarme.Rules.BadPractice {
 	// http://lists.ximian.com/archives/public/mono-patches/2008-September/128122.html
 
 	/// <summary>
-	/// This rule check for calls to <c>Type.GetInterface</c> that looks like they query if
-	/// a type is supported, i.e. the result value is only used to compare to <c>null</c>.
-	/// The results can be inexact since the string does not need to be complete (or fully
-	/// qualified) type name.
+	/// This rule checks for calls to <c>Type.GetInterface</c> that look like they query if
+	/// a type is supported, i.e. the result is only used to compare against <c>null</c>.
+	/// The problem is that only assembly qualified names uniquely identify a type so if
+	/// you just use the interface name or even just the name and namespace you may
+	/// get unexpected results.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -63,8 +64,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("This methods calls Type.GetInterface(string) to query if an interface is supported by the type. The result could be inexact because partial strings (without namespaces) are allowed.")]
-	[Solution ("Use the proper Type.IsAssignableFrom(Type) method for querying a compile time known type.")]
+	[Problem ("This method calls Type.GetInterface(string) to query if an interface is supported by the type, but the result may be incorrect if the type is not qualified with a namespace (and not even that is guaranteed to work).")]
+	[Solution ("Instead use Type.IsAssignableFrom(Type) method to query for types known at compile time.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotUseGetInterfaceToCheckAssignabilityRule : Rule, IMethodRule {
 

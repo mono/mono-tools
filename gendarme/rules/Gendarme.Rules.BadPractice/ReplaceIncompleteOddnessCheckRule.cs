@@ -42,17 +42,17 @@ namespace Gendarme.Rules.BadPractice {
 	// IM: Check for oddness that won't work for negative numbers (IM_BAD_CHECK_FOR_ODD)
 
 	/// <summary>
-	/// This rule checks for incomplete oddness checks inside methods. A common approach is
-	/// doing a modulo two (% 2) and comparing the result with one (1). This logic does not 
-	/// work for negative integers (where minus one is returned). A better (and faster)
-	/// approach is to check the least significant bit of the integer.
+	/// This rule checks for problematic oddness checks. Often this is done by comparing
+	/// a value modulo two (% 2) with one (1). However this will not work if the value is
+	/// negative because negative one will be returned. A better (and faster) approach is 
+	/// to check the least significant bit of the integer.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
 	/// public bool IsOdd (int x)
 	/// {
-	/// 	// (x % 2) won't work for negative numbers (returns -1)
+	/// 	// (x % 2) won't work for negative numbers (it returns -1)
 	/// 	return ((x % 2) == 1);
 	/// }
 	/// </code>
@@ -77,8 +77,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method looks like it check if an integer is odd or even but the implementation wont work on negative integers.")]
-	[Solution ("Verify the code logic and, if required, replace the defective logic with one that works with negative values too.")]
+	[Problem ("The method contains code which looks as if it is doing an oddness check, but the code will not work for negative integers.")]
+	[Solution ("Verify the code logic and, if required, replace the defective code with code that works for negative values as well.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReplaceIncompleteOddnessCheckRule : Rule, IMethodRule {
 

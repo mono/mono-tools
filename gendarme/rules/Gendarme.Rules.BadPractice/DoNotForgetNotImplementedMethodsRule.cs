@@ -41,7 +41,7 @@ using Mono.Cecil.Cil;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule check for short methods that throw an <c>System.NotImplementedException</c> 
+	/// This rule checks for short methods that throw a <c>System.NotImplementedException</c> 
 	/// exception. It's likely a method that has not yet been implemented and should not be
 	/// forgotten by the developer before a release.
 	/// </summary>
@@ -56,8 +56,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method look like it is not implemented or incomplete.")]
-	[Solution ("Implement the method and/or make sure it's limitation are well documented.")]
+	[Problem ("This method looks like it is not implemented or is incomplete.")]
+	[Solution ("Implement the method and/or make sure it's limitations are well documented.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotForgetNotImplementedMethodsRule : Rule, IMethodRule {
 

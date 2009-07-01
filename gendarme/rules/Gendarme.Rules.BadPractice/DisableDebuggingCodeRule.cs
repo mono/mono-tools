@@ -36,10 +36,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	// TODO: Is it a good idea to recommend TRACE? Isn't that often set for release builds?
 	/// <summary>
-	/// This rule check if non-console applications are using <c>Console.WriteLine</c> as
-	/// a mean to help debugging issues. While useful the debugging code should, before its
-	/// release be removed, moved inside methods decorated with <c>[Conditional("DEBUG")]</c> or 
+	/// This rule checks for non-console applications which use <c>Console.WriteLine</c> as
+	/// a debugging tool. While useful the debugging code should, before its
+	/// release, be removed or moved inside methods decorated with <c>[Conditional("DEBUG")]</c> or 
 	/// <c>[Conditional("TRACE")]</c> or changed to use the <c>Debug</c> or <c>Trace</c> types.
 	/// </summary>
 	/// <example>
@@ -80,7 +81,7 @@ namespace Gendarme.Rules.BadPractice {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method include calls to Console.WriteLine inside an assembly not compiled for console application (e.g. /target:exe).")]
-	[Solution ("If this code is used for debugging purpose then either use the Debug or Trace types or disable the code manually (e.g. using a preprocessor).")]
+	[Solution ("If this code is used for debugging then either use the Debug or Trace types or disable the code manually (e.g. using the preprocessor).")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DisableDebuggingCodeRule : Rule, IMethodRule {
 

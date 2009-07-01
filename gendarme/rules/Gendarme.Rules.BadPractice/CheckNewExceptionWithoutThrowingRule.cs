@@ -41,8 +41,8 @@ using Mono.Cecil.Cil;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks for exception objects that are created but not thrown, returned or
-	/// passed to another method as an argument.
+	/// This rule checks for exception objects which are created but not thrown, not returned,
+	/// and not passed to another method as an argument.
 	/// </summary>
 	/// <example>
 	/// Bad example:

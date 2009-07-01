@@ -37,9 +37,9 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks that no method or property returning a string, an array,
-	/// a collection, or an enumerable, returns <c>null</c>.
-	/// It is usually better to rather return an empty instance, as this allow
+	/// This rule checks that all methods and properties which return a string, an array,
+	/// a collection, or an enumerable do not return <c>null</c>.
+	/// It is usually better to return an empty instance, as this allows
 	/// the caller to use the result without having to perform a null-check first.
 	/// </summary>
 	/// <example>
@@ -125,8 +125,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
-	[Problem ("This method returns null whereas returning an empty instance would make it easier to use.")]
-	[Solution ("Return an empty instance rather than null.")]
+	[Problem ("This method returns null but returning an empty instance would make it easier to use.")]
+	[Solution ("Return an empty instance instead of null.")]
 	public class PreferEmptyInstanceOverNullRule : ReturnNullRule, IMethodRule {
 
 		TypeReference returnType;

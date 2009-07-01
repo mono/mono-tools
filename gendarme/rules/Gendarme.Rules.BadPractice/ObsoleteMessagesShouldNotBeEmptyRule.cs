@@ -37,9 +37,9 @@ namespace Gendarme.Rules.BadPractice {
 	/// <summary>
 	/// This rule warns if any type (including classes, structs, enums, interfaces and 
 	/// delegates), field, property, events, method and constructor are decorated with
-	/// an empty <c>[Obsolete]</c> attribute. Marking anything with obsolete is helpful
-	/// only if it includes some advice for the consumer on how to best deal with the
-	/// situation (e.g. the new recommanded API to use).
+	/// an empty <c>[Obsolete]</c> attribute because the attribute is much more helpful
+	/// if it includes advice on how to deal with the situation (e.g. the new recommended
+	/// API to use).
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -65,7 +65,7 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 
 	[Problem ("The [Obsolete] attribute was used but no help, alternative or description was provided.")]
-	[Solution ("Provide helpful advice to help developers abandon old features and migrate to newer ones.")]
+	[Solution ("Provide advice to help developers abandon old features and migrate to newer ones.")]
 	public class ObsoleteMessagesShouldNotBeEmptyRule : Rule, ITypeRule {
 
 		private const string ObsoleteAttribute = "System.ObsoleteAttribute";

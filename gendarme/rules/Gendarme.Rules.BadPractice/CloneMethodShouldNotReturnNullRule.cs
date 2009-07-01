@@ -36,7 +36,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks that no <c>Clone()</c> method returns <c>null</c>.
+	/// This rule checks for <c>Clone()</c> methods which return <c>null</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -66,7 +66,7 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 
 	[Problem ("This implementation of ICloneable.Clone() could return null in some circumstances.")]
-	[Solution ("Return an appropriate object rather than returning null.")]
+	[Solution ("Return an appropriate object instead of returning null.")]
 	public class CloneMethodShouldNotReturnNullRule : ReturnNullRule, IMethodRule {
 
 		private const string ICloneable = "System.ICloneable";

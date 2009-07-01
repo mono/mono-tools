@@ -41,7 +41,7 @@ using Mono.Cecil.Cil;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks for threads that are created but not started, returned or passed
+	/// This rule checks for threads which are created but not started, or returned or passed
 	/// to another method as an argument.
 	/// </summary>
 	/// <example>

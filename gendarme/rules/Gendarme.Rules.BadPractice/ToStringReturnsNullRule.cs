@@ -36,9 +36,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule checks that no overriden <c>ToString()</c> method returns <c>null</c>.
+	/// This rule checks for overridden <c>ToString()</c> methods which return <c>null</c>.
 	/// An appropriately descriptive string, or <c>string.Empty</c>, should be returned
-	/// in order to make the value more useful (especially in debugging).
+	/// instead in order to make the value more useful (especially in debugging).
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -58,10 +58,10 @@ namespace Gendarme.Rules.BadPractice {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>Before Gendarme 2.4 this rule named ToStringReturnsNull.</remarks>
+	/// <remarks>Before Gendarme 2.4 this rule was named ToStringReturnsNull.</remarks>
 
 	[Problem ("This type contains a ToString() method that could return null.")]
-	[Solution ("Return an appropriately descriptive string or an empty string rather than returning null.")]
+	[Solution ("Return an appropriately descriptive string or an empty string instead of returning null.")]
 	public class ToStringShouldNotReturnNullRule: ReturnNullRule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

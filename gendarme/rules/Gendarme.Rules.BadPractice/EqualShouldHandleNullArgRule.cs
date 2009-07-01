@@ -38,7 +38,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule ensures that methods <c>Equals(object)</c> returns <c>false</c> when the 
+	/// This rule ensures that <c>Equals(object)</c> methods return <c>false</c> when the 
 	/// object parameter is <c>null</c>.
 	/// </summary>
 	/// <example>
@@ -64,8 +64,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </code>
 	/// </example>
 
-	[Problem ("This Equals method does not handle null argument as it should.")]
-	[Solution ("Modify the method implementation to return false if a null argument found.")]
+	[Problem ("This Equals method does not handle null arguments as it should.")]
+	[Solution ("Modify the method implementation to return false if a null argument is found.")]
 	public class EqualsShouldHandleNullArgRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

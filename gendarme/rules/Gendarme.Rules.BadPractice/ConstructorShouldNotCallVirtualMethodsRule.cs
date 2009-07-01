@@ -42,9 +42,9 @@ namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
 	/// This rule warns the developer if any virtual methods are called in the constructor 
-	/// of non-sealed type. The problem is that the exact method that will be executed is 
-	/// not known before runtime. Also such virtual calls may be executed before the constructor
-	/// of deriving type is called, thus making possible mistakes.
+	/// of a non-sealed type. The problem is that if a derived class overrides the method
+	/// then that method will be called before the derived constructor has had a chance
+	/// to run. This makes the code quite fragile.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -74,7 +74,7 @@ namespace Gendarme.Rules.BadPractice {
 	///	}
 	/// }
 	/// 
-	/// B b = new B (); // outputs 0 because B constructor hasn't been called yet 
+	/// B b = new B (); // outputs 0 because B's constructor hasn't been called yet 
 	/// </code>
 	/// </example>
 	/// <example>
@@ -111,8 +111,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("Some constructors calls virtual methods which won't be known before runtime.")]
-	[Solution ("Avoid calling virtual methods from constructors or seal the the type.")]
+	[Problem ("A constructor calls an unsealed virtual method.")]
+	[Solution ("Avoid calling virtual methods from constructors or seal the the type/method.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2114:DoNotCallOverridableMethodsInConstructors")]
 	public class ConstructorShouldNotCallVirtualMethodsRule : Rule, ITypeRule {

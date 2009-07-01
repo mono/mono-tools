@@ -35,7 +35,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.BadPractice {
 
 	/// <summary>
-	/// This rule check for calls to <c>typeof (Enum).IsAssignableFrom (type)</c> that
+	/// This rule checks for calls to <c>typeof (Enum).IsAssignableFrom (type)</c> that
 	/// can be simplified to <c>type.IsEnum</c>.
 	/// </summary>
 	/// <example>
@@ -56,8 +56,8 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
-	[Problem ("This methods uses typeof (Enum).IsAssignableFrom to check if a type is an enum.")]
-	[Solution ("Use type.IsEnum property.")]
+	[Problem ("This method uses typeof (Enum).IsAssignableFrom to check if a type is an enum.")]
+	[Solution ("Use the Type.IsEnum property instead.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotUseEnumIsAssignableFromRule : Rule, IMethodRule {
 
