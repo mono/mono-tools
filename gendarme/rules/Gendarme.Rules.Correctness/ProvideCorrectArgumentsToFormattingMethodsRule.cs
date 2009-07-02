@@ -40,8 +40,8 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks that the format string provided to <c>String.Format</c> calls
-	/// match with its parameters.
+	/// This rule checks that the format string used with <c>String.Format</c> matches
+	/// the other parameters used with the method.
 	/// </summary>
 	/// <example>
 	/// Bad examples:
@@ -60,7 +60,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("You are calling to a Format method without the correct arguments.  This could throw an unexpected FormatException.")]
+	[Problem ("You are calling a Format method without the correct arguments.  This could result in a FormatException being thrown.")]
 	[Solution ("Pass the correct arguments to the formatting method.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ProvideCorrectArgumentsToFormattingMethodsRule : Rule, IMethodRule {

@@ -44,7 +44,7 @@ namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// This rule checks for variables or fields that are assigned multiple times 
-	/// to the same value. This never change the value of the variable (or fields) 
+	/// using the same value. This won't change the value of the variable (or fields) 
 	/// but should be reviewed since it could be a typo that hides a real issue in
 	/// the code.
 	/// </summary>
@@ -79,8 +79,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method assign the same value twice to the same variable or field.")]
-	[Solution ("Verify the code logic. This is likely a typo where the second assignment is unneeded or should have been assigned to another variable/field.")]
+	[Problem ("This method assigns the same value twice to the same variable or field.")]
+	[Solution ("Verify the code logic. This is likely a typo where the second assignment is unneeded or should have been used with another variable/field.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewDoubleAssignmentRule : Rule, IMethodRule {
 

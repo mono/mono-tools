@@ -40,8 +40,7 @@ using System.Text.RegularExpressions;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks if methods/constructors requiring a regular expression
-	/// string are provided a valid pattern.
+	/// This rule verifies that valid regular expression strings are used as arguments.
 	/// </summary>
 	/// <example>
 	/// Bad example:

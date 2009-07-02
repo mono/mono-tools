@@ -42,9 +42,9 @@ namespace Gendarme.Rules.Correctness {
 	// ICAST: int division result cast to double or float (ICAST_IDIV_CAST_TO_DOUBLE)
 
 	/// <summary>
-	/// This rule checks when the result of a division between integral types is casted
-	/// into a floating point type. Casting the result, instead of the operands, converts
-	/// the integer result into a floating point value - i.e. the result is truncated.
+	/// This rule checks for integral divisions where the result is cast to a floating point
+	/// type. It's usually best to instead cast an operand to the floating point type so
+	/// that the result is not truncated.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -70,8 +70,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("A division between two integers is casted, too late, into a Single or Double. The result is still an integer (truncated).")]
-	[Solution ("Make the cast to Single or Double on the operands, not on the result.")]
+	[Problem ("The result of an integral division is cast to a Single or Double. This is questionable unless you really want the truncated result.")]
+	[Solution ("Cast an operand to Single or Double, not the result.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewCastOnIntegerDivisionRule : Rule, IMethodRule {
 

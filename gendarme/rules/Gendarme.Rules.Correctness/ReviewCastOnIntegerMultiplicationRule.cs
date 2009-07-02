@@ -42,10 +42,9 @@ namespace Gendarme.Rules.Correctness {
 	// ICAST: Result of integer multiplication cast to long (ICAST_INTEGER_MULTIPLY_CAST_TO_LONG)
 
 	/// <summary>
-	/// This rule checks when the result of a multiplication between integral types is casted
-	/// into a larger integral type. Casting the result, instead of the operands, converts
-	/// the computed result into the new type - the multiplication operation is still done with
-	/// the smaller type.
+	/// This rule checks for integral multiply operations where the result is cast to
+	/// a larger integral type. It's safer instead to cast an operand to the larger type
+	/// to minimize the chance of overflow.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -69,8 +68,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("This method cast the result of an integer multiplication into a larger integer. This does not solve (i.e. expand) an overflow.")]
-	[Solution ("Make sure to cast the operands, not the result, of an integer multiplication. Otherwise you may get wrong results (overflow).")]
+	[Problem ("This method casts the result of an integer multiplication into a larger integer. This may result in an overflow before the cast can be done.")]
+	[Solution ("Cast the operands instead of the result.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewCastOnIntegerMultiplicationRule : Rule, IMethodRule {
 

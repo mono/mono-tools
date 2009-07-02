@@ -40,7 +40,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks to see if a type is managing its identity in a
+	/// This rule checks to see if a type manages its identity in a
 	/// consistent way. It checks:
 	/// <list type = "bullet">
 	///    <item>
@@ -61,7 +61,7 @@ namespace Gendarme.Rules.Correctness {
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("The type does not manage identity consistently in its Equals, relational operator, CompareTo, GetHashCode, and Clone methods.")]
-	[Solution ("Equals, relational operator, CompareTo methods should use the same fields and get properties. GetHashCode should use the same fields/properties or a strict subset of them. Clone should use the same fields/properties or a superset of them.")]
+	[Solution ("Equals, relational operator, CompareTo methods should use the same fields and getter properties. GetHashCode should use the same fields/properties or a strict subset of them. Clone should use the same fields/properties or a superset of them.")]
 	public sealed class ReviewInconsistentIdentityRule: Rule, ITypeRule {
 	
 		private const int MaxMethodCount = 10;

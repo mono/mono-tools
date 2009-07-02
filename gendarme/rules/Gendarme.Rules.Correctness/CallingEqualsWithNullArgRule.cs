@@ -39,7 +39,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks for methods that <c>Equals</c> with a <c>null</c> real parameter.
+	/// This rule checks for methods that call <c>Equals</c> with a <c>null</c> actual parameter.
 	/// Such calls should always return <c>false</c>.
 	/// </summary>
 	/// <example>
@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 
 	[Problem ("This method calls Equals(object) with a null argument.")]
-	[Solution ("Pass some other appropriate argument than null, as passing a null parameter should always return false.")]
+	[Solution ("Either use a different argument or remove the Equals call (it will always return false).")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class CallingEqualsWithNullArgRule: Rule, IMethodRule {
 

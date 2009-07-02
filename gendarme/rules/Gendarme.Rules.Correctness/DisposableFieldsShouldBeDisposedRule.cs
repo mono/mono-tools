@@ -43,8 +43,8 @@ namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// The rule inspects all fields for disposable types and, if <c>System.IDisposable</c>
-	/// is implemented, check that the type <c>Dispose</c> method does indeed call <c>Dispose</c>
-	/// on all the fields (that implements <c>System.IDisposable</c>).
+	/// is implemented, checks that the type's <c>Dispose</c> method does indeed call <c>Dispose</c>
+	/// on all disposable fields.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -88,8 +88,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains disposable field(s) that aren't disposed.")]
-	[Solution ("Ensure that every disposable field(s) are disposed correctly.")]
+	[Problem ("This type contains disposable field(s) which aren't disposed.")]
+	[Solution ("Ensure that every disposable field(s) is correctly disposed.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed")]
 	public class DisposableFieldsShouldBeDisposedRule : Rule, ITypeRule {

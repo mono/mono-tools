@@ -40,8 +40,8 @@ namespace Gendarme.Rules.Correctness {
 	/// <summary>
 	/// This rule checks for methods that do not require anything from the current
 	/// instance. Those methods can be converted into static methods, which helps
-	/// a bit the performance (the hidden <c>this</c> parameter can be omitted),
-	/// and clarify the API.
+	/// a bit with performance (the hidden <c>this</c> parameter can be omitted),
+	/// and clarifies the API.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -51,7 +51,7 @@ namespace Gendarme.Rules.Correctness {
 	///	
 	///	bool Valid (int value)
 	///	{
-	///		// the validation has no need to know the instance values
+	///		// no instance members are used
 	///		return (value > 0);
 	///	}
 	///	
@@ -88,7 +88,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 
 	[Problem ("This method does not use any instance fields, properties or methods and can be made static.")]
-	[Solution ("Make this method static.")]
+	[Solution ("Make the method static.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
 	public class MethodCanBeMadeStaticRule : Rule, IMethodRule {

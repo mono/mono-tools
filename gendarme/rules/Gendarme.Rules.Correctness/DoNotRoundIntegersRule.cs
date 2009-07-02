@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Correctness {
 	/// <summary>
 	/// This rule check for attempts to call <c>Round</c>, <c>Ceiling</c>, <c>Floor</c> or
 	/// <c>Truncate</c> on an integral type. This often indicate a typo in the source code
-	/// (e.g. wrong variable) or simply an unneeded operation.
+	/// (e.g. wrong variable) or an unnecessary operation.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -65,8 +65,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method round/ceil/floor/truncate an integer value.")]
-	[Solution ("Verify the code logic. This could be a typo (wrong variable) or an unneeded operation.")]
+	[Problem ("This method calls round/ceil/floor/truncate with an integer value.")]
+	[Solution ("Verify the code logic. This could be a typo (wrong variable) or an unnecessary operation.")]
 	public class DoNotRoundIntegersRule : Rule, IMethodRule {
 
 		static TypeReference GetType (Instruction ins, MethodDefinition method)

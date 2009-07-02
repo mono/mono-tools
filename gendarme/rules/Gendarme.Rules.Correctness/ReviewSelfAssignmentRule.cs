@@ -44,7 +44,7 @@ namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// This rule checks for variables or fields that are assigned to themselves. 
-	/// This never change the value of the variable (or fields) but should be reviewed
+	/// This won't change the value of the variable (or fields) but should be reviewed
 	/// since it could be a typo that hides a real issue in the code.
 	/// </summary>
 	/// <example>
@@ -76,8 +76,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method assign the variable or field to itself.")]
-	[Solution ("Verify the code logic. This is likely a typo which result in a wrong assignment.")]
+	[Problem ("This method assigns a variable or field to itself.")]
+	[Solution ("Verify the code logic. This is likely a typo resulting in an incorrect assignment.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewSelfAssignmentRule : Rule, IMethodRule {
 

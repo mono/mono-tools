@@ -37,9 +37,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule is used to warn the developer if a finalizer does not call base class 
+	/// This rule is used to warn the developer that a finalizer does not call the base class 
 	/// finalizer. In C#, this is enforced by compiler but some .NET languages (like IL)
-	/// may allow such behavior, which should not be allowed.
+	/// may allow such behavior.
 	/// </summary>
 	/// <example>
 	/// Bad example (IL):
@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </code>
 	/// </example>
 
-	[Problem ("The finalizer for this type does not call its base class finalizer.")]
+	[Problem ("The finalizer for this type does not call the base class finalizer.")]
 	[Solution ("Since your language does not do this automatically, like C#, add a call to the base type finalizer just before the finalizer exits.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2220:FinalizersShouldCallBaseClassFinalizer")]

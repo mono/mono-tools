@@ -36,11 +36,11 @@ namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// As attributes are used at compile time, only constants can
-	/// be passed to constructors.  You can use an URI but you have to pass the
-	/// URI as an string, and this can lead you at some errors at run time.
+	/// be passed to constructors. This can lead to runtime errors for
+	/// things like malformed URI strings.
 	///
 	/// This rule checks attributes with the following types, represented as
-	/// a string, and validate their contents:
+	/// a string, and validates the string value:
 	/// <list type="bullet">
 	/// <item>
 	/// <description>Version</description>
@@ -67,8 +67,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("As you are representing urls, versions or guids as strings, those parameters could be bad formatted and could cause some troubles at run time.")]
-	[Solution ("You should format correctly the reported parameters.")]
+	[Problem ("An url, version, or guid string seems to be malformed.")]
+	[Solution ("Correctly format the reported parameters.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2243:AttributeStringLiteralsShouldParseCorrectly")]
 	public class AttributeStringLiteralsShouldParseCorrectlyRule : Rule, IMethodRule, ITypeRule, IAssemblyRule {
 

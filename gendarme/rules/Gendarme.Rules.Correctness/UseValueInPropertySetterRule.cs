@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 
 	[Problem ("This property setter doesn't use 'value'.")]
-	[Solution ("The setter should use 'value' or, if unneeded, you should consider remove the setter to reduce possible confusion.")]
+	[Solution ("The setter should use 'value' or, if unneeded, you should consider removing the setter to reduce possible confusion.")]
 	public class UseValueInPropertySetterRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

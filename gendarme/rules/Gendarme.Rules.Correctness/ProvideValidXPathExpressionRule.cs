@@ -41,8 +41,7 @@ using System.Text.RegularExpressions;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks if a valid XPath expression string is provided to
-	/// methods requiring those.
+	/// This rule verifies that valid XPath expression strings are passed as arguments.
 	/// </summary>
 	/// <example>
 	/// Bad example (node selection):

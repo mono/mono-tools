@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// This rule checks for a modulo one (1) operation on an integral type. This is most
-	/// likely a typo since the answer is always 0. This usually happen when someone confuse
+	/// likely a typo since the result is always 0. This usually happen when someone confuses
 	/// a bitwise operation with a remainder.
 	/// </summary>
 	/// <example>
@@ -66,8 +66,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method compute the modulo (%) 1 of a integral value. This always evaluate to zero.")]
-	[Solution ("Verify the code logic. The likely logic is probably (i % 2) to separate even/odd or (i & 1) to check the least significant bit.")]
+	[Problem ("This method computes the modulo (%) 1 of a integral value. This always evaluates to zero.")]
+	[Solution ("Verify the code logic. The logic should probably be (i % 2) to separate even/odd or (i & 1) to check the least significant bit.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUseOfModuloOneOnIntegersRule : Rule, IMethodRule {
 

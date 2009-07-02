@@ -41,7 +41,7 @@ using System.Text.RegularExpressions;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// This rule checks if a valid XML string is provided to methods requiring those.
+	/// This rule verifies that valid XML string arguments are passed as arguments.
 	/// </summary>
 	/// <example>
 	/// Bad example (using LoadXml):

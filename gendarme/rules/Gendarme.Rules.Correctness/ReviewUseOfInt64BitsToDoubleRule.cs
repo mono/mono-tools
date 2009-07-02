@@ -42,9 +42,9 @@ namespace Gendarme.Rules.Correctness {
 	// DMI: Double.longBitsToDouble invoked on an int (DMI_LONG_BITS_TO_DOUBLE_INVOKED_ON_INT)
 
 	/// <summary>
-	/// This rule checks for invalid integer to double conversion using the, confusinsly named,
-	/// <c>BitConverter.Int64BitsToDouble</c> method. This methods converts the actual bits,
-	/// i.e. not the value, into a <c>Double</c>. The rule will warn when anything else than an 
+	/// This rule checks for invalid integer to double conversion using the, confusingly named,
+	/// <c>BitConverter.Int64BitsToDouble</c> method. This method converts the actual bits,
+	/// i.e. not the value, into a <c>Double</c>. The rule will warn when anything other than an 
 	/// <c>Int64</c> is being used as a parameter to this method.
 	/// </summary>
 	/// <example>
@@ -67,8 +67,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method calls System.BitConverter.Int64BitsToDouble(Int64) in a way that suggest it tries to convert an integer value, not the bits, into a double.")]
-	[Solution ("Verify the code logic. This could be a bad, non-working, convertion from an integer type into a double.")]
+	[Problem ("This method calls System.BitConverter.Int64BitsToDouble(Int64) in a way that suggests it is trying to convert an integer value, not the bits, into a double.")]
+	[Solution ("Verify the code logic. This could be a bad, non-working, conversion from an integer type into a double.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUseOfInt64BitsToDoubleRule : Rule, IMethodRule {
 

@@ -41,11 +41,12 @@ namespace Gendarme.Rules.Correctness {
 	// non-visible so people can't instantiate it (e.g. by mistake)
 
 	/// <summary>
-	/// This rule check for types that contains only static members and warn if a visible
-	/// instance constructor is present in it. This was a common mistake in the framework
-	/// 1.x since C# adds a default, public, constructor when none is provided. Code using
-	/// the framework 2.0 (and later) should change this type, if possible, into a static
-	/// type.
+	/// This rule checks for types that contain only static members and fires if the type
+	/// contains a visible
+	/// instance constructor. This was a common mistake in the 1.x framework
+	/// because C# adds a default, public, constructor if no other constructors are provided. 
+	/// Code using the framework 2.0 (and later) should change this type, if possible, into a
+	/// static type.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -76,7 +77,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 
 	[Problem ("This type (and ancestors) contains only static fields and methods but has a visible, non static, constructor.")]
-	[Solution ("You should remove the visible constructor to make sure this type cannot be instancied, or if using 2.0+, change it to a static type.")]
+	[Solution ("You should remove the visible constructor to make sure this type cannot be instantiated, or if using 2.0+, change it to a static type.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1053:StaticHolderTypesShouldNotHaveConstructors")]
 	public class AvoidConstructorsInStaticTypesRule : Rule, ITypeRule {
 

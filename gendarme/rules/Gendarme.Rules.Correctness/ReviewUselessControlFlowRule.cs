@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Correctness {
 	// UCF: Useless control flow (UCF_USELESS_CONTROL_FLOW)
 
 	/// <summary>
-	/// This rule checks for empty blocks that produce uneless control flow inside IL. 
+	/// This rule checks for empty blocks that produce useless control flow inside IL. 
 	/// This usually occurs when a block is left incomplete or when a typo is made.
 	/// </summary>
 	/// <example>
@@ -72,8 +72,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method contains useless condition that do not change the execution flow.")]
-	[Solution ("Verify the code logic. This is likely a typo (e.g. an extra ';') or some dead code (empty condition).")]
+	[Problem ("This method contains conditional code which does not change the flow of execution.")]
+	[Solution ("Verify the code logic. This is likely a typo (e.g. an extra ';') or dead code (empty condition).")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewUselessControlFlowRule : Rule, IMethodRule {
 

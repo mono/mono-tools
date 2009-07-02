@@ -38,10 +38,23 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	// TODO:
+	// The examples seem to have a few problems:
+	// 1) The decimal type has more precision (and a different base) than double, but it is
+	// still a floating point type so it is still susceptible to rounding and other errors associated
+	// with floating point math so, in general, it is not OK to use Equals with decimal types.
+	// 2) I have no idea what "known value" means in AMethod.
+	// 3) AMethod is rather unclear on what happens with infinity. The problem here is that
+	// the suggested test will not work with infinities because infinity - infinity is a nan.
+	// 4) AMethod says that users may "hit" a NaN. It's not clear what that means but the 
+	// suggested test does work if one or both arguments are a NaN.
+	// 5) The suggested test is difficult to write correctly if the expected values have very
+	// small or very large magnitudes because the epsilon value need to be scaled accordingly.
+	
 	/// <summary>
-	/// Comparing floating points values isn't easy, because simple values, such as 0.2, 
-	/// cannot be precisely represented. This rule ensures the code doesn't contains 
-	/// floating point [in]equality comparison for <c>Single</c> and <c>Double</c> values.
+	/// Comparing floating points values isn't easy, because most values, such as 0.2, 
+	/// cannot be precisely represented. This rule verifies that the code does not contain 
+	/// [in]equality comparisons for <c>Single</c> and <c>Double</c> values.
 	/// For more information:
 	/// <list>
 	/// <item>
@@ -96,8 +109,8 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named FloatComparisonRule.</remarks>
 
-	[Problem ("This method contais some code that performs equality operation between floating points.")]
-	[Solution ("Try comparing the absolute difference between the two floating point values and a small constant value.")]
+	[Problem ("This method contains code that performs equality operations between floating point numbers.")]
+	[Solution ("Instead use the absolute difference between the two floating point values and a small constant value.")]
 	public class AvoidFloatingPointEqualityRule : FloatingComparisonRule, IMethodRule {
 
 		private const string EqualityMessage = "Floating point values should not be directly compared for equality (e.g. == or !=).";
