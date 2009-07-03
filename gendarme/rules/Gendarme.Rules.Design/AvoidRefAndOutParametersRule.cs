@@ -34,11 +34,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: MS is thinking of adding support for tuples to C#. If this is happens we
+	// should mention them in the solution.
+
 	/// <summary>
-	/// This rule checks for methods that use <c>ref</c> or <c>out</c> parameters. 
-	/// They are powerful features that can easily be misunderstood (by the consumer)
-	/// and misused (by the consumer) to create hard to use API. Avoid them whenever 
-	/// possible or, if needed, provide simpler alternatives coverage most use cases.
+	/// This rule fires if a method uses <c>ref</c> or <c>out</c> parameters. 
+	/// These are advanced features that can easily be misunderstood (by the consumer)
+	/// and misused (by the consumer) and can result in an API that is difficult to use. 
+	/// Avoid them whenever 
+	/// possible or, if needed, provide simpler alternatives for most use cases.
 	/// An exception is made, i.e. no defect are reported, for the <c>bool Try*(X out)</c> 
 	/// pattern.
 	/// </summary>
@@ -73,8 +77,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method use ref and/or out parameters in a visible API, which should be as simple as possible.")]
-	[Solution ("If multiple return values are needed then refactor the method to return an object that contains them.")]
+	[Problem ("This method use ref and/or out parameters in a visible API which can confuse many developers.")]
+	[Solution ("The most common reason to do this is to return multiple values from a method which can be rewritten so that it returns a custom type instead.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1021:AvoidOutParameters")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1045:DoNotPassTypesByReference")]
 	public class AvoidRefAndOutParametersRule : Rule, IMethodRule {

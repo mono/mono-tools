@@ -41,9 +41,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// The rule inspects all fields inside a type and looks if any of them is from a type
-	/// that implements <c>System.IDisposable</c>. If so the rule warns if the type itself 
-	/// doesn't implement <c>System.IDisposable</c>.
+	/// This rule will fire if a type contains disposable fields but does not implement
+	/// <c>System.IDisposable</c>.
 	/// </summary>
 	/// <example>
 	/// Bad examples:
@@ -75,7 +74,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 
 	[Problem ("This type contains disposable field(s) but doesn't implement IDisposable.")]
-	[Solution ("Implement IDisposable and free the disposable field(s) in its Dispose method.")]
+	[Solution ("Implement IDisposable and free the disposable field(s) in the Dispose method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
 	public class TypesWithDisposableFieldsShouldBeDisposableRule : Rule, ITypeRule {
 

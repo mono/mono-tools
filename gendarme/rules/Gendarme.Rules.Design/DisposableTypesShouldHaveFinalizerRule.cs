@@ -35,10 +35,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// The rule inspects all types that implements <c>System.IDisposable</c> and contains
-	/// fields that use native types, like <c>System.IntPtr</c>, <c>System.UIntPtr</c> or
-	/// <c>System.Runtime.InteropServices.HandleRef</c>. If so the rule will warn unless
-	/// the type provides a finalizer (destructor in C#).
+	/// This rule will fire for types which implement <c>System.IDisposable</c>, contain
+	/// native fields such as <c>System.IntPtr</c>, <c>System.UIntPtr</c>, and
+	/// <c>System.Runtime.InteropServices.HandleRef</c>, but do not define a finalizer.
 	/// </summary>
 	/// <example>
 	/// Bad example:

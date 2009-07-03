@@ -34,9 +34,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// The rule ensure that all visible types are declared inside a namespace. This helps 
-	/// to avoid potential duplicates when several assemblies are used and is less confusing
-	/// for consumer of the API.
+	/// This rule will fire if a type which is visible outside the assembly is not declared
+	/// within a namespace. Using namespaces greatly reduces the probability of name
+	/// collisions, allows tools such as auto-complete to operate better, and can make
+	/// the assemblies API clearer.
 	/// </summary>
 	/// <example>
 	/// Bad example:

@@ -34,11 +34,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for field pairs that are likely trying to provide the same
+	/// This rule checks for pairs of fields which seem to provide the same
 	/// functionality as a single nullable field. If the assembly targets version 2.0, 
-	/// or more recent, of the CLR then the rule will warn about the opportunity to use 
-	/// real nullable fields. The rule will ignore assemblies targetting earlier versions
-	/// of the CLR.
+	/// or more recent, of the CLR then the rule will fire to let you know that a 
+	/// nullable field can be used instead. The rule will ignore assemblies targeting
+	/// earlier versions of the CLR.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -59,8 +59,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This field looks like a candidate to be a nullable.")]
-	[Solution ("If possible change this field into a nullable, otherwise you can ignore the rule.")]
+	[Problem ("This field looks like it can be simplified using a nullable type.")]
+	[Solution ("Change the field's type to a nullable type or ignore the defect.")]
 	public class ConsiderConvertingFieldToNullableRule : Rule, ITypeRule {
 
 		public override void Initialize (IRunner runner)

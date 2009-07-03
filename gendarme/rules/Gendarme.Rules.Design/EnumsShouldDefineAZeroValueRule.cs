@@ -34,8 +34,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule ensure that every enumeration, that are not flags, contains a <c>0</c> 
-	/// value usable as the default value.
+	/// This rule ensures that every non-flags enumeration contains a <c>0</c> 
+	/// value. This is important because if a field is not explicitly initialized .NET
+	/// will zero-initialize it and, if the enum has no zero value, then it will be
+	/// initialized to an invalid value.
 	/// </summary>
 	/// <example>
 	/// Bad example:

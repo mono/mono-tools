@@ -36,9 +36,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule check for types that contains only static members and, if the assembly
-	/// targets the CLR version 2.0 or later, suggest to promote the type to a <c>static</c>
-	/// type. The rule will ignore assemblies targeting earlier versions of the CLR.
+	/// This rule checks for types that contain only static members and, if the assembly
+	/// targets the CLR version 2.0 or later, suggests that the type be made <c>static</c>.
+	/// The rule will ignore assemblies targeting earlier versions of the CLR.
 	/// </summary>
 	/// <example>
 	/// Bad example:

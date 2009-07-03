@@ -38,7 +38,7 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule checks for operators that are not overloaded in pairs. Some compilers, like
-	/// the C# compilers, forces you to implement some of the pairs, but other languages might
+	/// the C# compilers, require you to implement some of the pairs, but other languages might
 	/// not. The following pairs are checked:
 	/// <list>
 	/// <description>Addition and Substraction</description>
@@ -78,8 +78,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type should overload operators in symmetry (e.g. == and !=, + and -).")]
-	[Solution ("Add the missing operator and keep the type operators symmetrical.")]
+	[Problem ("This type should overload symetric operators together (e.g. == and !=, + and -).")]
+	[Solution ("Add the missing operator.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2226:OperatorsShouldHaveSymmetricalOverloads")]
 	public class EnsureSymmetryForOverloadedOperatorsRule : Rule, ITypeRule {
 

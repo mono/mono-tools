@@ -35,9 +35,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks if the operators add <c>+</c> and subtract <c>-</c> are overloaded or 
-	/// if a value type overrides <c>Object.Equals</c> and warns if the equals <c>==</c> 
-	/// operator is not overloaded.
+	/// This rule fires if a type overloads operator add <c>+</c>, or overloads operator subtract <c>-</c>,
+	/// or is a value type and overrides <c>Object.Equals</c>, but equals <c>==</c> is
+	/// not overloaded.
 	/// </summary>
 	/// <example>
 	/// Bad example (add/substract):
@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type is a value type and override the Equals method or overloads + and - operators without overloading the == operator.")]
+	[Problem ("This type is a value type and overrides the Equals method or it overloads + and - operators but does not overload the == operator.")]
 	[Solution ("Overload the == operator to match the results of the Equals method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1013:OverloadOperatorEqualsOnOverloadingAddAndSubtract")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2231:OverloadOperatorEqualsOnOverridingValueTypeEquals")]

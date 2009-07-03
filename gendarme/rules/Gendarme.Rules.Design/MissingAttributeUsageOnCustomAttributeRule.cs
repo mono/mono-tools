@@ -34,9 +34,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks that every custom attribute, types that inherit from 
-	/// <c>System.Attribute</c>, should be decorated with an <c>[AttributeUsage]</c> 
-	/// attribute to specify which kind of code members the custom attribute can be applied to.
+	/// This rule verifies that every custom attribute (i.e. types that inherit from 
+	/// <c>System.Attribute</c>) is decorated with an <c>[AttributeUsage]</c> 
+	/// attribute to specify which kind of code instances of that custom attribute can be applied to.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -61,7 +61,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This attribute does not specify on which items it can be used.")]
+	[Problem ("This attribute does not specify the items it can be used upon.")]
 	[Solution ("Specify [AttributeUsage] on this attribute type.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage")]
 	public class MissingAttributeUsageOnCustomAttributeRule : Rule, ITypeRule {

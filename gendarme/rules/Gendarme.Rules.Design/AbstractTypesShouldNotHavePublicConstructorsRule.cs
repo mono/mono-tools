@@ -33,10 +33,10 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule ensure that <c>abstract</c> types do not have <c>public</c> constructor 
-	/// since they cannot be instantied by user code. Changing the constructor(s) visibility
-	/// to <c>protected</c> keeps the type functionality identical and makes it clear that
-	/// the type is there to be inherited from.
+	/// This rule fires if an <c>abstract</c> type has a <c>public</c> constructor. This is
+	/// a bit misleading because the constructor can only be called by the constructor of
+	/// a derived type. To make the type's semantics clearer make the constructor
+	/// <c>protected</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -59,8 +59,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This abstract type provides public constructor(s).")]
-	[Solution ("Change constructor visibility to protected.")]
+	[Problem ("This abstract type defines public constructor(s).")]
+	[Solution ("Change the constructor access to protected.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
 	public class AbstractTypesShouldNotHavePublicConstructorsRule : Rule, ITypeRule {
 

@@ -37,9 +37,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule looks at each assembly to see if it contains a <c>[ComVisible]</c> attribute. 
+	/// This rule fires if an assembly does not contain a <c>[ComVisible]</c> attribute. 
 	/// Unless the assembly is designed with COM interoperability in mind it is better to declare
-	/// it entirely as non-COM visible, i.e. <c>[ComVisible (false)]</c>.
+	/// it as non-COM visible, i.e. <c>[ComVisible (false)]</c>.
 	/// </summary>
 	/// <example>
 	/// Good example:

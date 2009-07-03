@@ -34,9 +34,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for indexer properties that use more than one index on visible types.
-	/// Such indexers are often confusing to use (e.g. index orders) and are better 
-	/// represented by a method.
+	/// This rule fires if an externally visible type contains a property with a setter but
+	/// not a getter. This is confusing to users and can make it difficult to use shared
+	/// objects. Instead either add a getter or make the property a method.
 	/// </summary>
 	/// <example>
 	/// Bad examples:
@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains some properties that have only setters.")]
+	[Problem ("This type contains properties which only have setters.")]
 	[Solution ("Add a getter to the property or change the property into a method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1044:PropertiesShouldNotBeWriteOnly")]
 	public class AvoidPropertiesWithoutGetAccessorRule : Rule, ITypeRule {

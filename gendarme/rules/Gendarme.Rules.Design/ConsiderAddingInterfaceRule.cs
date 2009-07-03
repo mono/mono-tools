@@ -35,9 +35,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks if a type could declare it implements an interface.
-	/// Usually, adding the interface in the type declaration will make code
-	/// more reusable and easier to understand.
+	/// This rule fires if a type implements members which are declared in an
+	/// interface, but the type does not implement the interface. Implementing
+	/// the interface will normally make the type more reuseable and will help
+	/// clarify the type's semantics.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -68,8 +69,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type implements an interface that it does not declare to implement.")]
-	[Solution ("If the interface matches the semantics of the type, add it to the type.")]
+	[Problem ("This type implements an interface's members, but does not implement the interface.")]
+	[Solution ("If the semantics of the type's  members are compatible with the interface then inherit from the interface. Otherwise ignore the defect.")]
 	public class ConsiderAddingInterfaceRule : Rule, ITypeRule {
 
 		private bool reference_only = true;

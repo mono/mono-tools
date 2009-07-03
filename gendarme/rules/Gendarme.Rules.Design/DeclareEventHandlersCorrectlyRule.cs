@@ -35,14 +35,19 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: This rule needs to say why the signature needs to follow the .NET conventions.
+	// For example, a non-void return type is problematic because some of the return values
+	// may be thrown away if multiple delegates are attached to the event. And a missing
+	// or unconventional second argument may cause problems with visual designer tools.
+	// It may also make sense to use a higher severity for non-void return types.
+
 	/// <summary>
-	/// The rule inspects all events inside every type and verify if they all have correct
-	/// signatures.
+	// This rule verifies that all events declared within a type have correct signatures.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// // the second parameter, inheriting from System.EventArgs, is missing
+	/// // the second parameter (which should be System.EventArgs or a derived class) is missing
 	/// delegate void MyDelegate (int sender);
 	/// 
 	/// class Bad {
@@ -70,8 +75,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("The delegate which handles the event haven't the correct signature.")]
-	[Solution ("You should correct the signature, return type, parameter types or parameter names.")]
+	[Problem ("The event has an incorrect signature.")]
+	[Solution ("You should correct the return type, parameter types, or parameter names.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
 	public class DeclareEventHandlersCorrectlyRule : Rule, ITypeRule {
 		static IList<TypeReference> valid_event_handler_types = new List<TypeReference> ();

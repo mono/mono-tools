@@ -35,9 +35,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks if visible methods/properties are using XmlDocument, XPathDocument or XmlNode in their signature.
-	/// This reduces extensibility (e.g virtual XML data sources) as it ties your API with a specific in-memory implementation.
-	/// Prefer using abstractions such as IXPathNavigable, XmlReader, XmlWriter, or subtypes of XmlNode.
+	/// This rule fires if an externally visible method or property uses an XmlDocument, XPathDocument or XmlNode
+	/// argument. The problem with this is that it ties your API to a specific implementation so it is difficult to change
+	/// later. Instead use abstract types like IXPathNavigable, XmlReader, XmlWriter, or subtypes of XmlNode.
 	/// </summary>
 	/// <example>
 	/// Bad example (property):
@@ -81,8 +81,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
-	[Problem ("This visible method uses XmlDocument, XPathDocument or XmlNode in its signature. This reduces extensibility as it ties your API with a specific implementation.")]
-	[Solution ("Use an abstraction such as IXPathNavigable, XmlReader, XmlWriter, or a subtype of XmlNode instead.")]
+	[Problem ("This visible method uses XmlDocument, XPathDocument or XmlNode in its signature. This makes changing the implementation more difficult than it should be.")]
+	[Solution ("Use IXPathNavigable, XmlReader, XmlWriter, or a subtype of XmlNode instead.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes")]
 	public class PreferXmlAbstractionsRule : Rule, IMethodRule {
 

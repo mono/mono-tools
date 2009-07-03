@@ -38,10 +38,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: If five is the default then how do users change it? If they cannot change it
+	// why are we implying that they can?
+
 	/// <summary>
-	/// This rule warns when a namespace contains less than five (default) visible types
-	/// across all assemblies being analyzed (i.e. the assembly set).
-	/// The rules make special exceptions for:
+	/// This rule fires if a namespace contains less than five (default) visible types. Note
+	/// that this rule enumerates the types in all the assemblies being analyzed instead of
+	/// simply considering each assembly in turn.
+	/// The rule exempts:
 	/// <list>
 	/// <item><term>specialized namespaces</term><description>e.g. <c>*.Design</c>,
 	/// <c>*.Interop</c> and <c>*.Permissions</c></description></item>

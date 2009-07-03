@@ -37,10 +37,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for every finalizers are visible to family only (protected in C#) 
-	/// because otherwise they can be called from the user code. In C# and VB.NET this rule
-	/// is enforced by the compiler, but some languages (like IL) may not have such a 
-	/// restriction, thus making developer able to declare non-family finalizers.
+	/// This rule verifies that finalizers are only visible to the type's family (e.g. protected in C#).
+	/// If they are not family then they can be called from user code which could lead to
+	/// problems. Note that this restriction is enforced by the C# and VB.NET compilers
+	/// but other compilers may not do so.
 	/// </summary>
 	/// <example>
 	/// Bad example (IL):
@@ -80,8 +80,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("The finalizer for this type isn't protected (family) and is not callable only from the runtime.")]
-	[Solution ("Change finalizer visibility to protected (family).")]
+	[Problem ("The finalizer for this type isn't protected (family) and can therefore be called by user level code.")]
+	[Solution ("Change the finalizer visibility to protected (family).")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2221:FinalizersShouldBeProtected")]
 	public class FinalizersShouldBeProtectedRule : Rule, ITypeRule {
 

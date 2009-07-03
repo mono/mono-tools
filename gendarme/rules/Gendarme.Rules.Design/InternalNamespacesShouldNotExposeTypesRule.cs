@@ -38,7 +38,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for visible types that resides inside internal namespaces, i.e.
+	/// This rule checks for externally visible types that reside inside internal namespaces, i.e.
 	/// namespaces ending with <c>Internal</c> or <c>Impl</c>.
 	/// </summary>
 	/// <example>

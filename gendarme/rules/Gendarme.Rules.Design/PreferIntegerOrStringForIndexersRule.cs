@@ -35,10 +35,13 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: Is there a reason that the summary does not mention System.Object?
+
 	/// <summary>
-	/// This rule checks for indexer properties that use uncommon types as indexes.
-	/// Recommanded types includes <c>Int32</c>, <c>Int64</c> and <c>String</c>.
-	/// Other types are discouraged since they are generally better served using a method.
+	/// This rule checks for indexer properties which use unusual types as indexes.
+	/// Recommended types include <c>Int32</c>, <c>Int64</c> and <c>String</c>.
+	/// Using other types can be OK if the indexer is providing an abstraction onto a
+	/// logical data store, but this is often not the case.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -81,7 +84,7 @@ namespace Gendarme.Rules.Design {
 				case "System.Int32":
 				case "System.Int64":
 				case "System.String":
-				case "System.Object": // tolarable in some circumstances
+				case "System.Object": // tolerable in some circumstances
 					break;
 				default:
 					Runner.Report (parameter, Severity.Medium, Confidence.Total);

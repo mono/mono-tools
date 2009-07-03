@@ -36,12 +36,17 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: As of .NET 2.0 the Framework Design Guidelines recommend that ICloneable
+	// not be used because it is so poorly specified. See <http://blogs.msdn.com/brada/archive/2003/04/09/49935.aspx>
+	// for example. This rule should probably be replaced with a new rule which fires for
+	// types that implement ICloneable.
+	
 	/// <summary>
-	/// This rule warns every time you implement a <c>object Clone()</c> method without 
-	/// implementing the <c>System.ICloneable</c> interface. Either implement the interface 
-	/// or, if possible, change the return type to the type definition (since can avoid
-	/// unnecessary casts).
-	/// <list type="bullet"><description>Note: Make sure to document the behavior of your
+	/// This rule fires if you implement a <c>object Clone()</c> method without 
+	/// implementing the <c>System.ICloneable</c> interface. Either change the
+	/// method so that it returns a better type than System.Object or implement
+	/// ICloneable.
+	/// <list type="bullet"><description>Note: Be sure to document the behavior of your
 	/// Clone method since the framework itself is not very clear, or consistent, between 
 	/// shallow and deep cloning.</description></list>
 	/// </summary>
@@ -70,7 +75,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example (not returning object):
+	/// Good example (not returning System.Object):
 	/// <code>
 	/// public class MyClass {
 	///	public MyClass Clone ()
@@ -83,8 +88,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named UsingCloneWithoutImplementingICloneableRule</remarks>
 
-	[Problem ("This type provides a Clone() method returning System.Object but does not implement the ICloneable interface.")]
-	[Solution ("Implement the ICloneable interface or change the return type to this type.")]
+	[Problem ("This type provides a Clone() method which returns System.Object but does not implement the ICloneable interface.")]
+	[Solution ("Use a better return type or implement the ICloneable interface.")]
 	public class ImplementICloneableCorrectlyRule: Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

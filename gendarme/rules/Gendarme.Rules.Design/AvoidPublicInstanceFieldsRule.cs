@@ -33,10 +33,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: It'd be nice if this rule also fired for fields with public access and internal visibility. 
+	// This is a common and serious design error so it seems like it should be reported at
+	// least at low severity.
+
 	/// <summary>
-	/// This rule checks every type for externally visible fields. Using a property offers
-	/// much more future freedom to adjust the behavior and validations on a field value
-	/// without breaking binary compatibility.
+	/// This rule fires if a type contains externally visible fields. Instead use
+	/// a property which allows you to change the implementation without breaking
+	/// binary compatibility with other assemblies.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -63,8 +67,8 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named AvoidPublicInstanceFieldsRule.</remarks>
 
-	[Problem ("This type contains visible instance fields. A field should be a local implementation detail.")]
-	[Solution ("If possible change the field visibility to private or internal.")]
+	[Problem ("This type contains visible instance fields. A field should be an implementation detail and encapsulated within a property or method.")]
+	[Solution ("Use a property or method instead.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
 	public class AvoidVisibleFieldsRule : Rule, ITypeRule {
 

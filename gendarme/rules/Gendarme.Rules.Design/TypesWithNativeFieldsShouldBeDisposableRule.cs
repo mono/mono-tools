@@ -35,9 +35,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// The rule inspects all fields inside a type for it's use of specific native types, 
-	/// like <c>IntPtr</c>, <c>UIntPtr</c> and <c>HandleRef</c>. If used the rule warns if 
-	/// the type itself doesn't implement <c>System.IDisposable</c>.
+	/// This rule will fire if a type contains <c>IntPtr</c>, <c>UIntPtr</c>, or 
+	/// <c>HandleRef</c> fields but does not implement <c>System.IDisposable</c>.
 	/// </summary>
 	/// <example>
 	/// Bad examples:
@@ -69,7 +68,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 
 	[Problem ("This type contains native field(s) but doesn't implement IDisposable.")]
-	[Solution ("Implement IDisposable and free the native field(s) in it's Dispose method.")]
+	[Solution ("Implement IDisposable and free the native field(s) in the Dispose method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
 	public class TypesWithNativeFieldsShouldBeDisposableRule : Rule, ITypeRule {
 

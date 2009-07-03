@@ -34,9 +34,9 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule checks for method names that suggest they are providing similar 
-	/// functionalities to .NET events. When possible the method(s) should be replaced
-	/// with a real event. In the case that the methods are not using or prroviding 
-	/// events-like features it should be renamed since such names can confuse consumer 
+	/// functionality to .NET events. When possible the method(s) should be replaced
+	/// with a real event. If the methods are not using or providing 
+	/// event-like features then they should be renamed since such names can confuse consumers
 	/// about what the method is really doing.
 	/// </summary>
 	/// <example>
@@ -94,7 +94,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This method name suggest it could be replaced by an event.")]
+	[Problem ("This method's name suggests that it could be replaced by an event.")]
 	[Solution ("Replace the method(s) by events or rename the method to something less confusing.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
 	public class PreferEventsOverMethodsRule : Rule, IMethodRule {

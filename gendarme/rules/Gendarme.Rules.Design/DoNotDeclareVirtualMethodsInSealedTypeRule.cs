@@ -35,7 +35,7 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule ensure that <c>sealed</c> types (i.e. types that you can't inherit from) 
-	/// do not define any new <c>virtual</c> methods. Such methods would only be useful in
+	/// do not define new <c>virtual</c> methods. Such methods would only be useful in
 	/// sub-types. Note that some compilers, like C# and VB.NET compilers, do not allow you
 	/// to define such methods.
 	/// </summary>
@@ -63,8 +63,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This sealed type introduce new virtual methods.")]
-	[Solution ("Change the visibility to public or private to represent its true intended use.")]
+	[Problem ("This sealed type introduces new virtual methods.")]
+	[Solution ("Change the accessibility to public or private to represent its true intended use.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1048:DoNotDeclareVirtualMembersInSealedTypes")]
 	public class DoNotDeclareVirtualMethodsInSealedTypeRule : Rule, ITypeRule {
 

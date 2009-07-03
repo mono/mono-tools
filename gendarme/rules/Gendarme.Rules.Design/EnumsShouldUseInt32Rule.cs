@@ -33,10 +33,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: It would be really nice to explain why this is a problem. Presumably it is for
+	// compatibility with other .NET languages which may not support non-int enums...
+	// It might also be a good idea if it only fired for publicly visible enums.
+
 	/// <summary>
-	/// Enumaration types should avoid specifying a non-default storage type for their values, 
-	/// unless it is used and required for interoperability. In the later case non-CLS compliant 
-	/// types should be avoided to ensure the code can be reused by all CLS-compliant languages.
+	/// Enumaration types should avoid specifying a non-default storage type for their values 
+	/// unless it is required for interoperability (e.g. with native code). If you do use a non-default
+	/// type for the enum, and the enum is externally visible, then prefer the CLS-compliant
+	/// integral types: System.Byte, System.Int16, System.Int32, and System.Int64.
 	/// </summary>
 	/// <example>
 	/// Bad examples:
@@ -72,7 +77,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 
 	[Problem ("Unless required for interoperability this enumeration should use Int32 as its underling storage type.")]
-	[Solution ("Remove the extra type from the enumeration declaration (Int32 will be used as default).")]
+	[Solution ("Remove the base type from the enumeration declaration (it will then default to Int32).")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
 	public class EnumsShouldUseInt32Rule : Rule, ITypeRule {
 

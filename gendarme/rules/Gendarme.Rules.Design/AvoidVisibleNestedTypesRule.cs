@@ -36,9 +36,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for nested types that are externally visible. Such types are often
+	/// This rule checks for nested types which are externally visible. Such types are often
 	/// confused with namespaces which makes them more difficult to document and find by
-	/// developers. In most cases it is possible to do better without them.
+	/// developers. In most cases it is better to make these types private or to scope them
+	/// within a namespace instead of a type.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -74,7 +75,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This type is nested and visible outside the assembly. Nested types are often confused with namespaces.")]
+	[Problem ("This type is both nested and visible outside the assembly. Nested types are often confused with namespaces.")]
 	[Solution ("Change the nested type to be invisible outside the assembly or un-nest it.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
 	public class AvoidVisibleNestedTypesRule : Rule, ITypeRule {

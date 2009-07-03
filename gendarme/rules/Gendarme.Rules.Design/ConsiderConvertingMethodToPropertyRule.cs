@@ -35,10 +35,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: It might be worthwhile if this rule used some sort of simple heuristic
+	// to ignore large or slow methods.
+
 	/// <summary>
-	/// The rule looks for methods which definition looks quite similar to a property.
-	/// For example, methods beginning with <c>Is</c>, <c>Get</c> or <c>Set</c> are 
-	/// likely candidates to be promoted into properties.
+	/// This rule checks for methods whose definition looks similar to a property.
+	/// For example, methods beginning with <c>Is</c>, <c>Get</c> or <c>Set</c> may 
+	/// be better off as properties. But note that this should not be done if the method
+	/// takes a non-trivial amount of time to execute.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -69,7 +73,7 @@ namespace Gendarme.Rules.Design {
 	/// </example>
 
 	[Problem ("This method looks like a candidate to be a property.")]
-	[Solution ("If possible change this method into a property, otherwise you can ignore the rule.")]
+	[Solution ("Either make the method a property or ignore the defect.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
 	public class ConsiderConvertingMethodToPropertyRule : Rule, IMethodRule {
 

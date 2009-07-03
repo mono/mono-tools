@@ -37,10 +37,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule checks for types that either overrides the <c>Equals(object)</c> method 
-	/// without overriding <c>GetHashCode()</c> or overrides <c>GetHashCode</c> without
+	/// This rule checks for types that either override the <c>Equals(object)</c> method 
+	/// without overriding <c>GetHashCode()</c> or override <c>GetHashCode</c> without
 	/// overriding <c>Equals</c>. In order to work correctly types should always override
-	/// them in pair.
+	/// these together.
 	/// </summary>
 	/// <example>
 	/// Bad example (missing GetHashCode):
@@ -81,8 +81,8 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type only implements one of the Equals(Object) or GetHashCode() methods.")]
-	[Solution ("Implement the missing method.")]
+	[Problem ("This type only implements one of Equals(Object) and GetHashCode().")]
+	[Solution ("Implement the other method.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2218:OverrideGetHashCodeOnOverridingEquals")]
 	public class ImplementEqualsAndGetHashCodeInPairRule : Rule, ITypeRule {
 

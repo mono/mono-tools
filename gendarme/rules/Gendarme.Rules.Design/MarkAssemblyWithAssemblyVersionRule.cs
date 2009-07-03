@@ -37,10 +37,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule looks at each assembly to see if it contains a <c>[AssemblyVersion]</c>
+	/// This rule fires if an assembly does not contain a <c>[AssemblyVersion]</c>
 	/// attribute. Early and correct versioning of assemblies is easy and crucial for consumers
-	/// of your assemblies. Note that when adding the <c>[AssemblyVersion]</c> make sure that
-	/// it match with the <c>[AssemblyFileVersion]</c> attribute (if existing).
+	/// of your assemblies. Note that the <c>[AssemblyVersion]</c> should
+	/// match the <c>[AssemblyFileVersion]</c> attribute (if it exists).
 	/// </summary>
 	/// <example>
 	/// Good example:

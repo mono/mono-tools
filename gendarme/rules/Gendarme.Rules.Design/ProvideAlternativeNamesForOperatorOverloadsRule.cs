@@ -36,11 +36,13 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
+	// TODO: Shouldn't this only fire for externally visible operators?
+
 	/// <summary>
-	/// The rule ensure that all overloaded operators are also accessible used named 
+	/// The rule ensure that all overloaded operators are also accessible using named 
 	/// alternatives because some languages, like VB.NET, cannot use overloaded operators. 
 	/// For those languages named methods should be implemented that provide the same
-	/// functionality. This rule checks for a named alternative for each overloaded operator.
+	/// functionality. This rule verifies that a named alternative exists for each overloaded operator.
 	/// <list type="bullet">
 	/// <item><term>op_UnaryPlus</term><description>Plus</description></item>
 	/// <item><term>op_UnaryNegation</term><description>Negate</description></item>
@@ -106,7 +108,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains overloads for some operators but doesn't provide named alternatives.")]
+	[Problem ("This type contains overloaded operators but doesn't provide named alternatives.")]
 	[Solution ("Add named methods equivalent to the operators for language that do not support them (e.g. VB.NET).")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates")]
 	public class ProvideAlternativeNamesForOperatorOverloadsRule : Rule, ITypeRule {
