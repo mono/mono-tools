@@ -1,3 +1,8 @@
+2009-07-02  Jesse Jones  <jesjones@mindspring.com>
+
+	* AvoidExtensionMethodOnSystemObjectRule.cs: Edited 
+    the solution text.
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* AvoidExtensionMethodOnSystemObjectRule.cs: Fix AnalyzeModule so

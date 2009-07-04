@@ -68,7 +68,7 @@ namespace Gendarme.Rules.Design.Linq {
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
 	[Problem ("This method extends System.Object. This will not work for VB.NET consumer.")]
-	[Solution ("Use of more specialized type to extend.")]
+	[Solution ("Either extend a subclass of System.Object or ignore the defect.")]
 	public class AvoidExtensionMethodOnSystemObjectRule : Rule, IMethodRule {
 
 		public override void Initialize (IRunner runner)
