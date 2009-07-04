@@ -1,3 +1,7 @@
+2009-07-03  Jesse Jones  <jesjones@mindspring.com>
+
+	* *Rule.cs: Edited most of the rule descriptions.
+
 2008-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotExposeNestedGenericSignaturesRule.cs: New. Rule to check

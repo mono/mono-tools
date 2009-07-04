@@ -36,9 +36,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule checks for visible method parameters or return values that are exposing
-	/// nested generic types. Such types are harder to construct and should not be imposed
-	/// on the consumer of the API since simpler alternative generally exists.
+	/// This rule will fire if an externally visible method has a parameter or return type
+	/// whose type is a generic type which contains a generic type. For example, 
+	/// <c>List&lt;List&lt;int&gt;&gt;</c>. Such types are hard to construct and should
+	/// be avoided because simpler alternatives generally exist.
 	/// Since some language, like C#, have direct support for nullable types, i.e. 
 	/// <c>Nullable&lt;T&gt;</c> this specific case is ignored by the rule.
 	/// </summary>
@@ -64,7 +65,7 @@ namespace Gendarme.Rules.Design.Generic {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
-	[Problem ("This method expose a nested generic parameter or return value in its signature.")]
+	[Problem ("This method exposes a nested generic type in its signature.")]
 	[Solution ("Remove the nested generics to keep the visible API simple to use.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
 	public class DoNotExposeNestedGenericSignaturesRule : Rule, IMethodRule {

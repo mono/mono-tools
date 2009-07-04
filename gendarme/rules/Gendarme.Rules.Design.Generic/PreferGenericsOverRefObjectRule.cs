@@ -37,10 +37,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule looks at each parameter of every methods to find reference, <c>ref</c> or
-	/// <c>out</c> in C#, to an <c>System.Object</c>. When using the CLR 2 (and later) such
-	/// parameters can generally be rewritten using generics. This provides additional type
-	/// safety, reduce casts and makes the API easier to consume.
+	/// This rule fires if a method has a reference argument (<c>ref</c> or
+	/// <c>out</c> in C#) to System.Object. These methods can generally be
+	/// rewritten in .NET 2.0 using generics which provides type safety, eliminates
+	/// casts, and makes the API easier to consume.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -63,7 +63,7 @@ namespace Gendarme.Rules.Design.Generic {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("This method contains an object reference parameter that could be changed into a generic.")]
+	[Problem ("This method contains a reference parameter to System.Object which is often an indication that the code is not type safe.")]
 	[Solution ("Change the parameter to use a generic type where the caller will provide the type.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
 	public class PreferGenericsOverRefObjectRule : Rule, IMethodRule {

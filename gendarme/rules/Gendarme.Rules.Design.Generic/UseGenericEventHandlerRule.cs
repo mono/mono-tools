@@ -37,9 +37,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule checks for delegate definitions that are not required when using the
-	/// 2.0 (or later) .NET framework as it can be replaced by using  the generic-based
-	/// <c>System.EventHandler&lt;TEventArgs&gt;</c>.
+	/// This rule fires if an assembly targets .NET 2.0 or later and defines a delegate
+	/// which can be replaced by <c>System.EventHandler&lt;TEventArgs&gt;</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -59,8 +58,8 @@ namespace Gendarme.Rules.Design.Generic {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("This delegate definition is not needed with FX 2.0 and later runtimes.")]
-	[Solution ("Replace this delegate with a generic based EventHandler<TEventArgs>.")]
+	[Problem ("This delegate definition is not needed with .NET 2.0 and later runtimes.")]
+	[Solution ("Replace the delegate with System.EventHandler<TEventArgs>.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1003:UseGenericEventHandlerInstances")]
 	public class UseGenericEventHandlerRule : Rule, ITypeRule {
 

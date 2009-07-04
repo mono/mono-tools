@@ -36,8 +36,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule checks for types that implements non-generic IEnumerable interface but 
-	/// does not implement IEnumerable&lt;T&gt; interface. Implementing the generic version
+	/// This rule checks for types which implement the non-generic IEnumerable interface but 
+	/// not the IEnumerable&lt;T&gt; interface. Implementing the generic version
 	/// of IEnumerable avoids casts, and possibly boxing, when iterating the collection.
 	/// </summary>
 	/// <example>
@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Design.Generic {
 	/// </example>
 	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Design assembly.</remarks>
 
-	[Problem ("This type implements non-generic IEnumerable interface but does not implement IEnumerable<T> interface that will make your collection type-safe.")]
+	[Problem ("This type implements the non-generic IEnumerable interface but not IEnumerable<T> which would make your collection type-safe.")]
 	[Solution ("Implement one of generic collection interfaces such as IEnumerable<T>, ICollection<T> or IList<T>.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface")]
 	public class ImplementGenericCollectionInterfacesRule : Rule, ITypeRule {

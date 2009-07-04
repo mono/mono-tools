@@ -35,8 +35,11 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule checks for method that requires generic parameter types that are not used in
-	/// the method parameters. This results in API that are hard to understand by consumers.
+	/// This method will fire if a generic method does not use all of its generic type parameters
+	/// in the formal parameter list. This usually means that either the type parameter is not used at
+	/// all in which case it should be removed or that it's used only for the return type which
+	/// is problematic because that prevents the compiler from inferring the generic type 
+	/// when the method is called which is confusing to many developers.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -49,6 +52,7 @@ namespace Gendarme.Rules.Design.Generic {
 	///	
 	///	static void Main ()
 	///	{
+	///		// the compiler can't infer int so we need to supply it ourselves
 	///		Console.WriteLine (ToString&lt;int&gt; ());
 	///	}
 	/// }
@@ -72,8 +76,8 @@ namespace Gendarme.Rules.Design.Generic {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("The method parameters are not using all generic type parameters defined.")]
-	[Solution ("Not infering all generic typers in the method parameters can lead to confusing, hard to use, API definitions.")]
+	[Problem ("One or more generic type parameters are not used in the formal parameter list.")]
+	[Solution ("This prevents the compiler from inferring types when the method is used which results in hard to use API definitions.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
 	public class AvoidMethodWithUnusedGenericTypeRule : Rule, IMethodRule {
 
@@ -107,7 +111,7 @@ namespace Gendarme.Rules.Design.Generic {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// rule applis only if the method has generic type parameters
+			// rule applies only if the method has generic type parameters
 			if (!method.HasGenericParameters)
 				return RuleResult.DoesNotApply;
 
