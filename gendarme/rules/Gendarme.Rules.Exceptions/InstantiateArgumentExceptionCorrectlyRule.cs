@@ -40,11 +40,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule check that any <c>System.ArgumentException</c>, 
-	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c> or
-	/// <c>System.DuplicateWaitObjectException</c> exception created to ensure the order of
-	/// their parameters, in particular the position of <c>parameterName</c>, is correct.
-	/// This is a common mistake since the position is not consistent across all exceptions.
+	/// This rule will fire if the arguments to the <c>System.ArgumentException</c>, 
+	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c>,
+	/// and <c>System.DuplicateWaitObjectException</c> constructors are used incorrectly.
+	/// This is a common mistake because the position of the <c>parameterName</c> argument
+	/// is not consistent across these types.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -52,9 +52,11 @@ namespace Gendarme.Rules.Exceptions {
 	/// public void Show (string s)
 	/// {
 	///	if (s == null) {
+	///		// the first argument should be the parameter name
 	///		throw new ArgumentNullException ("string is null", "s");
 	///	}
 	///	if (s.Length == 0) {
+	///		// the second argument should be the parameter name
 	///		return new ArgumentException ("s", "string is empty");
 	///	}
 	///	Console.WriteLine (s);

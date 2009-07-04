@@ -37,10 +37,10 @@ using Gendarme.Rules.Exceptions.Impl;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule check method's catch block to see if they are throwing back the caught 
-	/// exception. Doing so would destroy the stack trace of the original exception. If you
-	/// need to (re-)throw the exception caught by the catch block, you should use <c>throw;</c>
-	/// instead of <c>throw ex;</c>.
+	/// This rule will fire if a catch handler throws the exception it caught. What it should
+	/// do instead is rethrow the original exception (e.g. use <c>throw</c> instead of
+	/// <c>throw ex</c>). This is helpful because rethrow preserves the stacktrace of the
+	/// original exception.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -68,8 +68,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.0 this rule was named  DontDestroyStackTraceRule.</remarks>
 
-	[Problem ("A catch block in the method throws back the caught exception which destroys the stack trace.")]
-	[Solution ("If you need to throw the exception caught by the catch block, use 'throw;' instead of 'throw ex;'")]
+	[Problem ("A catch block throws the exception it caught which destroys the original stack trace.")]
+	[Solution ("Use 'throw;' instead of 'throw ex;'")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2200:RethrowToPreserveStackDetails")]
 	public class DoNotDestroyStackTraceRule : Rule, IMethodRule {

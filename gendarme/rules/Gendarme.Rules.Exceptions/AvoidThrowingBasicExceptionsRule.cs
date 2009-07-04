@@ -31,9 +31,9 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule check for methods that create basic exceptions like <c>System.Exception</c>,
+	/// This rule checks for methods that create basic exceptions like <c>System.Exception</c>,
 	/// <c>System.ApplicationException</c> or <c>System.SystemException</c>. Those exceptions
-	/// do not provide enough information about an error condition to be helpful to the consumer
+	/// do not provide enough information about the error to be helpful to the consumer
 	/// of the library.
 	/// </summary>
 	/// <example>
@@ -63,7 +63,7 @@ namespace Gendarme.Rules.Exceptions {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method creates (and probably throws) an exception of Exception, ApplicationException or SystemException type.")]
-	[Solution ("Try to use more specific exception types. If none of existing types meet your needs, create custom exception class that inherits from System.Exception or any appropriate descendant of it.")]
+	[Solution ("Try to use a more specific exception type. If none of existing types meet your needs, create a custom exception class that inherits from System.Exception or any appropriate descendant of it.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class AvoidThrowingBasicExceptionsRule : NewExceptionsRule {
 

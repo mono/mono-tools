@@ -29,10 +29,10 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule check for methods that create reserved exceptions like 
-	/// <c>System.ExecutionEngineException</c>, <c>System.IndexOutOfRangeException</c>,
-	/// <c>NullReferenceException</c> or <c>System.OutOfMemoryException</c>. Those exceptions
-	/// should only be thrown by the .NET runtime.
+	/// This rule will fire if an <c>System.ExecutionEngineException</c>, <c>System.IndexOutOfRangeException</c>,
+	/// <c>NullReferenceException</c>, or <c>System.OutOfMemoryException</c> class is
+	/// instantiated. These exceptions are for use by the runtime and should not be thrown by
+	/// user code.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -60,8 +60,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException or OutOfMemoryException.")]
-	[Solution ("Select and create a better suited exception type, one that is not reserved by the runtime.")]
+	[Problem ("This method creates an ExecutionEngineException, IndexOutOfRangeException, NullReferenceException, or OutOfMemoryException.")]
+	[Solution ("Throw an exception which is not reserved by the runtime.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class DoNotThrowReservedExceptionRule : NewExceptionsRule {
 

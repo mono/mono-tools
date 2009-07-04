@@ -33,8 +33,12 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	// TODO: This rule will not work very well for assemblies without externally visible types.
+	// It might be worthwhile to record the problematic exceptions and report them during
+	// teardown only if an externally visible type was found in the assembly.
+
 	/// <summary>
-	/// This rule check for non visible exception types that derive directly from
+	/// This rule checks for non-visible exceptions which derive directly from
 	/// the most basic exceptions: <c>System.Exception</c>, <c>System.ApplicationException</c>
 	/// or <c>System.SystemException</c>. Those basic exceptions, being visible, will be the 
 	/// only information available to the API consumer - but do not contain enough data to be
@@ -63,8 +67,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This exception is not public and it's base class does not provide enough information to be useful.")]
-	[Solution ("Change type visibility to public or inherit from another exception.")]
+	[Problem ("This exception is not public and its base class does not provide enough information to be useful.")]
+	[Solution ("Change the exception's visibility to public, inherit from another exception, or ignore the defect.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
 	public class ExceptionShouldBeVisibleRule : Rule, ITypeRule {
 

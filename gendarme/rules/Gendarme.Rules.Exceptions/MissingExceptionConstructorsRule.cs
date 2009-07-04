@@ -34,10 +34,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
+	// TODO: It would be helpful to explain why the constructors should be present. For 
+	// example many exceptions should not be default constructed so users will naturally
+	// want to omit the default constructor and they need to know why the rule requires
+	// it so that they can judge whether to provide it or not.
+
 	/// <summary>
-	/// This rule check that any exceptions, i.e. types deriving from <c>System.Exception</c>, 
-	/// provide all the necessary constructors that can be expected from consumer or required 
-	/// by the runtime.
+	/// This rule will fire if an exception class does not provide the constructors required
+	/// by the runtime or by .NET programming conventions.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -74,8 +78,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("Not all required constructors for an exception type are present in this type.")]
-	[Solution ("Add the missing constructor(s) for this exception.")]
+	[Problem ("The exception does not provide all of the constructors required by the runtime or by .NET programming conventions.")]
+	[Solution ("Add the missing constructor(s).")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
 	public class MissingExceptionConstructorsRule : Rule, ITypeRule {
 

@@ -35,10 +35,12 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule is used for ensure that methods do not swallow the catched exceptions. 
-	/// If you decide catch a non-specific exception, you should take care, because you 
-	/// wont know exactly what went wrong. You should catch exceptions when you know why
-	/// an exception can be thrown, and you can take a decision based on the failure.
+	/// This rule will fire if a catch block catches <c>System.Exception</c> or
+	/// <c>System.SystemException</c> but does not rethrow the original
+	/// exception. This is problematic because you don't know what went wrong
+	/// so it's difficult to know that the error was handled correctly. It is better
+	/// to catch a more specific set of exceptions so that you do know what went
+	/// wrong and do know that it is handled correctly.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -76,8 +78,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.0 this rule was named DontSwallowErrorsCatchingNonspecificExceptionsRule.</remarks>
 
-	[Problem ("The method catch a non-specific exception. This will likely hide the original problem to the callers.")]
-	[Solution ("You can rethrow the original exception, to avoid destroying the stacktrace, or you can handle more specific exceptions.")]
+	[Problem ("This method catches a very general exception without rethrowing it. This is not safe to do in general and may mask problems that the caller should be made aware of.")]
+	[Solution ("Rethrow the original exception (which will preserve the stacktrace of the original error) or catch a more specific exception type.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 	public class DoNotSwallowErrorsCatchingNonSpecificExceptionsRule : Rule, IMethodRule {
 

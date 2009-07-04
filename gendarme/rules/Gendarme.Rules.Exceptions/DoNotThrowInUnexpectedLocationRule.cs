@@ -144,7 +144,7 @@ namespace Gendarme.Rules.Exceptions {
 
 	// http://msdn.microsoft.com/en-us/library/bb386039.aspx
 	[Problem ("A method throws an exception it should not.")]
-	[Solution ("Change the code so that it does not throw, throw a correct exception, or trap exceptions.")]
+	[Solution ("Change the code so that it does not throw, throws a legal exception, or traps exceptions.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class DoNotThrowInUnexpectedLocationRule : Rule, IMethodRule {

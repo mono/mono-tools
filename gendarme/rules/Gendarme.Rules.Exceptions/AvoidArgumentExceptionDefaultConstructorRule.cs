@@ -36,10 +36,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Exceptions {
 
 	/// <summary>
-	/// This rule check that any <c>System.ArgumentException</c>, 
-	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c> or
-	/// <c>System.DuplicateWaitObjectException</c> exception created are provided with some
-	/// useful information about the exception being throw, minimally the parameter name.
+	/// This rule checks that every <c>System.ArgumentException</c>, 
+	/// <c>System.ArgumentNullException</c>, <c>System.ArgumentOutOfRangeException</c>, or
+	/// <c>System.DuplicateWaitObjectException</c> exception created is provided with some
+	/// useful information about the exception being thrown, minimally the parameter name.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -70,8 +70,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method create an ArgumentException (or derived) but do not provide any useful information, like the argument, to it.")]
-	[Solution ("Provide more useful details when creating the specified exception.")]
+	[Problem ("This method creates an ArgumentException (or derived class) but does not supply any useful information, such as the argument name, to it.")]
+	[Solution ("Provide more information when creating the exception.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidArgumentExceptionDefaultConstructorRule : Rule, IMethodRule {
 
