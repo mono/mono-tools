@@ -37,9 +37,11 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Interoperability {
 
+	// TODO: QueryPerformanceFrequency can be replaced with StopWatch
+
 	/// <summary>
-	/// This rule warns the developer if certain external (P/Invoke) methods are being 
-	/// called in case they have managed alternatives provided by the .NET framework
+	/// This rule will fire if an external (P/Invoke) method is called but a managed
+	/// alternative is provided by the .NET framework.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -63,7 +65,7 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 
-	[Problem ("There is a potential managed API for some p/invoke declaration used inside this method.")]
+	[Problem ("There is a managed API which can be used instead of the p/invoke call.")]
 	[Solution ("Use the suggested managed alternative to replace your p/invoke call and remove its declaration.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2205:UseManagedEquivalentsOfWin32Api")]
 	public class UseManagedAlternativesToPInvokeRule : Rule, IMethodRule {

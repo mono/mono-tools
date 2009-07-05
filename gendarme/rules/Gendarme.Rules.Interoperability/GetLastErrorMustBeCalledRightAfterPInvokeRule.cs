@@ -42,8 +42,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	/// <summary>
-	/// <code>Marshal.GetLastWin32Error()</code>should be called directly after a P/Invoke call. 
-	/// Intermediate method calls, even managed, could overwrite the error code.
+	/// This rule will fire if <code>Marshal.GetLastWin32Error()</code> is called, but is
+	/// not called immediately after a P/Invoke. This is a problem because other methods,
+	/// even managed methods, may overwrite the error code.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -74,7 +75,7 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 
-	[Problem ("GetLastError() should be called immediately after this the P/Invoke call.")]
+	[Problem ("GetLastError() should be called immediately after the P/Invoke call.")]
 	[Solution ("Move the call to GetLastError just after the P/Invoke call.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1404:CallGetLastErrorImmediatelyAfterPInvoke")]

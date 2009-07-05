@@ -40,7 +40,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	/// <summary>
-	/// <code>Every delegate which is passed to native code must include an exception block which spans the entire method and has a catch clause with no condition.</code>
+	/// <code>Every delegate which is passed to native code must include an exception 
+	/// block which spans the entire method and has a catch all handler.</code>
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -64,7 +65,7 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 
-	[Problem ("Every delegate passed to native code must include an exception block which spans the entire method and has a catch clause with no condition.")]
+	[Problem ("Every delegate passed to native code must include an exception block which spans the entire method and has a catch all handler.")]
 	[Solution ("Surround the entire method body with a try/catch block.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule : Rule, IMethodRule {

@@ -39,11 +39,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	/// <summary>
-	/// This rule checks for any cast of <code>IntPtr</code> or <code>UIntPtr</code> into a
-	/// 32bits (or smaller) value. It will also check if memory read with <c>Marshal.ReadInt32</c>
-	/// and <c>Marshal.ReadInt64</c> methods are being casted into an <code>IntPtr</code> or 
-	/// <code>UIntPtr</code>. <code>IntPtr</code> are generally used to reference a  memory 
-	/// location and downcasting them to 32bits will make the code fail on 64bits CPU.
+	/// This rule checks for code which casts an <code>IntPtr</code> or <code>UIntPtr</code> into a
+	/// 32-bit (or smaller) value. It will also check if memory read with the <c>Marshal.ReadInt32</c>
+	/// and <c>Marshal.ReadInt64</c> methods is being cast into an <code>IntPtr</code> or 
+	/// <code>UIntPtr</code>. <code>IntPtr</code> is generally used to reference a memory 
+	/// location and downcasting them to 32-bits will make the code fail on 64-bit CPUs.
 	/// </summary>
 	/// <example>
 	/// Bad example (cast):
@@ -80,8 +80,8 @@ namespace Gendarme.Rules.Interoperability {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0 but was named DoNotCastIntPtrToInt32Rule before 2.2</remarks>
 
-	[Problem ("This method cast a [U]IntPtr to a 32 bits value and this won't work on 64 bits architectures.")]
-	[Solution ("You should always use 64 bits integers, signed or unsigned, when computing pointers.")]
+	[Problem ("This method casts a [U]IntPtr to a 32-bit value which won't work on 64-bit architectures.")]
+	[Solution ("You should always use 64 bits integers, signed or unsigned, when doing pointer math.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotAssumeIntPtrSizeRule : Rule, IMethodRule {
 

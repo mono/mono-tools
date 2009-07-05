@@ -34,12 +34,16 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
+	// TODO: Doesn't the bad example need a DllImport? Why is the good example
+	// specifying ".so" instead of letting mono figure out the extension in a portable
+	// way?
+
 	/// <summary>
 	/// This rule warns the developer if a <code>[MarshalAs]</code> attribute has not been 
-	/// specified for boolean parameters of a P/Invoke method. The size of boolean types vary
-	/// across language (e.g. 4 bytes for language treating it as an integer, 1 byte in C++ 
-	/// <c>bool</c>). By default the CLR will marshal <b>System.Boolean</b> as a 32 bits value 
-	/// (<c>UnmanagedType.Bool</c>) like the Win32 API <b>BOOL</b> use. But, for clarity, 
+	/// specified for boolean parameters of a P/Invoke method. The size of boolean types varies
+	/// across language (e.g. the C++ <c>bool</c> type is four bytes on some platforms and
+	/// one byte on others). By default the CLR will marshal <b>System.Boolean</b> as a 32 bit value 
+	/// (<c>UnmanagedType.Bool</c>) like the Win32 API <b>BOOL</b> uses. But, for clarity, 
 	/// you should always specify the correct value.
 	/// </summary>
 	/// <example>

@@ -55,8 +55,8 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 	
-	[Problem ("P/Invoke declarations should not be visible outside of the assembly.")]
-	[Solution ("Reduce the visibility of the p/invoke method and make sure its declared as static.")]
+	[Problem ("P/Invoke declarations should not be visible outside of their assembly.")]
+	[Solution ("Reduce the visibility of the p/invoke method and make sure it is declared as static.")]
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1401:PInvokesShouldNotBeVisible")]
 	public class PInvokeShouldNotBeVisibleRule : Rule, IMethodRule {
 

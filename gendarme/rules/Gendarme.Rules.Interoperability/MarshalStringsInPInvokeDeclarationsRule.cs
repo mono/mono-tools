@@ -33,11 +33,13 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Interoperability {
 
+	// TODO: The summary should say what the default charset is for mono (utf-8) and
+	// .NET (?).
+
 	/// <summary>
-	/// This rule warns the developer if the <code>CharSet</code> has not been specified 
-	/// for string parameters of P/Invoke method, unless if they are individually decorated
-	/// with <code>[MarshalAs]</code> attribute. This applies to any <code>System.String</code>
-	/// and <code>System.Text.StringBuilder</code> parameters.
+	/// This rule will fire if a P/Invoke method has System.String or System.Text.StringBuilder
+	/// arguments, and the DllImportAttribute does not specify the <code>CharSet</code>, 
+	/// and the string arguments are not decorated with <code>[MarshalAs]</code>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -58,8 +60,8 @@ namespace Gendarme.Rules.Interoperability {
 	/// </code>
 	/// </example>
 
-	[Problem ("Marshaling information for string types is incomplete and what is required may be different from what you expected the default to be.")]
-	[Solution ("Add [DllImport CharSet=] on the method or [MarshalAs] on the parameter(s)")]
+	[Problem ("Marshaling information for string types is missing and what is required may be different from what you expected the default to be.")]
+	[Solution ("Add [DllImport CharSet=] to the method or [MarshalAs] on the parameter(s)")]
 	[FxCopCompatibility ("Microsoft.Globalization", "CA2101:SpecifyMarshalingForPInvokeStringArguments")]
 	public class MarshalStringsInPInvokeDeclarationsRule : Rule, IMethodRule {
 
