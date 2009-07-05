@@ -37,14 +37,16 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
+	// TODO: The summary says that the threshold can be configured. Is this true? If so how?
+
 	/// <summary>
-	/// This rule checks every type to check for lack of cohesion between the fields and the methods. Low cohesion is often
-	/// a sign that a type is doing too many, different an unrelated things. The cohesion score is given for each defect 
+	/// This rule checks every type for lack of cohesion between the fields and the methods. Low cohesion is often
+	/// a sign that a type is doing too many, different and unrelated things. The cohesion score is given for each defect 
 	/// (higher is better) and the success threshold can be configured. 
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("The methods in this class lacks cohesion (higher score is better). This leads to code harder to understand and maintain.")]
+	[Problem ("The methods in this class lack cohesion (a higher score is better). This leads to code which is harder to understand and maintain.")]
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule {
 

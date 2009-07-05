@@ -35,15 +35,17 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
+	// TODO: Afaict it is not possible to configure the MaximumDepth or CountExternalDepth
+	// properties.
+
 	/// <summary>
-	/// This rule checks every type to see how deep is it's inheritance tree inside
-	/// the analyzed assembly set. By default (configurable) the rule will warn if the
-	/// depth is greater than four levels. Optionally (configurable) it can include any
-	/// resolvable assembly (out of the analyzed assembly set) in the check.
+	/// This rule will fire if a type has (by default) more than four base classes defined
+	/// within the assembly set being analyzed. Optionally it will also count base 
+	/// classes defined outside the assembly set.
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This type inheritance tree is more than four levels deep.")]
+	[Problem ("This type has more than four base classes.")]
 	[Solution ("Refactor your class hierarchy to reduce its depth. Consider using extension methods to extend existing types.")]
 	[FxCopCompatibility ("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 	public class AvoidDeepInheritanceTreeRule : Rule, ITypeRule {

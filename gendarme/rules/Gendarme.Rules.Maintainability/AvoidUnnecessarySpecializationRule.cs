@@ -40,10 +40,10 @@ namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
 	/// This rule checks methods for over specialized parameters - i.e. parameter types
-	/// that are unnecessarily specialized with respect to what the method needs to do
-	/// its job. This often leads to reduced reusability potential of the method. 
-	/// The rule will suggest the minimal type, or interface, required for the method to
-	/// work.
+	/// that are unnecessarily specialized with respect to what the method needs to 
+	/// perform its job. This often impairs the reusability of the method. If a problem
+	/// is found the rule will suggest the most general type, or interface, required for the
+	/// method to work.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -79,8 +79,8 @@ namespace Gendarme.Rules.Maintainability {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method has a parameter whose type is more specialized than necessary. It can be harder to reuse and/or extend the method in derived types.")]
-	[Solution ("Replace parameter type with the least specialized type necessary, or make use of the specifics of the actual parameter type.")]
+	[Problem ("This method has a parameter whose type is more specialized than necessary. This can make it difficult to reuse the method in other contexts.")]
+	[Solution ("Replace the parameter type with the most general type which will work or make use of the specifics of the formal parameter type.")]
 	public class AvoidUnnecessarySpecializationRule : Rule, IMethodRule {
 
 		private StackEntryAnalysis sea;
