@@ -42,7 +42,7 @@ namespace Gendarme.Rules.Design {
 	// It may also make sense to use a higher severity for non-void return types.
 
 	/// <summary>
-	// This rule verifies that all events declared within a type have correct signatures.
+	/// This rule verifies that all events declared within a type have correct signatures.
 	/// </summary>
 	/// <example>
 	/// Bad example:
