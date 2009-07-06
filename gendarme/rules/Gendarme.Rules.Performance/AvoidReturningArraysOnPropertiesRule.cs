@@ -33,11 +33,16 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule check properties that returns arrays. Such properties can be dangerous, 
-	/// because the caller doesn't know whether it access the original (internal) array of
-	/// the instance or if it gets a copy (clone) of the original. A solution is to turn
-	/// such properties into methods and always return a copy of the array. Another is to
-	/// use a proerty that returns a read-only collection.
+	/// This rule check for properties which return arrays. This can be a problem because
+	/// properties are supposed to execute very quickly so it's likely that this property
+	/// is returning a reference to the internal state of the object. This means that
+	/// the caller can change the object's internal state via a back-door channel which
+	/// is usually a very bad thing and it means that the array's contents may change
+	/// unexpectedly if the caller holds onto the array.
+	///
+	/// The preferred approach is to either return a read-only collection or to change
+	/// the property to a method and return a copy of the array (it's important to use
+	/// a method so that callers are not misled about the performance of the property).
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -52,6 +57,7 @@ namespace Gendarme.Rules.Performance {
 	/// public byte[] Bar {
 	///	get {
 	///		// return a copy of the instance's data
+	///		// (this is bad because users expect properties to execute quickly)
 	///		return (byte[]) bar.Clone ();
 	///	}
 	/// }
@@ -73,7 +79,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 
 	[Problem ("By convention properties should not return arrays.")]
-	[Solution ("Return a read-only collection or replace the property by a method.")]
+	[Solution ("Return a read-only collection or replace the property by a method and return a copy of the array.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
 	public class AvoidReturningArraysOnPropertiesRule : Rule, IMethodRule {
 		

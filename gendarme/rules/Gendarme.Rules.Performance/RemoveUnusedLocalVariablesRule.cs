@@ -39,7 +39,7 @@ namespace Gendarme.Rules.Performance {
 
 	/// <summary>
 	/// This rule looks for unused local variables inside methods. This can leads to larger 
-	/// code (IL) size and longer JIT time, but note that some compiler while optimizing 
+	/// code (IL) size and longer JIT time, but note that some optimizing compilers
 	/// can remove the locals so they won't be reported even if you can still see them in 
 	/// the source code. This could also be a typo in the source were a value is assigned
 	/// to the wrong variable.
@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Performance {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This methods contains unused local variables.")]
-	[Solution ("Remove unused variables to reduce size of methods.")]
+	[Solution ("Remove unused variables to reduce the method's size.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1804:RemoveUnusedLocals")]
 	public class RemoveUnusedLocalVariablesRule : Rule, IMethodRule {
 

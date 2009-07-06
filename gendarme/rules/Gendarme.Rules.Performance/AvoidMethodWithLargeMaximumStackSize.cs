@@ -37,9 +37,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule warns when a method has a large maximum stack size (default is
+	/// This rule fires if a method has a large maximum stack size (default is
 	/// 100). Having a large maximum stack size makes it hard to generate code that 
-	/// perform well and, likely, makes the code harder to understand.
+	/// performs well and, likely, makes the code harder to understand.
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 

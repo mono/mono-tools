@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Performance {
 	/// <summary>
 	/// This rule checks for methods that are using the literal <c>""</c> instead of the
 	/// <c>String.Empty</c> field. You'll get slighly better performance by using 
-	/// <c>String.Empty</c>. Note that in some case, e.g. in a <c>switch/case</c> statement,
+	/// <c>String.Empty</c>. Note that in some cases, e.g. in a <c>switch/case</c> statement,
 	/// you cannot use a field, so <c>""</c> must be used instead of <c>String.Empty</c>.
 	/// </summary>
 	/// <example>
@@ -57,7 +57,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 
 	[Problem ("The method uses literal \"\" instead of String.Empty.")]
-	[Solution ("Change the empty string literal for String.Empty.")]
+	[Solution ("Replace the empty string literal with String.Empty.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseStringEmptyRule : Rule, IMethodRule {
 

@@ -48,8 +48,9 @@ namespace Gendarme.Rules.Performance {
 	/// <summary>
 	/// This rule detects when some methods, like <c>Clone()</c>, <c>Substring(0)</c>, 
 	/// <c>ToString()</c> or <c>ToString(IFormatProvider)</c>, are being called on a 
-	/// string instance. Since every case returns the exact same reference the extra 
-	/// call(s) only slow downs performance.
+	/// string instance. Since these calls all return the original string they don't do anything
+	/// useful and should be carefully reviewed to see if they are working as intended and,
+	/// if they are, the method call can be removed.
 	/// </summary>
 	/// <example>
 	/// Bad example:

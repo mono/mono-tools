@@ -36,13 +36,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	// TODO: Can users actually change the default? What is a "calculated field"?
+
 	/// <summary>
-	/// This rule warns when a structure is larger than a a maximum value (default to
-	/// 16 bytes). Large structure can cause performance problems since they are value types
-	/// and as such are copied by copying the whole value (size dependent) while reference 
-	/// types can be copied by only copying its reference (constant size). If the structure 
+	/// This rule will fire if a value type (struct in C#) is larger than a maximum value
+	/// (16 bytes by default). This is a problem because, unlike reference types, value
+	/// types are bitwise-copied whenever they are assigned to a variable or passed to
+	/// a method. If the type 
 	/// cannot be reduced in size (e.g. by removing calculated fields) then it should be 
-	/// turned into a class.
+	/// turned into a reference type (class in C#).
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -62,7 +64,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This structure is larger than the recommanded size (16 bytes) and this can degrade performance.")]
+	[Problem ("This structure is larger than the recommended size (16 bytes) which can degrade performance.")]
 	[Solution ("Try to reduce the struct size or change it into a class.")]
 	public class AvoidLargeStructureRule : Rule, ITypeRule {
 

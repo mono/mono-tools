@@ -38,8 +38,8 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule checks each method to look for a complex cast operation (e.g. a <c>as</c>
-	/// with a <c>null</c> check) that could be simplified using the <c>is</c> operator 
+	/// This rule looks for complex cast operations (e.g. a <c>as</c>
+	/// with a <c>null</c> check) that can be simplified using the <c>is</c> operator 
 	/// (C# syntax). Note: in some case a compiler, like [g]mcs, can optimize the code and
 	/// generate IL identical to a <c>is</c> operator. In this case the rule will not report 
 	/// an error even if you could see one while looking the at source code.
@@ -58,7 +58,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("The method should use the \"is\" operator and avoid the cast and compare to null.")]
+	[Problem ("The method should use the \"is\" operator and avoid the cast and comparison to null.")]
 	[Solution ("Replace the cast and compare to null with the simpler \"is\" operator.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseIsOperatorRule : Rule, IMethodRule {

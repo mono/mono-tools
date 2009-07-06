@@ -40,12 +40,32 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	// TODO: This is a nice rule, but it's fairly often that people do want to ignore return
+	// values (e.g. from List.Remove) and it's not at all clear to a beginner how best to
+	// do so. You can't cast to void as you can in C and C++ and you can't assign to an
+	// unused local because the compiler will complain. The best approach seems to be
+	// to create a little type like so:
+//	internal static class Unused
+//	{
+//		public static object Value
+//		{
+//			set {}
+//		}
+//	}
+
+	// TODO: Why is the first issue that the summary brings up the expense of allocating
+	// the return value? Maybe this is a problem if the return value is never used but surely
+	// it is a second tier concern. It seems to me that the primary benefit of this rule is
+	// that it points out places where you may be ignoring results without realizing it and
+	// (if you use something like the Unused struct above) you can make it clear to readers
+	// of the code that you are deliberately ignoring the return value.
+
 	/// <summary>
-	/// This rule detects when some code doesn't use the return value of a method call. 
+	/// This rule fires if the result of a method call is not used.
 	/// Since any returned object potentially requires memory allocations this impacts 
 	/// performance. Furthermore this often indicates that the code might not be doing 
-	/// what is expected. This is seen frequently on <c>string</c> where people forgets 
-	/// their immutability. There are some special cases, e.g. <c>StringBuilder</c>, where 
+	/// what is expected. This is seen frequently on <c>string</c> where people forget
+	/// that string is an immutable type. There are some special cases, e.g. <c>StringBuilder</c>, where 
 	/// some methods returns the current instance (to chain calls). The rule will ignore 
 	/// those well known cases. 
 	/// </summary>
@@ -55,8 +75,8 @@ namespace Gendarme.Rules.Performance {
 	/// public void GetName ()
 	/// {
 	///	string name = Console.ReadLine ();
-	///	// a new trimmed string is created by never assigned to anything
-	///	// but name itself is unchanged
+	///	// a new trimmed string is created but never assigned to anything
+	///	// and name itself is unchanged
 	///	name.Trim ();
 	///	Console.WriteLine ("Name: {0}", name);
 	/// }
@@ -74,8 +94,8 @@ namespace Gendarme.Rules.Performance {
 	/// </code>
 	/// </example>
 
-	[Problem ("The method ignores the result value from the specified call.")]
-	[Solution ("You shouldn't ignore the result value.")]
+	[Problem ("The method ignores the result value from a method call.")]
+	[Solution ("Don't ignore the result value.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults")]
 	public class DoNotIgnoreMethodResultRule : Rule, IMethodRule {

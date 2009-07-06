@@ -43,8 +43,8 @@ namespace Gendarme.Rules.Performance {
 	/// This rule checks all private fields inside each type to see if some of them are not
 	/// being used. This could be a leftover from debugging or testing code or a more 
 	/// serious typo where a wrong field is being used. In any case this makes the type bigger
-	/// than it needs to be and this can affect performance when a large number of instances
-	/// exists.
+	/// than it needs to be which can affect performance when a large number of instances
+	/// exist.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -83,7 +83,7 @@ namespace Gendarme.Rules.Performance {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains private fields that seems unused.")]
+	[Problem ("This type contains private fields which seem to be unused.")]
 	[Solution ("Remove unused fields to reduce the memory required by the type or correct the use of the field.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]

@@ -38,10 +38,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule will check for all internal types and look if they are being used inside the
-	/// assembly. Such types are often leftover (dead code) or debugging/testing code and is
-	/// not required. However in some case the types might by needed, e.g. when accessed thru
-	/// reflection or if the <c>[InternalsVisibleTo]</c> attribute is used on the assembly.
+	/// This rule will fire if a type is only visible within its assembly, can be instantiated, but 
+	/// is not instantiated. Such types are often leftover (dead code) or are debugging/testing
+	/// code and not required. However in some case the types might by needed, e.g. when 
+	/// accessed thru reflection or if the <c>[InternalsVisibleTo]</c> attribute is used on the
+	/// assembly.
 	/// </summary>
 	/// <example>
 	/// Bad example:

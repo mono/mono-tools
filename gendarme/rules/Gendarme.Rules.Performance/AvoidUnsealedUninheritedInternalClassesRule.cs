@@ -34,9 +34,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// Since a JIT is able to apply more optimization to <c>sealed</c> types this rule checks
-	/// for non-visible (outside the current assembly) and non-sealed types to find the ones 
-	/// that no other types inherit from.
+	/// This rule will fire for classes which are internal to the assembly and have no derived
+	/// classes, but are not <c>sealed</c>. Sealing the type clarifies the type hierarchy and
+	/// allows the compiler/JIT to perform optimizations such as eliding virtual method calls.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -64,7 +64,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0 and, before 2.2, was named AvoidUnsealedUninheritedInternalClassesRule</remarks>
 
-	[Problem ("Due to performance issues, types which are not visible outside of the assembly and which have no inherited types within the assembly should be sealed.")]
+	[Problem ("Due to performance issues, types which are not visible outside of the assembly and which have no derived types should be sealed.")]
 	[Solution ("You should seal this type, unless you plan to inherit from this type in the near-future.")]
 	public class AvoidUnsealedUninheritedInternalTypeRule : Rule, ITypeRule {
 

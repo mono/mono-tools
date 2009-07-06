@@ -39,10 +39,11 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule check methods that unbox several time the same value type. Since each unbox
-	/// operation is costly, as it involves a copy, the code should be rewritten to minimize
-	/// unbox operations. E.g. using a local variable of the right value type should remove
-	/// need for more than one unbox instruction per variable.
+	/// This rule checks methods which unbox the same value type multiple times (i.e. the
+	/// value is copied from the heap into the stack). Because the copy is relatively expensive, 
+	/// the code should be rewritten to minimize unboxes. For example, using a local variable 
+	/// of the right value type should remove the need for more than one unbox instruction
+	/// per variable.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -85,8 +86,8 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This method unbox (convert from object to a value type) several times the same variable.")]
-	[Solution ("Cast the variable, one time, into a temporary variable and use it afterward.")]
+	[Problem ("This method unboxes (converts from object to a value type) the same value multiple times.")]
+	[Solution ("Cast the variable, once, into a temporary variable and use the temporary.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidUnneededUnboxingRule : Rule, IMethodRule {
 

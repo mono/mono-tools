@@ -37,11 +37,15 @@ using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
+
+	// TODO: The good example, at least, should be rewritten to use the Dispose pattern
+	// (i.e. it should use a Dispose(bool) method.
 	
 	/// <summary>
-	/// This rule catches a common problem when a type has a finalizer (called a destructor in C#)
-	/// and implements <c>System.IDisposable</c>. In this case the <c>Dispose</c> method should 
-	/// call <c>System.GC.SuppressFinalize</c> to avoid the finalizer to be, needlessly, called.
+	/// This rule will fire if a type implements <c>System.IDisposable</c> and has a finalizer
+	/// (called a destructor in C#), but the Dispose method does not call <c>System.GC.SuppressFinalize</c>.
+	/// Failing to do this should not cause properly written code to fail, but it does place a non-trivial
+	/// amount of extra pressure on the garbage collector and on the finalizer thread.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -86,8 +90,8 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named IDisposableWithDestructorWithoutSuppressFinalizeRule</remarks>
 
-	[Problem ("The type has a finalizer and implements IDisposable. However it doesn't call System.GC.SuppressFinalize inside Dispose.")]
-	[Solution ("Add a call to GC.SuppressFinalize inside your Dispose method.s")]
+	[Problem ("The type has a finalizer and implements IDisposable, but Dispose does not call System.GC.SuppressFinalize.")]
+	[Solution ("Add a call to GC.SuppressFinalize inside your Dispose method.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseSuppressFinalizeOnIDisposableTypeWithFinalizerRule : Rule, ITypeRule {
 

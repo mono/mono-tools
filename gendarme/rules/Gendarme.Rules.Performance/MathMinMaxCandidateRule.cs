@@ -41,9 +41,10 @@ namespace Gendarme.Rules.Performance {
 	// suggestion from https://bugzilla.novell.com/show_bug.cgi?id=373269
 
 	/// <summary>
-	/// This rule checks methods that seems to include code duplicating <c>Math.Min</c> or 
-	/// <c>Math.Max</c> functionality. The JIT can inline those methods and provide better 
-	/// performance compared to custom, inline, implementations.
+	/// This rule checks methods for code which seems to duplicate <c>Math.Min</c> or 
+	/// <c>Math.Max</c>. The JIT can inline these methods and generate
+	/// better code for, at least some types, than it can for a custom inline
+	/// implementation.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -60,7 +61,7 @@ namespace Gendarme.Rules.Performance {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method seems to include code duplicating Math.Min or Math.Max functionality.")]
-	[Solution ("The JIT can inline the Math.Min and Math.Max methods which provides better performance compared to custom, inline, implementations.")]
+	[Solution ("The JIT can (sometimes) generate better code for Math.Min and Math.Max methods than it can for hand-written versions.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class MathMinMaxCandidateRule : Rule, IMethodRule {
 

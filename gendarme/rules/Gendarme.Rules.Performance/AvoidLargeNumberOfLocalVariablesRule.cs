@@ -36,15 +36,17 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	// TODO: Can users change the default?
+
 	/// <summary>
 	/// This rule warns when the number of local variables exceed a maximum value (default is
-	/// 64). Having a huge amount of local variables makes it hard to generate code that 
-	/// perform well and, likely, makes the code harder to understand.
+	/// 64). Having a large amount of local variables makes it hard to generate code that 
+	/// performs well and, likely, makes the code harder to understand.
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("The number of local variables is too large to allow the JIT to properly allocate registers.")]
-	[Solution ("Refactor your code to reduce the number of variables or split the variables into several methods.")]
+	[Solution ("Refactor your code to reduce the number of variables or split the method into several methods.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1809:AvoidExcessiveLocals")]
 	public class AvoidLargeNumberOfLocalVariablesRule : Rule, IMethodRule {
 

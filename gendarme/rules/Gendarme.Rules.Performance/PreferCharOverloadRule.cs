@@ -40,9 +40,16 @@ namespace Gendarme.Rules.Performance {
 
 	// rule request from
 	// https://bugzilla.novell.com/show_bug.cgi?id=406889
+	
+	// TODO: The summary is not as clear as it could be: a lot of people are not
+	// going to know what an ordinal comparison is in this context and it's not
+	// entirely clear what .NET 4.0 is actually changing. It would probably be better
+	// to explain what the rule is looking for, why using char is better (performance)
+	// and then follow up with a second paragraph that points out the subtle differences
+	// between using char and string arguments pre .NET 4.0.
 
 	/// <summary>
-	/// This rule looks for calls into <c>String</c> methods that use <b>String</b>
+	/// This rule looks for calls to <c>String</c> methods that use <b>String</b>
 	/// parameters when a <c>Char</c> parameter could have been used. Using the
 	/// <c>Char</c>-based method overload (ordinal comparison) is faster than the 
 	/// <c>String</c>-based one (culture-sensitive comparison). 
@@ -70,8 +77,8 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
-	[Problem ("This code is calling string-based overload when char-based overload could be used.")]
-	[Solution ("Replace the single-sized string parameters with chararacter parameters.")]
+	[Problem ("This code is calling a string-based overload when a char-based overload could be used.")]
+	[Solution ("Replace the string parameters with chararacter parameters.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class PreferCharOverloadRule : Rule, IMethodRule {
 

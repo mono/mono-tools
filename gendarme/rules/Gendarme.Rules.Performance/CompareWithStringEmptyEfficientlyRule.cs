@@ -39,10 +39,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule will check the comparison of a string variable with <c>""</c> or 
-	/// <c>String.Empty</c>. This promote the use of the <c>String.Length</c> property. 
-	/// Another way to check for an empty string (and a null one at the same time) is available
-	/// since the version 2.0 of the framework by using the static method 
+	/// This rule will fire if a string is compared to <c>""</c> or <c>String.Empty</c>.
+	/// Instead use a <c>String.Length</c> test which should be a bit faster. Another
+	/// possibility (with .Net 2.0) is to use the static <c>String.IsNullOrEmpty</c> method.
 	/// <c>String.IsNullOrEmpty</c>.
 	/// </summary>
 	/// <example>

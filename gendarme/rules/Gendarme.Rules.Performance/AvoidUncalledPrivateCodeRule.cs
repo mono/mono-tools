@@ -38,8 +38,8 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule will check for non externally visible methods that are never called. 
-	/// The rule will warn you if a private method isn't called in it's declaring type or 
+	/// This rule will check for internally visible methods which are never called. 
+	/// The rule will warn you if a private method isn't called in its declaring type or 
 	/// if an internal method doesn't have any callers in the assembly or isn't invoked by
 	/// the runtime or a delegate.
 	/// </summary>
@@ -89,7 +89,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 
 	[Problem ("This private or internal (assembly-level) member does not have callers in the assembly, is not invoked by the common language runtime, and is not invoked by a delegate.")]
-	[Solution ("Remove the non-callable code or add the code that calls it.")]
+	[Solution ("Remove the unused code or add code to call it.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 	public class AvoidUncalledPrivateCodeRule : Rule, IMethodRule {
 

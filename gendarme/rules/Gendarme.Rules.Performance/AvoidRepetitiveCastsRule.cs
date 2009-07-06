@@ -41,9 +41,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule warns multiple casts are done on the same value, for the same type.
+	/// This rule fires if multiple casts are done on the same value, for the same type.
 	/// Casts are expensive so reducing them, by changing the logic or caching the 
-	/// casted value, can help performance.
+	/// result, can help performance.
 	/// </summary>
 	/// <example>
 	/// Bad example:

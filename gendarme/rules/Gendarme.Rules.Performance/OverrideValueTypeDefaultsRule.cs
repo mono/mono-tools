@@ -40,7 +40,8 @@ namespace Gendarme.Rules.Performance {
 	/// This rule checks all value types, except enumerations, to see if they use the default 
 	/// implementation of <c>Equals(object)</c> and <c>GetHashCode()</c> methods. While 
 	/// <c>ValueType</c> implementations work for any value type they do so at the expense of
-	/// performance (since it must reflect all fields). You can easily override both methods 
+	/// performance (the default implementation uses reflection to access fields). You can easily 
+	/// override both methods 
 	/// with much faster code since you know all meaningful fields inside your structure. 
 	/// At the same time you should also provide, if your language allows it, operator overloads 
 	/// for equality (<c>op_Equality</c>, <c>==</c>) and inequality (<c>op_Inequality</c>, 
@@ -88,7 +89,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This type does not override the default ValueType implementation of Equals(object) and GetHashCode() which lacks performance due to their generalized design.")]
+	[Problem ("This type does not override the default ValueType implementation of Equals(object) and GetHashCode() which are quite slow.")]
 	[Solution ("To avoid performance penalities of the default implementations you should override, or implement, the specified methods.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]
 	public class OverrideValueTypeDefaultsRule : Rule, ITypeRule {

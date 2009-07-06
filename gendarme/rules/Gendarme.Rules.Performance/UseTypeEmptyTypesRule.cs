@@ -39,9 +39,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule looks for methods that creates an empty (zero sized) array of <c>System.Type</c>.
+	/// This rule fires if a zero length array of <c>System.Type</c> is created.
 	/// This value is so often required by the framework API that the <c>System.Type</c> includes 
-	/// a <c>EmptyTypes</c> field. Using this field avoids the memory allocation (and GC tracking)
+	/// an <c>EmptyTypes</c> field. Using this field avoids the memory allocation (and GC tracking)
 	/// of your own array.
 	/// </summary>
 	/// <example>
@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Performance {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("The method creates an empty System.Type array instead of using Type.EmptyTypes.")]
-	[Solution ("Change the array creation for Type.EmptyTypes.")]
+	[Solution ("Use Type.EmptyTypes instead of creating your own array.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseTypeEmptyTypesRule : Rule, IMethodRule {
 

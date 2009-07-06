@@ -43,11 +43,10 @@ namespace Gendarme.Rules.Performance {
 	// FI: Finalizer only nulls fields (FI_FINALIZER_ONLY_NULLS_FIELDS)
 
 	/// <summary>
-	/// This rule looks for types that have empty finalizer (a.k.a. destructor in C# or 
-	/// <c>Finalize</c> method). Finalizer that simply nullify fields are considered as
-	/// empty since this does not help the garbage collection. You should remove the empty 
-	/// finalizer to reduce the GC involvement (and get better performance) when the object 
-	/// instances are freed.
+	/// This rule looks for types that have an empty finalizer (a.k.a. destructor in C# or 
+	/// <c>Finalize</c> method). Finalizers that simply set fields to null are considered to be
+	/// empty because this does not help the garbage collection. You should remove the empty 
+	/// finalizer to alleviate pressure on the garbage collector and finalizer thread.
 	/// </summary>
 	/// <example>
 	/// Bad example (empty):
@@ -60,7 +59,7 @@ namespace Gendarme.Rules.Performance {
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Bad example (only nullify fields):
+	/// Bad example (only nulls fields):
 	/// <code>
 	/// class Bad {
 	///	object o;
@@ -82,8 +81,8 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>Prior to Gendarme 2.2 this rule was named EmptyDestructorRule</remarks>
 
-	[Problem ("The type has an unrequired (empty or only nullifying fields) finalizer.")]
-	[Solution ("Remove the unneeded finalizer from this type to reduce the GC work.")]
+	[Problem ("The type has an useless (empty or only nullifying fields) finalizer.")]
+	[Solution ("Remove the finalizer from this type to reduce the GC workload.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1821:RemoveEmptyFinalizers")]
 	public class RemoveUnneededFinalizerRule : Rule, ITypeRule {
 

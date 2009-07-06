@@ -33,6 +33,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
+	// TODO: It would be nice to explain in a bit more detail what the performance issues
+	// are.
+
 	/// <summary>
 	/// This rule is used to warn the developer if both unsealed and concrete (not abstract) 
 	/// attribute types are defined in the assembly. If you want other attributes to be able
@@ -70,7 +73,7 @@ namespace Gendarme.Rules.Performance {
 	/// <remarks>Before Gendarme 2.0 this rule was named AvoidUnsealedAttributesRule.</remarks>
 
 	[Problem ("Due performance issues, concrete attributes should be sealed.")]
-	[Solution ("Unless you plan to inherit from this attribute you should consider to seal it's type.")]
+	[Solution ("Unless you plan to inherit from this attribute you should consider sealing it.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]
 	public class AvoidUnsealedConcreteAttributesRule : Rule, ITypeRule {
 

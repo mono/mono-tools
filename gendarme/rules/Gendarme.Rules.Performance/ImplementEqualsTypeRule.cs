@@ -37,11 +37,11 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Performance {
 
 	/// <summary>
-	/// This rule looks for types that overrides <c>Object.Equals(object)</c> and that do not
-	/// provide a <c>Equals(x)</c> overload for their own type. Such an overload removes the
-	/// need to cast the object to the correct type. For value types this also remove the
-	/// costly boxing operations. Assemblies targeting the framework 2.0 (and later) should 
-	/// also have the type implement <c>System.IEquatable&lt;T&gt;</c>.
+	/// This rule looks for types that override <c>Object.Equals(object)</c> but do not
+	/// provide a <c>Equals(x)</c> overload using the type. Such an overload removes the
+	/// need to cast the object to the correct type. For value types this also removes the
+	/// costly boxing operations. Assemblies targeting .NET 2.0 (and later) should 
+	/// also implement <c>System.IEquatable&lt;T&gt;</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:

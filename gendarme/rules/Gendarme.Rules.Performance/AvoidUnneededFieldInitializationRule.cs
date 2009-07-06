@@ -40,7 +40,7 @@ namespace Gendarme.Rules.Performance {
 
 	/// <summary>
 	/// This rule looks for constructors that assign fields to their default value
-	/// (e.g. 0 for an integer, null for an object or a string). Since the CLR zeroize
+	/// (e.g. 0 for an integer, null for an object or a string). Since the CLR zero initializes
 	/// all values there is no need, under most circumstances, to assign default values.
 	/// Doing so only adds size to source code and in IL.
 	/// </summary>
@@ -77,7 +77,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("This constructor needlessly initialize some fields to their default value.")]
+	[Problem ("This constructor needlessly initializes zero initializes some fields.")]
 	[Solution ("Remove the unneeded initialization from the constructors.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1805:DoNotInitializeUnnecessarily")]
