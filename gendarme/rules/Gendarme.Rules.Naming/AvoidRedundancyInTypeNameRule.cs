@@ -37,11 +37,11 @@ using Gendarme.Framework.Engines;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule checks if a type is prefixed with the last component of its
-	/// enclosing namespace, and that removing the prefix would not cause
-	/// undesirable ambiguity with its base type or a type from a parent namespace.
-	/// If possible, removing the prefix from the type name usually makes an API less
-	/// verbose and more autocompletion-friendly.
+	/// This rule will fire if a type is prefixed with the last component of its namespace.
+	/// Using prefixes like this makes type names more verbose than they need to be
+	/// and makes them harder to use with tools like auto-complete. Note that an
+	/// exception is made if removal of the prefix would cause an ambiguity with another
+	/// type. If this is the case the rule will not report a defect.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Naming {
 	/// </example>
 
 	[Problem ("This type name is prefixed with the last component of its enclosing namespace. This usually makes an API more verbose and less autocompletion-friendly than necessary.")]
-	[Solution ("Rename type without the prefix or replace it with a more meaningful term in the context of the namespace.")]
+	[Solution ("Remove the prefix from the type or replace it with a more meaningful term in the context of the namespace.")]
 	[EngineDependency (typeof (NamespaceEngine))]
 	public class AvoidRedundancyInTypeNameRule : Rule, ITypeRule {
 

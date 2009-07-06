@@ -59,8 +59,8 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This enumeration contains value names that starts with the enum's name.")]
-	[Solution ("hange the value name(s) not to include the enum's type name.")]
+	[Problem ("This enumeration contains value names that start with the enum's name.")]
+	[Solution ("Change the values so that they do not include the enum's type name.")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1712:DoNotPrefixEnumValuesWithTypeName")]
 	public class DoNotPrefixValuesWithEnumNameRule : Rule, ITypeRule {
 

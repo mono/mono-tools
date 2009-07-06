@@ -42,12 +42,12 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule ensure that identifier are correctly cased. In particular:
+	/// This rule ensures that identifiers are correctly cased. In particular:
 	/// <list>
-	/// <item><description>namespace names are pascal cased</description></item>
-	/// <item><description>type names are pascal cased</description></item>
-	/// <item><description>method names are pascal cased</description></item>
-	/// <item><description>parameter names are camel cased</description></item>
+	/// <item><description>namespace names are PascalCased</description></item>
+	/// <item><description>type names are PascalCased</description></item>
+	/// <item><description>method names are PascalCased</description></item>
+	/// <item><description>parameter names are camelCased</description></item>
 	/// </list>
 	/// </summary>
 	/// <example>
@@ -71,8 +71,8 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This identifier (namespace, type or method) violates the .NET naming conventions.")]
-	[Solution ("Change namespace, type and method names to be pascal-cased (like MyClass) and parameter names to be camel-cased (like myParameter).")]
+	[Problem ("This identifier (namespace, type, or method) violates the .NET naming conventions.")]
+	[Solution ("Change the namespace, type, or method name to be pascal-cased (like MyClass) and parameter names to be camel-cased (like myParameter).")]
 	[EngineDependency (typeof (NamespaceEngine))]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly")]
 	public class UseCorrectCasingRule : Rule, IAssemblyRule, ITypeRule, IMethodRule {

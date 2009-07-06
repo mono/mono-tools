@@ -34,10 +34,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule checks for inconsistencies between interfaces and types names that are
-	/// part of the same namespace and assembly. If an interface and a type names differs
-	/// only by the <c>I</c> prefix (of the interface) then we can logically expect the 
-	/// type to implement this interface.
+	/// This rule will fire if an assembly has a namespace which contains an interface IFoo
+	/// and a type Foo, but the type does not implement the interface. If an interface and
+	/// a type name differ only by the <c>I</c> prefix (of the interface) then we can
+	/// logically expect the type to implement this interface.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Naming {
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>
 
 	[Problem ("This interface is not implemented by the type of the same name (minus the 'I' prefix).")]
-	[Solution ("Rename either the interface or the type to something else or implement this interface for the type.")]
+	[Solution ("Rename either the interface or the type to something else or implement the interface for the type.")]
 	public class AvoidTypeInterfaceInconsistencyRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

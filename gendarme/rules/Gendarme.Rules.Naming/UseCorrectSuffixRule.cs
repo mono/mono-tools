@@ -41,9 +41,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule ensure that types that inherit from certain types or implement some interfaces
-	/// are named correctly by appending the right suffix to them. It also ensure that no other
-	/// types are using the suffixes without inheriting/implementing the types/interfaces. E.g.
+	/// This rule ensure that types that inherit from certain types or implement certain interfaces
+	/// have a specific suffix. It also ensures that no other
+	/// types are using those suffixes without inheriting/implementing the types/interfaces. E.g.
 	/// <list>
 	/// <item><description><c>System.Attribute</c> should end with <c>Attribute</c></description></item>
 	/// <item><description><c>System.EventArgs</c> should end with <c>EventArgs</c></description></item>
@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type does not end with the correct suffix. That usually happens when you define a custom attribute or exception and forget appending suffixes like 'Attribute' or 'Exception' to the type name.")]
+	[Problem ("This type does not end with the correct suffix. That usually happens when you define a custom attribute or exception and forget to append suffixes like 'Attribute' or 'Exception' to the type name.")]
 	[Solution ("Rename the type and append the correct suffix.")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]

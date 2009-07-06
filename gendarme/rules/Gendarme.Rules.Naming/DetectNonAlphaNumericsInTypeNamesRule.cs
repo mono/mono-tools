@@ -39,6 +39,19 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	// TODO: This is a confusing rule. It's called "AvoidNonAlphanumericIdentifierRule" and 
+	// the summary suggests that it will fire for non-alphanumeric characters, but the
+	// problem/solution text and the code only check for underscores. The code suggests
+	// that it's only neccesary to check for underscores because the compiler will catch the
+	// others which seems to be true for gmcs 2.4. However section 9.4.2 of the standard
+	// clearly states that character classes like Lm should be allowed which seems like something
+	// the rule should fire for (see http://www.fileformat.info/info/unicode/category/Lm/index.htm).
+	// Also other compilers may very well be more lenient about which characters they accept.
+	//
+	// It seems to me that this rule should explain why underscores and unusual letters are
+	// a problem and fire if a character not in [a-zA-Z0-9] is used. And of course the summary
+	// and problem texts should be synced up. 
+
 	/// <summary>
 	/// This rule ensures that identifiers like assembly names, namespaces, types and 
 	/// members names don't have any non-alphanumerical characters inside them. The rule 

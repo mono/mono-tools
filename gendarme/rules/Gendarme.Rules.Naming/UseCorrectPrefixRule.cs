@@ -36,9 +36,12 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	// TODO: It would be nice to replace the C check with a more general hungarian name
+	// rule.
+
 	/// <summary>
-	/// This rule ensure that types are prefixed correctly. Interfaces should always be prefixed
-	/// with a <c>I</c>, types should never prefixed with a <c>C</c> (remainder for MFC folks)
+	/// This rule ensures that types are prefixed correctly. Interfaces should always be prefixed
+	/// with a <c>I</c>, types should never be prefixed with a <c>C</c> (reminder for MFC folks)
 	/// and generic parameters should be a single, uppercased letter or be prefixed with <c>T</c>.
 	/// </summary>
 	/// <example>

@@ -37,7 +37,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule ensure that the name of enumeration flags is in plural form.
+	/// This rule ensures that the name of enumerations decorated with FlagsAttribute are
+	/// in plural form.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -62,8 +63,8 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type is an enumeration and, by convention, enums should have a singular name.")]
-	[Solution ("Convert this enumeration type name from plural to singular.")]
+	[Problem ("This type is a flags enumeration and, by convention, should have a plural name.")]
+	[Solution ("Convert this enumeration type name from singular to plural.")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1714:FlagsEnumsShouldHavePluralNames")]
 	public class UsePluralNameInEnumFlagsRule : Rule, ITypeRule {
 

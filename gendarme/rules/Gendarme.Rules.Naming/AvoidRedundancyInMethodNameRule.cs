@@ -36,8 +36,8 @@ using Gendarme.Framework.Engines;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule checks if a method is named against its first parameter's type.
-	/// Usually, removing that type name from the method name makes an API less
+	/// This rule will fire if a method name embeds the type name of its first parameter.
+	/// Usually, removing that type name makes the API less
 	/// verbose, easier to learn, and more future-proof.
 	/// </summary>
 	/// <example>
@@ -85,8 +85,8 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This method is named against its first parameter's type. This usually makes an API more verbose and less evolutive than necessary.")]
-	[Solution ("Rename method without the parameter name or extract the method into the parameter's type.")]
+	[Problem ("This method's name includes the type name of the first parameter. This usually makes an API more verbose and less future-proof than necessary.")]
+	[Solution ("Remove the type from the method name, move the method into the parameter's type, or create an extension method (if using C#).")]
 	[EngineDependency (typeof (NamespaceEngine))]
 	public class AvoidRedundancyInMethodNameRule : Rule, IMethodRule {
 

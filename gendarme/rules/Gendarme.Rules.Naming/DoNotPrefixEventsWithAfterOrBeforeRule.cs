@@ -35,8 +35,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Naming {
 
 	/// <summary>
-	/// This rule ensures event names are not prefixed with <c>After</c> or <c>Before</c>.
-	/// The .NET naming convention suggest to name them using a verb in the present and in
+	/// This rule ensures that event names are not prefixed with <c>After</c> or <c>Before</c>.
+	/// The .NET naming conventions recommend using a verb in the present and in
 	/// the past tense.
 	/// </summary>
 	/// <example>
@@ -58,7 +58,7 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains event(s) that name starts with either After or Before.")]
+	[Problem ("This type contains event(s) whose names start with either After or Before.")]
 	[Solution ("Rename the event(s) to have a correct prefix. E.g. replace After with the future tense, and Before with the past tense.")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1713:EventsShouldNotHaveBeforeOrAfterPrefix")]
 	public class DoNotPrefixEventsWithAfterOrBeforeRule : Rule, ITypeRule {

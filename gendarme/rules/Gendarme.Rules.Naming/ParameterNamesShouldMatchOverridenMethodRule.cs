@@ -35,8 +35,12 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
+	// TODO: This really needs to explain why this is a problem. Is it just the potential for a
+	// bit of confusion as the FxCop rule suggests or are there more serious problems with
+	// languages like VB? 
+
 	/// <summary>
-	/// This rule warns if an overriden method's parameter names do not match those of the 
+	/// This rule warns if an overriden method's parameter names does not match those of the 
 	/// base class or those of the implemented interface.
 	/// </summary>
 	/// <example>
@@ -70,7 +74,7 @@ namespace Gendarme.Rules.Naming {
 	/// </code>
 	/// </example>
 
-	[Problem ("This method overrides (or implement) an existing method but does not use the same parameter names as the original.")]
+	[Problem ("This method overrides (or implements) an existing method but does not use the same parameter names as the original.")]
 	[Solution ("Keep parameter names consistent when overriding a class or implementing an interface.")]
 	[FxCopCompatibility ("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration")]
 	public class ParameterNamesShouldMatchOverriddenMethodRule : Rule, IMethodRule {
