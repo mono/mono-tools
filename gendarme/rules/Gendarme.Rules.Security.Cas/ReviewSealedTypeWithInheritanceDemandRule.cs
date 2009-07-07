@@ -35,7 +35,7 @@ namespace Gendarme.Rules.Security.Cas {
 
 	/// <summary>
 	/// This rule checks for sealed types that have <c>InheritanceDemand</c> declarative
-	/// security applied on them. Since those types cannot be inherited from the 
+	/// security applied to them. Since those types cannot be inherited from the 
 	/// <c>InheritanceDemand</c> will never be executed by the runtime. Check if the permission
 	/// is required and, if so, change the <c>SecurityAction</c> to the correct one. Otherwise
 	/// remove the permission.

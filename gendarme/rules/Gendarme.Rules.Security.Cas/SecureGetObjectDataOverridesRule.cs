@@ -38,8 +38,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Security.Cas {
 
 	/// <summary>
-	/// This rule checks for types that implements <c>System.Runtime.Serialization.ISerializable</c>
-	/// to see if the <c>GetObjectData</c> method is protected with a <c>Demand</c> or 
+	/// This rule fires if a type implements <c>System.Runtime.Serialization.ISerializable</c>
+	/// but the <c>GetObjectData</c> method is not protected with a <c>Demand</c> or 
 	/// <c>LinkDemand</c> for <c>SerializationFormatter</c>.
 	/// </summary>
 	/// <example>
@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Security.Cas {
 	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security.</remarks>
 
 	[Problem ("The method is not protected correctly against a serialization attack.")]
-	[Solution ("A security Demand for SerializationFormatter should protect this method.")]
+	[Solution ("A security Demand for SerializationFormatter should be added to protect the method.")]
 	public class SecureGetObjectDataOverridesRule : Rule, ITypeRule {
 
 		private const string NotFound = "No [Link]Demand was found.";

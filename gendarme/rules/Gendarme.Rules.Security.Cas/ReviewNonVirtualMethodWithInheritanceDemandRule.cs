@@ -34,6 +34,8 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Security.Cas {
 
+	// TODO: Shouldn't this rule have a summary?
+
 	[Problem ("This non-virtual method has an InheritanceDemand that the runtime will never execute.")]
 	[Solution ("Review the InheritanceDemand on this method and either remove it or change its SecurityAction to, probably, a LinkDemand.")]
 	public class ReviewNonVirtualMethodWithInheritanceDemandRule : Rule, IMethodRule {

@@ -1,3 +1,7 @@
+2009-07-07  Jesse Jones  <jesjones@mindspring.com>
+
+	* *Rule.cs: Edited most of the rule descriptions.
+
 2008-12-13  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ReviewSuppressUnmanagedCodeSecurityUsageRule.cs: Fix AnalyzeModule

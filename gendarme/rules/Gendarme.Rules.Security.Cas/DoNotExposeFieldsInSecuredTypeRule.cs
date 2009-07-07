@@ -67,8 +67,8 @@ namespace Gendarme.Rules.Security.Cas {
 	/// </example>
 	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeExposeFieldsRule.</remarks>
 
-	[Problem ("This type is secured by [Link]Demand but expose some visible fields.")]
-	[Solution ("Remove the (unsecured) visible fields, turn them into (secured) properties or reduce their visibility.")]
+	[Problem ("This type is secured by [Link]Demand but exposes some visible fields.")]
+	[Solution ("Remove the (unsecured) visible fields, turn them into (secured) properties or reduce their access.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2112:SecuredTypesShouldNotExposeFields")]
 	public class DoNotExposeFieldsInSecuredTypeRule : Rule, ITypeRule {
 

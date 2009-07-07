@@ -41,8 +41,8 @@ namespace Gendarme.Rules.Security.Cas {
 
 	/// <summary>
 	/// This rule checks for visible methods that are less protected (i.e. lower security 
-	/// requirements) than the method they calls. If the called methods are protected by a 
-	/// <c>LinkDemand</c> then the caller can be used to go around its protection.
+	/// requirements) than the method they call. If the called methods are protected by a 
+	/// <c>LinkDemand</c> then the caller can be used to bypass security checks.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -86,7 +86,7 @@ namespace Gendarme.Rules.Security.Cas {
 	/// </example>
 	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named MethodCallWithSubsetLinkDemandRule.</remarks>
 
-	[Problem ("This method is less protected than some methods it calls.")]
+	[Problem ("This method is less protected than some of the methods it calls.")]
 	[Solution ("Ensure that the LinkDemand on this method is a superset of any LinkDemand present on called methods.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]

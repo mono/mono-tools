@@ -37,9 +37,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Security.Cas {
 
 	/// <summary>
-	/// The rule checks for types that are not <c>sealed</c> and that have a <c>LinkDemand</c>.
+	/// The rule checks for types that are not <c>sealed</c> but have a <c>LinkDemand</c>.
 	/// In this case the type should also have an <c>InheritanceDemand</c> for the same 
-	/// permissions. An alternative fix is to seal the type.
+	/// permissions. An alternative is to seal the type.
 	/// </summary>
 	/// <example>
 	/// Bad example:

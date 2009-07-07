@@ -35,8 +35,8 @@ using Gendarme.Framework;
 namespace Gendarme.Rules.Security.Cas {
 
 	/// <summary>
-	/// This rule checks for types that have declarative security permission that aren't a
-	/// subset of the security permission on some of their methods.
+	/// This rule checks for types that have declarative security permission which aren't a
+	/// subset of the security permission of some of their methods.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -64,7 +64,7 @@ namespace Gendarme.Rules.Security.Cas {
 	/// </example>
 	/// <remarks>Before Gendarme 2.2 this rule was part of Gendarme.Rules.Security and named TypeIsNotSubsetOfMethodSecurityRule.</remarks>
 
-	[Problem ("This type has declarative security permission that aren't a subset of the security on some of it's methods.")]
+	[Problem ("This type has a declarative security permission that isn't a subset of the security on some of it's methods.")]
 	[Solution ("Ensure that the type security is a subset of any method security. This rule doesn't apply for LinkDemand an Inheritance demands as both the type and methods security will be executed.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2114:MethodSecurityShouldBeASupersetOfType")]
 	public class DoNotReduceTypeSecurityOnMethodsRule : Rule, ITypeRule {
