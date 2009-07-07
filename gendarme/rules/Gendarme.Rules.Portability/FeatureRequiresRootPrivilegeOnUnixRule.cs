@@ -41,12 +41,12 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Portability {
 
 	/// <summary>
-	/// This rule check usage of features that are, by default, restricted under Unix.
+	/// This rule fires if a feature is used which is, by default, restricted under Unix.
 	/// <list type="bullet">
 	/// <item>
 	/// <description><c>System.Net.NetworkInformation.Ping</c>: This type can only be used
 	/// by root on Unix systems. As an alternative you can execute the ping command and 
-	/// parse it's result.</description>
+	/// parse its result.</description>
 	/// </item>
 	/// <item>
 	/// <description><c>System.Diagnostics.Process</c>: The PriorityClass property can only
@@ -72,8 +72,8 @@ namespace Gendarme.Rules.Portability {
 	/// </code>
 	/// </example>
 
-	[Problem ("The method use some features that requires 'root' priviledge under Unix.")]
-	[Solution ("Make sure your code can work without requiring users to have 'root' priviledge.")]
+	[Problem ("The method uses some features which require 'root' privilege under Unix.")]
+	[Solution ("Make sure your code can work without requiring users to have 'root' privilege.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class FeatureRequiresRootPrivilegeOnUnixRule : Rule, IMethodRule {
 

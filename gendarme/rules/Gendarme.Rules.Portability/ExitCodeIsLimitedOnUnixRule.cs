@@ -52,7 +52,7 @@ namespace Gendarme.Rules.Portability {
 	/// <description>calling <c>Environment.Exit(exitCode)</c> method.</description>
 	/// </item>
 	/// </list>
-	/// An error is reported in case number which is definitely out of range is being returned 
+	/// An error is reported in case a number which is definitely out of range is returned 
 	/// as an exit code. 
 	/// </summary>
 	/// <example>
@@ -84,7 +84,7 @@ namespace Gendarme.Rules.Portability {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("The rule detected a value outside the 0-255 range or couldn't be sure of the returned value.")]
-	[Solution ("Review that your return values are all between 0 and 255, this will ensure them to works under both Unix and Windows OS.")]
+	[Solution ("Review that your return values are all between 0 and 255, this will ensure that they work under both Unix and Windows.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ExitCodeIsLimitedOnUnixRule : Rule, IAssemblyRule, IMethodRule {
 

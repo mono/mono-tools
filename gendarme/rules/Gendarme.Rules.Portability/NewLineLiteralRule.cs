@@ -38,10 +38,10 @@ using Gendarme.Framework.Helpers;
 namespace Gendarme.Rules.Portability {
 
 	/// <summary>
-	/// This rule warns about any methods, including properties, that are using the literal 
+	/// This rule warns if methods, including properties, are using the literal 
 	/// <c>\r</c> and/or <c>\n</c> for new lines. This isn't portable across operating systems.
 	/// To ensure correct cross-platform functionality they should be replaced by 
-	/// <c>Environment.NewLine</c>.
+	/// <c>System.Environment.NewLine</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -56,8 +56,8 @@ namespace Gendarme.Rules.Portability {
 	/// </code>
 	/// </example>
 
-	[Problem ("The method use some literal values for new lines (e.g. \\r\\n) which aren't portable across operating systems.")]
-	[Solution ("Replace literals with Environment.NewLine.")]
+	[Problem ("The method uses literals for new lines (e.g. \\r\\n) which isn't portable across operating systems.")]
+	[Solution ("Replace the literals with Environment.NewLine.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class NewLineLiteralRule : Rule, IMethodRule {
 

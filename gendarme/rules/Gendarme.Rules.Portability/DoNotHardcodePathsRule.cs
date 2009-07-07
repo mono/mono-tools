@@ -40,8 +40,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Portability {
 
 	/// <summary>
-	/// This rule check for strings that contains valid filenames, either under Unix or 
-	/// Windows operating systems file systems. Such filenames are often not portable across 
+	/// This rule checks for strings that contain valid paths, either under Unix or 
+	/// Windows file systems. Path literals are often not portable across 
 	/// operating systems (e.g. different path separators). To ensure correct cross-platform 
 	/// functionality they should be replaced by calls to <c>Path.Combine</c> and/or 
 	/// <c>Environment.GetFolderPath</c>.
@@ -73,7 +73,7 @@ namespace Gendarme.Rules.Portability {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This string looks like a path that may become invalid if the code is executed on a different operating system.")]
-	[Solution ("Use System.IO.Path and System.Environment types to generate paths instead of hardcoding them.")]
+	[Solution ("Use System.IO.Path and System.Environment to generate paths instead of hardcoding them.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotHardcodePathsRule : Rule, IMethodRule {
 
