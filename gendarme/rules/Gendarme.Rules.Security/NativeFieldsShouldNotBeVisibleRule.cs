@@ -64,8 +64,8 @@ namespace Gendarme.Rules.Security {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type expose native fields that aren't read-only.")]
-	[Solution ("Native fields are best hidden or, if required, read-only.")]
+	[Problem ("This type exposes native fields that aren't read-only.")]
+	[Solution ("Native fields are best hidden or, if required to be exposed, read-only.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2111:PointersShouldNotBeVisible")]
 	public class NativeFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 

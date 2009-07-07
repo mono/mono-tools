@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Security {
 	/// </code>
 	/// </example>
 
-	[Problem ("This type contains read-only array(s), however values inside the array(s) are not read-only.")]
+	[Problem ("This type contains read-only array(s), however elements inside the array(s) are not read-only.")]
 	[Solution ("Replace the array with a method returning a clone of the array or a read-only collection.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2105:ArrayFieldsShouldNotBeReadOnly")]
 	public class ArrayFieldsShouldNotBeReadOnlyRule : Rule, ITypeRule {

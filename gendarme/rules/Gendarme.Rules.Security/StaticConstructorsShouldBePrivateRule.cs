@@ -31,11 +31,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security {
 
+	// TODO: FxCop says that VB does enforce this constraint. It would be nice to explain
+	// in a bit more detail why this is a problem. I think the issue is that it allows the ctor
+	// to be called earlier than it would have otherwise been called and (probably more
+	// important) it allows the ctor to be called multiple times.
+
 	/// <summary>
-	/// To avoid calls from user code, all static constructors must be private. C# allows 
-	/// only private static constructors but some .NET languages (including VB .NET) do 
-	/// permit defining non-private static constructors (Shared in VB.NET), which is not
-	/// a good practice.
+	/// To avoid calls from user code, all static constructors must be private. C# enforces 
+	/// this but some .NET languages (including VB .NET) do not.
 	/// </summary>
 	/// <example>
 	/// Bad example (VB.NET):
@@ -65,7 +68,7 @@ namespace Gendarme.Rules.Security {
 	/// </example>
 
 	[Problem ("Static constructors must be private because otherwise they may be called once or multiple times from user code.")]
-	[Solution ("Change the static constructor visibility to private.")]
+	[Solution ("Change the static constructor access to private.")]
 	[FxCopCompatibility ("Microsoft.Security", "CA2121:StaticConstructorsShouldBePrivate")]
 	public class StaticConstructorsShouldBePrivateRule : Rule, ITypeRule {
 
