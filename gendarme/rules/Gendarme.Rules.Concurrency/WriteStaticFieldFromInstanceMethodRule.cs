@@ -39,8 +39,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule is used to check for instance methods that writes values in static fields.
-	/// This may cause problem when multiple instance of the type exists and when used in 
+	/// This rule is used to check for instance methods which write values to static fields.
+	/// This may cause problems if multiple instances of the type exist and are used in 
 	/// multithreaded applications. 
 	/// </summary>
 	/// <example>
@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </code>
 	/// </example>
 
-	[Problem ("This instance method writes to static fields. This may cause problem with multiple instances and in multithreaded applications.")]
+	[Problem ("This instance method writes to static fields. This may cause problem with multiple instances in multithreaded applications.")]
 	[Solution ("Move initialization to the static constructor or ensure appropriate locking.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class WriteStaticFieldFromInstanceMethodRule : Rule, IMethodRule {

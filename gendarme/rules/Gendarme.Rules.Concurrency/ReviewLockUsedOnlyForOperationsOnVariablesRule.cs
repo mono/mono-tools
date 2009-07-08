@@ -43,8 +43,8 @@ namespace Gendarme.Rules.Concurrency {
 	/// This rule checks if a lock is used only to perform operations on locals
 	/// or fields.
 	/// If the only purpose of that critical section is to make sure the variables
-	/// are modified atomatically, rather use the methods provided by
-	/// System.Threading.Interlocked class to achieve better throughput.
+	/// are modified atomatically then the methods provided by
+	/// System.Threading.Interlocked class will be more efficient.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </example>
 
 	[Problem ("Using a lock to do only atomic operations on locals or fields is often overkill.")]
-	[Solution ("If possible, rather use System.Threading.Interlocked class to improve throughput.")]
+	[Solution ("If possible, use System.Threading.Interlocked class to improve throughput.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewLockUsedOnlyForOperationsOnVariablesRule : Rule, IMethodRule {
 

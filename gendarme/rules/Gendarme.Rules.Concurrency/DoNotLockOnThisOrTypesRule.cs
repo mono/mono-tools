@@ -37,13 +37,13 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule checks if you're use <c>lock</c> on the current instance (<c>this</c>) or
-	/// on a <c>Type</c>. Doing so means potential concurrency troubles. If you are locking 
-	/// <c>this</c> anyone else, outside your code/control, could be using a <c>lock</c> on 
-	/// your instance causing a deadlock. Locking on types is also bad since there is 
-	/// only one instance of each <c>Type</c>. Again anyone else, outside your code/control,
-	/// could be locking on it. The best locking is to create your own, private, instance
-	/// <c>System.Object</c> and <c>lock</c> on it.
+	/// This rule checks if you're using <c>lock</c> on the current instance (<c>this</c>) or
+	/// on a <c>Type</c>. This can cause
+	/// problems because anyone can acquire a lock on the instance or type. And if another
+	/// thread does acquire a lock then deadlocks become a very real possibility. The preferred way to
+	/// handle this is to create a private <c>System.Object</c> instance field and <c>lock</c> that. This
+	/// greatly reduces the scope of the code which may acquire the lock which makes it much easier
+	/// to ensure that the locking is done correctly.
 	/// </summary>
 	/// <example>
 	/// Bad example (this):
@@ -84,8 +84,8 @@ namespace Gendarme.Rules.Concurrency {
 	/// </code>
 	/// </example>
 
-	[Problem ("This method use a lock(this) or lock(typeof(X)) construct which is often used incorrectly.")]
-	[Solution ("To be safe from outside always lock on something that is totally private to your code.")]
+	[Problem ("This method uses lock(this) or lock(typeof(X)) which makes it very difficult to ensure that the locking is done correctly.")]
+	[Solution ("Instead lock a private object so that you have better control of when the locking is done.")]
 	public class DoNotLockOnThisOrTypesRule : LockAnalyzerRule {
 
 		private const string LockThis = "Monitor.Enter(this) or lock(this) in C#";

@@ -36,8 +36,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule warns if a non constant public static field is detected. 
-	/// In a multi-threaded environment access to those fields needs to be synchronized. 
+	/// This rule warns if a non-constant public static field is found. 
+	/// In a multi-threaded environment access to those fields must be synchronized. 
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -69,7 +69,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </example>
 
 	[Problem ("This type has some static fields that are not constant. They may represent problems in multithreaded applications.")]
-	[Solution ("Change the field to read-only, mark it [ThreadStatic] or make it non visible outside the assembly.")]
+	[Solution ("Change the field to read-only, or mark it [ThreadStatic], or make it non visible outside the assembly.")]
 	public class NonConstantStaticFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)

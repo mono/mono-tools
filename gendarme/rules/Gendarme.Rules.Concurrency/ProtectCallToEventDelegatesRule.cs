@@ -39,9 +39,10 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule checks if the call to an event delegate is safely implemented. This means
-	/// the event field is verified not to be null before its use and that the field is not 
-	/// used directly (for the check and call) since this introduces potential race condition.
+	/// This rule checks that event invocations are safely implemented. In particular,
+	/// the event must be copied into a local to avoid race conditions and it must be
+	/// checked for null before it is used (events will normally be null until a delegate is added
+	/// to them).
 	/// </summary>
 	/// <example>
 	/// Bad example (no check):
@@ -90,7 +91,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </example>
 
 	[Problem ("The use of the event does not seems protected properly against NullReferenceException and/or race conditions.")]
-	[Solution ("Fix the event use to make sure it won't be null nor be susceptible to a race condition.")]
+	[Solution ("Fix the event use to make sure it won't be null or susceptible to a race condition.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ProtectCallToEventDelegatesRule : Rule, IMethodRule {
 

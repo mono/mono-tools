@@ -40,10 +40,13 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Concurrency {
 
+	// TODO: The summary does a really poor job describing what the rule is looking for.
+	// It also does a poor job describing what the problem the rule addresses is.
+
 	/// <summary>
-	/// This rule ensures the method atomicity.  You should put the
+	/// This rule ensures method atomicity.  You should put the
 	/// Monitor.Enter and Monitor.Exit call in the same method, otherwise
-	/// may have several headaches related to concurrency issues.
+	/// there may be headaches related to concurrency issues.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -82,7 +85,7 @@ namespace Gendarme.Rules.Concurrency {
 	// TODO: do a rule that checks if Monitor.Enter is used *before* Exit (dumb code, I know)
 	// TODO: do a more complex rule that checks that you have used Thread.Monitor.Exit in a finally block
 	[Problem ("This method uses Thread.Monitor.Enter() but doesn't use Thread.Monitor.Exit().")]
-	[Solution ("Rather use the lock{} statement in case your language is C#, or Thread.Monitor.Exit() in other case.")]
+	[Solution ("Prefer the lock{} statement when using C# or redesign the code so that Monitor.Enter and Exit are called together.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotUseLockedRegionOutsideMethodRule : Rule, IMethodRule {
 

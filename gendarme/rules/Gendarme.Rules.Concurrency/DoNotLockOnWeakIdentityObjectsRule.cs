@@ -38,9 +38,10 @@ namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
 	/// This rule ensures there are no locks on objects with weak identity.
-	/// An object with weak identity means that it can be accessed across
-	/// different application domains and may cause deadlocks or other
-	/// concurrency issues.
+	/// An object with weak identity is one that can be directly accessed across
+	/// different application domains. Because these objects can be accessed
+	/// by different application domains it is very difficult to ensure that the
+	/// locking is done correctly so problems such as deadlocks are much more likely.
 	/// The following types have a weak identities:
 	/// <list type="bullet"> 
 	/// <item> 
@@ -93,8 +94,8 @@ namespace Gendarme.Rules.Concurrency {
 	/// </code>
 	/// </example>
 
-	[Problem ("This method use a lock on a object with a weak identity, i.e. accessible across application domains.")]
-	[Solution ("To be safe from outside always lock on something that is totally private to your code.")]
+	[Problem ("This method uses a lock on an object with weak identity, i.e. one that is directly accessible across application domains.")]
+	[Solution ("To be safe it is important to lock on an object that is private to your code.")]
 	[FxCopCompatibility ("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity")]
 	public class DoNotLockOnWeakIdentityObjectsRule : LockAnalyzerRule {
 

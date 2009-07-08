@@ -34,13 +34,14 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule checks if some methods are decorated with <c>[MethodImpl(MethodImplOptions.Synchronized)]</c>.
-	/// The runtime synchronize those methods automatically using a <c>lock(this)</c> for
+	/// This rule fires if a method is decorated with <c>[MethodImpl(MethodImplOptions.Synchronized)]</c>.
+	/// The runtime synchronizes those methods automatically using a <c>lock(this)</c> for
 	/// instance methods or a <c>lock(typeof(X))</c> for static methods. This can cause
-	/// deadlocks if misused inside your own code or if the method is visible outside the
-	/// assembly since anyone else, outside your control, could be using a <c>lock</c> on 
-	/// an instance or the type and cause a deadlock. The best locking is to create your own, 
-	/// private, instance <c>System.Object</c> and <c>lock</c> on it.
+	/// problems because anyone can acquire a lock on the instance or type. And if another
+	/// thread does acquire a lock then deadlocks become a very real possibility. The preferred way to
+	/// handle this is to create a private <c>System.Object</c> instance field and <c>lock</c> that. This
+	/// greatly reduces the scope of the code which may acquire the lock which makes it much easier
+	/// to ensure that the locking is done correctly.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -70,7 +71,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// </example>
 
 	[Problem ("This method is decorated with [MethodImpl(MethodImplOptions.Synchronized)].")]
-	[Solution ("Remove the attribute and provide your own lock private to your code.")]
+	[Solution ("Remove the attribute and provide your own private lock object.")]
 	public class DoNotUseMethodImplOptionsSynchronizedRule : Rule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)

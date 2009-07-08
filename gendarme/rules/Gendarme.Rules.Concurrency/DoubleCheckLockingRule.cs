@@ -42,19 +42,19 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Concurrency {
 
-	// note: the rule only report a single double-lock per method
+	// note: the rule only reports a single double-lock per method
 
 	/// <summary>
 	/// This rule is used to check for the double-check pattern, often used when implementing 
-	/// the singleton pattern (1), and warns of its potential incorrect usage. 
+	/// the singleton pattern (1), and warns of potential incorrect usage. 
 	/// 
 	/// The original CLR (1.x) could not guarantee that a double-check would work correctly 
-	/// in multithreaded applications. However the technique do work on the x86 architecture, 
+	/// in multithreaded applications. However the technique does work on the x86 architecture, 
 	/// the most common architecture, so the problem is seldom seen (e.g. IA64).
 	/// 
 	/// The CLR 2 and later introduce a strong memory model (2) where a double check for a
 	/// <c>lock</c> is correct (as long as you assign to a <c>volatile</c> variable). This
-	/// rule wont report any defect for assemblies targetting the 2.0 (and later) runtime.
+	/// rule won't report a defect for assemblies targetting the 2.0 (and later) runtime.
 	/// <list>
 	/// <item><term>1. Implementing Singleton in C#</term><description>
 	/// http://msdn.microsoft.com/en-us/library/ms998558.aspx</description></item>
@@ -94,7 +94,7 @@ namespace Gendarme.Rules.Concurrency {
 	///	public static Singleton Instance {
 	/// 		get {
 	/// 			// do not check instance before the lock
-	/// 			// this will works on all CLR but will affect 
+	/// 			// this will work on all CLRs but will affect 
 	/// 			// performance since the lock is always acquired
 	///			lock (syncRoot) {
 	///				if (instance == null) {
