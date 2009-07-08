@@ -35,9 +35,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Smells {
 
 	/// <summary>
-	/// This rule checks for duplicated code in the same class.  It ensures
-	/// there aren't duplicated code in methods which belongs to the same
-	/// class.
+	/// This rule checks for duplicated code in the same class.  
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -101,7 +99,7 @@ namespace Gendarme.Rules.Smells {
 	/// </example>
 
 	[Problem ("There is similar code in various methods in the same class.  Your code will be better if you can unify them.")]
-	[Solution ("You should apply the Extract Method refactoring and invoke the method from the places.")]
+	[Solution ("You should apply the Extract Method refactoring and have a single implementation of the code.")]
 	public class AvoidCodeDuplicatedInSameClassRule : Rule, ITypeRule {
 
 		private CodeDuplicatedLocator locator;

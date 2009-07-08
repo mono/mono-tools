@@ -41,10 +41,17 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
+	// TODO: It may be worthwhile mentioning the law of demeter. The summary
+	// doesn't really say what the message chain smell is. The summary could do a better
+	// job explaining why the coupling is harmful (changes to the object inter-relationships
+	// can cause cascading changes to the source code). It would be helpful if the summary
+	// explained how to fix the problem (e.g. by adding accessors to encapsulate the structure).
+	// The good example is not a good version of the bad example (it should call a ToFrench
+	// or maybe a Language method on a person object).
+
 	/// <summary>
-	/// This rule avoids the Message Chain smell.  This could cause some
-	/// troubles to you, because your code is hardly coupled to the
-	/// navigation structure.
+	/// This rule checks for the Message Chain smell.  This can cause problems because it 
+	/// means that your code is heavily coupled to the navigation structure.
 	/// </summary>
 	/// <example>
 	/// Bad example:

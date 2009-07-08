@@ -35,18 +35,24 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
+
+	// TODO: What does "Other time, it's quite hard determine a long parameter list" mean?
+	// Can the default be changed? This rule should may need to be reviewed if C# adds
+	// default arguments. The solution is really confusing. What is "preserve whole object"?
+	// The introduction of a helper class to bundle state together? What is "parameter object"?
+	// The params keyword?
 	
 	/// <summary>
 	/// This rule allows developers to measure the parameter list size in a method.
 	/// If you have methods with a lot of parameters, perhaps you have a Long
 	/// Parameter List smell.
 	/// 
-	/// This rule counts the method parameters, and compare against a maximum value. 
+	/// This rule counts the method's parameters, and compares it against a maximum value. 
 	/// If you have an overloaded method, then the rule will get the shortest overload 
 	/// and compare the shortest overload against the maximum value.
 	///
 	/// Other time, it's quite hard determine a long parameter list. By default, 
-	/// a methods with 6 or more arguments will be notified. 
+	/// a method with 6 or more arguments will be flagged as a defect. 
 	/// </summary>
 	/// <example>
 	/// Bad example:

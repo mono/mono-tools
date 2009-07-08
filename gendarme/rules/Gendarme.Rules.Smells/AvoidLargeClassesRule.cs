@@ -35,16 +35,21 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 
+	// TODO: The summary should explain what a field prefix is. 
+	// What do field prefixes have to do with large classes? 
+	// The problem text says that the issue with large classes is that "duplicated code will not 
+	// be far away". This does not seem to me to be the real issue with large classes. The 
+	// problem is more that they are difficult to understand and to maintain. 
+	// Can the default be changed?
+
 	/// <summary>
 	/// This rule allows developers to measure the classes size. When a 
 	/// class is trying to doing a lot of work, then you probabily have 
 	/// the Large Class smell.
 	///
-	/// The rule counts all fields and if exists common prefixes in fields
-	/// it could be a point for extract a new class too. It's quite hard 
-	/// determine when a class is doing a lot of work, then in following 
-	/// versions you will can select a maximum number of fields, by 
-	/// default this amount is 25. 
+	/// This rule will fire if a type contains too many fields (over 25 by default) or
+	/// has fields with common prefixes. If the rule does fire then the type should
+	/// be reviewed to see if new classes should be extracted from it.
 	/// </summary>
 	/// <example>
 	/// Bad example:

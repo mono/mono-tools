@@ -38,18 +38,26 @@ using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 
 namespace Gendarme.Rules.Smells {
+
+	// TODO: No one is going to know what "Abstract classes without responsibility"
+	// or "Unnecessary delegation" are. It might also be nice to break at least
+	// the unused arg check into a separate rule: it's fairly common in some frameworks
+	// to have lots of unused arguments which makes this rule very annoying to use.
+	//
+	// The "Be carefull if you are developing a new framework" sentence in the summary
+	// is very confusing.
 	
 	/// <summary>
 	/// This rule allows developers to avoid the Speculative Generality smell. 
-	/// Be carefull if you are developing a new framework or a new library, 
-	/// because this rule only inspect the assembly, then if you provide an 
-	/// abstract base class for extend by thrid party people, then the rule
+	/// Be careful if you are developing a new framework or a new library, 
+	/// because this rule only inspects the assembly, then if you provide an 
+	/// abstract base class for extend by third party people, then the rule
 	/// can warn you. You can ignore the message in this special case.
 	/// 
-	/// We can detect this kind of smell looking for some points:
+	/// We detect this smell by looking for:
 	/// <list type="bullet">
-    	/// <item><description>Abstract classes without responsability</description></item>
-    	/// <item><description>Unnecesary delegation.</description></item>
+    	/// <item><description>Abstract classes without responsibility</description></item>
+    	/// <item><description>Unnecessary delegation.</description></item>
 	/// <item><description>Unused parameters.</description></item>
     	/// </list>
 	/// </summary>
