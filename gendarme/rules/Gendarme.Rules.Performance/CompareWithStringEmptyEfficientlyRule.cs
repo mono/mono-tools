@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Performance {
 	/// <summary>
 	/// This rule will fire if a string is compared to <c>""</c> or <c>String.Empty</c>.
 	/// Instead use a <c>String.Length</c> test which should be a bit faster. Another
-	/// possibility (with .Net 2.0) is to use the static <c>String.IsNullOrEmpty</c> method.
+	/// possibility (with .NET 2.0) is to use the static <c>String.IsNullOrEmpty</c> method.
 	/// <c>String.IsNullOrEmpty</c>.
 	/// </summary>
 	/// <example>
