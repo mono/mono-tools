@@ -32,7 +32,7 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.UI {
 
-	[Solution ("Recompile the assembly using '/target:winexe'.")]
+	[Solution ("Recompile the assembly using '/target:winexe' (gmcs syntax).")]
 	abstract public class ExecutableTargetRule : Rule, IAssemblyRule {
 
 		private bool CheckReferences (AssemblyDefinition assembly)
