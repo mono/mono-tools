@@ -39,10 +39,10 @@ using Mono.Cecil.Cil;
 namespace Gendarme.Rules.Serialization {
 
 	/// <summary>
-	/// This rule checks for types that implements <c>ISerializable</c>. Such types are
-	/// reponsible to serialize their data by implementing <c>GetObjectData</c>. This
-	/// rule checks that every instance fields, not decorated with the <c>[NonSerialized]</c>
-	/// attribute are serialized by the <c>GetObjectData</c> method. This rule will also warn
+	/// This rule checks for types that implement <c>ISerializable</c>. Such types
+	/// serialize their data by implementing <c>GetObjectData</c>. This
+	/// rule verifies that every instance field, not decorated with the <c>[NonSerialized]</c>
+	/// attribute is serialized by the <c>GetObjectData</c> method. This rule will also warn
 	/// if the type is unsealed and the <c>GetObjectData</c> is not <c>virtual</c>.
 	/// </summary>
 	/// <example>
@@ -58,7 +58,7 @@ namespace Gendarme.Rules.Serialization {
 	///		foo = info.GetInt32 ("foo");
 	///	}
 	///	
-	///	// extensibility is limited since GetObjectData is not virtual, 
+	///	// extensibility is limited since GetObjectData is not virtual:
 	///	// any type inheriting won't be able to serialized additional fields
 	///	public void GetObjectData (SerializationInfo info, StreamingContext context)
 	///	{
@@ -114,7 +114,7 @@ namespace Gendarme.Rules.Serialization {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("Although you are implementing the ISerializable interface, there are some fields that aren't going to be serialized and aren't marked with the [NonSerialized] attribute.")]
-	[Solution ("Mark with the [NonSerialized] attribute the field. This helps developers to understand better your code, and perhaps to discover quickly some errors.")]
+	[Solution ("Either add the [NonSerialized] attribute to the field or serialize it. This will help developers better understand your code and make errors easier to find.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2240:ImplementISerializableCorrectly")]
 	public class ImplementISerializableCorrectlyRule : Rule, ITypeRule {
 

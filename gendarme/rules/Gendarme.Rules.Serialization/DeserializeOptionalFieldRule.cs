@@ -33,10 +33,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Serialization {
 
+	// TODO: It would be helpful to explain in a bit more detail why this is actually a
+	// problem. A lot of people will think that they can rely on default initialization in
+	// the type's constructor but at least one of the serializers does not call a constructor. 
+
 	/// <summary>
-	/// This rule checks for types that have field(s) marked with <c>[OptionalField]</c>. 
-	/// Such types should take care of re-computing the value(s) when the data is deserialized 
-	/// using the <c>[OnDeserialized]</c> or <c>[OnDeserializing]</c> attributes on a method.
+	/// This rule will fire if a type has fields marked with <c>[OptionalField]</c>, but does
+	/// not have methods decorated with the <c>[OnDeserialized]</c> or <c>[OnDeserializing]</c> 
+	/// attributes. This is a problem because the optional fields must be re-computed when
+	/// the object is deserialized.
 	/// This rule only applies to assemblies compiled with the .NET framework version 2.0 
 	/// (or later).
 	/// </summary>

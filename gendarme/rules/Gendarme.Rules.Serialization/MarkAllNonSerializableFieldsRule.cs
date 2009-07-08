@@ -35,8 +35,8 @@ namespace Gendarme.Rules.Serialization {
 
 	/// <summary>
 	/// This rule checks for serializable types, i.e. decorated with the <c>[Serializable]</c>
-	/// attribute, and looks if all its fields are serializable too. If not the rule will 
-	/// warn unless the field itself is decorated with the <c>[NonSerialized]</c> attribute.
+	/// attribute, and checks to see if all its fields are serializable as well. If not the rule will 
+	/// fire unless the field is decorated with the <c>[NonSerialized]</c> attribute.
 	/// The rule will also warn if the field type is an interface as it is not possible,
 	/// before execution time, to know for certain if the type can be serialized or not.
 	/// </summary>
@@ -67,8 +67,8 @@ namespace Gendarme.Rules.Serialization {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("This type is Serializable, but contains fields that aren't serializable and this can drive you to some troubles and SerializationExceptions.")]
-	[Solution ("Make sure you are marking all non serializable fields with the NonSerialized attribute, or implement your custom serialization.")]
+	[Problem ("This type is Serializable, but contains fields that aren't serializable which can cause runtime errors when instances are serialized.")]
+	[Solution ("Make sure you are marking all non-serializable fields with the NonSerialized attribute or implement custom serialization.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
 	public class MarkAllNonSerializableFieldsRule : Rule, ITypeRule {
 

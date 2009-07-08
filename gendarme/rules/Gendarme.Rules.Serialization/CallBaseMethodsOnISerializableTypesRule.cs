@@ -38,7 +38,7 @@ namespace Gendarme.Rules.Serialization {
 
 	/// <summary>
 	/// This rule checks types that implement the <c>System.ISerializable</c> interface
-	/// and report if either the serialization constructor or the <c>GetObjectData</c>
+	/// and fires if either the serialization constructor or the <c>GetObjectData</c>
 	/// method does not call it's <c>base</c> type, potentially breaking the serialization
 	/// process.
 	/// </summary>
@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Serialization {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.2</remarks>
 
-	[Problem ("You are overriding the GetObjectData method or serialization constructor but you aren't calling to the base methods, and perhaps you aren't serializing / deserializing the fields of the base type.")]
+	[Problem ("You are overriding the GetObjectData method or serialization constructor but you aren't calling the base methods, and may not be serializing/deserializing the fields of the base type.")]
 	[Solution ("Call the base method or constructor from your own code.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2236:CallBaseClassMethodsOnISerializableTypes")]

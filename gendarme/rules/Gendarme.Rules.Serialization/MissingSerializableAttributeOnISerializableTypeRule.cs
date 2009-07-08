@@ -34,12 +34,12 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Serialization {
 
 	/// <summary>
-	/// This rule checks for types that implements <c>System.ISerializable</c> but are
+	/// This rule checks for types that implement <c>System.ISerializable</c> but are
 	/// not decorated with the <c>[Serializable]</c> attribute. Implementing 
 	/// <c>System.ISerializable</c> is not enough to make a class serializable as this 
 	/// interface only gives you more control over the basic serialization process. 
 	/// In order for the runtime to know your type is serializable it must have the 
-	/// <c>[Serializable]</c> pseudo-attribute.
+	/// <c>[Serializable]</c> attribute.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -59,7 +59,7 @@ namespace Gendarme.Rules.Serialization {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
-	[Problem ("The runtime won't consider this type as serializable unless your add the [Serializable] attribute to its definition.")]
+	[Problem ("The runtime won't consider this type as serializable unless you add the [Serializable] attribute to its definition.")]
 	[Solution ("Add [Serializable] to the type definition.")]
 	[FxCopCompatibility ("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
 	public class MissingSerializableAttributeOnISerializableTypeRule : Rule, ITypeRule {

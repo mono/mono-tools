@@ -35,10 +35,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Serialization {
 
 	/// <summary>
-	/// This rule checks for types that implements <c>System.ISerializable</c> provide a
-	/// serialization constructor, since the interface alone cannot force its presence. 
-	/// The serialization constructor should be <c>private</c> for <c>sealed</c> type, 
-	/// otherwise it should be <c>protected</c>.
+	/// This rule checks for types that implement <c>System.ISerializable</c> but don't provide a
+	/// serialization constructor. The constructor is required in order to make the type
+	/// serializeable but cannot be enforced by the interface. 
+	/// The serialization constructor should be <c>private</c> for <c>sealed</c> types and
+	/// <c>protected</c> for unsealed types.
 	/// </summary>
 	/// <example>
 	/// Bad example:
