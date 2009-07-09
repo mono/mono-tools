@@ -114,6 +114,7 @@ self-test: $(framework_SCRIPTS)
 $(generated_doc): $(framework_SCRIPTS)
 	mkdir -p doc
 	mdoc update -i $(framework_SCRIPTS).doc -o doc/generated $(framework_SCRIPTS)
+	touch $(generated_doc)
 
 $(framework_doc_zip): $(generated_doc)
 	mdoc assemble -f ecma -o doc/Gendarme.Framework doc/generated 

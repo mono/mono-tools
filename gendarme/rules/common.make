@@ -62,6 +62,7 @@ self-test: $(rules_dll)
 $(generated_doc): $(rules_dll)
 	mkdir -p doc
 	mdoc update -i $(rules_dll).doc -o doc/generated $(rules_dll)
+	touch $(generated_doc)
 
 $(rules_doc_zip): $(generated_doc)
 	mdoc assemble -f ecma -o doc/$(prefixed_rules_category) doc/generated 
