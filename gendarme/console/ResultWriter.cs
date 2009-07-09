@@ -46,6 +46,7 @@ namespace Gendarme {
 			this.filename = fileName;
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		~ResultWriter ()
 		{
 			if (!disposed)
@@ -93,6 +94,7 @@ namespace Gendarme {
 			}
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		protected abstract void Dispose (bool disposing);
 	}
 }

@@ -180,6 +180,7 @@ namespace Gendarme {
 			document.Save (writer);
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		protected override void Dispose (bool disposing)
 		{
 			if (!disposing)

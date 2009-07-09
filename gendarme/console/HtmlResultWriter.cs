@@ -66,6 +66,7 @@ namespace Gendarme {
 			}
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {

@@ -109,3 +109,11 @@ R: Gendarme.Rules.Naming.UseCorrectSuffixRule
 T: NDesk.Options.OptionSet
 R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
 T: NDesk.Options.OptionValueType
+
+# The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
+# fire because Gendarme code like the rules and the runners are not marked as
+# thread-safe.
+R: Gendarme.Rules.Concurrency.DecorateThreadsRule
+M: System.Void Gendarme.Wizard::UpdateWelcomeUI()
+M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
+M: System.Void Gendarme.Wizard::Analyze()

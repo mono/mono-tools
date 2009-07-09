@@ -75,7 +75,8 @@ framework_sources =  \
 	Gendarme.Framework/RunnerEventArgs.cs \
 	Gendarme.Framework/Severity.cs \
 	Gendarme.Framework/SolutionAttribute.cs \
-	Gendarme.Framework/Symbols.cs
+	Gendarme.Framework/Symbols.cs \
+	Gendarme.Framework/ThreadModelAttribute.cs
 
 framework_build_sources = $(addprefix $(srcdir)/, $(framework_sources))
 framework_build_sources += $(framework_generated_sources)

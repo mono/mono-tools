@@ -42,9 +42,12 @@ namespace Gendarme {
 
 	public partial class Wizard : Form {
 
-		// used to call code asynchronously
+		// This is used for methods which we execute within a thread, but we don't
+		// execute the methods concurrently so we can use single thread.
+		[ThreadModel (ThreadModel.SingleThread)]
 		delegate void MethodInvoker ();
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		sealed class AssemblyInfo {
 			private DateTime timestamp;
 			private AssemblyDefinition definition;
@@ -104,6 +107,7 @@ namespace Gendarme {
 			UpdatePageUI ();
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		static void EndCallback (IAsyncResult result)
 		{
 			(result.AsyncState as MethodInvoker).EndInvoke (result);
@@ -307,6 +311,7 @@ namespace Gendarme {
 			UpdatePageUI ();
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		public void UpdateAssemblies ()
 		{
 			if (IsDisposed)
@@ -433,6 +438,7 @@ namespace Gendarme {
 			}
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		private bool UpdateActiveRules ()
 		{
 			bool all_active = true;
@@ -539,6 +545,8 @@ namespace Gendarme {
 			progress_bar.Maximum = Runner.Assemblies.Count;
 		}
 
+		// TODO: Note that it isn't clear whether we can actually call gendarme from a thread...
+		[ThreadModel (ThreadModel.SingleThread)]
 		private void Analyze ()
 		{
 			counter = 0;

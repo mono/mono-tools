@@ -1,3 +1,8 @@
+2009-07-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* Makefile.am, ThreadModelAttribute.cs: Added new file allowing
+	threading semantics of gendarme to be specified.
+
 2009-07-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add a 'touch hack' so we only rebuild documentation

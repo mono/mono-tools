@@ -156,6 +156,7 @@ namespace Gendarme {
 				writer.WriteLine ("Processed {0} rules.", Runner.Rules.Count);
 		}
 
+		[ThreadModel (ThreadModel.SingleThread)]
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {

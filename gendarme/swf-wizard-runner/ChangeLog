@@ -1,3 +1,7 @@
+2009-07-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* Wizard.cs: Marked the async delegate code as threaded.
+
 2009-03-19  Jesse Jones  <jesjones@mindspring.com>
 
 	* Wizard.cs: Throws ObjectDisposedException.
