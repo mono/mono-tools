@@ -32,7 +32,7 @@ all: bin/Mono.Api.CompareMinimal.dll
 
 bin/Mono.Api.CompareMinimal.dll: $(SOURCES) Makefile
 	mkdir -p bin
-	gmcs -debug -target:library -out:bin/Mono.Api.CompareMinimal.dll $(SOURCES)
+	gmcs -debug -target:library -r:`pkg-config --variable=Libraries cecil` -out:bin/Mono.Api.CompareMinimal.dll $(SOURCES)
 
 get: masterinfos-3.5.tar.gz
 	tar xzvf masterinfos-3.5.tar.gz 
