@@ -54,6 +54,7 @@ MySQL configuration
 
   	* Create the user for the webcompare-db.exe application:
 	   mysql> GRANT ALL on `webcompare`.* TO `dbupdater`@`localhost`;
+	   mysql> GRANT SELECT on `mysql`.`proc` TO `webcompare`@`localhost`;
 	   mysql> SET PASSWORD FOR `dbupdater`@`localhost` = PASSWORD ('apassword');
 	   mysql> GRANT FILE ON *.* TO `dbupdater`@`localhost`;
 
@@ -86,9 +87,10 @@ DB update app configuration
 	* Copy db/webcompare-db.exe.config-EDITME to db/webcompare-db.exe.config
 	* Edit the existing appSettings section to set the connection string
 	for the 'dbupdater' user.
-	* You should run the DB update app (db/webcompare-db.exe) whenever you update
-	the binary/ folder with new assemblies. You can customize the
-	db/update-webcompare.sh script and use it as a Cron job.
+	* You should run the DB update app (db/webcompare-db.exe) whenever you
+	update the binary/ folder with new assemblies.
+	You can customize the db/update-webcompare.sh script and use it as a
+	Cron job.
 
 
 
