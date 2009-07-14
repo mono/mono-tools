@@ -18,6 +18,9 @@ one:
 	binary/ -> 	assemblies should be copied here into directories with
 			the MS .NET version name.
 
+	../gui-compare -> only needed when building the project. Some files
+			from that folder are used to build assemblies for webcompare.
+
 
 Prerequisites
 ------------
@@ -26,6 +29,12 @@ Prerequisites
 	* MySql.Data.dll in bin/ and db/.
 	You can compile one from MySql sources get it from one of the packages
 	at http://dev.mysql.com/downloads/
+
+Building
+----------
+
+	* Run 'make': this should build bin/Mono.Api.CompareMinimal.dll
+	and db/webcompare-db.exe.
 
 
 MySQL configuration
