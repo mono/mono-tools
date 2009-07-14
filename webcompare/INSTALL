@@ -54,7 +54,7 @@ MySQL configuration
 
   	* Create the user for the webcompare-db.exe application:
 	   mysql> GRANT ALL on `webcompare`.* TO `dbupdater`@`localhost`;
-	   mysql> GRANT SELECT on `mysql`.`proc` TO `webcompare`@`localhost`;
+	   mysql> GRANT SELECT on `mysql`.`proc` TO `dbupdater`@`localhost`;
 	   mysql> SET PASSWORD FOR `dbupdater`@`localhost` = PASSWORD ('apassword');
 	   mysql> GRANT FILE ON *.* TO `dbupdater`@`localhost`;
 
