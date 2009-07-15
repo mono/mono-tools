@@ -75,6 +75,10 @@ namespace  Mono.Profiler {
 			this.stream = new System.IO.FileStream (fileName, System.IO.FileMode.Open);
 		}
 		
+		public void Close () {
+			stream.Close ();
+		}
+
 		public BlockData ReadBlock () {
 			if (! hasEnded) {
 				byte [] header;

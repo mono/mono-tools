@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <CodePage>65001</CodePage>
-    <AssemblyName>mprof-decoder-library</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +23,7 @@
       <Execution clr-version="Net_2_0" />
     </Execution>
     <DefineConstants>DEBUG</DefineConstants>
+    <AssemblyName>mprof-decoder-library</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
