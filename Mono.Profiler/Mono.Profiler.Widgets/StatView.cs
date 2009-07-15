@@ -21,23 +21,29 @@
 
 
 using System;
+using System.Collections.Generic;
+using Gdk;
 using Gtk;
-using Mono.Profiler;
 
 namespace Mono.Profiler.Widgets {
-	
-	internal class CallsView : ScrolledWindow {
-		
-		public CallsView (ProfilerEventHandler data, DisplayOptions options) : base ()
+
+	public class StatView : VPaned {
+
+		StatList list;
+		StatDetail detail;
+
+		public StatView (ProfilerEventHandler data, DisplayOptions options)
 		{
-			TreeView view = new TreeView (new TreeModelAdapter (new CallsStore (data, options)));
-			view.AppendColumn ("Cost", new CellRendererText (), "text", 1);
-			TreeViewColumn col = new TreeViewColumn ("Method", new CellRendererText (), "text", 0);
-			view.AppendColumn (col);
-			view.ExpanderColumn = col;
-			view.Show ();
-			options.Changed += delegate { view.Model = new TreeModelAdapter (new CallsStore (data, options)); };
-			Add (view);
+			list = new StatList (data, options);
+			ScrolledWindow sw = new ScrolledWindow ();
+			sw.Add (list);
+			sw.ShowAll ();
+			detail = new StatDetail (data, options);
+			detail.CurrentItem = list.SelectedItem;
+			list.Selection.Changed += delegate { detail.CurrentItem = list.SelectedItem; };
+			Add1 (sw);
+			Add2 (detail);
+			Position = 200;
 		}
 	}
 }

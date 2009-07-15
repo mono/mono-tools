@@ -19,11 +19,15 @@ FILES =  \
 	AssemblyInfo.cs \
 	CallsStore.cs \
 	CallsView.cs \
+	DisplayOptions.cs \
 	Node.cs \
-	ProfileOptions.cs \
 	ProfileSetupDialog.cs \
 	ProfileStore.cs \
-	ProfileView.cs
+	ProfileView.cs \
+	StatDetail.cs \
+	StatList.cs \
+	StatStore.cs \
+	StatView.cs
 
 build_sources = $(addprefix $(srcdir)/, $(FILES))
 
@@ -35,6 +39,7 @@ build_resources_args = $(addprefix -resource:, $(build_resources))
 REFERENCES =  \
 	-pkg:glib-sharp-2.0 \
 	-pkg:gtk-sharp-2.0 \
+	-r:Mono.Posix \
 	-r:System
 
 PROJECT_REFERENCES = ../lib/mprof-decoder-library.dll

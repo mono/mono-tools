@@ -26,15 +26,17 @@ using Mono.Profiler;
 
 namespace Mono.Profiler.Widgets {
 	
-	internal class AllocationsView : TreeView {
+	internal class AllocationsView : ScrolledWindow {
 		
 		public AllocationsView (ProfilerEventHandler data, DisplayOptions options) : base ()
 		{
-			Model = new TreeModelAdapter (new AllocationsStore (data, options));
-			AppendColumn ("Cost", new CellRendererText (), "text", 1);
+			TreeView view = new TreeView (new TreeModelAdapter (new AllocationsStore (data, options)));
+			view.AppendColumn ("Cost", new CellRendererText (), "text", 1);
 			TreeViewColumn col = new TreeViewColumn ("Class/Allocator", new CellRendererText (), "text", 0);
-			AppendColumn (col);
-			ExpanderColumn = col;
+			view.AppendColumn (col);
+			view.ExpanderColumn = col;
+			view.Show ();
+			Add (view);
 		}
 	}
 }

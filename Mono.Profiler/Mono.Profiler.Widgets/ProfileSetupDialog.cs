@@ -29,6 +29,7 @@ namespace Mono.Profiler.Widgets {
 		
 		Allocations,
 		Calls,
+		Statistical,
 	}
 
 	public class ProfileSetupDialog : Dialog {
@@ -52,10 +53,26 @@ namespace Mono.Profiler.Widgets {
 			type_combo = ComboBox.NewText ();
 			type_combo.AppendText ("Allocations");
 			type_combo.AppendText ("Calls");
-			type_combo.Active = 1;
+			type_combo.AppendText ("Statistical");
+			type_combo.Active = 2;
 			box.PackStart (type_combo, false, false, 0);
 			box.ShowAll ();
 			VBox.PackStart (box, false, false, 0);
+		}
+
+		public string Args {
+			get {
+				switch (ProfileType) {
+				case ProfileType.Allocations:
+					return "alloc";
+				case ProfileType.Calls:
+					return "calls";
+				case ProfileType.Statistical:
+					return "s=16";
+				default:
+					throw new Exception ("Unexpected profile type: " + ProfileType);
+				}
+			}
 		}
 		
 		public string AssemblyPath {

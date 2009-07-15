@@ -1,3 +1,7 @@
+2009-07-15  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : support file open and save operations.
+
 2009-06-19  Mike Kestner <mkestner@novell.com>
 
 	* MainWindow.cs : add menu item to show/hide system nodes, hidden by

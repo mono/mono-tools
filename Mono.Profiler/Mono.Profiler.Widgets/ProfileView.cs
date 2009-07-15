@@ -26,7 +26,7 @@ using Mono.Profiler;
 namespace Mono.Profiler.Widgets {
 	
 	[System.ComponentModel.ToolboxItem (true)]
-	public class ProfileView : Gtk.ScrolledWindow {
+	public class ProfileView : Gtk.EventBox {
 
 		DisplayOptions options;
 		string path;
@@ -35,7 +35,7 @@ namespace Mono.Profiler.Widgets {
 			get { return path; }
 		}
 		
-		public void LoadProfile (string path, ProfileType type)
+		public bool LoadProfile (string path)
 		{
 			this.path = path;
 			SyncLogFileReader rdr = new SyncLogFileReader (path);
@@ -48,16 +48,21 @@ namespace Mono.Profiler.Widgets {
 					current.Decode (data, rdr);
 				} catch (DecodingException e) {
 					Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
-					break;
+					rdr.Close ();
+					return false;
 				}
 			}
-			Gtk.TreeView view;
-			if (type == ProfileType.Allocations) 
+			rdr.Close ();
+			Gtk.Widget view;
+			if (data.HasStatisticalData)
+				view = new StatView (data, Options);
+			else if (data.HasAllocationData)
 				view = new AllocationsView (data, Options);
 			else
 				view = new CallsView (data, Options);
 			view.ShowAll ();
 			View = view;
+			return true;
 		}
 		
 		public DisplayOptions Options {
@@ -68,8 +73,8 @@ namespace Mono.Profiler.Widgets {
 			}
 		}
 		
-		Gtk.TreeView View {
-			get { return Child as Gtk.TreeView; }
+		Gtk.Widget View {
+			get { return Child; }
 			set {
 				if (Child != null)
 					Remove (Child);

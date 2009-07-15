@@ -26,18 +26,31 @@ using Mono.Profiler;
 
 namespace Mono.Profiler.Widgets {
 	
-	internal class CallsView : ScrolledWindow {
+	internal class StatList : TreeView {
 		
-		public CallsView (ProfilerEventHandler data, DisplayOptions options) : base ()
+		StatStore store;
+
+		public StatList (ProfilerEventHandler data, DisplayOptions options) : base ()
 		{
-			TreeView view = new TreeView (new TreeModelAdapter (new CallsStore (data, options)));
-			view.AppendColumn ("Cost", new CellRendererText (), "text", 1);
+			store = new StatStore (data, options);
+			Model = new TreeModelAdapter (store);
+			Selection.SelectPath (new TreePath ("0"));
+			AppendColumn ("Percent", new CellRendererText (), "text", 1);
 			TreeViewColumn col = new TreeViewColumn ("Method", new CellRendererText (), "text", 0);
-			view.AppendColumn (col);
-			view.ExpanderColumn = col;
-			view.Show ();
-			options.Changed += delegate { view.Model = new TreeModelAdapter (new CallsStore (data, options)); };
-			Add (view);
+			AppendColumn (col);
+			ExpanderColumn = col;
+			options.Changed += delegate { Model = new TreeModelAdapter (new StatStore (data, options)); };
+		}
+
+		public IStatisticalHitItem SelectedItem {
+			get { 
+				TreeModel model;
+				TreePath[] paths = Selection.GetSelectedRows (out model);
+				return store [paths [0].Indices [0]];
+			}
+			set {
+				throw new NotImplementedException ();
+			}
 		}
 	}
 }
