@@ -39,10 +39,9 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
-	// TODO: I think that this should say LIB instead of EXE.
 	/// <summary>
-	/// This rule warns when an assembly without an entry point (i.e. an EXE) calls 
-	/// <c>Assembly.GetEntryAssembly()</c>. This call is problematic since it will always 
+	/// This rule warns when an assembly without an entry point (i.e. a dll or library) calls 
+	/// <c>Assembly.GetEntryAssembly ()</c>. This call is problematic since it will always 
 	/// return <c>null</c> when called from outside the root (main) application domain. This may 
 	/// become a problem inside libraries that can be used, for example, inside ASP.NET
 	/// applications.
