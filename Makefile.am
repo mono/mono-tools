@@ -1,3 +1,3 @@
 SUBDIRS= po docbrowser asn1view create-native-map ilcontrast gui-compare \
-	gendarme Mono.Profiler mperfmon gsharp webdoc
+	gendarme Mono.Profiler mperfmon gsharp webdoc minvoke
 
