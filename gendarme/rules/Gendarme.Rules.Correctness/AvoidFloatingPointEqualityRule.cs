@@ -38,23 +38,14 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
-	// TODO:
-	// The examples seem to have a few problems:
-	// 1) The decimal type has more precision (and a different base) than double, but it is
-	// still a floating point type so it is still susceptible to rounding and other errors associated
-	// with floating point math so, in general, it is not OK to use Equals with decimal types.
-	// 2) I have no idea what "known value" means in AMethod.
-	// 3) AMethod is rather unclear on what happens with infinity. The problem here is that
-	// the suggested test will not work with infinities because infinity - infinity is a nan.
-	// 4) AMethod says that users may "hit" a NaN. It's not clear what that means but the 
-	// suggested test does work if one or both arguments are a NaN.
-	// 5) The suggested test is difficult to write correctly if the expected values have very
-	// small or very large magnitudes because the epsilon value need to be scaled accordingly.
-	
 	/// <summary>
-	/// Comparing floating points values isn't easy, because most values, such as 0.2, 
-	/// cannot be precisely represented. This rule verifies that the code does not contain 
-	/// [in]equality comparisons for <c>Single</c> and <c>Double</c> values.
+	/// In general floating point numbers cannot be usefully compared using the equality and
+	/// inequality operators. This is because floating point numbers are inexact and most floating
+	/// point operations introduce errors which can accumulate if multiple operations are performed.
+	/// This rule will fire if [in]equality comparisons are used with <c>Single</c> or <c>Double</c> 
+	/// types. In general such comparisons should be done with some sort of epsilon test instead
+	/// of a simple compare (see the code below).
+	///
 	/// For more information:
 	/// <list>
 	/// <item>
@@ -68,42 +59,48 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// void AMethod ()
+	/// // This may or may not work as expected. In particular, if the values are from
+	/// // high precision real world measurements or different algorithmic sources then
+	/// // it's likely that they will have small errors and an exact inequality test will not 
+	/// // work as expected.
+	/// public static bool NearlyEqual (double [] lhs, double [] rhs)
 	/// {
-	///	float f1 = 0.1;
-	///	float f2 = 0.001 * 100;
-	///	if (f1 == f2) {
-	///		// ^^^ this equality can be false !
-	///	}
+	/// 	if (ReferenceEquals (lhs, rhs))
+	/// 		return true;
+	/// 		
+	/// 	if (lhs.Length != rhs.Length)
+	/// 		return false;
+	/// 		
+	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
+	/// 		if (lhs [i] != rhs [i])
+	/// 			return false;
+	/// 	}
+	/// 	
+	/// 	return true;
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example (delta):
+	/// Good example:
 	/// <code>
-	/// const float delta = 0.000001;
-	/// 
-	/// void AMethod ()
-	/// { 
-	///	float f1 = 0.1;
-	///	float f2 = 0.001 * 100;
-	///	if (Math.Abs (f1 - f2) &lt; delta) {
-	///		// this will work with known value but in real-life
-	///		// you may hit [Positive|Negative]Infinity and NaN
-	///	}
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// Good example (decimal):
-	/// <code>
-	/// void BMethod ()
-	/// { 
-	///	decimal d1 = 0.1m;
-	///	decimal d2 = 0.001m * 100;
-	///	// decimals are slower but keep their precision
-	///	if (d1 == d2) {
-	///	}
+	/// // This will normally work fine. However it will not work with infinity (because
+	/// // infinity - infinity is a NAN). It&apos;s also difficult to use if the values may 
+	/// // have very large or very small magnitudes (because the epsilon value must 
+	/// // be scaled accordingly).
+	/// public static bool NearlyEqual (double [] lhs, double [] rhs, double epsilon)
+	/// {
+	/// 	if (ReferenceEquals (lhs, rhs))
+	/// 		return true;
+	/// 		
+	/// 	if (lhs.Length != rhs.Length)
+	/// 		return false;
+	/// 		
+	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
+	/// 		if (Math.Abs (lhs [i] - rhs [i]) &gt; epsilon)
+	/// 			return false;
+	/// 	}
+	/// 	
+	/// 	return true;
 	/// }
 	/// </code>
 	/// </example>
