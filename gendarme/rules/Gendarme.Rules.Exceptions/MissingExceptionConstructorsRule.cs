@@ -34,20 +34,22 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Exceptions {
 
-	// TODO: It would be helpful to explain why the constructors should be present. For 
-	// example many exceptions should not be default constructed so users will naturally
-	// want to omit the default constructor and they need to know why the rule requires
-	// it so that they can judge whether to provide it or not.
-
 	/// <summary>
-	/// This rule will fire if an exception class does not provide the constructors required
-	/// by the runtime or by .NET programming conventions.
+	/// This rule will fire if an exception class is missing one or more of the following
+	/// constructors:
+	/// <list>
+	/// <item><description><c>public E ()</c> is required for XML serialization. Public access is required
+	/// in case the assembly uses CAS to prevent reflection on non-public members.</description></item>
+	/// <item><description><c>public E (string message)</c> is a .NET convention.</description></item>
+	/// <item><description><c>public E (string message, ..., Exception inner)</c> is a .NET convention.</description></item>
+	/// <item><description><c>(non)public E (SerializationInfo info, StreamingContext context)</c> is required for binary serialization.</description></item>
+	/// </list>
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
 	/// public class GeneralException : Exception {
-	///	// it should be a default public constructor
+	///	// access should be public
 	/// 	private GeneralException ()
 	/// 	{
 	/// 	}
@@ -62,15 +64,15 @@ namespace Gendarme.Rules.Exceptions {
 	/// 	{
 	/// 	}
 	/// 	
-	/// 	public GeneralException (string message)
+	/// 	public GeneralException (string message) : base (message)
 	/// 	{
 	/// 	}
 	/// 	
-	/// 	public GeneralException (string message, Exception inner)
+	/// 	public GeneralException (string message, Exception inner) : base (message, inner)
 	/// 	{
 	/// 	}
 	/// 	
-	/// 	protected GeneralException (SerializationInfo info, StreamingContext context)
+	/// 	protected GeneralException (SerializationInfo info, StreamingContext context) : base (info, context)
 	/// 	{
 	/// 	}
 	/// }
