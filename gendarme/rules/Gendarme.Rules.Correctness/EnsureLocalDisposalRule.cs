@@ -157,13 +157,7 @@ namespace Gendarme.Rules.Correctness {
 			while (ins != null) {
 				if (ins.IsLoadLocal () || ins.IsStoreLocal ())
 					return ins;
-
-				if (ins.OpCode.FlowControl == FlowControl.Branch
-					|| ins.OpCode.Code == Code.Isinst
-					|| ins.OpCode.Code == Code.Dup) {
-					ins = ins.TraceBack (method);
-				} else
-					break;
+				ins = ins.TraceBack (method);
 			}
 			return null;
 		}

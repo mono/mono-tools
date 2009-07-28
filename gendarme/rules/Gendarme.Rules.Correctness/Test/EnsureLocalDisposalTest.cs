@@ -101,6 +101,16 @@ namespace Test.Rules.Correctness {
 			return null;
 		}
 
+		//foreach(valuetype_enumerator) || valuetype disposable
+		static string ValueTypeDisposable (List<string> strings)
+		{
+			foreach (var s in strings) {
+				if (s.Length > 0)
+					return s;
+			}
+			return null;
+		}
+
 		//generator
 		//csc/gmcs for some reason build an IDisposable iterator class that is never disposed
 		static IEnumerable<string> Success6 ()
@@ -233,6 +243,12 @@ namespace Test.Rules.Correctness {
 		public void Success6 ()
 		{
 			AssertRuleSuccess<DisposalCases> ("Success6");
+		}
+
+		[Test]
+		public void ValueTypeDisposable ()
+		{
+			AssertRuleSuccess<DisposalCases> ("ValueTypeDisposable");
 		}
 
 		[Test]

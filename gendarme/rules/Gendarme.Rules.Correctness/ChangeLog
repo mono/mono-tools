@@ -1,3 +1,7 @@
+2009-07-28  Cedric Vivier  <cedricv@neonux.com>
+
+	* EnsureLocalDisposalRule.cs: Do not issue false positives for value type disposables.
+
 2009-07-24  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidFloatingPointEqualityRule.cs: Rewrote the description and
