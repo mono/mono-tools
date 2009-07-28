@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security;
 
+using Gendarme.Framework;
 using Gendarme.Rules.Naming;
 
 using NUnit.Framework;
@@ -95,6 +96,9 @@ namespace Test.Rules.Naming {
 	
 	public class IncorrectICollectionCol : InterfaceImplementer {
 	}
+
+	public class IncorrectICollectionColDerived : IncorrectICollectionCol {
+	}
 	
 	public class MultipleInterfaceImplementer : IEnumerable, IPermission {		
 		public IEnumerator GetEnumerator ()
@@ -146,7 +150,32 @@ namespace Test.Rules.Naming {
 	
 	public class IncorrectMultipleInterfaceImplementer : MultipleInterfaceImplementer {
 	}
-       
+
+	public class IncorrectICollectionImplementer : IncorrectMultipleInterfaceImplementer, ICollection
+	{
+		public int Count {
+			get { throw new NotImplementedException (); }
+		}
+
+		public bool IsSynchronized {
+			get { throw new NotImplementedException (); }
+		}
+
+		public object SyncRoot {
+			get { throw new NotImplementedException (); }
+		}
+
+		public IEnumerator GetEnumerator ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void CopyTo (Array array, int index)
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
 	public class DerivingClassImplementingInterfaces : EventArgs, IEnumerable, IPermission {		 
 		
 		public IEnumerator GetEnumerator ()
@@ -205,14 +234,32 @@ namespace Test.Rules.Naming {
 	public class CollectionIncorrect<T> : Collection<T> {
 	}
 
+	public class CollectionIncorrectDerived<T> : CollectionIncorrect<T> {
+	}
+
 	public class CorrectDictionary<T, V> : Dictionary<T, V> {
 	}
 
 	public class DictionaryIncorrect<T, V> : Dictionary<T, V> {
 	}
 
+	public class DictionaryIncorrectDerived<T, V> : DictionaryIncorrect<T, V> {
+	}
+
 	[TestFixture]
 	public class UseCorrectSuffixTest : TypeRuleTestFixture<UseCorrectSuffixRule> {
+
+		void AssertRuleFailureWithHighConfidence<T>()
+		{
+			AssertRuleFailure<T> (1);
+			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence, typeof (T).Name);
+		}
+
+		void AssertRuleFailureWithLowConfidence<T>()
+		{
+			AssertRuleFailure<T> (1);
+			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence, typeof (T).Name);
+		}
 
 		[Test]
 		public void DoesNotApply ()
@@ -223,7 +270,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestOneLevelInheritanceIncorrectName () 
 		{
-			AssertRuleFailure<IncorrectAttr> (1);
+			AssertRuleFailureWithHighConfidence<IncorrectAttr> ();
 		}
 		
 		[Test]
@@ -241,7 +288,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestVariousLevelInheritanceIncorrectName () 
 		{
-			AssertRuleFailure<OtherAttr> (1);
+			AssertRuleFailureWithHighConfidence<OtherAttr> ();
 		}
 		
 		[Test]
@@ -261,7 +308,7 @@ namespace Test.Rules.Naming {
  		[Test]
 		public void TestInterfaceImplementerIncorrectName () 
 		{
-			AssertRuleFailure<IncorrectICollectionCol> (1);
+			AssertRuleFailureWithLowConfidence<IncorrectICollectionCol> ();
 		}			       
 		
 		[Test]
@@ -279,8 +326,24 @@ namespace Test.Rules.Naming {
        		[Test]
 		public void TestMultipleInterfaceImplementerIncorrectName () 
 		{
-			AssertRuleFailure<IncorrectMultipleInterfaceImplementer> (1);
-		}			       
+			AssertRuleFailureWithHighConfidence<MultipleInterfaceImplementer> ();
+		}
+
+		[Test]
+		public void TestIncorrectMultipleInterfaceImplementer ()
+		{
+			//this type derives from an incorrect base type, *without* introducing its own defect
+			//hence it has low confidence
+			AssertRuleFailureWithLowConfidence<IncorrectMultipleInterfaceImplementer> ();
+		}
+
+		[Test]
+		public void TestIncorrectICollectionImplementer ()
+		{
+			//this type derives from an incorrect base type, but also introduce its own defect
+			//hence it has high confidence
+			AssertRuleFailureWithHighConfidence<IncorrectICollectionImplementer> ();
+		}
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesCorrectName ()
@@ -291,27 +354,37 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestDerivingClassImplementingInterfacesIncorrectName ()
 		{
-			AssertRuleFailure<IncorrectDerivingClassImplementingInterfaces> (1);
+			AssertRuleFailureWithLowConfidence<IncorrectDerivingClassImplementingInterfaces> ();
 		}      
 		
 		[Test]
 		public void TestDerivingClassImplementingInterfacesAnotherIncorrectName ()
 		{
-			AssertRuleFailure<IncorrectDerivingClassImplementingInterfacesCollection> (1);
+			//this type derives from an incorrect base type, *without* introducing its own defect
+			//hence it has low confidence
+			AssertRuleFailureWithLowConfidence<IncorrectDerivingClassImplementingInterfacesCollection> ();
 		}
 
 		[Test]
 		public void GenericCollection ()
 		{
 			AssertRuleSuccess<CorrectCollection<int>> ();
-			AssertRuleFailure<CollectionIncorrect<int>> (1);
+			AssertRuleFailureWithHighConfidence<CollectionIncorrect<int>> ();
 		}
 
 		[Test]
 		public void GenericDictionary ()
 		{
 			AssertRuleSuccess<CorrectDictionary<int,int>> ();
-			AssertRuleFailure<DictionaryIncorrect<int,int>> (1);
+			AssertRuleFailureWithHighConfidence<DictionaryIncorrect<int,int>> ();
+		}
+
+		[Test]
+		public void IncorrectBaseType ()
+		{
+			AssertRuleFailureWithLowConfidence<IncorrectICollectionColDerived> ();
+			AssertRuleFailureWithLowConfidence<CollectionIncorrectDerived<int>> ();
+			AssertRuleFailureWithLowConfidence<DictionaryIncorrectDerived<int,int>> ();
 		}
 
 		class My {
@@ -337,11 +410,11 @@ namespace Test.Rules.Naming {
 		public void CheckShouldNeverBeUsedSuffixes ()
 		{
 			AssertRuleSuccess<My> ();
-			AssertRuleFailure<MyDelegate> (1);
-			AssertRuleFailure<MyEnum> (1);
-			AssertRuleFailure<MyFlags> (1);
-			AssertRuleFailure<MyEx> (1);
-			AssertRuleFailure<MyImpl> (1);
+			AssertRuleFailureWithHighConfidence<MyDelegate> ();
+			AssertRuleFailureWithHighConfidence<MyEnum> ();
+			AssertRuleFailureWithHighConfidence<MyFlags> ();
+			AssertRuleFailureWithHighConfidence<MyEx> ();
+			AssertRuleFailureWithHighConfidence<MyImpl> ();
 		}
 
 		class MyCollection : EventArgs {
@@ -394,16 +467,16 @@ namespace Test.Rules.Naming {
 		public void EnumName ()
 		{
 			AssertRuleSuccess<ReturnValue> ();
-			AssertRuleFailure<ReturnValueEnum> (1);
-			AssertRuleFailure<returnvalueenum> (1);
+			AssertRuleFailureWithHighConfidence<ReturnValueEnum> ();
+			AssertRuleFailureWithHighConfidence<returnvalueenum> ();
 		}
 
 		[Test]
 		public void FlagsName ()
 		{
 			AssertRuleSuccess<ReturnValues> ();
-			AssertRuleFailure<ReturnValuesFlags> (1);
-			AssertRuleFailure<returnvaluesflags> (1);
+			AssertRuleFailureWithHighConfidence<ReturnValuesFlags> ();
+			AssertRuleFailureWithHighConfidence<returnvaluesflags> ();
 		}
 	}
 }
