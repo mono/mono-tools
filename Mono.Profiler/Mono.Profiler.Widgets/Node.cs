@@ -28,6 +28,10 @@ namespace Mono.Profiler.Widgets {
 	
 	internal abstract class Node {
 		
+		public static Comparison<Node> DescendingValue = delegate (Node a, Node b) {
+			return b.Value.CompareTo (a.Value);
+		};
+
 		ProfileStore store;
 		Node parent;
 		GCHandle gch;

@@ -1,3 +1,7 @@
+2009-07-30  Mike Kestner <mkestner@novell.com>
+
+	* Node.cs: add a DescendingValue comparison.
+
 2009-07-15  Mike Kestner <mkestner@novell.com>
 
 	* AllocationsView.cs: make it a ScrolledWindow subclass.
