@@ -34,10 +34,6 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
-	// TODO: Doesn't the bad example need a DllImport? Why is the good example
-	// specifying ".so" instead of letting mono figure out the extension in a portable
-	// way?
-
 	/// <summary>
 	/// This rule warns the developer if a <code>[MarshalAs]</code> attribute has not been 
 	/// specified for boolean parameters of a P/Invoke method. The size of boolean types varies
@@ -50,13 +46,14 @@ namespace Gendarme.Rules.Interoperability {
 	/// Bad example:
 	/// <code>
 	/// // bad assuming the last parameter is a single byte being mapped to a bool
+	/// [DllImport ("liberty")]
 	/// private static extern bool Bad (bool b1, ref bool b2);
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// [DllImport ("liberty.so")]
+	/// [DllImport ("liberty")]
 	/// [return: MarshalAs (UnmanagedType.Bool)]
 	/// private static extern bool Good ([MarshalAs (UnmanagedType.Bool)] bool b1, [MarshalAs (UnmanagedType.U1)] ref bool b2);
 	/// </code>

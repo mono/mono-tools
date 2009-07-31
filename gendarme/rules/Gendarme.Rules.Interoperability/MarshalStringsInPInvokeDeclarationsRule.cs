@@ -33,30 +33,32 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Interoperability {
 
-	// TODO: The summary should say what the default charset is for mono (utf-8) and
-	// .NET (?).
-
 	/// <summary>
 	/// This rule will fire if a P/Invoke method has System.String or System.Text.StringBuilder
 	/// arguments, and the DllImportAttribute does not specify the <code>CharSet</code>, 
 	/// and the string arguments are not decorated with <code>[MarshalAs]</code>.
+	///
+	/// This is important because the defaults are different on the various platforms.
+	/// On Mono the default is to always use utf-8. On .NET the default is to use the ANSI
+	/// CharSet which is the native encoding and will typically be some variant of ASCII or
+	/// something like Shift-JIS. On Compact .NET the default is utf-16.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// [DllImport("coredll.dll")]
+	/// [DllImport ("coredll")]
 	/// static extern int SHCreateShortcut (StringBuilder szShortcut, StringBuilder szTarget);
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good examples:
 	/// <code>
-	/// [DllImport("coredll.dll", CharSet = CharSet.Auto)]
+	/// [DllImport ("coredll", CharSet = CharSet.Auto)]
 	/// static extern int SHCreateShortcut (StringBuilder szShortcut, StringBuilder szTarget);
 	/// 
-	/// [DllImport("coredll.dll")]
-	/// static extern int SHCreateShortcut ([MarshalAs(UnmanagedType.LPTStr)] StringBuilder szShortcut, 
-	///	[MarshalAs(UnmanagedType.LPTStr)] StringBuilder szTarget);
+	/// [DllImport ("coredll")]
+	/// static extern int SHCreateShortcut ([MarshalAs (UnmanagedType.LPTStr)] StringBuilder szShortcut, 
+	///	[MarshalAs (UnmanagedType.LPTStr)] StringBuilder szTarget);
 	/// </code>
 	/// </example>
 
