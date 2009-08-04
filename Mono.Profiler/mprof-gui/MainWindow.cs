@@ -11,6 +11,7 @@ namespace Mono.Profiler.Gui {
 	public class MainWindow : Gtk.Window {	
 
 		Gtk.Action save_action;
+		Gtk.Action show_system_nodes_action;
 		ProfileView contents;
 		string filename;
 		
@@ -47,6 +48,7 @@ namespace Mono.Profiler.Gui {
 						if (contents.LoadProfile (log_file)) {
 							filename = log_file; 
 							save_action.Sensitive = true;
+							show_system_nodes_action.Sensitive = contents.SupportsFiltering;
 						}
 					});
 				};
@@ -61,6 +63,7 @@ namespace Mono.Profiler.Gui {
 			if (d.Run () == (int) ResponseType.Accept && contents.LoadProfile (d.Filename)) {
 				filename = d.Filename;
 				save_action.Sensitive = false;
+				show_system_nodes_action.Sensitive = contents.SupportsFiltering;
 			}
 			d.Destroy ();
 		}
@@ -77,6 +80,7 @@ namespace Mono.Profiler.Gui {
 				System.IO.File.Move (filename, d.Filename);
 				filename = d.Filename;
 				save_action.Sensitive = false;
+				show_system_nodes_action.Sensitive = contents.SupportsFiltering;
 			}
 			d.Destroy ();
 		}
@@ -126,6 +130,7 @@ namespace Mono.Profiler.Gui {
 			AddAccelGroup (uim.AccelGroup);
 			save_action = group.GetAction ("SaveAsAction");
 			save_action.Sensitive = false;
+			show_system_nodes_action = group.GetAction ("ShowSystemNodesAction");
  			return uim.GetWidget ("/Menubar");
 		}
 	}

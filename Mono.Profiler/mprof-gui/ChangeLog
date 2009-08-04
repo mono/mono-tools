@@ -1,3 +1,8 @@
+2009-08-04  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : update sensitivity of the Show System Nodes action
+	to indicate if the option is supported in the current view.
+
 2009-07-15  Mike Kestner <mkestner@novell.com>
 
 	* MainWindow.cs : support file open and save operations.
