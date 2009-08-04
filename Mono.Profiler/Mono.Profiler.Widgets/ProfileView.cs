@@ -28,6 +28,7 @@ namespace Mono.Profiler.Widgets {
 	[System.ComponentModel.ToolboxItem (true)]
 	public class ProfileView : Gtk.EventBox {
 
+		bool supports_filtering = false;
 		DisplayOptions options;
 		string path;
 		
@@ -54,12 +55,15 @@ namespace Mono.Profiler.Widgets {
 			}
 			rdr.Close ();
 			Gtk.Widget view;
+			supports_filtering = false;
 			if (data.HasStatisticalData)
 				view = new StatView (data, Options);
 			else if (data.HasAllocationData)
 				view = new AllocationsView (data, Options);
-			else
+			else {
 				view = new CallsView (data, Options);
+				supports_filtering = true;
+			}
 			view.ShowAll ();
 			View = view;
 			return true;
@@ -73,6 +77,10 @@ namespace Mono.Profiler.Widgets {
 			}
 		}
 		
+		public bool SupportsFiltering {
+			get { return supports_filtering; }
+		}
+
 		Gtk.Widget View {
 			get { return Child; }
 			set {
