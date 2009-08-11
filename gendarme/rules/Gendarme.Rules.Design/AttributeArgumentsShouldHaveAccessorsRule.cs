@@ -34,11 +34,10 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	// TODO: This rule should explain why this is a problem.
-
 	/// <summary>
 	/// This rule fires if a parameter to an <c>Attribute</c> constructor is not exposed
-	/// using a properly cased property.
+	/// using a properly cased property. This is a problem because it is generally not useful
+	/// to set state within an attribute without providing a way to get at that state.
 	/// </summary>
 	/// <example>
 	/// Bad example:

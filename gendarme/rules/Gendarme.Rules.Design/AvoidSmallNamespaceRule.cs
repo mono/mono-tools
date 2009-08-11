@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using Mono.Cecil;
 
@@ -38,11 +39,8 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	// TODO: If five is the default then how do users change it? If they cannot change it
-	// why are we implying that they can?
-
 	/// <summary>
-	/// This rule fires if a namespace contains less than five (default) visible types. Note
+	/// This rule fires if a namespace contains less than five (by default) visible types. Note
 	/// that this rule enumerates the types in all the assemblies being analyzed instead of
 	/// simply considering each assembly in turn.
 	/// The rule exempts:
@@ -84,8 +82,14 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes")]
 	public class AvoidSmallNamespaceRule : Rule, IAssemblyRule {
 
-		private int minimum = 5;
+		private const int Default = 5;
+		private int minimum = Default;
 
+		/// <summary>
+		/// The minimum number of types which must exist within a namespace.
+		/// </summary>
+		[DefaultValue (Default)]
+		[Description ("The minimum of types that should exists inside a namespace.")]
 		public int Minimum {
 			get { return minimum; }
 			set {

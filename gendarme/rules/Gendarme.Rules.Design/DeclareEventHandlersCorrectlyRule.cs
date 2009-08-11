@@ -35,14 +35,16 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Design {
 
-	// TODO: This rule needs to say why the signature needs to follow the .NET conventions.
-	// For example, a non-void return type is problematic because some of the return values
-	// may be thrown away if multiple delegates are attached to the event. And a missing
-	// or unconventional second argument may cause problems with visual designer tools.
-	// It may also make sense to use a higher severity for non-void return types.
-
 	/// <summary>
-	/// This rule verifies that all events declared within a type have correct signatures.
+	/// This rule will fire if an event is declared with a signature which does not match
+	/// the .NET guidelines. The return type of the event should be void (because there
+	/// is no good way to handle return values if multiple delegates are attached to the
+	/// event). And the event should take two arguments. The first should be of type
+	/// <c>System.Object</c> and be named &apos;sender&apos;. The second should be of type 
+	/// <c>System.EventArgs</c> (or a subclass) and named &apos;e&apos;. This helps tools
+	/// such as visual designers identify the delegates and methods which may be
+	/// attached to events. Note that .NET 2.0 added a generic <c>System.EventHandler</c>
+	/// type which can be used to easily create events with the correct signature.
 	/// </summary>
 	/// <example>
 	/// Bad example:

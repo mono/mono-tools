@@ -35,16 +35,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	// TODO: It's not at all clear why a method is better than an indexer here. Is it because
-	// a multiple dimensional indexer may not represent a "logical data store" as the FxCop
-	// rule implies? Or do IDEs provide better auto-complete for methods so that the index
-	// order problem is more tractable if the indexer is a method?
-
 	/// <summary>
-	/// This rule checks for indexer properties in externally visible types which have more
-	/// than one index argument.
-	/// Such indexers are often confusing to use (e.g. it's not always clear to users how
-	/// the actual arguments should be ordered) and are better represented by methods.
+	/// This rule checks for externally visible indexer properties which have more
+	/// than one index argument. These can be confusing to some developers and
+	/// IDEs with auto-complete don't always handle them as well as methods so
+	/// it can be hard to know which argument is which. 
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -68,7 +63,7 @@ namespace Gendarme.Rules.Design {
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This indexer use multiple indexes which can impair its usability.")]
-	[Solution ("Convert this indexer into a method.")]
+	[Solution ("Consider converting the indexer into a method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional")]
 	public class AvoidMultidimensionalIndexerRule : Rule, IMethodRule {
 
