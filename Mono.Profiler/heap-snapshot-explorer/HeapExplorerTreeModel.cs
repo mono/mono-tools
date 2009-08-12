@@ -447,7 +447,7 @@ namespace Mono.Profiler
 					eventBlocks.Add (block);
 				} else if (block.Code == BlockCode.DIRECTIVES) {
 					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
-				} else if (block.Code == BlockCode.MAPPING) {
+				} else if ((block.Code == BlockCode.MAPPING) || (block.Code == BlockCode.LOADED)){
 					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
 				} else if (block.Code == BlockCode.INTRO) {
 					reader.ReadBlock (block).Decode (heapEventProcessor, reader);
