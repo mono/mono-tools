@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -37,12 +38,10 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
-	// TODO: The summary says that the threshold can be configured. Is this true? If so how?
-
 	/// <summary>
 	/// This rule checks every type for lack of cohesion between the fields and the methods. Low cohesion is often
 	/// a sign that a type is doing too many, different and unrelated things. The cohesion score is given for each defect 
-	/// (higher is better) and the success threshold can be configured. 
+	/// (higher is better).
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
@@ -50,12 +49,17 @@ namespace Gendarme.Rules.Maintainability {
 	[Solution ("You can apply the Extract Class or Extract Subclass refactoring.")]
 	public class AvoidLackOfCohesionOfMethodsRule : Rule, ITypeRule {
 
-		private double successCoh = 0.5;
-		private double lowCoh = 0.4;
-		private double medCoh = 0.2;
-		private int method_minimum_count = 2;//set at 2 to remove 'uninteresting' types
-		private int field_minimum_count = 1;//set at 1 to remove 'uninteresting' types
-		                                 //this shouldn't be set to another value than MinimumMethodCount/2
+		private const double DefaultSuccessCoh = 0.5;
+		private const double DefaultLowCoh = 0.4;
+		private const double DefaultMediumCoh = 0.2;
+		private const int DefaultMethodMinimumCount = 2;	// set at 2 to remove 'uninteresting' types
+		private const int DefaultFieldMinimumCount = 1;		// set at 1 to remove 'uninteresting' types (this shouldn't be set to a value other than MinimumMethodCount/2)
+		
+		private double successCoh = DefaultSuccessCoh;
+		private double lowCoh = DefaultLowCoh;
+		private double medCoh = DefaultMediumCoh;
+		private int method_minimum_count = DefaultMethodMinimumCount;
+		private int field_minimum_count = DefaultFieldMinimumCount;
 		private Dictionary<FieldReference, int> F  = new Dictionary<FieldReference, int>();
 		private List<FieldReference> Fset = new List<FieldReference>();
 
@@ -150,24 +154,40 @@ namespace Gendarme.Rules.Maintainability {
 		}
 
 
+		/// <summary>Cohesion values lower than this will result in a defect.</summary>
+		/// <remarks>Defaults to 0.5.</remarks>
+		[DefaultValue (DefaultSuccessCoh)]
+		[Description ("Cohesion values lower than this will result in a defect.")]
 		public double SuccessLowerLimit
 		{
 			get { return successCoh; }
 			set { successCoh = value; }
 		}
 
+		/// <summary>Defects with cohesion values greater than this will be reported at low severity.</summary>
+		/// <remarks>Defaults to 0.4.</remarks>
+		[DefaultValue (DefaultLowCoh)]
+		[Description ("Defects with cohesion values greater than this will be reported at low severity.")]
 		public double LowSeverityLowerLimit
 		{
 			get { return lowCoh; }
 			set { lowCoh = value; }
 		}
 
+		/// <summary>Defects with cohesion values greater than (but less than LowSeverityLowerLimit) this will be reported at medium severity.</summary>
+		/// <remarks>Defaults to 0.2.</remarks>
+		[DefaultValue (DefaultMediumCoh)]
+		[Description ("Defects with cohesion values greater than (but less than LowSeverityLowerLimit) this will be reported at medium severity.")]
 		public double MediumSeverityLowerLimit
 		{
 			get { return medCoh; }
 			set { medCoh = value; }
 		}
 
+		/// <summary>The minimum number of methods a class must have to be checked.</summary>
+		/// <remarks>Defaults to 2.</remarks>
+		[DefaultValue (DefaultMethodMinimumCount)]
+		[Description ("The minimum number of methods a class must have to be checked.")]
 		public int MinimumMethodCount
 		{
 			get { return method_minimum_count; }
@@ -178,6 +198,10 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
+		/// <summary>The minimum number of fields a class must have to be checked.</summary>
+		/// <remarks>Defaults to 1.</remarks>
+		[DefaultValue (DefaultFieldMinimumCount)]
+		[Description ("The minimum number of fields a class must have to be checked.")]
 		public int MinimumFieldCount
 		{
 			get { return field_minimum_count; }

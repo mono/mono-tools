@@ -40,17 +40,13 @@ using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Maintainability {
 
-	// TODO: I think StopWatch is also more accurate than DateTime (at least on .NET). The
-	// precision of DateTime is 100-nanosecond which is quite high, but I suspect that the
-	// accuracy is not anywhere near that high. OTOH StopWatch will use QueryPerformanceFrequency
-	// which is very accurate.
-
 	/// <summary>
 	/// This rule checks methods for cases where a <c>System.Diagnostics.Stopwatch</c> could be
 	/// used instead of using <c>System.DateTime</c> to compute the time required for an action.
-	/// This does not affect execution nor performance (much) but it improves source 
-	/// code readability. This rule only applies to assemblies compiled with the 
-	/// .NET framework version 2.0 (or later).
+	/// Stopwatch is preferred because it better expresses the intent of the code and because (on
+	/// some platforms at least) StopWatch is accurate to roughly the microsecond whereas 
+	/// DateTime.Now is only accurate to 16 milliseconds or so. This rule only applies to assemblies
+	/// compiled with the .NET framework version 2.0 (or later).
 	/// </summary>
 	/// <example>
 	/// Bad example:

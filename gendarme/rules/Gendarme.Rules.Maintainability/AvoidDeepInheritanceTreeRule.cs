@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.ComponentModel;
 
 using Mono.Cecil;
 
@@ -35,13 +36,10 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
-	// TODO: Afaict it is not possible to configure the MaximumDepth or CountExternalDepth
-	// properties.
-
 	/// <summary>
 	/// This rule will fire if a type has (by default) more than four base classes defined
 	/// within the assembly set being analyzed. Optionally it will also count base 
-	/// classes defined outside the assembly set.
+	/// classes defined outside the assembly set being analyzed.
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
@@ -50,17 +48,27 @@ namespace Gendarme.Rules.Maintainability {
 	[FxCopCompatibility ("Microsoft.Maintainability", "CA1501:AvoidExcessiveInheritance")]
 	public class AvoidDeepInheritanceTreeRule : Rule, ITypeRule {
 
+		/// <summary>Classes with more base classes than this will result in a defect.</summary>
+		/// <remarks>Defaults to 4.</remarks>
+		[DefaultValue (DefaultMaximumDepth)]
+		[Description ("Classes with more base classes than this will result in a defect.")]
 		public int MaximumDepth {
 			get { return maximumDepth; }
 			set { maximumDepth = value; }
 		}
-		private int maximumDepth = 4;
+		private const int DefaultMaximumDepth = 4;
+		private int maximumDepth = DefaultMaximumDepth;
 
+		/// <summary>If true the rule will count base classes defined outside the assemblies being analyzed.</summary>
+		/// <remarks>Defaults to false.</remarks>
+		[DefaultValue (DefaultCountExternalDepth)]
+		[Description ("If true the rule will count base classes defined outside the assemblies being analyzed.")]
 		public bool CountExternalDepth {
 			get { return countExternalDepth; }
 			set { countExternalDepth = value; }
 		}
-		private bool countExternalDepth = false;
+		private const bool DefaultCountExternalDepth = false;
+		private bool countExternalDepth = DefaultCountExternalDepth;
 
 
 		private Severity GetSeverity (int depth)
