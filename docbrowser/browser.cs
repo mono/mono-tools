@@ -36,12 +36,13 @@ class Driver {
 		string mergeConfigFile = null;
 		bool show_help = false, show_version = false;
 		bool show_gui = true;
+		var sources = new List<string> ();
 		
 		int r = 0;
 
 		var p = new OptionSet () {
-			{ "docdir=",
-				"Load documentation from {DIR}.  The default directory is $libdir/monodoc/sources.",
+			{ "docrootdir=",
+				"Load documentation tree & sources from {DIR}.  The default directory is $libdir/monodoc.",
 				v => {
 					basedir = v != null && v.Length > 0 ? v : null;
 					string md;
@@ -50,6 +51,9 @@ class Driver {
 						r = 1;
 					}
 				} },
+			{ "docdir=",
+				"Load documentation from {DIR}.",
+				v => sources.Add (v) },
 			{ "edit=",
 				"Edit mdoc(5) XML documentation found within {PATH}.",
 				v => RootTree.UncompiledHelpSources.Add (v) },
@@ -65,7 +69,7 @@ class Driver {
 				v => {
 					show_gui = false;
 					Node n;
-					RootTree help_tree = RootTree.LoadTree (basedir);
+					RootTree help_tree = LoadTree (basedir, sources);
 					string res = help_tree.RenderUrl (v, out n);
 					if (res != null)
 						Console.WriteLine (res);
@@ -139,7 +143,7 @@ class Driver {
 		
 		Settings.RunningGUI = true;
 		Application.Init ();
-		Browser browser = new Browser (basedir, engine);
+		Browser browser = new Browser (basedir, sources, engine);
 		
 		if (topic != null)
 			browser.LoadUrl (topic);
@@ -173,6 +177,14 @@ class Driver {
 	{
 		Console.Error.Write("monodoc: ");
 		Console.Error.WriteLine (format, args);
+	}
+
+	public static RootTree LoadTree (string basedir, IEnumerable<string> sourcedirs)
+	{
+		var root = RootTree.LoadTree (basedir);
+		foreach (var s in sourcedirs)
+			root.AddSource (s);
+		return root;
 	}
 }
 
@@ -266,7 +278,7 @@ public class Browser {
 
 	public Capabilities capabilities;
 
-	public Browser (string basedir, string engine)
+	public Browser (string basedir, IEnumerable<string> sources, string engine)
 	{
 		this.engine = engine;		
 		ui = new Glade.XML (null, "browser.glade", "window1", null);
@@ -301,7 +313,7 @@ public class Browser {
 		MainWindow.StyleSet += new StyleSetHandler (BarStyleSet);
 		BarStyleSet (null, null);
 
-		help_tree = RootTree.LoadTree (basedir);
+		help_tree = Driver.LoadTree (basedir, sources);
 		tree_browser = new TreeBrowser (help_tree, reference_tree, this);
 		
 		// Bookmark Manager init;

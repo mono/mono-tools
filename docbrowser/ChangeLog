@@ -1,5 +1,10 @@
 2009-08-13  Jonathan Pryor  <jpryor@novell.com>
 
+	* browser.cs: Rename --docdir to --docrootdir.  Add --docdir option
+	  which will read .source files from the specified directory.
+
+2009-08-13  Jonathan Pryor  <jpryor@novell.com>
+
 	* browser.cs: Provide more accurate help for --engine.
 
 2009-08-13  Jonathan Pryor  <jpryor@novell.com>
