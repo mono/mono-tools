@@ -1,5 +1,9 @@
 2009-08-13  Jonathan Pryor  <jpryor@novell.com>
 
+	* browser.cs: Provide more accurate help for --engine.
+
+2009-08-13  Jonathan Pryor  <jpryor@novell.com>
+
 	* Makefile.am: Use Mono.Options for option parsing.
 	* browser.cs: Use Mono.Options for option parsing (yay consistency;
 	  --engine=ENGINE will actually work).  Add --docdir=DIR parameter to

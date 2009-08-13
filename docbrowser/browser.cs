@@ -54,8 +54,9 @@ class Driver {
 				"Edit mdoc(5) XML documentation found within {PATH}.",
 				v => RootTree.UncompiledHelpSources.Add (v) },
 			{ "engine=",
-				"Specify which HTML rendering {ENGINE} to use\n(WebKit, GtkHtml, " + 
-					"MonoWebBrowser, Gecko).  If the chosen engine isn't available " + 
+				"Specify which HTML rendering {ENGINE} to use:\n" + 
+					"  " + string.Join ("\n  ", engines) + "\n" +
+					"If the chosen engine isn't available " + 
 					"(or you\nhaven't chosen one), monodoc will fallback to the next " +
 					"one on the list until one is found.",
 				v => engine = v },
