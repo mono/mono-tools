@@ -1,3 +1,10 @@
+2009-08-13  Jonathan Pryor  <jpryor@novell.com>
+
+	* Makefile.am: Use Mono.Options for option parsing.
+	* browser.cs: Use Mono.Options for option parsing (yay consistency;
+	  --engine=ENGINE will actually work).  Add --docdir=DIR parameter to
+	  load documentation from the specified directory.
+
 2009-04-25  Jonathan Pryor  <jpryor@novell.com>
 
 	* browser.cs: Browser.GetHtml() needs to cope with

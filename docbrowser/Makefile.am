@@ -20,7 +20,7 @@ if ENABLE_MONOWEBBROWSER
 MONOWEBBROWSER_TARGET=MonoWebBrowserHtmlRender.dll
 endif
 
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb $(MONOWEBBROWSER_TARGET) $(MONOWEBBROWSER_TARGET).mdb monodoc.desktop
+CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(GECKO_TARGET) $(GECKO_TARGET).mdb $(GTKHTML_TARGET) $(GTKHTML_TARGET).mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb $(MONOWEBBROWSER_TARGET) $(MONOWEBBROWSER_TARGET).mdb monodoc.desktop Options.cs
 monodoc_DATA = browser.exe $(GECKO_TARGET) $(GTKHTML_TARGET) $(WEBKIT_TARGET) $(MONOWEBBROWSER_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc
@@ -38,7 +38,7 @@ browser_sources   = \
 	$(srcdir)/BookmarkManager.cs	\
 	$(srcdir)/ProgressPanel.cs
 
-browser_built_sources = AssemblyInfo.cs
+browser_built_sources = AssemblyInfo.cs Options.cs
 
 geckorender_sources = 			\
 	$(srcdir)/PrintManager.cs	\
@@ -102,6 +102,9 @@ WebKitHtmlRender.dll : $(webkitrender_sources) browser.exe
 
 MonoWebBrowserHtmlRender.dll : $(monowebbrowserrender_sources) browser.exe
 	$(GMCS) -debug -target:library -out:$@ $(monowebbrowserrender_sources) $(monowebbrowserrender_assemblies) $(CSHARP_FLAGS)
+
+Options.cs:
+	cp `pkg-config --variable=Sources mono-options` .
 
 b: browser.exe
 	MONO_PATH=. $(RUNTIME) --debug browser.exe
