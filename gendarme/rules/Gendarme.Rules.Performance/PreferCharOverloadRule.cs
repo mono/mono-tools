@@ -41,23 +41,24 @@ namespace Gendarme.Rules.Performance {
 	// rule request from
 	// https://bugzilla.novell.com/show_bug.cgi?id=406889
 	
-	// TODO: The summary is not as clear as it could be: a lot of people are not
-	// going to know what an ordinal comparison is in this context and it's not
-	// entirely clear what .NET 4.0 is actually changing. It would probably be better
-	// to explain what the rule is looking for, why using char is better (performance)
-	// and then follow up with a second paragraph that points out the subtle differences
-	// between using char and string arguments pre .NET 4.0.
-
 	/// <summary>
 	/// This rule looks for calls to <c>String</c> methods that use <b>String</b>
 	/// parameters when a <c>Char</c> parameter could have been used. Using the
-	/// <c>Char</c>-based method overload (ordinal comparison) is faster than the 
-	/// <c>String</c>-based one (culture-sensitive comparison). 
-	/// Note that .NET 4 will do a breaking change and will use ordinal comparison 
-	/// by default on <c>String</c>. If you need a culture-sensitive comparison 
-	/// use an overload that allow you to specify a <c>StringComparison</c>.
-	/// This rule checks specifically for <c>IndexOf</c>, <c>LastIndexOf</c> and
-	/// <c>Replace</c> to ensure there is a performance gain (other methods could vary).
+	/// <c>Char</c> overload is preferred because it will be faster. 
+	///
+	/// Note, however, that this may result in subtly different behavior on versions of
+	/// .NET before 4.0: the string overloads do a culture based comparison using
+	/// <c>CultureInfo.CurrentCulture</c> and the char methods do an ordinal
+	/// comparison (a simple compare of the character values). This can result in
+	/// a change of behavior (for example the two can produce different results when
+	/// precomposed characters are used). If this is important it is best to use an
+	/// overload that allows StringComparison or CultureInfo to be explicitly specified
+	/// see [http://msdn.microsoft.com/en-us/library/ms973919.aspx#stringsinnet20_topic4] 
+	/// for more details.
+	///
+	/// With .NET 4.0 <c>String</c>'s behavior will change and the various methods
+	/// will be made more consistent. In particular the comparison methods will be changed
+	/// so that they all default to doing an ordinal comparison.
 	/// </summary>
 	/// <example>
 	/// Bad example:

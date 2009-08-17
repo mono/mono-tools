@@ -40,11 +40,6 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	// TODO: Like DoNotIgnoreMethodResultRule this really needs to describe how
-	// to fix the defect in cases where the argument really is not used. (And it can
-	// recommend an Unused type like the one in the DoNotIgnoreMethodResultRule
-	// TODO).
-
 	/// <summary>
 	/// This rule is used to ensure that all parameters in a method signature are being used.
 	/// The rule wont report a defect against the following:

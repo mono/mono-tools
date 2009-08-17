@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 using Mono.Cecil;
 
@@ -36,14 +37,12 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	// TODO: Can users actually change the default? What is a "calculated field"?
-
 	/// <summary>
 	/// This rule will fire if a value type (struct in C#) is larger than a maximum value
 	/// (16 bytes by default). This is a problem because, unlike reference types, value
 	/// types are bitwise-copied whenever they are assigned to a variable or passed to
 	/// a method. If the type 
-	/// cannot be reduced in size (e.g. by removing calculated fields) then it should be 
+	/// cannot be reduced in size then it should be 
 	/// turned into a reference type (class in C#).
 	/// </summary>
 	/// <example>
@@ -57,7 +56,7 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public class BigArgb {
+	/// public sealed class BigArgb {
 	///	long a, r, g, b;
 	/// }
 	/// </code>
@@ -68,12 +67,7 @@ namespace Gendarme.Rules.Performance {
 	[Solution ("Try to reduce the struct size or change it into a class.")]
 	public class AvoidLargeStructureRule : Rule, ITypeRule {
 
-		private const int MaximumRecommandedSize = 16;
-
-		private const int MediumSeverityLimit = MaximumRecommandedSize * 2;
-		private const int HighSeverityLimit = MaximumRecommandedSize * 4;
-		private const int CriticalSeverityLimit = MaximumRecommandedSize * 16;
-
+		private const int MaximumRecommendedSize = 16;
 		private const int DefaultPaddingSize = 8;
 
 		// actually we should use IntPtr.Size but that would make the rule
@@ -96,6 +90,33 @@ namespace Gendarme.Rules.Performance {
 			{ Constants.IntPtr, ReferenceSize },	// so rule return the same results
 			{ Constants.UIntPtr, ReferenceSize },	// on 32 and 64 bits architectures
 		};
+
+		private int max_size = MaximumRecommendedSize;
+		private int medium_severity_limit;
+		private int high_severity_limit;
+		private int critical_severity_limit;
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+			
+			medium_severity_limit = max_size * 2;
+			high_severity_limit = max_size * 4;
+			critical_severity_limit = max_size * 16;
+		}
+		
+		/// <summary>The maximum size structs may be without a defect.</summary>
+		/// <remarks>Defaults to 16 bytes.</remarks>
+		[DefaultValue (MaximumRecommendedSize)]
+		[Description ("The maximum size structs may be without a defect.")]
+		public int MaxSize {
+			get { return max_size; }
+			set {
+				if (value <= 0)
+					throw new ArgumentOutOfRangeException ("MaxSize", "Must be positive");
+				max_size = value;
+			}
+		}
 
 		private static long SizeOfEnum (TypeDefinition type)
 		{
@@ -183,16 +204,16 @@ namespace Gendarme.Rules.Performance {
 			// rule applies
 
 			long size = SizeOfStruct (type);
-			if (size <= MaximumRecommandedSize)
+			if (size <= max_size)
 				return RuleResult.Success;
 
 			// here we compute severity based on the actual struct size
 			Severity severity = Severity.Low;
-			if (size > CriticalSeverityLimit)
+			if (size > critical_severity_limit)
 				severity = Severity.Critical;
-			else if (size > HighSeverityLimit)
+			else if (size > high_severity_limit)
 				severity = Severity.High;
-			else if (size > MediumSeverityLimit)
+			else if (size > medium_severity_limit)
 				severity = Severity.Medium;
 
 			string text = String.Format ("Structure size is {0} bytes.", size);

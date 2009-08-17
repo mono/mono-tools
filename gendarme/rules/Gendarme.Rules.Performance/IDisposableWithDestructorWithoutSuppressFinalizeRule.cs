@@ -38,9 +38,6 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	// TODO: The good example, at least, should be rewritten to use the Dispose pattern
-	// (i.e. it should use a Dispose(bool) method.
-	
 	/// <summary>
 	/// This rule will fire if a type implements <c>System.IDisposable</c> and has a finalizer
 	/// (called a destructor in C#), but the Dispose method does not call <c>System.GC.SuppressFinalize</c>.
@@ -50,41 +47,61 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// class Test: SomeClass, IDisposable {
-	///	~Test ()
-	///	{
-	///		if (ptr != IntPtr.Zero) {
-	///			Free (ptr);
-	///		}
-	///	}
-	///	
-	///	public void Dispose ()
-	///	{
-	///		if (ptr != IntPtr.Zero) {
-	///			Free (ptr);
-	///		}
-	///	}
+	/// class BadClass : IDisposable {
+	/// 	~BadClass ()
+	/// 	{
+	/// 		Dispose (false);
+	/// 	}
+	/// 	
+	/// 	public void Dispose ()
+	/// 	{
+	/// 		// GC.SuppressFinalize is missing so the finalizer will be called
+	/// 		// which puts needless extra pressure on the garbage collector.
+	/// 		Dispose (true);
+	/// 	}
+	/// 	
+	/// 	private void Dispose (bool disposing)
+	/// 	{
+	/// 		if (ptr != IntPtr.Zero) {
+	/// 			Free (ptr);
+	/// 			ptr = IntPtr.Zero;
+	/// 		}
+	/// 	}
+	/// 	
+	/// 	[DllImport ("somelib")]
+	/// 	private static extern void Free (IntPtr ptr);
+	/// 	
+	/// 	private IntPtr ptr;
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// class Test: SomeClass, IDisposable {
-	///	~Test ()
-	///	{
-	///		if (ptr != IntPtr.Zero) {
-	///			Free (ptr);
-	///		}
-	///	}
-	///	
-	///	public void Dispose ()
-	///	{
-	///		if (ptr != IntPtr.Zero) {
-	///			Free (ptr);
-	///		}
-	///		GC.SuppressFinalize (this);
-	///	}
+	/// class GoodClass : IDisposable {
+	/// 	~GoodClass ()
+	/// 	{
+	/// 		Dispose (false);
+	/// 	}
+	/// 	
+	/// 	public void Dispose ()
+	/// 	{
+	/// 		Dispose (true);
+	/// 		GC.SuppressFinalize (this);
+	/// 	}
+	/// 	
+	/// 	private void Dispose (bool disposing)
+	/// 	{
+	/// 		if (ptr != IntPtr.Zero) {
+	/// 			Free (ptr);
+	/// 			ptr = IntPtr.Zero;
+	/// 		}
+	/// 	}
+	/// 	
+	/// 	[DllImport ("somelib")]
+	/// 	private static extern void Free (IntPtr ptr);
+	/// 	
+	/// 	private IntPtr ptr;
 	/// }
 	/// </code>
 	/// </example>

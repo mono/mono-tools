@@ -33,14 +33,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
-	// TODO: It would be nice to explain in a bit more detail what the performance issues
-	// are.
-
 	/// <summary>
-	/// This rule is used to warn the developer if both unsealed and concrete (not abstract) 
-	/// attribute types are defined in the assembly. If you want other attributes to be able
-	/// to derive from your attribute class, make it <c>abstract</c>. Otherwise, make them
-	/// <c>sealed</c> to improve the performance.
+	/// This rule fires if an attribute is defined which is both concrete (i.e. not abstract)
+	/// and unsealed. This is a performance problem because it means that 
+	/// <c>System.Attribute.GetCustomAttribute</c> has to search the attribute type
+	// hierarchy for derived types. To fix this either seal the type or make it abstract. 
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -72,7 +69,7 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>Before Gendarme 2.0 this rule was named AvoidUnsealedAttributesRule.</remarks>
 
-	[Problem ("Due performance issues, concrete attributes should be sealed.")]
+	[Problem ("Because of performance issues, concrete attributes should be sealed.")]
 	[Solution ("Unless you plan to inherit from this attribute you should consider sealing it.")]
 	[FxCopCompatibility ("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]
 	public class AvoidUnsealedConcreteAttributesRule : Rule, ITypeRule {
