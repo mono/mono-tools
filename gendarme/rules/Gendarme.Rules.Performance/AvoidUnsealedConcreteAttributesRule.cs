@@ -37,7 +37,7 @@ namespace Gendarme.Rules.Performance {
 	/// This rule fires if an attribute is defined which is both concrete (i.e. not abstract)
 	/// and unsealed. This is a performance problem because it means that 
 	/// <c>System.Attribute.GetCustomAttribute</c> has to search the attribute type
-	// hierarchy for derived types. To fix this either seal the type or make it abstract. 
+	/// hierarchy for derived types. To fix this either seal the type or make it abstract. 
 	/// </summary>
 	/// <example>
 	/// Bad example:
