@@ -1,5 +1,9 @@
 2009-08-19  Mike Kestner <mkestner@novell.com>
 
+	* MainWindow.cs : fix crash with StartEnabled handling.
+
+2009-08-19  Mike Kestner <mkestner@novell.com>
+
 	* MainWindow.cs : add logging status ui to enable/disable logging in
 	the profiler process.
 

@@ -50,12 +50,12 @@ namespace Mono.Profiler.Gui {
 		{
 			ProfileSetupDialog d = new ProfileSetupDialog (this);
 			if (d.Run () == (int) ResponseType.Accept && !String.IsNullOrEmpty (d.AssemblyPath)) {
+				logging_enabled_action.Sensitive = true;
+				logging_enabled_action.Active = d.StartEnabled;
 				string args = d.Args;
 				proc = new ProfilerProcess (args, d.AssemblyPath);
 				proc.Paused += delegate { Refresh (); };
 				proc.Exited += delegate { Refresh (); };
-				logging_enabled_action.Sensitive = true;
-				logging_enabled_action.Active = d.StartEnabled;
 				proc.Start ();
 			}
 			d.Destroy ();		
@@ -93,6 +93,8 @@ namespace Mono.Profiler.Gui {
 
 		void OnLoggingActivated (object sender, System.EventArgs e)
 		{
+			if (proc == null)
+				return;
 			ToggleAction ta = sender as ToggleAction;
 			if (ta.Active)
 				proc.Resume ();
