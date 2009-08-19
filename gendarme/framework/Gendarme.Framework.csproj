@@ -108,6 +108,7 @@
     <Compile Include="Gendarme.Framework.Engines\NamespaceEngine.cs" />
     <Compile Include="Gendarme.Framework.Helpers\Namespace.cs" />
     <Compile Include="Gendarme.Framework.Helpers\PrimitiveReferences.cs" />
+    <Compile Include="Gendarme.Framework\ThreadModelAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
