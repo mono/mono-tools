@@ -85,10 +85,16 @@ namespace  Mono.Profiler {
 				byte [] block;
 				BlockCode code;
 				int length;
-				BlockData result;
+				int bytesRead;
+				BlockData result = null;
 				
 				header = new byte [BlockData.BLOCK_HEADER_SIZE];
-				stream.Read (header, 0, BlockData.BLOCK_HEADER_SIZE);
+				bytesRead = stream.Read (header, 0, BlockData.BLOCK_HEADER_SIZE);
+				if (bytesRead == 0) {
+					return null;
+				} else if (bytesRead < BlockData.BLOCK_HEADER_SIZE) {
+					throw new DecodingException (result, 0, String.Format ("Invalid header: length is {0} instead of {1}", bytesRead, BlockData.BLOCK_HEADER_SIZE));
+				}
 				fileOffset += (uint) BlockData.BLOCK_HEADER_SIZE;
 				
 				code = BlockData.DecodeHeaderBlockCode (header);

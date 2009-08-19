@@ -1,3 +1,9 @@
+2009-08-19  Massimiliano Mantione <massi@ximian.com>
+	* Reader.cs:
+	Return null when file ends without an EndBlock, instead of throwing
+	an exception.  This supports intermediate parsing of log files
+	during suspend/resume operations.
+
 2009-07-15  Mike Kestner <mkestner@novell.com>
 	* Reader.cs: add a Close method to explicitly close the stream.
 
