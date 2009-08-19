@@ -1,3 +1,11 @@
+2009-08-19  Mike Kestner <mkestner@novell.com>
+
+	* ProfilerProcess.cs: new class to manage creation of and comm
+	with the profiler.  Initial suspend/resume capability.
+	* ProfileSetupDialog.cs: add StartEnabled feature to control logging
+	status on startup.
+	* ProfileView.cs: use new reader iteration paradigm.
+
 2009-08-04  Mike Kestner <mkestner@novell.com>
 
 	* ProfileView.cs: add SupportsFiltering prop to support action 

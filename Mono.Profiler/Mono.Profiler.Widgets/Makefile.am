@@ -24,6 +24,7 @@ FILES =  \
 	ProfileSetupDialog.cs \
 	ProfileStore.cs \
 	ProfileView.cs \
+	ProfilerProcess.cs \
 	StatDetail.cs \
 	StatList.cs \
 	StatStore.cs \

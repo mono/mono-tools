@@ -21,6 +21,7 @@
 
 
 using System;
+using System.Text;
 using Gtk;
 
 namespace Mono.Profiler.Widgets {
@@ -34,6 +35,7 @@ namespace Mono.Profiler.Widgets {
 
 	public class ProfileSetupDialog : Dialog {
 		
+		CheckButton start_enabled_chkbtn;
 		ComboBox type_combo;
 		FileChooserButton assembly_button;
 		
@@ -47,7 +49,7 @@ namespace Mono.Profiler.Widgets {
 			assembly_button.Filter = filter;
 			box.PackStart (assembly_button, true, true, 0);
 			box.ShowAll ();
-			VBox.PackStart (box, false, false, 0);
+			VBox.PackStart (box, false, false, 3);
 			box = new HBox (false, 6);
 			box.PackStart (new Label ("Type:"), false, false, 0);
 			type_combo = ComboBox.NewText ();
@@ -57,21 +59,34 @@ namespace Mono.Profiler.Widgets {
 			type_combo.Active = 2;
 			box.PackStart (type_combo, false, false, 0);
 			box.ShowAll ();
-			VBox.PackStart (box, false, false, 0);
+			VBox.PackStart (box, false, false, 3);
+			box = new HBox (false, 6);
+			start_enabled_chkbtn = new CheckButton ("Enabled at Startup");
+			start_enabled_chkbtn.Active = true;
+			box.PackStart (start_enabled_chkbtn, false, false, 0);
+			box.ShowAll ();
+			VBox.PackStart (box, false, false, 3);
 		}
 
 		public string Args {
 			get {
+				StringBuilder sb = new StringBuilder ();
 				switch (ProfileType) {
 				case ProfileType.Allocations:
-					return "alloc";
+					sb.Append ("alloc");
+					break;
 				case ProfileType.Calls:
-					return "calls";
+					sb.Append ("calls");
+					break;
 				case ProfileType.Statistical:
-					return "s=16";
+					sb.Append ("s=16");
+					break;
 				default:
 					throw new Exception ("Unexpected profile type: " + ProfileType);
 				}
+				if (!start_enabled_chkbtn.Active)
+					sb.Append (",sd");
+				return sb.ToString ();
 			}
 		}
 		
@@ -81,6 +96,10 @@ namespace Mono.Profiler.Widgets {
 		
 		public ProfileType ProfileType {
 			get { return (ProfileType) type_combo.Active; }
+		}
+
+		public bool StartEnabled {
+			get { return start_enabled_chkbtn.Active; }
 		}
 	}
 }

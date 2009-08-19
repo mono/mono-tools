@@ -42,10 +42,8 @@ namespace Mono.Profiler.Widgets {
 			SyncLogFileReader rdr = new SyncLogFileReader (path);
 			ProfilerEventHandler data = new ProfilerEventHandler ();
 			data.LoadedElements.RecordHeapSnapshots = false;
-			while (!rdr.HasEnded) {
-				BlockData current = null;
+			for (BlockData current = rdr.ReadBlock (); current != null; current = rdr.ReadBlock ()) {
 				try {
-					current = rdr.ReadBlock ();
 					current.Decode (data, rdr);
 				} catch (DecodingException e) {
 					Console.Error.WriteLine ("Stopping decoding after a DecodingException in block of code {0}, length {1}, file offset {2}, block offset {3}: {4}", e.FailingData.Code, e.FailingData.Length, e.FailingData.FileOffset, e.OffsetInBlock, e.Message);
