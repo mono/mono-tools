@@ -35,11 +35,9 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.UI {
 
-	// TODO: "executable assemblies" is rather confusing. Does this mean assemblies with
-	// an entry point? If so, isn't bringing this up redundent?
-
 	/// <summary>
-	/// This rule checks executable assemblies that reference System.Windows.Forms to 
+	/// This rule checks executable assemblies, i.e. *.exe's, that reference 
+	/// System.Windows.Forms to 
 	/// ensure that their entry point is decorated with <c>[System.STAThread]</c> attribute 
 	/// and is not decorated with <c>[System.MTAThread]</c> attribute to ensure that Windows 
 	/// Forms work properly.
