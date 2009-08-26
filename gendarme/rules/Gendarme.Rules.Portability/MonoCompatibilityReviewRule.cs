@@ -44,30 +44,20 @@ using MoMA.Analyzer.MoMAWebService;
 
 namespace Gendarme.Rules.Portability {
 
-	// TODO: It would be nice to explain in a little more detail what MoMA is and whether this
-	// rule operates with a normal mono install. And if it doesn't what must be done to get the
-	// rule to work. And how do I "make sure your definition files are up to date"?
-
 	/// <summary>
-	/// This rule uses MoMA definition files to analyze assemblies and warns if called methods are:
-	/// <list type="bullet">
-	/// <item>
-	/// <description>marked with a <c>[MonoTODO]</c> attribute;</description>
-	/// </item>
-	/// <item>
-	/// <description>throw a <c>NotImplementedException</c>; or</description>
-	/// </item>
-	/// <item>
-	/// <description>does not exist in the current version of Mono</description>
-	/// </item>
-	/// </list>
-	/// The rule looks for the definitions in <c>~/.local/share/Gendarme/definitions.zip</c>. 
-	/// If the file is missing it will try to download the latest version.
+	/// This rule will fire if one of the assemblies being checked contains a call to a .NET
+	/// method which is either not implemented on Mono or partially implemented. It does
+	/// this by downloading a MoMA definitions.zip file into <c>~/.local/share/Gendarme/definitions.zip</c>
+	/// (on Unix) and checking for calls to the methods therein. The rule will work without 
+	/// MoMA but if it does fire it may be useful to download and run MoMA.
 	/// </summary>
-	/// <remarks>This rule does not replace MoMA (which is obviously the easiest solution for Windows developers). It's goal is to help analyze multiple portability issues from the Linux side (where Gendarme is most likely being used)</remarks>
+	/// <remarks>
+	/// The definitions.zip will not be downloaded if it already exists so it's a good idea to
+	/// manually remove it now and then.
+	/// </remarks>
 
-	[Problem ("The method has some known limitations when used with the Mono runtime.")]
-	[Solution ("Check if this code is critical to your application. Also make sure your definition files are up to date.")]
+	[Problem ("The method is either missing or partially implemented on Mono.")]
+	[Solution ("Review and test the code to ensure that it works properly on Mono. Also delete the definitions.zip to ensure that the latest version is downloaded.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class MonoCompatibilityReviewRule : Rule, IMethodRule {
 
