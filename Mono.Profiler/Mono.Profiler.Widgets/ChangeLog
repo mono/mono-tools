@@ -1,3 +1,7 @@
+2009-08-27  Mike Kestner <mkestner@novell.com>
+
+	* StartPage.cs: beginnings of a startup page similar to MD.
+
 2009-08-19  Mike Kestner <mkestner@novell.com>
 
 	* ProfilerProcess.cs: new class to manage creation of and comm

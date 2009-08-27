@@ -1,3 +1,11 @@
+2009-08-27  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : use new StartPage widget. Some refactoring for
+	tabbed MDI that I decided not to utilize, but left in the event we
+	do in the future. Refactoring for Opening recent documents which the
+	StartPage and menu don't support yet. Add toolbar with new/open/save
+	items.
+
 2009-08-19  Mike Kestner <mkestner@novell.com>
 
 	* MainWindow.cs : fix crash with StartEnabled handling.

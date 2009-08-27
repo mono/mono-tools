@@ -25,6 +25,7 @@ FILES =  \
 	ProfileStore.cs \
 	ProfileView.cs \
 	ProfilerProcess.cs \
+	StartPage.cs \
 	StatDetail.cs \
 	StatList.cs \
 	StatStore.cs \
@@ -32,7 +33,8 @@ FILES =  \
 
 build_sources = $(addprefix $(srcdir)/, $(FILES))
 
-RESOURCES = 
+RESOURCES = \
+	Monodevelop-logo.png
 
 build_resources = $(addprefix $(srcdir)/, $(RESOURCES))
 build_resources_args = $(addprefix -resource:, $(build_resources))
@@ -40,6 +42,7 @@ build_resources_args = $(addprefix -resource:, $(build_resources))
 REFERENCES =  \
 	-pkg:glib-sharp-2.0 \
 	-pkg:gtk-sharp-2.0 \
+	-r:Mono.Cairo \
 	-r:Mono.Posix \
 	-r:System
 
