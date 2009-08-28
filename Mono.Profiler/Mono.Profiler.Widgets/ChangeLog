@@ -1,5 +1,9 @@
 2009-08-28  Mike Kestner <mkestner@novell.com>
 
+	* StartPage.cs: a little banner gradient tweaking.
+
+2009-08-28  Mike Kestner <mkestner@novell.com>
+
 	* History.cs: basic history tracking xml serialized class.
 	* StartPage.cs: display recent logs using new history.
 

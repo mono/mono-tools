@@ -214,8 +214,8 @@ namespace Mono.Profiler.Widgets {
 					ctx.LineTo (new Cairo.PointD (0, Bounds.Height));
 					ctx.ClosePath ();
 					ctx.Save ();
-					Cairo.Gradient grad = new Cairo.LinearGradient (Bounds.Width / 3, 0, Bounds.Width * 2 / 3, Bounds.Height);
-					grad.AddColorStop (0, new Cairo.Color (0.0, 0.0, 0.7, 1.0));
+					Cairo.Gradient grad = new Cairo.LinearGradient (Bounds.Width / 4, 0, Bounds.Width * 3 / 4, Bounds.Height);
+					grad.AddColorStop (0, new Cairo.Color (0.0, 0.0, 0.5, 1.0));
 					grad.AddColorStop (1, new Cairo.Color (0.0, 0.0, 1.0, 1.0));
 					ctx.Pattern = grad;
 					ctx.FillPreserve ();
