@@ -34,11 +34,13 @@ namespace Mono.Profiler.Gui {
 		Gtk.ToggleAction logging_enabled_action;
 		Gtk.Box content_area;
 		Gtk.Widget view;
+		History history;
+		LogInfo log_info;
 		ProfilerProcess proc;
-		string filename;
-		
+
 		public MainWindow () : base (Catalog.GetString ("Mono Visual Profiler"))
 		{
+			history = History.Load ();
 			DefaultSize = new Gdk.Size (800, 600);
 			Gtk.Box box = new Gtk.VBox (false, 0);
 			Gtk.UIManager uim = BuildUIManager ();
@@ -47,7 +49,7 @@ namespace Mono.Profiler.Gui {
 			content_area = new Gtk.VBox (false, 0);
 			content_area.Show ();
 			box.PackStart (content_area, true, true, 0);
-			StartPage start_page = new StartPage ();
+			StartPage start_page = new StartPage (history);
 			start_page.Activated += OnStartPageActivated;
 			start_page.Show ();
 			View = start_page;
@@ -67,7 +69,7 @@ namespace Mono.Profiler.Gui {
 
 		protected override bool OnDeleteEvent (Gdk.Event ev)
 		{
-			Gtk.Application.Quit ();
+			Shutdown ();
 			return true;
 		}
 	
@@ -81,11 +83,20 @@ namespace Mono.Profiler.Gui {
 		{
 			Gtk.Application.Invoke (delegate { 
 				if (contents.LoadProfile (proc.LogFile)) {
-					filename = proc.LogFile; 
+					if (log_info == null || log_info.Filename != proc.LogFile) {
+						log_info = new LogInfo (proc.LogFile, log_info == null ? null : log_info.Detail);
+						history.LogFiles.Add (log_info);
+					}
 					save_action.Sensitive = true;
 					show_system_nodes_action.Sensitive = contents.SupportsFiltering;
 				}
 			});
+		}
+
+		void Shutdown ()
+		{
+			history.Save ();
+			Gtk.Application.Quit ();
 		}
 
 		void OnNewActivated (object sender, System.EventArgs e)
@@ -102,6 +113,8 @@ namespace Mono.Profiler.Gui {
 				proc.Paused += delegate { Refresh (view); };
 				proc.Exited += delegate { Refresh (view); logging_enabled_action.Visible = false; };
 				proc.Start ();
+				log_info = new LogInfo (proc.LogFile, System.IO.Path.GetFileName (d.AssemblyPath) + ":" + args);
+				history.LogFiles.Prepend (log_info);
 			}
 			d.Destroy ();		
 		}
@@ -114,10 +127,19 @@ namespace Mono.Profiler.Gui {
 			if (view.LoadProfile (filename)) {
 				view.Show ();
 				View = view;
-				this.filename = filename;
 				logging_enabled_action.Visible = false;
-				save_action.Sensitive = false;
+				save_action.Sensitive = true;
 				show_system_nodes_action.Sensitive = view.SupportsFiltering;
+				log_info = null;
+				foreach (LogInfo info in history.LogFiles) {
+					if (info.Filename == filename) {
+						log_info = info;
+						break;
+					}
+				}
+				if (log_info == null)
+					log_info = new LogInfo (filename, null);
+				history.LogFiles.Prepend (log_info);
 			}
 		}
 
@@ -131,15 +153,15 @@ namespace Mono.Profiler.Gui {
 	
 		void OnQuitActivated (object sender, System.EventArgs e)
 		{
-			Gtk.Application.Quit ();
+			Shutdown ();
 		}
 	
 		void OnSaveAsActivated (object sender, System.EventArgs e)
 		{
 			Gtk.FileChooserDialog d = new Gtk.FileChooserDialog ("Save Profile Log", this, Gtk.FileChooserAction.Save, chooser_button_params);
 			if (d.Run () == (int) Gtk.ResponseType.Accept) {
-				System.IO.File.Move (filename, d.Filename);
-				filename = d.Filename;
+				System.IO.File.Copy (log_info.Filename, d.Filename);
+				log_info.Filename = d.Filename;
 				save_action.Sensitive = false;
 			}
 			d.Destroy ();

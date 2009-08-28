@@ -61,13 +61,16 @@ namespace Mono.Profiler.Widgets {
 
 		bool pressed;
 		BannerItem banner;
+		History history;
 		LinkItem prelight_item;
 		LinkItem selected_item;
 		List<Item> items = new List<Item> ();
 		Pango.Layout layout;
 
-		public StartPage () 
+		public StartPage (History history) 
 		{
+			this.history = history;
+			history.Changed += delegate { Refresh (); };
 			CanFocus = true;
 			Events = Gdk.EventMask.ButtonPressMask | Gdk.EventMask.ButtonReleaseMask | Gdk.EventMask.ExposureMask | Gdk.EventMask.KeyPressMask | Gdk.EventMask.PointerMotionMask;
 			layout = CreatePangoLayout (String.Empty);
@@ -252,7 +255,9 @@ namespace Mono.Profiler.Widgets {
 			public StartEventType Type;
 			public string Detail;
 			string markup;
+			string description;
 			Gdk.Point text_offset;
+			Gdk.Point description_offset;
 
 			public LinkItem (StartPage owner, string caption, StartEventType type, string detail, int y) : base (owner)
 			{
@@ -262,8 +267,27 @@ namespace Mono.Profiler.Widgets {
 				owner.layout.SetMarkup (markup);
 				Pango.Rectangle ink, log;
 				owner.layout.GetPixelExtents (out ink, out log);
+				text_offset = new Gdk.Point (padding - ink.X, padding - ink.Y);
 				Bounds = new Gdk.Rectangle (60, y, ink.Width + 2 * padding, ink.Height + 2 * padding);
-				text_offset = new Gdk.Point (ink.X, ink.Y);
+			}
+
+			public LinkItem (StartPage owner, string caption, string description, StartEventType type, string detail, int y) : base (owner)
+			{
+				Console.WriteLine ("Creating correct LinkItem - desc: " + description);
+				markup = "<span underline=\"single\" foreground=\"#0000FF\">" + caption + "</span>";
+				this.description = description;
+				Type = type;
+				Detail = detail;
+				owner.layout.SetMarkup (markup);
+				Pango.Rectangle ink, log;
+				owner.layout.GetPixelExtents (out ink, out log);
+				text_offset = new Gdk.Point (padding - ink.X, padding - ink.Y);
+				int height = ink.Height + padding;
+				int width = ink.Width;
+				owner.layout.SetMarkup ("<i>" + description + "</i>");
+				owner.layout.GetPixelExtents (out ink, out log);
+				description_offset = new Gdk.Point (padding - ink.X, height - ink.Y);
+				Bounds = new Gdk.Rectangle (60, y, width > ink.Width ? width + 2 * padding : ink.Width + 2 * padding, height + ink.Height + padding);
 			}
 
 			public override void Draw (Gdk.Rectangle clip)
@@ -272,7 +296,11 @@ namespace Mono.Profiler.Widgets {
 					Gtk.Style.PaintBox (owner.Style, owner.GdkWindow, Gtk.StateType.Prelight, owner.pressed ? Gtk.ShadowType.Out : Gtk.ShadowType.In, clip, owner, "GtkButton", Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 
 				owner.layout.SetMarkup (markup);
-				owner.GdkWindow.DrawLayout (owner.Style.TextGC (Gtk.StateType.Normal), Bounds.X - text_offset.X + padding, Bounds.Y - text_offset.Y + padding, owner.layout);
+				owner.GdkWindow.DrawLayout (owner.Style.TextGC (Gtk.StateType.Normal), Bounds.X + text_offset.X, Bounds.Y + text_offset.Y, owner.layout);
+				if (description != null) {
+					owner.layout.SetMarkup ("<i>" + description + "</i>");
+					owner.GdkWindow.DrawLayout (owner.Style.TextGC (Gtk.StateType.Normal), Bounds.X + description_offset.X, Bounds.Y + description_offset.Y, owner.layout);
+				}
 			}
 		}
 
@@ -301,6 +329,15 @@ namespace Mono.Profiler.Widgets {
 			items.Add (item);
 			item = new LinkItem (this, "Open Profile Log File", StartEventType.Open, null, item.Bounds.Bottom);
 			items.Add (item);
+
+			if (history.LogFiles.Count > 0) {
+				item = new LabelItem (this, "Recent Logs:", item.Bounds.Bottom + 3 * text_padding);
+				items.Add (item);
+				foreach (LogInfo info in history.LogFiles) {
+					item = new LinkItem (this, info.Caption, info.Detail, StartEventType.Open, info.Filename, item.Bounds.Bottom);
+					items.Add (item);
+				}
+			}
 		}
 
 		void Paint (Gdk.EventExpose ev)

@@ -1,3 +1,8 @@
+2009-08-28  Mike Kestner <mkestner@novell.com>
+
+	* History.cs: basic history tracking xml serialized class.
+	* StartPage.cs: display recent logs using new history.
+
 2009-08-27  Mike Kestner <mkestner@novell.com>
 
 	* StartPage.cs: beginnings of a startup page similar to MD.

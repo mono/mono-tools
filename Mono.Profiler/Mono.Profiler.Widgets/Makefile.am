@@ -20,6 +20,7 @@ FILES =  \
 	CallsStore.cs \
 	CallsView.cs \
 	DisplayOptions.cs \
+	History.cs \
 	Node.cs \
 	ProfileSetupDialog.cs \
 	ProfileStore.cs \
@@ -44,7 +45,8 @@ REFERENCES =  \
 	-pkg:gtk-sharp-2.0 \
 	-r:Mono.Cairo \
 	-r:Mono.Posix \
-	-r:System
+	-r:System \
+	-r:System.Xml
 
 PROJECT_REFERENCES = ../lib/mprof-decoder-library.dll
 
