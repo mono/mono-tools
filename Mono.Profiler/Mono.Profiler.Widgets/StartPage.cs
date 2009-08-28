@@ -273,7 +273,6 @@ namespace Mono.Profiler.Widgets {
 
 			public LinkItem (StartPage owner, string caption, string description, StartEventType type, string detail, int y) : base (owner)
 			{
-				Console.WriteLine ("Creating correct LinkItem - desc: " + description);
 				markup = "<span underline=\"single\" foreground=\"#0000FF\">" + caption + "</span>";
 				this.description = description;
 				Type = type;
