@@ -1,5 +1,9 @@
 2009-08-28  Mike Kestner <mkestner@novell.com>
 
+	* MainWindow.cs : add RecentLogs menu to Profile menu.
+
+2009-08-28  Mike Kestner <mkestner@novell.com>
+
 	* MainWindow.cs : load and save History class. add LogInfo items
 	to history when new profiles are created and loaded.
 

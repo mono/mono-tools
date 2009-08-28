@@ -29,8 +29,10 @@ namespace Mono.Profiler.Gui {
 
 	public class MainWindow : Gtk.Window {	
 
+		int max_history_count = 5;
 		Gtk.Action save_action;
 		Gtk.Action show_system_nodes_action;
+		Gtk.ActionGroup group;
 		Gtk.ToggleAction logging_enabled_action;
 		Gtk.Box content_area;
 		Gtk.Widget view;
@@ -41,11 +43,13 @@ namespace Mono.Profiler.Gui {
 		public MainWindow () : base (Catalog.GetString ("Mono Visual Profiler"))
 		{
 			history = History.Load ();
+			history.LogFiles.Changed += UpdateRecentLogs;
 			DefaultSize = new Gdk.Size (800, 600);
 			Gtk.Box box = new Gtk.VBox (false, 0);
 			Gtk.UIManager uim = BuildUIManager ();
  			box.PackStart (uim.GetWidget ("/Menubar"), false, false, 0);
  			box.PackStart (uim.GetWidget ("/Toolbar"), false, false, 0);
+			UpdateRecentLogs (null, null);
 			content_area = new Gtk.VBox (false, 0);
 			content_area.Show ();
 			box.PackStart (content_area, true, true, 0);
@@ -77,6 +81,20 @@ namespace Mono.Profiler.Gui {
 		{
 			base.OnShown ();
 			View.GrabFocus ();
+		}
+
+		void UpdateRecentLogs (object o, EventArgs args)
+		{
+			for (int i = 0; i < max_history_count; i++) {
+				Gtk.Action action = group.GetAction ("RecentLogs" + i);
+				if (i < history.LogFiles.Count) {
+					LogInfo info = history.LogFiles [i];
+					action.Label = "_" + i + ": " + info.Caption;
+					action.Tooltip = info.Filename;
+					action.Visible = true;
+				} else
+					action.Visible = false;
+			}
 		}
 
 		void Refresh (ProfileView contents)
@@ -155,7 +173,13 @@ namespace Mono.Profiler.Gui {
 		{
 			Shutdown ();
 		}
-	
+
+		void OnRecentLogsActivated (object o, EventArgs args)
+		{
+			Gtk.Action action = o as Gtk.Action;
+			OpenProfile (action.Tooltip);
+		}
+
 		void OnSaveAsActivated (object sender, System.EventArgs e)
 		{
 			Gtk.FileChooserDialog d = new Gtk.FileChooserDialog ("Save Profile Log", this, Gtk.FileChooserAction.Save, chooser_button_params);
@@ -208,6 +232,16 @@ namespace Mono.Profiler.Gui {
 			"      <menuitem action='NewAction'/>" +
 			"      <menuitem action='OpenAction'/>" +
 			"      <menuitem action='SaveAsAction'/>" +
+			"      <separator/>" +
+			"      <menu action='RecentLogsMenu'>" +
+			"        <menuitem action='RecentLogs0'/>" +
+			"        <menuitem action='RecentLogs1'/>" +
+			"        <menuitem action='RecentLogs2'/>" +
+			"        <menuitem action='RecentLogs3'/>" +
+			"        <menuitem action='RecentLogs4'/>" +
+			"      </menu>" +
+			"      <menu action='RecentSetupsMenu'/>" +
+			"      <separator/>" +
 			"      <menuitem action='QuitAction'/>" +
 			"    </menu>" +
 			"    <menu action='RunMenu'>" +
@@ -231,6 +265,13 @@ namespace Mono.Profiler.Gui {
 				new Gtk.ActionEntry ("NewAction", Gtk.Stock.New, null, "<control>N", Catalog.GetString ("Create New Profile"), new EventHandler (OnNewActivated)),
 				new Gtk.ActionEntry ("OpenAction", Gtk.Stock.Open, null, "<control>O", Catalog.GetString ("Open Existing Profile Log"), new EventHandler (OnOpenActivated)),
 				new Gtk.ActionEntry ("SaveAsAction", Gtk.Stock.SaveAs, null, "<control>S", Catalog.GetString ("Save Profile Data"), new EventHandler (OnSaveAsActivated)),
+				new Gtk.ActionEntry ("RecentLogsMenu", null, Catalog.GetString ("Recent _Logs"), null, null, null),
+				new Gtk.ActionEntry ("RecentLogs0", null, "_0", null, null, new EventHandler (OnRecentLogsActivated)),
+				new Gtk.ActionEntry ("RecentLogs1", null, "_1", null, null, new EventHandler (OnRecentLogsActivated)),
+				new Gtk.ActionEntry ("RecentLogs2", null, "_2", null, null, new EventHandler (OnRecentLogsActivated)),
+				new Gtk.ActionEntry ("RecentLogs3", null, "_3", null, null, new EventHandler (OnRecentLogsActivated)),
+				new Gtk.ActionEntry ("RecentLogs4", null, "_4", null, null, new EventHandler (OnRecentLogsActivated)),
+				new Gtk.ActionEntry ("RecentSetupsMenu", null, Catalog.GetString ("Recent Set_ups"), null, null, null),
 				new Gtk.ActionEntry ("QuitAction", Gtk.Stock.Quit, null, "<control>Q", Catalog.GetString ("Quit Profiler"), new EventHandler (OnQuitActivated)),
 				new Gtk.ActionEntry ("RunMenu", null, Catalog.GetString ("_Run"), null, null, null),
 				new Gtk.ActionEntry ("ViewMenu", null, Catalog.GetString ("_View"), null, null, null),
@@ -240,7 +281,7 @@ namespace Mono.Profiler.Gui {
 				new Gtk.ToggleActionEntry ("ShowSystemNodesAction", null, Catalog.GetString ("_Show system nodes"), null, Catalog.GetString ("Shows internal nodes of system library method invocations"), new EventHandler (OnShowSystemNodesActivated), false),
 				new Gtk.ToggleActionEntry ("LogEnabledAction", null, Catalog.GetString ("_Logging enabled"), null, Catalog.GetString ("Profile logging enabled"), new EventHandler (OnLoggingActivated), true),
 			};
-	    		Gtk.ActionGroup group = new Gtk.ActionGroup ("group");
+	    		group = new Gtk.ActionGroup ("group");
 			group.Add (actions);
 			group.Add (toggle_actions);
 	    		Gtk.UIManager uim = new Gtk.UIManager ();
