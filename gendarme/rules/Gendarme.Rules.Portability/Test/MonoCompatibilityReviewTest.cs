@@ -146,9 +146,10 @@ namespace Test.Rules.Portability {
 		{
 			string localAppDataFolder = Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData);
 			string definitionsFolder = Path.Combine (localAppDataFolder, "Gendarme");
-			string definitionsFile = Path.Combine (definitionsFolder, "definitions.zip");
-			if (File.Exists (definitionsFile))
-				File.Delete (definitionsFile);
+			string[] files = Directory.GetFiles (definitionsFolder, "definitions*.zip");
+			foreach (string file in files) {
+				File.Delete (file);
+			}
 		}
 
 		[Test]

@@ -1,3 +1,11 @@
+2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewRule.cs: Added a Version configurable
+	property to select between (local) definition files (e.g. a new
+	gendarme reviewing compoatibility with an older mono). Automatic
+	download of new difinition files when Gendarme is updated (since
+	a new version of mono is likely available). Updated documentation
+
 2009-08-26  Jesse Jones  <jesjones@mindspring.com>
 
 	* MonoCompatibilityReviewRule.cs: Edited the description.
