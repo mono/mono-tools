@@ -33,14 +33,11 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	// TODO: How is renaming a reserved enum a breaking change, but adding a new
-	// enum is not?
-
 	/// <summary>
 	/// This rule checks for enumerations that contain values named <c>reserved</c>. This
-	/// practice, often seen in C/C++ applications, is not needed in .NET since adding new
-	/// values is (normally) not a breaking change. However renaming a <c>reserved</c> value to a new
-	/// name would be a breaking change.
+	/// practice, often seen in C/C++ sources, is not needed in .NET since adding new
+	/// values will not normally break binary compatibility. However renaming a <c>reserved</c> 
+	/// enum value can since there is no way to prevent people from using the old value.
 	/// </summary>
 	/// <example>
 	/// Bad example:

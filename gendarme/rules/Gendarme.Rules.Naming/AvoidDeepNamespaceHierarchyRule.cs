@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.ComponentModel;
 
 using Mono.Cecil;
 
@@ -35,8 +36,6 @@ using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Rules.Naming {
-
-	// TODO: Can users really change the default?
 
 	/// <summary>
 	/// This rule checks for deeply nested namespaces within an assembly. It will
@@ -89,8 +88,13 @@ namespace Gendarme.Rules.Naming {
 	[EngineDependency (typeof (NamespaceEngine))]
 	public class AvoidDeepNamespaceHierarchyRule : Rule, IAssemblyRule {
 
-		private int max_depth = 4; // default value
+		private const int DefaultMaxDepth = 4;
+		private int max_depth = DefaultMaxDepth;
 
+		/// <summary>The depth at which namespaces may be nested without triggering a defect.</summary>
+		/// <remarks>Defaults to 4.</remarks>
+		[DefaultValue (DefaultMaxDepth)]
+		[Description ("The depth at which namespaces may be nested without triggering a defect.")]
 		public int MaxDepth {
 			get { return max_depth; }
 			set {

@@ -35,13 +35,12 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Naming {
 
-	// TODO: This really needs to explain why this is a problem. Is it just the potential for a
-	// bit of confusion as the FxCop rule suggests or are there more serious problems with
-	// languages like VB? 
-
 	/// <summary>
 	/// This rule warns if an overriden method's parameter names does not match those of the 
-	/// base class or those of the implemented interface.
+	/// base class or those of the implemented interface. This can be confusing because it may
+	/// not always be clear that it is an override or implementation of an interface method. It
+	/// also makes it more difficult to use the method with languages that support named
+	/// parameters (like C# 4.0).
 	/// </summary>
 	/// <example>
 	/// Bad example:
