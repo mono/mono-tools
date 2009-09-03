@@ -1,5 +1,9 @@
 2009-09-03  Mike Kestner <mkestner@novell.com>
 
+	* MainWindow.cs : add RepeatSessions menu to the Profile menu.
+
+2009-09-03  Mike Kestner <mkestner@novell.com>
+
 	* MainWindow.cs : hook into Repeat events from the StartPage.
 
 2009-09-03  Mike Kestner <mkestner@novell.com>

@@ -44,12 +44,14 @@ namespace Mono.Profiler.Gui {
 		{
 			history = History.Load ();
 			history.LogFiles.Changed += UpdateRecentLogs;
+			history.Configs.Changed += UpdateRepeatSessions;
 			DefaultSize = new Gdk.Size (800, 600);
 			Gtk.Box box = new Gtk.VBox (false, 0);
 			Gtk.UIManager uim = BuildUIManager ();
  			box.PackStart (uim.GetWidget ("/Menubar"), false, false, 0);
  			box.PackStart (uim.GetWidget ("/Toolbar"), false, false, 0);
 			UpdateRecentLogs (null, null);
+			UpdateRepeatSessions (null, null);
 			content_area = new Gtk.VBox (false, 0);
 			content_area.Show ();
 			box.PackStart (content_area, true, true, 0);
@@ -91,6 +93,19 @@ namespace Mono.Profiler.Gui {
 					LogInfo info = history.LogFiles [i];
 					action.Label = "_" + i + ": " + info.Caption;
 					action.Tooltip = info.Filename;
+					action.Visible = true;
+				} else
+					action.Visible = false;
+			}
+		}
+
+		void UpdateRepeatSessions (object o, EventArgs args)
+		{
+			for (int i = 0; i < max_history_count; i++) {
+				Gtk.Action action = group.GetAction ("RepeatSession" + i);
+				if (i < history.Configs.Count) {
+					ProfileConfiguration config = history.Configs [i];
+					action.Label = "_" + i + ": " + config.ToString ();
 					action.Visible = true;
 				} else
 					action.Visible = false;
@@ -184,6 +199,14 @@ namespace Mono.Profiler.Gui {
 			OpenProfile (action.Tooltip);
 		}
 
+		void OnRepeatSessionActivated (object o, EventArgs args)
+		{
+			Gtk.Action action = o as Gtk.Action;
+			int idx = Int32.Parse (action.Name.Substring (13));
+			ProfileConfiguration config = history.Configs [idx];
+			StartProfile (config);
+		}
+
 		void OnSaveAsActivated (object sender, System.EventArgs e)
 		{
 			Gtk.FileChooserDialog d = new Gtk.FileChooserDialog ("Save Profile Log", this, Gtk.FileChooserAction.Save, chooser_button_params);
@@ -247,7 +270,13 @@ namespace Mono.Profiler.Gui {
 			"        <menuitem action='RecentLogs3'/>" +
 			"        <menuitem action='RecentLogs4'/>" +
 			"      </menu>" +
-			"      <menu action='RecentSetupsMenu'/>" +
+			"      <menu action='RepeatSessionsMenu'>" +
+			"        <menuitem action='RepeatSession0'/>" +
+			"        <menuitem action='RepeatSession1'/>" +
+			"        <menuitem action='RepeatSession2'/>" +
+			"        <menuitem action='RepeatSession3'/>" +
+			"        <menuitem action='RepeatSession4'/>" +
+			"      </menu>" +
 			"      <separator/>" +
 			"      <menuitem action='QuitAction'/>" +
 			"    </menu>" +
@@ -278,7 +307,12 @@ namespace Mono.Profiler.Gui {
 				new Gtk.ActionEntry ("RecentLogs2", null, "_2", null, null, new EventHandler (OnRecentLogsActivated)),
 				new Gtk.ActionEntry ("RecentLogs3", null, "_3", null, null, new EventHandler (OnRecentLogsActivated)),
 				new Gtk.ActionEntry ("RecentLogs4", null, "_4", null, null, new EventHandler (OnRecentLogsActivated)),
-				new Gtk.ActionEntry ("RecentSetupsMenu", null, Catalog.GetString ("Recent Set_ups"), null, null, null),
+				new Gtk.ActionEntry ("RepeatSessionsMenu", null, Catalog.GetString ("Re_peat Sessions"), null, null, null),
+				new Gtk.ActionEntry ("RepeatSession0", null, "_0", null, null, new EventHandler (OnRepeatSessionActivated)),
+				new Gtk.ActionEntry ("RepeatSession1", null, "_1", null, null, new EventHandler (OnRepeatSessionActivated)),
+				new Gtk.ActionEntry ("RepeatSession2", null, "_2", null, null, new EventHandler (OnRepeatSessionActivated)),
+				new Gtk.ActionEntry ("RepeatSession3", null, "_3", null, null, new EventHandler (OnRepeatSessionActivated)),
+				new Gtk.ActionEntry ("RepeatSession4", null, "_4", null, null, new EventHandler (OnRepeatSessionActivated)),
 				new Gtk.ActionEntry ("QuitAction", Gtk.Stock.Quit, null, "<control>Q", Catalog.GetString ("Quit Profiler"), new EventHandler (OnQuitActivated)),
 				new Gtk.ActionEntry ("RunMenu", null, Catalog.GetString ("_Run"), null, null, null),
 				new Gtk.ActionEntry ("ViewMenu", null, Catalog.GetString ("_View"), null, null, null),
