@@ -36,6 +36,7 @@ namespace Mono.Profiler.Widgets {
 
 	public class StartEventArgs : EventArgs {
 
+		ProfileConfiguration config;
 		StartEventType type;
 		string detail;
 
@@ -43,6 +44,16 @@ namespace Mono.Profiler.Widgets {
 		{
 			this.type = type;
 			this.detail = detail;
+		}
+
+		public StartEventArgs (ProfileConfiguration config)
+		{
+			this.type = StartEventType.Repeat;
+			this.config = config;
+		}
+
+		public ProfileConfiguration Config {
+			get { return config; }
 		}
 
 		public string Detail {
@@ -56,8 +67,8 @@ namespace Mono.Profiler.Widgets {
 
 	public class StartPage : Gtk.DrawingArea {
 
-		const int padding = 10;
-		const int text_padding = 8;
+		const int padding = 8;
+		const int text_padding = 3;
 
 		bool pressed;
 		BannerItem banner;
@@ -105,10 +116,8 @@ namespace Mono.Profiler.Widgets {
 
 			Gdk.Point pt = new Gdk.Point ((int)ev.X, (int)ev.Y);
 
-			if (selected_item.Bounds.Contains (pt)) {
-				OnActivated ();
-				// button release animation
-			}
+			if (selected_item.Bounds.Contains (pt))
+				selected_item.OnActivated ();
 
 			return base.OnButtonReleaseEvent (ev);
 		}
@@ -138,7 +147,8 @@ namespace Mono.Profiler.Widgets {
 			case Gdk.Key.KP_Enter:
 			case Gdk.Key.ISO_Enter:
 			case Gdk.Key.Return:
-				OnActivated ();
+				if (selected_item != null)
+					selected_item.OnActivated ();
 				break;
 			default:
 				return false;
@@ -196,6 +206,10 @@ namespace Mono.Profiler.Widgets {
 			}
 
 			public abstract void Draw (Gdk.Rectangle clip);
+
+			public virtual void OnActivated ()
+			{
+			}
 		}
 
 		class BannerItem : Item {
@@ -234,13 +248,13 @@ namespace Mono.Profiler.Widgets {
 			string markup;
 			Gdk.Point text_offset;
 
-			public LabelItem (StartPage owner, string label, int y) : base (owner)
+			public LabelItem (StartPage owner, string label, int x, int y) : base (owner)
 			{
 				markup = "<span foreground=\"#000099\"><b><big>" + label + "</big></b></span>";
 				owner.layout.SetMarkup (markup);
 				Pango.Rectangle ink, log;
 				owner.layout.GetPixelExtents (out ink, out log);
-				Bounds = new Gdk.Rectangle (30, y, ink.Width, ink.Height);
+				Bounds = new Gdk.Rectangle (x + 30, y, ink.Width, ink.Height);
 				text_offset = new Gdk.Point (ink.X, ink.Y);
 			}
 
@@ -259,34 +273,32 @@ namespace Mono.Profiler.Widgets {
 			Gdk.Point text_offset;
 			Gdk.Point description_offset;
 
-			public LinkItem (StartPage owner, string caption, StartEventType type, string detail, int y) : base (owner)
-			{
-				markup = "<span underline=\"single\" foreground=\"#0000FF\">" + caption + "</span>";
-				Type = type;
-				Detail = detail;
-				owner.layout.SetMarkup (markup);
-				Pango.Rectangle ink, log;
-				owner.layout.GetPixelExtents (out ink, out log);
-				text_offset = new Gdk.Point (padding - ink.X, padding - ink.Y);
-				Bounds = new Gdk.Rectangle (60, y, ink.Width + 2 * padding, ink.Height + 2 * padding);
-			}
-
-			public LinkItem (StartPage owner, string caption, string description, StartEventType type, string detail, int y) : base (owner)
+			protected LinkItem (StartPage owner, string caption, string description, int x, int y) : base (owner)
 			{
 				markup = "<span underline=\"single\" foreground=\"#0000FF\">" + caption + "</span>";
 				this.description = description;
-				Type = type;
-				Detail = detail;
 				owner.layout.SetMarkup (markup);
 				Pango.Rectangle ink, log;
 				owner.layout.GetPixelExtents (out ink, out log);
 				text_offset = new Gdk.Point (padding - ink.X, padding - ink.Y);
-				int height = ink.Height + padding;
-				int width = ink.Width;
-				owner.layout.SetMarkup ("<i>" + description + "</i>");
-				owner.layout.GetPixelExtents (out ink, out log);
-				description_offset = new Gdk.Point (padding - ink.X, height - ink.Y);
-				Bounds = new Gdk.Rectangle (60, y, width > ink.Width ? width + 2 * padding : ink.Width + 2 * padding, height + ink.Height + padding);
+				if (String.IsNullOrEmpty (description))
+					Bounds = new Gdk.Rectangle (x + 40, y, ink.Width + 2 * padding, ink.Height + 2 * padding);
+				else {
+					int height = ink.Height + padding;
+					int width = ink.Width;
+					owner.layout.SetMarkup ("<i>" + description + "</i>");
+					owner.layout.GetPixelExtents (out ink, out log);
+					description_offset = new Gdk.Point (padding - ink.X, height + text_padding - ink.Y);
+					Bounds = new Gdk.Rectangle (x + 40, y, width > ink.Width ? width + 2 * padding : ink.Width + 2 * padding, height + ink.Height + padding + text_padding);
+				}
+			}
+
+			public LinkItem (StartPage owner, string caption, StartEventType type, string detail, int x, int y) : this (owner, caption, null, type, detail, x, y) {}
+
+			public LinkItem (StartPage owner, string caption, string description, StartEventType type, string detail, int x, int y) : this (owner, caption, description, x, y)
+			{
+				Type = type;
+				Detail = detail;
 			}
 
 			public override void Draw (Gdk.Rectangle clip)
@@ -301,18 +313,26 @@ namespace Mono.Profiler.Widgets {
 					owner.GdkWindow.DrawLayout (owner.Style.TextGC (Gtk.StateType.Normal), Bounds.X + description_offset.X, Bounds.Y + description_offset.Y, owner.layout);
 				}
 			}
+			
+			public override void OnActivated ()
+			{
+				owner.OnActivated (new StartEventArgs (Type, Detail));
+			}
 		}
 
-		void OnActivated ()
-		{
-			if (Activated != null && selected_item != null)
-				Activated (this, new StartEventArgs (selected_item.Type, selected_item.Detail));
-		}
+		class QuickStartItem : LinkItem {
 
-		void Refresh ()
-		{
-			Layout ();
-			QueueDraw ();
+			ProfileConfiguration config;
+
+			public QuickStartItem (StartPage owner, ProfileConfiguration config, string caption, string description, int x, int y) : base (owner, caption, description, x, y)
+			{
+				this.config = config;
+			}
+
+			public override void OnActivated ()
+			{
+				owner.OnActivated (new StartEventArgs (config));
+			}
 		}
 
 		void Layout ()
@@ -322,21 +342,44 @@ namespace Mono.Profiler.Widgets {
 
 			items.Clear ();
 			items.Add (banner);
-			Item item = new LabelItem (this, "Common Actions:", banner.Bounds.Bottom + 3 * text_padding);
+			Item item = new LabelItem (this, "Common Actions:", 0, banner.Bounds.Bottom + 3 * padding);
 			items.Add (item);
-			item = new LinkItem (this, "Create New Profile", StartEventType.Create, null, item.Bounds.Bottom + text_padding);
+			item = new LinkItem (this, "Create New Profile", StartEventType.Create, null, 0, item.Bounds.Bottom + text_padding);
 			items.Add (item);
-			item = new LinkItem (this, "Open Profile Log File", StartEventType.Open, null, item.Bounds.Bottom);
+			item = new LinkItem (this, "Open Profile Log File", StartEventType.Open, null, 0, item.Bounds.Bottom);
 			items.Add (item);
 
+			int y = item.Bounds.Bottom + 3 * padding;
 			if (history.LogFiles.Count > 0) {
-				item = new LabelItem (this, "Recent Logs:", item.Bounds.Bottom + 3 * text_padding);
+				item = new LabelItem (this, "Recent Logs:", 0, y);
+				y = item.Bounds.Bottom + text_padding;
 				items.Add (item);
 				foreach (LogInfo info in history.LogFiles) {
-					item = new LinkItem (this, info.Caption, info.Detail, StartEventType.Open, info.Filename, item.Bounds.Bottom);
+					item = new LinkItem (this, info.Caption, info.Detail, StartEventType.Open, info.Filename, 0, y);
 					items.Add (item);
+					y = item.Bounds.Bottom;
 				}
 			}
+
+			int x = Allocation.Width / 2;
+			if (history.Configs.Count > 0) {
+				item = new LabelItem (this, "Quick Sessions:", x, banner.Bounds.Bottom + 3 * padding);
+				items.Add (item);
+				y = item.Bounds.Bottom + text_padding;
+				foreach (ProfileConfiguration config in history.Configs) {
+					string text = config.ToString ();
+					int idx = text.IndexOf (":");
+					item = new QuickStartItem (this, config, text.Substring (0, idx), text.Substring (idx + 1), x, y);
+					items.Add (item);
+					y = item.Bounds.Bottom;
+				}
+			}
+		}
+
+		void OnActivated (StartEventArgs args)
+		{
+			if (Activated != null)
+				Activated (this, args);
 		}
 
 		void Paint (Gdk.EventExpose ev)
@@ -345,6 +388,12 @@ namespace Mono.Profiler.Widgets {
 			foreach (Item item in items)
 				if (item.Bounds.IntersectsWith (ev.Area))
 					item.Draw (ev.Area);
+		}
+
+		void Refresh ()
+		{
+			Layout ();
+			QueueDraw ();
 		}
 
 		void SelectItem (LinkItem item)

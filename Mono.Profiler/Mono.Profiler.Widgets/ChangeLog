@@ -1,5 +1,10 @@
 2009-09-03  Mike Kestner <mkestner@novell.com>
 
+	* StartPage.cs: add Quick Sessions section to repeat configs from
+	the history.
+
+2009-09-03  Mike Kestner <mkestner@novell.com>
+
 	* History.cs: add recent config support.
 	* ProfileConfiguration.cs: new encapsulation for profile params.
 	* ProfilerProcess.cs: construct from ProfileConfiguation.
