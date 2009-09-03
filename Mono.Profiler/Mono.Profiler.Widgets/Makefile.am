@@ -22,6 +22,7 @@ FILES =  \
 	DisplayOptions.cs \
 	History.cs \
 	Node.cs \
+	ProfileConfiguration.cs \
 	ProfileSetupDialog.cs \
 	ProfileStore.cs \
 	ProfileView.cs \

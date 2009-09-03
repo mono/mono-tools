@@ -120,19 +120,19 @@ namespace Mono.Profiler.Gui {
 		void OnNewActivated (object sender, System.EventArgs e)
 		{
 			ProfileSetupDialog d = new ProfileSetupDialog (this);
-			if (d.Run () == (int) Gtk.ResponseType.Accept && !String.IsNullOrEmpty (d.AssemblyPath)) {
+			if (d.Run () == (int) Gtk.ResponseType.Accept) {
 				ProfileView view = new ProfileView ();
 				view.Show ();
 				View = view;
 				logging_enabled_action.Visible = true;
-				logging_enabled_action.Active = d.StartEnabled;
-				string args = d.Args;
-				proc = new ProfilerProcess (args, d.AssemblyPath);
+				logging_enabled_action.Active = d.Config.StartEnabled;
+				proc = new ProfilerProcess (d.Config);
 				proc.Paused += delegate { Refresh (view); };
 				proc.Exited += delegate { Refresh (view); logging_enabled_action.Visible = false; };
 				proc.Start ();
-				log_info = new LogInfo (proc.LogFile, System.IO.Path.GetFileName (d.AssemblyPath) + ":" + args);
+				log_info = new LogInfo (proc.LogFile, d.Config.ToString ());
 				history.LogFiles.Prepend (log_info);
+				history.Configs.Prepend (d.Config);
 			}
 			d.Destroy ();		
 		}

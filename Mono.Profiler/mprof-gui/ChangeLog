@@ -1,3 +1,8 @@
+2009-09-03  Mike Kestner <mkestner@novell.com>
+
+	* MainWindow.cs : refactor for ProfileConfiguration. Add recent
+	configs to history.
+
 2009-08-28  Mike Kestner <mkestner@novell.com>
 
 	* MainWindow.cs : add RecentLogs menu to Profile menu.

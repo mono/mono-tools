@@ -1,3 +1,11 @@
+2009-09-03  Mike Kestner <mkestner@novell.com>
+
+	* History.cs: add recent config support.
+	* ProfileConfiguration.cs: new encapsulation for profile params.
+	* ProfilerProcess.cs: construct from ProfileConfiguation.
+	* ProfileSetupDialog.cs: expose Config prop.  Manage the Execute
+	response button sensitivity proactively.
+
 2009-08-28  Mike Kestner <mkestner@novell.com>
 
 	* StartPage.cs: a little banner gradient tweaking.

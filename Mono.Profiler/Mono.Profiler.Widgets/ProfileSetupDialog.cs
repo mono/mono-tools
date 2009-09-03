@@ -26,80 +26,49 @@ using Gtk;
 
 namespace Mono.Profiler.Widgets {
 	
-	public enum ProfileType {
-		
-		Allocations,
-		Calls,
-		Statistical,
-	}
-
 	public class ProfileSetupDialog : Dialog {
 		
-		CheckButton start_enabled_chkbtn;
-		ComboBox type_combo;
-		FileChooserButton assembly_button;
+		ProfileConfiguration config;
 		
 		public ProfileSetupDialog (Gtk.Window parent) : base ("Profile Options", parent, DialogFlags.DestroyWithParent, Stock.Cancel, ResponseType.Cancel, Stock.Execute, ResponseType.Accept)
 		{
+			config = new ProfileConfiguration ();
 			HBox box = new HBox (false, 6);
 			box.PackStart (new Label ("Assembly:"), false, false, 0);
-			assembly_button = new FileChooserButton ("Select Assembly", FileChooserAction.Open);
+			FileChooserButton assembly_button = new FileChooserButton ("Select Assembly", FileChooserAction.Open);
 			FileFilter filter = new FileFilter ();
 			filter.AddPattern ("*.exe");
 			assembly_button.Filter = filter;
+			assembly_button.SelectionChanged += delegate { 
+				config.AssemblyPath = assembly_button.Filename;
+				SetResponseSensitive (ResponseType.Accept, !String.IsNullOrEmpty (assembly_button.Filename));
+			};
 			box.PackStart (assembly_button, true, true, 0);
 			box.ShowAll ();
 			VBox.PackStart (box, false, false, 3);
 			box = new HBox (false, 6);
 			box.PackStart (new Label ("Type:"), false, false, 0);
-			type_combo = ComboBox.NewText ();
+			ComboBox type_combo = ComboBox.NewText ();
 			type_combo.AppendText ("Allocations");
-			type_combo.AppendText ("Calls");
+			type_combo.AppendText ("Calls/Instrumented");
 			type_combo.AppendText ("Statistical");
 			type_combo.Active = 2;
+			type_combo.Changed += delegate { config.Mode = (ProfileMode) (1 << type_combo.Active); };
 			box.PackStart (type_combo, false, false, 0);
 			box.ShowAll ();
 			VBox.PackStart (box, false, false, 3);
 			box = new HBox (false, 6);
-			start_enabled_chkbtn = new CheckButton ("Enabled at Startup");
+			CheckButton start_enabled_chkbtn = new CheckButton ("Enabled at Startup");
 			start_enabled_chkbtn.Active = true;
+			start_enabled_chkbtn.Toggled += delegate { config.StartEnabled = start_enabled_chkbtn.Active; };
 			box.PackStart (start_enabled_chkbtn, false, false, 0);
 			box.ShowAll ();
 			VBox.PackStart (box, false, false, 3);
+			SetResponseSensitive (ResponseType.Accept, false);
 		}
 
-		public string Args {
-			get {
-				StringBuilder sb = new StringBuilder ();
-				switch (ProfileType) {
-				case ProfileType.Allocations:
-					sb.Append ("alloc");
-					break;
-				case ProfileType.Calls:
-					sb.Append ("calls");
-					break;
-				case ProfileType.Statistical:
-					sb.Append ("s=16");
-					break;
-				default:
-					throw new Exception ("Unexpected profile type: " + ProfileType);
-				}
-				if (!start_enabled_chkbtn.Active)
-					sb.Append (",sd");
-				return sb.ToString ();
-			}
-		}
-		
-		public string AssemblyPath {
-			get { return assembly_button.Filename; }
-		}
-		
-		public ProfileType ProfileType {
-			get { return (ProfileType) type_combo.Active; }
-		}
-
-		public bool StartEnabled {
-			get { return start_enabled_chkbtn.Active; }
+		public ProfileConfiguration Config {
+			get { return config; }
 		}
 	}
 }

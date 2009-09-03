@@ -34,12 +34,12 @@ namespace Mono.Profiler.Widgets {
 		Process proc;
 		string log_file;
 
-		public ProfilerProcess (string profiler_args, string assembly_path)
+		public ProfilerProcess (ProfileConfiguration config)
 		{
 			log_file = System.IO.Path.GetTempFileName ();
 			proc = new Process ();
 			proc.StartInfo.FileName = "mono";
-			proc.StartInfo.Arguments = "--profile=logging:" + profiler_args + ",o=" + log_file + ",cp=" + Port.ToString () + " " + assembly_path;
+			proc.StartInfo.Arguments = "--profile=logging:" + config.ToArgs () + ",o=" + log_file + ",cp=" + Port.ToString () + " " + config.AssemblyPath;
 			proc.EnableRaisingEvents = true;
 			proc.Exited += delegate { OnExited (); };
 		}

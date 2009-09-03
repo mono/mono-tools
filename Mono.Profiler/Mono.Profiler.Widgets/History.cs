@@ -113,7 +113,57 @@ namespace Mono.Profiler.Widgets {
 		}
 	}
 		
+	public class ProfileConfigList : IEnumerable {
+
+		int max_items = 5;
+		List<ProfileConfiguration> list = new List<ProfileConfiguration> ();
+
+		public int Count {
+			get { return list.Count; }
+		}
+
+		public ProfileConfiguration this [int index] {
+			get { return list [index]; }
+		}
+
+		public IEnumerator GetEnumerator ()
+		{
+			return list.GetEnumerator ();
+		}
+
+		public event EventHandler Changed;
+
+		void OnChanged ()
+		{
+			if (Changed != null)
+				Changed (this, EventArgs.Empty);
+		}
+
+		// Used by XmlSerializer
+		public void Add (object obj)
+		{
+			ProfileConfiguration config = obj as ProfileConfiguration;
+			if (config != null) {
+				list.Add (config);
+				OnChanged ();
+			}
+		}
+
+		public void Prepend (ProfileConfiguration config)
+		{
+			list.Remove (config);
+			list.Insert (0, config);
+			while (list.Count > max_items)
+				list.RemoveAt (max_items);
+			OnChanged ();
+		}
+	}
+
 	public class History {
+
+		[XmlArray]
+		[XmlArrayItem (ElementName="ProfileConfiguration", Type=typeof (ProfileConfiguration))]
+		public ProfileConfigList Configs;
 
 		[XmlArray]
 		[XmlArrayItem (ElementName="LogInfo", Type=typeof (LogInfo))]
@@ -123,6 +173,8 @@ namespace Mono.Profiler.Widgets {
 		{
 			LogFiles = new LogInfoList ();
 			LogFiles.Changed += delegate { OnChanged (); };
+			Configs = new ProfileConfigList ();
+			Configs.Changed += delegate { OnChanged (); };
 		}
 
 		public event EventHandler Changed;
