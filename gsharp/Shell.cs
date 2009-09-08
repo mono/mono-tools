@@ -257,6 +257,51 @@ namespace Mono.CSharp.Gui
 					Buffer.MoveMark(Buffer.SelectionBound, InputLineBegin);
 				}
 				return true;
+
+			case Gdk.Key.Tab:
+				string saved_text = InputLine;
+				string prefix;
+				string [] completions = Evaluator.GetCompletions (LineUntilCursor, out prefix);
+				if (completions == null)
+					return true;
+
+				if (completions.Length == 1){
+					TextIter cursor = Cursor;
+					Buffer.Insert (ref cursor, completions [0]);
+					return true;
+				}
+					
+				Console.WriteLine ();
+				foreach (var s in completions){
+					Console.Write (prefix);
+					Console.Write (s);
+					Console.Write (" ");
+				}
+				// Insert a new line before we evaluate.
+				end = Buffer.EndIter;
+				Buffer.InsertWithTagsByName (ref end, "\n", "Stdout");
+				ShowPrompt (false);
+				InputLine = saved_text;
+#if false
+				Gtk.TextIter start = Cursor;
+				if (prefix.Length != 0)
+					MoveVisually (ref start, -prefix.Length);
+				int x, y;
+				GdkWindow.GetOrigin (out x, out y);
+				var r = GetIterLocation (start);
+				x += r.X;
+				y += r.Y;
+				var w = new Gtk.Window (WindowType.Popup);
+				w.SetUposition (x, y);
+				w.SetUsize (100, 100);
+				foreach (var s in completions){
+					Console.WriteLine ("{0}[{1}]", prefix, s);
+				}
+				w.ShowAll ();
+				Console.WriteLine ("Position: x={0} y={1}", x + r.X, y +r.Y);
+#endif
+				return true;
+				
 			default:
 				break;
 			}
@@ -348,19 +393,19 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, err, "Error");
 		}
 		
-		private TextIter InputLineBegin {
+		TextIter InputLineBegin {
 			get { return Buffer.GetIterAtMark(end_of_last_processing); }
 		}
         
-		private TextIter InputLineEnd {
+		TextIter InputLineEnd {
 			get { return Buffer.EndIter; }
 		}
         
-		private TextIter Cursor {
+		TextIter Cursor {
 			get { return Buffer.GetIterAtMark(Buffer.InsertMark); }
 		}
 
-		private string InputLine {
+		string InputLine {
 			get { return Buffer.GetText(InputLineBegin, InputLineEnd, false); }
 			set {
 				TextIter start = InputLineBegin;
@@ -372,6 +417,12 @@ namespace Mono.CSharp.Gui
 			}
 		}
 
+		string LineUntilCursor {
+			get {
+				return Buffer.GetText (InputLineBegin, Cursor, false);
+			}
+		}
+		
 		static void p (TextWriter output, string s)
 		{
 			output.Write (s);

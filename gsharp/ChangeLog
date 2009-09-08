@@ -1,3 +1,10 @@
+2009-09-07  Miguel de Icaza  <miguel@novell.com>
+
+	* Shell.cs: Add poor man's autocompletion to GSharp. 
+
+	I probably should copy the way MonoDevelop pops up the completion
+	window to be right.
+
 2008-12-18  Miguel de Icaza  <miguel@novell.com>
 
 	* gtk-gui/Mono.CSharp.Gui.MainWindow.cs: Change hierarchy so that we can
