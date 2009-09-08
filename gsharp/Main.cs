@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Mono.Options;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Mono.CSharp.Gui
 {
@@ -24,6 +25,14 @@ namespace Mono.CSharp.Gui
 			Console.WriteLine ("Usage it: gsharp [--agent] [file1 [fileN]]");
 			
 			p.WriteOptionDescriptions (Console.Out);
+		}
+
+		static void ResetOutput ()
+		{
+			var stdout = new StreamWriter (Console.OpenStandardOutput ()) { AutoFlush = true };
+			var stderr = new StreamWriter (Console.OpenStandardError ()) { AutoFlush = true };
+			Console.SetOut (stdout);
+			Console.SetError (stderr);
 		}
 		
 		public static void Main (string[] args)
@@ -122,22 +131,15 @@ namespace Mono.CSharp.Gui
 			m.ShowAll ();
 
 			if (!HostHasGtkRunning){
-				System.IO.TextWriter cout = Console.Out;
-				System.IO.TextWriter cerr = Console.Error;
-				
 				try {
 					GLib.ExceptionManager.UnhandledException += delegate (GLib.UnhandledExceptionArgs a) {
-						Console.SetOut (cout);
-						Console.SetError (cerr);
-
+						ResetOutput ();
 						Console.WriteLine ("Application terminating: " + a.ExceptionObject);
 					};
 					
 					Application.Run ();
-				} catch (Exception) {
-					Console.SetOut (cout);
-					Console.SetError (cerr);
-
+				} catch (Exception e) {
+					ResetOutput ();
 					throw;
 				}
 			}
