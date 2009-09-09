@@ -1,3 +1,7 @@
+2008-08-09  Jesse Jones  <jesjones@mindspring.com>
+
+	* gendarme.1.in: Edited. Added sections for ignore and rules files.
+
 2009-01-27  Jonathan Pryor  <jpryor@novell.com>
 
 	* . (svn:ignore): Ignore generated files.

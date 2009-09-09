@@ -471,12 +471,12 @@ namespace Gendarme {
 		{
 			Console.WriteLine ("Usage: gendarme [--config file] [--set ruleset] [--{log|xml|html} file] assemblies");
 			Console.WriteLine ("Where");
-			Console.WriteLine ("  --config file\t\tSpecify the configuration file. Default is 'rules.xml'.");
-			Console.WriteLine ("  --set ruleset\t\tSpecify the set of rules to verify. Default is '*'.");
-			Console.WriteLine ("  --log file\t\tSave the text output to the specified file.");
-			Console.WriteLine ("  --xml file\t\tSave the output, as XML, to the specified file.");
-			Console.WriteLine ("  --html file\t\tSave the output, as HTML, to the specified file.");
-			Console.WriteLine ("  --ignore file\t\tDo not report defects specified inside the file.");
+			Console.WriteLine ("  --config file\t\tSpecify the rule sets and rule settings. Default is 'rules.xml'.");
+			Console.WriteLine ("  --set ruleset\t\tSpecify a rule set from configfile. Default is 'default'.");
+			Console.WriteLine ("  --log file\t\tSave the report to the specified file.");
+			Console.WriteLine ("  --xml file\t\tSave the report, as XML, to the specified file.");
+			Console.WriteLine ("  --html file\t\tSave the report, as HTML, to the specified file.");
+			Console.WriteLine ("  --ignore file\t\tDo not report defects listed in the specified file.");
 			Console.WriteLine ("  --limit N\t\tStop reporting after N defects are found.");
 			Console.WriteLine ("  --severity [all | [[audit | low | medium | high | critical][+|-]]],...");
 			Console.WriteLine ("\t\t\tFilter defects for the specified severity levels.");
@@ -484,8 +484,8 @@ namespace Gendarme {
 			Console.WriteLine ("  --confidence [all | [[low | normal | high | total][+|-]],...");
 			Console.WriteLine ("\t\t\tFilter defects for the specified confidence levels.");
 			Console.WriteLine ("\t\t\tDefault is 'normal+'");
-			Console.WriteLine ("  --quiet\t\tDisplay minimal output (results) from the runner.");
-			Console.WriteLine ("  --v\t\t\tEnable debugging output (can be used multiple times).");
+			Console.WriteLine ("  --quiet\t\tUsed to disable progress and other information which is normally written to stdout.");
+			Console.WriteLine ("  --v\t\t\tWhen present additional progress information is written to stdout (can be used multiple times).");
 			Console.WriteLine ("  assemblies\t\tSpecify the assemblies to verify.");
 			Console.WriteLine ();
 		}
