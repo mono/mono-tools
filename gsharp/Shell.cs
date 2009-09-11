@@ -139,7 +139,7 @@ namespace Mono.CSharp.Gui
 			bool result_set;
 			StringWriter errorwriter = new StringWriter ();
 
-			Report.Stderr = errorwriter;
+			Evaluator.MessageOutput = errorwriter;
 			
 			try {
 				res = Evaluator.Evaluate (s, out result, out result_set);

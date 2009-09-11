@@ -1,3 +1,7 @@
+2009-09-11  Marek Safar  <marek.safar@gmail.com>
+
+	* Shell.cs: Replaced Report.Stderr with Evaluator.MessageOutput.
+
 2009-09-07  Miguel de Icaza  <miguel@novell.com>
 
 	* Shell.cs: Add poor man's autocompletion to GSharp. 
