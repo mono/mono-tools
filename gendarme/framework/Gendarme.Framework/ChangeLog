@@ -1,3 +1,8 @@
+2009-08-13  Jesse Jones  <jesjones@mindspring.com>
+
+	* BasicIgnoreList.cs: Fixed AddType so that it works correctly when
+	multiple assemblies have the same type name.
+
 2009-06-10  Jesse Jones  <jesjones@mindspring.com>
 
 	* BasicIgnoreList.cs: IsIgnored methods now handle null targets.

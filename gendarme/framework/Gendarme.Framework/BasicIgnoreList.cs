@@ -142,16 +142,23 @@ namespace Gendarme.Framework {
 
 		protected bool AddType (string rule, string type)
 		{
+			bool found = false;
+			
+			// Note that we don't want to bail once we find the type name
+			// because more than one of the assemblies we're checking may
+			// have that name (this is a bit less likely with namespace
+			// qualified names, but even those may have duplicates especially
+			// for internal types).
 			foreach (AssemblyDefinition assembly in runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					TypeDefinition definition = module.Types [type];
 					if (definition != null) {
 						Add (rule, definition);
-						return true;
+						found = true;
 					}
 				}
 			}
-			return false;
+			return found;
 		}
 
 		protected bool AddMethod (string rule, string method)
