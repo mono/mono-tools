@@ -1,3 +1,374 @@
+# ---------------------------------------------------------
+# TODO: These should be fixed.
+R: Gendarme.Rules.Correctness.ProvideCorrectArgumentsToFormattingMethodsRule
+A: Gendarme.Rules.Design
+
+R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
+T: Gendarme.Framework.ThreadModel
+T: Gendarme.Rules.Concurrency.ThreadModel
+
+# I think these should throw System.FormatException.
+R: Gendarme.Rules.Exceptions.AvoidThrowingBasicExceptionsRule
+M: System.Int32 Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper::GetLoadIndex(Mono.Cecil.Cil.Instruction)
+M: System.Int32 Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper::GetStoreIndex(Mono.Cecil.Cil.Instruction)
+
+R: Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalTypeRule
+T: Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule/ILRange
+
+R: Gendarme.Rules.Correctness.EnsureLocalDisposalRule
+M: System.Void Gendarme.Wizard::SaveReportButtonClick(System.Object,System.EventArgs)
+
+# Not sure about this one.
+R: Gendarme.Rules.Design.Generic.PreferGenericsOverRefObjectRule
+M: Mono.Cecil.Cil.Instruction Gendarme.Framework.Helpers.StackEntryAnalysis::GetNextInstruction(Mono.Cecil.Cil.Instruction,System.Object&)
+
+R: Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule
+M: System.Void Gendarme.Wizard::set_Current(Gendarme.Page)
+
+R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+# Most of these are rule check methods which would be really annoying to fix.
+# It seems to me like the only good reason to make rules externally visible is
+# for the unit tests so we may want to consider making the rules internally
+# visible and exposing them to the tests via System.Runtime.CompilerServices.
+# InternalsVisibleToAttribute.
+R: Gendarme.Rules.Correctness.CheckParametersNullityInVisibleMethodsRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+# ---------------------------------------------------------
+# We might want to fix these.
+R: Gendarme.Rules.Naming.AvoidRedundancyInMethodNameRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+# TODO: For some reason this is not suppressing the defect. (And the console
+# report says "No defect found." even though it shows the defect.)
+R: Gendarme.Rules.Design.AvoidSmallNamespaceRule
+A: Gendarme.Framework
+
+R: Gendarme.Rules.Performance.OverrideValueTypeDefaultsRule
+T: Gendarme.Rules.Concurrency.DecorateThreadsRule/MethodName
+
+R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.BadPractice.DisableDebuggingCodeRule
+M: System.Void Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule/ILRange::DumpAll(System.String)
+M: System.Void Gendarme.Rules.Smells.CodeDuplicatedLocator::WriteToOutput(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodDefinition,Gendarme.Rules.Smells.Pattern)
+M: System.Void Gendarme.Rules.Smells.CodeDuplicatedLocator::WriteToOutput(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodDefinition,Gendarme.Rules.Smells.Pattern)
+M: System.Void Gendarme.Rules.Smells.CodeDuplicatedLocator::WriteToOutput(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodDefinition,Gendarme.Rules.Smells.Pattern)
+
+R: Gendarme.Rules.Design.ConsiderConvertingMethodToPropertyRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+# A few of these are externally visible methods... 
+R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
+T: Gendarme.Framework.EngineController
+
+R: Gendarme.Rules.Design.ConsiderAddingInterfaceRule
+T: Gendarme.Framework.IMethodRule
+
+R: Gendarme.Rules.Performance.AvoidUnusedParametersRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Smells.AvoidMessageChainsRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSize
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Smells.AvoidLargeClassesRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Smells.AvoidLongMethodsRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
+A: gendarme
+A: gendarme-wizard
+A: Gendarme.Framework
+A: Gendarme.Rules.BadPractice
+A: Gendarme.Rules.Concurrency
+A: Gendarme.Rules.Correctness
+A: Gendarme.Rules.Design
+A: Gendarme.Rules.Design.Generic
+A: Gendarme.Rules.Design.Linq
+A: Gendarme.Rules.Exceptions
+A: Gendarme.Rules.Interoperability
+A: Gendarme.Rules.Maintainability
+A: Gendarme.Rules.Naming
+A: Gendarme.Rules.Performance
+A: Gendarme.Rules.Portability
+A: Gendarme.Rules.Security
+A: Gendarme.Rules.Security.Cas
+A: Gendarme.Rules.Serialization
+A: Gendarme.Rules.Smells
+A: Gendarme.Rules.Ui
+
+# ---------------------------------------------------------
+# These are all OK.
+
+# Debug code.
+R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+M: System.Void Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule/ILRange::DumpAll(System.String)
+M: System.Int32 Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper::GetOffset(Mono.Cecil.Cil.Instruction)
+
 # OK - The rule itself needs the literal new line characters to test against them
 R: Gendarme.Rules.Portability.NewLineLiteralRule
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Portability.NewLineLiteralRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -111,9 +482,13 @@ R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
 T: NDesk.Options.OptionValueType
 
 # The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
-# fire because Gendarme code like the rules and the runners are not marked as
+# fire because Gendarme code, like the rules and the runners, are not marked as
 # thread-safe.
 R: Gendarme.Rules.Concurrency.DecorateThreadsRule
 M: System.Void Gendarme.Wizard::UpdateWelcomeUI()
 M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
 M: System.Void Gendarme.Wizard::Analyze()
+
+# This is internal code.
+R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
+M: System.Int32[] Gendarme.Rules.Smells.Pattern::get_Prefixes()
