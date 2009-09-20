@@ -1,3 +1,9 @@
+2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Moved file format informations to gendarme.5.in
+	* gendarme.5.in: New. Contains the information about file formats
+	* Makefile.am: Update for gendarme.5.in
+
 2008-08-09  Jesse Jones  <jesjones@mindspring.com>
 
 	* gendarme.1.in: Edited. Added sections for ignore and rules files.
