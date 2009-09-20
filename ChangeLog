@@ -1,3 +1,7 @@
+2009-09-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Add gendarme.5.in
+
 2008-12-15  Miguel de Icaza  <miguel@novell.com>
 
 	* configure.in: Detect the proper LIB_PREFIX and LIB_SUFIX to fix

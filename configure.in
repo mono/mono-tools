@@ -200,6 +200,7 @@ gendarme/gendarme
 gendarme/gendarme-wizard
 gendarme/man/Makefile
 gendarme/man/gendarme.1
+gendarme/man/gendarme.5
 gendarme/console/Makefile
 gendarme/console/gendarme.exe.config
 gendarme/framework/Makefile
