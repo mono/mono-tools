@@ -1,3 +1,10 @@
+2009-09-25  Jonathan Pryor  <jpryor@novell.com>
+
+	* monodoc.ashx: Remove tlink support (because tlinks keep potentially 
+	  changing every time we restart mod-mono-server), and instead rely on
+	  just the existing link support, and use node.PublicUrl instead of
+	  node.URL.  (Relying on n.tree.HelpSource.SourceID is a broken design.)
+
 2009-06-12 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* web.config: disable batch compilation to allow the application to

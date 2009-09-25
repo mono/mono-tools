@@ -44,12 +44,6 @@ namespace Mono.Website.Handlers
 		{
 			string s;
 
-			s = (string) context.Request.Params["tlink"];
-			if (s != null){
-				HandleTreeLink (context, s);
-				return;
-			}
-			
 			s = (string) context.Request.Params["link"];
 			if (s != null){
 				HandleMonodocUrl (context, s);
@@ -98,7 +92,7 @@ namespace Mono.Website.Handlers
 				w.WriteAttributeString ("text", n.Caption);
 
 				if (n.tree != null && n.tree.HelpSource != null)
-					w.WriteAttributeString ("action", n.tree.HelpSource.SourceID + "@" + HttpUtility.UrlEncode (n.URL));
+					w.WriteAttributeString ("action", HttpUtility.UrlEncode (n.PublicUrl));
 
 				if (n.Nodes != null){
 					w.WriteAttributeString ("src", tree + "@" + i);
@@ -376,7 +370,7 @@ function makeLink (link)
 		{
 			tree.strTargetDefault = 'content';
 			tree.strSrcBase = 'monodoc.ashx?tree=';
-			tree.strActionBase = 'monodoc.ashx?tlink=';
+			tree.strActionBase = 'monodoc.ashx?link=';
 			tree.strImagesBase = 'xtree/images/msdn2/';
 			tree.strImageExt = '.gif';
 			var content = document.getElementById ('contentList');
@@ -388,7 +382,7 @@ function makeLink (link)
 			Node n = (Node)help_tree.Nodes [i];
 			context.Response.Write (
 				"tree.CreateItem (root, '" + n.Caption + "', '" +
-				n.URL + "', ");
+				n.PublicUrl + "', ");
 	
 			if (n.Nodes.Count != 0)
 				context.Response.Write ("'" + i + "'");
