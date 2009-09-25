@@ -1,3 +1,7 @@
+2009-09-24 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* configure.in: avoid a lot of warnings.
+
 2009-09-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Add gendarme.5.in

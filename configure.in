@@ -1,6 +1,6 @@
 AC_INIT([mono-tools], [2.5])
 AC_CONFIG_SRCDIR([README])
-AM_INIT_AUTOMAKE([tar-ustar])
+AM_INIT_AUTOMAKE([tar-ustar -Wno-portability])
 AC_CANONICAL_SYSTEM
 AM_MAINTAINER_MODE
 
