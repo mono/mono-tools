@@ -80,13 +80,20 @@ class Driver {
 				} },
 			{ "make-index",
 				"Generate a documentation index.  Requires write permission to $libdir/monodoc.",
-				v => RootTree.MakeIndex () },
+				v => {
+					show_gui = false;
+					RootTree.MakeIndex ();
+				} },
 			{ "make-search-index",
 				"Generate a search index.  Requires write permission to $libdir/monodoc.",
-				v => RootTree.MakeSearchIndex () },
+				v => {
+					show_gui = false;
+					RootTree.MakeSearchIndex () ;
+				} },
 			{ "merge-changes=",
 				"Merge documentation changes found within {FILE} and target directories.",
 				v => {
+					show_gui = false;
 					if (v != null)
 						mergeConfigFile = v;
 					else {
