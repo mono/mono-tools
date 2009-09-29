@@ -1,3 +1,8 @@
+2009-09-29  Jonathan Pryor  <jpryor@novell.com>
+
+	* browser.cs: The make-index, make-search-index, and merge-changes
+	  options shouldn't display the GUI.
+
 2009-08-13  Jonathan Pryor  <jpryor@novell.com>
 
 	* browser.cs: Rename --docdir to --docrootdir.  Add --docdir option
