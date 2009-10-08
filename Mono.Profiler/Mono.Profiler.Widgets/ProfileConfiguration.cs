@@ -64,16 +64,16 @@ namespace Mono.Profiler.Widgets {
 		public string ToArgs ()
 		{
 			StringBuilder sb = new StringBuilder ();
-			if ((Mode | ProfileMode.Allocations) != 0)
+			if ((Mode & ProfileMode.Allocations) != 0)
 				sb.Append ("alloc");
 
-			if ((Mode | ProfileMode.Instrumented) != 0) {
+			if ((Mode & ProfileMode.Instrumented) != 0) {
 				if (sb.Length > 0)
 					sb.Append (",");
 				sb.Append ("calls");
 			}
 
-			if ((Mode | ProfileMode.Statistical) != 0) {
+			if ((Mode & ProfileMode.Statistical) != 0) {
 				if (sb.Length > 0)
 					sb.Append (",");
 				sb.Append ("s=128");

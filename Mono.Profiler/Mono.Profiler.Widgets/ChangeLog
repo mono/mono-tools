@@ -1,3 +1,8 @@
+2009-10-08  Mike Kestner <mkestner@novell.com>
+
+	* ProfileConfiguration.cs: fix screwup in args construction that was
+	causing multi-mode profile setups.
+
 2009-09-03  Mike Kestner <mkestner@novell.com>
 
 	* StartPage.cs: add Quick Sessions section to repeat configs from
