@@ -210,15 +210,13 @@ namespace GuiCompare
 
 		string [] api_4_0 = {
 			"mscorlib",
-			
-			"System.Activities.Core.Design",
-			"System.Activities.Design.Base",
+
+			"System.Activities",			
+			"System.Activities.Core.Presentation",
+			"System.Activities.DurableInstancing",
 			"System.Activities.Design",
-			"System.Activities",
-			"System.Activities.Extended",
 			"System.AddIn.Contract",
 			"System.AddIn",
-			"System.Caching",
 			"System.ComponentModel.Composition",
 			"System.ComponentModel.DataAnnotations",
 			"System.configuration",
@@ -236,6 +234,7 @@ namespace GuiCompare
 			"System.Data.SqlXml",
 			"System.Deployment",
 			"System.Design",
+			"System.Device",
 		//	"System.DirectoryServices.AccountManagement",
 			"System.DirectoryServices",
 		//	"System.DirectoryServices.Protocols",
@@ -253,12 +252,15 @@ namespace GuiCompare
 		//	"System.Management.Instrumentation",
 			"System.Messaging",
 			"System.Net",
+			"System.Numerics",
 			"System.Printing",
 			"System.Runtime",
+			"System.Runtime.Caching",
 			"System.Runtime.Remoting",
 			"System.Runtime.Serialization",
 			"System.Runtime.Serialization.Formatters.Soap",
 			"System.Security",
+			"System.ServiceModel.Activation",
 			"System.ServiceModel.Activities",
 			"System.ServiceModel.Channels",
 			"System.ServiceModel.Discovery",
@@ -269,6 +271,7 @@ namespace GuiCompare
 			"System.Speech",
 			"System.Transactions",
 			"System.Web.Abstractions",
+			"System.Web.ApplicationServices",
 			"System.Web.DataVisualization.Design",
 			"System.Web.DataVisualization",
 			"System.Web",
@@ -314,9 +317,8 @@ namespace GuiCompare
 			"PresentationFramework",
 			"PresentationFramework.Luna",
 			"PresentationFramework.Royale",
-
+			"PresentationUI",
 			"ReachFramework",
-			"ReferenceAssemblyBuildTask",
 
 			"WindowsBase",
 		//	"XamlBuildTask"
@@ -664,7 +666,7 @@ namespace GuiCompare
 			Populate (sub, "API 2.0 sp1", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
 			Populate (sub, "API 3.0 sp1", GetVersionPath ("3.0", "net_3_0"), "3.0", api_3_0);
 			Populate (sub, "API 3.5 sp1", GetVersionPath ("2.0", "net_2_0"), "3.5", api_3_5);
-			Populate (sub, "API 4.0 beta 1", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
+			Populate (sub, "API 4.0 beta 2", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
 			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
 			Populate (sub, "Silverlight 3.0", GetVersionPath ("2.1", "net_2_1"), "SL3", api_sl2);
 		}

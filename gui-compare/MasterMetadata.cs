@@ -151,12 +151,13 @@ namespace GuiCompare {
 			switch (name) {
 				case "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute":
 				case "System.NonSerializedAttribute":
-			    	case "System.Runtime.CompilerServices.CompilerGeneratedAttribute":
+				case "System.Runtime.CompilerServices.CompilerGeneratedAttribute":
 				case "System.Security.SecuritySafeCriticalAttribute":
 				case "System.Security.SecurityCriticalAttribute":
 				case "System.Diagnostics.DebuggerHiddenAttribute":
 				case "System.Diagnostics.DebuggerStepThroughAttribute":
 				case "System.Runtime.CompilerServices.InternalsVisibleToAttribute":
+				case "System.Runtime.TargetedPatchingOptOutAttribute":
 				return true;
 			}
 				
