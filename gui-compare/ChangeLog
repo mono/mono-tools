@@ -1,3 +1,7 @@
+2009-10-21  Atsushi Enomoto  <atsushi@ximian.com>
+
+	* InfoManager.cs : it never worked fine with 3.0 assemblies.
+
 2009-10-19  Marek Safar <marek.safar@gmail.com>
 
 	* InfoManager.cs, MasterMetadata.cs: Update 4.0 beta 2.

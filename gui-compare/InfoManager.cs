@@ -664,7 +664,7 @@ namespace GuiCompare
 			
 			Populate (sub, "API 1.1", GetVersionPath ("1.0", "net_1_1"), "1.0", api_1_1);
 			Populate (sub, "API 2.0 sp1", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
-			Populate (sub, "API 3.0 sp1", GetVersionPath ("3.0", "net_3_0"), "3.0", api_3_0);
+			Populate (sub, "API 3.0 sp1", GetVersionPath ("2.0", "net_2_0"), "3.0", api_3_0);
 			Populate (sub, "API 3.5 sp1", GetVersionPath ("2.0", "net_2_0"), "3.5", api_3_5);
 			Populate (sub, "API 4.0 beta 2", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
 			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
