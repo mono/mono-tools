@@ -1,3 +1,10 @@
+2009-10-13  Jo Shields <directhex@apebox.org>
+
+	* WebKitHtmlRender.cs: WebKit (1.1.15+) now raises NavigationRequested
+	events for initial loads from html, with about:blank uri. We only
+	want to deal with user-generated navigation events, so ignore these.
+	[backported from r143994]
+
 2009-01-29  Andreia Gaita <shana@jitted.com>
 
 	* MonoWebBrowserHtmlRender.cs: remove first load logic, there is no first
