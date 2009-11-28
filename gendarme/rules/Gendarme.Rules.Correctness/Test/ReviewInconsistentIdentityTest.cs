@@ -35,7 +35,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Correctness {
 
 	[TestFixture]
-	internal sealed class ReviewInconsistentIdentityTest : TypeRuleTestFixture<ReviewInconsistentIdentityRule> {
+	public sealed class ReviewInconsistentIdentityTest : TypeRuleTestFixture<ReviewInconsistentIdentityRule> {
 
 		private sealed class NoFields {
 		}
@@ -810,5 +810,24 @@ namespace Test.Rules.Correctness {
 			AssertRuleFailure<Bad9> (1);
 			AssertRuleFailure<Bad10> (1);
 		}
+
+		public abstract class AbstractEqualsTest : IEquatable<AbstractEqualsTest> {
+
+			private int field;
+
+			public abstract bool Equals (AbstractEqualsTest other);
+
+			public override bool Equals (object obj)
+			{
+				return Equals (obj as AbstractEqualsTest);
+			}
+		}
+
+		[Test]
+		public void Abstract ()
+		{
+			AssertRuleSuccess<AbstractEqualsTest> ();
+		}
 	}
 }
+

@@ -135,6 +135,10 @@ namespace Gendarme.Rules.Correctness {
 		{
 			Log.WriteLine (this, method);
 
+			// don't process abstract, pinvoke... methods
+			if (!method.HasBody)
+				return;
+
 			setFields.Clear ();
 			setProps.Clear ();
 

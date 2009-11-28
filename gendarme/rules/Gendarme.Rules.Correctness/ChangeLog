@@ -1,3 +1,9 @@
+2009-11-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewInconsistentIdentityTest.cs: Don't process methods 
+	without bodies (e.g. abstract, pinvoke...)
+	[Backport r147054]
+
 2009-07-28  Cedric Vivier  <cedricv@neonux.com>
 
 	* EnsureLocalDisposalRule.cs: Do not issue false positives for value type disposables.

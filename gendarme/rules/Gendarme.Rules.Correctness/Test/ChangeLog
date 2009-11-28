@@ -1,9 +1,16 @@
-2008-04-30  Jesse Jones  <jesjones@mindspring.com> 
+2009-11-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewInconsistentIdentityTest.cs: Add test case with abstract
+	methods. Make the test fixture public (otherwise it won't be
+	executed by nunit). Fix bug #550152 (also reported on the m-l).
+	[Backport r147054]
+
+2009-04-30  Jesse Jones  <jesjones@mindspring.com> 
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeTest.cs: 
 	Added new rule.
 
-2008-03-19  Jesse Jones  <jesjones@mindspring.com> 
+2009-03-19  Jesse Jones  <jesjones@mindspring.com> 
 
 	* ReviewInconsistentIdentityTest.cs: Updated for rule tweaks.
 
