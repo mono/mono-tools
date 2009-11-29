@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 using Gendarme.Framework;
 
@@ -40,11 +41,18 @@ namespace Gendarme {
 	public class GuiRunner : Runner, IIgnoreList {
 
 		private Wizard wizard;
+		private StringBuilder unexpected = new StringBuilder ();
+
+		private static TypeFilter RuleTypeFilter = new TypeFilter (RuleFilter);
 
 		public GuiRunner (Wizard form)
 		{
 			wizard = form;
 			IgnoreList = this;
+		}
+
+		public string Error {
+			get { return unexpected.ToString (); }
 		}
 
 		private static bool RuleFilter (Type type, object interfaceName)
@@ -60,7 +68,7 @@ namespace Gendarme {
 				if (t.IsAbstract || t.IsInterface)
 					continue;
 
-				if (t.FindInterfaces (new TypeFilter (RuleFilter), "Gendarme.Framework.IRule").Length > 0) {
+				if (t.FindInterfaces (RuleTypeFilter, "Gendarme.Framework.IRule").Length > 0) {
 					Rules.Add ((IRule) Activator.CreateInstance (t));
 				}
 			}
@@ -82,6 +90,24 @@ namespace Gendarme {
 				}
 
 				LoadRulesFromAssembly (info.FullName);
+			}
+		}
+
+		public void Execute ()
+		{
+			try {
+				unexpected.Length = 0;
+
+				Initialize ();
+				Run ();
+				TearDown ();
+			}
+			catch (Exception e) {
+				if (CurrentRule != null)
+					unexpected.AppendFormat ("Rule:\t{0}{1}{1}", CurrentRule, Environment.NewLine);
+				if (CurrentTarget != null)
+					unexpected.AppendFormat ("Target:\t{0}{1}{1}", CurrentTarget, Environment.NewLine);
+				unexpected.AppendFormat ("Stack trace: {0}", e);
 			}
 		}
 

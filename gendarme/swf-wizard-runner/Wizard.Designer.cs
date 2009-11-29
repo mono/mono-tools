@@ -81,6 +81,10 @@ namespace Gendarme {
 			this.open_file_dialog = new System.Windows.Forms.OpenFileDialog ();
 			this.save_file_dialog = new System.Windows.Forms.SaveFileDialog ();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox ();
+			this.unexpected_error_label = new System.Windows.Forms.Label ();
+			this.error_textbox = new System.Windows.Forms.TextBox ();
+			this.copy_paste_label = new System.Windows.Forms.Label ();
+			this.bugzilla_linklabel = new System.Windows.Forms.LinkLabel ();
 			this.wizard_tab_control.SuspendLayout ();
 			this.welcome_tab_page.SuspendLayout ();
 			this.addfiles_tab_page.SuspendLayout ();
@@ -575,6 +579,10 @@ namespace Gendarme {
 			// 
 			// results_tab_page
 			// 
+			this.results_tab_page.Controls.Add (this.bugzilla_linklabel);
+			this.results_tab_page.Controls.Add (this.copy_paste_label);
+			this.results_tab_page.Controls.Add (this.error_textbox);
+			this.results_tab_page.Controls.Add (this.unexpected_error_label);
 			this.results_tab_page.Controls.Add (this.view_report_button);
 			this.results_tab_page.Controls.Add (this.save_report_button);
 			this.results_tab_page.Controls.Add (this.results_title_label);
@@ -686,6 +694,54 @@ namespace Gendarme {
 			this.pictureBox1.TabIndex = 10;
 			this.pictureBox1.TabStop = false;
 			// 
+			// unexpected_error_label
+			// 
+			this.unexpected_error_label.AutoSize = true;
+			this.unexpected_error_label.Font = new System.Drawing.Font ("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte) (0)));
+			this.unexpected_error_label.ForeColor = System.Drawing.Color.Red;
+			this.unexpected_error_label.Location = new System.Drawing.Point (28, 49);
+			this.unexpected_error_label.Name = "unexpected_error_label";
+			this.unexpected_error_label.Size = new System.Drawing.Size (298, 13);
+			this.unexpected_error_label.TabIndex = 13;
+			this.unexpected_error_label.Text = "Results are incomplete due to an unexpected error!";
+			this.unexpected_error_label.Visible = false;
+			// 
+			// error_textbox
+			// 
+			this.error_textbox.Anchor = ((System.Windows.Forms.AnchorStyles) ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+				    | System.Windows.Forms.AnchorStyles.Left)
+				    | System.Windows.Forms.AnchorStyles.Right)));
+			this.error_textbox.Location = new System.Drawing.Point (18, 207);
+			this.error_textbox.Multiline = true;
+			this.error_textbox.Name = "error_textbox";
+			this.error_textbox.ReadOnly = true;
+			this.error_textbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.error_textbox.Size = new System.Drawing.Size (465, 163);
+			this.error_textbox.TabIndex = 14;
+			this.error_textbox.Visible = false;
+			// 
+			// copy_paste_label
+			// 
+			this.copy_paste_label.AutoSize = true;
+			this.copy_paste_label.Location = new System.Drawing.Point (15, 172);
+			this.copy_paste_label.Name = "copy_paste_label";
+			this.copy_paste_label.Size = new System.Drawing.Size (300, 13);
+			this.copy_paste_label.TabIndex = 15;
+			this.copy_paste_label.Text = "Please copy-paste the following information on a bug report to:";
+			this.copy_paste_label.Visible = false;
+			// 
+			// bugzilla_linklabel
+			// 
+			this.bugzilla_linklabel.AutoSize = true;
+			this.bugzilla_linklabel.Location = new System.Drawing.Point (15, 185);
+			this.bugzilla_linklabel.Name = "bugzilla_linklabel";
+			this.bugzilla_linklabel.Size = new System.Drawing.Size (127, 13);
+			this.bugzilla_linklabel.TabIndex = 16;
+			this.bugzilla_linklabel.TabStop = true;
+			this.bugzilla_linklabel.Text = "http://bugzilla.novell.com";
+			this.bugzilla_linklabel.Visible = false;
+			this.bugzilla_linklabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler (this.BugzillaLinkClick);
+			// 
 			// Wizard
 			// 
 			this.AcceptButton = this.next_button;
@@ -780,6 +836,10 @@ namespace Gendarme {
 		private System.Windows.Forms.RadioButton options_notvisible_radiobutton;
 		private System.Windows.Forms.Button options_save_button;
 		private System.Windows.Forms.Button rules_save_button;
+		private System.Windows.Forms.Label unexpected_error_label;
+		private System.Windows.Forms.Label copy_paste_label;
+		private System.Windows.Forms.TextBox error_textbox;
+		private System.Windows.Forms.LinkLabel bugzilla_linklabel;
 	}
 }
 
