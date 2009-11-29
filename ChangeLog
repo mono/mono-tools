@@ -1,3 +1,7 @@
+2009-11-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Now 2.7
+
 2009-09-24 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* configure.in: avoid a lot of warnings.
