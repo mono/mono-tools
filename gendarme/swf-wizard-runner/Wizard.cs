@@ -65,6 +65,7 @@ namespace Gendarme {
 
 		private const string BaseUrl = "http://www.mono-project.com/";
 		private const string DefaultUrl = BaseUrl + "Gendarme";
+		private const string BugzillaUrl = "http://bugzilla.novell.com";
 
 		static Process process;
 
@@ -568,9 +569,8 @@ namespace Gendarme {
 			// activate rules based on user selection
 			UpdateActiveRules ();
 
-			Runner.Initialize ();
-			Runner.Run ();
-			Runner.TearDown ();
+			// Initialize / Run / TearDown
+			Runner.Execute ();
 
 			// reset rules as the user selected them (since some rules might have
 			// turned themselves off is they were not needed for the analysis) so
@@ -622,6 +622,16 @@ namespace Gendarme {
 				has_defects ? Runner.Defects.Count.ToString () : "no");
 			cancel_button.Text = "Close";
 			next_button.Enabled = false;
+
+			// display an error message and details if we encountered an exception during analysis
+			string error = Runner.Error;
+			bool visible = (error.Length > 0);
+			unexpected_error_label.Visible = visible;
+			copy_paste_label.Visible = visible;
+			bugzilla_linklabel.Text = BugzillaUrl;
+			bugzilla_linklabel.Visible = visible;
+			error_textbox.Text = error;
+			error_textbox.Visible = visible;
 		}
 
 		private static bool CouldCopyReport (ref string currentName, string fileName)
@@ -629,8 +639,15 @@ namespace Gendarme {
 			// if possible avoid re-creating the report (as it can 
 			// be a long operation) and simply copy the file
 			bool copy = (currentName != null);
-			if (copy)
-				File.Copy (currentName, fileName);
+			if (copy) {
+				try {
+					File.Copy (currentName, fileName);
+				}
+				catch (Exception) {
+					// too many things can go wrong when copying
+					copy = false;
+				}
+			}
 
 			currentName = fileName;
 			return copy;
@@ -681,6 +698,11 @@ namespace Gendarme {
 				}
 			}
 			Open (html_report_filename);
+		}
+
+		private void BugzillaLinkClick (object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			Open (BugzillaUrl);
 		}
 
 		#endregion
