@@ -76,6 +76,17 @@ void GenerateList (string reference, string profile)
     </div>
     <div id="content">
 <div id="col1">
+<h2>Mono 4.0 vs .NET 4.0beta2</h2>
+
+	<p>This shows the work-in-progress of Mono towards completing
+	the 4.0beta2 APIs.
+
+	<ul class="assemblies">
+		<% GenerateList ("4.0", "4.0"); %>
+	</ul>
+</div>
+
+<div id="col2">
 <h2>Mono 3.5 vs .NET 3.5</h2>
 
 	<p>This shows the work-in-progress of Mono towards completing
@@ -86,7 +97,7 @@ void GenerateList (string reference, string profile)
 	</ul>
 </div>
 
-<div id="col2">
+<div id="col3">
 <h2>Moonlight vs Silverlight 3.0</h2>
 
 	<p>This is used to compare Mono + Moonlight assemblies against
@@ -105,7 +116,7 @@ void GenerateList (string reference, string profile)
 	</ul>
 </div>
 
-<div id="col3">
+<div id="col4">
 <h2>Mono 3.5 vs .NET 2.0</h2>
 
 	<p>This is comparing Mono's latest API which is typically
@@ -117,19 +128,6 @@ void GenerateList (string reference, string profile)
 
 	<ul class="assemblies">
 		<% GenerateList ("2.0", "2.0"); %>
-	</ul>
-</div>
-
-<div id="col4">
-<h2>Mono 1.1 vs .NET 1.1</h2>
-
-	<p>The Mono 1.1 API is typically used for embedded scenarios,
-	so we are tracking here any major differences in the area of
-	extra APIs that should not be exposed while building the
-	NET_1_1 profile.
-
-	<ul class="assemblies">
-		<% GenerateList ("1.1", "1.0"); %>
 	</ul>
 </div>
 </div>
