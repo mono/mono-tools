@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define ProductShortName = "Gendarme" ?>
-<?define ProductVersion = "2.4.0" ?>
-<?define ProductVersionText = "2.4" ?>
+<?define ProductVersion = "2.6.0" ?>
+<?define ProductVersionText = "2.6" ?>
 <?define Manufacturer = "Novell" ?>
 <?define UpgradeCode = "d7c83968-def2-4614-81f2-a3eefc9bc6b3" ?>
 
@@ -37,6 +37,7 @@
               <Shortcut Id="gen_shortcut" Directory="ProgramMenuDir" Name="$(var.ProductShortName)" LongName="$(var.ProductShortName) $(var.ProductVersionText)" WorkingDirectory='INSTALLLOCATION' Icon="GendarmeWizard.exe" IconIndex="0" Advertise="yes" />
             </File>
             <File Name="gendarme.exe" Source="$(var.GendarmeBin)\gendarme.exe" />
+            <File Name="rules.xml" Source="$(var.GendarmeBin)\rules.xml" />
             <File Name="Gendarme.Framework.dll" Source="$(var.GendarmeBin)\Gendarme.Framework.dll" />
             <File Name="Mono.Cecil.dll" Source="$(var.GendarmeBin)\Mono.Cecil.dll" />
             <File Name="Mono.Cecil.Pdb.dll" Source="$(var.GendarmeBin)\Mono.Cecil.Pdb.dll" />
