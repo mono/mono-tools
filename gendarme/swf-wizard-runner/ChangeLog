@@ -1,3 +1,10 @@
+2009-12-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Don't throw/crash wizard if an unmanaged dll is
+	added to the list of assemblies. At the moment the assembly is
+	simply ignored.
+	[Backport r147897]
+
 2009-11-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GuiRunner.cs: Add Execute method that will catch and report
