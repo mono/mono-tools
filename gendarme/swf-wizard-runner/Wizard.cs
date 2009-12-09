@@ -37,6 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Properties;
 
 using Mono.Cecil;
+using Mono.Cecil.Binary;
 
 namespace Gendarme {
 
@@ -323,7 +324,13 @@ namespace Gendarme {
 				if ((kvp.Value.Definition == null) || (kvp.Value.Timestamp < last_write)) {
 					AssemblyInfo a = kvp.Value;
 					a.Timestamp = last_write;
-					a.Definition = AssemblyFactory.GetAssembly (kvp.Key);
+					try {
+						a.Definition = AssemblyFactory.GetAssembly (kvp.Key);
+					}
+					catch (ImageFormatException) {
+						// continue loading & analyzing assemblies
+						// TODO: report as non-fatal warning
+					}
 				}
 			}
 		}
@@ -540,7 +547,10 @@ namespace Gendarme {
 			Runner.Assemblies.Clear ();
 			foreach (KeyValuePair<string, AssemblyInfo> kvp in assemblies) {
 				// add assemblies references to runner
-				Runner.Assemblies.Add (kvp.Value.Definition);
+				AssemblyDefinition ad = kvp.Value.Definition;
+				// an invalid assembly (e.g. non-managed code) will be null at this stage
+				if (ad != null)
+					Runner.Assemblies.Add (ad);
 			}
 
 			progress_bar.Maximum = Runner.Assemblies.Count;
