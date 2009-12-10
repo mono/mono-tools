@@ -150,6 +150,7 @@ namespace GuiCompare
 			"System.Net",
 			"System.Runtime.Serialization",
 			"System.ServiceModel",
+			"System.ServiceModel.Web",
 			"System.Windows.Browser",
 			"System.Xml",
 			"",
@@ -456,7 +457,14 @@ namespace GuiCompare
 					else {
 						Application.Invoke (delegate {
 							main.Progress = 0;
-							main.Status = "Download failed";
+							FileInfo masterinfoInfo = new FileInfo (masterinfo);
+							if (masterinfoInfo.Exists) {
+								main.Status = "Download failed, reusing cached (possibly out of date) masterinfo";
+								if (done != null)
+									done (masterinfo);
+							}
+							else
+								main.Status = "Download failed";
 						});
 					}
 				}
@@ -464,7 +472,14 @@ namespace GuiCompare
 					Console.WriteLine (e);
 					Application.Invoke (delegate {
 						main.Progress = 0;
-						main.Status = "Download failed";
+						FileInfo masterinfoInfo = new FileInfo (masterinfo);
+						if (masterinfoInfo.Exists) {
+							main.Status = "Download failed, reusing cached (possibly out of date) masterinfo";
+							if (done != null)
+								done (masterinfo);
+						}
+						else
+							main.Status = "Download failed";
 					});
 				}
 			});
