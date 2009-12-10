@@ -150,7 +150,6 @@ namespace GuiCompare
 			"System.Net",
 			"System.Runtime.Serialization",
 			"System.ServiceModel",
-			"System.ServiceModel.Web",
 			"System.Windows.Browser",
 			"System.Xml",
 			"",
