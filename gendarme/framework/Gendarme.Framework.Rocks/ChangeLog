@@ -1,3 +1,10 @@
+2009-12-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ModuleRocks.cs: Ignore InvalidOperationException (used by the 
+	new PdbCCiReader implementation) if the PDB is does not match 
+	the assembly (DLL/EXE)
+	[Backport r148085]
+
 2009-06-10  Jesse Jones  <jesjones@mindspring.com>
 
 	* TypeRocks.cs: Added AllSuperTypes rock.

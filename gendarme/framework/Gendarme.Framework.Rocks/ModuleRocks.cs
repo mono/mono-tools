@@ -128,6 +128,9 @@ namespace Gendarme.Framework.Rocks {
 				// This makes it possible to catch such exception without a reference to the
 				// Mono.CompilerServices.SymbolWriter.dll assembly
 			}
+			catch (InvalidOperationException) {
+				// this happens if the PDB is out of sync with the actual DLL (w/new PdbCciReader)
+			}
 			// in any case (of failure to load symbols) Gendarme can continue its analysis (but some rules
 			// can be affected). The HasDebuggingInformation extension method let them adjust themselves
 		}
