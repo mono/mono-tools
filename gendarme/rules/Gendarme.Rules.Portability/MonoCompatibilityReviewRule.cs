@@ -219,7 +219,7 @@ namespace Gendarme.Rules.Portability {
 
 			// MoMA tracks only assemblies that have "well known" public key tokens
 			byte [] pkt = anr.PublicKeyToken;
-			if (pkt == null)
+			if ((pkt == null) || (pkt.Length != 8))
 				return false;
 
 			switch (pkt [0]) {
