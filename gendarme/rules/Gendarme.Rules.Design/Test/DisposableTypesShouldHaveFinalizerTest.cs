@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2009 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -87,6 +87,24 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	// note: struct cannot have finalizer
+	struct NoNativeDisposableStruct : IDisposable {
+
+		public void Dispose ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	struct NativeFieldDisposableStruct : IDisposable {
+		IntPtr ptr;
+
+		public void Dispose ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
 	[TestFixture]
 	public class DisposableTypesShouldHaveFinalizerTest : TypeRuleTestFixture<DisposableTypesShouldHaveFinalizerRule> {
 
@@ -131,6 +149,13 @@ namespace Test.Rules.Design {
 		public void TestNotDisposableBecauseStatic ()
 		{
 			AssertRuleSuccess<NotDisposableBecauseStatic> ();
+		}
+
+		[Test]
+		public void Struct ()
+		{
+			AssertRuleSuccess<NoNativeDisposableStruct> ();
+			AssertRuleFailure<NativeFieldDisposableStruct> (2); // one field + struct
 		}
 	}
 }
