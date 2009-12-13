@@ -196,6 +196,53 @@ namespace Gendarme.Rules.Portability {
 			}
 		}
 
+		static byte [] ecma_key = new byte [] { 0xb7, 0x7a, 0x5c, 0x56, 0x19, 0x34, 0xe0, 0x89  };
+		static byte [] msfinal_key = new byte [] { 0xb0, 0x3f, 0x5f, 0x7f, 0x11, 0xd5, 0x0a, 0x3a };
+		static byte [] winfx_key = new byte [] { 0x31, 0xbf, 0x38, 0x56, 0xad, 0x36, 0xe4, 0x35 };
+		static byte [] silverlight_key = new byte [] { 0x7c, 0xec, 0x85, 0xd7, 0xbe, 0xa7, 0x79, 0x8e };
+		static Version silverlight = new Version (2, 0, 5, 0);
+
+		private bool ComparePublicKeyToken (byte [] pkt1, byte [] pkt2)
+		{
+			for (int i = 0; i < 8; i++) {
+				if (pkt1 [i] != pkt2 [i])
+					return false;
+			}
+			return true;
+		}
+
+		private bool Filter (AssemblyNameReference anr)
+		{
+			// if the scope is the current assembly, then AssemblyNameReference will be null
+			if (anr == null)
+				return false;
+
+			// MoMA tracks only assemblies that have "well known" public key tokens
+			byte [] pkt = anr.PublicKeyToken;
+			if (pkt == null)
+				return false;
+
+			switch (pkt [0]) {
+			case 0xb7:
+				// candidate for b77a5c561934e089 which is the ECMA key
+				return ComparePublicKeyToken (ecma_key, pkt);
+			case 0xb0:
+				// candidate for b03f5f7f11d50a3a which is the 'msfinal' key
+				return ComparePublicKeyToken (msfinal_key, pkt);
+			case 0x31:
+				// candidate for 31bf3856ad364e35 which is 'winfx' key - 
+				// but some Silverlight assemblies, Microsoft.VisualBasic.dll and 
+				// System.ServiceModel.dll, use it too
+				return (ComparePublicKeyToken (winfx_key, pkt) && (anr.Version != silverlight));
+			case 0x7c:
+				// candidate for 7cec85d7bea7798e which is used by Silverlight
+				// MoMA does not track Silverlight compatibility
+				return !ComparePublicKeyToken (silverlight_key, pkt);
+			default:
+				return false;
+			}
+		}
+
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -206,6 +253,17 @@ namespace Gendarme.Rules.Portability {
 
 			// rule is active only if we have, at least one of, the MoMA files
 			Active = ((NotImplemented != null) || (Missing != null) || (ToDo != null));
+
+			// MoMA does not support all frameworks, e.g. Silverlight
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				foreach (AssemblyNameReference anr in e.CurrentModule.AssemblyReferences) {
+					if (Filter (anr)) {
+						Active = true;
+						return;
+					}
+				}
+				Active = false;
+			};
 		}
 
 		private Version DownloadLatestDefinitions ()
@@ -281,8 +339,13 @@ namespace Gendarme.Rules.Portability {
 				if (!mask.Get (ins.OpCode.Code))
 					continue;
 
-				// this (MethodReference.ToString) is costly so we do it once for the three checks
-				string callee = ins.Operand.ToString ();
+				// filter calls to assemblies that MoMA likely does not include (e.g. your own code)
+				MethodReference mr = (ins.Operand as MethodReference);
+				if ((mr == null) || !Filter (mr.DeclaringType.Scope as AssemblyNameReference))
+					continue;
+
+				// MethodReference.ToString is costly so we do it once for the three checks
+				string callee = mr.ToString ();
 
 				// calling not implemented method is very likely not to work == High
 				if ((NotImplemented != null) && NotImplementedInternal.Contains (callee)) {

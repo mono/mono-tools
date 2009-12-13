@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2007 Andreas Noever
+// Copyright (C) 2009 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -53,14 +55,32 @@ namespace Test.Rules.Portability {
 			new object ().GetHashCode ();
 		}
 
+		// name duplication between MoMA definition and local assembly
+		public void NotImplementedLocal ()
+		{
+			NotImplemented ();
+		}
+
 		public void Missing ()
 		{
 			new object ().ToString ();
 		}
 
+		// name duplication between MoMA definition and local assembly
+		public void MissingLocal ()
+		{
+			Missing ();
+		}
+
 		public void TODO ()
 		{
 			new object ().GetType ();
+		}
+
+		// name duplication between MoMA definition and local assembly
+		public void TODOLocal ()
+		{
+			TODO ();
 		}
 
 		public void FalsePositive ()
@@ -83,10 +103,13 @@ namespace Test.Rules.Portability {
 		{
 			rule.NotImplemented.Clear ();
 			rule.NotImplemented.Add ("System.Int32 System.Object::GetHashCode()");
+			rule.NotImplemented.Add ("System.Void Test.Rules.Portability.MonoCompatibilityReviewTest::NotImplementedLocal()");
 			rule.Missing.Clear ();
 			rule.Missing.Add ("System.String System.Object::ToString()");
+			rule.Missing.Add ("System.Void Test.Rules.Portability.MonoCompatibilityReviewTest::MissingLocal()");
 			rule.ToDo.Clear ();
 			rule.ToDo.Add ("System.Type System.Object::GetType()", "TODO");
+			rule.ToDo.Add ("System.Void Test.Rules.Portability.MonoCompatibilityReviewTest::TODOLocal()", "TODO");
 		}
 
 		private MethodDefinition GetTest (string name)
@@ -104,6 +127,9 @@ namespace Test.Rules.Portability {
 		{
 			MethodDefinition method = GetTest ("NotImplemented");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+
+			method = GetTest ("NotImplementedLocal");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -111,6 +137,9 @@ namespace Test.Rules.Portability {
 		{
 			MethodDefinition method = GetTest ("Missing");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+
+			method = GetTest ("MissingLocal");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
@@ -118,6 +147,9 @@ namespace Test.Rules.Portability {
 		{
 			MethodDefinition method = GetTest ("TODO");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+
+			method = GetTest ("TODOLocal");
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
 		}
 
 		[Test]
