@@ -1,3 +1,9 @@
+2009-12-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableTypesShouldHaveFinalizerRule.cs: Report an additional
+	defect for struct, which cannot define a finalizer.
+	[Backport r148085]
+
 2009-08-11  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidSmallNamespaceRule.cs, DeclareEventHandlersCorrectlyRule.cs,

@@ -1,3 +1,9 @@
+2009-12-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableTypesShouldHaveFinalizerTest.cs: Add test cases for 
+	structs
+	[Backport r148085]
+
 2009-02-21  Jesse Jones  <jesjones@mindspring.com>
 
 	* UseCorrectDisposeSignaturesTest.cs: added new rule.
