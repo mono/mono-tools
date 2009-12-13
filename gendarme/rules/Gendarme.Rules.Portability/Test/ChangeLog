@@ -1,3 +1,8 @@
+2009-12-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewTest.cs: Add test cases to ensure we're not
+	analyzing the calls inside the current assembly.
+
 2009-08-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MonoCompatibilityReviewTest.cs: Adjust DeleteDefinitionData since

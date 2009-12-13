@@ -1,4 +1,10 @@
-2008-08-29  Sebastien Pouliot  <sebastien@ximian.com>
+2009-12-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewRule.cs: Only check calls on assemblies
+	that are covered by MoMA (e.g. don't check Silverlight platform
+	assemblies, user code...)
+
+2009-08-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MonoCompatibilityReviewRule.cs: Added a Version configurable
 	property to select between (local) definition files (e.g. a new
