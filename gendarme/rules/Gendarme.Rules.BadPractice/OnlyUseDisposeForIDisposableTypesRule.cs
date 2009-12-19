@@ -64,6 +64,7 @@ namespace Gendarme.Rules.BadPractice {
 	/// </example>
 	/// <example>
 	/// Good example:
+	/// <code>
 	/// internal sealed class Worker
 	/// {
 	/// 	// This class uses one or more temporary files to do its work.
@@ -78,9 +79,9 @@ namespace Gendarme.Rules.BadPractice {
 	/// 		files.Clear ();
 	/// 	}
 	/// }
-	/// <code>
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("A type has a method named Dispose, but does not implement IDisposable.")]
 	[Solution ("Rename the method or implement IDisposable.")]

@@ -42,9 +42,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
-	/// The rule inspects all fields for disposable types and, if <c>System.IDisposable</c>
-	/// is implemented, checks that the type's <c>Dispose</c> method does indeed call <c>Dispose</c>
-	/// on all disposable fields.
+	/// The rule inspects all fields for disposable types and, if <c>System.IDisposable</c> is
+	/// implemented, checks that the type's <c>Dispose</c> method does indeed call <c>Dispose</c> on
+	/// all disposable fields.
 	/// </summary>
 	/// <example>
 	/// Bad example:

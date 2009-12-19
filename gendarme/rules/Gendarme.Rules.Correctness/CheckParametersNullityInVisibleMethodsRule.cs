@@ -37,6 +37,55 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
+	/// <summary>
+	/// This rule checks if all nullable parameters of visible methods are compared 
+	/// with '''null''' before they get used. This reduce the likelyhood of the runtime
+	/// throwing a <c>NullReferenceException</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [DllImport ("message")]
+	/// internal static extern byte [] Parse (string s, int length);
+	///
+	/// public bool TryParse (string s, out Message m)
+	/// {
+	///	// is 's' is null then 's.Length' will throw a NullReferenceException
+	///	// which a TryParse method should never do
+	///	byte [] data = Parse (s, s.Length);
+	///	if (data == null) {
+	///		m = null;
+	///		return false;
+	///	}
+	///	m = new Message (data);
+	///	return true;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [DllImport ("message")]
+	/// internal static extern byte [] Parse (string s, int length);
+	///
+	/// public bool TryParse (string s, out Message m)
+	/// {
+	///	if (s == null) {
+	///		m = null;
+	///		return false;
+	///	}
+	///	byte [] data = Parse (s, s.Length);
+	///	if (data == null) {
+	///		m = null;
+	///		return false;
+	///	}
+	///	m = new Message (data);
+	///	return true;
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("A visible method does not check its parameter(s) for null values.")]
 	[Solution ("Since the caller is unknown you should always verify all of your parameters to protect yourself.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]

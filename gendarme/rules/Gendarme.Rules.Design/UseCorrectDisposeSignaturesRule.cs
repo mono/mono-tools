@@ -35,11 +35,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 	
 	/// <summary>
-	/// There is a convention that should be followed when implementing IDisposable. Part
+	/// There is a convention that should be followed when implementing <c>IDisposable</c>. Part
 	/// of this convention is that Dispose methods should have specific signatures. In
-	/// particular an IDisposable type's Dispose methods should either be nullary or unary
-	/// with a bool argument, Dispose () should not be virtual, Dispose (bool) should not be 
-	/// public, and unsealed types should have a protected virtual Dispose (bool) method.
+	/// particular an <c>IDisposable</c> type's Dispose methods should either be nullary or unary
+	/// with a bool argument, <c>Dispose ()</c> should not be virtual, <c>Dispose (bool)</c> should
+	/// not be public, and unsealed types should have a <c>protected virtual Dispose (bool)</c> method.
 	/// For more details see: [http://www.bluebytesoftware.com/blog/2005/04/08/DGUpdateDisposeFinalizationAndResourceManagement.aspx].
 	/// </summary>
 	/// <example>
@@ -68,7 +68,10 @@ namespace Gendarme.Rules.Design {
 	/// 		}
 	/// 	}
 	/// 	
-	/// 	protected bool Disposed { get; set; }
+	/// 	protected bool Disposed {
+	/// 		get;
+	/// 		set;
+	/// 	}
 	/// }
 	/// </code>
 	/// </example>
@@ -119,10 +122,14 @@ namespace Gendarme.Rules.Design {
 	/// 		}
 	/// 	}
 	/// 	
-	/// 	protected bool Disposed { get; private set; }
+	/// 	protected bool Disposed {
+	/// 		get; 
+	/// 		private set;
+	/// 	}
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 	
 	[Problem ("An IDisposable type does not conform to the guidelines for its Dispose methods.")]
 	[Solution ("Fix the signature of the methods or add the Dispose (bool) overload.")]

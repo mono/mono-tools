@@ -69,6 +69,7 @@ namespace Gendarme.Rules.Correctness {
 	/// bookElement.InnerXml = "&lt;author&gt;Robert J. Sawyer&lt;/author&gt;";
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("An invalid XML string is provided to a method.")]
 	[Solution ("Fix the invalid XML string.")]

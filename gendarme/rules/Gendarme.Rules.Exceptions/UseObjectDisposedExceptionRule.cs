@@ -110,7 +110,8 @@ namespace Gendarme.Rules.Exceptions {
 	/// }
 	/// </code>
 	/// </example>
-	
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
+
 	[Problem ("A method of an IDisposable type does not throw System.ObjectDisposedException.")]
 	[Solution ("Throw ObjectDisposedException if the object has been disposed.")]
 	public sealed class UseObjectDisposedExceptionRule : Rule, IMethodRule {

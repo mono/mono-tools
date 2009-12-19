@@ -40,8 +40,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	/// <summary>
-	/// <code>Every delegate which is passed to native code must include an exception 
-	/// block which spans the entire method and has a catch all handler.</code>
+	/// Every delegate which is passed to native code must include an exception 
+	/// block which spans the entire method and has a catch all handler.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -59,36 +59,30 @@ namespace Gendarme.Rules.Interoperability {
 	/// {
 	///	try {
 	///		Console.WriteLine ("{0}", 1);
-	///	} catch {
+	///	}
+	///	catch {
 	///	}
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("Every delegate passed to native code must include an exception block which spans the entire method and has a catch all handler.")]
 	[Solution ("Surround the entire method body with a try/catch block.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule : Rule, IMethodRule {
-		/// <summary>
-		/// A list of methods which have been verified to be safe to call from native code. 
-		/// </summary>
+		// A list of methods which have been verified to be safe to call from native code. 
 		Dictionary<MethodDefinition, bool> verified_methods;
 		
-		/// <summary>
-		/// A list of methods which have been reported to be unsafe (to not report the same method twice).
-		/// </summary>
+		// A list of methods which have been reported to be unsafe (to not report the same method twice).
 		List<MethodDefinition> reported_methods;
 		
-		/// <summary>
-		/// A list of all the fields which have been passed to pinvokes (as a delegate parameter).
-		/// We report an error if a ld[s]fld stores an unsafe function pointer into any of these fields.
-		/// </summary>
+		// A list of all the fields which have been passed to pinvokes (as a delegate parameter).
+		// We report an error if a ld[s]fld stores an unsafe function pointer into any of these fields.
 		List<FieldDefinition> fields_loads;
 		
-		/// <summary>
-		/// A list of all the fields which have been assigned function pointers.
-		/// We report an error if a pinvoke loads any of these fields.
-		/// </summary>
+		// A list of all the fields which have been assigned function pointers.
+		// We report an error if a pinvoke loads any of these fields.
 		Dictionary<FieldDefinition, List<MethodDefinition>> field_stores;
 				
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -236,9 +230,7 @@ namespace Gendarme.Rules.Interoperability {
 			return Runner.CurrentRuleResult;
 		}
 		
-		/// <summary>
-		/// Verifies that the method is safe to call as a callback from native code.
-		/// </summary>
+		// Verifies that the method is safe to call as a callback from native code.
 		private bool VerifyCallbackSafety (MethodDefinition callback)
 		{
 			bool result;
@@ -342,9 +334,7 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 		
-		/// <summary>
-		/// Parses the ILRange and return all delegate pointers that could end up on the stack as a result of executing that code.
-		/// </summary>
+		// Parses the ILRange and return all delegate pointers that could end up on the stack as a result of executing that code.
 		private List<MethodDefinition> GetDelegatePointers (MethodDefinition method, List<List<MethodDefinition>> locals, ILRange range)
 		{
 			List<MethodDefinition> result = null;
@@ -392,10 +382,8 @@ namespace Gendarme.Rules.Interoperability {
 		}
 		
 		
-		/// <summary>
-		/// Verifies that all methods in the list are safe to call from native code,
-		/// otherwise reports the correspoding result.
-		/// </summary>
+		// Verifies that all methods in the list are safe to call from native code,
+		// otherwise reports the correspoding result.
 		private void VerifyMethods (List<MethodDefinition> pointers)
 		{
 			if (pointers == null)
@@ -405,9 +393,7 @@ namespace Gendarme.Rules.Interoperability {
 				ReportVerifiedMethod (pointer, VerifyCallbackSafety (pointer));
 		}
 		
-		/// <summary>
-		/// Reports the result from verifying the method.
-		/// </summary>
+		// Reports the result from verifying the method.
 		private void ReportVerifiedMethod (MethodDefinition pointer, bool safe)
 		{
 			if (!safe) {
@@ -437,10 +423,8 @@ namespace Gendarme.Rules.Interoperability {
 			return -1;
 		}
 		
-		/// <summary>
-		/// Return the index of the load opcode.
-		/// This could probably go into InstructionRocks.
-		/// </summary>
+		// Return the index of the load opcode.
+		// This could probably go into InstructionRocks.
 		public static int GetLoadIndex (this Instruction ins)
 		{
 			switch (ins.OpCode.Code) {
@@ -458,10 +442,8 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 		
-		/// <summary>
-		/// Return the index of the store opcode.
-		/// This could probably go into InstructionRocks.
-		/// </summary>
+		// Return the index of the store opcode.
+		// This could probably go into InstructionRocks.
 		public static int GetStoreIndex (this Instruction ins)
 		{
 			switch (ins.OpCode.Code) {

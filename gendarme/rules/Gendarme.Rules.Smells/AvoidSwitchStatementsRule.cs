@@ -63,16 +63,19 @@ namespace Gendarme.Rules.Smells {
 	/// int balance = 0;
 	/// foreach (Movie movie in movies) {
 	/// 	switch (movie.GetTypeCode ()) {
-	/// 	case MovieType.OldMovie:
-	/// 		balance += movie.DaysRented * movie.Price / 2;
-	/// 		break
-	/// 	case MovieType.ChildMovie:
-	/// 		//its an special bargain !!
-	/// 		balance += movie.Price;
-	/// 		break;
-	/// 	case MovieType.NewMovie:
-	/// 		balance += (movie.DaysRented + 1) * movie.Price;
-	/// 		break:
+	///	 	case MovieType.OldMovie: {
+	/// 			balance += movie.DaysRented * movie.Price / 2;
+	/// 			break;
+	///	 	}
+	/// 		case MovieType.ChildMovie: {
+	///	 		//its an special bargain !!
+	/// 			balance += movie.Price;
+	/// 			break;
+	///		}
+	///		case MovieType.NewMovie: {
+	///			balance += (movie.DaysRented + 1) * movie.Price;
+	///			break:
+	///		}
 	/// 	}
 	/// }
 	/// </code>
@@ -84,24 +87,28 @@ namespace Gendarme.Rules.Smells {
 	///	abstract int GetPrice ();
 	/// }
 	/// class OldMovie : Movie {
-	///	public override int GetPrice () {
+	///	public override int GetPrice ()
+	///	{
 	///		return DaysRented * Price / 2;
 	///	}
 	/// }
 	/// class ChildMovie : Movie {
-	///	public override int GetPrice () {
+	///	public override int GetPrice ()
+	///	{
 	///		return movie.Price;
 	///	}
 	/// }
 	/// class NewMovie : Movie {
-	///	public override int GetPrice () {
+	///	public override int GetPrice ()
+	///	{
 	///		return (DaysRented + 1) * Price;
 	///	}
 	/// }
 	///
 	/// int balance = 0;
-	/// foreach (Movie movie in movies)  
+	/// foreach (Movie movie in movies) {
 	/// 	balance += movie.GetPrice ()
+	/// }
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.4</remarks>

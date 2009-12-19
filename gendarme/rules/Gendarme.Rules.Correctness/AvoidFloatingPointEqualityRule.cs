@@ -65,17 +65,17 @@ namespace Gendarme.Rules.Correctness {
 	/// // work as expected.
 	/// public static bool NearlyEqual (double [] lhs, double [] rhs)
 	/// {
-	/// 	if (ReferenceEquals (lhs, rhs))
+	/// 	if (ReferenceEquals (lhs, rhs)) {
 	/// 		return true;
-	/// 		
-	/// 	if (lhs.Length != rhs.Length)
-	/// 		return false;
-	/// 		
-	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
-	/// 		if (lhs [i] != rhs [i])
-	/// 			return false;
 	/// 	}
-	/// 	
+	/// 	if (lhs.Length != rhs.Length) {
+	/// 		return false;
+	/// 	}
+	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
+	/// 		if (lhs [i] != rhs [i]) {
+	/// 			return false;
+	/// 		}
+	/// 	}
 	/// 	return true;
 	/// }
 	/// </code>
@@ -89,17 +89,17 @@ namespace Gendarme.Rules.Correctness {
 	/// // be scaled accordingly).
 	/// public static bool NearlyEqual (double [] lhs, double [] rhs, double epsilon)
 	/// {
-	/// 	if (ReferenceEquals (lhs, rhs))
+	/// 	if (ReferenceEquals (lhs, rhs)) {
 	/// 		return true;
-	/// 		
-	/// 	if (lhs.Length != rhs.Length)
-	/// 		return false;
-	/// 		
-	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
-	/// 		if (Math.Abs (lhs [i] - rhs [i]) &gt; epsilon)
-	/// 			return false;
 	/// 	}
-	/// 	
+	/// 	if (lhs.Length != rhs.Length) {
+	/// 		return false;
+	/// 	}
+	/// 	for (int i = 0; i &lt; lhs.Length; ++i) {
+	/// 		if (Math.Abs (lhs [i] - rhs [i]) &gt; epsilon) {
+	/// 			return false;
+	/// 			}
+	/// 	}
 	/// 	return true;
 	/// }
 	/// </code>

@@ -69,9 +69,9 @@ namespace Gendarme.Rules.BadPractice {
 	/// 
 	/// // If cleaning up the native resource in a timely manner is important you can
 	/// // implement IDisposable.
-	/// public sealed class Database
-	/// {
-	/// 	~Database () {
+	/// public sealed class Database {
+	/// 	~Database ()
+	/// 	{
 	/// 		// This will execute even if the ctor throws so it is important to check
 	/// 		// to see if the fields are initialized.
 	/// 		if (m_database != IntPtr.Zero) {
@@ -82,13 +82,13 @@ namespace Gendarme.Rules.BadPractice {
 	/// 	public Database (string path)
 	/// 	{		
 	/// 		NativeMethods.OpenFlags flags = NativeMethods.OpenFlags.READWRITE | NativeMethods.OpenFlags.CREATE;
-	/// 		NativeMethods.Error err = NativeMethods.sqlite3_open_v2 (path, out m_database, flags, IntPtr.Zero);
+	/// 		int err = NativeMethods.sqlite3_open_v2 (path, out m_database, flags, IntPtr.Zero);
 	/// 		// handle errors
 	/// 	}
 	/// 	
 	/// 	// exec and query methods would go here
 	/// 							
-	/// 	[SuppressUnmanagedCodeSecurity ()]
+	/// 	[SuppressUnmanagedCodeSecurity]
 	/// 	private static class NativeMethods {
 	/// 		[Flags]
 	/// 		public enum OpenFlags : int {
@@ -98,17 +98,11 @@ namespace Gendarme.Rules.BadPractice {
 	/// 			// ...
 	/// 		}
 	/// 		
-	/// 		public enum Error : int {
-	/// 			OK = 0, 
-	/// 			ERROR = 1,
-	/// 			// ...
-	/// 		}
-	/// 						
 	/// 		[DllImport ("sqlite3")]
-	/// 		public static extern Error sqlite3_close (IntPtr db);
+	/// 		public static extern int sqlite3_close (IntPtr db);
 	/// 					
 	/// 	   	[DllImport ("sqlite3")]
-	/// 	    public static extern Error sqlite3_open_v2 (string fileName, out IntPtr db, OpenFlags flags, IntPtr module);
+	/// 		public static extern int sqlite3_open_v2 (string fileName, out IntPtr db, OpenFlags flags, IntPtr module);
 	/// 	}
 	/// 	
 	///     private IntPtr m_database;
@@ -141,17 +135,17 @@ namespace Gendarme.Rules.BadPractice {
 	/// 	private sealed class SqlitePtr : SafeHandle {
 	/// 		public SqlitePtr (string path, NativeMethods.OpenFlags flags) : base (IntPtr.Zero, true)
 	/// 		{		
-	/// 			NativeMethods.Error err = NativeMethods.sqlite3_open_v2 (path, out handle, flags, IntPtr.Zero);
+	/// 			int err = NativeMethods.sqlite3_open_v2 (path, out handle, flags, IntPtr.Zero);
 	/// 			// handle errors
 	/// 		}
 	/// 		
-	/// 		public override bool IsInvalid 
-	/// 		{ 
-	/// 			get { return handle == IntPtr.Zero; }
+	/// 		public override bool IsInvalid { 
+	/// 			get {
+	/// 				return (handle == IntPtr.Zero);
+	/// 			}
 	/// 		}
 	/// 		
-	/// 		// This will not be called if the handle is invalid. Note that this
-	/// 		// method should not throw.
+	/// 		// This will not be called if the handle is invalid. Note that this method should not throw.
 	/// 		[ReliabilityContract (Consistency.WillNotCorruptState, Cer.MayFail)]
 	/// 		protected override bool ReleaseHandle ()
 	/// 		{
@@ -160,7 +154,7 @@ namespace Gendarme.Rules.BadPractice {
 	/// 		}
 	/// 	}
 	/// 
-	/// 	[SuppressUnmanagedCodeSecurity ()]
+	/// 	[SuppressUnmanagedCodeSecurity]
 	/// 	private static class NativeMethods {
 	/// 		[Flags]
 	/// 		public enum OpenFlags : int {
@@ -170,24 +164,19 @@ namespace Gendarme.Rules.BadPractice {
 	/// 			// ...
 	/// 		}
 	/// 		
-	/// 		public enum Error : int {
-	/// 			OK = 0, 
-	/// 			ERROR = 1,
-	/// 			// ...
-	/// 		}
-	/// 		
 	/// 		[DllImport ("sqlite3")]
-	/// 		public static extern Error sqlite3_close (SqlitePtr db);
+	/// 		public static extern int sqlite3_close (SqlitePtr db);
 	/// 				
 	/// 		// Open must take an IntPtr but all other methods take a type safe SqlitePtr.
 	/// 		[DllImport ("sqlite3")]
-	/// 		public static extern Error sqlite3_open_v2 (string fileName, out IntPtr db, OpenFlags flags, IntPtr module);
+	/// 		public static extern int sqlite3_open_v2 (string fileName, out IntPtr db, OpenFlags flags, IntPtr module);
 	/// 	}
 	/// 
 	/// 	private SqlitePtr m_database;
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("The type uses System.IntPtr or System.UIntPtr instead of System.Runtime.InteropServices.SafeHandle.")]
 	[Solution ("Consider changing the code to use SafeHandle.")]

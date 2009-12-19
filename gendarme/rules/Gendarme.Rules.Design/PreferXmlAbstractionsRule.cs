@@ -35,16 +35,20 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design {
 
 	/// <summary>
-	/// This rule fires if an externally visible method or property uses an XmlDocument, XPathDocument or XmlNode
-	/// argument. The problem with this is that it ties your API to a specific implementation so it is difficult to change
-	/// later. Instead use abstract types like IXPathNavigable, XmlReader, XmlWriter, or subtypes of XmlNode.
+	/// This rule fires if an externally visible method or property uses an <c>XmlDocument</c>, 
+	/// <c>XPathDocument</c> or <c>XmlNode</c> argument. The problem with this is that it ties 
+	/// your API to a specific implementation so it is difficult to change later. Instead use 
+	/// abstract types like <c>IXPathNavigable</c>, <c>XmlReader</c>, <c>XmlWriter</c>, or subtypes
+	/// of <c>XmlNode</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example (property):
 	/// <code>
 	/// public class Application {
 	///	public XmlDocument UserData {
-	///		get { return userData; }
+	///		get {
+	///			return userData;
+	///		}
 	///	}
 	/// }
 	/// </code>
@@ -54,7 +58,9 @@ namespace Gendarme.Rules.Design {
 	/// <code>
 	/// public class Application {
 	///	public IXPathNavigable UserData {
-	///		get { return userData; }
+	///		get {
+	///			return userData;
+	///		}
 	///	}
 	/// }
 	/// </code>
@@ -63,7 +69,8 @@ namespace Gendarme.Rules.Design {
 	/// Bad example (method parameter):
 	/// <code>
 	/// public class Application {
-	///	public bool IsValidUserData (XmlDocument userData) {
+	///	public bool IsValidUserData (XmlDocument userData) 
+	///	{
 	///		/* implementation */
 	///	}
 	/// }
@@ -73,7 +80,8 @@ namespace Gendarme.Rules.Design {
 	/// Good example (method parameter):
 	/// <code>
 	/// public class Application {
-	///	public bool IsValidUserData (XmlReader userData) {
+	///	public bool IsValidUserData (XmlReader userData) 
+	///	{
 	///		/* implementation */
 	///	}
 	/// }

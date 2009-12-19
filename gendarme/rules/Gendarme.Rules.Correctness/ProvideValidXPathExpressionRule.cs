@@ -67,6 +67,7 @@ namespace Gendarme.Rules.Correctness {
 	/// var xpath = XPathExpression.Compile ("/book[@npages = 100]/@title");
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("An invalid XPath expression string is provided to a method.")]
 	[Solution ("Fix the invalid XPath expression.")]

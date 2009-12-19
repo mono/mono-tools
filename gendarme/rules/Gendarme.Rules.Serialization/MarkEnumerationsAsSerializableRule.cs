@@ -32,6 +32,32 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Serialization {
 
+	/// <summary>
+	/// This rule warns when it founds an <c>enum</c> that is not decorated with
+	/// a <c>[Serializable]</c> attribute. Enums, even without the attribute,
+	/// are always serializable. Marking them as such makes the source code more readable.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public enum Colors {
+	///	Black,
+	///	White
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// [Serializable]
+	/// public enum Colors {
+	///	Black,
+	///	White
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.2</remarks>
+
 	[Problem ("An enumeration, even if not decorated with [Serializable], is always serializable.")]
 	[Solution ("For better source code readability always decorate enumerations with [Serializable].")]
 	public class MarkEnumerationsAsSerializableRule : Rule, ITypeRule {
