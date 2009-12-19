@@ -39,9 +39,9 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule will fire if an enum's values look like they are intended to
-	/// be composed together with the bitwise OR operator and the enum
-	/// is not decorated with System.FlagsAttribute. Using FlagsAttribute
-	/// will allow System.Enum.ToString to return a better string when 
+	/// be composed together with the bitwise OR operator and the enum is not
+	/// decorated with <c>System.FlagsAttribute</c>. Using <c>FlagsAttribute</c> will
+	/// allow <c>System.Enum.ToString()</c> to return a better string when 
 	/// values are ORed together and helps indicate to readers of the code 
 	/// the intended usage of the enum.
 	/// </summary>
@@ -70,6 +70,7 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("The enum seems to be composed of flag values, but is not decorated with [Flags].")]
 	[Solution ("Add [Flags] to the enum,  change the values so that they are not powers of two, or ignore the defect.")]

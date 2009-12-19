@@ -43,7 +43,7 @@ namespace Gendarme.Rules.Performance {
 	/// Linq extension methods operate on sequences of values so they generally
 	/// have linear time complexity. However you may be able to achieve better
 	/// than linear time performance if you use a less general method or take
-	/// advantage of a method provided by an Sytem.Collections.Generic.IEnumerable&lt;T&gt; 
+	/// advantage of a method provided by an <c>Sytem.Collections.Generic.IEnumerable&lt;T&gt;</c> 
 	/// subclass.
 	/// </summary>
 	/// <example>
@@ -54,9 +54,8 @@ namespace Gendarme.Rules.Performance {
 	/// 	// Count () is O(n)
 	/// 	if (sequence.Count () &gt; 0) {
 	/// 		return sequence.First ();
-	/// 	} else {
-	/// 		return missing;
 	/// 	}
+	/// 	return missing;
 	/// }
 	/// 
 	/// public void Append (List&lt;string&gt; lines, string line)
@@ -76,9 +75,8 @@ namespace Gendarme.Rules.Performance {
 	/// 	// We don't need an exact count so we can use the O(1) Any () method.
 	/// 	if (sequence.Any ()) {
 	/// 		return sequence.First ();
-	/// 	} else {
-	/// 		return missing;
 	/// 	}
+	/// 	return missing;
 	/// }
 	/// 
 	/// public void Append (List&lt;string&gt; lines, string line)
@@ -91,6 +89,7 @@ namespace Gendarme.Rules.Performance {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("A linq extension method with linear time complexity is used, but a more efficient method is available.")]
 	[Solution ("Use the more efficient method.")]

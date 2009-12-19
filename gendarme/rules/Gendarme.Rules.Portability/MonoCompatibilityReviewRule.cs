@@ -54,13 +54,12 @@ namespace Gendarme.Rules.Portability {
 	/// or <c>C:\Documents and Settings\{username}\Local Settings\Application Data\Gendarme</c> 
 	/// (on Windows) and checking for calls to the methods therein. The rule will work without 
 	/// MoMA but if it does fire it may be useful to download and run MoMA.
-	/// </summary>
-	/// <remarks>
+	///
 	/// By default the rule will use the latest local version available. This can be overriden to use a 
 	/// specific, local, version if you want to review compatibility against a specific Mono version.
 	/// You can also manually remove them, now and then, to ensure you are using the latest version.
 	/// Also upgrading Gendarme will try to download a newer version of the definitions files.
-	/// </remarks>
+	/// </summary>
 
 	[Problem ("The method is either missing or partially implemented on Mono.")]
 	[Solution ("Review and test the code to ensure that it works properly on Mono. Also delete the definitions.zip to ensure that the latest version is downloaded.")]

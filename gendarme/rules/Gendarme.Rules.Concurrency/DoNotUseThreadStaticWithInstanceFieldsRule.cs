@@ -39,7 +39,7 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Concurrency {
 
 	/// <summary>
-	/// This rule will fire if an instance field is decorated with System.ThreadStaticAttribute. 
+	/// This rule will fire if an instance field is decorated with a <c>[ThreadStatic]</c> attribute. 
 	/// This is an error because the attribute will only work with static fields.
 	/// </summary>
 	/// <example>
@@ -78,6 +78,7 @@ namespace Gendarme.Rules.Concurrency {
 	/// } 
 	/// </code>
 	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
 	[Problem ("An instance field is decorated with System.ThreadStaticAttribute.")]
 	[Solution ("ThreadStaticAttribute will only make static fields thread safe. To make an instance field thread safe you need to use techniques like locking or System.Threading.Thread.Thread::AllocateNamedDataSlot.")]
