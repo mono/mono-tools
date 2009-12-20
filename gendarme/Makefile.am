@@ -95,6 +95,7 @@ zip-bin: bin extra-bin
 	cp ../bin/*.dll .; \
 	cp ../rules/rules.xml .; \
 	cp ../man/gendarme.1 .; \
+	cp ../man/gendarme.5 .; \
 	cp ../AUTHORS ../README ../MIT.X11 ../NEWS .; \
 	cp ../extra/* .; \
 	zip gendarme-$(GENDARME_VERSION)-bin.zip *; \
@@ -107,7 +108,7 @@ instruct.xsd:
 
 push: instruct.xsd
 	xmllint --schema instruct.xsd gendarme.xml
-#	scp gendarme-2.2preview1-bin.zip $(USER)@upload.ohloh.net:gendarme/files; \
-#	scp gendarme-2.2preview1-win32-setup.zip $(USER)@upload.ohloh.net:gendarme/files; \
+#	scp gendarme-2.8preview1-bin.zip $(USER)@upload.ohloh.net:gendarme/files; \
+#	scp gendarme-2.8preview1-win32-setup.zip $(USER)@upload.ohloh.net:gendarme/files; \
 #	scp gendarme.xml $(USER)@upload.ohloh.net:gendarme/instructs
 
