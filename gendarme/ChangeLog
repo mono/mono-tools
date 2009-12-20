@@ -1,3 +1,7 @@
+2009-12-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Bundle gendarme.5
+
 2009-08-19  Jesse Jones  <jesjones@mindspring.com>
 
 	* self-test.ignore: Added a bunch more entries to allow self-test to
