@@ -1,3 +1,8 @@
+2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ParameterRocks.cs: New. IsRef and IsParams rocks to use like
+	IsOut property.
+
 2009-12-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ModuleRocks.cs: Ignore InvalidOperationException (used by the 

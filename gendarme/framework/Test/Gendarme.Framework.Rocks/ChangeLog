@@ -1,3 +1,7 @@
+2010-01-01  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ParametersRocksTest.cs: New. Test cases for new rocks
+
 2010-01-01 Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CustomAttributeRocksTest.cs: Add test cases for HasAttribute
