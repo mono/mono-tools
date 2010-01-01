@@ -1,3 +1,7 @@
+2010-01-01 Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CustomAttributeRocksTest.cs: Add test cases for HasAttribute
+
 2009-04-30  Jesse Jones  <jesjones@mindspring.com>
 
 	* VariableDefinitionRocksTest.cs: Added tests for new

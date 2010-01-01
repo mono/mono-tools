@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2007 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2007, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -83,6 +83,25 @@ namespace Test.Framework.Rocks {
 				"System.ICloneable"
 			}), "NUnit.Framework.TestFixtureAttribute");
 			Assert.IsFalse (cac.ContainsAnyType (new string[] {}), "NUnit.Framework.TestFixture");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void HasAttribute_Null ()
+		{
+			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
+			type.HasAttribute (null);
+		}
+		
+		[Test]
+		public void HasAttribute ()
+		{
+			TypeDefinition type = null;
+			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "null-type");
+
+			type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
+			Assert.IsTrue (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "true");
+			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestAttribute"), "false");
 		}
 	}
 }
