@@ -47,6 +47,7 @@ framework_sources =  \
 	Gendarme.Framework.Rocks/InstructionRocks.cs \
 	Gendarme.Framework.Rocks/MethodRocks.cs \
 	Gendarme.Framework.Rocks/ModuleRocks.cs \
+	Gendarme.Framework.Rocks/ParameterRocks.cs \
 	Gendarme.Framework.Rocks/TypeRocks.cs \
 	Gendarme.Framework.Rocks/VariableDefinitionRocks.cs \
 	Gendarme.Framework/ApplicabilityScope.cs \
@@ -95,6 +96,7 @@ framework_test_sources = \
 	Gendarme.Framework.Rocks/CustomAttributeRocksTest.cs \
 	Gendarme.Framework.Rocks/InstructionRocksTest.cs \
 	Gendarme.Framework.Rocks/MethodRocksTest.cs \
+	Gendarme.Framework.Rocks/ParameterRocksTest.cs \
 	Gendarme.Framework.Rocks/TypeRocksTest.cs \
 	Gendarme.Framework.Rocks/VariableDefinitionRocksTest.cs \
 	Gendarme.Framework.Rocks/FieldRocksTest.cs
