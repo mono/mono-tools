@@ -114,10 +114,11 @@ namespace Gendarme.Rules.Naming {
 			if (method.IsConstructor || method.IsOverride ())
 				return RuleResult.DoesNotApply;
 
-			string name = method.Parameters [0].ParameterType.Name;
+			ParameterDefinition p0 = method.Parameters [0];
+			string name = p0.ParameterType.Name;
 
 			//param is out/ref, it is already not obvious (there is a rule for that)
-			if (method.Parameters [0].IsOut || name.EndsWith ("&", StringComparison.Ordinal))
+			if (p0.IsOut || p0.IsRef ())
 				return RuleResult.DoesNotApply;
 
 			if (name.Length == 1 || method.Name.Length <= name.Length)
@@ -128,7 +129,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			//if the method return the parameter type it is most likely clearer to have it in the name
-			if (method.ReturnType.ReturnType == method.Parameters [0].ParameterType)
+			if (method.ReturnType.ReturnType == p0.ParameterType)
 				return RuleResult.Success;
 
 			//if starting with name it is most likely on purpose
@@ -146,7 +147,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.Success;
 
 			//if IgnoreAlienNamespaces is True, then check if parameter type is from one of the analyzed namespaces
-			if (IgnoreAlienNamespaces && IsTypeFromAlienNamespace (method.Parameters [0].ParameterType))
+			if (IgnoreAlienNamespaces && IsTypeFromAlienNamespace (p0.ParameterType))
 				return RuleResult.Success; //ignored/out-of-reach, so this is a success
 
 			//main goal is to keep the API as simple as possible so this is more severe for visible methods
