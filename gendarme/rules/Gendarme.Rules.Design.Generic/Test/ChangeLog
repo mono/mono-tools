@@ -1,3 +1,8 @@
+2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeclaringCustomDelegatesTest.cs: New. Unit tests for
+	AvoidDeclaringCustomDelegatesRule
+
 2008-12-29  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotExposeNestedGenericSignaturesTest.cs: New. Unit tests for
