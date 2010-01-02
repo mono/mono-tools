@@ -1,0 +1,116 @@
+//
+// Gendarme.Rules.Correctness.UseNoInliningWithGetCallingAssemblyRule
+//
+// Authors:
+//	Sebastien Pouliot <sebastien@ximian.com>
+//
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+
+using System;
+
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+
+using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
+
+namespace Gendarme.Rules.Correctness {
+
+	/// <summary>
+	/// This rule warns when a method call <c>Assembly.GetCallingAssembly()</c> from a 
+	/// method that is not decorated with <c>[MethodImpl(MethodImplOptions.NoInlining)]</c>.
+	/// Without this attribute the method could be inlined by the JIT. In this case the
+	/// calling assembly would be the assembly of the caller (of the inlined method), 
+	/// which could be different than the assembly of the real, source-wise, caller to
+	/// <c>Assembly.GetCallingAssembly</c>.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// [MethodImpl (MethodImplOptions.NoInlining)]
+	/// public void ShowInfo ()
+	/// {
+	///	Console.WriteLine (Assembly.GetCallingAssembly ().Location);
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public void ShowInfo ()
+	/// {
+	///	Console.WriteLine (Assembly.GetCallingAssembly ().Location);
+	/// }
+	/// </code>
+	/// </example>
+	/// <remarks>This rule is available since Gendarme 2.8</remarks>
+	[Problem ("Assembly.GetCallingAssembly() is called from a method that could be inlined by the JIT")]
+	[Solution ("Decorate method with [MethodImpl(MethodImplOptions.NoInlining)] to ensure it wwill never be inlined.")]
+	[EngineDependency (typeof (OpCodeEngine))]
+	public class UseNoInliningWithGetCallingAssemblyRule : Rule, IMethodRule {
+
+		private const string Assembly = "System.Reflection.Assembly";
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				// if the module does not reference System.Reflection.Assembly 
+				// then no method inside it will be calling GetCallingAssembly
+				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib ||
+					e.CurrentModule.TypeReferences.ContainsType (Assembly));
+			};
+		}
+
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+				return RuleResult.DoesNotApply;
+
+			// we do not need to check if the method can't be inlined
+			if ((method.ImplAttributes & MethodImplAttributes.NoInlining) != 0)
+				return RuleResult.Success;
+
+			foreach (Instruction current in method.Body.Instructions) {
+				switch (current.OpCode.Code) {
+				case Code.Call:
+				case Code.Callvirt:
+					MethodReference mr = (current.Operand as MethodReference);
+					if ((mr != null) && (mr.Name == "GetCallingAssembly")
+						&& (mr.DeclaringType.FullName == Assembly)) {
+						Runner.Report (method, current, Severity.High, Confidence.Total);
+					}
+					break;
+				}
+			}
+			return Runner.CurrentRuleResult;
+		}
+	}
+}
+

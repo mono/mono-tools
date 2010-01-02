@@ -30,7 +30,10 @@ rules_sources =  \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs \
+	UseNoInliningWithGetCallingAssemblyRule.cs \
 	UseValueInPropertySetterRule.cs
+
+EXTRA_TESTS_OPTIONS += -d:DEBUG
 
 tests_sources = \
 	AttributeStringLiteralsShouldParseCorrectlyTest.cs \
@@ -60,4 +63,5 @@ tests_sources = \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs \
+	UseNoInliningWithGetCallingAssemblyTest.cs \
 	UseValueInPropertySetterTest.cs

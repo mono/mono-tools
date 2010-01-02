@@ -1,3 +1,8 @@
+2010-01-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseNoInliningWithGetCallingAssemblyTest.cs: New. Unit tests for
+	UseNoInliningWithGetCallingAssemblyRule
+
 2009-11-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewInconsistentIdentityTest.cs: Add test case with abstract

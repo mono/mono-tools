@@ -1,3 +1,12 @@
+2010-01-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseNoInliningWithGetCallingAssemblyRule.cs: New. Rule to ensure
+	Assembly.GetCallingAssembly is called from a method decorated 
+	with [MethodImpl (MethodImplOptions.NoInlining)]
+	* Makefile.am: Add new rule and tests to the build. Add -d:DEBUG
+	to unit tests assembly to remove the three failures in 
+	AvoidMethodsWithSideEffectsInConditionalCodeTest
+
 2009-11-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewInconsistentIdentityTest.cs: Don't process methods 
