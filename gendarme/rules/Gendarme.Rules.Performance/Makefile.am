@@ -3,6 +3,7 @@ include ../common.make
 rules_sources =  \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
 	AvoidLargeStructureRule.cs \
+	AvoidLocalDataStoreSlotRule.cs \
 	AvoidMethodWithLargeMaximumStackSize.cs \
 	AvoidRepetitiveCastsRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \
@@ -37,6 +38,7 @@ EXTRA_TESTS_OPTIONS += -unsafe -o-
 
 tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \
+	AvoidLocalDataStoreSlotTest.cs \
 	AvoidUnneededFieldInitializationTest.cs \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \

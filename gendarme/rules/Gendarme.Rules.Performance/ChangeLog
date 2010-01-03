@@ -1,3 +1,10 @@
+2010-01-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLocalDataStoreSlotRule.cs: New. Rule to promote the use of
+	[ThreadStatic] and [ContextStatic] attributes over the slower 
+	LocalDataStoreSlot-based API.
+	* Makefile.am: Add new rule and tests to the build.
+
 2009-08-16  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidLargeNumberOfLocalVariablesRule.cs, 

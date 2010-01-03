@@ -1,3 +1,8 @@
+2010-01-03  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLocalDataStoreSlotTest.cs: New. Unit tests for
+	AvoidLocalDataStoreSlotRule
+
 2009-05-14  Jb Evain  <jbevain@novell.com>
 
 	* AvoidMethodWithLargeMaximumStackSizeTest.cs: added unit tests
