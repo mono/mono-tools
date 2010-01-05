@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,6 +27,8 @@
 //
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -621,6 +623,52 @@ namespace Tests.Rules.Correctness {
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("GetOut");
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ShowOut");
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ArrayOut");
+		}
+
+		public class NonGeneric567817 {
+			private IList underlyingCollection;
+			private int ctx;
+			public virtual void Add (string item)
+			{
+				if (item == null) {
+					underlyingCollection.Add (null);
+					return;
+				} else {
+					if (ctx != item.Length) { throw new Exception (); }
+
+					underlyingCollection.Add (item);
+				}
+			}
+		}
+
+		public interface Stub {
+			object Context { get; }
+		}
+
+		public class Generic567817<TInterface, TImpl>
+			where TInterface : Stub
+			where TImpl : class, TInterface {
+			List<TImpl> underlyingCollection;
+			object ctx;
+
+			public virtual void Add (TInterface item)
+			{
+				if (item == null) {
+					underlyingCollection.Add (null);
+					return;
+				} else {
+					if (ctx != item.Context) { throw new Exception (); }
+
+					underlyingCollection.Add ((TImpl) item);
+				}
+			}
+		}
+
+		[Test]
+		public void Bug567817 ()
+		{
+			AssertRuleSuccess<NonGeneric567817> ("Add");
+			AssertRuleSuccess<Generic567817<Stub, Stub>> ("Add");
 		}
 	}
 }

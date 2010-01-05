@@ -1,3 +1,8 @@
+2010-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsRule.cs: Handle boxing
+	correctly (e.g. when dealing with generics). Fix bug #567817
+
 2010-01-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseNoInliningWithGetCallingAssemblyRule.cs: New. Rule to ensure

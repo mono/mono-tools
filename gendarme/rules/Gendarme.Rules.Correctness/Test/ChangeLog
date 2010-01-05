@@ -1,3 +1,8 @@
+2010-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsTest.cs: Add a generic
+	and a non-generic test case for #567817
+
 2010-01-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* UseNoInliningWithGetCallingAssemblyTest.cs: New. Unit tests for

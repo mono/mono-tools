@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -142,10 +142,12 @@ namespace Gendarme.Rules.Correctness {
 
 			Instruction next = ins.Next;
 			Code nc = next.OpCode.Code;
-			// load indirect reference (ref)
-			if (nc == Code.Ldind_Ref) {
+			switch (nc) {
+			case Code.Box:		// generics
+			case Code.Ldind_Ref:	// load indirect reference
 				next = next.Next;
 				nc = next.OpCode.Code;
+				break;
 			}
 
 			if (null_compare.Get (nc)) {
