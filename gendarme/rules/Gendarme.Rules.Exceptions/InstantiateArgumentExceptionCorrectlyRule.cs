@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // (C) 2008 Néstor Salceda
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -91,16 +91,30 @@ namespace Gendarme.Rules.Exceptions {
 			if (operand == null)
 				return false;
 
+			// for most getter and setter the property name is used
 			if (method.IsProperty ()) {
-				return String.Compare (method.Name, 4, operand, 0, operand.Length, StringComparison.Ordinal) == 0;
-			} else {
-				// note: we already know there are Parameters for this method is we got here
-				foreach (ParameterDefinition parameter in method.Parameters) {
-					if (parameter.Name == operand)
-						return true;
-				}
+				if (String.Compare (method.Name, 4, operand, 0, operand.Length, StringComparison.Ordinal) == 0)
+					return true;
+				// but we continue looking for parameters (e.g. indexers) unless it's the generic 'value' string
+				if (operand == "value")
+					return false;
+			}
+
+			// note: we already know there are Parameters for this method is we got here
+			foreach (ParameterDefinition parameter in method.Parameters) {
+				if (parameter.Name == operand)
+					return true;
 			}
 			return false;
+		}
+
+		private void Report (MethodDefinition method, Instruction ins, string name)
+		{
+			Severity severity = ((name == "value") && method.IsProperty () &&
+				!method.Name.EndsWith ("value", StringComparison.InvariantCultureIgnoreCase)) ?
+				Severity.Low : Severity.High;
+
+			Runner.Report (method, ins, severity, Confidence.Normal);
 		}
 
 		private void CheckArgumentException (MethodReference ctor, Instruction ins, MethodDefinition method)
@@ -117,10 +131,11 @@ namespace Gendarme.Rules.Exceptions {
 			// CHECK	public ArgumentException (string message, string paramName)
 			// CHECK	public ArgumentException (string message, string paramName, Exception innerException)
 			Instruction call = ins.TraceBack (method, -1);
-			if (MatchesAnyParameter (method, (call.Operand as string)))
+			string name = call.Operand as string;
+			if (MatchesAnyParameter (method, name))
 				return;
 
-			Runner.Report (method, ins, Severity.High, Confidence.Normal);
+			Report (method, ins, name);
 		}
 
 		// ctors are identical for ArgumentNullException, ArgumentOutOfRangeException and DuplicateWaitObjectException
@@ -139,10 +154,11 @@ namespace Gendarme.Rules.Exceptions {
 			// CHECK	public ArgumentNullException (string paramName)
 			// CHECK	public ArgumentNullException (string paramName, string message)
 			Instruction call = ins.TraceBack (method, 0);
-			if (MatchesAnyParameter (method, (call.Operand as string)))
+			string name = call.Operand as string;
+			if (MatchesAnyParameter (method, name))
 				return;
 
-			Runner.Report (method, ins, Severity.High, Confidence.Normal);
+			Report (method, ins, name);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

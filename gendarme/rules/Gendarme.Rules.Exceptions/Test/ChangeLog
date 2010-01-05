@@ -1,3 +1,8 @@
+2010-01-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstantiateArgumentExceptionCorrectlyTest.cs: Add test case for
+	indexers and be more precise (check severity) for "value".
+
 2009-03-15  Jesse Jones  <jesjones@mindspring.com> 
 
 	* UseObjectDisposedExceptionTest.cs: Added new rule.

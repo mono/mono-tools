@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // (C) 2008 Néstor Salceda
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -33,6 +33,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Mono.Cecil;
+using Gendarme.Framework;
 using Gendarme.Rules.Exceptions;
 
 using NUnit.Framework;
@@ -354,6 +355,7 @@ namespace Test.Rules.Exceptions {
 		public void FailOnBadNamedPropertyTest ()
 		{
 			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("set_BadNamedProperty", 1);
+			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Low");
 		}
 
 		public int WellNamedPropertyWithArgumentNullException {
@@ -758,6 +760,22 @@ namespace Test.Rules.Exceptions {
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("GoodStaticMethod2");
 			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("BadStaticMethod2", 2);
 			AssertRuleFailure<InstantiateArgumentExceptionCorrectlyTest> ("BadStaticMethod2half", 1);
+		}
+
+		public object this [int index] {
+			get {
+				throw new ArgumentOutOfRangeException ("index");
+			}
+			set {
+				throw new ArgumentOutOfRangeException ("index", "foo");
+			}
+		}
+
+		[Test]
+		public void Indexer ()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("get_Item");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("set_Item");
 		}
 	}
 }
