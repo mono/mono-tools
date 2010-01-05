@@ -149,9 +149,9 @@ namespace Gendarme.Rules.Exceptions {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class DoNotThrowInUnexpectedLocationRule : Rule, IMethodRule {
 
-		private static readonly OpCodeBitmask Throwers = new OpCodeBitmask (0x0, 0x80C8000000000000, 0x3FC17F8000001FF, 0x0);
+		private static readonly OpCodeBitmask Throwers = new OpCodeBitmask (0x0, 0x80C8000000000000, 0x3FC17FC000001FF, 0x0);
 		private static readonly OpCodeBitmask AlwaysBadThrowers = new OpCodeBitmask (0x0, 0x0, 0x100000000000, 0x0);
-		private static readonly OpCodeBitmask OverflowThrowers = new OpCodeBitmask (0x0, 0x8000000000000000, 0x3FC17F8000001FF, 0x0);
+		private static readonly OpCodeBitmask OverflowThrowers = new OpCodeBitmask (0x0, 0x8000000000000000, 0x3FC07F8000001FF, 0x0);
 
 		private static readonly string [] GetterExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException"};
 		private static readonly string [] IndexerExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException", "System.ArgumentException", "System.Collections.Generic.KeyNotFoundException"};
@@ -438,6 +438,7 @@ namespace Gendarme.Rules.Exceptions {
 			Code.Castclass,	// throws InvalidCastException
 			Code.Throw,
 			Code.Unbox,		// throws InvalidCastException or NullReferenceException
+			Code.Unbox_Any,		// throws InvalidCastException or NullReferenceException
 		};
 
 		private static readonly Code [] Overflow = new Code []

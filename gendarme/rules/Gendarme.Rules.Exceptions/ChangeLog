@@ -1,3 +1,9 @@
+2010-01-04  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotThrowInUnexpectedLocationRule.cs: Fix bitmask to include
+	Code.Unbox_Any. This will fix unit tests under both Mono 2.6 and
+	MS .NET (unbox was likely used in earlier Mono releases)
+
 2010-01-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstantiateArgumentExceptionCorrectlyRule.cs: Fix bug #567995
