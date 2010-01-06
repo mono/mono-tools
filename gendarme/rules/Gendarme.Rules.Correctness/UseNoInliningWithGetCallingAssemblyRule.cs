@@ -49,7 +49,6 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// [MethodImpl (MethodImplOptions.NoInlining)]
 	/// public void ShowInfo ()
 	/// {
 	///	Console.WriteLine (Assembly.GetCallingAssembly ().Location);
@@ -59,6 +58,7 @@ namespace Gendarme.Rules.Correctness {
 	/// <example>
 	/// Good example:
 	/// <code>
+	/// [MethodImpl (MethodImplOptions.NoInlining)]
 	/// public void ShowInfo ()
 	/// {
 	///	Console.WriteLine (Assembly.GetCallingAssembly ().Location);
@@ -67,7 +67,7 @@ namespace Gendarme.Rules.Correctness {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.8</remarks>
 	[Problem ("Assembly.GetCallingAssembly() is called from a method that could be inlined by the JIT")]
-	[Solution ("Decorate method with [MethodImpl(MethodImplOptions.NoInlining)] to ensure it wwill never be inlined.")]
+	[Solution ("Decorate method with [MethodImpl(MethodImplOptions.NoInlining)] to ensure it will never be inlined.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseNoInliningWithGetCallingAssemblyRule : Rule, IMethodRule {
 
@@ -85,6 +85,20 @@ namespace Gendarme.Rules.Correctness {
 			};
 		}
 
+		static bool IsCallToGetCallingAssembly (Instruction instruction)
+		{
+			var code = instruction.OpCode.Code;
+			if (code != Code.Call && code != Code.Callvirt)
+				return false;
+
+			var method = instruction.Operand as MethodReference;
+			if (method == null)
+				return false;
+
+			return method.Name == "GetCallingAssembly"
+				&& method.DeclaringType.FullName == Assembly;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
@@ -94,21 +108,16 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			// we do not need to check if the method can't be inlined
-			if ((method.ImplAttributes & MethodImplAttributes.NoInlining) != 0)
+			if (method.NoInlining)
 				return RuleResult.Success;
 
 			foreach (Instruction current in method.Body.Instructions) {
-				switch (current.OpCode.Code) {
-				case Code.Call:
-				case Code.Callvirt:
-					MethodReference mr = (current.Operand as MethodReference);
-					if ((mr != null) && (mr.Name == "GetCallingAssembly")
-						&& (mr.DeclaringType.FullName == Assembly)) {
-						Runner.Report (method, current, Severity.High, Confidence.Total);
-					}
+				if (IsCallToGetCallingAssembly (current)) {
+					Runner.Report (method, current, Severity.High, Confidence.Total);
 					break;
 				}
 			}
+
 			return Runner.CurrentRuleResult;
 		}
 	}
