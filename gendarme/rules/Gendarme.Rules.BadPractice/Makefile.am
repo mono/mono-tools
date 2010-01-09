@@ -17,6 +17,7 @@ rules_sources =  \
 	ObsoleteMessagesShouldNotBeEmptyRule.cs \
 	OnlyUseDisposeForIDisposableTypesRule.cs \
 	PreferEmptyInstanceOverNullRule.cs \
+	PreferParamsArrayForVariableArgumentsRule.cs \
 	PreferSafeHandleRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
 	ReturnNullRule.cs \
@@ -39,6 +40,7 @@ tests_sources = \
 	ObsoleteMessagesShouldNotBeEmptyTest.cs \
 	OnlyUseDisposeForIDisposableTypesTest.cs \
 	PreferEmptyInstanceOverNullTest.cs \
+	PreferParamsArrayForVariableArgumentsTest.cs \
 	PreferSafeHandleTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
 	ToStringReturnsNullTest.cs 

@@ -1,3 +1,8 @@
+2010-01-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferParamsArrayForVariableArgumentsTest.cs: New. Unit tests 
+	for PreferParamsArrayForVariableArgumentsRule
+
 2009-02-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* OnlyUseDisposeForIDisposableTypesTest.cs: Added new rule.

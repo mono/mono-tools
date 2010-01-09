@@ -1,3 +1,9 @@
+2010-01-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferParamsArrayForVariableArgumentsRule.cs: New rule to warn
+	about methods using the vararg calling convention and not used 
+	for interoperability purpose.
+
 2009-07-17  Jesse Jones  <jesjones@mindspring.com>
 
 	* GetEntryAssemblyMayReturnNullRule.cs, DisableDebuggingCodeRule.cs: 
