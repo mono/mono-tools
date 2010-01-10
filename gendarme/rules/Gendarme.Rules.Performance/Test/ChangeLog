@@ -1,3 +1,8 @@
+2010-01-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCallsToPropertiesTest.cs: New. Unit tests for
+	AvoidRepetitiveCallsToPropertiesRule
+
 2010-01-03  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLocalDataStoreSlotTest.cs: New. Unit tests for

@@ -5,6 +5,7 @@ rules_sources =  \
 	AvoidLargeStructureRule.cs \
 	AvoidLocalDataStoreSlotRule.cs \
 	AvoidMethodWithLargeMaximumStackSize.cs \
+	AvoidRepetitiveCallsToPropertiesRule.cs \
 	AvoidRepetitiveCastsRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
@@ -39,6 +40,7 @@ EXTRA_TESTS_OPTIONS += -unsafe -o-
 tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \
 	AvoidLocalDataStoreSlotTest.cs \
+	AvoidRepetitiveCallsToPropertiesTest.cs \
 	AvoidUnneededFieldInitializationTest.cs \
 	EmptyDestructorTest.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
