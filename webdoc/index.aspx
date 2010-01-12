@@ -1,11 +1,16 @@
-<%@ Page Language="C#" %>
+<%@ Page Language="C#" ClassName="Mono.Website.Index" %>
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <html>
   <head>
-    <title>Mono Documentation</title>
+    <title><%=GetTitle ()%></title>
   </head>
         <script language="c#" runat="server">
+		public string GetTitle ()
+		{
+			return Global.help_tree.GetTitle (Request.QueryString ["link"]);
+		}
+
                 // Get the path to be shown in the content fram
                 string getContentFrame()
                 {

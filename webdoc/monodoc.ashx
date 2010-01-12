@@ -36,10 +36,10 @@ namespace Mono.Website.Handlers
 			HelpSource.use_css = true;
 			HelpSource.FullHtml = false;
 			HelpSource.UseWebdocCache = true;
-			help_tree = RootTree.LoadTree ();
+			help_tree = Global.help_tree;
 			SettingsHandler.Settings.EnableEditing = false;
 		}
-		
+
 		void IHttpHandler.ProcessRequest (HttpContext context)
 		{
 			string s;
@@ -170,7 +170,7 @@ namespace Mono.Website.Handlers
 			if (context.Response.StatusCode == 304)
 				return;
 
-			PrintDocs (content, context, GetHelpSource (n));
+			PrintDocs (content, n, context, GetHelpSource (n));
 		}
 
 		HelpSource GetHelpSource (Node n)
@@ -198,7 +198,7 @@ namespace Mono.Website.Handlers
 				content = help_tree.RenderUrl (lnk [1], out n);
 				hs = GetHelpSource (n);
 			}
-			PrintDocs (content, context, hs);
+			PrintDocs (content, n, context, hs);
 		}
 
 		void Copy (Stream input, Stream output)
@@ -214,8 +214,10 @@ namespace Mono.Website.Handlers
 		}
 
 		string requestPath;
-		void PrintDocs (string content, HttpContext ctx, HelpSource hs)
+		void PrintDocs (string content, Node node, HttpContext ctx, HelpSource hs)
 		{
+			string title = (node == null || node.Caption == null) ? "Mono XDocumentation" : node.Caption;
+
 			ctx.Response.Write (@"
 <html>
 <head>
@@ -234,6 +236,7 @@ function load ()
 	{
 		top.location.href = 'index.aspx'+document.location.search;
 	}
+
 	parent.Header.document.getElementById ('pageLink').href = parent.content.window.location;
 	objs = document.getElementsByTagName('img');
 	for (i = 0; i < objs.length; i++)
@@ -262,38 +265,41 @@ function makeLink (link)
 			
 		default:
 			if(document.all) {
-				return '" + ctx.Request.Path + @"?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
+				return '");
+			ctx.Response.Write (ctx.Request.Path);
+			ctx.Response.Write (@"?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
 			}
-			return '" + ctx.Request.Path + @"?link=' + link.replace(/\+/g, '%2B');
+			return '");
+
+			ctx.Response.Write (ctx.Request.Path);
+			ctx.Response.Write (@"?link=' + link.replace(/\+/g, '%2B');
 		}
 }
--->
-	</script>
-		<title>Mono Documentation</title>
-		");
-		if (hs != null && hs.InlineCss != null) {
-			ctx.Response.Write ("<style type=\"text/css\">\n");
-			ctx.Response.Write (hs.InlineCss);
-			ctx.Response.Write ("</style>\n");
-		}
-		if (hs != null && hs.InlineJavaScript != null) {
-			ctx.Response.Write ("<script type=\"text/JavaScript\">\n");
-			ctx.Response.Write (hs.InlineJavaScript);
-			ctx.Response.Write ("</script>\n");
-		}
-		ctx.Response.Write (@"
-		</head>
-		<body onLoad='load()'>
-		");
+-->");
+			ctx.Response.Write ("</script><title>");
+			ctx.Response.Write (title);
+			ctx.Response.Write ("</title>\n");
+	
+			if (hs != null && hs.InlineCss != null) {
+				ctx.Response.Write ("<style type=\"text/css\">\n");
+				ctx.Response.Write (hs.InlineCss);
+				ctx.Response.Write ("</style>\n");
+			}
+			if (hs != null && hs.InlineJavaScript != null) {
+				ctx.Response.Write ("<script type=\"text/JavaScript\">\n");
+				ctx.Response.Write (hs.InlineJavaScript);
+				ctx.Response.Write ("</script>\n");
+			}
+			ctx.Response.Write (@"</head><body onLoad='load()'>");
+
 			// Set up object variable, as it's required by the MakeLink delegate
 			requestPath=ctx.Request.Path;
 			string output;
-
+	
 			if (content == null)
 				output = "No documentation available on this topic";
-			else {
+			else 
 				output = MakeLinks(content);
-			}
 			ctx.Response.Write (output);
 			ctx.Response.Write (@"</body></html>");
 		}
@@ -355,7 +361,7 @@ function makeLink (link)
 		}
 
 		void HandleBoot (HttpContext context)
-				{
+		{
 			context.Response.Write (@"
 <html>
 	<head>
