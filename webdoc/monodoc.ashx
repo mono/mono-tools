@@ -29,17 +29,6 @@ namespace Mono.Website.Handlers
 {
 	public class MonodocHandler : IHttpHandler
 	{
-		static RootTree help_tree;
-		
-		static MonodocHandler ()
-		{
-			HelpSource.use_css = true;
-			HelpSource.FullHtml = false;
-			HelpSource.UseWebdocCache = true;
-			help_tree = Global.help_tree;
-			SettingsHandler.Settings.EnableEditing = false;
-		}
-
 		void IHttpHandler.ProcessRequest (HttpContext context)
 		{
 			string s;
@@ -72,7 +61,7 @@ namespace Mono.Website.Handlers
 			// Walk the url, found what we are supposed to render.
 			//
 			string [] nodes = tree.Split (new char [] {'@'});
-			Node current_node = help_tree;
+			Node current_node = Global.help_tree;
 			for (int i = 0; i < nodes.Length; i++){
 				try {
 				current_node = (Node)current_node.Nodes [int.Parse (nodes [i])];
@@ -109,7 +98,7 @@ namespace Mono.Website.Handlers
 		void CheckLastModified (HttpContext context)
 		{
 			string strHeader = context.Request.Headers ["If-Modified-Since"];
-			DateTime lastHelpSourceTime = help_tree.LastHelpSourceTime;
+			DateTime lastHelpSourceTime = Global.help_tree.LastHelpSourceTime;
 			try {
 				if (strHeader != null && lastHelpSourceTime != DateTime.MinValue) {
 					DateTime dtIfModifiedSince = DateTime.ParseExact (strHeader, "r", null);
@@ -149,7 +138,7 @@ namespace Mono.Website.Handlers
 					throw new Exception ("Internal error");
 				}
 				
-				Stream s = help_tree.GetImage (link);
+				Stream s = Global.help_tree.GetImage (link);
 				
 				if (s == null)
 					throw new HttpException (404, "File not found");
@@ -162,10 +151,10 @@ namespace Mono.Website.Handlers
 				return;
 			}
 
-			if (help_tree == null)
+			if (Global.help_tree == null)
 				return;
 			Node n;
-			string content = help_tree.RenderUrl (link, out n);
+			string content = Global.help_tree.RenderUrl (link, out n);
 			CheckLastModified (context);
 			if (context.Response.StatusCode == 304)
 				return;
@@ -192,10 +181,10 @@ namespace Mono.Website.Handlers
 			int hsId = int.Parse (lnk [0]);
 			
 			Node n;
-			HelpSource hs = help_tree.GetHelpSourceFromId (hsId);
+			HelpSource hs = Global.help_tree.GetHelpSourceFromId (hsId);
 			string content = hs.GetText (lnk [1], out n);
 			if (content == null) {
-				content = help_tree.RenderUrl (lnk [1], out n);
+				content = Global.help_tree.RenderUrl (lnk [1], out n);
 				hs = GetHelpSource (n);
 			}
 			PrintDocs (content, n, context, hs);
@@ -384,8 +373,8 @@ function makeLink (link)
 			content.appendChild (root);
 		");
 
-		for (int i = 0; i < help_tree.Nodes.Count; i++){
-			Node n = (Node)help_tree.Nodes [i];
+		for (int i = 0; i < Global.help_tree.Nodes.Count; i++){
+			Node n = (Node)Global.help_tree.Nodes [i];
 			context.Response.Write (
 				"tree.CreateItem (root, '" + n.Caption + "', '" +
 				n.PublicUrl + "', ");
@@ -395,7 +384,7 @@ function makeLink (link)
 			else	
 				context.Response.Write ("null");
 	
-			if (i == help_tree.Nodes.Count-1)
+			if (i == Global.help_tree.Nodes.Count-1)
 				context.Response.Write (", true");
 
 			context.Response.Write (@");

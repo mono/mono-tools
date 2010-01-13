@@ -1,5 +1,22 @@
 2009-09-25  Jonathan Pryor  <jpryor@novell.com>
 
+	* Global.asax: Move the monodoc.ashx RootTree configuration here.
+	* monodoc.ashx: Remove MonodocHandler.help_tree and use
+	  Global.help_tree instead.  This is necessary because of an ordering
+	  issue: after starting the server, whether you get CSS or not depends
+	  on the *first* URL you get.  If you visit monodoc.ashx first, you'll
+	  get CSS support (which is the case if you just hit
+	  http://localhost:8080 w/ xsp and navigate normally).  If you instead
+	  visit a URL directly, e.g.
+	    http://localhost:8080/index.aspx?link=T:Mono.Options.OptionSet/*
+	  then you'll invoke index.aspx first, and since index.aspx was using
+	  Global.help_tree (which didn't enable CSS output), you'd get !CSS
+	  pages generated.
+	 
+	  The perils of avoiding SPOT.
+
+2009-09-25  Jonathan Pryor  <jpryor@novell.com>
+
 	* monodoc.ashx: Remove tlink support (because tlinks keep potentially 
 	  changing every time we restart mod-mono-server), and instead rely on
 	  just the existing link support, and use node.PublicUrl instead of
