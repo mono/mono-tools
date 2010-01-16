@@ -15,7 +15,7 @@ using System.Security.Permissions;
 
 [assembly: AssemblyTitle ("Gendarme")]
 [assembly: AssemblyDescription ("Rule-based assembly analyzer")]
-[assembly: AssemblyCopyright ("Copyright (C) 2005-2009 Novell, Inc. and contributors")]
+[assembly: AssemblyCopyright ("Copyright (C) 2005-2010 Novell, Inc. and contributors")]
 [assembly: AssemblyCompany ("Novell, Inc.")]
 
 [assembly: PermissionSet (SecurityAction.RequestMinimum, Unrestricted = true)]
@@ -23,5 +23,5 @@ using System.Security.Permissions;
 [assembly: ComVisible (false)]
 
 #if RELEASE
-[assembly: AssemblyVersion ("2.5.0.0")]
+[assembly: AssemblyVersion ("2.7.0.0")]
 #endif

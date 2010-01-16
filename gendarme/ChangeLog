@@ -1,3 +1,9 @@
+2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyStaticInfo.cs: Update copyright notice up to 2010
+	* README: Update name/url of our build infrastructure
+	* MIT.X11: Update copyright notice up to 2010
+
 2009-12-20  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* NEWS: Updated for 2.6

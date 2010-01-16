@@ -1,3 +1,7 @@
+2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.Designer.cs: Update copyright notice up to 2010
+
 2009-12-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Don't throw/crash wizard if an unmanaged dll is
