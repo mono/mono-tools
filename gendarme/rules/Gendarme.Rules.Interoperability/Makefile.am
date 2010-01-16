@@ -1,6 +1,7 @@
 include ../common.make
 
 rules_sources =  \
+	CentralizePInvokesIntoNativeMethodsTypeRule.cs \
 	DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs \
 	DoNotCastIntPtrToInt32Rule.cs \
 	GetLastErrorMustBeCalledRightAfterPInvokeRule.cs \
@@ -12,6 +13,7 @@ rules_sources =  \
 EXTRA_TESTS_OPTIONS += -unsafe
 
 tests_sources = \
+	CentralizePInvokesIntoNativeMethodsTypeTest.cs \
 	DoNotCastIntPtrToInt32Test.cs \
 	GetLastErrorMustBeCalledRightAfterPInvokeTest.cs \
 	MarshalBooleansInPInvokeDeclarationsTest.cs \

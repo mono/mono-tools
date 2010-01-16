@@ -1,3 +1,8 @@
+2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CentralizePInvokesIntoNativeMethodsTypeRule.cs: New. Rule to
+	ensure the fx convention on where to define p/invoke declarations
+
 2009-07-31  Jesse Jones  <jesjones@mindspring.com>
 
 	* MarshalBooleansInPInvokeDeclarationsRule.csm 
