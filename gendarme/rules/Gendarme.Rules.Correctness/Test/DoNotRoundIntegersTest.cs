@@ -292,13 +292,13 @@ namespace Test.Rules.Correctness {
 			Assert.AreEqual (4.0, ChainAllByte (1), "ChainAllByte");
 			AssertRuleFailure<DoNotRoundIntegersTest> ("ChainAllByte", 4);
 
-			Assert.AreEqual (3.0, ChainFloatingPoint ("3.14"), "ChainFloatingPoint");
+			Assert.AreEqual (3.0, ChainFloatingPoint ((3.14).ToString ()), "ChainFloatingPoint");
 			AssertRuleSuccess<DoNotRoundIntegersTest> ("ChainFloatingPoint");
 
-			Assert.AreEqual (3.14m, ChainDecimal ("3.1415"), "ChainDecimal");
+			Assert.AreEqual (3.14m, ChainDecimal ((3.1415).ToString ()), "ChainDecimal");
 			AssertRuleSuccess<DoNotRoundIntegersTest> ("ChainDecimal");
 
-			Assert.AreEqual (4m, ChainChainDecimal ("3.1415"), "ChainChainDecimal");
+			Assert.AreEqual (4m, ChainChainDecimal ((3.1415).ToString ()), "ChainChainDecimal");
 			AssertRuleSuccess<DoNotRoundIntegersTest> ("ChainChainDecimal");
 		}
 

@@ -1,3 +1,9 @@
+2010-01-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotRoundIntegersTest.cs: Fix test under non-English culture
+	(where ',' is used as a decimal separator). Issue reported by 
+	Guillaume Gautreau.
+
 2010-01-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CheckParametersNullityInVisibleMethodsTest.cs: Add a generic
