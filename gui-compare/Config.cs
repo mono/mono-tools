@@ -53,11 +53,11 @@ namespace GuiCompare
 		{
 		}
 		
-		public CompareDefinition (bool rmaster, string rpath, bool tmaster, string tpath)
+		public CompareDefinition (bool referenceIsInfo, string rpath, bool targetIsInfo, string tpath)
 		{
-			ReferenceIsInfo = rmaster;
+			ReferenceIsInfo = referenceIsInfo;
 			ReferencePath = rpath;
-			TargetIsInfo = tmaster;
+			TargetIsInfo = targetIsInfo;
 			TargetPath = tpath;
 
 			History = new CompareHistory[0];

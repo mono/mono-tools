@@ -574,6 +574,16 @@ public partial class MainWindow: Gtk.Window
 		StartCompare (delegate {});
 	}
 
+	public void Compare (string reference, string target)
+	{
+		var cd = new CompareDefinition (false, reference, false, target);
+		SetCompareDefinition (cd);
+		StartCompare (delegate { Title = cd.ToString (); });
+		Config.AddRecent (cd);
+		Config.Save ();
+		info_manager.PopulateRecent ();
+	}
+	
 	protected virtual void OnCustomActivated (object sender, System.EventArgs e)
 	{
 		CustomCompare cc = new CustomCompare ();
