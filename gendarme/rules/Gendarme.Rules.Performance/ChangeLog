@@ -1,3 +1,9 @@
+2010-01-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConcatenatingCharsRule.cs: New. Rule will warn if boxing
+	is required to concatenate string.
+	* Makefile.am: Add new rule and tests to the build.
+
 2010-01-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCallsToPropertiesRule.cs: New rule to warn if a

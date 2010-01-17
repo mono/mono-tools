@@ -1,6 +1,7 @@
 include ../common.make
 
 rules_sources =  \
+	AvoidConcatenatingCharsRule.cs \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
 	AvoidLargeStructureRule.cs \
 	AvoidLocalDataStoreSlotRule.cs \
@@ -38,6 +39,7 @@ rules_sources =  \
 EXTRA_TESTS_OPTIONS += -unsafe -o-
 
 tests_sources = \
+	AvoidConcatenatingCharsTest.cs \
 	AvoidLargeNumberOfLocalVariablesTest.cs \
 	AvoidLocalDataStoreSlotTest.cs \
 	AvoidRepetitiveCallsToPropertiesTest.cs \
