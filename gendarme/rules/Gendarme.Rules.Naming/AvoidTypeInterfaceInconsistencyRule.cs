@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Naming {
 			if (type.Name [0] != 'I')
 				return RuleResult.DoesNotApply;
 
-			string name = String.Concat (type.Namespace, '.', type.Name.Substring (1));
+			string name = String.Concat (type.Namespace, ".", type.Name.Substring (1));
 			TypeDefinition candidate = type.Module.Types [name];
 			if (candidate != null) {
 				// does Foo implement IFoo ?

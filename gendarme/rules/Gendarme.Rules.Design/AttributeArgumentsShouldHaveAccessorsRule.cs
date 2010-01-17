@@ -115,7 +115,8 @@ namespace Gendarme.Rules.Design {
 			// look through parameters
 			foreach (MethodDefinition constructor in type.Constructors) {
 				foreach (ParameterDefinition param in constructor.Parameters) {
-					string correspondingPropertyName = char.ToUpper (param.Name [0]) + param.Name.Substring (1); // pascal case it
+					 // pascal case it
+					string correspondingPropertyName = Char.ToUpper (param.Name [0]).ToString () + param.Name.Substring (1);
 					if (!allProperties.Contains (correspondingPropertyName)) {
 						string s = String.Format ("Add '{0}' property to the attribute class.", correspondingPropertyName);
 						Runner.Report (param, Severity.Medium, Confidence.High, s);

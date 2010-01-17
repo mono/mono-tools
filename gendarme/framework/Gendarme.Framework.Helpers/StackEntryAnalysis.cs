@@ -480,7 +480,7 @@ namespace Gendarme.Framework.Helpers {
 			case FlowControl.Throw:
 				return null;
 			default:
-				throw new NotImplementedException ("FlowControl: " + ins.OpCode.FlowControl + " is not supported.");
+				throw new NotImplementedException ("FlowControl: " + ins.OpCode.FlowControl.ToString () + " is not supported.");
 
 			}
 		}

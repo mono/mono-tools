@@ -64,7 +64,7 @@ namespace Gendarme.Rules.Concurrency {
 		public ThreadModelAttribute (ThreadModel model)
 		{
 			if (!Enum.IsDefined (typeof (ThreadModel), model & ~ThreadModel.AllowEveryCaller))
-				throw new ArgumentException ((int) model + " is not a valid ThreadModel value.");
+				throw new ArgumentException (model.ToString () + " is not a valid ThreadModel value.");
 			
 			Model = model & (ThreadModel) 0x0007;
 			AllowsEveryCaller = (model & ThreadModel.AllowEveryCaller) != 0;

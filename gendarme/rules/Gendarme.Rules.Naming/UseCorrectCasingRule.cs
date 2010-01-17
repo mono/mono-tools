@@ -96,7 +96,7 @@ namespace Gendarme.Rules.Naming {
 				return name.ToUpperInvariant ();
 
 			int index = IndexOfFirstCorrectChar (name);
-			return Char.ToUpperInvariant (name [index]) + name.Substring (index + 1);
+			return Char.ToUpperInvariant (name [index]).ToString () + name.Substring (index + 1);
 		}
 
 		// check if name is camelCased
@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Naming {
 				return name.ToLowerInvariant ();
 
 			int index = IndexOfFirstCorrectChar (name);
-			return Char.ToLowerInvariant (name [index]) + name.Substring (index + 1);
+			return Char.ToLowerInvariant (name [index]).ToString () + name.Substring (index + 1);
 		}
 
 		private static int IndexOfFirstCorrectChar (string s)
@@ -158,8 +158,8 @@ namespace Gendarme.Rules.Naming {
 				default:
 					// if the sub namespace is made of 3 or more chars, make sure they're not all uppercase
 					if (ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
-						string msg = String.Format ("Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}'",
-							ns, ns [0] + ns.Substring (1).ToLowerInvariant ());
+						string msg = String.Format ("Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}{2}'",
+							ns, ns [0].ToString (), ns.Substring (1).ToLowerInvariant ());
 						ReportCasingError (new NamespaceDefinition (nspace), msg);
 					} else if (!IsPascalCase (ns)) {
 						string msg = String.Format ("Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
