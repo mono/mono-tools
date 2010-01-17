@@ -36,8 +36,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gendarme.Framework.Helpers\MethodSignatureTest.cs" />
@@ -47,8 +45,10 @@
     <Compile Include="Gendarme.Framework.Rocks\FieldRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\InstructionRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\MethodRocksTest.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\ParameterRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\RocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\TypeRocksTest.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\VariableDefinitionRocksTest.cs" />
     <Compile Include="Gendarme.Framework\BitmaskTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -63,6 +63,8 @@
     <Compile Include="..\AssemblyStaticInfo.cs" />
     <Compile Include="Gendarme.Framework.Helpers\Log.cs" />
     <Compile Include="Gendarme.Framework.Helpers\MethodPrinter.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\ParameterRocks.cs" />
+    <Compile Include="Gendarme.Framework.Rocks\VariableDefinitionRocks.cs" />
     <Compile Include="Gendarme.Framework\Engine.cs" />
     <Compile Include="Gendarme.Framework.Engines\OpCodeEngine.cs" />
     <Compile Include="Gendarme.Framework.Helpers\OpCodeBitmask.cs" />

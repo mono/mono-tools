@@ -1,5 +1,5 @@
 // 
-// Unit tests for InstructionRocks
+// Unit tests for VariableDefinitionRocks
 //
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
