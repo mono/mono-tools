@@ -448,38 +448,29 @@ A: Gendarme.Rules.Smells
 A: Gendarme.Rules.Ui
 
 # non-gendarme code / NDesk.Options
-R: Gendarme.Rules.Security.Cas.SecureGetObjectDataOverridesRule
-T: NDesk.Options.OptionException
-R: Gendarme.Rules.Exceptions.MissingExceptionConstructorsRule
-T: NDesk.Options.OptionException
-R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
-M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
-M: System.Void NDesk.Options.OptionSet::Invoke(NDesk.Options.OptionContext,System.String,System.String,NDesk.Options.Option)
-R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
-M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Performance.AvoidUnsealedUninheritedInternalTypeRule
-T: NDesk.Options.OptionSet/ActionOption
-T: NDesk.Options.OptionSet/ActionOption`1
-T: NDesk.Options.OptionSet/ActionOption`2
-R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
-M: System.String[] NDesk.Options.Option::get_ValueSeparators()
-M: System.String[] NDesk.Options.Option::get_Names()
-R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
-T: NDesk.Options.OptionSet
-T: NDesk.Options.OptionContext
-R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
+R: Gendarme.Rules.Performance.AvoidConcatenatingCharsRule
+M: System.Boolean NDesk.Options.OptionSet::ParseBundledValue(System.String,System.String,NDesk.Options.OptionContext)
+M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
+R: Gendarme.Rules.Design.Generic.AvoidDeclaringCustomDelegatesRule
+T: NDesk.Options.OptionAction`2
 R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
 M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
-R: Gendarme.Rules.Exceptions.InstantiateArgumentExceptionCorrectlyRule
-M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.List`1<System.String>)
-M: NDesk.Options.OptionValueType NDesk.Options.Option::ParsePrototype()
-R: Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
+R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
+M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
+R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
+M: System.String[] NDesk.Options.Option::get_Names()
+M: System.String[] NDesk.Options.Option::get_ValueSeparators()
+R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
 M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Naming.UseCorrectSuffixRule
-T: NDesk.Options.OptionSet
+R: Gendarme.Rules.Exceptions.InstantiateArgumentExceptionCorrectlyRule
+M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.ICollection`1<System.String>)
+M: System.String NDesk.Options.OptionSet::GetKeyForItem(NDesk.Options.Option)
 R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
 T: NDesk.Options.OptionValueType
+R: Gendarme.Rules.Performance.PreferCharOverloadRule
+M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
+R: Gendarme.Rules.Naming.UseCorrectSuffixRule
+T: NDesk.Options.OptionSet
 
 # The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
 # fire because Gendarme code, like the rules and the runners, are not marked as

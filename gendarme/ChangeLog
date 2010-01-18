@@ -1,3 +1,7 @@
+2010-01-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Update defects to ignore wrt Options.cs 2.1
+
 2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyStaticInfo.cs: Update copyright notice up to 2010
