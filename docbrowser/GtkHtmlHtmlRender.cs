@@ -101,7 +101,7 @@ class GtkHtmlHtmlRender : IHtmlRender {
 	}
 	
 	public void Print (string Html) {
-#ifndef MACOS
+#if !MACOS
 		if (Html == null) {
 			Console.WriteLine ("empty print");
 			return;

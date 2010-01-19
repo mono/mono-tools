@@ -16,11 +16,11 @@ browser_sources   = \
 
 browser_built_sources = Options.cs
 
-browser_assemblies = -pkg:gtk-sharp-2.0 -pkg:glade-sharp-2.0 -r:gtkhtml-sharp -r:System.Web.Services -r:../monodoc.dll
+browser_assemblies = -pkg:gtk-sharp-2.0,glade-sharp-2.0,monodoc -r:gtkhtml-sharp -r:System.Web.Services
 
 GMCS=gmcs
 browser.exe: $(browser_sources) $(browser_built_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
-	$(GMCS) -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
+	$(GMCS) -define:MACOS -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
 
 Options.cs:
 	cp `pkg-config --variable=Sources mono-options` .
