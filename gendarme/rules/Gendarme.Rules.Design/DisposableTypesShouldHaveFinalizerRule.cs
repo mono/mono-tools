@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to types, interfaces and structures (value types)
-			if (type.IsEnum || type.IsDelegate ())
+			if (type.IsEnum || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			// rule onyly applies to type that implements IDisposable

@@ -29,12 +29,16 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using Gendarme.Rules.Design;
+using Gendarme.Framework.Rocks;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 
@@ -47,6 +51,12 @@ namespace Test.Rules.Design {
 		public void Dispose ()
 		{
 			throw new NotImplementedException ();
+		}
+
+		IEnumerator<byte> GetBytes ()
+		{
+			for (int i = 0; i < 10; i++)
+				yield return Marshal.ReadByte (A, i);
 		}
 	}
 
@@ -113,6 +123,20 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleDoesNotApply (SimpleTypes.Enum);
 			AssertRuleDoesNotApply (SimpleTypes.Delegate);
+		}
+
+		[Test]
+		public void DoesNotApplyGeneratedCode ()
+		{
+			var declaring_type = DefinitionLoader.GetTypeDefinition<HasFinalizer> ();
+	
+			Assert.IsTrue (declaring_type.HasNestedTypes);
+			Assert.AreEqual (1, declaring_type.NestedTypes.Count);
+
+			var type = declaring_type.NestedTypes [0];
+
+			Assert.IsTrue (type.IsGeneratedCode ());
+			AssertRuleDoesNotApply (type);
 		}
 
 		[Test]
