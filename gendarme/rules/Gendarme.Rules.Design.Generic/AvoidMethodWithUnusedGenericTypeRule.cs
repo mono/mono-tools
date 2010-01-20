@@ -120,13 +120,21 @@ namespace Gendarme.Rules.Design.Generic {
 				bool found = false;
 				// ... is being used by the method parameters
 				foreach (ParameterDefinition pd in method.Parameters) {
-					if (pd.ParameterType.FullName == gp.FullName) {
+					var parameter_type = pd.ParameterType;
+
+					if (parameter_type.FullName == gp.FullName) {
+						found = true;
+						break;
+					}
+
+					var type_spec = parameter_type as TypeSpecification;
+					if (type_spec != null && type_spec.ElementType.FullName == gp.FullName) {
 						found = true;
 						break;
 					}
 
 					// handle things like ICollection<T>
-					GenericInstanceType git = (pd.ParameterType as GenericInstanceType);
+					GenericInstanceType git = (parameter_type as GenericInstanceType);
 					if (git == null)
 						continue;
 

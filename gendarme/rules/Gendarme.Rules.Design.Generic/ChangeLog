@@ -1,3 +1,9 @@
+2010-01-19  Jb Evain  <jbevain@novell.com>
+
+	* AvoidMethodWithUnusedGenericTypeRule.cs: Fix the case where the
+	parameter type is a type specification of a generic type, such
+	as an array.
+
 2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeclaringCustomDelegatesRule.cs: New. Rule to check

@@ -1,3 +1,8 @@
+2010-01-19  Jb Evain  <jbevain@novell.com>
+
+	* AvoidMethodWithUnusedGenericTypeTest.cs: add test for the case
+	where the parameter type is an array of a generic parameter.
+
 2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidDeclaringCustomDelegatesTest.cs: New. Unit tests for

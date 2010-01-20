@@ -109,6 +109,10 @@ namespace Test.Rules.Design.Generic {
 			public void Duplicate<T, K> (T key, K min, K max)
 			{
 			}
+
+			public void SingleArray<T> (T [] values)
+			{
+			}
 		}
 
 		[Test]
@@ -119,6 +123,8 @@ namespace Test.Rules.Design.Generic {
 			AssertRuleSuccess<GoodCases> ("Triple");
 
 			AssertRuleSuccess<GoodCases> ("Duplicate");
+
+			AssertRuleSuccess<GoodCases> ("SingleArray");
 		}
 
 		// from CommonRocks
