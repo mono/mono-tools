@@ -107,7 +107,7 @@ class GtkHtmlHtmlRender : IHtmlRender {
 			return;
 		}
 
-		Gnome.PrintManager.Print (Html);
+		PrintManager.Print (Html);
 #endif
 	}
 
