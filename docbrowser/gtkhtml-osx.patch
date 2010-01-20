@@ -145,15 +145,18 @@ index c3efa4a..3cc84e0 100644
  AC_OUTPUT
  
 diff --git a/gtkhtml/Makefile.am b/gtkhtml/Makefile.am
-index 6ac2d02..89fa54e 100644
+index 6ac2d02..ca9f08f 100644
 --- a/gtkhtml/Makefile.am
 +++ b/gtkhtml/Makefile.am
-@@ -204,7 +204,7 @@ libgtkhtml_3_14_la_SOURCES =			\
+@@ -203,8 +203,9 @@ libgtkhtml_3_14_la_SOURCES =			\
+ 	$(PLATFORM_DEP_SOURCES)			\
  	$(NULL)
  
- libgtkhtml_3_14_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE) -no-undefined
+-libgtkhtml_3_14_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE) -no-undefined
 -libgtkhtml_3_14_la_LIBADD = $(GTKHTML_LIBS) ../a11y/libgtkhtml-a11y.la $(GAIL_LIBS) $(REGEX_LIBS)
-+libgtkhtml_3_14_la_LIBADD = $(GTKHTML_LIBS) $(REGEX_LIBS)
++libgtkhtml_3_14_la_LDFLAGS = -version-info $(GTKHTML_CURRENT):$(GTKHTML_REVISION):$(GTKHTML_AGE) -undefined suppress -flat_namespace
++libgtkhtml_3_14_la_LIBADD = 
++AM_LDFLAGS = 
  
  dist-hook:
  	mkdir $(distdir)/tests
