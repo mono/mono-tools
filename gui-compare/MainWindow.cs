@@ -574,7 +574,7 @@ public partial class MainWindow: Gtk.Window
 		StartCompare (delegate {});
 	}
 
-	public void Compare (string reference, string target)
+	public void ComparePaths (string reference, string target)
 	{
 		var cd = new CompareDefinition (false, reference, false, target);
 		SetCompareDefinition (cd);

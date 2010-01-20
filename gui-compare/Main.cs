@@ -49,7 +49,7 @@ namespace GuiCompare
 			MainWindow win = new MainWindow ();
 			win.Show ();
 			if (args.Length == 2 && File.Exists (args [0]) && File.Exists (args [1])){
-				win.Compare (args [0], args [1]);
+				win.ComparePaths (args [0], args [1]);
 			}
 			Application.Run ();
 		}

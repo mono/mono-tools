@@ -1,3 +1,9 @@
+2010-01-20  Jonathan Pryor  <jpryor@novell.com>
+
+	* MainWindow.cs, Main.cs: Fix build break; rename
+	  MainWindow.Compare(string,string) to
+	  MainWindow.ComparePaths(string,string).
+
 2010-01-16  Miguel de Icaza  <miguel@novell.com>
 
 	* Add support to compare assemblies from the command line. 
