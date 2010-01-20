@@ -31,10 +31,10 @@ Options.cs:
 MAC_APP_DIR=MonoDoc.app
 APP_MACOS="$(MAC_APP_DIR)/Contents/MacOS/"
 
-MonoDoc.app: browser.exe Info.plist monodoc monodoc-assemblies-for-osx/* monodoc.icns
+MonoDoc.app: browser.exe Info.plist monodoc $(gtkhtml_dll) $(gtkhtml_dll).config $(gtkhtml_native) monodoc.icns
 	mkdir -p $(MAC_APP_DIR)/Contents/{MacOS,Resources}
 	cp $(gtkhtml_dll) $(gtkhtml_dll).config $(gtkhtml_native) browser.exe $(MAC_APP_DIR)/Contents/MacOS/
-	cp monodoc$(MAC_APP_DIR)/Contents/MacOS/monodoc
+	cp monodoc $(MAC_APP_DIR)/Contents/MacOS/monodoc
 	chmod +x $(MAC_APP_DIR)/Contents/MacOS/monodoc
 	cp Info.plist $(MAC_APP_DIR)/Contents/
 	cp monodoc.icns $(MAC_APP_DIR)/Contents/Resources
