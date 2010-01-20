@@ -31,6 +31,8 @@ using System;
 // Note that these types are extended version of what we recommend
 // that users use.
 namespace Gendarme.Rules.Concurrency {
+
+	[Serializable]
 	public enum ThreadModel {
 		// The code may run safely only under the main thread (this is the 
 		// default for code in the assemblies being checked).

@@ -98,13 +98,13 @@ namespace Gendarme.Rules.Concurrency {
 				locker = locker.TraceBack (method);
 
 			string msg = CheckLocker (method, locker);
-			if (msg != null)
+			if (msg.Length > 0)
 				Runner.Report (method, ins, Severity.High, Confidence.High, msg);
 		}
 
 		private static string CheckLocker (MethodDefinition method, Instruction ins)
 		{
-			string msg = null;
+			string msg = String.Empty;
 
 			switch (ins.OpCode.Code) {
 			case Code.Ldarg_0:
@@ -120,7 +120,7 @@ namespace Gendarme.Rules.Concurrency {
 			case Code.Callvirt:
 				MethodReference mr = (ins.Operand as MethodReference);
 				if (mr.ReturnType.ReturnType.FullName != "System.Type")
-					return null;
+					return String.Empty;
 
 				if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {
 					// ldtoken
@@ -136,7 +136,7 @@ namespace Gendarme.Rules.Concurrency {
 				// and this throws off TraceBack
 				Instruction locker = StoreLoadLocal (method, ins);
 				if (locker == null)
-					return null;
+					return String.Empty;
 
 				return CheckLocker (method, locker);
 			}

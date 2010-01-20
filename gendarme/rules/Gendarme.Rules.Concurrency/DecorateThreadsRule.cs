@@ -469,7 +469,7 @@ namespace Gendarme.Rules.Concurrency {
 			}
 		}
 		
-		private bool HasSynchronizingObject (TypeReference tr)
+		static bool HasSynchronizingObject (TypeReference tr)
 		{
 			foreach (TypeDefinition type in tr.AllSuperTypes ()) {
 				if (type.GetMethod (SetSynchronizingObject) != null)
@@ -521,7 +521,7 @@ namespace Gendarme.Rules.Concurrency {
 		// MainThread code can call everything, AllowEveryCaller code can be called by 
 		// everything, SingleThread can call SingleThread/Serializable/Concurrent, and Serializable/
 		// Concurrent can call Serializable/Concurrent.
-		private bool IsValidCall (ThreadModelAttribute caller, ThreadModelAttribute target)
+		static bool IsValidCall (ThreadModelAttribute caller, ThreadModelAttribute target)
 		{
 			bool valid = false;
 			
