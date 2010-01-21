@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Performance {
 
 		Dictionary<string, KeyValuePair<MethodDefinition, int>> calls = new Dictionary<string, KeyValuePair<MethodDefinition, int>> ();
 
-		private string GetKey (MethodDefinition caller, MethodDefinition callee, Instruction ins)
+		static string GetKey (MethodDefinition caller, MethodDefinition callee, Instruction ins)
 		{
 			if (callee.IsStatic)
 				return callee.ToString ();
@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Performance {
 		// Critical	10+		20+
 		//
 		// note: inlining strategy is complex and varies between runtimes
-		private Severity GetSeverity (int count, bool virtualCall)
+		static Severity GetSeverity (int count, bool virtualCall)
 		{
 			if (!virtualCall)
 				count >>= 1;

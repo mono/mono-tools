@@ -127,7 +127,7 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private void CheckForAny (TypeDefinition type, MethodDefinition method, Instruction ins)
+		private void CheckForAny (MethodDefinition method, Instruction ins)
 		{			
 			// call System.Int32 System.Linq.Enumerable::Count<System.String>(System.Collections.Generic.IEnumerable`1<!!0>)
 			// ldc.i4.0
@@ -228,30 +228,31 @@ namespace Gendarme.Rules.Performance {
 					// and the method is a System.Linq.Enumerable method then,
 					var target = ins.Operand as MethodReference;
 					if (target != null && target.DeclaringType.FullName == EnumerableName) {
-					
+						string tname = target.Name;
+						int tcount = target.HasParameters ? target.Parameters.Count : 0;
 						// see if we can use a more efficient method.
-						if (target.Name == "Count" && target.Parameters.Count == 1) {
+						if (tname == "Count" && tcount == 1) {
 							TypeReference tr = ins.Previous.GetOperandType (method);
 							TypeDefinition td = tr.Resolve ();
 
 							if (td != null) {
 								CheckForCountProperty (td, method, ins);
-								CheckForAny (td, method, ins);
+								CheckForAny (method, ins);
 							}
 
-						} else if ((target.Name == "ElementAt" || target.Name == "ElementAtOrDefault") && target.Parameters.Count == 2) {
+						} else if ((tname == "ElementAt" || tname == "ElementAtOrDefault") && tcount == 2) {
 							Instruction arg = ins.TraceBack (method);
 							TypeReference tr = arg.GetOperandType (method);
-							CheckForSubscript (tr, method, ins, target.Name);
+							CheckForSubscript (tr, method, ins, tname);
 
-						} else if ((target.Name == "Last" || target.Name == "LastOrDefault") && target.Parameters.Count == 1) {
+						} else if ((tname == "Last" || tname == "LastOrDefault") && tcount == 1) {
 							TypeReference tr = ins.Previous.GetOperandType (method);
-							CheckForSubscript (tr, method, ins, target.Name);
+							CheckForSubscript (tr, method, ins, tname);
 
-						} else if (target.Name == "OrderBy" || target.Name == "OrderByDescending") {
+						} else if (tname == "OrderBy" || tname == "OrderByDescending") {
 							Instruction arg = ins.TraceBack (method);
 							TypeReference tr = arg.GetOperandType (method);
-							CheckForSort (tr, method, ins, target.Name);
+							CheckForSort (tr, method, ins, tname);
 						}
 					}
 				}
