@@ -95,7 +95,8 @@ namespace Gendarme.Rules.Exceptions {
 				if (ctor.HasParameters)
 					continue;
 
-				string name = ctor.DeclaringType.FullName;
+				TypeReference type = ctor.DeclaringType;
+				string name = type.FullName;
 				switch (name) {
 				// most common cases
 				case "System.ArgumentException":
@@ -107,7 +108,7 @@ namespace Gendarme.Rules.Exceptions {
 				default:
 					if (!name.EndsWith ("Exception", StringComparison.Ordinal))
 						break;
-					if (ctor.DeclaringType.Inherits ("System.ArgumentException"))
+					if (type.Inherits ("System.ArgumentException"))
 						Runner.Report (method, ins, Severity.Medium, Confidence.Total, name);
 					break;
 				}

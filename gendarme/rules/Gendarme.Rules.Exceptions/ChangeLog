@@ -1,3 +1,13 @@
+2010-01-21  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidArgumentExceptionDefaultConstructorRule.cs: Apply Avoid
+	RepetitiveCallsToPropertiesRule
+	* DoNotThrowInUnexpectedLocationRule.cs: Apply MethodCanBeMadeStatic
+	Rule
+	* MissingExceptionConstructorsRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule
+	* UseObjectDisposedExceptionRule.cs: Apply MethodCanBeMadeStaticRule
+
 2010-01-04  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotThrowInUnexpectedLocationRule.cs: Fix bitmask to include

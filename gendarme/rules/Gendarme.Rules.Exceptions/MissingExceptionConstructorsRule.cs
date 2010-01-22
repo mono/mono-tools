@@ -101,8 +101,9 @@ namespace Gendarme.Rules.Exceptions {
 
 		private static bool CheckForInnerExceptionConstructor (MethodDefinition ctor)
 		{
-			string first = ctor.Parameters [0].ParameterType.FullName;
-			string last = ctor.Parameters [ctor.Parameters.Count - 1].ParameterType.FullName;
+			ParameterDefinitionCollection pdc = ctor.Parameters;
+			string first = pdc [0].ParameterType.FullName;
+			string last = pdc [pdc.Count - 1].ParameterType.FullName;
 			return ((first == "System.String") && (last == Exception));
 		}
 

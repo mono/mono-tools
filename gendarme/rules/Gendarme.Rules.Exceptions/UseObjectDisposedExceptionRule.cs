@@ -211,7 +211,7 @@ namespace Gendarme.Rules.Exceptions {
 		// will skip methods which don't call a method or touch a field. This is done 
 		// to eliminate annoying cases like methods that do nothing but throw 
 		// something like a not implemented exception.
-		private bool Preflight (MethodDefinition method)
+		static bool Preflight (MethodDefinition method)
 		{
 			bool needs = false;
 			
@@ -230,7 +230,7 @@ namespace Gendarme.Rules.Exceptions {
 		
 		// Note that auto-setters are considered to be generated code so we won't
 		// make it this far for them.
-		private bool AllowedToThrow (MethodDefinition method)
+		static bool AllowedToThrow (MethodDefinition method)
 		{
 			if (method.IsConstructor)
 				return false;

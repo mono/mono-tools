@@ -164,7 +164,7 @@ namespace Gendarme.Rules.Exceptions {
 		private string [] allowedExceptions;
 		private string methodLabel;
 
-		private bool HasCatchBlock (MethodDefinition method)	
+		static bool HasCatchBlock (MethodDefinition method)	
 		{
 			foreach (ExceptionHandler handler in method.Body.ExceptionHandlers) {
 				if (handler.Type == ExceptionHandlerType.Catch)
@@ -269,7 +269,7 @@ namespace Gendarme.Rules.Exceptions {
 		// the reason here (for example foreach can generate castclass or unbox
 		// instructions and assemblies compiled with checked arithmetic can
 		// throw even if the code doesn't explicitly use an arithmetic operator). 
-		private string ExplainThrow (Instruction ins)
+		static string ExplainThrow (Instruction ins)
 		{
 			switch (ins.OpCode.Code) {
 			case Code.Castclass:
