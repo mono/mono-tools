@@ -292,7 +292,11 @@ public class Browser {
 	public Browser (string basedir, IEnumerable<string> sources, string engine)
 	{
 #if MACOS
-		InitMacAppHandlers();
+		try {
+			InitMacAppHandlers();
+		} catch (Exception ex) {
+			Console.Error.WriteLine ("Installing Mac AppleEvent handlers failed. Skipping.\n" + ex);
+		}
 #endif
 	
 		this.engine = engine;		
@@ -400,17 +404,27 @@ public class Browser {
 		index_browser = IndexBrowser.MakeIndexBrowser (this);
 		MainWindow.ShowAll();
 		
-#if false && MACOS
-		((MenuBar)ui["menubar1"]).Hide ();
-		IgeMacIntegration.IgeMacMenu.MenuBar = (MenuBar) ui["menubar1"];
-		IgeMacIntegration.IgeMacMenu.QuitMenuItem = (MenuItem) ui["quit1"];
-		var appGroup = IgeMacIntegration.IgeMacMenu.AddAppMenuGroup ();
-		appGroup.AddMenuItem ((MenuItem)ui["quit1"], null);
-		appGroup.AddMenuItem ((MenuItem)ui["about1"], null);
+#if MACOS
+		try {
+			InstallMacMainMenu ();
+			((MenuBar)ui["menubar1"]).Hide ();
+		} catch (Exception ex) {
+			Console.Error.WriteLine ("Installing Mac IGE Main Menu failed. Skipping.\n" + ex);
+		}
 #endif
 	}
 
 #if MACOS
+		void InstallMacMainMenu ()
+		{
+			IgeMacIntegration.IgeMacMenuGlobal.SetGlobalKeyHandlerEnabled (true);
+			IgeMacIntegration.IgeMacMenu.MenuBar = (MenuBar) ui["menubar1"];
+			IgeMacIntegration.IgeMacMenu.QuitMenuItem = (MenuItem) ui["quit1"];
+			var appGroup = IgeMacIntegration.IgeMacMenu.AddAppMenuGroup ();
+			appGroup.AddMenuItem ((MenuItem)ui["quit1"], null);
+			appGroup.AddMenuItem ((MenuItem)ui["about1"], null);
+		}
+
 		void InitMacAppHandlers ()
 		{
 			ApplicationEvents.Quit += delegate (object sender, ApplicationEventArgs e) {
