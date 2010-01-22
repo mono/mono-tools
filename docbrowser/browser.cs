@@ -417,7 +417,7 @@ public class Browser {
 #if MACOS
 		void InstallMacMainMenu ()
 		{
-			IgeMacIntegration.IgeMacMenuGlobal.SetGlobalKeyHandlerEnabled (true);
+			IgeMacIntegration.IgeMacMenu.GlobalKeyHandlerEnabled = true;
 			IgeMacIntegration.IgeMacMenu.MenuBar = (MenuBar) ui["menubar1"];
 			IgeMacIntegration.IgeMacMenu.QuitMenuItem = (MenuItem) ui["quit1"];
 			var appGroup = IgeMacIntegration.IgeMacMenu.AddAppMenuGroup ();

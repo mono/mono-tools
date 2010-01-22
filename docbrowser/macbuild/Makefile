@@ -13,7 +13,6 @@ browser_sources   = \
 	$(srcdir)/BookmarkManager.cs	\
 	$(srcdir)/ProgressPanel.cs	\
 	$(srcdir)/GtkHtmlHtmlRender.cs \
-	$(srcdir)/macbuild/IgeMacIntegrationSharp/*.cs \
 	$(srcdir)/macbuild/IgeMacMenuGlobal.cs \
 	$(srcdir)/macbuild/Framework/*
 
