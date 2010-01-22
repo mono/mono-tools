@@ -14,6 +14,7 @@ browser_sources   = \
 	$(srcdir)/ProgressPanel.cs	\
 	$(srcdir)/GtkHtmlHtmlRender.cs \
 	$(srcdir)/macbuild/IgeMacIntegrationSharp/*.cs \
+	$(srcdir)/macbuild/IgeMacMenuGlobal.cs \
 	$(srcdir)/macbuild/Framework/*
 
 browser_built_sources = Options.cs
