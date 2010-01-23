@@ -1,3 +1,9 @@
+2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferSafeHandleRule.cs: Apply MethodCanBeMadeStaticRule
+	* PreferTryParseRule.cs: New. Rule to encourage the use of TryParse
+	methods (when available) over Parse methods.
+
 2010-01-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferParamsArrayForVariableArgumentsRule.cs: New rule to warn

@@ -18,6 +18,7 @@ rules_sources =  \
 	OnlyUseDisposeForIDisposableTypesRule.cs \
 	PreferEmptyInstanceOverNullRule.cs \
 	PreferParamsArrayForVariableArgumentsRule.cs \
+	PreferTryParseRule.cs \
 	PreferSafeHandleRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
 	ReturnNullRule.cs \
@@ -41,6 +42,7 @@ tests_sources = \
 	OnlyUseDisposeForIDisposableTypesTest.cs \
 	PreferEmptyInstanceOverNullTest.cs \
 	PreferParamsArrayForVariableArgumentsTest.cs \
+	PreferTryParseTest.cs \
 	PreferSafeHandleTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
 	ToStringReturnsNullTest.cs 

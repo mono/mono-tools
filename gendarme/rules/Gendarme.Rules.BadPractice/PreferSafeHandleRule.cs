@@ -183,7 +183,7 @@ namespace Gendarme.Rules.BadPractice {
 	[FxCopCompatibility ("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")]
 	public sealed class PreferSafeHandleRule : Rule, ITypeRule {
 	
-		private FieldDefinition FindIntPtr (TypeDefinition type)
+		static FieldDefinition FindIntPtr (TypeDefinition type)
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				string name = field.FieldType.FullName;

@@ -1,3 +1,7 @@
+2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferTryParseTest.cs: New. Unit tests for PreferTryParseRule
+
 2010-01-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferParamsArrayForVariableArgumentsTest.cs: New. Unit tests 
