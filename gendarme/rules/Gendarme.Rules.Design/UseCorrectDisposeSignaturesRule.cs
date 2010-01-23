@@ -154,7 +154,7 @@ namespace Gendarme.Rules.Design {
 				// case we'll ignore any defects because the type doesn't actually
 				// implement IDisposable.
 				if (dispose0 != null || dispose1 != null) {
-					CheckDispose0 (type, dispose0);
+					CheckDispose0 (dispose0);
 					CheckDispose1 (type, dispose1);
 				}
 			}
@@ -173,24 +173,24 @@ namespace Gendarme.Rules.Design {
 					dispose1 = method;
 				
 				} else {
-					string message = string.Format ("Found a Dispose method with a bad signature.");
+					string message = "Found a Dispose method with a bad signature.";
 					Log.WriteLine (this, "{0}", message);
 					Runner.Report (method, Severity.Medium, Confidence.Total, message);
 				}
 			}
 		}
 		
-		private void CheckDispose0 (TypeDefinition type, MethodDefinition dispose0)
+		private void CheckDispose0 (MethodDefinition dispose0)
 		{
 			if (dispose0 != null) {
 				if (dispose0.IsVirtual && !dispose0.IsFinal) {
-					string message = string.Format ("Dispose () should not be virtual.");
+					string message = "Dispose () should not be virtual.";
 					Log.WriteLine (this, "{0}", message);
 					Runner.Report (dispose0, Severity.Medium, Confidence.Total, message);
 				}
 				
 				if (!dispose0.IsVirtual && (dispose0.Attributes & MethodAttributes.NewSlot) == 0) {
-					string message = string.Format ("The type should not hide the base class Dispose () method.");
+					string message = "The type should not hide the base class Dispose () method.";
 					Log.WriteLine (this, "{0}", message);
 					Runner.Report (dispose0, Severity.Medium, Confidence.Total, message);
 				}
@@ -202,7 +202,7 @@ namespace Gendarme.Rules.Design {
 			if (type.IsSealed) {
 				if (dispose1 != null) {				// sealed classes don't need Dispose (bool)
 					if (!dispose1.IsPrivate && DirectlyImplementsIDisposable (type)) {
-						string message = string.Format ("Dispose (bool) should be private for sealed types.");
+						string message = "Dispose (bool) should be private for sealed types.";
 						Log.WriteLine (this, "{0}", message);
 						Runner.Report (dispose1, Severity.Medium, Confidence.Total, message);
 					}
@@ -211,20 +211,20 @@ namespace Gendarme.Rules.Design {
 			} else {
 				if (dispose1 == null) {
 					if (DirectlyImplementsIDisposable (type)) {
-						string message = string.Format ("Unsealed types should have a protected virtual Dispose (bool) method.");
+						string message = "Unsealed types should have a protected virtual Dispose (bool) method.";
 						Log.WriteLine (this, "{0}", message);
 						Runner.Report (type, Severity.Medium, Confidence.Total, message);
 					}
 				
 				} else {
 					if (!dispose1.IsFamily) {
-						string message = string.Format ("Dispose (bool) should be protected for unsealed types.");
+						string message = "Dispose (bool) should be protected for unsealed types.";
 						Log.WriteLine (this, "{0}", message);
 						Runner.Report (type, Severity.Medium, Confidence.Total, message);
 					}
 					
 					if (!dispose1.IsPrivate && !dispose1.IsVirtual) {
-						string message = string.Format ("Dispose (bool) should be virtual for unsealed types.");
+						string message = "Dispose (bool) should be virtual for unsealed types.";
 						Log.WriteLine (this, "{0}", message);
 						Runner.Report (type, Severity.Medium, Confidence.Total, message);
 					}
@@ -232,7 +232,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 		
-		private bool DirectlyImplementsIDisposable (TypeDefinition type)
+		static bool DirectlyImplementsIDisposable (TypeDefinition type)
 		{
 			if (type.HasInterfaces) {
 				foreach (TypeReference candidate in type.Interfaces) {

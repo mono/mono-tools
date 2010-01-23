@@ -1,3 +1,12 @@
+2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeclareEventHandlersCorrectlyRule.cs: Apply AvoidUnnecessary
+	SpecializationRule and AvoidRepetitiveCallsToPropertiesRule
+	* UseCorrectDisposeSignaturesRule.cs: Apply MethodCanBeMadeStatic
+	Rule, ProvideCorrectArgumentsToFormattingMethodsRule and Avoid
+	UnusedParametersRule
+	* UseFlagsAttributeRule.cs: Apply MethodCanBeMadeStaticRule
+
 2010-01-19  Jb Evain  <jbevain@novell.com>
 
 	* DisposableTypesShouldHaveFinalizerRule.cs: the rule

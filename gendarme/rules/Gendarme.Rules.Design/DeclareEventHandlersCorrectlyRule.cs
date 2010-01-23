@@ -83,16 +83,18 @@ namespace Gendarme.Rules.Design {
 	public class DeclareEventHandlersCorrectlyRule : Rule, ITypeRule {
 		static IList<TypeReference> valid_event_handler_types = new List<TypeReference> ();
 
-		private bool CheckReturnVoid (TypeReference eventType, MethodReference invoke)
+		private bool CheckReturnVoid (IMetadataTokenProvider eventType, IMethodSignature invoke)
 		{
-			if (String.Compare (invoke.ReturnType.ReturnType.FullName, "System.Void") == 0)
+			string full_name = invoke.ReturnType.ReturnType.FullName;
+			if (String.Compare (full_name, "System.Void") == 0)
 				return true;
 
-			Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The delegate should return void, not {0}", invoke.ReturnType.ReturnType.FullName));
+			string msg = String.Format ("The delegate should return void, not {0}", full_name);
+			Runner.Report (eventType, Severity.Medium, Confidence.High, msg);
 			return false;
 		}
 
-		private bool CheckAmountOfParameters (TypeReference eventType, MethodReference invoke)
+		private bool CheckAmountOfParameters (IMetadataTokenProvider eventType, IMethodSignature invoke)
 		{
 			if (invoke.HasParameters && (invoke.Parameters.Count == 2))
 				return true;
@@ -101,18 +103,22 @@ namespace Gendarme.Rules.Design {
 			return false;
 		}
 
-		private bool CheckParameterTypes (TypeReference eventType, MethodReference invoke)
+		private bool CheckParameterTypes (IMetadataTokenProvider eventType, IMethodSignature invoke)
 		{
 			bool ok = true;
-			if (invoke.HasParameters && (invoke.Parameters.Count >= 1)) {
-				string type_name = invoke.Parameters [0].ParameterType.FullName;
+			if (!invoke.HasParameters)
+				return ok;
+
+			ParameterDefinitionCollection pdc = invoke.Parameters;
+			if (pdc.Count >= 1) {
+				string type_name = pdc [0].ParameterType.FullName;
 				if (String.Compare (type_name, "System.Object") != 0) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", type_name));
 					ok = false;
 				}
 			}
-			if (invoke.HasParameters && (invoke.Parameters.Count >= 2)) {
-				if (!invoke.Parameters [1].ParameterType.Inherits ("System.EventArgs")) {
+			if (pdc.Count >= 2) {
+				if (!pdc [1].ParameterType.Inherits ("System.EventArgs")) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, "The second parameter should be a subclass of System.EventArgs");
 					ok = false;
 				}
@@ -120,7 +126,7 @@ namespace Gendarme.Rules.Design {
 			return ok;
 		}
 
-		private bool CheckParameterName (TypeReference eventType, ParameterReference invokeParameter, string expectedName)
+		private bool CheckParameterName (IMetadataTokenProvider eventType, ParameterReference invokeParameter, string expectedName)
 		{
 			if (String.Compare (invokeParameter.Name, expectedName) == 0)
 				return true;
@@ -171,10 +177,13 @@ namespace Gendarme.Rules.Design {
 			bool valid = CheckReturnVoid (type, invoke);
 			valid &= CheckAmountOfParameters (type, invoke);
 			valid &= CheckParameterTypes (type, invoke);
-			if (invoke.Parameters.Count > 0)
-				valid &= CheckParameterName (type, invoke.Parameters [0], "sender");
-			if (invoke.Parameters.Count > 1)
-				valid &= CheckParameterName (type, invoke.Parameters [1], "e");
+
+			ParameterDefinitionCollection pdc = invoke.Parameters;
+			if (pdc.Count > 0) {
+				valid &= CheckParameterName (type, pdc [0], "sender");
+				if (pdc.Count > 1)
+					valid &= CheckParameterName (type, pdc [1], "e");
+			}
 			return valid;
 		}
 

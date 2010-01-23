@@ -111,7 +111,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 		
-		private bool IsPowerOfTwo (ulong x)
+		static bool IsPowerOfTwo (ulong x)
 		{
 			Debug.Assert (x > 0, "x is not positive");
 
