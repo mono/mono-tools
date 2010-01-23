@@ -184,7 +184,9 @@ namespace Gendarme {
 			foreach (XmlElement parameter in rules.SelectNodes ("parameter")) {
 				string ruleName = GetAttribute (parameter, "rule", String.Empty);
 				string propertyName = GetAttribute (parameter, "property", String.Empty);
-				int value = Int32.Parse (GetAttribute (parameter, "value", String.Empty));
+				int value;
+				if (!Int32.TryParse (GetAttribute (parameter, "value", String.Empty), out value))
+					value = 0;
 				
 				IRule rule = GetRule (ruleName);
 				if (rule == null)
