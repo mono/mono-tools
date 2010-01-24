@@ -39,6 +39,7 @@ rules_sources =  \
 	PreferIntegerOrStringForIndexersRule.cs \
 	PreferXmlAbstractionsRule.cs \
 	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
+	ProvideTryParseAlternativeRule.cs \
 	TypesShouldBeInsideNamespacesRule.cs \
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
 	TypesWithNativeFieldsShouldBeDisposableRule.cs \
@@ -82,6 +83,7 @@ tests_sources = \
 	PreferEventsOverMethodsTest.cs \
 	PreferIntegerOrStringForIndexersTest.cs \
 	PreferXmlAbstractionsTest.cs \
+	ProvideTryParseAlternativeTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
 	TypesShouldBeInsideNamespacesTest.cs \
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs \

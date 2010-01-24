@@ -1,3 +1,9 @@
+2010-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideTryParseAlternativeRule.cs: New. Rule to suggest adding
+	TryParse method(s) to types that already provide Parse method(s)
+	* Makefile.am: Add new rule and tests to the build
+
 2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DeclareEventHandlersCorrectlyRule.cs: Apply AvoidUnnecessary
