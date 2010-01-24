@@ -1,3 +1,10 @@
+2010-01-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSwitchStatementsTest.cs: Deal with different compiler
+	generated names for iterators (gmcs versus csc). Also make the
+	switch/case on string longer (> 6) so CSC won't optimize it
+	as a serie of String::op_Equality (failing the unit test)
+
 2008-12-22  Néstor Salceda  <nestor.salceda@gmail.com>
 
 	* AvoidSwitchStatementsTest.cs: Added a test for table-driven

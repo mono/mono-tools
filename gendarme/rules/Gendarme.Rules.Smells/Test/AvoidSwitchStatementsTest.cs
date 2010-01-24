@@ -92,9 +92,18 @@ namespace Test.Rules.Smells {
 		[Test]
 		public void SuccessOnMethodWithoutSwitchAndGeneratorTest ()
 		{
-			AssertRuleDoesNotApply (Type.GetType ("Test.Rules.Smells.AvoidSwitchStatementsTest+<MethodWithoutSwitchAndGenerator>c__Iterator0"), "MoveNext");
+			// compiler generated code (mono gmcs)
+			Type type = Type.GetType ("Test.Rules.Smells.AvoidSwitchStatementsTest+<MethodWithoutSwitchAndGenerator>c__Iterator0");
+			if (type == null) {
+				// if not found try the output of MS csc
+				type = Type.GetType ("Test.Rules.Smells.AvoidSwitchStatementsTest+<MethodWithoutSwitchAndGenerator>d__0");
+			}
+			Assert.IsNotNull (type, "compiler generated type name");
+			AssertRuleDoesNotApply (type, "MoveNext");
 		}
 
+		// if the number of elements in the swicth is small (like <= 6) then CSC (but not GMCS)
+		// well generate code using String::op_Equality instead of a switch IL statement
 		void SwitchWithStrings (string sample)
 		{
 			switch (sample) {
@@ -102,7 +111,13 @@ namespace Test.Rules.Smells {
 			case "Bar":
 				return;
 			case "Baz":
+			case "Bad":
 				throw new ArgumentException ("sample");	
+			case "Zoo":
+			case "Yoo":
+				throw new FormatException ("sample");
+			case "*":
+				break;
 			}
 		}
 
