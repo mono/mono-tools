@@ -143,15 +143,16 @@ namespace GuiCompare
 
 		string [] api_sl2 = {
 			"mscorlib",
-			"System.Windows",
-			"Microsoft.VisualBasic",
 			"System",
 			"System.Core",
 			"System.Net",
 			"System.Runtime.Serialization",
 			"System.ServiceModel",
+			"System.ServiceModel.Web",
+			"System.Windows",
 			"System.Windows.Browser",
 			"System.Xml",
+			"Microsoft.VisualBasic",
 			"",
 			// sdk assemblies:
 			"System.Xml.Linq",
