@@ -1,3 +1,7 @@
+2010-01-26 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* CecilMetadata.cs: add 2 missing operators and avoid a nullref.
+
 2010-01-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InfoManager.cs: Add missing System.ServiceModel.Web.dll

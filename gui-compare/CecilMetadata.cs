@@ -142,6 +142,8 @@ namespace GuiCompare {
 		{
 			if (interface_list != null) {
 				foreach (TypeReference ifc in GetInterfaces (fromDef)) {
+					if (ifc == null)
+						continue;
 					TypeDefinition ifc_def = ifc.Resolve ();
 					if (ifc_def.IsNotPublic)
 						continue;
@@ -930,6 +932,8 @@ namespace GuiCompare {
 					case "op_OnesComplement": sb.Append ("operator ~"); break;
 					case "op_True": sb.Append ("operator true"); break;
 					case "op_False": sb.Append ("operator false"); break;
+					case "op_LeftShift": sb.Append ("operator <<"); break;
+					case "op_RightShift": sb.Append ("operator >>"); break;
 					default: Console.WriteLine ("unhandled operator named {0}", method_def.Name); sb.Append (method_def.Name); break;
 					}
 				}
