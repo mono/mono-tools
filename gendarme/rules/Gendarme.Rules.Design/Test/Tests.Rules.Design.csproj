@@ -75,6 +75,7 @@
     <Compile Include="PreferIntegerOrStringForIndexersTest.cs" />
     <Compile Include="PreferXmlAbstractionsTest.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsTest.cs" />
+    <Compile Include="ProvideTryParseAlternativeTest.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesTest.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
     <Compile Include="TypesWithNativeFieldsShouldBeDisposableTest.cs" />
