@@ -62,7 +62,10 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidConcatenatingCharsTest.cs" />
     <Compile Include="AvoidLargeNumberOfLocalVariablesTest.cs" />
+    <Compile Include="AvoidLocalDataStoreSlotTest.cs" />
+    <Compile Include="AvoidRepetitiveCallsToPropertiesTest.cs" />
     <Compile Include="AvoidRepetitiveCastsTest.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsTest.cs" />
     <Compile Include="AvoidUnneededFieldInitializationTest.cs" />

@@ -67,6 +67,9 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="AvoidConcatenatingCharsRule.cs" />
+    <Compile Include="AvoidLocalDataStoreSlotRule.cs" />
+    <Compile Include="AvoidRepetitiveCallsToPropertiesRule.cs" />
     <Compile Include="AvoidRepetitiveCastsRule.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsRule.cs" />
     <Compile Include="AvoidUnneededUnboxingRule.cs" />
