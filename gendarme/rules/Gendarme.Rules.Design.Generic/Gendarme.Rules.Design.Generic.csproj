@@ -46,6 +46,7 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="AvoidDeclaringCustomDelegatesRule.cs" />
     <Compile Include="AvoidMethodWithUnusedGenericTypeRule.cs" />
     <Compile Include="DoNotExposeNestedGenericSignaturesRule.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesRule.cs" />

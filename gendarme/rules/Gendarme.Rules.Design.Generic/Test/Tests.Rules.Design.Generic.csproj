@@ -42,6 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvoidDeclaringCustomDelegatesTest.cs" />
     <Compile Include="AvoidMethodWithUnusedGenericTypeTest.cs" />
     <Compile Include="DoNotExposeNestedGenericSignaturesTest.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesTest.cs" />
