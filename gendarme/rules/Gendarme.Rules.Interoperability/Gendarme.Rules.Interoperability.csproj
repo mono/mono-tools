@@ -46,6 +46,7 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="CentralizePInvokesIntoNativeMethodsTypeRule.cs" />
     <Compile Include="DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs" />
     <Compile Include="DoNotCastIntPtrToInt32Rule.cs" />
     <Compile Include="GetLastErrorMustBeCalledRightAfterPInvokeRule.cs" />
