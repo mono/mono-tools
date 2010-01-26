@@ -62,7 +62,9 @@
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyRule.cs" />
     <Compile Include="OnlyUseDisposeForIDisposableTypesRule.cs" />
     <Compile Include="PreferEmptyInstanceOverNullRule.cs" />
+    <Compile Include="PreferParamsArrayForVariableArgumentsRule.cs" />
     <Compile Include="PreferSafeHandleRule.cs" />
+    <Compile Include="PreferTryParseRule.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckRule.cs" />
     <Compile Include="ReturnNullRule.cs" />
     <Compile Include="ToStringReturnsNullRule.cs" />

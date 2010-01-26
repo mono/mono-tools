@@ -54,7 +54,9 @@
     <Compile Include="ObsoleteMessagesShouldNotBeEmptyTest.cs" />
     <Compile Include="OnlyUseDisposeForIDisposableTypesTest.cs" />
     <Compile Include="PreferEmptyInstanceOverNullTest.cs" />
+    <Compile Include="PreferParamsArrayForVariableArgumentsTest.cs" />
     <Compile Include="PreferSafeHandleTest.cs" />
+    <Compile Include="PreferTryParseTest.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckTest.cs" />
     <Compile Include="ToStringReturnsNullTest.cs" />
   </ItemGroup>
