@@ -142,10 +142,8 @@ namespace GuiCompare {
 		{
 			if (interface_list != null) {
 				foreach (TypeReference ifc in GetInterfaces (fromDef)) {
-					if (ifc == null)
-						continue;
 					TypeDefinition ifc_def = ifc.Resolve ();
-					if (ifc_def.IsNotPublic)
+					if (ifc_def == null || ifc_def.IsNotPublic)
 						continue;
 
 					interface_list.Add (new CecilInterface (ifc));
