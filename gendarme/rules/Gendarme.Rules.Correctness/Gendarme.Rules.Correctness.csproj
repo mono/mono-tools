@@ -68,7 +68,9 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="AvoidCodeWithSideEffectsInConditionalCodeRule.cs" />
     <Compile Include="AvoidConstructorsInStaticTypesRule.cs" />
+    <Compile Include="AvoidMethodsWithSideEffectsInConditionalCodeRule.cs" />
     <Compile Include="BadRecursiveInvocationRule.cs" />
     <Compile Include="CallingEqualsWithNullArgRule.cs" />
     <None Include="dataflow\BasicBlock.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />
     <Compile Include="ReviewUselessControlFlowRule.cs" />
     <Compile Include="ReviewUseOfModuloOneOnIntegersRule.cs" />
+    <Compile Include="UseNoInliningWithGetCallingAssemblyRule.cs" />
     <Compile Include="UseValueInPropertySetterRule.cs" />
     <None Include="ChangeLog" />
     <Compile Include="AvoidFloatingPointEqualityRule.cs" />
