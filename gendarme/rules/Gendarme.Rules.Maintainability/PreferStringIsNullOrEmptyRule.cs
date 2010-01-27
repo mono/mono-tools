@@ -199,7 +199,7 @@ namespace Gendarme.Rules.Maintainability {
 					// now that we found it we check that
 					// 1 - we previously did a check null on the same value (that we already know is a string)
 					Instruction branch = PreLengthCheck (method, current.Previous);
-					if ((branch == null) || (branch.OpCode.Code == Code.Ldc_I4_0))
+					if (branch == null)
 						continue;
 					// 2 - we compare the return value (length) with 0
 					if (PostLengthCheck (current.Next, branch)) {

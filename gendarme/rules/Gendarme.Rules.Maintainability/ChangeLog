@@ -1,3 +1,8 @@
+2010-01-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyRule.cs: Fix regression on code compiled
+	using CSC.
+
 2009-08-13  Jesse Jones  <jesjones@mindspring.com>
 
 	* AvoidLackOfCohesionOfMethodsRule.cs, ConsiderUsingStopwatchRule.cs, 

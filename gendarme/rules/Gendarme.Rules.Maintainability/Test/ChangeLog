@@ -1,3 +1,9 @@
+2010-01-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferStringIsNullOrEmptyTest.cs: Run Argument_InvertedCondition
+	only if not compiled by *MCS (i.e. works with CSC). Ignore 
+	StrictlyEmpty since it cannot be reliably detected.
+
 2009-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidAlwaysNullFieldTest.cs: TestFixture must be public
