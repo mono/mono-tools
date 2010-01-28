@@ -1,3 +1,8 @@
+2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Use shorter, unambiguous
+	.ctor to create MethodSignature
+
 2010-01-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyRule.cs: Fix regression on code compiled

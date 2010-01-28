@@ -191,7 +191,7 @@ namespace Gendarme.Rules.Maintainability {
 		private static MethodSignature GetSignature (MethodReference method)
 		{
 			if (!method.HasParameters)
-				return new MethodSignature (method.Name, GetReturnTypeSignature (method), null);
+				return new MethodSignature (method.Name, GetReturnTypeSignature (method));
 
 			string [] parameters = new string [method.Parameters.Count];
 			for (int i = 0; i < method.Parameters.Count; ++i) {
