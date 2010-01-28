@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -396,5 +398,171 @@ namespace Test.Rules.Exceptions {
 			AssertRuleFailure<Bad11> ("op_Implicit", 1);
 			AssertRuleFailure<Bad12> ("get_Item", 1);
 		}
+
+		class Bad : IDisposable {
+			static Bad ()
+			{
+				throw new NullReferenceException ();
+			}
+
+			~Bad ()
+			{
+				throw new ObjectDisposedException ("a bit too soon");
+			}
+
+			int Property {
+				get { throw new NotFiniteNumberException (); }
+			}
+
+			event EventHandler Handler {
+				add { throw new NotFiniteNumberException (); }
+				remove { throw new NotFiniteNumberException (); }
+			}
+
+			static public bool operator == (Bad a, Bad b)
+			{
+				// not a very good test since it recurse
+				if ((a == null) || (b == null))
+					throw new ArgumentNullException ();
+				return Object.ReferenceEquals (a, b);
+			}
+
+			static public bool operator != (Bad a, Bad b)
+			{
+				if ((a == null) || (b == null))
+					throw new ArgumentNullException ();
+				return !Object.ReferenceEquals (a, b);
+			}
+
+			void IDisposable.Dispose ()
+			{
+				throw new ObjectDisposedException ("quickie");
+			}
+
+			static bool TryParse (string s, out Bad value)
+			{
+				if (s == null)
+					throw new ArgumentNullException ();
+				value = new Bad ();
+				return true;
+			}
+		}
+
+		class Good : IDisposable {
+			static Good ()
+			{
+				Console.WriteLine ();
+			}
+
+			~Good ()
+			{
+			}
+
+			int Property {
+				get { return 0; }
+			}
+
+			event EventHandler Handler {
+				add { throw new NotSupportedException (); }
+				remove { }
+			}
+
+			static public bool operator == (Good a, Good b)
+			{
+				return Object.ReferenceEquals (a, b);
+			}
+
+			static public bool operator != (Good a, Good b)
+			{
+				return (!(a == b));
+			}
+
+			void IDisposable.Dispose ()
+			{
+				throw new NotImplementedException ();
+			}
+
+			static bool TryParse (string s, out Good value)
+			{
+				value = new Good ();
+				return (s != null);
+			}
+		}
+
+		[Test]
+		public void StaticCtor ()
+		{
+			AssertRuleFailure<Bad> (".cctor", 1);
+			AssertRuleDoesNotApply<Good> (".cctor"); // no throw
+		}
+
+		[Test]
+		public void Finalizers ()
+		{
+			AssertRuleFailure<Bad> ("Finalize", 1);
+			AssertRuleDoesNotApply<Good> ("Finalize"); // no throw
+		}
+
+		[Test]
+		public void Getter ()
+		{
+			AssertRuleFailure<Bad> ("get_Property", 1);
+			AssertRuleDoesNotApply<Good> ("get_Property"); // no throw
+		}
+
+		[Test]
+		public void Events ()
+		{
+			AssertRuleFailure<Bad> ("add_Handler", 1);
+			AssertRuleFailure<Bad> ("remove_Handler", 1);
+			AssertRuleSuccess<Good> ("add_Handler"); // NotSupportedException is allowed here
+			AssertRuleDoesNotApply<Good> ("remove_Handler"); // no throw
+		}
+
+		[Test]
+		public void EqualityOperator ()
+		{
+			AssertRuleFailure<Bad> ("op_Equality", 1);
+			AssertRuleDoesNotApply<Good> ("op_Equality"); // no throw
+		}
+
+		[Test]
+		public void InequalityOperator ()
+		{
+			AssertRuleFailure<Bad> ("op_Inequality", 1);
+			AssertRuleDoesNotApply<Good> ("op_Inequality"); // no throw
+		}
+
+		[Test]
+		public void ExplicitDispose ()
+		{
+			AssertRuleFailure<Bad> ("System.IDisposable.Dispose", 1);
+			// NotImplementedException is allowed here
+			AssertRuleSuccess<Good> ("System.IDisposable.Dispose"); 
+		}
+
+		[Test]
+		public void TryParse ()
+		{
+			AssertRuleFailure<Bad> ("TryParse", 1);
+			AssertRuleDoesNotApply<Good> ("TryParse"); // no throw
+		}
+
+		struct Unbox {
+			int i;
+
+			public override bool Equals (object obj)
+			{
+				Unbox ub = (Unbox) obj;
+				return ub.i == i;
+			}
+		}
+
+		[Test]
+		public void EqualsStructUnboxing ()
+		{
+			AssertRuleFailure<Unbox> ("Equals", 1);
+		}
 	}
 }
+

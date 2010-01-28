@@ -150,13 +150,26 @@ namespace Gendarme.Rules.Exceptions {
 	public sealed class DoNotThrowInUnexpectedLocationRule : Rule, IMethodRule {
 
 		private static readonly OpCodeBitmask Throwers = new OpCodeBitmask (0x0, 0x80C8000000000000, 0x3FC17FC000001FF, 0x0);
-		private static readonly OpCodeBitmask AlwaysBadThrowers = new OpCodeBitmask (0x0, 0x0, 0x100000000000, 0x0);
 		private static readonly OpCodeBitmask OverflowThrowers = new OpCodeBitmask (0x0, 0x8000000000000000, 0x3FC07F8000001FF, 0x0);
+		private static readonly OpCodeBitmask Casts = new OpCodeBitmask (0x0, 0x48000000000000, 0x400000000, 0x0);
 
 		private static readonly string [] GetterExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException"};
 		private static readonly string [] IndexerExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException", "System.ArgumentException", "System.Collections.Generic.KeyNotFoundException"};
 		private static readonly string [] EventExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException", "System.ArgumentException"};
 		private static readonly string [] HashCodeExceptions = new string [] {"System.ArgumentException"};
+
+		private static bool CheckAttributes (MethodReference method, MethodAttributes attrs)
+		{
+			MethodDefinition md = method.Resolve ();
+			return ((md == null) || ((md.Attributes & attrs) == attrs));
+		}
+		
+		private static MethodSignature EqualityComparer_Equals = new MethodSignature ("Equals", "System.Boolean", new string [2],
+			(method) => (CheckAttributes (method, MethodAttributes.Public)));
+		private static MethodSignature EqualityComparer_GetHashCode = new MethodSignature ("GetHashCode", "System.Int32", new string [1], 
+			(method) => (CheckAttributes (method, MethodAttributes.Public)));
+		private static readonly MethodSignature GetTypeSig = new MethodSignature ("GetType", "System.Type", new string [0],
+			(method) => (CheckAttributes (method, MethodAttributes.Public)));
 		
 		private TypeReference type;
 		private MethodSignature equalityComparerEquals;
@@ -174,14 +187,11 @@ namespace Gendarme.Rules.Exceptions {
 			return false;
 		}
 		
-		private static readonly string [] AnySingleArg = new string [1];
-		private static readonly string [] AnyTwoArgs = new string [2];
-		
 		private void InitType (TypeReference type)	
 		{
 			if (type.Implements ("System.Collections.Generic.IEqualityComparer`1")) {
-				equalityComparerEquals = new MethodSignature ("Equals", "System.Boolean", AnyTwoArgs, MethodAttributes.Public);
-				equalityComparerHashCode = new MethodSignature ("GetHashCode", "System.Int32", AnySingleArg, MethodAttributes.Public);
+				equalityComparerEquals = EqualityComparer_Equals;
+				equalityComparerHashCode = EqualityComparer_GetHashCode;
 			} else {
 				equalityComparerEquals = null;
 				equalityComparerHashCode = null;
@@ -260,7 +270,11 @@ namespace Gendarme.Rules.Exceptions {
 				methodLabel = "Event accessors";
 				allowedExceptions = EventExceptions;
 				valid = true;
-			}		
+
+			} else if (MethodSignatures.TryParse.Matches (method)) {
+				methodLabel = "TryParse";
+				valid = true;
+			}
 			
 			return valid;
 		}
@@ -279,6 +293,7 @@ namespace Gendarme.Rules.Exceptions {
 				return string.Empty;
 
 			case Code.Unbox:
+			case Code.Unbox_Any:
 				return string.Format (" (unbox from {0})", ((TypeReference) ins.Operand).Name);
 				
 			case Code.Ckfinite:
@@ -293,7 +308,6 @@ namespace Gendarme.Rules.Exceptions {
 		private List<Instruction> instructions = new List<Instruction> ();
 		private List<Instruction> bad = new List<Instruction> ();
 		private List<Instruction> casts = new List<Instruction> ();
-		public static readonly MethodSignature GetTypeSig = new MethodSignature ("GetType", "System.Type", new string [0], MethodAttributes.Public);
 
 		private void ProcessMethod (MethodDefinition method)
 		{
@@ -310,8 +324,7 @@ namespace Gendarme.Rules.Exceptions {
 						casts_are_ok = true;
 	
 					else if (code == Code.Call || code == Code.Callvirt) {
-						MethodReference mr = (MethodReference) ins.Operand;
-						if (GetTypeSig.Matches (mr))
+						if (GetTypeSig.Matches (ins.Operand as MethodReference))
 							casts_are_ok = true;
 					}	
 				}
@@ -319,14 +332,14 @@ namespace Gendarme.Rules.Exceptions {
 				if (Throwers.Get (code)) {
 
 					// A few instructions are bad to the bone.
-					if (AlwaysBadThrowers.Get (code)) {
+					if (code == Code.Ckfinite) {
 						bad.Add (ins);
 				
 					// If the instruction is castclass or unbox then we may have a 
 					// problem, but only within Object.Equals (casts occur way too 
 					// often to flag them everywhere, but it's common mistake to
 					// cast the Equals argument without an is or GetType check). 
-					} else if (code == Code.Castclass || code == Code.Unbox) {
+					} else if (Casts.Get (code)) {
 						if (is_equals && !casts_are_ok)
 							casts.Add (ins);
 			
@@ -433,10 +446,9 @@ namespace Gendarme.Rules.Exceptions {
 			Code.Ckfinite,		// throws ArithmeticException
 		};
 
-		private static readonly Code [] SometimesBad = new Code []
+		private static readonly Code [] Casts = new Code []
 		{
 			Code.Castclass,	// throws InvalidCastException
-			Code.Throw,
 			Code.Unbox,		// throws InvalidCastException or NullReferenceException
 			Code.Unbox_Any,		// throws InvalidCastException or NullReferenceException
 		};
@@ -476,15 +488,18 @@ namespace Gendarme.Rules.Exceptions {
 			OpCodeBitmask throwers = new OpCodeBitmask ();
 			OpCodeBitmask alwaysBad = new OpCodeBitmask ();
 			OpCodeBitmask overflow = new OpCodeBitmask ();
+			OpCodeBitmask casts = new OpCodeBitmask ();
 			
 			foreach (Code code in AlwaysBad) {
 				throwers.Set (code);
 				alwaysBad.Set (code);
 			}
 			
-			foreach (Code code in SometimesBad) {
+			foreach (Code code in Casts) {
+				casts.Set (code);
 				throwers.Set (code);
 			}
+			throwers.Set (Code.Throw);
 			
 			foreach (Code code in Overflow) {
 				throwers.Set (code);
@@ -494,6 +509,7 @@ namespace Gendarme.Rules.Exceptions {
 			Console.WriteLine ("throwers: {0}", throwers);
 			Console.WriteLine ("alwaysBad: {0}", alwaysBad);
 			Console.WriteLine ("overflow: {0}", overflow);
+			Console.WriteLine ("casts: {0}", casts);
 		}
 #endif
 	}

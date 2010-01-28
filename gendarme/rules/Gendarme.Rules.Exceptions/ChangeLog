@@ -1,3 +1,11 @@
+2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationTest.cs: Add TryParse as a 
+	location where exceptions should never be thrown. Fix unbox 
+	by adding unbox.any opcode. Do not use a OpCodeBitmask for a
+	single opcode (ckfinite). Avoid creating equalityComparerEquals
+	and equalityComparerHashCode for each new type.
+
 2010-01-21  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidArgumentExceptionDefaultConstructorRule.cs: Apply Avoid
