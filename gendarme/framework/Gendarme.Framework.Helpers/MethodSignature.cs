@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -67,10 +67,7 @@ namespace Gendarme.Framework.Helpers {
 		/// </summary>
 		public ReadOnlyCollection<string> Parameters { get; private set; }
 
-		/// <summary>
-		/// An attribute mask matched against the attributes of the method.
-		/// </summary>
-		public MethodAttributes Attributes { get; private set; }
+		private Func<MethodReference, bool> extra_match_logic;
 
 
 		public MethodSignature ()
@@ -78,27 +75,37 @@ namespace Gendarme.Framework.Helpers {
 		}
 
 		public MethodSignature (string name)
-			: this (name, null, null)
+			: this (name, null, null, null)
+		{
+		}
+
+		public MethodSignature (string name, Func<MethodReference, bool> extraMatchingLogic)
+			: this (name, null, null, extraMatchingLogic)
 		{
 		}
 
 		public MethodSignature (string name, string returnType)
-			: this (name, returnType, null)
+			: this (name, returnType, null, null)
 		{
 		}
 
-		public MethodSignature (string name, string returnType, string[] parameters)
+		public MethodSignature (string name, string returnType, Func<MethodReference, bool> extraMatchingLogic)
+			: this (name, returnType, null, extraMatchingLogic)
+		{
+		}
+
+		public MethodSignature (string name, string returnType, string [] parameters)
+			: this (name, returnType, parameters, null)
+		{
+		}
+
+		public MethodSignature (string name, string returnType, string [] parameters, Func<MethodReference, bool> extraMatchingLogic)
 		{
 			Name = name;
 			ReturnType = returnType;
 			if (parameters != null)
 				Parameters = new ReadOnlyCollection<string> (new List<string> (parameters));
-		}
-
-		public MethodSignature (string name, string returnType, string [] parameters, MethodAttributes attributes)
-			: this (name, returnType, parameters)
-		{
-			Attributes = attributes;
+			extra_match_logic = extraMatchingLogic;
 		}
 
 		/// <summary>
@@ -133,13 +140,7 @@ namespace Gendarme.Framework.Helpers {
 				}
 			}
 
-			// skip last check if no attributes are part of the signature
-			if (((int) Attributes) == 0)
-				return true;
-
-			// put this at last step so we avoid the cast as much as possible
-			MethodDefinition md = (method as MethodDefinition);
-			return ((md == null) || ((md.Attributes & Attributes) == Attributes));
+			return (extra_match_logic == null) ? true : extra_match_logic (method);
 		}
 
 		/// <summary>
