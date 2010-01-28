@@ -30,6 +30,7 @@ using System;
 
 namespace Gendarme.Framework {
 	/// <summary>Used with <see cref = "ThreadModelAttribute"/>.</summary>
+	[Serializable]
 	public enum ThreadModel {
 		/// <summary>The code may run safely only under the main thread.</summary>
 		/// <remarks>This is the default for code in the assemblies being checked.</remarks>
