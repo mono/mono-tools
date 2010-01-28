@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -65,7 +65,6 @@ namespace Test.Framework {
 			Assert.IsNull (sig.Name, "Name");
 			Assert.IsNull (sig.Parameters, "Parameters");
 			Assert.IsNull (sig.ReturnType, "ReturnType");
-			Assert.AreEqual ((MethodAttributes) 0, sig.Attributes, "Attributes");
 			Assert.AreEqual (String.Empty, sig.ToString (), "ToString");
 		}
 
@@ -94,9 +93,6 @@ namespace Test.Framework {
 			Assert.IsTrue (new MethodSignature (null, null, new string [] { "System.Boolean" }).Matches (GetMethod ("Method")));
 			Assert.IsTrue (new MethodSignature (null, null, new string [] { null }).Matches (GetMethod ("Method")));
 			Assert.IsFalse (new MethodSignature (null, null, new string [] { "System.Object" }).Matches (GetMethod ("Method")));
-
-			Assert.IsTrue (new MethodSignature (null, null, null, MethodAttributes.Public).Matches (GetMethod ("TestMatch")));
-			Assert.IsFalse (new MethodSignature (null, null, null, MethodAttributes.Virtual).Matches (GetMethod ("TestMatch")));
 		}
 
 		[Test]

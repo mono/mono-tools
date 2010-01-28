@@ -1,3 +1,7 @@
+2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignatureTest.cs: Remove assertion on API about to be nuked.
+
 2008-07-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignatureTest.cs: Update test case for the new behavior of 
