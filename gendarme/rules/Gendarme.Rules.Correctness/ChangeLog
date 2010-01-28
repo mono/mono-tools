@@ -1,3 +1,12 @@
+2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Apply
+	MethodCanBeMadeStaticRule
+	* CallingEqualsWithNullArgRule.cs: Apply rule to Equals that are
+	not public.
+	* ReviewInconsistentIdentityRule.cs: Apply rules to CompareTo 
+	that are not public.
+
 2010-01-06  Jb Evain  <jbevain@novell.com>
 
 	* UseNoInliningWithGetCallingAssemblyRule.cs: Fix the

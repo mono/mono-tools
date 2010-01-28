@@ -96,7 +96,7 @@ namespace Gendarme.Rules.Correctness {
 		
 		private string [] args1 = new string [1];
 		private string [] args2 = new string [2];
-		private static readonly MethodSignature CompareTo = new MethodSignature ("CompareTo", "System.Int32", new string [] { "System.Object" },  MethodAttributes.Public);
+		private static readonly MethodSignature CompareTo = new MethodSignature ("CompareTo", "System.Int32", new string [] { "System.Object" });
 		
 		private void GetMethods (TypeDefinition type)	
 		{			

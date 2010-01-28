@@ -72,7 +72,7 @@ namespace Gendarme.Rules.Correctness {
 
 		// MethodSignatures.Equals check for a System.Object parameter while this rule is more general
 		// and will work as long as there is a single parameter, whatever the type
-		private static readonly new MethodSignature Equals = new MethodSignature ("Equals", "System.Boolean", new string [1], MethodAttributes.Public);
+		private static readonly new MethodSignature Equals = new MethodSignature ("Equals", "System.Boolean", new string [1]);
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{

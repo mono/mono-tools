@@ -307,7 +307,7 @@ namespace Gendarme.Rules.Correctness {
 		
 		// Note that we don't want to use ContainsType because we need to ignore
 		// the namespace (at least until it lands in System.Diagnostics).
-		private bool HasPureAttribute (CustomAttributeCollection attrs)
+		static bool HasPureAttribute (CustomAttributeCollection attrs)
 		{
 			foreach (CustomAttribute attr in attrs) {
 				if (attr.Constructor.DeclaringType.FullName.Contains ("PureAttribute")) {
