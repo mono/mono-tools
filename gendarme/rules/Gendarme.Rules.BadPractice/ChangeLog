@@ -1,3 +1,8 @@
+2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferTryParseRule.cs: Simplify and reduce code duplication by
+	using the new MethodSignatures.[Try]Parse
+
 2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferSafeHandleRule.cs: Apply MethodCanBeMadeStaticRule

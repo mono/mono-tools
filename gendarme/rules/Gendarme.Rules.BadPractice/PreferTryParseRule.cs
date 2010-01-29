@@ -115,44 +115,18 @@ namespace Gendarme.Rules.BadPractice {
 		// so we know if an alternative TryParse is available
 		static Dictionary<TypeReference, bool> has_try_parse = new Dictionary<TypeReference, bool> ();
 
-		static bool FirstParameterIsString (MethodReference method)
-		{
-			if (!method.HasParameters)
-				return false;
-			return (method.Parameters [0].ParameterType.FullName == "System.String");
-		}
-
 		static bool HasTryParseMethod (TypeDefinition type)
 		{
 			bool present = false;
 			if (!has_try_parse.TryGetValue (type, out present)) {
-				string out_name = type.FullName + "&";
 				foreach (MethodReference method in type.Methods) {
-					if (method.Name == "TryParse") {
-						if (method.ReturnType.ReturnType.FullName != "System.Boolean")
-							continue;
-						if (!FirstParameterIsString (method))
-							continue;
-						if (method.Parameters [method.Parameters.Count - 1].ParameterType.FullName != out_name)
-							continue;
-
-						present = true;
-						break;
+					if (MethodSignatures.TryParse.Matches (method)) {
+						has_try_parse.Add (type, true);
+						return true;
 					}
 				}
-				has_try_parse.Add (type, present);
 			}
 			return present;
-		}
-
-		// looking for: <type> <type>::Parse(string s ...)
-		static bool IsParse (MethodReference method)
-		{
-			if (method.Name != "Parse")
-				return false;
-			if (!FirstParameterIsString (method))
-				return false;
-			return (method.DeclaringType == method.ReturnType.ReturnType);
 		}
 
 		static bool InsideTryBlock (MethodDefinition method, Instruction ins)
@@ -184,7 +158,7 @@ namespace Gendarme.Rules.BadPractice {
 					continue;
 
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (!IsParse (mr))
+				if (!MethodSignatures.Parse.Matches (mr))
 					continue;
 
 				if (!HasTryParseMethod (mr.DeclaringType.Resolve ()))
