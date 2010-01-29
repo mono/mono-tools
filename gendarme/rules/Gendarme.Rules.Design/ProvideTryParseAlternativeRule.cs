@@ -29,6 +29,7 @@
 using System;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
@@ -135,47 +136,14 @@ namespace Gendarme.Rules.Design {
 	[Solution ("Add a TryParse alternative method that allow parsing without any exception handling from the caller.")]
 	public class ProvideTryParseAlternativeRule : Rule, ITypeRule {
 
-		#region mostly a copy-paste from PreferTryParse (except caching support)
-
-		static bool FirstParameterIsString (IMethodSignature method)
-		{
-			if (!method.HasParameters)
-				return false;
-			return (method.Parameters [0].ParameterType.FullName == "System.String");
-		}
-
 		static bool HasTryParseMethod (TypeDefinition type)
 		{
-			bool present = false;
-			string out_name = type.FullName + "&";
 			foreach (MethodReference method in type.Methods) {
-				if (method.Name == "TryParse") {
-					if (method.ReturnType.ReturnType.FullName != "System.Boolean")
-						continue;
-					if (!FirstParameterIsString (method))
-						continue;
-					ParameterDefinitionCollection pdc = method.Parameters;
-					if (pdc [pdc.Count - 1].ParameterType.FullName != out_name)
-						continue;
-
-					present = true;
-					break;
-				}
+				if (MethodSignatures.TryParse.Matches (method))
+					return true;
 			}
-			return present;
+			return false;
 		}
-
-		// looking for: <type> <type>::Parse(string s ...)
-		static bool IsParse (MethodReference method)
-		{
-			if (method.Name != "Parse")
-				return false;
-			if (!FirstParameterIsString (method))
-				return false;
-			return (method.DeclaringType == method.ReturnType.ReturnType);
-		}
-
-		#endregion
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -188,7 +156,7 @@ namespace Gendarme.Rules.Design {
 			// we look for a Parse method defined in the type
 			bool has_parse = false;
 			foreach (MethodDefinition method in type.Methods) {
-				if (IsParse (method)) {
+				if (MethodSignatures.Parse.Matches (method)) {
 					// the type provides a "<type> <type>::Parse(string)" method
 					has_parse = true;
 					break;

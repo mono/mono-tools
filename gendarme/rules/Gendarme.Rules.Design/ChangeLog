@@ -1,3 +1,8 @@
+2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideTryParseAlternativeRule.cs: Simplify and reduce code 
+	duplication by using the new MethodSignatures.[Try]Parse
+
 2010-01-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideTryParseAlternativeRule.cs: New. Rule to suggest adding
