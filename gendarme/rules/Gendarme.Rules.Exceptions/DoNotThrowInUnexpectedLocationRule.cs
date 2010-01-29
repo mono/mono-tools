@@ -105,6 +105,11 @@ namespace Gendarme.Rules.Exceptions {
 	/// are called implicitly so it tends to be quite surprising if they throw 
 	/// exceptions.</description>
 	/// </item>
+	/// <item>
+	/// <description><c>TryParse</c> methods - should not throw. These methods
+	/// are designed to be executed without having to catch multiple exceptions
+	/// (unlike the <c>Parse</c> methods).</description>
+	/// </item>
 	/// </list>
 	/// Note that the rule does not complain if a method throws 
 	/// System.NotImplementedException because 

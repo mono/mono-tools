@@ -1,3 +1,8 @@
+2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationTest.cs: Document the addition of
+	the TryParse method.
+
 2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationTest.cs: Add TryParse as a 
