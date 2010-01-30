@@ -91,27 +91,27 @@ namespace Gendarme.Rules.Correctness {
 
 			Instruction load = next.Next;
 			if ((load == null) || !load.IsLoadLocal ())
-				return null;
+				return String.Empty;
 
 			// check that this is the same variable
 			VariableDefinition vd1 = ins.GetVariable (method);
 			VariableDefinition vd2 = load.GetVariable (method);
 			if (vd1.Index != vd2.Index)
-				return null;
+				return String.Empty;
 
 			Instruction stfld = load.Next;
 			if ((stfld == null) || (stfld.OpCode.Code != Code.Stfld))
-				return null;
+				return String.Empty;
 
 			// check that we're assigning the same field twice
 			FieldDefinition fd1 = next.GetField ();
 			FieldDefinition fd2 = stfld.GetField ();
 			if (fd1.MetadataToken.RID != fd2.MetadataToken.RID)
-				return null;
+				return String.Empty;
 
 			// backward: DUP, (possible CONV), LD (value to be duplicated), LD instance, LD instance
 			if (stfld.TraceBack (method).GetOperand (method) != next.TraceBack (method).GetOperand (method))
-				return null;
+				return String.Empty;
 
 			return String.Format ("Instance field '{0}' on same variable '{1}'.", fd1.Name, vd1.Name);
 		}
@@ -122,13 +122,13 @@ namespace Gendarme.Rules.Correctness {
 			// DUP, STSFLD, STSFLD
 			if (ins.OpCode.Code == Code.Stsfld) {
 				if (next.OpCode.Code != Code.Stsfld)
-					return null;
+					return String.Empty;
 
 				// check that we're assigning the same field twice
 				FieldDefinition fd1 = ins.GetField ();
 				FieldDefinition fd2 = next.GetField ();
 				if (fd1.MetadataToken.RID != fd2.MetadataToken.RID)
-					return null;
+					return String.Empty;
 
 				return String.Format ("Static field '{0}'.", fd1.Name);
 			} else if (ins.IsStoreLocal ()) {
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Correctness {
 				if (vd2 != null) {
 					VariableDefinition vd1 = ins.GetVariable (method);
 					if (vd1.Index != vd2.Index)
-						return null;
+						return String.Empty;
 
 					return String.Format ("Local variable '{0}'.", vd1.Name);
 				} else if (next.OpCode.Code == Code.Stfld) {
@@ -147,7 +147,7 @@ namespace Gendarme.Rules.Correctness {
 					return CheckDoubleAssignementOnInstanceFields (method, ins, next);
 				}
 			}
-			return null;
+			return String.Empty;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -172,7 +172,7 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				string msg = CheckDoubleAssignement (method, next, nn);
-				if (msg != null)
+				if (msg.Length > 0)
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;
