@@ -394,6 +394,7 @@ namespace Gendarme.Framework {
 		public virtual void TearDown ()
 		{
 			// last chance to report defects
+			// FIXME: defects reported at TearDown (e.g. AvoidSmallNamespaceRule) cannot currently be ignored
 			tearing_down = true;
 			foreach (Rule rule in rules) {
 				currentRule = rule;

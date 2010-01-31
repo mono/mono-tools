@@ -129,32 +129,29 @@ namespace Gendarme.Framework {
 
 		protected bool AddAssembly (string rule, string assembly)
 		{
+			bool found = false;
+
 			foreach (AssemblyDefinition definition in runner.Assemblies) {
 				// check either the full name or only the name (as the version number will likely
 				// change and makes the fullname less useful in a separate ignore file)
 				if ((definition.Name.FullName == assembly) || (definition.Name.Name == assembly)) {
 					Add (rule, definition);
-					return true;
+					found = true; // same assembly can exist elsewhere
 				}
 			}
-			return false;
+			return found;
 		}
 
 		protected bool AddType (string rule, string type)
 		{
 			bool found = false;
 			
-			// Note that we don't want to bail once we find the type name
-			// because more than one of the assemblies we're checking may
-			// have that name (this is a bit less likely with namespace
-			// qualified names, but even those may have duplicates especially
-			// for internal types).
 			foreach (AssemblyDefinition assembly in runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					TypeDefinition definition = module.Types [type];
 					if (definition != null) {
 						Add (rule, definition);
-						found = true;
+						found = true; // same type can exist elsewhere
 					}
 				}
 			}
@@ -163,19 +160,21 @@ namespace Gendarme.Framework {
 
 		protected bool AddMethod (string rule, string method)
 		{
+			bool found = false;
+
 			foreach (AssemblyDefinition assembly in runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					foreach (TypeDefinition type in module.Types) {
 						foreach (MethodDefinition definition in type.AllMethods ()) {
 							if (method == definition.ToString ()) {
 								Add (rule, definition);
-								return true;
+								found = true; // same method can exist elsewhere
 							}
 						}
 					}
 				}
 			}
-			return false;
+			return found;
 		}
 
 		private static bool CheckRule (IRule rule)
