@@ -1,3 +1,24 @@
+2010-01-30  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidConcatenatingCharsRule.cs: Apply AvoidMessageChainsRule and 
+	make the check safer against names starting with Object*
+	* AvoidUncalledPrivateCodeRule.cs: Apply AvoidRepetitive
+	CallsToPropertiesRule
+	* AvoidUninstantiatedInternalClassesRule.cs: Apply AvoidRepetitive
+	CallsToPropertiesRule
+	* AvoidUnneededCallsOnStringRule.cs: Apply PreferEmptyInstanceOver
+	NullRule
+	* AvoidUnneededUnboxingRule.cs: Apply PreferEmptyInstanceOverNullRule
+	* AvoidUnsealedUninheritedInternalClassesRule.cs: Apply Avoid
+	RepetitiveCallsToPropertiesRule
+	* AvoidUnusedParametersRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule
+	* MathMinMaxCandidateRule.cs: Apply PreferEmptyInstanceOverNullRule
+	* PreferCharOverloadRule.cs: Apply AvoidRepetitiveCallsToProperties
+	Rule and add extra HasParameters check
+	* RemoveUnusedLocalVariablesRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule
+
 2010-01-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCallsToPropertiesRule.cs: Apply 

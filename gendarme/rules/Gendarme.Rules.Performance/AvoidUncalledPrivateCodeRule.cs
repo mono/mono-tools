@@ -213,9 +213,12 @@ namespace Gendarme.Rules.Performance {
 				return true;
 			
 			// handle non-virtual Equals, e.g. Equals(type)
-			if ((method.Name == "Equals") && (method.Parameters.Count == 1) &&
-				(method.Parameters [0].ParameterType == method.DeclaringType))
-				return true;
+			string name = method.Name;
+			if (method.HasParameters && (name == "Equals")) {
+				ParameterDefinitionCollection pdc = method.Parameters;
+				if ((pdc.Count == 1) && (pdc [0].ParameterType == method.DeclaringType))
+					return true;
+			}
 
 			// check if this method is needed to satisfy an interface
 			TypeDefinition type = (method.DeclaringType as TypeDefinition);
@@ -224,7 +227,7 @@ namespace Gendarme.Rules.Performance {
 					TypeDefinition intf = tr.Resolve ();
 					if (intf != null) {
 						foreach (MethodReference member in intf.Methods) {
-							if (method.Name == member.Name)
+							if (name == member.Name)
 								return true;
 						}
 					}

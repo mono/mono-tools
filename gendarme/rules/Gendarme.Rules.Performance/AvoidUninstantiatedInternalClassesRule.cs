@@ -167,8 +167,10 @@ namespace Gendarme.Rules.Performance {
 				if (t == null) {
 					MethodReference m = ins.Operand as MethodReference;
 					if (m != null) {
-						GenericInstanceType generic = (m.DeclaringType as GenericInstanceType);
-						t = (generic == null) ? m.DeclaringType : generic.GetOriginalType ();
+						t = m.DeclaringType;
+						GenericInstanceType generic = (t as GenericInstanceType);
+						if (generic != null)
+							t = generic.GetOriginalType ();
 					} else {
 						FieldReference f = ins.Operand as FieldReference;
 						if (f != null)
@@ -183,11 +185,14 @@ namespace Gendarme.Rules.Performance {
 
 		static bool HasSinglePrivateConstructor (TypeDefinition type)
 		{
-			if (!type.HasConstructors || (type.Constructors.Count != 1))
+			if (!type.HasConstructors)
 				return false;
 
-			var constructor = type.Constructors [0];
+			var ctors = type.Constructors;
+			if (ctors.Count != 1)
+				return false;
 
+			var constructor = ctors [0];
 			return (constructor.IsPrivate && !constructor.HasParameters);
 		}
 
@@ -205,12 +210,12 @@ namespace Gendarme.Rules.Performance {
 			// rule applies
 
 			// if the type holds the Main entry point then it is considered useful
-			MethodDefinition entry_point = type.Module.Assembly.EntryPoint;
+			AssemblyDefinition assembly = type.Module.Assembly;
+			MethodDefinition entry_point = assembly.EntryPoint;
 			if ((entry_point != null) && (entry_point.DeclaringType == type))
 				return RuleResult.Success;
 
 			// create a cache of all type instantiation inside this
-			AssemblyDefinition assembly = type.Module.Assembly;
 			CacheInstantiationFromAssembly (assembly);
 
 			HashSet<TypeReference> typeset = null;
@@ -220,7 +225,7 @@ namespace Gendarme.Rules.Performance {
 			// if we can't find the non-public type being used in the assembly then the rule fails
 			if (typeset == null || !typeset.Contains (type)) {
 				// base confidence on whether the internals are visible or not
-				Confidence c = type.Module.Assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute") ? 
+				Confidence c = assembly.HasAttribute ("System.Runtime.CompilerServices.InternalsVisibleToAttribute") ? 
 					Confidence.Low : Confidence.Normal;
 				Runner.Report (type, Severity.High, c);
 				return RuleResult.Failure;

@@ -90,21 +90,25 @@ namespace Gendarme.Rules.Performance {
 			return (parameter.Operand as string);
 		}
 
+		void Report (MethodDefinition method, Instruction ins, Confidence confidence, MethodReference call, string parameter)
+		{
+			string msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, parameter);
+			Runner.Report (method, ins, Severity.Medium, confidence, msg);
+		}
+
 		void CheckIndexOf (MethodDefinition method, MethodReference call, Instruction ins)
 		{
-			string msg;
-
 			// check that first parameter is a string of length equal to one
 			string p1 = GetString (ins.TraceBack (method, -1));
 			if (p1.Length != 1)
 				return;
 
-			int last = call.Parameters.Count;
-			if (call.Parameters [last - 1].ParameterType.FullName != "System.StringComparison") {
+			ParameterDefinitionCollection pdc = call.Parameters;
+			int last = pdc.Count;
+			if (pdc [last - 1].ParameterType.FullName != "System.StringComparison") {
 				// confidence is normal because it's possible that the code expects a
 				// culture sensitive comparison (but that will break in .NET 4).
-				msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, p1);
-				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
+				Report (method, ins, Confidence.Normal, call, p1);
 				return;
 			}
 
@@ -113,14 +117,12 @@ namespace Gendarme.Rules.Performance {
 			switch (sc.OpCode.Code) {
 			case Code.Ldc_I4_4:
 				// if it's StringComparison.Ordinal (4) then it's identical to what a Char would do
-				msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, p1);
-				Runner.Report (method, ins, Severity.Medium, Confidence.High, msg);
+				Report (method, ins, Confidence.High, call, p1);
 				break;
 			case Code.Ldc_I4_5:
 				// if it's StringComparison.OrdinalIgnoreCase (5) then it's identical as long as the Char is not case sensitive
 				if (p1 == p1.ToLowerInvariant () && p1 == p1.ToUpperInvariant ()) {
-					msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, p1);
-					Runner.Report (method, ins, Severity.Medium, Confidence.High, msg);
+					Report (method, ins, Confidence.High, call, p1);
 				}
 				break;
 			}
@@ -140,6 +142,11 @@ namespace Gendarme.Rules.Performance {
 			string msg = String.Format ("Prefer the use of: Replace('{0}','{1}');", p1, p2);
 			// confidence is higher since there's no StringComparison to consider
 			Runner.Report (method, ins, Severity.Medium, Confidence.High, msg);
+		}
+
+		static bool CheckFirstParameterIsString (MethodReference method)
+		{
+			return (method.HasParameters && (method.Parameters [0].ParameterType.FullName == "System.String"));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -165,15 +172,13 @@ namespace Gendarme.Rules.Performance {
 				case "LastIndexOf":
 					// 3 overloads each - parameters are identical (between them)
 					// and the String (or Char) is always the first one
-					if (call.Parameters [0].ParameterType.FullName != "System.String")
-						continue;
-					CheckIndexOf (method, call, ins);
+					if (CheckFirstParameterIsString (call))
+						CheckIndexOf (method, call, ins);
 					break;
 				case "Replace":
-					if (call.Parameters [0].ParameterType.FullName != "System.String")
-						continue;
 					// both parameters needs to be length == 1
-					CheckReplace (method, ins);
+					if (CheckFirstParameterIsString (call))
+						CheckReplace (method, ins);
 					break;
 				}
 				// String.Split could be a candidate but it is unlikely we

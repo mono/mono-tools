@@ -88,8 +88,13 @@ namespace Gendarme.Rules.Performance {
 				if (IsStringConcat (mr)) {
 					MethodReference method = (mr as MethodReference);
 					// catch both System.Object and System.Object[]
-					if (method.HasParameters && method.Parameters [0].ParameterType.FullName.StartsWith ("System.Object"))
+					if (!method.HasParameters)
+						continue;
+					switch (method.Parameters [0].ParameterType.FullName) {
+					case "System.Object":
+					case "System.Object[]":
 						return true;
+					}
 				}
 			}
 			return false;

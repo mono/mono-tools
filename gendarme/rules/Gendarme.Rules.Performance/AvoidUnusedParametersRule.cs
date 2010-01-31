@@ -133,10 +133,9 @@ namespace Gendarme.Rules.Performance {
 
 			// rule applies
 
-			// we limit ourselves to the first 64 parameters
-			int pcount = method.Parameters.Count;
-			if (pcount > 64)
-				pcount = 64;
+			// we limit ourselves to the first 64 parameters (so we can use a bitmask)
+			ParameterDefinitionCollection pdc = method.Parameters;
+			int pcount = pdc.Count > 64 ? 64 : pdc.Count;
 			ulong mask = 0;
 
 			// scan IL to see which parameter is being used
@@ -154,7 +153,7 @@ namespace Gendarme.Rules.Performance {
 
 			for (int i = 0; i < pcount; i++) {
 				if ((mask & ((ulong) 1 << i)) == 0) {
-					ParameterDefinition parameter = method.Parameters [i];
+					ParameterDefinition parameter = pdc [i];
 					string text = String.Format ("Parameter '{0}' of type '{1}' is never used in the method.",
 						parameter.Name, parameter.ParameterType);
 					Runner.Report (parameter, Severity.Medium, Confidence.Normal, text);

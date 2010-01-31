@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Performance {
 						continue;
 					}
 
-					if (text != null)
+					if (text.Length > 0)
 						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, text);
 					break;
 				}
@@ -124,10 +124,10 @@ namespace Gendarme.Rules.Performance {
 		private static string CheckClone (MethodReference call, Instruction ins, MethodDefinition method)
 		{
 			if (call.HasParameters)
-				return null;
+				return String.Empty;
 
 			if (!CheckTypeReference (ins.Previous.GetOperandType (method)))
-				return null;
+				return  String.Empty;
 
 			return String.Format (MessageString, call.Name, String.Empty);
 		}
@@ -135,13 +135,13 @@ namespace Gendarme.Rules.Performance {
 		private static string CheckSubstring (MethodReference call, Instruction ins)
 		{
 			if (!CheckTypeReference (call.DeclaringType))
-				return null;
+				return String.Empty;
 
 			// ensure it's System.String::Substring(System.Int32) and that it's given 0 as a parameter
 			if (call.HasParameters && (call.Parameters.Count != 1))
-				return null;
+				return String.Empty;
 			if (!ins.Previous.IsOperandZero ())
-				return null;
+				return String.Empty;
 
 			return String.Format (MessageString, call.Name, "0");
 		}

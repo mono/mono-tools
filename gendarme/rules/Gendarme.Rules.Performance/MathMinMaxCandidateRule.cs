@@ -135,7 +135,7 @@ namespace Gendarme.Rules.Performance {
 					return field.Name;
 				break;
 			}
-			return null;
+			return String.Empty;
 		}
 
 		private static bool IsOk (Instruction ins)
@@ -185,7 +185,7 @@ namespace Gendarme.Rules.Performance {
 					return field.Name;
 				break;
 			}
-			return null;
+			return String.Empty;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -206,11 +206,11 @@ namespace Gendarme.Rules.Performance {
 				// find the two values on stack
 				Instruction current = ins.Previous;
 				string op1 = GetPrevious (method, ref current);
-				if (op1 == null)
+				if (op1.Length == 0)
 					continue;
 				current = current.Previous;
 				string op2 = GetPrevious (method, ref current);
-				if (op2 == null)
+				if (op2.Length == 0)
 					continue;
 
 				// check value used immediately on both sides on the branch

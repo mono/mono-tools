@@ -102,7 +102,8 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			int count = method.Body.Variables.Count;
+			var variables = method.Body.Variables;
+			int count = variables.Count;
 			if (count == 0)
 				return RuleResult.Success;
 
@@ -125,7 +126,7 @@ namespace Gendarme.Rules.Performance {
 					// using them (e.g. assign only a constant). In this case we need
 					// to determine if the variable is "genuine" or a compiler
 					// (*) seen in a while (true) loop over a switch
-					VariableDefinition variable = method.Body.Variables [i];
+					VariableDefinition variable = variables [i];
 					string var_name = variable.Name;
 					if (var_name.StartsWith ("V_") || var_name.Contains ("$"))
 						continue;

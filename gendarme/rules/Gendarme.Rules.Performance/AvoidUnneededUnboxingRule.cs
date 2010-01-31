@@ -136,7 +136,7 @@ namespace Gendarme.Rules.Performance {
 				name = (ins.Operand as VariableDefinition).Name;
 				break;
 			default:
-				return null;
+				return String.Empty;
 			}
 			return String.Format ("{0} '{1}' unboxed to type '{2}' {{0}} times.", kind, name, type);
 		}
@@ -170,7 +170,7 @@ namespace Gendarme.Rules.Performance {
 				case Code.Unbox:
 				case Code.Unbox_Any:
 					string previous = Previous (method, ins);
-					if (previous == null)
+					if (previous.Length == 0)
 						continue;
 
 					int num;
