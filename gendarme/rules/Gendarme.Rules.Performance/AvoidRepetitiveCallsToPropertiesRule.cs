@@ -28,6 +28,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -79,12 +81,15 @@ namespace Gendarme.Rules.Performance {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidRepetitiveCallsToPropertiesRule : Rule, IMethodRule {
 
-		private int inline_limit = 20;
+		private const int Default = 20;
+		private int inline_limit = Default;
 
 		/// <summary>
 		/// Methods with a code size below InlineLimit (20 by default)
 		/// are considered to be inline-able by the JIT.
 		/// </summary>
+		[DefaultValue (Default)]
+		[Description ("Maximum IL size of a property getter to be considered inline-able.")]
 		public int InlineLimit {
 			get { return inline_limit; }
 			set { inline_limit = value; }
@@ -104,11 +109,20 @@ namespace Gendarme.Rules.Performance {
 			if (callee.IsStatic)
 				return callee.ToString ();
 
+			IMetadataTokenProvider chain = callee;
 			Instruction instance = ins.TraceBack (caller);
-			if (instance == null)
-				return callee.ToString ();
 
-			return instance.GetOperand (caller) + " " + callee.ToString ();
+			StringBuilder sb = new StringBuilder ();
+			while (instance != null) {
+				sb.Append (chain.ToString () ?? "null").Append ('.');
+				chain = (instance.Operand as IMetadataTokenProvider);
+				if (chain == null) {
+					sb.Append (instance.GetOperand (caller));
+					break;
+				}
+				instance = instance.TraceBack (caller);
+			}
+			return sb.ToString ();
 		}
 
 		//		virtual		non-virtual
@@ -169,6 +183,11 @@ namespace Gendarme.Rules.Performance {
 				}
 			}
 
+			return ReportResults (method);
+		}
+
+		private RuleResult ReportResults (MethodDefinition method)
+		{
 			foreach (KeyValuePair<string, KeyValuePair<MethodDefinition, int>> kvp in calls) {
 				// look which getter we're calling more than once
 				int count = kvp.Value.Value;

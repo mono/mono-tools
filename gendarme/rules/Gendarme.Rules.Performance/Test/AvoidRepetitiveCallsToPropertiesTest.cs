@@ -180,6 +180,18 @@ namespace Test.Rules.Performance {
 			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("DifferentIndex");
 			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("CalculatedIndex");
 		}
+
+		// test case distilled from ParameterNamesShouldMatchOverriddenMethodRule
+		bool SameReturnType (MethodReference a, MethodReference b)
+		{
+			return (a.ReturnType.ReturnType.FullName == b.ReturnType.ReturnType.FullName);
+		}
+
+		[Test]
+		public void Chain ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("SameReturnType");
+		}
 	}
 }
 

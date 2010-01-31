@@ -1,5 +1,10 @@
 2010-01-17  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidRepetitiveCallsToPropertiesTest.cs: Add test case with a
+	long message chain.
+
+2010-01-17  Sebastien Pouliot  <sebastien@ximian.com>
+
 	* AvoidConcatenatingCharsTest.cs: New. Unit tests for
 	AvoidConcatenatingCharsRule
 
