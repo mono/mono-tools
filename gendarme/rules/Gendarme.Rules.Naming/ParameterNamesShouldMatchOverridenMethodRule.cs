@@ -90,24 +90,30 @@ namespace Gendarme.Rules.Naming {
 
 		private static bool SignatureMatches (MethodReference method, MethodReference baseMethod, bool explicitInterfaceCheck)
 		{
-			if (method.Name != baseMethod.Name) {
+			string name = method.Name;
+			string base_name = baseMethod.Name;
+
+			if (name != base_name) {
 				if (!explicitInterfaceCheck)
 					return false;
-				if (method.Name != baseMethod.DeclaringType.FullName + "." + baseMethod.Name)
+				if (name != baseMethod.DeclaringType.FullName + "." + base_name)
 					return false;
 			}
 			if (method.ReturnType.ReturnType.FullName != baseMethod.ReturnType.ReturnType.FullName)
 				return false;
-			if (method.Parameters.Count != baseMethod.Parameters.Count)
+			if (method.HasParameters != baseMethod.HasParameters)
 				return false;
-			bool paramtersMatch = true;
-			for (int i = 0; i < method.Parameters.Count; i++) {
-				if (method.Parameters [i].ParameterType.ToString () != baseMethod.Parameters [i].ParameterType.ToString ()) {
-					paramtersMatch = false;
-					break;
-				}
+
+			ParameterDefinitionCollection pdc = method.Parameters;
+			ParameterDefinitionCollection base_pdc = baseMethod.Parameters;
+			if (pdc.Count != base_pdc.Count)
+				return false;
+
+			for (int i = 0; i < pdc.Count; i++) {
+				if (pdc [i].ParameterType != base_pdc [i].ParameterType)
+					return false;
 			}
-			return paramtersMatch;
+			return true;
 		}
 
 		private static MethodDefinition GetBaseMethod (MethodDefinition method)
@@ -157,15 +163,16 @@ namespace Gendarme.Rules.Naming {
 			if (baseMethod == null)
 				return RuleResult.Success;
 
+			ParameterDefinitionCollection base_pdc = baseMethod.Parameters;
 			//do not trigger false positives on Boo macros
-			if (IsBooAssemblyUsingMacro && IsBooMacroParameter (baseMethod.Parameters [0]))
+			if (IsBooAssemblyUsingMacro && IsBooMacroParameter (base_pdc [0]))
 				return RuleResult.Success;
 
-			for (int i = 0; i < method.Parameters.Count; i++) {
-				if (method.Parameters [i].Name != baseMethod.Parameters [i].Name) {
-					string s = string.Format (CultureInfo.InstalledUICulture,
-						"The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
-						i + 1, method.Parameters [i].Name, baseMethod.Parameters [i].Name);
+			ParameterDefinitionCollection pdc = method.Parameters;
+			for (int i = 0; i < pdc.Count; i++) {
+				if (pdc [i].Name != base_pdc [i].Name) {
+					string s = string.Format ("The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
+						i + 1, pdc [i].Name, base_pdc [i].Name);
 					Runner.Report (method, Severity.Medium, Confidence.High, s);
 				}
 			}

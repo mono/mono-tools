@@ -121,9 +121,10 @@ namespace Gendarme.Rules.Naming {
 			if (p0.IsOut || p0.IsRef ())
 				return RuleResult.DoesNotApply;
 
-			if (name.Length == 1 || method.Name.Length <= name.Length)
+			string method_name = method.Name;
+			if (name.Length == 1 || method_name.Length <= name.Length)
 				return RuleResult.DoesNotApply;
-			if ((method.Name.Length - name.Length) < 4 && IsVaguePrefix (method.Name)) //suggestion would be too vague anyway (Get/Set/Is)
+			if ((method_name.Length - name.Length) < 4 && IsVaguePrefix (method_name)) //suggestion would be too vague anyway (Get/Set/Is)
 				return RuleResult.DoesNotApply;
 			if (!char.IsUpper (name [0])) //non-compliant naming, cannot go further (PascalWords needed)
 				return RuleResult.DoesNotApply;
@@ -133,17 +134,17 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.Success;
 
 			//if starting with name it is most likely on purpose
-			if (method.Name.StartsWith (name, StringComparison.Ordinal))
+			if (method_name.StartsWith (name, StringComparison.Ordinal))
 				return RuleResult.Success;
 
-			int pos = method.Name.LastIndexOf (name);
+			int pos = method_name.LastIndexOf (name);
 			if (-1 == pos)
 				return RuleResult.Success;
 
 			Confidence confidence = Confidence.Normal;
-			if (pos >= method.Name.Length - name.Length) //suffix, most common and most verbose case
+			if (pos >= method_name.Length - name.Length) //suffix, most common and most verbose case
 				confidence = Confidence.High;
-			else if (!char.IsUpper (method.Name [pos + name.Length])) //not the end of a 'PascalWord'
+			else if (!char.IsUpper (method_name [pos + name.Length])) //not the end of a 'PascalWord'
 				return RuleResult.Success;
 
 			//if IgnoreAlienNamespaces is True, then check if parameter type is from one of the analyzed namespaces
@@ -157,7 +158,8 @@ namespace Gendarme.Rules.Naming {
 			string msg;
 			if (method.IsStatic) { //we already have a rule that checks if the method should be static
 				string memberKind = GetSuggestionMemberKind (method);
-				msg = String.Format ("Consider renaming method to '{2}', or extracting method to type '{0}' as {1} '{2}', or making an extension method of that type.", method.Parameters [0].ParameterType, memberKind, suggestion);
+				msg = String.Format ("Consider renaming method to '{2}', or extracting method to type '{0}' as {1} '{2}', or making an extension method of that type.", 
+					p0.ParameterType, memberKind, suggestion);
 			} else {
 				msg = String.Format ("Consider renaming method to '{0}'.", suggestion);
 			}
@@ -168,7 +170,8 @@ namespace Gendarme.Rules.Naming {
 
 		private static string GetSuggestionMethodName (MethodReference method, string name, int posFound)
 		{
-			string suggestion = string.Concat (method.Name.Substring (0, posFound), method.Name.Substring (posFound + name.Length));
+			string method_name = method.Name;
+			string suggestion = string.Concat (method_name.Substring (0, posFound), method_name.Substring (posFound + name.Length));
 			if (suggestion.EndsWith ("In", StringComparison.Ordinal))
 				return suggestion.Substring (0, suggestion.Length - 2);
 			if (suggestion.EndsWith ("For", StringComparison.Ordinal))

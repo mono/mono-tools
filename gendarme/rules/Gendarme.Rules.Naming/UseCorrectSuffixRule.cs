@@ -136,7 +136,7 @@ namespace Gendarme.Rules.Naming {
 		static string InheritsOrImplements (TypeReference type, string subtype)
 		{
 			if (type.Inherits (subtype) || type.Implements (subtype))
-				return null;
+				return String.Empty;
 			return String.Format ("'{0}' should only be used for types that inherits or implements {1}.", type.Name, subtype);
 		}
 
@@ -145,11 +145,11 @@ namespace Gendarme.Rules.Naming {
 			if (type.Implements ("System.Collections.ICollection") ||
 				type.Implements ("System.Collections.IEnumerable") ||
 				type.Implements ("System.Collections.Generic.ICollection`1"))
-				return null;
+				return String.Empty;
 
 			if (type.Inherits ("System.Collections.Queue") || type.Inherits ("System.Collections.Stack") || 
 				type.Inherits ("System.Data.DataSet") || type.Inherits ("System.Data.DataTable"))
-				return null;
+				return String.Empty;
 
 			return "'Collection' should only be used for implementing ICollection or IEnumerable or inheriting from Queue, Stack, DataSet and DataTable.";
 		}
@@ -157,14 +157,14 @@ namespace Gendarme.Rules.Naming {
 		static string CheckDictionary (TypeReference type)
 		{
 			if (type.Implements ("System.Collections.IDictionary") || type.Implements ("System.Collections.Generic.IDictionary`2"))
-				return null;
+				return String.Empty;
 			return "'Dictionary' should only be used for types implementing IDictionary and IDictionary<TKey,TValue>.";
 		}
 
 		static string CheckEventHandler (TypeReference type)
 		{
 			if (type.IsDelegate ())
-				return null;
+				return String.Empty;
 			return "'EventHandler' should only be used for event handler delegates.";
 		}
 

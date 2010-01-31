@@ -98,18 +98,21 @@ namespace Gendarme.Rules.Naming {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsGeneratedCode () || string.IsNullOrEmpty (type.Namespace))
+			string ns = type.Namespace;
+			if (type.IsGeneratedCode () || string.IsNullOrEmpty (ns))
 				return RuleResult.DoesNotApply;
 
 			int ifaceOffset = type.IsInterface ? 1 : 0;
-			int lastDot = type.Namespace.LastIndexOf ('.');
+			int lastDot = ns.LastIndexOf ('.');
+			string name = type.Name;
 
 			//type name is smaller or equal to namespace it cannot be a defect
-			if (type.Name.Length - ifaceOffset <= (type.Namespace.Length - lastDot))
+			if (name.Length - ifaceOffset <= (ns.Length - lastDot))
 				return RuleResult.Success;
 
-			string name = type.IsInterface ? type.Name.Substring (1) : type.Name;
-			string lastComponent = type.Namespace.Substring (lastDot + 1);
+			string lastComponent = ns.Substring (lastDot + 1);
+			if (type.IsInterface)
+				name = name.Substring (1);
 			if (!name.StartsWith (lastComponent, StringComparison.Ordinal))
 				return RuleResult.Success;
 
@@ -123,11 +126,12 @@ namespace Gendarme.Rules.Naming {
 			//if base type name is or ends with suggestion, likely not clearer if we rename it.
 			//would bring ambiguity or make suggestion looks like base of basetype
 			if (null != type.BaseType) {
-				if (type.BaseType.Name.EndsWith (suggestion, StringComparison.Ordinal))
+				string base_name = type.BaseType.Name;
+				if (base_name.EndsWith (suggestion, StringComparison.Ordinal))
 					return RuleResult.Success;
 
 				//equally, if base type starts with the prefix, it is likely a wanted pattern
-				if (DoesNameStartWithPascalWord (type.BaseType.Name, lastComponent))
+				if (DoesNameStartWithPascalWord (base_name, lastComponent))
 					return RuleResult.Success;
 			}
 
@@ -136,7 +140,6 @@ namespace Gendarme.Rules.Naming {
 
 			//we have a really interesting candidate now, let's check that removing prefix
 			//would not cause undesirable ambiguity with a type from a parent namespace
-			string ns = type.Namespace;
 			while (0 != ns.Length) {
 				foreach (TypeDefinition typ in NamespaceEngine.TypesInside (ns)) {
 					if (null == typ)

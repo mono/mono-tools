@@ -69,13 +69,14 @@ namespace Gendarme.Rules.Naming {
 			if (type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
-			// quick out if there are no fields
+			// quick out if there are no events
 			if (!type.HasEvents)
 				return RuleResult.Success;
 
 			foreach (EventDefinition evnt in type.Events) {
-				if (evnt.Name.StartsWith ("After", StringComparison.Ordinal) || 
-					evnt.Name.StartsWith ("Before", StringComparison.Ordinal)) {
+				string name = evnt.Name;
+				if (name.StartsWith ("After", StringComparison.Ordinal) || 
+					name.StartsWith ("Before", StringComparison.Ordinal)) {
 					Runner.Report (evnt, Severity.Medium, Confidence.Total);
 				}
 			}

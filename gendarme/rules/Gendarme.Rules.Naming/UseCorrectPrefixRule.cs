@@ -107,16 +107,17 @@ namespace Gendarme.Rules.Naming {
 			if (type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
+			string name = type.Name;
 			if (type.IsInterface) {
 				// interfaces should look like 'ISomething'
-				if (!IsCorrectInterfaceName (type.Name)) { 
-					string s = String.Format ("The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", type.Name);
+				if (!IsCorrectInterfaceName (name)) { 
+					string s = String.Format ("The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", name);
 					Runner.Report (type, Severity.Critical, Confidence.High, s);
 				}
 			} else {
 				// class should _not_ look like 'CSomething"
-				if (!IsCorrectTypeName (type.Name)) { 
-					string s = String.Format ("The '{0}' type name starts with 'C' prefix but, according to existing naming conventions, type names should not have any specific prefix.", type.Name);
+				if (!IsCorrectTypeName (name)) { 
+					string s = String.Format ("The '{0}' type name starts with 'C' prefix but, according to existing naming conventions, type names should not have any specific prefix.", name);
 					Runner.Report (type, Severity.Medium, Confidence.High, s);
 				}
 			}
@@ -126,8 +127,9 @@ namespace Gendarme.Rules.Naming {
 				// but if they are longer (than one char) they should start with a 'T'
 				// e.g. EventHandler<TEventArgs>
 				foreach (GenericParameter parameter in type.GenericParameters) {
-					if (IsCorrectGenericParameterName (parameter.Name)) {
-						string s = String.Format ("The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", parameter.Name);
+					string param_name = parameter.Name;
+					if (IsCorrectGenericParameterName (param_name)) {
+						string s = String.Format ("The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", param_name);
 						Runner.Report (type, Severity.High, Confidence.High, s);
 					}
 				}

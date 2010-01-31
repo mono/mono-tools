@@ -186,10 +186,12 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			// types should all be PascalCased
-			if (!IsPascalCase (type.Name))
+			string name = type.Name;
+			if (!IsPascalCase (name)) {
 				ReportCasingError (type, string.Format (
-					"Type names should all be pascal-cased. Rename '{0}' type to '{1}'.", type.Name, PascalCase (type.Name)));
-
+					"Type names should all be pascal-cased. Rename '{0}' type to '{1}'.", 
+					name, PascalCase (name)));
+			}
 			return Runner.CurrentRuleResult;
 		}
 
@@ -210,7 +212,7 @@ namespace Gendarme.Rules.Naming {
 			MethodSemanticsAttributes attrs = method.SemanticsAttributes;
 			if ((attrs & mask) != 0) {
 				// it's something special
-				int underscore = method.Name.IndexOf ('_');
+				int underscore = name.IndexOf ('_');
 				if (underscore != -1)
 					name = name.Substring (underscore + 1);
 			} else if (method.IsSpecialName) {

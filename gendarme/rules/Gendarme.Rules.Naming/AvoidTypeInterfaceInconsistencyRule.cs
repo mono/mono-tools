@@ -88,11 +88,12 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			// badly named interface, we let another rule report this
-			if (type.Name [0] != 'I')
+			string name = type.Name;
+			if (name [0] != 'I')
 				return RuleResult.DoesNotApply;
 
-			string name = String.Concat (type.Namespace, ".", type.Name.Substring (1));
-			TypeDefinition candidate = type.Module.Types [name];
+			string candidate_name = String.Concat (type.Namespace, ".", name.Substring (1));
+			TypeDefinition candidate = type.Module.Types [candidate_name];
 			if (candidate != null) {
 				// does Foo implement IFoo ?
 				if (!candidate.Implements (type.FullName)) {
