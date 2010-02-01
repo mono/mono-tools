@@ -1,3 +1,9 @@
+2010-01-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add new rule and tests to the build
+	* RemoveDependenceOnObsoleteCodeRule.cs: New. Rule to warn you if
+	your code depends on code decorated with the [Obsolete] attribute
+
 2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Use shorter, unambiguous

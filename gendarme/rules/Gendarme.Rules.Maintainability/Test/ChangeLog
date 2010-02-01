@@ -1,3 +1,8 @@
+2010-01-31  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RemoveDependenceOnObsoleteCodeTest.cs: New. Unit tests for
+	RemoveDependenceOnObsoleteCodeRule
+
 2010-01-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferStringIsNullOrEmptyTest.cs: Run Argument_InvertedCondition

@@ -7,7 +7,8 @@ rules_sources =  \
 	AvoidLackOfCohesionOfMethodsRule.cs \
 	AvoidUnnecessarySpecializationRule.cs \
 	ConsiderUsingStopwatchRule.cs \
-	PreferStringIsNullOrEmptyRule.cs
+	PreferStringIsNullOrEmptyRule.cs \
+	RemoveDependenceOnObsoleteCodeRule.cs
 
 tests_sources = \
 	AvoidAlwaysNullFieldTest.cs \
@@ -16,4 +17,5 @@ tests_sources = \
 	AvoidLackOfCohesionOfMethodsTest.cs \
 	AvoidUnnecessarySpecializationTest.cs \
 	ConsiderUsingStopwatchTest.cs \
-	PreferStringIsNullOrEmptyTest.cs
+	PreferStringIsNullOrEmptyTest.cs \
+	RemoveDependenceOnObsoleteCodeTest.cs
