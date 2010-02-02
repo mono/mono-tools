@@ -363,7 +363,7 @@ namespace Mono.Tools {
 		
 		private void PrintToDo (string s, StringBuilder sb, int level, ASN1Element asn)
 		{
-			sb.AppendFormat ("{0} (TODO)");
+			sb.AppendFormat ("{0} (TODO)", s);
 			byte[] value = asn.Value;
 			PrintData (sb, level, value, 0, value.Length);
 		}
@@ -635,7 +635,7 @@ namespace Mono.Tools {
 		private void PrintOtherData (StringBuilder sb, int level, ASN1Element asn)
 		{
 			byte tag = asn.Tag;
-			if (tag < 0x40) {
+			if (tag < 0x40 && !asn.IsConstructed) {
 				PrintToDo ("UNKNOWN", sb, level, asn);
 				return;
 			}

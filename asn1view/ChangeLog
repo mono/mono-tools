@@ -1,3 +1,8 @@
+2010-02-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* common/PrettyPrinter.cs: Fix TODO (missing argument) and fix
+	"unknown" test. Patch from Peter Dettman attached on bnc #575722
+
 2005-09-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* common/PrettyPrinter.cs: Printable string are in big-endian unicode.
