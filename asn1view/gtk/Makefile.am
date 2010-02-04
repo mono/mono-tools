@@ -7,13 +7,11 @@
 #
 local_flags = -debug+ -debug:full -nologo $(NUNIT_LIBS)
 
-local_flags += $(MCSFLAGS) $(GTK_SHARP_LIBS)
+local_flags += $(MCSFLAGS) $(GTK_SHARP_LIBS) $(GNOME_SHARP_LIBS)
 
 gasnview_SCRIPTS = gasnview.exe
 gasnviewdir = $(prefix)/lib/mono/1.0
 
-CLEANFILES = gasnview.exe gasnview.exe.mdb gasnview
-EXTRA_DIST = $(gasnview_sources_dist) gui.glade script.in
 
 resources = $(srcdir)/gui.glade \
 	$(srcdir)/../art/export-16.png \
@@ -34,6 +32,10 @@ gasnview_sources_build = $(gasnview_sources) $(gasnview_sources_in:.in=)
 ###
 ress= $(foreach res,$(resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
+if ENABLE_GNOME
+
+CLEANFILES = gasnview.exe gasnview.exe.mdb gasnview
+
 gasnview.exe: $(gasnview_sources_build) $(resources)
 	$(MCS) $(MCSFLAGS) $(local_flags) $(ress) -out:$@ $(gasnview_sources_build)
 
@@ -50,3 +52,9 @@ REWRITE = sed \
 gasnview: $(srcdir)/script.in Makefile
 	$(REWRITE) $(srcdir)/script.in > $@.tmp
 	mv $@.tmp $@
+else
+all:
+endif
+
+EXTRA_DIST = $(gasnview_sources_dist) gui.glade script.in
+

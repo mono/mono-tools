@@ -1,3 +1,12 @@
+2010-02-03  Michael Hutchinson  <mhutchinson@novell.com>
+
+	* configure.in:
+	* asn1view/gtk/Makefile.am
+	* docbrowser/BrowserWidget.cs:
+	* docbrowser/Makefile.am: Make Gnome# optional.
+
+	* autogen.sh: Pass ACLOCAL_FlAGS to aclocal.
+
 2009-11-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* configure.in: Now 2.7

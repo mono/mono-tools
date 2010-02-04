@@ -59,14 +59,14 @@ admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:System.Web.Services
+browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services
 # we insert gtkhtml libs if we have them for printing 
 geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
-gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
-monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.WebBrowser.dll
+monowebbrowserrender_assemblies = $(GTK_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONOWEBBROWSER_LIBS) $(MONODOC_LIBS) -r:browser.exe -r:Mono.WebBrowser.dll
 
 EXTRA_DIST = \
 	$(browser_sources) 		\
@@ -89,7 +89,7 @@ admin.exe: $(admin_sources) $(srcdir)/admin.glade
 endif
 
 browser.exe: $(browser_sources) $(browser_built_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
-	$(GMCS) -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) 
+	$(GMCS) -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) $(CSHARP_FLAGS)
 
 GeckoHtmlRender.dll : $(geckorender_sources) browser.exe
 	$(GMCS) -debug -target:library -out:$@ $(geckorender_sources) $(geckorender_assemblies)  $(GECKO_PRINTING_DEF) $(CSHARP_FLAGS)

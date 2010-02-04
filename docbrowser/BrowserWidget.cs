@@ -27,7 +27,9 @@ using System;
 using Mono.WebBrowser;
 using Gtk;
 using Gdk;
+#if GNOME
 using Gnome;
+#endif
 
 namespace Monodoc
 {

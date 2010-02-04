@@ -43,20 +43,28 @@ AC_SUBST(MONODOC_LIBS)
 AC_PATH_PROG(MDOC, mdoc, no)
 AC_SUBST(MDOC)
 
-PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0 gnome-sharp-2.0 gconf-sharp-2.0)
-#PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp glade-sharp gconf-sharp)
+PKG_CHECK_MODULES(GTK_SHARP, gtk-sharp-2.0 glade-sharp-2.0)
 AC_SUBST(GTK_SHARP_LIBS)
+
+CSHARP_FLAGS=""
+
+PKG_CHECK_MODULES(GNOME_SHARP, gnome-sharp-2.0 gconf-sharp-2.0, enable_gnome=yes, enable_gnome=no)
+if test "x$enable_gnome" = "xyes"; then
+	CSHARP_FLAGS="-d:GNOME"
+fi
+AC_SUBST(GNOME_SHARP_LIBS)
+AM_CONDITIONAL(ENABLE_GNOME, test "x$enable_gnome" = "xyes")
 
 PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-3.14, enable_gtkhtml=yes, enable_gtkhtml=no)
 if test "x$enable_gtkhtml" = "xyes"; then
-CSHARP_FLAGS="-d:GTKHTML_SHARP_3_14"
+	CSHARP_FLAGS="-d:GTKHTML_SHARP_3_14 $CSHARP_FLAGS"
 else
-PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-2.0, enable_gtkhtml=yes, enable_gtkhtml=no)
-CSHARP_FLAGS=
+	PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-2.0, enable_gtkhtml=yes, enable_gtkhtml=no)
 fi
 AC_SUBST(GTKHTML_SHARP_LIBS)
-AC_SUBST(CSHARP_FLAGS)
 AM_CONDITIONAL(ENABLE_GTKHTML, test "x$enable_gtkhtml" = "xyes")
+
+AC_SUBST(CSHARP_FLAGS)
 
 PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp-2.0, enable_gecko=yes, enable_gecko=no)
 AC_SUBST(GECKO_SHARP_LIBS)
@@ -265,6 +273,7 @@ echo "   * Using Gecko = $enable_gecko"
 echo "   * Using GtkHtml = $enable_gtkhtml"
 echo "   * Using Mono.WebBrowser = $enable_monowebbrowser"
 echo "   * Using WebKit = $enable_webkit"
+echo "   * Using Gnome = $enable_gnome"
 echo ""
 echo "      NOTE: if any of the above say 'no' you may install the"
 echo "            corresponding development packages for them, rerun"
