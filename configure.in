@@ -6,6 +6,9 @@ AM_MAINTAINER_MODE
 
 AC_PROG_INSTALL
 
+#capture aclocal flags for autoreconf
+AC_SUBST(ACLOCAL_FLAGS)
+
 dnl C# compiler
 AC_PATH_PROG(MCS, mcs, no)
 AC_PATH_PROG(GMCS, gmcs, no)

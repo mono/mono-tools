@@ -1,5 +1,11 @@
 2010-02-03  Michael Hutchinson  <mhutchinson@novell.com>
 
+        * Makefile.am:
+        * configure.in: Capture ACLOCAL_FLAGS for autoreconf
+          so building is less painful on Mac.
+
+2010-02-03  Michael Hutchinson  <mhutchinson@novell.com>
+
 	* configure.in:
 	* asn1view/gtk/Makefile.am
 	* docbrowser/BrowserWidget.cs:
