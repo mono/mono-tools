@@ -9,10 +9,6 @@ local_flags = -debug+ -debug:full -nologo $(NUNIT_LIBS)
 
 local_flags += $(MCSFLAGS) $(GTK_SHARP_LIBS) $(GNOME_SHARP_LIBS)
 
-gasnview_SCRIPTS = gasnview.exe
-gasnviewdir = $(prefix)/lib/mono/1.0
-
-
 resources = $(srcdir)/gui.glade \
 	$(srcdir)/../art/export-16.png \
 	$(srcdir)/../art/export.png \
@@ -30,9 +26,13 @@ gasnview_sources_dist = $(gasnview_sources) $(gasnview_sources_in)
 gasnview_sources_build = $(gasnview_sources) $(gasnview_sources_in:.in=)
 
 ###
-ress= $(foreach res,$(resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 if ENABLE_GNOME
+
+gasnview_SCRIPTS = gasnview.exe
+gasnviewdir = $(prefix)/lib/mono/1.0
+
+ress= $(foreach res,$(resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 CLEANFILES = gasnview.exe gasnview.exe.mdb gasnview
 
