@@ -158,6 +158,7 @@ namespace GuiCompare {
 				case "System.Diagnostics.DebuggerStepThroughAttribute":
 				case "System.Runtime.CompilerServices.InternalsVisibleToAttribute":
 				case "System.Runtime.TargetedPatchingOptOutAttribute":
+				case "System.Runtime.InteropServices.ComVisibleAttribute":
 				return true;
 			}
 				

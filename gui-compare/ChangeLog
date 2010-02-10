@@ -1,3 +1,7 @@
+2010-02-10  Marek Safar <marek.safar@gmail.com>
+
+	* MasterMetadata.cs: Ignore ComVisible.
+
 2010-01-26 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* CecilMetadata.cs: add 2 missing operators and avoid a nullref.
