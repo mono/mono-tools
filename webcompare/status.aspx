@@ -327,7 +327,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 			// Fields whose parents are an enum are enum definitions, make the link useful
 			if (child.Type == CompType.Field && cn.Type == CompType.Enum)
 			   	tn.NavigateUrl = MakeURL (GetFQN (cn));
-			else 
+			else
 				tn.NavigateUrl = MakeURL (GetFQN (child));
 			tn.Target = "_blank";
 			break;
@@ -335,6 +335,7 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		case CompType.Assembly:
 		case CompType.Attribute:
 			tn = new TreeNode (RenderMemberStatus (child, "{0} {3} {1}{2}"));
+			tn.SelectAction = TreeNodeSelectAction.None;
 			break;
 
 		default:

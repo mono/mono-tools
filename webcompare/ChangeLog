@@ -1,3 +1,11 @@
+2010-02-11 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* db/DataAccess.cs: the infile for the messages table was missing one
+	column. It was also saving an ASCII '0'/'1' instead of an ASCII
+	NUL/SOH.
+	* db/webcompare-db.cs: removed unused methods.
+	* status.aspx: assembly level attributes are not clickable.
+
 2009-07-11 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* Makefile: reference Mono.Cecil.dll to fix the build after latest

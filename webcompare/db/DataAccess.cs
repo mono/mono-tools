@@ -125,7 +125,7 @@ namespace Mono.WebCompareDB {
 
 			StringBuilder sb = new StringBuilder ();
 			foreach (string s in strs) {
-				sb.AppendFormat ("{0}\t{1}\t{2}\t{3}", node_name, state.MasterId, (is_todo) ? 1 : 0, FormatString (s));
+				sb.AppendFormat ("\\N\t{0}\t{1}\t{2}\t{3}", node_name, state.MasterId, (is_todo) ? (char) 1 : (char) 0, FormatString (s));
 				state.MessagesWriter.WriteLine (sb);
 				sb.Length = 0;
 			}
