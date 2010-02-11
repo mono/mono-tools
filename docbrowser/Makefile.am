@@ -61,7 +61,7 @@ admin_sources = \
 
 browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services
 # we insert gtkhtml libs if we have them for printing 
-geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
