@@ -344,7 +344,8 @@ void TreeNodePopulate (object sender, TreeNodeEventArgs e)
 		}
 
 		tn.Value = child.InternalID.ToString ();
-		tn.PopulateOnDemand = child.HasChildren;
+		if (tn.ChildNodes.Count == 0)
+			tn.PopulateOnDemand = child.HasChildren;
 		
 		e.Node.ChildNodes.Add (tn);
 	}
