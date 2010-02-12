@@ -1,3 +1,17 @@
+2010-02-12 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
+	* Makefile:
+	* main.css:
+	* App_Code/StatusPage.cs:
+	* status.aspx: split code and layout. Beautify using the icons
+	from gui-compare.
+
+	* db/init-db.mysql:
+	* db/createdb.sql: replaced the old script with other that can
+	actually be used.
+
+	* images/*: new or updated images.
+
 2010-02-11 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
 	* db/DataAccess.cs: the infile for the messages table was missing one

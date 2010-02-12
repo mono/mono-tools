@@ -11,6 +11,20 @@ body { font-size: small; margin: 0; padding: 0; background:#fff; color:#000; fon
 	clear: both;
 }
 
+.icontext {
+  display: inline-block;
+  background: no-repeat left center;
+  padding-left: 15px;
+  padding-right: 10px;
+}
+
+.icons {
+  width: 16px;
+  height: 1em;
+  display: inline-block;
+  background: no-repeat center center;
+}
+
 #content {
 	margin-left: 1.5em;
 	margin-right: 0.5em;
@@ -48,54 +62,12 @@ a { color:#33f; text-decoration: none; }
 a:hover { color:#00f; text-decoration: none; font-weight: bold; }
 a:active { color:#ccf; text-decoration: none; }
 
-.icons {
-  width: 14px;
-  height: 1em;
-  display: inline-block;
-  background: no-repeat left bottom;
-}
-
-.creport {
-	display: inline-block;
-	cursor: pointer;
-}
-
-.report {
-	display: inline-block;
-}
-
-.suffix {
-	margin-left: 0.5em;
-}
-	  
-.missing {
-	background-image: url(images/sm.gif);
-}
-
-.extra {
-	background-image: url(images/sx.gif);
-}
-
-.ok {
-	background-image: url(images/sc.gif);
-}
-
-.warning {
-	background-image: url(images/mn.png);
-}
-
-.niex {
-	background-image: url(images/se.gif);
-}
-
-.todo {
-	background-image: url(images/st.gif);
-}
-
 #treeview {
 	float: left;
+	width: 70%;
 }
 
+/* Remove these ? */
 #detaillevel {
 	float: right;
 	margin: 20px 20px 20px 20px;
@@ -107,7 +79,8 @@ a:active { color:#ccf; text-decoration: none; }
 	padding: 1em;
 }
 
-#counts {
+#legend {
+	width: 20%;
 	float: right;
 	margin-top: 20px;
 	border-width: 1px 1px 2px 2px;
@@ -115,10 +88,30 @@ a:active { color:#ccf; text-decoration: none; }
 	border-style: solid;
 }
 
-.item {
-	background-color: #ddd;
-}
+.item { background-color: #ddd; }
 
-.alternatingitem {
-	background-color: #FFF;
-}
+.alternatingitem { background-color: #FFF; }
+/* **** */
+
+.stnone { background-image: url(images/sc.gif); }
+.stmiss { background-image: url(images/sm.gif); }
+.stextra { background-image: url(images/sx.gif); }
+.stniex { background-image: url(images/mn.png); }
+.sterror { background-image: url(images/se.gif); }
+.sttodo { background-image: url(images/st.gif); }
+
+.tyy {background-image: url(images/y.gif);}
+.tyn {background-image: url(images/n.gif);}
+.tyr {background-image: url(images/r.gif);}
+.tyi {background-image: url(images/i.gif);}
+.tyc {background-image: url(images/c.gif);}
+.tys {background-image: url(images/s.gif);}
+.tyd {background-image: url(images/d.gif);}
+.tyen {background-image: url(images/en.gif);}
+.tym {background-image: url(images/m.gif);}
+.typ {background-image: url(images/p.gif);}
+.tyf {background-image: url(images/f.gif);}
+.tye {background-image: url(images/e.gif);}
+
+.cname { margin-left: 5px; margin-right: 15px; }
+

@@ -4,7 +4,7 @@ base = ../gui-compare
 # Do NOT copy your local webcompare-db.exe.config to the server
 DB_SYNCFILES= \
 	db/Makefile \
-	db/init-db.mysql \
+	db/createdb.sql \
 	db/webcompare-db.cs \
 	db/DataAccess.cs		\
 	db/MySqlDataAccess.cs		\
@@ -16,7 +16,6 @@ DB_SYNCFILES= \
 
 BASE_FILES= \
 	Web.config-EDITME \
-	README \
 	Makefile \
 	ChangeLog \
 	main.css \
@@ -31,14 +30,8 @@ all: bin/Mono.Api.CompareMinimal.dll
 	make -C db
 
 bin/Mono.Api.CompareMinimal.dll: $(SOURCES) Makefile
-	mkdir -p bin
+	@mkdir -p bin
 	gmcs -debug -target:library -r:`pkg-config --variable=Libraries cecil` -out:bin/Mono.Api.CompareMinimal.dll $(SOURCES)
-
-get: masterinfos-3.5.tar.gz
-	tar xzvf masterinfos-3.5.tar.gz 
-
-masterinfos-3.5.tar.gz:
-	wget http://mono.ximian.com/masterinfos/2.4/masterinfos-3.5.tar.gz
 
 run: all
 	xsp2
