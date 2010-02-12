@@ -1,3 +1,29 @@
+2010-02-12  Marek Habersack  <mhabersack@novell.com>
+
+	* Comparison.cs: added ExtraInfo field and a new constructor which
+	takes extra info as one of the parameters.
+
+	* Masterinfo.cs: exposed property collections in the
+	XMLAttributeProperties and XMLAttributes classes.
+
+	* gui-compare.in: added $MONO_OPTIONS to the mono command line
+
+	* Makefile.am (guicompare_DATA): install .mdb as well
+
+	* InfoManager.cs: CompareDefinition.Title now includes the
+	framework profile name.
+	Profiles with no entries aren't added to the Compare menu.
+
+	* Metadata.cs: added ExtraInfo property.
+
+	* CecilMetadata.cs, MasterMetadata.cs: added support for reading
+	type forwarders (the TypeForwardedTo attribute).
+	Added support for gathering and displaying information about
+	custom attribute properties.
+
+	* MainWindow.cs: summary label replaced with a TextView. 
+	Added Pango markup to TextView tags conversion method.
+
 2010-02-10  Marek Safar <marek.safar@gmail.com>
 
 	* MasterMetadata.cs: Ignore ComVisible.

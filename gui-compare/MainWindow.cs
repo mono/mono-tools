@@ -30,6 +30,7 @@ using Gtk;
 using GLib;
 using System.Threading;
 using System.Text;
+using System.Text.RegularExpressions;
 using GuiCompare;
 
 public partial class MainWindow: Gtk.Window
@@ -37,7 +38,8 @@ public partial class MainWindow: Gtk.Window
 	InfoManager info_manager;
 	Func<CompAssembly> reference_loader, target_loader;
 	CompareContext context;
-	
+
+	static readonly Regex markupRegex = new Regex (@"<(?:[^""']+?|.+?(?:""|').*?(?:""|')?.*?)*?>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 	static Gdk.Pixbuf classPixbuf, delegatePixbuf, enumPixbuf;
 	static Gdk.Pixbuf eventPixbuf, fieldPixbuf, interfacePixbuf;
 	static Gdk.Pixbuf methodPixbuf, namespacePixbuf, propertyPixbuf;
@@ -99,9 +101,9 @@ public partial class MainWindow: Gtk.Window
 		Gdk.Color.Parse ("#ff0000", ref red);
 		Gdk.Color.Parse ("#00ff00", ref green);
 		Gdk.Color.Parse ("#000000", ref black);		
-	}	
-	
-	public MainWindow (): base (Gtk.WindowType.Toplevel)
+	}
+
+	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
 		Build ();
 		notebook1.Page = 1;
@@ -185,38 +187,61 @@ public partial class MainWindow: Gtk.Window
 		countsColumn.AddAttribute (todoTextCell, "text", (int)TreeCol.TodoText);
 		countsColumn.AddAttribute (niexPixbufCell, "pixbuf", (int)TreeCol.NiexIcon);
 		countsColumn.AddAttribute (niexTextCell, "text", (int)TreeCol.NiexText);
-		
+
+		CreateTags (AdditionalInfoText.Buffer);
+
 		tree.Selection.Changed += delegate (object sender, EventArgs e) {
 			Gtk.TreeIter iter;
 			if (tree.Selection.GetSelected (out iter)) {
 				List<string> msgs = null;
 				ComparisonNode n = tree.Model.GetValue (iter, (int)TreeCol.Node) as ComparisonNode;
-				StringBuilder sb = new StringBuilder();
+				TextBuffer buffer = AdditionalInfoText.Buffer;
+				bool showInfo = false;
+				TextIter textIter = TextIter.Zero;
+
+				buffer.Clear ();
+
+				if (!String.IsNullOrEmpty (n.ExtraInfo)) {
+					showInfo = true;
+					textIter = buffer.StartIter;
+
+					buffer.InsertWithTagsByName (ref textIter, "Additional information:\n", "bold");
+					InsertWithMarkup (buffer, ref textIter, "\t" + n.ExtraInfo + "\n");
+				}
 
 				if (n != null) msgs = n.Messages;
 				if (msgs != null && msgs.Count > 0) {
-					sb.Append ("<b>Errors:</b>\n");
+					if (!showInfo) {
+						showInfo = true;
+						textIter = buffer.StartIter;
+					}
+
+					buffer.InsertWithTagsByName (ref textIter, "Errors:\n", "red", "bold");
 
 					for (int i = 0; i < msgs.Count; i ++) {
-						sb.AppendFormat ("\t<b>{0}</b>: {1}\n", i + 1, msgs[i]);
+						buffer.InsertWithTagsByName (ref textIter, String.Format ("\t{0}: ", i + 1), "bold");
+						InsertWithMarkup (buffer, ref textIter, msgs [i]);
 					}
 				}
 				
 				if (n != null) msgs = n.Todos;
 				if (msgs != null && msgs.Count > 0) {
-					sb.Append ("<b>TODO:</b>\n");
+					if (!showInfo) {
+						showInfo = true;
+						textIter = buffer.StartIter;
+					}
+
+					buffer.InsertWithTagsByName (ref textIter, "TODO:\n", "green", "bold");
 					for (int i = 0; i < msgs.Count; i ++) {
-						sb.AppendFormat ("\t<b>{0}</b>: {1}\n", i + 1, msgs[i]);
+						buffer.InsertWithTagsByName (ref textIter, String.Format ("\t{0}: ", i + 1), "bold");
+						buffer.Insert (ref textIter, msgs [i]);
 					}
 				}
 				
-				if (sb.Length > 0) {
-					summary.Markup = sb.ToString();
-					summary.Visible = true;
-				}
-				else {
-					summary.Visible = false;
-				}
+				if (showInfo)
+					AdditionalInfoWindow.Visible = true;
+				else
+					AdditionalInfoWindow.Visible = false;
 
 				string msdnUrl = n != null ? n.MSDNUrl : null;
 				if (!String.IsNullOrEmpty (msdnUrl))
@@ -289,7 +314,178 @@ public partial class MainWindow: Gtk.Window
 			progressbar1.Adjustment.Value = value;
 		}
 	}
-	
+
+	void CreateTags (TextBuffer buffer)
+	{
+		var tag = new TextTag ("bold");
+		tag.Weight = Pango.Weight.Bold;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("red");
+		tag.Foreground = "darkred";
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("green");
+		tag.Foreground = "darkgreen";
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("italic");
+		tag.Style = Pango.Style.Italic;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("big");
+		tag.Scale = Pango.Scale.Large;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("small");
+		tag.Scale = Pango.Scale.Small;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("strikethrough");
+		tag.Strikethrough = true;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("sub");
+		tag.Rise = -5000;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("sup");
+		tag.Rise = 5000;
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("monospace");
+		tag.Family = "monospace";
+		buffer.TagTable.Add (tag);
+
+		tag = new TextTag ("underline");
+		tag.Underline = Pango.Underline.Single;
+		buffer.TagTable.Add (tag);
+	}
+
+	void InsertWithMarkup (TextBuffer buffer, ref TextIter iter, string text)
+	{
+		Match match = markupRegex.Match (text);
+		if (!match.Success) {
+			buffer.Insert (ref iter, text);
+			return;
+		}
+
+		int start = 0, len, idx;
+		var tags = new List <string> ();
+		while (match.Success) {
+			len = match.Index - start;
+			if (len > 0)
+				buffer.InsertWithTagsByName (ref iter, text.Substring (start, len), tags.ToArray ());
+
+			switch (match.Value.ToLowerInvariant ()) {
+				case "<i>":
+					if (!tags.Contains ("italic"))
+						tags.Add ("italic");
+					break;
+
+				case "</i>":
+					idx = tags.IndexOf ("italic");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<b>":
+					if (!tags.Contains ("bold"))
+						tags.Add ("bold");
+					break;
+
+				case "</b>":
+					idx = tags.IndexOf ("bold");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<big>":
+					if (!tags.Contains ("big"))
+						tags.Add ("big");
+					break;
+
+				case "</big>":
+					idx = tags.IndexOf ("big");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<s>":
+					if (!tags.Contains ("strikethrough"))
+						tags.Add ("strikethrough");
+					break;
+
+				case "</s>":
+					idx = tags.IndexOf ("strikethrough");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<sub>":
+					if (!tags.Contains ("sub"))
+						tags.Add ("sub");
+					break;
+
+				case "</sub>":
+					idx = tags.IndexOf ("sub");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<sup>":
+					if (!tags.Contains ("sup"))
+						tags.Add ("sup");
+					break;
+
+				case "</sup>":
+					idx = tags.IndexOf ("sup");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<small>":
+					if (!tags.Contains ("small"))
+						tags.Add ("small");
+					break;
+
+				case "</small>":
+					idx = tags.IndexOf ("small");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<tt>":
+					if (!tags.Contains ("monospace"))
+						tags.Add ("monospace");
+					break;
+
+				case "</tt>":
+					idx = tags.IndexOf ("monospace");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+
+				case "<u>":
+					if (!tags.Contains ("underline"))
+						tags.Add ("underline");
+					break;
+
+				case "</u>":
+					idx = tags.IndexOf ("underline");
+					if (idx > -1)
+						tags.RemoveAt (idx);
+					break;
+			}
+
+			start = match.Index + match.Length;
+			match = match.NextMatch ();
+		}
+
+		if (start < text.Length)
+			buffer.InsertWithTagsByName (ref iter, text.Substring (start), tags.ToArray ());
+	}
+
 	public void SetTarget (Func<CompAssembly> target)
 	{
 		target_loader = target;
@@ -315,7 +511,7 @@ public partial class MainWindow: Gtk.Window
 	
 	public void StartCompare (WaitCallback done)
 	{		
-		summary.Visible = false;
+		AdditionalInfoWindow.Visible = false;
 		
 		progressbar1.Visible = true;						
 		progressbar1.Adjustment.Lower = 0;

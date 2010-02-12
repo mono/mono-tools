@@ -532,10 +532,13 @@ namespace GuiCompare {
 
 	public class XMLAttributeProperties: XMLNameGroup
 	{
-		static Hashtable ignored_properties;
+		static Dictionary <string, string> ignored_properties;
+		SortedDictionary <string, string> properties;
+
 		static XMLAttributeProperties ()
 		{
-			ignored_properties = new Hashtable ();
+
+			ignored_properties = new Dictionary <string, string> ();
 			ignored_properties.Add ("System.Reflection.AssemblyKeyFileAttribute", "KeyFile");
 			ignored_properties.Add ("System.Reflection.AssemblyCompanyAttribute", "Company");
 			ignored_properties.Add ("System.Reflection.AssemblyConfigurationAttribute", "Configuration");
@@ -549,15 +552,18 @@ namespace GuiCompare {
 			ignored_properties.Add ("System.Diagnostics.MonitoringDescriptionAttribute", "Description");
 		}
 
-		Hashtable properties = new Hashtable ();
 		string attribute;
+
+		public XMLAttributeProperties ()
+			: this (null)
+		{}
 
 		public XMLAttributeProperties (string attribute)
 		{
 			this.attribute = attribute;
 		}
 
-		public override void LoadData(XmlNode node)
+		public override void LoadData (XmlNode node)
 		{
 			if (node == null)
 				throw new ArgumentNullException ("node");
@@ -565,19 +571,29 @@ namespace GuiCompare {
 			if (node.ChildNodes == null)
 				return;
 
-			string ignored = ignored_properties [attribute] as string;
+			string ignored;
+
+			if (!ignored_properties.TryGetValue (attribute, out ignored))
+				ignored = null;
 
 			foreach (XmlNode n in node.ChildNodes) {
-				string name = n.Attributes ["name"].Value;
-				if (ignored == name)
+				string name = n.Attributes["name"].Value;
+				if (ignored != null && ignored == name)
 					continue;
 
-				if (n.Attributes ["null"] != null) {
-					properties.Add (name, null);
+				if (n.Attributes["null"] != null) {
+					Properties.Add (name, null);
 					continue;
 				}
-				string value = n.Attributes ["value"].Value;
-				properties.Add (name, value);
+				Properties.Add (name, n.Attributes ["value"].Value);
+			}
+		}
+
+		public IDictionary <string, string> Properties {
+			get {
+				if (properties == null)
+					properties = new SortedDictionary <string, string> ();
+				return properties;
 			}
 		}
 
@@ -596,10 +612,9 @@ namespace GuiCompare {
 
 	public class XMLAttributes : XMLNameGroup
 	{
-		Hashtable properties = new Hashtable ();
-
 		bool isTodo;
 		string comment;
+		SortedDictionary <string, XMLAttributeProperties> properties;
 
 		protected override bool CheckIfAdd (string value, XmlNode node)
 		{
@@ -662,7 +677,7 @@ namespace GuiCompare {
 			return key;
 		}
 
-		protected override void LoadExtraData(string name, XmlNode node)
+		protected override void LoadExtraData (string name, XmlNode node)
 		{
 			XmlNode pNode = node.SelectSingleNode ("properties");
 
@@ -676,15 +691,27 @@ namespace GuiCompare {
 			
 			if (MasterUtils.IsImplementationSpecificAttribute (name))
 				return;
-			
+
 			if (pNode != null) {
 				XMLAttributeProperties p = new XMLAttributeProperties (name);
 				p.LoadData (pNode);
 
-				properties[name] = p;
+				IDictionary <string, XMLAttributeProperties> properties = Properties;
+				if (properties.ContainsKey (name))
+					properties [name] = p;
+				else
+					properties.Add (name, p);
 			}
 		}
-		
+
+		public IDictionary <string, XMLAttributeProperties> Properties {
+			get {
+				if (properties == null)
+					properties = new SortedDictionary <string, XMLAttributeProperties> ();
+				return properties;
+			}
+		}
+
 		public override string GroupName {
 			get { return "attributes"; }
 		}

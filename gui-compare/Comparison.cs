@@ -43,13 +43,19 @@ namespace GuiCompare {
 		}
 		
 		public ComparisonNode (CompType type, string displayName, string typeName)
+		: this (type, displayName, typeName, null)
+		{
+		}
+
+		public ComparisonNode (CompType type, string displayName, string typeName, string extraInfo)
 		{
 			Type = type;
 			Name = displayName;
 			TypeName = typeName;
-			Children = new List<ComparisonNode>();
-			Messages = new List<string>();
-			Todos = new List<string>();
+			ExtraInfo = extraInfo;
+			Children = new List<ComparisonNode> ();
+			Messages = new List<string> ();
+			Todos = new List<string> ();
 		}
 
 		public void AddChild (ComparisonNode node)
@@ -169,6 +175,7 @@ namespace GuiCompare {
 
 		public readonly string Name;
 		public readonly string TypeName;
+		public readonly string ExtraInfo;
 		public readonly List<string> Messages;
 		public readonly List<string> Todos;
 		public bool ThrowsNIE;

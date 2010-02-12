@@ -104,7 +104,12 @@ namespace GuiCompare {
 			set { displayName = value; }
 			get { return displayName == null ? name : displayName; }
 		}
-		
+
+		public string ExtraInfo {
+			set { extraInfo = value; }
+			get { return extraInfo; }
+		}
+
 		public CompType Type {
 			set { type = value; }
 			get { return type; }
@@ -112,7 +117,7 @@ namespace GuiCompare {
 
 		public ComparisonNode GetComparisonNode ()
 		{
-			ComparisonNode node = new ComparisonNode (type, DisplayName, MemberName);
+			ComparisonNode node = new ComparisonNode (type, DisplayName, MemberName, ExtraInfo);
 			node.Todos.AddRange (todos);
 			return node;
 		}
@@ -125,6 +130,7 @@ namespace GuiCompare {
 		string displayName;
 		string name;
 		string memberName;
+		string extraInfo;
 		CompType type;
 		public List<string> todos;
 	}

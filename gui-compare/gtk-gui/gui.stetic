@@ -2,13 +2,13 @@
 <stetic-interface>
   <configuration>
     <images-root-path>..</images-root-path>
-    <target-gtk-version>2.14</target-gtk-version>
+    <target-gtk-version>2.10</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="glade-sharp, Version=2.14.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/gui-compare.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="648 577">
+  <widget class="Gtk.Window" id="MainWindow" design-size="648 759">
     <action-group name="Default">
       <action id="File">
         <property name="Type">Action</property>
@@ -96,7 +96,7 @@
         <property name="Active">True</property>
         <signal name="Toggled" handler="OnShowTodoToggled" />
       </action>
-      <action id="RecentComparisons">
+      <action id="RecentComparisonsAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Recent Comparisons</property>
         <property name="ShortLabel" translatable="yes">Recent Comparisons</property>
@@ -130,7 +130,6 @@
             <property name="MemberName" />
             <node name="menubar1" type="Menubar">
               <node type="Menu" action="File">
-                <node type="Menu" action="RecentComparisons" />
                 <node type="Separator" />
                 <node type="Menuitem" action="Refresh" />
                 <node type="Separator" />
@@ -217,19 +216,24 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="summary">
+          <widget class="Gtk.ScrolledWindow" id="AdditionalInfoWindow">
             <property name="MemberName" />
             <property name="Visible">False</property>
-            <property name="Xpad">6</property>
-            <property name="Ypad">6</property>
-            <property name="Xalign">0</property>
-            <property name="UseMarkup">True</property>
+            <property name="ShadowType">In</property>
+            <child>
+              <widget class="Gtk.TextView" id="AdditionalInfoText">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="ShowScrollbars">True</property>
+                <property name="Editable">False</property>
+                <property name="Text" translatable="yes" />
+              </widget>
+            </child>
           </widget>
           <packing>
             <property name="Position">2</property>
-            <property name="AutoSize">True</property>
+            <property name="AutoSize">False</property>
             <property name="Expand">False</property>
-            <property name="Fill">False</property>
           </packing>
         </child>
         <child>
@@ -712,7 +716,6 @@ To initiate a comparison, use the "Compare" menu and use one of the presets base
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
-    <property name="HasSeparator">False</property>
     <child internal-child="VBox">
       <widget class="Gtk.VBox" id="dialog1_VBox">
         <property name="MemberName" />

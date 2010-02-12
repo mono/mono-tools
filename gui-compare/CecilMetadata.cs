@@ -24,7 +24,9 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.IO;
 using System.Text;
 
@@ -353,16 +355,16 @@ namespace GuiCompare {
 
 	public class CecilAssembly : CompAssembly {
 		public CecilAssembly (string path)
-			: base (Path.GetFileName (path))
+			: base(Path.GetFileName (path))
 		{
 			var namespaces = new Dictionary<string, Dictionary<string, TypeDefinition>> ();
 
-			var assembly = AssemblyFactory.GetAssembly(path);
-
+			var assembly = AssemblyFactory.GetAssembly (path);
+			
 			foreach (TypeDefinition t in assembly.MainModule.Types) {
 				if (t.Name == "<Module>")
 					continue;
-
+				
 				if (t.IsNotPublic)
 					continue;
 
@@ -382,14 +384,21 @@ namespace GuiCompare {
 					namespaces.Add (t.Namespace, ns);
 				}
 
-				ns [t.Name] = t;
+				ns[t.Name] = t;
 			}
 
 			namespace_list = new List<CompNamed> ();
 			foreach (string ns_name in namespaces.Keys)
-				namespace_list.Add (new CecilNamespace (ns_name, namespaces [ns_name]));
+				namespace_list.Add (new CecilNamespace (ns_name, namespaces[ns_name]));
 
 			attributes = CecilUtils.GetCustomAttributes (assembly, todos);
+
+			// TypeForwardedToAttributes are created by checking if assembly contains
+			// extern forwarder types and using them to construct fake custom attributes
+			foreach (TypeReference t in assembly.MainModule.ExternTypes) {
+				if (((uint)t.Resolve ().Attributes & 0x200000u) != 0)
+					attributes.Add (new PseudoCecilAttribute (t));
+			}
 		}
 
 		public override List<CompNamed> GetNamespaces()
@@ -1124,6 +1133,44 @@ namespace GuiCompare {
 		public CecilAttribute (CustomAttribute ca)
 			: base (ca.Constructor.DeclaringType.FullName)
 		{
+			var sb = new StringBuilder ("[" + ca.Constructor.DeclaringType.FullName);
+
+			IList cparams = ca.ConstructorParameters;
+			if (cparams != null && cparams.Count > 0) {
+				bool first = true;
+				foreach (object o in cparams) {
+					if (first) {
+						sb.Append (" (");
+						first = false;
+					} else
+						sb.Append (", ");
+
+					sb.Append (FormatValue (o));
+				}
+				sb.Append (")]");
+			}
+
+			ExtraInfo = sb.ToString ();
+		}
+
+		string FormatValue (object o)
+		{
+			if (o == null)
+				return "null";
+
+			if (o is string)
+				return "\"" + o + "\"";
+
+			return o.ToString ();
+		}
+	}
+
+	public class PseudoCecilAttribute : CompAttribute
+	{
+		public PseudoCecilAttribute (TypeReference tref)
+			: base (typeof (TypeForwardedToAttribute).FullName)
+		{
+			ExtraInfo = "[assembly: TypeForwardedToAttribute (typeof (" + tref.ToString () + "))]";
 		}
 	}
 	

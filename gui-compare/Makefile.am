@@ -1,6 +1,6 @@
 guicomparedir=$(prefix)/lib/gui-compare
 bin_SCRIPTS = gui-compare
-guicompare_DATA = gui-compare.exe
+guicompare_DATA = gui-compare.exe gui-compare.exe.mdb
 
 CLEANFILES = gui-compare.exe gui-compare.exe.mdb gui-compare
 

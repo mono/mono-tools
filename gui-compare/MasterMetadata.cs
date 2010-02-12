@@ -169,10 +169,15 @@ namespace GuiCompare {
 		{
 			List<CompNamed> rv = new List<CompNamed>();
 			if (attributes != null) {
+				XMLAttributeProperties properties;
+				
 				foreach (string key in attributes.keys.Keys) {
 					if (IsImplementationSpecificAttribute (key))
 						continue;
-					rv.Add (new MasterAttribute ((string)attributes.keys[key]));
+
+					if (!attributes.Properties.TryGetValue (key, out properties))
+						properties = null;
+					rv.Add (new MasterAttribute ((string)attributes.keys[key], properties));
 				}
 			}
 			return rv;
@@ -745,10 +750,39 @@ namespace GuiCompare {
 		XMLAttributes attributes;
 	}
 			         
-	public class MasterAttribute : CompAttribute {
-		public MasterAttribute (string name)
-			: base (name)
+	public class MasterAttribute : CompAttribute
+	{
+		string FormatStringValue (string value)
 		{
+			if (value == null)
+				return "null";
+
+			return "\"" + value + "\"";
+		}
+
+		public MasterAttribute (string name, XMLAttributeProperties properties) : base(name)
+		{
+			var sb = new StringBuilder ();
+
+			if (properties == null)
+				return;
+
+			IDictionary<string, string> props = properties.Properties;
+			if (props.Count == 0)
+				return;
+
+			if (name == "System.Runtime.CompilerServices.TypeForwardedToAttribute") {
+				string dest;
+				if (props.TryGetValue ("Destination", out dest) && !String.IsNullOrEmpty (dest))
+					sb.AppendFormat ("[assembly: TypeForwardedToAttribute (typeof ({0}))]", dest);
+			} else {
+				sb.Append ("<b>Properties:</b>\n");
+				foreach (var prop in props)
+					sb.AppendFormat ("\t\t<i>{0}</i> == {1}\n", prop.Key, FormatStringValue (prop.Value));
+				sb.Append ('\n');
+			}
+
+			ExtraInfo = sb.ToString ();
 		}
 	}
 	

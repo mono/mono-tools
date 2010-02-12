@@ -500,11 +500,11 @@ namespace GuiCompare
 		/// <param name="assemblyname">
 		/// The name of the assembly to compare, in this case "mscorlib"
 		/// </param>
-		void StartPresetCompare (string assemblyfile, string profile, string assemblyname)
+		void StartPresetCompare (string assemblyfile, string profile, string assemblyname, string groupName)
 		{
 			Ensure (profile, assemblyname, delegate (string masterinfo){
 				CompareDefinition cd = new CompareDefinition (true, masterinfo, false, assemblyfile);
-				cd.Title = assemblyname;
+				cd.Title = assemblyname + " (" + groupName + ")";
 				main.Config.AddRecent (cd);
 				PopulateRecent ();
 				main.Config.Save ();
@@ -540,7 +540,7 @@ namespace GuiCompare
 				
 				if (e == String.Empty){
 					// Avoid inserting separators twice
-					if (child is SeparatorMenuItem)
+					if (child is SeparatorMenuItem || sub.Children.Length == 0)
 						continue;
 					child = new SeparatorMenuItem ();
 				} else {
@@ -578,14 +578,16 @@ namespace GuiCompare
 					string element = e;
 					child = new MenuItem (e);
 					child.Activated += delegate {
-						StartPresetCompare (assemblyfile, collection, element);
+						StartPresetCompare (assemblyfile, collection, element, caption);
 					};
 				}
 				sub.Add (child);
 			}
-			
-			item.ShowAll ();
-			container.Add (item);
+
+			if (sub.Children.Length > 0) {
+				item.ShowAll ();
+				container.Add (item);
+			}
 		}
 		
 		/// <summary>
