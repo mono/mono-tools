@@ -4,7 +4,7 @@
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="GuiCompare" %>
 <html>
-<head id="head1" runat="server">
+<head id="head1" runat="server" EnableViewState="false">
 <title>Mono API Compare</title>
 <link href="main.css" media="screen" type="text/css" rel="stylesheet">
 </head>
@@ -16,12 +16,15 @@
 	<div id="content">
 		<div id="treeview">
 			<br>
-			<asp:Label id="time_label" runat="server"/>
+			<asp:Label id="time_label" runat="server" EnableViewState="false" />
 			<asp:TreeView ID="tree" Runat="server"
 				OnTreeNodePopulate="TreeNodePopulate"
 				EnableClientScript="true"
 				PopulateNodesFromClient="true"
-				ExpandDepth="1">
+				ExpandDepth="1" EnableViewState="false"
+				CollapseImageToolTip="Expand"
+				ExpandImageToolTip="Collapse"
+				>
 			</asp:TreeView>
 		</div>
 		<div id="legend">
@@ -55,3 +58,4 @@
     </form>
 </body>
 </html>
+

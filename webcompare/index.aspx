@@ -76,10 +76,10 @@ void GenerateList (string reference, string profile)
     </div>
     <div id="content">
 <div id="col1">
-<h2>Mono 4.0 vs .NET 4.0beta2</h2>
+<h2>Mono 4.0 vs .NET 4.0 RC</h2>
 
 	<p>This shows the work-in-progress of Mono towards completing
-	the 4.0beta2 APIs.
+	the 4.0 RC APIs.
 
 	<ul class="assemblies">
 		<% GenerateList ("4.0", "4.0"); %>

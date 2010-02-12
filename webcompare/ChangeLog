@@ -1,5 +1,10 @@
 2010-02-12 Gonzalo Paniagua Javier <gonzalo@novell.com>
 
+	* index.aspx: s/beta2/RC
+	* status.aspx: reduce the HTML size in ~half.
+
+2010-02-12 Gonzalo Paniagua Javier <gonzalo@novell.com>
+
 	* Makefile:
 	* main.css:
 	* App_Code/StatusPage.cs:
