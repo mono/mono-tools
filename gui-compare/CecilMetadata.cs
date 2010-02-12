@@ -1134,10 +1134,10 @@ namespace GuiCompare {
 			: base (ca.Constructor.DeclaringType.FullName)
 		{
 			var sb = new StringBuilder ("[" + ca.Constructor.DeclaringType.FullName);
-
+			bool first = true;
+			
 			IList cparams = ca.ConstructorParameters;
 			if (cparams != null && cparams.Count > 0) {
-				bool first = true;
 				foreach (object o in cparams) {
 					if (first) {
 						sb.Append (" (");
@@ -1147,9 +1147,26 @@ namespace GuiCompare {
 
 					sb.Append (FormatValue (o));
 				}
-				sb.Append (")]");
+				
 			}
 
+			IDictionary properties = ca.Properties;
+			if (properties != null && properties.Count > 0) {
+				foreach (DictionaryEntry de in properties) {
+					if (first) {
+						sb.Append (" (");
+						first = false;
+					} else
+						sb.Append (", ");
+					
+					sb.AppendFormat ("{0}={1}", de.Key, FormatValue (de.Value));
+				}
+			}
+			
+			if (!first)
+				sb.Append (')');
+			sb.Append ("]");
+			
 			ExtraInfo = sb.ToString ();
 		}
 
@@ -1161,6 +1178,9 @@ namespace GuiCompare {
 			if (o is string)
 				return "\"" + o + "\"";
 
+			if (o is bool)
+				return o.ToString ().ToLowerInvariant ();
+			
 			return o.ToString ();
 		}
 	}
