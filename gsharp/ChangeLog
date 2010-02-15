@@ -1,3 +1,8 @@
+2010-02-14  Miguel de Icaza  <miguel@novell.com>
+
+	* Fix the "Show Gtk" pane feature.   Show an expander with a
+	sample.    Perhaps we need some samples here.
+
 2009-09-11  Marek Safar  <marek.safar@gmail.com>
 
 	* Shell.cs: Replaced Report.Stderr with Evaluator.MessageOutput.

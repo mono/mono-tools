@@ -129,6 +129,7 @@ namespace Mono.CSharp.Gui
 			if (files != null)
 				m.LoadFiles (files, false);
 			m.ShowAll ();
+			Evaluator.DescribeTypeExpressions = true;
 
 			if (!HostHasGtkRunning){
 				try {

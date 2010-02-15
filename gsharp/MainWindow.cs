@@ -232,10 +232,11 @@ namespace Mono.CSharp.Gui
 				
 			if (visible){
 				notebook1.Page = 0;
-				sw.Reparent (paned_container);
+				shellnotebook.Reparent (paned_container);
 			} else {
 				notebook1.Page = 1;
-				sw.Reparent (standalone_container);
+
+				shellnotebook.Reparent (standalone_container);
 			}
 		}
 
