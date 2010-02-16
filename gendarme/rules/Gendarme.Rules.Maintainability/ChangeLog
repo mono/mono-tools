@@ -1,3 +1,9 @@
+2010-02-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidAlwaysNullFieldRule.cs: The rules was ignoring "components" 
+	member for windows forms but not for usercontrol and more generally
+	controls. Patch provided by Antoine V.
+
 2010-01-31  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add new rule and tests to the build

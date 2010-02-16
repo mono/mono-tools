@@ -153,12 +153,12 @@ namespace Gendarme.Rules.Maintainability {
 			Log.WriteLine (this);
 			Log.WriteLine (this, "----------------------------------");
 			
-			bool isWinForm = usesWinForms && type.Inherits ("System.Windows.Forms.Form");
+			bool isWinFormControl = usesWinForms && type.Inherits("System.Windows.Forms.Control");
 
 			// All fields start out as always null and unused.
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsPrivate && !field.FieldType.IsValueType)
-					if (!isWinForm || field.Name != "components")	// the winforms designer seems to like to leave this null
+					if (!isWinFormControl || field.Name != "components")	// the winforms designer seems to like to leave this null
 						nullFields.Add (field);
 			}
 			
