@@ -25,6 +25,8 @@ body { font-size: small; margin: 0; padding: 0; background:#fff; color:#000; fon
   background: no-repeat center center;
 }
 
+.full { color: green; };
+
 #content {
 	margin-left: 1.5em;
 	margin-right: 0.5em;

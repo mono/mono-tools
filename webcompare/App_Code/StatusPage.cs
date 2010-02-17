@@ -97,7 +97,11 @@ namespace WebCompare {
 			HtmlGenericControl ctrl = new HtmlGenericControl ();
 			ctrl.Controls.Add (GetStatusImage (n, is_container));
 			ctrl.Controls.Add (GetTypeImage (n.Type));
-			ctrl.Controls.Add (new Label () { Text = n.Name, CssClass = "cname" });
+			bool completed = (n.Missing + n.Extra + n.Warning + n.Todo + n.Niex == 0);
+			string status_class = null;
+			if (completed)
+				status_class = "full ";
+			ctrl.Controls.Add (new Label () { Text = n.Name, CssClass = status_class + "cname" });
 			//if (is_container) {
 				AddIconAndText (ctrl, "stmiss", n.Missing);
 				AddIconAndText (ctrl, "stextra", n.Extra);
