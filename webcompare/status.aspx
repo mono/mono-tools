@@ -39,22 +39,17 @@
 				</table>
 			</LayoutTemplate>
 			<ItemTemplate>
-				<tr class="item">
-				<td><img src='<%# DataBinder.Eval (Container.DataItem, "Image") %>'>
-				</td>
-				<td style="text-align: left; padding-left: 7px;"><%# DataBinder.Eval (Container.DataItem, "Description") %>
-				</td>
-				</tr>
-			</ItemTemplate>
-			<AlternatingItemTemplate>
 				<tr class="item alternatingitem">
 				<td><img src='<%# DataBinder.Eval (Container.DataItem, "Image") %>'>
 				</td>
 				<td style="text-align: left; padding-left: 7px;"><%# DataBinder.Eval (Container.DataItem, "Description") %>
 				</td>
 				</tr>
-				</AlternatingItemTemplate>
+			</ItemTemplate>
 			</asp:ListView>
+			<hr style="width: 50%">
+			<div class="item alternatingitem" style="text-align: center">Items colored in <span style="color:green">green</span> are complete</div>
+			<br/>
 		</div>
 
 	</div>
