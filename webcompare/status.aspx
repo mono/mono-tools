@@ -24,6 +24,9 @@
 				ExpandDepth="1" EnableViewState="false"
 				CollapseImageToolTip="Expand"
 				ExpandImageToolTip="Collapse"
+				CollapseImageUrl="~/images/collapse.gif"
+				ExpandImageUrl="~/images/expand.gif"
+				NoExpandImageUrl="~/images/noexpand.gif"
 				>
 			</asp:TreeView>
 		</div>
