@@ -99,7 +99,7 @@ namespace WebCompare {
 			ctrl.Controls.Add (GetTypeImage (n.Type));
 			bool completed = (n.Missing + n.Extra + n.Warning + n.Todo + n.Niex == 0);
 			string status_class = null;
-			if (completed)
+			if (completed && n.Status == ComparisonStatus.None)
 				status_class = "full ";
 			ctrl.Controls.Add (new Label () { Text = n.Name, CssClass = status_class + "cname" });
 			//if (is_container) {
