@@ -1,0 +1,17 @@
+Makefile
+Makefile.in
+Makefile.in.in
+*.exe
+*.dll
+*.mdb
+config.guess
+config.log
+config.status
+config.sub
+configure
+INSTALL
+aclocal.m4
+autom4te.cache
+missing
+mkinstalldirs
+install-sh

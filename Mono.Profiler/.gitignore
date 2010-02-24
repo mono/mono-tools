@@ -31,3 +31,4 @@ profiler-file-decoder/bin/*
 heap-snapshot-viewer/mprof-heap-viewer
 profiler-file-decoder/mprof-decoder
 *.pidb
+mprof-gui/emveepee

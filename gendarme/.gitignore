@@ -1,0 +1,5 @@
+gendarme
+gendarme-wizard
+bin
+AssemblyInfo.cs
+*.pidb
