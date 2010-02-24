@@ -43,7 +43,7 @@ MonoDoc.app: browser.exe Info.plist monodoc $(gtkhtml_dll) $(gtkhtml_dll).config
 	cp monodoc $(MAC_APP_DIR)/Contents/MacOS/
 	chmod +x $(MAC_APP_DIR)/Contents/MacOS/monodoc
 	cp Info.plist $(MAC_APP_DIR)/Contents/
-	cp monodoc.icns $(MAC_APP_DIR)/Contents/Resources
+	cp $(srcdir)/theme-icons/Mac/monodoc.icns $(MAC_APP_DIR)/Contents/Resources
 	touch MonoDoc.app
 
 MonoDoc.app.zip: MonoDoc.app
