@@ -1,3 +1,7 @@
+2010-02-24  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* InfoManager.cs: Add support for SL4 beta.
+
 2010-02-12  Marek Habersack  <mhabersack@novell.com>
 
 	* Comparison.cs: added ExtraInfo field and a new constructor which
