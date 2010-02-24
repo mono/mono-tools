@@ -1,8 +1,12 @@
+2010-02-23  Michael Hutchinson  <mhutchinson@novell.com>
+
+	* configure.in: Add docbrowser/theme-icons/Makefile.am
+
 2010-02-03  Michael Hutchinson  <mhutchinson@novell.com>
 
-        * Makefile.am:
-        * configure.in: Capture ACLOCAL_FLAGS for autoreconf
-          so building is less painful on Mac.
+	* Makefile.am:
+	* configure.in: Capture ACLOCAL_FLAGS for autoreconf
+	  so building is less painful on Mac.
 
 2010-02-03  Michael Hutchinson  <mhutchinson@novell.com>
 

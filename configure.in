@@ -188,6 +188,7 @@ minvoke/minvoke
 mperfmon/Makefile
 mperfmon/mperfmon
 docbrowser/Makefile
+docbrowser/theme-icons/Makefile
 docbrowser/monodoc
 docbrowser/AssemblyInfo.cs
 po/Makefile.in

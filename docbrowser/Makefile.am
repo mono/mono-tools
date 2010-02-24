@@ -1,5 +1,7 @@
 monodocdir=$(prefix)/lib/monodoc
 
+SUBDIRS=theme-icons
+
 if ENABLE_GTKHTML
 noinst_DATA = admin.exe
 endif
