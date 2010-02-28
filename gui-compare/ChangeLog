@@ -1,3 +1,9 @@
+2010-02-27  Rodrigo Kumpera <rkumpera@novell.com>
+
+	* gtk-gui/GuiCompare.CustomCompare.cs: Make custom compares
+	work again. Someone should fix the stetic file cuz I don't
+	have the skills for it.
+
 2010-02-24  Rolf Bjarne Kvinge  <RKvinge@novell.com>
 
 	* InfoManager.cs: Add support for SL4 beta.
