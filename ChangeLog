@@ -1,3 +1,9 @@
+2010-03-02  Marek Habersack  <mhabersack@novell.com>
+
+	* configure.in: added check for dmcs, defines DMCS_PRESENT
+	conditional if found. Needed to build docbrowser with dmcs now
+	that mono from trunk tools are built with dmcs.
+
 2010-02-23  Michael Hutchinson  <mhutchinson@novell.com>
 
 	* configure.in: Add docbrowser/theme-icons/Makefile.am

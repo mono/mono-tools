@@ -12,6 +12,7 @@ AC_SUBST(ACLOCAL_FLAGS)
 dnl C# compiler
 AC_PATH_PROG(MCS, mcs, no)
 AC_PATH_PROG(GMCS, gmcs, no)
+AC_PATH_PROG(DMCS, dmcs, no)
 AC_PATH_PROG(RUNTIME, mono, no)
 AC_PATH_PROG(GACUTIL, gacutil, no)
 
@@ -20,6 +21,8 @@ if test "x$MCS" = "xno"  ; then
 	dnl AC_MSG_ERROR([You need to install a C# compiler])
 	AC_MSG_ERROR([No $CS compiler found])
 fi
+
+AM_CONDITIONAL(DMCS_PRESENT, test ! "x$DMCS" = "xno")
 
 if test "x$RUNTIME" = "xno" ; then
 	AC_MSG_ERROR([No runtime found])
@@ -33,6 +36,7 @@ fi
 
 AC_SUBST(MCS)
 AC_SUBST(GMCS)
+AC_SUBST(DMCS)
 AC_SUBST(RUNTIME)
 AC_SUBST(RESGEN)
 AC_SUBST(GACUTIL)
