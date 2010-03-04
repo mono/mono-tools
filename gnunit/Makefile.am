@@ -1,2 +1,0 @@
-SUBDIRS= art src
-
