@@ -1,3 +1,7 @@
+2010-03-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.1.in: Added exit code descriptions
+
 2008-09-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.1.in: Moved file format informations to gendarme.5.in
