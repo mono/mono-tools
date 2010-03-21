@@ -59,6 +59,15 @@ namespace Gendarme.Rules.Smells {
     	/// <item>
 	/// <description><c>System.Windows.Forms::InitializeComponents ()</c></description> 
 	/// </item>
+	/// <item>
+	/// <description><c>System.Workflow.Activities.StateMachineWorkflowActivity::InitializeComponents ()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Workflow.Activities.SequentialWorkflowActivity::InitializeComponents ()</c></description>
+	/// </item>
+	/// <item>
+	/// <description><c>System.Windows.Controls.UserControl::InitializeComponents ()</c></description>
+	/// </item>
 	/// </list>
 	/// This will work for classes that extend those types.
 	///
@@ -181,6 +190,9 @@ namespace Gendarme.Rules.Smells {
 			typeMethodDictionary.Add ("Gtk.Window", "Build");
 			typeMethodDictionary.Add ("Gtk.Dialog", "Build");
 			typeMethodDictionary.Add ("System.Windows.Forms.Form", "InitializeComponent");
+			typeMethodDictionary.Add ("System.Workflow.Activities.SequentialWorkflowActivity", "InitializeComponent");
+			typeMethodDictionary.Add ("System.Workflow.Activities.StateMachineWorkflowActivity", "InitializeComponent");
+			typeMethodDictionary.Add ("System.Windows.Controls.UserControl", "InitializeComponent");
 		}
 
 		public AvoidLongMethodsRule ()

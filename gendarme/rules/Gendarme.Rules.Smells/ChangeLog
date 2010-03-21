@@ -1,3 +1,9 @@
+2010-03-21  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongMethodsRule.cs: Add more types (from Workflow and 
+	Silverlight) that use InitializeComponent to be ignored. Patch
+	by Jeff Craig.
+
 2010-01-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSwitchStatementsRule.cs: Ignore all generated code since 
