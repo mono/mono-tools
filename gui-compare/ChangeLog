@@ -1,3 +1,9 @@
+2010-04-02  Jeffrey Stedfast  <fejj@novell.com>
+
+	* InfoManager.cs (Ensure): Don't combine 'tar' and its arguments
+	together for the pi.FileName. This doesn't work. Set the arguments
+	on pi.Arguments like we're supposed to instead.
+
 2010-02-27  Rodrigo Kumpera <rkumpera@novell.com>
 
 	* gtk-gui/GuiCompare.CustomCompare.cs: Make custom compares

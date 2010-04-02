@@ -435,10 +435,11 @@ namespace GuiCompare
 						ProcessStartInfo pi = new ProcessStartInfo();
 						pi.WorkingDirectory = pdir;
 						pi.UseShellExecute = true;
-						pi.FileName = "tar xzf " + target + " --strip-components=1";
+						pi.FileName = "tar";
+						pi.Arguments = "xzf " + target + " --strip-components=1";
 						Process p = Process.Start (pi);
 						p.WaitForExit ();
-							
+						
 						Application.Invoke (delegate {
 							main.Progress = 0;
 							main.Status = "Download complete";
