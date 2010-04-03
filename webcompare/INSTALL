@@ -44,8 +44,8 @@ MySQL configuration
 --------------------
 	* Create a database (i.e. 'webcompare').
 
-	* Run the init-db.mysql script in MySql:
-	   mysql> source init-db.mysql
+	* Run the createdb.sql script in MySql:
+	   mysql> source createdb.sql
 
 	* Create and assign privileges to the web application DB user like:
 	   mysql> GRANT SELECT,EXECUTE on `webcompare`.* TO `webcompare`@`localhost`;
