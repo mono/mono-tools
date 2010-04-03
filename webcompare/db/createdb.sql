@@ -58,10 +58,19 @@ CREATE TABLE  `nodes` (
   KEY `master_parent_idx` (`parent_name`,`master_id`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
+DROP PROCEDURE IF EXISTS `get_children`;
+DROP PROCEDURE IF EXISTS `get_master_id`;
+DROP PROCEDURE IF EXISTS `get_messages`;
+DROP PROCEDURE IF EXISTS `get_node_by_name`;
+DROP PROCEDURE IF EXISTS `insert_master`;
+DROP PROCEDURE IF EXISTS `update_active_master`;
+DELIMITER $$
+
 CREATE PROCEDURE  `get_children`(IN master_id INT, IN parent_name VARCHAR(128))
 BEGIN
 SELECT * FROM nodes n WHERE n.master_id = master_id AND n.parent_name = parent_name ORDER BY child_id;
 END
+$$
 
 CREATE PROCEDURE  `get_master_id`(in reference varchar(100), in profile varchar (100), in assembly varchar(100), in detail_level varchar (25))
 BEGIN
@@ -69,8 +78,8 @@ SELECT m.id, m.last_updated FROM master m
 WHERE m.reference = reference AND m.profile = profile AND m.assembly = assembly
 ORDER BY last_updated DESC
 LIMIT 1;
-
 END
+$$
 
 CREATE PROCEDURE  `get_messages`(IN master_id INT, IN nodename VARCHAR(128))
 BEGIN
@@ -78,18 +87,21 @@ SELECT m.is_todo, m.message
 FROM messages m
 WHERE m.master_id = master_id AND node_name = nodename;
 END
+$$
 
 CREATE PROCEDURE  `get_node_by_name`(in master_id int, in nodename varchar(128))
 BEGIN
 SELECT n.* FROM nodes n
 WHERE n.master_id = master_id AND n.node_name = nodename;
 END
+$$
 
 CREATE PROCEDURE  `insert_master`( IN reference varchar(100), IN profile varchar (100), IN assembly varchar (100), IN last_updated timestamp, OUT id int)
 BEGIN
 INSERT INTO master (reference, profile, assembly, last_updated, active) VALUES (reference, profile, assembly, last_updated, FALSE);
 SET id = LAST_INSERT_ID();
 END
+$$
 
 CREATE PROCEDURE  `update_active_master`(IN master_id INT)
 BEGIN
@@ -110,5 +122,6 @@ UPDATE master m
 SET m.active = FALSE
 WHERE m.id <> master_id AND m.reference = @reference AND m.profile = @profile AND m.assembly = @assembly;
 END
+$$
 
 
