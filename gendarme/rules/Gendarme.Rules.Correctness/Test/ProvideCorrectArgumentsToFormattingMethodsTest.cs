@@ -31,6 +31,7 @@ using Gendarme.Rules.Correctness;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
+using System.Globalization;
 
 namespace Test.Rules.Correctness {
 	[TestFixture]
@@ -58,24 +59,24 @@ namespace Test.Rules.Correctness {
 				String.Format ("The value {0} isn't valid", value);
 			}
 
-			public void MethodWithGoodFormatingAndThreeParams (object value1, object value2, object value3)
+			public void MethodWithGoodFormattingAndThreeParams (object value1, object value2, object value3)
 			{
 				String.Format ("{0} {1} {2}", value1, value2, value3);
 			}
 
-			public void MethodWithGoodFormatingAndFiveParams (object value1, object value2, object value3, object value4, object value5)
+			public void MethodWithGoodFormattingAndFiveParams (object value1, object value2, object value3, object value4, object value5)
 			{
 				String.Format ("{0} {1} {2} {3} {4}", value1, value2, value3, value4, value5);
 			}
 
 			public void MethodWithGoodFormattingAndSomeCalls (object value1, object value2)
 			{
-				String.Format ("{0} {1}", value1.ToString (), value2.ToString ());	
+				String.Format ("{0} {1}", value1.ToString (), value2.ToString ());
 			}
 
 			public void MethodWithGoodFormattingAndDateTimes (DateTime dateTime)
 			{
-				String.Format("'{0:yyyy-MM-dd HH:mm:ss}'", dateTime);
+				String.Format ("'{0:yyyy-MM-dd HH:mm:ss}'", dateTime);
 			}
 
 			public void MethodWithGoodFormattingAndRepeatedIndexes (object value)
@@ -114,7 +115,40 @@ namespace Test.Rules.Correctness {
 
 			public void MethodCallingEnumFormat (Type type, object value)
 			{
-				 Enum.Format (type, value, "G");
+				Enum.Format (type, value, "G");
+			}
+
+			public void MethodWithGoodFormattingAndArrayParameter ()
+			{
+				object [] values = { "value1", "value2", "value3" };
+				object [] notValues = { "notValue1", "notValue2" };
+				String.Format ("3 values : {0} {1} {2}", values);
+			}
+
+			public void MethodWithBadFormattingAndArrayParameter ()
+			{
+				object [] notValues = { "notValue1", "notValue2" };
+				object [] values = { "value1", "value2", "value3" };
+				String.Format ("3 values : {0} {1} {2}", notValues);
+			}
+
+			private string GetGoodFormat ()
+			{
+				return "{0} - {1}";
+			}
+			public void MethodCallingMethodToGetGoodFormat ()
+			{
+				String.Format (GetGoodFormat (), "value1", "value2");
+			}
+
+			public void MethodWithGoodFormattingAndIFormatProvider ()
+			{
+				String.Format (new CultureInfo ("en-US"), "Format : {0}", "value");
+			}
+
+			public void MethodWithBadFormattingAndIFormatProvider ()
+			{
+				String.Format (new CultureInfo ("en-US"), "Format : {0} {1}", "value1");
 			}
 		}
 
@@ -131,15 +165,15 @@ namespace Test.Rules.Correctness {
 		}
 		
 		[Test]
-		public void SuccessOnMethodWithGoodFormatingAndThreeParamsTest ()
+		public void SuccessOnMethodWithGoodFormattingAndThreeParamsTest ()
 		{
-			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormatingAndThreeParams");
+			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormattingAndThreeParams");
 		}
 		
 		[Test]
-		public void SuccessOnMethodWithGoodFormatingAndFiveParamsTest ()
+		public void SuccessOnMethodWithGoodFormattingAndFiveParamsTest ()
 		{
-			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormatingAndFiveParams");
+			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormattingAndFiveParams");
 		}
 
 		[Test]
@@ -194,6 +228,36 @@ namespace Test.Rules.Correctness {
 		public void SkipOnMethodCallingEnumFormatTest ()
 		{
 			AssertRuleSuccess<FormattingCases> ("MethodCallingEnumFormat");
+		}
+
+		[Test]
+		public void SuccessOnMethodWithGoodFormattingAndArrayParameter ()
+		{
+			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormattingAndArrayParameter");
+		}
+
+		[Test]
+		public void FailOnMethodWithBadFormattingAndArrayParameter ()
+		{
+			AssertRuleFailure<FormattingCases> ("MethodWithBadFormattingAndArrayParameter");
+		}
+
+		[Test]
+		public void SuccessOnMethodCallingMethodToGetGoodFormat ()
+		{
+			AssertRuleSuccess<FormattingCases> ("MethodCallingMethodToGetGoodFormat");
+		}
+
+		[Test]
+		public void SuccessOnMethodWithGoodFormattingAndIFormatProvider ()
+		{
+			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormattingAndIFormatProvider");
+		}
+
+		[Test]
+		public void FailOnMethodWithBadFormattingAndIFormatProvider ()
+		{
+			AssertRuleFailure<FormattingCases> ("MethodWithBadFormattingAndIFormatProvider");
 		}
 
 		string InstanceLocalize (string s)

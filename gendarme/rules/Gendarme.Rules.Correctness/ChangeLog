@@ -1,3 +1,9 @@
+2010-04-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Fix false
+	positives when globalization, arrays / 'params' are used. Patch
+	by Antoine Vandecrème
+
 2010-01-30  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewDoubleAssignmentRule: Apply PreferEmptyInstanceOverNullRule
