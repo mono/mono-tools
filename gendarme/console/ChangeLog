@@ -1,3 +1,8 @@
+2010-04-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.xsl: Add "Mark of the Web" so IE does not popup about 
+	security because of our little javascript. Fix bug #594308
+
 2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Settings.cs: Apply PreferTryParseRule

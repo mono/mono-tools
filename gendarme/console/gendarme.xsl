@@ -34,6 +34,8 @@
 	</xsl:template>
 	<xsl:template match="/">
 		<xsl:for-each select="gendarme-output">
+			<xsl:comment> saved from url=(0014)about:internet </xsl:comment>
+			<xsl:text>&#10;</xsl:text>
 			<html>
 				<head>
 					<title>Gendarme Report</title>
