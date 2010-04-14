@@ -163,7 +163,11 @@ namespace Gendarme.Rules.Performance {
 				if (ins.OpCode.FlowControl != FlowControl.Call)
 					continue;
 
-				MethodDefinition md = (ins.Operand as MethodReference).Resolve ();
+				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr == null)
+					continue;
+
+				MethodDefinition md = mr.Resolve ();
 				// md can be null for things like: new byte[,];
 				if ((md == null) || !md.IsGetter || md.HasParameters)
 					continue;
