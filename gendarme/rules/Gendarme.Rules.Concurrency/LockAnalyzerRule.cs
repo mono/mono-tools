@@ -71,6 +71,8 @@ namespace Gendarme.Rules.Concurrency {
 					continue;
 
 				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr == null)
+					continue;
 				if (mr.DeclaringType.FullName != "System.Threading.Monitor")
 					continue;
 				if (mr.Name != "Enter")

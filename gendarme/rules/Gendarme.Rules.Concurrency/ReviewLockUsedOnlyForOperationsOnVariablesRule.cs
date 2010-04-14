@@ -155,7 +155,11 @@ namespace Gendarme.Rules.Concurrency {
 				if (ins.OpCode.FlowControl == FlowControl.Call) {
 					//if this is a lock entry or exit then change state
 					//if not, the the current lock section does not apply
-					if (!HandleLockEnterExit (ins.Operand as MethodReference, method, ins))
+					MethodReference m = (ins.Operand as MethodReference);
+					if (m == null)
+						continue;
+
+					if (!HandleLockEnterExit (m, method, ins))
 						CurrentLockSectionDoesNotApply = true;
 					continue;
 				}

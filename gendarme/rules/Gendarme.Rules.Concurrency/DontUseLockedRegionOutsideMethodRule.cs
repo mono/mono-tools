@@ -150,13 +150,17 @@ namespace Gendarme.Rules.Concurrency {
 			int exit = 0;
 			
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.FlowControl == FlowControl.Call) {
-					MethodReference m = (ins.Operand as MethodReference);
-					if (IsMonitorMethod (m, "Enter")) {
-						enter++;
-					} else if (IsMonitorMethod (m, "Exit")) {
-						exit++;
-					}
+				if (ins.OpCode.FlowControl != FlowControl.Call)
+					continue;
+
+				MethodReference m = (ins.Operand as MethodReference);
+				if (m == null)
+					continue;
+
+				if (IsMonitorMethod (m, "Enter")) {
+					enter++;
+				} else if (IsMonitorMethod (m, "Exit")) {
+					exit++;
 				}
 			}
 			

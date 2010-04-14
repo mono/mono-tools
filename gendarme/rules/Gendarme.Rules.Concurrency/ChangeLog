@@ -1,3 +1,13 @@
+2010-04-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DecorateThreadsRule.cs: Implement IEquatable<> on MethodName
+	as suggested by Gendarme itself (self-test)
+	* DontUseLockedRegionOutsideMethodRule.cs, 
+	* LockAnalyzerRule.cs,
+	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs:
+		Don't assume a MethodReference for FlowControl.Call.
+		Calli, while uncommon, would provide a CallSite.
+
 2010-01-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DecorateThreadsRule.cs: Apply MethodCanBeMadeStaticRule

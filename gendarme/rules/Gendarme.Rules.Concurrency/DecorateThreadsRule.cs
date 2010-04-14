@@ -561,7 +561,7 @@ namespace Gendarme.Rules.Concurrency {
 		#endregion
 		
 		#region Private Types
-		private struct MethodName {
+		private struct MethodName : IEquatable<MethodName> {
 			public MethodName (string ns, string type, string name)
 			{
 				Namespace = ns;
@@ -587,6 +587,31 @@ namespace Gendarme.Rules.Concurrency {
 					return false;
 				
 				return true;
+			}
+
+			public override bool Equals (object obj)
+			{
+				return (obj is MethodName) ? Equals ((MethodName) obj) : false;
+			}
+
+			public bool Equals (MethodName method)
+			{
+				return ((method.Namespace == Namespace) && (method.Type == Type) && (method.Name == Name));
+			}
+
+			public override int GetHashCode ()
+			{
+				return Namespace.GetHashCode () ^ Type.GetHashCode () ^ Name.GetHashCode ();
+			}
+
+			public static bool operator == (MethodName a, MethodName b)
+			{
+				return a.Equals (b);
+			}
+
+			public static bool operator != (MethodName a, MethodName b)
+			{
+				return !a.Equals (b);
 			}
 		}
 		
