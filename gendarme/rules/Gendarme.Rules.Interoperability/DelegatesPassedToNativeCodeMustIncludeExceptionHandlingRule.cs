@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -156,10 +157,10 @@ namespace Gendarme.Rules.Interoperability {
 						for (int i = 0; i < called_method.Parameters.Count; i++) {
 							if (!called_method.Parameters [i].ParameterType.IsDelegate ())
 								continue;
-							
-							// Console.WriteLine (" Stack slot #{0}:", i);
-							// stack [i].DumpAll ("  ");
-
+#if DEBUG
+							Console.WriteLine (" Stack slot #{0}:", i);
+							stack [i].DumpAll ("  ");
+#endif
 							// if we load a field, store the field so that any subsequent unsafe writes to that field can be reported.
 							Instruction last = stack [i].Last;
 							if (last.OpCode.Code == Code.Ldfld || last.OpCode.Code == Code.Ldsfld) {
@@ -171,13 +172,13 @@ namespace Gendarme.Rules.Interoperability {
 							}
 							
 							// Get and check the pointers
-							VerifyMethods (GetDelegatePointers (method, locals, stack [i]));
+							VerifyMethods (GetDelegatePointers (locals, stack [i]));
 						}
 					}
 				} else if (ins.OpCode.Code == Code.Stfld || ins.OpCode.Code == Code.Stsfld) {
 					FieldDefinition field = (ins.Operand as FieldReference).Resolve ();
 					
-					pointers = GetDelegatePointers (method, locals, stack [stack_count - 1]);
+					pointers = GetDelegatePointers (locals, stack [stack_count - 1]);
 					
 					// Console.WriteLine (" Reached a field variable store to the field {0}, there are {1} unsafe pointers here.", field.Name, pointers == null ? 0 : pointers.Count);
 					
@@ -201,7 +202,7 @@ namespace Gendarme.Rules.Interoperability {
 				} else if (ins.IsStoreLocal ()) {
 					int index = ins.GetStoreIndex ();
 					
-					pointers = GetDelegatePointers (method, locals, stack [stack_count - 1]);
+					pointers = GetDelegatePointers (locals, stack [stack_count - 1]);
 					
 					// Console.WriteLine (" Reached a local variable store at index {0}, there are {1} pointers here.", index, pointers == null ? 0 : pointers.Count);
 					
@@ -215,12 +216,18 @@ namespace Gendarme.Rules.Interoperability {
 				} 
 				
 				stack_count += push - pop;
+				if (stack_count < 0) {
+#if DEBUG
+					Console.WriteLine ("{0} got a stack_count < 0 ({1})", method, stack_count);
+#endif
+					continue;
+				}
 				
 				while (stack_count > stack.Count)
 					stack.Add (new ILRange (ins));
 				while (stack_count < stack.Count)
 					stack.RemoveAt (stack.Count - 1);
-				
+
 				if (stack_count > 0 && stack [stack_count - 1] != null)
 					stack [stack_count - 1].Last = ins;
 			}
@@ -247,11 +254,11 @@ namespace Gendarme.Rules.Interoperability {
 			
 			if (callback.Body.HasExceptionHandlers) {
 				foreach (ExceptionHandler eh in callback.Body.ExceptionHandlers) {
-					/*
+#if DEBUG
 					Console.WriteLine ("HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, TryStart: {4}, TryEnd: {5}, CatchType: {6}, Type: {7}", 
-					                   GetOffset (eh.HandlerStart), GetOffset (eh.HandlerEnd), GetOffset (eh.FilterStart), GetOffset (eh.FilterEnd), 
-					                   GetOffset (eh.TryStart), GetOffset (eh.TryEnd), eh.CatchType, eh.Type);
-					 */
+					                   eh.HandlerStart.GetOffset (), eh.HandlerEnd.GetOffset (), eh.FilterStart.GetOffset (), eh.FilterEnd.GetOffset (),
+					                   eh.TryStart.GetOffset (), eh.TryEnd.GetOffset (), eh.CatchType, eh.Type);
+#endif
 					
 					/*
 					 * Here we could get a lot stricter, we accept the following code:
@@ -315,27 +322,32 @@ namespace Gendarme.Rules.Interoperability {
 			return valid_ex_handler;
 		}
 				
-		private class ILRange {
+		private sealed class ILRange {
 			public Instruction First;
 			public Instruction Last;
 			public ILRange (Instruction first)
 			{
 				First = first;
 			}
+#if DEBUG
 			public void DumpAll (string prefix)
 			{
 				Instruction instr = First;
 				do {
-					Console.WriteLine ("{0}{1}", prefix, instr.ToPrettyString ());
+					string pretty = (instr == null) ? "<nil>" : 
+						String.Format ("IL_{0} {1} {2}", instr.Offset, instr.OpCode.Name, instr.Operand);
+
+					Console.WriteLine ("dump", "{0}{1}", prefix, pretty);
 					if (instr == Last)
 						break;
 					instr = instr.Next;
 				} while (true);
 			}
+#endif
 		}
 		
 		// Parses the ILRange and return all delegate pointers that could end up on the stack as a result of executing that code.
-		private List<MethodDefinition> GetDelegatePointers (MethodDefinition method, List<List<MethodDefinition>> locals, ILRange range)
+		private List<MethodDefinition> GetDelegatePointers (List<List<MethodDefinition>> locals, ILRange range)
 		{
 			List<MethodDefinition> result = null;
 			Instruction current;
@@ -405,24 +417,15 @@ namespace Gendarme.Rules.Interoperability {
 		}
 	}
 	
-	internal static class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper
-	{
-		
-		public static string ToPrettyString (this Instruction instr)
-		{
-			if (instr == null)
-				return "<nil>";
-			
-			return string.Format ("IL_{0} {1} {2}", instr.Offset, instr.OpCode.Name, instr.Operand);
-		}
-		
+	internal static class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper {
+#if DEBUG
 		public static int GetOffset (this Instruction instr)
 		{
 			if (instr != null)
 				return instr.Offset;
 			return -1;
 		}
-		
+#endif
 		// Return the index of the load opcode.
 		// This could probably go into InstructionRocks.
 		public static int GetLoadIndex (this Instruction ins)
@@ -438,7 +441,7 @@ namespace Gendarme.Rules.Interoperability {
 			case Code.Ldloca_S: return int.MaxValue;
 
 			default:
-				throw new Exception (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
+				throw new ArgumentException (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}
 		}
 		
@@ -454,7 +457,7 @@ namespace Gendarme.Rules.Interoperability {
 			case Code.Stloc: // Untested for stloc
 			case Code.Stloc_S: return ((VariableDefinition) ins.Operand).Index;
 			default:
-				throw new Exception (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
+				throw new ArgumentException (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}
 		}
 	}

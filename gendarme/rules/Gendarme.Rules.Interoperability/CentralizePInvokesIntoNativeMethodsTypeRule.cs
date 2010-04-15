@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Interoperability {
 
 		const string Audit = "Unsafe p/invoke decorated with [SuppressUnmanagedCodeSecurity] needs a security review.";
 
-		private bool CanInstantiateType (TypeDefinition type)
+		static bool CanInstantiateType (TypeDefinition type)
 		{
 			// type is static (>= 2.0)
 			if (type.IsStatic ())

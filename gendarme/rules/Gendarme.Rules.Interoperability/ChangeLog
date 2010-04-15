@@ -1,3 +1,20 @@
+2010-04-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CentralizePInvokesIntoNativeMethodsTypeRule.cs: Static-ify
+	CanInstantiateType (make self-test)
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
+	Skip if we hit a negative 'stack_count' (workaround for #582823).
+	Fix some "make self-test" defects like: Seal ILRange. Remove some
+	unused parameters. Add #if DEBUG around debugging code. Do not 
+	throw Exception (changed to ArgumentException).
+	* GetLastErrorMustBeCalledRightAfterPInvokeRule.cs: Don't assume 
+	a MethodReference for FlowControl.Call. Calli, while uncommon, 
+	would provide a CallSite.
+	* MarshalStringsInPInvokeDeclarationsRule.cs: Check if PInvokeInfo
+	is null even if IsPInvokeImpl is true since some badly encoded
+	assemblies just do that (flag PInvokeImpl, but has no record in 
+	the ImplMapTable)
+
 2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CentralizePInvokesIntoNativeMethodsTypeRule.cs: New. Rule to

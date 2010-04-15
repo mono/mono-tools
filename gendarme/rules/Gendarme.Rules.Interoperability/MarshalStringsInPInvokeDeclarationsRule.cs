@@ -81,7 +81,7 @@ namespace Gendarme.Rules.Interoperability {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply to non-pinvoke methods
-			if (!method.IsPInvokeImpl)
+			if (!method.IsPInvokeImpl || (method.PInvokeInfo == null))
 				return RuleResult.DoesNotApply;
 
 			if (!method.PInvokeInfo.IsCharSetNotSpec || !method.HasParameters)

@@ -211,7 +211,11 @@ namespace Gendarme.Rules.Interoperability {
 				if (ins.Next == null)
 					break;
 
-				MethodDefinition pinvoke = (ins.Operand as MethodReference).Resolve ();
+				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr == null)
+					break;
+
+				MethodDefinition pinvoke = mr.Resolve ();
 				if ((pinvoke == null) || !pinvoke.IsPInvokeImpl)
 					break;
 
