@@ -201,7 +201,7 @@ namespace Gendarme.Rules.Portability {
 		static byte [] silverlight_key = new byte [] { 0x7c, 0xec, 0x85, 0xd7, 0xbe, 0xa7, 0x79, 0x8e };
 		static Version silverlight = new Version (2, 0, 5, 0);
 
-		private bool ComparePublicKeyToken (byte [] pkt1, byte [] pkt2)
+		static bool ComparePublicKeyToken (byte [] pkt1, byte [] pkt2)
 		{
 			for (int i = 0; i < 8; i++) {
 				if (pkt1 [i] != pkt2 [i])
@@ -210,7 +210,7 @@ namespace Gendarme.Rules.Portability {
 			return true;
 		}
 
-		private bool Filter (AssemblyNameReference anr)
+		static bool Filter (AssemblyNameReference anr)
 		{
 			// if the scope is the current assembly, then AssemblyNameReference will be null
 			if (anr == null)
