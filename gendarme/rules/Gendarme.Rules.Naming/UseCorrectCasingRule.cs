@@ -204,8 +204,8 @@ namespace Gendarme.Rules.Naming {
 			if (method.IsConstructor || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			// don't consider private compiler generated add / remove on events
-			if ((method.IsAddOn || method.IsRemoveOn) && method.IsSynchronized && method.IsPrivate)
+			// don't consider private add / remove on events
+			if ((method.IsAddOn || method.IsRemoveOn) && method.IsPrivate)
 				return RuleResult.DoesNotApply;
 
 			string name = method.Name;
