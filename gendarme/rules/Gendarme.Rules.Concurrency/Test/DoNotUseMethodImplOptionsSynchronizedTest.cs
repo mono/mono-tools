@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,10 +29,12 @@
 using System;
 using System.Runtime.CompilerServices;
 
+using Mono.Cecil;
 using Gendarme.Rules.Concurrency;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Concurrency {
 
@@ -64,7 +66,11 @@ namespace Test.Rules.Concurrency {
 		[Test]
 		public void DoesNotApply ()
 		{
-			AssertRuleDoesNotApply<DoNotUseMethodImplOptionsSynchronizedTest> ("add_CompilerGeneratedSynchronized");
+			MethodDefinition md = DefinitionLoader.GetMethodDefinition<DoNotUseMethodImplOptionsSynchronizedTest> ("add_CompilerGeneratedSynchronized");
+			if (!md.IsSynchronized)
+				Assert.Ignore ("newer versions of CSC (e.g. 10.0) does not set the Synchronized");
+
+			AssertRuleDoesNotApply (md);
 			AssertRuleDoesNotApply<DoNotUseMethodImplOptionsSynchronizedTest> ("remove_CompilerGeneratedSynchronized");
 		}
 	}
