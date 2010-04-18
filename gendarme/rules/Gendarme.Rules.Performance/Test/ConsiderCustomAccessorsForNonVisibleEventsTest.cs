@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,11 +29,13 @@
 using System;
 using System.ComponentModel;
 
+using Mono.Cecil;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Performance {
 
@@ -181,16 +183,27 @@ namespace Test.Rules.Performance {
 		[Test]
 		public void Visible ()
 		{
-			AssertRuleFailure<PublicDefaultType> (2);
 			AssertRuleSuccess<PublicManualType> ();
-
-			AssertRuleFailure<ProtectedDefaultType> (2);
 			AssertRuleSuccess<ProtectedManualType> ();
+
+			MethodDefinition md = DefinitionLoader.GetMethodDefinition<PublicDefaultType> ("add_Public");
+			if (md.IsSynchronized) {
+				// older CSC (and xMCS) compilers still generate it's own add/remove methods that set the
+				// synchronize flags and we simply ignore them since they are out of the developer's control
+				AssertRuleFailure<PublicDefaultType> (2);
+				AssertRuleFailure<ProtectedDefaultType> (2);
+			}
 		}
 
 		[Test]
 		public void NonVisible ()
 		{
+			MethodDefinition md = DefinitionLoader.GetMethodDefinition<PrivateDefaultType> ("add_Public");
+			if (!md.IsSynchronized)
+				Assert.Ignore ("newer versions of CSC (e.g. 10.0) does not set the Synchronized");
+
+			// older CSC (and xMCS) compilers still generate it's own add/remove methods that set the
+			// synchronize flags and we simply ignore them since they are out of the developer's control
 			AssertRuleFailure<PrivateDefaultType> (4);
 			AssertRuleFailure<PrivateManualType> (2);
 
