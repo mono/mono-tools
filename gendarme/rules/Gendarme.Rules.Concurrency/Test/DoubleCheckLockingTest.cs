@@ -6,7 +6,8 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2005 Aaron Tomb
-// Copyright (C) 2006-2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008, 20102010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
+ Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,11 +29,13 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using Mono.Cecil;
 using Gendarme.Rules.Concurrency;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Concurrency {
 
@@ -137,7 +140,12 @@ namespace Test.Rules.Concurrency {
 		[Test]
 		public void DoubleCheck ()
 		{
-			AssertRuleFailure<Singleton> ("get_DoubleCheck");
+			MethodDefinition md = DefinitionLoader.GetMethodDefinition<Singleton> ("get_DoubleCheck");
+			// even if the rule applies only to < 2.0 it still works (for unit testsing) until 4.0
+			if (md.DeclaringType.Module.Assembly.Runtime < TargetRuntime.NET_4_0)
+				AssertRuleFailure (md);
+			else
+				Assert.Ignore ("Rule applies for < 2.0 and works only for < 4.0");
 		}
 	}
 }

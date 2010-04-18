@@ -1,3 +1,8 @@
+2010-04-17  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoubleCheckLockingTest.cs: Ignore test case if the unit tests
+	were compiled with FX 4.0.
+
 2010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotUseMethodImplOptionsSynchronizedTest.cs: With newer CSC

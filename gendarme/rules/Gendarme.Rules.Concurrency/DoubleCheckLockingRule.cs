@@ -7,7 +7,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) 2005 Aaron Tomb
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -213,7 +213,12 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			if (method.Name != methodName)
 				return false;
-			return (method.DeclaringType.FullName == "System.Threading.Monitor");
+			if (method.DeclaringType.FullName != "System.Threading.Monitor")
+				return false;
+			// exclude Monitor.Enter(object, ref bool) since the comparison would be made
+			// againt the 'lockTaken' parameter and would report failures for every cases.
+			// not a big deal since this rule if active only on code compiled < FX 2.0
+			return (method.Parameters.Count == 1);
 		}
 
 		private static bool EffectivelyEqual (Instruction insn1, Instruction insn2)

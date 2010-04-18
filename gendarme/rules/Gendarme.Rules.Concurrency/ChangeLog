@@ -1,3 +1,9 @@
+2010-04-17  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoubleCheckLockingRule.cs: Ignore calls to Monitor.Enter(object,
+	ref bool), introduced in FX4.0, since this rule is applied only
+	to code compiled with a runtime earlier than 2.0
+
 2010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnThisOrTypesRule.cs: Update Analyze signature
