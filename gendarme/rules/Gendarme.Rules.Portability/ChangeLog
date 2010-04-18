@@ -1,3 +1,9 @@
+2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Avoid -pkg:dotnet since it refers to assemblies
+	that are not always installed by default (it it's pure laziness
+	to use that ;-)
+
 2010-04-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MonoCompatibilityReviewRule.cs: Static-ify Filter and
