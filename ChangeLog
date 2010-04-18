@@ -1,3 +1,7 @@
+2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* README: Add instructions for building from SVN
+
 2010-03-02  Marek Habersack  <mhabersack@novell.com>
 
 	* configure.in: added check for dmcs, defines DMCS_PRESENT

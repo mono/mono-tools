@@ -8,10 +8,18 @@ utilities for use with Mono.
 Building:
 --------
 
-Building should be as simple as:
+Building from a source tarball should be as simple as:
 
     ./configure [typical configure flags, such as --prefix=PREFIX]
     make
     make install
 
+Building from SVN is almost identical, except that you need to
+execute autogen.sh to create the configure script (which will be
+automatically executed):
+
+    svn co http://anonsvn.mono-project.com/source/trunk/mono-tools
+    ./autogen.sh [typical configure flags, such as --prefix=PREFIX]
+    make
+    make install
 
