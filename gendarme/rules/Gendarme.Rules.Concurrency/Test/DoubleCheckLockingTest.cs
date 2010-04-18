@@ -6,8 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2005 Aaron Tomb
-// Copyright (C) 2006-2008, 20102010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
- Novell, Inc (http://www.novell.com)
+// Copyright (C) 2006-2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the

@@ -1,3 +1,10 @@
+2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoubleCheckLockingTest.cs: Fix cop-paste error :(
+	* ReviewLockUsedOnlyForOperationsOnVariablesTest.cs: Use 
+	SimpleMethods and remove one-line helpers. Change Success6
+	to a DoNotApply (like the comment says)
+
 2010-04-17  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoubleCheckLockingTest.cs: Ignore test case if the unit tests

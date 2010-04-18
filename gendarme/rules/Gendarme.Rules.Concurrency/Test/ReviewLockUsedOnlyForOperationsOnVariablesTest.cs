@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -42,55 +44,46 @@ namespace Test.Rules.Concurrency {
 	[TestFixture]
 	public class ReviewLockUsedOnlyForOperationsOnVariablesTest : MethodRuleTestFixture<ReviewLockUsedOnlyForOperationsOnVariablesRule> {
 
-		private void AssertRuleSucceedForMe (string methodName)
-		{
-			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> (methodName);
-		}
-
-		private void AssertRuleFailsForMe (string methodName, int count)
-		{
-			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> (methodName, count);
-		}
-
 		[Test]
 		public void DoesNotApply ()
 		{
-			AssertRuleDoesNotApply<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("DoesNotApply0");
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
 			AssertRuleDoesNotApply<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("DoesNotApply1");
+			AssertRuleDoesNotApply<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("DoesNotApply2");
 		}
 
 		[Test]
 		public void Success ()
 		{
-			AssertRuleSucceedForMe ("Success1");
-			AssertRuleSucceedForMe ("Success2");
-			AssertRuleSucceedForMe ("Success3");
-			AssertRuleSucceedForMe ("Success4");
-			AssertRuleSucceedForMe ("Success5");
-			AssertRuleSucceedForMe ("Success6");
-			AssertRuleSucceedForMe ("Success7");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success1");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success2");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success3");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success4");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success5");
+			AssertRuleSuccess<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Success6");
 		}
 
 		[Test]
 		public void Failure ()
 		{
-			AssertRuleFailsForMe ("Failure0", 1);
-			AssertRuleFailsForMe ("Failure1", 1);
-			AssertRuleFailsForMe ("Failure2", 1);
-			AssertRuleFailsForMe ("Failure3", 1);
-			AssertRuleFailsForMe ("Failure4", 1);
-			AssertRuleFailsForMe ("Failure5", 1);
-			AssertRuleFailsForMe ("Failure5b", 2);
-			AssertRuleFailsForMe ("Failure6", 1);
-			AssertRuleFailsForMe ("Failure7", 1);
-			AssertRuleFailsForMe ("Failure8", 3);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure0", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure1", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure2", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure3", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure4", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure5", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure5b", 2);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure6", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure7", 1);
+			AssertRuleFailure<ReviewLockUsedOnlyForOperationsOnVariablesTest> ("Failure8", 3);
 		}
 
 
 		private object locker = new object ();
 		private object locker2 = new object ();
 
-		public bool DoesNotApply0 ()
+		public bool DoesNotApply1 ()
 		{
 			bool ret = true;
 			x = 42;
@@ -98,8 +91,11 @@ namespace Test.Rules.Concurrency {
 			return ret;
 		}
 
-		public void DoesNotApply1 ()
+		public void DoesNotApply2 ()
 		{
+			Monitor.Enter (locker);
+			x = 0;
+			//does not apply since we do not exit
 		}
 
 		public bool Success1 (string s)
@@ -163,14 +159,7 @@ namespace Test.Rules.Concurrency {
 			x = 0;
 		}
 
-		public void Success6 ()
-		{
-			Monitor.Enter (locker);
-			x = 0;
-			//does not apply since we do not exit
-		}
-
-		public void Success7 (string name)
+		public void Success6 (string name)
 		{
 			lock (locker) {
 				s = name.Substring(1);

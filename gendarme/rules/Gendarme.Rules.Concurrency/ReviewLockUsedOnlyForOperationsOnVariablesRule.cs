@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -80,11 +82,6 @@ namespace Gendarme.Rules.Concurrency {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ReviewLockUsedOnlyForOperationsOnVariablesRule : Rule, IMethodRule {
 
-		private int lockDepth = -1;
-		//64 nested locks in one method should be enough for anybody ;)
-		//the rule would just not analyze further.
-		private int [] lockDoesNotApply = new int [64];
-
 		private static OpCodeBitmask interlockedFriendlyOpCodeBitmask = BuildInterlockedFriendlyOpCodeBitmask ();
 
 
@@ -101,89 +98,57 @@ namespace Gendarme.Rules.Concurrency {
 			};
 		}
 
-
-		private bool HandleLockEnterExit (MethodReference m, MethodDefinition caller, Instruction ins)
-		{
-			if (lockDepth >= lockDoesNotApply.Length)
-				return false;
-
-			if (IsMonitorMethod (m, "Enter")) {
-				lockDepth ++;
-				lockDoesNotApply [lockDepth] = 0;
-				return true;
-			} else if (IsMonitorMethod (m, "Exit") && lockDepth > -1) {
-				if (lockDoesNotApply [lockDepth] < 0)
-					Runner.Report (caller, ins, Severity.Medium, Confidence.Normal);
-				lockDepth --;
-				//a nested lock invalidates parent lock (deferred case)
-				//thus return false
-			}
-			return false;
-		}
-
-		private bool CurrentLockSectionDoesNotApply
-		{
-			get {
-				if (lockDepth < 0 || lockDepth >= lockDoesNotApply.Length)
-					return false;
-				return lockDoesNotApply [lockDepth] > 0;
-			}
-			set {
-				if (lockDepth < 0 || lockDepth >= lockDoesNotApply.Length)
-					return;
-				if (value)
-					lockDoesNotApply [lockDepth] = 1;
-				else if (lockDoesNotApply [lockDepth] == 0) //deferred
-					lockDoesNotApply [lockDepth] = -1;
-			}
-		}
-
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasBody)
+			if (!method.HasBody || !method.Body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
 			// avoid looping if we're sure there's no call in the method
 			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			lockDepth = -1;
-			Array.Clear (lockDoesNotApply, 0, lockDoesNotApply.Length);
-
-			foreach (Instruction ins in method.Body.Instructions) {
-
-				if (ins.OpCode.FlowControl == FlowControl.Call) {
-					//if this is a lock entry or exit then change state
-					//if not, the the current lock section does not apply
-					MethodReference m = (ins.Operand as MethodReference);
-					if (m == null)
+			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+				Instruction ins = eh.TryStart;
+				// xMCS and earlier (pre-4.0) CSC usd Monitor.Enter(object) just outside of the Try block
+				bool monitor_enter = IsMonitorEnter (ins.Previous, 1);
+				// check every try block
+				int end = eh.TryEnd.Offset;
+				for (; ins.Offset < end; ins = ins.Next) {
+					// CSC10 use Monitor.Enter(object, ref bool) and put it inside the Try block
+					if (!monitor_enter) {
+						if (ins.OpCode.FlowControl == FlowControl.Call)
+							monitor_enter = (IsMonitorEnter (ins, 2));
+						// we do not start checking instruction until we have found our Enter call
 						continue;
+					}
 
-					if (!HandleLockEnterExit (m, method, ins))
-						CurrentLockSectionDoesNotApply = true;
-					continue;
+					// check for operations that requires a lock (and not a simpler interlock)
+					bool lock_required = false;
+					while (ins.Offset < end) {
+						if (!interlockedFriendlyOpCodeBitmask.Get (ins.OpCode.Code)) {
+							lock_required = true;
+							break;
+						}
+						ins = ins.Next;
+					}
+
+					if (!lock_required && monitor_enter)
+						Runner.Report (method, ins, Severity.Medium, Confidence.Normal);
+					break;
 				}
-				if (lockDepth < 0) //do not care below until we enter a lock
-					continue;
-				if (CurrentLockSectionDoesNotApply) //do not care below until we
-					continue;                       //exit the lock
-
-				//TODO: handle CompareExchange scenario
-				if (ins.OpCode.FlowControl == FlowControl.Cond_Branch)
-					CurrentLockSectionDoesNotApply = true;
-
-				CurrentLockSectionDoesNotApply = !interlockedFriendlyOpCodeBitmask.Get (ins.OpCode.Code);
 			}
 
 			return Runner.CurrentRuleResult;
 		}
 
-		//FIXME: copied from DoubleCheckLockingRule AND DoNotUseLockedRegion..., we need to share this
-		private static bool IsMonitorMethod (MethodReference method, string methodName)
+		static bool IsMonitorEnter (Instruction ins, int parametersCount)
 		{
-			if (method.Name != methodName)
+			MethodReference method = (ins.Operand as MethodReference);
+			if (method == null)
 				return false;
-			return (method.DeclaringType.FullName == "System.Threading.Monitor");
+			if ((method.Name != "Enter") || (method.DeclaringType.FullName != "System.Threading.Monitor"))
+				return false;
+			return (parametersCount == method.Parameters.Count);
 		}
 
 		private static OpCodeBitmask BuildInterlockedFriendlyOpCodeBitmask ()
