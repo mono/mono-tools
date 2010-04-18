@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Concurrency {
 		private const string LockThis = "Monitor.Enter(this) or lock(this) in C#";
 		private const string LockType = "Monitor.Enter(typeof({0})) or lock(typeof({0})) in C#";
 
-		public override void Analyze (MethodDefinition method, Instruction ins)
+		public override void Analyze (MethodDefinition method, MethodReference enter, Instruction ins)
 		{
 			Instruction locker = ins.TraceBack (method);
 			if (locker.OpCode.Code == Code.Dup)

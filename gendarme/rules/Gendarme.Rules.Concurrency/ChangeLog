@@ -1,3 +1,12 @@
+2010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnThisOrTypesRule.cs: Update Analyze signature
+	* DoNotLockOnWeakIdentityObjectsRule.cs: Update logic since CSC
+	on FX4 use Monitor.Enter(object, ref bool)
+	* LockAnalyzerRule.cs: Add a new 'enter' parameter to Analyze
+	so its possible to query which Monitor.Enter overload is being
+	used.
+
 2010-04-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DecorateThreadsRule.cs: Implement IEquatable<> on MethodName

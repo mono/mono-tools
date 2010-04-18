@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -55,7 +55,7 @@ namespace Gendarme.Rules.Concurrency {
 		}
 
 
-		abstract public void Analyze (MethodDefinition method, Instruction ins);
+		abstract public void Analyze (MethodDefinition method, MethodReference enter, Instruction ins);
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Concurrency {
 				if (mr.Name != "Enter")
 					continue;
 
-				Analyze (method, ins);
+				Analyze (method, mr, ins);
 			}
 			return Runner.CurrentRuleResult;
 		}

@@ -106,34 +106,50 @@ namespace Gendarme.Rules.Concurrency {
 			"System.Reflection.ParameterInfo"
 		};
 
-		public override void Analyze (MethodDefinition method, Instruction ins)
+		public override void Analyze (MethodDefinition method, MethodReference enter, Instruction ins)
 		{
-			// well original instruction since this is where we will report the defect
+			TypeReference type = null;
+
+			// keep original instruction since this is where we will report the defect
 			Instruction call = ins;
-			while (ins.Previous != null) {
-				ins = ins.Previous;
-				TypeReference type = ins.GetOperandType (method);
-				if (type == null)
-					continue;
 
-				// fast check for sealed types
-				switch (type.FullName) {
-				case "System.ExecutionEngineException":
-				case "System.StackOverflowException":
-				case "System.String":
-				case "System.Threading.Thread":
-					Runner.Report (method, call, Severity.High, Confidence.Normal, type.FullName);
-					return;
-				default:
-					foreach (string unsealed in unsealed_types) {
-						if (!type.Inherits (unsealed))
-							continue;
-
-						string msg = String.Format ("'{0}' inherits from '{1}'.", type.FullName, unsealed);
-						Runner.Report (method, call, Severity.High, Confidence.Normal, msg);
-					}
-					return;
+			switch (enter.Parameters.Count) {
+			case 1:
+				// Monitor.Enter(object)
+				while ((ins.Previous != null) && (type == null)) {
+					ins = ins.Previous;
+					type = ins.GetOperandType (method);
 				}
+				break;
+			case 2:
+				// Monitor.Enter(object, ref bool) <-- new in FX4 and used by CSC10
+				Instruction first = call.TraceBack (method);
+				if (first.OpCode.Code == Code.Dup)
+					first = first.Previous;
+				type = first.GetOperandType (method);
+				break;
+			}
+
+			if (type == null)
+				return;
+
+			// fast check for sealed types
+			switch (type.FullName) {
+			case "System.ExecutionEngineException":
+			case "System.StackOverflowException":
+			case "System.String":
+			case "System.Threading.Thread":
+				Runner.Report (method, call, Severity.High, Confidence.Normal, type.FullName);
+				break;
+			default:
+				foreach (string unsealed in unsealed_types) {
+					if (!type.Inherits (unsealed))
+						continue;
+
+					string msg = String.Format ("'{0}' inherits from '{1}'.", type.FullName, unsealed);
+					Runner.Report (method, call, Severity.High, Confidence.Normal, msg);
+				}
+				break;
 			}
 		}
 	}
