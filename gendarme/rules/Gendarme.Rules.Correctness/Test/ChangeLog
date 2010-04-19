@@ -1,3 +1,9 @@
+2010-04-19  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeWithSideEffectsInConditionalCodeTest.cs: Add a comment
+	about why 'Bad2' could fail on Windows - i.e. failing to load
+	Mono.Cecil.Pdb.dll
+
 2010-04-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: Additional
