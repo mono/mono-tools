@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -81,12 +83,32 @@ namespace Test.Rules.Correctness {
 			var re = new Regex (this.ToString ());
 		}
 
-		void Success2d (bool good) {
+		void Failure2d1 (bool good) {
 			var re = new Regex (good ? "bad\\" : "good");
 		}
 
-		void Failure2d (bool good) {
+		void Failure2d2 (bool good) {
 			var re = new Regex (good ? "good" : "bad\\");
+		}
+
+		void Failure2d3 (bool good)
+		{
+			var re = new Regex (good ? null : "good");
+		}
+
+		void Failure2d4 (bool good)
+		{
+			var re = new Regex (good ? "good" : null);
+		}
+
+		void Failure2d5 (bool good)
+		{
+			var re = new Regex (good ? String.Empty : "good");
+		}
+
+		void Failure2d6 (bool good)
+		{
+			var re = new Regex (good ? "good" : String.Empty);
 		}
 
 		bool Success3 (string pattern) {
@@ -191,7 +213,6 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<RegexCases> ("Success2");
 			AssertRuleSuccess<RegexCases> ("Success2b");
 			AssertRuleSuccess<RegexCases> ("Success2c");
-			AssertRuleSuccess<RegexCases> ("Success2d");
 		}
 
 		[Test]
@@ -239,7 +260,12 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Failure2d ()
 		{
-			AssertRuleFailure<RegexCases> ("Failure2d", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d1", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d2", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d3", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d4", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d5", 1);
+			AssertRuleFailure<RegexCases> ("Failure2d6", 1);
 		}
 
 		[Test]

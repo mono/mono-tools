@@ -3,6 +3,8 @@
 	* AvoidCodeWithSideEffectsInConditionalCodeTest.cs: Add a comment
 	about why 'Bad2' could fail on Windows - i.e. failing to load
 	Mono.Cecil.Pdb.dll
+	* ProvideCorrectRegexPatternRule.cs: Make test cases consistent
+	and add new ones.
 
 2010-04-10  Sebastien Pouliot  <sebastien@ximian.com>
 
