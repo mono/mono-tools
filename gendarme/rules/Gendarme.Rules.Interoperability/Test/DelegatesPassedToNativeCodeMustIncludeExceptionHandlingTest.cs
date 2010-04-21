@@ -77,8 +77,11 @@ namespace Test.Rules.Interoperability {
 			int a, b;
 			try {
 				a = 1;
-			} catch {
+				Console.WriteLine (a);
+			}
+			catch {
 				b = 2;
+				Console.WriteLine (b);
 			}
 		}
 		
@@ -89,8 +92,11 @@ namespace Test.Rules.Interoperability {
 			int a, b;
 			try {
 				a = 1;
-			} catch {
+				Console.WriteLine (a);
+			}
+			catch {
 				b = 2;
+				Console.WriteLine (b);
 			}
 		}
 		
@@ -205,7 +211,14 @@ namespace Test.Rules.Interoperability {
 		private void CheckMethod_AnonymousOK2 ()
 		{
 			CallbackDelegate a = delegate () { };
-			CallbackDelegate b = delegate () { try {} catch {} };
+			CallbackDelegate b = delegate () { 
+				try {
+					Console.WriteLine ("try");
+				} 
+				catch {
+					Console.WriteLine ("catch");
+				} 
+			};
 			// Create a bad delegate and a good delegate, pass the good delegate.
 			PInvokeDelegate1 (b);
 		}
@@ -247,35 +260,186 @@ namespace Test.Rules.Interoperability {
 		{
 			// These anonymous delegates will turn out non-static since they access a method variable in outer scope.
 			int o = 7;
-			CallbackDelegate c = delegate () { int a, b; try { a = o; } catch { b = o; } };
+			CallbackDelegate c = delegate () {
+				int a, b; 
+				try { 
+					a = o;
+					Console.WriteLine (a);
+				} 
+				catch { 
+					b = o;
+					Console.WriteLine (b);
+				}
+			};
 			
-			CallbackOKStatic_Field = delegate () { int a, b; try { a = o; } catch { b = o; } };
-			CallbackOKStatic_StaticField = delegate () { int a, b; try { a = o; } catch { b = o; } };
-			PInvokeDelegate1 (delegate () { int a, b; try { a = o; } catch { b = o; } });
-			PInvokeDelegate1 (new CallbackDelegate (delegate () { int a, b; try { a = o; } catch { b = o; } }));
+			CallbackOKStatic_Field = delegate () {
+				int a, b;
+				try {
+					a = o;
+					Console.WriteLine (a);
+				}
+				catch {
+					b = o;
+					Console.WriteLine (b);
+				}
+			};
+
+			CallbackOKStatic_StaticField = delegate () {
+				int a, b;
+				try {
+					a = o;
+					Console.WriteLine (a);
+				}
+				catch {
+					b = o;
+					Console.WriteLine (b);
+				}
+			};
+
+			PInvokeDelegate1 (delegate () {
+								int a, b; 
+				try { 
+					a = o;
+					Console.WriteLine (a);
+				} 
+				catch { 
+					b = o;
+					Console.WriteLine (b);
+				}
+			});
+
+			PInvokeDelegate1 (new CallbackDelegate (delegate () {
+								int a, b; 
+				try { 
+					a = o;
+					Console.WriteLine (a);
+				} 
+				catch { 
+					b = o;
+					Console.WriteLine (b);
+				}
+			}));
+
 			PInvokeDelegate1 (c);
 			PInvokeDelegate1 (CallbackOKStatic_Field);
 			PInvokeDelegate1 (CallbackOKStatic_StaticField);
-			PInvokeDelegate2 (null, delegate () { int a, b; try { a = o; } catch { b = o; } });
-			PInvokeDelegate2 (new CallbackDelegate (delegate () { int a, b; try { a = o; } catch { b = o; } }), null);
+
+			PInvokeDelegate2 (null, delegate () {
+				int a, b; 
+				try { 
+					a = o;
+					Console.WriteLine (a);
+				} 
+				catch { 
+					b = o;
+					Console.WriteLine (b);
+				}
+			});
+
+			PInvokeDelegate2 (new CallbackDelegate (delegate () {
+								int a, b; 
+				try { 
+					a = o;
+					Console.WriteLine (a);
+				} 
+				catch { 
+					b = o;
+					Console.WriteLine (b);
+				}
+			}), null);
 			PInvokeDelegate3 (CallbackOKStatic_Field, null, CallbackOKStatic_StaticField);
 		}
 		
 		private void CheckMethod_AnonymousCallbackOKStatic ()
 		{
 			// These anonymous delegates will turn out static given that they don't access any class/method variables in outer scope.
-			CallbackDelegate c = delegate () { int a, b; try { a = 1; } catch { b = 2; } };
+			CallbackDelegate c = delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch { 
+					b = 2;
+					Console.WriteLine (b);
+				}
+			};
 				
-			CallbackOK1_Field = delegate () { int a, b; try { a = 1; } catch { b = 2; } };
-			CallbackOK1_StaticField = delegate () { int a, b; try { a = 1; } catch { b = 2; } };
+			CallbackOK1_Field = delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch {
+					b = 2;
+					Console.WriteLine (b);
+				}
+			};
+
+			CallbackOK1_StaticField = delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch {
+					b = 2;
+					Console.WriteLine (b);
+				}
+			};
 			
-			PInvokeDelegate1 (delegate () { int a, b; try { a = 1; } catch { b = 2; } });
-			PInvokeDelegate1 (new CallbackDelegate (delegate () { int a, b; try { a = 1; } catch { b = 2; } }));
+			PInvokeDelegate1 (delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch { 
+					b = 2;
+					Console.WriteLine (b);
+				}
+			});
+
+			PInvokeDelegate1 (new CallbackDelegate (delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch { 
+					b = 2;
+					Console.WriteLine (b);
+				}
+			}));
+
 			PInvokeDelegate1 (c);
 			PInvokeDelegate1 (CallbackOK1_Field);
 			PInvokeDelegate1 (CallbackOK1_StaticField);
-			PInvokeDelegate2 (null, delegate () { int a, b; try { a = 1; } catch { b = 2; } });
-			PInvokeDelegate2 (new CallbackDelegate (delegate () { int a, b; try { a = 1; } catch { b = 2; } }), null);
+			PInvokeDelegate2 (null, delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch { 
+					b = 2;
+					Console.WriteLine (b);
+				}
+			});
+
+			PInvokeDelegate2 (new CallbackDelegate (delegate () {
+				int a, b;
+				try {
+					a = 1;
+					Console.WriteLine (a);
+				}
+				catch { 
+					b = 2;
+					Console.WriteLine (b);
+				}
+			}), null);
+
 			PInvokeDelegate3 (CallbackOK1_Field, null, CallbackOK1_StaticField);
 		}
 		

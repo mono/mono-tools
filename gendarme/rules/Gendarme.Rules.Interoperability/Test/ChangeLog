@@ -1,3 +1,10 @@
+2010-04-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs:
+	Make sure the delegates content cannot be optimized away (e.g. 
+	CSC) because they have no side effects (i.e. dead code). Fix unit
+	tests under Windows (CSC)
+
 2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CentralizePInvokesIntoNativeMethodsTypeTest.cs: New. Unit tests
