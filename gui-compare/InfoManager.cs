@@ -388,8 +388,8 @@ namespace GuiCompare
 				u = GetMasterInfoUri ("masterinfos-SL3.tar.gz");
 				break;
 			
-			case "SL4Beta":
-				u = GetMasterInfoUri ("masterinfos-SL4beta.tar.gz");
+			case "SL4":
+				u = GetMasterInfoUri ("masterinfos-SL4.tar.gz");
 				break;
 			default:
 				main.Status = "Profile is unknown";
@@ -687,10 +687,10 @@ namespace GuiCompare
 			Populate (sub, "API 2.0 sp1", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
 			Populate (sub, "API 3.0 sp1", GetVersionPath ("2.0", "net_2_0"), "3.0", api_3_0);
 			Populate (sub, "API 3.5 sp1", GetVersionPath ("2.0", "net_2_0"), "3.5", api_3_5);
-			Populate (sub, "API 4.0 RC", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
+			Populate (sub, "API 4.0", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
 			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
 			Populate (sub, "Silverlight 3.0", GetVersionPath ("2.1", "net_2_1"), "SL3", api_sl2);
-			Populate (sub, "Silverlight 4.0 (Beta)", GetVersionPath ("2.1", "net_2_1"), "SL4Beta", api_sl2);
+			Populate (sub, "Silverlight 4.0", GetVersionPath ("2.1", "net_2_1"), "SL4", api_sl2);
 		}
 		
 		static string GetVersionPath (string version, string profile)
