@@ -183,7 +183,8 @@ namespace Gendarme.Rules.Maintainability {
 			foreach (PropertyDefinition property in type.Properties) {
 				if (IsObsolete (property.PropertyType)) {
 					string msg = String.Format ("Property type '{0}' is obsolete.", property.PropertyType);
-					bool visible = property.GetMethod.IsVisible () || property.SetMethod.IsVisible ();
+					bool visible = (((property.GetMethod != null) && property.GetMethod.IsVisible ()) || 
+						((property.SetMethod != null) && property.SetMethod.IsVisible ()));
 					Runner.Report (property, visible ? Severity.High : Severity.Medium, Confidence.Total, msg);
 				}
 			}

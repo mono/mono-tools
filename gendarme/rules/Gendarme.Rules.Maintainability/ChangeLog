@@ -1,3 +1,8 @@
+2010-04-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RemoveDependenceOnObsoleteCodeRule.cs: Fix case where a property
+	setter or getter does not exists (on obsoleted property).
+
 2010-02-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidAlwaysNullFieldRule.cs: The rules was ignoring "components" 
