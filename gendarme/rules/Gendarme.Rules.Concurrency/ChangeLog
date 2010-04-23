@@ -1,3 +1,9 @@
+2010-04-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs: Handle case
+	when a try handler correspond to the first instruction of a 
+	method
+
 2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs: Fix rule to
