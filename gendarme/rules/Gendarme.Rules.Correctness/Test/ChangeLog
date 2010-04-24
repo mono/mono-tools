@@ -1,3 +1,8 @@
+2010-04-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeWithSideEffectsInConditionalCodeTest.cs: Skip Bad2 if
+	debugging symbols are unavailable (more effective than comments)
+
 2010-04-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCodeWithSideEffectsInConditionalCodeTest.cs: Add a comment
