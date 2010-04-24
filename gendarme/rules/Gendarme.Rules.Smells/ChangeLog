@@ -1,3 +1,16 @@
+2010-03-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CodeDuplicatedLocator.cs: Add [Conditional("DEBUG")] on 
+	WriteToOutput. Fix typo IsExtractableToMethodBlock
+	* InstructionMatcher.cs: Use rocks to cover all LDARG* and LDLOC*
+	* Pattern.cs: Don't try to be too precise when checking compiler
+	generated patterns since this only makes it difficult to support
+	many compilers and adds false positives. New logic is more 
+	permissive (IL wise), more (operand wise) and less (IL wise)
+	precise and should cover more compilers while reducing false 
+	positive (but it could fail to report some cases - which is less
+	problematic than reporting false positive IMO)
+
 2010-03-21  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongMethodsRule.cs: Add more types (from Workflow and 

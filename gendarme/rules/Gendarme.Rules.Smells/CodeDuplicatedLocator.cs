@@ -28,10 +28,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
@@ -84,16 +86,15 @@ namespace Gendarme.Rules.Smells {
 				current != target;
 		}
 
+		[Conditional ("DEBUG")]
 		void WriteToOutput (MethodDefinition current, MethodDefinition target, Pattern found) 
 		{
-			if (rule.Runner.VerbosityLevel > 0) {
-				Console.WriteLine ("Found pattern in {0} and {1}", current, target);
-				Console.WriteLine ("\t Pattern");
-				for (int index = 0; index < found.Count; index++) 
-					Console.WriteLine ("\t\t{0} - {1}",
-						found[index].OpCode.Code,
-						found[index].Operand != null? found[index].Operand : "No operator");
-			}
+			Log.WriteLine (this, "Found pattern in {0} and {1}", current, target);
+			Log.WriteLine (this, "\t Pattern");
+			for (int index = 0; index < found.Count; index++) 
+				Log.WriteLine (this, "\t\t{0} - {1}",
+					found[index].OpCode.Code,
+					found[index].Operand != null? found[index].Operand : "No operator");
 		}
 
 		Pattern GetDuplicatedCode (MethodDefinition current, MethodDefinition target)
@@ -105,12 +106,11 @@ namespace Gendarme.Rules.Smells {
 			InstructionMatcher.Target = target;
 
 			foreach (Pattern pattern in GetPatterns (current)) {
-				if (pattern.IsCompilerGeneratedBlock || !pattern.IsExtraibleToMethodBlock)
+				if (pattern.IsCompilerGeneratedBlock || !pattern.IsExtractableToMethodBlock)
 					continue;
 
 				if (InstructionMatcher.Match (pattern, target.Body.Instructions)) {
-					if (rule.Runner.VerbosityLevel > 0) 
-						WriteToOutput (current, target, pattern);
+					WriteToOutput (current, target, pattern);
 					return pattern;
 				}
 			}

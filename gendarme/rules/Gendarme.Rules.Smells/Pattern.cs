@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// 	(C) 2008 Néstor Salceda
+// (C) 2008 Néstor Salceda
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,6 +29,7 @@
 //
 
 using System;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 namespace Gendarme.Rules.Smells {
@@ -34,7 +37,7 @@ namespace Gendarme.Rules.Smells {
 		Instruction[] instructions;
 		int[] prefixes;
 		bool? compilerGeneratedBlock;
-		bool? extraibleToMethodBlock;
+		bool? extractableToMethodBlock;
 
 		internal Pattern (Instruction[] instructions) {
 			if (instructions == null)
@@ -42,129 +45,35 @@ namespace Gendarme.Rules.Smells {
 			this.instructions = instructions;
 		}
 
-		bool IsDisposingBlock ()
+		// look for: isinst System.IDisposable
+		static bool IsInstanceOfIDisposable (Instruction ins)
 		{
-			return (Count == 8 && 
-				((instructions[0].OpCode.Code == Code.Brtrue &&
-				instructions[1].OpCode.Code == Code.Leave &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Isinst &&
-				instructions[4].OpCode.Code == Code.Dup &&
-				instructions[5].OpCode.Code == Code.Brtrue_S &&
-				instructions[6].OpCode.Code == Code.Endfinally &&
-				//To Disposable
-				instructions[7].OpCode.Code == Code.Callvirt)
-				||
-				(instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Isinst &&
-				instructions[2].OpCode.Code == Code.Dup &&
-				instructions[3].OpCode.Code == Code.Brtrue_S &&
-				instructions[4].OpCode.Code == Code.Endfinally &&
-				instructions[5].OpCode.Code == Code.Callvirt && //ToDisposable
-				instructions[6].OpCode.Code == Code.Endfinally &&
-				instructions[7].OpCode.Code == Code.Ret)))
-				||
-				(Count == 9 &&
-				(instructions[0].OpCode.Code == Code.Brtrue &&
-				instructions[1].OpCode.Code == Code.Leave &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Isinst &&
-				instructions[4].OpCode.Code == Code.Dup &&
-				instructions[5].OpCode.Code == Code.Brtrue_S &&
-				instructions[6].OpCode.Code == Code.Endfinally &&
-				instructions[7].OpCode.Code == Code.Callvirt && //ToDisposable
-				instructions[8].OpCode.Code == Code.Endfinally) ||
-				(
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Isinst &&
-				instructions[2].OpCode.Code == Code.Dup &&
-				instructions[3].OpCode.Code == Code.Brtrue_S &&
-				instructions[4].OpCode.Code == Code.Endfinally &&
-				instructions[5].OpCode.Code == Code.Callvirt && //ToDisposable
-				instructions[6].OpCode.Code == Code.Endfinally &&
-				instructions[7].OpCode.StackBehaviourPush == StackBehaviour.Pushi && //return value
-				instructions[8].OpCode.Code == Code.Ret))
-			;
-		}
-		
-		bool IsForeachEnumeratorBlock ()
-		{
-			return (Count == 5 &&
-				instructions[0].OpCode.StackBehaviourPop == StackBehaviour.Pop1  &&
-				instructions[1].OpCode.Code == Code.Br &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Callvirt &&
-				//To get_Current
-				instructions[4].OpCode.Code == Code.Castclass)
-				||
-				(Count == 4 &&
-				instructions[0].OpCode.Code == Code.Callvirt &&
-				instructions[1].OpCode.Code == Code.Castclass &&
-				instructions[2].OpCode.StackBehaviourPop == StackBehaviour.Pop1 &&
-				instructions[3].OpCode.StackBehaviourPush == StackBehaviour.Push1)
-			;
+			if (ins.OpCode.Code != Code.Isinst)
+				return false;
+			return ((ins.Operand as TypeReference).FullName == "System.IDisposable");
 		}
 
-		bool IsUsingCleanupBlock ()
+		// look for a virtual call to a specific method
+		static bool IsCallVirt (Instruction ins, string typeName, string methodName)
 		{
-			return Count == 4 &&
-				((instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Brfalse &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Callvirt)
-				//to disposable ...
-				||
-				(instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Callvirt &&
-				//to disposable
-				instructions[2].OpCode.Code == Code.Endfinally &&
-				instructions[3].OpCode.Code == Code.Ret))
-			;
+			if (ins.OpCode.Code != Code.Callvirt)
+				return false;
+			MethodReference mr = (ins.Operand as MethodReference);
+			return ((mr != null) && (mr.Name == methodName) && (mr.DeclaringType.FullName == typeName));
 		}
 
-		bool IsLoadingOperandForSwitch () 
+		// look for:
+		//	callvirt System.Void System.IDisposable::Dispose()
+		//	endfinally 
+		static bool IsIDisposableDisposePattern (Instruction ins)
 		{
-			return (Count == 4 &&
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.StackBehaviourPop == StackBehaviour.Pop1 &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Brfalse)
-				||
-				(Count == 5 &&
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Ldfld &&
-				instructions[2].OpCode.StackBehaviourPop == StackBehaviour.Pop1 &&
-				instructions[3].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[4].OpCode.Code == Code.Brfalse)
-			;
+			if (!IsCallVirt (ins, "System.IDisposable", "Dispose"))
+				return false;
+			Instruction next = ins.Next;
+			return ((next != null) && (next.OpCode.Code == Code.Endfinally));
 		}
 
-		bool IsFillingDictionaryForSwitch () 
-		{
-			//As we ignore the ldstr operands, the filling of this
-			//should be ignored (we will get the error later)
-			return Count == 8 &&
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.StackBehaviourPush == StackBehaviour.Pushref &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Pushi &&
-				instructions[3].OpCode.Code == Code.Callvirt && //To dictionary
-				instructions[4].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[5].OpCode.StackBehaviourPush == StackBehaviour.Pushref &&
-				instructions[6].OpCode.StackBehaviourPush == StackBehaviour.Pushi &&
-				instructions[7].OpCode.Code == Code.Callvirt //To dictionary
-			;
-		}
-
-		bool IsReturningLoopsWithValue () 
-		{
-			return Count == 4 &&
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Pushi &&
-				instructions[1].OpCode.Code == Code.Ret &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[3].OpCode.Code == Code.Ret
-			;
-		}
-
+		// IIRC older xMCS generated that quite often
 		bool IsDoubleReturn () 
 		{
 			return Count > 1 &&
@@ -172,19 +81,29 @@ namespace Gendarme.Rules.Smells {
 				instructions[Count - 2].OpCode.Code == Code.Ret
 			;
 		}
-		
-		void ComputeCompilerGeneratedBlock ()
-		{
-			compilerGeneratedBlock = IsUsingCleanupBlock () ||
-			IsForeachEnumeratorBlock () || IsDisposingBlock () ||
-			IsLoadingOperandForSwitch () || IsFillingDictionaryForSwitch () ||
-			IsReturningLoopsWithValue () || IsDoubleReturn ();
-		}
 
+		// small patterns that highly suggest they were compiler generated
+		bool ComputeUnlikelyUserPatterns ()
+		{
+			for (int i = 0; i < Count; i++) {
+				Instruction ins = instructions [i];
+				// foreach
+				if (IsCallVirt (ins, "System.Collections.IEnumerator", "get_Current"))
+					return true;
+				// foreach
+				if (IsInstanceOfIDisposable (ins))
+					return true;
+				// foreach, using
+				if (IsIDisposableDisposePattern (ins))
+					return true;
+			}
+			return false;
+		}
+		
 		internal bool IsCompilerGeneratedBlock {
 			get {
 				if (compilerGeneratedBlock == null)
-					ComputeCompilerGeneratedBlock ();
+					compilerGeneratedBlock = ComputeUnlikelyUserPatterns () || IsDoubleReturn ();
 				return (bool) compilerGeneratedBlock;
 			}
 		}
@@ -203,16 +122,11 @@ namespace Gendarme.Rules.Smells {
 			;
 		}
 
-		void ComputeExtraible ()
-		{
-			extraibleToMethodBlock = !IsReturningCode ();
-		}
-
-		internal bool IsExtraibleToMethodBlock {
+		internal bool IsExtractableToMethodBlock {
 			get {
-				if (extraibleToMethodBlock == null) 
-					ComputeExtraible ();
-				return (bool) extraibleToMethodBlock;
+				if (extractableToMethodBlock == null) 
+					extractableToMethodBlock = !IsReturningCode ();
+				return (bool) extractableToMethodBlock;
 			}
 		}
 			

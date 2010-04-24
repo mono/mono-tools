@@ -66,41 +66,30 @@ namespace Gendarme.Rules.Smells {
 			//Check the types in ldarg stuff.  Sometimes this scheme
 			//could lead us to false positives.  We need an analysis
 			//which depends on the context.
-			if (source.OpCode.Code == Code.Ldarg_1)
-				return Current.Parameters.Count > 0 && Target.Parameters.Count > 0 ? 
-					Current.Parameters[0].ParameterType.Equals (Target.Parameters[0].ParameterType) : 
-					false;
+			if (source.IsLoadArgument ()) {
+				ParameterDefinition p = source.GetParameter (Current);
+				if (p != null) {
+					ParameterDefinitionCollection cp = Current.Parameters;
+					ParameterDefinitionCollection tp = Target.Parameters;
+					int pos = p.Sequence - 1;
+					return cp.Count > pos && tp.Count > pos ?
+						cp [pos].ParameterType.Equals (tp [pos].ParameterType) :
+						false;
+				}
+			}
 
-			if (source.OpCode.Code == Code.Ldarg_2)
-				return Current.Parameters.Count > 1 && Target.Parameters.Count > 1 ?
-					Current.Parameters[1].ParameterType.Equals (Target.Parameters[1].ParameterType) :
-					false;
-
-			if (source.OpCode.Code == Code.Ldarg_3)
-				return Current.Parameters.Count > 2 && Target.Parameters.Count > 2 ?
-					Current.Parameters[2].ParameterType.Equals (Target.Parameters[2].ParameterType) : 
-					false;
-
-			//TODO: The same for ldloc / stloc
-			if (source.OpCode.Code == Code.Ldloc_0) 
-				return Current.Body.Variables.Count > 0 && Target.Body.Variables.Count > 0 ? 
-					Current.Body.Variables[0].VariableType.Equals (Target.Body.Variables[0].VariableType):
-					false;
-			
-			if (source.OpCode.Code == Code.Ldloc_1) 
-				return Current.Body.Variables.Count > 1 && Target.Body.Variables.Count > 1 ?
-					Current.Body.Variables[1].VariableType.Equals (Target.Body.Variables[1].VariableType):
-					false;
-
-			if (source.OpCode.Code == Code.Ldloc_2) 
-				return Current.Body.Variables.Count > 2 && Target.Body.Variables.Count > 2 ?
-					Current.Body.Variables[2].VariableType.Equals (Target.Body.Variables[2].VariableType):
-					false;
-
-			if (source.OpCode.Code == Code.Ldloc_3) 
-				return Current.Body.Variables.Count > 3 && Target.Body.Variables.Count > 3 ?
-					Current.Body.Variables[3].VariableType.Equals (Target.Body.Variables[3].VariableType):
-					false;
+			// The same for ldloc / stloc
+			if (source.IsLoadLocal ()) {
+				VariableDefinition v = source.GetVariable (Current);
+				if (v != null) {
+					VariableDefinitionCollection cv = Current.Body.Variables;
+					VariableDefinitionCollection tv = Target.Body.Variables;
+					int pos = v.Index;
+					return cv.Count > pos && tv.Count > pos ?
+						cv [pos].VariableType.Equals (tv [pos].VariableType) :
+						false;
+				}
+			}
 
 			//WARNING: Dirty Evil Hack: this should be in the
 			//Pattern class
