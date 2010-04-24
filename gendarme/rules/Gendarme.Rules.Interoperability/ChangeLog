@@ -1,3 +1,13 @@
+2010-04-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
+	Check method.HasBody before doing any memory allocation. Check
+	HasExceptionHandlers before iterating the ExceptionHandlers. 
+	Check called_method.HasParameters before iterating them. Don't
+	call GetDelegatePointers, nor access 'stack' if stack_count is 0.
+	The later solve the exception thrown while analyzing the 
+	jts-1.10.dll assembly.
+
 2010-04-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CentralizePInvokesIntoNativeMethodsTypeRule.cs: Static-ify

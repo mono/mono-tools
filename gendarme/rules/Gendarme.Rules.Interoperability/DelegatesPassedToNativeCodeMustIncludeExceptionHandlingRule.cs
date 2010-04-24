@@ -90,12 +90,13 @@ namespace Gendarme.Rules.Interoperability {
 		{
 			MethodDefinition called_method;
 			List<MethodDefinition> pointers;
-			List<List<MethodDefinition>> locals = new List<List<MethodDefinition>> ();
-			List<ILRange> stack = new List<ILRange> (); // A rude way of assigning code sequences to stack positions.
-			
+
 			// Rule does not apply if the method has no IL
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
+
+			List<List<MethodDefinition>> locals = new List<List<MethodDefinition>> ();
+			List<ILRange> stack = new List<ILRange> (); // A rude way of assigning code sequences to stack positions.
 			
 			// Console.WriteLine ("Checking method: {0} on type: {1}", method.Name, method.DeclaringType.FullName);
 			
@@ -123,9 +124,7 @@ namespace Gendarme.Rules.Interoperability {
 			
 			int stack_count = 0;
 			foreach (Instruction ins in method.Body.Instructions) {
-				int push = ins.GetPushCount ();
 				int pop = ins.GetPopCount (method);
-				
 				if (pop == -1) {
 					// leave or leave.s, they leave the stack empty.
 					stack_count = 0;
@@ -133,7 +132,7 @@ namespace Gendarme.Rules.Interoperability {
 					continue; // No need to do anything else here.
 				}
 				
-				if (stack_count == 0) {
+				if ((stack_count == 0) && method.Body.HasExceptionHandlers) {
 					foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
 						if (eh.HandlerStart != null && eh.HandlerStart.Offset == ins.Offset) {
 							// upon entry to a catch handler there is an implicit object on the stack already (the thrown object)
@@ -143,6 +142,8 @@ namespace Gendarme.Rules.Interoperability {
 						}
 					}
 				}
+
+				int push = ins.GetPushCount ();
 				// Console.WriteLine ("before {0} + push {1} - pop {2} = after {3} {4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
 				// Console.WriteLine ("{4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
 			
@@ -151,7 +152,7 @@ namespace Gendarme.Rules.Interoperability {
 				} else if (ins.OpCode.Code == Code.Call) {
 					called_method = (ins.Operand as MethodReference).Resolve ();
 					
-					if (called_method != null && called_method.IsPInvokeImpl) {
+					if (called_method != null && called_method.IsPInvokeImpl && called_method.HasParameters) {
 						// Console.WriteLine ("Reached a call instruction to a pinvoke method: {0}", called_method.Name);
 						
 						for (int i = 0; i < called_method.Parameters.Count; i++) {
@@ -167,8 +168,7 @@ namespace Gendarme.Rules.Interoperability {
 								FieldDefinition field = (last.Operand as FieldReference).Resolve ();
 								if (fields_loads == null)
 									fields_loads = new List<FieldDefinition> ();
-								if (!fields_loads.Contains (field))
-									fields_loads.Add (field);
+								fields_loads.AddIfNew (field);
 							}
 							
 							// Get and check the pointers
@@ -178,7 +178,7 @@ namespace Gendarme.Rules.Interoperability {
 				} else if (ins.OpCode.Code == Code.Stfld || ins.OpCode.Code == Code.Stsfld) {
 					FieldDefinition field = (ins.Operand as FieldReference).Resolve ();
 					
-					pointers = GetDelegatePointers (locals, stack [stack_count - 1]);
+					pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
 					
 					// Console.WriteLine (" Reached a field variable store to the field {0}, there are {1} unsafe pointers here.", field.Name, pointers == null ? 0 : pointers.Count);
 					
@@ -201,8 +201,8 @@ namespace Gendarme.Rules.Interoperability {
 						VerifyMethods (pointers);
 				} else if (ins.IsStoreLocal ()) {
 					int index = ins.GetStoreIndex ();
-					
-					pointers = GetDelegatePointers (locals, stack [stack_count - 1]);
+
+					pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
 					
 					// Console.WriteLine (" Reached a local variable store at index {0}, there are {1} pointers here.", index, pointers == null ? 0 : pointers.Count);
 					
@@ -460,7 +460,5 @@ namespace Gendarme.Rules.Interoperability {
 				throw new ArgumentException (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}
 		}
-	}
-	
+	}	
 }
-
