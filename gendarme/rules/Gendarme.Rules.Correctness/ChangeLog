@@ -1,3 +1,8 @@
+2010-04-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedRule.cs: Handle compiler 
+	generated fields (e.g. used in C# 3 automatic properties).
+
 2010-04-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideCorrectRegexPatternRule.cs: Make rule consistent in case

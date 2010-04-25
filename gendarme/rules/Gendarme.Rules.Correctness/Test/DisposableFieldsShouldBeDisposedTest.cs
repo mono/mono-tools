@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -383,6 +383,35 @@ namespace Test.Rules.Correctness {
 		public void TestDelegatedOutsideDispose ()
 		{
 			AssertRuleSuccess<DelegatedOutsideDispose> ();
+		}
+
+		// test case provided by Guillaume Gautreau
+		public class AutomaticProperties : IDisposable {
+
+			// this is not a field, source wise, but the compiler will generated one
+			// that Gendarme will notice
+			public IDisposable TestField { get; set; }
+
+			public void Dispose ()
+			{
+				this.Dispose (true);
+				GC.SuppressFinalize (this);
+			}
+
+			protected virtual void Dispose (bool disposing)
+			{
+				if (disposing) {
+					if (this.TestField != null) {
+						this.TestField.Dispose ();
+					}
+				}
+			}
+		}
+
+		[Test]
+		public void AutomaticProperties_BackingField ()
+		{
+			AssertRuleSuccess<AutomaticProperties> ();
 		}
 	}
 }

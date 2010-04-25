@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -141,6 +141,8 @@ namespace Gendarme.Rules.Correctness {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
 					continue;
+				if (field.IsGeneratedCode ())
+					continue;
 				if (field.FieldType.IsArray ())
 					continue;
 				TypeDefinition fieldType = field.FieldType.Resolve ();
@@ -149,6 +151,10 @@ namespace Gendarme.Rules.Correctness {
 				if (fieldType.Implements ("System.IDisposable"))
 					disposeableFields.Add (field);
 			}
+
+			// nothing to check for, take shortcut out
+			if (disposeableFields.Count == 0)
+				return Runner.CurrentRuleResult;
 
 			List<FieldDefinition> iList;
 			List<FieldDefinition> eList;

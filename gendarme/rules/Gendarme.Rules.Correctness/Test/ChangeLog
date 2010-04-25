@@ -1,3 +1,9 @@
+2010-04-25  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DisposableFieldsShouldBeDisposedTest.cs: Add test case where C#
+	automatic properties are used (which creates a backing field).
+	Test case submitted by Guillaume Gautreau
+
 2010-04-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCodeWithSideEffectsInConditionalCodeTest.cs: Skip Bad2 if
