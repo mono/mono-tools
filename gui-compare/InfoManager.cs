@@ -521,7 +521,7 @@ namespace GuiCompare
 					 });
 					
 				main.StartCompare (delegate {
-					main.Title = String.Format ("{0} to {1}", masterinfo, assemblyfile);
+					main.Title = String.Format ("{0} to {1}", assemblyfile, masterinfo);
 				});
 			});
 		}

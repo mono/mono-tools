@@ -1,3 +1,10 @@
+2010-04-26  Alan McGovern  <amcgovern@novell.com>
+
+	* InfoManager.cs: When setting the title of the window, switch the
+	order of the arguments so that the text is 'foo.dll to foo.xml'. This
+	makes the title consistent with how the data is interpreted - a '+'
+	means foo.dll has something which foo.xml does not.
+
 2010-04-22  Jb Evain  <jbevain@novell.com>
 
 	* InfoManager.cs: update with .net 4.0 RTM and SL 4.0 RTW infos.
