@@ -48,6 +48,8 @@ self-test: all bin/gendarme.exe.config
 	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --html bin/self-test.html --ignore=self-test.ignore \
 		--severity=all --confidence=all bin/gendarme.exe bin/gendarme-wizard.exe bin/Gendarme.*.dll
 
+test-regress: all
+	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --log regress.log testcases/*.dll testcases/*.exe
 	
 TEST1 ?= AvoidVisibleConstantFieldTest
 test1_file = $(shell find rules -name "\.svn" -prune -o  -name "*$(TEST1)*" -print)
@@ -111,4 +113,8 @@ push: instruct.xsd
 #	scp gendarme-2.8preview1-bin.zip $(USER)@upload.ohloh.net:gendarme/files; \
 #	scp gendarme-2.8preview1-win32-setup.zip $(USER)@upload.ohloh.net:gendarme/files; \
 #	scp gendarme.xml $(USER)@upload.ohloh.net:gendarme/instructs
+
+pull-log:
+	scp $(USER)@upload.ohloh.net:gendarme/logs/upload.log .
+	cat upload.log
 
