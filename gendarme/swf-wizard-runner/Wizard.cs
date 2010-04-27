@@ -46,9 +46,6 @@ namespace Gendarme {
 		// This is used for methods which we execute within a thread, but we don't
 		// execute the methods concurrently so we can use single thread.
 		[ThreadModel (ThreadModel.SingleThread)]
-		delegate void MethodInvoker ();
-
-		[ThreadModel (ThreadModel.SingleThread)]
 		sealed class AssemblyInfo {
 			private DateTime timestamp;
 			private AssemblyDefinition definition;
@@ -75,14 +72,13 @@ namespace Gendarme {
 		private GuiRunner runner;
 		private int counter;
 
-		private MethodInvoker assembly_loader;
+		private Action assembly_loader;
 		private IAsyncResult assemblies_loading;
 
-		private MethodInvoker rule_loader;
+		private Action rule_loader;
 		private IAsyncResult rules_loading;
 
-		private MethodInvoker analyze;
-		private IAsyncResult analyzing;
+		private Action analyze;
 
 		private string html_report_filename;
 		private string xml_report_filename;
@@ -112,7 +108,7 @@ namespace Gendarme {
 		[ThreadModel (ThreadModel.SingleThread)]
 		static void EndCallback (IAsyncResult result)
 		{
-			(result.AsyncState as MethodInvoker).EndInvoke (result);
+			(result.AsyncState as Action).EndInvoke (result);
 		}
 
 		static Process Process {
@@ -529,7 +525,7 @@ namespace Gendarme {
 			assemblies_loading.AsyncWaitHandle.WaitOne ();
 			PrepareAnalyze ();
 			analyze = Analyze;
-			analyzing = analyze.BeginInvoke (EndCallback, analyze);
+			analyze.BeginInvoke (EndCallback, analyze);
 		}
 
 		private void PrepareAnalyze ()

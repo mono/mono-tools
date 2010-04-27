@@ -1,3 +1,7 @@
+2010-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Wizard.cs: Use Action instead of custom delegates (self-test)
+
 2010-01-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.Designer.cs: Update copyright notice up to 2010
