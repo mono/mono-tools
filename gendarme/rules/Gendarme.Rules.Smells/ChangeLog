@@ -1,3 +1,9 @@
+2010-04-26  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMessageChainsRule.cs: Change MaxChainLength from 5 to 4 
+	and condition from >= to > (same effect) so the rule description
+	(and documentation) makes more sense.
+
 2010-03-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CodeDuplicatedLocator.cs: Add [Conditional("DEBUG")] on 

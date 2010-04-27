@@ -103,12 +103,12 @@ namespace Test.Rules.Smells {
 			int chain = Rule.MaxChainLength;
 			try {
 				// unless we lower the limit
-				Rule.MaxChainLength = 3;
+				Rule.MaxChainLength = 2;
 				AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithSmallChain", 1);
 				AssertRuleFailure<AvoidMessageChainsTest> ("MethodWithArgumentsWithSmallChain", 1);
 			}
 			finally {
-				Rule.MaxChainLength = 5;
+				Rule.MaxChainLength = chain;
 			}
 		}
 

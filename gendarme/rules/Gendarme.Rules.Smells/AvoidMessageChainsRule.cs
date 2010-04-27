@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Smells {
 	[Solution ("You can apply the Hide Delegate refactoring or Extract Method to push down the chain.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidMessageChainsRule : Rule, IMethodRule {
-		private int maxChainLength = 5;
+		private int maxChainLength = 4;
 
 		public int MaxChainLength {
 			get {
@@ -128,7 +128,7 @@ namespace Gendarme.Rules.Smells {
 				}
 				Log.WriteLine (this, "chain of length {0} at {1:X4}", counter, ins.Offset);
 
-				if (counter >= MaxChainLength) {
+				if (counter > MaxChainLength) {
 					string msg = String.Format ("Chain length {0} versus maximum of {1}.", counter, MaxChainLength);
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 				}
