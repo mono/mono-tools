@@ -13,14 +13,12 @@ SOURCES = \
 	webcompare-db.cs	\
 	DataAccess.cs		\
 	MySqlDataAccess.cs	
-#	PostgresDataAccess.cs
 
 REFS = \
 	-r:System.Configuration.dll	\
 	-r:System.Core.dll 		\
 	-r:MySql.Data.dll 		\
 	-r:System.Data.dll 		
-#	-r:Npgsql
 
 all: webcompare-db.exe
 
