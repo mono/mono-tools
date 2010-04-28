@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
@@ -828,6 +829,18 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("MultidimArray", 1);
 			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("JaggedArray", 1);
 			AssertRuleFailure<AvoidUncalledPrivateCodeTest> ("NullableArray", 1);
+		}
+
+		[Conditional ("DO_NOT_DEFINE")]
+		static void WriteLine (string s)
+		{
+			Console.WriteLine (s);
+		}
+
+		[Test]
+		public void ConditionalCode ()
+		{
+			AssertRuleDoesNotApply<AvoidUncalledPrivateCodeTest> ("WriteLine");
 		}
 	}
 }

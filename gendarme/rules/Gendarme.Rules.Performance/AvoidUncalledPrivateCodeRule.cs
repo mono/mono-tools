@@ -93,9 +93,10 @@ namespace Gendarme.Rules.Performance {
 	[FxCopCompatibility ("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
 	public class AvoidUncalledPrivateCodeRule : Rule, IMethodRule {
 
-		static string [] ComRegistration = new string[] {
+		static string [] SpecialAttributes = new string[] {
 			"System.Runtime.InteropServices.ComRegisterFunctionAttribute",
-			"System.Runtime.InteropServices.ComUnregisterFunctionAttribute"
+			"System.Runtime.InteropServices.ComUnregisterFunctionAttribute",
+			"System.Diagnostics.ConditionalAttribute"
 		};
 
 		static private bool Applicable (MethodDefinition method)
@@ -117,8 +118,9 @@ namespace Gendarme.Rules.Performance {
 				return false;
 
 			// does not apply if the method is used to register/unregister COM objects
+			// or it is decorated with a [Conditional("x")] attribute
 			if (method.HasCustomAttributes) {
-				if (method.CustomAttributes.ContainsAnyType (ComRegistration))
+				if (method.CustomAttributes.ContainsAnyType (SpecialAttributes))
 					return false;
 			}
 

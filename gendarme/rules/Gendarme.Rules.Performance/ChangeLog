@@ -1,5 +1,7 @@
 2010-04-27  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidUncalledPrivateCodeRule.cs: Ignore methods decorated with
+	a [Conditional] attribute.
 	* AvoidUninstantiatedInternalClassesRule.cs: Ignore internal types
 	named NamespaceDoc since they are used by monodoc to include
 	namespace-related documentation (suggested by Jesse Jones)

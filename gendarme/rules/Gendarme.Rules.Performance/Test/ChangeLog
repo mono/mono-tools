@@ -1,5 +1,7 @@
 2010-04-27  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidUncalledPrivateCodeTest.cs: Add test case where a method
+	is decorated with a [Conditional("X")] attribute
 	* AvoidUninstantiatedInternalClassesTest.cs: Add test case for
 	NamespaceDoc
 
