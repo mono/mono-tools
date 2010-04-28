@@ -1,3 +1,9 @@
+2010-04-27  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUninstantiatedInternalClassesRule.cs: Ignore internal types
+	named NamespaceDoc since they are used by monodoc to include
+	namespace-related documentation (suggested by Jesse Jones)
+
 2010-04-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCallsToPropertiesRule.cs: Don't assume a 

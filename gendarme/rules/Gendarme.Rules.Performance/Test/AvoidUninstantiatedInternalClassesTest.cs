@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (c) <2007> Nidhi Rawal
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -392,6 +392,16 @@ namespace Test.Rules.Performance {
 			finally {
 				main.DeclaringType.Module.Assembly.EntryPoint = null;
 			}
+		}
+
+		/// <summary>This namespace contains the command-line options processing library distributed by the mono team.</summary>
+		internal sealed class NamespaceDoc {
+		}
+
+		[Test]
+		public void MonoDoc ()
+		{
+			AssertRuleDoesNotApply<NamespaceDoc> ();
 		}
 	}
 }

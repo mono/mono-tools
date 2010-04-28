@@ -207,6 +207,10 @@ namespace Gendarme.Rules.Performance {
 			if (type.IsSealed && HasSinglePrivateConstructor (type))
 				return RuleResult.DoesNotApply;
 
+			// used for documentation purpose by monodoc
+			if (type.Name == "NamespaceDoc")
+				return RuleResult.DoesNotApply;
+
 			// rule applies
 
 			// if the type holds the Main entry point then it is considered useful
