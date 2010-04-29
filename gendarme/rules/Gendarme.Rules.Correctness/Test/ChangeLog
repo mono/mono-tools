@@ -1,5 +1,8 @@
 2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* MethodCanBeMadeStaticTest.cs: Add test case with [Conditional]
+	method. Update other test cases to the "newer" way of unit testing
+	rules.
 	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: More test 
 	cases where an immediate if, e.g. cond ? "a" : "b", would result
 	in false positives (fixed in InstructionRock.TraceBack)

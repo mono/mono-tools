@@ -136,7 +136,7 @@ namespace Gendarme.Rules.Correctness {
 			return counter;
 		}
 
-		private bool TryComputeArraySize (Instruction call, MethodDefinition method, int lastParameterPosition, 
+		private static bool TryComputeArraySize (Instruction call, MethodDefinition method, int lastParameterPosition, 
 			out int elementsPushed)
 		{
 			elementsPushed = 0;

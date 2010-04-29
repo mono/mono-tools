@@ -1,3 +1,13 @@
+2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodCanBeMadeStaticRule.cs: Re-order conditions from the
+	fastest to the slowest to return DoesNotApply. Ignore methods
+	decorated with [Conditional("X")] since they could be empty (i.e.
+	not using 'this') in IL while impossible, source wise, to change
+	to static.
+	* ProvideCorrectRegexPatternRule.cs: Change TryComputeArraySize
+	to static (self-test)
+
 2010-04-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedRule.cs: Handle compiler 
