@@ -307,11 +307,24 @@ namespace Test.Rules.Correctness {
 			return String.Format ("{", a);
 		}
 
+		string ConditionalIfString (bool value)
+		{
+			return String.Format ("{0} {1}", value ? "true" : "false", "uho");
+		}
+
+		string ConditionalIfCalls (bool value)
+		{
+			return String.Format ("{0} {1}", value ? ConditionalIfString (value) : ConditionalIfString (!value), "uho");
+		}
+
 		[Test]
 		public void SpecialCase ()
 		{
 			AssertRuleFailure<ProvideCorrectArgumentsToFormattingMethodsTest> ("GetFormat", 1);
 			AssertRuleFailure<ProvideCorrectArgumentsToFormattingMethodsTest> ("End", 1);
+
+			AssertRuleSuccess<ProvideCorrectArgumentsToFormattingMethodsTest> ("ConditionalIfString");
+			AssertRuleSuccess<ProvideCorrectArgumentsToFormattingMethodsTest> ("ConditionalIfCalls");
 		}
 	}
 }

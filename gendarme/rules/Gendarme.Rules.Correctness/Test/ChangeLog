@@ -1,3 +1,9 @@
+2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideCorrectArgumentsToFormattingMethodsTest.cs: More test 
+	cases where an immediate if, e.g. cond ? "a" : "b", would result
+	in false positives (fixed in InstructionRock.TraceBack)
+
 2010-04-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DisposableFieldsShouldBeDisposedTest.cs: Add test case where C#

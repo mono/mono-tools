@@ -1,3 +1,8 @@
+2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Stop a backward trace if we encounter an
+	instruction doing an unconditional branch
+
 2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ParameterRocks.cs: New. IsRef and IsParams rocks to use like

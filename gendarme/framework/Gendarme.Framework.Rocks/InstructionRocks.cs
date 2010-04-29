@@ -490,6 +490,9 @@ namespace Gendarme.Framework.Rocks {
 			int n = offset + self.GetPopCount (method);
 			while (n > 0 && self.Previous != null) {
 				self = self.Previous;
+				// we cannot "simply" trace backward over a unconditional branch
+				if (self.OpCode.FlowControl == FlowControl.Branch)
+					return null;
 				n -= self.GetPushCount ();
 				if (n == 0)
 					return self;
