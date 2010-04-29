@@ -382,7 +382,7 @@ namespace Gendarme.Rules.Interoperability {
 			if (field_stores != null && (range.Last.OpCode.Code == Code.Ldfld || range.Last.OpCode.Code == Code.Ldsfld)) {
 				FieldDefinition field = (range.Last.Operand as FieldReference).Resolve ();
 				List<MethodDefinition> pointers;
-				if (field_stores.TryGetValue (field, out pointers)) {
+				if ((field != null) && field_stores.TryGetValue (field, out pointers)) {
 					if (result == null)
 						result = new List<MethodDefinition> ();
 					result.AddRange (pointers);

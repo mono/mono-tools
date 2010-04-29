@@ -1,3 +1,9 @@
+2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
+	Don't assume a FieldDefinition instance after resolving. Fix
+	analysis against Muinshee.exe
+
 2010-04-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
