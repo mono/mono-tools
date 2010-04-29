@@ -6,7 +6,7 @@
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
 //  (C) 2007 Néstor Salceda
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -120,7 +120,6 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// rule doesn't apply to virtual, overrides or generated code
-
 			// doesn't apply to code referenced by delegates (note: more complex check moved last)
 			if (method.IsVirtual || method.HasOverrides || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
@@ -130,6 +129,12 @@ namespace Gendarme.Rules.Performance {
 			// (*) it's more a "don't report things outside developer's control"
 			if (method.IsEventCallback () || IsReferencedByDelegate (method))
 				return RuleResult.DoesNotApply;
+
+			// methods with [Conditional] can be empty (not using any parameter) IL-wise but not source-wise, ignore them
+			if (method.HasCustomAttributes) {
+				if (method.CustomAttributes.ContainsType ("System.Diagnostics.ConditionalAttribute"))
+					return RuleResult.DoesNotApply;
+			}
 
 			// rule applies
 

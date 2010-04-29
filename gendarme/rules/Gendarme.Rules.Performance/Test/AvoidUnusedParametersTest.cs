@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -344,6 +345,20 @@ namespace Test.Rules.Performance {
 		public void ExternMethodTest () 
 		{
 			AssertRuleDoesNotApply<AvoidUnusedParametersTest> ("cos");
+		}
+
+		[Conditional ("DO_NOT_DEFINE")]
+		void WriteLine (string s)
+		{
+			// the C.WL will not be compiled since DO_NOT_DEFINE is undefined
+			// which means parameter 's' will be unused by the method
+			Console.WriteLine (s);
+		}
+
+		[Test]
+		public void ConditionalCode ()
+		{
+			AssertRuleDoesNotApply<AvoidUnusedParametersTest> ("WriteLine");
 		}
 	}
 }
