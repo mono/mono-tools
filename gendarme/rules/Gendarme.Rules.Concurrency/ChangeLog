@@ -1,3 +1,11 @@
+2010-04-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotLockOnWeakIdentityObjectsRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule to TypeReference::get_FullName
+	* DecorateThreadsRule.cs: Apply AvoidRepetitiveCallsToPropertiesRule
+	on MemberReference::get_DeclaringType (11) and TypeReference::get_Name
+	(6)
+
 2010-04-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs: Handle case

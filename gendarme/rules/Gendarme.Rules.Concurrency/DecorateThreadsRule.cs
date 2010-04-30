@@ -343,36 +343,38 @@ namespace Gendarme.Rules.Concurrency {
 				case Code.Newobj:
 					if (ins.Previous != null && ins.Previous.OpCode.Code == Code.Ldftn) {
 						MethodReference ctor = (MethodReference) ins.Operand;
-						
-						if (ctor.DeclaringType.IsDelegate ()) {
+						TypeReference type = ctor.DeclaringType;
+						if (type.IsDelegate ()) {
+							string nspace = type.Namespace;
 							// ldftn entry-point
 							// newobj System.Void System.Threading.XXX::.ctor (System.Object,System.IntPtr)
 							// i.e. creation of a System.Threading delegate
-							if (ctor.DeclaringType.Namespace == "System.Threading") {
-								if (ctor.DeclaringType.Name == "ThreadStart" ||
-									ctor.DeclaringType.Name == "ParameterizedThreadStart" ||
-									ctor.DeclaringType.Name == "WaitCallback" ||
-									ctor.DeclaringType.Name == "WaitOrTimerCallback" ||
-									ctor.DeclaringType.Name == "TimerCallback") {
+							if (nspace == "System.Threading") {
+								string name = type.Name;
+								if (name == "ThreadStart" ||
+									name == "ParameterizedThreadStart" ||
+									name == "WaitCallback" ||
+									name == "WaitOrTimerCallback" ||
+									name == "TimerCallback") {
 										candidate = (MethodReference) ins.Previous.Operand;
 								}
 							
 							// ldftn entry-point
 							// newobj System.Void System.AsyncCallback::.ctor (System.Object,System.IntPtr)
 							// i.e. creation of a async delegate
-							} else if (ctor.DeclaringType.Namespace == "System") {
-								if (ctor.DeclaringType.Name == "AsyncCallback") {
+							} else if (nspace == "System") {
+								if (type.Name == "AsyncCallback") {
 									candidate = (MethodReference) ins.Previous.Operand;
 								}
 							
 							// ldftn entry-point
 							// newobj System.Void ThreadedDelegate::.ctor (System.Object,System.IntPtr)
 							// i.e. creation of a delegate which is decorated with a threading attribute
-							} else if (!ThreadRocks.ThreadedNamespace (ctor.DeclaringType.Namespace)) {
+							} else if (!ThreadRocks.ThreadedNamespace (nspace)) {
 								// Delegates must be able to call the methods they are bound to.
 								MethodDefinition target = ((MethodReference) ins.Previous.Operand).Resolve ();
 								if (target != null) {
-									ThreadModelAttribute callerModel = ctor.DeclaringType.ThreadingModel ();
+									ThreadModelAttribute callerModel = type.ThreadingModel ();
 									if (!target.IsGeneratedCode () || target.IsProperty ()) {
 										ThreadModelAttribute targetModel = target.ThreadingModel ();
 										if (!IsValidCall (callerModel, targetModel)) {

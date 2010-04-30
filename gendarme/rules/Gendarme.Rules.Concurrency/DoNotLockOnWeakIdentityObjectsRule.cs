@@ -134,19 +134,20 @@ namespace Gendarme.Rules.Concurrency {
 				return;
 
 			// fast check for sealed types
-			switch (type.FullName) {
+			string full_name = type.FullName;
+			switch (full_name) {
 			case "System.ExecutionEngineException":
 			case "System.StackOverflowException":
 			case "System.String":
 			case "System.Threading.Thread":
-				Runner.Report (method, call, Severity.High, Confidence.Normal, type.FullName);
+				Runner.Report (method, call, Severity.High, Confidence.Normal, full_name);
 				break;
 			default:
 				foreach (string unsealed in unsealed_types) {
 					if (!type.Inherits (unsealed))
 						continue;
 
-					string msg = String.Format ("'{0}' inherits from '{1}'.", type.FullName, unsealed);
+					string msg = String.Format ("'{0}' inherits from '{1}'.", full_name, unsealed);
 					Runner.Report (method, call, Severity.High, Confidence.Normal, msg);
 				}
 				break;
