@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2005, 2007-2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2005, 2007-2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,6 +28,7 @@
 
 using System;
 using System.Security;
+using System.Security.Permissions;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -92,6 +93,8 @@ namespace Gendarme.Rules.Security.Cas {
 	[FxCopCompatibility ("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
 	public class DoNotExposeMethodsProtectedByLinkDemandRule : Rule, IMethodRule {
 
+		static PermissionSet Empty = new PermissionSet (PermissionState.None);
+
 		private static PermissionSet GetLinkDemand (MethodDefinition method)
 		{
 			foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {
@@ -102,14 +105,14 @@ namespace Gendarme.Rules.Security.Cas {
 					return declsec.PermissionSet;
 				}
 			}
-			return null;
+			return Empty;
 		}
 
 		private static bool Check (MethodDefinition caller, MethodDefinition callee)
 		{
 			// 1 - look if the callee has a LinkDemand
 			PermissionSet calleeLinkDemand = GetLinkDemand (callee);
-			if (calleeLinkDemand == null)
+			if (calleeLinkDemand.Count == 0)
 				return true;
 
 			// 2 - Ensure the caller requires a superset (or the same) permissions
