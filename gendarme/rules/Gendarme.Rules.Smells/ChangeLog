@@ -1,3 +1,10 @@
+2010-04-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeClassesRule.cs: Apply AvoidRepetitiveCallsToProperties
+	Rule on MemberReference::get_Name (6)
+	* AvoidLongParameterListsRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule on MemberReference::get_Name
+
 2010-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMessageChainsRule.cs: Change MaxChainLength from 5 to 4 

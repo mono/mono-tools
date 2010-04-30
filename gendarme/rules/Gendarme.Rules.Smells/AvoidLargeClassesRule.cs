@@ -153,17 +153,18 @@ namespace Gendarme.Rules.Smells {
 
 		private static string GetFieldPrefix (FieldDefinition field)
 		{
-			int index = GetIndexOfFirst (field.Name, delegate (char character) {return Char.IsNumber (character);});
+			string name = field.Name;
+			int index = GetIndexOfFirst (name, delegate (char character) {return Char.IsNumber (character);});
 			if (index != -1)
-				return field.Name.Substring (0, index);
+				return name.Substring (0, index);
 
-			index = GetIndexOfFirst (field.Name, delegate (char character) {return Char.IsUpper (character);});
+			index = GetIndexOfFirst (name, delegate (char character) {return Char.IsUpper (character);});
 			if (index != -1)
-				return field.Name.Substring (0, index);
+				return name.Substring (0, index);
 
-			index = GetIndexOfFirstDash (field.Name);
+			index = GetIndexOfFirstDash (name);
 			if (index != -1)
-				return field.Name.Substring (0, index);
+				return name.Substring (0, index);
 
 			return String.Empty;
 		}

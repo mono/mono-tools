@@ -150,14 +150,16 @@ namespace Gendarme.Rules.Smells {
 			foreach (MethodDefinition method in type.Methods) {
 				if (method.IsPInvokeImpl)
 					continue;
-				if (!possibleOverloaded.ContainsKey (method.Name))
-					possibleOverloaded.Add (method.Name, method);
+
+				string name = method.Name;
+				if (!possibleOverloaded.ContainsKey (name))
+					possibleOverloaded.Add (name, method);
 				else {
-					MethodDefinition candidate = possibleOverloaded [method.Name];
+					MethodDefinition candidate = possibleOverloaded [name];
 					int ccount = candidate.HasParameters ? candidate.Parameters.Count : 0;
 					int mcount = method.HasParameters ? method.Parameters.Count : 0;
 					if (ccount > mcount)
-						possibleOverloaded [method.Name] = method;
+						possibleOverloaded [name] = method;
 				}
 			}
 			return possibleOverloaded.Values;
