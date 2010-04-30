@@ -118,17 +118,18 @@ namespace Gendarme.Rules.Design.Generic {
 			// look if every generic type parameter...
 			foreach (GenericParameter gp in method.GenericParameters) {
 				bool found = false;
+				string gp_fullname = gp.FullName;
 				// ... is being used by the method parameters
 				foreach (ParameterDefinition pd in method.Parameters) {
 					var parameter_type = pd.ParameterType;
 
-					if (parameter_type.FullName == gp.FullName) {
+					if (parameter_type.FullName == gp_fullname) {
 						found = true;
 						break;
 					}
 
 					var type_spec = parameter_type as TypeSpecification;
-					if (type_spec != null && type_spec.ElementType.FullName == gp.FullName) {
+					if (type_spec != null && type_spec.ElementType.FullName == gp_fullname) {
 						found = true;
 						break;
 					}
@@ -138,13 +139,13 @@ namespace Gendarme.Rules.Design.Generic {
 					if (git == null)
 						continue;
 
-					if (FindGenericType (git, gp.FullName)) {
+					if (FindGenericType (git, gp_fullname)) {
 						found = true;
 						break;
 					}
 				}
 				if (!found) {
-					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp.FullName);
+					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp_fullname);
 					Runner.Report (method, Severity.Medium, Confidence.High, msg);
 				}
 			}
