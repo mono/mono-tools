@@ -1,3 +1,8 @@
+2010-01-29  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidPublicInstanceFieldsRule.cs: Apply AvoidRepetitiveCallsToPropertiesRule
+	on FieldDefinition.get_Name
+
 2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideTryParseAlternativeRule.cs: Simplify and reduce code 

@@ -87,12 +87,13 @@ namespace Gendarme.Rules.Design {
 				if (!fd.IsVisible () || fd.IsSpecialName || fd.HasConstant || fd.IsInitOnly)
 					continue;
 
+				string name = fd.Name;
 				if (fd.FieldType.IsArray ()) {
 					string s = String.Format ("Consider changing the field '{0}' to a private or internal field and add a 'Set{1}{2}' method.",
-						fd.Name, Char.ToUpper (fd.Name [0]).ToString (), fd.Name.Substring (1));
+						name, Char.ToUpper (name [0]).ToString (), name.Substring (1));
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				} else {
-					string s = String.Format ("Field '{0}' should be private or internal and its value accessed through a property.", fd.Name);
+					string s = String.Format ("Field '{0}' should be private or internal and its value accessed through a property.", name);
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);
 				}
 			}
