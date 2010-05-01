@@ -1,3 +1,9 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodsWithSideEffectsInConditionalCodeTest.cs: Duplicate
+	the namespace used by code contracts on FX4 and the latest 
+	Microsoft.Contracts.dll (for earlier releases like 3.5 and SL3)
+
 2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodCanBeMadeStaticTest.cs: Add test case with [Conditional]

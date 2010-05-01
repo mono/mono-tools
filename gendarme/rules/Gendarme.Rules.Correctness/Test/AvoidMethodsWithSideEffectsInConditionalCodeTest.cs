@@ -34,26 +34,29 @@ using Gendarme.Rules.Correctness;
 using NUnit.Framework;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
+
+namespace System.Diagnostics.Contracts {
+	[Serializable]
+	[AttributeUsage (AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
+	public sealed class PureAttribute : Attribute {
+	}
+		
+	public static class Contract {
+		public static bool Foo (bool predicate)
+		{
+			return predicate;
+		}
+	}
+}
 
 namespace Test.Rules.Correctness {
 	[TestFixture]
 	public class AvoidMethodsWithSideEffectsInConditionalCodeTest : MethodRuleTestFixture<AvoidMethodsWithSideEffectsInConditionalCodeRule> {
 	
-		[Serializable]
-		[AttributeUsage (AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
-		public sealed class PureAttribute : Attribute {
-		}
-		
-		internal static class Contract {
-			public static bool Foo (bool predicate)
-			{
-				return predicate;
-			}
-		}
-		
 		internal sealed class TestCases {
 			// Anything can be used with non-conditionally compiled methods. 
 			public void Good1 (bool data)
