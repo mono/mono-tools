@@ -74,34 +74,29 @@ namespace Gendarme.Rules.Exceptions {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2200:RethrowToPreserveStackDetails")]
 	public class DoNotDestroyStackTraceRule : Rule, IMethodRule {
 
-		private List<ExecutionPathCollection> executionPaths = new List<ExecutionPathCollection> ();
 		private List<int> warned_offsets_in_method = new List<int> ();
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			// rule only applies to methods with IL
-			if (!method.HasBody)
+			// rule only applies to methods with IL and exceptions handlers
+			if (!method.HasBody || !method.Body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
 			// and when the IL contains a Throw instruction (Rethrow is fine)
 			if (!OpCodeEngine.GetBitmask (method).Get (Code.Throw))
 				return RuleResult.DoesNotApply;
 
-			executionPaths.Clear ();
+			warned_offsets_in_method.Clear ();
 			ExecutionPathFactory epf = new ExecutionPathFactory ();
-			foreach (SEHGuardedBlock guardedBlock in ExceptionBlockParser.GetExceptionBlocks (method)) {
-				foreach (SEHHandlerBlock handlerBlock in guardedBlock.SEHHandlerBlocks) {
-					if (handlerBlock is SEHCatchBlock) {
-						executionPaths.AddRange (epf.CreatePaths (handlerBlock.Start, handlerBlock.End));
-					}
+
+			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+				if (eh.Type != ExceptionHandlerType.Catch)
+					continue;
+
+				foreach (ExecutionPathCollection catchPath in epf.CreatePaths (eh.HandlerStart, eh.HandlerEnd)) {
+					ProcessCatchPath (catchPath, method);
 				}
 			}
-
-			warned_offsets_in_method.Clear ();
-
-			// Look for paths that 'throw ex;' instead of 'throw'
-			foreach (ExecutionPathCollection catchPath in executionPaths)
-				ProcessCatchPath (catchPath, method);
 
 			return Runner.CurrentRuleResult;
 		}

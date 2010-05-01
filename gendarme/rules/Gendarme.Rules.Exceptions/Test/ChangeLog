@@ -1,3 +1,8 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontDestroyStackTraceTest.cs: Add test case with an empty method
+	and one where the exception local is overwritten by another exception
+
 2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationTest.cs: Add test cases for every 

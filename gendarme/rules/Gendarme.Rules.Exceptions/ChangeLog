@@ -1,3 +1,11 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotDestroyStackTraceRule.cs: Quick-out optimization using
+	method.Body.HasExceptionHandlers. Simplify and reduce memory 
+	allocations.
+	* Makefile.am: Remove Impl/ExceptionBlockParser.cs and Impl/
+	SEH*.cs from the build
+
 2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationTest.cs: Document the addition of

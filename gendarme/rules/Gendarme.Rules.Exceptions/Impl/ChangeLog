@@ -1,3 +1,8 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ExceptionBlockParser.cs, SEHCatchBlock.cs, SEHGuardedBlock.cs,
+	SEHHandlerBlock.cs: bye-bye
+
 2008-10-25  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ExecutionPath.cs: Change ctor to accept IEnumerable<ExecutionBlock>

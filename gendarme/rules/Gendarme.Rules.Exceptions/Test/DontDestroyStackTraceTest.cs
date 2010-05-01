@@ -39,6 +39,7 @@ namespace Test.Rules.Exceptions {
 		public void DoesNotApply ()
 		{
 			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
+			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
 		}
 	
 		public void ThrowOriginalEx ()
@@ -179,10 +180,23 @@ namespace Test.Rules.Exceptions {
 			}
 		}
 
+		public void ThrowNewExceptionUsingSameOldLocal_WithParameter ()
+		{
+			try {
+				Int32.Parse ("Broken!");
+			}
+			catch (Exception ex) {
+				// we deliberately choose to create a new exception
+				ex = new InvalidOperationException ("uho", ex);
+				throw ex;
+			}
+		}
+
 		[Test]
 		public void TestThrowNewExceptionUsingSameOldLocal ()
 		{
 			AssertRuleSuccess<DoNotDestroyStackTraceTest> ("ThrowNewExceptionUsingSameOldLocal");
+			AssertRuleSuccess<DoNotDestroyStackTraceTest> ("ThrowNewExceptionUsingSameOldLocal_WithParameter");
 		}
 	}
 }
