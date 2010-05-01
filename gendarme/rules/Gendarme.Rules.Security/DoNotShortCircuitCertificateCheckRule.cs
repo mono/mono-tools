@@ -180,18 +180,19 @@ namespace Gendarme.Rules.Security {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (method.IsAbstract || !method.HasParameters || (method.Parameters.Count != 4))
+			if (method.IsAbstract || !method.HasParameters)
 				return RuleResult.DoesNotApply;
 
-			if (method.ReturnType.ReturnType.FullName != "System.Boolean")
+			ParameterDefinitionCollection pdc = method.Parameters;
+			if ((pdc.Count != 4) || (method.ReturnType.ReturnType.FullName != "System.Boolean"))
 				return RuleResult.DoesNotApply;
 
 			// this method could be a candidate for both policy or callback
 			bool policy = true;
 			bool callback = true;
 			// if all the parameters match
-			for (int i = 0; i < method.Parameters.Count; i++) {
-				string name = method.Parameters [i].ParameterType.FullName;
+			for (int i = 0; i < pdc.Count; i++) {
+				string name = pdc [i].ParameterType.FullName;
 				if (policy && (name != CertificatePolicyParameters [i]))
 					policy = false;
 				if (callback && (name != RemoteCertificateValidationParameters [i]))

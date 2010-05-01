@@ -1,3 +1,8 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotShortCircuitCertificateCheckRule.cs: Apply AvoidRepetitive
+	CallsToPropertiesRule on MethodDefinition::get_Parameters
+
 2009-08-19  Jesse Jones  <jesjones@mindspring.com>
 
 	* StaticConstructorsShouldBePrivateRule.cs: Edited 
