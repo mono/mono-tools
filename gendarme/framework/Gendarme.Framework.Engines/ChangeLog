@@ -1,3 +1,8 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NamespaceEngine.cs: Apply AvoidRepetitiveCallsToPropertiesRule 
+	on TypeReference::get_Namespace
+
 2008-11-19  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NamespaceEngine.cs: Add Exists method to check the existance of

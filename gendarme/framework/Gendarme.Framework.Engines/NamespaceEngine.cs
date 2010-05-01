@@ -50,23 +50,23 @@ namespace Gendarme.Framework.Engines {
 		void OnType (object sender, EngineEventArgs e)
 		{
 			TypeDefinition type = (sender as TypeDefinition);
-
+			string nspace = type.Namespace;
 			// we keep track of namespaces per assemblies
 			AssemblyDefinition assembly = type.Module.Assembly;
 			HashSet<string> ns;
 			if (assemblies.TryGetValue (assembly, out ns)) {
-				ns.AddIfNew (type.Namespace);
+				ns.AddIfNew (nspace);
 			} else {
 				ns = new HashSet<string> ();
-				ns.Add (type.Namespace);
+				ns.Add (nspace);
 				assemblies.Add (assembly, ns);
 			}
 
 			// and types per namespaces
 			HashSet<TypeDefinition> td;
-			if (!namespaces.TryGetValue (type.Namespace, out td)) {
+			if (!namespaces.TryGetValue (nspace, out td)) {
 				td = new HashSet<TypeDefinition> ();
-				namespaces.Add (type.Namespace, td);
+				namespaces.Add (nspace, td);
 			}
 			td.Add (type);
 		}
