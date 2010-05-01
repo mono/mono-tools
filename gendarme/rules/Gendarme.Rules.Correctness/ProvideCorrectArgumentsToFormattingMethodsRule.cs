@@ -175,8 +175,9 @@ namespace Gendarme.Rules.Correctness {
 		{
 			MethodReference mr = (call.Operand as MethodReference);
 
+			ParameterDefinitionCollection pdc = mr.Parameters;
 			int formatPosition = 0;
-			int nbParameters = mr.Parameters.Count;
+			int nbParameters = pdc.Count;
 			int elementsPushed = nbParameters - 1;
 
 			// String.Format (string, object) -> elementsPushed = 1
@@ -184,13 +185,13 @@ namespace Gendarme.Rules.Correctness {
 			// String.Format (string, object, object, object) -> elementsPushed = 3
 			// String.Format (string, object[]) -> compute
 			// String.Format (IFormatProvider, string, object[]) -> compute
-			if (mr.Parameters [nbParameters - 1].ParameterType.FullName != "System.Object") {
+			if (pdc [nbParameters - 1].ParameterType.FullName != "System.Object") {
 				// If we cannot determine the array size, we succeed (well we don't fail/report)
 				if (!TryComputeArraySize (call, method, nbParameters - 1, out elementsPushed))
 					return;
 
 				// String.Format (IFormatProvider, string, object[]) -> formatPosition = 1
-				if (mr.Parameters [0].ParameterType.FullName != "System.String")
+				if (pdc [0].ParameterType.FullName != "System.String")
 					formatPosition = 1;
 			}
 
@@ -201,22 +202,22 @@ namespace Gendarme.Rules.Correctness {
 
 			int expectedParameters = GetExpectedParameters ((string) loadString.Operand);
 			
-			//There aren't parameters, and isn't a string with {
-			//characters
-			if (elementsPushed == 0 && expectedParameters == 0) {
-				Runner.Report (method, call, Severity.Low, Confidence.Normal, "You are calling String.Format without arguments, you can remove the call to String.Format");
+			// There aren't parameters, and isn't a string with '{' characters
+			if (expectedParameters == 0) {
+				if (elementsPushed == 0) {
+					Runner.Report (method, call, Severity.Low, Confidence.Normal, 
+						"You are calling String.Format without arguments, you can remove the call to String.Format");
+					return;
+				}
+
+				if (elementsPushed > 0) {
+					Runner.Report (method, call, Severity.Medium, Confidence.Normal, "Extra parameters");
+					return;
+				}
+
+				// It's likely you are calling a method for getting the formatting string.
 				return;
 			}
-
-			if ((expectedParameters == 0) && (elementsPushed > 0)) {
-				Runner.Report (method, call, Severity.Medium, Confidence.Normal, "Extra parameters");
-				return;
-			}
-
-			//It's likely you are calling a method for getting the
-			//formatting string.
-			if (expectedParameters == 0)
-				return;
 			
 			if (elementsPushed < expectedParameters)
 				Runner.Report (method, call, Severity.Critical, Confidence.Normal, String.Format ("The String.Format method is expecting {0} parameters, but only {1} are found.", expectedParameters, elementsPushed));

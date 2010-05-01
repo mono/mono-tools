@@ -254,37 +254,41 @@ namespace Gendarme.Rules.Correctness {
 			MethodDefinition method = mr.Resolve ();
 			
 			if (method != null) {
+				TypeReference type = method.DeclaringType;
+				string type_name = type.FullName;
+				string method_name = method.Name;
+
 				// getters
 				if (method.IsGetter)
 					return true;
 				
 				// System.String, System.Type, etc methods
-				if (pure_types.Contains (method.DeclaringType.FullName))
+				if (pure_types.Contains (type_name))
 					return true;
 				
 				// Equals, GetHashCode, Contains, etc
-				if (pure_methods.Contains (method.Name))
+				if (pure_methods.Contains (method_name))
 					return true;
 				
 				// operators
-				if (method.Name.StartsWith ("op_") && method.Name != "op_Implicit" && method.Name != "op_Explicit")
+				if (method_name.StartsWith ("op_") && method_name != "op_Implicit" && method_name != "op_Explicit")
 					return true;
 					
-				// Contract methods
-				if (method.DeclaringType.Name == "Contract")
+				// Contract methods (skip namespace)
+				if (type_name == "System.Diagnostics.Contracts.Contract")
 					return true;
 					
 				// System.Predicate<T> and System.Comparison<T>
-				if (method.DeclaringType.FullName.StartsWith ("System.Predicate`1"))
+				if (type_name.StartsWith ("System.Predicate`1"))
 					return true;
 					
-				if (method.DeclaringType.FullName.StartsWith ("System.Comparison`1"))
+				if (type_name.StartsWith ("System.Comparison`1"))
 					return true;
 					
 				// delegate invocation
 				if (MethodSignatures.Invoke.Matches (method)) {
-					if (method.DeclaringType.HasCustomAttributes) {
-						if (HasPureAttribute (method.DeclaringType.CustomAttributes)) {
+					if (type.HasCustomAttributes) {
+						if (HasPureAttribute (type.CustomAttributes)) {
 							return true;
 						}
 					}

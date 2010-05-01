@@ -99,8 +99,9 @@ namespace Gendarme.Rules.Correctness {
 		private static readonly MethodSignature CompareTo = new MethodSignature ("CompareTo", "System.Int32", new string [] { "System.Object" });
 		
 		private void GetMethods (TypeDefinition type)	
-		{			
-			args1 [0] = type.FullName;
+		{
+			string full_name = type.FullName;
+			args1 [0] = full_name;
 			AddMethod (type.GetMethod (MethodSignatures.Equals));
 			AddMethod (type.GetMethod ("Equals", "System.Boolean", args1));
 
@@ -109,8 +110,8 @@ namespace Gendarme.Rules.Correctness {
 
 			// Note that we don't want to use MethodSignatures for these 
 			// because we don't want any weird overloads.
-			args2 [0] = type.FullName;
-			args2 [1] = type.FullName;
+			args2 [0] = full_name;
+			args2 [1] = full_name;
 			AddMethod (type.GetMethod ("op_Equality", "System.Boolean", args2));	
 			AddMethod (type.GetMethod ("op_Inequality", "System.Boolean", args2));
 

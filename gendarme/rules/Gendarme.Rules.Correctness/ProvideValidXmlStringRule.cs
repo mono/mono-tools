@@ -153,8 +153,9 @@ namespace Gendarme.Rules.Correctness {
 			case "PrependChild":
 			case "InsertAfter":
 			case "InsertBefore":
-				if (mref.Parameters.Count == 1
-					&& mref.Parameters [0].ParameterType.FullName == "System.String"
+				ParameterDefinitionCollection pdc = mref.Parameters;
+				if (pdc.Count == 1
+					&& pdc [0].ParameterType.FullName == "System.String"
 					&& mref.DeclaringType.Inherits (XPathNavigatorClass))
 					CheckString (ins, -1);
 				break;

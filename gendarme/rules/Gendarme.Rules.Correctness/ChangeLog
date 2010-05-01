@@ -1,3 +1,18 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Apply 
+	AvoidRepetitiveCallsToPropertiesRule on MethodDefinition::
+	get_DeclaringType and get_Name and TypeReference::Get_FullName
+	* ProvideCorrectArgumentsToFormattingMethodsRule.cs: Apply Avoid
+	RepetitiveCallsToPropertiesRule on MethodDefinition::Parameters.
+	Check (expectedParameters == 0) only once
+	* ProvideValidXmlStringRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule on MethodDefinition::get_Parameters
+	* ProvideValidXPathExpressionRule.cs: Remove duplicate check on
+	SelectSingleNode
+	* ReviewInconsistentIdentityRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule on Type::get_FullName
+
 2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodCanBeMadeStaticRule.cs: Re-order conditions from the

@@ -148,17 +148,22 @@ namespace Gendarme.Rules.Correctness {
 				break;
 			case "Evaluate":
 			case "Select":
+				CheckXPathNavigatorString (ins, mref);
+				break;
 			case "SelectSingleNode":
-				if (mref.Parameters.Count != 0
-					&& mref.Parameters [0].ParameterType.FullName == "System.String"
-					&& mref.DeclaringType.Inherits (XPathNavigatorClass))
+				CheckXPathNavigatorString (ins, mref);
+				if (mref.DeclaringType.FullName == XmlNodeClass)
 					CheckString (ins, -1);
 				break;
 			}
+		}
 
-			 if (mref.Name == "SelectSingleNode"
-				&& mref.DeclaringType.FullName == XmlNodeClass)
-				CheckString (ins, -1);
+		void CheckXPathNavigatorString (Instruction ins, MethodReference mref)
+		{
+			if (mref.Parameters [0].ParameterType.FullName == "System.String") {
+				if (mref.DeclaringType.Inherits (XPathNavigatorClass))
+					CheckString (ins, -1);
+			}
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
