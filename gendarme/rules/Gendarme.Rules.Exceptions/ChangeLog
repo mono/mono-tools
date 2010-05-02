@@ -1,3 +1,11 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotThrowInUnexpectedLocationRule.cs: Quick-out optimization
+	in HasCatchBlock using method.Body.HasExceptionHandlers. Split
+	huge PreflightMethod and reduce the number of checks required
+	to get a match (or not). Remove collections (and associated 
+	memory allocations)
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotDestroyStackTraceRule.cs: Quick-out optimization using
