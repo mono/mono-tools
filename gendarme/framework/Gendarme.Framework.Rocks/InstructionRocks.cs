@@ -234,7 +234,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="method">The method inside which the instruction comes from 
 		/// (needed for StackBehaviour.Varpop).</param>
 		/// <returns>The number of value removed (pop) from the stack for this instruction.</returns>
-		public static int GetPopCount (this Instruction self, MethodDefinition method)
+		public static int GetPopCount (this Instruction self, IMethodSignature method)
 		{
 			switch (self.OpCode.StackBehaviourPop) {
 			case StackBehaviour.Pop0:
@@ -486,7 +486,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="self">The Instruction on which the extension method can be called.</param>
 		/// <param name="method">The method from which the instruction was extracted.</param>
 		/// <returns>The instruction that match the current instruction.</returns>
-		public static Instruction TraceBack (this Instruction self, MethodDefinition method)
+		public static Instruction TraceBack (this Instruction self, IMethodSignature method)
 		{
 			return TraceBack (self, method, 0);
 		}
@@ -499,7 +499,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="method">The method from which the instruction was extracted.</param>
 		/// <param name="offset">Offset to add the the Pop count. Useful to track several parameters to a method.</param>
 		/// <returns>The instruction that match the current instruction.</returns>
-		public static Instruction TraceBack (this Instruction self, MethodDefinition method, int offset)
+		public static Instruction TraceBack (this Instruction self, IMethodSignature method, int offset)
 		{
 			int n = offset + self.GetPopCount (method);
 			while (n > 0 && self.Previous != null) {

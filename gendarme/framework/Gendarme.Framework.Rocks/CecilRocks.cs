@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -66,6 +66,25 @@ namespace Gendarme.Framework.Rocks {
 				return pd.Method.DeclaringType.Module.Assembly;
 
 			return null;
+		}
+
+		/// <summary>
+		/// Compare IMetadataTokenProvider instances based on their metadata token and their
+		/// assembly.
+		/// </summary>
+		/// <param name="self">The IMetadataTokenProvider instance where the method is applied.</param>
+		/// <param name="other">The IMetadataTokenProvider instance to compare to</param>
+		/// <returns>True if the metadata tokens and assembly are identical, False otherwise</returns>
+		public static bool Equals (this IMetadataTokenProvider self, IMetadataTokenProvider other)
+		{
+			if (self == other)
+				return true;
+			if (other == null)
+				return false;
+			if (!self.MetadataToken.Equals (other.MetadataToken))
+				return false;
+			// metadata token is unique per assembly
+			return GetAssembly (self).ToString () == GetAssembly (other).ToString ();
 		}
 	}
 }

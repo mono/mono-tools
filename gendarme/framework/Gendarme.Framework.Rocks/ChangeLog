@@ -1,3 +1,12 @@
+2010-05-02  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CecilRocks.cs: Add IMetadataTokenProvider.Equals(IMetadataToken
+	Provider) rock
+	* InstructionRocks.cs: Apply AvoidUnnecessarySpecializationRule
+	on some methods (where it's not confusing)
+	* VariableDefinitionRocks.cs: Apply AvoidUnnecessarySpecialization
+	Rule
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Add a new Is(Code) rock to enhance rule
