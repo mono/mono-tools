@@ -366,6 +366,20 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Helper method to avoid patterns like "ins.Previous != null &amp;&amp; ins.Previous.OpCode.Code == Code.Newobj"
+		/// and replace it with a shorter "ins.Previous.Is (Code.Newobj)".
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <param name="code">The Code to compare to.</param>
+		/// <returns>True if the instruction's code match the specified argument, False otherwise</returns>
+		public static bool Is (this Instruction self, Code code)
+		{
+			if (self == null)
+				return false;
+			return (self.OpCode.Code == code);
+		}
+
+		/// <summary>
 		/// Return if the Instruction is a load of an argument (ldarg* family).
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>

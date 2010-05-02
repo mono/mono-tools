@@ -1,3 +1,8 @@
+2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* InstructionRocks.cs: Add a new Is(Code) rock to enhance rule
+	readability.
+
 2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionRocks.cs: Stop a backward trace if we encounter an
