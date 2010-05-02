@@ -31,6 +31,7 @@ using System;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 
 namespace Gendarme.Rules.Exceptions {
 
@@ -80,6 +81,7 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("This method catches a very general exception without rethrowing it. This is not safe to do in general and may mask problems that the caller should be made aware of.")]
 	[Solution ("Rethrow the original exception (which will preserve the stacktrace of the original error) or catch a more specific exception type.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	[FxCopCompatibility ("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 	public class DoNotSwallowErrorsCatchingNonSpecificExceptionsRule : Rule, IMethodRule {
 
@@ -89,18 +91,19 @@ namespace Gendarme.Rules.Exceptions {
 		//}
 		//catch {
 		//}
-		private string[] forbiddenTypeInCatches = {"System.Exception", "System.SystemException", "System.Object"};
-
 		private bool IsForbiddenTypeInCatches (string typeName)
 		{
-			foreach (String forbiddenTypeName in forbiddenTypeInCatches) {
-				if (typeName.Equals (forbiddenTypeName)) {
-					return true;
-				}
+			switch (typeName) {
+			case "System.Exception":
+			case "System.SystemException":
+			case "System.Object":
+				return true;
+			default:
+				return false;
 			}
-			return false;
 		}
 
+		// will always return exceptionHandler.HandlerStart if there's no 'rethrow' inside the method
 		private static Instruction ThrowsGeneralException (ExceptionHandler exceptionHandler)
 		{
 			for (Instruction currentInstruction = exceptionHandler.HandlerStart; currentInstruction != exceptionHandler.HandlerEnd && currentInstruction != null; currentInstruction = currentInstruction.Next) {
@@ -117,15 +120,19 @@ namespace Gendarme.Rules.Exceptions {
 				return RuleResult.DoesNotApply;
 
 			// and if the method has, at least one, exception handler(s)
-			ExceptionHandlerCollection exceptionHandlerCollection = method.Body.ExceptionHandlers;
-			if (exceptionHandlerCollection.Count == 0)
+			if (!method.Body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
-			foreach (ExceptionHandler exceptionHandler in exceptionHandlerCollection) {
+			bool has_rethrow = OpCodeEngine.GetBitmask (method).Get (Code.Rethrow);
+			foreach (ExceptionHandler exceptionHandler in method.Body.ExceptionHandlers) {
 				if (exceptionHandler.Type == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {
-						Instruction throw_instruction = ThrowsGeneralException (exceptionHandler);
+						// quickly find 'throw_instruction' if there's no 'rethrow' used in this method
+						Instruction throw_instruction = has_rethrow ?
+							ThrowsGeneralException (exceptionHandler) :
+							exceptionHandler.HandlerStart;
+
 						if (throw_instruction != null) {
 							Runner.Report (method, throw_instruction, Severity.Medium, Confidence.High);
 						}

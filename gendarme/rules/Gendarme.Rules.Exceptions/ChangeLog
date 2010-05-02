@@ -1,3 +1,11 @@
+2010-05-02  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DoNotSwallowErrorsCatchingNonSpecificExceptionsRule.cs: Use
+	OpCodeEngine to detect 'rethrow' instruction and skip
+	ThrowsGeneralException. Quick out using HasExceptionHandlers
+	instead of using Count (which would allocate a collection if
+	empty).
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DoNotThrowInUnexpectedLocationRule.cs: Quick-out optimization
