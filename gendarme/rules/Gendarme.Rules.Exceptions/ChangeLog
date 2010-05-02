@@ -1,5 +1,7 @@
-2010-05-02  Sebastien Pouliot  <sebastien@ximian.com> 
+2010-05-02  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* Gendarme.Rules.Exceptions.csproj: Remove deleted files from
+	project
 	* DoNotSwallowErrorsCatchingNonSpecificExceptionsRule.cs: Use
 	OpCodeEngine to detect 'rethrow' instruction and skip
 	ThrowsGeneralException. Quick out using HasExceptionHandlers

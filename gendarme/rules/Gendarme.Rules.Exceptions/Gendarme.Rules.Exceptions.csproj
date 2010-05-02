@@ -74,13 +74,9 @@
     <Compile Include="DoNotThrowReservedExceptionRule.cs" />
     <Compile Include="DontSwallowErrorsCatchingNonspecificExceptionsRule.cs" />
     <Compile Include="ExceptionShouldBeVisibleRule.cs" />
-    <Compile Include="Impl\ExceptionBlockParser.cs" />
     <Compile Include="Impl\ExecutionBlock.cs" />
     <Compile Include="Impl\ExecutionPath.cs" />
     <Compile Include="Impl\ExecutionPathFactory.cs" />
-    <Compile Include="Impl\SEHCatchBlock.cs" />
-    <Compile Include="Impl\SEHGuardedBlock.cs" />
-    <Compile Include="Impl\SEHHandlerBlock.cs" />
     <Compile Include="InstantiateArgumentExceptionCorrectlyRule.cs" />
     <Compile Include="MissingExceptionConstructorsRule.cs" />
     <Compile Include="NewExceptionRule.cs" />
