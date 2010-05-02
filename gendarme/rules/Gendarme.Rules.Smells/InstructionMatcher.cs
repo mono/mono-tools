@@ -57,7 +57,7 @@ namespace Gendarme.Rules.Smells {
 
 		internal static bool AreEquivalent (Instruction source, Instruction target)
 		{
-			if (source.OpCode != target.OpCode)
+			if (source.OpCode.Code != target.OpCode.Code)
 				return false;
 
 			if (source.OpCode.Code == Code.Ldstr)
@@ -101,13 +101,16 @@ namespace Gendarme.Rules.Smells {
 			
 			//if (source.Operand != target.Operand)
 			if (source.Operand != null && target.Operand != null) {
-				if (source.Operand is Instruction)
-					return ((Instruction) source.Operand).Offset == ((Instruction) target.Operand).Offset;
-				//See the tests for more reference.
-				//Alloc in comparisons isn't a nice idea :(
-				//REFS: Perhaps for each method that cecil
-				//reads, it creates a new instance for each
-				//operator as FieldDefinition?
+				// we're sure that target.Operand is of the same type as source.Operand (same OpCode is used)
+				Instruction si = (source.Operand as Instruction);
+				if (si != null)
+					return (si.Offset == ((Instruction) target.Operand).Offset);
+				IMetadataTokenProvider sm = (source.Operand as IMetadataTokenProvider);
+				if (sm != null)
+					return sm.Equals (target.Operand as IMetadataTokenProvider);
+				if (source.Operand == target.Operand)
+					return true;
+				// last chance: we do call ToString
 				if (source.Operand.ToString () != target.Operand.ToString ())
 					return false;
 			}
