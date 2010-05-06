@@ -389,11 +389,24 @@ namespace Gendarme {
 
 			base.Run ();
 
+			if (!quiet)
+				local.Stop ();
+		}
+
+		public override void TearDown ()
+		{
+			if (!quiet) {
+				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
+				local.Start ();
+				local.Reset ();
+			}
+			
+			base.TearDown ();
+
 			if (!quiet) {
 				local.Stop ();
 				total.Stop ();
-
-				Console.WriteLine (": {0}", TimeToString (local.Elapsed));
+				Console.WriteLine ("TearDown: {0}", TimeToString (local.Elapsed));
 				Console.WriteLine ();
 				if (Assemblies.Count == 1)
 					Console.WriteLine ("One assembly processed in {0}.",
@@ -407,7 +420,7 @@ namespace Gendarme {
 					List<string> files = new List<string> (new string [] { log_file, xml_file, html_file });
 					files.RemoveAll (string.IsNullOrEmpty);
 					hint = string.Format ("Report{0} written to: {1}.",
-						(files.Count > 1) ? "s": string.Empty,
+						(files.Count > 1) ? "s" : string.Empty,
 						string.Join (",", files.Select (file => string.Format ("`{0}'", file)).ToArray ()));
 				}
 

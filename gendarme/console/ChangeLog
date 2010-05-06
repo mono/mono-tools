@@ -1,3 +1,11 @@
+2010-05-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Delay showing results after tear down since 
+	rules can add defects at this late stage. Show the time required
+	to tear down.
+	* TextResultWriter.cs: Apply AvoidRepetitiveCallsToPropertiesRule
+	on virtual calls 
+
 2010-04-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gendarme.xsl: Add "Mark of the Web" so IE does not popup about 

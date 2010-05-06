@@ -89,9 +89,10 @@ namespace Gendarme {
 				string name = string.Empty;
 				string delimiter = new string ('-', 60);
 				foreach (Defect defect in query) {
-					if (defect.Rule.Name != name) {
+					string rname = defect.Rule.Name;
+					if (rname != name) {
 						writer.WriteLine (delimiter);
-						name = defect.Rule.Name;
+						name = rname;
 					}
 					
 					WriteDefect (defect);
@@ -148,12 +149,13 @@ namespace Gendarme {
 
 		private void WriteTrailer (int numDefects)
 		{
+			int num_rules = Runner.Rules.Count;
 			if (numDefects == 0)
-				writer.WriteLine ("Processed {0} rules, but found no defects.", Runner.Rules.Count);
-			else if (Runner.Rules.Count == 1)
+				writer.WriteLine ("Processed {0} rules, but found no defects.", num_rules);
+			else if (num_rules == 1)
 				writer.WriteLine ("Processed one rule.");	// we don't print the number of defects here because it is listed with the defect
 			else
-				writer.WriteLine ("Processed {0} rules.", Runner.Rules.Count);
+				writer.WriteLine ("Processed {0} rules.", num_rules);
 		}
 
 		[ThreadModel (ThreadModel.SingleThread)]
