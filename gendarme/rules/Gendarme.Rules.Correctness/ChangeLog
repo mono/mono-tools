@@ -1,3 +1,10 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CheckParametersNullityInVisibleMethodsRule.cs: Fix when 
+	"ldarg 0" is used instead of the, much more common, "ldarg_0"
+	* MethodCanBeMadeStaticRule.cs: Fix when "ldarg 0" is used 
+	instead of the, much more common, "ldarg_0"
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Apply 

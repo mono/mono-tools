@@ -106,12 +106,17 @@ namespace Gendarme.Rules.Correctness {
 			if (parameter.IsOut)
 				return;
 
+			int sequence = parameter.Sequence;
+			// ldarg this - 'this' cannot be null
+			if (sequence == 0)
+				return;
+
 			// was there a null check done before ?	
-			if (has_null_check.Get (parameter.Sequence))
+			if (has_null_check.Get (sequence))
 				return;
 
 			// make sure we don't report it more than once
-			has_null_check.Set (parameter.Sequence);
+			has_null_check.Set (sequence);
 
 			// ignore a value type parameter (as long as its not an array of value types)
 			TypeReference ptype = parameter.ParameterType;

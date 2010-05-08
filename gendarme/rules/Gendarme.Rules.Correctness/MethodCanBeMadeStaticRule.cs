@@ -128,8 +128,11 @@ namespace Gendarme.Rules.Correctness {
 
 			// but it's also valid to have an ldarg with a 0 value operand
 			foreach (Instruction instr in method.Body.Instructions) {
-				if ((instr.OpCode.Code == Code.Ldarg) && ((int) instr.Operand == 0))
-					return RuleResult.Success;
+				if (instr.OpCode.Code == Code.Ldarg) {
+					ParameterDefinition pd = (instr.Operand as ParameterDefinition);
+					if (pd.Sequence == 0)
+						return RuleResult.Success;
+				}
 			}
 
 			Runner.Report (method, Severity.Low, Confidence.Total);
