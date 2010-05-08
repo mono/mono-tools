@@ -97,12 +97,13 @@ namespace Gendarme.Rules.Smells {
 			if (!type.HasConstructors)
 				return null;
 
-			if (type.Constructors.Count == 1)
-				return type.Constructors[0];
+			ConstructorCollection ctors = type.Constructors;
+			if (ctors.Count == 1)
+				return ctors [0];
 
 			MethodDefinition smallest = null;
 			int scount = 0;
-			foreach (MethodDefinition constructor in type.Constructors) {
+			foreach (MethodDefinition constructor in ctors) {
 				// skip the static ctor since it will always be the smallest one
 				if (constructor.IsStatic)
 					continue;

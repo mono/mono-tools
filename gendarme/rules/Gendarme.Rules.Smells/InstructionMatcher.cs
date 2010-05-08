@@ -67,15 +67,22 @@ namespace Gendarme.Rules.Smells {
 			//could lead us to false positives.  We need an analysis
 			//which depends on the context.
 			if (source.IsLoadArgument ()) {
+				// case where 'ldarg this' is used (p.Sequence would be 0)
+				if (!Current.HasParameters && !Target.HasParameters)
+					return true;
 				ParameterDefinition p = source.GetParameter (Current);
 				if (p != null) {
-					ParameterDefinitionCollection cp = Current.Parameters;
-					ParameterDefinitionCollection tp = Target.Parameters;
 					int pos = p.Sequence - 1;
-					return cp.Count > pos && tp.Count > pos ?
-						cp [pos].ParameterType.Equals (tp [pos].ParameterType) :
-						false;
+					// handle case where Current does a 'ldarg this' while Target does not
+					if (pos > 0) {
+						ParameterDefinitionCollection cp = Current.Parameters;
+						ParameterDefinitionCollection tp = Target.Parameters;
+						return ((cp.Count > pos) && (tp.Count > pos)) ?
+							cp [pos].ParameterType.Equals (tp [pos].ParameterType) :
+							false;
+					}
 				}
+				return false;
 			}
 
 			// The same for ldloc / stloc

@@ -1,3 +1,10 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongParameterListsRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule on the use of TypeDefinition.Constructors property
+	* InstructionMatcher.cs: Fix when "ldarg 0" is used instead of 
+	the, much more common, "ldarg_0"
+
 2010-05-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* InstructionMatcher.cs: Rework AreEquivalent to avoid memory
