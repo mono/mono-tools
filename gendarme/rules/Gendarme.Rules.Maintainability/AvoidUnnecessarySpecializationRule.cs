@@ -345,7 +345,8 @@ namespace Gendarme.Rules.Maintainability {
 			foreach (Instruction ins in ldarg) {
 
 				ParameterDefinition parameter = ins.GetParameter (method);
-				if (null == parameter) //this is `this`, we do not care
+				// this is `this`, we do not care
+				if ((parameter == null) || (parameter.Sequence == 0))
 					continue;
 				if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
 					continue;
