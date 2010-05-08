@@ -1,3 +1,8 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DecorateThreadsRule.cs: Replace internal type MethodName (which
+	did not compile with CSC) and it's data by a simpler method.
+
 2010-04-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotLockOnWeakIdentityObjectsRule.cs: Apply AvoidRepetitiveCallsTo

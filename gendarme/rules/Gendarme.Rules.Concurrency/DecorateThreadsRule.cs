@@ -408,7 +408,7 @@ namespace Gendarme.Rules.Concurrency {
 					if (ins.Previous != null && ins.Previous.Previous != null && ins.Previous.OpCode.Code == Code.Newobj && ins.Previous.Previous.OpCode.Code == Code.Ldftn) {
 						// A few events are blacklisted because they do not use SynchronizingObject and
 						// are therefore always threaded.
-						if (non_synchronized_setters.Any (s => s.Matches (call))) {
+						if (IsNonSynchronizedSetter (call)) {
 							candidate = (MethodReference) ins.Previous.Previous.Operand;
 						
 						// But most events do use SynchronizingObject and therefore their threading
@@ -469,6 +469,23 @@ namespace Gendarme.Rules.Concurrency {
 					}
 				}
 			}
+		}
+
+		static bool IsNonSynchronizedSetter (MethodReference method)
+		{
+			switch (method.Name) {
+			case "add_Disposed":
+				return true;
+			// MSDN is ambiguous about whether these are supposed to work with SynchronizingObject
+			// but mono doesn't.
+			case "add_ErrorDataReceived":
+			case "add_OutputDataReceived":
+				TypeReference type = method.DeclaringType;
+				if (type.Name == "Process")
+					return (type.Namespace == "System.Diagnostics");
+				break;
+			}
+			return false;
 		}
 		
 		static bool HasSynchronizingObject (TypeReference tr)
@@ -561,62 +578,7 @@ namespace Gendarme.Rules.Concurrency {
 			Runner.Report (defect);
 		}
 		#endregion
-		
-		#region Private Types
-		private struct MethodName : IEquatable<MethodName> {
-			public MethodName (string ns, string type, string name)
-			{
-				Namespace = ns;
-				Type = type;
-				Name = name;
-			}
-			
-			public string Namespace { get; private set;}
-			
-			public string Type { get; private set;}
-			
-			public string Name { get; private set;}
-			
-			public bool Matches (MethodReference method)
-			{
-				if (Namespace != null && Namespace != method.DeclaringType.Namespace)
-					return false;
-				
-				if (Type != null && Type != method.DeclaringType.Name)
-					return false;
-				
-				if (Name != null && Name != method.Name)
-					return false;
-				
-				return true;
-			}
-
-			public override bool Equals (object obj)
-			{
-				return (obj is MethodName) ? Equals ((MethodName) obj) : false;
-			}
-
-			public bool Equals (MethodName method)
-			{
-				return ((method.Namespace == Namespace) && (method.Type == Type) && (method.Name == Name));
-			}
-
-			public override int GetHashCode ()
-			{
-				return Namespace.GetHashCode () ^ Type.GetHashCode () ^ Name.GetHashCode ();
-			}
-
-			public static bool operator == (MethodName a, MethodName b)
-			{
-				return a.Equals (b);
-			}
-
-			public static bool operator != (MethodName a, MethodName b)
-			{
-				return !a.Equals (b);
-			}
-		}
-		
+	
 #if false
 		private void Bitmask ()
 		{
@@ -629,7 +591,6 @@ namespace Gendarme.Rules.Concurrency {
 			Console.WriteLine (opcodes_mask);
 		}
 #endif
-		#endregion
 		
 		#region Fields
 		private HashSet<MethodReference> checked_entry_points = new HashSet<MethodReference> ();
@@ -639,16 +600,6 @@ namespace Gendarme.Rules.Concurrency {
 		private static readonly OpCodeBitmask opcodes_mask = new OpCodeBitmask (0x8000000000, 0x400000000000, 0x0, 0x20);
 		private static readonly MethodSignature SetSynchronizingObject = new MethodSignature ("set_SynchronizingObject", "System.Void", new string [] { "System.ComponentModel.ISynchronizeInvoke" });
 		
-		// Note that MSDN does not say that FileSystemWatcher::add_Error uses SynchronizingObject,
-		// but mono does.
-		private static readonly List<MethodName> non_synchronized_setters = new List<MethodName> {
-			new MethodName (null, null, "add_Disposed"),
-			
-			// MSDN is ambiguous about whether these are supposed to work with SynchronizingObject
-			// but mono doesn't.
-			new MethodName ("System.Diagnostics", "Process", "add_ErrorDataReceived"),
-			new MethodName ("System.Diagnostics", "Process", "add_OutputDataReceived"),
-		};
 		#endregion
 	}
 }
