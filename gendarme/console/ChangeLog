@@ -1,3 +1,8 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsoleRunner.cs: Better report warnings if some assembly could
+	not be loaded (invalid format, missing .netmodule ...)
+
 2010-05-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Delay showing results after tear down since 

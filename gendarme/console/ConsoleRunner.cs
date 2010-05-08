@@ -36,6 +36,7 @@ using System.Text;
 using System.Xml;
 
 using Mono.Cecil;
+using Mono.Cecil.Binary;
 
 using Gendarme.Framework;
 
@@ -240,13 +241,28 @@ namespace Gendarme {
 
 		void AddAssembly (string filename)
 		{
+			string warning = null;
+
 			try {
 				string assembly_name = Path.GetFullPath (filename);
 				AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
 				Assemblies.Add (ad);
 			}
-			catch (ArgumentException) {
-				Console.Error.WriteLine ("Could not load assembly '{0}'.", filename);
+			catch (ImageFormatException) {
+				warning = "Invalid assembly format";
+			}
+			catch (FileNotFoundException fnfe) {
+				// e.g. .netmodules
+				warning = fnfe.Message;
+			}
+			catch (ArgumentException e) {
+				warning = e.ToString ();
+			}
+
+			// show warning (quiet or not) but continue loading & analyzing assemblies
+			if (warning != null) {
+				Console.Error.WriteLine ("warning: could not load assembly '{0}', reason: {1}{2}",
+					filename, warning, Environment.NewLine);
 			}
 		}
 
