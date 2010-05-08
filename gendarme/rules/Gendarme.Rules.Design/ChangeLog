@@ -1,3 +1,8 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderConvertingMethodToPropertyRule.cs: Apply AvoidRepetitive
+	CallsToPropertiesRule to MethodDefinition.get_Name
+
 2010-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidPublicInstanceFieldsRule.cs: Apply AvoidRepetitiveCallsToPropertiesRule
