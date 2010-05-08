@@ -1,3 +1,8 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Turn
+	IsForbiddenTypeInCatches into a static method (self test)
+
 2010-05-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Gendarme.Rules.Exceptions.csproj: Remove deleted files from

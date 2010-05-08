@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Exceptions {
 		//}
 		//catch {
 		//}
-		private bool IsForbiddenTypeInCatches (string typeName)
+		private static bool IsForbiddenTypeInCatches (string typeName)
 		{
 			switch (typeName) {
 			case "System.Exception":
