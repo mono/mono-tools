@@ -42,6 +42,7 @@ namespace Gendarme {
 
 		private Wizard wizard;
 		private StringBuilder unexpected = new StringBuilder ();
+		private StringBuilder warnings = new StringBuilder ();
 
 		private static TypeFilter RuleTypeFilter = new TypeFilter (RuleFilter);
 
@@ -53,6 +54,10 @@ namespace Gendarme {
 
 		public string Error {
 			get { return unexpected.ToString (); }
+		}
+
+		public string Warnings {
+			get { return warnings.ToString (); }
 		}
 
 		private static bool RuleFilter (Type type, object interfaceName)
@@ -122,6 +127,11 @@ namespace Gendarme {
 		{
 			base.OnType (e);
 			wizard.BeginInvoke ((Action) (() => wizard.PostTypeUpdate (e)));
+		}
+
+		public void Warn (string warning)
+		{
+			warnings.AppendLine (warning);
 		}
 
 		// Ignore List is not supported by the Wizard runner

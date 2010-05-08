@@ -1,3 +1,13 @@
+2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GuiRunner.cs: Track the (non-fatal) warnings to be reported to 
+	the user.
+	* Wizard.cs: Catch FileNotFoundException when loading assemblies.
+	This can occurs if .netmodules are used (and absent). Show this
+	warning, if no fatal error occured, to the user at the end of the
+	analysis. Do not let UpdateAssemblies be called (final check)
+	while we're still loading them async
+
 2010-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Wizard.cs: Use Action instead of custom delegates (self-test)

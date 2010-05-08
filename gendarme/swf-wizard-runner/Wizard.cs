@@ -74,6 +74,7 @@ namespace Gendarme {
 
 		private Action assembly_loader;
 		private IAsyncResult assemblies_loading;
+		private object loader_lock = new object ();
 
 		private Action rule_loader;
 		private IAsyncResult rules_loading;
@@ -314,18 +315,29 @@ namespace Gendarme {
 		{
 			if (IsDisposed)
 				throw new ObjectDisposedException (GetType ().Name);
-			
-			foreach (KeyValuePair<string,AssemblyInfo> kvp in assemblies) {
-				DateTime last_write = File.GetLastWriteTimeUtc (kvp.Key);
-				if ((kvp.Value.Definition == null) || (kvp.Value.Timestamp < last_write)) {
-					AssemblyInfo a = kvp.Value;
-					a.Timestamp = last_write;
-					try {
-						a.Definition = AssemblyFactory.GetAssembly (kvp.Key);
-					}
-					catch (ImageFormatException) {
-						// continue loading & analyzing assemblies
-						// TODO: report as non-fatal warning
+
+			// do not let the final check be done while we're still loading assemblies
+			lock (loader_lock) {
+				foreach (KeyValuePair<string,AssemblyInfo> kvp in assemblies) {
+					DateTime last_write = File.GetLastWriteTimeUtc (kvp.Key);
+					if ((kvp.Value.Definition == null) && (kvp.Value.Timestamp < last_write)) {
+						AssemblyInfo a = kvp.Value;
+						string filename = kvp.Key;
+						try {
+							a.Definition = AssemblyFactory.GetAssembly (filename);
+						}
+						catch (ImageFormatException) {
+							// continue loading & analyzing assemblies
+							Runner.Warn ("Invalid image: " + filename);
+						}
+						catch (FileNotFoundException fnfe) {
+							// e.g. .netmodules
+							// continue loading & analyzing assemblies
+							Runner.Warn (fnfe.Message + " while loading " + filename);
+						}
+						finally {
+							a.Timestamp = last_write;
+						}
 					}
 				}
 			}
@@ -631,13 +643,29 @@ namespace Gendarme {
 
 			// display an error message and details if we encountered an exception during analysis
 			string error = Runner.Error;
-			bool visible = (error.Length > 0);
-			unexpected_error_label.Visible = visible;
-			copy_paste_label.Visible = visible;
+			bool has_errors = (error.Length > 0);
+			copy_paste_label.Visible = has_errors;
 			bugzilla_linklabel.Text = BugzillaUrl;
-			bugzilla_linklabel.Visible = visible;
-			error_textbox.Text = error;
-			error_textbox.Visible = visible;
+			bugzilla_linklabel.Visible = has_errors;
+
+			string warnings = Runner.Warnings;
+			bool has_warnings = (warnings.Length > 0);
+
+			if (has_errors) {
+				unexpected_error_label.Text = "Results are incomplete due to an unexpected error!";
+				unexpected_error_label.Visible = true;
+				// give priority to errors before warnings
+				error_textbox.Text = error;
+				error_textbox.Visible = true;
+			} else if (has_warnings) {
+				unexpected_error_label.Text = "Results might be incomplete due to the following warnings!";
+				unexpected_error_label.Visible = true;
+				error_textbox.Text = warnings;
+				error_textbox.Visible = true;
+			} else {
+				unexpected_error_label.Visible = false;
+				error_textbox.Visible = false;
+			}
 		}
 
 		private static bool CouldCopyReport (ref string currentName, string fileName)
