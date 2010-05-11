@@ -1,3 +1,7 @@
+2010-05-11  Andrew Jorgensen  <ajorgensen@novell.com>
+
+	* POTFILES.in: Remove gnunit files (since gnunit got removed)
+
 2005-05-31  Raja R Harinath  <rharinath@novell.com>
 
 	* POTFILES.in: Replace 'monodoc-browser/' with 'docbrowser/'.
