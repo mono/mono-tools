@@ -1,3 +1,11 @@
+2010-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodSignature.cs (Matches): Apply AvoidRepetitiveCallsTo
+	PropertiesRule on MethodDefinition.Parameters property.
+	* StackEntryAnalysis.cs: Apply CheckParametersNullityInVisible
+	MethodsRule on public methods. Use HasExceptionHandlers to avoid
+	creating needless collections.
+
 2010-01-27  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignature.cs: Remove MethodAttribute support and add a

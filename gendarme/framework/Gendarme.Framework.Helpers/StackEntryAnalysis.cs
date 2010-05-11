@@ -253,6 +253,9 @@ namespace Gendarme.Framework.Helpers {
 		/// <returns>An array of UsageResults containing the instructions that use the value and the stack offset of the entry at that instruction. A StackOffset of 0 means right on top of the stack.</returns>
 		public StackEntryUsageResult [] GetStackEntryUsage (Instruction ins)
 		{
+			if (ins == null)
+				throw new ArgumentNullException ("ins");
+
 			/* In the main loop we search for all usages of a StackEntry.
 			 * Then we check each usage for a store (to a local variable or an argument), search for corrosponding loads and search for usages of the new Stackentry.
 			 * This continues until no stores are found. */
@@ -398,25 +401,31 @@ namespace Gendarme.Framework.Helpers {
 						LoadResults.AddIfNew (insWithLeave.Copy (ins)); //continue, might be loaded again
 
 					//we simply branch to every possible catch block.
-					foreach (ExceptionHandler handler in Body.ExceptionHandlers) {
-						if (handler.Type != ExceptionHandlerType.Catch)
-							continue;
-						if (ins.Offset < handler.TryStart.Offset || ins.Offset >= handler.TryEnd.Offset)
-							continue;
-						LoadAlternatives.AddIfNew (insWithLeave.Copy (handler.HandlerStart));
+					ExceptionHandlerCollection ehc = null;
+					if (Body.HasExceptionHandlers) {
+						ehc = Body.ExceptionHandlers;
+						foreach (ExceptionHandler handler in ehc) {
+							if (handler.Type != ExceptionHandlerType.Catch)
+								continue;
+							if (ins.Offset < handler.TryStart.Offset || ins.Offset >= handler.TryEnd.Offset)
+								continue;
+							LoadAlternatives.AddIfNew (insWithLeave.Copy (handler.HandlerStart));
+						}
 					}
 
 					//Code.Leave leaves a try/catch block. Search for the finally block.
 					if (ins.OpCode.Code == Code.Leave || ins.OpCode.Code == Code.Leave_S) {
 						bool handlerFound = false;
-						foreach (ExceptionHandler handler in Body.ExceptionHandlers) {
-							if (handler.Type != ExceptionHandlerType.Finally)
-								continue;
-							if (handler.TryStart.Offset > ins.Offset || handler.TryEnd.Offset <= ins.Offset)
-								continue;
-							LoadAlternatives.AddIfNew (insWithLeave.Push (handler.HandlerStart, ins)); //push the leave instruction onto the leave stack
-							handlerFound = true;
-							break;
+						if (ehc != null) {
+							foreach (ExceptionHandler handler in ehc) {
+								if (handler.Type != ExceptionHandlerType.Finally)
+									continue;
+								if (handler.TryStart.Offset > ins.Offset || handler.TryEnd.Offset <= ins.Offset)
+									continue;
+								LoadAlternatives.AddIfNew (insWithLeave.Push (handler.HandlerStart, ins)); //push the leave instruction onto the leave stack
+								handlerFound = true;
+								break;
+							}
 						}
 						if (!handlerFound) //no finally found (try/catch without finally)
 							LoadAlternatives.AddIfNew (insWithLeave.Copy ((Instruction) ins.Operand));
@@ -464,6 +473,9 @@ namespace Gendarme.Framework.Helpers {
 		/// <returns>The next instruction that would be executed by the runtime.</returns>
 		public static Instruction GetNextInstruction (Instruction ins, out object alternative)
 		{
+			if (ins == null)
+				throw new ArgumentNullException ("ins");
+
 			alternative = null;
 			switch (ins.OpCode.FlowControl) {
 			case FlowControl.Branch:

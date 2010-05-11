@@ -126,12 +126,13 @@ namespace Gendarme.Framework.Helpers {
 
 			if (Parameters != null) {
 				if (method.HasParameters) {
-					if (Parameters.Count != method.Parameters.Count)
+					ParameterDefinitionCollection pdc = method.Parameters;
+					if (Parameters.Count != pdc.Count)
 						return false;
 					for (int i = 0; i < Parameters.Count; i++) {
 						if (Parameters [i] == null)
 							continue;//ignore parameter
-						if (Parameters [i] != method.Parameters [i].ParameterType.FullName) {
+						if (Parameters [i] != pdc [i].ParameterType.FullName) {
 							return false;
 						}
 					}
