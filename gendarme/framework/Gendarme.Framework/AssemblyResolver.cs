@@ -53,6 +53,9 @@ namespace Gendarme.Framework {
 
 		public override AssemblyDefinition Resolve (AssemblyNameReference name)
 		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
 			string aname = name.Name;
 			AssemblyDefinition asm = null;
 			if (!assemblies.TryGetValue (aname, out asm)) {
@@ -70,6 +73,9 @@ namespace Gendarme.Framework {
 
 		public void CacheAssembly (AssemblyDefinition assembly)
 		{
+			if (assembly == null)
+				throw new ArgumentNullException ("assembly");
+
 			assembly.Resolver = this;
 			assemblies.Add (assembly.Name.Name, assembly);
 			string location = Path.GetDirectoryName (assembly.MainModule.Image.FileInformation.FullName);
