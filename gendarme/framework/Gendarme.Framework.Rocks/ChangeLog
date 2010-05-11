@@ -1,3 +1,12 @@
+2010-05-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodRocks.cs (IsMain): Apply AvoidRepetitiveCallsToPropertiesRule
+	on MethodDefinition.Parameters property.
+	* TypeRocks.cs: Apply CheckParametersNullityInVisibleMethodsRule 
+	on several rocks.  Apply AvoidRepetitiveCallsToPropertiesRule
+	on MethodDefinition.Parameters on both GetMethod and IsFloatingPoint
+	rocks
+
 2010-05-02  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CecilRocks.cs: Add IMetadataTokenProvider.Equals(IMetadataToken

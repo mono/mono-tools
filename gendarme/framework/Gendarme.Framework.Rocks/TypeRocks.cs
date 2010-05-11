@@ -205,13 +205,14 @@ namespace Gendarme.Framework.Rocks {
 					continue;
 				if (parameters != null) {
 					if (method.HasParameters) {
-						if (parameters.Length != method.Parameters.Count)
+						ParameterDefinitionCollection pdc = method.Parameters;
+						if (parameters.Length != pdc.Count)
 							continue;
 						bool parameterError = false;
 						for (int i = 0; i < parameters.Length; i++) {
 							if (parameters [i] == null)
 								continue;//ignore parameter
-							if (parameters [i] != method.Parameters [i].ParameterType.GetOriginalType ().FullName) {
+							if (parameters [i] != pdc [i].ParameterType.GetOriginalType ().FullName) {
 								parameterError = true;
 								break;
 							}
@@ -392,6 +393,9 @@ namespace Gendarme.Framework.Rocks {
 		/// False otherwise.</returns>
 		public static bool IsAttribute (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			return self.Inherits ("System.Attribute");
 		}
 
@@ -402,6 +406,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type is a delegate, False otherwise.</returns>
 		public static bool IsDelegate (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			TypeDefinition type = self.Resolve ();
 			// e.g. this occurs for <Module> or GenericParameter
 			if (null == type || type.BaseType == null)
@@ -423,6 +430,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type as the [Flags] attribute, false otherwise.</returns>
 		public static bool IsFlags (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			TypeDefinition type = self.Resolve ();
 			if ((type == null) || !type.IsEnum || !type.HasCustomAttributes)
 				return false;
@@ -437,8 +447,12 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type is System.Single (C# float) or System.Double (C3 double), False otherwise.</returns>
 		public static bool IsFloatingPoint (this TypeReference self)
 		{
-			return ((self.FullName == Mono.Cecil.Constants.Single) ||
-				(self.FullName == Mono.Cecil.Constants.Double));
+			if (self == null)
+				return false;
+
+			string full_name = self.FullName;
+			return ((full_name == Mono.Cecil.Constants.Single) ||
+				(full_name == Mono.Cecil.Constants.Double));
 		}
 
 		/// <summary>
@@ -449,6 +463,9 @@ namespace Gendarme.Framework.Rocks {
 		/// False otherwise (e.g. compiler or tool generated)</returns>
 		public static bool IsGeneratedCode (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			if (self.HasCustomAttributes) {
 				// both helpful attributes only exists in 2.0 and more recent frameworks
 				if (self.Module.Assembly.Runtime >= TargetRuntime.NET_2_0) {
@@ -477,6 +494,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type refers to native code, False otherwise</returns>
 		public static bool IsNative (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			switch (self.FullName) {
 			case "System.IntPtr":
 			case "System.UIntPtr":
@@ -525,6 +545,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type is static, false otherwise.</returns>
 		public static bool IsStatic (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			TypeDefinition type = self.Resolve ();
 			if (type == null)
 				return false;
@@ -538,6 +561,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the type can be used from outside of the assembly, false otherwise.</returns>
 		public static bool IsVisible (this TypeReference self)
 		{
+			if (self == null)
+				return false;
+
 			TypeDefinition type = self.Resolve ();
 			if (type == null)
 				return true; // it's probably visible since we have a reference to it

@@ -123,11 +123,12 @@ namespace Gendarme.Framework.Rocks {
 			if (!method.HasParameters)
 				return true;
 
-			if (method.Parameters.Count != 1)
+			ParameterDefinitionCollection pdc = method.Parameters;
+			if (pdc.Count != 1)
 				return false;
 
 			// Main (string[] args)
-			return (method.Parameters [0].ParameterType.Name == "String[]");
+			return (pdc [0].ParameterType.Name == "String[]");
 		}
 
 		/// <summary>
