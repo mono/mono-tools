@@ -201,11 +201,19 @@ namespace Gendarme.Rules.Performance {
 		{
 			base.Initialize (runner);
 
-			// The IEnumerable<T> extension methods were introduced in .NET 3.5
-			// so disable the rule if the assembly is targeting something earlier.
+			// The IEnumerable<T> extension methods were introduced in .NET 3.5 (but runtime 2 !)
+			// so disable the rule if the assembly can't have Linq
 			Runner.AnalyzeAssembly += (object o, RunnerEventArgs e) => {
-				Active = e.CurrentAssembly.Runtime > TargetRuntime.NET_2_0;
+				Active = CanHasLinq (e.CurrentAssembly);
 			};
+		}
+
+		private static bool CanHasLinq (AssemblyDefinition assembly)
+		{
+			if (assembly.Runtime < TargetRuntime.NET_2_0)
+				return false;
+
+			return assembly.References ("System.Core");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
