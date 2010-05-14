@@ -1,3 +1,8 @@
+2010-05-14  Antoine Vandecreme  <avandecreme@sopragroup.com>
+
+	* ReviewLinqMethodRule.cs: Add support to detect use of
+	Count() instead of Any() in conditions
+
 2010-05-14  Antoine Vandecreme  <avandecreme@sopragroup.com> 
 
 	* ReviewLinqMethodRule.cs: Fix NullReferenceException,

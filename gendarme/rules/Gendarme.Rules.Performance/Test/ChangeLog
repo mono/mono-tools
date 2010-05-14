@@ -1,3 +1,8 @@
+2010-05-13  Antoine Vandecreme  <avandecreme@sopragroup.com>
+
+	* ReviewLinqMethodTest.cs: Add tests cases where a method use
+	Count() instead of Any() in conditions
+
 2010-04-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnusedParametersTest.cs: Add test case where a method

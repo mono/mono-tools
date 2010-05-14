@@ -97,8 +97,12 @@ namespace Gendarme.Rules.Performance {
 	public sealed class ReviewLinqMethodRule : Rule, IMethodRule {
 
 		private const string EnumerableName = "System.Linq.Enumerable";
-		private readonly OpCodeBitmask Comparisons = new OpCodeBitmask (0x0, 0x0, 0x0, 0xB);
-		
+
+		//private readonly OpCodeBitmask Comparisons = ComparisonsBitmask ();
+		//private readonly OpCodeBitmask Conditions = ConditionsBitmask ();
+		private readonly OpCodeBitmask Comparisons = new OpCodeBitmask (0x2801400000000000, 0x0, 0x0, 0xB);
+		private readonly OpCodeBitmask Conditions = new OpCodeBitmask (0x300180000000000, 0x0, 0x0, 0x0);
+
 		public readonly MethodSignature CountProperty = new MethodSignature ("get_Count", null, new string [0]);
 		public readonly MethodSignature LengthProperty = new MethodSignature ("get_Length", null, new string [0]);
 		public readonly MethodSignature Subscript = new MethodSignature ("get_Item", null, new string [] {"System.Int32"});
@@ -131,9 +135,9 @@ namespace Gendarme.Rules.Performance {
 		{			
 			// call System.Int32 System.Linq.Enumerable::Count<System.String>(System.Collections.Generic.IEnumerable`1<!!0>)
 			// ldc.i4.0
-			// cgt, clt, or ceq
+			// cgt, clt, ceq, ble, ble.s, bge or bge.s
 			Instruction n1 = ins.Next;
-			Instruction n2 = n1 !=null ? n1.Next : null;
+			Instruction n2 = n1 != null ? n1.Next : null;
 			if (n1 != null && n2 != null) {
 				object rhs = n1.GetOperand (method);
 				if (rhs != null && rhs.Equals (0)) {
@@ -148,7 +152,7 @@ namespace Gendarme.Rules.Performance {
 			// ldc.i4.0
 			// ldarg.1
 			// call System.Int32 System.Linq.Enumerable::Count<System.String>(System.Collections.Generic.IEnumerable`1<!!0>)
-			// cgt, clt, or ceq
+			// cgt, clt, ceq, ble, ble.s, bge or bge.s
 			Instruction p1 = ins.Previous;
 			Instruction p2 = p1 != null ? p1.Previous : null;
 			if (p1 != null && p2 != null && n1 != null) {
@@ -159,6 +163,16 @@ namespace Gendarme.Rules.Performance {
 						Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
 						Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
 					}
+				}
+			}
+
+			// call System.Int32 System.Linq.Enumerable::Count<System.String>(System.Collections.Generic.IEnumerable`1<!!0>)
+			// brtrue, brtrue.s, brfalse or brfalse.s
+			if (n1 != null) {
+				if (Conditions.Get(n1.OpCode.Code)) {
+					string message = "Use Any () instead of Count ().";
+					Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
+					Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
 				}
 			}
 		}
@@ -273,13 +287,29 @@ namespace Gendarme.Rules.Performance {
 		}
 		
 #if false
-		private void Bitmask ()
+		private static OpCodeBitmask ComparisonsBitmask ()
 		{
 			OpCodeBitmask mask = new OpCodeBitmask ();
 			mask.Set (Code.Cgt);
 			mask.Set (Code.Ceq);
 			mask.Set (Code.Clt);
-			Console.WriteLine (mask);
+			mask.Set (Code.Ble);
+			mask.Set (Code.Ble_S);
+			mask.Set (Code.Bge);
+			mask.Set (Code.Bge_S);
+			Console.WriteLine ("ComparisonsBitmask : " + mask);
+			return mask;
+		}
+
+		private static OpCodeBitmask ConditionsBitmask ()
+		{
+			OpCodeBitmask mask = new OpCodeBitmask ();
+			mask.Set (Code.Brtrue);
+			mask.Set (Code.Brtrue_S);
+			mask.Set (Code.Brfalse);
+			mask.Set (Code.Brfalse_S);
+			Console.WriteLine ("ConditionsBitmask : " + mask);
+			return mask;
 		}
 #endif
 	}

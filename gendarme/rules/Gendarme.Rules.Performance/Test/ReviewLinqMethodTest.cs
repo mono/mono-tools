@@ -74,6 +74,18 @@ namespace Test.Rules.Performance {
 				Console.WriteLine (sequence.Any ());				// the usual workaround
 			}
 
+			public void Good3 (IEnumerable<string> sequence)
+			{
+				if (sequence.Count () > 10)
+					Console.WriteLine ();
+			}
+
+			public void Good4 (IEnumerable<string> sequence)
+			{
+				if (sequence.Any ())
+					Console.WriteLine ();
+			}
+
 			public void Bad1a (IEnumerable<string> sequence)
 			{
 				Console.WriteLine (sequence.Count () > 0);
@@ -102,6 +114,42 @@ namespace Test.Rules.Performance {
 			public void Bad3b (IEnumerable<string> sequence)
 			{
 				Console.WriteLine (0 != sequence.Count ());
+			}
+
+			public void Bad1c (IEnumerable<string> sequence)
+			{
+				if (sequence.Count () > 0)
+					Console.WriteLine ();
+			}
+
+			public void Bad2c (IEnumerable<string> sequence)
+			{
+				if (sequence.Count () == 0)
+					Console.WriteLine ();
+			}
+
+			public void Bad3c (IEnumerable<string> sequence)
+			{
+				if (sequence.Count () != 0)
+					Console.WriteLine ();
+			}
+
+			public void Bad1d (IEnumerable<string> sequence)
+			{
+				if (0 < sequence.Count ())
+					Console.WriteLine ();
+			}
+
+			public void Bad2d (IEnumerable<string> sequence)
+			{
+				if (0 == sequence.Count ())
+					Console.WriteLine ();
+			}
+
+			public void Bad3d (IEnumerable<string> sequence)
+			{
+				if (0 != sequence.Count ())
+					Console.WriteLine ();
 			}
 		}
 
@@ -210,6 +258,7 @@ namespace Test.Rules.Performance {
 			// CanUseAny
 			AssertRuleSuccess<CanUseAny> ("Good1");
 			AssertRuleSuccess<CanUseAny> ("Good2");
+			AssertRuleSuccess<CanUseAny> ("Good3");
 
 			AssertRuleFailure<CanUseAny> ("Bad1a");
 			AssertRuleFailure<CanUseAny> ("Bad2a");
@@ -218,6 +267,14 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<CanUseAny> ("Bad1b");
 			AssertRuleFailure<CanUseAny> ("Bad2b");
 			AssertRuleFailure<CanUseAny> ("Bad3b");
+			
+			AssertRuleFailure<CanUseAny> ("Bad1c");
+			AssertRuleFailure<CanUseAny> ("Bad2c");
+			AssertRuleFailure<CanUseAny> ("Bad3c");
+			
+			AssertRuleFailure<CanUseAny> ("Bad1d");
+			AssertRuleFailure<CanUseAny> ("Bad2d");
+			AssertRuleFailure<CanUseAny> ("Bad3d");
 			
 			// CanUseSort
 			AssertRuleSuccess<CanUseSort> ("Good1");
