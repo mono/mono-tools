@@ -1,3 +1,12 @@
+2010-05-14  Antoine Vandecreme  <avandecreme@sopragroup.com> 
+
+	* ReviewLinqMethodRule.cs: Fix NullReferenceException,
+	I haven't analysed the reason of the null value but I
+	guess it happens in Linq queries such as :
+	myEnumerable.Where(v => v.IsCondition()).OrderBy(v => v.Value)
+	when searching the type of the object on which OrderBy is
+	applied (actually, always IEnumerable<T>, so no defect possible)
+
 2010-05-14  Antoine Vandecreme  <avandecreme@sopragroup.com>
 
 	* ReviewLinqMethodRule.cs: Fix the optimisation test

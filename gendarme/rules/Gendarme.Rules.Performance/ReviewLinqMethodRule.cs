@@ -251,16 +251,19 @@ namespace Gendarme.Rules.Performance {
 						} else if ((tname == "ElementAt" || tname == "ElementAtOrDefault") && tcount == 2) {
 							Instruction arg = ins.TraceBack (method);
 							TypeReference tr = arg.GetOperandType (method);
-							CheckForSubscript (tr, method, ins, tname);
+							if (tr != null)
+								CheckForSubscript (tr, method, ins, tname);
 
 						} else if ((tname == "Last" || tname == "LastOrDefault") && tcount == 1) {
 							TypeReference tr = ins.Previous.GetOperandType (method);
-							CheckForSubscript (tr, method, ins, tname);
+							if (tr != null)
+								CheckForSubscript (tr, method, ins, tname);
 
 						} else if (tname == "OrderBy" || tname == "OrderByDescending") {
 							Instruction arg = ins.TraceBack (method);
 							TypeReference tr = arg.GetOperandType (method);
-							CheckForSort (tr, method, ins, tname);
+							if (tr != null)
+								CheckForSort (tr, method, ins, tname);
 						}
 					}
 				}
