@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -75,7 +76,7 @@ namespace Gendarme.Framework {
 			set { currentTarget = value; }
 		}
 
-		protected IIgnoreList IgnoreList {
+		public IIgnoreList IgnoreList {
 			get {
 				if (ignoreList == null)
 					throw new InvalidOperationException ("No IgnoreList has been set for this runner.");
@@ -167,9 +168,13 @@ namespace Gendarme.Framework {
 			method_rules = rules.OfType<IMethodRule> ();
 		}
 
-		private bool Filter (Severity severity, Confidence confidence)
+		private bool Filter (Severity severity, Confidence confidence, IMetadataTokenProvider location)
 		{
-			return (SeverityBitmask.Get (severity) && ConfidenceBitmask.Get (confidence));
+			if (!SeverityBitmask.Get (severity) || !ConfidenceBitmask.Get (confidence))
+				return false;
+			// for Assembly | Type | Methods we can ignore before executing the rule
+			// but for others (e.g. Parameters, Fields...) we can only ignore the results
+			return !IgnoreList.IsIgnored (currentRule, location);
 		}
 
 		public virtual void Report (Defect defect)
@@ -177,22 +182,11 @@ namespace Gendarme.Framework {
 			if (defect == null)
 				throw new ArgumentNullException ("defect");
 
-			if (!Filter (defect.Severity, defect.Confidence))
+			if (!Filter (defect.Severity, defect.Confidence, defect.Location))
 				return;
 				
-			if (tearing_down) {
-				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as MethodDefinition)) {
-					return;
-				}
-				
-				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as TypeDefinition)) {
-					return;
-				}
-				
-				if (IgnoreList.IsIgnored (defect.Rule, defect.Target as AssemblyDefinition)) {
-					return;
-				}
-			}
+			if (tearing_down && IgnoreList.IsIgnored (defect.Rule, defect.Target))
+				return;
 
 			defect_list.Add (defect);
 		}
@@ -200,9 +194,9 @@ namespace Gendarme.Framework {
 		public void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence)
 		{
 			// check here to avoid creating the Defect object
-			if (!Filter (severity, confidence))
+			if (!Filter (severity, confidence, metadata))
 				return;
-				
+
 			Defect defect = new Defect (currentRule, currentTarget, metadata, severity, confidence);
 			Report (defect);
 		}
@@ -210,7 +204,7 @@ namespace Gendarme.Framework {
 		public void Report (IMetadataTokenProvider metadata, Severity severity, Confidence confidence, string message)
 		{
 			// check here to avoid creating the Defect object
-			if (!Filter (severity, confidence))
+			if (!Filter (severity, confidence, metadata))
 				return;
 
 			Defect defect = new Defect (currentRule, currentTarget, metadata, severity, confidence, message);
@@ -220,7 +214,7 @@ namespace Gendarme.Framework {
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence)
 		{
 			// check here to avoid creating the Defect object
-			if (!Filter (severity, confidence))
+			if (!Filter (severity, confidence, method))
 				return;
 
 			Defect defect = new Defect (currentRule, currentTarget, method, ins, severity, confidence);
@@ -230,7 +224,7 @@ namespace Gendarme.Framework {
 		public void Report (MethodDefinition method, Instruction ins, Severity severity, Confidence confidence, string message)
 		{
 			// check here to avoid creating the Defect object
-			if (!Filter (severity, confidence))
+			if (!Filter (severity, confidence, method))
 				return;
 
 			Defect defect = new Defect (currentRule, currentTarget, method, ins, severity, confidence, message);

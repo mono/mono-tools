@@ -1,3 +1,9 @@
+2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* IgnoreFileList.cs: Adjust for IIgnoreList changes. Avoid 
+	iterating across all analyzed code for each target (single pass).
+	Allow * (i.e. all) as a valid value on assembly targets.
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsoleRunner.cs: Better report warnings if some assembly could

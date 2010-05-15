@@ -1,3 +1,8 @@
+2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TestRunner.cs: Adjust for IIgnoreList changes. Check ignored
+	targets while running unit tests. 
+
 2009-06-10  Jesse Jones  <jesjones@mindspring.com>
 
 	* TestRunner.cs: ctor updates Rules property.

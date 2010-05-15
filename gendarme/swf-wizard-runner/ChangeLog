@@ -1,3 +1,9 @@
+2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GuiRunner.cs: Adjust for IIgnoreList changes
+	* Wizard.cs: Remove [ThreadModel] attribute from UpdateAssemblies
+	since it can be called asynchronously
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GuiRunner.cs: Track the (non-fatal) warnings to be reported to 

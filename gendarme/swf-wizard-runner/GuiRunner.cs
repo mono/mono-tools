@@ -38,7 +38,7 @@ using Mono.Cecil;
 
 namespace Gendarme {
 
-	public class GuiRunner : Runner, IIgnoreList {
+	public class GuiRunner : Runner {
 
 		private Wizard wizard;
 		private StringBuilder unexpected = new StringBuilder ();
@@ -49,7 +49,7 @@ namespace Gendarme {
 		public GuiRunner (Wizard form)
 		{
 			wizard = form;
-			IgnoreList = this;
+			IgnoreList = new BasicIgnoreList (this);
 		}
 
 		public string Error {
@@ -132,23 +132,6 @@ namespace Gendarme {
 		public void Warn (string warning)
 		{
 			warnings.AppendLine (warning);
-		}
-
-		// Ignore List is not supported by the Wizard runner
-
-		bool IIgnoreList.IsIgnored (IRule rule, AssemblyDefinition assembly)
-		{
-			return !rule.Active;
-		}
-
-		bool IIgnoreList.IsIgnored (IRule rule, TypeDefinition type)
-		{
-			return !rule.Active;
-		}
-
-		bool IIgnoreList.IsIgnored (IRule rule, MethodDefinition method)
-		{
-			return !rule.Active;
 		}
 	}
 }

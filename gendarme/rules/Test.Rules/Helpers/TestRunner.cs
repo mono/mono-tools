@@ -42,7 +42,7 @@ namespace Test.Rules.Helpers {
 	/// before each Check[Assembly|Type|Method] calls so we can easily
 	/// Assert on Defects.Count.
 	/// </summary>
-	public class TestRunner : Runner, IIgnoreList {
+	public class TestRunner : Runner {
 
 		private RunnerEventArgs event_args;
 
@@ -52,11 +52,11 @@ namespace Test.Rules.Helpers {
 			CurrentRule.Initialize (this);
 			Rules.Clear ();
 			Rules.Add (rule);
-			IgnoreList = this;
+			IgnoreList = new BasicIgnoreList (this);
 			Initialize ();
 		}
 
-		private void PreCheck (IMetadataTokenProvider obj)
+		private RuleResult PreCheck (IMetadataTokenProvider obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException ("obj", "Cannot check a null object");
@@ -69,6 +69,8 @@ namespace Test.Rules.Helpers {
 				Engines.Build (Assemblies);
 			}
 			CurrentTarget = obj;
+
+			return IgnoreList.IsIgnored (CurrentRule, obj) ? RuleResult.DoesNotApply : RuleResult.Success;
 		}
 		
 		private RuleResult PostCheck (RuleResult beforeTearingDown)
@@ -85,37 +87,26 @@ namespace Test.Rules.Helpers {
 	
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			PreCheck (assembly);
-			return PostCheck ((CurrentRule as IAssemblyRule).CheckAssembly (assembly));
+			RuleResult result = PreCheck (assembly);
+			if (result == RuleResult.Success)
+				result = (CurrentRule as IAssemblyRule).CheckAssembly (assembly);
+			return PostCheck (result);
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			PreCheck (type);
-			return PostCheck ((CurrentRule as ITypeRule).CheckType (type));
+			RuleResult result = PreCheck (type);
+			if (result == RuleResult.Success)
+				result = (CurrentRule as ITypeRule).CheckType (type);
+			return PostCheck (result);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			PreCheck (method);
-			return PostCheck ((CurrentRule as IMethodRule).CheckMethod (method));
-		}
-
-		// IIgnoreList
-
-		public bool IsIgnored (IRule rule, MethodDefinition method)
-		{
-			return !rule.Active;
-		}
-
-		public bool IsIgnored (IRule rule, TypeDefinition type)
-		{
-			return !rule.Active;
-		}
-
-		public bool IsIgnored (IRule rule, AssemblyDefinition assembly)
-		{
-			return !rule.Active;
+			RuleResult result = PreCheck (method);
+			if (result == RuleResult.Success)
+				result = (CurrentRule as IMethodRule).CheckMethod (method);
+			return PostCheck (result);
 		}
 
 		// reuse the same instance

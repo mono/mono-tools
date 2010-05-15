@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -32,11 +32,11 @@ using Mono.Cecil;
 namespace Gendarme.Framework {
 
 	/// <summary>
-	/// This interface defines how to query the ignore list, not how to add items nor it's internal storage.
+	/// This interface defines how to query the ignore list
 	/// </summary>
 	public interface IIgnoreList {
-		bool IsIgnored (IRule rule, MethodDefinition method);
-		bool IsIgnored (IRule rule, TypeDefinition type);
-		bool IsIgnored (IRule rule, AssemblyDefinition assembly);
+		IRunner Runner { get; }
+		void Add (string rule, IMetadataTokenProvider metadata);
+		bool IsIgnored (IRule rule, IMetadataTokenProvider metadata);
 	}
 }

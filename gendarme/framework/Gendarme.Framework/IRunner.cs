@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,8 @@ namespace Gendarme.Framework {
 		/// E.g. applying a rule based on data outside the current assembly
 		/// </summary>
 		Collection<AssemblyDefinition> Assemblies { get; }
+
+		IIgnoreList IgnoreList { get; set; }
 
 		Collection<Defect> Defects  { get; }
 		int DefectsLimit { get; }

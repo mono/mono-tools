@@ -1,3 +1,16 @@
+2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BasicIgnoreList.cs: Adjust for IIgnoreList changes. Remove 
+	Metadata inner type since all targets are now considered identical.
+	Make sure each type of IMetadataTokenProvider can be ignored and
+	chained to its parent.
+	* IIgnoreList.cs: Simplity IsIgnored to accept any IMetadata
+	TokenProvider. Add new Runner propertu and Add method.
+	* IRunner.cs: Add IIgnoreList property.
+	* Runner.cs: Adjust for IIgnoreList changes. Check ignored while
+	filtering (to avoid executing the rule when possible) and when a
+	defect is added.
+
 2010-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AssemblyResolver.cs: Apply CheckParametersNullityInVisibleMethods

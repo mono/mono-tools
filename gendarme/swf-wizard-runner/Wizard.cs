@@ -310,7 +310,6 @@ namespace Gendarme {
 			UpdatePageUI ();
 		}
 
-		[ThreadModel (ThreadModel.SingleThread)]
 		public void UpdateAssemblies ()
 		{
 			if (IsDisposed)
