@@ -1,3 +1,9 @@
+2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DeserializeOptionalFieldRule.cs: Apply AvoidRepetitiveCallsTo
+	PropertiesRule.
+	* MarkAllNonSerializableFieldsRule.cs: Fix typo
+
 2009-08-19  Jesse Jones  <jesjones@mindspring.com>
 
 	* DeserializeOptionalFieldRule.cs: Edited the rule description.

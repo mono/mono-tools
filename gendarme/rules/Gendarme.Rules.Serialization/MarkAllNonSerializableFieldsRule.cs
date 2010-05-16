@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Serialization {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			// if type is not serializable or has not any fields or does bot implements a custom serialization
+			// if type is not serializable or has not any fields or does not implements a custom serialization
 			if (!type.IsSerializable || !type.HasFields || type.Implements ("System.Runtime.Serialization.ISerializable"))
 				return RuleResult.DoesNotApply;
 

@@ -119,10 +119,13 @@ namespace Gendarme.Rules.Serialization {
 				foreach (MethodDefinition method in type.Methods) {
 					if (!method.HasCustomAttributes)
 						continue;
-					if (method.CustomAttributes.ContainsType (OnDeserializedAttribute))
+
+					CustomAttributeCollection cac = method.CustomAttributes;
+					if (cac.ContainsType (OnDeserializedAttribute))
 						deserialized_candidate = true;
-					if (method.CustomAttributes.ContainsType (OnDeserializingAttribute))
+					if (cac.ContainsType (OnDeserializingAttribute))
 						deserializing_candidate = true;
+
 					if (deserialized_candidate && deserializing_candidate)
 						break;
 				}
