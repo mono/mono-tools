@@ -59,6 +59,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (attributeTypeName == null)
 				throw new ArgumentNullException ("attributeTypeName");
+			if (self == null)
+				return false;
 
 			foreach (CustomAttribute ca in self) {
 				if (ca.Constructor.DeclaringType.FullName == attributeTypeName)
@@ -78,6 +80,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (attributeTypeNames == null)
 				throw new ArgumentNullException ("attributeTypeNames");
+			if (self == null)
+				return false;
 
 			foreach (CustomAttribute ca in self) {
 				string fullname = ca.Constructor.DeclaringType.FullName;

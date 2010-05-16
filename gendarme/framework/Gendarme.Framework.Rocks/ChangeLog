@@ -1,3 +1,17 @@
+2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AssemblyRocks.cs:
+	* CecilRocks.cs:
+	* CommonRocks.cs:
+	* CustomAttributeRocks.cs:
+	* FieldRocks.cs:
+	* InstructionRocks.cs:
+	* MethodRocks.cs:
+	* ModuleRocks.cs:
+	* TypeRocks.cs:
+	* VariableDefinitionRocks.cs:
+		Apply fix for CheckParametersNullityInVisibleMethodsRule
+
 2010-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodRocks.cs (IsMain): Apply AvoidRepetitiveCallsToPropertiesRule

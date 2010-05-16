@@ -80,7 +80,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == other)
 				return true;
 			if (other == null)
-				return false;
+				return (self == null);
 			if (!self.MetadataToken.Equals (other.MetadataToken))
 				return false;
 			// metadata token is unique per assembly

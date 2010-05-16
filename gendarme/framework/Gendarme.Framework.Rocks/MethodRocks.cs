@@ -59,7 +59,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is defined as the entry point of it's assembly, False otherwise</returns>
 		public static bool IsEntryPoint (this MethodReference self)
 		{
-			return (self == self.DeclaringType.Module.Assembly.EntryPoint);
+			return ((self != null) && (self == self.DeclaringType.Module.Assembly.EntryPoint));
 		}
 
 		/// <summary>
@@ -69,6 +69,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is a finalizer, False otherwise.</returns>
 		public static bool IsFinalizer (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			return (self.HasThis && !self.HasParameters && (self.Name == "Finalize") &&
 				(self.ReturnType.ReturnType.FullName == "System.Void"));
 		}
@@ -81,6 +84,9 @@ namespace Gendarme.Framework.Rocks {
 		/// False otherwise (e.g. compiler or tool generated)</returns>
 		public static bool IsGeneratedCode (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			if ((method != null) && method.HasCustomAttributes) {
 				if (method.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
@@ -101,6 +107,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is a valid Main, False otherwise.</returns>
 		public static bool IsMain (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			// Main must be static
 			if (!method.IsStatic)
@@ -138,6 +147,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is an override to a virtual method, False otherwise</returns>
 		public static bool IsOverride (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			if ((method == null) || !method.IsVirtual)
 				return false;
@@ -180,6 +192,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is a getter or a setter, False otherwise</returns>
 		public static bool IsProperty (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			if (method == null)
 				return false;
@@ -193,6 +208,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method can be used from outside of the assembly, false otherwise.</returns>
 		public static bool IsVisible (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			if ((method == null) || method.IsPrivate || method.IsAssembly)
 				return false;
@@ -208,6 +226,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method has the signature of an event callback.</returns>
 		public static bool IsEventCallback (this MethodReference self)
 		{
+			if (self == null)
+				return false;
+
 			MethodDefinition method = self.Resolve ();
 			if ((method == null) || !method.HasParameters)
 				return false;

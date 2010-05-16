@@ -114,6 +114,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (typeName == null)
 				throw new ArgumentNullException ("typeName");
+			if (self == null)
+				return false;
 
 			foreach (TypeReference type in self) {
 				if (type.FullName == typeName)
@@ -133,6 +135,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (typeNames == null)
 				throw new ArgumentNullException ("typeNames");
+			if (self == null)
+				return false;
 
 			foreach (TypeReference type in self) {
 				string fullname = type.FullName;
@@ -155,6 +159,11 @@ namespace Gendarme.Framework.Rocks {
 		/// </remarks>
 		public static MethodDefinition GetMethod (this TypeReference self, MethodSignature signature)
 		{
+			if (signature == null)
+				throw new ArgumentNullException ("signature");
+			if (self == null)
+				return null;
+
 			bool ctors, methods;
 			// method name is optional so we must look in everything
 			if (String.IsNullOrEmpty (signature.Name)) {
@@ -299,7 +308,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if at least one method matches the signature. Otherwise false.</returns>
 		public static bool HasMethod (this TypeReference self, MethodSignature signature)
 		{
-			return (self.GetMethod (signature) != null);
+			return ((self != null) && self.GetMethod (signature) != null);
 		}
 
 		/// <summary>
@@ -315,6 +324,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (interfaceName == null)
 				throw new ArgumentNullException ("interfaceName");
+			if (self == null)
+				return false;
 
 			TypeDefinition type = self.Resolve ();
 			if (type == null)
@@ -359,6 +370,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (className == null)
 				throw new ArgumentNullException ("className");
+			if (self == null)
+				return false;
 
 			TypeReference current = self.Resolve ();
 			while ((current != null) && (current.FullName != "System.Object")) {

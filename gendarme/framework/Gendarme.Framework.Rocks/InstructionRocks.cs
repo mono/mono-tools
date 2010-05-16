@@ -236,6 +236,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The number of value removed (pop) from the stack for this instruction.</returns>
 		public static int GetPopCount (this Instruction self, IMethodSignature method)
 		{
+			if (self == null)
+				throw new ArgumentException ("self");
+			if (method == null)
+				throw new ArgumentException ("method");
+
 			switch (self.OpCode.StackBehaviourPop) {
 			case StackBehaviour.Pop0:
 				return 0;
@@ -298,6 +303,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The number of value added (push) to the stack by this instruction.</returns>
 		public static int GetPushCount (this Instruction self)
 		{
+			if (self == null)
+				throw new ArgumentException ("self");
+
 			switch (self.OpCode.StackBehaviourPush) {
 			case StackBehaviour.Push0:
 				return 0;

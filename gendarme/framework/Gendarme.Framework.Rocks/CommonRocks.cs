@@ -43,12 +43,22 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="item">The item to add.</param>
 		public static void AddIfNew<T> (this ICollection<T> self, T item)
 		{
+			if (self == null)
+				throw new ArgumentNullException ("self");
+			if (item == null)
+				throw new ArgumentNullException ("item");
+
 			if (!self.Contains (item))
 				self.Add (item);
 		}
 
 		public static void AddRangeIfNew<T> (this ICollection<T> self, IEnumerable<T> items)
 		{
+			if (self == null)
+				throw new ArgumentNullException ("self");
+			if (items == null)
+				throw new ArgumentNullException ("items");
+
 			foreach (T item in items) {
 				if (!self.Contains (item))
 					self.Add (item);

@@ -40,6 +40,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if any of the assembly's modules reference the assembly name, false otherwise.</returns>
 		public static bool References (this AssemblyDefinition self, string assemblyName)
 		{
+			if (assemblyName == null)
+				throw new ArgumentNullException ("assemblyName");
+			if (self == null)
+				return false;
+
 			foreach (ModuleDefinition module in self.Modules) {
 				foreach (AssemblyNameReference r in module.AssemblyReferences) {
 					if (r.Name == assemblyName)

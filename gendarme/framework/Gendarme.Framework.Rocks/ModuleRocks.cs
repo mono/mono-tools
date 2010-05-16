@@ -66,6 +66,8 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the symbol file for this module is available, False otherwise</returns>
 		public static bool HasDebuggingInformation (this ModuleDefinition self)
 		{
+			if (self == null)
+				return false;
 			return (self as IAnnotationProvider).Annotations.Contains ("symbols");
 		}
 
@@ -77,6 +79,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="self"></param>
 		public static void LoadDebuggingSymbols (this ModuleDefinition self)
 		{
+			if (self == null)
+				return;
+
 			// don't create a new reader if the symbols are already loaded
 			IAnnotationProvider provider = (self as IAnnotationProvider);
 			if (provider.Annotations.Contains ("symbols"))

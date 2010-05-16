@@ -5,7 +5,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //	Andreas Noever <andreas.noever@gmail.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 // (C) 2008 Andreas Noever
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,9 +42,13 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the field was not added directly by the developer, False otherwise</returns>
 		public static bool IsGeneratedCode (this FieldReference self)
 		{
+			if (self == null)
+				return false;
+
 			FieldDefinition field = self.Resolve ();
 			if ((field == null) || !field.HasCustomAttributes)
 				return false;
+
 			return field.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes);
 		}
 
@@ -55,9 +59,13 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the field can be used from outside of the assembly, false otherwise.</returns>
 		public static bool IsVisible (this FieldReference self)
 		{
+			if (self == null)
+				return false;
+
 			FieldDefinition field = self.Resolve ();
 			if ((field == null) || field.IsPrivate || field.IsAssembly)
 				return false;
+
 			return field.DeclaringType.Resolve ().IsVisible ();
 		}
 	}
