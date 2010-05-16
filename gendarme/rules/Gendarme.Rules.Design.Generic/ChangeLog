@@ -1,3 +1,10 @@
+2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidDeclaringCustomDelegatesRule.cs:
+	* DoNotExposeNestedGenericSignaturesRule.cs:
+	* UseGenericEventHandlerRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-01-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodWithUnusedGenericTypeRule.cs: Apply AvoidRepetitiveCalls

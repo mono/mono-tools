@@ -152,7 +152,8 @@ namespace Gendarme.Rules.Design.Generic {
 			bool use_structure = false;
 			// check parameters for 'ref', 'out', 'params'
 			if (invoke.HasParameters) {
-				n = invoke.Parameters.Count;
+				ParameterDefinitionCollection pdc = invoke.Parameters;
+				n = pdc.Count;
 				// too many parameters to directly use Action/Func
 				// so we lower severity and suggest grouping them
 				if (n > MaxParameter) {
@@ -162,7 +163,7 @@ namespace Gendarme.Rules.Design.Generic {
 				}
 
 				// special cases not directly usable with Action/Func
-				foreach (ParameterDefinition pd in invoke.Parameters) {
+				foreach (ParameterDefinition pd in pdc) {
 					if (pd.IsOut || pd.IsRef () || pd.IsParams ())
 						return RuleResult.Success;
 				}

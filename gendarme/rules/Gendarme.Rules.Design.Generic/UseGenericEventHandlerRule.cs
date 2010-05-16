@@ -87,11 +87,16 @@ namespace Gendarme.Rules.Design.Generic {
 
 			if (invoke.ReturnType.ReturnType.FullName != "System.Void")
 				return RuleResult.Success;
-			if (!invoke.HasParameters || (invoke.Parameters.Count != 2))
+
+			if (!invoke.HasParameters)
 				return RuleResult.Success;
-			if (invoke.Parameters [0].ParameterType.FullName != "System.Object")
+
+			ParameterDefinitionCollection pdc = invoke.Parameters;
+			if (pdc.Count != 2)
 				return RuleResult.Success;
-			if (!invoke.Parameters [1].ParameterType.Inherits ("System.EventArgs"))
+			if (pdc [0].ParameterType.FullName != "System.Object")
+				return RuleResult.Success;
+			if (!pdc [1].ParameterType.Inherits ("System.EventArgs"))
 				return RuleResult.Success;
 
 			Runner.Report (type, Severity.Medium, Confidence.High);

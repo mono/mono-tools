@@ -108,9 +108,10 @@ namespace Gendarme.Rules.Design.Generic {
 			if (!method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
-			Severity? severity = Check (method.ReturnType.ReturnType);
+			MethodReturnType return_type = method.ReturnType;
+			Severity? severity = Check (return_type.ReturnType);
 			if (severity.HasValue)
-				Runner.Report (method.ReturnType, severity.Value, Confidence.Total);
+				Runner.Report (return_type, severity.Value, Confidence.Total);
 
 			if (method.HasParameters) {
 				foreach (ParameterDefinition parameter in method.Parameters) {
