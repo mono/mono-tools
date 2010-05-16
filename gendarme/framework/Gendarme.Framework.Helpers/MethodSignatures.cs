@@ -37,7 +37,7 @@ namespace Gendarme.Framework.Helpers {
 	/// <summary>
 	/// Defines commonly used MethodSignatures
 	/// </summary>
-	/// <see cref="Gendarme.Framework.Helpers.MethodSignature"/>
+	// <see cref="Gendarme.Framework.Helpers.MethodSignature"/>
 	public static class MethodSignatures {
 		private static readonly string [] NoParameter = new string [0];
 

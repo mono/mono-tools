@@ -28,7 +28,8 @@ namespace Gendarme.Framework.Helpers {
 
 		public MethodPrinter(MethodDefinition method)
 		{
-			Debug.Assert (method != null, "method is null");
+			if (method == null)
+				throw new ArgumentNullException ("method");
 			
 			this.method = method;
 			if (method.HasBody)
@@ -82,6 +83,9 @@ namespace Gendarme.Framework.Helpers {
 		#region Helpers (used by CFG)
 		public static int[] BranchTargets (Instruction instruction)
 		{
+			if (instruction == null)
+				throw new ArgumentNullException ("instruction");
+
 			int[] result = null;
 			switch (instruction.OpCode.OperandType) {
 			case OperandType.InlineSwitch:
@@ -107,6 +111,9 @@ namespace Gendarme.Framework.Helpers {
 
 		public bool IsLeader (Instruction instruction, Instruction previous)
 		{
+			if (instruction == null)
+				throw new ArgumentNullException ("instruction");
+
 			/* First instruction in the method */
 			if (previous == null)
 				return true;

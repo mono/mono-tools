@@ -1,3 +1,10 @@
+2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MethodPrinter.cs: Apply fix for CheckParametersNullityInVisible
+	MethodsRule 
+	* MethodSignature.cs, MethodSignatures.cs: workaround for gmcs
+	regression #603454
+
 2010-05-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodSignature.cs (Matches): Apply AvoidRepetitiveCallsTo
