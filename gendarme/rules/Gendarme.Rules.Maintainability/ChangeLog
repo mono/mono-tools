@@ -1,3 +1,9 @@
+2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationRule.cs: Apply AvoidRepetitive
+	CallsToPropertiesRule. Remove condition check that can never
+	occur at this stage since it is checked earlier by the rule.
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Fix when "ldarg 0" is 

@@ -220,10 +220,11 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static bool IsSystemObjectMethod (MethodReference method)
 		{
-			if (method.Name.Length < 6 /*Equals*/ || method.Name.Length > 16 /*EqualityOperator*/)
+			string name = method.Name;
+			if (name.Length < 6 /*Equals*/ || name.Length > 16 /*EqualityOperator*/)
 				return false; //no need to do the string comparisons
 
-			switch (method.Name) {
+			switch (name) {
 			case "Finalize" :
 			case "GetHashCode" :
 			case "GetType" :
@@ -256,7 +257,6 @@ namespace Gendarme.Rules.Maintainability {
 		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
 		{
 			int pIndex = parameter.Sequence - 1;
-			if (pIndex < 0) throw new InvalidOperationException ("parameter.Sequence < 1");
 			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
 
 			int currentLeastDepth = 0;
