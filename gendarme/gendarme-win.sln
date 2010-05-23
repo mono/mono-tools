@@ -96,8 +96,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swf-wizard-runner", "swf-wizard-runner\swf-wizard-runner.csproj", "{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "gendarme-win32-setup", "win32-setup\win32-setup.vdproj", "{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Design.Generic", "rules\Gendarme.Rules.Design.Generic\Test\Tests.Rules.Design.Generic.csproj", "{C3BDA065-4C29-48CA-907A-E35CE92F5F87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests.Rules.Design.Linq", "rules\Gendarme.Rules.Design.Linq\Test\Tests.Rules.Design.Linq.csproj", "{19837D0F-A8ED-4733-97D0-F5EC9991658F}"
@@ -286,10 +284,6 @@ Global
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C44DF79-3FEA-4F1D-8568-8744AD92E3F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Debug|Any CPU.ActiveCfg = Debug
-		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Debug|Any CPU.Build.0 = Debug
-		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Release|Any CPU.ActiveCfg = Release
-		{58EFCE12-43F0-48FE-9C3C-8F2B114AAC53}.Release|Any CPU.Build.0 = Release
 		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3BDA065-4C29-48CA-907A-E35CE92F5F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
