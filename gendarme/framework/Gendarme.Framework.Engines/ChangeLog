@@ -1,3 +1,8 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SuppressMessageEngine.cs: New. Engine to read [SuppressMessage]
+	attributes and create ignore entries from them.
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* NamespaceEngine.cs: Apply AvoidRepetitiveCallsToPropertiesRule 
