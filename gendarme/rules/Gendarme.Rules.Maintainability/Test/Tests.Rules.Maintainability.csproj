@@ -45,6 +45,7 @@
     <Compile Include="AvoidUnnecessarySpecializationTest.cs" />
     <Compile Include="ConsiderUsingStopwatchTest.cs" />
     <Compile Include="PreferStringIsNullOrEmptyTest.cs" />
+    <Compile Include="RemoveDependenceOnObsoleteCodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

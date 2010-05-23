@@ -53,6 +53,7 @@
     <Compile Include="AvoidUnnecessarySpecializationRule.cs" />
     <Compile Include="ConsiderUsingStopwatchRule.cs" />
     <Compile Include="PreferStringIsNullOrEmptyRule.cs" />
+    <Compile Include="RemoveDependenceOnObsoleteCodeRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
