@@ -30,6 +30,7 @@ framework_sources =  \
 	../AssemblyStaticInfo.cs \
 	Gendarme.Framework.Engines/NamespaceEngine.cs \
 	Gendarme.Framework.Engines/OpCodeEngine.cs \
+	Gendarme.Framework.Engines/SuppressMessageEngine.cs \
 	Gendarme.Framework.Helpers/Log.cs \
 	Gendarme.Framework.Helpers/MethodPrinter.cs \
 	Gendarme.Framework.Helpers/MethodSignature.cs \
@@ -88,7 +89,9 @@ framework_build_sources += $(framework_generated_sources)
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
+	GlobalSuppressions.cs \
 	Gendarme.Framework/BitmaskTest.cs \
+	Gendarme.Framework.Engines/SuppressMessageAttributeTest.cs \
 	Gendarme.Framework.Helpers/MethodSignatureTest.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysisTest.cs \
 	Gendarme.Framework.Rocks/RocksTest.cs \
@@ -103,13 +106,14 @@ framework_test_sources = \
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
 Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(CECIL_ASM)
-	$(GMCS) $(TESTS_OPTIONS) -target:library -r:$(CECIL_ASM) -pkg:mono-nunit -r:../bin/Gendarme.Framework.dll \
+	$(GMCS) $(TESTS_OPTIONS) -target:library -d:CODE_ANALYSIS -pkg:mono-nunit \
+		-r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll -r:../rules/Test.Rules/Test.Rules.dll \
 		-out:$@ $(framework_test_build_sources)
 
 test: Test.Framework.dll
 
 run-test: test
-	MONO_PATH=../bin/:$(MONO_PATH) nunit-console2 -noshadow Test.Framework.dll
+	MONO_PATH=../bin/:../rules/Test.Rules/:$(MONO_PATH) nunit-console2 -noshadow Test.Framework.dll
 
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)

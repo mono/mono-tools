@@ -1,3 +1,7 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add new engine and tests to the build
+
 2010-01-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add ParameterRocks.cs and its unit tests to the build
