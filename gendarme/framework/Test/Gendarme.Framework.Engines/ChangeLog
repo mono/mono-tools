@@ -1,0 +1,5 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SuppressMessageAttributeTest.cs: New. Unit tests using 
+	[SuppressMessage] attributes
+

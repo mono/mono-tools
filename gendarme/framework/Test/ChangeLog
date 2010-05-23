@@ -1,3 +1,8 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GlobalSuppressions.cs: New. FxCop-style global suppressions for
+	testing
+
 2008-11-07  Alan McGovern  <amcgovern@novell.com>
 
 	* Tests.Framework.csproj: Activate makefile integration for all the
