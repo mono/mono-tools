@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyStaticInfo.cs" />
+    <Compile Include="Gendarme.Framework.Engines\SuppressMessageEngine.cs" />
     <Compile Include="Gendarme.Framework.Helpers\Log.cs" />
     <Compile Include="Gendarme.Framework.Helpers\MethodPrinter.cs" />
     <Compile Include="Gendarme.Framework.Rocks\ParameterRocks.cs" />

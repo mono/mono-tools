@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -38,6 +38,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gendarme.Framework.Engines\SuppressMessageAttributeTest.cs" />
     <Compile Include="Gendarme.Framework.Helpers\MethodSignatureTest.cs" />
     <Compile Include="Gendarme.Framework.Helpers\StackEntryAnalysisTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\AssemblyRocksTest.cs" />
@@ -50,11 +51,16 @@
     <Compile Include="Gendarme.Framework.Rocks\TypeRocksTest.cs" />
     <Compile Include="Gendarme.Framework.Rocks\VariableDefinitionRocksTest.cs" />
     <Compile Include="Gendarme.Framework\BitmaskTest.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\rules\Test.Rules\Test.Rules.csproj">
+      <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
+      <Name>Test.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Framework.csproj">
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
