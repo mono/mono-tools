@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,18 @@ namespace Gendarme.Framework {
 
 	public class EngineController {
 
-		internal Dictionary<string, Engine> engines = new Dictionary<string, Engine> ();
+		private IRunner runner;
+		private Dictionary<string, Engine> engines;
+
+		public EngineController (IRunner runner)
+		{
+			this.runner = runner;
+			engines = new Dictionary<string, Engine> ();
+		}
+
+		public IRunner Runner {
+			get { return runner; }
+		}
 
 		public void Subscribe (string engineName)
 		{
@@ -61,42 +72,30 @@ namespace Gendarme.Framework {
 		public event EventHandler<EngineEventArgs> BuildingCustomAttributes;
 		public event EventHandler<EngineEventArgs> BuildingMethodBody;
 		public event EventHandler<EngineEventArgs> BuildingType;
+		public event EventHandler<EngineEventArgs> BuildingModule;
+		public event EventHandler<EngineEventArgs> BuildingAssembly;
 
 		public void Build (IList<AssemblyDefinition> list)
 		{
+			if (list == null)
+				throw new ArgumentNullException ("list");
+
 			EngineEventArgs e = new EngineEventArgs (this);
 
 			foreach (AssemblyDefinition assembly in list) {
-				e.CurrentAssembly = assembly;
-
-				BuildCustomAttributes (assembly, e);
+				Build (assembly, e);
 
 				foreach (ModuleDefinition module in assembly.Modules) {
-					e.CurrentModule = module;
-
-					// TODO check custom attributes
+					Build (module, e);
 
 					foreach (TypeDefinition type in module.Types) {
-						e.CurrentType = type;
-
-						EventHandler<EngineEventArgs> handler = BuildingType;
-						if (handler != null)
-							handler (type, e);
-
-						BuildCustomAttributes (type, e);
-
-						if (type.HasFields) {
-							foreach (FieldDefinition field in type.Fields)
-								BuildCustomAttributes (field, e);
-						}
-
-						// TODO check custom attributes (events)
-						// TODO check custom attributes (properties)
+						Build (type, e);
 
 						if (type.HasConstructors) {
 							foreach (MethodDefinition ctor in type.Constructors)
 								Build (ctor, e);
 						}
+
 						if (type.HasMethods) {
 							foreach (MethodDefinition method in type.Methods)
 								Build (method, e);
@@ -119,18 +118,85 @@ namespace Gendarme.Framework {
 		{
 			e.CurrentMethod = method;
 
-			// TODO check custom attributes (methods)
 			BuildCustomAttributes (method, e);
 
-			// TODO check custom attributes (parameters)
-			// TODO check custom attributes (generic parameters)
-			// TODO check custom attributes (return value)
+			if (method.HasGenericParameters) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (GenericParameter gp in method.GenericParameters)
+					BuildCustomAttributes (gp, e);
+			}
+
+			if (method.HasParameters) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (ParameterDefinition parameter in method.Parameters)
+					BuildCustomAttributes (parameter, e);
+			}
+
+			// TODO: incomplete - only covers custom attributes
+			BuildCustomAttributes (method.ReturnType, e);
 
 			if (method.HasBody) {
 				EventHandler<EngineEventArgs> handler = BuildingMethodBody;
 				if (handler != null)
 					handler (method.Body, e);
 			}
+		}
+
+		private void Build (TypeDefinition type, EngineEventArgs e)
+		{
+			e.CurrentType = type;
+
+			EventHandler<EngineEventArgs> handler = BuildingType;
+			if (handler != null)
+				handler (type, e);
+
+			BuildCustomAttributes (type, e);
+
+			if (type.HasEvents) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (EventDefinition evnt in type.Events)
+					BuildCustomAttributes (evnt, e);
+			}
+
+			if (type.HasFields) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (FieldDefinition field in type.Fields)
+					BuildCustomAttributes (field, e);
+			}
+
+			if (type.HasGenericParameters) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (GenericParameter gp in type.GenericParameters)
+					BuildCustomAttributes (gp, e);
+			}
+
+			if (type.HasProperties) {
+				// TODO: incomplete - only covers custom attributes
+				foreach (PropertyDefinition prop in type.Properties)
+					BuildCustomAttributes (prop, e);
+			}
+		}
+
+		private void Build (ModuleDefinition module, EngineEventArgs e)
+		{
+			e.CurrentModule = module;
+
+			EventHandler<EngineEventArgs> handler = BuildingModule;
+			if (handler != null)
+				handler (module, e);
+
+			BuildCustomAttributes (module, e);
+		}
+
+		private void Build (AssemblyDefinition assembly, EngineEventArgs e)
+		{
+			e.CurrentAssembly = assembly;
+
+			EventHandler<EngineEventArgs> handler = BuildingAssembly;
+			if (handler != null)
+				handler (assembly, e);
+
+			BuildCustomAttributes (assembly, e);
 		}
 
 		public void TearDown ()

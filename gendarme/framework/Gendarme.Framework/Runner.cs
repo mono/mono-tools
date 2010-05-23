@@ -122,7 +122,7 @@ namespace Gendarme.Framework {
 		public EngineController Engines { 
 			get {
 				if (ec == null)
-					ec = new EngineController ();
+					ec = new EngineController (this);
 				return ec;
 			}
 		}

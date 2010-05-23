@@ -1,3 +1,10 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* EngineController.cs: Handle custom attributes on every 
+	IMetadataTokenProvider
+	* Runner.cs: Give a reference of the runner to the engine 
+	controller
+
 2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BasicIgnoreList.cs: Adjust for IIgnoreList changes. Remove 
