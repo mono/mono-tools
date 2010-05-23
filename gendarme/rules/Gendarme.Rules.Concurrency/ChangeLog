@@ -1,3 +1,9 @@
+2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs: Fix last unit
+	test failure when compiled with VS2008 where CSC added some NOP
+	instructions.
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DecorateThreadsRule.cs: Replace internal type MethodName (which

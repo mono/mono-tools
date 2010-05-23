@@ -109,8 +109,8 @@ namespace Gendarme.Rules.Concurrency {
 
 			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
 				Instruction ins = eh.TryStart;
-				// xMCS and earlier (pre-4.0) CSC usd Monitor.Enter(object) just outside of the Try block
-				bool monitor_enter = ((ins.Previous != null) && IsMonitorEnter (ins.Previous, 1));
+				// xMCS and earlier (pre-4.0) CSC used Monitor.Enter(object) just outside of the Try block
+				bool monitor_enter = IsMonitorEnter (ins.Previous, 1);
 				// check every try block
 				int end = eh.TryEnd.Offset;
 				for (; ins.Offset < end; ins = ins.Next) {
@@ -143,6 +143,12 @@ namespace Gendarme.Rules.Concurrency {
 
 		static bool IsMonitorEnter (Instruction ins, int parametersCount)
 		{
+			// VS2008 like to includes a few NOP
+			while (ins != null && ins.OpCode.Code == Code.Nop)
+				ins = ins.Previous;
+			if (ins == null)
+				return false;
+
 			MethodReference method = (ins.Operand as MethodReference);
 			if (method == null)
 				return false;
