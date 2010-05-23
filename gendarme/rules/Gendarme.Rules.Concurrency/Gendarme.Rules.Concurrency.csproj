@@ -65,12 +65,15 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="DecorateThreadsRule.cs" />
     <Compile Include="DoNotLockOnThisOrTypesRule.cs" />
     <Compile Include="DoNotLockOnWeakIdentityObjectsRule.cs" />
     <Compile Include="DoNotUseThreadStaticWithInstanceFieldsRule.cs" />
     <Compile Include="DoubleCheckLockingRule.cs" />
     <Compile Include="LockAnalyzerRule.cs" />
     <Compile Include="NonConstantStaticFieldsShouldNotBeVisibleRule.cs" />
+    <Compile Include="ThreadModel.cs" />
+    <Compile Include="ThreadRocks.cs" />
     <Compile Include="WriteStaticFieldFromInstanceMethodRule.cs" />
     <Compile Include="DoNotUseMethodImplOptionsSynchronizedRule.cs" />
     <Compile Include="DontUseLockedRegionOutsideMethodRule.cs" />

@@ -59,6 +59,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DecorateThreadsTest.cs" />
     <Compile Include="DoNotLockOnThisOrTypesTest.cs" />
     <Compile Include="DoNotLockOnWeakIdentityObjectsTest.cs" />
     <Compile Include="DoNotUseMethodImplOptionsSynchronizedTest.cs" />
