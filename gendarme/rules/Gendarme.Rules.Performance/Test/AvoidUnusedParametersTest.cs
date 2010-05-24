@@ -3,8 +3,10 @@
 //
 // Authors:
 //      Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 //      (C) 2007 Néstor Salceda
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,6 +31,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -62,6 +65,12 @@ namespace Test.Rules.Performance {
 	
 	[TestFixture]
 	public class AvoidUnusedParametersTest : MethodRuleTestFixture<AvoidUnusedParametersRule> {
+
+		[TestFixtureSetUp]
+		public void SetUp ()
+		{
+			Runner.Engines.Subscribe ("Gendarme.Framework.Engines.SuppressMessageEngine");
+		}
 		
 		public void PrintBannerUsingParameter (Version version) 
 		{
@@ -359,6 +368,42 @@ namespace Test.Rules.Performance {
 		public void ConditionalCode ()
 		{
 			AssertRuleDoesNotApply<AvoidUnusedParametersTest> ("WriteLine");
+		}
+
+		public class FxCopTest {
+
+			// CA1801
+			public class ReviewUnusedParameters {
+				static public void Fail (int count)
+				{
+				}
+
+				// manually suppressed - no MessageId
+				[SuppressMessage ("Microsoft.Usage", "CA1801:ReviewUnusedParameters")]
+				static public void ManuallySuppressed (int count)
+				{
+				}
+
+				// automatically suppressed using VS2010
+				[System.Diagnostics.CodeAnalysis.SuppressMessage ("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "count")]
+				static public void AutomaticallySuppressed (int count)
+				{
+				}
+
+				// automatically suppressed using VS2010 (see GlobalSupressions.cs)
+				static public void GloballySuppressed (int count)
+				{
+				}
+			}
+		}
+
+		[Test]
+		public void CA1801 ()
+		{
+			AssertRuleFailure<FxCopTest.ReviewUnusedParameters> ("Fail", 1);
+			AssertRuleDoesNotApply<FxCopTest.ReviewUnusedParameters> ("ManuallySuppressed");
+			AssertRuleDoesNotApply<FxCopTest.ReviewUnusedParameters> ("AutomaticallySuppressed");
+			AssertRuleDoesNotApply<FxCopTest.ReviewUnusedParameters> ("GloballySuppressed");
 		}
 	}
 }

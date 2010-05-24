@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Daniel Abramov <ex@vingrad.ru>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) Daniel Abramov
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Gendarme.Rules.Performance;
 
@@ -51,6 +54,12 @@ namespace Test.Rules.Performance {
 	[TestFixture]
 	public class AvoidUnsealedConcreteAttributesTest : TypeRuleTestFixture<AvoidUnsealedConcreteAttributesRule> {
 
+		[TestFixtureSetUp]
+		public void SetUp ()
+		{
+			Runner.Engines.Subscribe ("Gendarme.Framework.Engines.SuppressMessageEngine");
+		}
+		
 		[Test]
 		public void TestAbstractAttribute ()
 		{
@@ -79,6 +88,39 @@ namespace Test.Rules.Performance {
 		public void TestSealedAttributeInheritsAnAttribute ()
 		{
 			AssertRuleSuccess<SealedAttributeInheritsAnAttribute> ();
+		}
+
+		public class FxCopTest {
+
+			// CA1813
+			public class AvoidUnsealedAttributes {
+
+				public class Fail : Attribute {
+				}
+
+				// manually suppressed - no MessageId
+				[SuppressMessage ("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]
+				public class ManuallySuppressed : Attribute {
+				}
+
+				// automatically suppressed using VS2010
+				[System.Diagnostics.CodeAnalysis.SuppressMessage ("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]
+				public class AutomaticallySuppressed : Attribute {
+				}
+
+				// automatically suppressed using VS2010 (see GlobalSupressions.cs)
+				public class GloballySuppressed : Attribute {
+				}
+			}
+		}
+
+		[Test]
+		public void CA1813 ()
+		{
+			AssertRuleFailure<FxCopTest.AvoidUnsealedAttributes.Fail> (1);
+			AssertRuleDoesNotApply<FxCopTest.AvoidUnsealedAttributes.ManuallySuppressed> ();
+			AssertRuleDoesNotApply<FxCopTest.AvoidUnsealedAttributes.AutomaticallySuppressed> ();
+			AssertRuleDoesNotApply<FxCopTest.AvoidUnsealedAttributes.GloballySuppressed> ();
 		}
 	}
 }

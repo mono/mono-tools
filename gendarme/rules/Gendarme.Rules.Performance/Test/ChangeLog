@@ -1,3 +1,10 @@
+2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnsealedConcreteAttributesTest.cs:
+	* AvoidUnusedParametersTest.cs:
+	* GlobalSuppressions.cs:
+		Add FxCop compatibility unit tests
+
 2010-05-13  Antoine Vandecreme  <avandecreme@sopragroup.com>
 
 	* ReviewLinqMethodTest.cs: Add tests cases where a method use
