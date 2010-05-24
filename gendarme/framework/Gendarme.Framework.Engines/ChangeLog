@@ -1,3 +1,8 @@
+2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SuppressMessageEngine.cs: Add partial support for Target= where
+	FxCop use a different syntax from Cecil
+
 2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* SuppressMessageEngine.cs: New. Engine to read [SuppressMessage]

@@ -117,6 +117,11 @@ namespace Gendarme.Framework.Engines {
 				if (targets == null)
 					targets = new Dictionary<string,HashSet<string>> ();
 
+				// inner types syntax fix
+				target = target.Replace ('+', '/');
+				// method/member syntax fix
+				target = target.Replace (".#", "::");
+
 				if (!targets.TryGetValue (target, out list)) {
 					list = new HashSet<string> ();
 					targets.Add (target, list);
@@ -138,14 +143,26 @@ namespace Gendarme.Framework.Engines {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					// TODO ...
 					foreach (TypeDefinition type in module.Types) {
-						if (targets.TryGetValue (type.FullName, out rules)) {
+						if (targets.TryGetValue (type.FullName, out rules))
 							Add (type, rules);
-							break;
-						}
-						// TODO ...
+						foreach (MethodDefinition ctor in type.Constructors)
+							ResolveMethod (ctor, targets);
+						foreach (MethodDefinition method in type.Methods)
+							ResolveMethod (method, targets);
 					}
 				}
 			}
+		}
+
+		private void ResolveMethod (MethodDefinition method, Dictionary<string, HashSet<string>> targets)
+		{
+			HashSet<string> rules;
+
+			string m = method.ToString ();
+			m = m.Substring (m.IndexOf (' ') + 1);
+
+			if (targets.TryGetValue (m, out rules))
+				Add (method, rules);
 		}
 
 		private void Add (IMetadataTokenProvider metadata, HashSet<string> rules)
