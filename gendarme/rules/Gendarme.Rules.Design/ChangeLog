@@ -1,3 +1,9 @@
+2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Add define for CODE_ANALYSIS on unit tests (required
+	for [SuppressMessage] to be present) and add GlobalSuppressions.cs
+	to the build
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ConsiderConvertingMethodToPropertyRule.cs: Apply AvoidRepetitive

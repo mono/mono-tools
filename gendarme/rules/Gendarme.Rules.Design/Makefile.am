@@ -47,6 +47,8 @@ rules_sources =  \
 	UseCorrectDisposeSignaturesRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs
 
+EXTRA_TESTS_OPTIONS += -d:CODE_ANALYSIS
+
 tests_sources = \
 	AbstractTypesShouldNotHavePublicConstructorsTest.cs \
 	AttributeArgumentsShouldHaveAccessorsTest.cs \
@@ -70,6 +72,7 @@ tests_sources = \
 	EnumsShouldUseInt32Test.cs \
 	FinalizersShouldBeProtectedTest.cs \
 	FlagsShouldNotDefineAZeroValueTest.cs \
+	GlobalSuppressions.cs \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
 	ImplementIComparableCorreclyTest.cs \
 	InternalNamespacesShouldNotExposeTypesTest.cs \
