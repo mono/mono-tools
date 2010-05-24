@@ -77,7 +77,7 @@ namespace Gendarme.Rules.Performance {
 	[Problem ("The method contains one or more unused parameters.")]
 	[Solution ("You should remove or use the unused parameters.")]
 	[EngineDependency (typeof (OpCodeEngine))]
-	[FxCopCompatibility ("Microsoft.Performance", "CA1801:ReviewUnusedParameters")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA1801:ReviewUnusedParameters")]
 	public class AvoidUnusedParametersRule : Rule, IMethodRule {
 
 		private static bool ContainsReferenceDelegateInstructionFor (MethodDefinition method, MethodDefinition delegateMethod)

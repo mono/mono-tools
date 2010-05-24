@@ -1,3 +1,12 @@
+2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnusedParametersRule.cs: Documented (MSDN) as a Performance
+	rule but it's actually in the Usage category (e.g. when suppressing
+	a defect) and we need to be compatible with the later.
+	* Makefile.am: Add define for CODE_ANALYSIS on unit tests (required
+	for [SuppressMessage] to be present) and add GlobalSuppressions.cs
+	to the build
+
 2010-05-14  Antoine Vandecreme  <avandecreme@sopragroup.com>
 
 	* ReviewLinqMethodRule.cs: Add support to detect use of

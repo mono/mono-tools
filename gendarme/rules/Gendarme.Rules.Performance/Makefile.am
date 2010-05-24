@@ -36,7 +36,7 @@ rules_sources =  \
 	UseTypeEmptyTypesRule.cs
 
 # turn off optimization for tests since gmcs (unlike MS csc) now turns "" into String.Empty when optimizing is on
-EXTRA_TESTS_OPTIONS += -unsafe -o-
+EXTRA_TESTS_OPTIONS += -unsafe -o- -d:CODE_ANALYSIS
 
 tests_sources = \
 	AvoidConcatenatingCharsTest.cs \
@@ -45,6 +45,7 @@ tests_sources = \
 	AvoidRepetitiveCallsToPropertiesTest.cs \
 	AvoidUnneededFieldInitializationTest.cs \
 	EmptyDestructorTest.cs \
+	GlobalSuppressions.cs \
 	IDisposableWithDestructorWithoutSuppressFinalizeTest.cs \
 	UseStringEmptyTest.cs \
 	UseTypeEmptyTypesTest.cs \
