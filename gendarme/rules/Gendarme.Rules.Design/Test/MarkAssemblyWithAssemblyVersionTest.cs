@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,29 +25,30 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Mono.Cecil;
 using Gendarme.Rules.Design;
 
 using NUnit.Framework;
 using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
 
 namespace Test.Rules.Design {
 
 	[TestFixture]
 	public class MarkAssemblyWithAssemblyVersionTest : AssemblyRuleTestFixture<MarkAssemblyWithAssemblyVersionRule> {
 
-		private AssemblyDefinition assembly;
-
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			assembly = AssemblyFactory.DefineAssembly ("Version", AssemblyKind.Dll);
+			Runner.Engines.Subscribe ("Gendarme.Framework.Engines.SuppressMessageEngine");
 		}
 
 		[Test]
 		public void Good ()
 		{
+			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("GoodVersion", AssemblyKind.Dll);
 			assembly.Name.Version = new Version (1, 2, 3, 4);
 			AssertRuleSuccess (assembly);
 		}
@@ -55,8 +56,34 @@ namespace Test.Rules.Design {
 		[Test]
 		public void Bad ()
 		{
+			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("BadVersion", AssemblyKind.Dll);
 			assembly.Name.Version = new Version ();
 			AssertRuleFailure (assembly, 1);
+		}
+
+		[Test]
+		public void FxCop_ManuallySuppressed ()
+		{
+			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("SuppressedVersion", AssemblyKind.Dll);
+			TypeDefinition type = DefinitionLoader.GetTypeDefinition<SuppressMessageAttribute> ();
+			assembly.MainModule.TypeReferences.Add (type.Clone ());
+
+			MethodDefinition ctor = DefinitionLoader.GetMethodDefinition (type, ".ctor",
+				new Type [] { typeof (string), typeof (string) });
+			CustomAttribute ca = new CustomAttribute (ctor);
+			ca.ConstructorParameters.Add ("Microsoft.Design");
+			ca.ConstructorParameters.Add ("CA1016:MarkAssembliesWithAssemblyVersion");
+			assembly.CustomAttributes.Add (ca);
+
+			AssertRuleDoesNotApply (assembly);
+		}
+
+		[Test]
+		public void FxCop_GloballySuppressed ()
+		{
+			AssemblyDefinition assembly = DefinitionLoader.GetAssemblyDefinition (this.GetType ());
+			// see GlobalSuppressions.cs
+			AssertRuleDoesNotApply (assembly);
 		}
 	}
 }

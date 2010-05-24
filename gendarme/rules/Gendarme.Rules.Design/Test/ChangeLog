@@ -1,3 +1,11 @@
+2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* GlobalSuppressions.cs:
+	* MarkAssemblyWithAssemblyVersionTest.cs:
+	* MarkAssemblyWithCLSCompliantTest.cs:
+	* MarkAssemblyWithComVisibleTest.cs:
+		Add FxCop compatibility unit tests
+
 2010-01-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideTryParseAlternativeTest.cs: New. Unit tests for
