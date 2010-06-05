@@ -32,6 +32,7 @@ using System.IO;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme {
@@ -102,6 +103,9 @@ namespace Gendarme {
 				break;
 			case 'M': // method
 				Add (methods, rule, line.Substring (2).Trim ());
+				break;
+			case 'N': // namespace - special case (no need to resolve)
+				base.Add (rule, NamespaceDefinition.GetDefinition (line.Substring (2).Trim ()));
 				break;
 			default:
 				Console.Error.WriteLine ("Bad ignore entry : '{0}'", line);
