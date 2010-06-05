@@ -1,3 +1,8 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* Namespace.cs: API update completed - make ctor private so we 
+	can be sure NamespaceDefinition are unique
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Namespace.cs: Ensure namespace definition are unique and provide

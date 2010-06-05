@@ -43,7 +43,7 @@ namespace Gendarme.Framework.Helpers {
 
 		private string ns;
 
-		public NamespaceDefinition (string name)
+		private NamespaceDefinition (string name)
 		{
 			ns = name;
 			MetadataToken = new MetadataToken (NamespaceTokenType, (uint) name.GetHashCode ());
