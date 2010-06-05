@@ -154,7 +154,7 @@ namespace Gendarme.Framework.Engines {
 			}
 		}
 
-		private void ResolveMethod (MethodDefinition method, Dictionary<string, HashSet<string>> targets)
+		private void ResolveMethod (IMetadataTokenProvider method, IDictionary<string, HashSet<string>> targets)
 		{
 			HashSet<string> rules;
 
@@ -165,7 +165,7 @@ namespace Gendarme.Framework.Engines {
 				Add (method, rules);
 		}
 
-		private void Add (IMetadataTokenProvider metadata, HashSet<string> rules)
+		private void Add (IMetadataTokenProvider metadata, IEnumerable<string> rules)
 		{
 			foreach (string rule in rules) {
 				Controller.Runner.IgnoreList.Add (rule, metadata);
