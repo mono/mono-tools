@@ -29,6 +29,9 @@
 using System;
 
 using Mono.Cecil;
+using Mono.Cecil.Metadata;
+
+using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Framework.Rocks {
 
@@ -45,27 +48,87 @@ namespace Gendarme.Framework.Rocks {
 		/// if none can be found</returns>
 		public static AssemblyDefinition GetAssembly (this IMetadataTokenProvider self)
 		{
-			AssemblyDefinition ad = (self as AssemblyDefinition);
+			if (self == null)
+				return null;
+
+			MetadataToken token = self.MetadataToken;
+			switch (token.TokenType) {
+			case TokenType.Assembly:
+				return (self as AssemblyDefinition);
+			case TokenType.Module:
+				// Module == 0, so we need to handle MetadataToken.Zero here
+				if (token.RID == 0) {
+					// if we don't have a valid token then we take the slow path
+					return GetAssemblyUsingCasts (self);
+				} else {
+					return (self as ModuleDefinition).Assembly;
+				}
+			case TokenType.GenericParam:
+				return GetAssembly ((self as GenericParameter).DeclaringType);
+			case TokenType.TypeRef:
+			case TokenType.TypeDef:
+				return GetAssembly (self as TypeReference);
+			case TokenType.Method:
+				return GetAssembly (self as MethodReference);
+			case TokenType.Event:
+				return GetAssembly ((self as EventDefinition).DeclaringType);
+			case TokenType.Field:
+				return GetAssembly ((self as FieldDefinition).DeclaringType);
+			case TokenType.Property:
+				return GetAssembly ((self as PropertyDefinition).DeclaringType);
+			case TokenType.Param:
+				return GetAssembly ((self as ParameterDefinition).Method);
+			// NamespaceDefinition is a Gendarme "extention", i.e. not real metadata, and does not belong in a single assembly
+			case NamespaceDefinition.NamespaceTokenType:
+				return null;
+			default:
+				return GetAssemblyUsingCasts (self);
+			}
+		}
+
+		static AssemblyDefinition GetAssemblyUsingCasts (IMetadataTokenProvider metadata)
+		{
+			AssemblyDefinition ad = (metadata as AssemblyDefinition);
 			if (ad != null)
 				return ad;
-
-			TypeDefinition td = (self as TypeDefinition);
-			if (td != null)
-				return td.Module.Assembly;
-
-			MethodDefinition md = (self as MethodDefinition);
+			ModuleDefinition md = (metadata as ModuleDefinition);
 			if (md != null)
-				return md.DeclaringType.Module.Assembly;
-
-			FieldDefinition fd = (self as FieldDefinition);
+				return md.Assembly;
+			GenericParameter gp = (metadata as GenericParameter); // needs to be before TypeReference
+			if (gp != null)
+				return GetAssembly (gp.DeclaringType);
+			TypeReference tr = (metadata as TypeReference);
+			if (tr != null)
+				return GetAssembly (tr);
+			MethodReference mr = (metadata as MethodReference);
+			if (mr != null)
+				return GetAssembly (mr);
+			EventDefinition ed = (metadata as EventDefinition);
+			if (ed != null)
+				return GetAssembly (ed.DeclaringType);
+			FieldDefinition fd = (metadata as FieldDefinition);
 			if (fd != null)
-				return fd.DeclaringType.Module.Assembly;
-
-			ParameterDefinition pd = (self as ParameterDefinition);
+				return GetAssembly (fd.DeclaringType);
+			PropertyDefinition pd = (metadata as PropertyDefinition);
 			if (pd != null)
-				return pd.Method.DeclaringType.Module.Assembly;
-
+				return GetAssembly (pd.DeclaringType);
+			ParameterDefinition paramd = (metadata as ParameterDefinition);
+			if (paramd != null)
+				return GetAssembly (paramd.Method);
+			MethodReturnType mrt = (metadata as MethodReturnType);
+			if (mrt != null)
+				return GetAssembly (mrt.Method);
 			return null;
+		}
+
+		static AssemblyDefinition GetAssembly (TypeReference type)
+		{
+			return type.Module.Assembly;
+		}
+
+		static AssemblyDefinition GetAssembly (IMemberReference method)
+		{
+			return method.DeclaringType.Module.Assembly;
 		}
 
 		/// <summary>
@@ -83,8 +146,19 @@ namespace Gendarme.Framework.Rocks {
 				return (self == null);
 			if (!self.MetadataToken.Equals (other.MetadataToken))
 				return false;
+
 			// metadata token is unique per assembly
-			return GetAssembly (self).ToString () == GetAssembly (other).ToString ();
+			AssemblyDefinition self_assembly = GetAssembly (self);
+			if (self_assembly == null) {
+				// special case for Namespace (where GetAssembly would return null)
+				if (self.MetadataToken.TokenType == NamespaceDefinition.NamespaceTokenType)
+					return (self as NamespaceDefinition).Name == (other as NamespaceDefinition).Name;
+				else
+					return false;
+			}
+			AssemblyDefinition other_assembly = GetAssembly (other);
+			// compare assemblies tokens (but do not recurse)
+			return other == null ? false : self_assembly.MetadataToken.Equals (other_assembly.MetadataToken);
 		}
 	}
 }
