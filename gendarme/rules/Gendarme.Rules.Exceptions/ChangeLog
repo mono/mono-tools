@@ -1,3 +1,10 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotDestroyStackTraceRule.cs:
+	* InstantiateArgumentExceptionCorrectlyRule.cs:
+	* MissingExceptionConstructorsRule.cs:
+		Apply AvoidUnnecessarySpecializationRule
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontSwallowErrorsCatchingNonspecificExceptionsRule.cs: Turn

@@ -117,7 +117,7 @@ namespace Gendarme.Rules.Exceptions {
 			Runner.Report (method, ins, severity, Confidence.Normal);
 		}
 
-		private void CheckArgumentException (MethodReference ctor, Instruction ins, MethodDefinition method)
+		private void CheckArgumentException (IMethodSignature ctor, Instruction ins, MethodDefinition method)
 		{
 			// OK		public ArgumentException ()
 			// OK		public ArgumentException (string message)
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Exceptions {
 		}
 
 		// ctors are identical for ArgumentNullException, ArgumentOutOfRangeException and DuplicateWaitObjectException
-		private void CheckOtherExceptions (MethodReference constructor, Instruction ins, MethodDefinition method)
+		private void CheckOtherExceptions (IMethodSignature constructor, Instruction ins, MethodDefinition method)
 		{
 			// OK		public ArgumentNullException ()
 			if (!constructor.HasParameters)

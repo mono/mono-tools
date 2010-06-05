@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Exceptions {
 			return (ctor.Parameters [0].ParameterType.FullName == "System.String");
 		}
 
-		private static bool CheckForInnerExceptionConstructor (MethodDefinition ctor)
+		private static bool CheckForInnerExceptionConstructor (IMethodSignature ctor)
 		{
 			ParameterDefinitionCollection pdc = ctor.Parameters;
 			string first = pdc [0].ParameterType.FullName;

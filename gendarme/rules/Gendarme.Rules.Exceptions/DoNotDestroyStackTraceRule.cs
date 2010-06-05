@@ -101,7 +101,7 @@ namespace Gendarme.Rules.Exceptions {
 			return Runner.CurrentRuleResult;
 		}
 
-		private void ProcessCatchPath (ExecutionPathCollection catchPath, MethodDefinition method)
+		private void ProcessCatchPath (IEnumerable<ExecutionBlock> catchPath, MethodDefinition method)
 		{
 			// Track original exception (top of stack at start) through to the final
 			// return (be it throw, rethrow, leave, or leave.s)
