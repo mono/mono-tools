@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Naming {
 				if (index > 0 && char.IsLetter (name, index - 1) && char.IsLower (name, index))
 					continue; //term is part of a larger word
 				string s = String.Format (Message, pair.Key, pair.Value);
-				Runner.Report (identifier ?? new NamespaceDefinition (name), severity, Confidence.High, s);
+				Runner.Report (identifier, severity, Confidence.High, s);
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Gendarme.Rules.Naming {
 			// note: we don't reuse CheckIdentifier because we want to avoid 
 			// creating Namespace instance unless necessary
 			foreach (string ns in NamespaceEngine.NamespacesInside (assembly))
-				CheckIdentifier (null, ns, Severity.Medium);
+				CheckIdentifier (NamespaceDefinition.GetDefinition (ns), ns, Severity.Medium);
 
 			return Runner.CurrentRuleResult;
 		}

@@ -140,10 +140,11 @@ namespace Gendarme.Rules.Naming {
 			if (String.IsNullOrEmpty (nspace))
 				return;
 
+			NamespaceDefinition nd = NamespaceDefinition.GetDefinition (nspace);
 			foreach (string ns in nspace.Split ('.')) {
 				switch (ns.Length) {
 				case 1:
-					ReportCasingError (new NamespaceDefinition (nspace), string.Format (
+					ReportCasingError (nd, string.Format (
 						"Use of single character namespace is discouraged. Rename namespace {0}", ns));
 
 					break;
@@ -152,7 +153,7 @@ namespace Gendarme.Rules.Naming {
 					if (ns.Any (c => Char.IsLetter (c) && Char.IsLower (c))) {
 						string msg = String.Format ("In namespaces made of two characters, both characters should uppercase. Rename namespace '{0}' to '{1}'",
 							ns, ns.ToUpperInvariant ());
-						ReportCasingError (new NamespaceDefinition (nspace), msg);
+						ReportCasingError (nd, msg);
 					}
 					break;
 				default:
@@ -160,11 +161,11 @@ namespace Gendarme.Rules.Naming {
 					if (ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
 						string msg = String.Format ("Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}{2}'",
 							ns, ns [0].ToString (), ns.Substring (1).ToLowerInvariant ());
-						ReportCasingError (new NamespaceDefinition (nspace), msg);
+						ReportCasingError (nd, msg);
 					} else if (!IsPascalCase (ns)) {
 						string msg = String.Format ("Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
 							ns, PascalCase (ns));
-						ReportCasingError (new NamespaceDefinition (nspace), msg);
+						ReportCasingError (nd, msg);
 					}
 					break;
 				}

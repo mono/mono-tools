@@ -145,7 +145,7 @@ namespace Gendarme.Rules.Naming {
 				}
 
 				Severity severity = (levels < MaxDepth * 2) ? Severity.Medium : Severity.High;
-				Runner.Report (new NamespaceDefinition (ns), severity, Confidence.High);
+				Runner.Report (NamespaceDefinition.GetDefinition (ns), severity, Confidence.High);
 			}
 			return Runner.CurrentRuleResult;
 		}
