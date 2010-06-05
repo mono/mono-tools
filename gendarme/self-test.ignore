@@ -59,10 +59,6 @@ R: Gendarme.Rules.Naming.AvoidRedundancyInMethodNameRule
 M: System.Void Gendarme.TextResultWriter::WriteDefect(Gendarme.Framework.Defect)
 M: System.Xml.Linq.XElement Gendarme.XmlResultWriter::CreateDefect(Gendarme.Framework.Defect)
 
-# FIXME: See comment in Runner.cs (defects reported at TearDown cannot be ignored)
-R: Gendarme.Rules.Design.AvoidSmallNamespaceRule
-A: Gendarme.Framework
-
 # in some cases a null and String.Empty means different things (e.g. absense versus empty)
 R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 M: System.String Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule::ConditionalOn(Mono.Cecil.MethodReference)
@@ -269,6 +265,10 @@ M: System.Boolean Gendarme.Rules.Correctness.ProvideCorrectRegexPatternRule::Che
 # OK - we're using switch extensively and in a way that would be hard to OO-ize while keeping performance and readability
 R: Gendarme.Rules.Smells.AvoidSwitchStatementsRule
 A: *
+
+# OK - small, but slowly growing, namespace
+R: Gendarme.Rules.Design.AvoidSmallNamespaceRule
+N: Gendarme.Framework.Engines
 
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 # only applies to parameters, so using 'Mono.Cecil.ICustomAttributeProvider' would only be confusing (e.g. code completion)
