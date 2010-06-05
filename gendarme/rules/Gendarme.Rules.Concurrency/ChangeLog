@@ -1,3 +1,11 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DecorateThreadsRule.cs:
+	* DontUseLockedRegionOutsideMethodRule.cs:
+	* ProtectCallToEventDelegatesRule.cs:
+	* ThreadRocks.cs:
+ 		Apply AvoidUnnecessarySpecializationRule
+
 2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ReviewLockUsedOnlyForOperationsOnVariablesRule.cs: Fix last unit

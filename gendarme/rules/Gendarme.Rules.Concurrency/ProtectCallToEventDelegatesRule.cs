@@ -115,7 +115,7 @@ namespace Gendarme.Rules.Concurrency {
 			}
 		}
 
-		static private bool CheckVariable (MethodDefinition method, Instruction ins, VariableDefinition load)
+		static private bool CheckVariable (MethodDefinition method, Instruction ins, VariableReference load)
 		{
 			// walkback to find the previous use of the variable
 			Instruction previous = ins.Previous;

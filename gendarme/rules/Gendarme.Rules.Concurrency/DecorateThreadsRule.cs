@@ -471,7 +471,7 @@ namespace Gendarme.Rules.Concurrency {
 			}
 		}
 
-		static bool IsNonSynchronizedSetter (MethodReference method)
+		static bool IsNonSynchronizedSetter (IMemberReference method)
 		{
 			switch (method.Name) {
 			case "add_Disposed":

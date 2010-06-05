@@ -140,7 +140,7 @@ namespace Gendarme.Rules.Concurrency {
 			return null;
 		}
 		
-		private static string GetNameSuffix (MethodDefinition method)
+		private static string GetNameSuffix (IMemberReference method)
 		{
 			string name = method.Name;
 			

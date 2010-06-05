@@ -172,7 +172,7 @@ namespace Gendarme.Rules.Concurrency {
 		}
 		
 		//FIXME: copied from DoubleCheckLockingRule, we need to share this
-		private static bool IsMonitorMethod (MethodReference method, string methodName)
+		private static bool IsMonitorMethod (IMemberReference method, string methodName)
 		{
 			if (method.Name != methodName)
 				return false;
