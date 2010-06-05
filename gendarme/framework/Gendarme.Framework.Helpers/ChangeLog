@@ -1,3 +1,8 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Namespace.cs: Ensure namespace definition are unique and provide
+	a usable, if not perfect, MetadataToken.
+
 2010-05-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MethodPrinter.cs: Apply fix for CheckParametersNullityInVisible

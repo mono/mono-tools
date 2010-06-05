@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Metadata;
@@ -38,14 +39,14 @@ namespace Gendarme.Framework.Helpers {
 	/// </summary>
 	public class NamespaceDefinition : IMetadataTokenProvider {
 
+		internal const TokenType NamespaceTokenType = (TokenType) 0xFF000000;
+
 		private string ns;
 
 		public NamespaceDefinition (string name)
 		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-			// "" (empty) is a valid namespace
 			ns = name;
+			MetadataToken = new MetadataToken (NamespaceTokenType, (uint) name.GetHashCode ());
 		}
 
 		public string Name {
@@ -53,12 +54,12 @@ namespace Gendarme.Framework.Helpers {
 		}
 
 		/// <summary>
-		/// This is not a true, CLR-wise, metadata object so this always return
-		/// <c>MetadataToken.Zero</c> and cannot be set to any other value.
+		/// This is not a true, CLR-wise, metadata object but it 
+		/// returns a fake token so other API, like rocks, can use it
+		/// like any real <c>IMetadataTokenProvider</c>
 		/// </summary>
 		public MetadataToken MetadataToken {
-			get { return MetadataToken.Zero; }
-			set { ; }
+			get; set;
 		}
 
 		public override string ToString ()
@@ -89,6 +90,27 @@ namespace Gendarme.Framework.Helpers {
 					return true;
 			}
 			return false;
+		}
+
+		static Dictionary<string, NamespaceDefinition> cache = new Dictionary<string, NamespaceDefinition> ();
+
+		/// <summary>
+		/// Get the NamespaceDefinition that correspond to the specified namespace.
+		/// </summary>
+		/// <param name="name">Name of the namespace</param>
+		/// <returns>A global NamespaceDefinition corresponding to the specified namespace</returns>
+		static public NamespaceDefinition GetDefinition (string name)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			// note: "" (empty) is a valid namespace
+			
+			NamespaceDefinition nd;
+			if (!cache.TryGetValue (name, out nd)) {
+				nd = new NamespaceDefinition (name);
+				cache.Add (name, nd);
+			}
+			return nd;
 		}
 	}
 }
