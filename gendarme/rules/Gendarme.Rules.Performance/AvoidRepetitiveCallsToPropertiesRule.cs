@@ -190,7 +190,7 @@ namespace Gendarme.Rules.Performance {
 			return ReportResults (method);
 		}
 
-		private RuleResult ReportResults (MethodDefinition method)
+		private RuleResult ReportResults (IMetadataTokenProvider method)
 		{
 			foreach (KeyValuePair<string, KeyValuePair<MethodDefinition, int>> kvp in calls) {
 				// look which getter we're calling more than once

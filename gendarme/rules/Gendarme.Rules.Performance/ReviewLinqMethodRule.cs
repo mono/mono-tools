@@ -117,7 +117,7 @@ namespace Gendarme.Rules.Performance {
 			return td != null && td.BaseType != null && HasMethod (td.BaseType, method);
 		}
 		
-		private void CheckForCountProperty (TypeDefinition type, MethodDefinition method, Instruction ins)
+		private void CheckForCountProperty (TypeReference type, MethodDefinition method, Instruction ins)
 		{
 			if (HasMethod (type, CountProperty)) {
 				string message = "Use the Count property instead of the Count () method.";

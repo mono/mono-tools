@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Performance {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidConcatenatingCharsRule : Rule, IMethodRule {
 
-		static bool IsStringConcat (MemberReference member)
+		static bool IsStringConcat (IMemberReference member)
 		{
 			if (member == null || (member.Name != "Concat"))
 				return false;
@@ -132,7 +132,7 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private void CheckParameters (MethodReference concat, MethodDefinition caller, Instruction ins)
+		private void CheckParameters (IMethodSignature concat, MethodDefinition caller, Instruction ins)
 		{
 			// check for boxed (likely char, but could be other types too) on any parameter
 			for (int i = 0; i < concat.Parameters.Count; i++) {

@@ -144,7 +144,7 @@ namespace Gendarme.Rules.Performance {
 			Runner.Report (method, ins, Severity.Medium, Confidence.High, msg);
 		}
 
-		static bool CheckFirstParameterIsString (MethodReference method)
+		static bool CheckFirstParameterIsString (IMethodSignature method)
 		{
 			return (method.HasParameters && (method.Parameters [0].ParameterType.FullName == "System.String"));
 		}
