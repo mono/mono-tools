@@ -64,7 +64,7 @@ namespace Gendarme {
 			TearDown ();
 		}
 
-		static private void Add (Dictionary<string, HashSet<string>> list, string rule, string target)
+		static private void Add (IDictionary<string, HashSet<string>> list, string rule, string target)
 		{
 			HashSet<string> rules;
 
@@ -109,7 +109,7 @@ namespace Gendarme {
 			}
 		}
 
-		private void AddList (IMetadataTokenProvider metadata, HashSet<string> rules)
+		private void AddList (IMetadataTokenProvider metadata, IEnumerable<string> rules)
 		{
 			foreach (string rule in rules) {
 				base.Add (rule, metadata);
