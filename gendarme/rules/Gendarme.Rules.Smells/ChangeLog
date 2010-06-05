@@ -1,3 +1,13 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSiblingClassesRule.cs:
+	* AvoidLargeClassesRule.cs:
+	* AvoidLongParameterListsRule.cs:
+	* CodeDuplicatedLocator.cs:
+ 		Apply AvoidUnnecessarySpecializationRule
+	* Pattern.cs:
+		Apply ConsiderConvertingMethodToPropertyRule
+
 2010-05-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsRule.cs: Apply AvoidRepetitiveCallsTo

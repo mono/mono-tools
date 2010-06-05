@@ -74,12 +74,11 @@ namespace Gendarme.Rules.Smells {
 		}
 
 		// IIRC older xMCS generated that quite often
-		bool IsDoubleReturn () 
-		{
-			return Count > 1 &&
-				instructions[Count - 1].OpCode.Code == Code.Ret &&
-				instructions[Count - 2].OpCode.Code == Code.Ret
-			;
+		bool IsDoubleReturn {
+			get {
+				return ((Count > 1) && (instructions[Count - 1].OpCode.Code == Code.Ret) &&
+					(instructions[Count - 2].OpCode.Code == Code.Ret));
+			}
 		}
 
 		// small patterns that highly suggest they were compiler generated
@@ -103,29 +102,29 @@ namespace Gendarme.Rules.Smells {
 		internal bool IsCompilerGeneratedBlock {
 			get {
 				if (compilerGeneratedBlock == null)
-					compilerGeneratedBlock = ComputeUnlikelyUserPatterns () || IsDoubleReturn ();
+					compilerGeneratedBlock = ComputeUnlikelyUserPatterns () || IsDoubleReturn;
 				return (bool) compilerGeneratedBlock;
 			}
 		}
 
-		bool IsReturningCode () 
-		{
-			return ((Count == 4 &&
-				instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-				instructions[1].OpCode.Code == Code.Brtrue &&
-				instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Pushi && 
-				instructions[3].OpCode.Code == Code.Ret)
-				||
-				(Count > 1 &&
-				instructions[Count - 1].OpCode.Code == Code.Ret &&
-				instructions[Count - 2].OpCode.FlowControl == FlowControl.Cond_Branch))
-			;
+		bool IsReturningCode {
+			get {
+				return ((Count == 4 &&
+					instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
+					instructions[1].OpCode.Code == Code.Brtrue &&
+					instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Pushi && 
+					instructions[3].OpCode.Code == Code.Ret)
+					||
+					(Count > 1 &&
+					instructions[Count - 1].OpCode.Code == Code.Ret &&
+					instructions[Count - 2].OpCode.FlowControl == FlowControl.Cond_Branch));
+			}
 		}
 
 		internal bool IsExtractableToMethodBlock {
 			get {
 				if (extractableToMethodBlock == null) 
-					extractableToMethodBlock = !IsReturningCode ();
+					extractableToMethodBlock = !IsReturningCode;
 				return (bool) extractableToMethodBlock;
 			}
 		}

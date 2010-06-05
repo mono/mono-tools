@@ -151,7 +151,7 @@ namespace Gendarme.Rules.Smells {
 			return -1;
 		}
 
-		private static string GetFieldPrefix (FieldDefinition field)
+		private static string GetFieldPrefix (IMemberReference field)
 		{
 			string name = field.Name;
 			int index = GetIndexOfFirst (name, delegate (char character) {return Char.IsNumber (character);});

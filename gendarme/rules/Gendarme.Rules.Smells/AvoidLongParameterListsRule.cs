@@ -122,7 +122,7 @@ namespace Gendarme.Rules.Smells {
 			return smallest;
 		}
 
-		private bool HasMoreParametersThanAllowed (MethodDefinition method)
+		private bool HasMoreParametersThanAllowed (IMethodSignature method)
 		{
 			return (method.HasParameters ? method.Parameters.Count : 0) >= MaxParameters;
 		}
