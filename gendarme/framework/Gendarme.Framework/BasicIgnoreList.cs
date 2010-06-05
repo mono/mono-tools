@@ -30,7 +30,9 @@ using System;
 using System.Collections.Generic;
 
 using Mono.Cecil;
+using Mono.Cecil.Metadata;
 
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework {
@@ -60,13 +62,11 @@ namespace Gendarme.Framework {
 		public void Add (string rule, IMetadataTokenProvider metadata)
 		{
 			HashSet<IMetadataTokenProvider> list;
-			if (ignore.TryGetValue (rule, out list)) {
-				list.Add (metadata);
-			} else {
+			if (!ignore.TryGetValue (rule, out list)) {
 				list = new HashSet<IMetadataTokenProvider> ();
-				list.Add (metadata);
 				ignore.Add (rule, list);
 			}
+			list.Add (metadata);
 		}
 
 		// AssemblyDefinition						AttributeTargets.Assembly
@@ -80,6 +80,7 @@ namespace Gendarme.Framework {
 		//				GenericParameterDefinition	AttributeTargets.GenericParameter
 		//				ParameterDefinition		AttributeTargets.Parameter
 		//				MethodReturnType		AttributeTargets.ReturnValue
+		// NamespaceDefinition						special case
 		public bool IsIgnored (IRule rule, IMetadataTokenProvider metadata)
 		{
 			// Note that the Runner tearing_down code may call us with nulls.
@@ -98,9 +99,51 @@ namespace Gendarme.Framework {
 
 		static bool IsIgnored (ICollection<IMetadataTokenProvider> list, IMetadataTokenProvider metadata)
 		{
+			MetadataToken token = metadata.MetadataToken;
+			switch (token.TokenType) {
+			case TokenType.Assembly:
+			// NamespaceDefinition is a Gendarme "extention", i.e. not real metadata, but we can ignore defects on them
+			case NamespaceDefinition.NamespaceTokenType:
+				// no parent to check
+				return list.Contains (metadata);
+			case TokenType.Module:
+				// Module == 0, so we need to handle MetadataToken.Zero here
+				if (token.RID == 0) {
+					// if we don't have a valid token then we take the slow path
+					return IsIgnoredUsingCasts (list, metadata);
+				} else {
+					return IsIgnored (list, metadata as ModuleDefinition);
+				}
+			case TokenType.GenericParam:
+				return IsIgnored (list, metadata as GenericParameter);
+			case TokenType.TypeRef:
+			case TokenType.TypeDef:
+				return IsIgnored (list, metadata as TypeReference);
+			case TokenType.Method:
+				return IsIgnored (list, metadata as MethodReference);
+			case TokenType.Event:
+				return IsIgnored (list, metadata as EventDefinition);
+			case TokenType.Field:
+				return IsIgnored (list, metadata as FieldDefinition);
+			case TokenType.Property:
+				return IsIgnored (list, metadata as PropertyDefinition);
+			case TokenType.Param:
+				return IsIgnored (list, metadata as ParameterDefinition);
+			default:
+				return IsIgnoredUsingCasts (list, metadata);
+			}
+		}
+
+		static bool IsIgnoredUsingCasts (ICollection<IMetadataTokenProvider> list, IMetadataTokenProvider metadata)
+		{
+			// MethodReturnType is first because it's always returning MetadataToken.Zero
+			MethodReturnType mrt = (metadata as MethodReturnType);
+			if (mrt != null)
+				return IsIgnored (list, mrt);
+			// well-known types...
 			AssemblyDefinition ad = (metadata as AssemblyDefinition);
 			if (ad != null)
-				return IsIgnored (list, ad);
+				return list.Contains (metadata);
 			ModuleDefinition md = (metadata as ModuleDefinition);
 			if (md != null)
 				return IsIgnored (list, md);
@@ -125,15 +168,7 @@ namespace Gendarme.Framework {
 			ParameterDefinition paramd = (metadata as ParameterDefinition);
 			if (paramd != null)
 				return IsIgnored (list, paramd);
-			MethodReturnType mrt = (metadata as MethodReturnType);
-			if (mrt != null)
-				return IsIgnored (list, mrt);
 			return false;
-		}
-
-		static bool IsIgnored (ICollection<IMetadataTokenProvider> list, AssemblyDefinition assembly)
-		{
-			return list.Contains (assembly);
 		}
 
 		static bool IsIgnored (ICollection<IMetadataTokenProvider> list, ModuleDefinition module)
@@ -143,7 +178,8 @@ namespace Gendarme.Framework {
 
 		static bool IsIgnored (ICollection<IMetadataTokenProvider> list, TypeReference type)
 		{
-			return (list.Contains (type) || IsIgnored (list, type.Module));
+			return (list.Contains (type) || IsIgnored (list, type.Module) || 
+				IsIgnored (list, NamespaceDefinition.GetDefinition (type.Namespace)));
 		}
 
 		static bool IsIgnored (ICollection<IMetadataTokenProvider> list, EventDefinition evnt)

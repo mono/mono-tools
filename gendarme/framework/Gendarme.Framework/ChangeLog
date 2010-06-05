@@ -1,3 +1,10 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BasicIgnoreList.cs: Add a faster path (without multiple casting)
+	for IsIgnored, falling back to existing (slow) code path if needed.
+	Add support to ignore defects based on namespaces
+	* Runner.cs: Remove tearing_down field and its FIXME
+
 2010-05-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* EngineController.cs: Handle custom attributes on every 

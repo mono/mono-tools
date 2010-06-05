@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,6 @@ namespace Gendarme.Framework {
 		private IMetadataTokenProvider currentTarget;
 		private IIgnoreList ignoreList;
 		private int defectCountBeforeCheck;
-		private bool tearing_down;
 
 		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
@@ -184,7 +183,7 @@ namespace Gendarme.Framework {
 			if (!Filter (defect.Severity, defect.Confidence, defect.Location))
 				return;
 				
-			if (tearing_down && IgnoreList.IsIgnored (defect.Rule, defect.Target))
+			if (IgnoreList.IsIgnored (defect.Rule, defect.Target))
 				return;
 
 			defect_list.Add (defect);
@@ -387,8 +386,6 @@ namespace Gendarme.Framework {
 		public virtual void TearDown ()
 		{
 			// last chance to report defects
-			// FIXME: defects reported at TearDown (e.g. AvoidSmallNamespaceRule) cannot currently be ignored
-			tearing_down = true;
 			foreach (Rule rule in rules) {
 				currentRule = rule;
 				rule.TearDown ();
