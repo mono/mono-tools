@@ -1,3 +1,9 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferEmptyInstanceOverNullRule.cs: Keep state around since it
+	can be needed if we report a defect. Rename GetReturnTypeSuggestion
+	to SuggestReturnType (apply ConsiderConvertingMethodToPropertyRule)
+
 2010-01-28  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferTryParseRule.cs: Simplify and reduce code duplication by
