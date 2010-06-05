@@ -1,3 +1,8 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidSmallNamespaceRule.cs: Use a unique NamespaceDefinition (not
+	a new one each time) when reporting a defect
+
 2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Add define for CODE_ANALYSIS on unit tests (required
