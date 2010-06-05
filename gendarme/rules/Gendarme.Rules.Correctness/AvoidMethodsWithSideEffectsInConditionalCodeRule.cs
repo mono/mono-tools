@@ -217,7 +217,7 @@ namespace Gendarme.Rules.Correctness {
 		// until it finds an instruction which does not pop any values off the stack. This
 		// allows us to check all of the instructions used to compute the method's
 		// arguments.
-		internal static Instruction FullTraceBack (MethodDefinition method, Instruction end)
+		internal static Instruction FullTraceBack (IMethodSignature method, Instruction end)
 		{
 			Instruction first = end.TraceBack (method);
 			
@@ -229,7 +229,7 @@ namespace Gendarme.Rules.Correctness {
 		}
 		
 		#region Private Methods
-		private MethodReference FindImpurity (MethodDefinition method, Instruction end)
+		private MethodReference FindImpurity (IMethodSignature method, Instruction end)
 		{
 			MethodReference impure = null;
 			

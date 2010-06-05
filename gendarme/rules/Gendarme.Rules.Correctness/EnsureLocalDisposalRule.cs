@@ -151,7 +151,7 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
-		static Instruction LocalTraceBack (MethodDefinition method, Instruction ins)
+		static Instruction LocalTraceBack (IMethodSignature method, Instruction ins)
 		{
 			ins = ins.TraceBack (method);
 			while (ins != null) {
