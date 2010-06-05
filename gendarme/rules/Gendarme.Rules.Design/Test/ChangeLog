@@ -1,3 +1,8 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Tests.Rules.Performance.csproj: Fix unit tests for solution
+	(non makefile) builds
+
 2010-05-24  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* GlobalSuppressions.cs:
