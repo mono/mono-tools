@@ -396,7 +396,7 @@ namespace Gendarme.Rules.Interoperability {
 		
 		// Verifies that all methods in the list are safe to call from native code,
 		// otherwise reports the correspoding result.
-		private void VerifyMethods (List<MethodDefinition> pointers)
+		private void VerifyMethods (IEnumerable<MethodDefinition> pointers)
 		{
 			if (pointers == null)
 				return;
