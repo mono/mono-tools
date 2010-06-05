@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Design.Generic {
 			};
 		}
 
-		static bool FindGenericType (GenericInstanceType git, string fullname)
+		static bool FindGenericType (IGenericInstance git, string fullname)
 		{
 			foreach (object o in git.GenericArguments) {
 				GenericParameter igp = (o as GenericParameter);
