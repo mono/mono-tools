@@ -168,7 +168,7 @@ namespace Gendarme.Rules.Naming {
 			return RuleResult.Failure;
 		}
 
-		private static string GetSuggestionMethodName (MethodReference method, string name, int posFound)
+		private static string GetSuggestionMethodName (IMemberReference method, string name, int posFound)
 		{
 			string method_name = method.Name;
 			string suggestion = string.Concat (method_name.Substring (0, posFound), method_name.Substring (posFound + name.Length));
@@ -181,7 +181,7 @@ namespace Gendarme.Rules.Naming {
 			return suggestion;
 		}
 
-		private static string GetSuggestionMemberKind (MethodReference method)
+		private static string GetSuggestionMemberKind (IMethodSignature method)
 		{
 			if (method.Parameters.Count == 1 && method.ReturnType.ReturnType.FullName != "System.Void")
 				return "property";
