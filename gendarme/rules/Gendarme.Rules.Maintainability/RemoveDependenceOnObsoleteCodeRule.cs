@@ -240,7 +240,7 @@ namespace Gendarme.Rules.Maintainability {
 			return Runner.CurrentRuleResult;
 		}
 
-		void CheckParameters (MethodDefinition method)
+		void CheckParameters (MethodReference method)
 		{
 			foreach (ParameterDefinition p in method.Parameters) {
 				if (IsObsolete (p.ParameterType)) {
@@ -250,7 +250,7 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		void CheckReturnType (MethodDefinition method)
+		void CheckReturnType (MethodReference method)
 		{
 			if (!IsObsolete (method.ReturnType.ReturnType))
 				return;
