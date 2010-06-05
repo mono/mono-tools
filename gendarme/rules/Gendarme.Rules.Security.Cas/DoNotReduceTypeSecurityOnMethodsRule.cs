@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Security.Cas {
 		private PermissionSet permitonly;
 		private PermissionSet demand;
 
-		private bool RuleDoesAppliesToType (TypeDefinition type)
+		private bool RuleDoesAppliesToType (IHasSecurity type)
 		{
 			assert = null;
 			deny = null;

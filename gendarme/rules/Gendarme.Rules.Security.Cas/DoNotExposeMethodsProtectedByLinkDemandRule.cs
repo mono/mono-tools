@@ -95,7 +95,7 @@ namespace Gendarme.Rules.Security.Cas {
 
 		static PermissionSet Empty = new PermissionSet (PermissionState.None);
 
-		private static PermissionSet GetLinkDemand (MethodDefinition method)
+		private static PermissionSet GetLinkDemand (IHasSecurity method)
 		{
 			foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {
 				switch (declsec.Action) {
@@ -108,7 +108,7 @@ namespace Gendarme.Rules.Security.Cas {
 			return Empty;
 		}
 
-		private static bool Check (MethodDefinition caller, MethodDefinition callee)
+		private static bool Check (IHasSecurity caller, IHasSecurity callee)
 		{
 			// 1 - look if the callee has a LinkDemand
 			PermissionSet calleeLinkDemand = GetLinkDemand (callee);

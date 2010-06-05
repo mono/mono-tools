@@ -1,3 +1,9 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotReduceTypeSecurityOnMethodsRule.cs:
+	* DoNotExposeMethodsProtectedByLinkDemandRule.cs:
+		Apply AvoidUnnecessarySpecializationRule
+
 2010-04-29  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotExposeMethodsProtectedByLinkDemandRule.cs: Apply PreferEmpty
