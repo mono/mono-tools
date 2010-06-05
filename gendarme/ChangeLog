@@ -1,3 +1,8 @@
+2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Add more precise entries to avoid hiding
+	defects that could/should be fixed.
+
 2010-04-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AUTHORS: Add Rolf Bjarne Kvinge
