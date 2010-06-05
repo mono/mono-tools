@@ -653,6 +653,35 @@ namespace Test.Rules.Performance {
 			AssertRuleSuccess<Anculus> ();
 		}
 
+		internal abstract class X<T> {
+			protected static bool a ()
+			{
+				return false;
+			}
+			public T b ()
+			{
+				return default(T);
+			}
+		}
+
+		internal class Y : X<float> {
+
+			public override string ToString ()
+			{
+				return a () ? String.Empty : base.ToString ();
+			}
+		}
+
+		[Test]
+		public void InheritedGenerics ()
+		{
+			Y y = new Y ();
+			Assert.AreEqual (0.0f, y.b (), "float");
+			AssertRuleSuccess<Y> ();
+			AssertRuleSuccess<X<int>> ("a");
+			AssertRuleSuccess<X<int>> ("b");
+		}
+
 		// test case from gmcs - bug #410000
 		class EmptyAddressOf /*: EmptyExpression, IMemoryLocation */ {
 			// THIS PROPERTY IS NEVER USED

@@ -1,3 +1,7 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUncalledPrivateCodeTest.cs: Flush uncommitted tests
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Tests.Rules.Performance.csproj: Fix unit tests for solution
