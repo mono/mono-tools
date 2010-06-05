@@ -129,7 +129,7 @@ namespace Gendarme.Rules.Portability {
 			return Path.Combine (DefinitionsFolder, String.Format ("definitions-{0}.zip", version));
 		}
 
-		private Version GetLastestLocalDefinition ()
+		private Version FindLastestLocalVersion ()
 		{
 			string [] def_files = Directory.GetFiles (DefinitionsFolder, "definitions-*.zip");
 			if (def_files.Length > 1)
@@ -154,7 +154,7 @@ namespace Gendarme.Rules.Portability {
 			// nothing specified ? 
 			if (def_version == null) {
 				// then we'll use the latest local version available
-				def_version = GetLastestLocalDefinition ();
+				def_version = FindLastestLocalVersion ();
 				// if Gendarme version is newer than the definitions then there's likely something new available
 				if (typeof (IRule).Assembly.GetName ().Version > def_version) {
 					// however we don't want to download a (potentially) unexisting file each time we execute 
