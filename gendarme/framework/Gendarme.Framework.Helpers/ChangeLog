@@ -1,3 +1,8 @@
+2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Log.cs: Reduce code duplication a bit - fix AvoidCodeDuplicated
+	InSameClassRule when compiled with CSC
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* Namespace.cs: API update completed - make ctor private so we 

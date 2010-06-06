@@ -73,25 +73,19 @@ namespace Gendarme.Framework.Helpers {
 		[Conditional ("DEBUG")]
 		public static void WriteLine<T> (T category)
 		{
-			string name = typeof (T).Name;
-			if (IsEnabled (name))
-				Debug.WriteLine (string.Empty);
+			WriteLine (typeof (T).Name);
 		}
 	
 		[Conditional ("DEBUG")]
 		public static void WriteLine<T> (T category, string format, params object[] args)
 		{
-			string name = typeof (T).Name;
-			if (IsEnabled (name))
-				Debug.WriteLine (string.Format (format, args));
+			WriteLine (typeof (T).Name, format, args);
 		}
 		
 		[Conditional ("DEBUG")]
 		public static void WriteLine<T> (T category, MethodDefinition method)
 		{
-			string name = typeof (T).Name;
-			if (IsEnabled (name))
-				Debug.WriteLine (new MethodPrinter (method).ToString ());
+			WriteLine (typeof (T).Name, method);
 		}
 		
 		// WriteLine (string)
