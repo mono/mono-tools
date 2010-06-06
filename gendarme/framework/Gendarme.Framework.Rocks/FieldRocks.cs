@@ -46,10 +46,14 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			FieldDefinition field = self.Resolve ();
-			if ((field == null) || !field.HasCustomAttributes)
+			if (field == null)
 				return false;
 
-			return field.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes);
+			if (field.HasCustomAttributes) {
+				if (field.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
+					return true;
+			}
+			return field.DeclaringType.IsGeneratedCode ();
 		}
 
 		/// <summary>
