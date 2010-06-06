@@ -1,3 +1,11 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CloneMethodShouldNotReturnNullTest.cs:
+	* PreferEmptyInstanceOverNullTest.cs:
+	* ToStringReturnsNullTest.cs:
+		Add test cases where an immediate if is used. xMCS use
+		a ldnull+branch while CSC branch then load null
+
 2010-01-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferTryParseTest.cs: New. Unit tests for PreferTryParseRule

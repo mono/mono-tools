@@ -184,6 +184,14 @@ namespace Test.Rules.BadPractice {
 				list.Add (8);
 				return list;
 			}
+
+			public string InlineIf {
+				get { return s.Length == 0 ? null : s; }
+			}
+
+			public string InlineIf2 {
+				get { return s.Length == 0 ? s : null; }
+			}
 		}
 
 		[Test]
@@ -221,6 +229,8 @@ namespace Test.Rules.BadPractice {
 			AssertRuleFailure<FailureCases> ("GetOffsets", 1);
 			AssertRuleFailure<FailureCases> ("Collection", 1);
 			AssertRuleFailure<FailureCases> ("GenericCollection", 1);
+			AssertRuleFailure<FailureCases> ("get_InlineIf", 1);
+			AssertRuleFailure<FailureCases> ("get_InlineIf2", 1);
 		}
 	}
 }

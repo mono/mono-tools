@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,34 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class ReturnNullRule : Rule {
 
+		void CheckReturn (Instruction ins, MethodDefinition method)
+		{
+			// trace back what is being returned
+			Instruction previous = ins.TraceBack (method);
+			while (previous != null) {
+				// most of the time we'll find the null value on the first trace back call
+				if (previous.OpCode.Code == Code.Ldnull) {
+					Report (method, ins);
+					break;
+				}
+
+				// but CSC non-optimized code generation results in strange IL that needs a few 
+				// more calls. e.g. "return null" == "nop | ldnull | stloc.0 | br.s | ldloc.0 | ret"
+				if ((previous.OpCode.FlowControl == FlowControl.Branch) || (previous.IsLoadLocal ()
+					|| previous.IsStoreLocal ())) {
+					previous = previous.TraceBack (method);
+				} else
+					break;
+			}
+		}
+
+		void CheckLdnull (Instruction ins, MethodDefinition method)
+		{
+			Instruction branch = (ins.Next.Operand as Instruction);
+			if (branch.Is (Code.Ret))
+				Report (method, ins);
+		}
+
 		public virtual RuleResult CheckMethod (MethodDefinition method)
 		{
 			// is there any Ldnull instructions in this method
@@ -47,26 +75,15 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				// look for a RET instruction
-				if (ins.OpCode.Code != Code.Ret)
-					continue;
-
-				// and trace back what is being returned
-				Instruction previous = ins.TraceBack (method);
-				while (previous != null) {
-					// most of the time we'll find the null value on the first trace back call
-					if (previous.OpCode.Code == Code.Ldnull) {
-						Report (method, ins);
-						break;
-					}
-
-					// but CSC non-optimized code generation results in strange IL that needs a few 
-					// more calls. e.g. "return null" == "nop | ldnull | stloc.0 | br.s | ldloc.0 | ret"
-					if ((previous.OpCode.FlowControl == FlowControl.Branch) || (previous.IsLoadLocal ()
-						|| previous.IsStoreLocal ())) {
-						previous = previous.TraceBack (method);
-					} else
-						break;
+				switch (ins.OpCode.Code) {
+				case Code.Ret:
+					// look if a null is returned
+					CheckReturn (ins, method);
+					break;
+				case Code.Ldnull:
+					// look for branching, e.g. immediate if
+					CheckLdnull (ins, method);
+					break;
 				}
 			}
 

@@ -134,6 +134,19 @@ namespace Test.Rules.BadPractice {
 		{
 			AssertRuleFailure<CloneReturningNullInSomeConditions> ("Clone", 1);
 		}
+
+		public class CloneWithInlineIf: ICloneable {
+			public object Clone ()
+			{
+				return (this is ICloneable) ? null : MemberwiseClone ();
+			}
+		}
+
+		[Test]
+		public void InlineIf ()
+		{
+			AssertRuleFailure<CloneWithInlineIf> ("Clone", 1);
+		}
 	}
 }
 

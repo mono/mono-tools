@@ -126,6 +126,12 @@ namespace Test.Rules.BadPractice {
 			}
 		}
 		
+		public class ToStringInlineIf {
+			public override string ToString ()
+			{
+				return GetType () != typeof (ToStringInlineIf) ? null : "ToStringInlineIf";
+			}
+		}
 		
 		[Test]
 		public void ReturningNullTest ()
@@ -192,6 +198,12 @@ namespace Test.Rules.BadPractice {
 		public void ReturningTypeName ()
 		{
 			AssertRuleDoesNotApply<ToStringReturningTypeName> ();
+		}
+
+		[Test]
+		public void InlineIf ()
+		{
+			AssertRuleFailure<ToStringInlineIf> (1);
 		}
 	}
 }

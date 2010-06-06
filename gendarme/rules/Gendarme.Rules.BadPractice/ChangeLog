@@ -1,3 +1,8 @@
+2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ReturnNullRule.cs: Fix case where an immediate if (?:) would 
+	not be reported
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferEmptyInstanceOverNullRule.cs: Keep state around since it
