@@ -135,6 +135,16 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassed
 M: System.Void Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::UpdateParameterLeastType(Mono.Cecil.ParameterReference,System.Collections.Generic.IEnumerable`1<Gendarme.Framework.Helpers.StackEntryUsageResult>)
 # CC 25
 M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.Instruction)
+# CC 33 (CSC only)
+M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
+# CC 25 (CSC only)
+M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
+# CC 26 (CSC only)
+M: System.Boolean Gendarme.Rules.BadPractice.EqualsShouldHandleNullArgRule::CheckSequence(Mono.Cecil.Cil.Instruction,Mono.Cecil.TypeDefinition)
+# CC 27 (CSC only)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule::CheckMethod(Mono.Cecil.MethodDefinition)
+# CC 25 (CSC only)
+M: System.Void Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::ProcessMethod(Mono.Cecil.MethodDefinition,System.String)
 
 # some should be fixed
 R: Gendarme.Rules.Smells.AvoidLargeClassesRule
@@ -312,6 +322,8 @@ M: System.Collections.Generic.List`1<System.String> NDesk.Options.OptionSet::Par
 M: System.Boolean NDesk.Options.OptionSet::Parse(System.String,NDesk.Options.OptionContext)
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 T: NDesk.Options.OptionContext
+R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
+M: System.String NDesk.Options.OptionValueCollection::get_Item(System.Int32)
 
 # The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
 # fire because Gendarme code, like the rules and the runners, are not marked as

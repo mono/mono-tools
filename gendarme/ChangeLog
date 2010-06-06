@@ -1,3 +1,9 @@
+2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Add some CSC-specific ignore entries (different
+	IL being generated) and a new NDesk.Options entry related to the
+	fix to ReturnNullRule.
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Ignore AvoidSmallNamespaceRule on Gendarme.
