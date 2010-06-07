@@ -1,0 +1,5 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: New. Do not build (Windows-only) but include files
+	in distribution
+
