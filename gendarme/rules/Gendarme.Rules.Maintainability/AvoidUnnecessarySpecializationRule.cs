@@ -371,19 +371,52 @@ namespace Gendarme.Rules.Maintainability {
 				UpdateParameterLeastType (usage.Key, usage.Value);
 		}
 
-		static bool SignatureDictatedByInterface (MethodReference method)
+		static bool IsSignatureDictated (MethodDefinition method)
 		{
-			TypeDefinition type = (method.DeclaringType as TypeDefinition);
-			if (type.HasInterfaces) {
-				MethodSignature sig = GetSignature (method);
-				foreach (TypeReference intf_ref in type.Interfaces) {
-					TypeDefinition intr = intf_ref.Resolve ();
-					if (intr == null)
-						continue;
-					foreach (MethodDefinition md in intr.Methods) {
+			MethodSignature signature = null;
+
+			if (method.DeclaringType.HasInterfaces) {
+				signature = GetSignature (method);
+				if (IsSignatureDictatedByInterface (method, signature))
+					return true;
+			}
+
+			if (!method.IsVirtual)
+				return false;
+
+			return IsSignatureDictatedByOverride (method, signature ?? GetSignature (method));
+		}
+
+		static bool IsSignatureDictatedByOverride (MethodDefinition method, MethodSignature sig)
+		{
+			TypeDefinition baseType = method.DeclaringType.BaseType.Resolve ();
+			while (baseType != null) {
+				if (method.IsConstructor && baseType.HasConstructors) {
+					foreach (MethodDefinition ctor in baseType.Constructors) {
+						if (sig.Matches (ctor))
+							return true;
+					}
+				} else if (baseType.HasMethods) {
+					foreach (MethodDefinition md in baseType.Methods) {
 						if (sig.Matches (md))
 							return true;
 					}
+				}
+				TypeReference tr = baseType.BaseType;
+				baseType = tr == null ? null : tr.Resolve ();
+			}
+			return false;
+		}
+
+		static bool IsSignatureDictatedByInterface (IMemberDefinition method, MethodSignature sig)
+		{
+			foreach (TypeReference intf_ref in method.DeclaringType.Interfaces) {
+				TypeDefinition intr = intf_ref.Resolve ();
+				if (intr == null)
+					continue;
+				foreach (MethodDefinition md in intr.Methods) {
+					if (sig.Matches (md))
+						return true;
 				}
 			}
 			return false;
@@ -393,11 +426,13 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			if (!method.HasBody || !method.HasParameters || method.IsCompilerControlled)
 				return RuleResult.DoesNotApply;
-			if (method.IsProperty () || method.IsGeneratedCode ())
+			if (method.IsProperty () || method.IsGeneratedCode () || method.IsEventCallback ())
 				return RuleResult.DoesNotApply;
 
-			// we can't change parameter types if they were specified by an interface
-			if (SignatureDictatedByInterface (method))
+			// we cannot change parameter types if:
+			// - we're overriding a base virtual method; or
+			// - they were specified by an interface
+			if (IsSignatureDictated (method))
 				return RuleResult.DoesNotApply;
 
 			if (method.Parameters.Count > types_least.Length) {

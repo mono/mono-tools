@@ -1,3 +1,9 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnnecessarySpecializationRule.cs: Fix potential false 
+	positives when overriding a base method. Fix potential false
+	positives when analyzing methods assigned to events.
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs: Avoid using temporary 

@@ -1,3 +1,9 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidUnnecessarySpecializationTest.cs: Add [Ignore]d test case
+	with two conflicting interfaces. Add test case for overriding
+	and event handlers.
+
 2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Remove [Ignore] on a

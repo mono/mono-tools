@@ -546,5 +546,76 @@ namespace Test.Rules.Maintainability {
 			Assert.IsTrue(Runner.Defects [0].Text.IndexOf ("'System.Reflection.MemberInfo'") > 0);
 		}
 
+		private bool HasMoreParametersThanAllowed (IMethodSignature method)
+		{
+			return (method.HasParameters ? method.Parameters.Count : 0) >= 1;
+		}
+
+		// extracted from AvoidLongParameterListsRule where IMethodSignature was suggested
+		// but could not be cast (when compiled) into Mono.Cecil.IMetadataTokenProvider
+		// the rule select one of the two incompatible interfaces instead of a base type
+		private void CheckConstructor (MethodDefinition constructor)
+		{
+			if (HasMoreParametersThanAllowed (constructor))
+				Runner.Report (constructor, Severity.Medium, Confidence.Normal, "This constructor contains a long parameter list.");
+		}
+
+		[Test]
+		[Ignore ("see self-test.ignore")]
+		public void UncompilableSuggestion ()
+		{
+			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("CheckConstructor");
+		}
+
+		// test case based on false positive found on:
+		// System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
+		class Base {
+			public virtual void Show (MethodDefinition method)
+			{
+				Console.WriteLine (method.Body.CodeSize);
+			}
+		}
+
+		class Override : Base {
+			// without checking the override the rule would suggest:
+			// Parameter 'method' could be of type 'Mono.Cecil.IMemberReference'.
+			// but this would not compile
+			public override void Show (MethodDefinition method)
+			{
+ 				 Console.WriteLine (method.Name);
+			}
+		}
+
+		[Test]
+		public void OverrideTypeCannotBeChanged ()
+		{
+			AssertRuleDoesNotApply<Override> ("Show");
+		}
+
+		public sealed class DecorateThreadsRule : Rule, IMethodRule {
+
+			public override void Initialize (IRunner runner)
+			{
+				base.Initialize (runner);
+				runner.AnalyzeAssembly += this.OnAssembly;
+			}
+
+			// rule suggest HierarchicalEventArgs but we can't change the event definition
+			public void OnAssembly (object sender, RunnerEventArgs e)
+			{
+				Console.WriteLine (e.CurrentAssembly);
+			}
+
+			public RuleResult CheckMethod (MethodDefinition method)
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		[Test]
+		public void EventsCannotBeChanged ()
+		{
+			AssertRuleDoesNotApply<DecorateThreadsRule> ("OnAssembly");
+		}
 	}
 }
