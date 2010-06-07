@@ -338,26 +338,32 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private void CheckParameter (MethodDefinition method, IEnumerable<Instruction> ldarg)
+		private void CheckParameters (MethodDefinition method)
 		{
 			Dictionary<ParameterDefinition, List<StackEntryUsageResult>> usages = new Dictionary<ParameterDefinition, List<StackEntryUsageResult>> ();
 
-			foreach (Instruction ins in ldarg) {
+			foreach (Instruction ins in method.Body.Instructions) {
+				if (!ins.IsLoadArgument ())
+					continue;
 
 				ParameterDefinition parameter = ins.GetParameter (method);
 				// this is `this`, we do not care
 				if ((parameter == null) || (parameter.Sequence == 0))
 					continue;
-				if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
-					continue;
-				if (parameter.ParameterType.IsArray () || parameter.ParameterType.IsDelegate ())
-					continue; //TODO: these are more complex to handle, not supported for now
 
-				if (null == sea || sea.Method != method)
-					sea = new StackEntryAnalysis (method);
+				// is parameter already known ?
+				if (!usages.ContainsKey (parameter)) {
+					if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
+						continue;
+					if (parameter.ParameterType.IsArray () || parameter.ParameterType.IsDelegate ())
+						continue; //TODO: these are more complex to handle, not supported for now
 
-				if (!usages.ContainsKey (parameter))
+					if (null == sea || sea.Method != method)
+						sea = new StackEntryAnalysis (method);
+
 					usages [parameter] = new List<StackEntryUsageResult> ();
+				}
+
 				usages [parameter].AddRange (sea.GetStackEntryUsage (ins));
 			}
 
@@ -400,14 +406,7 @@ namespace Gendarme.Rules.Maintainability {
 				depths_least = new int [method.Parameters.Count];
 			}
 
-			List<Instruction> instructions = new List<Instruction> ();
-			//look at each argument usage
-			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.IsLoadArgument ())
-					instructions.Add (ins);
-			}
-
-			CheckParameter (method, instructions);
+			CheckParameters (method);
 
 			CheckParametersSpecializationDelta (method);
 
