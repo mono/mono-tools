@@ -96,7 +96,12 @@ namespace Gendarme.Rules.Naming {
 			if (name != base_name) {
 				if (!explicitInterfaceCheck)
 					return false;
-				if (name != baseMethod.DeclaringType.FullName + "." + base_name)
+				string full_name = baseMethod.DeclaringType.FullName;
+				if (!name.StartsWith (full_name, StringComparison.Ordinal))
+					return false;
+				if (name [full_name.Length] != '.')
+					return false;
+				if (name.LastIndexOf (base_name, StringComparison.Ordinal) != full_name.Length + 1)
 					return false;
 			}
 			if (method.ReturnType.ReturnType.FullName != baseMethod.ReturnType.ReturnType.FullName)
