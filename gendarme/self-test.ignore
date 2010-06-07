@@ -216,12 +216,14 @@ M: System.Void Gendarme.Rules.Portability.DoNotHardcodePathsRule::ProcessUnixPro
 
 # OK - in those case the specialization has its contextual sense and helps readability
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Boolean Gendarme.Framework.Engines.CommonAttributesEngine::HasAttribute(Mono.Cecil.TypeDefinition,Gendarme.Framework.Engines.WellKnownTypeAttribute)
-M: System.Boolean Gendarme.Framework.Engines.CommonAttributesEngine::HasAttribute(Mono.Cecil.FieldDefinition,Gendarme.Framework.Engines.WellKnownFieldAttribute)
-M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsAnyType(Mono.Cecil.CustomAttributeCollection,System.String[])
-M: System.Boolean Gendarme.Framework.Rocks.CustomAttributeRocks::ContainsType(Mono.Cecil.CustomAttributeCollection,System.String)
 M: System.Boolean Gendarme.Framework.Rocks.ModuleRocks::HasDebuggingInformation(Mono.Cecil.ModuleDefinition)
 M: System.Void Gendarme.Framework.Defect::.ctor(Gendarme.Framework.IRule,Mono.Cecil.IMetadataTokenProvider,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Gendarme.Framework.Severity,Gendarme.Framework.Confidence,System.String)
+# only applies to parameters, so using 'Mono.Cecil.ICustomAttributeProvider' would only be confusing (e.g. code completion)
+M: System.Boolean Gendarme.Framework.Rocks.ParameterRocks::IsParams(Mono.Cecil.ParameterDefinition)
+# the bitmask applies only to methods, so using 'Mono.Cecil.IAnnotationProvider' would only be confusing (e.g. code completion)
+M: Gendarme.Framework.Helpers.OpCodeBitmask Gendarme.Framework.Engines.OpCodeEngine::GetBitmask(Mono.Cecil.MethodDefinition)
+# the check is done on methods, so using 'Mono.Cecil.IMemberReference' would only be confusing (e.g. code completion)
+M: System.Boolean Gendarme.Framework.Rocks.MethodRocks::IsEntryPoint(Mono.Cecil.MethodReference)
 
 # OK - the gendarme framework is not a beginner, nor easy, API
 R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
@@ -271,16 +273,6 @@ A: *
 # OK - small, but slowly growing, namespace
 R: Gendarme.Rules.Design.AvoidSmallNamespaceRule
 N: Gendarme.Framework.Engines
-
-R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-# only applies to parameters, so using 'Mono.Cecil.ICustomAttributeProvider' would only be confusing (e.g. code completion)
-M: System.Boolean Gendarme.Framework.Rocks.ParameterRocks::IsParams(Mono.Cecil.ParameterDefinition)
-# the bitmask applies only to methods, so using 'Mono.Cecil.IAnnotationProvider' would only be confusing (e.g. code completion)
-M: Gendarme.Framework.Helpers.OpCodeBitmask Gendarme.Framework.Engines.OpCodeEngine::GetBitmask(Mono.Cecil.MethodDefinition)
-# the check is done on methods, so using 'Mono.Cecil.IMemberReference' would only be confusing (e.g. code completion)
-M: System.Boolean Gendarme.Framework.Rocks.MethodRocks::IsEntryPoint(Mono.Cecil.MethodReference)
-# AssemblyDefinition is used on purpose so the API make sense and void confusion between which calls will be used
-M: System.Boolean Gendarme.Framework.BasicIgnoreList::IsIgnored(System.Collections.Generic.ICollection`1<Mono.Cecil.IMetadataTokenProvider>,Mono.Cecil.AssemblyDefinition)
 
 # non-gendarme code / NDesk.Options
 R: Gendarme.Rules.Performance.AvoidConcatenatingCharsRule
