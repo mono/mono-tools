@@ -197,9 +197,9 @@ T: Gendarme.TextResultWriter
 T: Gendarme.GuiRunner
 T: Gendarme.Wizard
 
-# BUG - suggestion won't compile
+# BUG - suggestion won't compile - two different, incompatible interfaces are used IMethodSignature and IMetadataTokenProvider
+# rule suggest the first one (same depth) but since it cannot be casted it should propose a base class
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Void Gendarme.Rules.Performance.PreferCharOverloadRule::Report(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Gendarme.Framework.Confidence,Mono.Cecil.MethodReference,System.String)
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckConstructor(Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
@@ -207,7 +207,7 @@ M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mo
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
 
-# BUG - suggestion on a emthod assigned to an event
+# BUG - suggestion on a method assigned to an event
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::OnAssembly(System.Object,Gendarme.Framework.RunnerEventArgs)
 
@@ -357,4 +357,7 @@ R: Gendarme.Rules.Smells.AvoidMessageChainsRule
 M: System.Void Gendarme.Framework.AssemblyResolver::CacheAssembly(Mono.Cecil.AssemblyDefinition)
 # Chain length 6 versus maximum of 4. -> e.CurrentAssembly.MainModule.Image.FileInformation.Name
 M: System.Void Gendarme.ConsoleRunner::OnAssembly(Gendarme.Framework.RunnerEventArgs)
+R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
+# OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the swicth/case (load versus store instructions) - delegating calls won't change defect
+T: Gendarme.Framework.Helpers.StackEntryAnalysis
 

@@ -1,3 +1,9 @@
+2010-06-06  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* self-test.ignore: Better document a bug in AvoidUnnecessary
+	SpecializationRule. Remove a (not a) bug on same rule. Add a CSC
+	specific entry
+
 2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Add some CSC-specific ignore entries (different
