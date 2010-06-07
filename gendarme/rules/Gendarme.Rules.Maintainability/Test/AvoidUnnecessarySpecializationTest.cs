@@ -533,7 +533,6 @@ namespace Test.Rules.Maintainability {
 		}
 
 		[Test]
-		[Ignore ("fails on MS runtime")]
 		public void Events ()
 		{
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
