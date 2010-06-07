@@ -1,3 +1,9 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* self-test.ignore: Add GendarmeWizard (Windows name) for
+	AvoidRepetitiveCallsToPropertiesRule. Fix a copy-paste typo.
+	Remove two entries for bugs in AvoidUnnecessarySpecializationRule
+
 2010-06-06  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* self-test.ignore: Better document a bug in AvoidUnnecessary

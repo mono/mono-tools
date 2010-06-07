@@ -37,6 +37,7 @@ A: Gendarme.Rules.Ui
 R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
 A: gendarme
 A: gendarme-wizard
+A: GendarmeWizard
 A: Gendarme.Framework
 A: Gendarme.Rules.BadPractice
 A: Gendarme.Rules.Concurrency
@@ -137,8 +138,8 @@ M: System.Void Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.Instruction)
 # CC 33 (CSC only)
 M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
-# CC 25 (CSC only)
-M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
+# CC 27 (CSC only)
+M: System.Boolean Gendarme.Rules.Design.ConsiderAddingInterfaceRule::DoesTypeStealthilyImplementInterface(Mono.Cecil.TypeDefinition,Mono.Cecil.TypeDefinition)
 # CC 26 (CSC only)
 M: System.Boolean Gendarme.Rules.BadPractice.EqualsShouldHandleNullArgRule::CheckSequence(Mono.Cecil.Cil.Instruction,Mono.Cecil.TypeDefinition)
 # CC 27 (CSC only)
@@ -174,7 +175,6 @@ M: System.Void Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 # some fixes possible, needs to be reviewed
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 T: Gendarme.ConsoleRunner
-T: NDesk.Options.OptionContext
 T: Gendarme.Settings
 T: Gendarme.TextResultWriter
 T: Gendarme.Framework.Helpers.MethodPrinter
@@ -202,14 +202,6 @@ T: Gendarme.Wizard
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckConstructor(Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mono.Cecil.MethodDefinition)
-
-# BUG - suggestion on a method that is an override
-R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
-
-# BUG - suggestion on a method assigned to an event
-R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::OnAssembly(System.Object,Gendarme.Framework.RunnerEventArgs)
 
 # ---------------------------------------------------------
 # These are all OK.
