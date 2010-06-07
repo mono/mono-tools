@@ -1,3 +1,8 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnnecessarySpecializationTest.cs: Merge both event-related
+	test cases together and mark them as DoesNotApply.
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationTest.cs: Add [Ignore]d test case

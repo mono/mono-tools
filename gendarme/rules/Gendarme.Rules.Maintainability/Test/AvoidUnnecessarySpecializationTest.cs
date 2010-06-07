@@ -533,12 +533,6 @@ namespace Test.Rules.Maintainability {
 		}
 
 		[Test]
-		public void Events ()
-		{
-			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
-		}
-
-		[Test]
 		public void GenericMethodArgument ()
 		{
 			AssertRuleSuccess<GeneralizedClass> ("GenericMethodArgument");
@@ -616,6 +610,7 @@ namespace Test.Rules.Maintainability {
 		public void EventsCannotBeChanged ()
 		{
 			AssertRuleDoesNotApply<DecorateThreadsRule> ("OnAssembly");
+			AssertRuleDoesNotApply<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
 		}
 	}
 }
