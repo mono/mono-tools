@@ -1,3 +1,7 @@
+2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* PreferCharOverloadRule.cs: Apply AvoidUnnecessarySpecializationRule
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidConcatenatingCharsRule.cs:

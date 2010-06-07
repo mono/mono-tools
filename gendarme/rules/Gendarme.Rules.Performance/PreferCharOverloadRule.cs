@@ -90,7 +90,7 @@ namespace Gendarme.Rules.Performance {
 			return (parameter.Operand as string);
 		}
 
-		void Report (MethodDefinition method, Instruction ins, Confidence confidence, MethodReference call, string parameter)
+		void Report (MethodDefinition method, Instruction ins, Confidence confidence, IMemberReference call, string parameter)
 		{
 			string msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, parameter);
 			Runner.Report (method, ins, Severity.Medium, confidence, msg);
