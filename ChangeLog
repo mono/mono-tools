@@ -1,3 +1,7 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* configure.in: Add new gendarme directories
+
 2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* README: Add instructions for building from SVN

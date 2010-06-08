@@ -259,7 +259,10 @@ gendarme/rules/Gendarme.Rules.Serialization/Test/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Test/Makefile
 gendarme/swf-wizard-runner/Makefile
-gendarme/win32-setup/Makefile
+gendarme/tools/Makefile
+gendarme/tools/supported/Makefile
+gendarme/tools/supported/gd2i/Makefile
+gendarme/wix/Makefile
 Mono.Profiler/profiler-file-decoder/Makefile
 Mono.Profiler/Makefile
 Mono.Profiler/heap-snapshot-viewer/mprof-heap-viewer
