@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Concurrency.Rocks
+// Gendarme.Rules.Concurrency.ThreadRocks
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
@@ -42,7 +42,7 @@ namespace Gendarme.Rules.Concurrency {
 			
 			TypeDefinition type = tr.Resolve ();
 			while (type != null) {
-				model = TryGetThreadingModel (type.CustomAttributes);
+				model = TryGetThreadingModel (type);
 				if (model != null)
 					return model;
 					
@@ -62,7 +62,7 @@ namespace Gendarme.Rules.Concurrency {
 			ThreadModelAttribute model;
 			
 			// Check the method first so it overrides whatever was used on the type.
-			model = TryGetThreadingModel (method.CustomAttributes);
+			model = TryGetThreadingModel (method);
 			if (model != null)
 				return model;
 			
@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Concurrency {
 				string name = GetNameSuffix (method);
 				PropertyDefinition [] props = method.DeclaringType.Properties.GetProperties (name);
 				if (props.Length == 1) {				// FIXME: we won't get the property if it is an explicit implementation
-					model = TryGetThreadingModel (props [0].CustomAttributes);
+					model = TryGetThreadingModel (props [0]);
 					if (model != null)
 						return model;
 				}
@@ -82,7 +82,7 @@ namespace Gendarme.Rules.Concurrency {
 				string name = GetNameSuffix (method);
 				EventDefinition evt = method.DeclaringType.Events.GetEvent (name);
 				
-				model = TryGetThreadingModel (evt.CustomAttributes);
+				model = TryGetThreadingModel (evt);
 				if (model != null)
 					return model;
 			}
@@ -117,9 +117,12 @@ namespace Gendarme.Rules.Concurrency {
 		}
 		
 		#region Private Methods
-		private static ThreadModelAttribute TryGetThreadingModel (CustomAttributeCollection attrs)
+		private static ThreadModelAttribute TryGetThreadingModel (ICustomAttributeProvider provider)
 		{
-			foreach (CustomAttribute attr in attrs) {
+			if (!provider.HasCustomAttributes)
+				return null;
+
+			foreach (CustomAttribute attr in provider.CustomAttributes) {
 				if (attr.Constructor.DeclaringType.Name == "ThreadModelAttribute") {
 					attr.Resolve ();
 					

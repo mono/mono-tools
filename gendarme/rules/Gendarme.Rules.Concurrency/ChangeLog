@@ -1,3 +1,10 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ThreadRocks.cs: Always check HasCustomAttributes before accessing
+	a CustomAttributes property (which would allocate an empty collection
+	if no custom attributes are present). Memory usage down by 463kb
+	while running self-test
+
 2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Remove ThreadModel.cs from build
