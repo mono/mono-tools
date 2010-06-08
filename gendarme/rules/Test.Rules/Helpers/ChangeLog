@@ -1,3 +1,8 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TestRunner.cs: Let the resolver looks at MONO_PATH to find
+	assemblies, like Gendarme.Framework.dll (fix two recent failures)
+
 2010-05-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TestRunner.cs: Adjust for IIgnoreList changes. Check ignored

@@ -44,6 +44,16 @@ namespace Test.Rules.Helpers {
 	/// </summary>
 	public class TestRunner : Runner {
 
+		static TestRunner ()
+		{
+			string mono_path = Environment.GetEnvironmentVariable ("MONO_PATH");
+			if (!String.IsNullOrEmpty (mono_path)) {
+				string [] paths = mono_path.Split (':');
+				foreach (string path in paths)
+					AssemblyResolver.Resolver.AddSearchDirectory (path);
+			}
+		}
+
 		private RunnerEventArgs event_args;
 
 		public TestRunner (IRule rule)
