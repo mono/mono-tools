@@ -1,3 +1,12 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Use new gd2i to be totally precise for all
+	CheckParametersNullityInVisibleMethodsRule entries.
+	* Makefile.am: Remove win32-setup from dist and replace it with 
+	wix. Also add tools (well gd2i for now) to the dist. Make
+	self-test produce xml (along with html) so we can semi-automate
+	gd2i updates on Gendarme
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* self-test.ignore: Add GendarmeWizard (Windows name) for

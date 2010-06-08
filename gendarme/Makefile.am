@@ -1,5 +1,5 @@
 TESTDIRS = framework rules
-SUBDIRS = $(TESTDIRS) console swf-wizard-runner man win32-setup
+SUBDIRS = $(TESTDIRS) console swf-wizard-runner man wix tools
 bin_SCRIPTS = gendarme gendarme-wizard
 EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.sln self-test.ignore gendarme.svg options.make
 
@@ -45,8 +45,8 @@ run-test: bin/gendarme.exe.config
 
 self-test: all bin/gendarme.exe.config
 	rm -f gendarme.log; \
-	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --html bin/self-test.html --ignore=self-test.ignore \
-		--severity=all --confidence=all bin/gendarme.exe bin/gendarme-wizard.exe bin/Gendarme.*.dll
+	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --xml bin/self-test.xml --html bin/self-test.html \
+		--ignore=self-test.ignore --severity=all --confidence=all bin/gendarme.exe bin/gendarme-wizard.exe bin/Gendarme.*.dll
 
 test-regress: all
 	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --log regress.log testcases/*.dll testcases/*.exe
