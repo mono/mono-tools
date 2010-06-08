@@ -1,0 +1,8 @@
+2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gd2i.cs: New. A bit crude but functional tool to convert an
+	XML file with defects into ignore entries
+	* self-test.ignore: Defects to be ignored on this tool
+	* Makefile.am: Build, clean, update Gendarme's ignore file and 
+	self-test
+

@@ -1,0 +1,10 @@
+Extra tools for Gendarme
+
+The source repository contains two kind of tools.
+
+* Supported tools: packaged with Gendarme, they are meant to be useful 
+to Gendarme users.
+
+* Unsupported tools: not packaged with Gendarme, they are meant to be 
+useful for contributors or the maintainer.
+

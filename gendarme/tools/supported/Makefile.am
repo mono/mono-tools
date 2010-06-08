@@ -1,0 +1,2 @@
+SUBDIRS = gd2i
+
