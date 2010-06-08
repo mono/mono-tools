@@ -12,7 +12,6 @@ rules_sources =  \
 	NonConstantStaticFieldsShouldNotBeVisibleRule.cs \
 	ProtectCallToEventDelegatesRule.cs \
 	ReviewLockUsedOnlyForOperationsOnVariablesRule.cs \
-	ThreadModel.cs \
 	ThreadRocks.cs \
 	WriteStaticFieldFromInstanceMethodRule.cs
 

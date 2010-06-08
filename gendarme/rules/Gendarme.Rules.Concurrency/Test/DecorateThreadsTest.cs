@@ -37,44 +37,7 @@ using System.Threading;
 using Test.Rules.Helpers;
 
 namespace Test.Rules.Concurrency {
-	public enum ThreadModel {
-		// The code may run safely only under the main thread (this is the 
-		// default for code in the assemblies being checked).
-		MainThread = 0x0000,
-		
-		// The code may run under a single arbitrary thread.
-		SingleThread = 0x0001,
-		
-		// The code may run under multiple threads, but only if the 
-		// execution is serialized (e.g. by user level locking).
-		Serializable = 0x0002,
-		
-		// The code may run under multiple threads concurrently without user 
-		// locking (this is the default for code in the System/Mono namespaces).
-		Concurrent = 0x0003,
-		
-		// Or this with the above for the rare cases where the code cannot be
-		// shown to be correct using a static analysis.
-		AllowEveryCaller = 0x0008,
-	}
-	
-	// This is used to precisely specify the threading semantics of code. Note 
-	// that Gendarme's DecorateThreadsRule will catch problematic code which 
-	// uses these attributes (such as concurrent code calling main thread code).
-	[Serializable]
-	[AttributeUsage (AttributeTargets.Class | AttributeTargets.Struct |
-	AttributeTargets.Interface | AttributeTargets.Delegate |
-	AttributeTargets.Method | AttributeTargets.Event | AttributeTargets.Property,
-	AllowMultiple = false, Inherited = false)]
-	public sealed class ThreadModelAttribute : Attribute {
-		public ThreadModelAttribute (ThreadModel model)
-		{
-			Model = model;
-		}
-		
-		public ThreadModel Model { get; set; }
-	}
-	
+
 	[TestFixture]
 	public class DecorateThreadsTest {
 		

@@ -1,3 +1,9 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ThreadModelAttribute.cs: Provide a single (source) ThreadModel
+	Attribute and make it the most complete one (documentation still
+	has the smaller version)
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BasicIgnoreList.cs: Add a faster path (without multiple casting)

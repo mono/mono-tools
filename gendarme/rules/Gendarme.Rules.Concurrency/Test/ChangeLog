@@ -1,3 +1,8 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DecorateThreadsTest.cs: Remove yet another copy of
+	ThreadModelAttribute
+
 2010-04-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoubleCheckLockingTest.cs: Fix cop-paste error :(

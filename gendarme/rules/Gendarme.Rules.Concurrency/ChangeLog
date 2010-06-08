@@ -1,3 +1,11 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Remove ThreadModel.cs from build
+	* ThreadModel.cs: Remove. There's already a copy in Gendarme's 
+	framework
+	* ThreadRocks.cs: Add using Gendarme.Framework so it can
+	access ThreadModelAttribute
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DecorateThreadsRule.cs:
