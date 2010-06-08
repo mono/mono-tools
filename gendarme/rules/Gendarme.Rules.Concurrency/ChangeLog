@@ -1,3 +1,8 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ThreadRocks.cs: Resolving can be expensive so we avoid it 
+	whenever possible
+
 2010-06-08  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ThreadRocks.cs: Always check HasCustomAttributes before accessing

@@ -36,13 +36,10 @@ namespace Gendarme.Rules.Concurrency {
 	
 	internal static class ThreadRocks {
 		
-		public static ThreadModelAttribute ThreadingModel (this TypeReference tr)
+		public static ThreadModelAttribute ThreadingModel (this TypeReference type)
 		{
-			ThreadModelAttribute model;
-			
-			TypeDefinition type = tr.Resolve ();
 			while (type != null) {
-				model = TryGetThreadingModel (type);
+				ThreadModelAttribute model = TryGetThreadingModel (type);
 				if (model != null)
 					return model;
 					
@@ -51,7 +48,7 @@ namespace Gendarme.Rules.Concurrency {
 				if (ThreadedNamespace (type.Namespace))
 					return new ThreadModelAttribute (ThreadModel.Concurrent);
 					
-				type = type.DeclaringType != null ? type.DeclaringType.Resolve () : null;
+				type = type.DeclaringType;
 			}
 			
 			return new ThreadModelAttribute (ThreadModel.MainThread);
