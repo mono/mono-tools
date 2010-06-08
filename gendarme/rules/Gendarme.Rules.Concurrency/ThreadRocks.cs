@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2009 Jesse Jones
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,6 +33,7 @@ using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 using Mono.Cecil;
 using System;
+using System.Collections;
 
 namespace Gendarme.Rules.Concurrency {
 	
@@ -54,6 +57,20 @@ namespace Gendarme.Rules.Concurrency {
 			return new ThreadModelAttribute (ThreadModel.MainThread);
 		}
 		
+		static ThreadModelAttribute Lookup (MethodDefinition method, CollectionBase collection)
+		{
+			string name = method.Name;
+			// Need the offset for explicit interface implementations.
+			int offset = Math.Max (name.LastIndexOf ('.'), 0);
+			offset = name.IndexOf ('_', offset) + 1;
+
+			foreach (IMemberDefinition member in collection) {
+				if (String.CompareOrdinal (name, offset, member.Name, 0, member.Name.Length) == 0)
+					return TryGetThreadingModel (member);
+			}
+			return null;
+		}
+
 		public static ThreadModelAttribute ThreadingModel (this MethodDefinition method)
 		{
 			ThreadModelAttribute model;
@@ -65,21 +82,15 @@ namespace Gendarme.Rules.Concurrency {
 			
 			// If it's a property we need to check the property as well.
 			if (method.IsProperty ()) {
-				string name = GetNameSuffix (method);
-				PropertyDefinition [] props = method.DeclaringType.Properties.GetProperties (name);
-				if (props.Length == 1) {				// FIXME: we won't get the property if it is an explicit implementation
-					model = TryGetThreadingModel (props [0]);
-					if (model != null)
-						return model;
-				}
+				// FIXME: we won't get the property if it is an explicit implementation
+				model = Lookup (method, method.DeclaringType.Properties);
+				if (model != null)
+					return model;
 			}
 			
 			// If it's a event we need to check the event as well.
 			if (method.IsAddOn || method.IsRemoveOn || method.IsFire) {
-				string name = GetNameSuffix (method);
-				EventDefinition evt = method.DeclaringType.Events.GetEvent (name);
-				
-				model = TryGetThreadingModel (evt);
+				model = Lookup (method, method.DeclaringType.Events);
 				if (model != null)
 					return model;
 			}
@@ -104,10 +115,10 @@ namespace Gendarme.Rules.Concurrency {
 		// Returns true if the namespace is one for which we consider all the types thread safe.
 		public static bool ThreadedNamespace (string ns)
 		{
-			if (ns == "System" || ns.StartsWith ("System."))
+			if (ns == "System" || ns.StartsWith ("System.", StringComparison.Ordinal))
 				return true;
-				
-			if (ns == "Mono" || ns.StartsWith ("Mono."))
+
+			if (ns == "Mono" || ns.StartsWith ("Mono.", StringComparison.Ordinal))
 				return true;
 			
 			return false;
@@ -120,38 +131,22 @@ namespace Gendarme.Rules.Concurrency {
 				return null;
 
 			foreach (CustomAttribute attr in provider.CustomAttributes) {
-				if (attr.Constructor.DeclaringType.Name == "ThreadModelAttribute") {
-					attr.Resolve ();
-					
-					if (attr.ConstructorParameters.Count == 1) {
-						if (attr.ConstructorParameters [0] is int) {
-							ThreadModel value = (ThreadModel) (int) attr.ConstructorParameters [0];
-							return new ThreadModelAttribute (value);
-						
-						} else {
-							throw new ArgumentException ("There should be a single ThreadModelAttribute ctor taking an (Int32) ThreadModel enum argument.");
-						}
-					
-					} else {
-						throw new ArgumentException ("There should be a single ThreadModelAttribute ctor taking an (Int32) ThreadModel enum argument.");
+				if (attr.Constructor.DeclaringType.Name != "ThreadModelAttribute")
+					continue;
+
+				if (attr.Resolve () && (attr.ConstructorParameters.Count == 1)) {
+					if (attr.ConstructorParameters [0] is int) {
+						ThreadModel value = (ThreadModel) (int) attr.ConstructorParameters [0];
+						return new ThreadModelAttribute (value);
 					}
 				}
+						
+				throw new ArgumentException ("There should be a single ThreadModelAttribute ctor taking an (Int32) ThreadModel enum argument.");
 			}
 			
 			return null;
 		}
-		
-		private static string GetNameSuffix (IMemberReference method)
-		{
-			string name = method.Name;
-			
-			// Need the offset for explicit interface implementations.
-			int offset = Math.Max (name.LastIndexOf ('.'), 0);
-			int i = name.IndexOf ('_', offset);
-			System.Diagnostics.Debug.Assert (i > 0, "didn't find a '_' in " + name);
-			
-			return name.Substring (i + 1);
-		}
+
 		#endregion
 	}
 }

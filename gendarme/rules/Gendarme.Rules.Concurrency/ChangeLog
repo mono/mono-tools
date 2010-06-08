@@ -1,3 +1,10 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ThreadRocks.cs: Refactor to share some code (property and events)
+	and avoid allocations when looking for properties. Also avoid string
+	allocation to get its suffix. Saves 317kb while running self-test.
+	Check return value for CustomAttribute.Resolve
+
 2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ThreadRocks.cs: Resolving can be expensive so we avoid it 
