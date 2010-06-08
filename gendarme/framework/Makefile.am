@@ -91,6 +91,7 @@ framework_build_sources += $(framework_generated_sources)
 framework_test_sources = \
 	GlobalSuppressions.cs \
 	Gendarme.Framework/BitmaskTest.cs \
+	Gendarme.Framework/ThreadModelAttributeTest.cs \
 	Gendarme.Framework.Engines/SuppressMessageAttributeTest.cs \
 	Gendarme.Framework.Helpers/MethodSignatureTest.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysisTest.cs \

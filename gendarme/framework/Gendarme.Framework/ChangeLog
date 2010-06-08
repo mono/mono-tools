@@ -1,3 +1,9 @@
+2010-06-08  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ThreadModelAttribute.cs: Avoid using Enum.IsDefined since it is
+	very slow and allocates memory (reflection/boxing). Save 237kb
+	while running self-test
+
 2010-06-08  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ThreadModelAttribute.cs: Provide a single (source) ThreadModel

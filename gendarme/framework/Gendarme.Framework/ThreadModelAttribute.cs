@@ -66,7 +66,8 @@ namespace Gendarme.Framework {
 
 		public ThreadModelAttribute (ThreadModel model)
 		{
-			if (!Enum.IsDefined (typeof (ThreadModel), model & ~ThreadModel.AllowEveryCaller))
+			ThreadModel value = model & ~ThreadModel.AllowEveryCaller;
+			if ((value < ThreadModel.MainThread) || (value > ThreadModel.Concurrent))
 				throw new ArgumentException (model.ToString () + " is not a valid ThreadModel value.");
 			
 			Model = model & (ThreadModel) 0x0007;
