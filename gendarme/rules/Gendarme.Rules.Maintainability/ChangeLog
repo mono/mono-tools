@@ -1,3 +1,10 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidUnnecessarySpecializationRule.cs: Split signature gathering
+	from UpdateParameterLeastType (fixing some self-test defects wrt 
+	size). Only compute signatures when we need them - saves 149kb 
+	while executing self-test
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnnecessarySpecializationRule.cs: Fix potential false 

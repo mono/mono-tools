@@ -254,22 +254,14 @@ namespace Gendarme.Rules.Maintainability {
 			return ((type.FullName == "System.Object") || IsFromNonGenericCollectionNamespace (type.Namespace));
 		}
 
-		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
+		private static List<MethodSignature> GetSignatures (IEnumerable<StackEntryUsageResult> usageResults)
 		{
-			int pIndex = parameter.Sequence - 1;
-			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
-
-			int currentLeastDepth = 0;
-			TypeReference currentLeastType = null;
 			List<MethodSignature> signatures = new List<MethodSignature> ();
-
-			//accumulate all used signatures first
 			foreach (var usage in usageResults) {
-
 				switch (usage.Instruction.OpCode.Code) {
-				case Code.Newobj :
-				case Code.Call :
-				case Code.Callvirt :
+				case Code.Newobj:
+				case Code.Call:
+				case Code.Callvirt:
 					MethodReference method = (MethodReference) usage.Instruction.Operand;
 					if (IsSystemObjectMethod (method) || IsFromNonGenericCollectionNamespace (method.DeclaringType.Namespace))
 						continue;
@@ -277,6 +269,17 @@ namespace Gendarme.Rules.Maintainability {
 					break;
 				}
 			}
+			return signatures;
+		}
+
+		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
+		{
+			int pIndex = parameter.Sequence - 1;
+			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
+
+			int currentLeastDepth = 0;
+			TypeReference currentLeastType = null;
+			List<MethodSignature> signatures = null;
 
 			//update the result array as in if (needUpdate) block below
 			foreach (var usage in usageResults) {
@@ -299,6 +302,8 @@ namespace Gendarme.Rules.Maintainability {
 
 					if (usage.StackOffset == method.Parameters.Count) {
 						//argument is used as `this` in the call
+						if (signatures == null)
+							signatures = GetSignatures (usageResults);
 						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signatures);
 					} else {
 						//argument is also used as an argument in the call
