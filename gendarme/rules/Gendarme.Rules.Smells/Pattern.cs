@@ -31,6 +31,7 @@
 using System;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 	internal sealed class Pattern {
@@ -69,8 +70,7 @@ namespace Gendarme.Rules.Smells {
 		{
 			if (!IsCallVirt (ins, "System.IDisposable", "Dispose"))
 				return false;
-			Instruction next = ins.Next;
-			return ((next != null) && (next.OpCode.Code == Code.Endfinally));
+			return ins.Next.Is (Code.Endfinally);
 		}
 
 		// IIRC older xMCS generated that quite often
@@ -84,11 +84,16 @@ namespace Gendarme.Rules.Smells {
 		// small patterns that highly suggest they were compiler generated
 		bool ComputeUnlikelyUserPatterns ()
 		{
+			bool call = false;
 			for (int i = 0; i < Count; i++) {
 				Instruction ins = instructions [i];
 				// foreach
 				if (IsCallVirt (ins, "System.Collections.IEnumerator", "get_Current"))
 					return true;
+				if (IsCallVirt (ins, "System.Collections.IEnumerator", "MoveNext"))
+					return !call;
+				// if there's a unknown call then it's likely not (totally) compiler generated
+				call |= (ins.OpCode.FlowControl == FlowControl.Call);
 				// foreach
 				if (IsInstanceOfIDisposable (ins))
 					return true;
@@ -111,7 +116,7 @@ namespace Gendarme.Rules.Smells {
 			get {
 				return ((Count == 4 &&
 					instructions[0].OpCode.StackBehaviourPush == StackBehaviour.Push1 &&
-					instructions[1].OpCode.Code == Code.Brtrue &&
+					(instructions [1].OpCode.Code == Code.Brtrue || instructions [1].OpCode.Code == Code.Brtrue_S) &&
 					instructions[2].OpCode.StackBehaviourPush == StackBehaviour.Pushi && 
 					instructions[3].OpCode.Code == Code.Ret)
 					||
@@ -129,20 +134,27 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 			
-		void ComputePrefixes ()
+		internal void ComputePrefixes (MethodDefinition method)
 		{
-			prefixes = new int[instructions.Length];
-			int offset = 0;
+			MethodDefinition target = InstructionMatcher.Target;
+			InstructionMatcher.Target = method;
+			try {
+				prefixes = new int [instructions.Length];
+				int offset = 0;
 
-			for (int index = 1; index < instructions.Length; index++) {
-				while (offset > 0 &&
-					!InstructionMatcher.AreEquivalent (instructions[offset], instructions[index]))
-					offset = prefixes[offset - 1];
+				for (int index = 1; index < instructions.Length; index++) {
+					while (offset > 0 &&
+						!InstructionMatcher.AreEquivalent (instructions [offset], instructions [index]))
+						offset = prefixes [offset - 1];
 
-				if (InstructionMatcher.AreEquivalent (instructions[offset], instructions[index]))  
-					offset++;
+					if (InstructionMatcher.AreEquivalent (instructions [offset], instructions [index]))
+						offset++;
 
-				prefixes[index] = offset;
+					prefixes [index] = offset;
+				}
+			}
+			finally {
+				InstructionMatcher.Target = target;
 			}
 		}
 
@@ -160,8 +172,6 @@ namespace Gendarme.Rules.Smells {
 
 		internal int[] Prefixes {
 			get {
-				if (prefixes == null) 
-					ComputePrefixes ();
 				return prefixes;
 			}
 		}

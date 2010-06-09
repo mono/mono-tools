@@ -72,7 +72,10 @@ namespace Gendarme.Rules.Smells {
 			if (CheckedTypes.Contains (targetType.Name)) 
 				return;
 			
-			foreach (MethodDefinition target in targetType.AllMethods()) {
+			foreach (MethodDefinition target in targetType.AllMethods ()) {
+				if (target.IsGeneratedCode ())
+					continue;
+
 				Pattern duplicated = GetDuplicatedCode (current, target);
 				if (duplicated != null && duplicated.Count > 0)
 					rule.Runner.Report (current, duplicated[0], Severity.High, Confidence.Normal, String.Format ("Duplicated code with {0}", target));

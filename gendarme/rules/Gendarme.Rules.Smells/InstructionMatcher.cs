@@ -55,6 +55,30 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
+		static bool AreEquivalent (ParameterReference source, ParameterReference target)
+		{
+			if ((source == null) || (target == null))
+				return false;
+
+			int ss = source.Sequence - 1;
+			int ts = target.Sequence - 1;
+			if ((ss <= 0) || (ts <= 0))
+				return false;
+
+			ParameterDefinitionCollection cp = Current.Parameters;
+			ParameterDefinitionCollection tp = Target.Parameters;
+			return ((cp.Count > ss) && (tp.Count > ts)) ?
+				cp [ss].ParameterType.Equals (tp [ts].ParameterType) : false;
+		}
+
+		static bool AreEquivalent (VariableReference source, VariableReference target)
+		{
+			VariableDefinitionCollection cv = Current.Body.Variables;
+			VariableDefinitionCollection tv = Target.Body.Variables;
+			return cv.Count > source.Index && tv.Count > target.Index ?
+				cv [source.Index].VariableType.Equals (tv [target.Index].VariableType) : false;
+		}
+
 		internal static bool AreEquivalent (Instruction source, Instruction target)
 		{
 			if (source.OpCode.Code != target.OpCode.Code)
@@ -70,33 +94,12 @@ namespace Gendarme.Rules.Smells {
 				// case where 'ldarg this' is used (p.Sequence would be 0)
 				if (!Current.HasParameters && !Target.HasParameters)
 					return true;
-				ParameterDefinition p = source.GetParameter (Current);
-				if (p != null) {
-					int pos = p.Sequence - 1;
-					// handle case where Current does a 'ldarg this' while Target does not
-					if (pos > 0) {
-						ParameterDefinitionCollection cp = Current.Parameters;
-						ParameterDefinitionCollection tp = Target.Parameters;
-						return ((cp.Count > pos) && (tp.Count > pos)) ?
-							cp [pos].ParameterType.Equals (tp [pos].ParameterType) :
-							false;
-					}
-				}
-				return false;
+				return AreEquivalent (source.GetParameter (Current), target.GetParameter (Target));
 			}
 
 			// The same for ldloc / stloc
-			if (source.IsLoadLocal ()) {
-				VariableDefinition v = source.GetVariable (Current);
-				if (v != null) {
-					VariableDefinitionCollection cv = Current.Body.Variables;
-					VariableDefinitionCollection tv = Target.Body.Variables;
-					int pos = v.Index;
-					return cv.Count > pos && tv.Count > pos ?
-						cv [pos].VariableType.Equals (tv [pos].VariableType) :
-						false;
-				}
-			}
+			if (source.IsLoadLocal () || source.IsStoreLocal ())
+				return AreEquivalent (source.GetVariable (Current), target.GetVariable (Target));
 
 			//WARNING: Dirty Evil Hack: this should be in the
 			//Pattern class
@@ -133,6 +136,7 @@ namespace Gendarme.Rules.Smells {
 		{
 			int instructionsMatched = 0;
 
+			pattern.ComputePrefixes (Current);
 			for (int index = 0; index < target.Count; index++) {
 				while (instructionsMatched > 0 && !AreEquivalent (pattern[instructionsMatched], target[index]))
 					instructionsMatched = pattern.Prefixes[instructionsMatched - 1];
