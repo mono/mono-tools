@@ -230,6 +230,8 @@ A: Gendarme.Rules.Security
 A: Gendarme.Rules.Security.Cas
 A: Gendarme.Rules.Serialization
 A: Gendarme.Rules.Smells
+# CSC only - System.Int32 System.Collections.CollectionBase::get_Count() > 20 (22) but MS.NET use an higher limit to inline...
+M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule::SignatureMatches(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
 
 # ---------------------------------------------------------
 # We might want to fix these.
@@ -268,6 +270,8 @@ T: Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule
 T: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 # CheckAssemblyForMethodUsage and GetCache - not clear, needs review
 T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+# CSC only - AddImpl and GetArgumentName
+T: NDesk.Options.OptionSet
 
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
