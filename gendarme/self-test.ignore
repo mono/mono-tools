@@ -256,8 +256,6 @@ T: Gendarme.Framework.Rocks.InstructionRocks
 T: Gendarme.Framework.Rocks.TypeRocks
 # OnType(Gendarme.Framework.RunnerEventArgs) vs OnMethod(Gendarme.Framework.RunnerEventArgs)
 T: Gendarme.Framework.Runner
-# 21 defects in generated code <-- review
-T: Gendarme.Rules.BadPractice.AvoidCallingProblematicMethodsRule
 # GetArgumentType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition) vs CheckMethod(Mono.Cecil.MethodDefinition)
 T: Gendarme.Rules.Correctness.DoNotRoundIntegersRule
 # GetPrevious(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction&) vs IsOk(Mono.Cecil.Cil.Instruction)
@@ -266,8 +264,10 @@ T: Gendarme.Rules.Performance.MathMinMaxCandidateRule
 T: Gendarme.Rules.Performance.AvoidRepetitiveCastsRule
 # CheckAssembly(Mono.Cecil.AssemblyDefinition) vs CheckMethod(Mono.Cecil.MethodDefinition)
 T: Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule
-# IsTooLarge(Mono.Cecil.TypeDefinition) vs HasPrefixedFields(System.String,Mono.Cecil.TypeDefinition)
-T: Gendarme.Rules.Smells.AvoidLargeClassesRule
+# GetSignatures and UpdateParameterLeastType - similar loop/switch/case but cannot be merged
+T: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+# CheckAssemblyForMethodUsage and GetCache - not clear, needs review
+T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
 
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
@@ -289,8 +289,6 @@ M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckM
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 # Found 103 maximum stack size (maximum 100). when compiled with CSC maxstack is 5 !!!
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
-# Found 141 maximum stack size (maximum 100).
-M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.Instruction)
 
 # FIXME
 R: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
@@ -304,8 +302,6 @@ M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(M
 M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckMethods()
 # CC 44
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
-# CC 25
-M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.Instruction)
 # CC 33 (CSC only)
 M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
 # CC 27 (CSC only)
@@ -506,6 +502,6 @@ M: System.Void Gendarme.Framework.AssemblyResolver::CacheAssembly(Mono.Cecil.Ass
 # Chain length 6 versus maximum of 4. -> e.CurrentAssembly.MainModule.Image.FileInformation.Name
 M: System.Void Gendarme.ConsoleRunner::OnAssembly(Gendarme.Framework.RunnerEventArgs)
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
-# OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the swicth/case (load versus store instructions) - delegating calls won't change defect
+# OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the switch/case (load versus store instructions) - delegating calls won't change defect
 T: Gendarme.Framework.Helpers.StackEntryAnalysis
 
