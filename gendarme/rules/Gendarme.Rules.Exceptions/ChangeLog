@@ -1,3 +1,9 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationRule.cs: Remove InitType hack
+	on use the AnalyzeType event from the runner. Extract AreCastsOk
+	from (too large) ProcessMethod. Rename fields with same prefix
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotDestroyStackTraceRule.cs:

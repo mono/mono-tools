@@ -45,6 +45,12 @@ namespace Test.Rules.Exceptions {
 	[TestFixture]
 	public sealed class DoNotThrowInUnexpectedLocationTest : MethodRuleTestFixture<DoNotThrowInUnexpectedLocationRule> {
 
+		public DoNotThrowInUnexpectedLocationTest ()
+		{
+			// make sure OnAssembly / OnType / OnMethod are fired
+			FireEvents = true;
+		}
+
 		private sealed class Inapplicable {
 			public override string ToString ()
 			{

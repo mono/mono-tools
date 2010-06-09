@@ -1,3 +1,8 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationTest.cs: Instruct TestRunner to
+	fire Analyze* events
+
 2010-05-01  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontDestroyStackTraceTest.cs: Add test case with an empty method

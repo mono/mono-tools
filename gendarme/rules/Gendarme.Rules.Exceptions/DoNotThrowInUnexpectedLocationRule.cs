@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -176,12 +178,26 @@ namespace Gendarme.Rules.Exceptions {
 		private static readonly MethodSignature GetTypeSig = new MethodSignature ("GetType", "System.Type", new string [0],
 			(method) => (CheckAttributes (method, MethodAttributes.Public)));
 		
-		private TypeReference type;
-		private MethodSignature equalityComparerEquals;
-		private MethodSignature equalityComparerHashCode;
+		private MethodSignature equals_signature;
+		private MethodSignature hashcode_signature;
 		private string [] allowedExceptions;
 		private Severity severity;
 		private bool is_equals;
+
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			Runner.AnalyzeType += delegate (object sender, RunnerEventArgs e) {
+				if (e.CurrentType.Implements ("System.Collections.Generic.IEqualityComparer`1")) {
+					equals_signature = EqualityComparer_Equals;
+					hashcode_signature = EqualityComparer_GetHashCode;
+				} else {
+					equals_signature = null;
+					hashcode_signature = null;
+				}
+			};
+		}
 
 		static bool HasCatchBlock (MethodDefinition method)	
 		{
@@ -194,17 +210,6 @@ namespace Gendarme.Rules.Exceptions {
 			}
 			
 			return false;
-		}
-		
-		private void InitType (TypeReference type)	
-		{
-			if (type.Implements ("System.Collections.Generic.IEqualityComparer`1")) {
-				equalityComparerEquals = EqualityComparer_Equals;
-				equalityComparerHashCode = EqualityComparer_GetHashCode;
-			} else {
-				equalityComparerEquals = null;
-				equalityComparerHashCode = null;
-			}
 		}
 
 		private string PreflightMethod (MethodDefinition method)
@@ -264,9 +269,9 @@ namespace Gendarme.Rules.Exceptions {
 			} else if (MethodSignatures.Dispose.Matches (method) || MethodSignatures.DisposeExplicit.Matches (method)) {
 				if (method.DeclaringType.Implements ("System.IDisposable"))
 					return "IDisposable.Dispose";
-			} else if (equalityComparerEquals != null && equalityComparerEquals.Matches (method)) {
+			} else if (equals_signature != null && equals_signature.Matches (method)) {
 				return "IEqualityComparer<T>.Equals";
-			} else if (equalityComparerHashCode != null && equalityComparerHashCode.Matches (method)) {
+			} else if (hashcode_signature != null && hashcode_signature.Matches (method)) {
 				allowedExceptions = HashCodeExceptions;
 				return "IEqualityComparer<T>.GetHashCode";
 			}
@@ -298,24 +303,29 @@ namespace Gendarme.Rules.Exceptions {
 				return " (checked arithmetic is being used)";
 			}
 		}
+
+		static bool AreCastsOk (Instruction ins)
+		{
+			switch (ins.OpCode.Code) {
+			case Code.Isinst:
+				return true;
+			case Code.Call:
+			case Code.Callvirt:
+				return GetTypeSig.Matches (ins.Operand as MethodReference);
+			default:
+				return false;
+			}
+		}
 				
 		private void ProcessMethod (MethodDefinition method, string methodLabel)
 		{
 			bool casts_are_ok = false;
 			
 			foreach (Instruction ins in method.Body.Instructions) {
+				if (is_equals && !casts_are_ok)
+					casts_are_ok = AreCastsOk (ins);
+
 				Code code = ins.OpCode.Code;
-				
-				if (is_equals && !casts_are_ok) {
-					if (code == Code.Isinst)
-						casts_are_ok = true;
-	
-					else if (code == Code.Call || code == Code.Callvirt) {
-						if (GetTypeSig.Matches (ins.Operand as MethodReference))
-							casts_are_ok = true;
-					}	
-				}
-				
 				if (Throwers.Get (code)) {
 
 					// A few instructions are bad to the bone.
@@ -393,11 +403,6 @@ namespace Gendarme.Rules.Exceptions {
 			if (!Throwers.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			if (method.DeclaringType != type) {		// note that we cannot use the AnalyzeType event because it is not called with the unit tests
-				InitType (method.DeclaringType);
-				type = method.DeclaringType;
-			}
-											
 			if (!HasCatchBlock (method)) {
 				// default severity for (most) methods
 				severity = Severity.High;
