@@ -1,3 +1,8 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* self-test.ignore: Remove some (fixed) defects and update some
+	descriptions
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Use new gd2i to be totally precise for all
