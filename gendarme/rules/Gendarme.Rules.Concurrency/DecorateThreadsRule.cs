@@ -238,9 +238,9 @@ namespace Gendarme.Rules.Concurrency {
 			Log.WriteLine (this, method);
 			
 			// Finalizers need to be single threaded.
-			ThreadModelAttribute model = method.ThreadingModel ();
+			ThreadModel model = method.ThreadingModel ();
 			if (method.IsFinalizer ()) {
-				if (model.Model != ThreadModel.SingleThread) {
+				if ((model & ~ThreadModel.AllowEveryCaller) != ThreadModel.SingleThread) {
 					string mesg = "Finalizers should be decorated with [ThreadModel (ThreadModel.SingleThreaded)].";
 					ReportDefect (method, Severity.High, Confidence.High, mesg);
 				}
@@ -257,8 +257,8 @@ namespace Gendarme.Rules.Concurrency {
 				ParameterDefinition p = method.Parameters [0];
 				TypeDefinition delegateType = p.ParameterType.Resolve ();
 				if (delegateType != null && !ThreadRocks.ThreadedNamespace (delegateType.Namespace)) {
-					ThreadModelAttribute delegateModel = delegateType.ThreadingModel ();
-					if (model != delegateModel && !delegateModel.AllowsEveryCaller) {
+					ThreadModel delegateModel = delegateType.ThreadingModel ();
+					if (model != delegateModel && !delegateModel.AllowsEveryCaller ()) {
 						string mesg = string.Format ("{0} event must match {1} delegate.", model, delegateModel);
 						ReportDefect (method, Severity.High, Confidence.High, mesg);
 					}
@@ -277,7 +277,7 @@ namespace Gendarme.Rules.Concurrency {
 				foreach (TypeDefinition type in superTypes) {
 					MethodDefinition superMethod = type.Methods.GetMethod (method.Name, method.Parameters);
 					if (superMethod != null && !ThreadRocks.ThreadedNamespace (superMethod.DeclaringType.Namespace)) {
-						ThreadModelAttribute superModel = superMethod.ThreadingModel ();
+						ThreadModel superModel = superMethod.ThreadingModel ();
 						if (model != superModel) {
 							string mesg;
 							if (method.IsNewSlot)
@@ -292,7 +292,7 @@ namespace Gendarme.Rules.Concurrency {
 			
 			// Serializable cannot be applied to static methods, but can be applied to
 			// operators because they're just sugar for normal calls.
-			if (method.IsStatic && model.Model == ThreadModel.Serializable && !method.Name.StartsWith ("op_")) {
+			if (method.IsStatic && model.Is (ThreadModel.Serializable) && !method.Name.StartsWith ("op_")) {
 				string mesg = "Static members cannot be decorated with Serializable.";
 				ReportDefect (method, Severity.High, Confidence.High, mesg);
 			}
@@ -312,8 +312,8 @@ namespace Gendarme.Rules.Concurrency {
 						case Code.Callvirt:
 							MethodDefinition target = ((MethodReference) ins.Operand).Resolve ();
 							if (target != null) {
-								ThreadModelAttribute targetModel = target.ThreadingModel ();
-								if (targetModel.Model == ThreadModel.MainThread && !targetModel.AllowsEveryCaller) {
+								ThreadModel targetModel = target.ThreadingModel ();
+								if (targetModel == ThreadModel.MainThread) {
 									string mesg = string.Format ("An anonymous thread entry point cannot call MainThread {0}.", target.Name);
 									
 									++DefectCount;
@@ -374,9 +374,9 @@ namespace Gendarme.Rules.Concurrency {
 								// Delegates must be able to call the methods they are bound to.
 								MethodDefinition target = ((MethodReference) ins.Previous.Operand).Resolve ();
 								if (target != null) {
-									ThreadModelAttribute callerModel = type.ThreadingModel ();
+									ThreadModel callerModel = type.ThreadingModel ();
 									if (!target.IsGeneratedCode () || target.IsProperty ()) {
-										ThreadModelAttribute targetModel = target.ThreadingModel ();
+										ThreadModel targetModel = target.ThreadingModel ();
 										if (!IsValidCall (callerModel, targetModel)) {
 											string mesg = string.Format ("{0} delegate cannot be bound to {1} {2} method.", callerModel, targetModel, target.Name);
 											
@@ -386,7 +386,7 @@ namespace Gendarme.Rules.Concurrency {
 											Runner.Report (defect);
 										}
 										
-									} else if (callerModel.Model != ThreadModel.MainThread) {
+									} else if (!callerModel.Is (ThreadModel.MainThread)) {
 										anonymous_entry_points.Add (target);
 									}
 								}
@@ -449,11 +449,11 @@ namespace Gendarme.Rules.Concurrency {
 				// if the event is synchronized on this then the target must have the same thread
 				// as the current method's type or better and it should not be treated as a entry point.
 				if (thisSynchronized.Contains (entry.Key.DeclaringType)) {
-					ThreadModelAttribute callerModel = method.DeclaringType.ThreadingModel ();
+					ThreadModel callerModel = method.DeclaringType.ThreadingModel ();
 					foreach (MethodReference mr in entry.Value) {
 						MethodDefinition target = mr.Resolve ();
 						if (target != null) {
-							ThreadModelAttribute targetModel = target.ThreadingModel ();
+							ThreadModel targetModel = target.ThreadingModel ();
 							if (!IsValidCall (callerModel, targetModel)) {
 								string mesg = string.Format ("{0} {1} cannot be bound to {2} {3} method.", callerModel, entry.Key, targetModel, target.Name);
 								ReportDefect (method, Severity.High, Confidence.High, mesg);
@@ -507,12 +507,12 @@ namespace Gendarme.Rules.Concurrency {
 				
 				MethodDefinition method = mr.Resolve ();
 				if (method != null) {
-					ThreadModelAttribute model = method.ThreadingModel ();
+					ThreadModel model = method.ThreadingModel ();
 					
 					if (method.IsGeneratedCode () && !method.IsProperty ()) {
 						anonymous_entry_points.Add (method);
 					
-					} else if (model.Model == ThreadModel.MainThread && !model.AllowsEveryCaller) {
+					} else if (model == ThreadModel.MainThread) {
 						string mesg = string.Format ("{0} is a thread entry point and so cannot be MainThread.", method.Name);
 						ReportDefect (method, Severity.High, Confidence.High, mesg);
 					}
@@ -524,8 +524,8 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			MethodDefinition target = ((MethodReference) ins.Operand).Resolve ();
 			if (target != null) {
-				ThreadModelAttribute callerModel = caller.ThreadingModel ();
-				ThreadModelAttribute targetModel = target.ThreadingModel ();
+				ThreadModel callerModel = caller.ThreadingModel ();
+				ThreadModel targetModel = target.ThreadingModel ();
 				if (!IsValidCall (callerModel, targetModel)) {
 					string mesg = string.Format ("{0} {1} cannot call {2} {3}.", callerModel, caller.Name, targetModel, target.Name);
 					
@@ -540,28 +540,27 @@ namespace Gendarme.Rules.Concurrency {
 		// MainThread code can call everything, AllowEveryCaller code can be called by 
 		// everything, SingleThread can call SingleThread/Serializable/Concurrent, and Serializable/
 		// Concurrent can call Serializable/Concurrent.
-		static bool IsValidCall (ThreadModelAttribute caller, ThreadModelAttribute target)
+		static bool IsValidCall (ThreadModel caller, ThreadModel target)
 		{
-			bool valid = false;
-			
 			// MainThread code can call everything
-			if (caller.Model == ThreadModel.MainThread)
-				valid = true;
-				
+			if (caller.Is (ThreadModel.MainThread))
+				return true;
+
 			// AllowEveryCaller code can be called by everything
-			else if (target.AllowsEveryCaller)
-				valid = true;
-				
+			else if (target.AllowsEveryCaller ())
+				return true;
+
 			// SingleThread can call SingleThread/Serializable/Concurrent
-			else if (caller.Model == ThreadModel.SingleThread && (target.Model == ThreadModel.SingleThread || target.Model == ThreadModel.Serializable || target.Model == ThreadModel.Concurrent))
-				valid = true;
-			
+			else if (caller.Is (ThreadModel.SingleThread) && (target.Is (ThreadModel.SingleThread) || target.Is (ThreadModel.Serializable) || target.Is (ThreadModel.Concurrent)))
+				return true;
+
+
 			// Serializable/Concurrent can call Serializable/Concurrent
-			else if ((caller.Model == ThreadModel.Serializable || caller.Model == ThreadModel.Concurrent) && 
-				(target.Model == ThreadModel.Serializable || target.Model == ThreadModel.Concurrent))
-				valid = true;
+			else if ((caller.Is (ThreadModel.Serializable) || caller.Is (ThreadModel.Concurrent)) &&
+				(target.Is (ThreadModel.Serializable) || target.Is (ThreadModel.Concurrent)))
+				return true;
 			
-			return valid;
+			return false;
 		}
 		
 		// We use this little helper so that we can report a better defect count to the test.

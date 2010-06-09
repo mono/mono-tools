@@ -1,3 +1,10 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* DecorateThreadsRule.cs: Rework to use ThreadModel to reduce
+	memory allocations. Save 217kb on self-test
+	* ThreadRocks.cs: Refactor to return ThreadModel (enum) instead of
+	ThreadModelAttribute (class). Add helpers
+
 2010-06-08  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* ThreadRocks.cs: Refactor to share some code (property and events)

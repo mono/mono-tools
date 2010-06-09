@@ -38,26 +38,38 @@ using System.Collections;
 namespace Gendarme.Rules.Concurrency {
 	
 	internal static class ThreadRocks {
-		
-		public static ThreadModelAttribute ThreadingModel (this TypeReference type)
+
+		public static bool AllowsEveryCaller (this ThreadModel self)
+		{
+			return ((self & ThreadModel.AllowEveryCaller) == ThreadModel.AllowEveryCaller);
+		}
+
+		public static bool Is (this ThreadModel self, ThreadModel model)
+		{
+			// since ThreadModel.MainThread == 0 we cannot do bitwise ops
+			// but we need to keep this "as is" for backward compatibility
+			return ((self & ~ThreadModel.AllowEveryCaller) == model);
+		}
+
+		public static ThreadModel ThreadingModel (this TypeReference type)
 		{
 			while (type != null) {
-				ThreadModelAttribute model = TryGetThreadingModel (type);
+				ThreadModel? model = TryGetThreadingModel (type);
 				if (model != null)
-					return model;
+					return model.Value;
 					
 				// If the type is not decorated then we'll assume that the type is main 
 				// thread unless it's a System/Mono type.
 				if (ThreadedNamespace (type.Namespace))
-					return new ThreadModelAttribute (ThreadModel.Concurrent);
+					return ThreadModel.Concurrent;
 					
 				type = type.DeclaringType;
 			}
 			
-			return new ThreadModelAttribute (ThreadModel.MainThread);
+			return ThreadModel.MainThread;
 		}
 		
-		static ThreadModelAttribute Lookup (MethodDefinition method, CollectionBase collection)
+		static ThreadModel? Lookup (IMemberReference method, CollectionBase collection)
 		{
 			string name = method.Name;
 			// Need the offset for explicit interface implementations.
@@ -71,45 +83,43 @@ namespace Gendarme.Rules.Concurrency {
 			return null;
 		}
 
-		public static ThreadModelAttribute ThreadingModel (this MethodDefinition method)
+		public static ThreadModel ThreadingModel (this MethodDefinition method)
 		{
-			ThreadModelAttribute model;
-			
 			// Check the method first so it overrides whatever was used on the type.
-			model = TryGetThreadingModel (method);
+			ThreadModel? model = TryGetThreadingModel (method);
 			if (model != null)
-				return model;
+				return model.Value;
 			
 			// If it's a property we need to check the property as well.
 			if (method.IsProperty ()) {
 				// FIXME: we won't get the property if it is an explicit implementation
 				model = Lookup (method, method.DeclaringType.Properties);
 				if (model != null)
-					return model;
+					return model.Value;
 			}
 			
 			// If it's a event we need to check the event as well.
 			if (method.IsAddOn || method.IsRemoveOn || method.IsFire) {
 				model = Lookup (method, method.DeclaringType.Events);
 				if (model != null)
-					return model;
+					return model.Value;
 			}
 			
 			// Check the type.
 			model = ThreadingModel (method.DeclaringType);
 			
 			if (method.IsConstructor && method.IsStatic) {
-				if (model.Model == ThreadModel.Concurrent || model.Model == ThreadModel.Serializable) {
-					return new ThreadModelAttribute (ThreadModel.SingleThread);
+				if (model == ThreadModel.Concurrent || model == ThreadModel.Serializable) {
+					return ThreadModel.SingleThread;
 				}
 				
 			} else if (method.IsStatic) {
-				if (model.Model == ThreadModel.Serializable && !method.Name.StartsWith ("op_")) {
-					return new ThreadModelAttribute (ThreadModel.MainThread);
+				if (model == ThreadModel.Serializable && !method.Name.StartsWith ("op_")) {
+					return ThreadModel.MainThread;
 				}
 			}
 			
-			return model;
+			return model.Value;
 		}
 		
 		// Returns true if the namespace is one for which we consider all the types thread safe.
@@ -125,7 +135,7 @@ namespace Gendarme.Rules.Concurrency {
 		}
 		
 		#region Private Methods
-		private static ThreadModelAttribute TryGetThreadingModel (ICustomAttributeProvider provider)
+		private static ThreadModel? TryGetThreadingModel (ICustomAttributeProvider provider)
 		{
 			if (!provider.HasCustomAttributes)
 				return null;
@@ -136,8 +146,7 @@ namespace Gendarme.Rules.Concurrency {
 
 				if (attr.Resolve () && (attr.ConstructorParameters.Count == 1)) {
 					if (attr.ConstructorParameters [0] is int) {
-						ThreadModel value = (ThreadModel) (int) attr.ConstructorParameters [0];
-						return new ThreadModelAttribute (value);
+						return (ThreadModel) (int) attr.ConstructorParameters [0];
 					}
 				}
 						
