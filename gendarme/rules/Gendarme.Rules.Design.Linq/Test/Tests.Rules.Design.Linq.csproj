@@ -55,7 +55,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
       <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
-      <Name>Tests.Rules</Name>
+      <Name>Test.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Design.Linq.csproj">
       <Project>{EEC7B836-DB9D-4CB3-9829-53C223C9411F}</Project>

@@ -60,7 +60,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Test.Rules\Test.Rules.csproj">
       <Project>{069148AF-86AB-4EE3-BFB9-429AE722461F}</Project>
-      <Name>Tests.Rules</Name>
+      <Name>Test.Rules</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gendarme.Rules.Design.Generic.csproj">
       <Project>{5446570C-A304-418D-B908-91ADA51E4F00}</Project>
