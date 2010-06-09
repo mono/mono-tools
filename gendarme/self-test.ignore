@@ -314,8 +314,6 @@ M: System.Boolean Gendarme.Rules.Design.ConsiderAddingInterfaceRule::DoesTypeSte
 M: System.Boolean Gendarme.Rules.BadPractice.EqualsShouldHandleNullArgRule::CheckSequence(Mono.Cecil.Cil.Instruction,Mono.Cecil.TypeDefinition)
 # CC 27 (CSC only)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule::CheckMethod(Mono.Cecil.MethodDefinition)
-# CC 25 (CSC only)
-M: System.Void Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::ProcessMethod(Mono.Cecil.MethodDefinition,System.String)
 
 # some should be fixed
 R: Gendarme.Rules.Smells.AvoidLargeClassesRule
@@ -326,7 +324,6 @@ T: Gendarme.Framework.Runner
 T: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 T: Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule
-T: Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule
 T: Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule
 T: Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule
 T: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
@@ -352,7 +349,6 @@ T: Gendarme.Framework.EngineController
 T: Gendarme.Rules.Concurrency.DecorateThreadsRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule/MethodInfo
-T: Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule
 T: Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule
 T: Gendarme.Rules.Interoperability.UseManagedAlternativesToPInvokeRule/ManagedAlternatives
 T: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
