@@ -57,6 +57,8 @@ namespace Test.Rules.Fixtures {
 			get { return runner; }
 		}
 
+		public bool FireEvents { get; set; }
+
 		/// <summary>
 		/// Creates a RuleTestFixture instance, the runner and the rule itself.
 		/// </summary>
@@ -126,17 +128,33 @@ namespace Test.Rules.Fixtures {
 			if (token == null)
 				throw new ArgumentNullException ("token");
 
-			if (token is MethodDefinition)
+			MethodDefinition md = (token as MethodDefinition);
+			if (md != null) {
+				if (FireEvents) {
+					runner.OnAssembly (md.DeclaringType.Module.Assembly);
+					runner.OnType (md.DeclaringType);
+					runner.OnMethod (md);
+				}
 				return runner.CheckMethod (token as MethodDefinition);
+			}
 
-			else if (token is TypeDefinition)				
-				return runner.CheckType (token as TypeDefinition);	
+			TypeDefinition td = (token as TypeDefinition);
+			if (td != null) {
+				if (FireEvents) {
+					runner.OnAssembly (md.DeclaringType.Module.Assembly);
+					runner.OnType (md.DeclaringType);
+				}
+				return runner.CheckType (td);
+			}
 
-			else if (token is AssemblyDefinition)
-				return runner.CheckAssembly (token as AssemblyDefinition);
+			AssemblyDefinition ad = (token as AssemblyDefinition);
+			if (ad != null) {
+				if (FireEvents)
+					runner.OnAssembly (td.Module.Assembly);
+				return runner.CheckAssembly (ad);
+			}
 
-			else
-				throw new NotImplementedException (token.GetType ().ToString ());
+			throw new NotImplementedException (token.GetType ().ToString ());
 		}
 	}
 }

@@ -1,3 +1,9 @@
+2010-06-09  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* RuleTestFixture.cs: Allow tests to receive On* events from
+	the runner when necessary (rare but we don't want hacks into
+	rules to make them testable)
+
 2008-11-16  Andrés G. Aragoneses  <aaragoneses@novell.com>
 
 	* MethodRuleTestFixture.cs: Correct typo in the docs.
