@@ -37,7 +37,7 @@ namespace Gendarme.Framework.Rocks {
 
 	// Here we keep general, Cecil related, rocks
 
-	public static class IMetadataTokenProviderRock {
+	public static class MetadataTokenProviderRock {
 
 		/// <summary>
 		/// Return the AssemblyDefinition that correspond to the IMetadataTokenProvider

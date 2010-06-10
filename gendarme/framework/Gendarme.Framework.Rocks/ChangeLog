@@ -1,3 +1,7 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* CecilRocks.cs: Types should not start with an I (self-test)
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* FieldRock.cs: Check if a field's type is generated code (CSC
