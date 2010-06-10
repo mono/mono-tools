@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Xml;
@@ -36,6 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Smells;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
@@ -798,6 +800,43 @@ namespace Test.Rules.Smells {
 		public void SuccessOnNonDuplicateCodeWithNonCompatibleTypesInLocals ()
 		{
 			AssertRuleSuccess<NonDuplicateCodeWithNonCompatibleTypesInLocals> ();
+		}
+
+		// produced a false positive when compiled with CSC
+		class AvoidLongMethodsRule {
+			private static int CountInstanceFields (TypeDefinition type)
+			{
+				int counter = 0;
+				foreach (FieldDefinition field in type.Fields) {
+					if (!(field.IsStatic || field.HasConstant))
+						counter++;
+					//I not take care about arrays here.
+				}
+				return counter;
+			}
+
+			private static int CountInstructions (MethodDefinition method)
+			{
+				int count = 0;
+				foreach (Instruction ins in method.Body.Instructions) {
+					switch (ins.OpCode.Code) {
+					case Code.Nop:
+					case Code.Box:
+					case Code.Unbox:
+						break;
+					default:
+						count++;
+						break;
+					}
+				}
+				return count;
+			}
+		}
+
+		[Test]
+		public void IEnumerator_MoveNext_Block ()
+		{
+			AssertRuleSuccess<AvoidLongMethodsRule> ();
 		}
 	}
 }

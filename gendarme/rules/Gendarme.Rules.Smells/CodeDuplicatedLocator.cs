@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 using Mono.Cecil;
@@ -39,6 +40,9 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Smells {
 
 	internal sealed class CodeDuplicatedLocator {
+
+		static ReadOnlyCollection<Pattern> Empty = new ReadOnlyCollection<Pattern> (new List<Pattern> ());
+
 		HashSet<string> methods = new HashSet<string> ();
 		HashSet<string> types = new HashSet<string> ();
 		Dictionary<MethodDefinition, IList<Pattern>> patternsCached = new Dictionary<MethodDefinition, IList<Pattern>> ();
@@ -104,11 +108,15 @@ namespace Gendarme.Rules.Smells {
 		{
 			if (!CanCompareMethods (current, target))
 				return null;
+
+			IList<Pattern> patterns = GetPatterns (current);
+			if (patterns.Count == 0)
+				return null;
 			
 			InstructionMatcher.Current = current;
 			InstructionMatcher.Target = target;
 
-			foreach (Pattern pattern in GetPatterns (current)) {
+			foreach (Pattern pattern in patterns) {
 				if (pattern.IsCompilerGeneratedBlock || !pattern.IsExtractableToMethodBlock)
 					continue;
 
@@ -124,8 +132,8 @@ namespace Gendarme.Rules.Smells {
 
 		IList<Pattern> GetPatterns (MethodDefinition method) 
 		{
-			IList<Pattern> patterns = null;
-			if (!patternsCached.TryGetValue(method, out patterns)) {
+			IList<Pattern> patterns = Empty;
+			if (!patternsCached.TryGetValue (method, out patterns)) {
 				patterns = GeneratePatterns (method);
 				patternsCached.Add (method, patterns);
 			}
@@ -160,6 +168,9 @@ namespace Gendarme.Rules.Smells {
 			//We can remove the first ocurrence
 			if (result.Count != 0)
 				result.Pop ();
+
+			if (result.Count == 0)
+				return Empty;
 
 			IList<Pattern> res = new List<Pattern> ();
 			foreach (Stack<Instruction> stack in result) 

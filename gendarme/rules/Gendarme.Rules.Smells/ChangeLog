@@ -1,3 +1,12 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLongParameterListsRule.cs: Move HasConstructor check before
+	a call. Rename two methods (Smaller->Smallest)
+	* CodeDuplicatedLocator.cs: Don't create more than one empty List
+	of patterns and avoid some allocations. Saves 74kb on self-test
+	* Pattern.cs: Reuse the instructions array when possible. Saves 
+	1320kb while executing self-test
+
 2010-06-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* CodeDuplicatedLocator.cs: Ignore duplicated code located inside

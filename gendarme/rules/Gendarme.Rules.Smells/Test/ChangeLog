@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidCodeDuplicatedInSameClassTest.cs: Add test case for
+	a (fixed) false positive when compiled with CSC
+
 2010-01-26  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMessageChainsTest.cs: Adjust test to new condition and

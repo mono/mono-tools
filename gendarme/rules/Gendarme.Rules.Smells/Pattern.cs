@@ -139,8 +139,9 @@ namespace Gendarme.Rules.Smells {
 			MethodDefinition target = InstructionMatcher.Target;
 			InstructionMatcher.Target = method;
 			try {
-				prefixes = new int [instructions.Length];
 				int offset = 0;
+				if ((prefixes == null) || (prefixes.Length < instructions.Length))
+					prefixes = new int [instructions.Length];
 
 				for (int index = 1; index < instructions.Length; index++) {
 					while (offset > 0 &&
