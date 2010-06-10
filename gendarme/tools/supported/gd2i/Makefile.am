@@ -1,4 +1,4 @@
-EXTRA_DIST = $(gd2i_sources)
+EXTRA_DIST = $(gd2i_sources) gd2i.csproj
 
 gd2i_sources =  \
 	../../../AssemblyStaticInfo.cs	\

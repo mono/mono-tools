@@ -1,3 +1,7 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* Makefile.am: Include project file in dist
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* gd2i.cs: New. A bit crude but functional tool to convert an
