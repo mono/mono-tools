@@ -220,7 +220,7 @@ namespace Gendarme.Rules.BadPractice {
 						continue;
 
 					if (md.IsVirtual && !md.IsFinal) {
-						string s = stack.Count == 0 ? method.ToString () : stack.Aggregate ((a1, a2) => a1 + ", " + Environment.NewLine + a2);
+						string s = stack.Count == 0 ? method_name : stack.Aggregate ((a1, a2) => a1 + ", " + Environment.NewLine + a2);
 						s = String.Format ("Calling a virtual method, '{0}' from {1}.", md, s);
 						Runner.Report (method, current, Severity.High, Confidence.High, s);
 					} else {
