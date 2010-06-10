@@ -1,3 +1,10 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DontCompareWithNaNRule.cs: Skip rule if the assembly does not
+	refer (or define for mscorlib) Single or Double types
+	* UseValueInPropertySetterRule.cs: Skip rule if the type has
+	no properties.
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs:

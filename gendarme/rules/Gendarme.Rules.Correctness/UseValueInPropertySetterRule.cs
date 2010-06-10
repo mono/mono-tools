@@ -74,6 +74,16 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("The setter should use 'value' or, if unneeded, you should consider removing the setter to reduce possible confusion.")]
 	public class UseValueInPropertySetterRule : Rule, IMethodRule {
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// avoid checking all methods unless the type has some properties
+			Runner.AnalyzeType += delegate (object o, RunnerEventArgs e) {
+				Active = e.CurrentType.HasProperties;
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			//Skip the test, instead of flooding messages
