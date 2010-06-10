@@ -325,7 +325,6 @@ T: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 T: Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule
 T: Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule
-T: Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule
 T: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
 
 # FIXME
