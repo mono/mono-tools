@@ -89,6 +89,47 @@ namespace Test.Rules.Performance {
 			{
 				return 42;
 			}
+
+			public void SmallSwitch (string s)
+			{
+				switch (s) {
+				// case String.Empty: error CS0150: A constant value is expected
+				case "":
+					Console.WriteLine ("empty");
+					break;
+				default:
+					Console.WriteLine (s);
+					break;
+				}
+			}
+
+			public void LargeSwitch (string s)
+			{
+				switch (s) {
+				// case String.Empty: error CS0150: A constant value is expected
+				case "":
+					Console.WriteLine ("unknown");
+					break;
+				case "zero":
+					Console.WriteLine ("0");
+					break;
+				case "one":
+					Console.WriteLine ("1");
+					break;
+				case "two":
+					Console.WriteLine ("2");
+					break;
+				case "three":
+					Console.WriteLine ("3");
+					break;
+				case "four":
+					Console.WriteLine ("4");
+					break;
+				default:
+					Console.WriteLine ("large value");
+					break;
+				}
+			}
 		}
 
 		[Test]
@@ -146,6 +187,16 @@ namespace Test.Rules.Performance {
 		public void NoHarm ()
 		{
 			AssertRuleDoesNotApply<TestCase> ("NoStringWereHarmedInThisTestCase");
+		}
+
+		[Test]
+		[Ignore ("switch/case optimized into if/else by compilers")]
+		public void Switch ()
+		{
+			// compilers optimize the switch into a bunch of if/else - however, syntax wise,
+			// String.Empty cannot be used in a swicth/case. Undetectable IL wise
+			AssertRuleSuccess<TestCase> ("SmallSwitch");
+			AssertRuleSuccess<TestCase> ("LargeSwitch");
 		}
 	}
 }

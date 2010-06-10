@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseStringEmptyTest.cs: Add test case about switch/cases being
+	optimized, by compilers, into if/else
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUncalledPrivateCodeTest.cs: Flush uncommitted tests
