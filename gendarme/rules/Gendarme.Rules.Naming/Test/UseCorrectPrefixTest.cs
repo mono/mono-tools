@@ -2,10 +2,11 @@
 // Unit Test for UseCorrectPrefixRule
 //
 // Authors:
+//      Abramov Daniel <ex@vingrad.ru>
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2007 Daniel Abramov
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -45,6 +46,12 @@ namespace Test.Rules.Naming {
 	}
 
 	public class CIncorrectClass {
+	}
+
+	public class INcorrectClass {
+	}
+
+	public class ILRange {
 	}
 
 	public interface I {
@@ -93,6 +100,8 @@ namespace Test.Rules.Naming {
 			AssertRuleSuccess<CorrectClass> ();
 			AssertRuleSuccess<AnotherCorrectClass> ();
 			AssertRuleFailure<CIncorrectClass> (1);
+			AssertRuleFailure<INcorrectClass> (1);
+			AssertRuleSuccess<ILRange> ();
 		}
 
 		[Test]

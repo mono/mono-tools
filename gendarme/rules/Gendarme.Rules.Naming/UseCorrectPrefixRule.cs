@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2007 Daniel Abramov
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -87,7 +87,14 @@ namespace Gendarme.Rules.Naming {
 		{
 			if (name.Length < 3)
 				return true;
-			return !((name [0] == 'C') && Char.IsUpper (name [1]) && Char.IsLower (name [2]));
+
+			switch (name [0]) {
+			case 'C':	// MFC like CMyClass - but works for CLSCompliant
+			case 'I':	// interface-like
+				return Char.IsLower (name [1]) == Char.IsLower (name [2]);
+			default:
+				return true;
+			}
 		}
 
 		private static bool IsCorrectInterfaceName (string name)
@@ -115,9 +122,10 @@ namespace Gendarme.Rules.Naming {
 					Runner.Report (type, Severity.Critical, Confidence.High, s);
 				}
 			} else {
-				// class should _not_ look like 'CSomething"
+				// class should _not_ look like 'CSomething" or like an interface 'IOops'
 				if (!IsCorrectTypeName (name)) { 
-					string s = String.Format ("The '{0}' type name starts with 'C' prefix but, according to existing naming conventions, type names should not have any specific prefix.", name);
+					string s = String.Format ("The '{0}' type name starts with '{1}' prefix but, according to existing naming conventions, type names should not have any specific prefix.", 
+						name, name [0]);
 					Runner.Report (type, Severity.Medium, Confidence.High, s);
 				}
 			}

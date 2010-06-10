@@ -1,3 +1,7 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseCorrectPrefixTest.cs: Add test cases for types starting with an I
+
 2009-03-23  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* UseCorrectCasingTest.cs: Add a different test case for a namespace
