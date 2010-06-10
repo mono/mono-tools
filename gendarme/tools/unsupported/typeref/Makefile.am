@@ -1,4 +1,4 @@
-EXTRA_DIST = $(typeref_sources) ChangeLog
+EXTRA_DIST = $(typeref_sources) ChangeLog typeref.csproj
 
 typeref_sources =  \
 	../../../AssemblyStaticInfo.cs	\

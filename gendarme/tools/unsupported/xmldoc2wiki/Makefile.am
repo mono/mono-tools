@@ -1,4 +1,4 @@
-EXTRA_DIST = $(xmldoc2wiki_sources) ChangeLog
+EXTRA_DIST = $(xmldoc2wiki_sources) ChangeLog xmldoc2wiki.csproj
 
 xmldoc2wiki_sources =  \
 	../../../AssemblyStaticInfo.cs	\

@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* typeref.csproj: New. VS.NET project file
+	* Makefile.am: Add csproj file to the dist
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* typeref.cs: New. Quick tool to look for type references
