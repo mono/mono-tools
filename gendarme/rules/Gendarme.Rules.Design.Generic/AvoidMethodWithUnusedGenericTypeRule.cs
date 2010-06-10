@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -95,18 +95,20 @@ namespace Gendarme.Rules.Design.Generic {
 		static bool FindGenericType (IGenericInstance git, string fullname)
 		{
 			foreach (object o in git.GenericArguments) {
-				GenericParameter igp = (o as GenericParameter);
-				if (igp != null) {
-					if (igp.FullName == fullname)
-						return true;
-					continue;
-				}
+				if (IsGenericParameter (o, fullname))
+					return true;
 
 				GenericInstanceType inner = (o as GenericInstanceType);
 				if ((inner != null) && (FindGenericType (inner, fullname)))
 					return true;
 			}
 			return false;
+		}
+
+		static bool IsGenericParameter (object obj, string fullname)
+		{
+			GenericParameter gp = (obj as GenericParameter);
+			return ((gp != null) && (gp.FullName == fullname));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -117,6 +119,7 @@ namespace Gendarme.Rules.Design.Generic {
 
 			// look if every generic type parameter...
 			foreach (GenericParameter gp in method.GenericParameters) {
+				Severity severity = Severity.Medium;
 				bool found = false;
 				string gp_fullname = gp.FullName;
 				// ... is being used by the method parameters
@@ -145,8 +148,13 @@ namespace Gendarme.Rules.Design.Generic {
 					}
 				}
 				if (!found) {
-					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp_fullname);
-					Runner.Report (method, Severity.Medium, Confidence.High, msg);
+					// it's a defect when used only for the return value - but we reduce its severity
+					if (IsGenericParameter (method.ReturnType.ReturnType, gp.FullName))
+						severity = Severity.Low;
+				}
+				if (!found) {
+					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp.FullName);
+					Runner.Report (method, severity, Confidence.High, msg);
 				}
 			}
 			return Runner.CurrentRuleResult;

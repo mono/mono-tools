@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodWithUnusedGenericTypeRule.cs: Reduce severity to low 
+	if the generic type is used for the return value
+
 2010-06-04  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodWithUnusedGenericTypeRule.cs: Apply AvoidUnnecessarySpecializationRule

@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 
+using Gendarme.Framework;
 using Gendarme.Rules.Design.Generic;
 
 using NUnit.Framework;
@@ -87,10 +88,19 @@ namespace Test.Rules.Design.Generic {
 		public void Bad ()
 		{
 			AssertRuleFailure<BadCases> ("Single", 1);
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "1");
+			
 			AssertRuleFailure<BadCases> ("Double", 2);
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "2a");
+			Assert.AreEqual (Severity.Medium, Runner.Defects [1].Severity, "2b");
+			
 			AssertRuleFailure<BadCases> ("Triple", 3);
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "3a");
+			Assert.AreEqual (Severity.Medium, Runner.Defects [1].Severity, "3b");
+			Assert.AreEqual (Severity.Medium, Runner.Defects [2].Severity, "3c");
 
 			AssertRuleFailure<BadCases> ("Partial", 1);
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "4");
 		}
 
 		public class GoodCases {
@@ -151,6 +161,7 @@ namespace Test.Rules.Design.Generic {
 		public void ReturnValue ()
 		{
 			AssertRuleFailure<AvoidMethodWithUnusedGenericTypeTest> ("Parse", 1);
+			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Low");
 		}
 	}
 }
