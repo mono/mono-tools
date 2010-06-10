@@ -83,6 +83,16 @@ namespace Gendarme.Rules.Performance {
 	[FxCopCompatibility ("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
 	public class AvoidReturningArraysOnPropertiesRule : Rule, IMethodRule {
 		
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// avoid checking all methods unless the type has some properties
+			Runner.AnalyzeType += delegate (object o, RunnerEventArgs e) {
+				Active = e.CurrentType.HasProperties;
+			};
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.IsGetter)

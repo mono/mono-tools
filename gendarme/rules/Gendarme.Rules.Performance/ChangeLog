@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidReturningArraysOnPropertiesRule.cs: Skip rule if the type 
+	has no properties.
+
 2010-06-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* PreferCharOverloadRule.cs: Apply AvoidUnnecessarySpecializationRule
