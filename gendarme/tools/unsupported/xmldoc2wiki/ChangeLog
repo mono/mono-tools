@@ -1,0 +1,5 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* xmldoc2wiki.cs: New. Produce mediawiki-like pages from the
+	xmldoc of the rules.
+

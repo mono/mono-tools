@@ -1,0 +1,5 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* typeref.cs: New. Quick tool to look for type references
+	inside assemblies. Useful to add "turn off" optimizations
+	to rules when it is known to be impossible to find defects

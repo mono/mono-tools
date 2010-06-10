@@ -262,6 +262,9 @@ gendarme/swf-wizard-runner/Makefile
 gendarme/tools/Makefile
 gendarme/tools/supported/Makefile
 gendarme/tools/supported/gd2i/Makefile
+gendarme/tools/unsupported/Makefile
+gendarme/tools/unsupported/typeref/Makefile
+gendarme/tools/unsupported/xmldoc2wiki/Makefile
 gendarme/wix/Makefile
 Mono.Profiler/profiler-file-decoder/Makefile
 Mono.Profiler/Makefile
