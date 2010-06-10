@@ -1,3 +1,8 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLargeClassesRule.cs: Be more accurate when reporting. E.g.
+	report all common prefixes with a count
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLongParameterListsRule.cs: Move HasConstructor check before

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -34,13 +35,6 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
-
-	// TODO: The summary should explain what a field prefix is. 
-	// What do field prefixes have to do with large classes? 
-	// The problem text says that the issue with large classes is that "duplicated code will not 
-	// be far away". This does not seem to me to be the real issue with large classes. The 
-	// problem is more that they are difficult to understand and to maintain. 
-	// Can the default be changed?
 
 	/// <summary>
 	/// This rule allows developers to measure the classes size. When a 
@@ -91,9 +85,11 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		private static bool IsTooLarge (TypeDefinition type)
+		List<FieldDefinition> fields = new List<FieldDefinition> ();
+
+		private IList<FieldDefinition> GetNonConstantFields (TypeDefinition type)
 		{
-			int counter = 0;
+			fields.Clear ();
 			//Skip the constants and others related from this check.
 			//It's common use a class for store constants, by
 			//example: Gendarme.Framework.MethodSignatures.
@@ -102,30 +98,22 @@ namespace Gendarme.Rules.Smells {
 					continue;
 				if (field.IsGeneratedCode ())
 					continue;
-				counter++;
+				fields.Add (field);
 			}
-			return counter >= MaxFields;
+			return fields;
 		}
 
-		private RuleResult CheckForClassFields (TypeDefinition type)
+		private int CountPrefixedFields (string prefix, int start)
 		{
-			if (IsTooLarge (type)) {
-				Runner.Report (type, Severity.High, Confidence.High, "This type contains a lot of fields.");
-			}
-			return RuleResult.Success;	
-		}
-
-		private static bool HasPrefixedFields (string prefix, TypeDefinition type)
-		{
-			if (prefix.Length == 0)
-				return false;
-
-			int counter = 0;
-			foreach (FieldDefinition field in type.Fields) {
-				if (field.Name.StartsWith (prefix))
+			int counter = 1; // include self
+			for (int i = fields.Count - 1; i > start; i--) {
+				FieldDefinition field = fields [i];
+				if (field.Name.StartsWith (prefix)) {
+					fields.RemoveAt (i);
 					counter++;
+				}
 			}
-			return counter > 1;
+			return counter;
 		}
 
 		private static int GetIndexOfFirst (string value, Predicate<char> predicate)
@@ -169,30 +157,22 @@ namespace Gendarme.Rules.Smells {
 			return String.Empty;
 		}
 
-		private bool ExitsCommonPrefixes (TypeDefinition type)
+		private bool CheckForFieldCommonPrefixes (IMetadataTokenProvider type)
 		{
-			foreach (FieldDefinition field in type.Fields) {
-				// skip special, constant and read-only fields
-				if (field.IsSpecialName || field.HasConstant || field.IsInitOnly)
-					continue;
-				// skip C# 3 fields generated for auto-implemented properties
-				if (field.IsGeneratedCode ())
-					continue;
+			for (int i=0; i < fields.Count; i++) {
+				FieldDefinition field = fields [i];
 
 				string prefix = GetFieldPrefix (field);
-				if (HasPrefixedFields (prefix, type)) {
-					Runner.Report (type, Severity.Medium, Confidence.High, "This type contains common prefixes.");
-					return true;
+				if (prefix.Length == 0)
+					continue;
+				int count = CountPrefixedFields (prefix, i);
+				if (count > 1) {
+					string msg = String.Format ("This type contains fields common prefixes: {0} fields prefixed with '{1}'.",
+						count, prefix);
+					Runner.Report (type, Severity.Medium, Confidence.High, msg);
 				}
 			}
 			return false;
-		}
-
-		private RuleResult CheckForCommonPrefixesInFields (TypeDefinition type)
-		{
-			if (ExitsCommonPrefixes (type))
-				return RuleResult.Failure;
-			return RuleResult.Success;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -200,8 +180,16 @@ namespace Gendarme.Rules.Smells {
 			if (type.IsEnum || !type.HasFields || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			CheckForClassFields (type);
-			CheckForCommonPrefixesInFields (type);
+			IList<FieldDefinition> fields = GetNonConstantFields (type);
+			if (fields.Count > MaxFields) {
+				string msg = String.Format ("This type contains a lot of fields ({0} versus maximum of {1}).",
+					fields.Count, MaxFields);
+				Runner.Report (type, Severity.High, Confidence.High, msg);
+			}
+
+			// skip check if there are only constants or generated fields
+			if (fields.Count > 0)
+				CheckForFieldCommonPrefixes (type);
 
 			return Runner.CurrentRuleResult;
 		}

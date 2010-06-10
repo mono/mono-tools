@@ -134,7 +134,8 @@ namespace Test.Rules.Smells {
 		{
 			type = assembly.MainModule.Types["Test.Rules.Smells.LargeClass"];
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (2, runner.Defects.Count);
+			// 'x', 'foo', 'bar', 'f', 'c' and 's' are reported as prefixes
+			Assert.AreEqual (6, runner.Defects.Count);
 		}
 
 		[Test]

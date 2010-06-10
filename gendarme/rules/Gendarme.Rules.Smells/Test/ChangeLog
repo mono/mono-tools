@@ -1,3 +1,7 @@
+2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* AvoidLargeClassesTest.cs: Adjust defects count for prefixes
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidCodeDuplicatedInSameClassTest.cs: Add test case for
