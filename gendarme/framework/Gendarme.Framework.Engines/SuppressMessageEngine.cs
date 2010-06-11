@@ -145,10 +145,16 @@ namespace Gendarme.Framework.Engines {
 					foreach (TypeDefinition type in module.Types) {
 						if (targets.TryGetValue (type.FullName, out rules))
 							Add (type, rules);
-						foreach (MethodDefinition ctor in type.Constructors)
-							ResolveMethod (ctor, targets);
-						foreach (MethodDefinition method in type.Methods)
-							ResolveMethod (method, targets);
+
+						if (type.HasConstructors) {
+							foreach (MethodDefinition ctor in type.Constructors)
+								ResolveMethod (ctor, targets);
+						}
+
+						if (type.HasMethods) {
+							foreach (MethodDefinition method in type.Methods)
+								ResolveMethod (method, targets);
+						}
 					}
 				}
 			}
