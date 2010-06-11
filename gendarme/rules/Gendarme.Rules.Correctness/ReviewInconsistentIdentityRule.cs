@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Jesse Jones  <jesjones@mindspring.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -64,38 +66,61 @@ namespace Gendarme.Rules.Correctness {
 	[Solution ("Equals, relational operator, CompareTo methods should use the same fields and getter properties. GetHashCode should use the same fields/properties or a strict subset of them. Clone should use the same fields/properties or a superset of them.")]
 	public sealed class ReviewInconsistentIdentityRule: Rule, ITypeRule {
 	
-		private const int MaxMethodCount = 10;
-		private Dictionary<MethodDefinition, MethodInfo> equalityMethods = new Dictionary<MethodDefinition, MethodInfo> (MaxMethodCount);
-		private MethodDefinition hashMethod;
-		private MethodInfo hashInfo;
-		private MethodDefinition cloneMethod;
-		private MethodInfo cloneInfo;
+		private HashSet<MethodInfo> methods = new HashSet<MethodInfo> ();
+		private MethodInfo hash = new MethodInfo ();
+		private MethodInfo clone = new MethodInfo ();
 		
 		private sealed class MethodInfo {
-			private HashSet<FieldDefinition> fields = new HashSet<FieldDefinition> ();
-			private HashSet<MethodDefinition> getters = new HashSet<MethodDefinition> ();
-			
+			private HashSet<MemberReference> fields;
+			private HashSet<MemberReference> getters;
+
 			public bool Delegates { get; set; }	// i.e. calls a method (but not a property of the type)
 			
-			public HashSet<FieldDefinition> Fields {
-				get { return fields; }
+			public HashSet<MemberReference> Fields {
+				get {
+					if (fields == null)
+						fields = new HashSet<MemberReference> ();
+					return fields;
+				}
 			}
 			
-			public HashSet<MethodDefinition> Getters {
-				get { return getters; }
+			public HashSet<MemberReference> Getters {
+				get {
+					if (getters == null)
+						getters = new HashSet<MemberReference> ();
+					return getters;
+				}
+			}
+
+			public bool HasFields {
+				get { return ((fields != null) && (fields.Count > 0)); }
+			}
+
+			public bool HasGetters {
+				get { return ((getters != null) && (getters.Count > 0)); }
+			}
+
+			public MethodDefinition Method { get; set; }
+
+			public void Clear ()
+			{
+				Delegates = false;
+				if (fields != null)
+					fields.Clear ();
+				if (getters != null)
+					getters.Clear ();
+				Method = null;
 			}
 		}
-				
+
 		private void AddMethod (MethodDefinition method)
 		{
-			if (method != null) {
-				equalityMethods.Add (method, new MethodInfo ());
-				Debug.Assert (equalityMethods.Count <= MaxMethodCount, string.Format ("equalityMethods has {0} methods", equalityMethods.Count));
-			}
+			if (method != null)
+				methods.Add (new MethodInfo () { Method = method });
 		}
 		
-		private string [] args1 = new string [1];
-		private string [] args2 = new string [2];
+		private static readonly string [] args1 = new string [1];
+		private static readonly string [] args2 = new string [2];
 		private static readonly MethodSignature CompareTo = new MethodSignature ("CompareTo", "System.Int32", new string [] { "System.Object" });
 		
 		private void GetMethods (TypeReference type)	
@@ -120,28 +145,24 @@ namespace Gendarme.Rules.Correctness {
 			AddMethod (type.GetMethod ("op_GreaterThan", "System.Boolean", args2));
 			AddMethod (type.GetMethod ("op_GreaterThanOrEqual", "System.Boolean", args2));
 			
-			cloneMethod = type.GetMethod (MethodSignatures.Clone);
-			if (cloneMethod != null) 
-				cloneInfo = new MethodInfo ();
-
-			hashMethod = type.GetMethod (MethodSignatures.GetHashCode);
-			if (hashMethod != null) 
-				hashInfo = new MethodInfo ();
+			clone.Method = type.GetMethod (MethodSignatures.Clone);
+			hash.Method = type.GetMethod (MethodSignatures.GetHashCode);
 		}
 		
-		private HashSet<FieldDefinition> setFields = new HashSet<FieldDefinition> ();
-		private HashSet<MethodDefinition> setProps = new HashSet<MethodDefinition> ();
+		private HashSet<MemberReference> stored_fields = new HashSet<MemberReference> ();
+		private HashSet<MemberReference> property_setters = new HashSet<MemberReference> ();
 
-		private void ProcessMethod (TypeDefinition type, MethodDefinition method, MethodInfo info)
+		private void ProcessMethod (TypeDefinition type, MethodInfo info)
 		{
+			MethodDefinition method = info.Method;
 			Log.WriteLine (this, method);
 
 			// don't process abstract, pinvoke... methods
 			if (!method.HasBody)
 				return;
 
-			setFields.Clear ();
-			setProps.Clear ();
+			stored_fields.Clear ();
+			property_setters.Clear ();
 
 			// For each instruction in the method,
 			foreach (Instruction ins in method.Body.Instructions) {	
@@ -169,7 +190,7 @@ namespace Gendarme.Rules.Correctness {
 				} else if (ins.OpCode.Code == Code.Stfld) {
 					if (!MethodSignatures.Clone.Matches (method)) {
 						FieldDefinition field = ins.GetField ();	
-						setFields.Add (field);
+						stored_fields.Add (field);
 					}
 				
 				// If we're calling a method which belongs to our type then,
@@ -183,7 +204,7 @@ namespace Gendarme.Rules.Correctness {
 							
 						// if it's a setter then we'll ignore the corresponding getter,
 						else if (callee.IsSetter)
-							setProps.Add (callee);
+							property_setters.Add (callee);
 							
 						// anything else is assumed to be some sort of helper method which means
 						// we don't know all of the state which this method may use.
@@ -193,109 +214,132 @@ namespace Gendarme.Rules.Correctness {
 				}
 			}
 			
-			info.Fields.ExceptWith (setFields);
-			if (setProps.Count > 0) {
+			info.Fields.ExceptWith (stored_fields);
+			if (property_setters.Count > 0) {
 				foreach (PropertyDefinition prop in type.Properties) {
-					if (prop.GetMethod != null && setProps.Contains (prop.SetMethod))
+					if (prop.GetMethod != null && property_setters.Contains (prop.SetMethod))
 						info.Getters.Remove (prop.GetMethod);
 				}
 			}
-
 #if DEBUG
-			if (info.Fields.Count > 0)
-				Log.WriteLine (this, "{0} uses {1}", method.Name, string.Join (", ", (from f in info.Fields select f.Name).ToArray ()));
-				
-			if (info.Getters.Count > 0)
-				Log.WriteLine (this, "{0} uses {1}", method.Name, string.Join (", ", (from g in info.Getters select g.Name).ToArray ()));
-			
+			if (info.HasFields) {
+				StringBuilder sb = new StringBuilder ();
+				sb.Append (method.Name).Append (" uses fields ");
+				AppendTo (sb, info.Fields);
+				Log.WriteLine (this, sb.ToString ());
+			}
+			if (info.HasGetters) {
+				StringBuilder sb = new StringBuilder ();
+				sb.Append (method.Name).Append (" uses getters ");
+				AppendTo (sb, info.Getters);
+				Log.WriteLine (this, sb.ToString ());
+			}
 			Log.WriteLine (this);
 #endif
 		}
 		
 		// It's a bit silly to stick these into fields, but it does save some 
 		// allocations in a highly used code path...
-		private HashSet<FieldDefinition> equalityFields = new HashSet<FieldDefinition> ();
-		private HashSet<MethodDefinition> equalityGetters = new HashSet<MethodDefinition> ();
-		private List<string> badNames = new List<string> ();
+		private HashSet<MemberReference> fields = new HashSet<MemberReference> ();
+		private HashSet<MemberReference> getters = new HashSet<MemberReference> ();
+		private List<MemberReference> badNames = new List<MemberReference> ();
 		
 		private void CheckMethods ()
 		{
 			// Get the set of all fields/getters used by the equality methods.
-			equalityFields.Clear ();
-			equalityGetters.Clear ();
-			foreach (var info in equalityMethods.Values) {
-				equalityFields.UnionWith (info.Fields);
-				equalityGetters.UnionWith (info.Getters);
+			foreach (MethodInfo info in methods) {
+				if (info.HasFields)
+					fields.UnionWith (info.Fields);
+				if (info.HasGetters)
+					getters.UnionWith (info.Getters);
 			}
-			
+		}
+
+		private void CheckBadNames ()
+		{
 			// If an equality or comparison method uses a subset of the 
 			// full set then we have a problem.
-			badNames.Clear ();
 			MethodDefinition first = null;
 			
-			foreach (var entry in equalityMethods) {
-				if (!entry.Value.Delegates && (entry.Value.Fields.Count > 0 || entry.Value.Getters.Count > 0)) {
-					if (entry.Value.Fields.Count < equalityFields.Count) {
-						first = first ?? entry.Key;
-						badNames.Add (entry.Key.ToString ());
-					} else if (entry.Value.Getters.Count < equalityGetters.Count) {
-						first = first ?? entry.Key;
-						badNames.Add (entry.Key.ToString ());
-					}
+			foreach (MethodInfo info in methods) {
+				if (info.Delegates)
+					continue;
+
+				if (info.HasFields && (info.Fields.Count < fields.Count)) {
+					first = first ?? info.Method;
+					badNames.Add (info.Method);
+				} else if (info.HasGetters && (info.Getters.Count < getters.Count)) {
+					first = first ?? info.Method;
+					badNames.Add (info.Method);
 				}
 			}
 			
 			if (badNames.Count > 0) {
-				string mesg = string.Format ("Inconsistent: {0}", string.Join (", ", badNames.ToArray ()));
-				Log.WriteLine (this, mesg);
-				Runner.Report (first, Severity.High, Confidence.Normal, mesg);
+				Report (first, "Inconsistent:", badNames, null);
+				badNames.Clear ();
 			}
-			
+		}
+
+		private void CheckHashMethod ()
+		{
 			// We also have a problem if GetHashCode does not check a 
 			// subset of the equality state.
-			if (hashMethod != null && !hashInfo.Delegates) {
+			if (hash.Method != null && !hash.Delegates) {
 				// Note that if there are no equality fields or getters then the 
 				// equality methods delegate all of their work so we don't
 				// don't know which state they are checking.
-				if (equalityFields.Count > 0 || equalityGetters.Count > 0) {
-					if (hashInfo.Fields.Count == 0 && hashInfo.Getters.Count == 0) {
-						string mesg = "GetHashCode does not use any of the fields and/or properties used by the equality methods.";
-						Log.WriteLine (this, mesg);
-						Runner.Report (hashMethod, Severity.High, Confidence.Normal, mesg);
-						
-					} else if (!hashInfo.Fields.IsSubsetOf (equalityFields) || !hashInfo.Getters.IsSubsetOf (equalityGetters)) {
-						hashInfo.Fields.ExceptWith (equalityFields);
-						hashInfo.Getters.ExceptWith (equalityGetters);
-						
-						var fnames = (from f in hashInfo.Fields select f.Name).ToArray ();
-						var gnames = (from g in hashInfo.Getters select g.Name).ToArray ();
-						string mesg = string.Format ("GetHashCode uses fields and/or properties not used by the equality methods: {0} {1}", 
-							string.Join (" ", fnames), string.Join (" ", gnames));
-						
-						Log.WriteLine (this, mesg);
-						Runner.Report (hashMethod, Severity.High, Confidence.Normal, mesg);
+				if (fields.Count > 0 || getters.Count > 0) {
+					if (!hash.HasFields && !hash.HasGetters) {
+						Report (hash.Method, "GetHashCode does not use any of the fields and/or properties used by the equality methods.", 
+							null, null);
+					} else if (!hash.Fields.IsSubsetOf (fields) || !hash.Getters.IsSubsetOf (getters)) {
+						hash.Fields.ExceptWith (fields);
+						hash.Getters.ExceptWith (getters);
+
+						Report (hash.Method, "GetHashCode uses fields and/or properties not used by the equality methods:",
+							hash.Fields, hash.Getters);
 					}
 				}
 			}
-			
+			hash.Clear ();
+		}
+
+		private void CheckCloneMethod ()
+		{
 			// We also have a problem if Clone does not use a 
 			// superset of the equality state.
-			if (cloneMethod != null && !cloneInfo.Delegates && (cloneInfo.Fields.Count > 0 || cloneInfo.Getters.Count > 0)) {
-				if (equalityFields.Count > 0 || equalityGetters.Count > 0) {
-					if (!cloneInfo.Fields.IsSupersetOf (equalityFields) || !cloneInfo.Getters.IsSupersetOf (equalityGetters)) {
-						equalityFields.ExceptWith (cloneInfo.Fields);
-						equalityGetters.ExceptWith (cloneInfo.Getters);
-						
-						var fnames = (from f in equalityFields select f.Name).ToArray ();
-						var gnames = (from g in equalityGetters select g.Name).ToArray ();
-						string mesg = string.Format ("Clone does not use fields and/or properties used by the equality methods: {0} {1}", 
-							string.Join (" ", fnames), string.Join (" ", gnames));
-						
-						Log.WriteLine (this, mesg);
-						Runner.Report (cloneMethod, Severity.High, Confidence.Normal, mesg);
+			if (clone.Method != null && !clone.Delegates && (clone.HasFields || clone.HasGetters)) {
+				if (fields.Count > 0 || getters.Count > 0) {
+					if (!clone.Fields.IsSupersetOf (fields) || !clone.Getters.IsSupersetOf (getters)) {
+						fields.ExceptWith (clone.Fields);
+						getters.ExceptWith (clone.Getters);
+
+						Report (clone.Method, "Clone does not use fields and/or properties used by the equality methods:", 
+							fields, getters);
 					}
 				}
 			}
+			clone.Clear ();
+		}
+
+		static void AppendTo (StringBuilder sb, IEnumerable<MemberReference> values)
+		{
+			foreach (MemberReference mr in values) {
+				sb.Append (' ');
+				sb.Append (mr.Name);
+			}
+		}
+
+		private void Report (IMetadataTokenProvider method, string message, IEnumerable<MemberReference> first, IEnumerable<MemberReference> second)
+		{
+			StringBuilder sb = new StringBuilder (message);
+			if (first != null)
+				AppendTo (sb, first);
+			if (second != null)
+				AppendTo (sb, second);
+			string mesg = sb.ToString ();
+			Log.WriteLine (this, mesg);
+			Runner.Report (method, Severity.High, Confidence.Normal, mesg);
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -308,21 +352,22 @@ namespace Gendarme.Rules.Correctness {
 			Log.WriteLine (this, type.FullName);
 			
 			GetMethods (type);
-			if (equalityMethods.Count > 0) {
-				foreach (var entry in equalityMethods)
-					ProcessMethod (type, entry.Key, entry.Value);
-				if (hashMethod != null)
-					ProcessMethod (type, hashMethod, hashInfo);
-				if (cloneMethod != null)
-					ProcessMethod (type, cloneMethod, cloneInfo);
+			if (methods.Count > 0) {
+				foreach (MethodInfo info in methods)
+					ProcessMethod (type, info);
+				if (hash.Method != null)
+					ProcessMethod (type, hash);
+				if (clone.Method != null)
+					ProcessMethod (type, clone);
 					
 				CheckMethods ();
-			
-				equalityMethods.Clear ();
-				hashMethod = null;
-				hashInfo = null;
-				cloneMethod = null;
-				cloneInfo = null;
+				CheckBadNames ();
+				CheckHashMethod ();
+				CheckCloneMethod ();
+
+				methods.Clear ();
+				fields.Clear ();
+				getters.Clear ();
 			}
 			
 			return Runner.CurrentRuleResult;

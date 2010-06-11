@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Correctness {
 	/// using System.Linq;
 	/// using System.Runtime.Diagnostics;
 	///
-	/// // Eventually this should be part of System.Runtime.Diagnostics.
+	/// // note: in FX4 (and later) this attribute is defined in System.Runtime.Diagnostics.Contracts
 	/// [Serializable]
 	/// [AttributeUsage (AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false)]
 	/// public sealed class PureAttribute : Attribute {

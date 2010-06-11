@@ -1,3 +1,10 @@
+2010-06-11  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Update
+	comment in xmldoc wrt FX4
+	* ReviewInconsistentIdentityRule.cs: Fix several defects (self 
+	test) and reduce memory usage (e.g. array creation)
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DontCompareWithNaNRule.cs: Skip rule if the assembly does not
