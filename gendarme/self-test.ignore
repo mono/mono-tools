@@ -285,11 +285,9 @@ M: System.Void Gendarme.Wizard::InitializeComponent()
 M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave> Gendarme.Framework.Helpers.StackEntryAnalysis::FindLoad(Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave,Gendarme.Framework.Helpers.StackEntryAnalysis/StoreSlot)
 # Found 202 maximum stack size (maximum 100).
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
-# Found 119 maximum stack size (maximum 100).
-M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::ProcessMethod(Mono.Cecil.TypeDefinition,Mono.Cecil.MethodDefinition,Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule/MethodInfo)
+# Found 121 maximum stack size (maximum 100).
+M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::ProcessMethod(Mono.Cecil.TypeDefinition,Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule/MethodInfo)
 # Found 188 maximum stack size (maximum 100).
-M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckMethods()
-# Found 162 maximum stack size (maximum 100).
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 # Found 103 maximum stack size (maximum 100). when compiled with CSC maxstack is 5 !!!
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -303,8 +301,6 @@ M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalys
 # CC 43
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
 # CC 31
-M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckMethods()
-# CC 44
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 # CC 33 (CSC only)
 M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
@@ -323,7 +319,6 @@ T: Gendarme.Framework.Helpers.OpCodeBitmask
 T: Gendarme.Framework.Runner
 T: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 T: Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule
-T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule
 T: Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule
 T: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
 
@@ -507,4 +502,10 @@ M: System.Void Gendarme.ConsoleRunner::OnAssembly(Gendarme.Framework.RunnerEvent
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 # OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the switch/case (load versus store instructions) - delegating calls won't change defect
 T: Gendarme.Framework.Helpers.StackEntryAnalysis
+
+# FX4 related - will be fixed once we move to FX4 (likely for Gendarme 3.0)
+R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
+# use ISet<H>
+M: System.Void Gendarme.Rules.Performance.AvoidUninstantiatedInternalClassesRule::AddType(System.Collections.Generic.HashSet`1<Mono.Cecil.TypeReference>,Mono.Cecil.TypeReference)
+M: System.Void Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule::BuildMethodUsage(System.Collections.Generic.HashSet`1<System.UInt32>,Mono.Cecil.MethodDefinition)
 

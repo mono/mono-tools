@@ -1,3 +1,8 @@
+2010-06-11  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* self-test.ignore: Remove mode defects and add some that would
+	show up if compiling with FX4 (like VS2010)
+
 2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* self-test.ignore: Remove some (fixed) defects and update some
