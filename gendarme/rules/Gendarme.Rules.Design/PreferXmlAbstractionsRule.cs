@@ -118,8 +118,9 @@ namespace Gendarme.Rules.Design {
 			if (!method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
-			if (IsSpecificXmlType (method.ReturnType.ReturnType))
-				Runner.Report (method.ReturnType, GetSeverity (method), Confidence.High);
+			MethodReturnType mrt = method.ReturnType;
+			if (IsSpecificXmlType (mrt.ReturnType))
+				Runner.Report (mrt, GetSeverity (method), Confidence.High);
 
 			if (method.HasParameters) {
 				foreach (ParameterDefinition parameter in method.Parameters) {
@@ -136,7 +137,8 @@ namespace Gendarme.Rules.Design {
 
 		static bool IsSpecificXmlType (TypeReference type)
 		{
-			return type.FullName == XmlDocumentClass || type.FullName == XPathDocumentClass || type.FullName == XmlNodeClass;
+			string tname = type.FullName;
+			return tname == XmlDocumentClass || tname == XPathDocumentClass || tname == XmlNodeClass;
 		}
 
 		static Severity GetSeverity (MethodDefinition method)

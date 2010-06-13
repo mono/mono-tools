@@ -87,23 +87,24 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			//TODO: take into account [InternalsVisibleTo] on iface's assembly
+			AssemblyDefinition current_assembly = type.Module.Assembly;
 			if (type.IsVisible ()) {
 				// We should not, by default, promote the implementation of interfaces in assemblies that
 				// do not, already, refer to the current one because:
 				// (a) we could be suggesting circular references (solvable, or not, by refactoring)
 				// (b) it has a very HIGH performance cost, with verry LITTLE value (in # of defects)
-				string current_assembly_name = type.Module.Assembly.Name.Name;
+				string current_assembly_name = current_assembly.Name.Name;
 				foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 					// by default only process assemblies (from the set) that refers to the current one
 					// or the current one itself
-					if (!ReferencesOnly || (current_assembly_name == assembly.Name.Name) || 
+					if (!ReferencesOnly || (current_assembly_name == assembly.Name.Name) ||
 						assembly.References (current_assembly_name)) {
 						CheckAssemblyTypes (assembly, type);
 					}
 				}
 			} else {
 				// if the interface is not visible then we only check this assembly
-				CheckAssemblyTypes (type.Module.Assembly, type);
+				CheckAssemblyTypes (current_assembly, type);
 			}
 
 			return Runner.CurrentRuleResult;
@@ -129,14 +130,17 @@ namespace Gendarme.Rules.Design {
 				return false;
 
 			//if type has less methods than the interface no need to check further
-			if (!type.HasMethods || (type.Methods.Count < iface.Methods.Count))
+			if (!type.HasMethods)
+				return false;
+			MethodDefinitionCollection mdc = iface.Methods;
+			if (type.Methods.Count < mdc.Count)
 				return false;
 
 			//type already publicly says it implements the interface
 			if (type.Implements (iface.FullName))
 				return false;
 
-			foreach (MethodDefinition m in iface.Methods) {
+			foreach (MethodDefinition m in mdc) {
 				//if any candidate fails we can return right away
 				//since the interface will never be fully implemented
 				MethodDefinition candidate = type.GetMethod (MethodAttributes.Public, m.Name);
@@ -147,24 +151,31 @@ namespace Gendarme.Rules.Design {
 				if (!AreSameOriginalTypes (m.ReturnType.ReturnType, candidate.ReturnType.ReturnType))
 					return false;
 
-				int mp_count = m.HasGenericParameters ? m.GenericParameters.Count : 0;
-				int cp_count = candidate.HasGenericParameters ? candidate.GenericParameters.Count : 0;
-				if (mp_count != cp_count)
+				if (!CompareParameters (m, candidate))
 					return false;
-
-				mp_count = m.HasParameters ? m.Parameters.Count : 0;
-				cp_count = candidate.HasParameters ? candidate.Parameters.Count : 0;
-				if (mp_count != cp_count)
-					return false;
-
-				if (mp_count > 0) {
-					for (int i = 0; i < mp_count; ++i) {
-						if (!AreSameOriginalTypes (m.Parameters [i].ParameterType, candidate.Parameters [i].ParameterType))
-							return false;
-					}
-				}
 			}
 
+			return true;
+		}
+
+		private static bool CompareParameters (IMethodSignature m1, IMethodSignature m2)
+		{
+			bool h1 = m1.HasParameters;
+			bool h2 = m2.HasParameters;
+			if (h1 != h2)
+				return false;
+			if (!h1 && !h2)
+				return true;
+
+			ParameterDefinitionCollection pdc1 = m1.Parameters;
+			ParameterDefinitionCollection pdc2 = m2.Parameters;
+			if (pdc1.Count != pdc2.Count)
+				return false;
+
+			for (int i = 0; i < pdc1.Count; ++i) {
+				if (!AreSameOriginalTypes (pdc1 [i].ParameterType, pdc2 [i].ParameterType))
+					return false;
+			}
 			return true;
 		}
 
@@ -172,7 +183,6 @@ namespace Gendarme.Rules.Design {
 		{
 			return a.GetOriginalType ().FullName == b.GetOriginalType ().FullName;
 		}
-
 	}
-
 }
+

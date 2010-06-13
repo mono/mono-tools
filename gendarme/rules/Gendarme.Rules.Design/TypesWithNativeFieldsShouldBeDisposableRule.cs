@@ -76,6 +76,11 @@ namespace Gendarme.Rules.Design {
 		private const string TypeMessage = "Field is native. Type should implement a Dispose() method";
 		private const string AbstractDisposeMessage = "Some fields are native pointers. Making this method abstract shifts the reponsability of disposing those fields to the inheritors of this class.";
 
+		static bool IsAbstract (MethodDefinition method)
+		{
+			return ((method != null) && (method.IsAbstract));
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule doesn't apply to enums, interfaces, structs, delegates or generated code
@@ -91,8 +96,7 @@ namespace Gendarme.Rules.Design {
 				implicitDisposeMethod = type.GetMethod (MethodSignatures.Dispose);
 				explicitDisposeMethod = type.GetMethod (MethodSignatures.DisposeExplicit);
 
-				if (((implicitDisposeMethod != null) && implicitDisposeMethod.IsAbstract) ||
-					((explicitDisposeMethod != null) && explicitDisposeMethod.IsAbstract)) {
+				if (IsAbstract (implicitDisposeMethod) || IsAbstract (explicitDisposeMethod)) {
 					abstractWarning = true;
 				} else {
 					return RuleResult.Success;
@@ -104,15 +108,13 @@ namespace Gendarme.Rules.Design {
 				if (field.IsStatic)
 					continue;
 				if (field.FieldType.GetOriginalType ().IsNative ()) {
-					if (abstractWarning)
-						Runner.Report (field, Severity.High, Confidence.High, AbstractTypeMessage);
-					else
-						Runner.Report (field, Severity.High, Confidence.High, TypeMessage);
+					Runner.Report (field, Severity.High, Confidence.High, 
+						abstractWarning ? AbstractTypeMessage : TypeMessage);
 				}
 			}
 
 			// Warn about possible confusion if the Dispose methods are abstract
-			if (implicitDisposeMethod != null && implicitDisposeMethod.IsAbstract)
+			if (IsAbstract (implicitDisposeMethod))
 				Runner.Report (implicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
 
 			return Runner.CurrentRuleResult;

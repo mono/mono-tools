@@ -1,3 +1,11 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ConsiderAddingInterfaceRule.cs:
+	* PreferXmlAbstractionsRule.cs:
+	* TypesWithDisposableFieldsShouldBeDisposableRule.cs:
+	* TypesWithNativeFieldsShouldBeDisposableRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidSmallNamespaceRule.cs: Use a unique NamespaceDefinition (not
