@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -96,10 +97,11 @@ namespace Gendarme.Rules.BadPractice {
 			foreach (CustomAttribute ca in cac) {
 				if (ca.Constructor.DeclaringType.FullName == ConditionalAttribute) {
 					// this should not happen since there's a single ctor accepting a string
-					// bu we never know what the next framework version can throw at us...
-					if (ca.ConstructorParameters.Count < 1)
+					// but we never know what the next framework version can throw at us...
+					IList cp = ca.ConstructorParameters;
+					if (cp.Count < 1)
 						continue;
-					switch (ca.ConstructorParameters [0] as string) {
+					switch (cp [0] as string) {
 					case "DEBUG":
 					case "TRACE":
 						return true;
