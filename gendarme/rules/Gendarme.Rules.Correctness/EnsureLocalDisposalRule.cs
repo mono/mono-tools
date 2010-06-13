@@ -234,9 +234,11 @@ namespace Gendarme.Rules.Correctness {
 
 		static string GetFriendlyNameOrEmpty (VariableReference variable)
 		{
-			if (null == variable.Name || variable.Name.StartsWith ("V_"))
-				return string.Format ("of type '{0}' ", variable.VariableType.Name);
-			return string.Format ("'{0}' of type '{1}' ", variable.Name, variable.VariableType.Name);
+			string vname = variable.Name;
+			string tname = variable.VariableType.Name;
+			if (null == vname || vname.StartsWith ("V_"))
+				return string.Format ("of type '{0}' ", tname);
+			return string.Format ("'{0}' of type '{1}' ", vname, tname);
 		}
 
 		static OpCodeBitmask BuildCallsAndNewobjOpCodeBitmask ()

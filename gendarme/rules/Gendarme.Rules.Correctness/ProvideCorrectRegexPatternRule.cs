@@ -161,7 +161,8 @@ namespace Gendarme.Rules.Correctness {
 				return;
 			if (!call.HasParameters)
 				return;
-			if (call.DeclaringType.FullName != RegexClass && call.DeclaringType.FullName != ValidatorClass)
+			string tname = call.DeclaringType.FullName;
+			if (tname != RegexClass && tname != ValidatorClass)
 				return;
 
 			MethodDefinition mdef = call.Resolve ();
@@ -172,7 +173,8 @@ namespace Gendarme.Rules.Correctness {
 				return;
 
 			foreach (ParameterDefinition p in mdef.Parameters) {
-				if ((p.Name == "pattern" || p.Name == "regex") && p.ParameterType.FullName == "System.String") {
+				string pname = p.Name;
+				if ((pname == "pattern" || pname == "regex") && p.ParameterType.FullName == "System.String") {
 					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : -1 + p.Sequence));
 					if (ld != null)
 						CheckArguments (method, ins, ld);

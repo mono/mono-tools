@@ -1,3 +1,15 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* BadRecursiveInvocationRule.cs:
+	* DoNotRecurseInEqualityRule.cs:
+	* DoNotRoundIntegersRule.cs:
+	* EnsureLocalDisposalRule.cs:
+	* ProvideCorrectRegexPatternRule.cs:
+	* ProvideValidXmlStringRule.cs:
+	* ProvideValidXPathExpressionRule.cs:
+	* ReviewSelfAssignmentRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-11  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Update

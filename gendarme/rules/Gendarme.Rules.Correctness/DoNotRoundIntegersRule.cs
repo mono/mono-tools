@@ -146,7 +146,8 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				Instruction value = null;
-				switch (mr.Name) {
+				string name = mr.Name;
+				switch (name) {
 				case "Ceiling":
 				case "Floor":
 				case "Truncate":
@@ -173,7 +174,7 @@ namespace Gendarme.Rules.Correctness {
 				if (type == null)
 					continue;
 
-				string msg = string.Format ("Math.{0} called on a {1}.", mr.Name, type.FullName);
+				string msg = string.Format ("Math.{0} called on a {1}.", name, type.FullName);
 				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;

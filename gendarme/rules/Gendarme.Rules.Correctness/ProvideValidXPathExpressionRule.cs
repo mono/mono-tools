@@ -138,8 +138,8 @@ namespace Gendarme.Rules.Correctness {
 
 			switch (mref.Name) {
 			case "Compile":
-				if (mref.DeclaringType.FullName == XPathExpressionClass
-					|| mref.DeclaringType.Inherits (XPathNavigatorClass))
+				TypeReference tr = mref.DeclaringType;
+				if (tr.FullName == XPathExpressionClass || tr.Inherits (XPathNavigatorClass))
 					CheckString (ins, GetFirstArgumentOffset (mref));
 				break;
 			case "SelectNodes":

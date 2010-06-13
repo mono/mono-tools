@@ -87,7 +87,8 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 				
 			// ignore everything but operator== and operator!=
-			if (!method.IsSpecialName || (method.Name != "op_Equality" && method.Name != "op_Inequality"))
+			string name = method.Name;
+			if (!method.IsSpecialName || (name != "op_Equality" && name != "op_Inequality"))
 				return RuleResult.DoesNotApply;
 
 			// avoid looping if we're sure there's no Call[virt] in the method
@@ -98,7 +99,6 @@ namespace Gendarme.Rules.Correctness {
 			Log.WriteLine (this, "---------------------------------------");
 			Log.WriteLine (this, method);
 
-			RuleResult result = RuleResult.Success;
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
@@ -110,7 +110,6 @@ namespace Gendarme.Rules.Correctness {
 							if (callee.ToString () == method.ToString ()) {
 								Log.WriteLine (this, "recursive call at {0:X4}", ins.Offset);
 								Runner.Report (method, ins, Severity.Critical, Confidence.Normal);
-								result = RuleResult.Failure;
 							}
 						}
 					}
@@ -118,7 +117,7 @@ namespace Gendarme.Rules.Correctness {
 				}
 			}
 
-			return result;
+			return Runner.CurrentRuleResult;
 		}
 	}
 }

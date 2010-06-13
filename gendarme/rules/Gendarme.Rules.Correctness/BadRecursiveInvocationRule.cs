@@ -105,13 +105,20 @@ namespace Gendarme.Rules.Correctness {
 				return false;
 
 			// we could be implementing an interface (skip position 0 because of .ctor and .cctor)
-			bool explicit_interface = (method1.Name.IndexOf ('.') > 0);
-			if (!explicit_interface && (method1.Name != method2.Name))
+			string m1name = method1.Name;
+			bool explicit_interface = (m1name.IndexOf ('.') > 0);
+			if (!explicit_interface && (m1name != method2.Name))
 				return false;
 
 			// compare parameters
-			if (!CheckParameters (method1.Parameters, method2.Parameters))
+			bool p1 = method1.HasParameters;
+			bool p2 = method2.HasParameters;
+			if (p1 != p2)
 				return false;
+			if (p1 && p2) {
+				if (!CheckParameters (method1.Parameters, method2.Parameters))
+					return false;
+			}
 
 			// return value may differ (e.g. if generics are used)
 			if (method1.ReturnType.ReturnType.FullName != method2.ReturnType.ReturnType.FullName)
@@ -121,9 +128,10 @@ namespace Gendarme.Rules.Correctness {
 			if (!explicit_interface && (t2 != null) && !t2.IsInterface)
 				return true;
 
+			string t2name = t2.FullName;
 			// we're calling into an interface and this could be us!
 			foreach (MethodReference mr in method1.Resolve ().Overrides) {
-				if (method2.DeclaringType.FullName == mr.DeclaringType.FullName)
+				if (t2name == mr.DeclaringType.FullName)
 					return true;
 			}
 			return false;

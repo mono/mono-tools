@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -116,6 +116,19 @@ namespace Gendarme.Rules.Correctness {
 			return operand_left.Equals (operand_right);
 		}
 
+		void CheckFields (Instruction ins, Instruction next, MethodDefinition method, bool isStatic)
+		{
+			FieldDefinition field = ins.GetField ();
+			if ((field != null) && (field == next.GetField ())) {
+				// instance fields need extra comparison using method
+				if (isStatic || Compare (next, ins, method)) {
+					string msg = String.Format ("{0} field '{1}' of type '{2}'.",
+						isStatic ? "Static" : "Instance", field.Name, field.FieldType.FullName);
+					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
+				}
+			}
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody || method.IsGeneratedCode ())
@@ -127,26 +140,16 @@ namespace Gendarme.Rules.Correctness {
 
 			foreach (Instruction ins in method.Body.Instructions) {
 
-				string msg = null;
 				Instruction next = ins.Next;
 				if (next == null)
 					continue;
 
 				if (next.OpCode.Code == Code.Stfld) {
-					// is it the same field ?
-					FieldDefinition field = ins.GetField ();
-					if ((field != null) && (field == next.GetField ())) {
-						if (Compare (next, ins, method)) {
-							msg = String.Format ("Instance field '{0}' of type '{1}'.",
-								field.Name, field.FieldType.FullName);
-						}
-					}
+					// is it the same (instance) field ?
+					CheckFields (ins, next, method, false);
 				} else if (next.OpCode.Code == Code.Stsfld) {
-					FieldDefinition field = next.GetField ();
-					if ((field != null) && (field == ins.GetField ())) {
-						msg = String.Format ("Static field '{0}' of type '{1}'.", 
-							field.Name, field.FieldType.FullName);
-					}
+					// is it the same (static) field ?
+					CheckFields (ins, next, method, true);
 // too much false positive because compilers add their own variables 
 // and don't always "play well" with them
 #if false
@@ -161,12 +164,11 @@ namespace Gendarme.Rules.Correctness {
 				} else if (ins.IsLoadArgument () && next.IsStoreArgument ()) {
 					ParameterDefinition parameter = next.GetParameter (method);
 					if (parameter == ins.GetParameter (method)) {
-						msg = String.Format ("Parameter '{0}' of type '{1}'.", parameter.Name, parameter.ParameterType.FullName);
+						string msg = String.Format ("Parameter '{0}' of type '{1}'.", 
+							parameter.Name, parameter.ParameterType.FullName);
+						Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 					}
 				}
-
-				if (msg != null)
-					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;
 		}
@@ -190,3 +192,4 @@ namespace Gendarme.Rules.Correctness {
 #endif
 	}
 }
+

@@ -145,8 +145,8 @@ namespace Gendarme.Rules.Correctness {
 				break;
 			case "set_InnerXml":
 			case "set_OuterXml":
-				if (mref.DeclaringType.Inherits (XmlNodeClass)
-					|| mref.DeclaringType.Inherits (XPathNavigatorClass))
+				TypeReference tr = mref.DeclaringType;
+				if (tr.Inherits (XmlNodeClass) || tr.Inherits (XPathNavigatorClass))
 					CheckString (ins, -1);
 				break;
 			case "AppendChild":
