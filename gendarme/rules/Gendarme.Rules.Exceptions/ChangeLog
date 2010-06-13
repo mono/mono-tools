@@ -1,3 +1,10 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DoNotThrowInUnexpectedLocationRule.cs:
+	* InstantiateArgumentExceptionCorrectlyRule.cs:
+	* UseObjectDisposedExceptionRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-09  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationRule.cs: Remove InitType hack

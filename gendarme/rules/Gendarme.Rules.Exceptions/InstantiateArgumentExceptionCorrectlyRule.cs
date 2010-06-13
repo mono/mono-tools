@@ -120,12 +120,16 @@ namespace Gendarme.Rules.Exceptions {
 		private void CheckArgumentException (IMethodSignature ctor, Instruction ins, MethodDefinition method)
 		{
 			// OK		public ArgumentException ()
+			if (!ctor.HasParameters)
+				return;
+
 			// OK		public ArgumentException (string message)
-			if (!ctor.HasParameters || (ctor.Parameters.Count < 2))
+			ParameterDefinitionCollection pdc = ctor.Parameters;
+			if (pdc.Count < 2)
 				return;
 
 			// OK		public ArgumentException (string message, Exception innerException)
-			if (ctor.Parameters [1].ParameterType.FullName != "System.String")
+			if (pdc [1].ParameterType.FullName != "System.String")
 				return;
 
 			// CHECK	public ArgumentException (string message, string paramName)
@@ -145,10 +149,10 @@ namespace Gendarme.Rules.Exceptions {
 			if (!constructor.HasParameters)
 				return;
 
-			int parameters = constructor.Parameters.Count;
 			// OK		protected ArgumentNullException (SerializationInfo info, StreamingContext context)
 			// OK		public ArgumentNullException (string message, Exception innerException)
-			if ((parameters == 2) && (constructor.Parameters [1].ParameterType.FullName != "System.String"))
+			ParameterDefinitionCollection pdc = constructor.Parameters;
+			if ((pdc.Count == 2) && (pdc [1].ParameterType.FullName != "System.String"))
 				return;
 
 			// CHECK	public ArgumentNullException (string paramName)

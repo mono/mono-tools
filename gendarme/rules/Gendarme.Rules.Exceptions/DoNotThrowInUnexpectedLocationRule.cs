@@ -231,9 +231,11 @@ namespace Gendarme.Rules.Exceptions {
 
 		private string PreflightSpecialNameMethod (MethodDefinition method)
 		{
-			if (method.IsConstructor && method.IsStatic) {	
+			if (method.IsConstructor && method.IsStatic)
 				return "Static constructors";
-			} else if (method.Name == "get_Item") {
+
+			string name = method.Name;
+			if (name == "get_Item") {
 				severity = Severity.Medium;
 				allowedExceptions = IndexerExceptions;
 				return "Indexed getters";
@@ -249,7 +251,7 @@ namespace Gendarme.Rules.Exceptions {
 				return "operator==";
 			} else if (MethodSignatures.op_Inequality.Matches (method)) {	
 				return "operator!=";
-			} else if (method.Name == "op_Implicit") {
+			} else if (name == "op_Implicit") {
 				return "Implicit cast operators";
 			} 
 			return String.Empty;
@@ -357,8 +359,8 @@ namespace Gendarme.Rules.Exceptions {
 						// handle it).
 						if (ins.Previous.Is (Code.Newobj)) {
 							MethodReference mr = (MethodReference) ins.Previous.Operand;
-							string name = mr.DeclaringType.FullName;
-							if (name == "System.NotImplementedException" || mr.DeclaringType.Inherits ("System.NotImplementedException"))
+							TypeReference tr = mr.DeclaringType;
+							if (tr.FullName == "System.NotImplementedException" || tr.Inherits ("System.NotImplementedException"))
 								continue;
 						}	
 					

@@ -149,6 +149,7 @@ namespace Gendarme.Rules.Exceptions {
 		
 		private void CheckBody (MethodDefinition method)
 		{
+			string fullname = method.DeclaringType.FullName;
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
@@ -158,7 +159,7 @@ namespace Gendarme.Rules.Exceptions {
 						MethodDefinition callee = target.Resolve ();
 						if (callee != null) {
 							if (!callee.IsPublic && !callee.IsStatic) {
-								if (callee.DeclaringType.FullName == method.DeclaringType.FullName) {
+								if (callee.DeclaringType.FullName == fullname) {
 									Instruction instance = ins.TraceBack (method);
 									if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 										Log.WriteLine (this, "found non-public this call at {0:X4}", ins.Offset);
@@ -172,7 +173,8 @@ namespace Gendarme.Rules.Exceptions {
 					// Special case for helper methods like CheckIfClosedThrowDisposed or
 					// CheckObjectDisposedException.
 					if (!has_dispose_check) {
-						if (target.Name.Contains ("Check") && target.Name.Contains ("Dispose")) {
+						string tname = target.Name;
+						if (tname.Contains ("Check") && tname.Contains ("Dispose")) {
 							Log.WriteLine (this, "found dispose check at {0:X4}", ins.Offset);
 							has_dispose_check = true;
 						}
@@ -184,7 +186,7 @@ namespace Gendarme.Rules.Exceptions {
 				case Code.Ldflda:
 					if (!has_this_field) {
 						FieldReference field = (FieldReference) ins.Operand;
-						if (field.DeclaringType.FullName == method.DeclaringType.FullName) {
+						if (field.DeclaringType.FullName == fullname) {
 							Instruction instance = ins.TraceBack (method);
 							if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 								Log.WriteLine (this, "found field access at {0:X4}", ins.Offset);
