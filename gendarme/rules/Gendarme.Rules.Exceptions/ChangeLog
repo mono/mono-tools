@@ -1,3 +1,9 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* UseObjectDisposedExceptionRule.cs: Fis bitmask to include
+	Newobj since the rule could applies if the method's IL contains
+	this instruction
+
 2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotThrowInUnexpectedLocationRule.cs:

@@ -273,11 +273,12 @@ namespace Gendarme.Rules.Exceptions {
 			mask.Set (Code.Ldfld);
 			mask.Set (Code.Ldflda);
 			mask.Set (Code.Stfld);
+			mask.Set (Code.Newobj);
 			Console.WriteLine (mask);
 		}
 #endif
 		
-		private static readonly OpCodeBitmask CallsAndFields = new OpCodeBitmask (0x8000000000, 0x700400000000000, 0x0, 0x0);
+		private static readonly OpCodeBitmask CallsAndFields = new OpCodeBitmask (0x8000000000, 0x704400000000000, 0x0, 0x0);
 		private static readonly MethodSignature Equals1 = new MethodSignature ("Equals", "System.Boolean", new string [1]);
 		private static readonly MethodSignature Close = new MethodSignature ("Close", "System.Void", new string [0]);
 		
