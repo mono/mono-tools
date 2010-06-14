@@ -59,7 +59,7 @@ namespace Gendarme.Tools {
 					switch (reader.Name) {
 					case "rule":
 						defects = new HashSet<string> ();
-						ignore_list.Add ("R: " + full_names [reader ["Name"]], defects);
+						ignore_list.Add (full_names [reader ["Name"]], defects);
 						break;
 					case "target":
 						string target = reader ["Name"];

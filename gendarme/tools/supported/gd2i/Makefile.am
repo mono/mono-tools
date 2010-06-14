@@ -11,7 +11,7 @@ gd2i.exe:  $(gd2i_sources)
 update: gd2i.exe
 	mono --debug gd2i.exe ../../../bin/self-test.xml ../../../self-test.ignore
 
-self-update: gd2i.exe
+self-update: gd2i.exe self-test
 	mono --debug gd2i.exe self-test.xml self-test.ignore
 
 self-test: all

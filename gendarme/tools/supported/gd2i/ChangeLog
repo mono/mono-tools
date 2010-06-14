@@ -1,3 +1,8 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gd2i.cs: Remove extra "R: " on rules
+	* Makefile.am: Fix self-update
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* Makefile.am: Include project file in dist
