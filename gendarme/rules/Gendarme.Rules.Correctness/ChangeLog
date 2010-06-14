@@ -1,3 +1,8 @@
+2010-06-13  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* BadRecursiveInvocationRule.cs: Fix regression if a type
+	cannot be resolved (the original name is still available)
+
 2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* BadRecursiveInvocationRule.cs:

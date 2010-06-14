@@ -124,8 +124,9 @@ namespace Gendarme.Rules.Correctness {
 			if (method1.ReturnType.ReturnType.FullName != method2.ReturnType.ReturnType.FullName)
 				return false;
 
-			TypeDefinition t2 = method2.DeclaringType.Resolve ();
-			if (!explicit_interface && (t2 != null) && !t2.IsInterface)
+			TypeReference t2 = method2.DeclaringType;
+			TypeDefinition t2r = t2.Resolve ();
+			if (!explicit_interface && (t2r != null) && !t2r.IsInterface)
 				return true;
 
 			string t2name = t2.FullName;
