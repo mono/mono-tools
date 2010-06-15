@@ -1,3 +1,8 @@
+2010-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCallsToPropertiesRule.cs: Filter out some well 
+	known properties that are often called several times
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidReturningArraysOnPropertiesRule.cs: Skip rule if the type 

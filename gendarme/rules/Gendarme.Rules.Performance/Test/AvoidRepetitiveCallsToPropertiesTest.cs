@@ -192,6 +192,28 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("SameReturnType");
 		}
+
+		void UsingDateTime ()
+		{
+			Console.WriteLine ("start {0} {1}", DateTime.Now, DateTime.UtcNow);
+			// ...
+			Console.WriteLine ("end {0} {1}", DateTime.Now, DateTime.UtcNow);
+		}
+
+		void UsingStopwatch ()
+		{
+			Stopwatch sw = Stopwatch.StartNew ();
+			Console.WriteLine ("start {0}", sw.Elapsed);
+			// ...
+			Console.WriteLine ("end {0}", sw.Elapsed);
+		}
+
+		[Test]
+		public void WellKnownUsages ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("UsingDateTime");
+			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("UsingStopwatch");
+		}
 	}
 }
 
