@@ -1,3 +1,9 @@
+2010-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* DecorateThreadsRule.cs:
+	* ThreadRocks.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* DecorateThreadsRule.cs: Rework to use ThreadModel to reduce

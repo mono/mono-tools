@@ -77,7 +77,8 @@ namespace Gendarme.Rules.Concurrency {
 			offset = name.IndexOf ('_', offset) + 1;
 
 			foreach (IMemberDefinition member in collection) {
-				if (String.CompareOrdinal (name, offset, member.Name, 0, member.Name.Length) == 0)
+				string member_name = member.Name;
+				if (String.CompareOrdinal (name, offset, member_name, 0, member_name.Length) == 0)
 					return TryGetThreadingModel (member);
 			}
 			return null;
@@ -144,10 +145,10 @@ namespace Gendarme.Rules.Concurrency {
 				if (attr.Constructor.DeclaringType.Name != "ThreadModelAttribute")
 					continue;
 
-				if (attr.Resolve () && (attr.ConstructorParameters.Count == 1)) {
-					if (attr.ConstructorParameters [0] is int) {
-						return (ThreadModel) (int) attr.ConstructorParameters [0];
-					}
+				if (attr.Resolve ()) {
+					IList cp = attr.ConstructorParameters;
+					if ((cp.Count == 1) && (cp [0] is int))
+						return (ThreadModel) (int) cp [0];
 				}
 						
 				throw new ArgumentException ("There should be a single ThreadModelAttribute ctor taking an (Int32) ThreadModel enum argument.");

@@ -33,8 +33,10 @@ using Gendarme.Framework.Rocks;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
-using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Gendarme.Rules.Concurrency {
@@ -179,6 +181,8 @@ namespace Gendarme.Rules.Concurrency {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class DecorateThreadsRule : Rule, IMethodRule {
 		
+		static ParameterDefinitionCollection Empty = new ParameterDefinitionCollection (null);
+
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -189,26 +193,30 @@ namespace Gendarme.Rules.Concurrency {
 			checked_entry_points.Clear ();
 			anonymous_entry_points.Clear ();
 		}
-		
+
+		static bool LookForThreadModelAttribute (IList list)
+		{
+			foreach (TypeReference type in list) {
+				if (type.Name == "ThreadModelAttribute") {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public void OnAssembly (object sender, RunnerEventArgs e)
 		{
 			// If the assembly defines ThreadModelAttribute then we need to
 			// check all of the methods within it.
 			foreach (ModuleDefinition module in e.CurrentAssembly.Modules) {
-				foreach (TypeDefinition type in module.Types) {
-					if (type.Name == "ThreadModelAttribute") {
-						Active = true;
-						Log.WriteLine (this, "assembly defines ThreadModelAttribute");
-						return;
-					}
-				}
-				
-				foreach (TypeReference type in module.TypeReferences) {
-					if (type.Name == "ThreadModelAttribute") {
-						Active = true;
-						Log.WriteLine (this, "assembly references ThreadModelAttribute");
-						return;
-					}
+				if (LookForThreadModelAttribute (module.Types)) {
+					Log.WriteLine (this, "assembly defines ThreadModelAttribute");
+					Active = true;
+					return;
+				} else if (LookForThreadModelAttribute (module.TypeReferences)) {
+					Log.WriteLine (this, "assembly references ThreadModelAttribute");
+					Active = true;
+					return;
 				}
 			}
 			
@@ -227,7 +235,7 @@ namespace Gendarme.Rules.Concurrency {
 		}
 		
 		public int DefectCount { get; private set; }
-		
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (ThreadRocks.ThreadedNamespace (method.DeclaringType.Namespace))
@@ -236,7 +244,10 @@ namespace Gendarme.Rules.Concurrency {
 			Log.WriteLine (this);
 			Log.WriteLine (this, "---------------------------------------");
 			Log.WriteLine (this, method);
-			
+
+			string name = method.Name;
+			ParameterDefinitionCollection pdc = method.HasParameters ? method.Parameters : null;
+
 			// Finalizers need to be single threaded.
 			ThreadModel model = method.ThreadingModel ();
 			if (method.IsFinalizer ()) {
@@ -254,7 +265,7 @@ namespace Gendarme.Rules.Concurrency {
 			// A delegate used with a threaded event must use the same threading model 
 			// as the event.
 			if (method.IsAddOn) {
-				ParameterDefinition p = method.Parameters [0];
+				ParameterDefinition p = pdc [0];
 				TypeDefinition delegateType = p.ParameterType.Resolve ();
 				if (delegateType != null && !ThreadRocks.ThreadedNamespace (delegateType.Namespace)) {
 					ThreadModel delegateModel = delegateType.ThreadingModel ();
@@ -264,26 +275,21 @@ namespace Gendarme.Rules.Concurrency {
 					}
 				}
 			}
-			
+
 			// An override of a base method or an implementation of an interface method
 			// must use the same threading model as the original method.
 			if (method.IsVirtual) {
 				IEnumerable<TypeDefinition> superTypes = method.DeclaringType.AllSuperTypes ();
-				if (method.IsNewSlot)
-					superTypes = from s in superTypes where s.IsInterface select s;
-				else
-					superTypes = from s in superTypes where !s.IsInterface select s;
+				bool new_slot = method.IsNewSlot;
+				superTypes = from s in superTypes where (s.IsInterface == new_slot) select s;
 				
 				foreach (TypeDefinition type in superTypes) {
-					MethodDefinition superMethod = type.Methods.GetMethod (method.Name, method.Parameters);
+					MethodDefinition superMethod = type.Methods.GetMethod (name, pdc ?? Empty);
 					if (superMethod != null && !ThreadRocks.ThreadedNamespace (superMethod.DeclaringType.Namespace)) {
 						ThreadModel superModel = superMethod.ThreadingModel ();
 						if (model != superModel) {
-							string mesg;
-							if (method.IsNewSlot)
-								mesg = string.Format ("{0} {1} must match {2} interface method.", model, method.Name, superModel);
-							else
-								mesg = string.Format ("{0} {1} must match {2} base method.", model, method.Name, superModel);
+							string mesg = string.Format ("{0} {1} must match {2} {3} method.", model, name, superModel,
+								new_slot ? "interface" : "base");
 							ReportDefect (method, Severity.High, Confidence.High, mesg);
 						}
 					}
@@ -292,7 +298,7 @@ namespace Gendarme.Rules.Concurrency {
 			
 			// Serializable cannot be applied to static methods, but can be applied to
 			// operators because they're just sugar for normal calls.
-			if (method.IsStatic && model.Is (ThreadModel.Serializable) && !method.Name.StartsWith ("op_")) {
+			if (method.IsStatic && model.Is (ThreadModel.Serializable) && !name.StartsWith ("op_")) {
 				string mesg = "Static members cannot be decorated with Serializable.";
 				ReportDefect (method, Severity.High, Confidence.High, mesg);
 			}
@@ -405,7 +411,8 @@ namespace Gendarme.Rules.Concurrency {
 					// callvirt System.Void SynchronizedType::add_Name (XXX)	
 					// i.e. adding a delegate to an event in a type which uses SynchronizingObject
 					MethodReference call = (MethodReference) ins.Operand;
-					if (ins.Previous != null && ins.Previous.Previous != null && ins.Previous.OpCode.Code == Code.Newobj && ins.Previous.Previous.OpCode.Code == Code.Ldftn) {
+					TypeReference call_type = call.DeclaringType;
+					if (ins.Previous.Is (Code.Newobj) && ins.Previous.Previous.Is (Code.Ldftn)) {
 						// A few events are blacklisted because they do not use SynchronizingObject and
 						// are therefore always threaded.
 						if (IsNonSynchronizedSetter (call)) {
@@ -413,7 +420,7 @@ namespace Gendarme.Rules.Concurrency {
 						
 						// But most events do use SynchronizingObject and therefore their threading
 						// depends on whether and how SynchronizingObject is initialized.
-						} else if (HasSynchronizingObject (call.DeclaringType)) {
+						} else if (HasSynchronizingObject (call_type)) {
 							List<MethodReference> methods;
 							if (!synchronizedEvents.TryGetValue (call, out methods)) {
 								methods = new List<MethodReference> ();
@@ -423,7 +430,7 @@ namespace Gendarme.Rules.Concurrency {
 							methods.AddIfNew ((MethodReference) ins.Previous.Previous.Operand);
 						
 						// Misc threaded events.
-						} else if (call.DeclaringType.FullName == "System.ComponentModel.BackgroundWorker") {
+						} else if (call_type.FullName == "System.ComponentModel.BackgroundWorker") {
 							if (call.Name == "add_DoWork") {
 								candidate = (MethodReference) ins.Previous.Previous.Operand;
 							}
@@ -432,7 +439,7 @@ namespace Gendarme.Rules.Concurrency {
 					// callvirt System.Void System.Diagnostics.Process::set_SynchronizingObject (System.ComponentModel.ISynchronizeInvoke)
 					} else if (SetSynchronizingObject.Matches (call)) {
 						if (ins.Previous.OpCode.Code == Code.Ldarg_0) {
-							thisSynchronized.Add (call.DeclaringType);
+							thisSynchronized.Add (call_type);
 						}
 					}
 					break;
@@ -445,17 +452,19 @@ namespace Gendarme.Rules.Concurrency {
 			}
 			
 			// For every method added to a threaded event,
+			ThreadModel? method_model = null;
 			foreach (KeyValuePair<MethodReference, List<MethodReference>> entry in synchronizedEvents) {
 				// if the event is synchronized on this then the target must have the same thread
 				// as the current method's type or better and it should not be treated as a entry point.
 				if (thisSynchronized.Contains (entry.Key.DeclaringType)) {
-					ThreadModel callerModel = method.DeclaringType.ThreadingModel ();
+					if (method_model == null)
+						method_model = method.DeclaringType.ThreadingModel ();
 					foreach (MethodReference mr in entry.Value) {
 						MethodDefinition target = mr.Resolve ();
 						if (target != null) {
 							ThreadModel targetModel = target.ThreadingModel ();
-							if (!IsValidCall (callerModel, targetModel)) {
-								string mesg = string.Format ("{0} {1} cannot be bound to {2} {3} method.", callerModel, entry.Key, targetModel, target.Name);
+							if (!IsValidCall (method_model.Value, targetModel)) {
+								string mesg = string.Format ("{0} {1} cannot be bound to {2} {3} method.", method_model, entry.Key, targetModel, target.Name);
 								ReportDefect (method, Severity.High, Confidence.High, mesg);
 							}
 						}
