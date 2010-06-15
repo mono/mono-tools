@@ -1,3 +1,8 @@
+2010-06-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodWithUnusedGenericTypeRule.cs: Apply AvoidRepetitiveCalls
+	ToPropertiesRule on GenericParameter.get_FullName
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidMethodWithUnusedGenericTypeRule.cs: Reduce severity to low 

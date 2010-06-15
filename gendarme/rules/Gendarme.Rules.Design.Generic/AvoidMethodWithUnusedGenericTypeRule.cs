@@ -149,11 +149,11 @@ namespace Gendarme.Rules.Design.Generic {
 				}
 				if (!found) {
 					// it's a defect when used only for the return value - but we reduce its severity
-					if (IsGenericParameter (method.ReturnType.ReturnType, gp.FullName))
+					if (IsGenericParameter (method.ReturnType.ReturnType, gp_fullname))
 						severity = Severity.Low;
 				}
 				if (!found) {
-					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp.FullName);
+					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp_fullname);
 					Runner.Report (method, severity, Confidence.High, msg);
 				}
 			}
