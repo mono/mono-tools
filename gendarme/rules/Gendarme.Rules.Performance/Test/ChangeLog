@@ -1,3 +1,8 @@
+2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCallsToPropertiesTest.cs: Add missing using 
+	clause. Fix test build.
+
 2010-06-14  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCallsToPropertiesTest.cs: Add test cases for
