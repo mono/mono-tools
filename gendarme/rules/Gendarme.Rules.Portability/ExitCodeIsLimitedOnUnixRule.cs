@@ -140,7 +140,8 @@ namespace Gendarme.Rules.Portability {
 			// the rule does not apply of the entry point returns void
 			// FIXME: entryPoint.ReturnType.ReturnType should not be null with void Main ()
 			// either bad unit tests or bug in cecil
-			if (entry_point.ReturnType.ReturnType == null || entry_point.ReturnType.ReturnType.FullName != "System.Int32")
+			TypeReference rt = entry_point.ReturnType.ReturnType;
+			if (rt == null || rt.FullName != "System.Int32")
 				return RuleResult.DoesNotApply;
 
 			Instruction previous = null;
@@ -213,7 +214,8 @@ namespace Gendarme.Rules.Portability {
 				case Code.Call:
 				case Code.Callvirt:
 					MethodReference calledMethod = (MethodReference) current.Operand;
-					if (calledMethod.Name != "set_ExitCode" && calledMethod.Name != "Exit")
+					string name = calledMethod.Name;
+					if ((name != "set_ExitCode") && (name != "Exit"))
 						break;
 					if (calledMethod.DeclaringType.FullName != "System.Environment")
 						break;

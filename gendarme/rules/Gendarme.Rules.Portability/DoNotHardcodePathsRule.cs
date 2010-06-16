@@ -376,10 +376,10 @@ namespace Gendarme.Rules.Portability {
 				// see what we can learn
 
 				if (target.HasParameters && (target.Parameters.Count == 1) && 
-					target.Name.StartsWith ("set_", StringComparison.Ordinal)) {
+					methodName.StartsWith ("set_", StringComparison.Ordinal)) {
 					// to improve performance, don't Resolve () to call IsSpecialName
 					// this is a setter (in 99% cases)
-					CheckIdentifier (target.Name);
+					CheckIdentifier (methodName);
 				} else {
 					// we can also check parameter name
 					CheckMethodParameterName (target, currentOffset);
@@ -407,17 +407,18 @@ namespace Gendarme.Rules.Portability {
 		void CheckMethodParameterName (MethodReference methodReference, int parameterOffset)
 		{
 			MethodDefinition method = methodReference.Resolve ();
-			if (method == null)
+			if ((method == null) || !method.HasParameters)
 				return;
 
-			int parameterIndex = (method.HasParameters ? method.Parameters.Count : 0) - parameterOffset - 1;
+			ParameterDefinitionCollection pdc = method.Parameters;
+			int parameterIndex = pdc.Count - parameterOffset - 1;
 
 			// to prevent some uncommon situations
 			if (parameterIndex < 0)
 				return;
 
 			// parameterOffset is distance in instructions between ldstr and call(i|virt)?
-			ParameterDefinition parameter = method.Parameters [parameterIndex];
+			ParameterDefinition parameter = pdc [parameterIndex];
 
 			// if its name is 'pathy', score some points!
 			CheckIdentifier (parameter.Name);
