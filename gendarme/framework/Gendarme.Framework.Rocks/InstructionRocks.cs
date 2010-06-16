@@ -77,29 +77,31 @@ namespace Gendarme.Framework.Rocks {
 				return null;
 
 			Code code = self.OpCode.Code;
-			int index;
 			switch (code) {
 			case Code.Ldarg_0:
 			case Code.Ldarg_1:
 			case Code.Ldarg_2:
 			case Code.Ldarg_3:
-				index = code - Code.Ldarg_0;
-				if (!method.IsStatic) {
-					index--;
-					if (index < 0)
-						return method.DeclaringType; // this
-				}
-				return method.Parameters [index];
+			case Code.Ldarg:
+			case Code.Ldarg_S:
+			case Code.Ldarga:
+			case Code.Ldarga_S:
+			case Code.Starg:
+			case Code.Starg_S:
+				ParameterDefinition p = self.GetParameter (method);
+				// handle 'this' for instance methods
+				if (p == null)
+					return method.DeclaringType;
+				return p;
 			case Code.Ldloc_0:
 			case Code.Ldloc_1:
 			case Code.Ldloc_2:
 			case Code.Ldloc_3:
-				return method.Body.Variables [code - Code.Ldloc_0];
 			case Code.Stloc_0:
 			case Code.Stloc_1:
 			case Code.Stloc_2:
 			case Code.Stloc_3:
-				return method.Body.Variables [code - Code.Stloc_0];
+				return self.GetVariable (method);
 			case Code.Ldc_I4_M1:
 			case Code.Ldc_I4_0:
 			case Code.Ldc_I4_1:
@@ -354,13 +356,13 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Ldloc_2:
 			case Code.Ldloc_3:
 				index = self.OpCode.Code - Code.Ldloc_0;
-				return method.Body.Variables [index];
+				break;
 			case Code.Stloc_0:
 			case Code.Stloc_1:
 			case Code.Stloc_2:
 			case Code.Stloc_3:
 				index = self.OpCode.Code - Code.Stloc_0;
-				return method.Body.Variables [index];
+				break;
 			case Code.Ldloc:
 			case Code.Ldloc_S:
 			case Code.Ldloca:
@@ -371,6 +373,7 @@ namespace Gendarme.Framework.Rocks {
 			default:
 				return null;
 			}
+			return method.Body.Variables [index];
 		}
 
 		/// <summary>

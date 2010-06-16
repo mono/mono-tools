@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -83,8 +84,8 @@ namespace Gendarme.Framework.Rocks {
 				return;
 
 			// don't create a new reader if the symbols are already loaded
-			IAnnotationProvider provider = (self as IAnnotationProvider);
-			if (provider.Annotations.Contains ("symbols"))
+			IDictionary annotations = (self as IAnnotationProvider).Annotations;
+			if (annotations.Contains ("symbols"))
 				return;
 
 			string image_name = self.Image.FileInformation.FullName;
@@ -117,7 +118,7 @@ namespace Gendarme.Framework.Rocks {
 			ISymbolStoreFactory factory = (ISymbolStoreFactory) Activator.CreateInstance (reader_type);
 			try {
 				self.LoadSymbols (factory.CreateReader (self, image_name));
-				provider.Annotations.Add ("symbols", symbol_name);
+				annotations.Add ("symbols", symbol_name);
 			}
 			catch (FileNotFoundException) {
 				// this happens if a MDB file is missing 	 

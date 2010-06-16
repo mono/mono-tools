@@ -165,12 +165,15 @@ namespace Gendarme.Framework.Rocks {
 						continue;
 					if (retval != md.ReturnType.ReturnType.FullName)
 						continue;
-					if ((md.HasParameters && (pcount == 0)) || (pcount != md.Parameters.Count))
+					if (md.HasParameters && (pcount == 0))
+						continue;
+					ParameterDefinitionCollection ppdc = md.Parameters;
+					if (pcount != ppdc.Count)
 						continue;
 
 					bool ok = true;
 					for (int i = 0; i < pcount; i++) {
-						if (method.Parameters [i].ParameterType.FullName != md.Parameters [i].ParameterType.FullName) {
+						if (method.Parameters [i].ParameterType.FullName != ppdc [i].ParameterType.FullName) {
 							ok = false;
 							break;
 						}
@@ -242,8 +245,10 @@ namespace Gendarme.Framework.Rocks {
 			if (gp == null)
 				return type.Inherits ("System.EventArgs");
 
-			if (gp.HasConstraints && (gp.Constraints.Count == 1))
-				return (gp.Constraints [0].FullName == "System.EventArgs");
+			if (gp.HasConstraints) {
+				ConstraintCollection cc = gp.Constraints;
+				return ((cc.Count == 1) && (cc [0].FullName == "System.EventArgs"));
+			}
 
 			return false;
 		}

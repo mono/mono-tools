@@ -144,14 +144,16 @@ namespace Gendarme.Framework.Rocks {
 				return true;
 			if (other == null)
 				return (self == null);
-			if (!self.MetadataToken.Equals (other.MetadataToken))
+
+			MetadataToken token = self.MetadataToken;
+			if (!token.Equals (other.MetadataToken))
 				return false;
 
 			// metadata token is unique per assembly
 			AssemblyDefinition self_assembly = GetAssembly (self);
 			if (self_assembly == null) {
 				// special case for Namespace (where GetAssembly would return null)
-				if (self.MetadataToken.TokenType == NamespaceDefinition.NamespaceTokenType)
+				if (token.TokenType == NamespaceDefinition.NamespaceTokenType)
 					return (self as NamespaceDefinition).Name == (other as NamespaceDefinition).Name;
 				else
 					return false;

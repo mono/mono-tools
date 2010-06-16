@@ -1,3 +1,12 @@
+2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* CecilRocks.cs:
+	* InstructionRocks.cs:
+	* MethodRocks.cs:
+	* ModuleRocks.cs:
+	* TypeRocks.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* CecilRocks.cs: Types should not start with an I (self-test)

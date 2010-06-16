@@ -374,9 +374,12 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			TypeReference current = self.Resolve ();
-			while ((current != null) && (current.FullName != "System.Object")) {
-				if (current.FullName == className)
+			while (current != null) {
+				string fullname = current.FullName;
+				if (fullname == className)
 					return true;
+				if (fullname == "System.Object")
+					return false;
 
 				TypeDefinition td = current.Resolve ();
 				if (td == null)
