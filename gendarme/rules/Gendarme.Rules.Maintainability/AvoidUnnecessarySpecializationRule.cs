@@ -91,8 +91,11 @@ namespace Gendarme.Rules.Maintainability {
 		private static TypeReference GetActualType (TypeReference type)
 		{
 			GenericParameter gp = (type as GenericParameter);
-			if ((gp != null) && (gp.Constraints.Count == 1))
-				type = gp.Constraints [0];
+			if (gp != null) {
+				ConstraintCollection cc = gp.Constraints;
+				if (cc.Count == 1)
+					type = cc [0];
+			}
 			return type;
 		}
 
@@ -190,12 +193,15 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static MethodSignature GetSignature (MethodReference method)
 		{
+			string name = method.Name;
+			string rtype = GetReturnTypeSignature (method);
 			if (!method.HasParameters)
-				return new MethodSignature (method.Name, GetReturnTypeSignature (method));
+				return new MethodSignature (name, rtype);
 
-			string [] parameters = new string [method.Parameters.Count];
-			for (int i = 0; i < method.Parameters.Count; ++i) {
-				TypeReference pType = method.Parameters [i].ParameterType;
+			ParameterDefinitionCollection pdc = method.Parameters;
+			string [] parameters = new string [pdc.Count];
+			for (int i = 0; i < pdc.Count; ++i) {
+				TypeReference pType = pdc [i].ParameterType;
 
 				// handle reference type (ref in C#)
 				ReferenceType ref_type = (pType as ReferenceType);
@@ -207,7 +213,7 @@ namespace Gendarme.Rules.Maintainability {
 				else
 					parameters [i] = pType.FullName;
 			}
-			return new MethodSignature (method.Name, GetReturnTypeSignature (method), parameters);
+			return new MethodSignature (name, rtype, parameters);
 		}
 
 		private static string GetReturnTypeSignature (MethodReference method)
@@ -232,7 +238,8 @@ namespace Gendarme.Rules.Maintainability {
 			case "ToString" :
 				return !method.HasParameters;
 			case "Equals" :
-				return (method.HasParameters && (method.Parameters.Count == 1 || method.Parameters.Count == 2));
+				ParameterDefinitionCollection pdc = method.Parameters;
+				return (method.HasParameters && (pdc.Count == 1 || pdc.Count == 2));
 			case "ReferenceEquals" :
 				return (method.HasParameters && (method.Parameters.Count == 2));
 
@@ -297,17 +304,19 @@ namespace Gendarme.Rules.Maintainability {
 						continue;
 					//we cannot really know if suggestion would work since the collection
 					//is non-generic thus we ignore it
-					if (IsFromNonGenericCollectionNamespace (method.DeclaringType.Namespace))
+					TypeReference type = method.DeclaringType;
+					if (IsFromNonGenericCollectionNamespace (type.Namespace))
 						continue;
 
-					if (usage.StackOffset == method.Parameters.Count) {
+					int pcount = method.HasParameters ? method.Parameters.Count : 0;
+					if (usage.StackOffset == pcount) {
 						//argument is used as `this` in the call
 						if (signatures == null)
 							signatures = GetSignatures (usageResults);
-						currentLeastType = GetBaseImplementor (GetActualType (method.DeclaringType), signatures);
+						currentLeastType = GetBaseImplementor (GetActualType (type), signatures);
 					} else {
 						//argument is also used as an argument in the call
-						currentLeastType = method.Parameters [method.Parameters.Count - usage.StackOffset - 1].ParameterType;
+						currentLeastType = method.Parameters [pcount - usage.StackOffset - 1].ParameterType;
 
 						//if parameter type is a generic, find the 'real' constructed type
 						GenericParameter gp = (currentLeastType as GenericParameter);
@@ -440,10 +449,11 @@ namespace Gendarme.Rules.Maintainability {
 			if (IsSignatureDictated (method))
 				return RuleResult.DoesNotApply;
 
-			if (method.Parameters.Count > types_least.Length) {
+			int pcount = method.Parameters.Count;
+			if (pcount > types_least.Length) {
 				// that should be quite rare (does not happen for mono 2.0 class libs)
-				types_least = new TypeReference [method.Parameters.Count];
-				depths_least = new int [method.Parameters.Count];
+				types_least = new TypeReference [pcount];
+				depths_least = new int [pcount];
 			}
 
 			CheckParameters (method);

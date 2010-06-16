@@ -164,13 +164,17 @@ namespace Gendarme.Rules.Maintainability {
 			
 			// The type's constructors will often set all of the fields
 			// so it is a bit more efficient to check them first.
-			if (type.HasConstructors)
-				for (int i = 0; i < type.Constructors.Count && nullFields.Count > 0; ++i)
-					CheckMethod (type.Constructors [i]);
+			if (type.HasConstructors) {
+				ConstructorCollection cc = type.Constructors;
+				for (int i = 0; i < cc.Count && nullFields.Count > 0; ++i)
+					CheckMethod (cc [i]);
+			}
 			
-			if (type.HasMethods)
-				for (int i = 0; i < type.Methods.Count && nullFields.Count > 0; ++i)
-					CheckMethod (type.Methods [i]);
+			if (type.HasMethods) {
+				MethodDefinitionCollection mc = type.Methods;
+				for (int i = 0; i < mc.Count && nullFields.Count > 0; ++i)
+					CheckMethod (mc [i]);
+			}
 				
 			// Report a defect if:
 			// 1) The field is explicitly set to null and not used (if 

@@ -1,3 +1,9 @@
+2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidAlwaysNullFieldRule.cs:
+	* AvoidUnnecessarySpecializationRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-09  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnnecessarySpecializationRule.cs: Split signature gathering
