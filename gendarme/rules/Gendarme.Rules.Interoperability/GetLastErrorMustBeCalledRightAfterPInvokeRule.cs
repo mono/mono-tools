@@ -151,7 +151,8 @@ namespace Gendarme.Rules.Interoperability {
 							break;
 						case "System.IntPtr":
 						case "System.UIntPtr":
-							dirty = ((mDef.Name != "op_Inequality") && (mDef.Name != "op_Equality"));
+							string name = mDef.Name;
+							dirty = ((name != "op_Inequality") && (name != "op_Equality"));
 							break;
 						default:
 							dirty = true;

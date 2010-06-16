@@ -92,8 +92,9 @@ namespace Gendarme.Rules.Interoperability {
 			}
 
 			// and check return value
-			if (!CheckBooleanMarshalling (method.ReturnType, method.ReturnType.ReturnType)) {
-				Runner.Report (method.ReturnType, Severity.High, Confidence.Normal);
+			MethodReturnType mrt = method.ReturnType;
+			if (!CheckBooleanMarshalling (mrt, mrt.ReturnType)) {
+				Runner.Report (mrt, Severity.High, Confidence.Normal);
 			}
 
 			return Runner.CurrentRuleResult;

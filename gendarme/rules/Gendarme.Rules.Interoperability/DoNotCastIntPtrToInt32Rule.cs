@@ -124,12 +124,14 @@ namespace Gendarme.Rules.Interoperability {
 		{
 			// check for calls to IntPtr.ToInt32, UIntPtr.ToUInt32 or 
 			// cast to anything other than [U]IntPtr, [U]Int64 or Void*
-			if (intptr && (mr.Name == "ToInt32")) {
+			string name = mr.Name;
+			if (intptr && (name == "ToInt32")) {
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, "Call to 'IntPtr.ToInt32()'.");
-			} else if (uintptr && (mr.Name == "ToUInt32")) {
+			} else if (uintptr && (name == "ToUInt32")) {
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, "Call to 'UIntPtr.ToUInt32()'.");
-			} else if (mr.Name == "op_Explicit") {
-				switch (mr.ReturnType.ReturnType.FullName) {
+			} else if (name == "op_Explicit") {
+				string rtfullname = mr.ReturnType.ReturnType.FullName;
+				switch (rtfullname) {
 				case "System.Int64":
 				case "System.UInt64":
 					// valid cases unless (like [g]mcs does) it's followed by a convertion
@@ -144,7 +146,7 @@ namespace Gendarme.Rules.Interoperability {
 					break;
 				default:
 					// problematic cases
-					Report (method, ins, mr.ReturnType.ReturnType.FullName);
+					Report (method, ins, rtfullname);
 					break;
 				}
 			}

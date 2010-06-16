@@ -154,9 +154,9 @@ namespace Gendarme.Rules.Interoperability {
 					
 					if (called_method != null && called_method.IsPInvokeImpl && called_method.HasParameters) {
 						// Console.WriteLine ("Reached a call instruction to a pinvoke method: {0}", called_method.Name);
-						
-						for (int i = 0; i < called_method.Parameters.Count; i++) {
-							if (!called_method.Parameters [i].ParameterType.IsDelegate ())
+						ParameterDefinitionCollection pdc = called_method.Parameters;
+						for (int i = 0; i < pdc.Count; i++) {
+							if (!pdc [i].ParameterType.IsDelegate ())
 								continue;
 #if DEBUG
 							Console.WriteLine (" Stack slot #{0}:", i);
