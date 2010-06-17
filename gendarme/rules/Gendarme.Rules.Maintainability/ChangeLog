@@ -1,5 +1,11 @@
 2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
+	* AvoidUnnecessarySpecializationRule.cs:
+	* RemoveDependenceOnObsoleteCodeRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
+2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
+
 	* AvoidAlwaysNullFieldRule.cs:
 	* AvoidUnnecessarySpecializationRule.cs:
 		Apply AvoidRepetitiveCallsToPropertiesRule

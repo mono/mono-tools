@@ -519,18 +519,20 @@ namespace Gendarme.Rules.Maintainability {
 		private static void AppendPrettyTypeName (StringBuilder sb, TypeReference type)
 		{
 			int nRemoveTrail;
-			if (type.GenericParameters.Count == 0)
+			GenericParameterCollection gpc = type.GenericParameters;
+			if (gpc.Count == 0)
 				nRemoveTrail = 0;
-			else if (type.GenericParameters.Count < 10)
+			else if (gpc.Count < 10)
 				nRemoveTrail = 2;
 			else
 				nRemoveTrail = 3;
 
-			sb.Append (type.FullName.Substring (0, type.FullName.Length - nRemoveTrail));
-			if (type.GenericParameters.Count > 0) {
+			string fullname = type.FullName;
+			sb.Append (fullname.Substring (0, fullname.Length - nRemoveTrail));
+			if (gpc.Count > 0) {
 				int n = 0;
 				sb.Append ("<");
-				foreach (GenericParameter gp in type.GenericParameters) {
+				foreach (GenericParameter gp in gpc) {
 					if (n > 0)
 						sb.Append (",");
 					AppendPrettyTypeName (sb, gp);

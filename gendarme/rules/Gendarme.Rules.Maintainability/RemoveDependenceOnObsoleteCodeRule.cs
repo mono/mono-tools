@@ -252,10 +252,11 @@ namespace Gendarme.Rules.Maintainability {
 
 		void CheckReturnType (MethodReference method)
 		{
-			if (!IsObsolete (method.ReturnType.ReturnType))
+			TypeReference rt = method.ReturnType.ReturnType;
+			if (!IsObsolete (rt))
 				return;
 
-			string msg = String.Format ("Return type '{0}' is obsolete.", method.ReturnType.ReturnType);
+			string msg = String.Format ("Return type '{0}' is obsolete.", rt);
 			Runner.Report (method, method.IsVisible () ? Severity.High : Severity.Medium, Confidence.Total, msg);
 		}
 
@@ -287,14 +288,16 @@ namespace Gendarme.Rules.Maintainability {
 			string msg = null;
 			if (IsObsolete (call)) {
 				msg = String.Format ("Method '{0}' is obsolete.", call);
-			} else if (IsObsolete (call.DeclaringType)) {
-				msg = String.Format ("Type '{0}' is obsolete.", call.DeclaringType);
 			} else {
-				return;
+				TypeReference type = call.DeclaringType;
+				if (IsObsolete (type))
+					msg = String.Format ("Type '{0}' is obsolete.", type);
 			}
 
-			Severity severity = call.IsVisible () ? Severity.Medium : Severity.Low;
-			Runner.Report (method, ins, severity, Confidence.High, msg);
+			if (msg != null) {
+				Severity severity = call.IsVisible () ? Severity.Medium : Severity.Low;
+				Runner.Report (method, ins, severity, Confidence.High, msg);
+			}
 		}
 
 		void CheckFieldAccess (MethodDefinition method, Instruction ins, FieldReference field)
