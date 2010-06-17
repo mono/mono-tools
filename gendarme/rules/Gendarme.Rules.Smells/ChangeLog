@@ -1,3 +1,9 @@
+2010-06-16  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidLargeClassesRule.cs:
+	* AvoidSpeculativeGeneralityRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-10  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidLargeClassesRule.cs: Be more accurate when reporting. E.g.

@@ -87,7 +87,7 @@ namespace Gendarme.Rules.Smells {
 
 		List<FieldDefinition> fields = new List<FieldDefinition> ();
 
-		private IList<FieldDefinition> GetNonConstantFields (TypeDefinition type)
+		private int GetNonConstantFieldsCount (TypeDefinition type)
 		{
 			fields.Clear ();
 			//Skip the constants and others related from this check.
@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Smells {
 					continue;
 				fields.Add (field);
 			}
-			return fields;
+			return fields.Count;
 		}
 
 		private int CountPrefixedFields (string prefix, int start)
@@ -180,15 +180,15 @@ namespace Gendarme.Rules.Smells {
 			if (type.IsEnum || !type.HasFields || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			IList<FieldDefinition> fields = GetNonConstantFields (type);
-			if (fields.Count > MaxFields) {
+			int fcount = GetNonConstantFieldsCount (type);
+			if (fcount > MaxFields) {
 				string msg = String.Format ("This type contains a lot of fields ({0} versus maximum of {1}).",
-					fields.Count, MaxFields);
+					fcount, MaxFields);
 				Runner.Report (type, Severity.High, Confidence.High, msg);
 			}
 
 			// skip check if there are only constants or generated fields
-			if (fields.Count > 0)
+			if (fcount > 0)
 				CheckForFieldCommonPrefixes (type);
 
 			return Runner.CurrentRuleResult;

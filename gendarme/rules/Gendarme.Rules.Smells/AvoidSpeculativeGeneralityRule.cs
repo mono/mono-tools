@@ -173,12 +173,13 @@ namespace Gendarme.Rules.Smells {
 				return false; // 0 / 2 + 1 <= 0
 
 			int delegationCounter = 0;
-			foreach (MethodDefinition method in type.Methods) {
+			MethodDefinitionCollection methods = type.Methods;
+			foreach (MethodDefinition method in methods) {
 				if (OnlyDelegatesCall (method))
 					delegationCounter++;
 			}
 
-			return type.Methods.Count / 2 + 1 <= delegationCounter;
+			return methods.Count / 2 + 1 <= delegationCounter;
 		}
 
 		private void CheckUnnecesaryDelegation (TypeDefinition type)
