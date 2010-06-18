@@ -152,13 +152,13 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Ldind_R4:
 			case Code.Stelem_R4:
 			case Code.Stind_R4:
-				return PrimitiveReferences.GetSingle (method.DeclaringType.Module);
+				return PrimitiveReferences.GetSingle (method);
 			case Code.Conv_R8:
 			case Code.Ldc_R8:
 			case Code.Ldelem_R8:
 			case Code.Ldind_R8:
 			case Code.Stelem_R8:
-				return PrimitiveReferences.GetDouble (method.DeclaringType.Module);
+				return PrimitiveReferences.GetDouble (method);
 			case Code.Ldloc_0:
 			case Code.Ldloc_1:
 			case Code.Ldloc_2:
