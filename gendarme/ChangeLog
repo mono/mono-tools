@@ -1,3 +1,8 @@
+2010-06-17  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Remove more AvoidRepetitiveCallsToPropertiesRule
+	entries
+
 2010-06-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Remove some fixed AvoidRepetitiveCallsToPropertiesRule
