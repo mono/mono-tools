@@ -112,19 +112,13 @@ namespace Gendarme {
 			(result.AsyncState as Action).EndInvoke (result);
 		}
 
-		static Process Process {
-			get {
-				if (process == null)
-					process = new Process ();
-				return process;
-			}
-		}
-
 		static void Open (string filename)
 		{
-			Process.StartInfo.Verb = "open";
-			Process.StartInfo.FileName = filename;
-			Process.Start ();
+			if (process == null)
+				process = new Process ();
+			process.StartInfo.Verb = "open";
+			process.StartInfo.FileName = filename;
+			process.Start ();
 		}
 
 		#region general wizard code
@@ -354,8 +348,10 @@ namespace Gendarme {
 			rules_count_label.Text = String.Format ("{0} rules are available.", Runner.Rules.Count);
 			if (rules_loading == null)
 				throw new InvalidOperationException ("rules_loading");
-			next_button.Enabled = rules_loading.IsCompleted;
-			rules_tree_view.Enabled = rules_loading.IsCompleted;
+
+			bool completed = rules_loading.IsCompleted;
+			next_button.Enabled = completed;
+			rules_tree_view.Enabled = completed;
 			rules_loading.AsyncWaitHandle.WaitOne ();
 			PopulateRules ();
 		}
@@ -375,7 +371,9 @@ namespace Gendarme {
 			rules_tree_view.AfterCheck -= RulesTreeViewAfterCheck;
 			foreach (IRule rule in Runner.Rules) {
 				TreeNode parent;
-				string name_space = rule.FullName.Substring (0, rule.FullName.Length - rule.Name.Length - 1);
+				string full_name = rule.FullName;
+				string name = rule.Name;
+				string name_space = full_name.Substring (0, full_name.Length - name.Length - 1);
 				if (!nodes.TryGetValue (name_space, out parent)) {
 					parent = new TreeNode (name_space);
 					parent.Checked = all_rules;
@@ -383,8 +381,8 @@ namespace Gendarme {
 					rules_tree_view.Nodes.Add (parent);
 				}
 
-				TreeNode node = new TreeNode (rule.Name);
-				node.Checked = all_rules || rules.Contains (rule.FullName);
+				TreeNode node = new TreeNode (name);
+				node.Checked = all_rules || rules.Contains (full_name);
 				node.Tag = rule;
 				node.ToolTipText = rule.Problem;
 				parent.Nodes.Add (node);
@@ -414,13 +412,14 @@ namespace Gendarme {
 		{
 			string url = null;
 
-			if (rules_tree_view.SelectedNode == null)
+			TreeNode selected = rules_tree_view.SelectedNode;
+			if (selected == null)
 				url = DefaultUrl;
 			else {
-				if (rules_tree_view.SelectedNode.Tag == null) {
-					url = BaseUrl + rules_tree_view.SelectedNode.Text;
+				if (selected.Tag == null) {
+					url = BaseUrl + selected.Text;
 				} else {
-					url = (rules_tree_view.SelectedNode.Tag as IRule).Uri.ToString ();
+					url = (selected.Tag as IRule).Uri.ToString ();
 				}
 			}
 
