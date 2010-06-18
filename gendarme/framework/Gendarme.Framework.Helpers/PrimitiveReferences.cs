@@ -26,6 +26,7 @@
 
 using System;
 using Mono.Cecil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework.Helpers {
 
@@ -44,25 +45,26 @@ namespace Gendarme.Framework.Helpers {
 		static TypeReference single_ref;
 		static TypeReference double_ref;
 
-		static TypeReference GetReference (Type type, ModuleDefinition module)
+		static TypeReference GetReference (Type type, IMetadataTokenProvider metadata)
 		{
+			ModuleDefinition module = metadata.GetAssembly ().MainModule;
 			TypeReference tr = module.TypeReferences [type.FullName];
 			if (tr == null)
 				tr = module.Import (type);
 			return tr;
 		}
 
-		static public TypeReference GetDouble (ModuleDefinition module)
+		static public TypeReference GetDouble (IMetadataTokenProvider metadata)
 		{
 			if (double_ref == null)
-				double_ref = GetReference (typeof (double), module);
+				double_ref = GetReference (typeof (double), metadata);
 			return double_ref;
 		}
 
-		static public TypeReference GetSingle (ModuleDefinition module)
+		static public TypeReference GetSingle (IMetadataTokenProvider metadata)
 		{
 			if (single_ref == null)
-				single_ref = GetReference (typeof (float), module);
+				single_ref = GetReference (typeof (float), metadata);
 			return single_ref;
 		}
 	}
