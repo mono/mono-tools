@@ -136,11 +136,12 @@ namespace Gendarme.Framework {
 			AnalyzeType = null;
 			AnalyzeMethod = null;
 
-			AssemblyResolver.Resolver.AssemblyCache.Clear ();
+			AssemblyResolver resolver = AssemblyResolver.Resolver;
+			resolver.AssemblyCache.Clear ();
 
 			foreach (AssemblyDefinition assembly in assemblies) {
 				assembly.MainModule.LoadDebuggingSymbols ();
-				AssemblyResolver.Resolver.CacheAssembly (assembly);
+				resolver.CacheAssembly (assembly);
 			}
 
 			foreach (Rule rule in rules) {

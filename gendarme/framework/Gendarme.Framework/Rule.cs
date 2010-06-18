@@ -141,7 +141,7 @@ namespace Gendarme.Framework {
 					string url;
 					if (attributes.Length == 0) {
 						url = String.Format (CultureInfo.InvariantCulture, 
-							"http://www.mono-project.com/{0}#{1}", Type.Namespace, Name);
+							"http://www.mono-project.com/{0}#{1}", type.Namespace, Name);
 					} else {
 						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}
