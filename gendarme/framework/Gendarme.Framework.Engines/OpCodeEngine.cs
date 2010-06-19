@@ -26,6 +26,7 @@
 //
 
 using System;
+using System.Collections;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -54,17 +55,17 @@ namespace Gendarme.Framework.Engines {
 		void OnMethodBody (object sender, EngineEventArgs e)
 		{
 			MethodBody body = (sender as MethodBody);
-			IAnnotationProvider ap = (body.Method as IAnnotationProvider);
+			IDictionary annotations = (body.Method as IAnnotationProvider).Annotations;
 			// some runners, like the wizard, can run this engine several times
 			// and, in this case, the result won't change
-			if (ap.Annotations.Contains ("OPCODEBITMASK"))
+			if (annotations.Contains ("OPCODEBITMASK"))
 				return;
 
 			OpCodeBitmask mask = new OpCodeBitmask ();
 			foreach (Instruction ins in body.Instructions) {
 				mask.Set (ins.OpCode.Code);
 			}
-			ap.Annotations.Add ("OPCODEBITMASK", mask);
+			annotations.Add ("OPCODEBITMASK", mask);
 		}
 
 		// service offered by the engine
