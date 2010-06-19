@@ -10,8 +10,8 @@ needed to build/test Gendarme on Linux.
 2. gendarme-win.sln
 
 This solution include projects to compile Mono.Cecil.Pdb (instead of 
-Mono.Cecil.Mdb) and to build the win32 installer. Otherwise it's 
-identical to gendarme.sln.
+Mono.Cecil.Mdb) and to build the win32 (wix) installer. Otherwise it's
+identical to gendarme.sln. USE THIS FILE FOR VS.NET
 
 
 \/\/\/ DISCLAIMER \/\/\/
@@ -27,13 +27,72 @@ These are unsupported, for your convenience, files. Use at your own risk!
 
 Requirements
 
-* The minimal requirements are VS.NET 2008 [2];
-* You need to check some modules from Mono SVN repository
+The minimal requirements are:
+
+* Microsoft Visual Studio.NET 2008 [2];
+* Some modules from Mono SVN repository
 	* 'mcs' (or mcs/class/Mono.Cecil) to get Mono.Cecil
 	* 'cecil' to get Mono.Cecil.Pdb
 	* 'mono-tools' for Gendarme latest sources
-* You need ICSharpCode.SharpZipLib.dll to compile Gendarme.Rules.Portability [3]
-* You need NUnit 2.4.x to build/run the unit tests
+* NUnit 2.4.x to build/run the unit tests
+
+
+How To (for VS 2008)
+
+* Check out the source code from SVN. Minimally (download-wise) this is:
+
+	mkdir mono-tools
+	svn co http://anonsvn.mono-project.com/source/trunk/mono-tools/gendarme mono-tools/gendarme
+	mkdir mcs
+	mkdir mcs/class
+	svn co http://anonsvn.mono-project.com/source/trunk/mcs/class/Mono.Cecil mcs/class/Mono.Cecil
+	svn cat http://anonsvn.mono-project.com/source/trunk/mcs/class/mono.snk > mcs/class/mono.snk
+	mkdir cecil
+	svn co http://anonsvn.mono-project.com/source/trunk/cecil/pdb cecil/pdb
+
+* Install NUnit 2.4.x if you do not already have it [3].
+
+* Install nunit-framework.dll into the GAC
+
+	gacutil -i c:\path\to\nunit\nunit-framework.dll
+
+* Optionally installed WIX [4] if you want to build the setup. If not 
+installed you'll an error when doing a "Rebuild Solution" - but everything
+will be fine.
+
+* Open the gendarme-win.sln solution inside VS.NET 2008, build, execute, enjoy!
+
+
+How To (for VS 2010)
+
+Follow the same instructions as above (VS 2008) and let the convertion
+wizard do its job when it opens gendarm-win.sln for the first time.
+
+
+Self-test
+
+Running Gendarme on Gendarme is something very important for (existing 
+and would be) contributors. On Linux this is done by executing 
+"make self-test" in a terminal. As a general rule the report should
+find no (zero) defect - i.e. all known defects should have (documented)
+ignore entries.
+
+The same "self-test" can be done using Visual Studio [5] by adding the 
+following lines in the 'gendarme's project Properties, Debug tab as the
+"Command line arguments"
+
+	--config ../../../rules/rules.xml --set self-test 
+	--xml ../../../self-test.xml --html ../../../self-test.html 
+	--ignore=../../../self-test.ignore --severity=all 
+	--confidence=all gendarme.exe Gendarme.*.dll
+
+Make sure you have (re)built the whole solution in "Release" (not Debug)
+before executing the gendarme project - otherwise you'll have a report
+with hundreds of false positives (since CSC generates pretty bad code
+without optimizations).
+
+Once executed start your web browser and open the self-test.html file
+that was generated on the root directory of your gendarme solution.
 
 
 Notes
@@ -44,5 +103,12 @@ development platform for Gendarme.
 
 [2] Older version won't work since Gendarme uses C# 3 features.
 
-[3] Get it from Mono mcs SVN repository or from download it from
-http://www.icsharpcode.net/OpenSource/SharpZipLib/
+[3] You can download nunit 2.4.8 binaries for FX2.0 from:
+http://sourceforge.net/projects/nunit/files/NUnit%20Version%202/NUnit-2.4.8-net-2.0.zip/download
+
+[4] Windows Installer XML Toolset 3.0
+http://wix.codeplex.com/releases/view/44406
+
+[5] This cannot be committed in SVN since this setting is kept in the
+gendarme.csproj.user file
+

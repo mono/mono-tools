@@ -214,7 +214,6 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.UI.UseSTAThreadAttributeOnSWFEnt
 R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
 M: System.Int32 Gendarme.Settings::LoadRulesFromAssembly(System.String,System.String,System.String,System.String)
 M: System.Void Gendarme.TextResultWriter::WriteDefect(Gendarme.Framework.Defect)
-M: System.Void Gendarme.Framework.Engines.OpCodeEngine::OnMethodBody(System.Object,Gendarme.Framework.EngineEventArgs)
 M: System.Boolean Gendarme.Framework.Rocks.MethodRocks::IsOverride(Mono.Cecil.MethodReference)
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.ThreadModel Gendarme.Rules.Concurrency.ThreadRocks::ThreadingModel(Mono.Cecil.MethodDefinition)

@@ -1,3 +1,9 @@
+2010-06-18  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* README.vsnet: Add more detailled instructions on how to get and
+	build all required source code
+	* win32-setup/*: Removed - wix is being used since 2.6
+
 2010-06-17  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Remove more AvoidRepetitiveCallsToPropertiesRule
