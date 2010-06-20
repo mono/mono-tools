@@ -1,3 +1,9 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* ProvideValidXmlStringRule.cs:
+	* ProvideValidXPathExpressionRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-13  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* BadRecursiveInvocationRule.cs: Fix regression if a type

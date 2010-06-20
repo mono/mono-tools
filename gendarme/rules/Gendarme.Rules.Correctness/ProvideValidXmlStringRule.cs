@@ -170,11 +170,12 @@ namespace Gendarme.Rules.Correctness {
 			this.method = method;
 
 			//is there any interesting opcode in the method?
-			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+			OpCodeBitmask calls = OpCodeBitmask.Calls;
+			if (!calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (!OpCodeBitmask.Calls.Get (ins.OpCode.Code))
+				if (!calls.Get (ins.OpCode.Code))
 					continue;
 
 				CheckCall (ins, (MethodReference) ins.Operand);
