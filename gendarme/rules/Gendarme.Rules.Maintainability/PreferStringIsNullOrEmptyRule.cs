@@ -183,7 +183,8 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			// is there any Call or Callvirt instructions in the method
-			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+			OpCodeBitmask calls = OpCodeBitmask.Calls;
+			if (!calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			// go!
@@ -191,7 +192,7 @@ namespace Gendarme.Rules.Maintainability {
 			// we look for a call to String.Length property (since it's much easier 
 			// than checking a string being compared to null)
 			foreach (Instruction current in method.Body.Instructions) {
-				if (!OpCodeBitmask.Calls.Get (current.OpCode.Code))
+				if (!calls.Get (current.OpCode.Code))
 					continue;
 
 				MethodReference mr = (current.Operand as MethodReference);

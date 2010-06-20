@@ -1,3 +1,9 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com> 
+
+	* ConsiderUsingStopwatchRule.cs:
+	* PreferStringIsNullOrEmptyRule.cs:
+		Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidComplexMethodsRule.cs: Fix sparse (non consecutive)

@@ -156,11 +156,12 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			// is there any Call or Callvirt instructions in the method
-			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+			OpCodeBitmask calls = OpCodeBitmask.Calls;
+			if (!calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (!OpCodeBitmask.Calls.Get (ins.OpCode.Code))
+				if (!calls.Get (ins.OpCode.Code))
 					continue;
 
 				MethodReference calledMethod = (MethodReference) ins.Operand;
