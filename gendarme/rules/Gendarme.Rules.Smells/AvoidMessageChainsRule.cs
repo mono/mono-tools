@@ -96,7 +96,8 @@ namespace Gendarme.Rules.Smells {
 				return RuleResult.DoesNotApply;
 
 			// no chain are possible without Call[virt] instructions within the method
-			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+			OpCodeBitmask calls = OpCodeBitmask.Calls;
+			if (!calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			Log.WriteLine (this);
@@ -109,7 +110,7 @@ namespace Gendarme.Rules.Smells {
 			for (int i = ic.Count - 1; i >= MaxChainLength; i--) {
 				Instruction ins = ic [i];
 				// continue until we find a Call[virt] instruction
-				if (!OpCodeBitmask.Calls.Get (ins.OpCode.Code))
+				if (!calls.Get (ins.OpCode.Code))
 					continue;
 
 				// operators "break" chains

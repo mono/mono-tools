@@ -1,3 +1,7 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMessageChainsRule.cs: Apply AvoidRepetitiveCallsToPropertiesRule
+
 2010-06-16  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidLargeClassesRule.cs:
