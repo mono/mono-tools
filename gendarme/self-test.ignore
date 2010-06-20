@@ -503,6 +503,10 @@ M: System.Void Gendarme.Wizard::Analyze()
 R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
 M: System.Int32[] Gendarme.Rules.Smells.Pattern::get_Prefixes()
 
+# OK - GetFastCyclomaticComplexity and GetSwitchCyclomaticComplexity are meant to be similar
+R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
+T: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
+
 # Conditional code is used and, sadly, this leaves useless control flow in the IL
 R: Gendarme.Rules.Correctness.ReviewUselessControlFlowRule
 M: System.Void Gendarme.Framework.Helpers.Log::WriteLine(T)
