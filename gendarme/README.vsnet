@@ -84,7 +84,7 @@ following lines in the 'gendarme's project Properties, Debug tab as the
 	--config ../../../rules/rules.xml --set self-test 
 	--xml ../../../self-test.xml --html ../../../self-test.html 
 	--ignore=../../../self-test.ignore --severity=all 
-	--confidence=all gendarme.exe Gendarme.*.dll
+	--confidence=all gendarme.exe GendarmeWizard.exe Gendarme.*.dll
 
 Make sure you have (re)built the whole solution in "Release" (not Debug)
 before executing the gendarme project - otherwise you'll have a report

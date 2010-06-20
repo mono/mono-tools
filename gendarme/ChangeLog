@@ -1,3 +1,8 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Remove entries fixed with AvoidComplexMethodsRule
+	* README.vsnet: Add the wizard to the self-test instructions
+
 2010-06-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* README.vsnet: Add more detailled instructions on how to get and

@@ -326,14 +326,8 @@ M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalys
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
 # CC 31
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
-# CC 33 (CSC only)
-M: Mono.Cecil.TypeReference Gendarme.Framework.Rocks.InstructionRocks::GetOperandType(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
-# CC 27 (CSC only)
-M: System.Boolean Gendarme.Rules.Design.ConsiderAddingInterfaceRule::DoesTypeStealthilyImplementInterface(Mono.Cecil.TypeDefinition,Mono.Cecil.TypeDefinition)
-# CC 26 (CSC only)
-M: System.Boolean Gendarme.Rules.BadPractice.EqualsShouldHandleNullArgRule::CheckSequence(Mono.Cecil.Cil.Instruction,Mono.Cecil.TypeDefinition)
-# CC 27 (CSC only)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule::CheckMethod(Mono.Cecil.MethodDefinition)
+# CC 25 (CSC only)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
 # some should be fixed
 R: Gendarme.Rules.Smells.AvoidLargeClassesRule
