@@ -223,9 +223,7 @@ M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckH
 M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckCloneMethod()
 M: System.Void Gendarme.Rules.Correctness.ProvideCorrectArgumentsToFormattingMethodsRule::CheckCallToFormatter(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckCall(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckCall(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DisposableTypesShouldHaveFinalizerRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotExposeNestedGenericSignaturesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: System.String Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::ExplainThrow(Mono.Cecil.Cil.Instruction)
@@ -235,19 +233,12 @@ M: System.Boolean Gendarme.Rules.Interoperability.GetLastErrorMustBeCalledRightA
 M: Mono.Cecil.TypeDefinition Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::GetInterfaceImplementor(Mono.Cecil.TypeDefinition,System.Collections.Generic.IEnumerable`1<Gendarme.Framework.Helpers.MethodSignature>)
 M: System.Boolean Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::IsSystemObjectMethod(Mono.Cecil.MethodReference)
 M: System.Void Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::UpdateParameterLeastType(Mono.Cecil.ParameterReference,System.Collections.Generic.IEnumerable`1<Gendarme.Framework.Helpers.StackEntryUsageResult>)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.ConsiderUsingStopwatchRule::CheckMethod(Mono.Cecil.MethodDefinition)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.CompareWithEmptyStringEfficientlyRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: System.Boolean Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule::IsCallException(Mono.Cecil.MethodReference)
 M: System.String Gendarme.Rules.Performance.MathMinMaxCandidateRule::GetPrevious(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction&)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.ReviewLinqMethodRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Serialization.DeserializeOptionalFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Serialization.ImplementISerializableCorrectlyRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Serialization.MarkAllNonSerializableFieldsRule::CheckType(Mono.Cecil.TypeDefinition)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Smells.AvoidMessageChainsRule::CheckMethod(Mono.Cecil.MethodDefinition)
-M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.ParameterReference,Mono.Cecil.ParameterReference)
-M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.VariableReference,Mono.Cecil.Cil.VariableReference)
-M: System.Boolean Gendarme.Rules.Smells.InstructionMatcher::AreEquivalent(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.Instruction)
 M: System.Void Gendarme.Wizard::Open(System.String)
 M: System.Void Gendarme.Wizard::UpdateAssemblies()
 M: System.Void Gendarme.Wizard::PrepareAnalyze()
@@ -294,6 +285,8 @@ T: Gendarme.Rules.Portability.ExitCodeIsLimitedOnUnixRule
 T: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 # CheckAssemblyForMethodUsage and GetCache - not clear, needs review
 T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+# CheckForAny and CheckMethod
+T: Gendarme.Rules.Performance.ReviewLinqMethodRule
 # CSC only - AddImpl and GetArgumentName
 T: NDesk.Options.OptionSet
 
