@@ -1,3 +1,8 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsTest.cs: Add test case with a switch that has
+	non consecutive cases entries.
+
 2010-06-07  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* AvoidUnnecessarySpecializationTest.cs: Merge both event-related

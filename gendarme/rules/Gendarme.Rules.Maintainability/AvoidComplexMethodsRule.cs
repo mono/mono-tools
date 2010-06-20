@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // 	(C) 2008 Cedric Vivier
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,6 +36,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
@@ -50,11 +54,14 @@ namespace Gendarme.Rules.Maintainability {
 	[Problem ("Methods with a large cyclomatic complexity are hard to understand and maintain.")]
 	[Solution ("Simplify the method using refactors like Extract Method.")]
 	[FxCopCompatibility ("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidComplexMethodsRule : Rule, IMethodRule {
 	
 		// defaults match fxcop rule http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=1575061&SiteID=1
 		// so people using both tools should not see conflicting results
 		private const int DefaultSuccessThreshold = 25;
+
+		static OpCodeBitmask ld = new OpCodeBitmask (0xFFFF6C3FC, 0x1B0300000000FFE0, 0x400100FFF800, 0xDE0);
 
 		public AvoidComplexMethodsRule ()
 		{
@@ -113,7 +120,7 @@ namespace Gendarme.Rules.Maintainability {
 			if (method.Body.Instructions.Count < SuccessThreshold)
 				return RuleResult.Success;
 
-			int cc = GetCyclomaticComplexityForMethod(method);
+			int cc = GetCyclomaticComplexity (method);
 			if (cc < SuccessThreshold)
 				return RuleResult.Success;
 
@@ -140,77 +147,186 @@ namespace Gendarme.Rules.Maintainability {
 			return Severity.Critical;
 		}
 
-		public int GetCyclomaticComplexityForMethod (MethodDefinition method)
+		static public int GetCyclomaticComplexity (MethodDefinition method)
 		{
 			if ((method == null) || !method.HasBody)
 				return 1;
 
+			if (OpCodeEngine.GetBitmask (method).Get (Code.Switch))
+				return GetSwitchCyclomaticComplexity (method);
+			else
+				return GetFastCyclomaticComplexity (method);
+		}
+
+		// the use of 'switch' requires a bit more code so we avoid it unless there are swicth instructions
+		static private int GetFastCyclomaticComplexity (MethodDefinition method)
+		{
 			int cc = 1;
-
-			foreach (Instruction inst in method.Body.Instructions)
-			{
-				if (FlowControl.Branch == inst.OpCode.FlowControl)
-				{
-					//detect ternary pattern
-					// FIXME: nice case to look if using a OpCodeBitmask would be faster
-					if (null != inst && null != inst.Previous && inst.Previous.OpCode.Name.StartsWith ("ld", StringComparison.Ordinal))
+			foreach (Instruction ins in method.Body.Instructions) {
+				switch (ins.OpCode.FlowControl) {
+				case FlowControl.Branch:
+					// detect ternary pattern
+					Instruction previous = ins.Previous;
+					if ((previous != null) && ld.Get (previous.OpCode.Code))
 						cc++;
-				}
-				if (FlowControl.Cond_Branch != inst.OpCode.FlowControl)
-				{
-					continue;
-				}
-
-				if (inst.OpCode.Code == Code.Switch)
-				{
-					cc += GetNumberOfSwitchTargets(inst);
-				}
-				else //'normal' conditional branch
-				{
+					break;
+				case FlowControl.Cond_Branch:
 					cc++;
+					break;
 				}
 			}
+			return cc;
+		}
+
+		static private int GetSwitchCyclomaticComplexity (MethodDefinition method)
+		{
+			Instruction previous = null;
+			Instruction branch = null;
+			int cc = 1;
+
+			foreach (Instruction ins in method.Body.Instructions) {
+				switch (ins.OpCode.FlowControl) {
+				case FlowControl.Branch:
+					if (previous == null)
+						continue;
+					// detect ternary pattern
+					previous = ins.Previous;
+					if (ld.Get (previous.OpCode.Code))
+						cc++;
+					// or 'default' (xmcs)
+					if (previous.OpCode.FlowControl == FlowControl.Cond_Branch) {
+						branch = (previous.Operand as Instruction);
+						// branch can be null (e.g. switch -> Instruction[])
+						if ((branch != null) && targets.Contains (branch))
+							targets.AddIfNew (ins);
+					}
+					break;
+				case FlowControl.Cond_Branch:
+					// note: a single switch (C#) with sparse values can be broken into several swicth (IL)
+					// that will use the same 'targets' and must be counted only once
+					if (ins.OpCode.Code == Code.Switch) {
+						AccumulateSwitchTargets (ins);
+					} else {
+						// some conditional branch can be related to the sparse switch
+						branch = (ins.Operand as Instruction);
+						previous = branch.Previous;
+						if ((previous != null) && !previous.Previous.Is (Code.Switch)) {
+							if (!targets.Contains (branch))
+								cc++;
+						}
+					}
+					break;
+				}
+			}
+			// count all unique targets (and default if more than one C# switch is used)
+			cc += targets.Count;
+			targets.Clear ();
 
 			return cc;
 		}
 
-		List<Instruction> targets = new List<Instruction> ();
+		static List<Instruction> targets = new List<Instruction> ();
 
-		private int GetNumberOfSwitchTargets (Instruction inst)
+		static private void AccumulateSwitchTargets (Instruction ins)
 		{
-			targets.Clear ();
-			foreach (Instruction target in ((Instruction[]) inst.Operand))
-			{
-				if (!targets.Contains (target))
-				{
-					targets.Add (target);
-				}
+			Instruction[] cases = (Instruction[]) ins.Operand;
+			foreach (Instruction target in cases) {
+				// ignore targets that are the next instructions (xmcs)
+				if (target != ins.Next)
+					targets.AddIfNew (target);
 			}
-			int nTargets = targets.Count;
-			//detect 'default' branch
-			if (FlowControl.Branch == inst.Next.OpCode.FlowControl)
-			{
-				if (inst.Next.Operand != FindFirstUnconditionalBranchTarget (targets[0]))
-				{
-					nTargets++;
-				}
+			// add 'default' branch (if one exists)
+			Instruction next = ins.Next;
+			if (next.OpCode.FlowControl == FlowControl.Branch) {
+				Instruction unc = FindFirstUnconditionalBranchTarget (cases [0]);
+				if (unc != next.Operand)
+					targets.AddIfNew (next.Operand as Instruction);
 			}
-			return nTargets;
 		}
 
-		private static Instruction FindFirstUnconditionalBranchTarget(Instruction inst)
+		static private Instruction FindFirstUnconditionalBranchTarget (Instruction ins)
 		{
-			while (null != inst)
-			{
-				if (FlowControl.Branch == inst.OpCode.FlowControl)
-				{
-					return ((Instruction) inst.Operand);
-				}
-				inst = inst.Next;
+			while (ins != null) {
+				if (FlowControl.Branch == ins.OpCode.FlowControl)
+					return ((Instruction) ins.Operand);
+
+				ins = ins.Next;
 			}
 			return null;
 		}
-
+#if false
+		public void Bitmask ()
+		{
+			OpCodeBitmask mask = new OpCodeBitmask ();
+			mask.Set (Code.Ldarg);
+			mask.Set (Code.Ldarg_0);
+			mask.Set (Code.Ldarg_1);
+			mask.Set (Code.Ldarg_2);
+			mask.Set (Code.Ldarg_3);
+			mask.Set (Code.Ldarg_S);
+			mask.Set (Code.Ldarga);
+			mask.Set (Code.Ldarga_S);
+			mask.Set (Code.Ldc_I4);
+			mask.Set (Code.Ldc_I4_0);
+			mask.Set (Code.Ldc_I4_1);
+			mask.Set (Code.Ldc_I4_2);
+			mask.Set (Code.Ldc_I4_3);
+			mask.Set (Code.Ldc_I4_4);
+			mask.Set (Code.Ldc_I4_5);
+			mask.Set (Code.Ldc_I4_6);
+			mask.Set (Code.Ldc_I4_7);
+			mask.Set (Code.Ldc_I4_8);
+			mask.Set (Code.Ldc_I4_M1);
+			mask.Set (Code.Ldc_I4_S);
+			mask.Set (Code.Ldc_I8);
+			mask.Set (Code.Ldc_R4);
+			mask.Set (Code.Ldc_R8);
+			mask.Set (Code.Ldelem_Any);
+			mask.Set (Code.Ldelem_I);
+			mask.Set (Code.Ldelem_I1);
+			mask.Set (Code.Ldelem_I2);
+			mask.Set (Code.Ldelem_I4);
+			mask.Set (Code.Ldelem_I8);
+			mask.Set (Code.Ldelem_R4);
+			mask.Set (Code.Ldelem_R8);
+			mask.Set (Code.Ldelem_Ref);
+			mask.Set (Code.Ldelem_U1);
+			mask.Set (Code.Ldelem_U2);
+			mask.Set (Code.Ldelem_U4);
+			mask.Set (Code.Ldelema);
+			mask.Set (Code.Ldfld);
+			mask.Set (Code.Ldflda);
+			mask.Set (Code.Ldftn);
+			mask.Set (Code.Ldind_I);
+			mask.Set (Code.Ldind_I1);
+			mask.Set (Code.Ldind_I2);
+			mask.Set (Code.Ldind_I4);
+			mask.Set (Code.Ldind_I8);
+			mask.Set (Code.Ldind_R4);
+			mask.Set (Code.Ldind_R8);
+			mask.Set (Code.Ldind_Ref);
+			mask.Set (Code.Ldind_U1);
+			mask.Set (Code.Ldind_U2);
+			mask.Set (Code.Ldind_U4);
+			mask.Set (Code.Ldlen);
+			mask.Set (Code.Ldloc);
+			mask.Set (Code.Ldloc_0);
+			mask.Set (Code.Ldloc_1);
+			mask.Set (Code.Ldloc_2);
+			mask.Set (Code.Ldloc_3);
+			mask.Set (Code.Ldloc_S);
+			mask.Set (Code.Ldloca);
+			mask.Set (Code.Ldloca_S);
+			mask.Set (Code.Ldnull);
+			mask.Set (Code.Ldobj);
+			mask.Set (Code.Ldsfld);
+			mask.Set (Code.Ldsflda);
+			mask.Set (Code.Ldstr);
+			mask.Set (Code.Ldtoken);
+			mask.Set (Code.Ldvirtftn);
+			Console.WriteLine (mask);
+		}
+#endif
 	}
-
 }
+

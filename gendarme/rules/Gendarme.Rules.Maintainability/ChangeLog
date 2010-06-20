@@ -1,3 +1,9 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidComplexMethodsRule.cs: Fix sparse (non consecutive)
+	switch/cases. Use a fast version of CC if no switch is present
+	(based on OpCodeEngine). Handle both xMCS and CSC
+
 2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidUnnecessarySpecializationRule.cs:
