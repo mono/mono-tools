@@ -1,3 +1,8 @@
+2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidRepetitiveCallsToPropertiesTest.cs: Add property access 
+	test case
+
 2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AvoidRepetitiveCallsToPropertiesTest.cs: Add missing using 

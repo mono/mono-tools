@@ -235,7 +235,8 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
-			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
+			OpCodeBitmask calls = OpCodeBitmask.Calls;
+			if (!calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 								
 			Log.WriteLine (this, "--------------------------------------");
@@ -243,43 +244,39 @@ namespace Gendarme.Rules.Performance {
 			
 			// Loop through each instruction,
 			foreach (Instruction ins in method.Body.Instructions) {
-			
 				// if we're calling a method,
-				if (OpCodeBitmask.Calls.Get (ins.OpCode.Code)) {
+				if (!calls.Get (ins.OpCode.Code))
+					continue;
 				
-					// and the method is a System.Linq.Enumerable method then,
-					var target = ins.Operand as MethodReference;
-					if (target != null && target.DeclaringType.FullName == EnumerableName) {
-						string tname = target.Name;
-						int tcount = target.HasParameters ? target.Parameters.Count : 0;
-						// see if we can use a more efficient method.
-						if (tname == "Count" && tcount == 1) {
-							TypeReference tr = ins.Previous.GetOperandType (method);
-							TypeDefinition td = tr.Resolve ();
+				// and the method is a System.Linq.Enumerable method then,
+				var target = ins.Operand as MethodReference;
+				if ((target == null) || (target.DeclaringType.FullName != EnumerableName))
+					continue;
 
-							if (td != null) {
-								CheckForCountProperty (td, method, ins);
-								CheckForAny (method, ins);
-							}
-
-						} else if ((tname == "ElementAt" || tname == "ElementAtOrDefault") && tcount == 2) {
-							Instruction arg = ins.TraceBack (method);
-							TypeReference tr = arg.GetOperandType (method);
-							if (tr != null)
-								CheckForSubscript (tr, method, ins, tname);
-
-						} else if ((tname == "Last" || tname == "LastOrDefault") && tcount == 1) {
-							TypeReference tr = ins.Previous.GetOperandType (method);
-							if (tr != null)
-								CheckForSubscript (tr, method, ins, tname);
-
-						} else if (tname == "OrderBy" || tname == "OrderByDescending") {
-							Instruction arg = ins.TraceBack (method);
-							TypeReference tr = arg.GetOperandType (method);
-							if (tr != null)
-								CheckForSort (tr, method, ins, tname);
-						}
+				string tname = target.Name;
+				int tcount = target.HasParameters ? target.Parameters.Count : 0;
+				// see if we can use a more efficient method.
+				if (tname == "Count" && tcount == 1) {
+					TypeReference tr = ins.Previous.GetOperandType (method);
+					TypeDefinition td = tr.Resolve ();
+					if (td != null) {
+						CheckForCountProperty (td, method, ins);
+						CheckForAny (method, ins);
 					}
+				} else if ((tname == "ElementAt" || tname == "ElementAtOrDefault") && tcount == 2) {
+					Instruction arg = ins.TraceBack (method);
+					TypeReference tr = arg.GetOperandType (method);
+					if (tr != null)
+						CheckForSubscript (tr, method, ins, tname);
+				} else if ((tname == "Last" || tname == "LastOrDefault") && tcount == 1) {
+					TypeReference tr = ins.Previous.GetOperandType (method);
+					if (tr != null)
+						CheckForSubscript (tr, method, ins, tname);
+				} else if (tname == "OrderBy" || tname == "OrderByDescending") {
+					Instruction arg = ins.TraceBack (method);
+					TypeReference tr = arg.GetOperandType (method);
+					if (tr != null)
+						CheckForSort (tr, method, ins, tname);
 				}
 			}
 

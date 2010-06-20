@@ -31,6 +31,7 @@ using System.Collections;
 using System.Diagnostics;
 
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Rules.Performance;
 
@@ -214,6 +215,45 @@ namespace Test.Rules.Performance {
 		{
 			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("UsingDateTime");
 			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("UsingStopwatch");
+		}
+
+		internal static MethodDefinition Current {
+			get { return null; }
+		}
+
+		internal static MethodDefinition Target {
+			get { return null; }
+		}
+
+		static bool AreEquivalent (VariableReference source, VariableReference target)
+		{
+			VariableDefinitionCollection cv = Current.Body.Variables;
+			VariableDefinitionCollection tv = Target.Body.Variables;
+			return cv.Count > source.Index && tv.Count > target.Index ?
+				cv [source.Index].VariableType.Equals (tv [target.Index].VariableType) : false;
+		}
+
+		static bool AreEquivalent2 (ParameterReference source, ParameterReference target)
+		{
+			if ((source == null) || (target == null))
+				return false;
+
+			int ss = source.Sequence - 1;
+			int ts = target.Sequence - 1;
+			if ((ss <= 0) || (ts <= 0))
+				return false;
+
+			ParameterDefinitionCollection cp = Current.Parameters;
+			ParameterDefinitionCollection tp = Target.Parameters;
+			return ((cp.Count > ss) && (tp.Count > ts)) ?
+				cp [ss].ParameterType.Equals (tp [ts].ParameterType) : false;
+		}
+
+		[Test]
+		public void Properties ()
+		{
+			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("AreEquivalent");
+			AssertRuleSuccess<AvoidRepetitiveCallsToPropertiesTest> ("AreEquivalent2");
 		}
 	}
 }

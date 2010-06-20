@@ -122,6 +122,8 @@ namespace Gendarme.Rules.Performance {
 				}
 				instance = instance.TraceBack (caller);
 			}
+			if (chain != null)
+				sb.Append (chain.ToString ());
 			return sb.ToString ();
 		}
 
