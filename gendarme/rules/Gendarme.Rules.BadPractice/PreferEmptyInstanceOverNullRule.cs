@@ -129,10 +129,10 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("Return an empty instance instead of null.")]
 	public class PreferEmptyInstanceOverNullRule : ReturnNullRule, IMethodRule {
 
-		TypeReference returnType;
-		bool return_string;
-		bool return_array;
-		bool return_ienumerable;
+		TypeReference return_type;
+		bool string_return_type;
+		bool array_return_type;
+		bool ienumerable_return_type;
 
 		public override RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -145,12 +145,12 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			//only apply to methods returning string, array, or IEnumerable-impl
-			returnType = method.ReturnType.ReturnType;
-			return_string = (returnType.FullName == "System.String");
-			return_array = returnType.IsArray ();
-			return_ienumerable = returnType.Implements ("System.Collections.IEnumerable");
+			return_type = method.ReturnType.ReturnType;
+			string_return_type = (return_type.FullName == "System.String");
+			array_return_type = return_type.IsArray ();
+			ienumerable_return_type = return_type.Implements ("System.Collections.IEnumerable");
 
-			if (!return_string && !return_array && !return_ienumerable)
+			if (!string_return_type && !array_return_type && !ienumerable_return_type)
 				return RuleResult.DoesNotApply;
 
 			return base.CheckMethod (method);
@@ -164,11 +164,11 @@ namespace Gendarme.Rules.BadPractice {
 
 		string SuggestReturnType ()
 		{
-			if (return_string)
+			if (string_return_type)
 				return "string.Empty";
-			else if (return_array)
-				return string.Format ("an empty {0} array", returnType.Name);
-			else if (return_ienumerable)
+			else if (array_return_type)
+				return string.Format ("an empty {0} array", return_type.Name);
+			else if (ienumerable_return_type)
 				return "yield break (or equivalent)";
 			return "an empty collection";
 		}
