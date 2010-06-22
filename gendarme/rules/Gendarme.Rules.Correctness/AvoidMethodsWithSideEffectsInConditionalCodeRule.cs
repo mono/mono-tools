@@ -263,11 +263,11 @@ namespace Gendarme.Rules.Correctness {
 					return true;
 				
 				// System.String, System.Type, etc methods
-				if (pure_types.Contains (type_name))
+				if (types_considered_pure.Contains (type_name))
 					return true;
 				
 				// Equals, GetHashCode, Contains, etc
-				if (pure_methods.Contains (method_name))
+				if (methods_considered_pure.Contains (method_name))
 					return true;
 				
 				// operators
@@ -325,7 +325,8 @@ namespace Gendarme.Rules.Correctness {
 		
 		#region Fields
 		private static readonly MethodSignature StringConstructor = new MethodSignature (".ctor", "System.Void", new string [] {"System.String"});
-		private static HashSet<string> pure_types = new HashSet<string>{
+
+		private static HashSet<string> types_considered_pure = new HashSet<string> {
 			"System.Math",
 			"System.Object",
 			"System.String",
@@ -333,7 +334,8 @@ namespace Gendarme.Rules.Correctness {
 			"System.IO.Path",
 			"System.Linq.Enumerable",
 		};
-		private static HashSet<string> pure_methods = new HashSet<string>{
+
+		private static HashSet<string> methods_considered_pure = new HashSet<string> {
 			"AsReadOnly",
 			"BinarySearch",
 			"Clone",

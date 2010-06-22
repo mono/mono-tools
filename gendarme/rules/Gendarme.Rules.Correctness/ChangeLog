@@ -1,3 +1,8 @@
+2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* AvoidMethodsWithSideEffectsInConditionalCodeRule.cs: Apply 
+	AvoidLargeClassesRule
+
 2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* ProvideValidXmlStringRule.cs:
