@@ -1,3 +1,7 @@
+2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* UseObjectDisposedExceptionRule.cs: Apply AvoidLargeClassesRule
+
 2010-06-13  Sebastien Pouliot  <sebastien@ximian.com> 
 
 	* UseObjectDisposedExceptionRule.cs: Fis bitmask to include

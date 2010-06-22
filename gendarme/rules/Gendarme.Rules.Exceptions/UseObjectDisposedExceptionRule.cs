@@ -130,14 +130,14 @@ namespace Gendarme.Rules.Exceptions {
 				Log.WriteLine (this, "-----------------------------------------");
 				Log.WriteLine (this, method);
 				
-				has_this_call = false;
-				has_this_field = false;
+				call_using_this = false;
+				field_access_using_this = false;
 				creates_exception = false;
 				has_dispose_check = false;
 				
 				CheckBody (method);
 				
-				if ((has_this_call || has_this_field) && !creates_exception) {
+				if ((call_using_this || field_access_using_this) && !creates_exception) {
 					if (!has_dispose_check) {
 						Runner.Report (method, Severity.Medium, Confidence.High);
 					}
@@ -155,7 +155,7 @@ namespace Gendarme.Rules.Exceptions {
 				case Code.Call:
 				case Code.Callvirt:
 					MethodReference target = (MethodReference) ins.Operand;
-					if (!has_this_call) {
+					if (!call_using_this) {
 						MethodDefinition callee = target.Resolve ();
 						if (callee != null) {
 							if (!callee.IsPublic && !callee.IsStatic) {
@@ -163,7 +163,7 @@ namespace Gendarme.Rules.Exceptions {
 									Instruction instance = ins.TraceBack (method);
 									if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 										Log.WriteLine (this, "found non-public this call at {0:X4}", ins.Offset);
-										has_this_call = true;
+										call_using_this = true;
 									}
 								}
 							}
@@ -184,13 +184,13 @@ namespace Gendarme.Rules.Exceptions {
 				case Code.Ldfld:
 				case Code.Stfld:
 				case Code.Ldflda:
-					if (!has_this_field) {
+					if (!field_access_using_this) {
 						FieldReference field = (FieldReference) ins.Operand;
 						if (field.DeclaringType.FullName == fullname) {
 							Instruction instance = ins.TraceBack (method);
 							if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 								Log.WriteLine (this, "found field access at {0:X4}", ins.Offset);
-								has_this_field = true;
+								field_access_using_this = true;
 							}
 						}
 					}
@@ -282,8 +282,8 @@ namespace Gendarme.Rules.Exceptions {
 		private static readonly MethodSignature Equals1 = new MethodSignature ("Equals", "System.Boolean", new string [1]);
 		private static readonly MethodSignature Close = new MethodSignature ("Close", "System.Void", new string [0]);
 		
-		private bool has_this_call;
-		private bool has_this_field;
+		private bool call_using_this;
+		private bool field_access_using_this;
 		private bool creates_exception;
 		private bool has_dispose_check;
 	}
