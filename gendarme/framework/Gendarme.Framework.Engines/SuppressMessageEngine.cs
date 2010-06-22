@@ -40,14 +40,14 @@ namespace Gendarme.Framework.Engines {
 		const string SuppressMessage = "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute";
 
 		static Type fxCopCompatibility = typeof (FxCopCompatibilityAttribute);
-		private Dictionary<string, string> fxcopMapper;
+		private Dictionary<string, string> mapper;
 
 		public override void Initialize (EngineController controller)
 		{
 			base.Initialize (controller);
 			controller.BuildingAssembly += new EventHandler<EngineEventArgs> (OnAssembly);
 
-			fxcopMapper = new Dictionary<string,string> ();
+			mapper = new Dictionary<string,string> ();
 			foreach (IRule rule in Controller.Runner.Rules) {
 				Type type = rule.GetType ();
 				object [] attrs = type.GetCustomAttributes (fxCopCompatibility, true);
@@ -56,7 +56,7 @@ namespace Gendarme.Framework.Engines {
 				// one Gendarme rule can be mapped to several FxCop rules
 				// one FxCop rules can be split across several Gendarme rules
 				foreach (FxCopCompatibilityAttribute attr in attrs) {
-					fxcopMapper.Add (attr.Category + "." + attr.CheckId, rule.FullName);
+					mapper.Add (attr.Category + "." + attr.CheckId, rule.FullName);
 				}
 			}
 		}
@@ -98,7 +98,7 @@ namespace Gendarme.Framework.Engines {
 
 				// map from FxCop - otherwise keep the Gendarme syntax
 				string mapped_name;
-				if (!fxcopMapper.TryGetValue (name, out mapped_name))
+				if (!mapper.TryGetValue (name, out mapped_name))
 					mapped_name = name;
 
 				// FIXME: Scope ? "member", "resource", "module", "type", "method", or "namespace"

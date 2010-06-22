@@ -1,3 +1,7 @@
+2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* SuppressMessageEngine.cs: Apply AvoidLargeClassesRule
+
 2010-06-18  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* OpCodeEngine.cs: Apply AvoidRepetitiveCallsToPropertiesRule
