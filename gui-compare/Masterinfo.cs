@@ -1045,6 +1045,9 @@ namespace GuiCompare {
 
 		public override string GetNodeKey (string name, XmlNode node)
 		{
+			if (genericParameters != null)
+				name = name + ":" + genericParameters.Count;
+
 			// for explicit/implicit operators we need to include the return
 			// type in the key to allow matching; as a side-effect, differences
 			// in return types will be reported as extra/missing methods
@@ -1103,7 +1106,7 @@ namespace GuiCompare {
 			get { return "constructor"; }
 		}
 	}
-
+/*
 	public class XmlNodeComparer : IComparer
 	{
 		public static XmlNodeComparer Default = new XmlNodeComparer ();
@@ -1115,4 +1118,5 @@ namespace GuiCompare {
 			return String.Compare (na.Attributes ["name"].Value, nb.Attributes ["name"].Value);
 		}
 	}
+*/ 
 }

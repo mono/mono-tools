@@ -1,3 +1,8 @@
+2010-06-22  Marek Safar <marek.safar@gmail.com>
+
+	* Metadata.cs, CompareContext.cs, Masterinfo.cs: Compare correctly
+	generic and non-generic method overloads.
+
 2010-06-04  Marek Habersack  <mhabersack@novell.com>
 
 	* MainWindow.cs: don't crash when comparison failed.

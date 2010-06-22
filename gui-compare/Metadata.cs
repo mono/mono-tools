@@ -124,7 +124,27 @@ namespace GuiCompare {
 
 		public static int Compare (CompNamed x, CompNamed y)
 		{
-			return String.Compare (x.Name, y.Name);
+			int res = string.Compare (x.Name, y.Name);
+			if (res != 0)
+				return res;
+
+			var x_g = x as CompMethod;
+			var y_g = y as CompMethod;
+			if (x_g == null || y_g == null)
+				return res;
+
+			var x_tp = x_g.GetTypeParameters ();
+			var y_tp = y_g.GetTypeParameters ();
+			if (x_tp == null && y_tp != null)
+				return -1;
+
+			if (x_tp != null && y_tp == null)
+				return 1;
+
+			if (x_tp == null && y_tp == null)
+				return res;
+
+			return x_tp.Count.CompareTo (y_tp.Count);
 		}
 
 		string displayName;

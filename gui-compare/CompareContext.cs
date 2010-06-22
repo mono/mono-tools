@@ -368,7 +368,7 @@ namespace GuiCompare {
 					continue;
 				}
 
-				int c = String.Compare (reference_list[m].Name, target_list[a].Name);
+				int c = CompNamed.Compare (reference_list[m], target_list[a]);
 				comparisons_performed ++;
 
 				if (c == 0) {
@@ -408,6 +408,12 @@ namespace GuiCompare {
 						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
 							
 							comparison.ThrowsNIE = true;
+						}
+
+						if (reference_list[m] is ICompGenericParameter && target_list[a] is ICompGenericParameter) {
+							CompareTypeParameters (comparison,
+									(ICompGenericParameter) reference_list[m],
+									(ICompGenericParameter) target_list[a]);
 						}
 					}
 
