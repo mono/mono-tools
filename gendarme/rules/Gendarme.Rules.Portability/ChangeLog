@@ -1,3 +1,7 @@
+2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* MonoCompatibilityReviewRule.cs: Apply AvoidLargeClassesRule
+
 2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DoNotHardcodePathsRule.cs:

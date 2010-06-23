@@ -199,7 +199,7 @@ namespace Gendarme.Rules.Portability {
 		static byte [] msfinal_key = new byte [] { 0xb0, 0x3f, 0x5f, 0x7f, 0x11, 0xd5, 0x0a, 0x3a };
 		static byte [] winfx_key = new byte [] { 0x31, 0xbf, 0x38, 0x56, 0xad, 0x36, 0xe4, 0x35 };
 		static byte [] silverlight_key = new byte [] { 0x7c, 0xec, 0x85, 0xd7, 0xbe, 0xa7, 0x79, 0x8e };
-		static Version silverlight = new Version (2, 0, 5, 0);
+		static Version coreclr_runtime = new Version (2, 0, 5, 0);
 
 		static bool ComparePublicKeyToken (byte [] pkt1, byte [] pkt2)
 		{
@@ -232,7 +232,7 @@ namespace Gendarme.Rules.Portability {
 				// candidate for 31bf3856ad364e35 which is 'winfx' key - 
 				// but some Silverlight assemblies, Microsoft.VisualBasic.dll and 
 				// System.ServiceModel.dll, use it too
-				return (ComparePublicKeyToken (winfx_key, pkt) && (anr.Version != silverlight));
+				return (ComparePublicKeyToken (winfx_key, pkt) && (anr.Version != coreclr_runtime));
 			case 0x7c:
 				// candidate for 7cec85d7bea7798e which is used by Silverlight
 				// MoMA does not track Silverlight compatibility
