@@ -1,3 +1,7 @@
+2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Remove entries fixed with AvoidLargeClassesRule
+
 2010-06-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Remove entries fixed with AvoidComplexMethodsRule

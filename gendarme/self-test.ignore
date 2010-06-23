@@ -322,17 +322,6 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassed
 # CC 25 (CSC only)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
-# some should be fixed
-R: Gendarme.Rules.Smells.AvoidLargeClassesRule
-T: Gendarme.Wizard
-T: Gendarme.Framework.Engines.SuppressMessageEngine
-T: Gendarme.Framework.Helpers.OpCodeBitmask
-T: Gendarme.Framework.Runner
-T: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
-T: Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule
-T: Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule
-T: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
-
 # FIXME
 R: Gendarme.Rules.Smells.AvoidLongMethodsRule
 # Logical SLOC: 50. Maximum : 40
@@ -493,6 +482,12 @@ M: System.Int32[] Gendarme.Rules.Smells.Pattern::get_Prefixes()
 # OK - GetFastCyclomaticComplexity and GetSwitchCyclomaticComplexity are meant to be similar
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 T: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
+
+# OK - some field prefix are identical - but they would be hard to avoid while keeping readability
+R: Gendarme.Rules.Smells.AvoidLargeClassesRule
+T: Gendarme.Wizard
+T: Gendarme.Framework.Helpers.OpCodeBitmask
+T: Gendarme.Framework.Runner
 
 # Conditional code is used and, sadly, this leaves useless control flow in the IL
 R: Gendarme.Rules.Correctness.ReviewUselessControlFlowRule
