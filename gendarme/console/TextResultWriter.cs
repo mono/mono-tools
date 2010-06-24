@@ -49,9 +49,7 @@ namespace Gendarme {
 		}
 
 		private TextWriter writer;
-		private bool need_closing;
 		private ColorScheme color_scheme;
-		private int index;
 
 		public TextResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
@@ -73,7 +71,6 @@ namespace Gendarme {
 				}
 			} else {
 				writer = new StreamWriter (fileName);
-				need_closing = true;
 			}
 		}
 
@@ -85,6 +82,7 @@ namespace Gendarme {
 				    select n;
 			
 			WriteHeader ();
+			int num = 0;
 			if (query.Any ()) {				
 				string name = string.Empty;
 				string delimiter = new string ('-', 60);
@@ -95,10 +93,10 @@ namespace Gendarme {
 						name = rname;
 					}
 					
-					WriteDefect (defect);
+					WriteEntry (++num, defect);
 				}
 			}
-			WriteTrailer (query.Count ());
+			WriteTrailer (num);
 		}
 		
 		private void WriteHeader ()
@@ -109,14 +107,14 @@ namespace Gendarme {
 			writer.WriteLine ();
 		}
 
-		private void WriteDefect (Defect defect)
+		private void WriteEntry (int index, Defect defect)
 		{
 			IRule rule = defect.Rule;
 
 			BeginColor (
 				(Severity.Critical == defect.Severity || Severity.High == defect.Severity)
 				? ConsoleColor.DarkRed : ConsoleColor.DarkYellow);
-			writer.WriteLine ("{0}. {1}", ++index, rule.Name);
+			writer.WriteLine ("{0}. {1}", index, rule.Name);
 			writer.WriteLine ();
 			EndColor ();
 
@@ -128,10 +126,14 @@ namespace Gendarme {
 
 			writer.WriteLine ("* Severity: {0}, Confidence: {1}", defect.Severity, defect.Confidence);
 			writer.WriteLine ("* Target:   {0}", defect.Target);
+
 			if (defect.Location != defect.Target)
-				writer.WriteLine ("* Location: {0}", defect.Location);				
-			if (!String.IsNullOrEmpty (defect.Source))
-				writer.WriteLine ("* Source:   {0}", defect.Source);
+				writer.WriteLine ("* Location: {0}", defect.Location);	
+
+			string source = defect.Source;
+			if (!String.IsNullOrEmpty (source))
+				writer.WriteLine ("* Source:   {0}", source);
+
 			if (!String.IsNullOrEmpty (defect.Text))
 				writer.WriteLine ("* Details:  {0}", defect.Text);
 			writer.WriteLine ();
@@ -150,19 +152,23 @@ namespace Gendarme {
 		private void WriteTrailer (int numDefects)
 		{
 			int num_rules = Runner.Rules.Count;
+			if (num_rules == 1)
+				writer.Write ("Processed one rule");
+			else 
+				writer.Write ("Processed {0} rules", num_rules);
+
 			if (numDefects == 0)
-				writer.WriteLine ("Processed {0} rules, but found no defects.", num_rules);
-			else if (num_rules == 1)
-				writer.WriteLine ("Processed one rule.");	// we don't print the number of defects here because it is listed with the defect
-			else
-				writer.WriteLine ("Processed {0} rules.", num_rules);
+				writer.Write (" and found no defects");
+
+			// we don't print the number of defects here because it is listed with the defect
+			writer.WriteLine (".");
 		}
 
 		[ThreadModel (ThreadModel.SingleThread)]
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing) {
-				if (need_closing) {
+				if (writer != Console.Out) {
 					writer.Dispose ();
 				}
 			}

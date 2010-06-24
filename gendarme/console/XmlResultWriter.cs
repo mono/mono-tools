@@ -141,7 +141,7 @@ namespace Gendarme {
 					select new XElement ("target",
 						CreateTargetDetails (v2.Target),
 						from Defect defect in v2.Value
-						select CreateDefect (defect))));
+						select CreateElement (defect))));
 		}
 
 		static XObject [] CreateRuleDetails (IRule rule)
@@ -161,7 +161,7 @@ namespace Gendarme {
 				new XAttribute ("Assembly", assembly == null ? AssemblySet : assembly.Name.FullName) };
 		}
 
-		static XElement CreateDefect (Defect defect)
+		static XElement CreateElement (Defect defect)
 		{
 			return new XElement ("defect",
 				new XAttribute ("Severity", defect.Severity.ToString ()),

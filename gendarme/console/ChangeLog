@@ -1,3 +1,9 @@
+2010-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* TextResultWriter.cs: Apply AvoidRedundancyInMethodNameRule,
+	AvoidRepetitiveCallsToPropertiesRule and AvoidLackOfCohesionOfMethodsRule
+	* XmlResultWriter.cs: Apply AvoidRedundancyInMethodNameRule
+
 2010-06-05  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* IgnoreFileList.cs: Add 'N' tag to ignore defects on namespaces
