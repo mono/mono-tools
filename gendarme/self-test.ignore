@@ -213,7 +213,6 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.UI.UseSTAThreadAttributeOnSWFEnt
 # temp entries (new rule) most need to be fixed but some occurs on different code paths
 R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
 M: System.Int32 Gendarme.Settings::LoadRulesFromAssembly(System.String,System.String,System.String,System.String)
-M: System.Void Gendarme.TextResultWriter::WriteDefect(Gendarme.Framework.Defect)
 M: System.Boolean Gendarme.Framework.Rocks.MethodRocks::IsOverride(Mono.Cecil.MethodReference)
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.ThreadModel Gendarme.Rules.Concurrency.ThreadRocks::ThreadingModel(Mono.Cecil.MethodDefinition)
@@ -250,9 +249,6 @@ M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMetho
 
 # ---------------------------------------------------------
 # We might want to fix these.
-R: Gendarme.Rules.Naming.AvoidRedundancyInMethodNameRule
-M: System.Void Gendarme.TextResultWriter::WriteDefect(Gendarme.Framework.Defect)
-M: System.Xml.Linq.XElement Gendarme.XmlResultWriter::CreateDefect(Gendarme.Framework.Defect)
 
 # in some cases a null and String.Empty means different things (e.g. absense versus empty)
 R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
@@ -335,7 +331,6 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassed
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 T: Gendarme.ConsoleRunner
 T: Gendarme.Settings
-T: Gendarme.TextResultWriter
 T: Gendarme.Framework.Helpers.MethodPrinter
 T: Gendarme.Framework.Helpers.MethodSignature
 T: Gendarme.Framework.Defect
@@ -351,7 +346,6 @@ T: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
 T: Gendarme.Rules.Smells.AvoidLongMethodsRule
 T: Gendarme.Rules.Smells.CodeDuplicatedLocator
 T: Gendarme.Rules.Smells.Pattern
-T: Gendarme.TextResultWriter
 T: Gendarme.GuiRunner
 T: Gendarme.Wizard
 
@@ -399,11 +393,7 @@ M: System.Void Gendarme.GuiRunner::Execute()
 # FIXME the last one needs validation
 M: System.Boolean Gendarme.Wizard::CouldCopyReport(System.String&,System.String)
 
-# OK - System.Configuration.ApplicationSettingsBase works enough for Gendarme's Wizard (using Mono 2.1)
-R: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
-T: Gendarme.Properties.Settings
-
-# OK - Version and Guid sadly do not provide a TryParse method
+# OK - Version and Guid sadly do not provide a TryParse method (at least they did not before FX4.0 - FIXME once we update)
 R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
 M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseVersion(System.String)
 M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseGuid(System.String)

@@ -1,3 +1,9 @@
+2010-06-23  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* self-test.ignore: Remove entries fixed on the console runner, one
+	that does not apply to recent Mono and add comments about defects
+	that can/will be fixed with FX4.0
+
 2010-06-22  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* self-test.ignore: Remove entries fixed with AvoidLargeClassesRule
