@@ -55,24 +55,26 @@ function expcol (sender, args)
 				</head>
 				<style type="text/css">
 					body {
-						font-family: sans-serif;
-					}
-					h1, h2, h3 {
-						font-size: 1.2em;
-						color: #68892F;
+						font: "DejaVu Sans", "Bitstream Vera Sans", Verdana, sans-serif;
 					}
 					h1 {
-						font-size: 1.4em;
+						font-size: 1.8em;
+						color: #274e80;
 					}
 					h2 {
-						font-size: 1.1em;
+						font-size: 1.4em;
+						color: #19194b;
 					}
-
+					h3 {
+						font-size: 1.2em;
+						font-weight: normal;
+						color: #274e80;
+					}
 					p, li, b {
 						font-size: 1em;
 					}
 					p.where, p.problem, p.found, p.solution {
-						font-family: monospace;
+						font: "Consolas", "DejaVu Sans Mono", monospace;
 						background-color: #F6F6F6;
 						border: 1px solid #DDDDDD;
 						padding: 10px;
@@ -102,14 +104,17 @@ function expcol (sender, args)
 						float: right;				
 						width: 300px;						
 					}
-					a:link, a:active, a:hover, a:visited {
-						color: #9F75AD;
-						font-weight: bold;
+					a:link, a:visited {
+						color: #274e80;
+						text-decoration: none;
+					}
+					a:active, a:hover {
+						color: #19194b;
 						text-decoration: none;
 					}
 					a.go-to-rule {
 						float: right;
-						color: gray;
+						color: #274e80;
 						font-size: 0.6em;
 						font-weight: normal;
 					}
@@ -120,9 +125,7 @@ function expcol (sender, args)
 					<p>Produced on <xsl:value-of select="@date" /> UTC.</p>
 					
 					<div class="toc">
-						<div align="center">
-							<b style="font-size: 10pt;">Table of contents</b>
-						</div>
+						<h2 align="center">Table of contents</h2>
 						<p style="font-size: 10pt;">														
 							<a href="#s1">1.&#160;&#160;Summary</a><br />
 							<a href="#s1_1">&#160;&#160;1.1.&#160;&#160;List of assemblies searched</a><br />

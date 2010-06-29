@@ -1,3 +1,8 @@
+2010-06-28  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* gendarme.xsl: Update styles to be closer to the current Mono 
+	wiki style - which is also closer to Gendarme's logo colors.
+
 2010-06-23  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* TextResultWriter.cs: Apply AvoidRedundancyInMethodNameRule,
