@@ -87,27 +87,26 @@ namespace Gendarme.Rules.Portability {
 					continue;
 
 				if (s.IndexOfAny (InvalidChar) >= 0) {
-					s = FormatStringForDisplay (s);
-					s = String.Format ("Found string: \"{0}\"", s);
-					Runner.Report (method, ins, Severity.Low, Confidence.High, s);
+					Runner.Report (method, ins, Severity.Low, Confidence.High, FormatStringForDisplay (s));
 				}
 			}
 
 			return Runner.CurrentRuleResult;
 		}
 
-		/// <summary>
-		/// Format the string to looks like in the C# source code
-		/// For example the character \x01 is converted to the "\x01" string
-		/// </summary>
-		/// <remarks>This operation avoid crash with special characters when applying the XSL
-		/// transform to produce the html report</remarks>
-		/// <param name="value">the string to format</param>
-		/// <returns>the string fomatted</returns>
+		// Format the string to looks like in the C# source code
+		// For example the character \x01 is converted to the "\x01" string
+		// This operation avoid crash with special characters when applying the XSL
+		// transform to produce the html report
 		private static string FormatStringForDisplay (string value)
 		{
-			StringBuilder result = new StringBuilder();
+			StringBuilder result = new StringBuilder ("Found string: \"");
 			foreach (char c in value) {
+				if (!Char.IsControl (c)) {
+					result.Append (c);
+					continue;
+				}
+
 				// make the invalid char visible on output
 				if (c == '\n')
 					result.Append ("\\n");
@@ -115,12 +114,10 @@ namespace Gendarme.Rules.Portability {
 					result.Append ("\\r");
 				else if (c == '\t')
 					result.Append ("\\t");
-				else if (Char.IsControl (c))
-					result.AppendFormat ("\\x{0}", ((short) c).ToString("00"));
 				else
-					result.Append (c);
+					result.AppendFormat ("\\x").Append (((short) c).ToString ("x"));
 			}
-			return result.ToString ();
+			return result.Append ("\".").ToString ();
 		}
 	}
 }

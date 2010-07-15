@@ -10,6 +10,8 @@ rules_sources =  \
 	MonoCompatibilityReviewRule.cs \
 	NewLineLiteralRule.cs
 
+EXTRA_TESTS_OPTIONS += -o-
+
 tests_sources = \
 	DoNotHardcodePathsTest.cs \
 	ExitCodeIsLimitedOnUnixTest.cs \

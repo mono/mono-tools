@@ -60,12 +60,28 @@ namespace Test.Rules.Portability {
 			return "Hello Mono\r\n";
 		}
 
+		public string Tab ()
+		{
+			return "\tHello Mono\r\n";
+		}
+
+		public string Control ()
+		{
+			return "\xbHello Mono\r\n";
+		}
+
 		[Test]
 		public void Bad ()
 		{
 			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral_13", 1);
 			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral_10", 1);
 			AssertRuleFailure<NewLineLiteralTest> ("GetNewLineLiteral", 1);
+
+			AssertRuleFailure<NewLineLiteralTest> ("Tab", 1);
+			Assert.IsTrue (Runner.Defects [0].Text.Contains ("\\t"), "visible tab");
+
+			AssertRuleFailure<NewLineLiteralTest> ("Control", 1);
+			Assert.IsTrue (Runner.Defects [0].Text.Contains ("\\xb"), "visible 0xb");
 		}
 
 		public string GetNewLine ()
@@ -90,7 +106,7 @@ namespace Test.Rules.Portability {
 		{
 			AssertRuleSuccess<NewLineLiteralTest> ("GetNewLine");
 			// see note ^^^
-			// AssertRuleSuccess<NewLineLiteralTest> ("GetEmpty");
+			AssertRuleSuccess<NewLineLiteralTest> ("GetEmpty");
 			// no LDSTR instruction (LDNULL is used)
 			AssertRuleDoesNotApply<NewLineLiteralTest> ("GetNull");
 		}

@@ -1,3 +1,7 @@
+2010-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NewLineLiteralTest.cs: Complete test coverage for rule
+
 2009-12-13  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* MonoCompatibilityReviewTest.cs: Add test cases to ensure we're not

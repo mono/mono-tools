@@ -1,3 +1,11 @@
+2010-07-14  Sebastien Pouliot  <sebastien@ximian.com>
+
+	* NewLineLiteralRule.cs: Fix decimal (needs hexadecimal) for
+	control characters. Remove XML doc (used for rules doc only)
+	and avoid a few allocations since we're using a StringBuilder
+	* Makefile.am: Compile tests without optimizations so GMCS
+	won't replace a "" with String.Empty
+
 2010-07-14  Antoine Vandecreme  <avandecreme@sopragroup.com>
 
 	* NewLineLiteralRule.cs: Format specials char to be
