@@ -1,3 +1,8 @@
+2010-07-22  Marek Habersack  <mhabersack@novell.com>
+
+	* MasterMetadata.cs: added code to show values of enums in the
+	extra info box.
+
 2010-06-22  Marek Safar <marek.safar@gmail.com>
 
 	* Metadata.cs, CompareContext.cs, Masterinfo.cs: Compare correctly

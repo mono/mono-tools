@@ -423,6 +423,39 @@ namespace GuiCompare {
 			                                 fields,
 			                                 null);
 
+			if (fields == null || fields.Count == 0)
+				return;
+
+			List <MasterField> masterFields = new List<MasterField> ();
+			foreach (CompNamed f in fields) {
+				MasterField field = f as MasterField;
+				if (field == null)
+					continue;
+
+				masterFields.Add (field);
+			}
+
+			if (masterFields.Count == 0)
+				return;
+
+			masterFields.Sort ((MasterField left, MasterField right) => {
+				if (left == null && right == null)
+					return 0;
+
+				if (left == null)
+					return 1;
+
+				if (right == null)
+					return -1;
+
+				return String.Compare (left.GetLiteralValue (), right.GetLiteralValue (), StringComparison.Ordinal);
+			});
+
+			StringBuilder sb = new StringBuilder ();
+			sb.Append ("<b>Members:</b>\n");
+			foreach(MasterField field in masterFields)
+				sb.AppendFormat ("\t\t<i>{0}</i> = {1}\n", field.Name, field.GetLiteralValue ());
+			ExtraInfo = sb.ToString ();
 		}
 
 		public override string GetBaseType()
