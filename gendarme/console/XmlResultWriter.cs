@@ -4,7 +4,8 @@
 // Authors:
 //	Christian Birkl <christian.birkl@gmail.com>
 //	Sebastien Pouliot <sebastien@ximian.com>
-//  Jb Evain <jbevain@novell.com>
+//	Jb Evain <jbevain@novell.com>
+//	Eric Zeitler <eric.zeitler@gmail.com>
 //
 // Copyright (C) 2006 Christian Birkl
 // Copyright (C) 2006, 2008 Novell, Inc (http://www.novell.com)
@@ -48,7 +49,6 @@ namespace Gendarme {
 		private const string AssemblySet = "[across all assemblies analyzed]";
 
 		XmlWriter writer;
-		XElement root;
 
 		public XmlResultWriter (IRunner runner, string fileName)
 			: base (runner, fileName)
@@ -68,25 +68,28 @@ namespace Gendarme {
 
 		protected override void Start ()
 		{
-			root = new XElement ("gendarme-output",
-				new XAttribute ("date", DateTime.UtcNow.ToString ()));
+			writer.WriteStartDocument ();
+			writer.WriteStartElement ("gendarme-output");
+			writer.WriteAttributeString ("date", DateTime.UtcNow.ToString ());
 		}
 
 		protected override void Write ()
 		{
-			root.Add (
-				CreateFiles (),
-				CreateRules (),
-				CreateDefects ());
+			CreateFiles ();
+			CreateRules ();
+			CreateDefects ();
 		}
 
-		private XElement CreateFiles ()
+		private void CreateFiles ()
 		{
-			return new XElement ("files",
-				from AssemblyDefinition assembly in Runner.Assemblies
-				select new XElement ("file",
-					new XAttribute ("Name", assembly.Name.FullName),
-					new XText (assembly.MainModule.Image.FileInformation.FullName)));
+			writer.WriteStartElement ("files");
+			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
+				writer.WriteStartElement ("file");
+				writer.WriteAttributeString ("Name", assembly.Name.FullName);
+				writer.WriteString (assembly.MainModule.Image.FileInformation.FullName);
+				writer.WriteEndElement ();
+			}
+			writer.WriteEndElement ();
 		}
 
 		static string GetRuleType (IRule rule)
@@ -100,24 +103,28 @@ namespace Gendarme {
 			return "Other";
 		}
 
-		private XElement CreateRules ()
+		private void CreateRules ()
 		{
-			return new XElement ("rules",
-				from rule in Runner.Rules
-				where rule.Active
-				select CreateRule (rule, GetRuleType (rule)));
+			writer.WriteStartElement ("rules");
+			foreach (var rule in Runner.Rules) {
+				if (rule.Active) {
+					CreateRule (rule, GetRuleType (rule));
+				}
+			}
+			writer.WriteEndElement ();
 		}
 
-		static XElement CreateRule (IRule rule, string type)
+		void CreateRule (IRule rule, string type)
 		{
-			return new XElement ("rule",
-				new XAttribute ("Name", rule.Name),
-				new XAttribute ("Type", type),
-				new XAttribute ("Uri", rule.Uri.ToString ()),
-				new XText (rule.GetType ().FullName));
+			writer.WriteStartElement ("rule");
+			writer.WriteAttributeString ("Name", rule.Name);
+			writer.WriteAttributeString ("Type", type);
+			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
+			writer.WriteString (rule.GetType ().FullName);
+			writer.WriteEndElement ();
 		}
 
-		private XElement CreateDefects ()
+		private void CreateDefects ()
 		{
 			var query = from n in Runner.Defects
 				    group n by n.Rule into a
@@ -133,51 +140,55 @@ namespace Gendarme {
 						    }
 				    };
 
-			return new XElement ("results",
-				from value in query
-				select new XElement ("rule",
-					CreateRuleDetails (value.Rule),
-					from v2 in value.Value
-					select new XElement ("target",
-						CreateTargetDetails (v2.Target),
-						from Defect defect in v2.Value
-						select CreateElement (defect))));
+			writer.WriteStartElement ("results");
+			foreach (var value in query) {
+				writer.WriteStartElement ("rule");
+				CreateRuleDetails (value.Rule);
+				foreach (var v2 in value.Value) {
+					writer.WriteStartElement ("target");
+					CreateTargetDetails (v2.Target);
+					foreach (Defect defect in v2.Value) {
+						CreateElement (defect);
+					}
+					writer.WriteEndElement ();
+				}
+				writer.WriteEndElement ();
+			}
+			writer.WriteEndElement ();
 		}
 
-		static XObject [] CreateRuleDetails (IRule rule)
+		void CreateRuleDetails (IRule rule)
 		{
-			return new XObject [] {
-				new XAttribute ("Name", rule.Name),
-				new XAttribute ("Uri", rule.Uri.ToString ()),
-				new XElement ("problem", rule.Problem),
-				new XElement ("solution", rule.Solution) };
+			writer.WriteAttributeString ("Name", rule.Name);
+			writer.WriteAttributeString ("Uri", rule.Uri.ToString ());
+			writer.WriteElementString ("problem", rule.Problem);
+			writer.WriteElementString ("solution", rule.Solution);
 		}
 
-		static XObject [] CreateTargetDetails (IMetadataTokenProvider target)
+		void CreateTargetDetails (IMetadataTokenProvider target)
 		{
 			AssemblyDefinition assembly = target.GetAssembly ();
-			return new XObject [] {
-				new XAttribute ("Name", target.ToString ()),
-				new XAttribute ("Assembly", assembly == null ? AssemblySet : assembly.Name.FullName) };
+
+			writer.WriteAttributeString ("Name", target.ToString ());
+			writer.WriteAttributeString ("Assembly", assembly == null ? AssemblySet : assembly.Name.FullName);
 		}
 
-		static XElement CreateElement (Defect defect)
+		void CreateElement (Defect defect)
 		{
-			return new XElement ("defect",
-				new XAttribute ("Severity", defect.Severity.ToString ()),
-				new XAttribute ("Confidence", defect.Confidence.ToString ()),
-				new XAttribute ("Location", defect.Location.ToString ()),
-				new XAttribute ("Source", defect.Source),
-				new XText (defect.Text));
+			writer.WriteStartElement ("defect");
+			writer.WriteAttributeString ("Severity", defect.Severity.ToString ());
+			writer.WriteAttributeString ("Confidence", defect.Confidence.ToString ());
+			writer.WriteAttributeString ("Location", defect.Location.ToString ());
+			writer.WriteAttributeString ("Source", defect.Source);
+			writer.WriteString (defect.Text);
+			writer.WriteEndElement ();
 		}
 
 		protected override void Finish ()
 		{
-			var document = new XDocument (
-				new XDeclaration ("1.0", "utf-8", "yes"),
-				root);
-
-			document.Save (writer);
+			writer.WriteEndElement ();
+			writer.WriteEndDocument ();
+			writer.Close ();
 		}
 
 		[ThreadModel (ThreadModel.SingleThread)]
