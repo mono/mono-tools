@@ -66,7 +66,7 @@ namespace Gendarme.Framework {
 		public void Clear (T bit)
 		{
 			unchecked {
-				mask &= (ulong) ~(1 << bit.ToInt32 (null));
+				mask &= ~((ulong) 1 << bit.ToInt32 (null));
 			}
 		}
 
@@ -76,6 +76,19 @@ namespace Gendarme.Framework {
 		public void ClearAll ()
 		{
 			mask = 0;
+		}
+
+		public int Count ()
+		{
+			if (mask == 0)
+				return 0;
+
+			int count = 0;
+			for (int i = 0; i < 64; i++) {
+				if (((mask >> i) & 1) == 1)
+					count++;
+			}
+			return count;
 		}
 
 		/// <summary>

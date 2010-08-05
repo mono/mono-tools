@@ -56,6 +56,57 @@ namespace Test.Framework {
 		}
 
 		[Test]
+		public void Count ()
+		{
+			Bitmask<long> x = new Bitmask<long> ();
+			Assert.AreEqual (0, x.Count (), "0");
+			x.SetAll ();
+			Assert.AreEqual (64, x.Count (), "64");
+			for (int i = 63; i >= 0; i--) {
+				x.Clear (i);
+				Assert.AreEqual (i, x.Count (), i.ToString ());
+			}
+		}
+
+		[Test]
+		public void Intersect ()
+		{
+			Bitmask<long> x = new Bitmask<long> ();
+			Assert.IsTrue (x.Intersect (null), "null"); // special case since they are equals
+			Assert.IsFalse (x.Intersect (x), "self");
+
+			Bitmask<long> all = new Bitmask<long> ();
+			all.SetAll ();
+			Assert.IsFalse (x.Intersect (all), "x N all");
+			Assert.IsFalse (all.Intersect (x), "all N x");
+
+			x.Set (0);
+			Assert.IsTrue (x.Intersect (all), "1 N all");
+			Assert.IsTrue (all.Intersect (x), "all N 1");
+
+			Assert.IsTrue (x.Intersect (x), "self 1");
+		}
+
+		[Test]
+		public void IsSubsetOf ()
+		{
+			Bitmask<long> x = new Bitmask<long> ();
+			Assert.IsFalse (x.IsSubsetOf (null), "null");
+			Assert.IsTrue (x.IsSubsetOf (x), "self");
+
+			Bitmask<long> all = new Bitmask<long> ();
+			all.SetAll ();
+			Assert.IsTrue (x.IsSubsetOf (all), "x < all");
+			Assert.IsFalse (all.IsSubsetOf (x), "all < x");
+
+			x.Set (0);
+			Assert.IsTrue (x.IsSubsetOf (all), "1 < all");
+			Assert.IsFalse (all.IsSubsetOf (x), "all < 1");
+
+			Assert.IsTrue (x.IsSubsetOf (x), "self 1");
+		}
+
+		[Test]
 		public void SetClearAll ()
 		{
 			Bitmask<long> x = new Bitmask<long> ();
