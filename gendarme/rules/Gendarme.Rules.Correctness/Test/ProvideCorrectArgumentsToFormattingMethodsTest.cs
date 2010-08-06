@@ -3,6 +3,7 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Antoine Vandecreme  <avandecreme@sopragroup.com>
 //
 // 	(C) 2008 Néstor Salceda
 //
@@ -27,11 +28,12 @@
 //
 
 using System;
+using System.Globalization;
 using Gendarme.Rules.Correctness;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
 using Test.Rules.Definitions;
-using System.Globalization;
+using Tests.Rules.Correctness;
 
 namespace Test.Rules.Correctness {
 	[TestFixture]
@@ -150,6 +152,18 @@ namespace Test.Rules.Correctness {
 			{
 				String.Format (new CultureInfo ("en-US"), "Format : {0} {1}", "value1");
 			}
+
+			public void MethodWithGoodFormattingAndStringResource ()
+			{
+				String.Format (Resource.OneParameter, "parameter1");
+				String.Format (Resource.TwoParameter, "parameter1", "parameter2");
+			}
+
+			public void MethodWithBadFormattingAndStringResource ()
+			{
+				String.Format (Resource.OneParameter, "parameter1", "parameter2");
+				String.Format (Resource.TwoParameter, "parameter1");
+			}
 		}
 
 		[Test]
@@ -258,6 +272,18 @@ namespace Test.Rules.Correctness {
 		public void FailOnMethodWithBadFormattingAndIFormatProvider ()
 		{
 			AssertRuleFailure<FormattingCases> ("MethodWithBadFormattingAndIFormatProvider");
+		}
+
+		[Test]
+		public void SuccessOnMethodWithGoodFormattingAndStringResource ()
+		{
+			AssertRuleSuccess<FormattingCases> ("MethodWithGoodFormattingAndStringResource");
+		}
+
+		[Test]
+		public void FailOnMethodWithBadFormattingAndStringResource ()
+		{
+			AssertRuleFailure<FormattingCases> ("MethodWithBadFormattingAndStringResource", 2);
 		}
 
 		string InstanceLocalize (string s)

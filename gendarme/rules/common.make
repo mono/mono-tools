@@ -44,7 +44,7 @@ $(rules_dll): $(rules_build_sources) $(framework)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 
-$(tests_dll): $(tests_build_sources) $(rules_dll)
+$(tests_dll): $(tests_build_sources) $(rules_dll) $(EXTRA_TESTS_DEPS)
 	$(GMCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
 		-r:$(rules_dll) -r:$(common_tests) -pkg:mono-nunit -out:$@ $(tests_build_sources)
 

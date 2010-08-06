@@ -254,6 +254,7 @@ M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMetho
 R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 M: System.String Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule::ConditionalOn(Mono.Cecil.MethodReference)
 M: System.String Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::GetReturnTypeSignature(Mono.Cecil.MethodReference)
+T: Gendarme.Rules.Correctness.ProvideCorrectArgumentsToFormattingMethodsRule
 
 # some needs fixing - to be reviewed
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule

@@ -81,6 +81,11 @@
     <Compile Include="ProvideCorrectRegexPatternTest.cs" />
     <Compile Include="ProvideValidXmlStringTest.cs" />
     <Compile Include="ProvideValidXPathExpressionTest.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="ReviewCastOnIntegerDivisionTest.cs" />
     <Compile Include="ReviewCastOnIntegerMultiplicationTest.cs" />
     <Compile Include="ReviewDoubleAssignmentTest.cs" />
@@ -120,6 +125,13 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

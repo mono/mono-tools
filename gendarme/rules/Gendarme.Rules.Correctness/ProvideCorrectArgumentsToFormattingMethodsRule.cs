@@ -3,6 +3,7 @@
 //
 // Authors:
 //	Néstor Salceda <nestor.salceda@gmail.com>
+//	Antoine Vandecreme  <avandecreme@sopragroup.com>
 //
 // 	(C) 2008 Néstor Salceda
 //
@@ -27,6 +28,8 @@
 //
 
 using System;
+using System.IO;
+using System.Resources;
 using System.Collections;
 
 using Mono.Cecil;
@@ -67,7 +70,7 @@ namespace Gendarme.Rules.Correctness {
 		static MethodSignature formatSignature = new MethodSignature ("Format", "System.String");
 		static BitArray results = new BitArray (16);
 
-		private static Instruction GetLoadStringFormatInstruction (Instruction call, MethodDefinition method, 
+		private static string GetLoadStringFormatInstruction (Instruction call, MethodDefinition method,
 			int formatPosition)
 		{
 			Instruction loadString = call.TraceBack (method, -formatPosition);
@@ -84,10 +87,62 @@ namespace Gendarme.Rules.Correctness {
 					return null;
 			}
 
-			if (loadString.OpCode.Code != Code.Ldstr)
+			switch (loadString.OpCode.Code) {
+			case Code.Call:
+			case Code.Callvirt:
+				return GetLoadStringFromCall (loadString.Operand as MethodReference);
+			case Code.Ldstr:
+				return loadString.Operand as string;
+			default:
+				return null;
+			}
+		}
+
+		// this works because there's an earlier check limiting this to generated code
+		// which is a simple, well-known, case where the first string load is known
+		private static string GetResourceNameFromResourceGetter (MethodDefinition md)
+		{
+			foreach (Instruction instruction in md.Body.Instructions)
+				if (instruction.OpCode.Code == Code.Ldstr)
+					return instruction.Operand as string;
+			return null;
+		}
+
+		private static EmbeddedResource GetEmbeddedResource (AssemblyDefinition ad,
+			string resourceClassName)
+		{
+			ResourceCollection resources = ad.MainModule.Resources;
+			foreach (EmbeddedResource resource in resources)
+				if (resourceClassName.Equals (resource.Name))
+					return resource;
+			return null;
+		}
+
+		private static string GetLoadStringFromCall (MethodReference mr)
+		{
+			MethodDefinition md = mr.Resolve ();
+			if ((md == null) || !IsResource (md))
 				return null;
 
-			return loadString;
+			string resourceName = GetResourceNameFromResourceGetter (md);
+			if (resourceName == null)
+				return null;
+
+			AssemblyDefinition ad = md.GetAssembly ();
+			string resourceClassName = md.DeclaringType.FullName + ".resources";
+			EmbeddedResource resource = GetEmbeddedResource (ad, resourceClassName);
+			if (resource == null)
+				return null;
+
+			using (MemoryStream ms = new MemoryStream (resource.Data))
+			using (ResourceSet resourceSet = new ResourceSet (ms)) {
+				return resourceSet.GetString (resourceName);
+			}
+		}
+
+		private static bool IsResource (MethodDefinition method)
+		{
+			return method.IsStatic && method.IsGetter && method.IsGeneratedCode ();
 		}
 
 		// Get the store instruction associated with the load instruction
@@ -136,7 +191,7 @@ namespace Gendarme.Rules.Correctness {
 			return counter;
 		}
 
-		private static bool TryComputeArraySize (Instruction call, MethodDefinition method, int lastParameterPosition, 
+		private static bool TryComputeArraySize (Instruction call, MethodDefinition method, int lastParameterPosition,
 			out int elementsPushed)
 		{
 			elementsPushed = 0;
@@ -196,29 +251,23 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			// if we don't find the content we succeed (well we don't fail/report).
-			Instruction loadString = GetLoadStringFormatInstruction (call, method, formatPosition);
+			string loadString = GetLoadStringFormatInstruction (call, method, formatPosition);
 			if (loadString == null)
 				return;
 
-			int expectedParameters = GetExpectedParameters ((string) loadString.Operand);
-			
+			int expectedParameters = GetExpectedParameters (loadString);
+
 			// There aren't parameters, and isn't a string with '{' characters
-			if (expectedParameters == 0) {
-				if (elementsPushed == 0) {
-					Runner.Report (method, call, Severity.Low, Confidence.Normal, 
-						"You are calling String.Format without arguments, you can remove the call to String.Format");
-					return;
-				}
-
-				if (elementsPushed > 0) {
-					Runner.Report (method, call, Severity.Medium, Confidence.Normal, "Extra parameters");
-					return;
-				}
-
-				// It's likely you are calling a method for getting the formatting string.
+			if (expectedParameters == 0 && elementsPushed == 0) {
+				Runner.Report (method, call, Severity.Low, Confidence.Normal, "You are calling String.Format without arguments, you can remove the call to String.Format");
 				return;
 			}
-			
+
+			if (expectedParameters < elementsPushed) {
+				Runner.Report (method, call, Severity.Medium, Confidence.Normal, String.Format ("Extra parameters are provided to String.Format, {0} provided but only {1} expected", elementsPushed, expectedParameters));
+				return;
+			}
+
 			if (elementsPushed < expectedParameters)
 				Runner.Report (method, call, Severity.Critical, Confidence.Normal, String.Format ("The String.Format method is expecting {0} parameters, but only {1} are found.", expectedParameters, elementsPushed));
 		}

@@ -33,7 +33,17 @@ rules_sources =  \
 	UseNoInliningWithGetCallingAssemblyRule.cs \
 	UseValueInPropertySetterRule.cs
 
-EXTRA_TESTS_OPTIONS += -d:DEBUG
+EXTRA_TESTS_OPTIONS += -d:DEBUG -resource:Test/Resources.resources,Tests.Rules.Correctness.Resource.resources
+
+EXTRA_DIST += Test/Resource.resx
+
+tests_resource_resx = Test/Resource.resx
+tests_resource_prefix_resx = $(addprefix $(srcdir)/, $(tests_resource_resx))
+
+Test/Resources.resources: $(tests_resource_resx)
+	resgen2 -usesourcepath -compile $(tests_resource_resx),Test/Resources.resources;
+
+EXTRA_TESTS_DEPS = Test/Resources.resources
 
 tests_sources = \
 	AttributeStringLiteralsShouldParseCorrectlyTest.cs \
@@ -56,6 +66,7 @@ tests_sources = \
 	ProvideCorrectRegexPatternTest.cs \
 	ProvideValidXmlStringTest.cs \
 	ProvideValidXPathExpressionTest.cs \
+	Resource.Designer.cs \
 	ReviewCastOnIntegerDivisionTest.cs \
 	ReviewCastOnIntegerMultiplicationTest.cs \
 	ReviewDoubleAssignmentTest.cs \
