@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 using Mono.Cecil;
 
@@ -669,6 +670,73 @@ namespace Tests.Rules.Correctness {
 		{
 			AssertRuleSuccess<NonGeneric567817> ("Add");
 			AssertRuleSuccess<Generic567817<Stub, Stub>> ("Add");
+		}
+
+		public class GenericClass {
+
+			public bool Test1<T> (T fs) where T : Stream
+			{
+				return fs.CanRead;
+			}
+
+			public bool Test2<T> (T fs) where T : Stream
+			{
+				if (fs == null)
+					return false;
+				return fs.CanRead;
+			}
+
+			public bool Test2Equals<T> (T fs) where T : Stream
+			{
+				if (Equals (fs, null))
+					return false;
+
+				return fs.CanRead;
+			}
+
+			public bool Test2EqualsDefault<T> (T fs) where T : Stream
+			{
+				if (Equals (fs, default (Stream)))
+					return false;
+
+				return fs.CanRead;
+			}
+
+			public bool Test3<T> (T fs) where T : Stream
+			{
+				if (fs != null)
+					return fs.CanRead;
+
+				return false;
+			}
+
+			public bool Test3Equals<T> (T fs) where T : Stream
+			{
+				if (!Equals (fs, null))
+					return fs.CanRead;
+
+				return false;
+			}
+
+			public bool Test3EqualsDefault<T> (T fs) where T : Stream
+			{
+				if (!Equals (fs, default (Stream)))
+					return fs.CanRead;
+
+				return false;
+			}
+		}
+
+		[Test]
+		public void MoreGenericCases ()
+		{
+			AssertRuleFailure<GenericClass> ("Test1", 1);
+			AssertRuleSuccess<GenericClass> ("Test2");
+			AssertRuleSuccess<GenericClass> ("Test2Equals");
+			AssertRuleSuccess<GenericClass> ("Test2EqualsDefault");
+			AssertRuleSuccess<GenericClass> ("Test3");
+			AssertRuleSuccess<GenericClass> ("Test3Equals");
+			AssertRuleSuccess<GenericClass> ("Test3EqualsDefault");
 		}
 	}
 }

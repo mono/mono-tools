@@ -145,6 +145,10 @@ namespace Gendarme.Rules.Correctness {
 			if (parameter == null)
 				return;
 
+			// avoid checking parameters where a null check was already found
+			if (has_null_check.Get (parameter.Sequence))
+				return;
+
 			Instruction next = ins.Next;
 			Code nc = next.OpCode.Code;
 			switch (nc) {
@@ -191,6 +195,9 @@ namespace Gendarme.Rules.Correctness {
 				Instruction pi = ins.TraceBack (method, -(md.IsStatic ? 0 : 1 + i));
 				if (pi == null)
 					continue;
+				// generic types will be be boxed, skip that
+				if (pi.OpCode.Code == Code.Box)
+					pi = pi.Previous;
 				ParameterDefinition p = pi.GetParameter (method);
 				if (p != null)
 					has_null_check.Set (p.Sequence);
@@ -204,6 +211,7 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			has_null_check.ClearAll ();
+			int parameters = method.Parameters.Count;
 
 			// check
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -219,6 +227,10 @@ namespace Gendarme.Rules.Correctness {
 					}
 					CheckParameter (owner.GetParameter (method));
 				}
+
+				// stop processing instructions once all parameters are validated
+				if (has_null_check.Count () == parameters)
+					break;
 			}
 
 			return Runner.CurrentRuleResult;
