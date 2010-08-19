@@ -1,2 +1,3 @@
 doc
 gendarme-framework.pc
+*.dll.config
