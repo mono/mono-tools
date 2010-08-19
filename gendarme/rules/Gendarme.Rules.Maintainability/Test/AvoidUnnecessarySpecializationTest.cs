@@ -612,5 +612,22 @@ namespace Test.Rules.Maintainability {
 			AssertRuleDoesNotApply<DecorateThreadsRule> ("OnAssembly");
 			AssertRuleDoesNotApply<AvoidUnnecessarySpecializationTest> ("BuildCustomAttributes");
 		}
+
+		// this will generate code like:
+		// call instance void !!T[0...,0...]::Set(int32, int32, !!0)
+		// which does not really exists (e.g. can't be resolve into a MethodDefinition)
+		private void Fill<T> (T [,] source, T value)
+		{
+			for (int i = 0; i < source.GetLength (0); i++) {
+				for (int j = 0; j < source.GetLength (1); j++)
+					source [i, j] = value;
+			}
+		}
+
+		[Test]
+		public void MultiDimSet ()
+		{
+			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("Fill");
+		}
 	}
 }

@@ -509,10 +509,17 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static TypeReference GetConstructedGenericType (MethodReference method, GenericParameter parameter)
 		{
-			if (parameter.Owner is MethodReference)
-				return ((GenericInstanceMethod) method).GenericArguments [parameter.Position];
-			if (parameter.Owner is TypeReference)
-				return ((GenericInstanceType) method.DeclaringType).GenericArguments [parameter.Position];
+			if (parameter.Owner is MethodReference) {
+				GenericInstanceMethod gim = (method as GenericInstanceMethod);
+				// 'gim' can be null in special cases, e.g. a generated Set method on a multidim array
+				if (gim != null)
+					return gim.GenericArguments [parameter.Position];
+			}
+			if (parameter.Owner is TypeReference) {
+				GenericInstanceType git = (method.DeclaringType as GenericInstanceType);
+				if (git != null)
+					return git.GenericArguments [parameter.Position];
+			}
 			return parameter.Owner.GenericParameters [parameter.Position];
 		}
 
