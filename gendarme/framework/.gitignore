@@ -1,3 +1,5 @@
 doc
 gendarme-framework.pc
 *.dll.config
+TestResult.xml
+
