@@ -507,7 +507,7 @@ namespace Gendarme.Rules.Maintainability {
 			return sb.ToString ();
 		}
 
-		private static TypeReference GetConstructedGenericType (MethodReference method, GenericParameter parameter)
+		private static TypeReference GetConstructedGenericType (IMemberReference method, GenericParameter parameter)
 		{
 			if (parameter.Owner is MethodReference) {
 				GenericInstanceMethod gim = (method as GenericInstanceMethod);
