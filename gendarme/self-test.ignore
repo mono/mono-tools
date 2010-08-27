@@ -391,6 +391,8 @@ R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
 M: System.Byte Gendarme.ConsoleRunner::Execute(System.String[])
 M: System.Void Gendarme.Framework.Runner::Initialize()
 M: System.Void Gendarme.GuiRunner::Execute()
+# OK - DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule might throw exceptions with very uncommon code sequences (obfuscated code for instance)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 # FIXME the last one needs validation
 M: System.Boolean Gendarme.Wizard::CouldCopyReport(System.String&,System.String)
 

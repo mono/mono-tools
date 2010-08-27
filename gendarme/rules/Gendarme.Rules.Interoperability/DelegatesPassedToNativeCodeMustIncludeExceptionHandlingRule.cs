@@ -26,6 +26,9 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+//#define DEBUG
+//#define LOG
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,64 +44,241 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability {
 
 	/// <summary>
-	/// Every delegate which is passed to native code must include an exception 
-	/// block which spans the entire method and has a catch all handler.
+	/// This rule checks for delegates which are created for methods which don't
+	/// have exception handling and then passed to native code.
+	/// Every delegate which is passed to native code must include an exception
+	/// block which spans the entire method and has a catch all block.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// public void NativeCallback ()
+	/// delegate void Callback ();
+	/// [DllImport ("mylibrary.dll")]
+	/// static extern void RegisterCallback (Callback callback);
+	/// public void RegisterManagedCallback ()
 	/// {
-	///	Console.WriteLine ("{0}", 1);
+	/// 	RegisterCallback (ManagedCallback);
+	/// }
+	/// public void ManagedCallback ()
+	/// {
+	/// 	// This will cause the process to crash if native code calls this method.
+	/// 	throw new NotImplementedException ();
 	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public void NativeCallback ()
+	/// delegate void Callback ();
+	/// [DllImport ("mylibrary.dll")]
+	/// static extern void RegisterCallback (Callback callback);
+	/// public void RegisterManagedCallback ()
+	/// {
+	/// 	RegisterCallback (ManagedCallback);
+	/// }
+	/// public void ManagedCallback ()
 	/// {
 	///	try {
-	///		Console.WriteLine ("{0}", 1);
+	///		throw new NotImplementedException ();
 	///	}
 	///	catch {
+	///		// This way the exception won't "leak" to native code
+	///	}
+	///	try {
+	///		throw new NotImplementedException ();
+	///	}
+	///	catch (System.Exception ex) {
+	///		// This is also safe - the runtime will process this catch clause,
+	///		// even if it is technically possible (by writing assemblies in managed
+	///		// C++ or IL) to throw an exception that doesn't inherit from
+	///		// System.Exception.
 	///	}
 	/// }
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.6</remarks>
 
-	[Problem ("Every delegate passed to native code must include an exception block which spans the entire method and has a catch all handler.")]
+	[Problem ("Every delegate passed to native code must include an exception block which spans the entire method and has a catch all block.")]
 	[Solution ("Surround the entire method body with a try/catch block.")]
 	[EngineDependency (typeof (OpCodeEngine))]
-	public class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule : Rule, IMethodRule {
+	public sealed class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule : Rule, IMethodRule {
 		// A list of methods which have been verified to be safe to call from native code. 
-		Dictionary<MethodDefinition, bool> verified_methods;
+		Dictionary<MethodDefinition, bool> verified_methods = new Dictionary<MethodDefinition, bool> ();
 		
 		// A list of methods which have been reported to be unsafe (to not report the same method twice).
-		List<MethodDefinition> reported_methods;
+		HashSet<MethodDefinition> reported_methods = new HashSet<MethodDefinition> ();
 		
 		// A list of all the fields which have been passed to pinvokes (as a delegate parameter).
 		// We report an error if a ld[s]fld stores an unsafe function pointer into any of these fields.
-		List<FieldDefinition> fields_loads;
+		List<FieldDefinition> loaded_fields = new List<FieldDefinition> ();
 		
 		// A list of all the fields which have been assigned function pointers.
 		// We report an error if a pinvoke loads any of these fields.
-		Dictionary<FieldDefinition, List<MethodDefinition>> field_stores;
+		Dictionary<FieldDefinition, List<MethodDefinition>> stored_fields = new Dictionary<FieldDefinition, List<MethodDefinition>> ();
 				
+		// A list of all the locals in a method. 
+		// Have one class-level instance which is emptied before checking a method.
+		// Avoids creating a new list instance for each method to check.
+		List<List<MethodDefinition>> locals = new List<List<MethodDefinition>> ();
+		
+		// A list of ilranges a stack position corresponds to.
+		// Avoids creating a new list instance for each method to check.
+		List<ILRange> stack = new List<ILRange> ();
+	
+		// A list of one bool per instruction in a method indicating whether that instruction is safe in a method.
+		// Avoids creating a new list instance for each method to check.
+		List<bool> is_safe = new List<bool>();
+		
+		// A bitmask of safe instructions.
+		static OpCodeBitmask safe_instructions = new OpCodeBitmask (0x22F7FFE7FFD, 0x48000000007F0000, 0x2C00000000000000, 0x45C80);
+		
+		// A bitmask of opcodes a method must have to be checked in CheckMethod.
+		static OpCodeBitmask applicable_method_bitmask = new OpCodeBitmask (0x8000000000, 0x2400400000000000, 0x0, 0x0);
+
+#if LOG
+		static class Log 
+		{
+			public static bool IsEnabled (object o) { return true; }
+			public static void WriteLine (object o, string msg, params object [] args)
+			{
+				Console.WriteLine (msg, args);
+			}
+			public static void WriteLine (object o, MethodDefinition m)
+			{
+				Console.WriteLine (new MethodPrinter (m).ToString ());
+			}
+		}
+#endif
+
+#if false
+		static DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule ()
+		{
+			GenerateBitmasks ();
+		}
+		
+		public static void GenerateBitmasks ()
+		{
+			OpCodeBitmask bitmask;
+			
+			bitmask = new OpCodeBitmask ();
+			bitmask.Set (Code.Stfld);
+			bitmask.Set (Code.Stsfld);
+			bitmask.Set (Code.Call);
+			bitmask.Set (Code.Callvirt);
+			applicable_method_bitmask = bitmask;
+			Console.WriteLine ("applicable_method_bitmask: {0}", bitmask);
+			
+			bitmask = new OpCodeBitmask ();
+			// a list of safe instructions, which under no circumstances
+			// (for verifiable code) can cause an exception to be raised.
+			bitmask = new OpCodeBitmask ();
+			bitmask.Set (Code.Nop);
+			bitmask.Set (Code.Ret);
+			bitmask.Set (Code.Ldloc);
+			bitmask.Set (Code.Ldloc_0);
+			bitmask.Set (Code.Ldloc_1);
+			bitmask.Set (Code.Ldloc_2);
+			bitmask.Set (Code.Ldloc_3);
+			bitmask.Set (Code.Ldloc_S);
+			bitmask.Set (Code.Ldloca);
+			bitmask.Set (Code.Ldloca_S);
+			// This one is needed to load static fields for return values 
+			// a method which returns IntPtr should be able to ldsfld IntPtr.Zero
+			bitmask.Set (Code.Ldsfld); 
+			// bitmask.Set (Code.Ldsflda); // Not quite sure about this one, leaving it out for now.
+			bitmask.Set (Code.Leave);
+			bitmask.Set (Code.Endfilter);
+			bitmask.Set (Code.Endfinally);
+			bitmask.Set (Code.Ldc_I4);
+			bitmask.Set (Code.Ldc_I4_0);
+			bitmask.Set (Code.Ldc_I4_1);
+			bitmask.Set (Code.Ldc_I4_2);
+			bitmask.Set (Code.Ldc_I4_3);
+			bitmask.Set (Code.Ldc_I4_4);
+			bitmask.Set (Code.Ldc_I4_5);
+			bitmask.Set (Code.Ldc_I4_6);
+			bitmask.Set (Code.Ldc_I4_7);
+			bitmask.Set (Code.Ldc_I4_8);
+			bitmask.Set (Code.Ldc_I4_M1);
+			bitmask.Set (Code.Ldc_I8);
+			bitmask.Set (Code.Ldc_R4);
+			bitmask.Set (Code.Ldc_R8);
+			bitmask.Set (Code.Ldarg);
+			bitmask.Set (Code.Ldarg_0);
+			bitmask.Set (Code.Ldarg_1);
+			bitmask.Set (Code.Ldarg_2);
+			bitmask.Set (Code.Ldarg_3);
+			bitmask.Set (Code.Ldarg_S);
+			bitmask.Set (Code.Stloc);
+			bitmask.Set (Code.Stloc_0);
+			bitmask.Set (Code.Stloc_1);
+			bitmask.Set (Code.Stloc_2);
+			bitmask.Set (Code.Stloc_3);
+			bitmask.Set (Code.Stloc_S);
+			bitmask.Set (Code.Stobj); /* Can throw TypeLoadException. This is required to properly initialize out parameters which are ValueTypes */
+			bitmask.Set (Code.Ldnull);
+			bitmask.Set (Code.Initobj);
+			bitmask.Set (Code.Pop);
+			// The stind* instructions can raise an exception:
+			// "NullReferenceException is thrown if addr is not naturally aligned for the argument type implied by the instruction suffix."
+			// Not sure how we can verify that the alignment is correct, and this instruction is emitted by the compiler for byref/out parameters.
+			// Not marking this instructions as safe would mean that it would be impossible to fix a delegate that takes 
+			// a byref/out parameter.
+			bitmask.Set (Code.Stind_I);
+			bitmask.Set (Code.Stind_I1);
+			bitmask.Set (Code.Stind_I2);
+			bitmask.Set (Code.Stind_I4);
+			bitmask.Set (Code.Stind_I8);
+			bitmask.Set (Code.Stind_R4);
+			bitmask.Set (Code.Stind_R8);
+			bitmask.Set (Code.Stind_Ref);
+			safe_instructions = bitmask;
+			Console.WriteLine ("safe_instructions: {0}", bitmask);			
+		}
+#endif
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			MethodDefinition called_method;
-			List<MethodDefinition> pointers;
-
 			// Rule does not apply if the method has no IL
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
+			// 
+			// We need to check all methods which has any of the following opcodes: call, stfld or stsfld.
+			// 
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			if (!applicable_method_bitmask.Intersect (bitmask))
+				return RuleResult.DoesNotApply;
 
-			List<List<MethodDefinition>> locals = new List<List<MethodDefinition>> ();
-			List<ILRange> stack = new List<ILRange> (); // A rude way of assigning code sequences to stack positions.
+			/* Unfortunately it's possible to generate IL this rule will choke on, especially when 
+			 * using non-standard compilers or obfuscators. */
+			try {
+				return CheckMethodUnsafe (method);
+			} catch (Exception ex) {
+				// FIXME: This problem should be reported some other way, it's not really a failure.
+				// Pending implementation of "analysis warnings", as mentioned here (post #21):
+				// http://groups.google.com/group/gendarme/browse_frm/thread/c37d157ae0c9682/57f89f3abf14f2fd?tvc=1&q=Gendarme+2.6+Preview+1+is+ready+for+download#57f89f3abf14f2fd
+				Runner.Report (method, Severity.Low, Confidence.Low,
+					string.Format ("An exception occurred while verifying this method. " +
+					"This failure can probably be ignored, it's most likely due to an " + 
+					"uncommon code sequence in the method the rule didn't understand. {0}", ex.Message));
+				return RuleResult.Failure;
+			}
+		}
+
+		private RuleResult CheckMethodUnsafe (MethodDefinition method)
+		{
+			locals.Clear ();
+			stack.Clear ();
 			
-			// Console.WriteLine ("Checking method: {0} on type: {1}", method.Name, method.DeclaringType.FullName);
+			Log.WriteLine (this, "\n\nChecking method: {0} on type: {1}", method.Name, method.DeclaringType.FullName);
+			Log.WriteLine (this, method);
+
+#if DEBUG
+			foreach (ExceptionHandler e in method.Body.ExceptionHandlers)
+				Log.WriteLine (this, " Type: {7}, TryStart: {4:X}, TryEnd: {5:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, FilterEnd: {3:X}, CatchType: {6}", 
+				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
+				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.Type);
+#endif
 			
 			//
 			// We check the following code patterns:
@@ -144,84 +324,19 @@ namespace Gendarme.Rules.Interoperability {
 				}
 
 				int push = ins.GetPushCount ();
-				// Console.WriteLine ("before {0} + push {1} - pop {2} = after {3} {4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
-				// Console.WriteLine ("{4}", stack_count, push, pop, stack_count + push - pop, ToString (ins));
+				Log.WriteLine (this, " {0:X} {5} prev stack: {1}, pop: {2}, push: {3}, post stack: {4}", ins.Offset, stack_count, pop, push, stack_count + push - pop, ins.OpCode.Name);
 			
 				if (stack_count == 1 && stack [stack_count - 1] == null) {
 					// Don't do anything, this is the implicit exception object passed to a catch handler.
 				} else if (ins.OpCode.Code == Code.Call) {
-					called_method = (ins.Operand as MethodReference).Resolve ();
-					
-					if (called_method != null && called_method.IsPInvokeImpl && called_method.HasParameters) {
-						// Console.WriteLine ("Reached a call instruction to a pinvoke method: {0}", called_method.Name);
-						ParameterDefinitionCollection pdc = called_method.Parameters;
-						for (int i = 0; i < pdc.Count; i++) {
-							if (!pdc [i].ParameterType.IsDelegate ())
-								continue;
-#if DEBUG
-							Console.WriteLine (" Stack slot #{0}:", i);
-							stack [i].DumpAll ("  ");
-#endif
-							// if we load a field, store the field so that any subsequent unsafe writes to that field can be reported.
-							Instruction last = stack [i].Last;
-							if (last.OpCode.Code == Code.Ldfld || last.OpCode.Code == Code.Ldsfld) {
-								FieldDefinition field = (last.Operand as FieldReference).Resolve ();
-								if (fields_loads == null)
-									fields_loads = new List<FieldDefinition> ();
-								fields_loads.AddIfNew (field);
-							}
-							
-							// Get and check the pointers
-							VerifyMethods (GetDelegatePointers (locals, stack [i]));
-						}
-					}
+					VerifyCallInstruction (ins);
 				} else if (ins.OpCode.Code == Code.Stfld || ins.OpCode.Code == Code.Stsfld) {
-					FieldDefinition field = (ins.Operand as FieldReference).Resolve ();
-					
-					pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
-					
-					// Console.WriteLine (" Reached a field variable store to the field {0}, there are {1} unsafe pointers here.", field.Name, pointers == null ? 0 : pointers.Count);
-					
-					if (pointers != null && pointers.Count > 0) {
-						List<MethodDefinition> tmp;
-						if (field_stores == null) {
-							field_stores = new Dictionary<FieldDefinition, List<MethodDefinition>> ();
-							tmp = new List<MethodDefinition> ();
-							field_stores.Add (field, tmp);
-						} else if (!field_stores.TryGetValue (field, out tmp)) {
-							tmp = new List<MethodDefinition> ();
-							field_stores.Add (field, tmp);
-						}
-						tmp.AddRange (pointers);
-					}
-	
-					// If this field has been loaded into a pinvoke, 
-					// check the list for unsafe pointers.
-					if (fields_loads != null && fields_loads.Contains (field))
-						VerifyMethods (pointers);
+					VerifyStoreFieldInstruction (ins, stack_count);
 				} else if (ins.IsStoreLocal ()) {
-					int index = ins.GetStoreIndex ();
-
-					pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
-					
-					// Console.WriteLine (" Reached a local variable store at index {0}, there are {1} pointers here.", index, pointers == null ? 0 : pointers.Count);
-					
-					if (pointers != null && pointers.Count > 0) {
-						while (locals.Count <= index)
-							locals.Add (null);
-						if (locals [index] == null)
-							locals [index] = new List<MethodDefinition> ();
-						locals [index].AddRange (pointers);
-					}
+					VerifyStoreLocalInstruction (ins, stack_count);
 				} 
 				
 				stack_count += push - pop;
-				if (stack_count < 0) {
-#if DEBUG
-					Console.WriteLine ("{0} got a stack_count < 0 ({1})", method, stack_count);
-#endif
-					continue;
-				}
 				
 				while (stack_count > stack.Count)
 					stack.Add (new ILRange (ins));
@@ -232,61 +347,144 @@ namespace Gendarme.Rules.Interoperability {
 					stack [stack_count - 1].Last = ins;
 			}
 			
-			// Console.WriteLine ("Checking method: {0} [Done]", method.Name);
+			Log.WriteLine (this, "Checking method: {0} [Done], result: {1}", method.Name, Runner.CurrentRuleResult);
 			
 			return Runner.CurrentRuleResult;
+		}
+		
+		private void VerifyStoreLocalInstruction (Instruction ins, int stack_count)
+		{
+			List<MethodDefinition> pointers;
+			int index = ins.GetStoreIndex ();
+			
+			pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
+			
+			Log.WriteLine (this, " Reached a local variable store at offset {2:X}. index {0}, there are {1} pointers here.", index, pointers == null ? 0 : pointers.Count, ins.Offset);
+			
+			if (pointers != null && pointers.Count > 0) {
+				while (locals.Count <= index)
+					locals.Add (null);
+				if (locals [index] == null)
+					locals [index] = new List<MethodDefinition> ();
+				locals [index].AddRange (pointers);
+			}
+		}
+		
+		private void VerifyStoreFieldInstruction (Instruction ins, int stack_count)
+		{
+			List<MethodDefinition> pointers;
+			FieldDefinition field = (ins.Operand as FieldReference).Resolve ();
+			
+			pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
+			
+			Log.WriteLine (this, " Reached a field variable store to the field {0}, there are {1} unsafe pointers here.", field.Name, pointers == null ? 0 : pointers.Count);
+#if DEBUG
+			stack [stack_count - 1].DumpAll ("  ");
+#endif
+			
+			if (pointers != null && pointers.Count > 0) {
+				List<MethodDefinition> tmp;
+				if (!stored_fields.TryGetValue (field, out tmp)) {
+					tmp = new List<MethodDefinition> ();
+					stored_fields.Add (field, tmp);
+				}
+				tmp.AddRange (pointers);
+			}
+
+			// If this field has been loaded into a pinvoke, 
+			// check the list for unsafe pointers.
+			if (loaded_fields.Contains (field))
+				VerifyMethods (pointers);
+		}
+		
+		private void VerifyCallInstruction (Instruction ins)
+		{
+			MethodDefinition called_method;
+			ParameterDefinitionCollection parameters;
+
+			called_method = (ins.Operand as MethodReference).Resolve ();
+					
+			if (called_method != null && called_method.IsPInvokeImpl && called_method.HasParameters) {
+				Log.WriteLine (this, " Reached a call instruction to a pinvoke method: {0}", called_method.Name);
+
+				parameters = called_method.Parameters;
+				for (int i = 0; i < parameters.Count; i++) {
+					if (stack [i] == null)
+						continue;
+					
+					if (!parameters [i].ParameterType.IsDelegate ())
+						continue;
+
+					Log.WriteLine (this, " Parameter #{0} takes a delegate, stack expression:", i);
+#if DEBUG
+					stack [i].DumpAll ("  ");
+#endif
+
+					// if we load a field, store the field so that any subsequent unsafe writes to that field can be reported.
+					Instruction last = stack [i].Last;
+					if (last.OpCode.Code == Code.Ldfld || last.OpCode.Code == Code.Ldsfld) {
+						FieldDefinition field = (last.Operand as FieldReference).Resolve ();
+						loaded_fields.AddIfNew (field);
+					}
+					
+					// Get and check the pointers
+					VerifyMethods (GetDelegatePointers (locals, stack [i]));
+				}
+			}
 		}
 		
 		// Verifies that the method is safe to call as a callback from native code.
 		private bool VerifyCallbackSafety (MethodDefinition callback)
 		{
 			bool result;
-			bool valid_ex_handler = false;
-				
+			bool valid_ex_handler;
+			MethodBody body;
+			InstructionCollection instructions;
+
 			if (callback == null)
 				return true;
+
+			Log.WriteLine (this, " Verifying: {0} with code size: {1} instruction count: {2}", callback.Name, callback.Body.CodeSize, callback.Body.Instructions.Count);
 
 			if (!callback.HasBody)
 				return true;
 								
-			if (verified_methods != null && verified_methods.TryGetValue (callback, out result))
+			if (verified_methods.TryGetValue (callback, out result))
 				return result;
 			
+			body = callback.Body;
+			instructions = body.Instructions;
+			is_safe.Clear ();
+			is_safe.Capacity = body.Instructions.Count;
+
+			// 
+			// We assume that the method is verifiable.
+			// 
+			
+			// Mark all instructions corresponding to a safe opcode as safe, others are unsafe for now.
+			for (int i = 0; i < instructions.Count; i++) {
+				bool safe = safe_instructions.Get (instructions [i].OpCode.Code);
+				Log.WriteLine (this, "  {0} {1}: {2}", i, instructions [i].OpCode.Code, safe);
+				is_safe.Add (safe);
+			}
+
+			//
+			// Mark code handled by a catch all block as safe.
+			// 
+			// Catch all block is any of the following:
+			// a) A try block which does not specify an exception type
+			// b) A try block which specifies System.Exception as the exception type.
+			// 
+			// The second case will break if both of the following happens:
+			// 1) An exception is thrown which does not inherit from System.Exception (not valid in C# nor VB, but it is valid in C++/CIL and IL)
+			// 2) The assembly where the exception handler resides has the System.Runtime.CompilerServices.RuntimeCompatibility attribute set with WrapNonExceptionThrows = true.
+			// 
+			// If 2) is not true, the runtime will wrap the exception in a RuntimeWrappedException object, which is handled by case b) above.
+			// Given that this is the normal case (otherwise you'd have to put the attribute in the assembly), we accept 2) as safe too.
+			// 
+	
 			if (callback.Body.HasExceptionHandlers) {
 				foreach (ExceptionHandler eh in callback.Body.ExceptionHandlers) {
-#if DEBUG
-					Console.WriteLine ("HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, TryStart: {4}, TryEnd: {5}, CatchType: {6}, Type: {7}", 
-					                   eh.HandlerStart.GetOffset (), eh.HandlerEnd.GetOffset (), eh.FilterStart.GetOffset (), eh.FilterEnd.GetOffset (),
-					                   eh.TryStart.GetOffset (), eh.TryEnd.GetOffset (), eh.CatchType, eh.Type);
-#endif
-					
-					/*
-					 * Here we could get a lot stricter, we accept the following code:
-					 * 
-					 *  void Method ()
-					 *  {
-					 *      // no code here
-					 *        try {
-					 * 		    // ... code ..
-					 *    [ } catch (Exception ex } ]
-					 *    [     // ... code ...     ]
-					 *      } catch {
-					 *          // ... code ...
-					 *    [ } finally { ]
-					 *    [     // ... code ...     ]
-					 *      } 
-					 *      // no code here
-					 *  }
-					 * 
-					 * There are a few ways to break this
-					 * - any of the catch clauses may throw an exception.
-					 * - finally clause may throw an exception.
-					 * 
-					 * The stricter rules would ensure that:
-					 * - all code in catch and finally clauses are also embedded in a simple try { <code> } catch { <no code> } block
-					 * 
-					 */
-					
 					// We only care about catch clauses.
 					if (eh.Type != ExceptionHandlerType.Catch)
 						continue;
@@ -295,27 +493,35 @@ namespace Gendarme.Rules.Interoperability {
 					if (eh.FilterStart != null || eh.FilterEnd != null)
 						continue;
 					
-					// exception clause has to start at the beginning of the method
-					if (eh.TryStart == null || eh.TryStart.Offset != 0)
+					// check for catch all clauses
+					string exception_typename = eh.CatchType == null ? null : eh.CatchType.FullName;
+					if (!(exception_typename == null || exception_typename == "System.Object" || exception_typename == "System.Exception"))
 						continue;
 					
-					// and span the entire method
-					if (eh.HandlerEnd == null || eh.HandlerEnd.Offset != callback.Body.CodeSize - 1)
-						continue;
-					
-					// check for empty catch clause catching every single exception
-					// we don't allow 'catch (Exception)' because in IL it's valid to
-					// throw any object.
-					if (eh.CatchType != null && eh.CatchType.FullName != "System.Object")
-						continue;
-					
-					valid_ex_handler = true;
-					break;
+					// Mark the code this exception handler handles as safe.
+					int start_index = instructions.IndexOf (eh.TryStart);
+					int end_index = instructions.IndexOf (eh.TryEnd);
+					Log.WriteLine (this, " Catch all block found, marking instruction at index {0} to index {1} (included) as safe.", start_index, end_index - 1);
+					for (int j = start_index; j < end_index; j++)
+						is_safe [j] = true;
 				}
 			}
-				
-			if (verified_methods == null)
-				verified_methods = new Dictionary<MethodDefinition, bool> ();
+			
+			// Check that all instructions have been marked as safe, otherwise mark the method as unsafe.
+			valid_ex_handler = !is_safe.Contains (false);
+
+#if DEBUG
+			Log.WriteLine (this, " Method {0} verified: {1}.", callback.Name, valid_ex_handler);
+			for (int i = 0; i < is_safe.Count; i++) {
+				// Console.ForegroundColor = safe [i] ? ConsoleColor.DarkGreen : ConsoleColor.Red;
+				Log.WriteLine (this, " {1} {0}", instructions [i].ToPrettyString (), is_safe [i] ? "Y" : "N");
+				// Console.ResetColor ();
+			}
+			foreach (ExceptionHandler e in body.ExceptionHandlers)
+				Log.WriteLine (this, " Type: {7}, TryStart: {4}, TryEnd: {5}, HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, CatchType: {6}", 
+				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
+				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.Type);
+#endif
 			
 			verified_methods.Add (callback, valid_ex_handler);
 				
@@ -332,12 +538,12 @@ namespace Gendarme.Rules.Interoperability {
 #if DEBUG
 			public void DumpAll (string prefix)
 			{
+				if (!Log.IsEnabled (this.GetType ().Name))
+					return;
+				
 				Instruction instr = First;
 				do {
-					string pretty = (instr == null) ? "<nil>" : 
-						String.Format ("IL_{0} {1} {2}", instr.Offset, instr.OpCode.Name, instr.Operand);
-
-					Console.WriteLine ("dump", "{0}{1}", prefix, pretty);
+					Log.WriteLine (this, "{0}{1}", prefix, instr.ToPrettyString ());
 					if (instr == Last)
 						break;
 					instr = instr.Next;
@@ -350,20 +556,21 @@ namespace Gendarme.Rules.Interoperability {
 		private List<MethodDefinition> GetDelegatePointers (List<List<MethodDefinition>> locals, ILRange range)
 		{
 			List<MethodDefinition> result = null;
-			Instruction current;
+			MethodReference ldftn;
+			MethodDefinition ldftn_definition;
 			
 			// Check if the code does any ldftn.
-			current = range.First;
-			do {
-				if (current.OpCode.Code == Code.Ldftn) {
-					if (result == null)
-						result = new List<MethodDefinition> ();
-					result.Add ((current.Operand as MethodReference).Resolve ());
+			if (range.First != range.Last && range.Last.OpCode.Code == Code.Newobj && range.Last.Previous.OpCode.Code == Code.Ldftn) {
+				ldftn = range.Last.Previous.Operand as MethodReference;
+				if (ldftn != null) {
+					ldftn_definition = ldftn.Resolve ();
+					if (ldftn_definition != null) {
+						if (result == null)
+							result = new List<MethodDefinition> ();
+						result.Add (ldftn_definition);
+					}
 				}
-				if (current == range.Last)
-					break;
-				current = current.Next;
-			} while (true);
+			}
 			
 			// Check if the code loads any local variables which can be delegates.
 			if (locals != null && range.Last.IsLoadLocal ()) {
@@ -379,46 +586,63 @@ namespace Gendarme.Rules.Interoperability {
 			}
 			
 			// If the last opcode is a field load, check if any pointers have been stored in that field.
-			if (field_stores != null && (range.Last.OpCode.Code == Code.Ldfld || range.Last.OpCode.Code == Code.Ldsfld)) {
-				FieldDefinition field = (range.Last.Operand as FieldReference).Resolve ();
+			if (stored_fields.Count > 0 && range.Last.OpCode.Code == Code.Ldfld || range.Last.OpCode.Code == Code.Ldsfld) {
+				FieldReference field = range.Last.Operand as FieldReference;
+				FieldDefinition field_definition;
 				List<MethodDefinition> pointers;
-				if ((field != null) && field_stores.TryGetValue (field, out pointers)) {
-					if (result == null)
-						result = new List<MethodDefinition> ();
-					result.AddRange (pointers);
+				if (field != null) {
+					field_definition = (range.Last.Operand as FieldReference).Resolve ();
+					if (field_definition != null && stored_fields.TryGetValue (field_definition, out pointers)) {
+						if (result == null)
+							result = new List<MethodDefinition> ();
+						result.AddRange (pointers);
+					}
 				}
-				
 			}
 			
 			return result;
 		}
 		
-		
 		// Verifies that all methods in the list are safe to call from native code,
-		// otherwise reports the correspoding result.
-		private void VerifyMethods (IEnumerable<MethodDefinition> pointers)
+		// otherwise reports the corresponding result.
+		private void VerifyMethods (List<MethodDefinition> pointers)
 		{
+			Log.WriteLine (this, " Verifying {0} method pointers.", pointers == null ? 0 : pointers.Count);
+			
 			if (pointers == null)
 				return;
 			
-			foreach (MethodDefinition pointer in pointers)
-				ReportVerifiedMethod (pointer, VerifyCallbackSafety (pointer));
+			for (int i = 0; i < pointers.Count; i++)
+				ReportVerifiedMethod (pointers [i], VerifyCallbackSafety (pointers [i]));
 		}
 		
 		// Reports the result from verifying the method.
 		private void ReportVerifiedMethod (MethodDefinition pointer, bool safe)
 		{
 			if (!safe) {
-				if (reported_methods == null)
-					reported_methods = new List<MethodDefinition> ();
+				if (reported_methods.Contains (pointer))
+					return;
+
 				reported_methods.Add (pointer);
+				
+				Log.WriteLine (this, " Reporting: {0}", pointer.Name);
 				Runner.Report (pointer, Severity.High, Confidence.High);
+			} else {
+				Log.WriteLine (this, " Safe: {0}", pointer.Name);
 			}
 		}
 	}
 	
 	internal static class DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRuleHelper {
 #if DEBUG
+		public static string ToPrettyString (this Instruction instr)
+		{
+			if (instr == null)
+				return "<nil>";
+			
+			return string.Format ("IL_{0} {1} {2}", instr.Offset, instr.OpCode.Name, instr.Operand);
+		}
+		
 		public static int GetOffset (this Instruction instr)
 		{
 			if (instr != null)
@@ -435,11 +659,10 @@ namespace Gendarme.Rules.Interoperability {
 			case Code.Ldloc_1: return 1;
 			case Code.Ldloc_2: return 2;
 			case Code.Ldloc_3: return 3;
-			case Code.Ldloc: // Untested for ldloc
+			case Code.Ldloc:  // Untested 
+			case Code.Ldloca: // Untested
+			case Code.Ldloca_S:
 			case Code.Ldloc_S: return ((VariableDefinition) ins.Operand).Index;
-			case Code.Ldloca: // we don't care about ldloca
-			case Code.Ldloca_S: return int.MaxValue;
-
 			default:
 				throw new ArgumentException (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}
@@ -460,5 +683,5 @@ namespace Gendarme.Rules.Interoperability {
 				throw new ArgumentException (string.Format ("Invalid opcode: {0}", ins.OpCode.Name));
 			}
 		}
-	}	
+	}
 }

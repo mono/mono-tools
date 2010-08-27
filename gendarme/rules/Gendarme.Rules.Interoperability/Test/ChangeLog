@@ -1,3 +1,10 @@
+2010-08-27  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs:
+	Remove CWL's from catch blocks in methods that are safe, and add
+	CWL's to methods that should not be safe. In general update to
+	make the tests work with the more correct version of the rule.
+
 2010-04-20  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest.cs:
