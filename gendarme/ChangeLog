@@ -1,3 +1,9 @@
+2010-08-27  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* self-test.ignore: Add an entry to allow
+	DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule to catch all
+	exceptions it may throw.
+
 2010-08-06  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* AUTHORS: Add Antoine Vandecreme

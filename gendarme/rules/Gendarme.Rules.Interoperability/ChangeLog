@@ -1,3 +1,16 @@
+2010-08-27  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
+	Make the example code more extensive and explain the rule a bit better.
+	Initialize member variables in the the ctor to avoid null checks all
+	the time. Use HashSet instead of List when we only check for existence.
+	Use bitmasks to exclude methods to process, and generate the bitmasks
+	statically. Change rule logic to mark all code in a method that is
+	covered by a catch-all exception clause as safe - and the remaining
+	code must be included in a list of safe instructions for the rule to
+	accept it. Fix other minor issues as noted by either self-test or
+	peer-review.
+
 2010-06-15  Sebastien Pouliot  <sebastien@ximian.com>
 
 	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
