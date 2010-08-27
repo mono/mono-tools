@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Interoperability {
 		List<bool> is_safe = new List<bool>();
 		
 		// A bitmask of safe instructions.
-		static OpCodeBitmask safe_instructions = new OpCodeBitmask (0x22F7FFE7FFD, 0x48000000007F0000, 0x2C00000000000000, 0x45C80);
+		static OpCodeBitmask safe_instructions = new OpCodeBitmask (0x22F7FFE7FFD, 0x48000000007F0000, 0x3C00000000000000, 0x45C80);
 		
 		// A bitmask of opcodes a method must have to be checked in CheckMethod.
 		static OpCodeBitmask applicable_method_bitmask = new OpCodeBitmask (0x8000000000, 0x2400400000000000, 0x0, 0x0);
@@ -187,6 +187,7 @@ namespace Gendarme.Rules.Interoperability {
 			bitmask.Set (Code.Ldsfld); 
 			// bitmask.Set (Code.Ldsflda); // Not quite sure about this one, leaving it out for now.
 			bitmask.Set (Code.Leave);
+			bitmask.Set (Code.Leave_S);
 			bitmask.Set (Code.Endfilter);
 			bitmask.Set (Code.Endfinally);
 			bitmask.Set (Code.Ldc_I4);
