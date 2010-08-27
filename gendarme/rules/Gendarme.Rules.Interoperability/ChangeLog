@@ -1,5 +1,10 @@
 2010-08-27  Rolf Bjarne Kvinge  <RKvinge@novell.com>
 
+	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs: Mark leave.s
+	as safe (just as leave is safe too).
+
+2010-08-27  Rolf Bjarne Kvinge  <RKvinge@novell.com>
+
 	* DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule.cs:
 	Make the example code more extensive and explain the rule a bit better.
 	Initialize member variables in the the ctor to avoid null checks all
