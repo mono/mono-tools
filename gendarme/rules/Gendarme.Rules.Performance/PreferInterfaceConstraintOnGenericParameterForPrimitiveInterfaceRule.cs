@@ -33,9 +33,9 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Performance {
 	/// <summary>
-	/// This rule fires if a method use interface of base type as parameter.  
-	/// (IComparable, IFormattable, IConvertible, IComparable&lt;T&gt;, IEquatable&lt;int&gt;)
-	/// Using generic method with interface constraint instead avoir boxing of value
+	/// This rule fires if a method use an interface of a primitive type as parameter.  
+	/// (IComparable, IFormattable, IConvertible, IComparable&lt;T&gt;, IEquatable&lt;int&gt; ...)
+	/// Using generic method with an interface constraint instead avoid boxing of value
 	/// type when calling the method.
 	/// </summary>
 	/// <example>
@@ -58,13 +58,13 @@ namespace Gendarme.Rules.Performance {
 	/// </example>
 	/// <remarks>This rule is available since Gendarme X.X</remarks>
 
-	[Problem("The method should use interface constraint on generic to avoid boxing of value type")]
-	[Solution("Replace the interface parameter with interface constraint on generic.")]
-	public class PreferInterfaceConstraintOnGenericForBaseTypeInterfaceRule : Rule, IMethodRule {
+	[Problem("The method should use interface constraint on generic type parameter to avoid boxing of value type")]
+	[Solution("Replace the interface parameter with interface constraint on generic type parameter.")]
+	public class PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule : Rule, IMethodRule {
 
 		private readonly HashSet<string> primitiveTypeInterfaces = new HashSet<string> ();
 
-		public PreferInterfaceConstraintOnGenericForBaseTypeInterfaceRule ()
+		public PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule ()
 		{
 			primitiveTypeInterfaces.Add ("System.IComparable");
 			primitiveTypeInterfaces.Add ("System.IComparable`1<T>");

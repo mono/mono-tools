@@ -5,8 +5,8 @@ using Test.Rules.Fixtures;
 
 namespace Tests.Rules.Performance {
 	[TestFixture]
-	public class PreferInterfaceConstraintOnGenericForBaseTypeInterfaceTest :
-		MethodRuleTestFixture<PreferInterfaceConstraintOnGenericForBaseTypeInterface> {
+	public class PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceTest :
+		MethodRuleTestFixture<PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule> {
 
 		private class TestCase {
 			private void MethodWithoutParameters ()

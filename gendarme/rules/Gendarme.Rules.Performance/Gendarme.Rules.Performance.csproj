@@ -92,7 +92,7 @@
     <Compile Include="MathMinMaxCandidateRule.cs" />
     <Compile Include="OverrideValueTypeDefaultsRule.cs" />
     <Compile Include="PreferCharOverloadRule.cs" />
-    <Compile Include="PreferInterfaceConstraintOnGenericForBaseTypeInterface.cs" />
+    <Compile Include="PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule.cs" />
     <Compile Include="RemoveUnusedLocalVariablesRule.cs" />
     <Compile Include="ReviewLinqMethodRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
