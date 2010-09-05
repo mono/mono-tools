@@ -60,11 +60,11 @@ namespace Gendarme.Rules.Performance {
 
 	[Problem("The method should use interface constraint on generic to avoid boxing of value type")]
 	[Solution("Replace the interface parameter with interface constraint on generic.")]
-	public class PreferInterfaceConstraintOnGenericForBaseTypeInterface : Rule, IMethodRule {
+	public class PreferInterfaceConstraintOnGenericForBaseTypeInterfaceRule : Rule, IMethodRule {
 
 		private readonly HashSet<string> primitiveTypeInterfaces = new HashSet<string> ();
 
-		public PreferInterfaceConstraintOnGenericForBaseTypeInterface ()
+		public PreferInterfaceConstraintOnGenericForBaseTypeInterfaceRule ()
 		{
 			primitiveTypeInterfaces.Add ("System.IComparable");
 			primitiveTypeInterfaces.Add ("System.IComparable`1<T>");
