@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7A8D4AE7-66FA-42E0-BDCB-400D8E0ECFA6}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -92,6 +92,7 @@
     <Compile Include="MathMinMaxCandidateRule.cs" />
     <Compile Include="OverrideValueTypeDefaultsRule.cs" />
     <Compile Include="PreferCharOverloadRule.cs" />
+    <Compile Include="PreferInterfaceConstraintOnGenericForBaseTypeInterface.cs" />
     <Compile Include="RemoveUnusedLocalVariablesRule.cs" />
     <Compile Include="ReviewLinqMethodRule.cs" />
     <Compile Include="UseIsOperatorRule.cs" />
