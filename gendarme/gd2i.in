@@ -1,0 +1,2 @@
+#!/bin/sh
+exec @RUNTIME@ $MONO_OPTIONS $MONO_EXTRA_ARGS @prefix@/lib/gendarme/gd2i.exe "$@"

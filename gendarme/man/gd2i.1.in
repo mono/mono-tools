@@ -1,0 +1,17 @@
+.\" 
+.\" gd2i manual page.
+.\"
+.\" Authors:
+.\"	Sebastien Pouliot  <sebastien@ximian.com>
+.\"
+.\" Copyright (C) 2010 Novell, Inc (http://www.novell.com)
+.\"
+
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.TH gd2i "Gendarme @GENDARME_VERSION@"
+.SH NAME
+Gendarme Defect To Ignore List
+

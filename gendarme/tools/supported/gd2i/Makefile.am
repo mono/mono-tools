@@ -1,26 +1,30 @@
 EXTRA_DIST = $(gd2i_sources) gd2i.csproj
 
+gd2idir=$(prefix)/lib/gendarme
+gd2i_SCRIPTS = ../../../bin/gd2i.exe
+CLEANFILES = $(gd2i_SCRIPTS) $(gd2i_SCRIPTS).mdb
+DISTCLEANFILES = Makefile.in
+
 gd2i_sources =  \
 	../../../AssemblyStaticInfo.cs	\
 	../../../AssemblyInfo.cs	\
 	gd2i.cs
 
-gd2i.exe:  $(gd2i_sources)
+$(gd2i_SCRIPTS):  $(gd2i_sources)
 	$(GMCS) -debug $^ -out:$@
 
-update: gd2i.exe
-	mono --debug gd2i.exe ../../../bin/self-test.xml ../../../self-test.ignore
+update: $(gd2i_SCRIPTS)
+	mono --debug $(gd2i_SCRIPTS) ../../../bin/self-test.xml ../../../self-test.ignore
 
 self-update: gd2i.exe self-test
-	mono --debug gd2i.exe self-test.xml self-test.ignore
+	mono --debug $(gd2i_SCRIPTS) self-test.xml self-test.ignore
 
 self-test: all
 	mono --debug ../../../bin/gendarme.exe --config ../../../rules/rules.xml --set self-test --xml self-test.xml --html self-test.html \
-		--ignore=self-test.ignore --severity=all --confidence=all gd2i.exe
+		--ignore=self-test.ignore --severity=all --confidence=all $(gd2i_SCRIPTS)
 
 clean:
 	rm -f self-test.xml self-test.html
-	rm -f gd2i.exe*
 
-all: gd2i.exe
+all: $(gd2i_SCRIPTS)
 

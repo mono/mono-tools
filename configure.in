@@ -214,9 +214,11 @@ gendarme/Makefile
 gendarme/AssemblyInfo.cs
 gendarme/gendarme
 gendarme/gendarme-wizard
+gendarme/gd2i
 gendarme/man/Makefile
 gendarme/man/gendarme.1
 gendarme/man/gendarme.5
+gendarme/man/gd2i.1
 gendarme/console/Makefile
 gendarme/console/gendarme.exe.config
 gendarme/framework/Makefile
