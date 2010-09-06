@@ -8,6 +8,7 @@ DISTCLEANFILES = Makefile.in
 gd2i_sources =  \
 	../../../AssemblyStaticInfo.cs	\
 	../../../AssemblyInfo.cs	\
+	../../../console/Options.cs	\
 	gd2i.cs
 
 $(gd2i_SCRIPTS):  $(gd2i_sources)

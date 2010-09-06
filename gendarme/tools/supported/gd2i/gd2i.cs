@@ -29,16 +29,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 
+using NDesk.Options;
+
 namespace Gendarme.Tools {
 
-	static class DefectsToIgnoreList {
+	class DefectsToIgnoreList {
 
-		static Dictionary<string, HashSet<string>> ignore_list = new Dictionary<string, HashSet<string>> ();
+		Dictionary<string, HashSet<string>> ignore_list = new Dictionary<string, HashSet<string>> ();
 
-		static void ReadDefects (string filename)
+		void ReadDefects (string filename)
 		{
 			using (XmlTextReader reader = new XmlTextReader (filename)) {
 				Dictionary<string, string> full_names = new Dictionary<string, string> ();
@@ -73,7 +76,7 @@ namespace Gendarme.Tools {
 			}
 		}
 
-		static void ReadIgnoreList (string filename)
+		void ReadIgnoreList (string filename)
 		{
 			HashSet<string> entries_for_rule = null;
 			int line_no = 0;
@@ -129,7 +132,7 @@ namespace Gendarme.Tools {
 			}
 		}
 
-		static string BuildIgnoreData ()
+		string BuildIgnoreData ()
 		{
 			if (ignore_list.Count == 0)
 				return String.Empty;
@@ -147,7 +150,7 @@ namespace Gendarme.Tools {
 			return ignore_data.ToString ();
 		}
 
-		static void WriteIgnoreList (string filename)
+		void WriteIgnoreList (string filename)
 		{
 			string data = BuildIgnoreData ();
 			if (data.Length == 0)
@@ -158,7 +161,7 @@ namespace Gendarme.Tools {
 			}
 		}
 
-		static void AppendToIgnoreList (string filename)
+		void AppendToIgnoreList (string filename)
 		{
 			string data = BuildIgnoreData ();
 			if (data.Length == 0)
@@ -172,25 +175,103 @@ namespace Gendarme.Tools {
 			}
 		}
 
-		static bool extra_defects_warnings;
-		static bool syntax_errors_warnings;
+		bool extra_defects_warnings;
+		bool syntax_errors_warnings;
+		bool help;
+		bool version;
+		bool quiet;
+		string defects;
+		string ignores;
 
-		static void Main (string [] args)
+		void Header ()
 		{
-			// todo - use Options.cs
-			string defects = args [0];
-			string ignores = args [1];
-
-			// read defects XML file and build an ignore list from it
-			ReadDefects (defects);
-			if (File.Exists (ignores)) {
-				// read existing 'ignore-list' and remove them from the ignore list
-				ReadIgnoreList (ignores);
-				// don't touch the original (sort, comment...) but append new ignore entries
-				AppendToIgnoreList (ignores);
+			Assembly a = Assembly.GetExecutingAssembly ();
+			Version v = a.GetName ().Version;
+			if (v.ToString () != "0.0.0.0") {
+				Console.WriteLine ("gd2i v{0}", v);
 			} else {
-				WriteIgnoreList (ignores);
+				Console.WriteLine ("gd2i - Development Snapshot");
 			}
+
+			object [] attr = a.GetCustomAttributes (typeof (AssemblyCopyrightAttribute), false);
+			if (attr.Length > 0)
+				Console.WriteLine (((AssemblyCopyrightAttribute) attr [0]).Copyright);
+
+			Console.WriteLine ();
+		}
+
+		static void Help ()
+		{
+			Console.WriteLine ("Usage: gd2i defects.xml list.ignore [--extra-defects-warnings] [--syntax-check] [--quiet] [--version] [--help]");
+			Console.WriteLine ("Where");
+			Console.WriteLine (" defects.xml\tThe list of defects (XML) produced by Gendarme on your project.");
+			Console.WriteLine (" list.ignore\tThe file listing ignored defects entries for your project.");
+			Console.WriteLine (" --extra-check\t[optional] Report ignore entries not in the defect list.");
+			Console.WriteLine (" --syntax-check\t[optional] Report syntax error found in 'list.ignore' file.");
+			Console.WriteLine (" --quiet\t[optional] Minimize output tro stdout.");
+			Console.WriteLine (" --version\tDisplay the tool's version number.");
+			Console.WriteLine (" --help\t\tShow help about the command-line options.");
+			Console.WriteLine ();
+		}
+
+		byte Parse (string [] args)
+		{
+			var p = new OptionSet () {
+				{ "syntax-check",	v => syntax_errors_warnings = v != null },
+				{ "extra-check",	v => extra_defects_warnings = v != null },
+				{ "quiet",		v => quiet = v != null },
+				{ "version",		v => version = v != null },
+				{ "h|?|help",		v => help = v != null },
+			};
+
+			List<string> files = p.Parse (args);
+			if (files.Count != 2)
+				return (byte) 1;
+
+			defects = files [0];
+			ignores = files [1];
+			return (byte) 0;
+		}
+
+		byte Execute (string [] args)
+		{
+			byte result = 1;
+			try {
+				result = Parse (args);
+
+				bool parsed = (result == 0);
+				if (!quiet || !parsed)
+					Header ();
+				if (!parsed) {
+					Console.WriteLine ("Invalid command-line parameters");
+					Console.WriteLine ();
+				}
+				if (help || !parsed)
+					Help ();
+
+				if (parsed && !help && !version) {
+					// read defects XML file and build an ignore list from it
+					ReadDefects (defects);
+					if (File.Exists (ignores)) {
+						// read existing 'ignore-list' and remove them from the ignore list
+						ReadIgnoreList (ignores);
+						// don't touch the original (sort, comment...) but append new ignore entries
+						AppendToIgnoreList (ignores);
+					} else {
+						WriteIgnoreList (ignores);
+					}
+				}
+			}
+			catch (Exception e) {
+				Console.WriteLine ("Unhandled exception caught: {0}", e);
+				result = 2;
+			}
+			return result;
+		}
+
+		static int Main (string [] args)
+		{
+			return new DefectsToIgnoreList ().Execute (args);
 		}
 	}
 }

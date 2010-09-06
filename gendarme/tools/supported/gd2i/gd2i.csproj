@@ -41,6 +41,9 @@
     <Compile Include="..\..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\console\Options.cs">
+      <Link>Options.cs</Link>
+    </Compile>
     <Compile Include="gd2i.cs" />
   </ItemGroup>
   <ItemGroup>
