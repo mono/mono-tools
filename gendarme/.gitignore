@@ -1,5 +1,7 @@
 gendarme
 gendarme-wizard
 bin
+obj
 AssemblyInfo.cs
 *.pidb
+*.suo
