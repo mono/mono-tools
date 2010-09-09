@@ -2,5 +2,6 @@
 <monodoc>
   <node label="Gendarme" name="gendarme" parent="man"/>
   <source provider="man" basefile="gendarme" path="gendarme"/>
+  <source provider="man" basefile="gd2i" path="gendarme"/>
 </monodoc>
 
