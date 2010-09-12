@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.AvoidRepetitiveCastsRule
+// Gendarme.Rules.Performance.PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule
 //
 // Authors:
 //	Julien Hoarau <madgnome@gmail.com>
