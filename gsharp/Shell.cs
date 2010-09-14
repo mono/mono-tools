@@ -72,6 +72,7 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
 			ShowPrompt (false);
 
+			Evaluator.Init (new string [0]);
 			Evaluator.SetInteractiveBaseClass (typeof (InteractiveGraphicsBase));
 			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
 			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
