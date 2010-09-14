@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Bad example:
 	/// <code>
-	/// public bool GreaterThan(IComparable arg1, IComparable arg2)
+	/// public bool GreaterThan (IComparable arg1, IComparable arg2)
 	/// {
 	///		return arg1.CompareTo (arg2) > 0
 	/// }
@@ -50,7 +50,7 @@ namespace Gendarme.Rules.Performance {
 	/// <example>
 	/// Good example:
 	/// <code>
-	/// public bool GreaterThan&lt;T&gt;(T arg1, T arg2) where T : IComparable
+	/// public bool GreaterThan&lt;T&gt; (T arg1, T arg2) where T : IComparable
 	/// {
 	///		return arg1.CompareTo (arg2) > 0
 	/// }
@@ -101,13 +101,11 @@ namespace Gendarme.Rules.Performance {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (method.Parameters.Count == 0)
+			if (!method.HasParameters)
 				return RuleResult.DoesNotApply;
 
-			foreach (ParameterDefinition parameter in method.Parameters)
-			{
-				if (primitiveTypeInterfaces.Contains (parameter.ParameterType.FullName))
-				{
+			foreach (ParameterDefinition parameter in method.Parameters) {
+				if (primitiveTypeInterfaces.Contains (parameter.ParameterType.FullName)) {
 					string msg = String.Format ("You are using {0} as parameter, which cause boxing with value type as argument",
 					                            parameter.ParameterType.FullName);
 					Runner.Report (method, Severity.Low, Confidence.Total, msg);
