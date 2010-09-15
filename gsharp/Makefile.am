@@ -1,4 +1,11 @@
 gsharpdir = $(prefix)/lib/gsharp
+
+if DMCS_PRESENT
+COMPILER=$(DMCS)
+else
+COMPILER=$(GMCS)
+endif
+
 bin_SCRIPTS = gsharp
 
 gsharp_DATA = gsharp.exe gsharp.exe.config
@@ -30,7 +37,7 @@ EXTRA_DIST = $(gsharp_sources) gsharp.in $(desktop_DATA).in close.png gsharp.exe
 CLEANFILES = $(gsharp_DATA) $(gsharp_DATA).mdb $(desktop_DATA)
 
 gsharp.exe: $(gsharp_sources)
-	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies) -resource:$(srcdir)/close.png,close.png
+	$(COMPILER) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gsharp.exe $(gsharp_sources) $(packages) $(assemblies) -resource:$(srcdir)/close.png,close.png
 
 $(desktop_DATA): $(desktop_DATA).in
 	sed -e "s|\@bindir\@|$(bindir)|" $< > $@
