@@ -54,6 +54,7 @@
     <Compile Include="AvoidRefAndOutParametersRule.cs" />
     <Compile Include="AvoidSmallNamespaceRule.cs" />
     <Compile Include="AvoidVisibleNestedTypesRule.cs" />
+    <Compile Include="OverrideToStringMethodRule.cs" />
     <Compile Include="ConsiderConvertingFieldToNullableRule.cs" />
     <Compile Include="ConsiderConvertingMethodToPropertyRule.cs" />
     <Compile Include="ConsiderUsingStaticTypeRule.cs" />
