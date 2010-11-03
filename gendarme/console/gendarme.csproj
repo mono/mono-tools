@@ -80,7 +80,7 @@
       <Project>{4FEBBB25-D5C0-48F0-A822-2E0D6F3D777E}</Project>
       <Name>Mono.Cecil.Pdb</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
+    <ProjectReference Include="..\..\..\mono\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
       <Project>{D8F63DFF-5230-43E4-9AB2-DA6E721A1FAE}</Project>
       <Name>Mono.Cecil</Name>
     </ProjectReference>
