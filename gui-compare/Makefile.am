@@ -19,7 +19,6 @@ gui_compare_sources = \
 	$(srcdir)/CecilMetadata.cs 			\
 	$(srcdir)/ProviderSelector.cs 			\
 	$(srcdir)/gtk-gui/guicompare.ProviderSelector.cs\
-	$(srcdir)/AssemblyResolver.cs 			\
 	$(srcdir)/Config.cs 				\
 	$(srcdir)/CustomCompare.cs 			\
 	$(srcdir)/gtk-gui/GuiCompare.CustomCompare.cs

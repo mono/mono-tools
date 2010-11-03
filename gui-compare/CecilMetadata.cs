@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Mono.Cecil;
@@ -62,7 +63,7 @@ namespace GuiCompare {
 			if (array != null)
 				return PrettyType (array.ElementType) + "[]";
 
-			var reference = type as ReferenceType;
+			var reference = type as ByReferenceType;
 			if (reference != null)
 				return PrettyType (reference.ElementType) + "&";
 
@@ -153,14 +154,14 @@ namespace GuiCompare {
 			}
 
 			if (constructor_list != null) {
-				foreach (MethodDefinition md in fromDef.Constructors) {
+				foreach (MethodDefinition md in fromDef.Methods.Where (m => m.IsConstructor)) {
 					if (md.IsPrivate || md.IsAssembly)
 						continue;
 					constructor_list.Add (new CecilMethod (md));
 				}
 			}
 			if (method_list != null) {
-				foreach (MethodDefinition md in fromDef.Methods) {
+				foreach (MethodDefinition md in fromDef.Methods.Where (m => !m.IsConstructor)) {
 					if (md.IsSpecialName) {
 						if (!md.Name.StartsWith("op_"))
 							continue;
@@ -289,11 +290,11 @@ namespace GuiCompare {
 		{
 			StringBuilder sb = new StringBuilder();
 			bool first = true;
-			foreach (object o in ca.ConstructorParameters) {
+			foreach (var argument in ca.ConstructorArguments) {
 				if (!first)
 					sb.Append (", ");
 				first = false;
-				sb.Append (o.ToString());
+				sb.Append (argument.Value.ToString());
 			}
 			
 			return sb.ToString();
@@ -350,7 +351,7 @@ namespace GuiCompare {
 			return l;			
 		}
 		
-		public static readonly AssemblyResolver Resolver = new AssemblyResolver();
+		public static readonly IAssemblyResolver Resolver = new DefaultAssemblyResolver();
 	}
 
 	public class CecilAssembly : CompAssembly {
@@ -359,16 +360,13 @@ namespace GuiCompare {
 		{
 			var namespaces = new Dictionary<string, Dictionary<string, TypeDefinition>> ();
 
-			var assembly = AssemblyFactory.GetAssembly (path);
+			var assembly = AssemblyDefinition.ReadAssembly (path, new ReaderParameters { AssemblyResolver = CecilUtils.Resolver });
 			
 			foreach (TypeDefinition t in assembly.MainModule.Types) {
 				if (t.Name == "<Module>")
 					continue;
 				
 				if (t.IsNotPublic)
-					continue;
-
-				if (t.IsNested)
 					continue;
 
 				if (t.IsSpecialName || t.IsRuntimeSpecialName)
@@ -395,8 +393,8 @@ namespace GuiCompare {
 
 			// TypeForwardedToAttributes are created by checking if assembly contains
 			// extern forwarder types and using them to construct fake custom attributes
-			foreach (TypeReference t in assembly.MainModule.ExternTypes) {
-				if (((uint)t.Resolve ().Attributes & 0x200000u) != 0)
+			foreach (ExportedType t in assembly.MainModule.ExportedTypes) {
+				if (t.IsForwarder)
 					attributes.Add (new PseudoCecilAttribute (t));
 			}
 		}
@@ -862,7 +860,7 @@ namespace GuiCompare {
 			if (method_def.IsConstructor)
 				return null;
 			
-			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType);
+			return CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType);
 		}
 
 		public override bool ThrowsNotImplementedException ()
@@ -909,8 +907,8 @@ namespace GuiCompare {
 			StringBuilder sb = new StringBuilder ();
 			if (!method_def.IsConstructor)
 				sb.Append (beautify
-				           ? CecilUtils.PrettyType (method_def.ReturnType.ReturnType)
-				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType.ReturnType));
+				           ? CecilUtils.PrettyType (method_def.ReturnType)
+				           : CecilUtils.FormatTypeLikeCorCompare (method_def.ReturnType));
 			sb.Append (" ");
 			if (beautify) {
 				if (method_def.IsSpecialName && method_def.Name.StartsWith ("op_")) {
@@ -1136,30 +1134,30 @@ namespace GuiCompare {
 			var sb = new StringBuilder ("[" + ca.Constructor.DeclaringType.FullName);
 			bool first = true;
 			
-			IList cparams = ca.ConstructorParameters;
-			if (cparams != null && cparams.Count > 0) {
-				foreach (object o in cparams) {
+			var cargs = ca.ConstructorArguments;
+			if (cargs != null && cargs.Count > 0) {
+				foreach (var argument in cargs) {
 					if (first) {
 						sb.Append (" (");
 						first = false;
 					} else
 						sb.Append (", ");
 
-					sb.Append (FormatValue (o));
+					sb.Append (FormatValue (argument.Value));
 				}
 				
 			}
 
-			IDictionary properties = ca.Properties;
+			var properties = ca.Properties;
 			if (properties != null && properties.Count > 0) {
-				foreach (DictionaryEntry de in properties) {
+				foreach (var namedArg in properties) {
 					if (first) {
 						sb.Append (" (");
 						first = false;
 					} else
 						sb.Append (", ");
 					
-					sb.AppendFormat ("{0}={1}", de.Key, FormatValue (de.Value));
+					sb.AppendFormat ("{0}={1}", namedArg.Name, FormatValue (namedArg.Argument.Value));
 				}
 			}
 			
@@ -1187,10 +1185,10 @@ namespace GuiCompare {
 
 	public class PseudoCecilAttribute : CompAttribute
 	{
-		public PseudoCecilAttribute (TypeReference tref)
+		public PseudoCecilAttribute (ExportedType type)
 			: base (typeof (TypeForwardedToAttribute).FullName)
 		{
-			ExtraInfo = "[assembly: TypeForwardedToAttribute (typeof (" + tref.ToString () + "))]";
+			ExtraInfo = "[assembly: TypeForwardedToAttribute (typeof (" + type.ToString () + "))]";
 		}
 	}
 	
