@@ -179,13 +179,16 @@ namespace Gendarme.Rules.Portability {
 					while ((ze = zs.GetNextEntry ()) != null) {
 						switch (ze.Name) {
 						case "exception.txt":
-							NotImplementedInternal = Read (new StreamReader (zs));
+							using (StreamReader sr = new StreamReader (zs))
+								NotImplementedInternal = Read (sr);
 							break;
 						case "missing.txt":
-							MissingInternal = Read (new StreamReader (zs));
+							using (StreamReader sr = new StreamReader (zs))
+								MissingInternal = Read (sr);
 							break;
 						case "monotodo.txt":
-							TodoInternal = ReadWithComments (new StreamReader (zs));
+							using (StreamReader sr = new StreamReader (zs))
+								TodoInternal = ReadWithComments (sr);
 							break;
 						default:
 							break;

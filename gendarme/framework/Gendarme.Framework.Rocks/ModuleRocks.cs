@@ -117,7 +117,8 @@ namespace Gendarme.Framework.Rocks {
 
 			ISymbolStoreFactory factory = (ISymbolStoreFactory) Activator.CreateInstance (reader_type);
 			try {
-				self.LoadSymbols (factory.CreateReader (self, image_name));
+				using (ISymbolReader symbol_reader = factory.CreateReader (self, image_name))
+					self.LoadSymbols (symbol_reader);
 				annotations.Add ("symbols", symbol_name);
 			}
 			catch (FileNotFoundException) {

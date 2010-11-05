@@ -41,7 +41,8 @@ namespace Gendarme {
 		{
 			Application.EnableVisualStyles ();
 			Application.SetCompatibleTextRenderingDefault (false);
-			Application.Run (new Wizard ());
+			using (Wizard wizard = new Wizard ())
+				Application.Run (wizard);
 		}
 	}
 }
