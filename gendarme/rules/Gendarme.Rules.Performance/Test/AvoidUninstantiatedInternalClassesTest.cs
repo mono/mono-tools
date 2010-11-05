@@ -260,13 +260,13 @@ namespace Test.Rules.Performance {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 		
 		private TypeDefinition GetTest (string name)
 		{
 			string fullname = "Test.Rules.Performance." + name;
-			return assembly.MainModule.Types[fullname];
+			return assembly.MainModule.GetType (fullname);
 		}
 		
 		[Test]

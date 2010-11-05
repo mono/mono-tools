@@ -217,7 +217,7 @@ namespace Gendarme.Rules.Performance {
 			// handle non-virtual Equals, e.g. Equals(type)
 			string name = method.Name;
 			if (method.HasParameters && (name == "Equals")) {
-				ParameterDefinitionCollection pdc = method.Parameters;
+				IList<ParameterDefinition> pdc = method.Parameters;
 				if ((pdc.Count == 1) && (pdc [0].ParameterType == method.DeclaringType))
 					return true;
 			}
@@ -250,7 +250,7 @@ namespace Gendarme.Rules.Performance {
 			AssemblyDefinition assembly = method.DeclaringType.Module.Assembly;
 			foreach (ModuleDefinition module in assembly.Modules) {
 				// scan each type
-				foreach (TypeDefinition type in module.Types) {
+				foreach (TypeDefinition type in module.GetAllTypes ()) {
 					if (CheckTypeForMethodUsage (type, method))
 						return true;
 				}
@@ -262,13 +262,13 @@ namespace Gendarme.Rules.Performance {
 
 		private static uint GetToken (MethodReference method)
 		{
-			return method.GetOriginalMethod ().MetadataToken.ToUInt ();
+			return method.GetElementMethod ().MetadataToken.ToUInt32 ();
 		}
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
 		{
 			if (type.HasGenericParameters)
-				type = type.GetOriginalType ().Resolve ();
+				type = type.GetElementType ().Resolve ();
 
 			HashSet<uint> methods = GetCache (type);
 			if (methods.Contains (GetToken (method)))
@@ -290,13 +290,6 @@ namespace Gendarme.Rules.Performance {
 			if (!cache.TryGetValue (type, out methods)) {
 				methods = new HashSet<uint> ();
 				cache.Add (type, methods);
-				if (type.HasConstructors) {
-					foreach (MethodDefinition ctor in type.Constructors) {
-						if (!ctor.HasBody)
-							continue;
-						BuildMethodUsage (methods, ctor);
-					}
-				}
 				if (type.HasMethods) {
 					foreach (MethodDefinition md in type.Methods) {
 						if (!md.HasBody)
@@ -317,7 +310,7 @@ namespace Gendarme.Rules.Performance {
 
 				TypeReference type = mr.DeclaringType;
 				if (!(type is ArrayType)) {
-					// if (type.GetOriginalType ().HasGenericParameters)
+					// if (type.GetElementType ().HasGenericParameters)
 					// the simpler ^^^ does not work under Mono but works on MS
 					type = type.Resolve ();
 					if (type != null && type.HasGenericParameters)

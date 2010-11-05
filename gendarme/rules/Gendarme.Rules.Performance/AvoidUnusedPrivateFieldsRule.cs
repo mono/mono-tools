@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Performance {
 			}
 
 			// scan all methods, including constructors, to find if the field is used
-			foreach (MethodDefinition method in type.AllMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
 				if (!method.HasBody)
 					continue;
 

@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -102,7 +103,7 @@ namespace Gendarme.Rules.Performance {
 			if (declaringType == null)
 				return false;
 
-			foreach (var method in declaringType.AllMethods ())
+			foreach (var method in declaringType.Methods)
 				if (ContainsReferenceDelegateInstructionFor (method, delegateMethod))
 					return true;
 
@@ -139,7 +140,7 @@ namespace Gendarme.Rules.Performance {
 			// rule applies
 
 			// we limit ourselves to the first 64 parameters (so we can use a bitmask)
-			ParameterDefinitionCollection pdc = method.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
 			int pcount = pdc.Count > 64 ? 64 : pdc.Count;
 			ulong mask = 0;
 
@@ -148,7 +149,7 @@ namespace Gendarme.Rules.Performance {
 				ParameterDefinition parameter = ins.GetParameter (method);
 				if (parameter == null)
 					continue;
-				mask |= ((ulong)1 << (parameter.Sequence - 1));
+				mask |= ((ulong)1 << (parameter.GetSequence () - 1));
 			}
 
 			// quick out based on value - i.e. every parameter is being used

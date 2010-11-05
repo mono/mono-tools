@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -90,7 +91,7 @@ namespace Gendarme.Rules.Performance {
 			return (parameter.Operand as string);
 		}
 
-		void Report (MethodDefinition method, Instruction ins, Confidence confidence, IMemberReference call, string parameter)
+		void Report (MethodDefinition method, Instruction ins, Confidence confidence, MemberReference call, string parameter)
 		{
 			string msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, parameter);
 			Runner.Report (method, ins, Severity.Medium, confidence, msg);
@@ -103,7 +104,7 @@ namespace Gendarme.Rules.Performance {
 			if (p1.Length != 1)
 				return;
 
-			ParameterDefinitionCollection pdc = call.Parameters;
+			IList<ParameterDefinition> pdc = call.Parameters;
 			int last = pdc.Count;
 			if (pdc [last - 1].ParameterType.FullName != "System.StringComparison") {
 				// confidence is normal because it's possible that the code expects a

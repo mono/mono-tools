@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Performance {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidConcatenatingCharsRule : Rule, IMethodRule {
 
-		static bool IsStringConcat (IMemberReference member)
+		static bool IsStringConcat (MemberReference member)
 		{
 			if (member == null || (member.Name != "Concat"))
 				return false;
@@ -82,9 +82,9 @@ namespace Gendarme.Rules.Performance {
 			return (member.DeclaringType.FullName == "System.String");
 		}
 
-		static bool HasReferenceToStringConcatObject (MemberReferenceCollection mrc)
+		static bool HasReferenceToStringConcatObject (ModuleDefinition module)
 		{
-			foreach (MemberReference mr in mrc) {
+			foreach (MemberReference mr in module.GetMemberReferences ()) {
 				if (IsStringConcat (mr)) {
 					MethodReference method = (mr as MethodReference);
 					// catch both System.Object and System.Object[]
@@ -106,8 +106,8 @@ namespace Gendarme.Rules.Performance {
 
 			// turn off the rule if String.Concat(object...) is not used in the module
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					HasReferenceToStringConcatObject (e.CurrentModule.MemberReferences);
+				Active = e.CurrentAssembly.Name.Name == "mscorlib" ||
+					HasReferenceToStringConcatObject (e.CurrentModule);
 			};
 		}
 

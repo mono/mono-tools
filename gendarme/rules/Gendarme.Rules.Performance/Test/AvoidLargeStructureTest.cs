@@ -290,7 +290,7 @@ namespace Test.Rules.Performance {
 			public bool Type;
 			public bool BoxedValueType;
 
-			public ElementType FieldOrPropType;
+			public Type FieldOrPropType;
 			public object Value;
 
 			public TypeReference ElemType;

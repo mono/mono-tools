@@ -593,10 +593,10 @@ namespace Test.Rules.Performance {
 		{
 			if (assembly == null) {
 				string unit = Assembly.GetExecutingAssembly ().Location;
-				assembly = AssemblyFactory.GetAssembly (unit);
+				assembly = AssemblyDefinition.ReadAssembly (unit);
 			}
 			string fullname = "Test.Rules.Performance.AvoidUncalledPrivateCodeTest/" + name;
-			return assembly.MainModule.Types [fullname];
+			return assembly.MainModule.GetType (fullname);
 		}
 
 		[Test]
@@ -615,7 +615,8 @@ namespace Test.Rules.Performance {
 					// this isn't part of the test (but included with CSC)
 					break;
 				default:
-					AssertRuleDoesNotApply (method);
+					if (!method.IsConstructor)
+						AssertRuleDoesNotApply (method);
 					break;
 				}
 			}

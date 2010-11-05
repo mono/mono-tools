@@ -98,8 +98,8 @@ namespace Gendarme.Rules.Performance {
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
 				// if the module does not reference System.LocalDataStoreSlot
 				// then no method inside it will be using it
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsType (LocalDataStoreSlot));
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasTypeReference (LocalDataStoreSlot));
 			};
 		}
 
