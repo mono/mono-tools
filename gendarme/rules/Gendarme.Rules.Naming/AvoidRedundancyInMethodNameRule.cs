@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			//if the method return the parameter type it is most likely clearer to have it in the name
-			if (method.ReturnType.ReturnType == p0.ParameterType)
+			if (method.ReturnType == p0.ParameterType)
 				return RuleResult.Success;
 
 			//if starting with name it is most likely on purpose
@@ -168,7 +168,7 @@ namespace Gendarme.Rules.Naming {
 			return RuleResult.Failure;
 		}
 
-		private static string GetSuggestionMethodName (IMemberReference method, string name, int posFound)
+		private static string GetSuggestionMethodName (MemberReference method, string name, int posFound)
 		{
 			string method_name = method.Name;
 			string suggestion = string.Concat (method_name.Substring (0, posFound), method_name.Substring (posFound + name.Length));
@@ -183,7 +183,7 @@ namespace Gendarme.Rules.Naming {
 
 		private static string GetSuggestionMemberKind (IMethodSignature method)
 		{
-			if (method.Parameters.Count == 1 && method.ReturnType.ReturnType.FullName != "System.Void")
+			if (method.Parameters.Count == 1 && method.ReturnType.FullName != "System.Void")
 				return "property";
 			return "method";
 		}

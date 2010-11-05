@@ -86,8 +86,8 @@ namespace Test.Rules.Naming {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Naming.ParameterNamesShouldMatchOverridenMethodTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Naming.ParameterNamesShouldMatchOverridenMethodTest");
 			rule = new ParameterNamesShouldMatchOverriddenMethodRule ();
 			runner = new TestRunner (rule);
 		}

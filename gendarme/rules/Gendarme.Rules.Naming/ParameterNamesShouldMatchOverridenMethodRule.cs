@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 using Mono.Cecil;
@@ -84,7 +85,7 @@ namespace Gendarme.Rules.Naming {
 
 			//check if this is a Boo assembly using macros
 			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				IsBooAssemblyUsingMacro = (e.CurrentAssembly.MainModule.TypeReferences.ContainsType (BooMacroStatement));
+				IsBooAssemblyUsingMacro = (e.CurrentAssembly.MainModule.HasTypeReference (BooMacroStatement));
 			};
 		}
 
@@ -104,13 +105,13 @@ namespace Gendarme.Rules.Naming {
 				if (name.LastIndexOf (base_name, StringComparison.Ordinal) != full_name.Length + 1)
 					return false;
 			}
-			if (method.ReturnType.ReturnType.FullName != baseMethod.ReturnType.ReturnType.FullName)
+			if (method.ReturnType.FullName != baseMethod.ReturnType.FullName)
 				return false;
 			if (method.HasParameters != baseMethod.HasParameters)
 				return false;
 
-			ParameterDefinitionCollection pdc = method.Parameters;
-			ParameterDefinitionCollection base_pdc = baseMethod.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
+			IList<ParameterDefinition> base_pdc = baseMethod.Parameters;
 			if (pdc.Count != base_pdc.Count)
 				return false;
 
@@ -168,12 +169,12 @@ namespace Gendarme.Rules.Naming {
 			if (baseMethod == null)
 				return RuleResult.Success;
 
-			ParameterDefinitionCollection base_pdc = baseMethod.Parameters;
+			IList<ParameterDefinition> base_pdc = baseMethod.Parameters;
 			//do not trigger false positives on Boo macros
 			if (IsBooAssemblyUsingMacro && IsBooMacroParameter (base_pdc [0]))
 				return RuleResult.Success;
 
-			ParameterDefinitionCollection pdc = method.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
 			for (int i = 0; i < pdc.Count; i++) {
 				if (pdc [i].Name != base_pdc [i].Name) {
 					string s = string.Format ("The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
