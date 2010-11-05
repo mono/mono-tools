@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Design {
 			}
 
 			// look through parameters
-			foreach (MethodDefinition constructor in type.Constructors) {
+			foreach (MethodDefinition constructor in type.GetConstructors ()) {
 				foreach (ParameterDefinition param in constructor.Parameters) {
 					 // pascal case it
 					string correspondingPropertyName = Char.ToUpper (param.Name [0]).ToString () + param.Name.Substring (1);

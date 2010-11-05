@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 
 using Mono.Cecil;
 
@@ -164,8 +165,7 @@ namespace Gendarme.Rules.Design {
 		
 		private void FindDisposeMethods (TypeDefinition type, ref MethodDefinition dispose0, ref MethodDefinition dispose1)
 		{
-			MethodDefinition [] methods = type.Methods.GetMethod ("Dispose");
-			foreach (MethodDefinition method in methods) {
+			foreach (MethodDefinition method in type.Methods.Where (m => m.Name == "Dispose")) {
 				if (MethodSignatures.Dispose.Matches (method)) {
 					dispose0 = method;
 				

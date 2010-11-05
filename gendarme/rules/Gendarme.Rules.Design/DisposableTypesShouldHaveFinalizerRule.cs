@@ -87,7 +87,7 @@ namespace Gendarme.Rules.Design {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
 					continue;
-				if (!field.FieldType.GetOriginalType ().IsNative ())
+				if (!field.FieldType.GetElementType ().IsNative ())
 					continue;
 				Runner.Report (field, Severity.High, Confidence.High);
 			}

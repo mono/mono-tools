@@ -46,7 +46,7 @@ namespace Test.Rules.Design {
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			assembly = AssemblyFactory.DefineAssembly ("CLSCompliant", AssemblyKind.Dll);
+			assembly = AssemblyDefinition.CreateAssembly (new AssemblyNameDefinition ("CLSCompliant", new Version ()), "CLSCompliant", ModuleKind.Dll);
 			comvisible = new CustomAttribute (DefinitionLoader.GetMethodDefinition<ComVisibleAttribute> (".ctor"));
 			clscompliant = new CustomAttribute (DefinitionLoader.GetMethodDefinition<CLSCompliantAttribute> (".ctor"));
 			Runner.Engines.Subscribe ("Gendarme.Framework.Engines.SuppressMessageEngine");

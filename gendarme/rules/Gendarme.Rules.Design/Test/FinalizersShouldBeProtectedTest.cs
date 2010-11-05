@@ -51,13 +51,22 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 
-			non_protected_finalizer_class = assembly.MainModule.Types [typeof (ProtectedFinalizerClass).FullName].Clone ();
-			non_protected_finalizer_class.Module = assembly.MainModule;
-			MethodDefinition finalizer = non_protected_finalizer_class.GetMethod (MethodSignatures.Finalize);
-			// make it non-protected (e.g. public)
-			finalizer.IsPublic = true;
+			non_protected_finalizer_class = new TypeDefinition (
+				"Test.Rules.Design",
+				"PublicFinalizerClass",
+				TypeAttributes.Public,
+				assembly.MainModule.TypeSystem.Object);
+
+			assembly.MainModule.Types.Add (non_protected_finalizer_class);
+
+			var finalizer = new MethodDefinition (
+				"Finalize",
+				MethodAttributes.Public | MethodAttributes.Virtual,
+				assembly.MainModule.TypeSystem.Void);
+
+			non_protected_finalizer_class.Methods.Add (finalizer);
 		}
 
 		[Test]

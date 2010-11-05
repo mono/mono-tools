@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Design {
 			if (!method.IsVisible ())
 				return RuleResult.DoesNotApply;
 
-			MethodReturnType mrt = method.ReturnType;
+			MethodReturnType mrt = method.MethodReturnType;
 			if (IsSpecificXmlType (mrt.ReturnType))
 				Runner.Report (mrt, GetSeverity (method), Confidence.High);
 

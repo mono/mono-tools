@@ -26,6 +26,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 using Mono.Cecil;
 using Gendarme.Rules.Design;
@@ -45,10 +46,17 @@ namespace Test.Rules.Design {
 			Runner.Engines.Subscribe ("Gendarme.Framework.Engines.SuppressMessageEngine");
 		}
 
+		static AssemblyDefinition CreateAssembly (string name, ModuleKind kind)
+		{
+			return AssemblyDefinition.CreateAssembly (
+				new AssemblyNameDefinition (name, new Version (0, 0)),
+				name, kind);
+		}
+
 		[Test]
 		public void Good ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("GoodVersion", AssemblyKind.Dll);
+			AssemblyDefinition assembly = CreateAssembly ("GoodVersion", ModuleKind.Dll);
 			assembly.Name.Version = new Version (1, 2, 3, 4);
 			AssertRuleSuccess (assembly);
 		}
@@ -56,7 +64,7 @@ namespace Test.Rules.Design {
 		[Test]
 		public void Bad ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("BadVersion", AssemblyKind.Dll);
+			AssemblyDefinition assembly = CreateAssembly ("BadVersion", ModuleKind.Dll);
 			assembly.Name.Version = new Version ();
 			AssertRuleFailure (assembly, 1);
 		}
@@ -64,16 +72,26 @@ namespace Test.Rules.Design {
 		[Test]
 		public void FxCop_ManuallySuppressed ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.DefineAssembly ("SuppressedVersion", AssemblyKind.Dll);
+			AssemblyDefinition assembly = CreateAssembly ("SuppressedVersion", ModuleKind.Dll);
 			TypeDefinition type = DefinitionLoader.GetTypeDefinition<SuppressMessageAttribute> ();
-			assembly.MainModule.TypeReferences.Add (type.Clone ());
 
 			MethodDefinition ctor = DefinitionLoader.GetMethodDefinition (type, ".ctor",
 				new Type [] { typeof (string), typeof (string) });
-			CustomAttribute ca = new CustomAttribute (ctor);
-			ca.ConstructorParameters.Add ("Microsoft.Design");
-			ca.ConstructorParameters.Add ("CA1016:MarkAssembliesWithAssemblyVersion");
+			CustomAttribute ca = new CustomAttribute (assembly.MainModule.Import (ctor));
+			ca.ConstructorArguments.Add (
+				new CustomAttributeArgument (
+					assembly.MainModule.TypeSystem.String, "Microsoft.Design"));
+			ca.ConstructorArguments.Add (
+				new CustomAttributeArgument (
+					assembly.MainModule.TypeSystem.String, "CA1016:MarkAssembliesWithAssemblyVersion"));
 			assembly.CustomAttributes.Add (ca);
+
+			var stream = new MemoryStream ();
+			assembly.Write (stream);
+
+			stream.Position = 0;
+
+			assembly = AssemblyDefinition.ReadAssembly (stream);
 
 			AssertRuleDoesNotApply (assembly);
 		}

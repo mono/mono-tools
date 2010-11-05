@@ -50,40 +50,56 @@ namespace Test.Rules.Design {
 			GenerateRequiredAssemblies ();
 		}
 
+		static AssemblyDefinition CreateAssembly (string name, ModuleKind kind)
+		{
+			return AssemblyDefinition.CreateAssembly (
+				new AssemblyNameDefinition (name, new Version (0, 0)), name, ModuleKind.Console);
+		}
+
+		static AssemblyDefinition CreateTestAssembly (string name, TypeAttributes classAttributes, MethodAttributes mainAttributes)
+		{
+			var assembly = CreateAssembly (name, ModuleKind.Console);
+
+			var testClass = new TypeDefinition ("", "MainClass", classAttributes, assembly.MainModule.TypeSystem.Object);
+			assembly.MainModule.Types.Add (testClass);
+
+			var mainMethod = new MethodDefinition ("Main", mainAttributes, assembly.MainModule.TypeSystem.Void);
+			testClass.Methods.Add (mainMethod);
+
+			assembly.EntryPoint = mainMethod;
+
+			return assembly;
+		}
+
 		private void GenerateRequiredAssemblies ()
 		{
 			// public class, private method
-			goodAssembly = AssemblyFactory.DefineAssembly ("GoodAssembly", AssemblyKind.Console);
-			TypeDefinition goodMainClass = new TypeDefinition ("MainClass", "", TypeAttributes.Class | TypeAttributes.Public, goodAssembly.MainModule.TypeReferences ["System.Object"]);
-			MethodDefinition goodMain = new MethodDefinition ("Main", MethodAttributes.Static | MethodAttributes.Private, goodAssembly.MainModule.TypeReferences ["System.Void"]);
-			goodMainClass.Methods.Add (goodMain);
-			goodAssembly.MainModule.Types.Add (goodMainClass);
-			goodAssembly.EntryPoint = goodMain;
+			goodAssembly = CreateTestAssembly (
+				"GoodAssembly",
+				TypeAttributes.Class | TypeAttributes.Public,
+				MethodAttributes.Static | MethodAttributes.Private);
 
 			// internal class, public method
-			anotherGoodAssembly = AssemblyFactory.DefineAssembly ("AnotherGoodAssembly", AssemblyKind.Console);
-			TypeDefinition anotherGoodMainClass = new TypeDefinition ("MainClass", "", TypeAttributes.Class | TypeAttributes.NotPublic, anotherGoodAssembly.MainModule.TypeReferences ["System.Object"]);
-			MethodDefinition anotherGoodMain = new MethodDefinition ("Main", MethodAttributes.Static | MethodAttributes.Public, anotherGoodAssembly.MainModule.TypeReferences ["System.Void"]);
-			anotherGoodMainClass.Methods.Add (anotherGoodMain);
-			anotherGoodAssembly.MainModule.Types.Add (anotherGoodMainClass);
-			anotherGoodAssembly.EntryPoint = anotherGoodMain;
+			anotherGoodAssembly = CreateTestAssembly (
+				"AnotherGoodAssembly",
+				TypeAttributes.Class | TypeAttributes.NotPublic,
+				MethodAttributes.Static | MethodAttributes.Public);
 
 			// public class, public method
-			badAssembly = AssemblyFactory.DefineAssembly ("BadAssembly", AssemblyKind.Console);
-			TypeDefinition badMainClass = new TypeDefinition ("MainClass", "", TypeAttributes.Class | TypeAttributes.Public, goodAssembly.MainModule.TypeReferences ["System.Object"]);
-			MethodDefinition badMain = new MethodDefinition ("Main", MethodAttributes.Static | MethodAttributes.Public, goodAssembly.MainModule.TypeReferences ["System.Void"]);
-			badMainClass.Methods.Add (badMain);
-			badAssembly.MainModule.Types.Add (badMainClass);
-			badAssembly.EntryPoint = badMain;
+			badAssembly = CreateTestAssembly (
+				"BadAssembly",
+				TypeAttributes.Class | TypeAttributes.Public,
+				MethodAttributes.Static | MethodAttributes.Public);
 
 			// has a reference to Micrisoft.VisualBasic assembly (i.e. likely compiled VB.NET)
-			vbBadAssembly = AssemblyFactory.DefineAssembly ("BadAssembly", AssemblyKind.Console);
-			vbBadAssembly.MainModule.Types.Add (badMainClass.Clone ());
-			vbBadAssembly.EntryPoint = badMain;
-			vbBadAssembly.MainModule.AssemblyReferences.Add (new AssemblyNameReference ("Microsoft.VisualBasic", "neutral", new Version (1, 0, 0, 0)));
+			vbBadAssembly = CreateTestAssembly (
+				"BadAssembly",
+				TypeAttributes.Class | TypeAttributes.Public,
+				MethodAttributes.Static | MethodAttributes.Public);
+			vbBadAssembly.MainModule.AssemblyReferences.Add (new AssemblyNameReference ("Microsoft.VisualBasic", new Version (1, 0, 0, 0)));
 
 			// no entry point
-			noEntryPointAssembly = AssemblyFactory.DefineAssembly ("NoEntryPointAssembly", AssemblyKind.Dll);
+			noEntryPointAssembly = CreateAssembly ("NoEntryPointAssembly", ModuleKind.Dll);
 		}
 
 		[Test]

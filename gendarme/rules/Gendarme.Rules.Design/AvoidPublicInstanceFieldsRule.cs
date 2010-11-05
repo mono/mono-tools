@@ -88,7 +88,7 @@ namespace Gendarme.Rules.Design {
 					continue;
 
 				string name = fd.Name;
-				if (fd.FieldType.IsArray ()) {
+				if (fd.FieldType.IsArray) {
 					string s = String.Format ("Consider changing the field '{0}' to a private or internal field and add a 'Set{1}{2}' method.",
 						name, Char.ToUpper (name [0]).ToString (), name.Substring (1));
 					Runner.Report (fd, Severity.Medium, Confidence.Total, s);

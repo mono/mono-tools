@@ -45,15 +45,18 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Design.EnsureSymmetryForOverloadedOperatorsTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Design.EnsureSymmetryForOverloadedOperatorsTest");
 		}
 
 		public TypeDefinition CreateType (string name, string [] methods, int parameterCount)
 		{
-			TypeDefinition testType = new TypeDefinition (name, "", TypeAttributes.Class, type.BaseType);
-			testType.Module = assembly.MainModule;
-			TypeDefinition returnType = new TypeDefinition ("Boolean", "System", TypeAttributes.Class, type.BaseType);
+			TypeDefinition testType = new TypeDefinition ("", name, TypeAttributes.Class, type.BaseType);
+			assembly.MainModule.Types.Add (testType);
+
+			TypeDefinition returnType = new TypeDefinition ("System", "Boolean", TypeAttributes.Class, type.BaseType);
+			assembly.MainModule.Types.Add (returnType);
+
 			foreach (string method in methods) {
 				MethodDefinition mDef = new MethodDefinition (method, MethodAttributes.Static | MethodAttributes.SpecialName, returnType);
 				for (int i = 0; i < parameterCount; i++)
