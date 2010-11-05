@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			GenericParameter gp = (type as GenericParameter);
 			if (gp != null) {
-				ConstraintCollection cc = gp.Constraints;
+				IList<TypeReference> cc = gp.Constraints;
 				if (cc.Count == 1)
 					type = cc [0];
 			}
@@ -198,13 +198,13 @@ namespace Gendarme.Rules.Maintainability {
 			if (!method.HasParameters)
 				return new MethodSignature (name, rtype);
 
-			ParameterDefinitionCollection pdc = method.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
 			string [] parameters = new string [pdc.Count];
 			for (int i = 0; i < pdc.Count; ++i) {
 				TypeReference pType = pdc [i].ParameterType;
 
 				// handle reference type (ref in C#)
-				ReferenceType ref_type = (pType as ReferenceType);
+				ByReferenceType ref_type = (pType as ByReferenceType);
 				if (ref_type != null)
 					pType = ref_type.ElementType;
 
@@ -221,7 +221,7 @@ namespace Gendarme.Rules.Maintainability {
 			//special exception
 			if (!method.HasParameters && (method.Name == "GetEnumerator"))
 				return null;
-			return method.ReturnType.ReturnType.FullName;
+			return method.ReturnType.FullName;
 		}
 
 		private static bool IsSystemObjectMethod (MethodReference method)
@@ -238,7 +238,7 @@ namespace Gendarme.Rules.Maintainability {
 			case "ToString" :
 				return !method.HasParameters;
 			case "Equals" :
-				ParameterDefinitionCollection pdc = method.Parameters;
+				IList<ParameterDefinition> pdc = method.Parameters;
 				return (method.HasParameters && (pdc.Count == 1 || pdc.Count == 2));
 			case "ReferenceEquals" :
 				return (method.HasParameters && (method.Parameters.Count == 2));
@@ -279,9 +279,9 @@ namespace Gendarme.Rules.Maintainability {
 			return signatures;
 		}
 
-		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
+		private void UpdateParameterLeastType (ParameterDefinition parameter, IEnumerable<StackEntryUsageResult> usageResults)
 		{
-			int pIndex = parameter.Sequence - 1;
+			int pIndex = parameter.GetSequence () - 1;
 			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
 
 			int currentLeastDepth = 0;
@@ -362,14 +362,14 @@ namespace Gendarme.Rules.Maintainability {
 
 				ParameterDefinition parameter = ins.GetParameter (method);
 				// this is `this`, we do not care
-				if ((parameter == null) || (parameter.Sequence == 0))
+				if ((parameter == null) || (parameter.GetSequence () == 0))
 					continue;
 
 				// is parameter already known ?
 				if (!usages.ContainsKey (parameter)) {
 					if (parameter.IsOut || parameter.IsOptional || parameter.ParameterType.IsValueType)
 						continue;
-					if (parameter.ParameterType.IsArray () || parameter.ParameterType.IsDelegate ())
+					if (parameter.ParameterType.IsArray || parameter.ParameterType.IsDelegate ())
 						continue; //TODO: these are more complex to handle, not supported for now
 
 					if (null == sea || sea.Method != method)
@@ -405,13 +405,8 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			TypeDefinition baseType = method.DeclaringType.BaseType.Resolve ();
 			while (baseType != null) {
-				if (method.IsConstructor && baseType.HasConstructors) {
-					foreach (MethodDefinition ctor in baseType.Constructors) {
-						if (sig.Matches (ctor))
-							return true;
-					}
-				} else if (baseType.HasMethods) {
-					foreach (MethodDefinition md in baseType.Methods) {
+				if (baseType.HasMethods) {
+					foreach (MethodDefinition md in baseType.GetMethods ()) {
 						if (sig.Matches (md))
 							return true;
 					}
@@ -428,7 +423,7 @@ namespace Gendarme.Rules.Maintainability {
 				TypeDefinition intr = intf_ref.Resolve ();
 				if (intr == null)
 					continue;
-				foreach (MethodDefinition md in intr.Methods) {
+				foreach (MethodDefinition md in intr.GetMethods ()) {
 					if (sig.Matches (md))
 						return true;
 				}
@@ -470,7 +465,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (ParameterDefinition parameter in method.Parameters){
 
-				int i = parameter.Sequence - 1;
+				int i = parameter.GetSequence () - 1;
 				if (null == types_least [i])
 					continue; //argument is not used
 
@@ -491,7 +486,7 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private string GetSuggestionMessage (ParameterReference parameter)
+		private string GetSuggestionMessage (ParameterDefinition parameter)
 		{
 			StringBuilder sb = new StringBuilder ();
 			sb.Append ("Parameter '");
@@ -501,13 +496,13 @@ namespace Gendarme.Rules.Maintainability {
 			else
 				sb.Append ("' could be of type '");
 
-			TypeReference type = types_least [parameter.Sequence - 1];
+			TypeReference type = types_least [parameter.GetSequence () - 1];
 			AppendPrettyTypeName (sb, type);
 			sb.Append ("'.");
 			return sb.ToString ();
 		}
 
-		private static TypeReference GetConstructedGenericType (IMemberReference method, GenericParameter parameter)
+		private static TypeReference GetConstructedGenericType (MemberReference method, GenericParameter parameter)
 		{
 			if (parameter.Owner is MethodReference) {
 				GenericInstanceMethod gim = (method as GenericInstanceMethod);
@@ -526,7 +521,7 @@ namespace Gendarme.Rules.Maintainability {
 		private static void AppendPrettyTypeName (StringBuilder sb, TypeReference type)
 		{
 			int nRemoveTrail;
-			GenericParameterCollection gpc = type.GenericParameters;
+			IList<GenericParameter> gpc = type.GenericParameters;
 			if (gpc.Count == 0)
 				nRemoveTrail = 0;
 			else if (gpc.Count < 10)

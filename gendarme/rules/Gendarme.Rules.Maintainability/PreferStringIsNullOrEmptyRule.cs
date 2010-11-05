@@ -79,8 +79,8 @@ namespace Gendarme.Rules.Maintainability {
 
 			// we only want to run this on assemblies that use 2.0 or later
 			// since String.IsNullOrEmpty did not exist before that
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
 			};
 		}
 

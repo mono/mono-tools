@@ -32,6 +32,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Maintainability;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -398,7 +399,7 @@ namespace Test.Rules.Maintainability {
 			int actual_cc;
 			int expected_cc;
 
-			foreach (MethodDefinition method in type.Methods) {
+			foreach (MethodDefinition method in type.GetMethods ()) {
 				actual_cc = AvoidComplexMethodsRule.GetCyclomaticComplexity (method);
 				expected_cc = GetExpectedComplexity (method);
 				Assert.AreEqual (expected_cc, actual_cc,
@@ -410,8 +411,8 @@ namespace Test.Rules.Maintainability {
 		private int GetExpectedComplexity(MethodDefinition method)
 		{
 			foreach (CustomAttribute attr in method.CustomAttributes) {
-				if (attr.Constructor.DeclaringType.Name == "ExpectedCCAttribute")
-					return (int) attr.ConstructorParameters [0];
+				if (attr.AttributeType.Name == "ExpectedCCAttribute")
+					return (int) attr.ConstructorArguments [0].Value;
 			}
 			
 			throw new ArgumentException (method + " does not have ExpectedCCAttribute");

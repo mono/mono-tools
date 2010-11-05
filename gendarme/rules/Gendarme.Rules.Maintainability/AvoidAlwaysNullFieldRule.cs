@@ -161,17 +161,9 @@ namespace Gendarme.Rules.Maintainability {
 					if (!isWinFormControl || field.Name != "components")	// the winforms designer seems to like to leave this null
 						nullFields.Add (field);
 			}
-			
-			// The type's constructors will often set all of the fields
-			// so it is a bit more efficient to check them first.
-			if (type.HasConstructors) {
-				ConstructorCollection cc = type.Constructors;
-				for (int i = 0; i < cc.Count && nullFields.Count > 0; ++i)
-					CheckMethod (cc [i]);
-			}
-			
+
 			if (type.HasMethods) {
-				MethodDefinitionCollection mc = type.Methods;
+				IList<MethodDefinition> mc = type.Methods;
 				for (int i = 0; i < mc.Count && nullFields.Count > 0; ++i)
 					CheckMethod (mc [i]);
 			}
