@@ -100,10 +100,10 @@ namespace Gendarme.Rules.Correctness {
 
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
 				bool usingRegexClass = e.CurrentAssembly.Name.Name == "System"
-				                       || e.CurrentModule.TypeReferences.ContainsType (RegexClass);
-				bool usingValidatorClass = e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0
+				                       || e.CurrentModule.HasTypeReference (RegexClass);
+				bool usingValidatorClass = e.CurrentModule.Runtime >= TargetRuntime.Net_2_0
 				                           && (e.CurrentAssembly.Name.Name == "System.Configuration"
-				                              || e.CurrentModule.TypeReferences.ContainsType (ValidatorClass));
+				                              || e.CurrentModule.HasTypeReference (ValidatorClass));
 				Active = usingRegexClass | usingValidatorClass;
 			};
 		}
@@ -175,7 +175,7 @@ namespace Gendarme.Rules.Correctness {
 			foreach (ParameterDefinition p in mdef.Parameters) {
 				string pname = p.Name;
 				if ((pname == "pattern" || pname == "regex") && p.ParameterType.FullName == "System.String") {
-					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : -1 + p.Sequence));
+					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : -1 + p.GetSequence ()));
 					if (ld != null)
 						CheckArguments (method, ins, ld);
 					return;

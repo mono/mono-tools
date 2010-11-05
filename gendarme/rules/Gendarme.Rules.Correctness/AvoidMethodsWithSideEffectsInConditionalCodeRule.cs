@@ -202,8 +202,8 @@ namespace Gendarme.Rules.Correctness {
 				if (method.HasCustomAttributes) {
 					foreach (CustomAttribute attr in method.CustomAttributes) {
 						if (StringConstructor.Matches (attr.Constructor)) {
-							if (attr.Constructor.DeclaringType.FullName == "System.Diagnostics.ConditionalAttribute") {
-								return (string) attr.ConstructorParameters [0];
+							if (attr.AttributeType.FullName == "System.Diagnostics.ConditionalAttribute") {
+								return (string) attr.ConstructorArguments [0].Value;
 							}
 						}
 					}
@@ -254,7 +254,7 @@ namespace Gendarme.Rules.Correctness {
 			MethodDefinition method = mr.Resolve ();
 			
 			if (method != null) {
-				TypeReference type = method.DeclaringType;
+				TypeDefinition type = method.DeclaringType;
 				string type_name = type.FullName;
 				string method_name = method.Name;
 
@@ -311,10 +311,10 @@ namespace Gendarme.Rules.Correctness {
 		
 		// Note that we don't want to use ContainsType because we need to ignore
 		// the namespace (at least until it lands in System.Diagnostics).
-		static bool HasPureAttribute (CustomAttributeCollection attrs)
+		static bool HasPureAttribute (IList<CustomAttribute> attrs)
 		{
 			foreach (CustomAttribute attr in attrs) {
-				if (attr.Constructor.DeclaringType.FullName.Contains ("PureAttribute")) {
+				if (attr.AttributeType.FullName.Contains ("PureAttribute")) {
 					return true;
 				}
 			}

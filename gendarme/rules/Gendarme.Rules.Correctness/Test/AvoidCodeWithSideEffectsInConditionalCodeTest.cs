@@ -129,7 +129,7 @@ namespace Test.Rules.Correctness {
 			// Bad2 can "avoid to fail" if debugging symbols are not found - that includes not being 
 			// able to load Mono.Cecil.Pdb.dll (on Windows / CSC) or Mono.Cecil.Mdb.dll (xMCS)
 			MethodDefinition md = DefinitionLoader.GetMethodDefinition<TestCases> ("Bad2");
-			if (md.DeclaringType.Module.HasDebuggingInformation ())
+			if (md.DeclaringType.Module.HasSymbols)
 				AssertRuleFailure (md);
 
 			AssertRuleFailure<TestCases> ("Bad3");

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -83,12 +84,12 @@ namespace Gendarme.Rules.Correctness {
 			// System.Single or System.Double (big performance difference)
 			// note: mscorlib.dll is an exception since it defines, not refer, System.Single and Double
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsAnyType (FloatingPointTypes);
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasAnyTypeReference (FloatingPointTypes);
 			};
 		}
 
-		private static bool CheckPrevious (InstructionCollection il, int index)
+		private static bool CheckPrevious (IList<Instruction> il, int index)
 		{
 			for (int i = index; i >= 0; i--) {
 				Instruction ins = il [i];
@@ -128,7 +129,7 @@ namespace Gendarme.Rules.Correctness {
 			if (!Ldc_R.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			InstructionCollection il = method.Body.Instructions;
+			IList<Instruction> il = method.Body.Instructions;
 			for (int i = 0; i < method.Body.Instructions.Count; i++) {
 				Instruction ins = il [i];
 				switch (ins.OpCode.Code) {

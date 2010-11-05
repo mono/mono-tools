@@ -30,6 +30,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -73,7 +74,7 @@ namespace Gendarme.Rules.Correctness {
 	public class BadRecursiveInvocationRule : Rule, IMethodRule {
 
 		// note: parameter names do not have to match because we can be calling a base class virtual method
-		private static bool CheckParameters (ParameterDefinitionCollection caller, ParameterDefinitionCollection callee)
+		private static bool CheckParameters (IList<ParameterDefinition> caller, IList<ParameterDefinition> callee)
 		{
 			if (caller.Count != callee.Count)
 				return false;
@@ -121,7 +122,7 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			// return value may differ (e.g. if generics are used)
-			if (method1.ReturnType.ReturnType.FullName != method2.ReturnType.ReturnType.FullName)
+			if (method1.ReturnType.FullName != method2.ReturnType.FullName)
 				return false;
 
 			TypeReference t2 = method2.DeclaringType;
@@ -164,7 +165,7 @@ namespace Gendarme.Rules.Correctness {
 					ParameterDefinition param = (ParameterDefinition) insn.Operand;
 					if (method.IsStatic)
 						paramNum++;
-					return (param.Sequence == paramNum);
+					return (param.GetSequence () == paramNum);
 				case Code.Ldarg_0:
 				case Code.Ldarg_1:
 				case Code.Ldarg_2:
@@ -205,7 +206,7 @@ namespace Gendarme.Rules.Correctness {
 			if (!CallsNew.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			InstructionCollection instructions = method.Body.Instructions;
+			IList<Instruction> instructions = method.Body.Instructions;
 			for (int i = 0; i < instructions.Count; i++) {
 				Instruction ins = instructions [i];
 

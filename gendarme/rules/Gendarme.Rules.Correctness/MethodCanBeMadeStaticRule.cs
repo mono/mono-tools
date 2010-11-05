@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Correctness {
 			foreach (Instruction instr in method.Body.Instructions) {
 				if (instr.OpCode.Code == Code.Ldarg) {
 					ParameterDefinition pd = (instr.Operand as ParameterDefinition);
-					if (pd.Sequence == 0)
+					if (pd.GetSequence () == 0)
 						return RuleResult.Success;
 				}
 			}

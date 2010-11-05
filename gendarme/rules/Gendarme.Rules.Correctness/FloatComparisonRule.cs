@@ -51,8 +51,8 @@ namespace Gendarme.Rules.Correctness {
 			// System.Single or System.Double (big performance difference)
 			// note: mscorlib.dll is an exception since it defines, not refer, System.Single and Double
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsAnyType (FloatingPointTypes);
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasAnyTypeReference (FloatingPointTypes);
 			};
 		}
 
