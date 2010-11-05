@@ -229,7 +229,7 @@ namespace Gendarme.Rules.Correctness {
 
 					TypeReference type = ins.OpCode.Code == Code.Newobj ?
 						call.DeclaringType : call.ReturnType.ReturnType;
-					string msg = string.Format ("Local of type '{0}' is not disposed of (at least.", type.Name);
+					string msg = string.Format ("Local of type '{0}' is not disposed of (at least not locally).", type.Name);
 					Runner.Report (method, ins, Severity.High, Confidence.High, msg);
 					continue;
 				}
