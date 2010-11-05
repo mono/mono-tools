@@ -87,8 +87,8 @@ namespace Gendarme.Rules.Design.Generic {
 
 			// we only want to run this on assemblies that use 2.0 or later
 			// since generics were not available before
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
 			};
 		}
 
@@ -149,7 +149,7 @@ namespace Gendarme.Rules.Design.Generic {
 				}
 				if (!found) {
 					// it's a defect when used only for the return value - but we reduce its severity
-					if (IsGenericParameter (method.ReturnType.ReturnType, gp_fullname))
+					if (IsGenericParameter (method.ReturnType, gp_fullname))
 						severity = Severity.Low;
 				}
 				if (!found) {

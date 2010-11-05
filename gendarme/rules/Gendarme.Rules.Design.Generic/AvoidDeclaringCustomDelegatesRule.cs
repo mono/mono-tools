@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -80,12 +81,12 @@ namespace Gendarme.Rules.Design.Generic {
 
 			// we only want to run this on assemblies that use 2.0 or later
 			// since generics were not available before
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				TargetRuntime runtime = e.CurrentAssembly.Runtime;
-				if (runtime >= TargetRuntime.NET_4_0) {
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				TargetRuntime runtime = e.CurrentModule.Runtime;
+				if (runtime >= TargetRuntime.Net_4_0) {
 					MaxParameter = 16;
 					Active = true;
-				} else if (runtime >= TargetRuntime.NET_2_0) {
+				} else if (runtime >= TargetRuntime.Net_2_0) {
 					MaxParameter = 4;
 					Active = true;
 				} else {
@@ -152,7 +153,7 @@ namespace Gendarme.Rules.Design.Generic {
 			bool use_structure = false;
 			// check parameters for 'ref', 'out', 'params'
 			if (invoke.HasParameters) {
-				ParameterDefinitionCollection pdc = invoke.Parameters;
+				IList<ParameterDefinition> pdc = invoke.Parameters;
 				n = pdc.Count;
 				// too many parameters to directly use Action/Func
 				// so we lower severity and suggest grouping them
@@ -169,7 +170,7 @@ namespace Gendarme.Rules.Design.Generic {
 				}
 			}
 
-			string msg = (invoke.ReturnType.ReturnType.FullName == "System.Void") ? ActionMessage [n] : FuncMessage [n];
+			string msg = (invoke.ReturnType.FullName == "System.Void") ? ActionMessage [n] : FuncMessage [n];
 			if (use_structure)
 				msg += " and use a structure to hold all your parameters into <T>.";
 			Runner.Report (type, severity, Confidence.High, msg);
