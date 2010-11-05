@@ -82,15 +82,15 @@ namespace Gendarme.Rules.BadPractice {
 			base.Initialize (runner);
 
 			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib ||
-				e.CurrentModule.TypeReferences.ContainsType ("System.ArgIterator"));
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+				e.CurrentModule.HasTypeReference ("System.ArgIterator"));
 			};
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// methods using vararg are easily identifiable
-			if (method.CallingConvention != MethodCallingConvention.VarArg)
+			if ((method.CallingConvention & MethodCallingConvention.VarArg) == 0)
 				return RuleResult.Success;
 
 			// __arglist is accepted for interoperability purpose

@@ -78,8 +78,8 @@ namespace Gendarme.Rules.BadPractice {
 			// if the module does not reference System.ICloneable then
 			// no type inside will be implementing it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType (ICloneable);
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasTypeReference (ICloneable);
 			};
 		}
 

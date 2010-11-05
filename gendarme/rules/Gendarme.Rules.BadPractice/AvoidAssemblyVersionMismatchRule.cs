@@ -75,10 +75,10 @@ namespace Gendarme.Rules.BadPractice {
 
 			Version file_version = null;
 			foreach (CustomAttribute ca in assembly.CustomAttributes) {
-				if (ca.Constructor.DeclaringType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
+				if (ca.AttributeType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
 					continue;
 
-				file_version = new Version (ca.ConstructorParameters [0] as string);
+				file_version = new Version (ca.ConstructorArguments [0].Value as string);
 				break;
 			}
 
