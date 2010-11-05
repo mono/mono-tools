@@ -141,7 +141,7 @@ namespace Test.Rules.Concurrency {
 		{
 			MethodDefinition md = DefinitionLoader.GetMethodDefinition<Singleton> ("get_DoubleCheck");
 			// even if the rule applies only to < 2.0 it still works (for unit testsing) until 4.0
-			if (md.DeclaringType.Module.Assembly.Runtime < TargetRuntime.NET_4_0)
+			if (md.DeclaringType.Module.Runtime < TargetRuntime.Net_4_0)
 				AssertRuleFailure (md);
 			else
 				Assert.Ignore ("Rule applies for < 2.0 and works only for < 4.0");

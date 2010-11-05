@@ -131,8 +131,8 @@ namespace Gendarme.Rules.Concurrency {
 			// if not then this rule does not need to be executed for the module
 			// note: mscorlib.dll is an exception since it defines, not refer, System.Threading.Monitor
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType ("System.Threading.Monitor");
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasTypeReference ("System.Threading.Monitor");
 			};
 		}
 		
@@ -172,7 +172,7 @@ namespace Gendarme.Rules.Concurrency {
 		}
 		
 		//FIXME: copied from DoubleCheckLockingRule, we need to share this
-		private static bool IsMonitorMethod (IMemberReference method, string methodName)
+		private static bool IsMonitorMethod (MemberReference method, string methodName)
 		{
 			if (method.Name != methodName)
 				return false;

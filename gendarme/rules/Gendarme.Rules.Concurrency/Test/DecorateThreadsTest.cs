@@ -874,7 +874,7 @@ namespace Test.Rules.Concurrency {
 			PreCheck (type);
 			
 //			runner.OnType (type);
-			foreach (MethodDefinition method in type.AllMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
 				runner.OnMethod (method);
 			}
 			
