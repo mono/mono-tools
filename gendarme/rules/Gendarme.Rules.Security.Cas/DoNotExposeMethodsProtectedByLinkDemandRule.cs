@@ -95,20 +95,19 @@ namespace Gendarme.Rules.Security.Cas {
 
 		static PermissionSet Empty = new PermissionSet (PermissionState.None);
 
-		private static PermissionSet GetLinkDemand (IHasSecurity method)
+		private static PermissionSet GetLinkDemand (ISecurityDeclarationProvider method)
 		{
 			foreach (SecurityDeclaration declsec in method.SecurityDeclarations) {
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
-					declsec.Resolve ();
-					return declsec.PermissionSet;
+					return declsec.ToPermissionSet ();
 				}
 			}
 			return Empty;
 		}
 
-		private static bool Check (IHasSecurity caller, IHasSecurity callee)
+		private static bool Check (ISecurityDeclarationProvider caller, ISecurityDeclarationProvider callee)
 		{
 			// 1 - look if the callee has a LinkDemand
 			PermissionSet calleeLinkDemand = GetLinkDemand (callee);
