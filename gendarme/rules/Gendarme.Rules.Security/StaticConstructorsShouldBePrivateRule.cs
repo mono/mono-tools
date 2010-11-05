@@ -46,13 +46,13 @@ namespace Gendarme.Rules.Security {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to interface, enumerations or delegates
-			if (type.IsInterface || type.IsEnum || !type.HasConstructors || type.IsDelegate ())
+			if (type.IsInterface || type.IsEnum || !type.HasMethods || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition private_static_ctor = null;
-			foreach (MethodDefinition constructor in type.Constructors) {
-				if (constructor.IsStatic && !constructor.IsPrivate) {
-					private_static_ctor = constructor;
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsStatic && !method.IsPrivate && method.IsConstructor) {
+					private_static_ctor = method;
 					break; // there cannot be two .cctor's so we can stop looking
 				}
 			}
