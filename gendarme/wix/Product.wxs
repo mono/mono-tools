@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define ProductShortName = "Gendarme" ?>
-<?define ProductVersion = "2.7.0" ?>
-<?define ProductVersionText = "2.7" ?>
+<?define ProductVersion = "2.8.0" ?>
+<?define ProductVersionText = "2.8" ?>
 <?define Manufacturer = "Novell" ?>
-<?define UpgradeCode = "d7c83968-def2-4614-81f2-a3eefc9bc6b3" ?>
+<?define UpgradeCode = "D7C83968-DEF2-4614-81F2-A3EEFC9BC6B3" ?>
 
 <?define GendarmeBin=..\console\bin\$(var.Configuration)?>
 <?define GendarmeRoot=..?>
@@ -15,12 +15,6 @@
 		<Package Id="*" Compressed="yes" Description="$(var.ProductShortName) $(var.ProductVersionText) ($(var.ProductVersion))" InstallerVersion="200" ShortNames="no" Manufacturer="$(var.Manufacturer)" />
 		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-    <!-- Ensure .Net Framework 3.5 is installed -->
-    <PropertyRef Id="NETFRAMEWORK35" />
-    <Condition Message="This setup requires the .NET Framework 3.5 to be installed.">
-      Installed OR NETFRAMEWORK35
-    </Condition>
-
     <!-- Major upgrade -->
     <Upgrade Id="$(var.UpgradeCode)">
       <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
@@ -31,9 +25,9 @@
 			<Directory Id="ProgramFilesFolder">
 				<Directory Id="INSTALLLOCATION" Name="Gendarme">
           
-					<Component Id="ProductComponent" Guid="93fe542d-d350-4329-ac61-d1bb9c20f26a">
+					<Component Id="ProductComponent" Guid="93FE542D-D350-4329-AC61-D1BB9C20F26A">
             <!-- Gendarme files -->
-            <File Name="GendarmeWizard.exe" Source="$(var.GendarmeBin)\GendarmeWizard.exe">
+            <File Name="GendarmeWizard.exe" Source="$(var.GendarmeBin)\GendarmeWizard.exe" KeyPath="yes">
               <Shortcut Id="gen_shortcut" Directory="ProgramMenuDir" Name="$(var.ProductShortName)" LongName="$(var.ProductShortName) $(var.ProductVersionText)" WorkingDirectory='INSTALLLOCATION' Icon="GendarmeWizard.exe" IconIndex="0" Advertise="yes" />
             </File>
             <File Name="gendarme.exe" Source="$(var.GendarmeBin)\gendarme.exe" />
@@ -87,13 +81,16 @@
     
     <!-- Sequences -->
     <InstallExecuteSequence>
+      <!-- Because we have a launch condition that uses the results of FindRelatedProducts, put it first. -->
+      <LaunchConditions After="FindRelatedProducts" />
       <RemoveExistingProducts After="InstallValidate" />
     </InstallExecuteSequence>
 
-    <InstallUISequence>
-      <!-- Because we have a launch condition that uses the results of FindRelatedProducts, put it first. -->
-      <LaunchConditions After="FindRelatedProducts" />
-    </InstallUISequence>
+    <!-- Ensure .Net Framework 3.5 is installed -->
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <Condition Message="This setup requires the .NET Framework 3.5 to be installed.">
+      <![CDATA[Installed OR NETFRAMEWORK35]]>
+    </Condition>
 
     <!-- This enables the license screen and where to install screen -->
     <Property Id="WIXUI_INSTALLDIR">INSTALLLOCATION</Property>
