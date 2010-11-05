@@ -45,8 +45,8 @@ namespace Gendarme.Framework {
 		{
 			if (type == null)
 				return null;
-			foreach (MethodDefinition ctor in type.Constructors) {
-				Instruction ins = ExtractFirst (ctor);
+			foreach (MethodDefinition method in type.Methods) {
+				Instruction ins = ExtractFirst (method);
 				if (ins != null)
 					return ins;
 			}
@@ -77,7 +77,7 @@ namespace Gendarme.Framework {
 
 			ParameterDefinition parameter = (location as ParameterDefinition);
 			if (parameter != null)
-				return (parameter.Method.DeclaringType as TypeDefinition);
+				return FindTypeFromLocation (parameter.Method);
 
 			return (location as TypeDefinition);
 		}

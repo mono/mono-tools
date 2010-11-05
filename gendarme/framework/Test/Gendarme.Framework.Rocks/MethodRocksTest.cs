@@ -91,12 +91,12 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		private MethodDefinition GetMethod (string typeName, string methodName)
 		{
-			TypeDefinition type = assembly.MainModule.Types [typeName];
+			TypeDefinition type = assembly.MainModule.GetType (typeName);
 			foreach (MethodDefinition method in type.Methods) {
 				if (method.Name == methodName)
 					return method;
@@ -176,24 +176,24 @@ namespace Test.Framework.Rocks {
 		[Test]
 		public void IsVisible ()
 		{
-			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.PublicType"];
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.PublicType");
 			Assert.IsTrue (type.GetMethod ("PublicMethod").IsVisible (), "PublicType.PublicMethod");
 			Assert.IsTrue (type.GetMethod ("ProtectedMethod").IsVisible (), "PublicType.ProtectedMethod");
 			Assert.IsFalse (type.GetMethod ("InternalMethod").IsVisible (), "PublicType.InternalMethod");
 			Assert.IsFalse (type.GetMethod ("PrivateMethod").IsVisible (), "PublicType.PrivateMethod");
 
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.PublicType/NestedPublicType"];
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.PublicType/NestedPublicType");
 			Assert.IsTrue (type.GetMethod ("PublicMethod").IsVisible (), "NestedPublicType.PublicMethod");
 			Assert.IsTrue (type.GetMethod ("ProtectedMethod").IsVisible (), "NestedPublicType.ProtectedMethod");
 			Assert.IsFalse (type.GetMethod ("PrivateMethod").IsVisible (), "NestedPublicType.PrivateMethod");
 
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.PublicType/NestedProtectedType"];
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.PublicType/NestedProtectedType");
 			Assert.IsTrue (type.GetMethod ("PublicMethod").IsVisible (), "NestedProtectedType.PublicMethod");
 
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.PublicType/NestedPrivateType"];
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.PublicType/NestedPrivateType");
 			Assert.IsFalse (type.GetMethod ("PublicMethod").IsVisible (), "NestedPrivateType.PublicMethod");
 
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.InternalType"];
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.InternalType");
 			Assert.IsFalse (type.GetMethod ("PublicMethod").IsVisible (), "InternalType.PublicMethod");
 		}
 

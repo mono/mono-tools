@@ -401,11 +401,11 @@ namespace Gendarme.Framework.Helpers {
 						LoadResults.AddIfNew (insWithLeave.Copy (ins)); //continue, might be loaded again
 
 					//we simply branch to every possible catch block.
-					ExceptionHandlerCollection ehc = null;
+					IList<ExceptionHandler> ehc = null;
 					if (Body.HasExceptionHandlers) {
 						ehc = Body.ExceptionHandlers;
 						foreach (ExceptionHandler handler in ehc) {
-							if (handler.Type != ExceptionHandlerType.Catch)
+							if (handler.HandlerType != ExceptionHandlerType.Catch)
 								continue;
 							if (ins.Offset < handler.TryStart.Offset || ins.Offset >= handler.TryEnd.Offset)
 								continue;
@@ -418,7 +418,7 @@ namespace Gendarme.Framework.Helpers {
 						bool handlerFound = false;
 						if (ehc != null) {
 							foreach (ExceptionHandler handler in ehc) {
-								if (handler.Type != ExceptionHandlerType.Finally)
+								if (handler.HandlerType != ExceptionHandlerType.Finally)
 									continue;
 								if (handler.TryStart.Offset > ins.Offset || handler.TryEnd.Offset <= ins.Offset)
 									continue;
@@ -516,9 +516,9 @@ namespace Gendarme.Framework.Helpers {
 
 			case Code.Ldfld:
 				//TODO: we do not check what instance is on the stack
-				return new StoreSlot (StoreType.Field, (int) ((FieldReference) ins.Operand).MetadataToken.ToUInt ());
+				return new StoreSlot (StoreType.Field, ((FieldReference) ins.Operand).MetadataToken.ToInt32 ());
 			case Code.Ldsfld:
-				return new StoreSlot (StoreType.StaticField, (int) ((FieldReference) ins.Operand).MetadataToken.ToUInt ());
+				return new StoreSlot (StoreType.StaticField, ((FieldReference) ins.Operand).MetadataToken.ToInt32 ());
 
 			case Code.Ldarg_0:
 			case Code.Ldarg_1:
@@ -527,7 +527,7 @@ namespace Gendarme.Framework.Helpers {
 				return new StoreSlot (StoreType.Argument, ins.OpCode.Code - Code.Ldarg_0);
 			case Code.Ldarg_S:
 			case Code.Ldarg: {
-					int sequence = ((ParameterDefinition) ins.Operand).Sequence;
+					int sequence = ((ParameterDefinition) ins.Operand).GetSequence ();
 					if (!this.Method.HasThis)
 						sequence--;
 					return new StoreSlot (StoreType.Argument, sequence);
@@ -575,13 +575,13 @@ namespace Gendarme.Framework.Helpers {
 
 			case Code.Stfld:
 				//TODO: we do not check what instance is on the stack
-				return new StoreSlot (StoreType.Field, (int) ((FieldReference) ins.Operand).MetadataToken.ToUInt ());
+				return new StoreSlot (StoreType.Field, ((FieldReference) ins.Operand).MetadataToken.ToInt32 ());
 			case Code.Stsfld:
-				return new StoreSlot (StoreType.StaticField, (int) ((FieldReference) ins.Operand).MetadataToken.ToUInt ());
+				return new StoreSlot (StoreType.StaticField, ((FieldReference) ins.Operand).MetadataToken.ToInt32 ());
 
 			case Code.Starg_S: //store arg (not ref / out etc)
 			case Code.Starg: {
-					int sequence = ((ParameterDefinition) ins.Operand).Sequence;
+					int sequence = ((ParameterDefinition) ins.Operand).GetSequence ();
 					if (!this.Method.HasThis)
 						sequence--;
 					return new StoreSlot (StoreType.Argument, sequence);

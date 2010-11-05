@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -119,10 +120,10 @@ namespace Gendarme.Framework.Helpers {
 		// TryParse
 		public static readonly MethodSignature TryParse = new MethodSignature ("TryParse",
 			delegate (MethodReference method) {
-				if (method.ReturnType.ReturnType.FullName != "System.Boolean")
+				if (method.ReturnType.FullName != "System.Boolean")
 					return false;
 
-				ParameterDefinitionCollection pdc = method.Parameters;
+				IList<ParameterDefinition> pdc = method.Parameters;
 				if (pdc [0].ParameterType.FullName != "System.String")
 					return false;
 
@@ -139,7 +140,7 @@ namespace Gendarme.Framework.Helpers {
 			delegate (MethodReference method) {
 				if (!method.HasParameters)
 					return false;
-				if (method.ReturnType.ReturnType != method.DeclaringType)
+				if (method.ReturnType.FullName != method.DeclaringType.FullName)
 					return false;
 				return (method.Parameters [0].ParameterType.FullName == "System.String");
 			}

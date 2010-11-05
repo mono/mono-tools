@@ -31,6 +31,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
+using Mono.Collections.Generic;
 using NUnit.Framework;
 
 namespace Test.Framework.Rocks {
@@ -44,22 +45,22 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
 		public void Contains_Null ()
 		{
-			CustomAttributeCollection cac = new CustomAttributeCollection (null);
+			Collection<CustomAttribute> cac = new Collection<CustomAttribute> ();
 			cac.ContainsType ((string) null);
 		}
 
 		[Test]
 		public void Contains ()
 		{
-			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
-			CustomAttributeCollection cac = type.CustomAttributes;
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
+			Collection<CustomAttribute> cac = type.CustomAttributes;
 			Assert.IsTrue (cac.ContainsType ("NUnit.Framework.TestFixtureAttribute"), "NUnit.Framework.TestFixtureAttribute");
 			Assert.IsFalse (cac.ContainsType ("NUnit.Framework.TestFixture"), "NUnit.Framework.TestFixture");
 		}
@@ -68,15 +69,15 @@ namespace Test.Framework.Rocks {
 		[ExpectedException (typeof (ArgumentNullException))]
 		public void ContainsAny_Null ()
 		{
-			CustomAttributeCollection cac = new CustomAttributeCollection (null);
+			Collection<CustomAttribute> cac = new Collection<CustomAttribute> ();
 			cac.ContainsAnyType (null);
 		}
 
 		[Test]
 		public void ContainsAny ()
 		{
-			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
-			CustomAttributeCollection cac = type.CustomAttributes;
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
+			Collection<CustomAttribute> cac = type.CustomAttributes;
 			Assert.IsTrue (cac.ContainsAnyType (new string[] {
 				"NUnit.Framework.TestFixtureAttribute",
 				null,
@@ -89,7 +90,7 @@ namespace Test.Framework.Rocks {
 		[ExpectedException (typeof (ArgumentNullException))]
 		public void HasAttribute_Null ()
 		{
-			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
 			type.HasAttribute (null);
 		}
 		
@@ -99,7 +100,7 @@ namespace Test.Framework.Rocks {
 			TypeDefinition type = null;
 			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "null-type");
 
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.CustomAttributeRocksTest"];
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
 			Assert.IsTrue (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "true");
 			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestAttribute"), "false");
 		}

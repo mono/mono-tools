@@ -47,7 +47,7 @@ namespace Test.Framework {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			type = AssemblyFactory.GetAssembly (unit).MainModule.Types ["Test.Framework.MethodSignatureTest"];
+			type = AssemblyDefinition.ReadAssembly (unit).MainModule.GetType ("Test.Framework.MethodSignatureTest");
 		}
 
 		private MethodDefinition GetMethod (string name, int parameters)

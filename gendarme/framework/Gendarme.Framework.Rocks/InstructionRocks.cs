@@ -184,7 +184,7 @@ namespace Gendarme.Framework.Rocks {
 			case Code.Call:
 			case Code.Callvirt:
 			case Code.Newobj:
-				return (self.Operand as MethodReference).ReturnType.ReturnType;
+				return (self.Operand as MethodReference).ReturnType;
 			default:
 				return null;
 			}
@@ -273,7 +273,7 @@ namespace Gendarme.Framework.Rocks {
 			case StackBehaviour.Varpop:
 				switch (self.OpCode.FlowControl) {
 				case FlowControl.Return:
-					return method.ReturnType.ReturnType.FullName == "System.Void" ? 0 : 1;
+					return method.ReturnType.FullName == "System.Void" ? 0 : 1;
 
 				case FlowControl.Call:
 					IMethodSignature calledMethod = (IMethodSignature) self.Operand;
@@ -326,7 +326,7 @@ namespace Gendarme.Framework.Rocks {
 			case StackBehaviour.Varpush:
 				IMethodSignature calledMethod = (IMethodSignature) self.Operand;
 				if (calledMethod != null)
-					return (calledMethod.ReturnType.ReturnType.FullName == "System.Void") ? 0 : 1;
+					return (calledMethod.ReturnType.FullName == "System.Void") ? 0 : 1;
 
 				throw new NotImplementedException ("Varpush not supported for this Instruction.");
 			default:

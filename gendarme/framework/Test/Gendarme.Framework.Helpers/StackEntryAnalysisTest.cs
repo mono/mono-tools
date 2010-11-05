@@ -49,8 +49,8 @@ namespace Test.Framework {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Framework.StackEntryAnalysisTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Framework.StackEntryAnalysisTest");
 		}
 
 		public MethodDefinition GetTest (string name)
@@ -563,19 +563,21 @@ namespace Test.Framework {
 
 			MethodDefinition m = new MethodDefinition ("Switch2", Mono.Cecil.MethodAttributes.Public, this.type);
 
-			Instruction switch1 = m.Body.CilWorker.Create (OpCodes.Ret);
-			Instruction switch2 = m.Body.CilWorker.Create (OpCodes.Ret);
+			ILProcessor il = m.Body.GetILProcessor ();
 
-			m.Body.CilWorker.Emit (OpCodes.Newobj, (MethodReference) GetFirstNewObj (GetTest ("Switch")).Operand); //get object.ctor()
-			m.Body.CilWorker.Emit (OpCodes.Ldc_I4_0);
-			m.Body.CilWorker.Emit (OpCodes.Switch, new Instruction [] { switch1, switch2 });
+			Instruction switch1 = il.Create (OpCodes.Ret);
+			Instruction switch2 = il.Create (OpCodes.Ret);
+
+			il.Emit (OpCodes.Newobj, (MethodReference) GetFirstNewObj (GetTest ("Switch")).Operand); //get object.ctor()
+			il.Emit (OpCodes.Ldc_I4_0);
+			il.Emit (OpCodes.Switch, new Instruction [] { switch1, switch2 });
 
 			//default	
-			m.Body.CilWorker.Emit (OpCodes.Ret);
+			il.Emit (OpCodes.Ret);
 
 			//switch 1 and 2
-			m.Body.CilWorker.Append (switch1);
-			m.Body.CilWorker.Append (switch2);
+			il.Append (switch1);
+			il.Append (switch2);
 
 			StackEntryAnalysis sea = new StackEntryAnalysis (m);
 			StackEntryUsageResult [] result = sea.GetStackEntryUsage (GetFirstNewObj (m));
