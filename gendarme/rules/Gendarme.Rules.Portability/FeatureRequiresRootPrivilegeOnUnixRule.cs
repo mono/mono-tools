@@ -98,8 +98,8 @@ namespace Gendarme.Rules.Portability {
 			// if the module does not reference either Ping or Process
 			// then it's not being used inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				ping_present = e.CurrentModule.TypeReferences.ContainsType (Ping);
-				process_present = e.CurrentModule.TypeReferences.ContainsType (Process);
+				ping_present = e.CurrentModule.HasTypeReference (Ping);
+				process_present = e.CurrentModule.HasTypeReference (Process);
 				Active = (ping_present || process_present);
 			};
 			// note: this ignores on purpose System.dll since there's
