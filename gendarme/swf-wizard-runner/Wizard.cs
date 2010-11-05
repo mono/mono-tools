@@ -37,7 +37,6 @@ using Gendarme.Framework;
 using Gendarme.Properties;
 
 using Mono.Cecil;
-using Mono.Cecil.Binary;
 
 namespace Gendarme {
 
@@ -317,9 +316,9 @@ namespace Gendarme {
 						AssemblyInfo a = kvp.Value;
 						string filename = kvp.Key;
 						try {
-							a.Definition = AssemblyFactory.GetAssembly (filename);
+							a.Definition = AssemblyDefinition.ReadAssembly (filename, new ReaderParameters { AssemblyResolver = AssemblyResolver.Resolver });
 						}
-						catch (ImageFormatException) {
+						catch (BadImageFormatException) {
 							// continue loading & analyzing assemblies
 							Runner.Warn ("Invalid image: " + filename);
 						}
