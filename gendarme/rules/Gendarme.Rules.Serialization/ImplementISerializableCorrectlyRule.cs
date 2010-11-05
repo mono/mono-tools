@@ -122,7 +122,7 @@ namespace Gendarme.Rules.Serialization {
 
 		static private FieldDefinition CheckProperty (MethodDefinition getter)
 		{
-			string return_type = getter.ReturnType.ReturnType.FullName;
+			string return_type = getter.ReturnType.FullName;
 			foreach (Instruction ins in getter.Body.Instructions) {
 				if (ins.OpCode.OperandType != OperandType.InlineField)
 					continue;
