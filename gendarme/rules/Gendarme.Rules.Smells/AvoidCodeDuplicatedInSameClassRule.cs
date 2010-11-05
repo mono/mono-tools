@@ -120,7 +120,7 @@ namespace Gendarme.Rules.Smells {
 				return RuleResult.DoesNotApply;
 
 			locator.Clear ();
-			foreach (MethodDefinition current in type.AllMethods ()) {
+			foreach (MethodDefinition current in type.Methods) {
 				locator.CompareMethodAgainstTypeMethods (current, type);
 				locator.CheckedMethods.AddIfNew (current.Name);
 			}
