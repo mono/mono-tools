@@ -73,7 +73,7 @@ namespace Gendarme.Rules.UI {
 
 			// 3. On Windows a console window will appear if the subsystem isn't Windows
 			//    i.e. the assembly wasn't compiled with /target:winexe
-			if (assembly.Kind == AssemblyKind.Windows)
+			if (assembly.MainModule.Kind == ModuleKind.Windows)
 				return RuleResult.Success;
 
 			Runner.Report (assembly, Severity.Medium, Confidence.Total);

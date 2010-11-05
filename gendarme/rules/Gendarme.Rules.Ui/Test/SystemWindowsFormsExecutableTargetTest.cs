@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.IO;
 using System.Reflection;
 
 using Mono.Cecil;
@@ -55,7 +56,7 @@ namespace Test.Rules.Ui {
 		[Test]
 		public void Library ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (Assembly.GetExecutingAssembly ().Location);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (Assembly.GetExecutingAssembly ().Location);
 			// this (unit test) assembly is a library (dll) and has no entry point
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (assembly));
 		}
@@ -63,7 +64,7 @@ namespace Test.Rules.Ui {
 		[Test]
 		public void ConsoleExe ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.conexe_exe);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (new MemoryStream (ExecutableTargetTest.conexe_exe));
 			// this assembly is a executable (exe) but doesn't refer to SWF
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckAssembly (assembly));
 		}
@@ -71,7 +72,7 @@ namespace Test.Rules.Ui {
 		[Test]
 		public void WinExe ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.swf_winexe_exe);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (new MemoryStream (ExecutableTargetTest.swf_winexe_exe));
 			// this assembly is a executable (exe), refer to SWF and is compiled with /winexe
 			Assert.AreEqual (RuleResult.Success, runner.CheckAssembly (assembly));
 		}
@@ -79,7 +80,7 @@ namespace Test.Rules.Ui {
 		[Test]
 		public void SwfExe ()
 		{
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (ExecutableTargetTest.swfexe_exe);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (new MemoryStream (ExecutableTargetTest.swfexe_exe));
 			// this assembly is a executable (exe) and refer to SWF but isn't compiled with /winexe
 			Assert.AreEqual (RuleResult.Failure, runner.CheckAssembly (assembly));
 		}
