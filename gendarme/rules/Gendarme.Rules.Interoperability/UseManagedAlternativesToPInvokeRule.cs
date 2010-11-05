@@ -73,7 +73,7 @@ namespace Gendarme.Rules.Interoperability {
 		private sealed class ManagedAlternatives {
 
 			public ManagedAlternatives (string module, string alternatives)
-				: this (module, alternatives, TargetRuntime.NET_1_1)
+				: this (module, alternatives, TargetRuntime.Net_1_1)
 			{
 			}
 
@@ -99,8 +99,8 @@ namespace Gendarme.Rules.Interoperability {
 				{ "WaitForMultipleObjects", new ManagedAlternatives ("kernel32.dll", "System.Threading.WaitHandle::WaitAny(), System.Threading.WaitHandle::WaitAll()") },
 				{ "GetLastError", new ManagedAlternatives ("kernel32.dll", "System.Runtime.InteropServices.Marshal::GetLastWin32Error()") },
 				{ "MessageBox", new ManagedAlternatives ("user32.dll", "System.Windows.Forms.MessageBox::Show()") },
-				{ "Beep", new ManagedAlternatives ("kernel32.dll", "System.Console::Beep()", TargetRuntime.NET_2_0) },
-				{ "PlaySound", new ManagedAlternatives ("winmm.dll", "System.Media.SoundPlayer", TargetRuntime.NET_2_0) }
+				{ "Beep", new ManagedAlternatives ("kernel32.dll", "System.Console::Beep()", TargetRuntime.Net_2_0) },
+				{ "PlaySound", new ManagedAlternatives ("winmm.dll", "System.Media.SoundPlayer", TargetRuntime.Net_2_0) }
 			};
 
 		private static ManagedAlternatives GetManagedAlternatives (MethodDefinition method)
@@ -108,7 +108,7 @@ namespace Gendarme.Rules.Interoperability {
 			ManagedAlternatives alts;
 			if (managedAlternatives.TryGetValue (method.Name, out alts)) {
 				// can we apply this alternative to the framework being used ?
-				if (method.DeclaringType.Module.Assembly.Runtime < alts.Runtime)
+				if (method.DeclaringType.Module.Runtime < alts.Runtime)
 					return null;
 				// make sure we're talking about the exact same (module-wise) p/invoke declaration
 				if (alts.Module.StartsWith (method.PInvokeInfo.Module.Name, StringComparison.OrdinalIgnoreCase))

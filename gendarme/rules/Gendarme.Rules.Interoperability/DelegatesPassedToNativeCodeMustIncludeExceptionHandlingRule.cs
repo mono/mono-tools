@@ -401,7 +401,7 @@ namespace Gendarme.Rules.Interoperability {
 		private void VerifyCallInstruction (Instruction ins)
 		{
 			MethodDefinition called_method;
-			ParameterDefinitionCollection parameters;
+			IList<ParameterDefinition> parameters;
 
 			called_method = (ins.Operand as MethodReference).Resolve ();
 					
@@ -440,7 +440,7 @@ namespace Gendarme.Rules.Interoperability {
 			bool result;
 			bool valid_ex_handler;
 			MethodBody body;
-			InstructionCollection instructions;
+			IList<Instruction> instructions;
 
 			if (callback == null)
 				return true;
@@ -487,7 +487,7 @@ namespace Gendarme.Rules.Interoperability {
 			if (callback.Body.HasExceptionHandlers) {
 				foreach (ExceptionHandler eh in callback.Body.ExceptionHandlers) {
 					// We only care about catch clauses.
-					if (eh.Type != ExceptionHandlerType.Catch)
+					if (eh.HandlerType != ExceptionHandlerType.Catch)
 						continue;
 					
 					// no 'Catch ... When <condition>' clause. C# doesn't support it, VB does

@@ -86,7 +86,7 @@ namespace Test.Rules.Interoperability {
 		{
 			// since C# compiler won't compile an instance p/invoke we'll need to hack our own
 			AssemblyDefinition assembly = DefinitionLoader.GetAssemblyDefinition<PInvokePublic> ();
-			foreach (MethodDefinition method in assembly.MainModule.Types ["Test.Rules.Interoperability.PInvokePublic"].Methods) {
+			foreach (MethodDefinition method in assembly.MainModule.GetType ("Test.Rules.Interoperability.PInvokePublic").Methods) {
 				if (method.Name.StartsWith ("Instance"))
 					method.IsStatic = false;
 			}

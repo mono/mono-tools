@@ -125,8 +125,8 @@ namespace Test.Rules.Interoperability {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Interoperability.GetLastErrorMustBeCalledRightAfterPInvokeTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Interoperability.GetLastErrorMustBeCalledRightAfterPInvokeTest");
 			rule = new GetLastErrorMustBeCalledRightAfterPInvokeRule ();
 			runner = new TestRunner (rule);
 		}
