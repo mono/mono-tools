@@ -38,94 +38,94 @@ using Gendarme.Framework;
 
 namespace Gendarme.Rules.Maintainability {
 
-        /// <summary>
-        /// A satellite assembly have a resource which does not exist in the main assembly.
-        /// The resource should be removed from the satellite assembly.
-        /// </summary>
-        /// <remarks>
-        /// The satellites assemblies are searched in the subdirectories of the main assembly location.
-        /// </remarks>
+	/// <summary>
+	/// A satellite assembly have a resource which does not exist in the main assembly.
+	/// The resource should be removed from the satellite assembly.
+	/// </summary>
+	/// <remarks>
+	/// The satellites assemblies are searched in the subdirectories of the main assembly location.
+	/// </remarks>
 
-        [Problem ("A satellite assembly have a resource which does not exist in the main assembly.")]
-        [Solution ("Remove the resource in the satellite assemby.")]
-        public sealed class RemoveOrphanResourcesRule : Rule, IAssemblyRule {
+	[Problem ("A satellite assembly have a resource which does not exist in the main assembly.")]
+	[Solution ("Remove the resource in the satellite assemby.")]
+	public sealed class RemoveOrphanResourcesRule : Rule, IAssemblyRule {
 
-                public RuleResult CheckAssembly (AssemblyDefinition assembly)
-                {
-                        // If the analyzed assembly is a satellite assembly, does not apply
-                        if (assembly.Name.Name.Contains (".resources"))
-                                return RuleResult.DoesNotApply;
+		public RuleResult CheckAssembly (AssemblyDefinition assembly)
+		{
+			// If the analyzed assembly is a satellite assembly, does not apply
+			if (assembly.Name.Name.Contains (".resources"))
+				return RuleResult.DoesNotApply;
 
-                        IList<AssemblyDefinition> satellites = GetSatellitesAssemblies (assembly);
+			IList<AssemblyDefinition> satellites = GetSatellitesAssemblies (assembly);
 
-                        foreach (AssemblyDefinition satellite in satellites)
-                                CheckSatelliteAssembly (assembly, satellite);
+			foreach (AssemblyDefinition satellite in satellites)
+				CheckSatelliteAssembly (assembly, satellite);
 
-                        return RuleResult.Success;
-                }
+			return RuleResult.Success;
+		}
 
-                private void CheckSatelliteAssembly (AssemblyDefinition mainAssembly, AssemblyDefinition satellite)
-                {
-                        ResourceCollection mainResources = mainAssembly.MainModule.Resources;
-                        Dictionary<string, EmbeddedResource> mainResourcesNames = new Dictionary<string, EmbeddedResource> (mainResources.Count);
-                        foreach (EmbeddedResource resource in mainResources) {
-                                string fullName = resource.Name;
-                                string name = fullName.Remove (fullName.IndexOf (".resources"));
+		private void CheckSatelliteAssembly (AssemblyDefinition mainAssembly, AssemblyDefinition satellite)
+		{
+			ResourceCollection mainResources = mainAssembly.MainModule.Resources;
+			Dictionary<string, EmbeddedResource> mainResourcesNames = new Dictionary<string, EmbeddedResource> (mainResources.Count);
+			foreach (EmbeddedResource resource in mainResources) {
+				string fullName = resource.Name;
+				string name = fullName.Remove (fullName.IndexOf (".resources"));
 
-                                mainResourcesNames.Add (name, resource);
-                        }
+				mainResourcesNames.Add (name, resource);
+			}
 
-                        ResourceCollection satellitesResources = satellite.MainModule.Resources;
-                        foreach (EmbeddedResource resource in satellitesResources) {
-                                string fullName = resource.Name;
-                                string nameWithCulture = fullName.Remove (fullName.IndexOf (".resources"));
-                                string name = nameWithCulture.Remove (nameWithCulture.LastIndexOf ('.'));
+			ResourceCollection satellitesResources = satellite.MainModule.Resources;
+			foreach (EmbeddedResource resource in satellitesResources) {
+				string fullName = resource.Name;
+				string nameWithCulture = fullName.Remove (fullName.IndexOf (".resources"));
+				string name = nameWithCulture.Remove (nameWithCulture.LastIndexOf ('.'));
 
-                                EmbeddedResource mainResource;
-                                if (!mainResourcesNames.TryGetValue (name, out mainResource)) {
-                                        Runner.Report (satellite, Severity.Low, Confidence.High,
-                                                String.Format ("The resource file '{0}' exist in the satellite assembly but not in the main assembly", fullName));
-                                        continue;
-                                }
+				EmbeddedResource mainResource;
+				if (!mainResourcesNames.TryGetValue (name, out mainResource)) {
+					Runner.Report (satellite, Severity.Low, Confidence.High,
+						String.Format ("The resource file '{0}' exist in the satellite assembly but not in the main assembly", fullName));
+					continue;
+				}
 
-                                CheckSatelliteResource (mainResource, resource, satellite);
-                        }
-                }
+				CheckSatelliteResource (mainResource, resource, satellite);
+			}
+		}
 
-                private void CheckSatelliteResource (EmbeddedResource mainResource, EmbeddedResource satelliteResource, AssemblyDefinition satelliteAssembly)
-                {
-                        using (MemoryStream mainMs = new MemoryStream (mainResource.Data))
-                        using (ResourceSet mainResourceSet = new ResourceSet (mainMs))
-                        using (MemoryStream ms = new MemoryStream (satelliteResource.Data))
-                        using (ResourceSet resourceSet = new ResourceSet (ms)) {
-                                foreach (DictionaryEntry entry in resourceSet) {
-                                        object mainValue = mainResourceSet.GetObject ((string) entry.Key);
-                                        if (mainValue == null && entry.Value != null)
-                                                Runner.Report (satelliteAssembly, Severity.Low, Confidence.High,
-                                                        String.Format ("The resource '{0}' in the file '{1}' exist in the satellite assembly but not in the main assembly", entry.Key, satelliteResource.Name));
-                                }
-                        }
-                }
+		private void CheckSatelliteResource (EmbeddedResource mainResource, EmbeddedResource satelliteResource, AssemblyDefinition satelliteAssembly)
+		{
+			using (MemoryStream mainMs = new MemoryStream (mainResource.Data))
+			using (ResourceSet mainResourceSet = new ResourceSet (mainMs))
+			using (MemoryStream ms = new MemoryStream (satelliteResource.Data))
+			using (ResourceSet resourceSet = new ResourceSet (ms)) {
+				foreach (DictionaryEntry entry in resourceSet) {
+					object mainValue = mainResourceSet.GetObject ((string) entry.Key);
+					if (mainValue == null && entry.Value != null)
+						Runner.Report (satelliteAssembly, Severity.Low, Confidence.High,
+							String.Format ("The resource '{0}' in the file '{1}' exist in the satellite assembly but not in the main assembly", entry.Key, satelliteResource.Name));
+				}
+			}
+		}
 
-                private static IList<AssemblyDefinition> GetSatellitesAssemblies (AssemblyDefinition mainAssembly)
-                {
-                        List<AssemblyDefinition> satellitesAssemblies = new List<AssemblyDefinition> ();
+		private static IList<AssemblyDefinition> GetSatellitesAssemblies (AssemblyDefinition mainAssembly)
+		{
+			List<AssemblyDefinition> satellitesAssemblies = new List<AssemblyDefinition> ();
 
-                        string satellitesName = mainAssembly.Name.Name + ".resources.dll";
+			string satellitesName = mainAssembly.Name.Name + ".resources.dll";
 
-                        DirectoryInfo directory = mainAssembly.MainModule.Image.FileInformation.Directory;
-                        DirectoryInfo [] subDirectories = directory.GetDirectories ();
-                        foreach (DirectoryInfo dir in subDirectories) {
-                                FileInfo [] files = dir.GetFiles (satellitesName, SearchOption.TopDirectoryOnly);
-                                if (files.Length == 0)
-                                        continue;
+			DirectoryInfo directory = mainAssembly.MainModule.Image.FileInformation.Directory;
+			DirectoryInfo [] subDirectories = directory.GetDirectories ();
+			foreach (DirectoryInfo dir in subDirectories) {
+				FileInfo [] files = dir.GetFiles (satellitesName, SearchOption.TopDirectoryOnly);
+				if (files.Length == 0)
+					continue;
 
-                                AssemblyDefinition assembly = AssemblyFactory.GetAssembly (files [0].FullName);
-                                satellitesAssemblies.Add (assembly);
-                        }
+				AssemblyDefinition assembly = AssemblyFactory.GetAssembly (files [0].FullName);
+				satellitesAssemblies.Add (assembly);
+			}
 
-                        return satellitesAssemblies;
-                }
-        }
+			return satellitesAssemblies;
+		}
+	}
 
 }

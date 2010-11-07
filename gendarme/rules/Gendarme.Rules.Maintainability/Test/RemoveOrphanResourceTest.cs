@@ -37,28 +37,28 @@ using Mono.Cecil;
 
 namespace Tests.Rules.Maintainability {
 
-        [TestFixture]
-        public sealed class RemoveOrphanResourceTest : AssemblyRuleTestFixture<RemoveOrphanResourcesRule> {
+	[TestFixture]
+	public sealed class RemoveOrphanResourceTest : AssemblyRuleTestFixture<RemoveOrphanResourcesRule> {
 
-                AssemblyDefinition assembly;
+		AssemblyDefinition assembly;
 
-                [TestFixtureSetUp]
-                public void FixtureSetUp ()
-                {
-                        // We use CodeBase insteed of Location to find the satellites assemblies
-                        string asmUri = Assembly.GetExecutingAssembly ().CodeBase;
-                        Uri uri = new Uri (asmUri);
-                        assembly = AssemblyFactory.GetAssembly (uri.AbsolutePath);
-                }
+		[TestFixtureSetUp]
+		public void FixtureSetUp ()
+		{
+			// We use CodeBase insteed of Location to find the satellites assemblies
+			string asmUri = Assembly.GetExecutingAssembly ().CodeBase;
+			Uri uri = new Uri (asmUri);
+			assembly = AssemblyFactory.GetAssembly (uri.AbsolutePath);
+		}
 
-                [Test]
-                public void OrphanResources ()
-                {
-                        // 1. StringOnlyInFrench
-                        // 2. ImageOnlyInFrench
-                        // 3. MainResourceMissing.fr.resx file
-                        AssertRuleFailure (assembly, 3);
-                }
-        }
+		[Test]
+		public void OrphanResources ()
+		{
+			// 1. StringOnlyInFrench
+			// 2. ImageOnlyInFrench
+			// 3. MainResourceMissing.fr.resx file
+			AssertRuleFailure (assembly, 3);
+		}
+	}
 
 }
