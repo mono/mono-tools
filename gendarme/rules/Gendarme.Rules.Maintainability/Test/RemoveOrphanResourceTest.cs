@@ -56,8 +56,10 @@ namespace Tests.Rules.Maintainability {
 		{
 			// 1. StringOnlyInFrench
 			// 2. ImageOnlyInFrench
-			// 3. MainResourceMissing.fr.resx file
-			AssertRuleFailure (assembly, 3);
+			// 3. StringInEnglishImageInFrench
+			// 4. StringWith3ParametersEnBut12Fr
+			// 5. MainResourceMissing.fr.resx file
+			AssertRuleFailure (assembly, 5);
 		}
 	}
 

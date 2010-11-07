@@ -84,11 +84,38 @@ namespace Tests.Rules.Maintainability {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A string.
+        /// </summary>
+        internal static string StringInEnglishImageInFrench {
+            get {
+                return ResourceManager.GetString("StringInEnglishImageInFrench", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That&apos;s all !.
         /// </summary>
         internal static string StringOnlyInEnglish {
             get {
                 return ResourceManager.GetString("StringOnlyInEnglish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First: {0} Second: {1} Third: {2}.
+        /// </summary>
+        internal static string StringWith3ParametersEnBut12Fr {
+            get {
+                return ResourceManager.GetString("StringWith3ParametersEnBut12Fr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First: {0} Second: {1} Third: {2}.
+        /// </summary>
+        internal static string StringWithThreeParameters {
+            get {
+                return ResourceManager.GetString("StringWithThreeParameters", resourceCulture);
             }
         }
     }

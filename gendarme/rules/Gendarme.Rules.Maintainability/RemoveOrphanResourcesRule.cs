@@ -28,6 +28,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Resources;
 using System.Collections;
 using System.Collections.Generic;
@@ -99,12 +100,79 @@ namespace Gendarme.Rules.Maintainability {
 			using (MemoryStream ms = new MemoryStream (satelliteResource.Data))
 			using (ResourceSet resourceSet = new ResourceSet (ms)) {
 				foreach (DictionaryEntry entry in resourceSet) {
-					object mainValue = mainResourceSet.GetObject ((string) entry.Key);
-					if (mainValue == null && entry.Value != null)
+					string resourceName = (string)entry.Key;
+					object satelliteValue = entry.Value;
+					object mainValue = mainResourceSet.GetObject (resourceName);
+					if (mainValue == null) {
 						Runner.Report (satelliteAssembly, Severity.Low, Confidence.High,
-							String.Format ("The resource '{0}' in the file '{1}' exist in the satellite assembly but not in the main assembly", entry.Key, satelliteResource.Name));
+							String.Format ("The resource '{0}' in the file '{1}' exist in the satellite assembly but not in the main assembly", resourceName, satelliteResource.Name));
+						continue;
+					}
+
+					Type satelliteType = satelliteValue.GetType ();
+					Type mainType = mainValue.GetType ();
+					if (!satelliteType.Equals (mainType)) {
+						Runner.Report (satelliteAssembly, Severity.High, Confidence.High,
+							String.Format ("The resource '{0}' in the file '{1}' is of type '{2}' in the satellite assembly but of type '{3}' in the main assembly", resourceName, satelliteResource.Name, satelliteType, mainType));
+						continue;
+					}
+
+					if (satelliteType.Equals (typeof (string))) {
+						int mainNumber = GetNumberOfExpectedParameters ((string)mainValue);
+						int satelliteNumber = GetNumberOfExpectedParameters ((string)satelliteValue);
+						if (mainNumber != satelliteNumber)
+							Runner.Report (satelliteAssembly, Severity.High, Confidence.Normal,
+								String.Format ("The string resource '{0}' in the file '{1}' as '{2}' parameters in the satellite assembly but '{3}' in the main assembly", resourceName, satelliteResource.Name, satelliteNumber, mainNumber));
+					}
 				}
 			}
+		}
+
+		//TODO: share it whith ProvideCorrectArgumentsToFormattingMethodsRule
+		private int GetNumberOfExpectedParameters (string format)
+		{
+			if(format == null)
+				throw new ArgumentNullException("format");
+
+			int result = 0; // the number of expected parameters is the biggest value between {} + 1
+
+			// if last character is { then there's no digit after it
+			for (int index = 0; index < format.Length - 1; index++) {
+				if (format [index] != '{')
+					continue;
+
+				char nextChar = format [index + 1];
+				if (nextChar == '{') {
+					index++; // skip special {{
+					continue;
+				}
+
+				if (!char.IsDigit (nextChar))
+					continue;
+
+				StringBuilder value = new StringBuilder (nextChar.ToString ());
+				index++; // next char is already added to value
+
+				while(index++ < format.Length) {
+					char current = format [index];
+					if (!char.IsDigit (current))
+						break;
+					value.Append (current);
+				}
+
+				if (index == format.Length)
+					break; // Incorrect format
+
+				int intValue;
+				if (!int.TryParse (value.ToString(), out intValue))
+					continue;
+
+				int parameterNumber = intValue + 1; // The indexes start at 0 !
+				if (parameterNumber > result)
+					result = parameterNumber;
+			}
+
+			return result;
 		}
 
 		private static IList<AssemblyDefinition> GetSatellitesAssemblies (AssemblyDefinition mainAssembly)
@@ -116,7 +184,12 @@ namespace Gendarme.Rules.Maintainability {
 			DirectoryInfo directory = mainAssembly.MainModule.Image.FileInformation.Directory;
 			DirectoryInfo [] subDirectories = directory.GetDirectories ();
 			foreach (DirectoryInfo dir in subDirectories) {
-				FileInfo [] files = dir.GetFiles (satellitesName, SearchOption.TopDirectoryOnly);
+				FileInfo [] files;
+				try {
+					files = dir.GetFiles (satellitesName, SearchOption.TopDirectoryOnly);
+				} catch (UnauthorizedAccessException) {
+					continue; // If we don't have access to directory ignore it
+				}
 				if (files.Length == 0)
 					continue;
 

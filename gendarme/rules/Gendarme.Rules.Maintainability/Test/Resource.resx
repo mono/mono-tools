@@ -127,7 +127,16 @@
   <data name="StringInBothLanguages" xml:space="preserve">
     <value>Hello!</value>
   </data>
+  <data name="StringInEnglishImageInFrench" xml:space="preserve">
+    <value>A string</value>
+  </data>
   <data name="StringOnlyInEnglish" xml:space="preserve">
     <value>That's all !</value>
+  </data>
+  <data name="StringWith3ParametersEnBut12Fr" xml:space="preserve">
+    <value>First: {0} Second: {1} Third: {2}</value>
+  </data>
+  <data name="StringWithThreeParameters" xml:space="preserve">
+    <value>First: {0} Second: {1} Third: {2}</value>
   </data>
 </root>

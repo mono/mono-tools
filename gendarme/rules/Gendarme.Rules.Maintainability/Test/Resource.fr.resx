@@ -127,7 +127,16 @@
   <data name="StringInBothLanguages" xml:space="preserve">
     <value>Bonjour !</value>
   </data>
+  <data name="StringInEnglishImageInFrench" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources/StringInEnglishImageInFrench.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="StringOnlyInFrench" xml:space="preserve">
     <value>Et voila !</value>
+  </data>
+  <data name="StringWith3ParametersEnBut12Fr" xml:space="preserve">
+    <value>Premier: {0} Deuxieme: {11} Troisieme: {2}</value>
+  </data>
+  <data name="StringWithThreeParameters" xml:space="preserve">
+    <value>Deuxieme: {1} Premier: {0} Troisieme: {2}</value>
   </data>
 </root>
