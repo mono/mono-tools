@@ -5,15 +5,10 @@ namespace guicompare
 	public partial class ProviderSelector
 	{
 		private global::Gtk.Table table2;
-
 		private global::Gtk.FileChooserButton filechooserbutton1;
-
 		private global::Gtk.FileChooserButton filechooserbutton2;
-
 		private global::Gtk.Label label2;
-
 		private global::Gtk.RadioButton radiobutton1;
-
 		private global::Gtk.RadioButton radiobutton2;
 
 		protected virtual void Build ()
@@ -32,7 +27,7 @@ namespace guicompare
 			this.filechooserbutton1 = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
 			this.filechooserbutton1.Name = "filechooserbutton1";
 			this.table2.Add (this.filechooserbutton1);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table2[this.filechooserbutton1]));
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table2 [this.filechooserbutton1]));
 			w1.TopAttach = ((uint)(1));
 			w1.BottomAttach = ((uint)(2));
 			w1.LeftAttach = ((uint)(1));
@@ -42,7 +37,7 @@ namespace guicompare
 			this.filechooserbutton2 = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
 			this.filechooserbutton2.Name = "filechooserbutton2";
 			this.table2.Add (this.filechooserbutton2);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table2[this.filechooserbutton2]));
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table2 [this.filechooserbutton2]));
 			w2.TopAttach = ((uint)(3));
 			w2.BottomAttach = ((uint)(4));
 			w2.LeftAttach = ((uint)(1));
@@ -53,7 +48,7 @@ namespace guicompare
 			this.label2.Name = "label2";
 			this.label2.Xpad = 8;
 			this.table2.Add (this.label2);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table2[this.label2]));
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table2 [this.label2]));
 			w3.TopAttach = ((uint)(1));
 			w3.BottomAttach = ((uint)(2));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -67,7 +62,7 @@ namespace guicompare
 			this.radiobutton1.UseUnderline = true;
 			this.radiobutton1.Group = new global::GLib.SList (global::System.IntPtr.Zero);
 			this.table2.Add (this.radiobutton1);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table2[this.radiobutton1]));
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table2 [this.radiobutton1]));
 			w4.RightAttach = ((uint)(2));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table2.Gtk.Table+TableChild
@@ -78,7 +73,7 @@ namespace guicompare
 			this.radiobutton2.UseUnderline = true;
 			this.radiobutton2.Group = this.radiobutton1.Group;
 			this.table2.Add (this.radiobutton2);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table2[this.radiobutton2]));
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table2 [this.radiobutton2]));
 			w5.TopAttach = ((uint)(2));
 			w5.BottomAttach = ((uint)(3));
 			w5.RightAttach = ((uint)(2));

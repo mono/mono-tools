@@ -1,61 +1,61 @@
-<Project name="gui-compare" fileversion="2.0" language="C#" clr-version="Net_2_0" targetFramework="3.5" ctype="DotNetProject">
+<Project name="gui-compare" fileversion="2.0" DefaultNamespace="guicompare" language="C#" clr-version="Net_2_0" targetFramework="3.5" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Debug" assembly="gui-compare" />
       <Build debugmode="True" target="Exe" />
-      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <Execution consolepause="True" runwithwarnings="True" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Release" assembly="gui-compare" />
       <Build debugmode="False" target="Exe" />
-      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <Execution consolepause="True" runwithwarnings="True" runtime="MsNet" clr-version="Net_2_0" />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
   </Configurations>
   <Contents>
-    <File name="gtk-gui/gui.stetic" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="gtk-gui/generated.cs" subtype="Code" buildaction="Compile" />
-    <File name="MainWindow.cs" subtype="Code" buildaction="Compile" />
-    <File name="gtk-gui/MainWindow.cs" subtype="Code" buildaction="Compile" />
-    <File name="Main.cs" subtype="Code" buildaction="Compile" />
-    <File name="AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
-    <File name="InfoManager.cs" subtype="Code" buildaction="Compile" />
-    <File name="CompareContext.cs" subtype="Code" buildaction="Compile" />
-    <File name="cm/c.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/d.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/e.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/en.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/f.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/i.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/m.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/n.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/p.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/r.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/s.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/sc.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/se.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/sm.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/st.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/sx.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/tb.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/tm.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/tp.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/w.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="cm/y.gif" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="Comparison.cs" subtype="Code" buildaction="Compile" />
-    <File name="Metadata.cs" subtype="Code" buildaction="Compile" />
-    <File name="MasterMetadata.cs" subtype="Code" buildaction="Compile" />
-    <File name="Masterinfo.cs" subtype="Code" buildaction="Compile" />
-    <File name="CecilMetadata.cs" subtype="Code" buildaction="Compile" />
-    <File name="ProviderSelector.cs" subtype="Code" buildaction="Compile" />
-    <File name="gtk-gui/guicompare.ProviderSelector.cs" subtype="Code" buildaction="Compile" />
-    <File name="gtk-gui/objects.xml" subtype="Code" buildaction="EmbedAsResource" />
-    <File name="AssemblyResolver.cs" subtype="Code" buildaction="Compile" />
-    <File name="Config.cs" subtype="Code" buildaction="Compile" />
-    <File name="CustomCompare.cs" subtype="Code" buildaction="Compile" />
-    <File name="gtk-gui/GuiCompare.CustomCompare.cs" subtype="Code" buildaction="Compile" />
-    <File name="cm/mn.png" subtype="Code" buildaction="EmbedAsResource" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="gtk-gui/gui.stetic" />
+    <File subtype="Code" buildaction="Compile" name="gtk-gui/generated.cs" />
+    <File subtype="Code" buildaction="Compile" name="MainWindow.cs" />
+    <File subtype="Code" buildaction="Compile" name="gtk-gui/MainWindow.cs" />
+    <File subtype="Code" buildaction="Compile" name="Main.cs" />
+    <File subtype="Code" buildaction="Compile" name="AssemblyInfo.cs" />
+    <File subtype="Code" buildaction="Compile" name="InfoManager.cs" />
+    <File subtype="Code" buildaction="Compile" name="CompareContext.cs" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/c.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/d.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/e.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/en.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/f.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/i.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/m.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/n.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/p.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/r.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/s.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/sc.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/se.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/sm.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/st.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/sx.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/tb.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/tm.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/tp.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/w.gif" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/y.gif" />
+    <File subtype="Code" buildaction="Compile" name="Comparison.cs" />
+    <File subtype="Code" buildaction="Compile" name="Metadata.cs" />
+    <File subtype="Code" buildaction="Compile" name="MasterMetadata.cs" />
+    <File subtype="Code" buildaction="Compile" name="Masterinfo.cs" />
+    <File subtype="Code" buildaction="Compile" name="CecilMetadata.cs" />
+    <File subtype="Code" buildaction="Compile" name="ProviderSelector.cs" />
+    <File subtype="Code" buildaction="Compile" name="gtk-gui/guicompare.ProviderSelector.cs" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="gtk-gui/objects.xml" />
+    <File subtype="Code" buildaction="Compile" name="AssemblyResolver.cs" />
+    <File subtype="Code" buildaction="Compile" name="Config.cs" />
+    <File subtype="Code" buildaction="Compile" name="CustomCompare.cs" />
+    <File subtype="Code" buildaction="Compile" name="gtk-gui/GuiCompare.CustomCompare.cs" />
+    <File subtype="Code" buildaction="EmbedAsResource" name="cm/mn.png" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
@@ -67,12 +67,6 @@
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-    <ProjectReference type="Assembly" localcopy="True" refto="Mono.Cecil.dll" />
+    <ProjectReference type="Gac" localcopy="True" refto="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </References>
-  <GtkDesignInfo gtkVersion="2.10.2">
-    <ExportedWidgets>
-      <Widget>guicompare.ProviderSelector</Widget>
-      <Widget>guicompare.CompareSource</Widget>
-    </ExportedWidgets>
-  </GtkDesignInfo>
 </Project>

@@ -4,97 +4,51 @@
 public partial class MainWindow
 {
 	private global::Gtk.UIManager UIManager;
-
 	private global::Gtk.Action File;
-
 	private global::Gtk.Action quit;
-
 	private global::Gtk.Action Compare;
-
 	private global::Gtk.Action Custom;
-
 	private global::Gtk.Action a;
-
 	private global::Gtk.Action b;
-
 	private global::Gtk.Action View;
-
 	private global::Gtk.ToggleAction ShowMissing;
-
 	private global::Gtk.ToggleAction ShowExtra;
-
 	private global::Gtk.ToggleAction ShowPresent;
-
 	private global::Gtk.ToggleAction ShowErrors;
-
 	private global::Gtk.Action Refresh;
-
 	private global::Gtk.ToggleAction ShowTodo;
-
 	private global::Gtk.Action RecentComparisonsAction;
-
 	private global::Gtk.ToggleAction ShowNotImplemented;
-
 	private global::Gtk.Action ToggleRowExpansionAction;
-
 	private global::Gtk.VBox vbox1;
-
 	private global::Gtk.MenuBar menubar1;
-
 	private global::Gtk.Notebook notebook1;
-
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
-
 	private global::Gtk.TreeView tree;
-
 	private global::Gtk.Label label1;
-
 	private global::Gtk.Label label3;
-
 	private global::Gtk.Label label2;
-
 	private global::Gtk.ScrolledWindow AdditionalInfoWindow;
-
 	private global::Gtk.TextView AdditionalInfoText;
-
 	private global::Gtk.Expander expander1;
-
 	private global::Gtk.Table table1;
-
 	private global::Gtk.Label label4;
-
 	private global::Gtk.Label label5;
-
 	private global::Gtk.Label label6;
-
 	private global::Gtk.Label label7;
-
 	private global::Gtk.Label label8;
-
 	private global::Gtk.Label label9;
-
 	private global::Gtk.Image legendImageError;
-
 	private global::Gtk.Image legendImageExtra;
-
 	private global::Gtk.Image legendImageMissing;
-
 	private global::Gtk.Image legendImageNIEX;
-
 	private global::Gtk.Image legendImageOK;
-
 	private global::Gtk.Image legendImageTODO;
-
 	private global::Gtk.VSeparator vseparator1;
-
 	private global::Gtk.VSeparator vseparator2;
-
 	private global::Gtk.VSeparator vseparator3;
-
 	private global::Gtk.Label GtkLabel4;
-
 	private global::Gtk.Statusbar statusbar1;
-
 	private global::Gtk.ProgressBar progressbar1;
 
 	protected virtual void Build ()
@@ -171,7 +125,7 @@ public partial class MainWindow
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.vbox1.Add (this.menubar1);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.menubar1]));
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.menubar1]));
 		w2.Position = 0;
 		w2.Expand = false;
 		w2.Fill = false;
@@ -206,7 +160,7 @@ public partial class MainWindow
 		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("This tool allows you to compare the API of assemblies.\n\nTo initiate a comparison, use the \"Compare\" menu and use one of the presets based on the assemblies you  have installed on your system and some popular profiles, or use \"Custom\" to define your own comparison");
 		this.label3.Wrap = true;
 		this.notebook1.Add (this.label3);
-		global::Gtk.Notebook.NotebookChild w5 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1[this.label3]));
+		global::Gtk.Notebook.NotebookChild w5 = ((global::Gtk.Notebook.NotebookChild)(this.notebook1 [this.label3]));
 		w5.Position = 1;
 		// Notebook tab
 		this.label2 = new global::Gtk.Label ();
@@ -215,7 +169,7 @@ public partial class MainWindow
 		this.notebook1.SetTabLabel (this.label3, this.label2);
 		this.label2.ShowAll ();
 		this.vbox1.Add (this.notebook1);
-		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.notebook1]));
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.notebook1]));
 		w6.Position = 1;
 		// Container child vbox1.Gtk.Box+BoxChild
 		this.AdditionalInfoWindow = new global::Gtk.ScrolledWindow ();
@@ -228,7 +182,7 @@ public partial class MainWindow
 		this.AdditionalInfoText.Editable = false;
 		this.AdditionalInfoWindow.Add (this.AdditionalInfoText);
 		this.vbox1.Add (this.AdditionalInfoWindow);
-		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.AdditionalInfoWindow]));
+		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.AdditionalInfoWindow]));
 		w8.Position = 2;
 		w8.Expand = false;
 		// Container child vbox1.Gtk.Box+BoxChild
@@ -243,10 +197,10 @@ public partial class MainWindow
 		// Container child table1.Gtk.Table+TableChild
 		this.label4 = new global::Gtk.Label ();
 		this.label4.Name = "label4";
-		this.label4.Xalign = 1f;
+		this.label4.Xalign = 1F;
 		this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Missing");
 		this.table1.Add (this.label4);
-		global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1[this.label4]));
+		global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
 		w9.TopAttach = ((uint)(1));
 		w9.BottomAttach = ((uint)(2));
 		w9.LeftAttach = ((uint)(3));
@@ -256,10 +210,10 @@ public partial class MainWindow
 		// Container child table1.Gtk.Table+TableChild
 		this.label5 = new global::Gtk.Label ();
 		this.label5.Name = "label5";
-		this.label5.Xalign = 1f;
+		this.label5.Xalign = 1F;
 		this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("TODO");
 		this.table1.Add (this.label5);
-		global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1[this.label5]));
+		global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
 		w10.TopAttach = ((uint)(2));
 		w10.BottomAttach = ((uint)(3));
 		w10.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -267,10 +221,10 @@ public partial class MainWindow
 		// Container child table1.Gtk.Table+TableChild
 		this.label6 = new global::Gtk.Label ();
 		this.label6.Name = "label6";
-		this.label6.Xalign = 1f;
+		this.label6.Xalign = 1F;
 		this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("Extra");
 		this.table1.Add (this.label6);
-		global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1[this.label6]));
+		global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
 		w11.TopAttach = ((uint)(2));
 		w11.BottomAttach = ((uint)(3));
 		w11.LeftAttach = ((uint)(3));
@@ -280,10 +234,10 @@ public partial class MainWindow
 		// Container child table1.Gtk.Table+TableChild
 		this.label7 = new global::Gtk.Label ();
 		this.label7.Name = "label7";
-		this.label7.Xalign = 1f;
+		this.label7.Xalign = 1F;
 		this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("Not implemented");
 		this.table1.Add (this.label7);
-		global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1[this.label7]));
+		global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
 		w12.TopAttach = ((uint)(1));
 		w12.BottomAttach = ((uint)(2));
 		w12.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -291,20 +245,20 @@ public partial class MainWindow
 		// Container child table1.Gtk.Table+TableChild
 		this.label8 = new global::Gtk.Label ();
 		this.label8.Name = "label8";
-		this.label8.Xalign = 1f;
+		this.label8.Xalign = 1F;
 		this.label8.LabelProp = global::Mono.Unix.Catalog.GetString ("No errors");
 		this.label8.Justify = ((global::Gtk.Justification)(2));
 		this.table1.Add (this.label8);
-		global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table1[this.label8]));
+		global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table1 [this.label8]));
 		w13.XOptions = ((global::Gtk.AttachOptions)(4));
 		w13.YOptions = ((global::Gtk.AttachOptions)(4));
 		// Container child table1.Gtk.Table+TableChild
 		this.label9 = new global::Gtk.Label ();
 		this.label9.Name = "label9";
-		this.label9.Xalign = 1f;
+		this.label9.Xalign = 1F;
 		this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Error");
 		this.table1.Add (this.label9);
-		global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table1[this.label9]));
+		global::Gtk.Table.TableChild w14 = ((global::Gtk.Table.TableChild)(this.table1 [this.label9]));
 		w14.LeftAttach = ((uint)(3));
 		w14.RightAttach = ((uint)(4));
 		w14.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -313,7 +267,7 @@ public partial class MainWindow
 		this.legendImageError = new global::Gtk.Image ();
 		this.legendImageError.Name = "legendImageError";
 		this.table1.Add (this.legendImageError);
-		global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageError]));
+		global::Gtk.Table.TableChild w15 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageError]));
 		w15.LeftAttach = ((uint)(4));
 		w15.RightAttach = ((uint)(5));
 		w15.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -322,7 +276,7 @@ public partial class MainWindow
 		this.legendImageExtra = new global::Gtk.Image ();
 		this.legendImageExtra.Name = "legendImageExtra";
 		this.table1.Add (this.legendImageExtra);
-		global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageExtra]));
+		global::Gtk.Table.TableChild w16 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageExtra]));
 		w16.TopAttach = ((uint)(2));
 		w16.BottomAttach = ((uint)(3));
 		w16.LeftAttach = ((uint)(4));
@@ -333,7 +287,7 @@ public partial class MainWindow
 		this.legendImageMissing = new global::Gtk.Image ();
 		this.legendImageMissing.Name = "legendImageMissing";
 		this.table1.Add (this.legendImageMissing);
-		global::Gtk.Table.TableChild w17 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageMissing]));
+		global::Gtk.Table.TableChild w17 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageMissing]));
 		w17.TopAttach = ((uint)(1));
 		w17.BottomAttach = ((uint)(2));
 		w17.LeftAttach = ((uint)(4));
@@ -344,7 +298,7 @@ public partial class MainWindow
 		this.legendImageNIEX = new global::Gtk.Image ();
 		this.legendImageNIEX.Name = "legendImageNIEX";
 		this.table1.Add (this.legendImageNIEX);
-		global::Gtk.Table.TableChild w18 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageNIEX]));
+		global::Gtk.Table.TableChild w18 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageNIEX]));
 		w18.TopAttach = ((uint)(1));
 		w18.BottomAttach = ((uint)(2));
 		w18.LeftAttach = ((uint)(1));
@@ -355,7 +309,7 @@ public partial class MainWindow
 		this.legendImageOK = new global::Gtk.Image ();
 		this.legendImageOK.Name = "legendImageOK";
 		this.table1.Add (this.legendImageOK);
-		global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageOK]));
+		global::Gtk.Table.TableChild w19 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageOK]));
 		w19.LeftAttach = ((uint)(1));
 		w19.RightAttach = ((uint)(2));
 		w19.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -364,7 +318,7 @@ public partial class MainWindow
 		this.legendImageTODO = new global::Gtk.Image ();
 		this.legendImageTODO.Name = "legendImageTODO";
 		this.table1.Add (this.legendImageTODO);
-		global::Gtk.Table.TableChild w20 = ((global::Gtk.Table.TableChild)(this.table1[this.legendImageTODO]));
+		global::Gtk.Table.TableChild w20 = ((global::Gtk.Table.TableChild)(this.table1 [this.legendImageTODO]));
 		w20.TopAttach = ((uint)(2));
 		w20.BottomAttach = ((uint)(3));
 		w20.LeftAttach = ((uint)(1));
@@ -375,7 +329,7 @@ public partial class MainWindow
 		this.vseparator1 = new global::Gtk.VSeparator ();
 		this.vseparator1.Name = "vseparator1";
 		this.table1.Add (this.vseparator1);
-		global::Gtk.Table.TableChild w21 = ((global::Gtk.Table.TableChild)(this.table1[this.vseparator1]));
+		global::Gtk.Table.TableChild w21 = ((global::Gtk.Table.TableChild)(this.table1 [this.vseparator1]));
 		w21.LeftAttach = ((uint)(2));
 		w21.RightAttach = ((uint)(3));
 		w21.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -384,7 +338,7 @@ public partial class MainWindow
 		this.vseparator2 = new global::Gtk.VSeparator ();
 		this.vseparator2.Name = "vseparator2";
 		this.table1.Add (this.vseparator2);
-		global::Gtk.Table.TableChild w22 = ((global::Gtk.Table.TableChild)(this.table1[this.vseparator2]));
+		global::Gtk.Table.TableChild w22 = ((global::Gtk.Table.TableChild)(this.table1 [this.vseparator2]));
 		w22.TopAttach = ((uint)(1));
 		w22.BottomAttach = ((uint)(2));
 		w22.LeftAttach = ((uint)(2));
@@ -395,7 +349,7 @@ public partial class MainWindow
 		this.vseparator3 = new global::Gtk.VSeparator ();
 		this.vseparator3.Name = "vseparator3";
 		this.table1.Add (this.vseparator3);
-		global::Gtk.Table.TableChild w23 = ((global::Gtk.Table.TableChild)(this.table1[this.vseparator3]));
+		global::Gtk.Table.TableChild w23 = ((global::Gtk.Table.TableChild)(this.table1 [this.vseparator3]));
 		w23.TopAttach = ((uint)(2));
 		w23.BottomAttach = ((uint)(3));
 		w23.LeftAttach = ((uint)(2));
@@ -409,7 +363,7 @@ public partial class MainWindow
 		this.GtkLabel4.UseUnderline = true;
 		this.expander1.LabelWidget = this.GtkLabel4;
 		this.vbox1.Add (this.expander1);
-		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.expander1]));
+		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.expander1]));
 		w25.Position = 3;
 		w25.Expand = false;
 		// Container child vbox1.Gtk.Box+BoxChild
@@ -420,10 +374,10 @@ public partial class MainWindow
 		this.progressbar1 = new global::Gtk.ProgressBar ();
 		this.progressbar1.Name = "progressbar1";
 		this.statusbar1.Add (this.progressbar1);
-		global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.statusbar1[this.progressbar1]));
+		global::Gtk.Box.BoxChild w26 = ((global::Gtk.Box.BoxChild)(this.statusbar1 [this.progressbar1]));
 		w26.Position = 2;
 		this.vbox1.Add (this.statusbar1);
-		global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.statusbar1]));
+		global::Gtk.Box.BoxChild w27 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.statusbar1]));
 		w27.Position = 4;
 		w27.Expand = false;
 		w27.Fill = false;

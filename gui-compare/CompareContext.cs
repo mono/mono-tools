@@ -175,6 +175,38 @@ namespace GuiCompare {
 			}
 		}
 		
+		void CompareParameters (ComparisonNode parent, ICompParameters reference, ICompParameters target)
+		{
+			var r = reference.GetParameters ();
+			var t = target.GetParameters ();
+			
+			if (r.Count != t.Count) {
+				throw new NotImplementedException (string.Format ("Should never happen with valid data ({0} != {1})", r.Count, t.Count));
+			}
+			
+			for (int i = 0; i < r.Count; ++i) {
+				var r_i = r [i];
+				var t_i = t [i];
+				
+				if (r_i.TypeReference != t_i.TypeReference) {
+					parent.AddError (string.Format ("Parameter `{0}' type mismatch", t_i.Name));
+				}
+				
+				if (r_i.Name != t_i.Name) {
+					parent.AddError (string.Format ("Parameter name `{0}' should be `{1}'", t_i.Name, r_i.Name));
+				}
+				
+				if (r_i.IsOptional != t_i.IsOptional) {
+					if (r_i.IsOptional)
+						parent.AddError (string.Format ("Parameter `{0}' is missing a default value", t_i.Name));
+					else
+						parent.AddError (string.Format ("Parameter `{0}' should not have a default value", t_i.Name));
+				}
+				
+				CompareAttributes (parent, r_i, t_i);
+			}
+		}
+		
 		void CompareTypeParameters (ComparisonNode parent, ICompGenericParameter reference, ICompGenericParameter target)
 		{
 			var r = reference.GetTypeParameters ();
@@ -198,9 +230,12 @@ namespace GuiCompare {
 						t_i.Name));
 				}
 
+				// TODO: Compare constraints properly			
+				if (r_i.HasConstraints != t_i.HasConstraints) {
+					parent.AddError (string.Format ("Type parameter `{0}' constraints mismatch", r_i.Name));
+				}
+
 				CompareAttributes (parent, r_i, t_i);
-				
-				// TODO: Compare contraints
 			}
 		}
 
@@ -402,19 +437,16 @@ namespace GuiCompare {
 							comparison.Status = ComparisonStatus.Error;
 						}
 					}
-
-					if (reference_list[m] is CompMethod) {
-						if (((CompMethod)target_list[a]).ThrowsNotImplementedException ()
-						    && !((CompMethod)reference_list[m]).ThrowsNotImplementedException ()) {
-							
+					
+					var r_method = reference_list[m] as CompMethod;
+					if (r_method != null) {
+						var t_method = (CompMethod)target_list[a];
+						if (t_method.ThrowsNotImplementedException () && !r_method.ThrowsNotImplementedException ()) {
 							comparison.ThrowsNIE = true;
 						}
 
-						if (reference_list[m] is ICompGenericParameter && target_list[a] is ICompGenericParameter) {
-							CompareTypeParameters (comparison,
-									(ICompGenericParameter) reference_list[m],
-									(ICompGenericParameter) target_list[a]);
-						}
+						CompareTypeParameters (comparison, r_method, t_method);
+						CompareParameters (comparison, r_method, t_method);
 					}
 
 					if (reference_list[m] is CompField) {
