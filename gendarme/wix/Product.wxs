@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define ProductShortName = "Gendarme" ?>
-<?define ProductVersion = "2.8.0" ?>
-<?define ProductVersionText = "2.8" ?>
+<?define ProductVersion = "2.9.0" ?>
+<?define ProductVersionText = "2.9" ?>
 <?define Manufacturer = "Novell" ?>
 <?define UpgradeCode = "D7C83968-DEF2-4614-81F2-A3EEFC9BC6B3" ?>
 
@@ -60,6 +60,7 @@
             <File Name="AUTHORS" Source="$(var.GendarmeRoot)\AUTHORS" />
             <File Name="MIT.X11" Source="$(var.GendarmeRoot)\MIT.X11" />
             <File Name="README" Source="$(var.GendarmeRoot)\README" />
+            <File Name="rules.xml" Source="$(var.GendarmeRoot)\rules\rules.xml" />
             <File Name="gendarme.xsd" Source="$(var.GendarmeResources)\gendarme.xsd" />
             <File Name="gendarme.xsl" Source="$(var.GendarmeResources)\gendarme.xsl" />
 
