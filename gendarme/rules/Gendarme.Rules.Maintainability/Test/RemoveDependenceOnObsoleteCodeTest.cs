@@ -297,6 +297,13 @@ namespace Tests.Rules.Maintainability {
 			AssertRuleDoesNotApply<StructWithObsoleteEvents> ("add_TooLate");
 			AssertRuleDoesNotApply<StructWithObsoleteEvents> ("remove_TooLate");
 		}
+
+		[Test]
+		public void InsideObsoleteType ()
+		{
+			// method in obsolete type calls some obsolete code
+			AssertRuleDoesNotApply<ObsoleteType> ("Show");
+		}
 	}
 }
 
