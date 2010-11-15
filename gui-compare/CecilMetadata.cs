@@ -350,6 +350,17 @@ namespace GuiCompare {
 			return l;			
 		}
 		
+		public static List<CompParameter> GetParameters (IMethodSignature provider)
+		{
+			var l = new List<CompParameter> ();
+			foreach (ParameterDefinition pd in provider.Parameters)
+			{
+				l.Add (new CecilParameter (pd));
+			}
+					
+			return l;
+		}
+		
 		public static readonly AssemblyResolver Resolver = new AssemblyResolver();
 	}
 
@@ -607,6 +618,16 @@ namespace GuiCompare {
 		public override string GetBaseType ()
 		{
 			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
+		}
+		
+		public override List<CompNamed> GetMethods ()
+		{
+			List<CompNamed> l = new List<CompNamed> ();
+			foreach (MethodDefinition md in type_def.Methods) {			
+				l.Add (new CecilMethod (md));
+			}
+			
+			return l;
 		}
 		
 		public override List<CompGenericParameter> GetTypeParameters ()
@@ -902,7 +923,12 @@ namespace GuiCompare {
 		public override List<CompGenericParameter> GetTypeParameters ()
 		{
 			return CecilUtils.GetTypeParameters (method_def);
-		}	
+		}
+		
+		public override List<CompParameter> GetParameters ()
+		{
+			return CecilUtils.GetParameters (method_def);
+		}
 		
 		static string FormatName (MethodDefinition method_def, bool beautify)
 		{
@@ -1196,7 +1222,8 @@ namespace GuiCompare {
 	
 	public class CecilGenericParameter : CompGenericParameter
 	{
-		List<CompNamed> attributes;		
+		List<CompNamed> attributes;	
+		ConstraintCollection constraints;
 		
 		public CecilGenericParameter (GenericParameter gp)
 			: base (gp.Name, gp.Attributes)
@@ -1206,8 +1233,31 @@ namespace GuiCompare {
 			var constraints = gp.Constraints;
 			if (constraints.Count == 0)
 				return;
-				
+			
 			// TODO: finish constraints loading
+			this.constraints = constraints;
+		}
+		
+		public override bool HasConstraints {
+			get {
+				return constraints != null;
+			}
+		}
+		
+		public override List<CompNamed> GetAttributes ()
+		{
+			return attributes;
+		}
+	}
+	
+	public class CecilParameter : CompParameter
+	{
+		List<CompNamed> attributes;
+		
+		public CecilParameter (ParameterDefinition pd)
+			: base (pd.Name, CecilUtils.FormatTypeLikeCorCompare (pd.ParameterType), pd.IsOptional)
+		{
+			attributes = CecilUtils.GetCustomAttributes (pd, todos);
 		}
 		
 		public override List<CompNamed> GetAttributes ()

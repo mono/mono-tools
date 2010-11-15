@@ -195,11 +195,21 @@ namespace GuiCompare {
 					
 				var constraints = gparams.constraints [key];
 				
-				list.Add (new MasterGenericTypeParameter (key, constraints.attributes, attributes));
+				list.Add (new MasterGenericTypeParameter (key, constraints, attributes));
 			}
 			
 			return list;
 		}
+		
+		public static List<CompParameter> GetParameters (XMLParameters parameters)
+		{
+			var list = new List<CompParameter> ();
+			foreach (XMLParameter key in parameters.keys.Values) {
+				list.Add (new MasterParameter (key.Name, key.type, key.isOptional, key.attributes));
+			}
+			
+			return list;
+		}		
 	}
 	
 	public class MasterAssembly : CompAssembly {
@@ -293,7 +303,7 @@ namespace GuiCompare {
 
 	public class MasterInterface : CompInterface {
 		public MasterInterface (XMLClass xml_cls)
-			: base (xml_cls.name)
+			: base (FormatName (xml_cls))
 		{
 			this.xml_cls = xml_cls;
 			
@@ -325,6 +335,12 @@ namespace GuiCompare {
 			fields = new List<CompNamed>();
 			events = new List<CompNamed>();
 			attributes = new List<CompNamed>();
+		}
+		
+		static string FormatName (XMLClass iface)
+		{
+			string name = iface.name;
+			return name;
 		}
 
 		public override string GetBaseType()
@@ -392,6 +408,13 @@ namespace GuiCompare {
 		public override List<CompNamed> GetAttributes ()
 		{
 			return MasterUtils.GetAttributes (xml_cls.attributes);
+		}
+		
+		public override List<CompNamed> GetMethods ()
+		{
+			List<CompNamed> method_list = new List<CompNamed> ();
+			MasterUtils.PopulateMethodList (xml_cls.methods, method_list);
+			return method_list;
 		}
 
 		public override string GetBaseType ()
@@ -774,6 +797,11 @@ namespace GuiCompare {
 		{
 			return MasterUtils.GetTypeParameters (genericParameters);
 		}
+		
+		public override List<CompParameter> GetParameters ()
+		{
+			return MasterUtils.GetParameters (parameters);
+		}
 
 		XMLMethods.SignatureFlags signatureFlags;
 		string returnType;
@@ -819,13 +847,37 @@ namespace GuiCompare {
 		}
 	}
 	
-	public class MasterGenericTypeParameter : CompGenericParameter {
-		XMLAttributes attributes;
+	public class MasterParameter : CompParameter
+	{
+		XMLAttributes attributes;		
 		
-		public MasterGenericTypeParameter (string name, string genericAttribute, XMLAttributes attributes)
-			: base (name, (Mono.Cecil.GenericParameterAttributes)Enum.Parse (typeof (Mono.Cecil.GenericParameterAttributes), genericAttribute))
+		public MasterParameter (string name, string type, bool optional, XMLAttributes attributes)
+			: base (name, type, optional)
 		{
 			this.attributes = attributes;
+		}
+		
+		public override List<CompNamed> GetAttributes ()
+		{
+			return MasterUtils.GetAttributes (attributes);
+		}
+	}
+	
+	public class MasterGenericTypeParameter : CompGenericParameter {
+		XMLGenericParameterConstraints constraints;
+		XMLAttributes attributes;
+		
+		public MasterGenericTypeParameter (string name, XMLGenericParameterConstraints constraints, XMLAttributes attributes)
+			: base (name, (Mono.Cecil.GenericParameterAttributes)Enum.Parse (typeof (Mono.Cecil.GenericParameterAttributes), constraints.attributes))
+		{
+			this.constraints = constraints;
+			this.attributes = attributes;
+		}
+		
+		public override bool HasConstraints {
+			get {
+				return constraints.keys != null;
+			}
 		}
 		
 		public override List<CompNamed> GetAttributes ()

@@ -61,6 +61,26 @@ namespace Gendarme.Rules.BadPractice {
 	[Solution ("This situation can be confusing once deployed. Make sure both version are identical.")]
 	public class AvoidAssemblyVersionMismatchRule : Rule, IAssemblyRule {
 
+		static bool VersionTryParse (string input, out Version result)
+		{
+			result = null;
+			if (String.IsNullOrEmpty (input))
+				return false;
+
+			try {
+				result = new Version (input);
+				return true;
+			}
+			catch (ArgumentException) {
+				// also cover ArgumentOutOfRangeException
+			}
+			catch (FormatException) {
+			}
+			catch (OverflowException) {
+			}
+			return false;
+		}
+
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			if (!assembly.HasCustomAttributes)
@@ -78,7 +98,8 @@ namespace Gendarme.Rules.BadPractice {
 				if (ca.Constructor.DeclaringType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
 					continue;
 
-				file_version = new Version (ca.ConstructorParameters [0] as string);
+				// FIXME: replace with Version.TryParse once we upgrade to FX4.0
+				VersionTryParse (ca.ConstructorParameters [0] as string, out file_version);
 				break;
 			}
 

@@ -86,7 +86,7 @@ namespace Test.Rules.BadPractice {
 		}
 
 		[Test]
-		public void EmptyAssemblyFileVersion ()
+		public void AbsentAssemblyFileVersion ()
 		{
 			CustomAttribute afv = null;
 			foreach (CustomAttribute ca in assembly.CustomAttributes) {
@@ -102,6 +102,27 @@ namespace Test.Rules.BadPractice {
 			}
 			finally {
 				assembly.CustomAttributes.Add (afv);
+			}
+		}
+
+		[Test]
+		public void EmptyAssemblyFileVersion ()
+		{
+			CustomAttribute afv = null;
+			foreach (CustomAttribute ca in assembly.CustomAttributes) {
+				if (ca.Constructor.DeclaringType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
+					continue;
+				afv = ca;
+				break;
+			}
+			string value = afv.ConstructorParameters [0] as string;
+			afv.ConstructorParameters [0] = String.Empty;
+
+			try {
+				AssertRuleDoesNotApply (assembly);
+			}
+			finally {
+				afv.ConstructorParameters [0] = value;
 			}
 		}
 

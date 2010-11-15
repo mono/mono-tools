@@ -333,7 +333,8 @@ namespace Gendarme.Rules.Maintainability {
 			if (method.IsProperty () || method.IsAddOn || method.IsRemoveOn || method.IsFire)
 				return RuleResult.DoesNotApply;
 
-			if (method.HasAttribute (Obsolete))
+			// if the method is obsolete (directly or because it's type is)
+			if (method.HasAttribute (Obsolete) || method.DeclaringType.HasAttribute (Obsolete))
 				return RuleResult.DoesNotApply;
 
 			// check method signature (parameters, return value)
