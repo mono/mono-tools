@@ -61,7 +61,8 @@ namespace Gendarme {
 					throw new InvalidDataException ("Could not locate XSL style sheet inside resources.");
 				// process the XML result with the XSL file
 				XslCompiledTransform xslt = new XslCompiledTransform ();
-				xslt.Load (new XmlTextReader (s));
+				using (XmlTextReader xmlReader = new XmlTextReader (s))
+					xslt.Load (xmlReader);
 				xslt.Transform (temp_filename, FileName);
 			}
 		}
