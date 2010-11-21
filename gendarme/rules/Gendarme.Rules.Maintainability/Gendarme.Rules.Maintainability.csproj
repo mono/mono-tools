@@ -41,8 +41,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyStaticInfo.cs">
@@ -56,7 +54,6 @@
     <Compile Include="ConsiderUsingStopwatchRule.cs" />
     <Compile Include="PreferStringIsNullOrEmptyRule.cs" />
     <Compile Include="RemoveDependenceOnObsoleteCodeRule.cs" />
-    <Compile Include="RemoveOrphanResourcesRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\mono\mcs\class\Mono.Cecil\Mono.Cecil.csproj">

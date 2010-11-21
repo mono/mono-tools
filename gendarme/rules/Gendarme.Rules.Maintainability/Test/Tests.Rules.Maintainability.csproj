@@ -36,9 +36,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidAlwaysNullFieldTest.cs" />
@@ -49,12 +46,6 @@
     <Compile Include="ConsiderUsingStopwatchTest.cs" />
     <Compile Include="PreferStringIsNullOrEmptyTest.cs" />
     <Compile Include="RemoveDependenceOnObsoleteCodeTest.cs" />
-    <Compile Include="RemoveOrphanResourceTest.cs" />
-    <Compile Include="Resource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\mono\mcs\class\Mono.Cecil\Mono.Cecil.csproj">
@@ -73,29 +64,6 @@
       <Project>{8DB890C9-F9B7-4BEA-9ADE-EF32391363C2}</Project>
       <Name>Gendarme.Rules.Maintainability</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MainResourceMissing.fr.resx" />
-    <EmbeddedResource Include="Resource.fr.resx" />
-    <EmbeddedResource Include="Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ImageOnlyInFrench.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ImageInBothCultures.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ImageInBothCultures.fr.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ImageOnlyInEnglish.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\StringInEnglishImageInFrench.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
