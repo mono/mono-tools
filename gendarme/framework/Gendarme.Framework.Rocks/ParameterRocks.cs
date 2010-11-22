@@ -56,6 +56,18 @@ namespace Gendarme.Framework.Rocks {
 			string name = self.ParameterType.Name;
 			return (name [name.Length - 1] == '&');
 		}
+
+		/// <summary>
+		/// Returns the sequence number as found in the metadata
+		/// </summary>
+		/// <param name="self">The ParameterDefinition on which the extension method can be called.</param>
+		/// <returns>The integer value of the sequence number of the parameter.</returns>
+		public static int GetSequence (this ParameterDefinition self)
+		{
+			if (self == null)
+				return -1;
+
+			return self.Index + 1;
+		}
 	}
 }
-

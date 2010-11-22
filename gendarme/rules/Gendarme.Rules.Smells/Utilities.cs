@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 using Mono.Cecil;
 
@@ -40,7 +41,7 @@ namespace Gendarme.Rules.Smells {
 		public static ICollection<TypeDefinition> GetInheritedClassesFrom (TypeReference baseType)
 		{
 			List<TypeDefinition> inheritedClasses = new List<TypeDefinition> ();
-			foreach (TypeDefinition type in baseType.Module.Types) {
+			foreach (TypeDefinition type in baseType.Module.GetAllTypes ()) {
 				if ((type.BaseType != null) && type.BaseType.Equals (baseType))
 					inheritedClasses.Add (type);
 			}

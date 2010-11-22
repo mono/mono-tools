@@ -65,11 +65,24 @@ namespace Gendarme.Framework.Engines {
 		{
 			// we only need to check the custom attributes if [SuppressMessage] is referenced (note: won't work for mscorlib)
 			AssemblyDefinition assembly = (sender as AssemblyDefinition);
-			if (assembly.MainModule.TypeReferences.Contains (SuppressMessage)) {
+			if (assembly.MainModule.HasTypeReference (SuppressMessage)) {
 				Controller.BuildingCustomAttributes += new EventHandler<EngineEventArgs> (OnCustomAttributes);
 			} else {
 				Controller.BuildingCustomAttributes -= new EventHandler<EngineEventArgs> (OnCustomAttributes);
 			}
+		}
+
+		static bool TryGetPropertyArgument (CustomAttribute attribute, string name, out CustomAttributeArgument argument)
+		{
+			foreach (var namedArg in attribute.Properties) {
+				if (namedArg.Name == name) {
+					argument = namedArg.Argument;
+					return true;
+				}
+			}
+
+			argument = default (CustomAttributeArgument);
+			return false;
 		}
 
 		void OnCustomAttributes (object sender, EngineEventArgs e)
@@ -84,12 +97,12 @@ namespace Gendarme.Framework.Engines {
 			bool global = (sender is AssemblyDefinition);
 
 			foreach (CustomAttribute ca in cap.CustomAttributes) {
-				if (ca.Constructor.DeclaringType.FullName != SuppressMessage)
+				if (ca.AttributeType.FullName != SuppressMessage)
 					continue;
 
-				IList parameters = ca.ConstructorParameters;
-				string category = (string) parameters [0];
-				string checkId = (string) parameters [1];
+				var arguments = ca.ConstructorArguments;
+				string category = (string) arguments [0].Value;
+				string checkId = (string) arguments [1].Value;
 				if (String.IsNullOrEmpty (category) || String.IsNullOrEmpty (checkId))
 					continue;
 
@@ -103,7 +116,13 @@ namespace Gendarme.Framework.Engines {
 
 				// FIXME: Scope ? "member", "resource", "module", "type", "method", or "namespace"
 
-				string target = global ? (string) ca.Properties ["Target"] : null;
+				string target = null;
+				if (global) {
+					CustomAttributeArgument targetArgument;
+					if (TryGetPropertyArgument (ca, "Target", out targetArgument))
+						target = (string) targetArgument.Value;
+				}
+
 				if (String.IsNullOrEmpty (target)) {
 					Controller.Runner.IgnoreList.Add (mapped_name, token);
 					// continue loop - [SuppressMessage] has AllowMultiple == true
@@ -142,14 +161,9 @@ namespace Gendarme.Framework.Engines {
 				// TODO ...
 				foreach (ModuleDefinition module in assembly.Modules) {
 					// TODO ...
-					foreach (TypeDefinition type in module.Types) {
+					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						if (targets.TryGetValue (type.FullName, out rules))
 							Add (type, rules);
-
-						if (type.HasConstructors) {
-							foreach (MethodDefinition ctor in type.Constructors)
-								ResolveMethod (ctor, targets);
-						}
 
 						if (type.HasMethods) {
 							foreach (MethodDefinition method in type.Methods)

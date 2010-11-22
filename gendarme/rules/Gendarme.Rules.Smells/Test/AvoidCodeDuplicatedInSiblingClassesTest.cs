@@ -100,7 +100,7 @@ namespace Test.Rules.Smells {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			rule = new AvoidCodeDuplicatedInSiblingClassesRule ();
 			runner = new TestRunner (rule);
 		}
@@ -108,7 +108,7 @@ namespace Test.Rules.Smells {
 		[Test]
 		public void BaseClassWithCodeDuplicatedTest () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Smells.BaseClassWithCodeDuplicated"];
+			type = assembly.MainModule.GetType ("Test.Rules.Smells.BaseClassWithCodeDuplicated");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
 			Assert.AreEqual (1, runner.Defects.Count);
 		}
@@ -116,7 +116,7 @@ namespace Test.Rules.Smells {
 		[Test]
 		public void BaseClassWithoutCodeDuplicatedTest ()
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Smells.BaseClassWithoutCodeDuplicated"];
+			type = assembly.MainModule.GetType ("Test.Rules.Smells.BaseClassWithoutCodeDuplicated");
 			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
 		}
 	}

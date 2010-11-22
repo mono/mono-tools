@@ -486,20 +486,6 @@ namespace Test.Rules.Maintainability {
 			AssertRuleSuccess<Bitmask<Confidence>> ("Set");
 		}
 
-		private void SuggestMethodReference(MethodDefinition method)
-		{
-			// test against method that suggest two un-related classes/interfaces from GetBaseImplementor
-			int parametersCount = method.Parameters.Count;
-			Runner.Report (method, Severity.Medium, Confidence.High, "");
-		}
-
-		[Test]
-		public void ShouldSuggestMethodReferenceInsteadOfIMethodSignature ()
-		{
-			AssertRuleFailure<AvoidUnnecessarySpecializationTest> ("SuggestMethodReference");
-			Assert.IsTrue(Runner.Defects [0].Text.IndexOf ("'Mono.Cecil.MethodReference'") > 0);
-		}
-
 		// from AvoidUncalledPrivateCodeRule
 		static Dictionary<TypeDefinition, HashSet<uint>> cache;
 
@@ -509,7 +495,7 @@ namespace Test.Rules.Maintainability {
 			if (!cache.TryGetValue (type, out methods)) {
 				methods = new HashSet<uint> ();
 				cache.Add (type, methods);
-				foreach (MethodDefinition md in type.AllMethods ()) {
+				foreach (MethodDefinition md in type.Methods) {
 					if (!md.HasBody)
 						continue;
 				}
@@ -572,7 +558,7 @@ namespace Test.Rules.Maintainability {
 
 		class Override : Base {
 			// without checking the override the rule would suggest:
-			// Parameter 'method' could be of type 'Mono.Cecil.IMemberReference'.
+			// Parameter 'method' could be of type 'Mono.Cecil.MemberReference'.
 			// but this would not compile
 			public override void Show (MethodDefinition method)
 			{

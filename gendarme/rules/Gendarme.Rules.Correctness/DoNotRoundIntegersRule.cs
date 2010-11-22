@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Correctness {
 			case Code.Call:
 			case Code.Callvirt:
 				MethodReference mr = (ins.Operand as MethodReference);
-				TypeReference rv = mr.ReturnType.ReturnType;
+				TypeReference rv = mr.ReturnType;
 				// a call that return a decimal or floating point is ok
 				if (rv.IsFloatingPoint ())
 					return null;

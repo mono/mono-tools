@@ -111,8 +111,7 @@ namespace Gendarme.Rules.Security.Cas {
 				case Mono.Cecil.SecurityAction.LinkDemand:
 				case Mono.Cecil.SecurityAction.NonCasLinkDemand:
 					demand = true;
-					declsec.Resolve ();
-					if (!RuleSet.IsSubsetOf (declsec.PermissionSet)) {
+					if (!RuleSet.IsSubsetOf (declsec.ToPermissionSet ())) {
 						string message = String.Format ("{0} is not a subset of {1} permission set",
 							"SerializationFormatter", declsec.Action);
 						Runner.Report (method, Severity.High, Confidence.Total, message);

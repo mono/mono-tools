@@ -125,7 +125,7 @@ namespace Test.Rules.BadPractice {
 		public void Initialize ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 
 			Rule.Active = false;
 			(Runner as TestRunner).OnAssembly (assembly);

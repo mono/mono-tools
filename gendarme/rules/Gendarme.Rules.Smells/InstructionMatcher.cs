@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework.Rocks;
@@ -55,26 +56,26 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		static bool AreEquivalent (ParameterReference source, ParameterReference target)
+		static bool AreEquivalent (ParameterDefinition source, ParameterDefinition target)
 		{
 			if ((source == null) || (target == null))
 				return false;
 
-			int ss = source.Sequence - 1;
-			int ts = target.Sequence - 1;
+			int ss = source.GetSequence () - 1;
+			int ts = target.GetSequence () - 1;
 			if ((ss <= 0) || (ts <= 0))
 				return false;
 
-			ParameterDefinitionCollection cp = Current.Parameters;
-			ParameterDefinitionCollection tp = Target.Parameters;
+			IList<ParameterDefinition> cp = Current.Parameters;
+			IList<ParameterDefinition> tp = Target.Parameters;
 			return ((cp.Count > ss) && (tp.Count > ts)) ?
 				cp [ss].ParameterType.Equals (tp [ts].ParameterType) : false;
 		}
 
 		static bool AreEquivalent (VariableReference source, VariableReference target)
 		{
-			VariableDefinitionCollection cv = Current.Body.Variables;
-			VariableDefinitionCollection tv = Target.Body.Variables;
+			IList<VariableDefinition> cv = Current.Body.Variables;
+			IList<VariableDefinition> tv = Target.Body.Variables;
 			return cv.Count > source.Index && tv.Count > target.Index ?
 				cv [source.Index].VariableType.Equals (tv [target.Index].VariableType) : false;
 		}
@@ -91,7 +92,7 @@ namespace Gendarme.Rules.Smells {
 			//could lead us to false positives.  We need an analysis
 			//which depends on the context.
 			if (source.IsLoadArgument ()) {
-				// case where 'ldarg this' is used (p.Sequence would be 0)
+				// case where 'ldarg this' is used (p.GetSequence () would be 0)
 				if (!Current.HasParameters && !Target.HasParameters)
 					return true;
 				return AreEquivalent (source.GetParameter (Current), target.GetParameter (Target));
@@ -132,7 +133,7 @@ namespace Gendarme.Rules.Smells {
 		//Mono.Cecil.Cil.Instruction instead of characters, and a
 		//InstructionCollection instead of string.  I think it's a nice
 		//metaphor :)
-		internal static bool Match (Pattern pattern, InstructionCollection target)
+		internal static bool Match (Pattern pattern, IList<Instruction> target)
 		{
 			int instructionsMatched = 0;
 

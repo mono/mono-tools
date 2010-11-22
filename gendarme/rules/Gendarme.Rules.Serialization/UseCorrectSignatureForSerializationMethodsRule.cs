@@ -92,12 +92,12 @@ namespace Gendarme.Rules.Serialization {
 					// the attributes are only available since fx 2.0 so there's no point
 					// to execute it on every methods if the assembly target runtime is
 					// earlier than 2.0
-					e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0 && 
+					e.CurrentModule.Runtime >= TargetRuntime.Net_2_0 && 
 		
 					// if the module does not have a reference to any of the attributes
 					// then nothing will be reported by this rule
-					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsAnyType (Attributes));
+					(e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasAnyTypeReference (Attributes));
 			};
 		}
 

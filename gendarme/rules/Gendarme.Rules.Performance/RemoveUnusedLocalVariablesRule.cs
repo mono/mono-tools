@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Performance {
 
 			// this rule cannot execute if debugging information is not available
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = e.CurrentModule.HasDebuggingInformation ();
+				Active = e.CurrentModule.HasSymbols;
 			};
 		}
 

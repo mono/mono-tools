@@ -366,12 +366,12 @@ namespace Gendarme.Framework {
 					runner_args.CurrentModule = module;
 					OnModule (runner_args);
 
-					foreach (TypeDefinition type in module.Types) {
+					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						currentTarget = (IMetadataTokenProvider) type;
 						runner_args.CurrentType = type;
 						OnType (runner_args);
 
-						foreach (MethodDefinition method in type.AllMethods()) {
+						foreach (MethodDefinition method in type.Methods) {
 							currentTarget = (IMetadataTokenProvider) method;
 							runner_args.CurrentMethod = method;
 							OnMethod (runner_args);

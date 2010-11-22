@@ -65,13 +65,13 @@ namespace Test.Framework {
 		public void Assemblies ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 			// see [assembly: SuppressMessage ...] for test case
 			// since the rule is NOT executed, the target (assembly) being ignored, the result is DoesNotApply
 			AssertRuleDoesNotApply (assembly);
 
 			unit = typeof (Rule).Assembly.Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			AssertRuleSuccess (assembly);
 		}
 	}
@@ -101,13 +101,13 @@ namespace Test.Framework {
 		public void Modules ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 			// see [module: SuppressMessage ...] for test case
 			// since the rule is executed, then the defect ignored, the result is Success
 			AssertRuleSuccess (assembly);
 
 			unit = typeof (Rule).Assembly.Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			AssertRuleFailure (assembly);
 		}
 	}
@@ -310,8 +310,8 @@ namespace Test.Framework {
 				Runner.Report (method.Parameters [0], Severity.Critical, Confidence.Total);
 				return Runner.CurrentRuleResult;
 			}
-			if (method.ReturnType.ReturnType.FullName != "System.Void") {
-				Runner.Report (method.ReturnType, Severity.Critical, Confidence.Total);
+			if (method.ReturnType.FullName != "System.Void") {
+				Runner.Report (method.MethodReturnType, Severity.Critical, Confidence.Total);
 				return Runner.CurrentRuleResult;
 			}
 			return RuleResult.Failure;

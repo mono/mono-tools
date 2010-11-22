@@ -46,8 +46,8 @@ namespace Gendarme.Rules.Exceptions {
 			// if the module does not reference any of these types, don't analyze it
 			// (unless this is corlib itself since they're defined in it :-)
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsAnyType (GetExceptionTypes ());
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasAnyTypeReference (GetExceptionTypes ());
 			};
 		}
 

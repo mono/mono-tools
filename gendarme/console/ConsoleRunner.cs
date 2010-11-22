@@ -36,7 +36,6 @@ using System.Text;
 using System.Xml;
 
 using Mono.Cecil;
-using Mono.Cecil.Binary;
 
 using Gendarme.Framework;
 
@@ -245,10 +244,12 @@ namespace Gendarme {
 
 			try {
 				string assembly_name = Path.GetFullPath (filename);
-				AssemblyDefinition ad = AssemblyFactory.GetAssembly (assembly_name);
+				AssemblyDefinition ad = AssemblyDefinition.ReadAssembly (
+					assembly_name,
+					new ReaderParameters { AssemblyResolver = AssemblyResolver.Resolver });
 				Assemblies.Add (ad);
 			}
-			catch (ImageFormatException) {
+			catch (BadImageFormatException) {
 				warning = "Invalid assembly format";
 			}
 			catch (BadImageFormatException) {
@@ -462,7 +463,7 @@ namespace Gendarme {
 				}
 			
 				// next assembly
-				Console.Write (e.CurrentAssembly.MainModule.Image.FileInformation.Name);
+				Console.Write (Path.GetFileName (e.CurrentAssembly.MainModule.FullyQualifiedName));
 				local.Start ();
 			}
 			

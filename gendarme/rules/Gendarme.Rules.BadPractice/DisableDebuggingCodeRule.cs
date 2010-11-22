@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -92,16 +93,16 @@ namespace Gendarme.Rules.BadPractice {
 		private const string Console = "System.Console";
 
 		// note: there can be multiple [Conditional] attribute on a method
-		private static bool HasConditionalAttributeForDebugging (CustomAttributeCollection cac)
+		private static bool HasConditionalAttributeForDebugging (IList<CustomAttribute> cac)
 		{
 			foreach (CustomAttribute ca in cac) {
-				if (ca.Constructor.DeclaringType.FullName == ConditionalAttribute) {
+				if (ca.AttributeType.FullName == ConditionalAttribute) {
 					// this should not happen since there's a single ctor accepting a string
 					// but we never know what the next framework version can throw at us...
-					IList cp = ca.ConstructorParameters;
+					IList<CustomAttributeArgument> cp = ca.ConstructorArguments;
 					if (cp.Count < 1)
 						continue;
-					switch (cp [0] as string) {
+					switch (cp [0].Value as string) {
 					case "DEBUG":
 					case "TRACE":
 						return true;
@@ -120,12 +121,12 @@ namespace Gendarme.Rules.BadPractice {
 					// using Console.Write* methods is ok if the application is compiled
 					// with /target:exe - but not if it's compiled with /target:winexe or
 					// /target:library
-					e.CurrentAssembly.Kind != AssemblyKind.Console && 
+					e.CurrentModule.Kind != ModuleKind.Console && 
 
 					// if the module does not reference System.Console then no
 					// method inside it will be calling any Console.write* methods
-					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsType (Console));
+					(e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasTypeReference (Console));
 			};
 		}
 

@@ -85,7 +85,7 @@ namespace Gendarme.Rules.Performance {
 
 				var type = (TypeReference) ins.Operand;
 
-				if (type.FullName != Constants.Type)
+				if (type.FullName != "System.Type")
 					continue;
 
 				if (ins.Previous.IsOperandZero ())

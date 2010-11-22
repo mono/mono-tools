@@ -62,7 +62,7 @@ namespace Gendarme.Rules.Correctness {
 				result.SetArgNullity(0, Nullity.NonNull);
 			foreach(ParameterDefinition param in method.Parameters)
 				if(nnaCollector.HasNonNullAttribute(method, param))
-					result.SetArgNullity(param.Sequence - 1, Nullity.NonNull);
+					result.SetArgNullity(param.GetSequence () - 1, Nullity.NonNull);
 			return result;
 		}
 
@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Correctness {
 				result.SetArgNullity(0, Nullity.NonNull);
 			foreach(ParameterDefinition param in method.Parameters)
 				if(nnaCollector.HasNonNullAttribute(method, param))
-					result.SetArgNullity(param.Sequence - 1, Nullity.NonNull);
+					result.SetArgNullity(param.GetSequence () - 1, Nullity.NonNull);
 			/* The exception being caught is pushed onto the stack. */
 			result.PushStack(Nullity.NonNull);
 			return result;
@@ -174,7 +174,7 @@ namespace Gendarme.Rules.Correctness {
 						ParameterDefinition param =
 							(ParameterDefinition)insn.Operand;
 						outFrame.PushStack(
-								outFrame.GetArgNullity(param.Sequence - 1));
+								outFrame.GetArgNullity(param.GetSequence () - 1));
 						break;
 					}
 			case Code.Ldarga:
@@ -189,7 +189,7 @@ namespace Gendarme.Rules.Correctness {
 			case Code.Starg_S: {
 						ParameterDefinition param =
 							(ParameterDefinition)insn.Operand;
-						outFrame.SetArgNullity(param.Sequence - 1,
+						outFrame.SetArgNullity(param.GetSequence () - 1,
 								outFrame.PopStack());
 						break;
 					}
@@ -353,7 +353,7 @@ namespace Gendarme.Rules.Correctness {
 				ProcessCall (insn, warn, false, outFrame);
 				break;
 			case Code.Ret:
-				if(!IsVoid(method.ReturnType.ReturnType)) {
+				if(!IsVoid(method.ReturnType)) {
 					Nullity n = outFrame.PopStack();
 					if(nnaCollector.HasNonNullAttribute(method) && warn) {
 						if (Verbose)
@@ -697,8 +697,8 @@ namespace Gendarme.Rules.Correctness {
 			}
 			if(csig.HasThis && !Ignoring(csig)) /* Add 'this' parameter. */
 				Check(insn, warn, frame.PopStack(), "method");
-			if(!IsVoid(csig.ReturnType.ReturnType)) {
-				if(csig.ReturnType.ReturnType.IsValueType)
+			if(!IsVoid(csig.ReturnType)) {
+				if(csig.ReturnType.IsValueType)
 					frame.PushStack(Nullity.NonNull);
 				else if(nnaCollector.HasNonNullAttribute(csig))
 					frame.PushStack(Nullity.NonNull);

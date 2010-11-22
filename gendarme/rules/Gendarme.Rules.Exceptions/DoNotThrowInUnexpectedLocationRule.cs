@@ -205,7 +205,7 @@ namespace Gendarme.Rules.Exceptions {
 				return false;
 
 			foreach (ExceptionHandler handler in method.Body.ExceptionHandlers) {
-				if (handler.Type == ExceptionHandlerType.Catch)
+				if (handler.HandlerType == ExceptionHandlerType.Catch)
 					return true;
 			}
 			
@@ -219,7 +219,7 @@ namespace Gendarme.Rules.Exceptions {
 			} else if (method.IsVirtual) {
 				return PreflightVirtualMethod (method);
 			} else if (method.HasParameters && (method.Name == "Dispose")) {
-				ParameterDefinitionCollection pdc = method.Parameters;
+				IList<ParameterDefinition> pdc = method.Parameters;
 				if ((pdc.Count == 1) && (pdc [0].ParameterType.FullName == "System.Boolean"))
 					return "Dispose (bool)";
 			} else if (MethodSignatures.TryParse.Matches (method)) {

@@ -28,8 +28,11 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
+
 using Mono.Cecil;
 
 namespace Gendarme.Rules.Correctness {
@@ -108,12 +111,12 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 
-		void CheckParametersAndValues (IMetadataTokenProvider provider, IMethodSignature constructor, IList values)
+		void CheckParametersAndValues (IMetadataTokenProvider provider, IMethodSignature constructor, IList<CustomAttributeArgument> arguments)
 		{
-			for (int index = 0; index < values.Count; index++) {
+			for (int index = 0; index < arguments.Count; index++) {
 				ParameterDefinition parameter = constructor.Parameters[index];
 				if (String.Compare (parameter.ParameterType.FullName, "System.String") == 0) {
-					string value = (string) values[index];
+					string value = (string) arguments [index].Value;
 					if (Contains (parameter.Name, "version")) { 
 						if (!TryParseVersion (value)) {
 							string msg = String.Format ("The value passed: {0} can't be parsed to a valid Version.", value);
@@ -154,7 +157,7 @@ namespace Gendarme.Rules.Correctness {
 			foreach (CustomAttribute attribute in provider.CustomAttributes) {
 				MethodReference ctor = attribute.Constructor;
 				if (ctor.HasParameters)
-					CheckParametersAndValues (metadataProvider, ctor, attribute.ConstructorParameters);
+					CheckParametersAndValues (metadataProvider, ctor, attribute.ConstructorArguments);
 			}
 		}
 
@@ -167,7 +170,7 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			CheckAttributesIn (method);
-			CheckAttributesIn (method.ReturnType);
+			CheckAttributesIn (method.MethodReturnType);
 			if (method.HasParameters)
 				CheckAttributesIn (method.Parameters);
 			if (method.HasGenericParameters)

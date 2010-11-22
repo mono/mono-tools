@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 
 using Mono.Cecil;
 
@@ -90,24 +91,24 @@ namespace Test.Rules.BadPractice {
 
 		private TypeDefinition GetTest<T> (AssemblyDefinition assembly)
 		{
-			return assembly.MainModule.Types [typeof (T).FullName];
+			return assembly.MainModule.GetType (typeof (T).FullName);
 		}
 
 		[Test]
 		public void TestGetEntryAssemblyCallFromExecutable ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 			try {
-				assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.GetMethod ("Main", new Type [] { });
-				assembly.Kind = AssemblyKind.Console;
-				MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.GetMethod ("ThreeCalls", new Type [] { });
+				assembly.EntryPoint = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.FirstOrDefault (m => m.Name == "Main");
+				assembly.MainModule.Kind = ModuleKind.Console;
+				MethodDefinition method = GetTest<ClassCallingGetEntryAssembly> (assembly).Methods.FirstOrDefault (m => m.Name == "ThreeCalls");
 				Assert.AreEqual (RuleResult.DoesNotApply, (Runner as TestRunner).CheckMethod (method), "RuleResult");
 				Assert.AreEqual (0, Runner.Defects.Count, "Count");
 			}
 			finally {
 				assembly.EntryPoint = null;
-				assembly.Kind = AssemblyKind.Dll;
+				assembly.MainModule.Kind = ModuleKind.Dll;
 			}
 		}
 

@@ -180,8 +180,6 @@ namespace Gendarme.Rules.Concurrency {
 	[Solution ("Use the correct threading attribute or disable the defect.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class DecorateThreadsRule : Rule, IMethodRule {
-		
-		static ParameterDefinitionCollection Empty = new ParameterDefinitionCollection (null);
 
 		public override void Initialize (IRunner runner)
 		{
@@ -194,7 +192,7 @@ namespace Gendarme.Rules.Concurrency {
 			anonymous_entry_points.Clear ();
 		}
 
-		static bool LookForThreadModelAttribute (IList list)
+		static bool LookForThreadModelAttribute (IEnumerable list)
 		{
 			foreach (TypeReference type in list) {
 				if (type.Name == "ThreadModelAttribute") {
@@ -209,11 +207,11 @@ namespace Gendarme.Rules.Concurrency {
 			// If the assembly defines ThreadModelAttribute then we need to
 			// check all of the methods within it.
 			foreach (ModuleDefinition module in e.CurrentAssembly.Modules) {
-				if (LookForThreadModelAttribute (module.Types)) {
+				if (LookForThreadModelAttribute (module.GetAllTypes ())) {
 					Log.WriteLine (this, "assembly defines ThreadModelAttribute");
 					Active = true;
 					return;
-				} else if (LookForThreadModelAttribute (module.TypeReferences)) {
+				} else if (LookForThreadModelAttribute (module.GetTypeReferences ())) {
 					Log.WriteLine (this, "assembly references ThreadModelAttribute");
 					Active = true;
 					return;
@@ -246,7 +244,7 @@ namespace Gendarme.Rules.Concurrency {
 			Log.WriteLine (this, method);
 
 			string name = method.Name;
-			ParameterDefinitionCollection pdc = method.HasParameters ? method.Parameters : null;
+			IList<ParameterDefinition> pdc = method.HasParameters ? method.Parameters : null;
 
 			// Finalizers need to be single threaded.
 			ThreadModel model = method.ThreadingModel ();
@@ -282,9 +280,12 @@ namespace Gendarme.Rules.Concurrency {
 				IEnumerable<TypeDefinition> superTypes = method.DeclaringType.AllSuperTypes ();
 				bool new_slot = method.IsNewSlot;
 				superTypes = from s in superTypes where (s.IsInterface == new_slot) select s;
-				
+				string [] parameters = pdc != null
+					? (from p in pdc.Cast<ParameterDefinition> () select p.ParameterType.FullName).ToArray ()
+					: null;
+
 				foreach (TypeDefinition type in superTypes) {
-					MethodDefinition superMethod = type.Methods.GetMethod (name, pdc ?? Empty);
+					MethodDefinition superMethod = type.GetMethod (name, method.ReturnType.FullName, parameters);
 					if (superMethod != null && !ThreadRocks.ThreadedNamespace (superMethod.DeclaringType.Namespace)) {
 						ThreadModel superModel = superMethod.ThreadingModel ();
 						if (model != superModel) {
@@ -480,7 +481,7 @@ namespace Gendarme.Rules.Concurrency {
 			}
 		}
 
-		static bool IsNonSynchronizedSetter (IMemberReference method)
+		static bool IsNonSynchronizedSetter (MemberReference method)
 		{
 			switch (method.Name) {
 			case "add_Disposed":

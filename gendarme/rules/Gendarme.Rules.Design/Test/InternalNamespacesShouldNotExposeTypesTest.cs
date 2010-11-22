@@ -69,7 +69,7 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		[Test]

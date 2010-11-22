@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -103,8 +104,8 @@ namespace Gendarme.Rules.Performance {
 		static void AddType (HashSet<TypeReference> typeset, TypeReference type)
 		{
 			// we're interested in the array element type, not the array itself
-			if (type.IsArray ())
-				type = type.GetOriginalType ();
+			if (type.IsArray)
+				type = type.GetElementType ();
 
 			// only keep stuff from this assembly, which means we have a TypeDefinition (not a TypeReference)
 			// and types that are not visible outside the assembly (since this is what we check for)
@@ -123,13 +124,13 @@ namespace Gendarme.Rules.Performance {
 						AddType (typeset, t);
 				}
 			}
-			if (type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors)
-					ProcessMethod (ctor, typeset);
-			}
 			if (type.HasMethods) {
 				foreach (MethodDefinition method in type.Methods)
 					ProcessMethod (method, typeset);
+			}
+			if (type.HasNestedTypes) {
+				foreach (TypeDefinition nested in type.NestedTypes)
+					ProcessType (nested, typeset);
 			}
 		}
 
@@ -137,14 +138,14 @@ namespace Gendarme.Rules.Performance {
 		{
 			// this is needed in case we return an enum, a struct or something mapped
 			// to p/invoke (i.e. no ctor called). We also need to check for arrays.
-			TypeReference t = method.ReturnType.ReturnType;
+			TypeReference t = method.ReturnType;
 			AddType (typeset, t);
 
 			if (method.HasParameters) {
 				// an "out" from a p/invoke must be flagged
 				foreach (ParameterDefinition parameter in method.Parameters) {
 					// we don't want the reference (&) on the type
-					t = parameter.ParameterType.GetOriginalType ();
+					t = parameter.ParameterType.GetElementType ();
 					AddType (typeset, t);
 				}
 			}
@@ -170,7 +171,7 @@ namespace Gendarme.Rules.Performance {
 						t = m.DeclaringType;
 						GenericInstanceType generic = (t as GenericInstanceType);
 						if (generic != null)
-							t = generic.GetOriginalType ();
+							t = generic.GetElementType ();
 					} else {
 						FieldReference f = ins.Operand as FieldReference;
 						if (f != null)
@@ -185,10 +186,10 @@ namespace Gendarme.Rules.Performance {
 
 		static bool HasSinglePrivateConstructor (TypeDefinition type)
 		{
-			if (!type.HasConstructors)
+			if (!type.HasMethods)
 				return false;
 
-			var ctors = type.Constructors;
+			var ctors = type.GetConstructors ().ToList ();
 			if (ctors.Count != 1)
 				return false;
 

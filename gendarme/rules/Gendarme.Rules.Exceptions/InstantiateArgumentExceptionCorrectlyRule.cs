@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -124,7 +125,7 @@ namespace Gendarme.Rules.Exceptions {
 				return;
 
 			// OK		public ArgumentException (string message)
-			ParameterDefinitionCollection pdc = ctor.Parameters;
+			IList<ParameterDefinition> pdc = ctor.Parameters;
 			if (pdc.Count < 2)
 				return;
 
@@ -151,7 +152,7 @@ namespace Gendarme.Rules.Exceptions {
 
 			// OK		protected ArgumentNullException (SerializationInfo info, StreamingContext context)
 			// OK		public ArgumentNullException (string message, Exception innerException)
-			ParameterDefinitionCollection pdc = constructor.Parameters;
+			IList<ParameterDefinition> pdc = constructor.Parameters;
 			if ((pdc.Count == 2) && (pdc [1].ParameterType.FullName != "System.String"))
 				return;
 

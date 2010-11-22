@@ -60,7 +60,7 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			int num = method.Body.MaxStack;
+			int num = method.Body.MaxStackSize;
 			if (num <= MaximumStackSize)
 				return RuleResult.Success;
 

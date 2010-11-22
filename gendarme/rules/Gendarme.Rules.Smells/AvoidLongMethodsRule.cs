@@ -319,7 +319,7 @@ namespace Gendarme.Rules.Smells {
 				field_count = GetFieldCount ((method.DeclaringType as TypeDefinition), method.IsStatic);
 
 			// if we have debugging information available and we're not asked to use IL approximation
-			if (!UseIlApproximation && method.DeclaringType.Module.HasDebuggingInformation ()) {
+			if (!UseIlApproximation && method.DeclaringType.Module.HasSymbols) {
 				// add a few extra lines to let the constructors initialize the fields
 				int max = MaxSourceLineOfCode + field_count;
 				int sloc = CountSourceLinesOfCode (method);

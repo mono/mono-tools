@@ -85,7 +85,7 @@ namespace Gendarme.Rules.Design {
 
 		private bool CheckReturnVoid (IMetadataTokenProvider eventType, IMethodSignature invoke)
 		{
-			string full_name = invoke.ReturnType.ReturnType.FullName;
+			string full_name = invoke.ReturnType.FullName;
 			if (String.Compare (full_name, "System.Void") == 0)
 				return true;
 
@@ -109,7 +109,7 @@ namespace Gendarme.Rules.Design {
 			if (!invoke.HasParameters)
 				return ok;
 
-			ParameterDefinitionCollection pdc = invoke.Parameters;
+			IList<ParameterDefinition> pdc = invoke.Parameters;
 			if (pdc.Count >= 1) {
 				string type_name = pdc [0].ParameterType.FullName;
 				if (String.Compare (type_name, "System.Object") != 0) {
@@ -178,7 +178,7 @@ namespace Gendarme.Rules.Design {
 			valid &= CheckAmountOfParameters (type, invoke);
 			valid &= CheckParameterTypes (type, invoke);
 
-			ParameterDefinitionCollection pdc = invoke.Parameters;
+			IList<ParameterDefinition> pdc = invoke.Parameters;
 			if (pdc.Count > 0) {
 				valid &= CheckParameterName (type, pdc [0], "sender");
 				if (pdc.Count > 1)

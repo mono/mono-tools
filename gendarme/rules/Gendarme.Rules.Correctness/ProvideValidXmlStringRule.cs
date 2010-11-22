@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -153,7 +154,7 @@ namespace Gendarme.Rules.Correctness {
 			case "PrependChild":
 			case "InsertAfter":
 			case "InsertBefore":
-				ParameterDefinitionCollection pdc = mref.Parameters;
+				IList<ParameterDefinition> pdc = mref.Parameters;
 				if (pdc.Count == 1
 					&& pdc [0].ParameterType.FullName == "System.String"
 					&& mref.DeclaringType.Inherits (XPathNavigatorClass))

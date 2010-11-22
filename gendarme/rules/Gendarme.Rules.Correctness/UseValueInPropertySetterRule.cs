@@ -103,7 +103,7 @@ namespace Gendarme.Rules.Correctness {
 				ParameterDefinition pd = instruction.GetParameter (method);
 				if (pd != null) {
 					empty = false;
-					if (pd.Sequence == 1) // value
+					if (pd.GetSequence () == 1) // value
 						return RuleResult.Success;
 					continue;
 				}

@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Security.Cas {
 		private PermissionSet permitonly;
 		private PermissionSet demand;
 
-		private bool RuleDoesAppliesToType (IHasSecurity type)
+		private bool RuleDoesAppliesToType (ISecurityDeclarationProvider type)
 		{
 			assert = null;
 			deny = null;
@@ -89,22 +89,21 @@ namespace Gendarme.Rules.Security.Cas {
 			// #2 - this rules doesn't apply to LinkDemand (both are executed)
 			// and to InheritanceDemand (both are executed at different time).
 			foreach (SecurityDeclaration declsec in type.SecurityDeclarations) {
-				declsec.Resolve ();
 				switch (declsec.Action) {
 				case Mono.Cecil.SecurityAction.Assert:
-					assert = declsec.PermissionSet;
+					assert = declsec.ToPermissionSet ();
 					apply = true;
 					break;
 				case Mono.Cecil.SecurityAction.Deny:
-					deny = declsec.PermissionSet;
+					deny = declsec.ToPermissionSet ();
 					apply = true;
 					break;
 				case Mono.Cecil.SecurityAction.PermitOnly:
-					permitonly = declsec.PermissionSet;
+					permitonly = declsec.ToPermissionSet ();
 					apply = true;
 					break;
 				case Mono.Cecil.SecurityAction.Demand:
-					demand = declsec.PermissionSet;
+					demand = declsec.ToPermissionSet ();
 					apply = true;
 					break;
 				}
@@ -131,26 +130,26 @@ namespace Gendarme.Rules.Security.Cas {
 					case Mono.Cecil.SecurityAction.Assert:
 						if (assert == null)
 							continue;
-						if (!assert.IsSubsetOf (declsec.PermissionSet))
+						if (!assert.IsSubsetOf (declsec.ToPermissionSet ()))
 							Runner.Report (method, Severity.High, Confidence.Total, "Assert");
 						break;
 					case Mono.Cecil.SecurityAction.Deny:
 						if (deny == null)
 							continue;
-						if (!deny.IsSubsetOf (declsec.PermissionSet))
+						if (!deny.IsSubsetOf (declsec.ToPermissionSet ()))
 							Runner.Report (method, Severity.High, Confidence.Total, "Deny");
 						break;
 					case Mono.Cecil.SecurityAction.PermitOnly:
 						if (permitonly == null)
 							continue;
-						if (!permitonly.IsSubsetOf (declsec.PermissionSet))
+						if (!permitonly.IsSubsetOf (declsec.ToPermissionSet ()))
 							Runner.Report (method, Severity.High, Confidence.Total, "PermitOnly");
 						break;
 					case Mono.Cecil.SecurityAction.Demand:
 					case Mono.Cecil.SecurityAction.NonCasDemand:
 						if (demand == null)
 							continue;
-						if (!demand.IsSubsetOf (declsec.PermissionSet))
+						if (!demand.IsSubsetOf (declsec.ToPermissionSet ()))
 							Runner.Report (method, Severity.High, Confidence.Total, "Demand");
 						break;
 					}

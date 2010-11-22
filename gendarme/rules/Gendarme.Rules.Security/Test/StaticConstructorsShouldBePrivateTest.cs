@@ -28,6 +28,7 @@
 using Mono.Cecil;
 
 using Gendarme.Rules.Security;
+using Gendarme.Framework.Rocks;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
@@ -80,7 +81,7 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition inspectedType = DefinitionLoader.GetTypeDefinition<NonPrivateStaticCtorDefinedClass> ();
 			MethodDefinition static_ctor = null;
-			foreach (MethodDefinition ctor in inspectedType.Constructors) {
+			foreach (MethodDefinition ctor in inspectedType.GetConstructors ()) {
 				if (ctor.IsStatic) {
 					static_ctor = ctor;
 					break;

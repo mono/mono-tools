@@ -63,21 +63,25 @@ namespace Test.Rules.Correctness {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 
-			finalizer_not_calling_base_class =  assembly.MainModule.Types [typeof (FinalizerCallingBaseFinalizerClass).FullName].Clone ();
-			finalizer_not_calling_base_class.Module = assembly.MainModule;
-			MethodDefinition finalizer = finalizer_not_calling_base_class.Methods.GetMethod ("Finalize") [0];
-			// remove base call
-			foreach (Instruction current in finalizer.Body.Instructions) {
-				if (current.OpCode.Code == Code.Call) { // it's call
-					MethodReference mr = (current.Operand as MethodReference);
-					if (mr != null && mr.Name == "Finalize") { // it's Finalize () call
-						finalizer.Body.CilWorker.Remove (current); // remove it for our test
-						break;
-					}
-				}
-			}
+			finalizer_not_calling_base_class = new TypeDefinition (
+				"Test.Rules.Correctness",
+				"FinalizerNotCallingBaseClass",
+				TypeAttributes.NotPublic,
+				assembly.MainModule.TypeSystem.Object);
+
+			assembly.MainModule.Types.Add (finalizer_not_calling_base_class);
+
+			var finalizer = new MethodDefinition (
+				"Finalize",
+				MethodAttributes.Public | MethodAttributes.Virtual,
+				assembly.MainModule.TypeSystem.Void);
+
+			finalizer_not_calling_base_class.Methods.Add (finalizer);
+
+			var il = finalizer.Body.GetILProcessor ();
+			il.Emit (OpCodes.Ret);
 		}
 
 		[Test]

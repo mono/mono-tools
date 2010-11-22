@@ -84,12 +84,12 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		private TypeDefinition GetType (string name)
 		{
-			return assembly.MainModule.Types [name];
+			return assembly.MainModule.GetType (name);
 		}
 
 		[Test]

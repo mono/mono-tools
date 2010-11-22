@@ -143,7 +143,7 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 				if (field.IsGeneratedCode ())
 					continue;
-				if (field.FieldType.IsArray ())
+				if (field.FieldType.IsArray)
 					continue;
 				TypeDefinition fieldType = field.FieldType.Resolve ();
 				if (fieldType == null)

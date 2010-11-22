@@ -153,7 +153,7 @@ namespace Gendarme.Rules.Correctness {
 			case Code.Call:
 			case Code.Callvirt:
 				MethodReference call = instruction.Operand as MethodReference;
-				return call.ReturnType.ReturnType.IsFloatingPoint ();
+				return call.ReturnType.IsFloatingPoint ();
 			case Code.Ldfld:
 			case Code.Ldflda:
 			case Code.Ldsfld:

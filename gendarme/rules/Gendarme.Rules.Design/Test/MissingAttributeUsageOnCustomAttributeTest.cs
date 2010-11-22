@@ -65,14 +65,14 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			rule = new MissingAttributeUsageOnCustomAttributeRule ();
 			runner = new TestRunner (rule);
 		}
 
 		private TypeDefinition GetTest<T> ()
 		{
-			return assembly.MainModule.Types [typeof (T).FullName];
+			return assembly.MainModule.GetType (typeof (T).FullName);
 		}
 
 		[Test]

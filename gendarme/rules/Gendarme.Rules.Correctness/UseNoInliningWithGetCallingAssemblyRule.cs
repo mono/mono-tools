@@ -80,8 +80,8 @@ namespace Gendarme.Rules.Correctness {
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
 				// if the module does not reference System.Reflection.Assembly 
 				// then no method inside it will be calling GetCallingAssembly
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsType (Assembly));
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasTypeReference (Assembly));
 			};
 		}
 

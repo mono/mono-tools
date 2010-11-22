@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Mono.Cecil;
@@ -106,7 +107,7 @@ namespace Gendarme.Rules.Smells {
 			
 			// walk back so we don't process very long chains multiple times
 			// (we don't need to go down to zero since it would not be big enough for a chain to exists)
-			InstructionCollection ic = method.Body.Instructions;
+			IList<Instruction> ic = method.Body.Instructions;
 			for (int i = ic.Count - 1; i >= MaxChainLength; i--) {
 				Instruction ins = ic [i];
 				// continue until we find a Call[virt] instruction

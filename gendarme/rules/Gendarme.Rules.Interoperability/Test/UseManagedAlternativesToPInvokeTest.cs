@@ -65,8 +65,8 @@ namespace Test.Rules.Interoperability {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Interoperability.UseManagedAlternativesToPInvokeTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Interoperability.UseManagedAlternativesToPInvokeTest");
 			rule = new UseManagedAlternativesToPInvokeRule ();
 			runner = new TestRunner (rule);
 		}

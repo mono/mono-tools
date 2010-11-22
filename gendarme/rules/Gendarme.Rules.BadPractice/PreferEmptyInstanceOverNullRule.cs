@@ -145,9 +145,9 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			//only apply to methods returning string, array, or IEnumerable-impl
-			return_type = method.ReturnType.ReturnType;
+			return_type = method.ReturnType;
 			string_return_type = (return_type.FullName == "System.String");
-			array_return_type = return_type.IsArray ();
+			array_return_type = return_type.IsArray;
 			ienumerable_return_type = return_type.Implements ("System.Collections.IEnumerable");
 
 			if (!string_return_type && !array_return_type && !ienumerable_return_type)

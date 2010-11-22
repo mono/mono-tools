@@ -77,8 +77,8 @@ namespace Gendarme.Rules.Interoperability {
 			if (type.IsStatic ())
 				return false;
 
-			if (type.IsSealed && type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors) {
+			if (type.IsSealed && type.HasMethods) {
+				foreach (MethodDefinition ctor in type.GetConstructors ()) {
 					if (ctor.IsVisible ())
 						return true;
 				}
@@ -101,7 +101,7 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private void CheckSuppressUnmanagedCodeSecurity (TypeReference type, bool required)
+		private void CheckSuppressUnmanagedCodeSecurity (TypeDefinition type, bool required)
 		{
 			string msg = null;
 			if (type.HasCustomAttributes && type.CustomAttributes.ContainsType ("System.Security.SuppressUnmanagedCodeSecurityAttribute")) {

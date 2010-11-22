@@ -79,7 +79,7 @@ namespace Gendarme.Rules.Security {
 
 			foreach (FieldDefinition field in type.Fields) {
 				//IsInitOnly == readonly
-				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray ()) {
+				if (field.IsInitOnly && field.IsVisible () && field.FieldType.IsArray) {
 					// Medium = this will work as long as no code starts "playing" with the array values
 					Runner.Report (field, Severity.Medium, Confidence.Total);
 				}

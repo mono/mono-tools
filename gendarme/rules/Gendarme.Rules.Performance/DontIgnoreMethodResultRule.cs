@@ -103,13 +103,13 @@ namespace Gendarme.Rules.Performance {
 			case "System.String":
 				// Since strings are immutable, calling System.String methods that returns strings 
 				// better be assigned to something
-				return (method.ReturnType.ReturnType.FullName != "System.String");
+				return (method.ReturnType.FullName != "System.String");
 			case "System.IO.DirectoryInfo":
 				// GetDirectories overloads don't apply to the instance
 				return (method.Name != "GetDirectories");
 			case "System.Security.PermissionSet":
 				// Intersection and Union returns a new PermissionSet (it does not change the instance)
-				return (method.ReturnType.ReturnType.FullName != "System.Security.PermissionSet");
+				return (method.ReturnType.FullName != "System.Security.PermissionSet");
 			default:
 				// this is useless anytime, if unassigned, more in cases like a StringBuilder
 				return (method.Name != "ToString");
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Performance {
 
 			if (instruction.OpCode.Code == Code.Call || instruction.OpCode.Code == Code.Callvirt) {
 				MethodReference callee = instruction.Operand as MethodReference;
-				if (callee != null && !callee.ReturnType.ReturnType.IsValueType) {
+				if (callee != null && !callee.ReturnType.IsValueType) {
 					// check for some common exceptions (to reduce false positive)
 					if (!IsCallException (callee)) {
 						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.ToString ());

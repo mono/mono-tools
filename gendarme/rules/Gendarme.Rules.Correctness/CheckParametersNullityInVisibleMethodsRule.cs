@@ -106,7 +106,7 @@ namespace Gendarme.Rules.Correctness {
 			if (parameter.IsOut)
 				return;
 
-			int sequence = parameter.Sequence;
+			int sequence = parameter.GetSequence ();
 			// ldarg this - 'this' cannot be null
 			if (sequence == 0)
 				return;
@@ -121,10 +121,10 @@ namespace Gendarme.Rules.Correctness {
 			// ignore a value type parameter (as long as its not an array of value types)
 			TypeReference ptype = parameter.ParameterType;
 			// take care of references (ref)
-			ReferenceType rt = (ptype as ReferenceType);
+			ByReferenceType rt = (ptype as ByReferenceType);
 			if (rt != null)
 				ptype = rt.ElementType;
-			if (ptype.IsValueType && !ptype.IsArray ())
+			if (ptype.IsValueType && !ptype.IsArray)
 				return;
 
 			// last chance, if the type is a generic type constrained not to be nullable
@@ -146,7 +146,7 @@ namespace Gendarme.Rules.Correctness {
 				return;
 
 			// avoid checking parameters where a null check was already found
-			if (has_null_check.Get (parameter.Sequence))
+			if (has_null_check.Get (parameter.GetSequence ()))
 				return;
 
 			Instruction next = ins.Next;
@@ -160,16 +160,16 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			if (null_compare.Get (nc)) {
-				has_null_check.Set (parameter.Sequence);
+				has_null_check.Set (parameter.GetSequence ());
 			} else {
 				// compare with null (next or previous to current instruction)
 				// followed by a CEQ instruction
 				if (nc == Code.Ldnull) {
 					if (next.Next.OpCode.Code == Code.Ceq)
-						has_null_check.Set (parameter.Sequence);
+						has_null_check.Set (parameter.GetSequence ());
 				} else if (nc == Code.Ceq) {
 					if (ins.Previous.OpCode.Code == Code.Ldnull)
-						has_null_check.Set (parameter.Sequence);
+						has_null_check.Set (parameter.GetSequence ());
 				}
 			}
 		}
@@ -200,7 +200,7 @@ namespace Gendarme.Rules.Correctness {
 					pi = pi.Previous;
 				ParameterDefinition p = pi.GetParameter (method);
 				if (p != null)
-					has_null_check.Set (p.Sequence);
+					has_null_check.Set (p.GetSequence ());
 			}
 		}
 

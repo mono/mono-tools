@@ -114,7 +114,8 @@ namespace Gendarme.Rules.Maintainability {
 
 			bool obsolete = false;
 			if (!types.TryGetValue (type, out obsolete)) {
-				obsolete = type.HasAttribute (Obsolete);
+				TypeDefinition t = type.Resolve ();
+				obsolete = t == null ? false : t.HasAttribute (Obsolete);
 				types.Add (type, obsolete);
 			}
 			return obsolete;
@@ -252,7 +253,7 @@ namespace Gendarme.Rules.Maintainability {
 
 		void CheckReturnType (MethodReference method)
 		{
-			TypeReference rt = method.ReturnType.ReturnType;
+			TypeReference rt = method.ReturnType;
 			if (!IsObsolete (rt))
 				return;
 

@@ -200,8 +200,8 @@ namespace Gendarme.Rules.BadPractice {
 
 			// SafeHandle was introduced in .NET 2.0 so disable the rule if the
 			// assembly is targeting something earlier.
-			Runner.AnalyzeAssembly += (object o, RunnerEventArgs e) => {
-				Active = e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0;
+			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => {
+				Active = e.CurrentModule.Runtime >= TargetRuntime.Net_2_0;
 			};
 		}
 

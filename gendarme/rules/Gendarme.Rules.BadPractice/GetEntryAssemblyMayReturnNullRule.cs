@@ -83,8 +83,8 @@ namespace Gendarme.Rules.BadPractice {
 					
 					// if the module does not reference System.Reflection.Assembly 
 					// then no method inside it will be calling GetEntryAssembly
-					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsType (Assembly));
+					(e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasTypeReference (Assembly));
 			};
 		}
 

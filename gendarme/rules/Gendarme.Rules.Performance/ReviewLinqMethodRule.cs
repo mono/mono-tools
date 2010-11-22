@@ -179,7 +179,7 @@ namespace Gendarme.Rules.Performance {
 		
 		private void CheckForSubscript (TypeReference type, MethodDefinition method, Instruction ins, string name)
 		{
-			if (type.IsArray ()) {
+			if (type.IsArray) {
 				string message = string.Format ("Use operator [] instead of the {0} method.", name);
 				Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
@@ -196,7 +196,7 @@ namespace Gendarme.Rules.Performance {
 		
 		private void CheckForSort (TypeReference type, MethodDefinition method, Instruction ins, string name)
 		{
-			if (type.IsArray ()) {
+			if (type.IsArray) {
 				string message = string.Format ("Use Array.Sort instead of the {0} method.", name);
 				Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
@@ -224,7 +224,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool CanHasLinq (AssemblyDefinition assembly)
 		{
-			if (assembly.Runtime < TargetRuntime.NET_2_0)
+			if (assembly.MainModule.Runtime < TargetRuntime.Net_2_0)
 				return false;
 
 			return assembly.References ("System.Core");

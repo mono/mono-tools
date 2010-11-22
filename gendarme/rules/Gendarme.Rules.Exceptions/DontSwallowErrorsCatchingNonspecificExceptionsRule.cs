@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Exceptions {
 
 			bool has_rethrow = OpCodeEngine.GetBitmask (method).Get (Code.Rethrow);
 			foreach (ExceptionHandler exceptionHandler in method.Body.ExceptionHandlers) {
-				if (exceptionHandler.Type == ExceptionHandlerType.Catch) {
+				if (exceptionHandler.HandlerType == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {
 						// quickly find 'throw_instruction' if there's no 'rethrow' used in this method

@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Mono.Cecil;
 
 using Gendarme.Framework.Engines;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework {
 
@@ -88,13 +89,8 @@ namespace Gendarme.Framework {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					Build (module, e);
 
-					foreach (TypeDefinition type in module.Types) {
+					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						Build (type, e);
-
-						if (type.HasConstructors) {
-							foreach (MethodDefinition ctor in type.Constructors)
-								Build (ctor, e);
-						}
 
 						if (type.HasMethods) {
 							foreach (MethodDefinition method in type.Methods)
@@ -133,7 +129,7 @@ namespace Gendarme.Framework {
 			}
 
 			// TODO: incomplete - only covers custom attributes
-			BuildCustomAttributes (method.ReturnType, e);
+			BuildCustomAttributes (method.MethodReturnType, e);
 
 			if (method.HasBody) {
 				EventHandler<EngineEventArgs> handler = BuildingMethodBody;

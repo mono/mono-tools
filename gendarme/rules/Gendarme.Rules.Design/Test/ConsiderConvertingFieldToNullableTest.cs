@@ -132,18 +132,18 @@ namespace Test.Rules.Design {
 		{
 			// ensure that the rule does not apply for types defined in 1.x assemblies
 			TypeDefinition violator = DefinitionLoader.GetTypeDefinition<ClassWithOnePotentialNullable> ();
-			TargetRuntime realRuntime = violator.Module.Assembly.Runtime;
+			TargetRuntime realRuntime = violator.Module.Runtime;
 			try {
 
 				// fake assembly runtime version and do the check
-				violator.Module.Assembly.Runtime = TargetRuntime.NET_1_1;
+				violator.Module.Runtime = TargetRuntime.Net_1_1;
 				Rule.Active = true;
 				Rule.Initialize (Runner);
 				Assert.IsFalse (Rule.Active, "Active");
 			}
 			catch {
 				// rollback
-				violator.Module.Assembly.Runtime = realRuntime;
+				violator.Module.Runtime = realRuntime;
 				Rule.Active = true;
 			}
 		}

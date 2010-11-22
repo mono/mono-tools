@@ -68,8 +68,8 @@ namespace Gendarme.Rules.Design {
 			base.Initialize (runner);
 
 			// Nullable cannot be used if the assembly target runtime is earlier than 2.0
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
 			};
 		}
 
@@ -140,7 +140,7 @@ namespace Gendarme.Rules.Design {
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.FieldType.IsValueType
-					&& "System.Nullable`1" != field.FieldType.GetOriginalType().FullName
+					&& "System.Nullable`1" != field.FieldType.GetElementType().FullName
 					&& 0 == string.Compare(name, field.Name, StringComparison.OrdinalIgnoreCase))
 					return field;
 			}

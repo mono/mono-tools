@@ -75,20 +75,20 @@ namespace Gendarme.Rules.Performance {
 		private const int ReferenceSize = 4;
 
 		static Dictionary<string, int> Primitives = new Dictionary<string, int> (14) {
-			{ Constants.Byte, 1 },
-			{ Constants.SByte, 1 },
-			{ Constants.Boolean, 1 },
-			{ Constants.Int16, 2 },
-			{ Constants.UInt16, 2 },
-			{ Constants.Char, 2 },
-			{ Constants.Int32, 4 },
-			{ Constants.UInt32, 4 },
-			{ Constants.Single, 4 },
-			{ Constants.Int64, 8 },
-			{ Constants.UInt64, 8 },
-			{ Constants.Double, 8 },
-			{ Constants.IntPtr, ReferenceSize },	// so rule return the same results
-			{ Constants.UIntPtr, ReferenceSize },	// on 32 and 64 bits architectures
+			{ "System.Byte", 1 },
+			{ "System.SByte", 1 },
+			{ "System.Boolean", 1 },
+			{ "System.Int16", 2 },
+			{ "System.UInt16", 2 },
+			{ "System.Char", 2 },
+			{ "System.Int32", 4 },
+			{ "System.UInt32", 4 },
+			{ "System.Single", 4 },
+			{ "System.Int64", 8 },
+			{ "System.UInt64", 8 },
+			{ "System.Double", 8 },
+			{ "System.IntPtr", ReferenceSize },	// so rule return the same results
+			{ "System.UIntPtr", ReferenceSize },	// on 32 and 64 bits architectures
 		};
 
 		private int max_size = MaximumRecommendedSize;
@@ -173,7 +173,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static long SizeOf (TypeReference type)
 		{
-			if (!type.IsValueType || type.IsArray ())
+			if (!type.IsValueType || type.IsArray)
 				return ReferenceSize;
 
 			// list based on Type.IsPrimitive

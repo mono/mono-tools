@@ -28,11 +28,13 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Gendarme.Rules.Performance;
 
 using NUnit.Framework;
@@ -186,7 +188,7 @@ namespace Test.Rules.Performance {
 		// test case distilled from ParameterNamesShouldMatchOverriddenMethodRule
 		bool SameReturnType (MethodReference a, MethodReference b)
 		{
-			return (a.ReturnType.ReturnType.FullName == b.ReturnType.ReturnType.FullName);
+			return (a.ReturnType.FullName == b.ReturnType.FullName);
 		}
 
 		[Test]
@@ -227,24 +229,24 @@ namespace Test.Rules.Performance {
 
 		static bool AreEquivalent (VariableReference source, VariableReference target)
 		{
-			VariableDefinitionCollection cv = Current.Body.Variables;
-			VariableDefinitionCollection tv = Target.Body.Variables;
+			IList<VariableDefinition> cv = Current.Body.Variables;
+			IList<VariableDefinition> tv = Target.Body.Variables;
 			return cv.Count > source.Index && tv.Count > target.Index ?
 				cv [source.Index].VariableType.Equals (tv [target.Index].VariableType) : false;
 		}
 
-		static bool AreEquivalent2 (ParameterReference source, ParameterReference target)
+		static bool AreEquivalent2 (ParameterDefinition source, ParameterDefinition target)
 		{
 			if ((source == null) || (target == null))
 				return false;
 
-			int ss = source.Sequence - 1;
-			int ts = target.Sequence - 1;
+			int ss = source.GetSequence () - 1;
+			int ts = target.GetSequence () - 1;
 			if ((ss <= 0) || (ts <= 0))
 				return false;
 
-			ParameterDefinitionCollection cp = Current.Parameters;
-			ParameterDefinitionCollection tp = Target.Parameters;
+			IList<ParameterDefinition> cp = Current.Parameters;
+			IList<ParameterDefinition> tp = Target.Parameters;
 			return ((cp.Count > ss) && (tp.Count > ts)) ?
 				cp [ss].ParameterType.Equals (tp [ts].ParameterType) : false;
 		}

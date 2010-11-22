@@ -28,6 +28,8 @@ using System;
 
 using Mono.Cecil;
 
+using Mono.Collections.Generic;
+
 namespace Gendarme.Framework.Rocks {
 
 	// add CustomAttribute[Collection], ICustomAttributeProvider extensions 
@@ -55,7 +57,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="attributeTypeName">Full type name of the attribute class.</param>
 		/// <returns>True if the collection contains an attribute of the same name,
 		/// False otherwise.</returns>
-		public static bool ContainsType (this CustomAttributeCollection self, string attributeTypeName)
+		public static bool ContainsType (this Collection<CustomAttribute> self, string attributeTypeName)
 		{
 			if (attributeTypeName == null)
 				throw new ArgumentNullException ("attributeTypeName");
@@ -63,7 +65,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (CustomAttribute ca in self) {
-				if (ca.Constructor.DeclaringType.FullName == attributeTypeName)
+				if (ca.AttributeType.FullName == attributeTypeName)
 					return true;
 			}
 			return false;
@@ -76,7 +78,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="attributeTypeNames">A strings array of full type names of the attributes.</param>
 		/// <returns>True if the collection contains any attribute matching one specified,
 		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this CustomAttributeCollection self, string[] attributeTypeNames)
+		public static bool ContainsAnyType (this Collection<CustomAttribute> self, string[] attributeTypeNames)
 		{
 			if (attributeTypeNames == null)
 				throw new ArgumentNullException ("attributeTypeNames");
@@ -84,7 +86,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (CustomAttribute ca in self) {
-				string fullname = ca.Constructor.DeclaringType.FullName;
+				string fullname = ca.AttributeType.FullName;
 				foreach (string attribute_full_name in attributeTypeNames) {
 					if (fullname == attribute_full_name)
 						return true;
