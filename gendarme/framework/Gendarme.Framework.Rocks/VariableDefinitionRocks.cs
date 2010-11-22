@@ -44,7 +44,7 @@ namespace Gendarme.Framework.Rocks {
 
 		public static string GetName (this VariableReference self)
 		{
-			return !string.IsNullOrEmpty (self.Name) ? self.Name : "V_" + self.Index;
+			return !string.IsNullOrEmpty (self.Name) ? self.Name : "V_" + self.Index.ToString ();
 		}
 	}
 }
