@@ -5,3 +5,4 @@ obj
 AssemblyInfo.cs
 *.pidb
 *.suo
+*.user
