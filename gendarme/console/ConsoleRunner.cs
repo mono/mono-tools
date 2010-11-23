@@ -252,9 +252,6 @@ namespace Gendarme {
 			catch (BadImageFormatException) {
 				warning = "Invalid assembly format";
 			}
-			catch (BadImageFormatException) {
-				warning = "Invalid assembly format";
-			}
 			catch (FileNotFoundException fnfe) {
 				// e.g. .netmodules
 				warning = fnfe.Message;
