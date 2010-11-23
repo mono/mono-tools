@@ -116,14 +116,14 @@ namespace Test.Rules.BadPractice {
 				afv = ca;
 				break;
 			}
-			string value = afv.ConstructorParameters [0] as string;
-			afv.ConstructorParameters [0] = String.Empty;
+			CustomAttributeArgument value = afv.ConstructorArguments [0];
+			afv.ConstructorArguments [0] = new CustomAttributeArgument ();
 
 			try {
 				AssertRuleDoesNotApply (assembly);
 			}
 			finally {
-				afv.ConstructorParameters [0] = value;
+				afv.ConstructorArguments [0] = value;
 			}
 		}
 
