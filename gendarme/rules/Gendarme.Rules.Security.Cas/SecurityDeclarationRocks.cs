@@ -60,12 +60,20 @@ namespace Gendarme.Rules.Security.Cas {
 			if (attribute_type.Name != "PermissionSetAttribute" || attribute_type.Namespace != "System.Security.Permissions")
 				return false;
 
-			var named_argument = security_attribute.Properties [0];
-			if (named_argument.Name != "XML")
-				throw new NotSupportedException ();
-
 			var attribute = new SSP.PermissionSetAttribute ((SSP.SecurityAction) declaration.Action);
-			attribute.XML = (string) named_argument.Argument.Value;
+
+			var named_argument = security_attribute.Properties [0];
+			string value = (string) named_argument.Argument.Value;
+			switch (named_argument.Name) {
+			case "XML":
+				attribute.XML = value;
+				break;
+			case "Name":
+				attribute.Name = value;
+				break;
+			default:
+				throw new NotImplementedException (named_argument.Name);
+			}
 
 			set = attribute.CreatePermissionSet ();
 			return true;
