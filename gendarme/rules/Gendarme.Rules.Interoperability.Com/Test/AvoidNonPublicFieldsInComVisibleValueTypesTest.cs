@@ -79,9 +79,6 @@ namespace Test.Rules.Interoperability.Com {
 			// Type without ComVisible.
 			AssertRuleDoesNotApply<NoDefinedComVisible> ();
 
-			// Type with ComVisible = false.
-			AssertRuleDoesNotApply<NonComVisibleType> ();
-
 			// Type with no fields.
 			AssertRuleDoesNotApply<ComVisibleTypeNoFields> ();
 		}
@@ -91,6 +88,9 @@ namespace Test.Rules.Interoperability.Com {
 		{
 			// Type with explicit ComVisible and only public fields.
 			AssertRuleSuccess<ComVisibleGood> ();
+
+			// Type with ComVisible = false.
+			AssertRuleSuccess<NonComVisibleType> ();
 		}
 
 		[Test]
