@@ -38,7 +38,7 @@ using Test.Rules.Fixtures;
 using Test.Rules.Helpers;
 
 
-namespace Test.Rules.Smells {
+namespace Test.Rules.Maintainability {
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExpectedCohesivenessAttribute : Attribute
@@ -46,14 +46,25 @@ namespace Test.Rules.Smells {
 		public ExpectedCohesivenessAttribute(double c)
 		{
 			_c = c;
+			_d = Double.Epsilon;
 		}
 
-		public double Value
+		public ExpectedCohesivenessAttribute (double c, double delta)
 		{
+			_c = c;
+			_d = delta;
+		}
+
+		public double Value {
 			get { return _c; }
 		}
 
-		private double _c = 0;
+		public double Delta {
+			get { return _d; }
+		}
+
+		private double _c;
+		private double _d;
 	}
 
 	#pragma warning disable 414, 169
@@ -190,7 +201,8 @@ namespace Test.Rules.Smells {
 		}
 	}
 
-	[ExpectedCohesiveness(0.17)]
+	// CSC 9.x result varies if /o (optimize) is ON or OFF and we want the test to pass in both cases
+	[ExpectedCohesiveness (0.17, 0.2)]
 	public class VeryBadCohesion
 	{
 		int x;
@@ -312,9 +324,9 @@ namespace Test.Rules.Smells {
 							DefinitionLoader.GetTypeDefinition (type));
 
 				Assert.IsTrue (
-					Math.Abs(coh - expectedCoh.Value) <= double.Epsilon,
-					"Cohesiveness for type '{0}' is {1} but should have been {2}.",
-					type, coh, expectedCoh.Value);
+					Math.Abs (coh - expectedCoh.Value) <= expectedCoh.Delta,
+					"Cohesiveness for type '{0}' is {1} but should have been {2} +/- {3}.",
+					type, coh, expectedCoh.Value, expectedCoh.Delta);
 			}
 		}
 
