@@ -95,7 +95,7 @@ namespace Gendarme.Rules.Security.Cas {
 		{
 			var attribute_type = Type.GetType (attribute.AttributeType.FullName);
 			if (attribute_type == null)
-				throw new ArgumentException ();
+				throw new ArgumentException ("attribute");
 
 			var security_attribute = CreateSecurityAttribute (attribute_type, declaration);
 			if (security_attribute == null)
