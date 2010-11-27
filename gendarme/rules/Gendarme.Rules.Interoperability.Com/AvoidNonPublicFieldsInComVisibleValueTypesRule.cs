@@ -84,22 +84,13 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 			// Iterate through attributes on the type and assembly to ensure that ComVisible is false on the assembly,
 			// and true on the type.
+			bool exp;
 			if (assembly != null) {
-				foreach (CustomAttribute attribute in assembly.CustomAttributes) {
-					if (attribute.Constructor.DeclaringType.FullName != ComVisible)
-						continue;
-					if ((bool) attribute.ConstructorArguments [0].Value)
-						return RuleResult.Success;
-					break;
-				}
-			}
-			foreach (CustomAttribute attribute in type.CustomAttributes) {
-				if (attribute.Constructor.DeclaringType.FullName != ComVisible)
-					continue;
-				if (!(bool) attribute.ConstructorArguments [0].Value)
+				if (assembly.IsComVisible (out exp) && exp)
 					return RuleResult.Success;
-				break;
 			}
+			if (!type.IsComVisible (out exp) && exp)
+				return RuleResult.Success;
 
 			// If we find any, low severity as the code works, but it's bad practice.
 			foreach (FieldDefinition field in type.Fields)

@@ -1,8 +1,11 @@
 include ../common.make
 
 rules_sources =  \
-	AvoidNonPublicFieldsInComVisibleValueTypesRule.cs
+	AvoidNonPublicFieldsInComVisibleValueTypesRule.cs \
+	AvoidOverloadsInComVisibleInterfacesRule.cs \
+	ComRocks.cs
 
 tests_sources = \
-	AvoidNonPublicFieldsInComVisibleValueTypesTest.cs
+	AvoidNonPublicFieldsInComVisibleValueTypesTest.cs \
+	AvoidOverloadsInComVisibleInterfacesTest.cs
 
