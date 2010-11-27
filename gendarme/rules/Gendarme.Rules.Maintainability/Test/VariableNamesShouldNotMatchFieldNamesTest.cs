@@ -112,8 +112,7 @@ namespace Test.Rules.Maintainability {
 		}
 
 		[Test]
-		[Ignore(".pdb information is required to assign names to local variables.")]
-		public void Ignores() 
+		public void Ignores ()
 		{
 			AssertRuleFailure<BadIgnore> (2);
 		}

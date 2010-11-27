@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\console\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,6 +46,8 @@
     <Compile Include="ConsiderUsingStopwatchTest.cs" />
     <Compile Include="PreferStringIsNullOrEmptyTest.cs" />
     <Compile Include="RemoveDependenceOnObsoleteCodeTest.cs" />
+    <Compile Include="ReviewMisleadingFieldNamesTest.cs" />
+    <Compile Include="VariableNamesShouldNotMatchFieldNamesTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\Mono.Cecil.csproj">

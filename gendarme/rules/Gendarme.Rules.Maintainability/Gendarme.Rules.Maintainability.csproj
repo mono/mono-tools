@@ -54,6 +54,8 @@
     <Compile Include="ConsiderUsingStopwatchRule.cs" />
     <Compile Include="PreferStringIsNullOrEmptyRule.cs" />
     <Compile Include="RemoveDependenceOnObsoleteCodeRule.cs" />
+    <Compile Include="ReviewMisleadingFieldNamesRule.cs" />
+    <Compile Include="VariableNamesShouldNotMatchFieldNamesRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cecil\Mono.Cecil.csproj">
