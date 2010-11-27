@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Mono.Cecil;
 using Gendarme.Framework;
@@ -94,7 +95,7 @@ namespace Gendarme.Rules.Smells {
 
 		private static MethodDefinition GetSmallestConstructorFrom (TypeDefinition type)
 		{
-			ConstructorCollection ctors = type.Constructors;
+			IList<MethodDefinition> ctors = type.GetConstructors ().ToList ();
 			if (ctors.Count == 1)
 				return ctors [0];
 
@@ -145,7 +146,7 @@ namespace Gendarme.Rules.Smells {
 		private static IEnumerable<MethodDefinition> GetSmallestOverloaded (TypeDefinition type)
 		{
 			IDictionary<string, MethodDefinition> possibleOverloaded = new Dictionary<string, MethodDefinition> ();
-			foreach (MethodDefinition method in type.Methods) {
+			foreach (MethodDefinition method in type.GetMethods ()) {
 				if (method.IsPInvokeImpl)
 					continue;
 
@@ -165,14 +166,14 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool OnlyContainsExternalMethods (TypeDefinition type)
 		{
-			if (!type.HasMethods)
-				return false;
-
-			foreach (MethodDefinition method in type.Methods)
+			bool has_methods = false;
+			foreach (MethodDefinition method in type.GetMethods ()) {
+				has_methods = true;
 				if (!method.IsPInvokeImpl)
 					return false;
+			}
 			// all methods are p/invoke
-			return true;
+			return has_methods;
 		}
 
 		private RuleResult CheckDelegate (TypeReference type)
@@ -194,10 +195,9 @@ namespace Gendarme.Rules.Smells {
 			if (type.IsDelegate ())
 				return CheckDelegate (type);
 
-			if (type.HasConstructors)
+			if (type.HasMethods) {
 				CheckConstructor (GetSmallestConstructorFrom (type));
 
-			if (type.HasMethods) {
 				foreach (MethodDefinition method in GetSmallestOverloaded (type)) 
 					CheckMethod (method);
 			}

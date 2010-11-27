@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -74,7 +75,7 @@ namespace Gendarme.Rules.Performance {
 			if (!bitmask.IsSubsetOf (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			InstructionCollection instructions = method.Body.Instructions;
+			IList<Instruction> instructions = method.Body.Instructions;
 			int n = instructions.Count - 2;
 			for (int i = 0; i < n; i++) {
 				Code code0 = instructions [i].OpCode.Code;

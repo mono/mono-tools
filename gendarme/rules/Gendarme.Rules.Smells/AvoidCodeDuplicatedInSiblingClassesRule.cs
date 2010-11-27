@@ -109,9 +109,9 @@ namespace Gendarme.Rules.Smells {
 			codeDuplicatedLocator = new CodeDuplicatedLocator (this);
 		}
 
-		private void FindCodeDuplicated (TypeReference type, ICollection<TypeDefinition> siblingClasses)
+		private void FindCodeDuplicated (TypeDefinition type, ICollection<TypeDefinition> siblingClasses)
 		{
-			foreach (MethodDefinition method in type.AllMethods ())
+			foreach (MethodDefinition method in type.Methods)
 				foreach (TypeDefinition sibling in siblingClasses)
 					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (method, sibling);
 		}

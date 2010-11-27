@@ -128,18 +128,18 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.TypeRocksTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.TypeRocksTest");
 		}
 
 		private TypeDefinition GetType (string name)
 		{
-			return assembly.MainModule.Types ["Test.Framework.Rocks.TypeRocksTest" + name];
+			return assembly.MainModule.GetType ("Test.Framework.Rocks.TypeRocksTest" + name);
 		}
 
 		private TypeReference GetFieldType (string name)
 		{
-			TypeDefinition type = assembly.MainModule.Types ["Test.Framework.Rocks.TypeRocksTest"];
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.TypeRocksTest");
 			foreach (FieldDefinition field in type.Fields) {
 				if (name == field.Name)
 					return field.FieldType;
@@ -252,23 +252,6 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
-		public void IsArray ()
-		{
-			Assert.IsTrue (GetFieldType ("array_of_bytes").IsArray (), "array_of_bytes");
-			Assert.IsTrue (GetFieldType ("array_of_strings").IsArray (), "array_of_strings");
-			Assert.IsTrue (GetFieldType ("array_of_interfaces").IsArray (), "array_of_interfaces");
-
-			Assert.IsFalse (GetType ("/AnAttribute").IsArray (), "AnAttribute");
-			Assert.IsTrue (GetFieldType ("array_of_classes").IsArray (), "array_of_classes");
-
-			Assert.IsFalse (GetType ("/Enum").IsArray (), "Enum");
-			Assert.IsTrue (GetFieldType ("array_of_enum").IsArray (), "array_of_enum");
-
-			Assert.IsFalse (GetType ("/Flags").IsArray (), "Flags");
-			Assert.IsTrue (GetFieldType ("array_of_flags").IsArray (), "array_of_flags");
-		}
-
-		[Test]
 		public void IsAttribute ()
 		{
 			Assert.IsFalse (GetType ("/NotAttribute").IsAttribute (), "NotAttribute");
@@ -342,23 +325,23 @@ namespace Test.Framework.Rocks {
 		public void IsVisible ()
 		{
 			string name = "Test.Framework.Rocks.PublicType";
-			TypeDefinition type = assembly.MainModule.Types [name];
+			TypeDefinition type = assembly.MainModule.GetType (name);
 			Assert.IsTrue (type.IsVisible (), name);
 
 			name = "Test.Framework.Rocks.PublicType/NestedPublicType";
-			Assert.IsTrue (assembly.MainModule.Types [name].IsVisible (), name);
+			Assert.IsTrue (assembly.MainModule.GetType (name).IsVisible (), name);
 
 			name = "Test.Framework.Rocks.PublicType/NestedProtectedType";
-			Assert.IsTrue (assembly.MainModule.Types [name].IsVisible (), name);
+			Assert.IsTrue (assembly.MainModule.GetType (name).IsVisible (), name);
 
 			name = "Test.Framework.Rocks.PublicType/NestedPrivateType";
-			Assert.IsFalse (assembly.MainModule.Types [name].IsVisible (), name);
+			Assert.IsFalse (assembly.MainModule.GetType (name).IsVisible (), name);
 
 			name = "Test.Framework.Rocks.PublicType/NestedInternalType";
-			Assert.IsFalse (assembly.MainModule.Types [name].IsVisible (), name);
+			Assert.IsFalse (assembly.MainModule.GetType (name).IsVisible (), name);
 
 			name = "Test.Framework.Rocks.InternalType";
-			Assert.IsFalse (assembly.MainModule.Types [name].IsVisible (), name);
+			Assert.IsFalse (assembly.MainModule.GetType (name).IsVisible (), name);
 		}
 	}
 }

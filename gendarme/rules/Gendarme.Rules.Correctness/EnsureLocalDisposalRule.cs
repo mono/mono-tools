@@ -136,13 +136,13 @@ namespace Gendarme.Rules.Correctness {
 				return method.DeclaringType.Implements ("System.IDisposable");
 			}
 
-			return method.ReturnType.ReturnType.Implements ("System.IDisposable");
+			return method.ReturnType.Implements ("System.IDisposable");
 		}
 
 		static bool AreBothInstructionsInSameTryFinallyBlock (MethodBody body, Instruction a, Instruction b)
 		{
 			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
-				if (eh.Type != ExceptionHandlerType.Finally)
+				if (eh.HandlerType != ExceptionHandlerType.Finally)
 					continue;
 				if (eh.TryStart.Offset <= a.Next.Offset && eh.TryEnd.Offset >= a.Offset
 					&& eh.HandlerStart.Offset <= b.Offset && eh.HandlerEnd.Offset >= b.Offset)

@@ -24,7 +24,7 @@ RetargetAssembly.exe: $(retargetassembly_exe_sources)
 	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -target:exe -out:RetargetAssembly.exe $(retargetassembly_exe_sources)
 
 minvoke.exe: $(minvoke_sources);
-	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:minvoke.exe $(minvoke_sources) -r:$(CECIL_ASM)
+	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:minvoke.exe $(minvoke_sources) -r:System.Core -r:$(CECIL_ASM)
 
 
 test: minvoke.exe MapAssembly.dll RetargetAssembly.exe

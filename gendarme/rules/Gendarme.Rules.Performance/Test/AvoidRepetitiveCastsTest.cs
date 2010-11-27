@@ -189,10 +189,10 @@ namespace Test.Rules.Performance {
 
 		private void Foreach (TypeDefinition type)
 		{
-			foreach (MethodDefinition ctor in type.Constructors) {
+			foreach (MethodDefinition ctor in (IEnumerable)type.Methods) {
 				Console.WriteLine (ctor);
 			}
-			foreach (MethodDefinition method in type.Methods) {
+			foreach (MethodDefinition method in (IEnumerable)type.Methods) {
 				Console.WriteLine (method);
 			}
 		}

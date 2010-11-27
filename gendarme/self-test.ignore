@@ -127,6 +127,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.MarshalBooleans
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.MarshalStringsInPInvokeDeclarationsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.PInvokeShouldNotBeVisibleRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.UseManagedAlternativesToPInvokeRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPublicFieldsInComVisibleValueTypesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidComplexMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -496,12 +497,6 @@ R: Gendarme.Rules.Correctness.MethodCanBeMadeStaticRule
 M: System.String Gendarme.Rules.Correctness.AvoidCodeWithSideEffectsInConditionalCodeRule::Mutates(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
 M: System.Boolean Gendarme.Rules.Correctness.AvoidMethodsWithSideEffectsInConditionalCodeRule::IsPure(Mono.Cecil.MethodReference)
 
-# Cecil API related issue / unlikely to be fixed
-R: Gendarme.Rules.Smells.AvoidMessageChainsRule
-# Chain length 6 versus maximum of 4. -> assembly.MainModule.Image.FileInformation.FullName is long but the most direct way
-M: System.Void Gendarme.Framework.AssemblyResolver::CacheAssembly(Mono.Cecil.AssemblyDefinition)
-# Chain length 6 versus maximum of 4. -> e.CurrentAssembly.MainModule.Image.FileInformation.Name
-M: System.Void Gendarme.ConsoleRunner::OnAssembly(Gendarme.Framework.RunnerEventArgs)
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 # OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the switch/case (load versus store instructions) - delegating calls won't change defect
 T: Gendarme.Framework.Helpers.StackEntryAnalysis

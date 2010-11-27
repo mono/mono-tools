@@ -8,6 +8,7 @@
 		<rules include="*" from="Gendarme.Rules.Design.Linq.dll"/>
 		<rules include="*" from="Gendarme.Rules.Exceptions.dll" />
 		<rules include="*" from="Gendarme.Rules.Interoperability.dll"/>
+		<rules include="*" from="Gendarme.Rules.Interoperability.Com.dll"/>
 		<rules include="*" from="Gendarme.Rules.Naming.dll"/>
 		<rules include="*" from="Gendarme.Rules.Performance.dll" />
 		<rules include="*" from="Gendarme.Rules.Portability.dll" />
@@ -101,6 +102,9 @@
 	</ruleset>
 	<ruleset name="interoperability">
 		<rules include="*" from="Gendarme.Rules.Interoperability.dll"/>
+	</ruleset>
+	<ruleset name="interop-com">
+		<rules include="*" from="Gendarme.Rules.Interoperability.Com.dll"/>
 	</ruleset>
 	<ruleset name="serialization">
 		<rules include="*" from="Gendarme.Rules.Serialization.dll"/>

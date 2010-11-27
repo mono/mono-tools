@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Performance {
 
 			ModuleDefinition module = type.Module;
 			string type_name = type.FullName;
-			foreach (TypeDefinition type_definition in module.Types) {
+			foreach (TypeDefinition type_definition in module.GetAllTypes ()) {
 				// skip ourself
 				if (type_definition.FullName == type_name)
 					continue;

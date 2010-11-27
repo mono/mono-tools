@@ -113,13 +113,13 @@ namespace Gendarme.Rules.Concurrency {
 			case Code.Ldarg:
 			case Code.Ldarg_S:
 				ParameterDefinition pd = (ins.Operand as ParameterDefinition);
-				if ((pd == null) || (pd.Sequence != 0))
+				if ((pd == null) || (pd.GetSequence () != 0))
 					msg = LockThis;
 				break;
 			case Code.Call:
 			case Code.Callvirt:
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.ReturnType.ReturnType.FullName != "System.Type")
+				if (mr.ReturnType.FullName != "System.Type")
 					return String.Empty;
 
 				if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {

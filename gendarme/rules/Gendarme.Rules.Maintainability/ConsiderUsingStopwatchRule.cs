@@ -89,9 +89,9 @@ namespace Gendarme.Rules.Maintainability {
 			// also we do not want to run this on <2.0 assemblies since Stopwatch
 			// did not exist back then.
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0
-					&& (e.CurrentAssembly.Name.Name == Constants.Corlib
-					|| e.CurrentModule.TypeReferences.ContainsType (DateTime)));
+				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0
+					&& (e.CurrentAssembly.Name.Name == "mscorlib"
+					|| e.CurrentModule.HasTypeReference (DateTime)));
 			};
 		}
 
@@ -125,14 +125,14 @@ namespace Gendarme.Rules.Maintainability {
 				ParameterDefinition p = prev.GetParameter (method);
 				if (p == null)
 					return false;
-				int arg = p.Sequence;
+				int arg = p.GetSequence ();
 				prev = prev.Previous;
 				while (null != prev) {
 					// look for a STOBJ instruction and compare the objects
 					if (prev.OpCode.Code == Code.Stobj) {
 						prev = prev.TraceBack (method);
 						p = prev.GetParameter (method);
-						return (p == null) ? false : (arg == p.Sequence);
+						return (p == null) ? false : (arg == p.GetSequence ());
 					}
 					prev = prev.Previous;
 				}

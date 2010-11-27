@@ -84,8 +84,8 @@ namespace Gendarme.Rules.Correctness {
 			// if the module does not reference System.BitConverter then no
 			// method inside it will be calling any BitConverter.Int64BitsToDouble method
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType (BitConverter);
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasTypeReference (BitConverter);
 			};
 		}
 

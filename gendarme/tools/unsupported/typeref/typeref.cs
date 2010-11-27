@@ -17,7 +17,7 @@ namespace Gendarme.Tools {
 			TypeNames.AddRange (args [0].Split (','));
 
 			for (int i = 1; i < args.Length; i++) {
-				Assemblies.Add (AssemblyFactory.GetAssembly (args [i]));
+				Assemblies.Add (AssemblyDefinition.ReadAssembly (args [i]));
 			}
 
 			if (TypeNames.Count == 1) {
@@ -33,7 +33,7 @@ namespace Gendarme.Tools {
 			int total = 0;
 			foreach (AssemblyDefinition assembly in Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
-					bool all = TypeNames.All (name => (module.TypeReferences.Contains (name)));
+					bool all = TypeNames.All (name => (module.HasTypeReference (name)));
 					if (all)
 						inside++;
 					total++;

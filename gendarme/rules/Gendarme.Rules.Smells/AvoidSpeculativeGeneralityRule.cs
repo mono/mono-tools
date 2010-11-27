@@ -27,6 +27,8 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -120,7 +122,7 @@ namespace Gendarme.Rules.Smells {
 			int count = 0;
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
-					foreach (TypeDefinition type in module.Types) {
+					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						if ((baseType == type.BaseType) || (type.BaseType != null &&
 							(baseType.FullName == type.BaseType.FullName))) {
 							count++;
@@ -173,7 +175,7 @@ namespace Gendarme.Rules.Smells {
 				return false; // 0 / 2 + 1 <= 0
 
 			int delegationCounter = 0;
-			MethodDefinitionCollection methods = type.Methods;
+			IList<MethodDefinition> methods = type.GetMethods ().ToList ();
 			foreach (MethodDefinition method in methods) {
 				if (OnlyDelegatesCall (method))
 					delegationCounter++;
@@ -225,7 +227,7 @@ namespace Gendarme.Rules.Smells {
 
 			CheckAbstractClassWithoutResponsability (type);
 			if (avoidUnusedParameters != null) {
-				foreach (MethodDefinition method in type.AllMethods ()) {
+				foreach (MethodDefinition method in type.GetMethods ()) {
 					avoidUnusedParameters.CheckMethod (method);
 				}
 			}

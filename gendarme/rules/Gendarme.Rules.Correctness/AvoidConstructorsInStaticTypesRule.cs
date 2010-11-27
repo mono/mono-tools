@@ -86,16 +86,14 @@ namespace Gendarme.Rules.Correctness {
 			if (type == null)
 				return false;
 
-			if (type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors) {
+			if (type.HasMethods) {
+				foreach (MethodDefinition ctor in type.GetConstructors ()) {
 					// let's the default ctor pass (since it's always here for 1.x code)
 					if (!ctor.IsStatic && ctor.HasParameters)
 						return false;
 				}
-			}
 
-			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.Methods) {
+				foreach (MethodDefinition method in type.GetMethods ()) {
 					if (!method.IsStatic)
 						return false;
 				}
@@ -129,7 +127,7 @@ namespace Gendarme.Rules.Correctness {
 
 			// rule applies!
 
-			foreach (MethodDefinition ctor in type.Constructors) {
+			foreach (MethodDefinition ctor in type.GetConstructors ()) {
 				if (!ctor.IsStatic && ctor.IsVisible ()) {
 					Runner.Report (ctor, Severity.Low, Confidence.High);
 				}

@@ -81,7 +81,7 @@ namespace Gendarme.Rules.Security {
 
 				//not readonly native fields or arrays of native fields
 				if ((field.FieldType.IsNative () && !field.IsInitOnly) || 
-					(field.FieldType.IsArray () && field.FieldType.GetOriginalType ().IsNative ())) {
+					(field.FieldType.IsArray && field.FieldType.GetElementType ().IsNative ())) {
 
 					Runner.Report (field, Severity.Medium, Confidence.Total);
 				}

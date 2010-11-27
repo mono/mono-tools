@@ -48,8 +48,8 @@ namespace Gendarme.Framework.Helpers {
 		static TypeReference GetReference (Type type, IMetadataTokenProvider metadata)
 		{
 			ModuleDefinition module = metadata.GetAssembly ().MainModule;
-			TypeReference tr = module.TypeReferences [type.FullName];
-			if (tr == null)
+			TypeReference tr;
+			if (!module.TryGetTypeReference (type.FullName, out tr))
 				tr = module.Import (type);
 			return tr;
 		}

@@ -98,7 +98,7 @@ namespace Gendarme.Rules.Performance {
 			if (!method.IsGetter)
 				return RuleResult.DoesNotApply;
 
-			if (!method.ReturnType.ReturnType.IsArray ())
+			if (!method.ReturnType.IsArray)
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.Medium, Confidence.Total);

@@ -30,10 +30,9 @@ Requirements
 The minimal requirements are:
 
 * Microsoft Visual Studio.NET 2008 [2];
-* Some modules from Mono GIT repository
-	* 'mono' to get Mono.Cecil
-	* 'cecil' to get Mono.Cecil.Pdb
-	* 'mono-tools' for Gendarme latest sources
+* Some modules from github
+	* 'jbevain/cecil' to get both Mono.Cecil and Mono.Cecil.Pdb
+	* 'mono/mono-tools' for Gendarme latest sources
 * NUnit 2.4.x to build/run the unit tests
 
 
@@ -42,8 +41,7 @@ How To (for VS 2008)
 * Check out the source code from GIT. This is:
 
 	git clone git://github.com/mono/mono-tools.git
-	git clone git://github.com/mono/mono.git
-	git clone git://github.com/mono/cecil.git
+	git clone git://github.com/jbevain/cecil.git
 
 * Install NUnit 2.4.x if you do not already have it [3].
 
@@ -52,10 +50,17 @@ How To (for VS 2008)
 	gacutil -i c:\path\to\nunit\nunit-framework.dll
 
 * Optionally installed WIX [4] if you want to build the setup. If not 
-installed you'll an error when doing a "Rebuild Solution" - but everything
-will be fine.
+installed you will get some errors when doing a "Rebuild Solution" - but
+everything else will be fine.
 
-* Open the gendarme-win.sln solution inside VS.NET 2008, build, execute, enjoy!
+* Open the gendarme-win.sln solution inside VS.NET 2008
+
+* In both the Mono.Cecil.csproj and Mono.Cecil.Pdb.csproj properties:
+	* change "Target Framework" to ".NET Framework 3.5"; and
+	* define the symbol NET_3_5 
+so extension methods inside Gendarme can be compiled by CSC
+
+* Build, execute, enjoy!
 
 
 How To (for VS 2010)

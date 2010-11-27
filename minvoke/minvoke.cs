@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Mono.Cecil;
@@ -61,11 +62,30 @@ namespace MInvoke {
 
 	class DllImports : Dictionary<ImportKey, MethodDefinition> { }
 
+	static class CecilRocks {
+
+		public static IEnumerable<TypeDefinition> GetAllTypes (this ModuleDefinition self)
+		{
+			return self.Types.SelectMany (t => t.GetAllTypes ());
+		}
+
+		static IEnumerable<TypeDefinition> GetAllTypes (this TypeDefinition self)
+		{
+			yield return self;
+
+			if (!self.HasNestedTypes)
+				yield break;
+
+			foreach (var type in self.NestedTypes.SelectMany (t => t.GetAllTypes ()))
+				yield return type;
+		}
+	}
+
 	public class MInvoke {
 		private static CustomAttribute GetMapDllImportAttribute (ICustomAttributeProvider provider)
 		{
 			foreach (CustomAttribute ca in provider.CustomAttributes) {
-				TypeDefinition resolved = ca.Constructor.DeclaringType.Resolve ();
+				TypeDefinition resolved = ca.AttributeType.Resolve ();
 
 				if (resolved != null) {
 					if (resolved.Name == "MapDllImport") {
@@ -96,8 +116,8 @@ namespace MInvoke {
 		{
 			DllImportMap map = new DllImportMap ();
 
-			var assembly = AssemblyFactory.GetAssembly (map_assembly);
-			foreach (TypeDefinition t in assembly.MainModule.Types) {
+			var assembly = AssemblyDefinition.ReadAssembly (map_assembly);
+			foreach (TypeDefinition t in assembly.MainModule.GetAllTypes ()) {
 				if (t.Name == "<Module>")
 					continue;
 
@@ -115,7 +135,7 @@ namespace MInvoke {
 					if (attr == null)
 						continue;
 
-					ImportKey key = new ImportKey (attr.ConstructorParameters[0].ToString(), md.Name);
+					ImportKey key = new ImportKey (attr.ConstructorArguments [0].Value.ToString(), md.Name);
 					map.Add (key, md);
 				}
 			}
@@ -127,7 +147,7 @@ namespace MInvoke {
 		{
 			DllImports imports = new DllImports ();
 
-			foreach (TypeDefinition t in assembly.MainModule.Types) {
+			foreach (TypeDefinition t in assembly.MainModule.GetAllTypes ()) {
 				if (t.Name == "<Module>")
 					continue;
 
@@ -164,41 +184,50 @@ namespace MInvoke {
 				if (t.Name == "<Module>")
 					continue;
 
-				foreach (MethodDefinition md in t.Methods) {
-					if (md.Body != null) {
-						for (int i = 0; i < md.Body.Instructions.Count; i ++) {
-							Instruction ins = md.Body.Instructions[i];
+				Retarget (t, map, imports);
+			}
+		}
 
-							if (ins.OpCode == OpCodes.Call) {
-								MethodDefinition method_operand = ins.Operand as MethodDefinition;
-								if (method_operand == null)
-									continue;
+		private static void Retarget (TypeDefinition type, DllImportMap map, DllImports imports)
+		{
+			foreach (var nested in type.NestedTypes)
+				Retarget (nested, map, imports);
 
-								PInvokeInfo pinfo = method_operand.PInvokeInfo;
-								if (pinfo == null)
-									continue;
+			foreach (MethodDefinition md in type.Methods) {
+				if (!md.HasBody)
+					continue;
+	
+				for (int i = 0; i < md.Body.Instructions.Count; i ++) {
+					Instruction ins = md.Body.Instructions[i];
 
-								ImportKey key = new ImportKey (pinfo.Module.Name, pinfo.EntryPoint);
-								if (imports.ContainsKey (key)) {
-									//Console.WriteLine ("{0} is a pinvoke, {1}/{2}", method_operand, pinfo.EntryPoint, pinfo.Module.Name);
-									if (map.ContainsKey (key)) {
+					if (ins.OpCode == OpCodes.Call) {
+						MethodDefinition method_operand = ins.Operand as MethodDefinition;
+						if (method_operand == null)
+							continue;
 
-										Console.WriteLine ("retargeting reference to method method {0}/{1}", key.module_name, key.entry_point);
+						PInvokeInfo pinfo = method_operand.PInvokeInfo;
+						if (pinfo == null)
+							continue;
 
-										CilWorker worker = md.Body.CilWorker;
-										MethodDefinition mapped_method = map[key];
-										MethodReference mapped_ref;
+						ImportKey key = new ImportKey (pinfo.Module.Name, pinfo.EntryPoint);
+						if (imports.ContainsKey (key)) {
+							//Console.WriteLine ("{0} is a pinvoke, {1}/{2}", method_operand, pinfo.EntryPoint, pinfo.Module.Name);
+							if (map.ContainsKey (key)) {
 
-										mapped_ref = assembly.MainModule.Import(mapped_method);
+								Console.WriteLine ("retargeting reference to method method {0}/{1}", key.module_name, key.entry_point);
 
-										Instruction callMethod = worker.Create(OpCodes.Call, mapped_ref);
+								var il = md.Body.GetILProcessor ();
+								MethodDefinition mapped_method = map[key];
+								MethodReference mapped_ref;
 
-										worker.Replace (ins, callMethod);
-									}
-									else {
-										Console.WriteLine ("WARNING: no map entry for method {0}/{1}", key.module_name, key.entry_point);
-									}
-								}
+								mapped_ref = type.Module.Import(mapped_method);
+
+								Instruction callMethod = il.Create(OpCodes.Call, mapped_ref);
+
+								il.Replace (ins, callMethod);
+							}
+							else {
+								Console.WriteLine ("WARNING: no map entry for method {0}/{1}", key.module_name, key.entry_point);
 							}
 						}
 					}
@@ -221,7 +250,7 @@ namespace MInvoke {
 
 			Console.WriteLine ("building list of DllImports in input assembly {0}", input_assembly_name);
 
-			var input_assembly = AssemblyFactory.GetAssembly (input_assembly_name);
+			var input_assembly = AssemblyDefinition.ReadAssembly (input_assembly_name);
 
 			DllImports imports = CollectDllImports (input_assembly);
 
@@ -229,7 +258,7 @@ namespace MInvoke {
 
 			Retarget (input_assembly, map, imports);
 
-			AssemblyFactory.SaveAssembly (input_assembly, output_assembly_name);
+			input_assembly.Write (output_assembly_name);
 		}
 	}
 }

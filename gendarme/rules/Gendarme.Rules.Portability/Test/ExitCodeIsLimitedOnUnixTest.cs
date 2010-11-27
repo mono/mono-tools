@@ -193,22 +193,48 @@ namespace Test.Rules.Portability {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			rule = new ExitCodeIsLimitedOnUnixRule ();
 			runner = new TestRunner (rule);
 
 			// generate void Main () assembly
-			voidMainAssembly = AssemblyFactory.DefineAssembly ("GoodAssembly", AssemblyKind.Console);
-			TypeDefinition goodMainClass = new TypeDefinition ("MainClass", "", TypeAttributes.Class | TypeAttributes.Public, voidMainAssembly.MainModule.TypeReferences ["System.Object"]);
-			MethodDefinition goodMain = new MethodDefinition ("Main", MethodAttributes.Static | MethodAttributes.Private, voidMainAssembly.MainModule.TypeReferences ["System.Void"]);
+			voidMainAssembly = CreateAssembly ("GoodAssembly", ModuleKind.Console);
+			TypeDefinition goodMainClass = new TypeDefinition ("", "MainClass", TypeAttributes.Class | TypeAttributes.Public, voidMainAssembly.MainModule.TypeSystem.Object);
+			MethodDefinition goodMain = new MethodDefinition ("Main", MethodAttributes.Static | MethodAttributes.Private, voidMainAssembly.MainModule.TypeSystem.Void);
 			goodMainClass.Methods.Add (goodMain);
 			voidMainAssembly.MainModule.Types.Add (goodMainClass);
 			voidMainAssembly.EntryPoint = goodMain;
 			// inject there EnvExitCodeTester and EnvExitTester (their methods must be in executable in order to be checked)
-			envSetExitCodeTester = voidMainAssembly.MainModule.Inject (assembly.MainModule.Types ["Test.Rules.Portability.EnvSetExitCodeTester"]);
+			envSetExitCodeTester = Inject (assembly.MainModule.GetType ("Test.Rules.Portability.EnvSetExitCodeTester"), voidMainAssembly);
 			Assert.IsNotNull (envSetExitCodeTester);
-			envExitTester = voidMainAssembly.MainModule.Inject (assembly.MainModule.Types ["Test.Rules.Portability.EnvExitTester"]);
+			envExitTester = Inject (assembly.MainModule.GetType ("Test.Rules.Portability.EnvExitTester"), voidMainAssembly);
 			Assert.IsNotNull (envExitTester);
+		}
+
+		static AssemblyDefinition CreateAssembly (string name, ModuleKind kind)
+		{
+			return AssemblyDefinition.CreateAssembly (new AssemblyNameDefinition (name, new Version ()), name, kind);
+		}
+
+		// horrible hack, pretend to inject a fully loaded type in another assembly
+		static TypeDefinition Inject (TypeDefinition type, AssemblyDefinition target)
+		{
+			var module = ModuleDefinition.ReadModule (
+				type.Module.FullyQualifiedName,
+				new ReaderParameters { ReadingMode = ReadingMode.Immediate });
+
+			type = module.GetType (type.FullName);
+
+			foreach (var method in type.Methods) {
+				// load the method body
+				var _ = method.Body;
+			}
+
+			module.Types.Remove (type);
+
+			target.MainModule.Types.Add (type);
+
+			return type;
 		}
 
 		private AssemblyDefinition GetAssemblyAndInject<TInjectedType> ()
@@ -216,8 +242,9 @@ namespace Test.Rules.Portability {
 		{
 			// return executable assembly with predefined entry point - Main () of TInjectedType
 			string fullClassName = typeof (TInjectedType).FullName;
-			AssemblyDefinition ass = AssemblyFactory.DefineAssembly (typeof (TInjectedType).Name + "Assembly", AssemblyKind.Console);
-			TypeDefinition mainClass = ass.MainModule.Inject (assembly.MainModule.Types [fullClassName]);
+			AssemblyDefinition ass = CreateAssembly (typeof (TInjectedType).Name + "Assembly", ModuleKind.Console);
+			TypeDefinition mainClass = Inject (assembly.MainModule.GetType (fullClassName), ass);
+
 			ass.EntryPoint = GetMethod (mainClass, "Main");
 			return ass;
 		}
@@ -289,7 +316,7 @@ namespace Test.Rules.Portability {
 		public void TestEnvSetBadExitCodeFromNonExecutable ()
 		{
 			// get method from this assembly, not generated one
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvSetExitCodeTester"], "SetTooBigExitCode")));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.GetType ("Test.Rules.Portability.EnvSetExitCodeTester"), "SetTooBigExitCode")));
 		}
 
 		[Test]
@@ -340,7 +367,7 @@ namespace Test.Rules.Portability {
 		public void TestEnvExitWithBadExitCodeFromNonExecutable ()
 		{
 			// get method from this assembly, not generated one
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.Types ["Test.Rules.Portability.EnvExitTester"], "ExitWithTooBigExitCode")));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (GetMethod (assembly.MainModule.GetType ("Test.Rules.Portability.EnvExitTester"), "ExitWithTooBigExitCode")));
 		}
 
 		[Test]

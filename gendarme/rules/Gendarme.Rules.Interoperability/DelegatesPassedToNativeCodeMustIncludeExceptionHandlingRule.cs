@@ -276,9 +276,9 @@ namespace Gendarme.Rules.Interoperability {
 
 #if DEBUG
 			foreach (ExceptionHandler e in method.Body.ExceptionHandlers)
-				Log.WriteLine (this, " Type: {7}, TryStart: {4:X}, TryEnd: {5:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, FilterEnd: {3:X}, CatchType: {6}", 
+				Log.WriteLine (this, " HandlerType: {7}, TryStart: {4:X}, TryEnd: {5:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, FilterEnd: {3:X}, CatchType: {6}", 
 				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
-				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.Type);
+				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.HandlerType);
 #endif
 			
 			//
@@ -401,7 +401,7 @@ namespace Gendarme.Rules.Interoperability {
 		private void VerifyCallInstruction (Instruction ins)
 		{
 			MethodDefinition called_method;
-			ParameterDefinitionCollection parameters;
+			IList<ParameterDefinition> parameters;
 
 			called_method = (ins.Operand as MethodReference).Resolve ();
 					
@@ -440,7 +440,7 @@ namespace Gendarme.Rules.Interoperability {
 			bool result;
 			bool valid_ex_handler;
 			MethodBody body;
-			InstructionCollection instructions;
+			IList<Instruction> instructions;
 
 			if (callback == null)
 				return true;
@@ -487,7 +487,7 @@ namespace Gendarme.Rules.Interoperability {
 			if (callback.Body.HasExceptionHandlers) {
 				foreach (ExceptionHandler eh in callback.Body.ExceptionHandlers) {
 					// We only care about catch clauses.
-					if (eh.Type != ExceptionHandlerType.Catch)
+					if (eh.HandlerType != ExceptionHandlerType.Catch)
 						continue;
 					
 					// no 'Catch ... When <condition>' clause. C# doesn't support it, VB does
@@ -519,9 +519,9 @@ namespace Gendarme.Rules.Interoperability {
 				// Console.ResetColor ();
 			}
 			foreach (ExceptionHandler e in body.ExceptionHandlers)
-				Log.WriteLine (this, " Type: {7}, TryStart: {4}, TryEnd: {5}, HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, CatchType: {6}", 
+				Log.WriteLine (this, " HandlerType: {7}, TryStart: {4}, TryEnd: {5}, HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, CatchType: {6}", 
 				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
-				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.Type);
+				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.HandlerType);
 #endif
 			
 			verified_methods.Add (callback, valid_ex_handler);

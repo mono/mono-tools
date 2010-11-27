@@ -51,8 +51,8 @@ namespace Test.Rules.Naming {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Naming.DoNotPrefixValuesWithEnumNameTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Naming.DoNotPrefixValuesWithEnumNameTest");
 			rule = new DoNotPrefixValuesWithEnumNameRule ();
 			runner = new TestRunner (rule);
 		}

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using SR = System.Reflection;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
@@ -45,7 +46,7 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			type_def = AssemblyFactory.GetAssembly (unit).MainModule.Types ["Test.Framework.Rocks.InstructionRocksTest"];
+			type_def = AssemblyDefinition.ReadAssembly (unit).MainModule.GetType ("Test.Framework.Rocks.InstructionRocksTest");
 			body = type_def.GetMethod ("Fields").Body;
 		}
 
@@ -130,6 +131,13 @@ namespace Test.Framework.Rocks {
 			}
 		}
 
+		static OpCode GetOpCode (Code code)
+		{
+			return (OpCode) typeof (OpCodes).GetField (
+				code.ToString (),
+				SR.BindingFlags.Public | SR.BindingFlags.Static).GetValue (null);
+		}
+
 		[Test]
 		public void IsLoadArgument ()
 		{
@@ -137,9 +145,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsLoadArgument (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Ldarg_0:
 				case Code.Ldarg_1:
@@ -165,9 +173,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsLoadElement (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Ldelem_Any:
 				case Code.Ldelem_I:
@@ -198,9 +206,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsLoadIndirect (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Ldind_I:
 				case Code.Ldind_I1:
@@ -229,9 +237,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsLoadLocal (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Ldloc_0:
 				case Code.Ldloc_1:
@@ -257,9 +265,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsStoreArgument (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Starg:
 				case Code.Starg_S:
@@ -279,9 +287,9 @@ namespace Test.Framework.Rocks {
 			// that's a funny thing we can do with extention methods and null
 			Assert.IsFalse (ins.IsStoreLocal (), "null");
 			// work around Cecil validations
-			ins = body.CilWorker.Emit (OpCodes.Nop);
+			ins = Instruction.Create (OpCodes.Nop);
 			foreach (Code code in Enum.GetValues (typeof (Code))) {
-				ins.OpCode = OpCodes.GetOpCode (code);
+				ins.OpCode = GetOpCode (code);
 				switch (code) {
 				case Code.Stloc_0:
 				case Code.Stloc_1:

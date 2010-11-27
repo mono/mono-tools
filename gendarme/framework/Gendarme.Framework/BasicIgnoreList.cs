@@ -128,7 +128,11 @@ namespace Gendarme.Framework {
 			case TokenType.Property:
 				return IsIgnored (list, metadata as PropertyDefinition);
 			case TokenType.Param:
-				return IsIgnored (list, metadata as ParameterDefinition);
+				ParameterDefinition parameter = metadata as ParameterDefinition;
+				if (parameter == null) // return type
+					return IsIgnoredUsingCasts (list, metadata);
+
+				return IsIgnored (list, parameter);
 			default:
 				return IsIgnoredUsingCasts (list, metadata);
 			}
@@ -136,7 +140,6 @@ namespace Gendarme.Framework {
 
 		static bool IsIgnoredUsingCasts (ICollection<IMetadataTokenProvider> list, IMetadataTokenProvider metadata)
 		{
-			// MethodReturnType is first because it's always returning MetadataToken.Zero
 			MethodReturnType mrt = (metadata as MethodReturnType);
 			if (mrt != null)
 				return IsIgnored (list, mrt);

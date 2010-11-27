@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			string candidate_name = String.Concat (type.Namespace, ".", name.Substring (1));
-			TypeDefinition candidate = type.Module.Types [candidate_name];
+			TypeDefinition candidate = type.Module.GetType (candidate_name);
 			if (candidate != null) {
 				// does Foo implement IFoo ?
 				if (!candidate.Implements (type.FullName)) {

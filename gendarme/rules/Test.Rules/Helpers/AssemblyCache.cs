@@ -50,13 +50,15 @@ namespace Test.Rules.Helpers {
 		/// </summary>
 		public static AssemblyDefinition GetDefinition (Assembly asm)
 		{
-			if (cachedAssemblies.ContainsKey (asm))
-				return cachedAssemblies [asm];
-			
-			AssemblyDefinition def = AssemblyFactory.GetAssembly (asm.Location);
-			def.Resolver = AssemblyResolver.Resolver;
+			AssemblyDefinition def;
+			if (cachedAssemblies.TryGetValue (asm, out def))
+				return def;
+
+			def = AssemblyDefinition.ReadAssembly (
+				asm.Location,
+				new ReaderParameters { AssemblyResolver = AssemblyResolver.Resolver });
 			def.MainModule.LoadDebuggingSymbols ();
-			cachedAssemblies [asm] = def;
+			cachedAssemblies.Add (asm, def);
 			return def;
 		}
 	}

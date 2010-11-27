@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -120,8 +122,8 @@ namespace Gendarme.Rules.Security {
 			// if the module does not reference System.Math then 
 			// none of its method is being called with constants
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == Constants.Corlib) ||
-					e.CurrentModule.TypeReferences.ContainsType ("System.Net.ICertificatePolicy");
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
+					e.CurrentModule.HasTypeReference ("System.Net.ICertificatePolicy");
 			};
 		}
 
@@ -136,7 +138,7 @@ namespace Gendarme.Rules.Security {
 						if (pd == null)
 							continue;
 
-						switch (pd.Sequence) {
+						switch (pd.GetSequence ()) {
 						case 2:
 						case 4:
 							return RuleResult.Success;
@@ -183,8 +185,8 @@ namespace Gendarme.Rules.Security {
 			if (method.IsAbstract || !method.HasParameters)
 				return RuleResult.DoesNotApply;
 
-			ParameterDefinitionCollection pdc = method.Parameters;
-			if ((pdc.Count != 4) || (method.ReturnType.ReturnType.FullName != "System.Boolean"))
+			IList<ParameterDefinition> pdc = method.Parameters;
+			if ((pdc.Count != 4) || (method.ReturnType.FullName != "System.Boolean"))
 				return RuleResult.DoesNotApply;
 
 			// this method could be a candidate for both policy or callback

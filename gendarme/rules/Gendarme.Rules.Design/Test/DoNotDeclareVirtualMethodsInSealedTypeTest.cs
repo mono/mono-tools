@@ -51,12 +51,22 @@ namespace Test.Rules.Design {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 
-			sealed_class_with_virtual_method = assembly.MainModule.Types [typeof (SealedClassWithoutVirtualMethods).FullName].Clone ();
-			sealed_class_with_virtual_method.Module = assembly.MainModule;
-			MethodDefinition get_int = sealed_class_with_virtual_method.Methods [0];
-			get_int.IsVirtual = true;
+			sealed_class_with_virtual_method = new TypeDefinition (
+				"Test.Rules.Design",
+				"SealedClassWithVirtualMethods",
+				TypeAttributes.Sealed | TypeAttributes.Public,
+				assembly.MainModule.TypeSystem.Object);
+
+			assembly.MainModule.Types.Add (sealed_class_with_virtual_method);
+
+			var virtual_method = new MethodDefinition (
+				"VirtualGetInt",
+				MethodAttributes.Virtual | MethodAttributes.Public,
+				assembly.MainModule.TypeSystem.Int32);
+
+			sealed_class_with_virtual_method.Methods.Add (virtual_method);
 		}
 
 		[Test]

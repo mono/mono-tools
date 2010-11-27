@@ -6,6 +6,7 @@ RULEDIRS= Gendarme.Rules.BadPractice \
 	 Gendarme.Rules.Design.Linq \
 	 Gendarme.Rules.Exceptions \
 	 Gendarme.Rules.Interoperability \
+	 Gendarme.Rules.Interoperability.Com \
 	 Gendarme.Rules.Maintainability \
 	 Gendarme.Rules.Naming \
 	 Gendarme.Rules.Performance \

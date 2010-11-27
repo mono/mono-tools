@@ -45,10 +45,10 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			AssemblyDefinition assembly = AssemblyFactory.GetAssembly (unit);
+			AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (unit);
 			assembly.MainModule.LoadDebuggingSymbols ();
 			
-			type_def = assembly.MainModule.Types ["Test.Framework.Rocks.VariableDefinitionRocksTest"];
+			type_def = assembly.MainModule.GetType ("Test.Framework.Rocks.VariableDefinitionRocksTest");
 		}
 		
 		public string path;

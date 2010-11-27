@@ -31,6 +31,7 @@ using System;
 using System.IO;
 using System.Resources;
 using System.Collections;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -111,7 +112,7 @@ namespace Gendarme.Rules.Correctness {
 		private static EmbeddedResource GetEmbeddedResource (AssemblyDefinition ad,
 			string resourceClassName)
 		{
-			ResourceCollection resources = ad.MainModule.Resources;
+			IList<Resource> resources = ad.MainModule.Resources;
 			foreach (EmbeddedResource resource in resources)
 				if (resourceClassName.Equals (resource.Name))
 					return resource;
@@ -134,7 +135,7 @@ namespace Gendarme.Rules.Correctness {
 			if (resource == null)
 				return null;
 
-			using (MemoryStream ms = new MemoryStream (resource.Data))
+			using (MemoryStream ms = new MemoryStream (resource.GetResourceData ()))
 			using (ResourceSet resourceSet = new ResourceSet (ms)) {
 				return resourceSet.GetString (resourceName);
 			}
@@ -230,7 +231,7 @@ namespace Gendarme.Rules.Correctness {
 		{
 			MethodReference mr = (call.Operand as MethodReference);
 
-			ParameterDefinitionCollection pdc = mr.Parameters;
+			IList<ParameterDefinition> pdc = mr.Parameters;
 			int formatPosition = 0;
 			int nbParameters = pdc.Count;
 			int elementsPushed = nbParameters - 1;

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Linq;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -81,7 +82,7 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// get the static constructor
-			MethodDefinition cctor = type.Constructors.GetConstructor (true, Type.EmptyTypes);
+			MethodDefinition cctor = type.Methods.FirstOrDefault (m => m.IsConstructor && m.IsStatic);
 			if (cctor == null)
 				return RuleResult.DoesNotApply;
 
@@ -112,7 +113,7 @@ namespace Gendarme.Rules.Performance {
 				// and report constant stuff
 				if (Constant.Get (previous.OpCode.Code)) {
 					// adjust severity based on the field visibility and it's type
-					Severity s = (field.FieldType.FullName == Constants.String || !field.IsVisible ()) ?
+					Severity s = (field.FieldType.FullName == "System.String" || !field.IsVisible ()) ?
 						Severity.High : Severity.Medium;
 					Runner.Report (field, s, Confidence.Normal);
 				}

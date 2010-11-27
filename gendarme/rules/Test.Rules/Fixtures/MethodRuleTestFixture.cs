@@ -50,7 +50,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleDoesNotApply<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
 				base.AssertRuleDoesNotApply (method);
 		}
 		
@@ -87,7 +87,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleSuccess<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
 				base.AssertRuleSuccess (method);
 		}
 		
@@ -124,7 +124,7 @@ namespace Test.Rules.Fixtures {
 		/// <typeparam name="T">Type containing the methods.</typeparam>
 		protected void AssertRuleFailure<T> ()
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
 				base.AssertRuleFailure (method);
 		}
 		
@@ -135,7 +135,7 @@ namespace Test.Rules.Fixtures {
 		/// <param name="expectedCount">Expected defect count for each method.</param>
 		protected void AssertRuleFailure<T> (int expectedCount)
 		{
-			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().AllMethods ())
+			foreach (MethodDefinition method in DefinitionLoader.GetTypeDefinition<T> ().Methods)
 				base.AssertRuleFailure (method, expectedCount);
 		}
 		

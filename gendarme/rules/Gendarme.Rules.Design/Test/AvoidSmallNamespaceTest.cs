@@ -43,8 +43,8 @@ namespace Test.Rules.Design {
 
 		private MethodDefinition Add (string namespaceName, string typeName, string methodName)
 		{
-			TypeDefinition type = new TypeDefinition (typeName, namespaceName, TypeAttributes.Class | TypeAttributes.Public, assembly.MainModule.TypeReferences ["System.Object"]);
-			MethodDefinition method = new MethodDefinition (methodName, MethodAttributes.Static | MethodAttributes.Private, assembly.MainModule.TypeReferences ["System.Void"]);
+			TypeDefinition type = new TypeDefinition (namespaceName, typeName, TypeAttributes.Class | TypeAttributes.Public, assembly.MainModule.TypeSystem.Object);
+			MethodDefinition method = new MethodDefinition (methodName, MethodAttributes.Static | MethodAttributes.Private, assembly.MainModule.TypeSystem.Void);
 			type.Methods.Add (method);
 			assembly.MainModule.Types.Add (type);
 			return method;
@@ -53,7 +53,10 @@ namespace Test.Rules.Design {
 		[TestFixtureSetUp]
 		public void FixtureSetUp ()
 		{
-			assembly = AssemblyFactory.DefineAssembly ("Assembly", AssemblyKind.Console);
+			assembly = AssemblyDefinition.CreateAssembly (
+				new AssemblyNameDefinition ("Assembly", new Version (1, 0)),
+				"Module",
+				ModuleKind.Console);
 		}
 
 		[SetUp]

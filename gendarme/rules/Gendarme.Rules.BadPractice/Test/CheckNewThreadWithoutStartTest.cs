@@ -65,8 +65,8 @@ namespace Test.Rules.BadPractice {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.BadPractice.CheckNewThreadWithoutStartTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.BadPractice.CheckNewThreadWithoutStartTest");
 			rule = new CheckNewThreadWithoutStartRule ();
 			runner = new TestRunner (rule);
 		}

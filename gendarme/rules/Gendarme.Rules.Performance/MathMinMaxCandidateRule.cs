@@ -84,7 +84,7 @@ namespace Gendarme.Rules.Performance {
 		private static bool IsSupported (TypeReference type)
 		{
 			// GetOriginalType will remove the '&' for references
-			switch (type.GetOriginalType ().FullName) {
+			switch (type.GetElementType ().FullName) {
 			case "System.Byte":
 			case "System.Double":
 			case "System.Int16":

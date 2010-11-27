@@ -14,7 +14,10 @@
 using System;
 using System.Collections;
 using System.IO;
+
 using Mono.Cecil;
+
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
 
@@ -34,7 +37,7 @@ public class NonNullAttributeCollector {
     public void AddAssembly([NonNull] AssemblyDefinition assembly)
     {
         foreach(ModuleDefinition module in assembly.Modules) {
-            foreach(TypeDefinition type in module.Types) {
+            foreach(TypeDefinition type in module.GetAllTypes ()) {
                 foreach(MethodDefinition method in type.Methods) {
                     if(DefHasNonNullAttribute(method)) {
                         nonNullMethods.Add(method.ToString(), method);
@@ -42,7 +45,7 @@ public class NonNullAttributeCollector {
                     foreach(ParameterDefinition param in method.Parameters) {
                         if(DefHasNonNullAttribute(param)) {
                             nonNullParams.Add(method.ToString() + "/"
-                                    + param.Sequence, param);
+                                    + param.GetSequence (), param);
                         }
                     }
                 }
@@ -80,7 +83,7 @@ public class NonNullAttributeCollector {
     public bool HasNonNullAttribute([NonNull] IMethodSignature msig,
             [NonNull] ParameterDefinition param)
     {
-        if(nonNullParams.Contains(msig.ToString() + "/" + param.Sequence))
+        if(nonNullParams.Contains(msig.ToString() + "/" + param.GetSequence ()))
             return true;
         return false;
     }

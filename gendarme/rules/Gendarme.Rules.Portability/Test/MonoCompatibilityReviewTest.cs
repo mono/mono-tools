@@ -92,8 +92,8 @@ namespace Test.Rules.Portability {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Portability.MonoCompatibilityReviewTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Portability.MonoCompatibilityReviewTest");
 			rule = new MonoCompatibilityReviewRule ();
 			runner = new TestRunner (rule);
 		}

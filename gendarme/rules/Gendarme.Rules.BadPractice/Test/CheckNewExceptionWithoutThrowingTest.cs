@@ -64,8 +64,8 @@ namespace Test.Rules.BadPractice {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.BadPractice.CheckNewExceptionWithoutThrowingTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.BadPractice.CheckNewExceptionWithoutThrowingTest");
 			rule = new CheckNewExceptionWithoutThrowingRule ();
 			runner = new TestRunner (rule);
 		}

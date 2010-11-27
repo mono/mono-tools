@@ -34,6 +34,7 @@ using Gendarme.Framework.Rocks;
 using Mono.Cecil;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Gendarme.Rules.Concurrency {
 	
@@ -54,10 +55,12 @@ namespace Gendarme.Rules.Concurrency {
 		public static ThreadModel ThreadingModel (this TypeReference type)
 		{
 			while (type != null) {
-				ThreadModel? model = TryGetThreadingModel (type);
-				if (model != null)
-					return model.Value;
-					
+				if (type.IsDefinition) {
+					ThreadModel? model = TryGetThreadingModel ((TypeDefinition) type);
+					if (model != null)
+						return model.Value;
+				}
+
 				// If the type is not decorated then we'll assume that the type is main 
 				// thread unless it's a System/Mono type.
 				if (ThreadedNamespace (type.Namespace))
@@ -69,7 +72,8 @@ namespace Gendarme.Rules.Concurrency {
 			return ThreadModel.MainThread;
 		}
 		
-		static ThreadModel? Lookup (IMemberReference method, CollectionBase collection)
+		static ThreadModel? Lookup<TDefinition> (MemberReference method, IEnumerable<TDefinition> collection)
+			where TDefinition : IMemberDefinition
 		{
 			string name = method.Name;
 			// Need the offset for explicit interface implementations.
@@ -142,14 +146,12 @@ namespace Gendarme.Rules.Concurrency {
 				return null;
 
 			foreach (CustomAttribute attr in provider.CustomAttributes) {
-				if (attr.Constructor.DeclaringType.Name != "ThreadModelAttribute")
+				if (attr.AttributeType.Name != "ThreadModelAttribute")
 					continue;
 
-				if (attr.Resolve ()) {
-					IList cp = attr.ConstructorParameters;
-					if ((cp.Count == 1) && (cp [0] is int))
-						return (ThreadModel) (int) cp [0];
-				}
+				IList<CustomAttributeArgument> cp = attr.ConstructorArguments;
+				if ((cp.Count == 1) && (cp [0].Value is int))
+					return (ThreadModel) (int) cp [0].Value;
 						
 				throw new ArgumentException ("There should be a single ThreadModelAttribute ctor taking an (Int32) ThreadModel enum argument.");
 			}

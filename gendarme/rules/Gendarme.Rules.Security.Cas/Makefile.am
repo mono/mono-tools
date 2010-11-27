@@ -8,7 +8,8 @@ rules_sources =  \
 	ReviewNonVirtualMethodWithInheritanceDemandRule.cs \
 	ReviewSealedTypeWithInheritanceDemandRule.cs \
 	ReviewSuppressUnmanagedCodeSecurityUsageRule.cs \
-	SecureGetObjectDataOverridesRule.cs
+	SecureGetObjectDataOverridesRule.cs \
+	SecurityDeclarationRocks.cs
 
 tests_sources = \
 	AddMissingTypeInheritanceDemandTest.cs \

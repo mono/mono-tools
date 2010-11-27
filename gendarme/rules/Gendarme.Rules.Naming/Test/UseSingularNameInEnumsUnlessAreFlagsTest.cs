@@ -74,7 +74,7 @@ namespace Test.Rules.Naming {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			rule = new UseSingularNameInEnumsUnlessAreFlagsRule ();
 			runner = new TestRunner (rule);
 		}
@@ -82,7 +82,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestEnumHasSingularName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.DayOfWeek"];
+			type = assembly.MainModule.GetType ("Test.Rules.Naming.DayOfWeek");
 			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "RuleResult");
 			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
@@ -90,7 +90,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestEnumHasPluralName () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.DateTimeKinds"];
+			type = assembly.MainModule.GetType ("Test.Rules.Naming.DateTimeKinds");
 			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "RuleResult");
 			Assert.AreEqual (1, runner.Defects.Count, "Count");
 		}
@@ -98,7 +98,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestFlagsAllowedToHavePluralNames () 
 		{
-			type = assembly.MainModule.Types ["Test.Rules.Naming.StringSplitOptions"];
+			type = assembly.MainModule.GetType ("Test.Rules.Naming.StringSplitOptions");
 			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "RuleResult");
 			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}

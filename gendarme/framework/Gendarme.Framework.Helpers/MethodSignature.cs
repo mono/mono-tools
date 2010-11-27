@@ -121,12 +121,12 @@ namespace Gendarme.Framework.Helpers {
 			if (Name != null && method.Name != Name)
 				return false;
 
-			if (ReturnType != null && method.ReturnType.ReturnType.FullName != ReturnType)
+			if (ReturnType != null && method.ReturnType.FullName != ReturnType)
 				return false;
 
 			if (Parameters != null) {
 				if (method.HasParameters) {
-					ParameterDefinitionCollection pdc = method.Parameters;
+					IList<ParameterDefinition> pdc = method.Parameters;
 					if (Parameters.Count != pdc.Count)
 						return false;
 					for (int i = 0; i < Parameters.Count; i++) {

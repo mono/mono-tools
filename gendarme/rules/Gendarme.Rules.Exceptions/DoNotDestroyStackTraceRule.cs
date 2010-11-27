@@ -90,7 +90,7 @@ namespace Gendarme.Rules.Exceptions {
 			ExecutionPathFactory epf = new ExecutionPathFactory ();
 
 			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
-				if (eh.Type != ExceptionHandlerType.Catch)
+				if (eh.HandlerType != ExceptionHandlerType.Catch)
 					continue;
 
 				foreach (ExecutionPathCollection catchPath in epf.CreatePaths (eh.HandlerStart, eh.HandlerEnd)) {

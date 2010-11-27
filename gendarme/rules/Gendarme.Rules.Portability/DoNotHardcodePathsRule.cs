@@ -410,7 +410,7 @@ namespace Gendarme.Rules.Portability {
 			if ((method == null) || !method.HasParameters)
 				return;
 
-			ParameterDefinitionCollection pdc = method.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
 			int parameterIndex = pdc.Count - parameterOffset - 1;
 
 			// to prevent some uncommon situations

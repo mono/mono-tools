@@ -277,7 +277,7 @@ namespace Gendarme.Rules.Portability {
 				using (MoMASubmit ws = new MoMASubmit ()) {
 					string lastest_def = ws.GetLatestDefinitionsVersion ();
 					int s = lastest_def.LastIndexOf ('/') + 1;
-					int e = lastest_def.LastIndexOf ('-');
+					int e = lastest_def.IndexOf ('-', s);
 					v = new Version (lastest_def.Substring (s, e - s));
 					definitionsUri = lastest_def.Split ('|') [2];
 				}

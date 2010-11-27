@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 using Mono.Cecil;
@@ -49,7 +50,7 @@ namespace Test.Rules.BadPractice {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		[Test]
@@ -71,7 +72,7 @@ namespace Test.Rules.BadPractice {
 		[Test]
 		public void EmptyCustomAttributes ()
 		{
-			CustomAttributeCollection cac = new CustomAttributeCollection (assembly);
+			IList<CustomAttribute> cac = new List<CustomAttribute> ();
 			foreach (CustomAttribute ca in assembly.CustomAttributes)
 				cac.Add (ca);
 
@@ -90,7 +91,7 @@ namespace Test.Rules.BadPractice {
 		{
 			CustomAttribute afv = null;
 			foreach (CustomAttribute ca in assembly.CustomAttributes) {
-				if (ca.Constructor.DeclaringType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
+				if (ca.AttributeType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
 					continue;
 				afv = ca;
 				break;
@@ -115,14 +116,14 @@ namespace Test.Rules.BadPractice {
 				afv = ca;
 				break;
 			}
-			string value = afv.ConstructorParameters [0] as string;
-			afv.ConstructorParameters [0] = String.Empty;
+			CustomAttributeArgument value = afv.ConstructorArguments [0];
+			afv.ConstructorArguments [0] = new CustomAttributeArgument ();
 
 			try {
 				AssertRuleDoesNotApply (assembly);
 			}
 			finally {
-				afv.ConstructorParameters [0] = value;
+				afv.ConstructorArguments [0] = value;
 			}
 		}
 

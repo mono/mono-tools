@@ -44,8 +44,8 @@ namespace Test.Framework.Rocks {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Framework.Rocks.ParameterRocksTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Framework.Rocks.ParameterRocksTest");
 		}
 
 		public void UseParams (int a, params int [] args)

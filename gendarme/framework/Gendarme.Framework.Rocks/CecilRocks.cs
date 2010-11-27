@@ -126,9 +126,9 @@ namespace Gendarme.Framework.Rocks {
 			return type.Module.Assembly;
 		}
 
-		static AssemblyDefinition GetAssembly (IMemberReference method)
+		static AssemblyDefinition GetAssembly (MemberReference method)
 		{
-			return method.DeclaringType.Module.Assembly;
+			return method.Module.Assembly;
 		}
 
 		/// <summary>

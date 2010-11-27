@@ -97,7 +97,7 @@ namespace Test.Rules.Helpers {
 			int ambiguous = 0;
 			MethodDefinition result = null;
 
-			foreach (MethodDefinition method in type.AllMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
 				if (method.Name != methodName)
 					continue;
 
@@ -193,7 +193,7 @@ namespace Test.Rules.Helpers {
 		public static TypeDefinition GetTypeDefinition (Type type)
 		{
 			return GetAssemblyDefinition (type)
-			         .MainModule.Types [GetCecilTypeName (type)];
+			         .MainModule.GetType (GetCecilTypeName (type));
 		}				
 		
 		/// <summary>
@@ -205,7 +205,7 @@ namespace Test.Rules.Helpers {
 		public static TypeDefinition GetTypeDefinition (Assembly assembly, string typeName)
 		{
 			return AssemblyCache.GetDefinition (assembly)
-			         .MainModule.Types [GetCecilNestedTypeName (typeName)];
+			         .MainModule.GetType (GetCecilNestedTypeName (typeName));
 			// well, we don't really need to check if type is nested in this case
 		}	
 	}

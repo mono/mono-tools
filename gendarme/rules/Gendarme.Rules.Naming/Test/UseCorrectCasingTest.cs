@@ -60,7 +60,7 @@ namespace Test.Rules.Naming {
 			// 4. Test.Rules.ROCKS
 			// 5. Test.aSP
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			AssertRuleFailure (AssemblyFactory.GetAssembly (unit), 5);
+			AssertRuleFailure (AssemblyDefinition.ReadAssembly (unit), 5);
 		}
 	}
 
@@ -230,17 +230,17 @@ namespace Test.Rules.Naming {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 		}
 
 		[Test]
 		public void TestAnonymousMethod ()
 		{
 			// compiler generated code is compiler dependant, check for [g]mcs (inner type)
-			TypeDefinition type = assembly.MainModule.Types ["Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod/<>c__CompilerGenerated0"];
+			TypeDefinition type = assembly.MainModule.GetType ("Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod/<>c__CompilerGenerated0");
 			// otherwise try for csc (inside same class)
 			if (type == null)
-				type = assembly.MainModule.Types  ["Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod"];
+				type = assembly.MainModule.GetType ("Test.Rules.Naming.UseCorrectCasingTest/AnonymousMethod");
 
 			Assert.IsNotNull (type, "type not found");
 			foreach (MethodDefinition method in type.Methods) {

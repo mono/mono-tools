@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -97,12 +98,12 @@ namespace Gendarme.Rules.Serialization {
 					// the [OptionalField] and deserialization attributes are only available 
 					// since fx 2.0 so there's no point to execute it on every methods if the 
 					// assembly target runtime is earlier than 2.0
-					e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0 &&
+					e.CurrentModule.Runtime >= TargetRuntime.Net_2_0 &&
 					
 					// if the module does not have a reference to System.Runtime.Serialization.OptionalFieldAttribute
 					// then nothing will be reported by this rule
-					(e.CurrentAssembly.Name.Name == Constants.Corlib ||
-					e.CurrentModule.TypeReferences.ContainsType (OptionalFieldAttribute));
+					(e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.HasTypeReference (OptionalFieldAttribute));
 			};
 		}
 
@@ -116,14 +117,13 @@ namespace Gendarme.Rules.Serialization {
 			bool deserialized_candidate = false;
 			bool deserializing_candidate = false;
 			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.Methods) {
+				foreach (MethodDefinition method in type.GetMethods ()) {
 					if (!method.HasCustomAttributes)
 						continue;
 
-					CustomAttributeCollection cac = method.CustomAttributes;
-					if (cac.ContainsType (OnDeserializedAttribute))
+					if (method.HasAttribute (OnDeserializedAttribute))
 						deserialized_candidate = true;
-					if (cac.ContainsType (OnDeserializingAttribute))
+					if (method.HasAttribute (OnDeserializingAttribute))
 						deserializing_candidate = true;
 
 					if (deserialized_candidate && deserializing_candidate)

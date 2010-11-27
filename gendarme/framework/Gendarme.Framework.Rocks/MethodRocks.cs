@@ -31,6 +31,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 
@@ -59,7 +60,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the method is defined as the entry point of it's assembly, False otherwise</returns>
 		public static bool IsEntryPoint (this MethodReference self)
 		{
-			return ((self != null) && (self == self.DeclaringType.Module.Assembly.EntryPoint));
+			return ((self != null) && (self == self.Module.Assembly.EntryPoint));
 		}
 
 		/// <summary>
@@ -73,7 +74,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			return (self.HasThis && !self.HasParameters && (self.Name == "Finalize") &&
-				(self.ReturnType.ReturnType.FullName == "System.Void"));
+				(self.ReturnType.FullName == "System.Void"));
 		}
 
 		/// <summary>
@@ -119,7 +120,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			// Main must return void or int
-			switch (method.ReturnType.ReturnType.Name) {
+			switch (method.ReturnType.Name) {
 			case "Void":
 			case "Int32":
 				// ok, continue checks
@@ -132,7 +133,7 @@ namespace Gendarme.Framework.Rocks {
 			if (!method.HasParameters)
 				return true;
 
-			ParameterDefinitionCollection pdc = method.Parameters;
+			IList<ParameterDefinition> pdc = method.Parameters;
 			if (pdc.Count != 1)
 				return false;
 
@@ -158,16 +159,16 @@ namespace Gendarme.Framework.Rocks {
 			TypeDefinition parent = declaring.BaseType != null ? declaring.BaseType.Resolve () : null;
 			while (parent != null) {
 				string name = method.Name;
-				string retval = method.ReturnType.ReturnType.FullName;
+				string retval = method.ReturnType.FullName;
 				int pcount = method.HasParameters ? method.Parameters.Count : 0;
 				foreach (MethodDefinition md in parent.Methods) {
 					if (name != md.Name)
 						continue;
-					if (retval != md.ReturnType.ReturnType.FullName)
+					if (retval != md.ReturnType.FullName)
 						continue;
 					if (md.HasParameters && (pcount == 0))
 						continue;
-					ParameterDefinitionCollection ppdc = md.Parameters;
+					IList<ParameterDefinition> ppdc = md.Parameters;
 					if (pcount != ppdc.Count)
 						continue;
 
@@ -236,7 +237,7 @@ namespace Gendarme.Framework.Rocks {
 			if ((method == null) || !method.HasParameters)
 				return false;
 
-			ParameterDefinitionCollection parameters = method.Parameters;
+			IList<ParameterDefinition> parameters = method.Parameters;
 			if (parameters.Count != 2)
 				return false;
 
@@ -246,7 +247,7 @@ namespace Gendarme.Framework.Rocks {
 				return type.Inherits ("System.EventArgs");
 
 			if (gp.HasConstraints) {
-				ConstraintCollection cc = gp.Constraints;
+				IList<TypeReference> cc = gp.Constraints;
 				return ((cc.Count == 1) && (cc [0].FullName == "System.EventArgs"));
 			}
 

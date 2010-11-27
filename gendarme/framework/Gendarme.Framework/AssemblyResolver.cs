@@ -61,7 +61,6 @@ namespace Gendarme.Framework {
 			if (!assemblies.TryGetValue (aname, out asm)) {
 				try {
 					asm = base.Resolve (name);
-					asm.Resolver = this;
 				}
 				catch (FileNotFoundException) {
 					// note: analysis will be incomplete
@@ -76,9 +75,8 @@ namespace Gendarme.Framework {
 			if (assembly == null)
 				throw new ArgumentNullException ("assembly");
 
-			assembly.Resolver = this;
 			assemblies.Add (assembly.Name.Name, assembly);
-			string location = Path.GetDirectoryName (assembly.MainModule.Image.FileInformation.FullName);
+			string location = Path.GetDirectoryName (assembly.MainModule.FullyQualifiedName);
 			AddSearchDirectory (location);
 		}
 

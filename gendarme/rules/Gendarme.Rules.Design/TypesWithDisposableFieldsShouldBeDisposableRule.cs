@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Design {
 				// we can't dispose static fields in IDisposable
 				if (field.IsStatic)
 					continue;
-				TypeDefinition fieldType = field.FieldType.GetOriginalType ().Resolve ();
+				TypeDefinition fieldType = field.FieldType.GetElementType ().Resolve ();
 				if (fieldType == null)
 					continue;
 				// enums and primitives don't implement IDisposable

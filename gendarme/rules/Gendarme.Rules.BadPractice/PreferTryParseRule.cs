@@ -137,7 +137,7 @@ namespace Gendarme.Rules.BadPractice {
 			int offset = ins.Offset;
 			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
 				// is the call between a "try/catch" or "try/finally"
-				if ((offset >= eh.TryStart.Offset) && (offset <= eh.TryEnd.Offset))
+				if ((offset >= eh.TryStart.Offset) && (offset < eh.TryEnd.Offset))
 					return true;
 			}
 			return false;
@@ -163,7 +163,7 @@ namespace Gendarme.Rules.BadPractice {
 
 				if (!HasTryParseMethod (mr.DeclaringType.Resolve ()))
 					continue;
-
+				
 				// if inside a try (catch/finally) block then...
 				bool inside_try_block = InsideTryBlock (method, ins);
 				// we lower severity (i.e. other cases are more urgent to fix)

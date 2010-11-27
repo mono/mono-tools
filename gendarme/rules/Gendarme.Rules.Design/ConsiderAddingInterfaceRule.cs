@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Mono.Cecil;
 
@@ -113,7 +115,7 @@ namespace Gendarme.Rules.Design {
 		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
 		{
 			foreach (ModuleDefinition module in assembly.Modules) {
-				foreach (TypeDefinition type in module.Types) {
+				foreach (TypeDefinition type in module.GetAllTypes ()) {
 					if (DoesTypeStealthilyImplementInterface (type, iface)) {
 						string msg = string.Format ("Type implements '{0}' interface but does not declare it.", iface);
 						// use our own Defect since the *real* target (of analysis) is 'type' not 'iface'
@@ -132,7 +134,7 @@ namespace Gendarme.Rules.Design {
 			//if type has less methods than the interface no need to check further
 			if (!type.HasMethods)
 				return false;
-			MethodDefinitionCollection mdc = iface.Methods;
+			IList<MethodDefinition> mdc = iface.GetMethods ().ToList ();
 			if (type.Methods.Count < mdc.Count)
 				return false;
 
@@ -148,7 +150,7 @@ namespace Gendarme.Rules.Design {
 					return false;
 
 				//ok interesting candidate! let's check if it matches the signature
-				if (!AreSameOriginalTypes (m.ReturnType.ReturnType, candidate.ReturnType.ReturnType))
+				if (!AreSameElementTypes (m.ReturnType, candidate.ReturnType))
 					return false;
 
 				if (!CompareParameters (m, candidate))
@@ -167,21 +169,21 @@ namespace Gendarme.Rules.Design {
 			if (!h1 && !h2)
 				return true;
 
-			ParameterDefinitionCollection pdc1 = m1.Parameters;
-			ParameterDefinitionCollection pdc2 = m2.Parameters;
+			IList<ParameterDefinition> pdc1 = m1.Parameters;
+			IList<ParameterDefinition> pdc2 = m2.Parameters;
 			if (pdc1.Count != pdc2.Count)
 				return false;
 
 			for (int i = 0; i < pdc1.Count; ++i) {
-				if (!AreSameOriginalTypes (pdc1 [i].ParameterType, pdc2 [i].ParameterType))
+				if (!AreSameElementTypes (pdc1 [i].ParameterType, pdc2 [i].ParameterType))
 					return false;
 			}
 			return true;
 		}
 
-		private static bool AreSameOriginalTypes (TypeReference a, TypeReference b)
+		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
 		{
-			return a.GetOriginalType ().FullName == b.GetOriginalType ().FullName;
+			return a.GetElementType ().FullName == b.GetElementType ().FullName;
 		}
 	}
 }

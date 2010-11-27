@@ -77,8 +77,8 @@ namespace Gendarme.Rules.Design.Linq {
 			// extension methods are only available in FX3.5
 			// check runtime >= NET2_0 (fast) then check if [ExtensionAttribute] is referenced
 			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => {
-				Active = e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0 &&
-					e.CurrentModule.TypeReferences.ContainsType ("System.Runtime.CompilerServices.ExtensionAttribute");
+				Active = e.CurrentModule.Runtime >= TargetRuntime.Net_2_0 &&
+					e.CurrentModule.HasTypeReference ("System.Runtime.CompilerServices.ExtensionAttribute");
 			};
 		}
 

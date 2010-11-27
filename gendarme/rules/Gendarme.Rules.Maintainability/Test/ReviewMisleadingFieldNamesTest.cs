@@ -1,10 +1,10 @@
 //
-// AssemblyResolver.cs
+// Unit Tests for ReviewMisleadingFieldNamesRule
 //
-// Author:
-//   Jb Evain (jbevain@novell.com)
+// Authors:
+//	N Lum <nol888@gmail.com>
 //
-// (C) 2007 Novell, Inc.
+// Copyright (C) 2010 N Lum
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -13,10 +13,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,41 +27,53 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 
-using Mono.Cecil;
+using Gendarme.Rules.Maintainability;
 
-namespace GuiCompare {
+using NUnit.Framework;
+using Test.Rules.Definitions;
+using Test.Rules.Fixtures;
 
-	public class AssemblyResolver : BaseAssemblyResolver {
+namespace Test.Rules.Maintainability {
 
-		Hashtable _assemblies;
+	[TestFixture]
+	public class ReviewMisleadingFieldNamesTest : TypeRuleTestFixture<ReviewMisleadingFieldNamesRule> {
 
-		public IDictionary AssemblyCache {
-			get { return _assemblies; }
+		private class GoodClass {
+			int m_SomeValue;
+			static int s_SomeValue;
 		}
 
-		public AssemblyResolver ()
-		{
-			_assemblies = new Hashtable ();
+		private class Bad1 {
+			int s_SomeValue;
+			static int s_SomeOtherValue;
 		}
 
-		public override AssemblyDefinition Resolve (AssemblyNameReference name)
-		{
-			AssemblyDefinition asm = (AssemblyDefinition) _assemblies [name.Name];
-			if (asm == null) {
-				asm = base.Resolve (name);
-				asm.Resolver = this;
-				_assemblies [name.Name] = asm;
-			}
-
-			return asm;
+		private class Bad2 {
+			int s_SomeValue;
+			static int m_SomeValue;
 		}
 
-		public void CacheAssembly (AssemblyDefinition assembly)
+		[Test]
+		public void Good ()
 		{
-			_assemblies [assembly.Name.FullName] = assembly;
-			assembly.Resolver = this;
+			AssertRuleSuccess<GoodClass> ();
+		}
+
+		[Test]
+		public void Bad ()
+		{
+			AssertRuleFailure<Bad1> (1);
+			AssertRuleFailure<Bad2> (2);
+		}
+
+		[Test]
+		public void DoesNotApply ()
+		{
+			AssertRuleDoesNotApply (SimpleTypes.Class);
 		}
 	}
 }

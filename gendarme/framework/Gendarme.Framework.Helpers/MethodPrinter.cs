@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Mono.Cecil;
@@ -22,7 +23,7 @@ namespace Gendarme.Framework.Helpers {
 
 	public sealed class MethodPrinter { 
 
-		private InstructionCollection instructions;
+		private IList<Instruction> instructions;
 		private MethodDefinition method;
 		private IDictionary branchTable;
 

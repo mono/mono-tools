@@ -190,8 +190,8 @@ namespace Test.Rules.Interoperability {
 		public void FixtureSetUp ()
 		{
 			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
-			type = assembly.MainModule.Types ["Test.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest"];
+			assembly = AssemblyDefinition.ReadAssembly (unit);
+			type = assembly.MainModule.GetType ("Test.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingTest");
 		}
 
 		private void CheckMethod_OK1 ()

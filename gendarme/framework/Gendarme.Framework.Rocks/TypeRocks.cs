@@ -36,6 +36,8 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 
+using Mono.Collections.Generic;
+
 using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Framework.Rocks {
@@ -58,21 +60,33 @@ namespace Gendarme.Framework.Rocks {
 
 		/// <summary>
 		/// Return an IEnumerable that allows a single loop (like a foreach) to
-		/// traverse all MethodDefinition in the type. That includes the Constructors
-		/// and Methods collections.
+		/// traverse all MethodDefinition that are a constructor in the type.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>An IEnumerable to traverse all constructors and methods</returns>
-		public static IEnumerable<MethodDefinition> AllMethods (this TypeReference self)
+		/// <returns>An IEnumerable to traverse all constructors methods</returns>
+		public static IEnumerable<MethodDefinition> GetConstructors (this TypeReference self)
 		{
 			TypeDefinition type = self.Resolve ();
-			if (type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors)
-					yield return ctor;
-			}
 			if (type.HasMethods) {
 				foreach (MethodDefinition method in type.Methods)
-					yield return method;
+					if (method.IsConstructor)
+						yield return method;
+			}
+		}
+
+		/// <summary>
+		/// Return an IEnumerable that allows a single loop (like a foreach) to
+		/// traverse all MethodDefinition that are not a constructor in the type.
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <returns>An IEnumerable to traverse all non constructors methods</returns>
+		public static IEnumerable<MethodDefinition> GetMethods (this TypeReference self)
+		{
+			TypeDefinition type = self.Resolve ();
+			if (type.HasMethods) {
+				foreach (MethodDefinition method in type.Methods)
+					if (!method.IsConstructor)
+						yield return method;
 			}
 		}
 
@@ -110,7 +124,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="typeName">Full name of the type.</param>
 		/// <returns>True if the collection contains an type of the same name,
 		/// False otherwise.</returns>
-		public static bool ContainsType (this TypeReferenceCollection self, string typeName)
+		public static bool ContainsType (this Collection<TypeReference> self, string typeName)
 		{
 			if (typeName == null)
 				throw new ArgumentNullException ("typeName");
@@ -131,7 +145,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="typeNames">A string array of full type names.</param>
 		/// <returns>True if the collection contains any types matching one specified,
 		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this TypeReferenceCollection self, string [] typeNames)
+		public static bool ContainsAnyType (this Collection<TypeReference> self, string [] typeNames)
 		{
 			if (typeNames == null)
 				throw new ArgumentNullException ("typeNames");
@@ -164,27 +178,11 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return null;
 
-			bool ctors, methods;
-			// method name is optional so we must look in everything
-			if (String.IsNullOrEmpty (signature.Name)) {
-				ctors = true;
-				methods = true;
-			} else {
-				ctors = (signature.Name [0] == '.');
-				methods = !ctors;
-			}
-			
 			TypeDefinition type = self.Resolve ();
 			if (type == null)
 				return null;
 
-			if (ctors && type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors) {
-					if (signature.Matches (ctor))
-						return ctor;
-				}
-			}
-			if (methods && type.HasMethods) {
+			if (type.HasMethods) {
 				foreach (MethodDefinition method in type.Methods) {
 					if (signature.Matches (method))
 						return method;
@@ -205,23 +203,23 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
 		public static MethodDefinition GetMethod (this TypeReference self, MethodAttributes attributes, string name, string returnType, string [] parameters, Func<MethodDefinition, bool> customCondition)
 		{
-			foreach (MethodDefinition method in self.AllMethods ()) {
+			foreach (MethodDefinition method in self.Resolve ().Methods) {
 				if (name != null && method.Name != name)
 					continue;
 				if ((method.Attributes & attributes) != attributes)
 					continue;
-				if (returnType != null && method.ReturnType.ReturnType.FullName != returnType)
+				if (returnType != null && method.ReturnType.FullName != returnType)
 					continue;
 				if (parameters != null) {
 					if (method.HasParameters) {
-						ParameterDefinitionCollection pdc = method.Parameters;
+						IList<ParameterDefinition> pdc = method.Parameters;
 						if (parameters.Length != pdc.Count)
 							continue;
 						bool parameterError = false;
 						for (int i = 0; i < parameters.Length; i++) {
 							if (parameters [i] == null)
 								continue;//ignore parameter
-							if (parameters [i] != pdc [i].ParameterType.GetOriginalType ().FullName) {
+							if (parameters [i] != pdc [i].ParameterType.GetElementType ().FullName) {
 								parameterError = true;
 								break;
 							}
@@ -344,7 +342,7 @@ namespace Gendarme.Framework.Rocks {
 				// does the type implements it itself
 				if (type.HasInterfaces) {
 					foreach (TypeReference iface in type.Interfaces) {
-						string fullname = (generic) ? iface.GetOriginalType ().FullName : iface.FullName;
+						string fullname = (generic) ? iface.GetElementType ().FullName : iface.FullName;
 						if (fullname == interfaceName)
 							return true;
 						//if not, then maybe one of its parent interfaces does
@@ -387,16 +385,6 @@ namespace Gendarme.Framework.Rocks {
 				current = td.BaseType;
 			}
 			return false;
-		}
-
-		/// <summary>
-		/// Check if the type represent an array (of any other type).
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>True if the type is an array, False otherwise</returns>
-		public static bool IsArray (this TypeReference self)
-		{
-			return (self is ArrayType);
 		}
 
 		/// <summary>
@@ -467,8 +455,8 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			string full_name = self.FullName;
-			return ((full_name == Mono.Cecil.Constants.Single) ||
-				(full_name == Mono.Cecil.Constants.Double));
+			return ((full_name == "System.Single") ||
+				(full_name == "System.Double"));
 		}
 
 		/// <summary>
@@ -482,10 +470,11 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			if (self.HasCustomAttributes) {
+			if (self.IsDefinition) {
+				TypeDefinition type = self.Resolve ();
 				// both helpful attributes only exists in 2.0 and more recent frameworks
-				if (self.Module.Assembly.Runtime >= TargetRuntime.NET_2_0) {
-					if (self.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
+				if (type.Module.Runtime >= TargetRuntime.Net_2_0) {
+					if (type.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
 						return true;
 				}
 			}

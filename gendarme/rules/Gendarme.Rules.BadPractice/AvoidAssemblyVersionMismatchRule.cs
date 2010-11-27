@@ -95,11 +95,11 @@ namespace Gendarme.Rules.BadPractice {
 
 			Version file_version = null;
 			foreach (CustomAttribute ca in assembly.CustomAttributes) {
-				if (ca.Constructor.DeclaringType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
+				if (ca.AttributeType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
 					continue;
 
 				// FIXME: replace with Version.TryParse once we upgrade to FX4.0
-				VersionTryParse (ca.ConstructorParameters [0] as string, out file_version);
+				VersionTryParse (ca.ConstructorArguments [0].Value as string, out file_version);
 				break;
 			}
 

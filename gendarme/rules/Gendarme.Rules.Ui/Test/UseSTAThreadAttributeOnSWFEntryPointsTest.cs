@@ -80,7 +80,7 @@ namespace Test.Rules.Ui {
 		public void FixtureSetUp ()
 		{
 			string unit = System.Reflection.Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyFactory.GetAssembly (unit);
+			assembly = AssemblyDefinition.ReadAssembly (unit);
 			rule = new UseSTAThreadAttributeOnSWFEntryPointsRule ();
 			runner = new TestRunner (rule);
 		}
@@ -90,18 +90,34 @@ namespace Test.Rules.Ui {
 		{
 			// return executable assembly with predefined entry point - Main () of TInjectedType
 			string fullClassName = typeof (TInjectedType).FullName;
-			AssemblyDefinition ass = AssemblyFactory.DefineAssembly (typeof (TInjectedType).Name + "Assembly", AssemblyKind.Console);
+			AssemblyDefinition ass = CreateAssembly (typeof (TInjectedType).Name + "Assembly", ModuleKind.Console);
 			if (SWF) {
-				ass.Kind = AssemblyKind.Windows;
-				AssemblyNameReference winFormsRef = new AssemblyNameReference ();
-				winFormsRef.Name = "System.Windows.Forms";
+				ass.MainModule.Kind = ModuleKind.Windows;
+				AssemblyNameReference winFormsRef = new AssemblyNameReference ("System.Windows.Forms", new Version (2, 0, 0, 0));
 				winFormsRef.PublicKeyToken = new byte [] { 0xb7, 0x7a, 0x5c, 0x56, 0x19, 0x34, 0xe0, 0x89 };
-				winFormsRef.Version = new Version (2, 0, 0, 0);
 				ass.MainModule.AssemblyReferences.Add (winFormsRef);
 			}
-			TypeDefinition mainClass = ass.MainModule.Inject (assembly.MainModule.Types [fullClassName]);
+			TypeDefinition mainClass = Inject (assembly.MainModule.GetType (fullClassName), ass);
 			ass.EntryPoint = GetMethod (mainClass, "Main");
 			return ass;
+		}
+
+		static AssemblyDefinition CreateAssembly (string name, ModuleKind kind)
+		{
+			return AssemblyDefinition.CreateAssembly (new AssemblyNameDefinition (name, new Version ()), name, kind);
+		}
+
+		// horrible hack, we're pretending to copy a full loaded type into another assembly
+		static TypeDefinition Inject (TypeDefinition type, AssemblyDefinition target)
+		{
+			var module = ModuleDefinition.ReadModule (
+				type.Module.FullyQualifiedName,
+				new ReaderParameters { ReadingMode = ReadingMode.Immediate });
+
+			type = module.GetType (type.FullName);
+			module.Types.Remove (type);
+			target.MainModule.Types.Add (type);
+			return type;
 		}
 
 		private MethodDefinition GetMethod (TypeDefinition type, string name)

@@ -29,6 +29,7 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
@@ -72,7 +73,7 @@ namespace Gendarme.Rules.Design {
 
 			// rule applies!
 
-			foreach (MethodDefinition ctor in type.Constructors) {
+			foreach (MethodDefinition ctor in type.GetConstructors ()) {
 				if (ctor.IsPublic) {
 					Runner.Report (ctor, Severity.Low, Confidence.Total);
 				}

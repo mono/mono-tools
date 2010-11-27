@@ -8,7 +8,9 @@ rules_sources =  \
 	AvoidUnnecessarySpecializationRule.cs \
 	ConsiderUsingStopwatchRule.cs \
 	PreferStringIsNullOrEmptyRule.cs \
-	RemoveDependenceOnObsoleteCodeRule.cs
+	RemoveDependenceOnObsoleteCodeRule.cs \
+	ReviewMisleadingFieldNamesRule.cs \
+	VariableNamesShouldNotMatchFieldNamesRule.cs
 
 tests_sources = \
 	AvoidAlwaysNullFieldTest.cs \
@@ -18,4 +20,6 @@ tests_sources = \
 	AvoidUnnecessarySpecializationTest.cs \
 	ConsiderUsingStopwatchTest.cs \
 	PreferStringIsNullOrEmptyTest.cs \
-	RemoveDependenceOnObsoleteCodeTest.cs
+	RemoveDependenceOnObsoleteCodeTest.cs \
+	ReviewMisleadingFieldNamesTest.cs \
+	VariableNamesShouldNotMatchFieldNamesTest.cs

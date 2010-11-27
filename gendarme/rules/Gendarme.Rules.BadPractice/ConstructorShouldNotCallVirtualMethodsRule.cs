@@ -126,7 +126,7 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			// check each constructor
-			foreach (MethodDefinition constructor in type.Constructors) {
+			foreach (MethodDefinition constructor in type.GetConstructors ()) {
 				// early checks to avoid stack creation
 				if (constructor.IsStatic || !constructor.HasBody)
 					continue;
@@ -177,7 +177,7 @@ namespace Gendarme.Rules.BadPractice {
 						if (mr.HasThis)
 							parameters++;
 						parameters += mr.Parameters.Count;
-						if (mr.ReturnType.ReturnType.FullName != "System.Void")
+						if (mr.ReturnType.FullName != "System.Void")
 							parameters--;
 					}
 					break;

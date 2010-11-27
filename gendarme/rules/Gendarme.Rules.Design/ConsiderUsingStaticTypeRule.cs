@@ -71,22 +71,21 @@ namespace Gendarme.Rules.Design {
 
 			// Static type exists only since 2.0 so there's no point to execute this
 			// rule on every type if the assembly target runtime is earlier than 2.0
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Runtime >= TargetRuntime.NET_2_0);
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
 			};
 		}
 
 		static bool IsAllStatic (TypeDefinition type)
 		{
-			if (type.HasConstructors) {
-				foreach (MethodDefinition ctor in type.Constructors) {
+			if (type.HasMethods) {
+				foreach (MethodDefinition ctor in type.GetConstructors ()) {
 					// let's the default ctor pass (since it's always here for 1.x code)
 					if (!ctor.IsStatic && ctor.HasParameters)
 						return false;
 				}
-			}
-			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.Methods) {
+
+				foreach (MethodDefinition method in type.GetMethods ()) {
 					if (!method.IsStatic)
 						return false;
 				}
@@ -100,10 +99,25 @@ namespace Gendarme.Rules.Design {
 			return true;
 		}
 
+		static int GetMethodCount (TypeDefinition type)
+		{
+			if (!type.HasMethods)
+				return 0;
+
+			int methods = 0;
+
+			foreach (var method in type.Methods) {
+				if (!method.IsConstructor)
+					methods++;
+			}
+
+			return methods;
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only if the type isn't: an enum, an interface, a struct, a delegate or compiler generated
-			if (type.IsEnum || type.IsInterface || type.IsValueType || !type.HasFields && !type.HasMethods
+			if (type.IsEnum || type.IsInterface || type.IsValueType || !type.HasFields && GetMethodCount (type) == 0
 				|| type.IsDelegate () || type.IsGeneratedCode () 
 				|| type.BaseType != null && type.BaseType.FullName != "System.Object")
 				return RuleResult.DoesNotApply;

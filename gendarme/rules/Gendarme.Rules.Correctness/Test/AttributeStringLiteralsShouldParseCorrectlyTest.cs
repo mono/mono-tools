@@ -307,19 +307,26 @@ namespace Test.Rules.Correctness {
 
 	[TestFixture]
 	public class AttributeStringLiteralsShouldParseCorrectlyAssemblyTest : AssemblyRuleTestFixture<AttributeStringLiteralsShouldParseCorrectlyRule>{
+
+		static void AddStringArgument (CustomAttribute attribute, AssemblyDefinition assembly, string str)
+		{
+			attribute.ConstructorArguments.Add (
+				new CustomAttributeArgument (assembly.MainModule.TypeSystem.String, str));
+		}
+
 		private AssemblyDefinition GenerateFakeAssembly (string version, string url, string guid)
 		{
 			AssemblyDefinition definition = DefinitionLoader.GetAssemblyDefinition (this.GetType ());
 			CustomAttribute attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<ValidSince> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (version);
+			AddStringArgument (attribute, definition, version);
 			definition.CustomAttributes.Add (attribute);
 
 			attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<Reference> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (url);
+			AddStringArgument (attribute, definition, url);
 			definition.CustomAttributes.Add (attribute);
 
 			attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<Uses> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (guid);
+			AddStringArgument (attribute, definition, guid);
 			definition.CustomAttributes.Add (attribute);
 
 			return definition;
@@ -328,18 +335,18 @@ namespace Test.Rules.Correctness {
 		private AssemblyDefinition GenerateFakeModuleAnnotatedAssembly (string version, string url, string guid)
 		{
 			AssemblyDefinition definition = DefinitionLoader.GetAssemblyDefinition (this.GetType ());
-			ModuleDefinition module = new ModuleDefinition ("test", definition);
+			ModuleDefinition module = ModuleDefinition.CreateModule ("test", ModuleKind.NetModule);
 			definition.Modules.Add (module);
 			CustomAttribute attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<ValidSince> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (version);
+			AddStringArgument (attribute, definition, version);
 			module.CustomAttributes.Add (attribute);
 
 			attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<Reference> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (url);
+			AddStringArgument (attribute, definition, url);
 			module.CustomAttributes.Add (attribute);
 
 			attribute = new CustomAttribute (DefinitionLoader.GetMethodDefinition<Uses> (".ctor", new Type[] {typeof (string)}));
-			attribute.ConstructorParameters.Add (guid);
+			AddStringArgument (attribute, definition, guid);
 			module.CustomAttributes.Add (attribute);
 
 			return definition;
@@ -352,7 +359,7 @@ namespace Test.Rules.Correctness {
 			
 			foreach (CustomAttribute attribute in new ArrayList (definition.CustomAttributes)) {
 				//We only revert our changes on assembly.
-				if (String.Compare (attribute.Constructor.DeclaringType.FullName, "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute") != 0)
+				if (String.Compare (attribute.AttributeType.FullName, "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute") != 0)
 					definition.CustomAttributes.Remove (attribute);
 			}
 			
