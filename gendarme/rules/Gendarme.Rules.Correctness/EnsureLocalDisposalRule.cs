@@ -191,10 +191,6 @@ namespace Gendarme.Rules.Correctness {
 			if (!callsAndNewobjBitmask.Intersect (methodBitmask))
 				return RuleResult.DoesNotApply;
 
-			//do we potentially store that IDisposable in a local?
-			if (!OpCodeBitmask.StoreLocal.Intersect (methodBitmask))
-				return RuleResult.DoesNotApply;
-
 			suspectLocals.Clear ();
 
 			foreach (Instruction ins in method.Body.Instructions) {
@@ -215,13 +211,33 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 				}
 
-				if (ins.Next == null || !ins.Next.IsStoreLocal ())
-					continue; //even if an IDisposable, it isn't stored in a local
-
 				if (!DoesReturnDisposable (call))
 					continue;
 
-				suspectLocals.Add (ins.Next);
+				Instruction nextInstruction = ins.Next;
+				if (nextInstruction == null)
+					continue;
+
+				Code nextCode = nextInstruction.OpCode.Code;
+				if (nextCode == Code.Pop || OpCodeBitmask.Calls.Get (nextCode)) {
+					MethodReference nextCall = nextInstruction.Operand as MethodReference;
+					if (nextCall != null) {
+						MethodDefinition md = nextCall.Resolve ();
+						if (md != null && md.IsSetter)
+							continue; // We ignore setter because it is an obvious share of the IDisposable
+					}
+
+					TypeReference type = ins.OpCode.Code == Code.Newobj ?
+						call.DeclaringType : call.ReturnType;
+					string msg = string.Format ("Local of type '{0}' is not disposed of (at least not locally).", type.Name);
+					Runner.Report (method, ins, Severity.High, Confidence.High, msg);
+					continue;
+				}
+
+				if (!nextInstruction.IsStoreLocal ())
+					continue; //even if an IDisposable, it isn't stored in a local
+
+				suspectLocals.Add (nextInstruction);
 			}
 
 			foreach (var local in suspectLocals) {
