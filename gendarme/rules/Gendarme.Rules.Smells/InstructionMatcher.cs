@@ -56,7 +56,7 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		static bool AreEquivalent (ParameterDefinition source, ParameterDefinition target)
+		static bool AreEquivalent (ParameterReference source, ParameterReference target)
 		{
 			if ((source == null) || (target == null))
 				return false;

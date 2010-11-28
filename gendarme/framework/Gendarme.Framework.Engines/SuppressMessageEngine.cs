@@ -72,7 +72,7 @@ namespace Gendarme.Framework.Engines {
 			}
 		}
 
-		static bool TryGetPropertyArgument (CustomAttribute attribute, string name, out CustomAttributeArgument argument)
+		static bool TryGetPropertyArgument (ICustomAttribute attribute, string name, out CustomAttributeArgument argument)
 		{
 			foreach (var namedArg in attribute.Properties) {
 				if (namedArg.Name == name) {

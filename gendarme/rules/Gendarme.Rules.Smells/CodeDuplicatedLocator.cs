@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Smells {
 			types.Clear ();
 		}
 
-		internal void CompareMethodAgainstTypeMethods (MethodDefinition current, TypeDefinition targetType)
+		internal void CompareMethodAgainstTypeMethods (MethodDefinition current, TypeReference targetType)
 		{
 			if (CheckedTypes.Contains (targetType.Name)) 
 				return;

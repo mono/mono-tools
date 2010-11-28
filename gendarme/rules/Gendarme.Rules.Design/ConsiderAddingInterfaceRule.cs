@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
+		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeReference iface)
 		{
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.GetAllTypes ()) {
@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 
-		private static bool DoesTypeStealthilyImplementInterface(TypeDefinition type, TypeDefinition iface)
+		private static bool DoesTypeStealthilyImplementInterface (TypeDefinition type, TypeReference iface)
 		{
 			//ignore already uninteresting types below (self, enum, struct, static class)
 			if (type == iface || type.IsEnum || type.IsValueType || type.IsStatic ())

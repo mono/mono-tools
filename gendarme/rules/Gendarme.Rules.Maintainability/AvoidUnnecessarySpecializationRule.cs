@@ -279,7 +279,7 @@ namespace Gendarme.Rules.Maintainability {
 			return signatures;
 		}
 
-		private void UpdateParameterLeastType (ParameterDefinition parameter, IEnumerable<StackEntryUsageResult> usageResults)
+		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
 		{
 			int pIndex = parameter.GetSequence () - 1;
 			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
@@ -401,7 +401,7 @@ namespace Gendarme.Rules.Maintainability {
 			return IsSignatureDictatedByOverride (method, signature ?? GetSignature (method));
 		}
 
-		static bool IsSignatureDictatedByOverride (MethodDefinition method, MethodSignature sig)
+		static bool IsSignatureDictatedByOverride (IMemberDefinition method, MethodSignature sig)
 		{
 			TypeDefinition baseType = method.DeclaringType.BaseType.Resolve ();
 			while (baseType != null) {
@@ -486,7 +486,7 @@ namespace Gendarme.Rules.Maintainability {
 			}
 		}
 
-		private string GetSuggestionMessage (ParameterDefinition parameter)
+		private string GetSuggestionMessage (ParameterReference parameter)
 		{
 			StringBuilder sb = new StringBuilder ();
 			sb.Append ("Parameter '");
@@ -496,7 +496,7 @@ namespace Gendarme.Rules.Maintainability {
 			else
 				sb.Append ("' could be of type '");
 
-			TypeReference type = types_least [parameter.GetSequence () - 1];
+			TypeReference type = types_least [parameter.Index];
 			AppendPrettyTypeName (sb, type);
 			sb.Append ("'.");
 			return sb.ToString ();
