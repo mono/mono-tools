@@ -184,8 +184,7 @@ namespace Gendarme.Rules.Maintainability {
 			foreach (PropertyDefinition property in type.Properties) {
 				if (IsObsolete (property.PropertyType)) {
 					string msg = String.Format ("Property type '{0}' is obsolete.", property.PropertyType);
-					bool visible = (((property.GetMethod != null) && property.GetMethod.IsVisible ()) || 
-						((property.SetMethod != null) && property.SetMethod.IsVisible ()));
+					bool visible = (IsVisible (property.GetMethod) || IsVisible (property.SetMethod));
 					Runner.Report (property, visible ? Severity.High : Severity.Medium, Confidence.Total, msg);
 				}
 			}
@@ -196,12 +195,17 @@ namespace Gendarme.Rules.Maintainability {
 			foreach (EventDefinition evnt in type.Events) {
 				if (IsObsolete (evnt.EventType)) {
 					string msg = String.Format ("Event type '{0}' is obsolete.", evnt.EventType);
-					bool visible = (evnt.AddMethod != null && evnt.AddMethod.IsVisible ()) ||
-						(evnt.RemoveMethod != null && evnt.RemoveMethod.IsVisible ()) ||
-						(evnt.InvokeMethod != null && evnt.InvokeMethod.IsVisible ());
+					bool visible = (IsVisible (evnt.AddMethod) || IsVisible (evnt.RemoveMethod) || 
+						IsVisible (evnt.InvokeMethod));
 					Runner.Report (evnt, visible ? Severity.High : Severity.Medium, Confidence.Total, msg);
 				}
 			}
+		}
+
+		// helper method to avoid calling the same (large) properties more than once -> AvoidRepetitiveCallsToPropertiesRule
+		static bool IsVisible (MethodReference method)
+		{
+			return ((method != null) && method.IsVisible ());
 		}
 
 		// Type			Visible		Non-Visible
@@ -346,10 +350,11 @@ namespace Gendarme.Rules.Maintainability {
 
 			// then check what the IL calls/access
 			if (method.HasBody) {
-				if (method.Body.HasVariables)
+				MethodBody body = method.Body;
+				if (body.HasVariables)
 					CheckVariables (method);
 
-				foreach (Instruction ins in method.Body.Instructions) {
+				foreach (Instruction ins in body.Instructions) {
 					switch (ins.OpCode.Code) {
 					case Code.Newarr:
 					case Code.Newobj:
