@@ -51,6 +51,8 @@
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
     <Compile Include="AvoidNonPublicFieldsInComVisibleValueTypesRule.cs" />
+    <Compile Include="AvoidOverloadsInComVisibleInterfacesRule.cs" />
+    <Compile Include="ComRocks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
