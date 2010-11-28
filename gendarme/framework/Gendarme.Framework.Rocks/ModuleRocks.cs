@@ -70,6 +70,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="self"></param>
 		public static void LoadDebuggingSymbols (this ModuleDefinition self)
 		{
+			if (self == null)
+				return;
+
 			// don't create a new reader if the symbols are already loaded
 			if (self.HasSymbols)
 				return;
@@ -126,6 +129,8 @@ namespace Gendarme.Framework.Rocks {
 			// can be affected). The HasDebuggingInformation extension method let them adjust themselves
 		}
 
+		static TypeDefinition[] Empty = new TypeDefinition [0];
+
 		/// <summary>
 		/// Return an IEnumerable that allows a single loop (like a foreach) to
 		/// traverse all types that are defined in a module.
@@ -134,6 +139,8 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>An IEnumerable to traverse every types of the module</returns>
 		public static IEnumerable<TypeDefinition> GetAllTypes (this ModuleDefinition self)
 		{
+			if (self == null)
+				return Empty;
 			return self.Types.SelectMany (t => t.GetAllTypes ());
 		}
 
@@ -150,6 +157,9 @@ namespace Gendarme.Framework.Rocks {
 
 		public static bool HasAnyTypeReference (this ModuleDefinition self, string [] typeNames)
 		{
+			if (self == null)
+				return false;
+
 			if (typeNames == null)
 				throw new ArgumentNullException ("typeNames");
 

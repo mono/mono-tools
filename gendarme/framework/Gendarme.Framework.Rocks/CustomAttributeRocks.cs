@@ -25,10 +25,9 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
-
-using Mono.Collections.Generic;
 
 namespace Gendarme.Framework.Rocks {
 
@@ -53,11 +52,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the custom attribute collection contains an attribute of a specified type.
 		/// </summary>
-		/// <param name="self">The CustomAttributeCollection on which the extension method can be called.</param>
+		/// <param name="self">The CustomAttribute enumerable on which the extension method can be called.</param>
 		/// <param name="attributeTypeName">Full type name of the attribute class.</param>
 		/// <returns>True if the collection contains an attribute of the same name,
 		/// False otherwise.</returns>
-		public static bool ContainsType (this Collection<CustomAttribute> self, string attributeTypeName)
+		public static bool ContainsType (this IEnumerable<CustomAttribute> self, string attributeTypeName)
 		{
 			if (attributeTypeName == null)
 				throw new ArgumentNullException ("attributeTypeName");
@@ -74,11 +73,11 @@ namespace Gendarme.Framework.Rocks {
 		/// <summary>
 		/// Check if the custom attribute collection contains any of the specified type.
 		/// </summary>
-		/// <param name="self">The CustomAttributeCollection on which the extension method can be called.</param>
+		/// <param name="self">The CustomAttribute enumerable on which the extension method can be called.</param>
 		/// <param name="attributeTypeNames">A strings array of full type names of the attributes.</param>
 		/// <returns>True if the collection contains any attribute matching one specified,
 		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this Collection<CustomAttribute> self, string[] attributeTypeNames)
+		public static bool ContainsAnyType (this IEnumerable<CustomAttribute> self, string[] attributeTypeNames)
 		{
 			if (attributeTypeNames == null)
 				throw new ArgumentNullException ("attributeTypeNames");
