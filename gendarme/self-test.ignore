@@ -128,6 +128,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.MarshalStringsI
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.PInvokeShouldNotBeVisibleRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.UseManagedAlternativesToPInvokeRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPublicFieldsInComVisibleValueTypesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidOverloadsInComVisibleInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidComplexMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -135,6 +136,8 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidLackOfCohes
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.ConsiderUsingStopwatchRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.ReviewMisleadingFieldNamesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.VariableNamesShouldNotMatchFieldNamesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.AvoidRedundancyInMethodNameRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.AvoidRedundancyInTypeNameRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.AvoidTypeInterfaceInconsistencyRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -378,6 +381,9 @@ M: System.Boolean Gendarme.Framework.Rocks.ParameterRocks::IsParams(Mono.Cecil.P
 M: Gendarme.Framework.Helpers.OpCodeBitmask Gendarme.Framework.Engines.OpCodeEngine::GetBitmask(Mono.Cecil.MethodDefinition)
 # the check is done on methods, so using 'Mono.Cecil.IMemberReference' would only be confusing (e.g. code completion)
 M: System.Boolean Gendarme.Framework.Rocks.MethodRocks::IsEntryPoint(Mono.Cecil.MethodReference)
+# the check is done on types so using the suggested 'Mono.Cecil.MemberReference' would be confusing (e.g. code completion)
+M: System.Boolean Gendarme.Framework.Rocks.TypeRocks::IsFloatingPoint(Mono.Cecil.TypeReference)
+M: System.Boolean Gendarme.Framework.Rocks.TypeRocks::IsNative(Mono.Cecil.TypeReference)
 
 # OK - the gendarme framework is not a beginner, nor easy, API
 R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule

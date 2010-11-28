@@ -36,8 +36,6 @@ using System.Collections.Generic;
 
 using Mono.Cecil;
 
-using Mono.Collections.Generic;
-
 using Gendarme.Framework.Helpers;
 
 namespace Gendarme.Framework.Rocks {
@@ -124,7 +122,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="typeName">Full name of the type.</param>
 		/// <returns>True if the collection contains an type of the same name,
 		/// False otherwise.</returns>
-		public static bool ContainsType (this Collection<TypeReference> self, string typeName)
+		public static bool ContainsType (this IEnumerable<TypeReference> self, string typeName)
 		{
 			if (typeName == null)
 				throw new ArgumentNullException ("typeName");
@@ -145,7 +143,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <param name="typeNames">A string array of full type names.</param>
 		/// <returns>True if the collection contains any types matching one specified,
 		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this Collection<TypeReference> self, string [] typeNames)
+		public static bool ContainsAnyType (this IEnumerable<TypeReference> self, string [] typeNames)
 		{
 			if (typeNames == null)
 				throw new ArgumentNullException ("typeNames");
@@ -203,6 +201,9 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>The first MethodDefinition that satisfies all conditions.</returns>
 		public static MethodDefinition GetMethod (this TypeReference self, MethodAttributes attributes, string name, string returnType, string [] parameters, Func<MethodDefinition, bool> customCondition)
 		{
+			if (self == null)
+				return null;
+
 			foreach (MethodDefinition method in self.Resolve ().Methods) {
 				if (name != null && method.Name != name)
 					continue;
