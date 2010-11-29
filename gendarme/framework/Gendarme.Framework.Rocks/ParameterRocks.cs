@@ -62,7 +62,7 @@ namespace Gendarme.Framework.Rocks {
 		/// </summary>
 		/// <param name="self">The ParameterDefinition on which the extension method can be called.</param>
 		/// <returns>The integer value of the sequence number of the parameter.</returns>
-		public static int GetSequence (this ParameterDefinition self)
+		public static int GetSequence (this ParameterReference self)
 		{
 			if (self == null)
 				return -1;
