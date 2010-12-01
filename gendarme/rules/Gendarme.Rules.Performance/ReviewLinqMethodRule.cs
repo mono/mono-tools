@@ -258,9 +258,8 @@ namespace Gendarme.Rules.Performance {
 				// see if we can use a more efficient method.
 				if (tname == "Count" && tcount == 1) {
 					TypeReference tr = ins.Previous.GetOperandType (method);
-					TypeDefinition td = tr.Resolve ();
-					if (td != null) {
-						CheckForCountProperty (td, method, ins);
+					if (tr != null) {
+						CheckForCountProperty (tr, method, ins);
 						CheckForAny (method, ins);
 					}
 				} else if ((tname == "ElementAt" || tname == "ElementAtOrDefault") && tcount == 2) {

@@ -223,6 +223,13 @@ namespace Test.Rules.Performance {
 				return sequence.OrderByDescending<string, string> ((string x) => x, null);
 			}
 		}
+
+		public class Bug656790 {
+			public virtual int CanExecute<T> (object data)
+			{
+				return ((IEnumerable<T>) data).Count ();
+			}
+		}
 		
 		[Test]
 		public void DoesNotApply ()
@@ -283,6 +290,8 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<CanUseSort> ("Bad2");
 			AssertRuleFailure<CanUseSort> ("Bad3");
 			AssertRuleFailure<CanUseSort> ("Bad4");
+
+			AssertRuleSuccess<Bug656790> ("CanExecute");
 		}
 	}
 }
