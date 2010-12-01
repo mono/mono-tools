@@ -12,6 +12,7 @@ rules_sources =  \
 	AvoidTypeGetTypeForConstantStringsRule.cs \
 	AvoidUncalledPrivateCodeRule.cs \
 	AvoidUninstantiatedInternalClassesRule.cs \
+	AvoidUnnecessaryOverridesRule.cs \
 	AvoidUnneededCallsOnStringRule.cs \
 	AvoidUnneededFieldInitializationRule.cs \
 	AvoidUnneededUnboxingRule.cs \
@@ -43,6 +44,7 @@ tests_sources = \
 	AvoidLargeNumberOfLocalVariablesTest.cs \
 	AvoidLocalDataStoreSlotTest.cs \
 	AvoidRepetitiveCallsToPropertiesTest.cs \
+	AvoidUnnecessaryOverridesTest.cs \
 	AvoidUnneededFieldInitializationTest.cs \
 	EmptyDestructorTest.cs \
 	GlobalSuppressions.cs \
