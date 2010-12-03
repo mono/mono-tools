@@ -3,6 +3,8 @@
 
 R: Gendarme.Rules.Correctness.EnsureLocalDisposalRule
 M: System.Void Gendarme.Wizard::SaveReportButtonClick(System.Object,System.EventArgs)
+# we create but give it to cecil
+M: System.Void Gendarme.Framework.Rocks.ModuleRocks::LoadDebuggingSymbols(Mono.Cecil.ModuleDefinition)
 
 # Not sure about this one.
 R: Gendarme.Rules.Design.Generic.PreferGenericsOverRefObjectRule
@@ -127,8 +129,10 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.MarshalBooleans
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.MarshalStringsInPInvokeDeclarationsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.PInvokeShouldNotBeVisibleRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.UseManagedAlternativesToPInvokeRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AutoLayoutTypesShouldNotBeComVisibleRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPublicFieldsInComVisibleValueTypesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidOverloadsInComVisibleInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidComplexMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -161,6 +165,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCalls
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCastsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidTypeGetTypeForConstantStringsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededCallsOnStringRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededFieldInitializationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededUnboxingRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -175,6 +180,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.ImplementEqualsTypeR
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.MathMinMaxCandidateRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.OverrideValueTypeDefaultsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.PreferCharOverloadRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.PreferLiteralOverInitOnlyFieldsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.RemoveUnusedLocalVariablesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.ReviewLinqMethodRule::CheckMethod(Mono.Cecil.MethodDefinition)
