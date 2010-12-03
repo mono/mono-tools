@@ -712,10 +712,9 @@ namespace Gendarme {
 			if (save_file_dialog.ShowDialog () != DialogResult.OK)
 				return;
 
-			ResultWriter writer = GetSelectedWriter (save_file_dialog.FilterIndex, save_file_dialog.FileName);
-			if (writer != null) {
-				writer.Report ();
-				writer.Dispose ();
+			using (ResultWriter writer = GetSelectedWriter (save_file_dialog.FilterIndex, save_file_dialog.FileName)) {
+				if (writer != null)
+					writer.Report ();
 			}
 		}
 

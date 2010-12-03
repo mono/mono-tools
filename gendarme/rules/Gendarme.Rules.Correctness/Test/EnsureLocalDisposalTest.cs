@@ -42,6 +42,8 @@ namespace Test.Rules.Correctness {
 		string foo;
 		StreamReader sr;
 
+		StreamReader StreamReader { get; set; }
+
 		string DoesNotApply1 () { //no call/newobj/stloc
 			return foo;
 		}
@@ -49,10 +51,6 @@ namespace Test.Rules.Correctness {
 		StreamReader DoesNotApply2 () { //returns IDisposable
 			var sr = new StreamReader ("bar.xml");
 			return sr;
-		}
-
-		void DoesNotApply3 () {
-			sr = new StreamReader ("bar.xml"); //field
 		}
 
 		string Success0 () {
@@ -119,6 +117,14 @@ namespace Test.Rules.Correctness {
 			yield return "bar";
 		}
 
+		void Success7 () {
+			sr = new StreamReader ("bar.xml"); //field
+		}
+
+		void Success8 () {
+			StreamReader = new StreamReader ("bar.xml"); //property
+		}
+
 		void Failure0 () {
 			var reader = XmlReader.Create ("foo.xml");
 			Console.WriteLine (reader.ToString ());
@@ -174,6 +180,20 @@ namespace Test.Rules.Correctness {
 			Success3 (reader);
 			reader = XmlReader.Create ("bar.xml");
 		}
+
+		void Failure7 () {
+			new XmlTextReader ("foo.xml");
+		}
+
+		void Failure8 () {
+			var xslt = new System.Xml.Xsl.XslCompiledTransform ();
+			xslt.Load (new XmlTextReader ("foo.xml"));
+		}
+
+		void Failure9 () {
+			var xslt = new System.Xml.Xsl.XslCompiledTransform ();
+			xslt.Load (XmlTextReader.Create ("foo.xml"));
+		}
 	}
 
 	[TestFixture]
@@ -195,12 +215,6 @@ namespace Test.Rules.Correctness {
 		public void DoesNotApply2 ()
 		{
 			AssertRuleDoesNotApply<DisposalCases> ("DoesNotApply2");
-		}
-
-		[Test]
-		public void DoesNotApply3 ()
-		{
-			AssertRuleDoesNotApply<DisposalCases> ("DoesNotApply3");
 		}
 
 		[Test]
@@ -243,6 +257,18 @@ namespace Test.Rules.Correctness {
 		public void Success6 ()
 		{
 			AssertRuleSuccess<DisposalCases> ("Success6");
+		}
+
+		[Test]
+		public void Success7 ()
+		{
+			AssertRuleSuccess<DisposalCases> ("Success7");
+		}
+
+		[Test]
+		public void Success8 ()
+		{
+			AssertRuleSuccess<DisposalCases> ("Success8");
 		}
 
 		[Test]
@@ -291,6 +317,24 @@ namespace Test.Rules.Correctness {
 		public void Failure6 ()
 		{
 			AssertRuleFailure<DisposalCases> ("Failure6", 2);
+		}
+
+		[Test]
+		public void Failure7 ()
+		{
+			AssertRuleFailure<DisposalCases> ("Failure7", 1);
+		}
+
+		[Test]
+		public void Failure8 ()
+		{
+			AssertRuleFailure<DisposalCases> ("Failure8", 1);
+		}
+
+		[Test]
+		public void Failure9 ()
+		{
+			AssertRuleFailure<DisposalCases> ("Failure9", 1);
 		}
 	}
 }

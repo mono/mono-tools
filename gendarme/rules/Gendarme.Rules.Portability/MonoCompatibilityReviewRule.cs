@@ -173,23 +173,23 @@ namespace Gendarme.Rules.Portability {
 			if (!File.Exists (filename))
 				return;
 
-			using (FileStream fs = File.OpenRead (filename)) {
-				using (ZipInputStream zs = new ZipInputStream (fs)) {
-					ZipEntry ze;
-					while ((ze = zs.GetNextEntry ()) != null) {
-						switch (ze.Name) {
-						case "exception.txt":
-							NotImplementedInternal = Read (new StreamReader (zs));
-							break;
-						case "missing.txt":
-							MissingInternal = Read (new StreamReader (zs));
-							break;
-						case "monotodo.txt":
-							TodoInternal = ReadWithComments (new StreamReader (zs));
-							break;
-						default:
-							break;
-						}
+			using (FileStream fs = File.OpenRead (filename)) 
+			using (ZipInputStream zs = new ZipInputStream (fs))
+			using (StreamReader sr = new StreamReader (zs)) {
+				ZipEntry ze;
+				while ((ze = zs.GetNextEntry ()) != null) {
+					switch (ze.Name) {
+					case "exception.txt":
+						NotImplementedInternal = Read (sr);
+						break;
+					case "missing.txt":
+						MissingInternal = Read (sr);
+						break;
+					case "monotodo.txt":
+						TodoInternal = ReadWithComments (sr);
+						break;
+					default:
+						break;
 					}
 				}
 			}
