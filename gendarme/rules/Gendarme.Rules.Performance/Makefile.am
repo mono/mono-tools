@@ -29,6 +29,7 @@ rules_sources =  \
 	MathMinMaxCandidateRule.cs \
 	OverrideValueTypeDefaultsRule.cs \
 	PreferCharOverloadRule.cs \
+	PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule.cs \
 	PreferLiteralOverInitOnlyFieldsRule.cs \
 	RemoveUnusedLocalVariablesRule.cs \
 	ReviewLinqMethodRule.cs \
@@ -73,5 +74,6 @@ tests_sources = \
 	AvoidRepetitiveCastsTest.cs \
 	AvoidUnusedPrivateFieldsTest.cs \
 	PreferCharOverloadTest.cs \
+	PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceTest.cs \
 	PreferLiteralOverInitOnlyFieldsTest.cs \
 	ReviewLinqMethodTest.cs
