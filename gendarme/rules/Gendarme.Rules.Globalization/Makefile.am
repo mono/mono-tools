@@ -31,7 +31,7 @@ tests_resource_missing_xmlnotresx_fr = Test/Resources/XMLFileNotInResXOnlyInFren
 
 fr/Test.Rules.Globalization.resources.dll: Test/Resource.fr.resources Test/MainResourceMissing.fr.resources $(tests_resource_xmlnotresx_fr) $(tests_resource_missing_xmlnotresx_fr)
 	mkdir -p fr
-	/usr/bin/al -culture:fr -embed:Test/MainResourceMissing.fr.resources -embed:Test/Resource.fr.resources -embed:$(tests_resource_xmlnotresx_fr) -embed:$(tests_resource_missing_xmlnotresx_fr) -out:fr/Test.Rules.Globalization.resources.dll
+	al -culture:fr -embed:Test/MainResourceMissing.fr.resources -embed:Test/Resource.fr.resources -embed:$(tests_resource_xmlnotresx_fr) -embed:$(tests_resource_missing_xmlnotresx_fr) -out:fr/Test.Rules.Globalization.resources.dll
 
 EXTRA_TESTS_DEPS = Test/Resource.resources Test/Resources/XMLFileNotInResX.xml fr/Test.Rules.Globalization.resources.dll
 
