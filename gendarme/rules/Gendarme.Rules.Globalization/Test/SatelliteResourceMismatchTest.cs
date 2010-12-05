@@ -52,14 +52,15 @@ namespace Tests.Rules.Globalization {
 		}
 
 		[Test]
-		public void OrphanResources ()
+		public void SatelliteResourceTest ()
 		{
 			// 1. StringOnlyInFrench
 			// 2. ImageOnlyInFrench
 			// 3. StringInEnglishImageInFrench
 			// 4. StringWith3ParametersEnBut12Fr
 			// 5. MainResourceMissing.fr.resx file
-			AssertRuleFailure (assembly, 5);
+			// 6. XMLFileNotInResXOnlyInFrench.fr.xml file
+			AssertRuleFailure (assembly, 6);
 		}
 	}
 

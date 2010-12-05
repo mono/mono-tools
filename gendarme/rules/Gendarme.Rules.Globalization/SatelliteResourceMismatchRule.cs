@@ -55,7 +55,8 @@ namespace Gendarme.Rules.Globalization {
 	[Solution ("Remove or fix the resource in the satellite assemby.")]
 	public sealed class SatelliteResourceMismatchRule : Rule, IAssemblyRule {
 
-		AssemblyResourceCache mainAssemblyResourceCache;
+		private const string resXResourcesExtension = ".resources";
+		private AssemblyResourceCache mainAssemblyResourceCache;
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
@@ -82,11 +83,15 @@ namespace Gendarme.Rules.Globalization {
 			Collection<Resource> satellitesResources = satellite.MainModule.Resources;
 			foreach (EmbeddedResource resource in satellitesResources) {
 				EmbeddedResource mainResource;
-				if (!mainAssemblyResourceCache.TryGetMainResourceFile (GetName (resource, true), out mainResource)) {
+				if (!mainAssemblyResourceCache.TryGetMainResourceFile (GetNameInSatellite (resource), out mainResource)) {
 					Runner.Report (satellite, Severity.Low, Confidence.High,
 						String.Format ("The resource file '{0}' exist in the satellite assembly but not in the main assembly", resource.Name));
 					continue;
 				}
+
+				if (!IsResXResources (resource))
+					continue;
+
 				CheckSatelliteResource (mainResource, resource, satellite);
 			}
 		}
@@ -189,18 +194,35 @@ namespace Gendarme.Rules.Globalization {
 				if (files.Length == 0)
 					continue;
 
-				AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(files [0].FullName);
+				AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (files [0].FullName);
 				satellitesAssemblies.Add (assembly);
 			}
 
 			return satellitesAssemblies;
 		}
 
-		private static string GetName (Resource resource, bool isSatellite)
+		// In satellites assemblies, if the resource is a resource file (extension .resources)
+		// the culture is included in the name in the assembly, for example StringResource.fr.resources
+		// But if the resource is a custom file (any other extension) the culture is not included in
+		// the name, for example XmlFile.xml
+		// This method always return the name without the culture to be able to match with the main
+		// assembly resource
+		private static string GetNameInSatellite (Resource resource)
 		{
-			string fullName = resource.Name;
-			string nameWithCulture = fullName.Remove (fullName.IndexOf (".resources"));
-			return isSatellite ? nameWithCulture.Remove (nameWithCulture.LastIndexOf ('.')) : nameWithCulture;
+			string name = resource.Name;
+
+			if (!IsResXResources (resource))
+				return name;
+
+			string nameWithoutExtension = name.Remove (name.LastIndexOf (resXResourcesExtension));
+			string nameWithoutCultureAndExtension = nameWithoutExtension.Remove (
+				nameWithoutExtension.LastIndexOf ('.'));
+			return nameWithoutCultureAndExtension + resXResourcesExtension;
+		}
+
+		private static bool IsResXResources (Resource resource)
+		{
+			return resource.Name.EndsWith (resXResourcesExtension);
 		}
 
 		private sealed class AssemblyResourceCache {
@@ -220,9 +242,8 @@ namespace Gendarme.Rules.Globalization {
 					files = new Dictionary<string, EmbeddedResource> ();
 
 					Collection<Resource> mainResources = assembly.MainModule.Resources;
-					foreach (EmbeddedResource resource in mainResources) {
-						files.Add (GetName (resource, false), resource);
-					}
+					foreach (EmbeddedResource resource in mainResources)
+						files.Add (resource.Name, resource);
 				}
 				return files.TryGetValue (resourceFileName, out embeddedResource);
 			}

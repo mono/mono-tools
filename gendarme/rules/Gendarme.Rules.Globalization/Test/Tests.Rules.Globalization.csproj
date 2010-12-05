@@ -62,6 +62,7 @@
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +87,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\StringInEnglishImageInFrench.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XMLFileNotInResX.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XMLFileNotInResX.fr.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XMLFileNotInResXOnlyInFrench.fr.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
