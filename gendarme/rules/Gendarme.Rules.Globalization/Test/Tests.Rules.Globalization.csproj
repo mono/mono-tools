@@ -36,6 +36,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\Mono.Cecil.csproj">
@@ -54,6 +55,37 @@
       <Project>{5D883285-903D-4FDB-9ED9-AB37AE9648F7}</Project>
       <Name>Gendarme.Rules.Globalization</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainResourceMissing.fr.resx" />
+    <EmbeddedResource Include="Resource.fr.resx" />
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SatelliteResourceMismatchTest.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageInBothCultures.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageInBothCultures.fr.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageOnlyInEnglish.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageOnlyInFrench.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StringInEnglishImageInFrench.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
