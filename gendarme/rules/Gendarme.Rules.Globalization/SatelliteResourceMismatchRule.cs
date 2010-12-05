@@ -64,7 +64,7 @@ namespace Gendarme.Rules.Globalization {
 				throw new ArgumentNullException ("assembly");
 
 			// If the analyzed assembly is a satellite assembly, does not apply
-			if (assembly.Name.Name.Contains (".resources"))
+			if (!string.IsNullOrEmpty(assembly.Name.Culture))
 				return RuleResult.DoesNotApply;
 
 			// Reset caches
@@ -80,10 +80,12 @@ namespace Gendarme.Rules.Globalization {
 
 		private void CheckSatelliteAssembly (AssemblyDefinition satellite)
 		{
+			string culture = satellite.Name.Culture;
 			Collection<Resource> satellitesResources = satellite.MainModule.Resources;
 			foreach (EmbeddedResource resource in satellitesResources) {
 				EmbeddedResource mainResource;
-				if (!mainAssemblyResourceCache.TryGetMainResourceFile (GetNameInSatellite (resource), out mainResource)) {
+				string resourceName = GetNameInSatellite (resource, culture);
+				if (!mainAssemblyResourceCache.TryGetMainResourceFile (resourceName, out mainResource)) {
 					Runner.Report (satellite, Severity.Low, Confidence.High,
 						String.Format ("The resource file '{0}' exist in the satellite assembly but not in the main assembly", resource.Name));
 					continue;
@@ -201,23 +203,22 @@ namespace Gendarme.Rules.Globalization {
 			return satellitesAssemblies;
 		}
 
-		// In satellites assemblies, if the resource is a resource file (extension .resources)
-		// the culture is included in the name in the assembly, for example StringResource.fr.resources
-		// But if the resource is a custom file (any other extension) the culture is not included in
-		// the name, for example XmlFile.xml
-		// This method always return the name without the culture to be able to match with the main
+		// In satellites assemblies, the resource file name sometimes contains the culture 
+		// some times do not
+		// This method always returns the name without the culture to be able to match with the main
 		// assembly resource
-		private static string GetNameInSatellite (Resource resource)
+		private static string GetNameInSatellite (Resource resource, string culture)
 		{
 			string name = resource.Name;
+			string nameWithoutExtension = Path.GetFileNameWithoutExtension (name);
 
-			if (!IsResXResources (resource))
+			string cultureExtension = "." + culture;
+
+			if (!nameWithoutExtension.EndsWith (cultureExtension))
 				return name;
 
-			string nameWithoutExtension = name.Remove (name.LastIndexOf (resXResourcesExtension));
-			string nameWithoutCultureAndExtension = nameWithoutExtension.Remove (
-				nameWithoutExtension.LastIndexOf ('.'));
-			return nameWithoutCultureAndExtension + resXResourcesExtension;
+			string nameWithoutCulture = Path.GetFileNameWithoutExtension (nameWithoutExtension);
+			return nameWithoutCulture + Path.GetExtension (name);
 		}
 
 		private static bool IsResXResources (Resource resource)
