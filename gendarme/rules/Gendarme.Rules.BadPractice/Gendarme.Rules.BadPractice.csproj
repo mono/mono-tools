@@ -68,6 +68,7 @@
     <Compile Include="ReplaceIncompleteOddnessCheckRule.cs" />
     <Compile Include="ReturnNullRule.cs" />
     <Compile Include="ToStringReturnsNullRule.cs" />
+    <Compile Include="UseFileOpenOnlyWithFileAccessRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cecil\Mono.Cecil.csproj">

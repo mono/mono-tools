@@ -59,6 +59,7 @@
     <Compile Include="PreferTryParseTest.cs" />
     <Compile Include="ReplaceIncompleteOddnessCheckTest.cs" />
     <Compile Include="ToStringReturnsNullTest.cs" />
+    <Compile Include="UseFileOpenOnlyWithFileAccessTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\Mono.Cecil.csproj">
