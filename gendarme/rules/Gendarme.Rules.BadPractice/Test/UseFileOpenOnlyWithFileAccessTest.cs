@@ -1,4 +1,4 @@
-﻿//
+//
 // Test.Rules.BadPractice.UseFileOpenOnlyWithFileAccessTest
 //
 // Authors:

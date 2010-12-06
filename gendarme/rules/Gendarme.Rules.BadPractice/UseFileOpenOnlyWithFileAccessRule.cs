@@ -1,4 +1,4 @@
-﻿//
+//
 // Gendarme.Rules.BadPractice.UseFileOpenOnlyWithFileAccessRule
 //
 // Authors:
