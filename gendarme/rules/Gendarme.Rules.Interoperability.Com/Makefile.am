@@ -5,8 +5,10 @@ rules_sources =  \
 	AvoidInt64ArgumentsInComVisibleMethodsRule.cs \
 	AvoidNonPublicFieldsInComVisibleValueTypesRule.cs \
 	AvoidOverloadsInComVisibleInterfacesRule.cs \
+	AvoidStaticMembersInComVisibleTypesRule.cs \
 	ComVisibleShouldInheritFromComVisibleRule.cs \
 	ComVisibleTypesShouldBeCreatableRule.cs \
+	DoNotUseAutoDualClassInterfaceTypeRule.cs \
 	ComRocks.cs
 
 tests_sources = \
@@ -14,7 +16,9 @@ tests_sources = \
 	AvoidInt64ArgumentsInComVisibleMethodsTest.cs \
 	AvoidNonPublicFieldsInComVisibleValueTypesTest.cs \
 	AvoidOverloadsInComVisibleInterfacesTest.cs \
+	AvoidStaticMembersInComVisibleTypesTest.cs \
 	ComVisibleShouldInheritFromComVisibleTest.cs \
 	ComVisibleTypesShouldBeCreatableTest.cs \
+	DoNotUseAutoDualClassInterfaceTypeTest.cs \
 	ComRocksTest.cs
 
