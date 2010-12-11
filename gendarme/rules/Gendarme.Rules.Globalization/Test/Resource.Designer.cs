@@ -118,5 +118,14 @@ namespace Tests.Rules.Globalization {
                 return ResourceManager.GetString("StringWithThreeParameters", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First: {0} Third: {2}.
+        /// </summary>
+        internal static string StringWithThreeParametersButSomeUnused {
+            get {
+                return ResourceManager.GetString("StringWithThreeParametersButSomeUnused", resourceCulture);
+            }
+        }
     }
 }

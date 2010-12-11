@@ -87,7 +87,7 @@ namespace Gendarme.Rules.Globalization {
 				string resourceName = GetNameInSatellite (resource, culture);
 				if (!mainAssemblyResourceCache.TryGetMainResourceFile (resourceName, out mainResource)) {
 					Runner.Report (satellite, Severity.Low, Confidence.High,
-						String.Format ("The resource file '{0}' exist in the satellite assembly but not in the main assembly", resource.Name));
+						String.Format ("The resource file {0} exist in the satellite assembly but not in the main assembly", resource.Name));
 					continue;
 				}
 
@@ -108,7 +108,7 @@ namespace Gendarme.Rules.Globalization {
 					object mainValue;
 					if (!mainAssemblyResourceCache.TryGetMainResource (mainResource, resourceName, out mainValue)) {
 						Runner.Report (satelliteAssembly, Severity.Low, Confidence.High,
-							String.Format ("The resource '{0}' in the file '{1}' exist in the satellite assembly but not in the main assembly", resourceName, satelliteResource.Name));
+							String.Format ("The resource {0} in the file {1} exist in the satellite assembly but not in the main assembly", resourceName, satelliteResource.Name));
 						continue;
 					}
 
@@ -116,27 +116,28 @@ namespace Gendarme.Rules.Globalization {
 					Type mainType = mainValue.GetType ();
 					if (!satelliteType.Equals (mainType)) {
 						Runner.Report (satelliteAssembly, Severity.High, Confidence.High,
-							String.Format ("The resource '{0}' in the file '{1}' is of type '{2}' in the satellite assembly but of type '{3}' in the main assembly", resourceName, satelliteResource.Name, satelliteType, mainType));
+							String.Format ("The resource {0} in the file {1} is of type {2} in the satellite assembly but of type {3} in the main assembly", resourceName, satelliteResource.Name, satelliteType, mainType));
 						continue;
 					}
 
 					if (satelliteType.Equals (typeof (string))) {
-						int mainNumber = GetNumberOfExpectedParameters ((string) mainValue);
-						int satelliteNumber = GetNumberOfExpectedParameters ((string) satelliteValue);
-						if (mainNumber != satelliteNumber)
+						Bitmask<int> mainParameters = GetStringFormatExpectedParameters ((string) mainValue);
+						Bitmask<int> satelliteParameters = GetStringFormatExpectedParameters ((string) satelliteValue);
+
+						if (!mainParameters.Equals (satelliteParameters))
 							Runner.Report (satelliteAssembly, Severity.High, Confidence.Normal,
-								String.Format ("The string resource '{0}' in the file '{1}' as '{2}' parameters in the satellite assembly but '{3}' in the main assembly", resourceName, satelliteResource.Name, satelliteNumber, mainNumber));
+								String.Format ("The string resource {0} in the file {1} does not use the same string format parameters in the satellite and main assemblies", resourceName, satelliteResource.Name));
 					}
 				}
 			}
 		}
 
-		private static int GetNumberOfExpectedParameters (string format)
+		private static Bitmask<int> GetStringFormatExpectedParameters (string format)
 		{
 			if (format == null)
 				throw new ArgumentNullException ("format");
 
-			int result = 0; // the number of expected parameters is the biggest value between {} + 1
+			Bitmask<int> result = new Bitmask<int> (false);
 
 			// if last character is { then there's no digit after it
 			for (int index = 0; index < format.Length - 1; index++) {
@@ -169,9 +170,7 @@ namespace Gendarme.Rules.Globalization {
 				if (!int.TryParse (value.ToString (), out intValue))
 					continue;
 
-				int parameterNumber = intValue + 1; // The indexes start at 0 !
-				if (parameterNumber > result)
-					result = parameterNumber;
+				result.Set (intValue);
 			}
 
 			return result;

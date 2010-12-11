@@ -58,8 +58,9 @@ namespace Tests.Rules.Globalization {
 			// 2. ImageOnlyInFrench
 			// 3. StringInEnglishImageInFrench
 			// 4. StringWith3ParametersEnBut12Fr
-			// 5. MainResourceMissing.fr.resx file
-			// 6. XMLFileNotInResXOnlyInFrench.fr.xml file
+			// 5. StringWithThreeParametersButSomeUnused
+			// 6. MainResourceMissing.fr.resx file
+			// 7. XMLFileNotInResXOnlyInFrench.fr.xml file
 			AssertRuleFailure (assembly, 6);
 		}
 	}

@@ -139,4 +139,7 @@
   <data name="StringWithThreeParameters" xml:space="preserve">
     <value>First: {0} Second: {1} Third: {2}</value>
   </data>
+  <data name="StringWithThreeParametersButSomeUnused" xml:space="preserve">
+    <value>First: {0} Third: {2}</value>
+  </data>
 </root>
