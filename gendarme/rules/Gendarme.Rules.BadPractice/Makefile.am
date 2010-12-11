@@ -22,7 +22,8 @@ rules_sources =  \
 	PreferSafeHandleRule.cs \
 	ReplaceIncompleteOddnessCheckRule.cs \
 	ReturnNullRule.cs \
-	ToStringReturnsNullRule.cs 
+	ToStringReturnsNullRule.cs \
+	UseFileOpenOnlyWithFileAccessRule.cs
 
 tests_sources = \
 	AvoidAssemblyVersionMismatchTest.cs \
@@ -45,4 +46,5 @@ tests_sources = \
 	PreferTryParseTest.cs \
 	PreferSafeHandleTest.cs \
 	ReplaceIncompleteOddnessCheckTest.cs \
-	ToStringReturnsNullTest.cs 
+	ToStringReturnsNullTest.cs \
+	UseFileOpenOnlyWithFileAccessTest.cs

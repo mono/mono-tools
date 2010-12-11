@@ -69,6 +69,7 @@
     <Compile Include="AvoidRepetitiveCallsToPropertiesTest.cs" />
     <Compile Include="AvoidRepetitiveCastsTest.cs" />
     <Compile Include="AvoidTypeGetTypeForConstantStringsTest.cs" />
+    <Compile Include="AvoidUnnecessaryOverridesTest.cs" />
     <Compile Include="AvoidUnneededFieldInitializationTest.cs" />
     <Compile Include="AvoidUnneededUnboxingTest.cs" />
     <Compile Include="AvoidLargeStructureTest.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="MathMinMaxCandidateTest.cs" />
     <Compile Include="OverrideValueTypeDefaultsTest.cs" />
     <Compile Include="PreferCharOverloadTest.cs" />
+    <Compile Include="PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceTest.cs" />
     <Compile Include="PreferLiteralOverInitOnlyFieldsTest.cs" />
     <Compile Include="RemoveUnusedLocalVariablesTest.cs" />
     <Compile Include="ReviewLinqMethodTest.cs" />
