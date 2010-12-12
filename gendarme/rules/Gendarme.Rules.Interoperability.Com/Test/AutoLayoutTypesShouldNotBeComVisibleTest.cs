@@ -1,4 +1,4 @@
-﻿//
+//
 // AutoLayoutTypesShouldNotBeComVisibleTest.cs
 //
 // Authors:

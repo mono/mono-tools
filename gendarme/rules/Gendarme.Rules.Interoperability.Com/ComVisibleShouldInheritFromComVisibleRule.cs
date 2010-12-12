@@ -1,4 +1,4 @@
-﻿//
+//
 // ComVisibleShouldInheritFromComVisibleRule.cs
 //
 // Authors:

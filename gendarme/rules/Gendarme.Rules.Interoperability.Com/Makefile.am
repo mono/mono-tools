@@ -9,6 +9,7 @@ rules_sources =  \
 	ComVisibleShouldInheritFromComVisibleRule.cs \
 	ComVisibleTypesShouldBeCreatableRule.cs \
 	DoNotUseAutoDualClassInterfaceTypeRule.cs \
+	MarkComSourceInterfacesAsIDispatchRule.cs \
 	ComRocks.cs
 
 tests_sources = \
@@ -20,5 +21,6 @@ tests_sources = \
 	ComVisibleShouldInheritFromComVisibleTest.cs \
 	ComVisibleTypesShouldBeCreatableTest.cs \
 	DoNotUseAutoDualClassInterfaceTypeTest.cs \
+	MarkComSourceInterfacesAsIDispatchTest.cs \
 	ComRocksTest.cs
 
