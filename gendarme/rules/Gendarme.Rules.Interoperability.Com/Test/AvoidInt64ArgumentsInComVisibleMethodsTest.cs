@@ -1,4 +1,4 @@
-﻿//
+//
 // AvoidInt64ArgumentsInComVisibleMethodsTest.cs
 //
 // Authors:

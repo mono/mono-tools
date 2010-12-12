@@ -1,4 +1,4 @@
-﻿//
+//
 // Unit Tests for ComVisibleTypesShouldBeCreatableRule
 //
 // Authors:

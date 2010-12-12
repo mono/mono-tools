@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Tests.Rules.Interoperability.Com.AvoidStaticMembersInComVisibleTypesTest
 //
 // Authors:

@@ -1,4 +1,4 @@
-﻿//
+//
 // Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule
 //
 // Authors:
