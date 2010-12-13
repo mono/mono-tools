@@ -110,34 +110,35 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		// Checks whether specific type is COM visible or not
 		// considering nested types/modules/assemblies attributes and default values
-		private bool IsTypeComVisible (TypeDefinition type)
+		private static bool IsTypeComVisible (TypeDefinition type)
 		{
-			bool exp, t;
-			t = type.IsComVisible (out exp);
-			if (exp)
-				return t;
+			bool? t = type.IsComVisible ();
+			var module = type.Module;
+			if (t.HasValue)
+				return (bool)t;
 			if (type.IsNested) {
-				t = type.DeclaringType.IsComVisible (out exp);
-				if (exp)
-					return t;
+				t = type.DeclaringType.IsComVisible ();
+				if (t.HasValue)
+					return (bool)t;
 			}
-			t = type.Module.IsComVisible (out exp);
-			if (exp)
-				return t;
-			t = type.Module.Assembly.IsComVisible (out exp);
-			if (exp)
-				return t;
+			t = module.IsComVisible ();
+			if (t.HasValue)
+				return (bool)t;
+			t = module.Assembly.IsComVisible ();
+			if (t.HasValue)
+				return (bool)t;
 			return true;
 		}
 
-		private ClassInterfaceType? GetClassInterfaceAttributeValue (ICustomAttributeProvider obj)
+		private static ClassInterfaceType? GetClassInterfaceAttributeValue (ICustomAttributeProvider obj)
 		{
 			foreach (CustomAttribute attribute in obj.CustomAttributes) {
 				if (attribute.AttributeType.FullName != "System.Runtime.InteropServices.ClassInterfaceAttribute")
 					continue;
-				if (attribute.ConstructorArguments [0].Type.FullName == "System.Int16")
-					return (ClassInterfaceType)(short)attribute.ConstructorArguments [0].Value;
-				return (ClassInterfaceType)(int)attribute.ConstructorArguments [0].Value;
+				var ctorArgs = attribute.ConstructorArguments;
+				if (ctorArgs [0].Type.FullName == "System.Int16")
+					return (ClassInterfaceType)(short)ctorArgs [0].Value;
+				return (ClassInterfaceType)(int)ctorArgs [0].Value;
 			}
 			return null;
 		}

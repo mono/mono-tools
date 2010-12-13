@@ -136,6 +136,8 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPub
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidOverloadsInComVisibleInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidStaticMembersInComVisibleTypesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ReviewComRegistrationMethodsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidComplexMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidDeepInheritanceTreeRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -521,4 +523,17 @@ R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 # use ISet<H>
 M: System.Void Gendarme.Rules.Performance.AvoidUninstantiatedInternalClassesRule::AddType(System.Collections.Generic.HashSet`1<Mono.Cecil.TypeReference>,Mono.Cecil.TypeReference)
 M: System.Void Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule::BuildMethodUsage(System.Collections.Generic.HashSet`1<System.UInt32>,Mono.Cecil.MethodDefinition)
+
+# OK - use is on different code paths
+M: System.Boolean Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
+M: System.Boolean Gendarme.Rules.Interoperability.Com.DoNotUseAutoDualClassInterfaceTypeRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
+M: System.Boolean Gendarme.Rules.Interoperability.Com.ReviewComRegistrationMethodsRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
+
+# OK
+R: Gendarme.Rules.Naming.AvoidRedundancyInTypeNameRule
+# ComRocks is not directly used
+T: Gendarme.Rules.Interoperability.Com.ComRocks
+# Some Com rules start with 'Com'
+T: Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule
+T: Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule
 

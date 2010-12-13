@@ -102,10 +102,9 @@ namespace Gendarme.Rules.Interoperability.Com {
 			
 			// check that class is explicitly ComVisible, assembly is explicitly not ComVisible
 			// and method does not have [ComVisible (false)]
-			bool exp;
-			if (!(method.DeclaringType.IsComVisible (out exp) && exp) ||
-					(method.DeclaringType.Module.Assembly.IsComVisible (out exp) || !exp) ||
-					(!method.IsComVisible(out exp) && exp))
+			if (!(method.DeclaringType.IsComVisible () ?? false) ||
+					(method.DeclaringType.Module.Assembly.IsComVisible () ?? true) ||
+					(!(method.IsComVisible () ?? true)))
 				return RuleResult.DoesNotApply;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {

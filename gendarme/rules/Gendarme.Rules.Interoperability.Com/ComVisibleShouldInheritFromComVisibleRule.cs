@@ -105,24 +105,22 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		// Checks whether specific type is COM visible or not
 		// considering nested types/modules/assemblies attributes and default values
-		private bool IsTypeComVisible (TypeDefinition type)
+		private static bool IsTypeComVisible (TypeDefinition type)
 		{
-			bool exp, t;
-			t = type.IsComVisible (out exp);
-			if (exp)
-				return t;
+			bool? t = type.IsComVisible ();
+			if (t.HasValue)
+				return (bool)t;
 			if (type.IsNested) {
-				t = type.DeclaringType.IsComVisible (out exp);
-				if (exp)
-					return t;
+				t = type.DeclaringType.IsComVisible ();
+				if (t.HasValue)
+					return (bool)t;
 			}
-			t = type.Module.IsComVisible (out exp);
-			if (exp)
-				return t;
-			t = type.Module.Assembly.IsComVisible (out exp);
-			if (exp)
-				return t;
-			return true;
+			var module = type.Module;
+			t = module.IsComVisible ();
+			if (t.HasValue)
+				return (bool)t;
+			t = module.Assembly.IsComVisible ();
+			return t ?? true;
 		}
 
 	}

@@ -88,13 +88,8 @@ namespace Gendarme.Rules.Interoperability.Com {
 			return null;
 		}
 
-		private TypeDefinition FindInterfaceDefinition (Type type)
-		{
-			return FindInterfaceDefinition (type.FullName);
-		}
-
 		// Finds a CustomAttribute on a type from the given name.
-		private CustomAttribute FindCustomAttribute (TypeDefinition type, string fullName)
+		private static CustomAttribute FindCustomAttribute (ICustomAttributeProvider type, string fullName)
 		{
 			foreach (var attribute in type.CustomAttributes) {
 				if (attribute.AttributeType.FullName == fullName)

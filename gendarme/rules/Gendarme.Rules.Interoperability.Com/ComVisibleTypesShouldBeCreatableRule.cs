@@ -76,8 +76,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 				return RuleResult.DoesNotApply;
 
 			// Ensure class is explicitly ComVisible.
-			bool wasExplicit;
-			if (!type.IsComVisible (out wasExplicit) || !wasExplicit)
+			if (!(type.IsComVisible () ?? false))
 				return RuleResult.DoesNotApply;
 
 			// Report success if a default public constructor is found or no parameterized constructor is found.

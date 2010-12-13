@@ -84,12 +84,11 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 			// Iterate through attributes on the type and assembly to ensure that ComVisible is false on the assembly,
 			// and true on the type.
-			bool exp;
 			if (assembly != null) {
-				if (assembly.IsComVisible (out exp) && exp)
+				if (assembly.IsComVisible () ?? false)
 					return RuleResult.Success;
 			}
-			if (!type.IsComVisible (out exp) && exp)
+			if (!(type.IsComVisible () ?? true))
 				return RuleResult.Success;
 
 			// If we find any, low severity as the code works, but it's bad practice.
