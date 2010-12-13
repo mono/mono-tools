@@ -258,6 +258,8 @@ gendarme/rules/Gendarme.Rules.Interoperability/Makefile
 gendarme/rules/Gendarme.Rules.Interoperability/Test/Makefile
 gendarme/rules/Gendarme.Rules.Interoperability.Com/Makefile
 gendarme/rules/Gendarme.Rules.Interoperability.Com/Test/Makefile
+gendarme/rules/Gendarme.Rules.NUnit/Makefile
+gendarme/rules/Gendarme.Rules.NUnit/Test/Makefile
 gendarme/rules/Gendarme.Rules.Serialization/Makefile
 gendarme/rules/Gendarme.Rules.Serialization/Test/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Makefile
