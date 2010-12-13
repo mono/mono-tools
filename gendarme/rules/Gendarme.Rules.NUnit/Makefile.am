@@ -2,8 +2,12 @@ include ../common.make
 
 rules_sources =  \
 	ProvideMessageOnAssertCallsRule.cs \
-	NUnitRule.cs
+	NUnitRocks.cs \
+	NUnitRule.cs \
+	UnitTestsMissingTestFixtureRule.cs 
 
 tests_sources = \
-	ProvideMessageOnAssertCallsTest.cs
+	NUnitRocksTest.cs \
+	ProvideMessageOnAssertCallsTest.cs \
+	UnitTestsMissingTestFixtureTest.cs 
 

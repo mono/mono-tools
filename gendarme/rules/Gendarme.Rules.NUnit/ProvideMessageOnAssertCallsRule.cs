@@ -83,7 +83,7 @@ namespace Gendarme.Rules.NUnit {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			reportCounter = 0;
-			if (!method.HasBody || !HasTestAttribute (method))
+			if (!method.HasBody || !method.IsTest ())
 				return RuleResult.DoesNotApply;
 
 			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
@@ -128,17 +128,6 @@ namespace Gendarme.Rules.NUnit {
 				Runner.Report (defect);
 			} else
 				defectDelayed = defect;
-		}
-
-		private bool HasTestAttribute (MethodDefinition method)
-		{
-			if (method.HasCustomAttributes)
-				foreach (CustomAttribute attribute in method.CustomAttributes)
-					if (attribute.AttributeType.FullName == "NUnit.Framework.TestAttribute" ||
-						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseAttribute" ||
-						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseSourceAttribute")
-						return true;
-			return false;
 		}
 	}
 }

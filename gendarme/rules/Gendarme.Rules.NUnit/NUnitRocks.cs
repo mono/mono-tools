@@ -1,5 +1,5 @@
 ﻿// 
-// Gendarme.Rules.NUnit.NUnitRule
+// Gendarme.Rules.NUnit.NUnitRocks
 //
 // Authors:
 //	Yuri Stuken <stuken.yuri@gmail.com>
@@ -24,40 +24,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using Mono.Cecil;
-using Mono.Cecil.Cil;
-
-using Gendarme.Framework;
-using Gendarme.Framework.Engines;
-using Gendarme.Framework.Helpers;
-using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.NUnit {
 
-	abstract public class NUnitRule : Rule {
-
-		public Version NUnitVersion { get; set; }
-
-		public override void Initialize (IRunner runner)
+	/// <summary>
+	/// NUnitRocks contains extensions methods for NUnit-related methods and types.
+	/// </summary>
+	public static class NUnitRocks {
+		
+		/// <summary>
+		/// Checks if the method is a valid unit test (has corresponding attribute).
+		/// </summary>
+		/// <param name="self">The MethodDefenition on which the extension method can be called.</param>
+		/// <returns>True if method is a unit test, false otherwise.</returns>
+		public static bool IsTest (this MethodDefinition self)
 		{
-			base.Initialize (runner);
-
-			// If the assembly doesn't references nunit.framework then it 
-			// obviously doesn't use any of its types
-			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => 
-			{
-				Active = false;
-				foreach (AssemblyNameReference assembly in e.CurrentModule.AssemblyReferences) {
-					if (assembly.Name == "nunit.framework") {
-						Active = true;
-						NUnitVersion = assembly.Version;
-						return;
-					}
-				}
-
-			};
+			if (self.HasCustomAttributes)
+				foreach (CustomAttribute attribute in self.CustomAttributes)
+					if (attribute.AttributeType.FullName == "NUnit.Framework.TestAttribute" ||
+						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseAttribute" ||
+						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseSourceAttribute")
+						return true;
+			return false;
 		}
 	}
 }

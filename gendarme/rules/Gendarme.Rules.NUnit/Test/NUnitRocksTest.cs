@@ -1,5 +1,5 @@
 ﻿// 
-// Gendarme.Rules.NUnit.NUnitRule
+// Test.Rules.NUnit.NUnitRocksTest
 //
 // Authors:
 //	Yuri Stuken <stuken.yuri@gmail.com>
@@ -25,39 +25,30 @@
 // THE SOFTWARE.
 
 using System;
+using System.Reflection;
 
 using Mono.Cecil;
-using Mono.Cecil.Cil;
+using Gendarme.Rules.NUnit;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Engines;
-using Gendarme.Framework.Helpers;
-using Gendarme.Framework.Rocks;
+using NUnit.Framework;
+using Test.Rules.Fixtures;
+using Test.Rules.Helpers;
+using Test.Rules.Definitions;
 
-namespace Gendarme.Rules.NUnit {
+namespace Test.Rules.NUnit {
 
-	abstract public class NUnitRule : Rule {
-
-		public Version NUnitVersion { get; set; }
-
-		public override void Initialize (IRunner runner)
+	[TestFixture]
+	public class NUnitRocksTest {
+		[Test]
+		public void True ()
 		{
-			base.Initialize (runner);
+			Assert.IsTrue (DefinitionLoader.GetMethodDefinition<NUnitRocksTest> ("True").IsTest ());
+		}
 
-			// If the assembly doesn't references nunit.framework then it 
-			// obviously doesn't use any of its types
-			Runner.AnalyzeModule += (object o, RunnerEventArgs e) => 
-			{
-				Active = false;
-				foreach (AssemblyNameReference assembly in e.CurrentModule.AssemblyReferences) {
-					if (assembly.Name == "nunit.framework") {
-						Active = true;
-						NUnitVersion = assembly.Version;
-						return;
-					}
-				}
-
-			};
+		[Test]
+		public void False ()
+		{
+			Assert.IsFalse (SimpleMethods.EmptyMethod.IsTest());
 		}
 	}
 }
