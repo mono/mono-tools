@@ -54,9 +54,13 @@
     <Compile Include="AvoidInt64ArgumentsInComVisibleMethodsRule.cs" />
     <Compile Include="AvoidNonPublicFieldsInComVisibleValueTypesRule.cs" />
     <Compile Include="AvoidOverloadsInComVisibleInterfacesRule.cs" />
+    <Compile Include="AvoidStaticMembersInComVisibleTypesRule.cs" />
     <Compile Include="ComRocks.cs" />
     <Compile Include="ComVisibleShouldInheritFromComVisibleRule.cs" />
     <Compile Include="ComVisibleTypesShouldBeCreatableRule.cs" />
+    <Compile Include="DoNotUseAutoDualClassInterfaceTypeRule.cs" />
+    <Compile Include="MarkComSourceInterfacesAsIDispatchRule.cs" />
+    <Compile Include="ReviewComRegistrationMethodsRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

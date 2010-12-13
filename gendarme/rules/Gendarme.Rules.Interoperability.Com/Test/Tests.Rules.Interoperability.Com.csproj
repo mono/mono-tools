@@ -60,9 +60,13 @@
     <Compile Include="AvoidInt64ArgumentsInComVisibleMethodsTest.cs" />
     <Compile Include="AvoidNonPublicFieldsInComVisibleValueTypesTest.cs" />
     <Compile Include="AvoidOverloadsInComVisibleInterfacesTest.cs" />
+    <Compile Include="AvoidStaticMembersInComVisibleTypesTest.cs" />
     <Compile Include="ComRocksTest.cs" />
     <Compile Include="ComVisibleShouldInheritFromComVisibleTest.cs" />
     <Compile Include="ComVisibleTypesShouldBeCreatableTest.cs" />
+    <Compile Include="DoNotUseAutoDualClassInterfaceTypeTest.cs" />
+    <Compile Include="MarkComSourceInterfacesAsIDispatchTest.cs" />
+    <Compile Include="ReviewComRegistrationMethodsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
