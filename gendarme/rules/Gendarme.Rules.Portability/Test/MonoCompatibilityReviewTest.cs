@@ -126,30 +126,30 @@ namespace Test.Rules.Portability {
 		public void TestNotImplemented ()
 		{
 			MethodDefinition method = GetTest ("NotImplemented");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "NotImplemented failure test");
 
 			method = GetTest ("NotImplementedLocal");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "NotImplementedLocal success test");
 		}
 
 		[Test]
 		public void TestMissing ()
 		{
 			MethodDefinition method = GetTest ("Missing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "Missing failure test");
 
 			method = GetTest ("MissingLocal");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "MissingLocal success test");
 		}
 
 		[Test]
 		public void TestTODO ()
 		{
 			MethodDefinition method = GetTest ("TODO");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "TODO failure test");
 
 			method = GetTest ("TODOLocal");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method));
+			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "TODOLocal success test");
 		}
 
 		[Test]
@@ -192,9 +192,9 @@ namespace Test.Rules.Portability {
 
 			MonoCompatibilityReviewRule rule = new MonoCompatibilityReviewRule ();
 			rule.Initialize (new TestRunner (rule));
-			Assert.IsNotNull (rule.Missing);
-			Assert.IsNotNull (rule.NotImplemented);
-			Assert.IsNotNull (rule.ToDo);
+			Assert.IsNotNull (rule.Missing, "rule.Missing is not null test");
+			Assert.IsNotNull (rule.NotImplemented, "rule.NotImplemented is not null test");
+			Assert.IsNotNull (rule.ToDo, "rule.ToDo is not null test");
 		}
 	}
 }

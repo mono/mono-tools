@@ -133,19 +133,19 @@ namespace Test.Rules.Smells {
 		public void LargeClassTest () 
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.LargeClass");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Test.Rules.Smells.LargeClass failure test");
 			// 'x', 'foo', 'bar', 'f', 'c' and 's' are reported as prefixes
-			Assert.AreEqual (6, runner.Defects.Count);
+			Assert.AreEqual (6, runner.Defects.Count, "Test.Rules.Smells.LargeClass defect count check");
 		}
 
 		[Test]
 		public void NotLargeClassTest () 
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.NoFieldClass");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckType (type), "Test.Rules.Smells.NoFieldClass does not apply test");
 
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.NotLargeClass");
-			Assert.AreEqual (RuleResult.Success, runner.CheckType (type));
+			Assert.AreEqual (RuleResult.Success, runner.CheckType (type), "Test.Rules.Smells.NotLargeClass success test");
 		}
 
 		
@@ -160,8 +160,8 @@ namespace Test.Rules.Smells {
 		public void ClassWithPrefixedFieldsWithCamelCasingTest ()
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.ClassWithPrefixedFieldsWithCamelCasing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Test.Rules.Smells.ClassWithPrefixedFieldsWithCamelCasing failure test");
+			Assert.AreEqual (1, runner.Defects.Count, "Test.Rules.Smells.ClassWithPrefixedFieldsWithCamelCasing defect count check");
 		}
 			
 		[Test]
@@ -175,16 +175,16 @@ namespace Test.Rules.Smells {
 		public void ClassWithPrefixedFieldsWithDashCasingTest () 
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.ClassWithPrefixedFieldsWithDashCasing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Test.Rules.Smells.ClassWithPrefixedFieldsWithDashCasing failure test");
+			Assert.AreEqual (1, runner.Defects.Count, "Test.Rules.Smells.ClassWithPrefixedFieldsWithDashCasing defect count check");
 		}
 
 		[Test]
 		public void ClassWithPrefixedFieldsWithMDashCasingTest () 
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.ClassWithPrefixedFieldsWithMDashCasing");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Test.Rules.Smells.ClassWithPrefixedFieldsWithMDashCasing failure test");
+			Assert.AreEqual (1, runner.Defects.Count, "Test.Rules.Smells.ClassWithPrefixedFieldsWithMDashCasing defect count check");
 		}
 
 		[Test]
