@@ -49,6 +49,7 @@
             <File Name="Gendarme.Rules.Interoperability.Com.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Interoperability.Com.dll" />
             <File Name="Gendarme.Rules.Maintainability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Maintainability.dll" />
             <File Name="Gendarme.Rules.Naming.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Naming.dll" />
+            <File Name="Gendarme.Rules.NUnit.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.NUnit.dll" />
             <File Name="Gendarme.Rules.Performance.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Performance.dll" />
             <File Name="Gendarme.Rules.Portability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Portability.dll" />
             <File Name="Gendarme.Rules.Security.Cas.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Security.Cas.dll" />
