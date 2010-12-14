@@ -218,13 +218,13 @@ namespace Test.Rules.Correctness {
 		public void Confidences ()
 		{
 			AssertRuleFailure<TestCases> ("High1");
-			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence, "High1-Confidence-High");
 			
 			AssertRuleFailure<TestCases> ("High2");
-			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence, "High2-Confidence-High");
 			
 			AssertRuleFailure<TestCases> ("Low");
-			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence, "Low-Confidence-Low");
 		}
 	}
 }
