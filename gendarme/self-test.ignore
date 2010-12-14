@@ -161,6 +161,8 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.UsePreferredTermsRule::Ch
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.UsePreferredTermsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.UsePreferredTermsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Naming.UseSingularNameInEnumsUnlessAreFlagsRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.NUnit.ProvideMessageOnAssertCallsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.NUnit.UnitTestsMissingTestFixtureRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidConcatenatingCharsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidLargeNumberOfLocalVariablesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidLargeStructureRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -222,6 +224,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Smells.AvoidLongMethodsRule::Che
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Smells.AvoidMessageChainsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Smells.AvoidSwitchStatementsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.UI.AddMatchingArrangeMeasureOverrideRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.UI.ExecutableTargetRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.UI.UseSTAThreadAttributeOnSWFEntryPointsRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 
@@ -536,4 +539,6 @@ T: Gendarme.Rules.Interoperability.Com.ComRocks
 # Some Com rules start with 'Com'
 T: Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule
 T: Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule
+# NUnitRocks is not directly used
+T: Gendarme.Rules.NUnit.NUnitRocks
 

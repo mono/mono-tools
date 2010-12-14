@@ -85,6 +85,9 @@
 	<ruleset name="naming">
 		<rules include="*" from="Gendarme.Rules.Naming.dll"/>
 	</ruleset>
+	<ruleset name="unit-test">
+		<rules include="*" from="Gendarme.Rules.NUnit.dll"/>
+	</ruleset>
 	<ruleset name="smells">
 		<rules include="*" from="Gendarme.Rules.Smells.dll"/>
 	</ruleset>

@@ -9,6 +9,7 @@ RULEDIRS= Gendarme.Rules.BadPractice \
 	 Gendarme.Rules.Interoperability.Com \
 	 Gendarme.Rules.Maintainability \
 	 Gendarme.Rules.Naming \
+	 Gendarme.Rules.NUnit \
 	 Gendarme.Rules.Performance \
 	 Gendarme.Rules.Portability \
 	 Gendarme.Rules.Security \

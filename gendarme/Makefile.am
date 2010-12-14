@@ -48,6 +48,10 @@ self-test: all bin/gendarme.exe.config
 	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --xml bin/self-test.xml --html bin/self-test.html \
 		--ignore=self-test.ignore --severity=all --confidence=all bin/gendarme.exe bin/gendarme-wizard.exe bin/Gendarme.*.dll
 
+check-test: all bin/gendarme.exe.config
+	mono --debug bin/gendarme.exe --config rules/rules.xml --set unit-test --xml bin/unit-test.xml --html bin/unit-test.html \
+		--ignore=unit-test.ignore --severity=all --confidence=all @unit-test.list
+
 test-regress: all
 	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --log regress.log testcases/*.dll testcases/*.exe
 	
