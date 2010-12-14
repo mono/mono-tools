@@ -36,16 +36,22 @@ namespace Gendarme.Rules.NUnit {
 		/// <summary>
 		/// Checks if the method is a valid unit test (has corresponding attribute).
 		/// </summary>
-		/// <param name="self">The MethodDefenition on which the extension method can be called.</param>
+		/// <param name="self">The ICustomAttributeProvider on which the extension method can be called.</param>
 		/// <returns>True if method is a unit test, false otherwise.</returns>
-		public static bool IsTest (this MethodDefinition self)
+		public static bool IsTest (this ICustomAttributeProvider self)
 		{
-			if (self.HasCustomAttributes)
-				foreach (CustomAttribute attribute in self.CustomAttributes)
-					if (attribute.AttributeType.FullName == "NUnit.Framework.TestAttribute" ||
-						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseAttribute" ||
-						attribute.AttributeType.FullName == "NUnit.Framework.TestCaseSourceAttribute")
-						return true;
+			if ((self == null) || !self.HasCustomAttributes)
+				return false;
+
+			foreach (CustomAttribute attribute in self.CustomAttributes) {
+				TypeReference type = attribute.AttributeType;
+				if (type.Namespace != "NUnit.Framework")
+					continue;
+
+				string name = attribute.AttributeType.Name;
+				if (name == "TestAttribute" || name == "TestCaseAttribute" || name == "TestCaseSourceAttribute")
+					return true;
+			}
 			return false;
 		}
 	}
