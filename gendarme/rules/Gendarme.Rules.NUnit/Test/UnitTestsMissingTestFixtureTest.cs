@@ -82,8 +82,8 @@ namespace Test.Rules.NUnit {
 			AssertRuleSuccess<TestFixtureClass> ();
 			AssertRuleSuccess<InheritsFromTestFixtureClass> ();
 
-			AddTestAttribute (DefinitionLoader.GetMethodDefinition<TestFixtureClass> ("TestMethod"));
-			AddTestAttribute (DefinitionLoader.GetMethodDefinition<InheritsFromTestFixtureClass> ("AnotherTestMethod"));
+			DefinitionLoader.GetMethodDefinition<TestFixtureClass> ("TestMethod").AddTestAttribute ();
+			DefinitionLoader.GetMethodDefinition<InheritsFromTestFixtureClass> ("AnotherTestMethod").AddTestAttribute ();
 			AssertRuleSuccess<TestFixtureClass> ();
 			AssertRuleSuccess<InheritsFromTestFixtureClass> ();
 
@@ -97,14 +97,8 @@ namespace Test.Rules.NUnit {
 		[Test]
 		public void Bad ()
 		{
-			AddTestAttribute (DefinitionLoader.GetMethodDefinition<NoTestFixtureClass> ("TestMethod"));
+			DefinitionLoader.GetMethodDefinition<NoTestFixtureClass> ("TestMethod").AddTestAttribute ();
 			AssertRuleFailure<NoTestFixtureClass> ();
-		}
-
-		private void AddTestAttribute (MethodDefinition method)
-		{
-			MethodDefinition ctor = DefinitionLoader.GetMethodDefinition<TestAttribute> (".ctor");
-			method.CustomAttributes.Add (new CustomAttribute (ctor));
 		}
 	}
 }

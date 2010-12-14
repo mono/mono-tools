@@ -106,11 +106,11 @@ namespace Test.Rules.NUnit {
 		public void DoesNotApply ()
 		{
 			MethodDefinition m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("DoesNotApplyExternal");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleDoesNotApply (m);
 
 			m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("DoesNotApplyEmpty");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleDoesNotApply (m);
 
 			AssertRuleDoesNotApply<ProvideMessageOnAssertCallsTest> ("DoesNotApplyNoAttributes");
@@ -120,15 +120,15 @@ namespace Test.Rules.NUnit {
 		public void Good ()
 		{
 			MethodDefinition m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("GoodOneBadAssert");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleSuccess (m);
 
 			m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("GoodExceptions");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleSuccess (m);
 
 			m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("GoodWithMessages");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleSuccess (m);
 		}
 
@@ -136,18 +136,12 @@ namespace Test.Rules.NUnit {
 		public void Bad ()
 		{
 			MethodDefinition m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("BadTestAttribute");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleFailure (m, 2);
 
 			m = DefinitionLoader.GetMethodDefinition<ProvideMessageOnAssertCallsTest> ("FourBadAsserts");
-			AddTestAttribute (m);
+			m.AddTestAttribute ();
 			AssertRuleFailure (m, 4);
-		}
-
-		private void AddTestAttribute (MethodDefinition method)
-		{
-			MethodDefinition ctor = DefinitionLoader.GetMethodDefinition<TestAttribute> (".ctor");
-			method.CustomAttributes.Add (new CustomAttribute (ctor));
 		}
 	}
 }
