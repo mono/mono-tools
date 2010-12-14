@@ -42,6 +42,7 @@ using Test.Rules.Definitions;
 
 namespace Test.Rules.Interoperability.Com {
 
+	[TestFixture]
 	public class ComVisibleShouldInheritFromComVisibleTest : TypeRuleTestFixture<ComVisibleShouldInheritFromComVisibleRule> {
 
 		[ComVisible (false)]
