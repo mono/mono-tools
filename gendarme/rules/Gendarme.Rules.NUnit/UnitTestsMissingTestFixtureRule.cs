@@ -84,7 +84,7 @@ namespace Gendarme.Rules.NUnit {
 				if (testingType.HasAttribute ("NUnit.Framework.TestFixtureAttribute"))
 					return RuleResult.Success;
 				if (testingType.BaseType != null)
-					testingType = type.BaseType.Resolve ();
+					testingType = testingType.BaseType.Resolve ();
 				else
 					break;
 			}

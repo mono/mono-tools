@@ -89,6 +89,9 @@ namespace Test.Rules.NUnit {
 
 			// no TestFixture and no Test attributes
 			AssertRuleSuccess (SimpleTypes.Class);
+
+			// deep (more than one) hierarchy / loop
+			AssertRuleSuccess<UnitTestsMissingTestFixtureRule> ();
 		}
 
 		[Test]
