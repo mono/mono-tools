@@ -159,6 +159,8 @@ namespace GuiCompare {
 				case "System.Runtime.CompilerServices.InternalsVisibleToAttribute":
 				case "System.Runtime.TargetedPatchingOptOutAttribute":
 				case "System.Runtime.InteropServices.ComVisibleAttribute":
+				case "System.Runtime.AssemblyTargetedPatchBandAttribute":
+				case "System.Diagnostics.DebuggableAttribute":
 				return true;
 			}
 				
@@ -408,6 +410,13 @@ namespace GuiCompare {
 		public override List<CompNamed> GetAttributes ()
 		{
 			return MasterUtils.GetAttributes (xml_cls.attributes);
+		}
+		
+		public override List<CompNamed> GetConstructors ()
+		{
+			List<CompNamed> ctor_list = new List<CompNamed> ();
+			MasterUtils.PopulateMethodList (xml_cls.constructors, ctor_list);
+			return ctor_list;
 		}
 		
 		public override List<CompNamed> GetMethods ()
