@@ -45,6 +45,7 @@
     <Compile Include="NUnitRocks.cs" />
     <Compile Include="NUnitRule.cs" />
     <Compile Include="ProvideMessageOnAssertCallsRule.cs" />
+    <Compile Include="TestMethodsMustBePublicRule.cs" />
     <Compile Include="UnitTestsMissingTestFixtureRule.cs" />
   </ItemGroup>
   <ItemGroup>

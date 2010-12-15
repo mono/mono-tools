@@ -38,8 +38,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers.cs" />
     <Compile Include="NUnitRocksTest.cs" />
     <Compile Include="ProvideMessageOnAssertCallsTest.cs" />
+    <Compile Include="TestMethodsMustBePublicTest.cs" />
     <Compile Include="UnitTestsMissingTestFixtureTest.cs" />
   </ItemGroup>
   <ItemGroup>
