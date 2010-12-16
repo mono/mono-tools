@@ -74,6 +74,7 @@ namespace Gendarme.Rules.Design {
 
 	[Problem ("The enum seems to be composed of flag values, but is not decorated with [Flags].")]
 	[Solution ("Add [Flags] to the enum,  change the values so that they are not powers of two, or ignore the defect.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1027:MarkEnumsWithFlags")]
 	public sealed class UseFlagsAttributeRule : Rule, ITypeRule {
 	
 		private List<ulong> values = new List<ulong> ();

@@ -67,6 +67,7 @@ namespace Gendarme.Rules.BadPractice {
 
 	[Problem ("The [Obsolete] attribute was used but no help, alternative or description was provided.")]
 	[Solution ("Provide advice to help developers abandon old features and migrate to newer ones.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
 	public class ObsoleteMessagesShouldNotBeEmptyRule : Rule, ITypeRule {
 
 		private const string ObsoleteAttribute = "System.ObsoleteAttribute";

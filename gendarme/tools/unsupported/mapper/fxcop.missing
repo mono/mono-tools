@@ -2,15 +2,12 @@ Microsoft.Design
 CA1000	Do not declare static members on generic types                                               http://msdn.microsoft.com/en-us/library/ms182139.aspx
 CA1002	Do not expose generic lists                                                                  http://msdn.microsoft.com/en-us/library/ms182142.aspx
 CA1005	Avoid excessive parameters on generic types                                                  http://msdn.microsoft.com/en-us/library/ms182129.aspx
-CA1011	Consider passing base types as parameters                                                    http://msdn.microsoft.com/en-us/library/3hk32yyz.aspx
 CA1025	Replace repetitive arguments with params array                                               http://msdn.microsoft.com/en-us/library/ms182167.aspx
 CA1026	Default parameters should not be used                                                        http://msdn.microsoft.com/en-us/library/ms182135.aspx
-CA1027	Mark enums with FlagsAttribute                                                               http://msdn.microsoft.com/en-us/library/ms182159.aspx
 CA1033	Interface methods should be callable by child types                                          http://msdn.microsoft.com/en-us/library/ms182153.aspx
 CA1035	ICollection implementations have strongly typed members                                      http://msdn.microsoft.com/en-us/library/49stb304.aspx
 CA1038	Enumerators should be strongly typed                                                         http://msdn.microsoft.com/en-us/library/ms182148.aspx
 CA1039	Lists are strongly typed                                                                     http://msdn.microsoft.com/en-us/library/ms182154.aspx
-CA1041	Provide ObsoleteAttribute message                                                            http://msdn.microsoft.com/en-us/library/ms182166.aspx
 CA1046	Do not overload operator equals on reference types                                           http://msdn.microsoft.com/en-us/library/ms182145.aspx
 CA1052	Static holder types should be sealed                                                         http://msdn.microsoft.com/en-us/library/ms182168.aspx
 CA1054	URI parameters should not be strings                                                         http://msdn.microsoft.com/en-us/library/ms182174.aspx
@@ -77,7 +74,6 @@ CA2108	Review declarative security on value types                               
 CA2109	Review visible event handlers                                                                http://msdn.microsoft.com/en-us/library/ms182312.aspx
 CA2116	APTCA methods should only call APTCA methods                                                 http://msdn.microsoft.com/en-us/library/ms182297.aspx
 CA2117	APTCA types should only extend APTCA base types                                              http://msdn.microsoft.com/en-us/library/ms182298.aspx
-CA2118	Review SuppressUnmanagedCodeSecurityAttribute usage                                          http://msdn.microsoft.com/en-us/library/ms182311.aspx
 CA2119	Seal methods that satisfy private interfaces                                                 http://msdn.microsoft.com/en-us/library/ms182313.aspx
 CA2120	Secure serialization constructors                                                            http://msdn.microsoft.com/en-us/library/ms182317.aspx
 CA2123	Override link demands should be identical to base                                            http://msdn.microsoft.com/en-us/library/ms182305.aspx
@@ -109,7 +105,6 @@ CA2202	Do not dispose objects multiple times                                    
 CA2204	Literals should be spelled correctly                                                         http://msdn.microsoft.com/en-us/library/bb264488.aspx
 CA2207	Initialize value type static fields inline                                                   http://msdn.microsoft.com/en-us/library/ms182346.aspx
 CA2212	Do not mark serviced components with WebMethod                                               http://msdn.microsoft.com/en-us/library/ms182336.aspx
-CA2214	Do not call overridable methods in constructors                                              http://msdn.microsoft.com/en-us/library/ms182331.aspx
 CA2215	Dispose methods should call base class dispose                                               http://msdn.microsoft.com/en-us/library/ms182330.aspx
 CA2217	Do not mark enums with FlagsAttribute                                                        http://msdn.microsoft.com/en-us/library/ms182335.aspx
 CA2219	Do not raise exceptions in exception clauses                                                 http://msdn.microsoft.com/en-us/library/bb386041.aspx
@@ -118,4 +113,3 @@ CA2223	Members should differ by more than return type                           
 CA2227	Collection properties should be read only                                                    http://msdn.microsoft.com/en-us/library/ms182327.aspx
 CA2228	Do not ship unreleased resource formats                                                      http://msdn.microsoft.com/en-us/library/ms182339.aspx
 CA2233	Operations should not overflow                                                               http://msdn.microsoft.com/en-us/library/ms182354.aspx
-CA2241	Provide correct arguments to formatting methods                                              http://msdn.microsoft.com/en-us/library/ms182361.aspx
