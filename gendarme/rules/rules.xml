@@ -18,6 +18,7 @@
 		<rules include="*" from="Gendarme.Rules.Smells.dll"/>
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
 		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
+		<rules include="*" from="Gendarme.Rules.Gendarme.dll"/>
 	</ruleset>
 
 	<ruleset name="default">
@@ -114,5 +115,8 @@
 	</ruleset>
 	<ruleset name="maintainability">
 		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
+	</ruleset>
+	<ruleset name="gendarme">
+		<rules include="*" from="Gendarme.Rules.Gendarme.dll"/>
 	</ruleset>
 </gendarme>
