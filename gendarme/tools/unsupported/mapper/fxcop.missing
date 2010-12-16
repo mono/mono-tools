@@ -1,0 +1,121 @@
+Microsoft.Design
+CA1000	Do not declare static members on generic types                                               http://msdn.microsoft.com/en-us/library/ms182139.aspx
+CA1002	Do not expose generic lists                                                                  http://msdn.microsoft.com/en-us/library/ms182142.aspx
+CA1005	Avoid excessive parameters on generic types                                                  http://msdn.microsoft.com/en-us/library/ms182129.aspx
+CA1011	Consider passing base types as parameters                                                    http://msdn.microsoft.com/en-us/library/3hk32yyz.aspx
+CA1025	Replace repetitive arguments with params array                                               http://msdn.microsoft.com/en-us/library/ms182167.aspx
+CA1026	Default parameters should not be used                                                        http://msdn.microsoft.com/en-us/library/ms182135.aspx
+CA1027	Mark enums with FlagsAttribute                                                               http://msdn.microsoft.com/en-us/library/ms182159.aspx
+CA1033	Interface methods should be callable by child types                                          http://msdn.microsoft.com/en-us/library/ms182153.aspx
+CA1035	ICollection implementations have strongly typed members                                      http://msdn.microsoft.com/en-us/library/49stb304.aspx
+CA1038	Enumerators should be strongly typed                                                         http://msdn.microsoft.com/en-us/library/ms182148.aspx
+CA1039	Lists are strongly typed                                                                     http://msdn.microsoft.com/en-us/library/ms182154.aspx
+CA1041	Provide ObsoleteAttribute message                                                            http://msdn.microsoft.com/en-us/library/ms182166.aspx
+CA1046	Do not overload operator equals on reference types                                           http://msdn.microsoft.com/en-us/library/ms182145.aspx
+CA1052	Static holder types should be sealed                                                         http://msdn.microsoft.com/en-us/library/ms182168.aspx
+CA1054	URI parameters should not be strings                                                         http://msdn.microsoft.com/en-us/library/ms182174.aspx
+CA1055	URI return values should not be strings                                                      http://msdn.microsoft.com/en-us/library/ms182176.aspx
+CA1056	URI properties should not be strings                                                         http://msdn.microsoft.com/en-us/library/ms182175.aspx
+CA1058	Types should not extend certain base types                                                   http://msdn.microsoft.com/en-us/library/ms182171.aspx
+CA1061	Do not hide base class methods                                                               http://msdn.microsoft.com/en-us/library/ms182143.aspx
+CA1063	Implement IDisposable correctly                                                              http://msdn.microsoft.com/en-us/library/ms244737.aspx
+CA2210	Assemblies should have valid strong names                                                    http://msdn.microsoft.com/en-us/library/ms182127.aspx
+
+Microsoft.Globalization
+CA1300	Specify MessageBoxOptions                                                                    http://msdn.microsoft.com/en-us/library/ms182191.aspx
+CA1301	Avoid duplicate accelerators                                                                 http://msdn.microsoft.com/en-us/library/ms182185.aspx
+CA1302	Do not hardcode locale specific strings                                                      http://msdn.microsoft.com/en-us/library/ms182186.aspx
+CA1303	Do not pass literals as localized parameters                                                 http://msdn.microsoft.com/en-us/library/ms182187.aspx
+CA1304	Specify CultureInfo                                                                          http://msdn.microsoft.com/en-us/library/ms182189.aspx
+CA1305	Specify IFormatProvider                                                                      http://msdn.microsoft.com/en-us/library/ms182190.aspx
+CA1306	Set locale for data types                                                                    http://msdn.microsoft.com/en-us/library/ms182188.aspx
+CA1307	Specify StringComparison                                                                     http://msdn.microsoft.com/en-us/library/bb386080.aspx
+CA1308	Normalize strings to uppercase                                                               http://msdn.microsoft.com/en-us/library/bb386042.aspx
+CA1309	Use ordinal StringComparison                                                                 http://msdn.microsoft.com/en-us/library/bb385972.aspx
+
+Microsoft.Maintainability
+CA1505	Avoid unmaintainable code                                                                    http://msdn.microsoft.com/en-us/library/bb386043.aspx
+CA1506	Avoid excessive class coupling                                                               http://msdn.microsoft.com/en-us/library/bb397994.aspx
+
+Microsoft.Mobility
+CA1600	Do not use idle process priority                                                             http://msdn.microsoft.com/en-us/library/ms182219.aspx
+CA1601	Do not use timers that prevent power state changes                                           http://msdn.microsoft.com/en-us/library/ms182230.aspx
+
+Microsoft.Naming
+CA1701	Resource string compound words should be cased correctly                                     http://msdn.microsoft.com/en-us/library/bb264481.aspx
+CA1702	Compound words should be cased correctly                                                     http://msdn.microsoft.com/en-us/library/bb264474.aspx
+CA1703	Resource strings should be spelled correctly                                                 http://msdn.microsoft.com/en-us/library/bb264483.aspx
+CA1704	Identifiers should be spelled correctly                                                      http://msdn.microsoft.com/en-us/library/bb264492.aspx
+CA1708	Identifiers should differ by more than case                                                  http://msdn.microsoft.com/en-us/library/ms182242.aspx
+CA1716	Identifiers should not match keywords                                                        http://msdn.microsoft.com/en-us/library/ms182248.aspx
+CA1717	Only FlagsAttribute enums should have plural names                                           http://msdn.microsoft.com/en-us/library/bb264487.aspx
+CA1719	Parameter names should not match member names                                                http://msdn.microsoft.com/en-us/library/ms182252.aspx
+CA1720	Identifiers should not contain type names                                                    http://msdn.microsoft.com/en-us/library/bb531486.aspx
+CA1721	Property names should not match get methods                                                  http://msdn.microsoft.com/en-us/library/ms182253.aspx
+CA1724	Type Names Should Not Match Namespaces                                                       http://msdn.microsoft.com/en-us/library/ms182257.aspx
+
+Microsoft.Performance
+CA1810	Initialize reference type static fields inline                                               http://msdn.microsoft.com/en-us/library/ms182275.aspx
+CA1814	Prefer jagged arrays over multidimensional                                                   http://msdn.microsoft.com/en-us/library/ms182277.aspx
+CA1824	Mark assemblies with NeutralResourcesLanguageAttribute                                       http://msdn.microsoft.com/en-us/library/bb385967.aspx
+
+Microsoft.Portability
+CA1900	Value type fields should be portable                                                         http://msdn.microsoft.com/en-us/library/ms182285.aspx
+CA1903	Use only API from targeted framework                                                         http://msdn.microsoft.com/en-us/library/cc667408.aspx
+
+Microsoft.Reliability
+CA2000	Dispose objects before losing scope                                                          http://msdn.microsoft.com/en-us/library/ms182289.aspx
+CA2003	Do not treat fibers as threads                                                               http://msdn.microsoft.com/en-us/library/ms182291.aspx
+
+Microsoft.Security
+CA2100	Review SQL queries for security vulnerabilities                                              http://msdn.microsoft.com/en-us/library/ms182310.aspx
+CA2103	Review imperative security                                                                   http://msdn.microsoft.com/en-us/library/ms182309.aspx
+CA2104	Do not declare read only mutable reference types                                             http://msdn.microsoft.com/en-us/library/ms182302.aspx
+CA2106	Secure asserts                                                                               http://msdn.microsoft.com/en-us/library/ms182314.aspx
+CA2107	Review deny and permit only usage                                                            http://msdn.microsoft.com/en-us/library/ms182308.aspx
+CA2108	Review declarative security on value types                                                   http://msdn.microsoft.com/en-us/library/ms182307.aspx
+CA2109	Review visible event handlers                                                                http://msdn.microsoft.com/en-us/library/ms182312.aspx
+CA2116	APTCA methods should only call APTCA methods                                                 http://msdn.microsoft.com/en-us/library/ms182297.aspx
+CA2117	APTCA types should only extend APTCA base types                                              http://msdn.microsoft.com/en-us/library/ms182298.aspx
+CA2118	Review SuppressUnmanagedCodeSecurityAttribute usage                                          http://msdn.microsoft.com/en-us/library/ms182311.aspx
+CA2119	Seal methods that satisfy private interfaces                                                 http://msdn.microsoft.com/en-us/library/ms182313.aspx
+CA2120	Secure serialization constructors                                                            http://msdn.microsoft.com/en-us/library/ms182317.aspx
+CA2123	Override link demands should be identical to base                                            http://msdn.microsoft.com/en-us/library/ms182305.aspx
+CA2124	Wrap vulnerable finally clauses in outer try                                                 http://msdn.microsoft.com/en-us/library/ms182322.aspx
+CA2136	Members should not have conflicting transparency annotations                                 http://msdn.microsoft.com/en-us/library/bb264493.aspx
+CA2147	Transparent methods may not use security asserts                                             http://msdn.microsoft.com/en-us/library/bb264482.aspx
+CA2140	Transparent code must not reference security critical items                                  http://msdn.microsoft.com/en-us/library/bb264475.aspx
+CA2130	Security critical constants should be transparent                                            http://msdn.microsoft.com/en-us/library/dd997446.aspx
+CA2131	Security critical types may not participate in type equivalence                              http://msdn.microsoft.com/en-us/library/dd997564.aspx
+CA2132	Default constructors must be at least as critical as base type default constructors          http://msdn.microsoft.com/en-us/library/dd983956.aspx
+CA2133	Delegates must bind to methods with consistent transparency                                  http://msdn.microsoft.com/en-us/library/dd997710.aspx
+CA2134	Methods must keep consistent transparency when overriding base methods                       http://msdn.microsoft.com/en-us/library/dd997447.aspx
+CA2135	Level 2 assemblies should not contain LinkDemands                                            http://msdn.microsoft.com/en-us/library/dd997569.aspx
+CA2136	Members should not have conflicting transparency annotations                                 http://msdn.microsoft.com/en-us/library/bb264493.aspx
+CA2137	Transparent methods must contain only verifiable IL                                          http://msdn.microsoft.com/en-us/library/dd983954.aspx
+CA2138	Transparent methods must not call methods with the SuppressUnmanagedCodeSecurity attribute   http://msdn.microsoft.com/en-us/library/dd997711.aspx
+CA2139	Transparent methods may not use the HandleProcessCorruptingExceptions attribute              http://msdn.microsoft.com/en-us/library/dd997565.aspx
+CA2140	Transparent code must not reference security critical items                                  http://msdn.microsoft.com/en-us/library/bb264475.aspx
+CA2142	Transparent code should not be protected with LinkDemands                                    http://msdn.microsoft.com/en-us/library/dd997567.aspx
+CA2143	Transparent methods should not use security demands                                          http://msdn.microsoft.com/en-us/library/dd997566.aspx
+CA2144	Transparent code should not load assemblies from byte arrays                                 http://msdn.microsoft.com/en-us/library/dd997568.aspx
+CA2145	Transparent methods should not be decorated with the SuppressUnmanagedCodeSecurityAttribute  http://msdn.microsoft.com/en-us/library/dd997570.aspx
+CA2146	Types must be at least as critical as their base types and interfaces                        http://msdn.microsoft.com/en-us/library/dd997443.aspx
+CA2147	Transparent methods may not use security asserts                                             http://msdn.microsoft.com/en-us/library/bb264482.aspx
+CA2149	Transparent methods must not call into native code                                           http://msdn.microsoft.com/en-us/library/ee155709.aspx
+
+Microsoft.Usage
+CA2202	Do not dispose objects multiple times                                                        http://msdn.microsoft.com/en-us/library/ms182334.aspx
+CA2204	Literals should be spelled correctly                                                         http://msdn.microsoft.com/en-us/library/bb264488.aspx
+CA2207	Initialize value type static fields inline                                                   http://msdn.microsoft.com/en-us/library/ms182346.aspx
+CA2212	Do not mark serviced components with WebMethod                                               http://msdn.microsoft.com/en-us/library/ms182336.aspx
+CA2214	Do not call overridable methods in constructors                                              http://msdn.microsoft.com/en-us/library/ms182331.aspx
+CA2215	Dispose methods should call base class dispose                                               http://msdn.microsoft.com/en-us/library/ms182330.aspx
+CA2217	Do not mark enums with FlagsAttribute                                                        http://msdn.microsoft.com/en-us/library/ms182335.aspx
+CA2219	Do not raise exceptions in exception clauses                                                 http://msdn.microsoft.com/en-us/library/bb386041.aspx
+CA2222	Do not decrease inherited member visibility                                                  http://msdn.microsoft.com/en-us/library/ms182332.aspx
+CA2223	Members should differ by more than return type                                               http://msdn.microsoft.com/en-us/library/ms182352.aspx
+CA2227	Collection properties should be read only                                                    http://msdn.microsoft.com/en-us/library/ms182327.aspx
+CA2228	Do not ship unreleased resource formats                                                      http://msdn.microsoft.com/en-us/library/ms182339.aspx
+CA2233	Operations should not overflow                                                               http://msdn.microsoft.com/en-us/library/ms182354.aspx
+CA2241	Provide correct arguments to formatting methods                                              http://msdn.microsoft.com/en-us/library/ms182361.aspx
