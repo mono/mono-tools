@@ -95,10 +95,11 @@ namespace Gendarme.Rules.Interoperability.Com {
 				return RuleResult.DoesNotApply;
 
 			TypeDefinition baseType = type.BaseType.Resolve ();
-			if (!IsTypeComVisible (baseType))
+			if ((baseType != null) && !IsTypeComVisible (baseType)) {
 				Runner.Report (type, Severity.High, Confidence.Total,
 					String.Format ("Type is derived from invisible from COM type {0}",
 						baseType.FullName));
+			}
 			return Runner.CurrentRuleResult;
 		}
 
