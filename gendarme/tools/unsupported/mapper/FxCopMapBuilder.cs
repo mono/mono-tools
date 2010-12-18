@@ -35,10 +35,6 @@ using System.Linq;
 using Mono.Cecil;
 using System.Text;
 
-[assembly: AssemblyVersion ("1.0.1.0")]
-[assembly: CLSCompliant (false)]
-[assembly: ComVisible (false)]
-
 namespace FxCopMapBuilder {
 
 	static class FxCopMapBuilder {
