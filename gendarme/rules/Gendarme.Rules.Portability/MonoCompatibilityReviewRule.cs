@@ -318,8 +318,8 @@ namespace Gendarme.Rules.Portability {
 			return set;
 		}
 
-		// this correspond to Call, Calli, Callvirt, Newobj, Initobj, Ldftn, Ldvirtftn
-		private static OpCodeBitmask mask = new OpCodeBitmask (0x18000000000, 0x4400000000000, 0x0, 0x40060);
+		// this correspond to Call, Callvirt, Newobj, Initobj, Ldftn, Ldvirtftn
+		private static OpCodeBitmask mask = new OpCodeBitmask (0x8000000000, 0x4400000000000, 0x0, 0x40060);
 		
 		public RuleResult CheckMethod (MethodDefinition method)
 		{

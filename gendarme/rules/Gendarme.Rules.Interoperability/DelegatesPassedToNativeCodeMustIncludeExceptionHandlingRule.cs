@@ -110,11 +110,11 @@ namespace Gendarme.Rules.Interoperability {
 		
 		// A list of all the fields which have been passed to pinvokes (as a delegate parameter).
 		// We report an error if a ld[s]fld stores an unsafe function pointer into any of these fields.
-		List<FieldDefinition> loaded_fields = new List<FieldDefinition> ();
+		List<FieldReference> loaded_fields = new List<FieldReference> ();
 		
 		// A list of all the fields which have been assigned function pointers.
 		// We report an error if a pinvoke loads any of these fields.
-		Dictionary<FieldDefinition, List<MethodDefinition>> stored_fields = new Dictionary<FieldDefinition, List<MethodDefinition>> ();
+		Dictionary<FieldReference, List<MethodDefinition>> stored_fields = new Dictionary<FieldReference, List<MethodDefinition>> ();
 				
 		// A list of all the locals in a method. 
 		// Have one class-level instance which is emptied before checking a method.
@@ -374,7 +374,7 @@ namespace Gendarme.Rules.Interoperability {
 		private void VerifyStoreFieldInstruction (Instruction ins, int stack_count)
 		{
 			List<MethodDefinition> pointers;
-			FieldDefinition field = (ins.Operand as FieldReference).Resolve ();
+			FieldReference field = (ins.Operand as FieldReference);
 			
 			pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
 			
@@ -424,7 +424,7 @@ namespace Gendarme.Rules.Interoperability {
 					// if we load a field, store the field so that any subsequent unsafe writes to that field can be reported.
 					Instruction last = stack [i].Last;
 					if (last.OpCode.Code == Code.Ldfld || last.OpCode.Code == Code.Ldsfld) {
-						FieldDefinition field = (last.Operand as FieldReference).Resolve ();
+						FieldReference field = (last.Operand as FieldReference);
 						loaded_fields.AddIfNew (field);
 					}
 					
@@ -589,11 +589,9 @@ namespace Gendarme.Rules.Interoperability {
 			// If the last opcode is a field load, check if any pointers have been stored in that field.
 			if (stored_fields.Count > 0 && range.Last.OpCode.Code == Code.Ldfld || range.Last.OpCode.Code == Code.Ldsfld) {
 				FieldReference field = range.Last.Operand as FieldReference;
-				FieldDefinition field_definition;
 				List<MethodDefinition> pointers;
 				if (field != null) {
-					field_definition = (range.Last.Operand as FieldReference).Resolve ();
-					if (field_definition != null && stored_fields.TryGetValue (field_definition, out pointers)) {
+					if (stored_fields.TryGetValue (field, out pointers)) {
 						if (result == null)
 							result = new List<MethodDefinition> ();
 						result.AddRange (pointers);

@@ -185,7 +185,7 @@ namespace Gendarme.Rules.Interoperability {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.GetMethod ();
 				if (mr == null)
 					continue;
 

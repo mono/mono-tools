@@ -138,10 +138,7 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.FlowControl != FlowControl.Call)
-					continue;
-
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.GetMethod ();
 				if ((mr == null) || (mr.DeclaringType.FullName != "System.Math"))
 					continue;
 

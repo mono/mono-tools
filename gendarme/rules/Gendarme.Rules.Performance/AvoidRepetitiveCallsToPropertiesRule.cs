@@ -176,16 +176,13 @@ namespace Gendarme.Rules.Performance {
 			calls.Clear ();
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.FlowControl != FlowControl.Call)
-					continue;
-
-				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr == null)
+				MethodReference mr = ins.GetMethod ();
+				if ((mr == null) || mr.HasParameters)
 					continue;
 
 				MethodDefinition md = mr.Resolve ();
 				// md can be null for things like: new byte[,];
-				if ((md == null) || !md.IsGetter || md.HasParameters)
+				if ((md == null) || !md.IsGetter)
 					continue;
 
 				if ((!md.IsVirtual || md.IsFinal) && IsInliningCandidate (md))

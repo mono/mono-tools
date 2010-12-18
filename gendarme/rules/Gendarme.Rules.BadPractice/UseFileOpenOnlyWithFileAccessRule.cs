@@ -89,10 +89,7 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.FlowControl != FlowControl.Call)
-					continue;
-				
-				MethodReference m = (instruction.Operand as MethodReference);
+				MethodReference m = instruction.GetMethod ();
 				// note: namespace check should be extended if anything outside of System.IO.* 
 				// was added to the 'methods'
 				if (m == null || !m.HasParameters || !m.DeclaringType.Namespace.StartsWith("System.IO"))

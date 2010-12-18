@@ -212,7 +212,7 @@ namespace Gendarme.Rules.Interoperability {
 				if (ins.Next == null)
 					break;
 
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.GetMethod ();
 				if (mr == null)
 					break;
 
