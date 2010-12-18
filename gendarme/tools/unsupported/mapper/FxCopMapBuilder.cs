@@ -31,10 +31,11 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using System.Linq;
 using Mono.Cecil;
+using System.Text;
 
-
-[assembly: AssemblyVersion ("1.0.0.0")]
+[assembly: AssemblyVersion ("1.0.1.0")]
 [assembly: CLSCompliant (false)]
 [assembly: ComVisible (false)]
 
@@ -47,30 +48,35 @@ namespace FxCopMapBuilder {
 
 		static void Main (string [] args)
 		{
-			string dirname = ".", fxCopFile = "fxCopToGendarme.xml", gendarmeFile = "gendarmeToFxCop.xml";
-			bool error = false, include = false;
+			string dirname = ".", fxCopFile = "FxCopToGendarme", gendarmeFile = "GendarmeToFxCop";
+			bool error = false, include = false, xmloutput = true;
 
 			try {
 				dirname = args [0];
-				fxCopFile = args [1];
-				gendarmeFile = args [2];
-				include = (args [3] == "/I");
+				xmloutput = !(args [1] == "/target:wiki");
+				fxCopFile = args [2];
+				gendarmeFile = args [3];
+				include = (args [4] == "/I");
 			}
 			catch (IndexOutOfRangeException e) {
 				// nothing to do
 			}
 
+			string ext = (xmloutput) ? "xml" : "md";
+			
+			fxCopFile = Path.ChangeExtension (fxCopFile, ext);
+			gendarmeFile = Path.ChangeExtension (gendarmeFile, ext);
 
 			if (!Directory.Exists (dirname))
 				error = true;
 
 			if (error) {
-				Console.WriteLine ("Usage: fxcopmapbuilder [dirname] [fxcopmapfile] [gendarmemapfile] [/I]");
+				Console.WriteLine ("Usage: fxcopmapbuilder [dirname] [/target:wiki] [fxcopmapfile] [gendarmemapfile] [/I]");
 				Console.WriteLine ();
 				Console.WriteLine ("\t/I\tIncludes Gendarme rules which were not mapped to any of FxCop rules to the output");
 			} else {
 				BuildMap (dirname, include);
-				WriteXml (fxCopFile, gendarmeFile);
+				BuildXml (fxCopFile, gendarmeFile, xmloutput);
 			}
 		}
 
@@ -125,7 +131,7 @@ namespace FxCopMapBuilder {
 			}
 		}
 
-		private static void WriteXml (string fxCopToGendarmeFilename, string gendarmeToFxCopFilename)
+		private static void BuildXml (string fxCopToGendarmeFilename, string gendarmeToFxCopFilename, bool xmloutput)
 		{
 			// Writing FxCop to Gendarme rules map
 			XElement root = new XElement ("rules");
@@ -147,7 +153,13 @@ namespace FxCopMapBuilder {
 				root.Add (rule);
 
 			}
-			new XDocument (root).Save (fxCopToGendarmeFilename);
+
+			SortXml (root);
+			if (xmloutput)
+				new XDocument (root).Save (fxCopToGendarmeFilename);
+			else
+				using (StreamWriter output = new StreamWriter (fxCopToGendarmeFilename))
+					output.Write (BuildWikiTextFromXml(root));
 
 			// Writing Gendarme to FxCop rules map
 			root = new XElement ("rules");
@@ -168,8 +180,55 @@ namespace FxCopMapBuilder {
 				}
 				root.Add (rule);
 			}
-			new XDocument (root).Save (gendarmeToFxCopFilename);
+
+			SortXml (root);
+			if (xmloutput)
+				new XDocument (root).Save (gendarmeToFxCopFilename);
+			else
+				using (StreamWriter output = new StreamWriter (gendarmeToFxCopFilename))
+					output.Write (BuildWikiTextFromXml (root));
 		}
 
+		private static XElement SortXml (XElement node)
+		{
+			node.ReplaceNodes (
+				from element in node.Elements ()
+				orderby element.Attribute ("category").Value,
+					element.Attribute ("id").Value
+				select SortXml(element));
+			return node;
+		}
+
+		private static StringBuilder BuildWikiTextFromXml (XElement rootNode)
+		{
+			StringBuilder sb = new StringBuilder ();
+			string category = String.Empty;
+			foreach (var element in rootNode.Elements ()) {
+				if (element.Attribute ("category").Value != category) { 
+					category = element.Attribute ("category").Value;
+					sb.AppendLine(String.Format("## {0}",  category));
+				}
+				sb.AppendLine (String.Format ("### {0}", BuildWikiLink(element)));
+				foreach (var rule in element.Elements ())
+					sb.AppendLine(String.Format("* {0}", BuildWikiLink(rule)));
+				sb.AppendLine ();
+
+			}
+			return sb;
+		}
+
+		private static string BuildWikiLink (XElement rule)
+		{
+			if (rule.Attribute ("type").Value == "fxcop") {
+				string [] idName = rule.Attribute ("id").Value.Split (':');
+				return String.Format (
+					"[[{0}: {1}|http://social.msdn.microsoft.com/Search/en-US?query={2} {0} {1}]]",
+					idName [0], idName [1], rule.Attribute ("category").Value);
+			}
+			if (rule.Attribute ("type").Value == "gendarme") {
+				return String.Format ("[[{0}]]", rule.Attribute ("id").Value);
+			}
+			return String.Empty;
+		}
 	}
 }
