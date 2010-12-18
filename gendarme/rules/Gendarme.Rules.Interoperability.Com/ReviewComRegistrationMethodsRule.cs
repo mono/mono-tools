@@ -90,7 +90,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 	[Problem ("COM registration methods should be matched (i.e. both or none of them should exist) and should not be externally visible.")]
 	[Solution ("Add a missing method or change methods visibility to private or internal.")]
-	[FxCopCompatibility ("Mircosoft.Interoperability", "CA1410:ComRegistrationMethodsShouldBeMatched")]
+	[FxCopCompatibility ("Microsoft.Interoperability", "CA1410:ComRegistrationMethodsShouldBeMatched")]
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1411:ComRegistrationMethodsShouldNotBeVisible")]
 	public class ReviewComRegistrationMethodsRule : Rule, ITypeRule {
 
