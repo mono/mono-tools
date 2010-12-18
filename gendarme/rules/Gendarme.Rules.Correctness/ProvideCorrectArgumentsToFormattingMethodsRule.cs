@@ -66,6 +66,7 @@ namespace Gendarme.Rules.Correctness {
 
 	[Problem ("You are calling a Format method without the correct arguments.  This could result in a FormatException being thrown.")]
 	[Solution ("Pass the correct arguments to the formatting method.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2241:ProvideCorrectArgumentsToFormattingMethods")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ProvideCorrectArgumentsToFormattingMethodsRule : Rule, IMethodRule {
 		static MethodSignature formatSignature = new MethodSignature ("Format", "System.String");

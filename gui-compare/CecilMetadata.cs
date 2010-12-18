@@ -618,11 +618,23 @@ namespace GuiCompare {
 			return type_def.BaseType == null ? null : CecilUtils.FormatTypeLikeCorCompare (type_def.BaseType);
 		}
 		
+		public override List<CompNamed> GetConstructors ()
+		{
+			List<CompNamed> l = new List<CompNamed> ();
+			foreach (MethodDefinition md in type_def.Methods) {
+				if (md.IsConstructor)
+					l.Add (new CecilMethod (md));
+			}
+			
+			return l;
+		}
+		
 		public override List<CompNamed> GetMethods ()
 		{
 			List<CompNamed> l = new List<CompNamed> ();
-			foreach (MethodDefinition md in type_def.Methods) {			
-				l.Add (new CecilMethod (md));
+			foreach (MethodDefinition md in type_def.Methods) {
+				if (!md.IsConstructor)
+					l.Add (new CecilMethod (md));
 			}
 			
 			return l;

@@ -239,10 +239,10 @@ namespace GuiCompare {
 		
 		public List<CompNamed> GetFields() { return new List<CompNamed>(); }
 		public List<CompNamed> GetInterfaces () { return new List<CompNamed>(); }
-		public List<CompNamed> GetConstructors() { return new List<CompNamed>(); }
  		public List<CompNamed> GetProperties() { return new List<CompNamed>(); }
  		public List<CompNamed> GetEvents() { return new List<CompNamed>(); }
 
+		public abstract List<CompNamed> GetConstructors();
 		public abstract List<CompNamed> GetMethods();
 		
 		public abstract List<CompNamed> GetAttributes ();

@@ -118,21 +118,21 @@ namespace Test.Rules.BadPractice {
 			AssertRuleSuccess<Good3> ();
 			
 			AssertRuleFailure<Bad1> ();
-			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity);
+			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity, "Bad1-Severity-High");
 
 			AssertRuleFailure<Bad2> ();
-			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity);
+			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity, "Bad2-Severity-High");
 
 			AssertRuleFailure<Bad3> ();
-			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity);
+			Assert.AreEqual (Severity.High, Runner.Defects [0].Severity, "Bad3-Severity-High");
 
 			// Bad4 has internal visibility so we consider it less severe.
 			AssertRuleFailure<Bad4> ();
-			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity);
+			Assert.AreEqual (Severity.Medium, Runner.Defects [0].Severity, "Bad4-Severity-Medium");
 
 			// Private Dispose.
 			AssertRuleFailure<Bad5> ();
-			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity);
+			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Bad5-Severity-Low");
 
 			AssertRuleFailure<Bad6> (2);
 		}

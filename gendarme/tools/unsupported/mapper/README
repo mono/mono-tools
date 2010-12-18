@@ -1,12 +1,18 @@
 ﻿This tool generates two XML files which contain map from FxCop/Gendarme rules to the Gendarme/FxCop rules.
 
-Usage: fxcopmapbuilder [dirname] [fxcopmapfile] [gendarmemapfile] [/I]
+Usage: fxcopmapbuilder [dirname] [/target] [fxcopmapfile] [gendarmemapfile] [/I]
 	dirname is a name of a directory which contains Gendarme.Rules.*.dll files. Default value is '.' (current directory)
-	fxcopmapfile is a name of an output file for a FxCop -> Gendarme map. Default value is fxCopToGendarme.xml
-	gendarmemapfile is a name of an output file for a Gendarme -> FxCop map. Default value is gendarmeToFxCop.xml
+	target argument specifies output file format: either "xml" or "wiki". If not specified, xml is used.
+	fxcopmapfile is a name of an output file for a FxCop -> Gendarme map. Default value is FxCopToGendarme (extension is added depending on output file format).
+	gendarmemapfile is a name of an output file for a Gendarme -> FxCop map. Default value is GendarmeToFxCop (extension is added depending on output file format).
 	/I is a flag, setting this will include Gendarme rules which were not mapped with any FxCop rules to the second output file (gendarmemapfile)
 
 Examples:
 	fxcopmapbuilder
-	fxcopmapbuilder gendarme out1.xml out2.xml
-	fxcopmapbuilder "C:\gendarme" fxCopToGendarme.xml gendarmeToFxCop.xml /I
+	fxcopmapbuilder gendarme /target:xml out1.xml out2.xml
+	fxcopmapbuilder "C:\gendarme" /target:xml fxCopToGendarme.xml gendarmeToFxCop.xml /I
+	fxcopmapbuilder gendarme /target:wiki
+	
+Notes:
+	You can add header and footer to the output wiki files using cat command. 
+	Example: cat header FxCopToGendarme.md footer > FxCopToGendarme.md

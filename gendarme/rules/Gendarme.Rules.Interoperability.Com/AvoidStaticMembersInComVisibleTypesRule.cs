@@ -82,40 +82,46 @@ namespace Gendarme.Rules.Interoperability.Com {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 
-			if (!method.IsStatic || !method.IsPublic || method.HasGenericParameters || 
-				method.IsAddOn || method.IsRemoveOn || method.IsGetter || method.IsSetter ||
-				((method.Attributes & MethodAttributes.SpecialName) != 0 && method.Name.StartsWith("op_")) ||
-				method.DeclaringType.HasGenericParameters || method.DeclaringType.IsEnum ||
-				method.DeclaringType.IsInterface)
+			if (!IsApplicableMethod (method))
 				return RuleResult.DoesNotApply;
 
 			// check if assembly has [ComVisible (false)]
 			// and type has [ComVisible (true)]
-			bool exp;
-			if ((method.Module.Assembly.IsComVisible (out exp) || !exp) ||
-				!(method.DeclaringType.IsComVisible (out exp) && exp))
+			if ((method.Module.Assembly.IsComVisible () ?? true) ||
+				!(method.DeclaringType.IsComVisible () ?? false))
 				return RuleResult.DoesNotApply;
-
-			bool foundRegisterUnregister = false;
+			
 			bool comVisibleValue = true;
-
-			if (method.HasCustomAttributes)
+			
+			if (method.HasCustomAttributes) {
 				foreach (CustomAttribute attribute in method.CustomAttributes) {
-					if (attribute.AttributeType.FullName == "System.Runtime.InteropServices.ComUnregisterFunctionAttribute")
-						foundRegisterUnregister = true;
-					if (attribute.AttributeType.FullName == "System.Runtime.InteropServices.ComRegisterFunctionAttribute")
-						foundRegisterUnregister = true;
-					if (attribute.AttributeType.FullName == "System.Runtime.InteropServices.ComVisibleAttribute")
+					var name = attribute.AttributeType.FullName;
+					if (IsRegisterUnregister (name))
+						return RuleResult.DoesNotApply;
+					if (name == "System.Runtime.InteropServices.ComVisibleAttribute")
 						comVisibleValue = (bool)attribute.ConstructorArguments [0].Value;
 				}
-
-			if (foundRegisterUnregister)
-				return RuleResult.DoesNotApply;
+			}
 
 			if (comVisibleValue)
 				Runner.Report (method, Severity.Medium, Confidence.High);
 
 			return Runner.CurrentRuleResult;
+		}
+		
+		private static bool IsApplicableMethod (MethodDefinition method)
+		{
+			return !(!method.IsStatic || !method.IsPublic || method.HasGenericParameters || 
+				method.IsAddOn || method.IsRemoveOn || method.IsGetter || method.IsSetter ||
+				((method.Attributes & MethodAttributes.SpecialName) != 0 && method.Name.StartsWith ("op_")) ||
+				method.DeclaringType.HasGenericParameters || method.DeclaringType.IsEnum ||
+				method.DeclaringType.IsInterface);
+		}
+		
+		private static bool IsRegisterUnregister (string fullName)
+		{
+			return fullName == "System.Runtime.InteropServices.ComUnregisterFunctionAttribute" ||
+				fullName == "System.Runtime.InteropServices.ComRegisterFunctionAttribute";
 		}
 	}
 }

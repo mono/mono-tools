@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\console\bin\Debug\Gendarme.Rules.Interoperability.Com.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\console\bin\Release\Gendarme.Rules.Interoperability.Com.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -54,9 +56,13 @@
     <Compile Include="AvoidInt64ArgumentsInComVisibleMethodsRule.cs" />
     <Compile Include="AvoidNonPublicFieldsInComVisibleValueTypesRule.cs" />
     <Compile Include="AvoidOverloadsInComVisibleInterfacesRule.cs" />
+    <Compile Include="AvoidStaticMembersInComVisibleTypesRule.cs" />
     <Compile Include="ComRocks.cs" />
     <Compile Include="ComVisibleShouldInheritFromComVisibleRule.cs" />
     <Compile Include="ComVisibleTypesShouldBeCreatableRule.cs" />
+    <Compile Include="DoNotUseAutoDualClassInterfaceTypeRule.cs" />
+    <Compile Include="MarkComSourceInterfacesAsIDispatchRule.cs" />
+    <Compile Include="ReviewComRegistrationMethodsRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

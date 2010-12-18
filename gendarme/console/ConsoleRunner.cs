@@ -247,7 +247,10 @@ namespace Gendarme {
 				AssemblyDefinition ad = AssemblyDefinition.ReadAssembly (
 					assembly_name,
 					new ReaderParameters { AssemblyResolver = AssemblyResolver.Resolver });
-				Assemblies.Add (ad);
+				// this will force cecil to load all the modules, which will throw (like old cecil) a FNFE
+				// if a .netmodule is missing (otherwise this exception will occur later in several places)
+				if (ad.Modules.Count > 0)
+					Assemblies.Add (ad);
 			}
 			catch (BadImageFormatException) {
 				warning = "Invalid assembly format";

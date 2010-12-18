@@ -40,20 +40,47 @@ namespace Test.Rules.Interoperability.Com {
 
 	[InterfaceType (ComInterfaceType.InterfaceIsIDispatch)]
 	public interface IInterfaceIsIDispatch { }
-	[InterfaceType(ComInterfaceType.InterfaceIsDual)]
+
+	[InterfaceType (ComInterfaceType.InterfaceIsDual)]
 	public interface IInterfaceIsDual { }
+
+	[InterfaceType (2)]
+	public interface IInterfaceIsIDispatchShort { }
+
+	[InterfaceType (1)]
+	public interface IInterfaceIsIUnknownShort { }
+
+	[InterfaceType ((short) 0)]
+	public interface IInterfaceIsDualShort { }
+
 	public interface IBlankInterface { }
 
 	[ComSourceInterfaces ("Test.Rules.Interoperability.Com.IInterfaceIsIDispatch")]
 	public class GoodStringOverloadClass { }
-	[ComSourceInterfaces (typeof(IInterfaceIsIDispatch))]
+
+	[ComSourceInterfaces (typeof (IInterfaceIsIDispatch))]
 	public class GoodTypeOverloadClass { }
+
+	[ComSourceInterfaces ("Test.Rules.Interoperability.Com.IInterfaceIsIDispatchShort")]
+	public class GoodStringOverloadShortClass { }
+
+	[ComSourceInterfaces (typeof (IInterfaceIsIDispatchShort))]
+	public class GoodTypeOverloadShortClass { }
+
 	[ComSourceInterfaces (typeof (IInterfaceIsDual))]
 	public class BadWrongTypeClass { }
+
 	[ComSourceInterfaces (typeof (IBlankInterface))]
 	public class BadNoTypeClass { }
+
 	[ComSourceInterfaces (typeof (IInterfaceIsDual), typeof(IBlankInterface))]
 	public class BadTwoInterfacesClass { }
+
+	[ComSourceInterfaces (typeof (IInterfaceIsDualShort))]
+	public class BadWrongTypeShortClass { }
+
+	[ComSourceInterfaces (typeof (IInterfaceIsIUnknownShort), typeof (IBlankInterface))]
+	public class BadTwoInterfacesShortClass { }
 
 
 	[TestFixture]
@@ -80,6 +107,13 @@ namespace Test.Rules.Interoperability.Com {
 		}
 
 		[Test]
+		public void GoodShort ()
+		{
+			AssertRuleSuccess<GoodStringOverloadShortClass> ();
+			AssertRuleSuccess<GoodTypeOverloadShortClass> ();
+		}
+
+		[Test]
 		public void Bad ()
 		{
 			// The specified interface is marked with the wrong ComInterfaceType
@@ -90,6 +124,14 @@ namespace Test.Rules.Interoperability.Com {
 
 			// Both of the above
 			AssertRuleFailure<BadTwoInterfacesClass> (2);
+		}
+
+		[Test]
+		public void BadShort ()
+		{
+			// variants using the 'short' based attribute
+			AssertRuleFailure<BadWrongTypeShortClass> (1);
+			AssertRuleFailure<BadTwoInterfacesShortClass> (2);
 		}
 	}
 }

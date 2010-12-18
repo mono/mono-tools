@@ -114,7 +114,7 @@ namespace Gendarme.Rules.BadPractice {
 	[Problem ("A constructor calls an unsealed virtual method.")]
 	[Solution ("Avoid calling virtual methods from constructors or seal the the type/method.")]
 	[EngineDependency (typeof (OpCodeEngine))]
-	[FxCopCompatibility ("Microsoft.Usage", "CA2114:DoNotCallOverridableMethodsInConstructors")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
 	public class ConstructorShouldNotCallVirtualMethodsRule : Rule, ITypeRule {
 
 		private Stack<string> stack = new Stack<string> ();

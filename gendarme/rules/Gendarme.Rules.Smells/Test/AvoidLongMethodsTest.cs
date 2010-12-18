@@ -1014,6 +1014,7 @@ namespace Test.Rules.Smells {
 		}
 	}
 
+	[TestFixture]
 	public class AvoidLongMethodsTest : MethodRuleTestFixture<AvoidLongMethodsRule> {
 
 		public void LongMethod () 

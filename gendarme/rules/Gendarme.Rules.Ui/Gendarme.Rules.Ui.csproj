@@ -65,6 +65,7 @@
     <Compile Include="..\..\AssemblyStaticInfo.cs">
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
+    <Compile Include="AddMatchingArrangeMeasureOverrideRule.cs" />
     <Compile Include="ExecutableTargetRule.cs" />
     <Compile Include="GtkSharpExecutableTargetRule.cs" />
     <Compile Include="SystemWindowsFormsExecutableTargetRule.cs" />

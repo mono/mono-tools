@@ -39,22 +39,19 @@ namespace Gendarme.Rules.Interoperability.Com {
 		/// </summary>
 		/// <param name="self">The ICustomAttributeProvider (e.g. AssemblyDefinition, TypeReference, MethodReference,
 		/// FieldReference...) on which the extension method can be called.</param>
-		/// <param name="wasExplicit">Set to <code>true</code> if a ComVisible attribute was present, <code>false</code> otherwise.</param>
-		/// <returns><code>true</code> if the provider is explicitly ComVisible, <code>false</code> otherwise.</returns>
-		public static bool IsComVisible(this ICustomAttributeProvider self, out bool wasExplicit)
+		/// <returns><code>null</code> no ComVisible attribute is present, <code>true</code> if ComVisible is set to true, <code>false</code> otherwise.</returns>
+		public static bool? IsComVisible(this ICustomAttributeProvider self)
 		{
-			wasExplicit = false;
 			if ((self == null) || !self.HasCustomAttributes)
-				return false;
+				return null;
 
 			foreach (CustomAttribute attribute in self.CustomAttributes) {
 				if (attribute.Constructor.DeclaringType.FullName != "System.Runtime.InteropServices.ComVisibleAttribute")
 					continue;
-				wasExplicit = true;
 				return (bool) attribute.ConstructorArguments[0].Value;
 			}
 
-			return false;
+			return null;
 		}
 	}
 }

@@ -88,13 +88,8 @@ namespace Gendarme.Rules.Interoperability.Com {
 			return null;
 		}
 
-		private TypeDefinition FindInterfaceDefinition (Type type)
-		{
-			return FindInterfaceDefinition (type.FullName);
-		}
-
 		// Finds a CustomAttribute on a type from the given name.
-		private CustomAttribute FindCustomAttribute (TypeDefinition type, string fullName)
+		private static CustomAttribute FindCustomAttribute (ICustomAttributeProvider type, string fullName)
 		{
 			foreach (var attribute in type.CustomAttributes) {
 				if (attribute.AttributeType.FullName == fullName)
@@ -109,22 +104,26 @@ namespace Gendarme.Rules.Interoperability.Com {
 		{
 			if (def == null)
 				return;
-			if(!def.HasCustomAttributes) {
-				// No attributes are present on a specified interface.
-				Runner.Report (def, Severity.High, Confidence.Total);
+			if (!def.HasCustomAttributes) {
+				Runner.Report (def, Severity.High, Confidence.Total, "No attributes are present on a specified interface");
 				return;
 			}
 			var attribute = FindCustomAttribute (def,
 						"System.Runtime.InteropServices.InterfaceTypeAttribute");
 			if (attribute == null) {
-				// No InterfaceTypeAttribute is present on a specified interface.
-				Runner.Report (def, Severity.High, Confidence.Total);
+				Runner.Report (def, Severity.High, Confidence.Total, "No [InterfaceType] attribute is present on a specified interface");
 				return;
 			}
-			var arg = (ComInterfaceType)attribute.ConstructorArguments [0].Value;
-			if (arg != ComInterfaceType.InterfaceIsIDispatch)
-				// The InterfaceTypeAttribute is not set to InerfaceIsIDispatch.
-				Runner.Report (def, Severity.High, Confidence.Total);
+
+			// default to bad value - anything not InterfaceIsIDispatch will be reported
+			ComInterfaceType cit = ComInterfaceType.InterfaceIsDual;
+			object o = attribute.ConstructorArguments [0].Value;
+			if (o is int)
+				cit = (ComInterfaceType) o;
+			else if (o is short)
+				cit = (ComInterfaceType) (short) o;
+			if (cit != ComInterfaceType.InterfaceIsIDispatch)
+				Runner.Report (def, Severity.High, Confidence.Total, "The [InterfaceType] attribute is not set to InterfaceIsIDispatch");
 		}
 
 		private void CheckInterface (string interface_name)

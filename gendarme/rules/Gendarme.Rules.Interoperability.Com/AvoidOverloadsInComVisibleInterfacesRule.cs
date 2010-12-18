@@ -79,16 +79,16 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 			// If no explicit ComVisible is found, we still need to check.
 			// If we're explicitly invisible, we can assume success.
-			bool wasExplicit;
-			if (!type.IsComVisible (out wasExplicit) && wasExplicit)
+			if (!(type.IsComVisible () ?? true))
 				return RuleResult.Success;
 
 			methods.Clear ();
 			foreach (MethodDefinition method in type.Methods) {
-				if (methods.Contains (method.Name) && !(!method.IsComVisible(out wasExplicit) && wasExplicit))
+				var name = method.Name;
+				if (methods.Contains (name) && (method.IsComVisible () ?? true))
 					Runner.Report (method, Severity.Critical, Confidence.Total);
 				else
-					methods.Add (method.Name);
+					methods.Add (name);
 			}
 
 			return Runner.CurrentRuleResult;

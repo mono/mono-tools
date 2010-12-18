@@ -49,16 +49,12 @@ namespace Test.Rules.Interoperability.Com {
 		[Test]
 		public void IsComVisible()
 		{
-			bool exp;
 			TypeDefinition type = DefinitionLoader.GetTypeDefinition<ExplicitComVisibleClass> ();
-			Assert.IsTrue (type.IsComVisible (out exp), "true");
-			Assert.IsTrue (exp, "true");
+			Assert.IsTrue (type.IsComVisible () ?? false, "true");
 			type = SimpleTypes.Class;
-			Assert.IsFalse (type.IsComVisible (out exp), "false");
-			Assert.IsFalse (exp, "false");
+			Assert.IsNull (type.IsComVisible (), "null");
 			type = DefinitionLoader.GetTypeDefinition<ExplicitComInvisibleClass> ();
-			Assert.IsFalse (type.IsComVisible (out exp), "false");
-			Assert.IsTrue (exp, "true");
+			Assert.IsFalse (type.IsComVisible () ?? true, "false");
 		}
 
 	}

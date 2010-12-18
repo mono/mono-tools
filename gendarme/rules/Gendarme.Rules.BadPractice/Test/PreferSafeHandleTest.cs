@@ -95,19 +95,19 @@ namespace Test.Rules.BadPractice {
 			AssertRuleSuccess<Good1> ();
 			
 			AssertRuleFailure<Bad1> ();
-			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence, "Bad1-Confidence-Low");
 
 			AssertRuleFailure<Bad2> ();
-			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence, "Bad2-Confidence-Low");
 
 			AssertRuleFailure<Bad3> ();
-			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence, "Bad3-Confidence-Normal");
 
 			AssertRuleFailure<Bad4> ();
-			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence, "Bad4-Confidence-Normal");
 
 			AssertRuleFailure<Bad5> ();
-			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence);
+			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence, "Bad5-Confidence-High");
 		}
 	}
 }

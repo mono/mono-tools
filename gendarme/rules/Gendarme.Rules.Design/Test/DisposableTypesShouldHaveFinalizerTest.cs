@@ -130,12 +130,12 @@ namespace Test.Rules.Design {
 		{
 			var declaring_type = DefinitionLoader.GetTypeDefinition<HasFinalizer> ();
 	
-			Assert.IsTrue (declaring_type.HasNestedTypes);
-			Assert.AreEqual (1, declaring_type.NestedTypes.Count);
+			Assert.IsTrue (declaring_type.HasNestedTypes, "HasFinalizer-HasNestedTypes");
+			Assert.AreEqual (1, declaring_type.NestedTypes.Count, "HasFinalized-NestedTypesCount-1");
 
 			var type = declaring_type.NestedTypes [0];
 
-			Assert.IsTrue (type.IsGeneratedCode ());
+			Assert.IsTrue (type.IsGeneratedCode (), "NestedType-IsGeneratedCode-True");
 			AssertRuleDoesNotApply (type);
 		}
 

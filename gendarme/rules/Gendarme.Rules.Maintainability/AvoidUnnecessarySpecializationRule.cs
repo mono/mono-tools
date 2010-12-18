@@ -81,6 +81,7 @@ namespace Gendarme.Rules.Maintainability {
 
 	[Problem ("This method has a parameter whose type is more specialized than necessary. This can make it difficult to reuse the method in other contexts.")]
 	[Solution ("Replace the parameter type with the most general type which will work or make use of the specifics of the formal parameter type.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
 	public class AvoidUnnecessarySpecializationRule : Rule, IMethodRule {
 
 		private StackEntryAnalysis sea;

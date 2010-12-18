@@ -109,8 +109,8 @@ namespace Test.Rules.Smells {
 		public void BaseClassWithCodeDuplicatedTest () 
 		{
 			type = assembly.MainModule.GetType ("Test.Rules.Smells.BaseClassWithCodeDuplicated");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type));
-			Assert.AreEqual (1, runner.Defects.Count);
+			Assert.AreEqual (RuleResult.Failure, runner.CheckType (type), "Test.Rules.Smells.BaseClassWithCodeDuplicated failure test");
+			Assert.AreEqual (1, runner.Defects.Count, "Test.Rules.Smells.BaseClassWithCodeDuplicated defect count check");
 		}
 
 		[Test]

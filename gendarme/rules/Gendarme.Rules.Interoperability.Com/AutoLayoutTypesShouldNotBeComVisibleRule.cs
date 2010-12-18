@@ -85,14 +85,13 @@ namespace Gendarme.Rules.Interoperability.Com {
 				return RuleResult.DoesNotApply;
 
 			AssemblyDefinition assembly = type.Module.Assembly;
-			bool expl;
 			// return if assembly is ComVisible 
 			// or not visible but was not marked explicitly
-			if (assembly.IsComVisible (out expl) || !expl)
+			if (assembly.IsComVisible () ?? true)
 				return RuleResult.DoesNotApply;
 
 			// type should be explicitly marked as ComVisible, return otherwise
-			if (!(type.IsComVisible (out expl) && expl))
+			if (!(type.IsComVisible () ?? false))
 				return RuleResult.DoesNotApply;
 				
 			if (type.IsAutoLayout) 
