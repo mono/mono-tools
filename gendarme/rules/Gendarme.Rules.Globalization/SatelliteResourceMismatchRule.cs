@@ -60,19 +60,14 @@ namespace Gendarme.Rules.Globalization {
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
-			if (assembly == null)
-				throw new ArgumentNullException ("assembly");
-
 			// If the analyzed assembly is a satellite assembly, does not apply
-			if (!string.IsNullOrEmpty(assembly.Name.Culture))
+			if (!string.IsNullOrEmpty (assembly.Name.Culture))
 				return RuleResult.DoesNotApply;
 
 			// Reset caches
 			mainAssemblyResourceCache = new AssemblyResourceCache (assembly);
 
-			IList<AssemblyDefinition> satellites = GetSatellitesAssemblies (assembly);
-
-			foreach (AssemblyDefinition satellite in satellites)
+			foreach (AssemblyDefinition satellite in GetSatellitesAssemblies (assembly))
 				CheckSatelliteAssembly (satellite);
 
 			return RuleResult.Success;
@@ -134,10 +129,10 @@ namespace Gendarme.Rules.Globalization {
 
 		private static Bitmask<int> GetStringFormatExpectedParameters (string format)
 		{
-			if (format == null)
-				throw new ArgumentNullException ("format");
-
 			Bitmask<int> result = new Bitmask<int> (false);
+
+			if (format == null)
+				return result;
 
 			// if last character is { then there's no digit after it
 			for (int index = 0; index < format.Length - 1; index++) {
@@ -153,33 +148,30 @@ namespace Gendarme.Rules.Globalization {
 				if (!char.IsDigit (nextChar))
 					continue;
 
-				StringBuilder value = new StringBuilder (nextChar.ToString ());
+				int value = nextChar - '0';
+
 				index++; // next char is already added to value
 
+				int tenPower = 1;
 				while (index++ < format.Length) {
 					char current = format [index];
 					if (!char.IsDigit (current))
 						break;
-					value.Append (current);
+					tenPower *= 10;
+					value = value * tenPower + current - '0';
 				}
 
 				if (index == format.Length)
 					break; // Incorrect format
 
-				int intValue;
-				if (!int.TryParse (value.ToString (), out intValue))
-					continue;
-
-				result.Set (intValue);
+				result.Set (value);
 			}
 
 			return result;
 		}
 
-		private static IList<AssemblyDefinition> GetSatellitesAssemblies (AssemblyDefinition mainAssembly)
+		private static IEnumerable<AssemblyDefinition> GetSatellitesAssemblies (AssemblyDefinition mainAssembly)
 		{
-			List<AssemblyDefinition> satellitesAssemblies = new List<AssemblyDefinition> ();
-
 			string satellitesName = mainAssembly.Name.Name + ".resources.dll";
 
 			DirectoryInfo directory = new DirectoryInfo (Path.GetDirectoryName (
@@ -196,10 +188,8 @@ namespace Gendarme.Rules.Globalization {
 					continue;
 
 				AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly (files [0].FullName);
-				satellitesAssemblies.Add (assembly);
+				yield return assembly;
 			}
-
-			return satellitesAssemblies;
 		}
 
 		// In satellites assemblies, the resource file name sometimes contains the culture 

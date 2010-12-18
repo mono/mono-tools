@@ -111,6 +111,15 @@ namespace Tests.Rules.Globalization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last parameter: {64}.
+        /// </summary>
+        internal static string StringWithMoreThan64Parameters {
+            get {
+                return ResourceManager.GetString("StringWithMoreThan64Parameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First: {0} Second: {1} Third: {2}.
         /// </summary>
         internal static string StringWithThreeParameters {

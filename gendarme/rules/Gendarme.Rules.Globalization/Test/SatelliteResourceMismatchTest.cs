@@ -61,7 +61,7 @@ namespace Tests.Rules.Globalization {
 			// 5. StringWithThreeParametersButSomeUnused
 			// 6. MainResourceMissing.fr.resx file
 			// 7. XMLFileNotInResXOnlyInFrench.fr.xml file
-			AssertRuleFailure (assembly, 6);
+			AssertRuleFailure (assembly, 7);
 		}
 	}
 

@@ -136,6 +136,9 @@
   <data name="StringWith3ParametersEnBut12Fr" xml:space="preserve">
     <value>First: {0} Second: {1} Third: {2}</value>
   </data>
+  <data name="StringWithMoreThan64Parameters" xml:space="preserve">
+    <value>Last parameter: {64}</value>
+  </data>
   <data name="StringWithThreeParameters" xml:space="preserve">
     <value>First: {0} Second: {1} Third: {2}</value>
   </data>
