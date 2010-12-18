@@ -1,2 +1,2 @@
-SUBDIRS = typeref xmldoc2wiki
+SUBDIRS = typeref xmldoc2wiki mapper
 
