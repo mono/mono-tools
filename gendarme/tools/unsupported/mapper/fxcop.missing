@@ -1,7 +1,4 @@
 Microsoft.Design
-CA1000	Do not declare static members on generic types                                               http://msdn.microsoft.com/en-us/library/ms182139.aspx
-CA1002	Do not expose generic lists                                                                  http://msdn.microsoft.com/en-us/library/ms182142.aspx
-CA1005	Avoid excessive parameters on generic types                                                  http://msdn.microsoft.com/en-us/library/ms182129.aspx
 CA1025	Replace repetitive arguments with params array                                               http://msdn.microsoft.com/en-us/library/ms182167.aspx
 CA1026	Default parameters should not be used                                                        http://msdn.microsoft.com/en-us/library/ms182135.aspx
 CA1033	Interface methods should be callable by child types                                          http://msdn.microsoft.com/en-us/library/ms182153.aspx
