@@ -253,5 +253,28 @@ namespace Gendarme.Framework.Rocks {
 
 			return false;
 		}
+
+		/// <summary>
+		/// Returns a property using supplied MethodReference of 
+		/// a property accessor method (getter or setter).
+		/// </summary>
+		/// <param name="self">The MethodReference on which the extension method can be called.</param>
+		/// <returns>PropertyDefinition which corresponds to the supplied MethodReference.</returns>
+		public static PropertyDefinition GetPropertyByAccessor (this MethodReference self)
+		{
+			if (self == null)
+				return null;
+
+			MethodDefinition method = self.Resolve ();
+			if (method == null || !method.DeclaringType.HasProperties || !self.IsProperty ())
+				return null;
+
+			foreach (PropertyDefinition property in method.DeclaringType.Properties)
+				// set_ and get_ both have a length equal to 4
+				if (String.CompareOrdinal (property.Name, 0, method.Name, 4, property.Name.Length) == 0)
+					return property;
+
+			return null;
+		}
 	}
 }

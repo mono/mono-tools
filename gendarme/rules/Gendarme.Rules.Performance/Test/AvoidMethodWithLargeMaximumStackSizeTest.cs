@@ -1,5 +1,5 @@
 //
-// Unit tests for AvoidMethodWithLargeMaximumStackSize
+// Unit tests for AvoidMethodWithLargeMaximumStackSizeRule
 //
 // Authors:
 //	Jb Evain <jbevain@novell.com>
@@ -37,7 +37,7 @@ using Test.Rules.Fixtures;
 namespace Test.Rules.Performance {
 
 	[TestFixture]
-	public class AvoidMethodWithLargeMaximumStackSizeTest : MethodRuleTestFixture<AvoidMethodWithLargeMaximumStackSize> {
+	public class AvoidMethodWithLargeMaximumStackSizeTest : MethodRuleTestFixture<AvoidMethodWithLargeMaximumStackSizeRule> {
 
 		[Test]
 		public void DoesNotApply ()

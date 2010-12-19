@@ -204,5 +204,13 @@ namespace Test.Framework.Rocks {
 			Assert.IsTrue (GetMethod ("FooEventCallback").IsEventCallback (), "FooEventCallback");
 			Assert.IsFalse (GetMethod ("IsEventCallback").IsEventCallback (), "IsEventCallback");
 		}
+
+		[Test]
+		public void GetPropertyByAccessor ()
+		{
+			Assert.AreEqual (GetMethod ("get_Value").GetPropertyByAccessor ().Name, "Value", "get_Value");
+			Assert.AreEqual (GetMethod ("set_Value").GetPropertyByAccessor ().Name, "Value", "set_Value");
+			Assert.IsNull (GetMethod ("EventCallback").GetPropertyByAccessor (), "EventCallback");
+		}
 	}
 }

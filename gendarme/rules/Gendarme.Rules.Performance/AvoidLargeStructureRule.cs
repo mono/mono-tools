@@ -126,7 +126,7 @@ namespace Gendarme.Rules.Performance {
 				if (!field.IsStatic)
 					return SizeOf (field.FieldType);
 			}
-			throw new NotSupportedException (type.ToString () + " should not be usable as an enum type.");
+			return 4; // Int32 size
 		}
 
 		// Note: Needs to be public since this is being tested by our unit tests

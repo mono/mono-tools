@@ -5,7 +5,7 @@ rules_sources =  \
 	AvoidLargeNumberOfLocalVariablesRule.cs \
 	AvoidLargeStructureRule.cs \
 	AvoidLocalDataStoreSlotRule.cs \
-	AvoidMethodWithLargeMaximumStackSize.cs \
+	AvoidMethodWithLargeMaximumStackSizeRule.cs \
 	AvoidRepetitiveCallsToPropertiesRule.cs \
 	AvoidRepetitiveCastsRule.cs \
 	AvoidReturningArraysOnPropertiesRule.cs \

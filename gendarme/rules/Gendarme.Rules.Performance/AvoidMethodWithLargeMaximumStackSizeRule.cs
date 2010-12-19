@@ -1,5 +1,5 @@
 //
-// Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSize
+// Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSizeRule
 //
 // Authors:
 //	Jb Evain <jbevain@novell.com>
@@ -45,7 +45,7 @@ namespace Gendarme.Rules.Performance {
 
 	[Problem ("The method has a large max stack, which is a sign of complex code.")]
 	[Solution ("Refactor your code to reduce the size of the method.")]
-	public class AvoidMethodWithLargeMaximumStackSize : Rule, IMethodRule {
+	public class AvoidMethodWithLargeMaximumStackSizeRule : Rule, IMethodRule {
 
 		private int max_stack_size = 100;
 
