@@ -36,13 +36,6 @@ namespace Gendarme.Framework {
 
 	public class Defect {
 
-		private IRule rule;
-		private IMetadataTokenProvider target;
-		private IMetadataTokenProvider location;
-		private Severity severity;
-		private Confidence confidence;
-		private Instruction ins;
-		private string text;
 		private string source;
 
 		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Severity severity, Confidence confidence, string text)
@@ -54,12 +47,12 @@ namespace Gendarme.Framework {
 			if (location == null)
 				throw new ArgumentNullException ("location");
 
-			this.rule = rule;
-			this.target = target;
-			this.location = location;
-			this.confidence = confidence;
-			this.severity = severity;
-			this.text = text;
+			Rule = rule;
+			Target = target;
+			Location = location;
+			Confidence = confidence;
+			Severity = severity;
+			Text = text;
 		}
 
 		public Defect (IRule rule, IMetadataTokenProvider target, IMetadataTokenProvider location, Severity severity, Confidence confidence)
@@ -70,7 +63,7 @@ namespace Gendarme.Framework {
 		public Defect (IRule rule, IMetadataTokenProvider target, MethodDefinition location, Instruction ins, Severity severity, Confidence confidence, string text)
 			: this (rule, target, location, severity, confidence, text)
 		{
-			this.ins = ins;
+			Instruction = ins;
 		}
 
 		public Defect (IRule rule, IMetadataTokenProvider target, MethodDefinition location, Instruction ins, Severity severity, Confidence confidence)
@@ -79,27 +72,32 @@ namespace Gendarme.Framework {
 		}
 
 		public AssemblyDefinition Assembly {
-			get { return target.GetAssembly (); }
+			get { return Target.GetAssembly (); }
 		}
 
 		public Confidence Confidence {
-			get { return confidence; }
+			get;
+			private set;
 		}
 
 		public Instruction Instruction {
-			get { return ins; }
+			get;
+			private set;
 		}
 
 		public IMetadataTokenProvider Location {
-			get { return location; }
+			get;
+			private set;
 		}
 
 		public IRule Rule {
-			get { return rule; }
+			get;
+			private set;
 		}
 
 		public Severity Severity {
-			get { return severity; }
+			get;
+			private set;
 		}
 
 		public string Source {
@@ -111,11 +109,13 @@ namespace Gendarme.Framework {
 		}
 
 		public IMetadataTokenProvider Target {
-			get { return target; }
+			get;
+			private set;
 		}
 
 		public string Text {
-			get { return text; }
+			get;
+			private set;
 		}
 	}
 }

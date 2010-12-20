@@ -28,15 +28,14 @@ namespace Gendarme.Framework {
 
 	public class EngineEventArgs : HierarchicalEventArgs {
 
-		private EngineController controller;
-
 		public EngineEventArgs (EngineController controller)
 		{
-			this.controller = controller;
+			Controller = controller;
 		}
 
 		public EngineController Controller {
-			get { return controller; }
+			get;
+			private set;
 		}
 	}
 }

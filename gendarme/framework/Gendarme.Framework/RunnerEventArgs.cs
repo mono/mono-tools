@@ -28,15 +28,14 @@ namespace Gendarme.Framework {
 
 	public class RunnerEventArgs : HierarchicalEventArgs {
 
-		private IRunner runner;
-
 		public RunnerEventArgs (IRunner runner)
 		{
-			this.runner = runner;
+			Runner = runner;
 		}
 
 		public IRunner Runner {
-			get { return runner; }
+			get;
+			private set;
 		}
 	}
 }

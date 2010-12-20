@@ -31,17 +31,15 @@ using System;
 namespace Gendarme.Framework {
 	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public sealed class DocumentationUriAttribute : Attribute {
-		private string documentationUri;
 		
 		public DocumentationUriAttribute (string documentationUri) 
 		{
-			this.documentationUri = documentationUri;
+			DocumentationUri = documentationUri;
 		}
 
 		public string DocumentationUri {
-			get {
-				return documentationUri;
-			}
+			get;
+			private set;
 		}
 	}
 }

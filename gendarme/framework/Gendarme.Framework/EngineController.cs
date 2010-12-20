@@ -37,17 +37,17 @@ namespace Gendarme.Framework {
 
 	public class EngineController {
 
-		private IRunner runner;
 		private Dictionary<string, Engine> engines;
 
 		public EngineController (IRunner runner)
 		{
-			this.runner = runner;
+			Runner = runner;
 			engines = new Dictionary<string, Engine> ();
 		}
 
 		public IRunner Runner {
-			get { return runner; }
+			get;
+			private set;
 		}
 
 		public void Subscribe (string engineName)

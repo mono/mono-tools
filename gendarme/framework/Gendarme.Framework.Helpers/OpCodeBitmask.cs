@@ -47,15 +47,15 @@ namespace Gendarme.Framework.Helpers {
 		{
 		}
 
-		public OpCodeBitmask (OpCodeBitmask mask)
+		public OpCodeBitmask (OpCodeBitmask bitmask)
 		{
-			if (mask == null)
-				throw new ArgumentNullException ("mask");
+			if (bitmask == null)
+				throw new ArgumentNullException ("bitmask");
 
-			this.mask [0] = mask.mask [0];
-			this.mask [1] = mask.mask [1];
-			this.mask [2] = mask.mask [2];
-			this.mask [3] = mask.mask [3];
+			mask [0] = bitmask.mask [0];
+			mask [1] = bitmask.mask [1];
+			mask [2] = bitmask.mask [2];
+			mask [3] = bitmask.mask [3];
 		}
 
 		public OpCodeBitmask (ulong a, ulong b, ulong c, ulong d)
@@ -95,48 +95,48 @@ namespace Gendarme.Framework.Helpers {
 			mask [0] = mask [1] = mask [2] = mask [3] = UInt64.MaxValue;
 		}
 
-		public void UnionWith (OpCodeBitmask mask)
+		public void UnionWith (OpCodeBitmask bitmask)
 		{
-			if (mask == null)
-				throw new ArgumentNullException ("mask");
+			if (bitmask == null)
+				throw new ArgumentNullException ("bitmask");
 
-			this.mask [0] |= mask.mask [0];
-			this.mask [1] |= mask.mask [1];
-			this.mask [2] |= mask.mask [2];
-			this.mask [3] |= mask.mask [3];
+			mask [0] |= bitmask.mask [0];
+			mask [1] |= bitmask.mask [1];
+			mask [2] |= bitmask.mask [2];
+			mask [3] |= bitmask.mask [3];
 		}
 
 		/// <summary>
-		/// 
+		/// Compute if an intersection exists between the bitmasks
 		/// </summary>
-		/// <param name="mask">Note: a null value is interpreted as a full (set) mask.</param>
+		/// <param name="bitmask">Note: a null value is interpreted as a full (set) mask.</param>
 		/// <returns>True if there is an intersection (for any opcode) between the masks, False otherwise</returns>
-		public bool Intersect (OpCodeBitmask mask)
+		public bool Intersect (OpCodeBitmask bitmask)
 		{
-			if (mask == null)
+			if (bitmask == null)
 				return true;
 
-			if ((this.mask [0] & mask.mask [0]) != 0)
+			if ((mask [0] & bitmask.mask [0]) != 0)
 				return true;
-			if ((this.mask [1] & mask.mask [1]) != 0)
+			if ((mask [1] & bitmask.mask [1]) != 0)
 				return true;
-			if ((this.mask [2] & mask.mask [2]) != 0)
+			if ((mask [2] & bitmask.mask [2]) != 0)
 				return true;
-			return ((this.mask [3] & mask.mask [3]) != 0);
+			return ((mask [3] & bitmask.mask [3]) != 0);
 		}
 
-		public bool IsSubsetOf (OpCodeBitmask mask)
+		public bool IsSubsetOf (OpCodeBitmask bitmask)
 		{
-			if (mask == null)
+			if (bitmask == null)
 				return true;
 
-			if ((this.mask [0] & mask.mask [0]) != this.mask [0])
+			if ((mask [0] & bitmask.mask [0]) != mask [0])
 				return false;
-			if ((this.mask [1] & mask.mask [1]) != this.mask [1])
+			if ((mask [1] & bitmask.mask [1]) != mask [1])
 				return false;
-			if ((this.mask [2] & mask.mask [2]) != this.mask [2])
+			if ((mask [2] & bitmask.mask [2]) != mask [2])
 				return false;
-			return ((this.mask [3] & mask.mask [3]) == this.mask [3]);
+			return ((mask [3] & bitmask.mask [3]) == mask [3]);
 		}
 
 		public override bool Equals (object obj)

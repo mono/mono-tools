@@ -266,14 +266,16 @@ namespace Gendarme.Framework.Rocks {
 				return null;
 
 			MethodDefinition method = self.Resolve ();
-			if (method == null || !method.DeclaringType.HasProperties || !self.IsProperty ())
+			if (method == null || !method.DeclaringType.HasProperties || !method.IsProperty ())
 				return null;
 
-			foreach (PropertyDefinition property in method.DeclaringType.Properties)
+			string mname = method.Name;
+			foreach (PropertyDefinition property in method.DeclaringType.Properties) {
 				// set_ and get_ both have a length equal to 4
-				if (String.CompareOrdinal (property.Name, 0, method.Name, 4, property.Name.Length) == 0)
+				string pname = property.Name;
+				if (String.CompareOrdinal (pname, 0, mname, 4, pname.Length) == 0)
 					return property;
-
+			}
 			return null;
 		}
 	}
