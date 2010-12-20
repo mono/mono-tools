@@ -131,11 +131,12 @@ namespace Gendarme.Rules.BadPractice {
 
 		static bool InsideTryBlock (MethodDefinition method, Instruction ins)
 		{
-			if (!method.Body.HasExceptionHandlers)
+			MethodBody body = method.Body;
+			if (!body.HasExceptionHandlers)
 				return false; // no handlers
 			
 			int offset = ins.Offset;
-			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
 				// is the call between a "try/catch" or "try/finally"
 				if ((offset >= eh.TryStart.Offset) && (offset < eh.TryEnd.Offset))
 					return true;
