@@ -79,7 +79,11 @@ namespace Gendarme.Rules.Exceptions {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies to methods with IL and exceptions handlers
-			if (!method.HasBody || !method.Body.HasExceptionHandlers)
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			MethodBody body = method.Body;
+			if (!body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
 			// and when the IL contains a Throw instruction (Rethrow is fine)
@@ -89,7 +93,7 @@ namespace Gendarme.Rules.Exceptions {
 			warned_offsets_in_method.Clear ();
 			ExecutionPathFactory epf = new ExecutionPathFactory ();
 
-			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
 				if (eh.HandlerType != ExceptionHandlerType.Catch)
 					continue;
 

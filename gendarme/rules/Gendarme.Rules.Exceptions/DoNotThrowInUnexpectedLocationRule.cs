@@ -199,12 +199,12 @@ namespace Gendarme.Rules.Exceptions {
 			};
 		}
 
-		static bool HasCatchBlock (MethodDefinition method)	
+		static bool HasCatchBlock (MethodBody body)	
 		{
-			if (!method.Body.HasExceptionHandlers)
+			if (!body.HasExceptionHandlers)
 				return false;
 
-			foreach (ExceptionHandler handler in method.Body.ExceptionHandlers) {
+			foreach (ExceptionHandler handler in body.ExceptionHandlers) {
 				if (handler.HandlerType == ExceptionHandlerType.Catch)
 					return true;
 			}
@@ -405,7 +405,7 @@ namespace Gendarme.Rules.Exceptions {
 			if (!Throwers.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			if (!HasCatchBlock (method)) {
+			if (!HasCatchBlock (method.Body)) {
 				// default severity for (most) methods
 				severity = Severity.High;
 				// by default no exceptions are allowed
