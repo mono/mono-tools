@@ -124,9 +124,9 @@ namespace Gendarme.Rules.Portability {
 			}
 		}
 
-		private string GetFileName (Version version)
+		private string GetFileName (Version v)
 		{
-			return Path.Combine (DefinitionsFolder, String.Format ("definitions-{0}.zip", version));
+			return Path.Combine (DefinitionsFolder, String.Format ("definitions-{0}.zip", v));
 		}
 
 		private Version FindLastestLocalVersion ()
