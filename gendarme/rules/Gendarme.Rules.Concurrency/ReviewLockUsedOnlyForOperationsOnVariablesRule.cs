@@ -100,14 +100,18 @@ namespace Gendarme.Rules.Concurrency {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasBody || !method.Body.HasExceptionHandlers)
+			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			MethodBody body = method.Body;
+			if (!body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
 			// avoid looping if we're sure there's no call in the method
 			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
 				Instruction ins = eh.TryStart;
 				// xMCS and earlier (pre-4.0) CSC used Monitor.Enter(object) just outside of the Try block
 				bool monitor_enter = IsMonitorEnter (ins.Previous, 1);

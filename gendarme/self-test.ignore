@@ -270,6 +270,12 @@ M: System.Void Gendarme.Wizard::UpdateReportUI()
 M: Gendarme.ResultWriter Gendarme.Wizard::GetSelectedWriter(System.Int32,System.String)
 # CSC only - System.Int32 System.Collections.CollectionBase::get_Count() > 20 (22) but MS.NET use an higher limit to inline...
 M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule::SignatureMatches(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
+# 'type' might be re-assigned so the second call to FullName is required
+M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
+
+# mono bug wrt metatoken id with generics
+R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+M: System.Nullable`1<Gendarme.Framework.ThreadModel> Gendarme.Rules.Concurrency.ThreadRocks::Lookup(Mono.Cecil.MemberReference,System.Collections.Generic.IEnumerable`1<TDefinition>)
 
 # ---------------------------------------------------------
 # We might want to fix these.
