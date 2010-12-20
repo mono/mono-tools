@@ -77,9 +77,12 @@ namespace Gendarme.Rules.Design.Generic {
 
 		private void CheckProperty (PropertyDefinition property)
 		{
-			if (IsList (property.PropertyType) &&
-				((property.GetMethod != null && property.GetMethod.IsVisible ()) ||
-				(property.SetMethod != null && property.SetMethod.IsVisible ())))
+			if (!IsList (property.PropertyType))
+				return;
+
+			MethodDefinition getm = property.GetMethod;
+			MethodDefinition setm = property.SetMethod;
+			if (((getm != null) && getm.IsVisible ()) || ((setm != null) && setm.IsVisible ()))
 				Runner.Report (property, Severity.Medium, Confidence.Total);
 		}
 
