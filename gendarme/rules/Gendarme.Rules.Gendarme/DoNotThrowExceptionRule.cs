@@ -97,11 +97,16 @@ namespace Gendarme.Rules.Gendarme {
 				if (instruction.OpCode.Code != Code.Throw)
 					continue;
 
-				if (instruction.Previous.Is (Code.Newobj)) {
-					MethodReference m = (instruction.Previous.Operand as MethodReference);
-					if (m != null && m.DeclaringType.FullName != "System.NotImplementedException" && !m.DeclaringType.Inherits ("System.NotImplementedException"))
-						Runner.Report (method, instruction, Severity.Medium, Confidence.High);
-				}
+				if (!instruction.Previous.Is (Code.Newobj))
+					continue;
+
+				MethodReference m = (instruction.Previous.Operand as MethodReference);
+				if (m == null)
+					continue;
+
+				TypeReference type = m.DeclaringType;
+				if (type.FullName != "System.NotImplementedException" && !type.Inherits ("System.NotImplementedException"))
+					Runner.Report (method, instruction, Severity.Medium, Confidence.High);
 			}
 
 			return Runner.CurrentRuleResult;
