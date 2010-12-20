@@ -36,14 +36,12 @@ namespace Gendarme {
 
 	abstract public class ResultWriter : IDisposable {
 
-		private IRunner runner;
-		private string filename;
 		private bool disposed;
 
 		protected ResultWriter (IRunner runner, string fileName)
 		{
-			this.runner = runner;
-			this.filename = fileName;
+			Runner = runner;
+			FileName = fileName;
 		}
 
 		[ThreadModel (ThreadModel.SingleThread)]
@@ -54,12 +52,13 @@ namespace Gendarme {
 		}
 
 		protected IRunner Runner {
-			get { return runner; }
+			get;
+			private set;
 		}
 
 		protected string FileName {
-			get { return filename; }
-			set { filename = value; }
+			get;
+			set;
 		}
 
 		protected virtual void Start ()

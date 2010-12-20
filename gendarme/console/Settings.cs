@@ -30,6 +30,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -41,15 +42,18 @@ namespace Gendarme {
 
 		private const string DefaultRulesFile = "rules.xml";
 
-		private IRunner runner;
+		private Collection<IRule> rules;
 		private string config_file;
 		private string rule_set;
 		private IList<string> validation_errors = new List<string> ();
 
 		public Settings (IRunner runner, string configurationFile, string ruleSet)
 		{
-			this.runner = runner;
-			this.rule_set = ruleSet;
+			if (runner == null)
+				throw new ArgumentNullException ("runner");
+
+			rules = runner.Rules;
+			rule_set = ruleSet;
 			if (String.IsNullOrEmpty (configurationFile)) {
 				config_file = GetFullPath (DefaultRulesFile);
 			} else {
@@ -135,7 +139,7 @@ namespace Gendarme {
 
 				if (t.FindInterfaces (new TypeFilter (RuleFilter), "Gendarme.Framework.IRule").Length > 0) {
 					IRule rule = (IRule) Activator.CreateInstance (t);
-					runner.Rules.Add (rule);
+					rules.Add (rule);
 					SetApplicabilityScope (rule, applicabilityScope);
 
 					total++;
@@ -172,16 +176,16 @@ namespace Gendarme {
 
 		private IRule GetRule (string name)
 		{
-			foreach (IRule rule in runner.Rules) {
+			foreach (IRule rule in rules) {
 				if (rule.GetType ().ToString ().Contains (name)) 
 					return rule;
 			}
 			return null;
 		}
 		
-		private void SetCustomParameters (XmlNode rules)
+		private void SetCustomParameters (XmlNode nodes)
 		{
-			foreach (XmlElement parameter in rules.SelectNodes ("parameter")) {
+			foreach (XmlElement parameter in nodes.SelectNodes ("parameter")) {
 				string ruleName = GetAttribute (parameter, "rule", String.Empty);
 				string propertyName = GetAttribute (parameter, "property", String.Empty);
 				int value;
