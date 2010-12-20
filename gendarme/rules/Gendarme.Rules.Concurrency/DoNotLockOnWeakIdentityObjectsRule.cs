@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -113,21 +113,19 @@ namespace Gendarme.Rules.Concurrency {
 			// keep original instruction since this is where we will report the defect
 			Instruction call = ins;
 
-			switch (enter.Parameters.Count) {
-			case 1:
-				// Monitor.Enter(object)
-				while ((ins.Previous != null) && (type == null)) {
-					ins = ins.Previous;
-					type = ins.GetOperandType (method);
+			// Monitor.Enter(object)
+			// Monitor.Enter(object, ref bool) <-- new in FX4 and used by CSC10
+			Instruction first = call.TraceBack (method);
+			if (first.OpCode.Code == Code.Dup)
+				first = first.Previous;
+			type = first.GetOperandType (method);
+			if (type.FullName == "System.Object") {
+				// newer GMCS use a temporary local that hides the real type
+				Instruction prev = first.Previous;
+				if (first.IsLoadLocal () && prev.IsStoreLocal ()) {
+					if (first.GetVariable (method) == prev.GetVariable (method))
+						type = prev.Previous.GetOperandType (method);
 				}
-				break;
-			case 2:
-				// Monitor.Enter(object, ref bool) <-- new in FX4 and used by CSC10
-				Instruction first = call.TraceBack (method);
-				if (first.OpCode.Code == Code.Dup)
-					first = first.Previous;
-				type = first.GetOperandType (method);
-				break;
 			}
 
 			if (type == null)
