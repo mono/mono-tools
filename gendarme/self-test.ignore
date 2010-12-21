@@ -141,6 +141,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidInt64A
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPublicFieldsInComVisibleValueTypesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidOverloadsInComVisibleInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidStaticMembersInComVisibleTypesRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ReviewComRegistrationMethodsRule::CheckType(Mono.Cecil.TypeDefinition)

@@ -91,6 +91,9 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
+			if (type.BaseType == null)
+				return RuleResult.DoesNotApply;
+
 			// Checks whether specific type is COM visible or not
 			// considering nested types, assemblies attributes and default values
 			if (!type.IsTypeComVisible ())
