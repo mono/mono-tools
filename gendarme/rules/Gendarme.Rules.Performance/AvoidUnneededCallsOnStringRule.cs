@@ -126,7 +126,7 @@ namespace Gendarme.Rules.Performance {
 			if (call.HasParameters)
 				return String.Empty;
 
-			if (!CheckTypeReference (ins.Previous.GetOperandType (method)))
+			if (!IsSystemString (ins.Previous.GetOperandType (method)))
 				return  String.Empty;
 
 			return String.Format (MessageString, call.Name, String.Empty);
@@ -134,7 +134,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static string CheckSubstring (MethodReference call, Instruction ins)
 		{
-			if (!CheckTypeReference (call.DeclaringType))
+			if (!IsSystemString (call.DeclaringType))
 				return String.Empty;
 
 			// ensure it's System.String::Substring(System.Int32) and that it's given 0 as a parameter
@@ -148,7 +148,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static string CheckToString (MethodReference call, Instruction ins, MethodDefinition method)
 		{
-			if (CheckTypeReference (call.DeclaringType)) {
+			if (IsSystemString (call.DeclaringType)) {
 				// most probably ToString(IFormatProvider), possibly ToString()
 				return String.Format (MessageString, call.Name, 
 					(call.HasParameters && (call.Parameters.Count > 1)) ? "IFormatProvider" : String.Empty);
@@ -158,7 +158,7 @@ namespace Gendarme.Rules.Performance {
 			}
 		}
 
-		private static bool CheckTypeReference (TypeReference type)
+		private static bool IsSystemString (MemberReference type)
 		{
 			return (type == null) ? false : (type.FullName == "System.String");
 		}

@@ -153,14 +153,17 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody)
 				return;
 
-			// add every type of variables we use
-			foreach (VariableDefinition variable in method.Body.Variables) {
-				t = variable.VariableType;
-				AddType (typeset, t);
+			MethodBody body = method.Body;
+			if (body.HasVariables) {
+				// add every type of variables we use
+				foreach (VariableDefinition variable in body.Variables) {
+					t = variable.VariableType;
+					AddType (typeset, t);
+				}
 			}
 
 			// add every type we create or refer to (e.g. loading fields from an enum)
-			foreach (Instruction ins in method.Body.Instructions) {
+			foreach (Instruction ins in body.Instructions) {
 				if (ins.Operand == null)
 					continue;
 

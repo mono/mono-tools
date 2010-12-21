@@ -82,12 +82,13 @@ namespace Gendarme.Rules.Performance {
 			bool type_visible = type.IsVisible ();
 
 			foreach (EventDefinition evnt in type.Events) {
+				MethodDefinition adder = evnt.AddMethod;
 				// we assume that Add|Remove have the same visibility
-				if (evnt.AddMethod.IsVisible ())
+				if (adder.IsVisible ())
 					continue;
 
 				// report if Add|Remove is synchronized
-				if (evnt.AddMethod.IsSynchronized) {
+				if (adder.IsSynchronized) {
 					Confidence confidence = type_visible ? Confidence.Normal : Confidence.Low;
 					Runner.Report (evnt, Severity.Medium, confidence);
 				}
