@@ -3,8 +3,12 @@
 //
 // Authors:
 //	N Lum <nol888@gmail.com>
-// 
+//	Yuri Stuken <stuken.yuri@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
+//
 // Copyright (C) 2010 N Lum
+// Copyright (C) 2010 Yuri Stuken
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,7 +35,7 @@ using Mono.Cecil;
 namespace Gendarme.Rules.Interoperability.Com {
 
 	/// <summary>
-	/// ComRocks contains extensions methods for Com-related methods.
+	/// ComRocks contains extensions methods for COM-related methods.
 	/// </summary>
 	public static class ComRocks {
 		/// <summary>
@@ -40,18 +44,32 @@ namespace Gendarme.Rules.Interoperability.Com {
 		/// <param name="self">The ICustomAttributeProvider (e.g. AssemblyDefinition, TypeReference, MethodReference,
 		/// FieldReference...) on which the extension method can be called.</param>
 		/// <returns><code>null</code> no ComVisible attribute is present, <code>true</code> if ComVisible is set to true, <code>false</code> otherwise.</returns>
-		public static bool? IsComVisible(this ICustomAttributeProvider self)
+		public static bool? IsComVisible (this ICustomAttributeProvider self)
 		{
-			if ((self == null) || !self.HasCustomAttributes)
+			if (self == null)
 				return null;
 
-			foreach (CustomAttribute attribute in self.CustomAttributes) {
-				if (attribute.Constructor.DeclaringType.FullName != "System.Runtime.InteropServices.ComVisibleAttribute")
-					continue;
-				return (bool) attribute.ConstructorArguments[0].Value;
+			if (self.HasCustomAttributes) {
+				foreach (CustomAttribute attribute in self.CustomAttributes) {
+					if (attribute.Constructor.DeclaringType.FullName != "System.Runtime.InteropServices.ComVisibleAttribute")
+						continue;
+					return (bool) attribute.ConstructorArguments[0].Value;
+				}
 			}
 
-			return null;
+			// special case for types, check if this is a nested type inside a [ComVisible] type
+			TypeDefinition type = (self as TypeDefinition);
+			if (type == null)
+				return null;
+
+			return type.DeclaringType.IsComVisible ();
+		}
+
+		// Checks whether specific type is COM visible or not
+		// considering nested types, assemblies attributes and default values
+		public static bool IsTypeComVisible (this TypeDefinition self)
+		{
+			return (self.IsComVisible () ?? self.Module.Assembly.IsComVisible () ?? true);
 		}
 	}
 }

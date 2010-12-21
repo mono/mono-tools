@@ -81,7 +81,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (!IsTypeComVisible (type))
+			if (!type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 
 			ClassInterfaceType? attributeValue = GetClassInterfaceAttributeValue (type);
@@ -106,28 +106,6 @@ namespace Gendarme.Rules.Interoperability.Com {
 				return RuleResult.Failure;
 			} else
 				return RuleResult.Success;
-		}
-
-		// Checks whether specific type is COM visible or not
-		// considering nested types/modules/assemblies attributes and default values
-		private static bool IsTypeComVisible (TypeDefinition type)
-		{
-			bool? t = type.IsComVisible ();
-			var module = type.Module;
-			if (t.HasValue)
-				return (bool)t;
-			if (type.IsNested) {
-				t = type.DeclaringType.IsComVisible ();
-				if (t.HasValue)
-					return (bool)t;
-			}
-			t = module.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			t = module.Assembly.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			return true;
 		}
 
 		private static ClassInterfaceType? GetClassInterfaceAttributeValue (ICustomAttributeProvider obj)

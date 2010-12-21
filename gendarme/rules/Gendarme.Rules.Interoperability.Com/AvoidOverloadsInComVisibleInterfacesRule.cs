@@ -74,13 +74,11 @@ namespace Gendarme.Rules.Interoperability.Com {
 		public RuleResult CheckType(TypeDefinition type)
 		{
 			// This rule only applies to public interfaces with methods and explicit ComVisible.
-			if (!type.IsInterface || !type.IsPublic || !type.HasMethods || !type.HasCustomAttributes)
+			if (!type.IsInterface || !type.IsPublic || !type.HasMethods)
 				return RuleResult.DoesNotApply;
 
-			// If no explicit ComVisible is found, we still need to check.
-			// If we're explicitly invisible, we can assume success.
-			if (!(type.IsComVisible () ?? true))
-				return RuleResult.Success;
+			if (!type.IsTypeComVisible ())
+				return RuleResult.DoesNotApply;
 
 			methods.Clear ();
 			foreach (MethodDefinition method in type.Methods) {

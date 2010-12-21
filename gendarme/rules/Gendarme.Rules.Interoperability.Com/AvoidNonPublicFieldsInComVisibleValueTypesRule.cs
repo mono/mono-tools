@@ -77,19 +77,8 @@ namespace Gendarme.Rules.Interoperability.Com {
 			if (!type.IsValueType || !type.HasCustomAttributes || !type.HasFields)
 				return RuleResult.DoesNotApply;
 
-			// Ensure the defining assembly is not null, then perform the same check for attributes on the assembly.
-			AssemblyDefinition assembly = type.GetAssembly ();
-			if (assembly != null && !assembly.HasCustomAttributes)
+			if (!type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
-
-			// Iterate through attributes on the type and assembly to ensure that ComVisible is false on the assembly,
-			// and true on the type.
-			if (assembly != null) {
-				if (assembly.IsComVisible () ?? false)
-					return RuleResult.Success;
-			}
-			if (!(type.IsComVisible () ?? true))
-				return RuleResult.Success;
 
 			// If we find any, low severity as the code works, but it's bad practice.
 			foreach (FieldDefinition field in type.Fields)

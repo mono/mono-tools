@@ -81,25 +81,30 @@ namespace Gendarme.Rules.Interoperability.Com {
 	public class AvoidStaticMembersInComVisibleTypesRule : Rule, IMethodRule {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-
 			if (!IsApplicableMethod (method))
 				return RuleResult.DoesNotApply;
 
 			// check if assembly has [ComVisible (false)]
 			// and type has [ComVisible (true)]
-			if ((method.Module.Assembly.IsComVisible () ?? true) ||
-				!(method.DeclaringType.IsComVisible () ?? false))
+			if (!method.DeclaringType.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 			
 			bool comVisibleValue = true;
 			
 			if (method.HasCustomAttributes) {
 				foreach (CustomAttribute attribute in method.CustomAttributes) {
-					var name = attribute.AttributeType.FullName;
-					if (IsRegisterUnregister (name))
+					TypeReference type = attribute.AttributeType;
+					if (type.Namespace != "System.Runtime.InteropServices")
+						continue;
+
+					switch (type.Name) {
+					case "ComUnregisterFunctionAttribute":
+					case "ComRegisterFunctionAttribute":
 						return RuleResult.DoesNotApply;
-					if (name == "System.Runtime.InteropServices.ComVisibleAttribute")
+					case "ComVisibleAttribute":
 						comVisibleValue = (bool)attribute.ConstructorArguments [0].Value;
+						break;
+					}
 				}
 			}
 
@@ -116,12 +121,6 @@ namespace Gendarme.Rules.Interoperability.Com {
 				((method.Attributes & MethodAttributes.SpecialName) != 0 && method.Name.StartsWith ("op_")) ||
 				method.DeclaringType.HasGenericParameters || method.DeclaringType.IsEnum ||
 				method.DeclaringType.IsInterface);
-		}
-		
-		private static bool IsRegisterUnregister (string fullName)
-		{
-			return fullName == "System.Runtime.InteropServices.ComUnregisterFunctionAttribute" ||
-				fullName == "System.Runtime.InteropServices.ComRegisterFunctionAttribute";
 		}
 	}
 }

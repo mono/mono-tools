@@ -84,14 +84,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 				(!type.IsPublic && !type.IsNestedPublic) || type.HasGenericParameters)
 				return RuleResult.DoesNotApply;
 
-			AssemblyDefinition assembly = type.Module.Assembly;
-			// return if assembly is ComVisible 
-			// or not visible but was not marked explicitly
-			if (assembly.IsComVisible () ?? true)
-				return RuleResult.DoesNotApply;
-
-			// type should be explicitly marked as ComVisible, return otherwise
-			if (!(type.IsComVisible () ?? false))
+			if (!type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 				
 			if (type.IsAutoLayout) 
