@@ -57,7 +57,6 @@
     <Compile Include="CodeDuplicatedLocator.cs" />
     <Compile Include="InstructionMatcher.cs" />
     <Compile Include="Pattern.cs" />
-    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cecil\Mono.Cecil.csproj">

@@ -34,6 +34,7 @@
             <File Name="gd2i.exe" Source="$(var.GendarmeRoot)\tools\supported\gd2i\bin\$(var.Configuration)\gd2i.exe" />
             <File Name="Gendarme.Framework.dll" Source="$(var.GendarmeBin)\Gendarme.Framework.dll" />
             <File Name="Mono.Cecil.dll" Source="$(var.GendarmeBin)\Mono.Cecil.dll" />
+            <File Name="Mono.Cecil.Mdb.dll" Source="$(var.GendarmeBin)\Mono.Cecil.Mdb.dll" />
             <File Name="Mono.Cecil.Pdb.dll" Source="$(var.GendarmeBin)\Mono.Cecil.Pdb.dll" />
             <File Name="ICSharpCode.SharpZipLib.dll" Source="Libraries\ICSharpCode.SharpZipLib.dll" />
 
