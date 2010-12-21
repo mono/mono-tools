@@ -178,7 +178,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCalls
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCastsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidTypeGetTypeForConstantStringsRule::CheckMethod(Mono.Cecil.MethodDefinition)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededCallsOnStringRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededFieldInitializationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededUnboxingRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -272,6 +272,9 @@ M: Gendarme.ResultWriter Gendarme.Wizard::GetSelectedWriter(System.Int32,System.
 M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule::SignatureMatches(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
 # 'type' might be re-assigned so the second call to FullName is required
 M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
+# different code path / swicth
+M: System.Void Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
+M: System.Void Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
 
 # mono bug wrt metatoken id with generics
 R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
@@ -291,7 +294,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.AvoidSmallNamespaceRule::
 M: System.Void Gendarme.Rules.Design.AvoidSmallNamespaceRule::TearDown()
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.InternalNamespacesShouldNotExposeTypesRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: System.Void Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::FindInterfaces()
-M: System.Int32 Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::CountInheritedClassesFrom(Mono.Cecil.TypeReference)
+M: System.Boolean Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::HasExpectedInheritedTypeCount(Mono.Cecil.MemberReference,System.Int32)
 M: System.Void Gendarme.XmlResultWriter::CreateDefects()
 M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
 
@@ -334,6 +337,10 @@ T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
 T: Gendarme.Rules.Performance.ReviewLinqMethodRule
 # CSC only - AddImpl and GetArgumentName
 T: NDesk.Options.OptionSet
+# 2.8+
+M: System.String Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::GetName(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
+R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
@@ -403,6 +410,9 @@ T: Gendarme.Wizard
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckConstructor(Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: System.Boolean Gendarme.Rules.Interoperability.Com.ComRocks::IsTypeComVisible(Mono.Cecil.TypeDefinition)
+M: System.Boolean Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::IsBase(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)
+M: System.Boolean Gendarme.Rules.Correctness.BadRecursiveInvocationRule::CompareMethods(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
 
 # ---------------------------------------------------------
 # These are all OK.
