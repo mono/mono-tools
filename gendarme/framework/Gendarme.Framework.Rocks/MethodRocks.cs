@@ -6,11 +6,13 @@
 //	Adrian Tsai <adrian_tsai@hotmail.com>
 //	Daniel Abramov <ex@vingrad.ru>
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Cedric Vivier  <cedricv@neonux.com>
 //
 // Copyright (C) 2007-2008 Novell, Inc (http://www.novell.com)
 // Copyright (c) 2007 Adrian Tsai
 // Copyright (C) 2008 Daniel Abramov
 // (C) 2008 Andreas Noever
+// Copyright (C) 2008 Cedric Vivier
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -277,6 +279,52 @@ namespace Gendarme.Framework.Rocks {
 					return property;
 			}
 			return null;
+		}
+
+		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
+		{
+			return a.GetElementType ().FullName == b.GetElementType ().FullName;
+		}
+
+		/// <summary>
+		/// Compare the IMethodSignature members with the one being specified.
+		/// </summary>
+		/// <param name="self">>The IMethodSignature on which the extension method can be called.</param>
+		/// <param name="signature">The IMethodSignature which is being compared.</param>
+		/// <returns>True if the IMethodSignature members are identical, false otherwise</returns>
+		public static bool CompareSignature (this IMethodSignature self, IMethodSignature signature)
+		{
+			if (self == null)
+				return (signature == null);
+
+			if (self.HasThis != signature.HasThis)
+				return false;
+			if (self.ExplicitThis != signature.ExplicitThis)
+				return false;
+			if (self.CallingConvention != signature.CallingConvention)
+				return false;
+
+			if (!AreSameElementTypes (self.ReturnType, signature.ReturnType))
+				return false;
+
+			bool h1 = self.HasParameters;
+			bool h2 = signature.HasParameters;
+			if (h1 != h2)
+				return false;
+			if (!h1 && !h2)
+				return true;
+
+			IList<ParameterDefinition> pdc1 = self.Parameters;
+			IList<ParameterDefinition> pdc2 = signature.Parameters;
+			int count = pdc1.Count;
+			if (count != pdc2.Count)
+				return false;
+
+			for (int i = 0; i < count; ++i) {
+				if (!AreSameElementTypes (pdc1 [i].ParameterType, pdc2 [i].ParameterType))
+					return false;
+			}
+			return true;
 		}
 	}
 }
