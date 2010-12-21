@@ -200,8 +200,9 @@ namespace Gendarme.Rules.Maintainability {
 				return new MethodSignature (name, rtype);
 
 			IList<ParameterDefinition> pdc = method.Parameters;
-			string [] parameters = new string [pdc.Count];
-			for (int i = 0; i < pdc.Count; ++i) {
+			int count = pdc.Count;
+			string [] parameters = new string [count];
+			for (int i = 0; i < count; ++i) {
 				TypeReference pType = pdc [i].ParameterType;
 
 				// handle reference type (ref in C#)
@@ -505,34 +506,36 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static TypeReference GetConstructedGenericType (MemberReference method, GenericParameter parameter)
 		{
+			int position = parameter.Position;
 			if (parameter.Owner is MethodReference) {
 				GenericInstanceMethod gim = (method as GenericInstanceMethod);
 				// 'gim' can be null in special cases, e.g. a generated Set method on a multidim array
 				if (gim != null)
-					return gim.GenericArguments [parameter.Position];
+					return gim.GenericArguments [position];
 			}
 			if (parameter.Owner is TypeReference) {
 				GenericInstanceType git = (method.DeclaringType as GenericInstanceType);
 				if (git != null)
-					return git.GenericArguments [parameter.Position];
+					return git.GenericArguments [position];
 			}
-			return parameter.Owner.GenericParameters [parameter.Position];
+			return parameter.Owner.GenericParameters [position];
 		}
 
 		private static void AppendPrettyTypeName (StringBuilder sb, TypeReference type)
 		{
 			int nRemoveTrail;
 			IList<GenericParameter> gpc = type.GenericParameters;
-			if (gpc.Count == 0)
+			int count = gpc.Count;
+			if (count == 0)
 				nRemoveTrail = 0;
-			else if (gpc.Count < 10)
+			else if (count < 10)
 				nRemoveTrail = 2;
 			else
 				nRemoveTrail = 3;
 
 			string fullname = type.FullName;
 			sb.Append (fullname.Substring (0, fullname.Length - nRemoveTrail));
-			if (gpc.Count > 0) {
+			if (count > 0) {
 				int n = 0;
 				sb.Append ("<");
 				foreach (GenericParameter gp in gpc) {
