@@ -110,14 +110,15 @@ namespace Gendarme.Rules.Design {
 				return ok;
 
 			IList<ParameterDefinition> pdc = invoke.Parameters;
-			if (pdc.Count >= 1) {
+			int count = pdc.Count;
+			if (count >= 1) {
 				string type_name = pdc [0].ParameterType.FullName;
 				if (String.Compare (type_name, "System.Object") != 0) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", type_name));
 					ok = false;
 				}
 			}
-			if (pdc.Count >= 2) {
+			if (count >= 2) {
 				if (!pdc [1].ParameterType.Inherits ("System.EventArgs")) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, "The second parameter should be a subclass of System.EventArgs");
 					ok = false;
@@ -179,15 +180,16 @@ namespace Gendarme.Rules.Design {
 			valid &= CheckParameterTypes (type, invoke);
 
 			IList<ParameterDefinition> pdc = invoke.Parameters;
-			if (pdc.Count > 0) {
+			int count = pdc.Count;
+			if (count > 0) {
 				valid &= CheckParameterName (type, pdc [0], "sender");
-				if (pdc.Count > 1)
+				if (count > 1)
 					valid &= CheckParameterName (type, pdc [1], "e");
 			}
 			return valid;
 		}
 
-		private bool CheckGenericDelegate (TypeReference type)
+		private bool CheckGenericDelegate (MemberReference type)
 		{
 			if (type.FullName == "System.EventHandler`1")
 				return true;
