@@ -274,8 +274,9 @@ namespace Gendarme.Rules.Interoperability {
 			Log.WriteLine (this, "\n\nChecking method: {0} on type: {1}", method.Name, method.DeclaringType.FullName);
 			Log.WriteLine (this, method);
 
+			MethodBody body = method.Body;
 #if DEBUG
-			foreach (ExceptionHandler e in method.Body.ExceptionHandlers)
+			foreach (ExceptionHandler e in body.ExceptionHandlers)
 				Log.WriteLine (this, " HandlerType: {7}, TryStart: {4:X}, TryEnd: {5:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, FilterEnd: {3:X}, CatchType: {6}", 
 				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
 				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.HandlerType);
@@ -304,7 +305,7 @@ namespace Gendarme.Rules.Interoperability {
 			// 
 			
 			int stack_count = 0;
-			foreach (Instruction ins in method.Body.Instructions) {
+			foreach (Instruction ins in body.Instructions) {
 				int pop = ins.GetPopCount (method);
 				if (pop == -1) {
 					// leave or leave.s, they leave the stack empty.
@@ -313,8 +314,8 @@ namespace Gendarme.Rules.Interoperability {
 					continue; // No need to do anything else here.
 				}
 				
-				if ((stack_count == 0) && method.Body.HasExceptionHandlers) {
-					foreach (ExceptionHandler eh in method.Body.ExceptionHandlers) {
+				if ((stack_count == 0) && body.HasExceptionHandlers) {
+					foreach (ExceptionHandler eh in body.ExceptionHandlers) {
 						if (eh.HandlerStart != null && eh.HandlerStart.Offset == ins.Offset) {
 							// upon entry to a catch handler there is an implicit object on the stack already (the thrown object)
 							stack_count = 1;
@@ -358,7 +359,7 @@ namespace Gendarme.Rules.Interoperability {
 			List<MethodDefinition> pointers;
 			int index = ins.GetStoreIndex ();
 			
-			pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
+			pointers = (stack_count <= 0) ? null : GetDelegatePointers (stack [stack_count - 1]);
 			
 			Log.WriteLine (this, " Reached a local variable store at offset {2:X}. index {0}, there are {1} pointers here.", index, pointers == null ? 0 : pointers.Count, ins.Offset);
 			
@@ -376,7 +377,7 @@ namespace Gendarme.Rules.Interoperability {
 			List<MethodDefinition> pointers;
 			FieldReference field = (ins.Operand as FieldReference);
 			
-			pointers = (stack_count <= 0) ? null : GetDelegatePointers (locals, stack [stack_count - 1]);
+			pointers = (stack_count <= 0) ? null : GetDelegatePointers (stack [stack_count - 1]);
 			
 			Log.WriteLine (this, " Reached a field variable store to the field {0}, there are {1} unsafe pointers here.", field.Name, pointers == null ? 0 : pointers.Count);
 #if DEBUG
@@ -429,7 +430,7 @@ namespace Gendarme.Rules.Interoperability {
 					}
 					
 					// Get and check the pointers
-					VerifyMethods (GetDelegatePointers (locals, stack [i]));
+					VerifyMethods (GetDelegatePointers (stack [i]));
 				}
 			}
 		}
@@ -455,15 +456,16 @@ namespace Gendarme.Rules.Interoperability {
 			
 			body = callback.Body;
 			instructions = body.Instructions;
+			int icount = instructions.Count;
 			is_safe.Clear ();
-			is_safe.Capacity = body.Instructions.Count;
+			is_safe.Capacity = icount;
 
 			// 
 			// We assume that the method is verifiable.
 			// 
 			
 			// Mark all instructions corresponding to a safe opcode as safe, others are unsafe for now.
-			for (int i = 0; i < instructions.Count; i++) {
+			for (int i = 0; i < icount; i++) {
 				bool safe = safe_instructions.Get (instructions [i].OpCode.Code);
 				Log.WriteLine (this, "  {0} {1}: {2}", i, instructions [i].OpCode.Code, safe);
 				is_safe.Add (safe);
@@ -484,8 +486,8 @@ namespace Gendarme.Rules.Interoperability {
 			// Given that this is the normal case (otherwise you'd have to put the attribute in the assembly), we accept 2) as safe too.
 			// 
 	
-			if (callback.Body.HasExceptionHandlers) {
-				foreach (ExceptionHandler eh in callback.Body.ExceptionHandlers) {
+			if (body.HasExceptionHandlers) {
+				foreach (ExceptionHandler eh in body.ExceptionHandlers) {
 					// We only care about catch clauses.
 					if (eh.HandlerType != ExceptionHandlerType.Catch)
 						continue;
@@ -554,7 +556,7 @@ namespace Gendarme.Rules.Interoperability {
 		}
 		
 		// Parses the ILRange and return all delegate pointers that could end up on the stack as a result of executing that code.
-		private List<MethodDefinition> GetDelegatePointers (List<List<MethodDefinition>> locals, ILRange range)
+		private List<MethodDefinition> GetDelegatePointers (ILRange range)
 		{
 			List<MethodDefinition> result = null;
 			MethodReference ldftn;

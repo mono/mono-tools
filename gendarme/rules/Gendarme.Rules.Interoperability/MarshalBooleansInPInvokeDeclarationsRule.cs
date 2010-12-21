@@ -64,7 +64,7 @@ namespace Gendarme.Rules.Interoperability {
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1414:MarkBooleanPInvokeArgumentsWithMarshalAs")]
 	public class MarshalBooleansInPInvokeDeclarationsRule : Rule, IMethodRule {
 
-		static bool CheckBooleanMarshalling (IMarshalInfoProvider spec, TypeReference type)
+		static bool CheckBooleanMarshalling (IMarshalInfoProvider spec, MemberReference type)
 		{
 			// is marshalling information provided
 			if (spec.MarshalInfo != null)
