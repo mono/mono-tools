@@ -11,7 +11,6 @@ rules_sources =  \
 	AvoidMessageChainsRule.cs \
 	AvoidSpeculativeGeneralityRule.cs \
 	AvoidSwitchStatementsRule.cs \
-	Utilities.cs \
 	CodeDuplicatedLocator.cs \
 	InstructionMatcher.cs \
 	Pattern.cs 

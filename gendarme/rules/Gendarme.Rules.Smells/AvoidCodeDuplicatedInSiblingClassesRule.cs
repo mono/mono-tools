@@ -103,25 +103,19 @@ namespace Gendarme.Rules.Smells {
 	public class AvoidCodeDuplicatedInSiblingClassesRule : Rule, ITypeRule {
 
 		private CodeDuplicatedLocator codeDuplicatedLocator;
+		private List<TypeDefinition> siblingClasses;
 
 		public AvoidCodeDuplicatedInSiblingClassesRule ()
 		{
 			codeDuplicatedLocator = new CodeDuplicatedLocator (this);
+			siblingClasses = new List<TypeDefinition> ();
 		}
 
-		private void FindCodeDuplicated (TypeDefinition type, ICollection<TypeDefinition> siblingClasses)
+		private void FindCodeDuplicated (TypeDefinition type)
 		{
 			foreach (MethodDefinition method in type.Methods)
 				foreach (TypeDefinition sibling in siblingClasses)
 					codeDuplicatedLocator.CompareMethodAgainstTypeMethods (method, sibling);
-		}
-
-		private void CompareSiblingClasses (ICollection<TypeDefinition> siblingClasses)
-		{
-			foreach (TypeDefinition type in siblingClasses) {
-				FindCodeDuplicated (type, siblingClasses);
-				codeDuplicatedLocator.CheckedTypes.AddIfNew (type.Name);
-			}
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -130,11 +124,21 @@ namespace Gendarme.Rules.Smells {
 			if (type.IsEnum || type.IsInterface)
 				return RuleResult.DoesNotApply;
 
-			ICollection<TypeDefinition> siblingClasses = Utilities.GetInheritedClassesFrom (type);
+			foreach (TypeDefinition module_type in type.Module.GetAllTypes ()) {
+				if ((module_type.BaseType != null) && module_type.BaseType.Equals (type))
+					siblingClasses.Add (module_type);
+			}
+
 			if (siblingClasses.Count >= 2) {
 				codeDuplicatedLocator.Clear ();
-				CompareSiblingClasses (siblingClasses);
+
+				foreach (TypeDefinition sibling in siblingClasses) {
+					FindCodeDuplicated (sibling);
+					codeDuplicatedLocator.CheckedTypes.AddIfNew (sibling.Name);
+				}
 			}
+
+			siblingClasses.Clear ();
 
 			return Runner.CurrentRuleResult;
 		}

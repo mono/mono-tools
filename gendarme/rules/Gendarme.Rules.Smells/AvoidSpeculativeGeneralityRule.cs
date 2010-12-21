@@ -117,26 +117,28 @@ namespace Gendarme.Rules.Smells {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
 
-		private int CountInheritedClassesFrom (TypeReference baseType)
+		private bool HasExpectedInheritedTypeCount (MemberReference baseType, int expected)
 		{
 			int count = 0;
+			string base_name = baseType.FullName;
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						if ((baseType == type.BaseType) || (type.BaseType != null &&
-							(baseType.FullName == type.BaseType.FullName))) {
-							count++;
+							(base_name == type.BaseType.FullName))) {
+							if (++count > expected)
+								return false;
 						}
 					}
 				}
 			}
-			return count;
+			return (count == expected);
 		}
 
 		private void CheckAbstractClassWithoutResponsability (TypeDefinition type)
 		{
 			if (type.IsAbstract) {
-				if (CountInheritedClassesFrom (type) == 1)
+				if (HasExpectedInheritedTypeCount (type, 1))
 					Runner.Report (type, Severity.Medium, Confidence.Normal, "This abstract class has only one class inheritting from.  Abstract classes without responsability are a sign for the Speculative Generality smell.");
 			}
 		}
