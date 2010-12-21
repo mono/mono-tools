@@ -73,23 +73,6 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class BadRecursiveInvocationRule : Rule, IMethodRule {
 
-		// note: parameter names do not have to match because we can be calling a base class virtual method
-		private static bool CheckParameters (IList<ParameterDefinition> caller, IList<ParameterDefinition> callee)
-		{
-			if (caller.Count != callee.Count)
-				return false;
-
-			for (int j = 0; j < caller.Count; j++) {
-				ParameterDefinition p1 = (ParameterDefinition) callee [j];
-				ParameterDefinition p2 = (ParameterDefinition) caller [j];
-
-				if (p1.ParameterType.FullName != p2.ParameterType.FullName)
-					return false;
-			}
-			// complete match (of types)
-			return true;
-		}
-
 		private static bool CompareMethods (MethodReference method1, MethodReference method2, bool virtual_call)
 		{
 			if (method1 == null)
@@ -101,10 +84,6 @@ namespace Gendarme.Rules.Correctness {
 			if (!virtual_call)
 				return (method1.MetadataToken == method2.MetadataToken);
 
-			// static or instance mismatch
-			if (method1.HasThis != method2.HasThis)
-				return false;
-
 			// we could be implementing an interface (skip position 0 because of .ctor and .cctor)
 			string m1name = method1.Name;
 			bool explicit_interface = (m1name.IndexOf ('.') > 0);
@@ -112,17 +91,7 @@ namespace Gendarme.Rules.Correctness {
 				return false;
 
 			// compare parameters
-			bool p1 = method1.HasParameters;
-			bool p2 = method2.HasParameters;
-			if (p1 != p2)
-				return false;
-			if (p1 && p2) {
-				if (!CheckParameters (method1.Parameters, method2.Parameters))
-					return false;
-			}
-
-			// return value may differ (e.g. if generics are used)
-			if (method1.ReturnType.FullName != method2.ReturnType.FullName)
+			if (!method1.CompareSignature (method2))
 				return false;
 
 			TypeReference t2 = method2.DeclaringType;

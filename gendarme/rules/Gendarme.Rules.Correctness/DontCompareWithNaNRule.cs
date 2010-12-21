@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Correctness {
 				return RuleResult.DoesNotApply;
 
 			IList<Instruction> il = method.Body.Instructions;
-			for (int i = 0; i < method.Body.Instructions.Count; i++) {
+			for (int i = 0; i < il.Count; i++) {
 				Instruction ins = il [i];
 				switch (ins.OpCode.Code) {
 				// handle == and !=

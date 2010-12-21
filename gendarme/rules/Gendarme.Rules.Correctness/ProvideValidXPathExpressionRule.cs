@@ -74,8 +74,6 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class ProvideValidXPathExpressionRule : Rule, IMethodRule {
 
-		MethodDefinition method;
-
 		const string XmlNodeClass = "System.Xml.XmlNode";
 		const string XPathNavigatorClass = "System.Xml.XPath.XPathNavigator";
 		const string XPathExpressionClass = "System.Xml.XPath.XPathExpression";
@@ -95,7 +93,7 @@ namespace Gendarme.Rules.Correctness {
 			};
 		}
 
-		void CheckString (Instruction ins, int argumentOffset)
+		void CheckString (MethodDefinition method, Instruction ins, int argumentOffset)
 		{
 			Instruction ld = ins.TraceBack (method, argumentOffset);
 			if (null == ld)
@@ -103,20 +101,20 @@ namespace Gendarme.Rules.Correctness {
 
 			switch (ld.OpCode.Code) {
 			case Code.Ldstr:
-				CheckString (ins, (string) ld.Operand);
+				CheckString (method, ins, (string) ld.Operand);
 				break;
 			case Code.Ldsfld:
 				FieldReference f = (FieldReference) ld.Operand;
 				if (f.Name == "Empty" && f.DeclaringType.FullName == "System.String")
-					CheckString (ins, null);
+					CheckString (method, ins, null);
 				break;
 			case Code.Ldnull:
-				CheckString (ins, null);
+				CheckString (method, ins, null);
 				break;
 			}
 		}
 
-		void CheckString (Instruction ins, string expression)
+		void CheckString (MethodDefinition method, Instruction ins, string expression)
 		{
 			if (string.IsNullOrEmpty (expression)) {
 				Runner.Report (method, ins, Severity.High, Confidence.Total, "Expression is null or empty.");
@@ -131,7 +129,7 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 
-		void CheckCall (Instruction ins, MethodReference mref)
+		void CheckCall (MethodDefinition method, Instruction ins, MethodReference mref)
 		{
 			if (null == mref || !mref.HasParameters)
 				return;
@@ -140,29 +138,29 @@ namespace Gendarme.Rules.Correctness {
 			case "Compile":
 				TypeReference tr = mref.DeclaringType;
 				if (tr.FullName == XPathExpressionClass || tr.Inherits (XPathNavigatorClass))
-					CheckString (ins, GetFirstArgumentOffset (mref));
+					CheckString (method, ins, GetFirstArgumentOffset (mref));
 				break;
 			case "SelectNodes":
 				if (mref.DeclaringType.FullName == XmlNodeClass)
-					CheckString (ins, -1);
+					CheckString (method, ins, -1);
 				break;
 			case "Evaluate":
 			case "Select":
-				CheckXPathNavigatorString (ins, mref);
+				CheckXPathNavigatorString (method, ins, mref);
 				break;
 			case "SelectSingleNode":
-				CheckXPathNavigatorString (ins, mref);
+				CheckXPathNavigatorString (method, ins, mref);
 				if (mref.DeclaringType.FullName == XmlNodeClass)
-					CheckString (ins, -1);
+					CheckString (method, ins, -1);
 				break;
 			}
 		}
 
-		void CheckXPathNavigatorString (Instruction ins, MethodReference mref)
+		void CheckXPathNavigatorString (MethodDefinition method, Instruction ins, MethodReference mref)
 		{
 			if (mref.Parameters [0].ParameterType.FullName == "System.String") {
 				if (mref.DeclaringType.Inherits (XPathNavigatorClass))
-					CheckString (ins, -1);
+					CheckString (method, ins, -1);
 			}
 		}
 
@@ -170,8 +168,6 @@ namespace Gendarme.Rules.Correctness {
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
-
-			this.method = method;
 
 			//is there any interesting opcode in the method?
 			OpCodeBitmask calls = OpCodeBitmask.Calls;
@@ -182,7 +178,7 @@ namespace Gendarme.Rules.Correctness {
 				if (!calls.Get (ins.OpCode.Code))
 					continue;
 
-				CheckCall (ins, (MethodReference) ins.Operand);
+				CheckCall (method, ins, (MethodReference) ins.Operand);
 			}
 
 			return Runner.CurrentRuleResult;
