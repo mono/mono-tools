@@ -52,10 +52,14 @@ namespace Gendarme.Rules.Security.Cas {
 		{
 			set = null;
 
-			if (!declaration.HasSecurityAttributes && declaration.SecurityAttributes.Count != 1)
+			if (!declaration.HasSecurityAttributes)
 				return false;
 
-			var security_attribute = declaration.SecurityAttributes [0];
+			var attributes = declaration.SecurityAttributes;
+			if (attributes.Count != 1)
+				return false;
+
+			var security_attribute = attributes [0];
 			var attribute_type = security_attribute.AttributeType;
 			if (attribute_type.Name != "PermissionSetAttribute" || attribute_type.Namespace != "System.Security.Permissions")
 				return false;
@@ -115,7 +119,7 @@ namespace Gendarme.Rules.Security.Cas {
 				CompleteSecurityAttributeProperties (security_attribute, attribute);
 		}
 
-		static void CompleteSecurityAttributeFields (SSP.SecurityAttribute security_attribute, SecurityAttribute attribute)
+		static void CompleteSecurityAttributeFields (SSP.SecurityAttribute security_attribute, ICustomAttribute attribute)
 		{
 			var type = security_attribute.GetType ();
 
@@ -123,7 +127,7 @@ namespace Gendarme.Rules.Security.Cas {
 				type.GetField (named_argument.Name).SetValue (security_attribute, named_argument.Argument.Value);
 		}
 
-		static void CompleteSecurityAttributeProperties (SSP.SecurityAttribute security_attribute, SecurityAttribute attribute)
+		static void CompleteSecurityAttributeProperties (SSP.SecurityAttribute security_attribute, ICustomAttribute attribute)
 		{
 			var type = security_attribute.GetType ();
 
