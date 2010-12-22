@@ -176,14 +176,17 @@ namespace Gendarme.Rules.Smells {
 			if (!type.HasMethods)
 				return false; // 0 / 2 + 1 <= 0
 
+			int methodCount = 0;
 			int delegationCounter = 0;
-			IList<MethodDefinition> methods = type.GetMethods ().ToList ();
-			foreach (MethodDefinition method in methods) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
+				methodCount++;
 				if (OnlyDelegatesCall (method))
 					delegationCounter++;
 			}
 
-			return methods.Count / 2 + 1 <= delegationCounter;
+			return methodCount / 2 + 1 <= delegationCounter;
 		}
 
 		private void CheckUnnecesaryDelegation (TypeDefinition type)

@@ -192,11 +192,14 @@ namespace Gendarme.Rules.Performance {
 			if (!type.HasMethods)
 				return false;
 
-			var ctors = type.GetConstructors ().ToList ();
-			if (ctors.Count != 1)
-				return false;
-
-			var constructor = ctors [0];
+			MethodDefinition constructor = null;
+			foreach (MethodDefinition method in type.Methods) {
+				if (!method.IsConstructor)
+					continue;
+				if (constructor != null)
+					return false; // more than one ctor
+				constructor = method;
+			}
 			return (constructor.IsPrivate && !constructor.HasParameters);
 		}
 

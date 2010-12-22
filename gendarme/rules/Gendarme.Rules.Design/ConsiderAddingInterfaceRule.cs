@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeReference iface)
+		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
 		{
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.GetAllTypes ()) {
@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 
-		private static bool DoesTypeStealthilyImplementInterface (TypeDefinition type, TypeReference iface)
+		private static bool DoesTypeStealthilyImplementInterface (TypeDefinition type, TypeDefinition iface)
 		{
 			//ignore already uninteresting types below (self, enum, struct, static class)
 			if (type == iface || type.IsEnum || type.IsValueType || type.IsStatic ())
@@ -134,7 +134,7 @@ namespace Gendarme.Rules.Design {
 			//if type has less methods than the interface no need to check further
 			if (!type.HasMethods)
 				return false;
-			IList<MethodDefinition> mdc = iface.GetMethods ().ToList ();
+			IList<MethodDefinition> mdc = iface.Methods;
 			if (type.Methods.Count < mdc.Count)
 				return false;
 

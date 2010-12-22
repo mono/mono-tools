@@ -93,15 +93,14 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		private static MethodDefinition GetSmallestConstructorFrom (TypeReference type)
+		private static MethodDefinition GetSmallestConstructorFrom (TypeDefinition type)
 		{
-			IList<MethodDefinition> ctors = type.GetConstructors ().ToList ();
-			if (ctors.Count == 1)
-				return ctors [0];
-
 			MethodDefinition smallest = null;
 			int scount = 0;
-			foreach (MethodDefinition constructor in ctors) {
+			foreach (MethodDefinition constructor in type.Methods) {
+				if (!constructor.IsConstructor)
+					continue;
+
 				// skip the static ctor since it will always be the smallest one
 				if (constructor.IsStatic)
 					continue;
