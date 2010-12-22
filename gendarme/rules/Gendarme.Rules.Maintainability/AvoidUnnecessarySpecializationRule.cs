@@ -389,15 +389,20 @@ namespace Gendarme.Rules.Maintainability {
 
 		static bool IsSignatureDictated (MethodDefinition method)
 		{
+			TypeDefinition type = method.DeclaringType;
 			MethodSignature signature = null;
 
-			if (method.DeclaringType.HasInterfaces) {
+			if (type.HasInterfaces) {
 				signature = GetSignature (method);
 				if (IsSignatureDictatedByInterface (method, signature))
 					return true;
 			}
 
 			if (!method.IsVirtual)
+				return false;
+
+			// e.g. System.Object
+			if (type.BaseType == null)
 				return false;
 
 			return IsSignatureDictatedByOverride (method, signature ?? GetSignature (method));
