@@ -43,7 +43,9 @@
       <Link>AssemblyStaticInfo.cs</Link>
     </Compile>
     <Compile Include="DefectsMustBeReportedRule.cs" />
+    <Compile Include="DoNotThrowExceptionRule.cs" />
     <Compile Include="GendarmeRule.cs" />
+    <Compile Include="UseCorrectSuffixRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\cecil\Mono.Cecil.csproj">

@@ -8,8 +8,8 @@
     <ProjectGuid>{C3BDA065-4C29-48CA-907A-E35CE92F5F87}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tests.Rules.Design.Generics</RootNamespace>
-    <AssemblyName>Tests.Rules.Design.Generics</AssemblyName>
+    <RootNamespace>Tests.Rules.Design.Generic</RootNamespace>
+    <AssemblyName>Tests.Rules.Design.Generic</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,7 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvoidDeclaringCustomDelegatesTest.cs" />
+    <Compile Include="AvoidExcessiveParametersOnGenericTypesTest.cs" />
     <Compile Include="AvoidMethodWithUnusedGenericTypeTest.cs" />
+    <Compile Include="DoNotDeclareStaticMembersOnGenericTypesTest.cs" />
+    <Compile Include="DoNotExposeGenericListsTest.cs" />
     <Compile Include="DoNotExposeNestedGenericSignaturesTest.cs" />
     <Compile Include="ImplementGenericCollectionInterfacesTest.cs" />
     <Compile Include="PreferGenericsOverRefObjectTest.cs" />

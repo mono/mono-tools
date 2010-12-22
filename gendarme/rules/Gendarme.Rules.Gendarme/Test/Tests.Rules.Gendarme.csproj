@@ -8,8 +8,8 @@
     <ProjectGuid>{C329FF89-4C07-4D72-AF5B-70B10670CB36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>Tests.Rules.Gendarme</RootNamespace>
+    <AssemblyName>Tests.Rules.Gendarme</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,6 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefectsMustBeReportedTest.cs" />
+    <Compile Include="DoNotThrowExceptionTest.cs" />
+    <Compile Include="UseCorrectSuffixTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\Mono.Cecil.csproj">
