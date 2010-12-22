@@ -167,9 +167,6 @@ namespace GuiCompare {
 							continue;
 					}
 
-					if (IsFinalizer (md))
-						continue;
-
 					if (md.IsPrivate || md.IsAssembly)
 						continue;
 
@@ -236,20 +233,6 @@ namespace GuiCompare {
 					cache [iface.FullName] = iface;
 
 			return cache.Values;
-		}
-
-		static bool IsFinalizer (MethodDefinition method)
-		{
-			if (method.Name != "Finalize")
-				return false;
-
-			if (!method.IsVirtual)
-				return false;
-
-			if (method.Parameters.Count != 0)
-				return false;
-
-			return true;
 		}
 
 		public static void PopulateTypeLists (TypeDefinition fromDef,
