@@ -365,7 +365,7 @@ namespace GuiCompare
 		//	"XamlBuildTask"
 		};
 		
-		const string masterinfos_version = "2.6";
+		const string masterinfos_version = "2.8";
 
 		static Uri GetMasterInfoUri (string file)
 		{
