@@ -450,11 +450,10 @@ namespace GuiCompare {
 					}
 
 					if (reference_list[m] is CompField) {
-						if (((CompField)reference_list[m]).GetLiteralValue() !=
-						    ((CompField)target_list[a]).GetLiteralValue()) {
-							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}",
-							                                    ((CompField)reference_list[m]).GetLiteralValue(),
-							                                    ((CompField)target_list[a]).GetLiteralValue()));
+						var v_ref = ((CompField)reference_list[m]).GetLiteralValue();
+						var v_tar = ((CompField)target_list[a]).GetLiteralValue();
+						if (v_ref != v_tar) {
+							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}", v_ref, v_tar));
 							comparison.Status = ComparisonStatus.Error;
 						}
 					}
