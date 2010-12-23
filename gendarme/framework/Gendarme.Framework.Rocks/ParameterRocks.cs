@@ -45,19 +45,6 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if the parameter is passed by reference (<c>ref</c> keyword in C#)
-		/// </summary>
-		/// <param name="self">The ParameterReference on which the extension method can be called.</param>
-		/// <returns>True if the parameter is passed by reference, false otherwise.</returns>
-		public static bool IsRef (this ParameterReference self)
-		{
-			if (self == null)
-				return false;
-			string name = self.ParameterType.Name;
-			return (name [name.Length - 1] == '&');
-		}
-
-		/// <summary>
 		/// Returns the sequence number as found in the metadata
 		/// </summary>
 		/// <param name="self">The ParameterDefinition on which the extension method can be called.</param>

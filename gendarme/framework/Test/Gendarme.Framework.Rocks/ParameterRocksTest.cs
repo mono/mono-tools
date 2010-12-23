@@ -62,21 +62,6 @@ namespace Test.Framework.Rocks {
 			Assert.IsFalse (md.Parameters [0].IsParams (), "0");
 			Assert.IsTrue (md.Parameters [1].IsParams (), "1");
 		}
-
-		public void UseRef (int a, ref int b)
-		{
-		}
-
-		[Test]
-		public void IsRef ()
-		{
-			ParameterReference pr = null;
-			Assert.IsFalse (pr.IsRef (), "null");
-
-			MethodDefinition md = type.GetMethod ("UseRef");
-			Assert.IsFalse (md.Parameters [0].IsRef (), "0");
-			Assert.IsTrue (md.Parameters [1].IsRef (), "1");
-		}
 	}
 }
 
