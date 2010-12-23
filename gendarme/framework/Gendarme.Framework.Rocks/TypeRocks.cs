@@ -514,37 +514,6 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if the type refers to a primitive type.
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>True if the type is a primitive type, False otherwise</returns>
-		public static bool IsPrimitive (this TypeReference self)
-		{
-			if ((self == null) || (self.Namespace != "System"))
-				return false;
-
-			switch (self.Name) {
-			case "Byte":
-			case "SByte":
-			case "Boolean":
-			case "Int16":
-			case "UInt16":
-			case "Char":
-			case "Int32":
-			case "UInt32":
-			case "Single":
-			case "Int64":
-			case "UInt64":
-			case "Double":
-			case "IntPtr":
-			case "UIntPtr":
-				return true;
-			default:
-				return false;
-			}
-		}
-
-		/// <summary>
 		/// Check if the type is static (2.0+)
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>

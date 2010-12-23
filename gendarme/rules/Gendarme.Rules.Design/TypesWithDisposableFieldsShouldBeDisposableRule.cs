@@ -117,7 +117,7 @@ namespace Gendarme.Rules.Design {
 				if (fieldType == null)
 					continue;
 				// enums and primitives don't implement IDisposable
-				if (fieldType.IsEnum || fieldType.IsPrimitive ())
+				if (fieldType.IsEnum || fieldType.IsPrimitive)
 					continue;
 				if (fieldType.Implements ("System.IDisposable")) {
 					Runner.Report (field, Severity.High, Confidence.High,
