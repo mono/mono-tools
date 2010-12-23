@@ -137,7 +137,7 @@ namespace Test.Framework.Rocks {
 		[Test]
 		public void Resolve ()
 		{
-			foreach (Instruction ins in type.GetConstructors ().First ().Body.Instructions) {
+			foreach (Instruction ins in type.Methods [0].Body.Instructions) {
 				FieldReference field = (ins.Operand as FieldReference);
 				if ((field != null) && !(field is FieldDefinition)) {
 					FieldDefinition fd = field.Resolve ();

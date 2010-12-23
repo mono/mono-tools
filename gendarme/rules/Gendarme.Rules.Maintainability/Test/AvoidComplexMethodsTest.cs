@@ -399,7 +399,10 @@ namespace Test.Rules.Maintainability {
 			int actual_cc;
 			int expected_cc;
 
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
+
 				actual_cc = AvoidComplexMethodsRule.GetCyclomaticComplexity (method);
 				expected_cc = GetExpectedComplexity (method);
 				Assert.AreEqual (expected_cc, actual_cc,

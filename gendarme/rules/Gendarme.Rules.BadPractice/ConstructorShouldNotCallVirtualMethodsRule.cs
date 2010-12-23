@@ -126,9 +126,9 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			// check each constructor
-			foreach (MethodDefinition constructor in type.GetConstructors ()) {
+			foreach (MethodDefinition constructor in type.Methods) {
 				// early checks to avoid stack creation
-				if (constructor.IsStatic || !constructor.HasBody)
+				if (!constructor.IsConstructor || constructor.IsStatic || !constructor.HasBody)
 					continue;
 
 				CheckConstructor (constructor);

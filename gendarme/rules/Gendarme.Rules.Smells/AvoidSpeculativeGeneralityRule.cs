@@ -232,7 +232,7 @@ namespace Gendarme.Rules.Smells {
 
 			CheckAbstractClassWithoutResponsability (type);
 			if (avoidUnusedParameters != null) {
-				foreach (MethodDefinition method in type.GetMethods ()) {
+				foreach (MethodDefinition method in type.Methods) {
 					avoidUnusedParameters.CheckMethod (method);
 				}
 			}

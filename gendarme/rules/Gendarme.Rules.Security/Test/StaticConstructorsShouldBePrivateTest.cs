@@ -81,8 +81,8 @@ namespace Test.Rules.Security {
 		{
 			TypeDefinition inspectedType = DefinitionLoader.GetTypeDefinition<NonPrivateStaticCtorDefinedClass> ();
 			MethodDefinition static_ctor = null;
-			foreach (MethodDefinition ctor in inspectedType.GetConstructors ()) {
-				if (ctor.IsStatic) {
+			foreach (MethodDefinition ctor in inspectedType.Methods) {
+				if (ctor.IsConstructor && ctor.IsStatic) {
 					static_ctor = ctor;
 					break;
 				}

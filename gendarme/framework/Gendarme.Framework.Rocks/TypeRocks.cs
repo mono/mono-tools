@@ -57,38 +57,6 @@ namespace Gendarme.Framework.Rocks {
 	public static class TypeRocks {
 
 		/// <summary>
-		/// Return an IEnumerable that allows a single loop (like a foreach) to
-		/// traverse all MethodDefinition that are a constructor in the type.
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>An IEnumerable to traverse all constructors methods</returns>
-		public static IEnumerable<MethodDefinition> GetConstructors (this TypeReference self)
-		{
-			TypeDefinition type = self.Resolve ();
-			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.Methods)
-					if (method.IsConstructor)
-						yield return method;
-			}
-		}
-
-		/// <summary>
-		/// Return an IEnumerable that allows a single loop (like a foreach) to
-		/// traverse all MethodDefinition that are not a constructor in the type.
-		/// </summary>
-		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <returns>An IEnumerable to traverse all non constructors methods</returns>
-		public static IEnumerable<MethodDefinition> GetMethods (this TypeReference self)
-		{
-			TypeDefinition type = self.Resolve ();
-			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.Methods)
-					if (!method.IsConstructor)
-						yield return method;
-			}
-		}
-
-		/// <summary>
 		/// Returns an IEnumerable that allows a single loop (like a foreach) to
 		/// traverse all base classes and interfaces inherited by the type.
 		/// </summary>

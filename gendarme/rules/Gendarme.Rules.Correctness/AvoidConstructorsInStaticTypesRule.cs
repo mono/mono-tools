@@ -127,8 +127,8 @@ namespace Gendarme.Rules.Correctness {
 
 			// rule applies!
 
-			foreach (MethodDefinition ctor in type.GetConstructors ()) {
-				if (!ctor.IsStatic && ctor.IsVisible ()) {
+			foreach (MethodDefinition ctor in type.Methods) {
+				if (ctor.IsConstructor && !ctor.IsStatic && ctor.IsVisible ()) {
 					Runner.Report (ctor, Severity.Low, Confidence.High);
 				}
 			}

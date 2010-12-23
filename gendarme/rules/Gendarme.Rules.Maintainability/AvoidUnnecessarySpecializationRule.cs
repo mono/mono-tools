@@ -413,8 +413,8 @@ namespace Gendarme.Rules.Maintainability {
 			TypeDefinition baseType = method.DeclaringType.BaseType.Resolve ();
 			while (baseType != null) {
 				if (baseType.HasMethods) {
-					foreach (MethodDefinition md in baseType.GetMethods ()) {
-						if (sig.Matches (md))
+					foreach (MethodDefinition md in baseType.Methods) {
+						if (!md.IsConstructor && sig.Matches (md))
 							return true;
 					}
 				}
@@ -430,7 +430,7 @@ namespace Gendarme.Rules.Maintainability {
 				TypeDefinition intr = intf_ref.Resolve ();
 				if (intr == null)
 					continue;
-				foreach (MethodDefinition md in intr.GetMethods ()) {
+				foreach (MethodDefinition md in intr.Methods) {
 					if (sig.Matches (md))
 						return true;
 				}

@@ -138,26 +138,13 @@ namespace Gendarme.Rules.Design {
 
 		static bool HasTryParseMethod (TypeDefinition type)
 		{
-			foreach (MethodReference method in type.Methods) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				if (MethodSignatures.TryParse.Matches (method))
 					return true;
 			}
 			return false;
-		}
-
-		static int GetMethodCount (TypeDefinition type)
-		{
-			if (!type.HasMethods)
-				return 0;
-
-			int methods = 0;
-
-			foreach (var method in type.Methods) {
-				if (!method.IsConstructor)
-					methods++;
-			}
-
-			return methods;
 		}
 
 		public RuleResult CheckType (TypeDefinition type)
@@ -165,12 +152,11 @@ namespace Gendarme.Rules.Design {
 			if (type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 
-			if (GetMethodCount (type) == 0)
-				return RuleResult.DoesNotApply;
-
 			// we look for a Parse method defined in the type
 			bool has_parse = false;
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				if (MethodSignatures.Parse.Matches (method)) {
 					// the type provides a "<type> <type>::Parse(string)" method
 					has_parse = true;

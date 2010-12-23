@@ -73,9 +73,9 @@ namespace Gendarme.Rules.Design {
 
 			// rule applies!
 
-			foreach (MethodDefinition ctor in type.GetConstructors ()) {
-				if (ctor.IsPublic) {
-					Runner.Report (ctor, Severity.Low, Confidence.Total);
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor && method.IsPublic) {
+					Runner.Report (method, Severity.Low, Confidence.Total);
 				}
 			}
 
