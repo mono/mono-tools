@@ -105,6 +105,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.PreferEventsOverMethodsRu
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.PreferIntegerOrStringForIndexersRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ProvideTryParseAlternativeRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.StronglyTypedRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesShouldBeInsideNamespacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesWithNativeFieldsShouldBeDisposableRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -334,6 +335,8 @@ T: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
 # CheckForAny and CheckMethod
 T: Gendarme.Rules.Performance.ReviewLinqMethodRule
+# CheckType and ProcessMethods, ProcessMethods and ProcessProperties
+T: Gendarme.Rules.Design.StronglyTypedRule
 # CSC only - AddImpl and GetArgumentName
 T: NDesk.Options.OptionSet
 # 2.8+
@@ -582,6 +585,9 @@ T: Gendarme.Rules.NUnit.NUnitRocks
 
 # OK - Runner.Report is being called in a base type or in another type (for Smells)
 R: Gendarme.Rules.Gendarme.DefectsMustBeReportedRule
+T: Gendarme.Rules.Design.EnumeratorsShouldBeStronglyTypedRule
+T: Gendarme.Rules.Design.StronglyTypeICollectionMembersRule
+T: Gendarme.Rules.Design.ListsAreStronglyTypedRule
 T: Gendarme.Rules.Design.MarkAssemblyWithComVisibleRule
 T: Gendarme.Rules.Design.MarkAssemblyWithCLSCompliantRule
 T: Gendarme.Rules.Exceptions.DoNotThrowReservedExceptionRule

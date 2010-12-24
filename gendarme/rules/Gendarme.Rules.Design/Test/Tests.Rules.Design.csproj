@@ -57,14 +57,17 @@
     <Compile Include="DontDeclareProtectedFieldsInSealedClassTest.cs" />
     <Compile Include="AvoidEmptyInterfaceTest.cs" />
     <Compile Include="EnsureSymmetryForOverloadedOperatorsTest.cs" />
+    <Compile Include="EnumeratorsShouldBeStronglyTypedTest.cs" />
     <Compile Include="EnumsShouldDefineAZeroValueTest.cs" />
     <Compile Include="EnumsShouldUseInt32Test.cs" />
     <Compile Include="FinalizersShouldBeProtectedTest.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="StronglyTypeICollectionMembersTest.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairTest.cs" />
     <Compile Include="ImplementIComparableCorreclyTest.cs" />
     <Compile Include="InternalNamespacesShouldNotExposeTypesTest.cs" />
+    <Compile Include="ListsAreStronglyTypedTest.cs" />
     <Compile Include="MainShouldNotBePublicTest.cs" />
     <Compile Include="MarkAssemblyWithAssemblyVersionTest.cs" />
     <Compile Include="MarkAssemblyWithCLSCompliantTest.cs" />

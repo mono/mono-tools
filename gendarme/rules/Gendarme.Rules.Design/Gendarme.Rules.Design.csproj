@@ -64,13 +64,16 @@
     <Compile Include="DontDeclareProtectedFieldsInSealedClassRule.cs" />
     <Compile Include="AvoidEmptyInterfaceRule.cs" />
     <Compile Include="EnsureSymmetryForOverloadedOperatorsRule.cs" />
+    <Compile Include="EnumeratorsShouldBeStronglyTypedRule.cs" />
     <Compile Include="EnumsShouldDefineAZeroValueRule.cs" />
     <Compile Include="EnumsShouldUseInt32Rule.cs" />
     <Compile Include="FinalizersShouldBeProtectedRule.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
+    <Compile Include="StronglyTypeICollectionMembersRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
     <Compile Include="ImplementIComparableCorreclyRule.cs" />
     <Compile Include="InternalNamespacesShouldNotExposeTypesRule.cs" />
+    <Compile Include="ListsAreStronglyTypedRule.cs" />
     <Compile Include="MainShouldNotBePublicRule.cs" />
     <Compile Include="MarkAssemblyWithAssemblyVersionRule.cs" />
     <Compile Include="MarkAssemblyWithAttributeRule.cs" />
@@ -84,6 +87,7 @@
     <Compile Include="PreferXmlAbstractionsRule.cs" />
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsRule.cs" />
     <Compile Include="ProvideTryParseAlternativeRule.cs" />
+    <Compile Include="StronglyTypedRule.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
     <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />
     <Compile Include="TypesWithNativeFieldsShouldBeDisposableRule.cs" />

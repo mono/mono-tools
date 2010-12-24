@@ -20,6 +20,7 @@ rules_sources =  \
 	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
 	EnsureSymmetryForOverloadedOperatorsRule.cs \
+	EnumeratorsShouldBeStronglyTypedRule.cs \
 	EnumsShouldDefineAZeroValueRule.cs \
 	EnumsShouldUseInt32Rule.cs \
 	FinalizersShouldBeProtectedRule.cs \
@@ -27,6 +28,7 @@ rules_sources =  \
 	ImplementEqualsAndGetHashCodeInPairRule.cs \
 	ImplementIComparableCorreclyRule.cs \
 	InternalNamespacesShouldNotExposeTypesRule.cs \
+	ListsAreStronglyTypedRule.cs \
 	MainShouldNotBePublicRule.cs \
 	MarkAssemblyWithAssemblyVersionRule.cs \
 	MarkAssemblyWithAttributeRule.cs \
@@ -40,6 +42,8 @@ rules_sources =  \
 	PreferXmlAbstractionsRule.cs \
 	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
 	ProvideTryParseAlternativeRule.cs \
+	StronglyTypedRule.cs \
+	StronglyTypeICollectionMembersRule.cs \
 	TypesShouldBeInsideNamespacesRule.cs \
 	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
 	TypesWithNativeFieldsShouldBeDisposableRule.cs \
@@ -68,6 +72,7 @@ tests_sources = \
 	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
 	EnsureSymmetryForOverloadedOperatorsTest.cs \
+	EnumeratorsShouldBeStronglyTypedTest.cs \
 	EnumsShouldDefineAZeroValueTest.cs \
 	EnumsShouldUseInt32Test.cs \
 	FinalizersShouldBeProtectedTest.cs \
@@ -76,6 +81,7 @@ tests_sources = \
 	ImplementEqualsAndGetHashCodeInPairTest.cs \
 	ImplementIComparableCorreclyTest.cs \
 	InternalNamespacesShouldNotExposeTypesTest.cs \
+	ListsAreStronglyTypedTest.cs \
 	MainShouldNotBePublicTest.cs \
 	MarkAssemblyWithAssemblyVersionTest.cs \
 	MarkAssemblyWithCLSCompliantTest.cs \
@@ -88,6 +94,7 @@ tests_sources = \
 	PreferXmlAbstractionsTest.cs \
 	ProvideTryParseAlternativeTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
+	StronglyTypeICollectionMembersTest.cs \
 	TypesShouldBeInsideNamespacesTest.cs \
 	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
 	TypesWithNativeFieldsShouldBeDisposableTest.cs \
