@@ -110,7 +110,17 @@ namespace Gendarme.Rules.Security.Cas {
 
 		static IPermission CreatePermission (SecurityDeclaration declaration, SecurityAttribute attribute)
 		{
-			var attribute_type = Type.GetType (attribute.AttributeType.FullName);
+			TypeReference atype = attribute.AttributeType;
+			string name = atype.FullName;
+
+			// most of the permissions resides inside mscorlib.dll
+			Type attribute_type = Type.GetType (name);
+			if (attribute_type == null) {
+				// but not all of them, so we need to try harder :-)
+				TypeDefinition rtype = atype.Resolve ();
+				AssemblyDefinition ad = rtype == null ? atype.Module.Assembly : rtype.Module.Assembly;
+				attribute_type = Type.GetType (name + ", " + ad.FullName);
+			}
 			if (attribute_type == null)
 				throw new ArgumentException ("attribute");
 

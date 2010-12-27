@@ -583,6 +583,12 @@ T: Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule
 # NUnitRocks is not directly used
 T: Gendarme.Rules.NUnit.NUnitRocks
 
+# OK - different code paths
+R: Gendarme.Rules.Performance.AvoidRepetitiveCastsRule
+M: System.Boolean Gendarme.Rules.Security.Cas.SecurityDeclarationRocks::TryProcessPermissionSetAttribute(Mono.Cecil.SecurityDeclaration,System.Security.PermissionSet&)
+R: Gendarme.Rules.Performance.AvoidUnneededUnboxingRule
+M: System.Boolean Gendarme.Rules.Security.Cas.SecurityDeclarationRocks::TryProcessPermissionSetAttribute(Mono.Cecil.SecurityDeclaration,System.Security.PermissionSet&)
+
 # OK - Runner.Report is being called in a base type or in another type (for Smells)
 R: Gendarme.Rules.Gendarme.DefectsMustBeReportedRule
 T: Gendarme.Rules.Design.EnumeratorsShouldBeStronglyTypedRule
