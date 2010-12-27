@@ -34,7 +34,7 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Security.Cas {
 
-	static class SecurityDeclarationRocks {
+	static public class SecurityDeclarationRocks {
 
 		public static PermissionSet ToPermissionSet (this SecurityDeclaration self)
 		{
@@ -66,17 +66,30 @@ namespace Gendarme.Rules.Security.Cas {
 
 			var attribute = new SSP.PermissionSetAttribute ((SSP.SecurityAction) declaration.Action);
 
-			var named_argument = security_attribute.Properties [0];
-			string value = (string) named_argument.Argument.Value;
-			switch (named_argument.Name) {
-			case "XML":
-				attribute.XML = value;
-				break;
-			case "Name":
-				attribute.Name = value;
-				break;
-			default:
-				throw new NotImplementedException (named_argument.Name);
+			foreach (var named_argument in security_attribute.Properties) {
+				object value = named_argument.Argument.Value;
+				switch (named_argument.Name) {
+				case "Unrestricted":
+					attribute.Unrestricted = (bool) value;
+					break;
+				case "UnicodeEncoded":
+					attribute.UnicodeEncoded = (bool) value;
+					break;
+				case "XML":
+					attribute.XML = (string) value;
+					break;
+				case "Name":
+					attribute.Name = (string) value;
+					break;
+				case "File":
+					attribute.File = (string) value;
+					break;
+				case "Hex":
+					attribute.Hex = (string) value;
+					break;
+				default:
+					throw new NotImplementedException (named_argument.Name);
+				}
 			}
 
 			set = attribute.CreatePermissionSet ();
