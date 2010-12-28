@@ -51,6 +51,11 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 			if (self.HasCustomAttributes) {
 				foreach (CustomAttribute attribute in self.CustomAttributes) {
+					// ComVisibleAttribute has a single ctor taking a boolean value
+					// http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.comvisibleattribute.comvisibleattribute.aspx
+					// any attribute without arguments can be skipped
+					if (!attribute.HasConstructorArguments)
+						continue;
 					if (attribute.Constructor.DeclaringType.FullName != "System.Runtime.InteropServices.ComVisibleAttribute")
 						continue;
 					return (bool) attribute.ConstructorArguments[0].Value;

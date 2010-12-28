@@ -111,6 +111,11 @@ namespace Gendarme.Rules.Interoperability.Com {
 		private static ClassInterfaceType? GetClassInterfaceAttributeValue (ICustomAttributeProvider obj)
 		{
 			foreach (CustomAttribute attribute in obj.CustomAttributes) {
+				// ClassInterfaceAttribute has a two ctors each taking an argument (ClassInterfaceType or short)
+				// http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.classinterfaceattribute.aspx
+				// any attribute without arguments can be skipped
+				if (!attribute.HasConstructorArguments)
+					continue;
 				if (attribute.AttributeType.FullName != "System.Runtime.InteropServices.ClassInterfaceAttribute")
 					continue;
 				var ctorArgs = attribute.ConstructorArguments;

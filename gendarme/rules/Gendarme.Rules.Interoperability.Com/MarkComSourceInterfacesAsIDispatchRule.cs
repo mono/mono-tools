@@ -89,10 +89,17 @@ namespace Gendarme.Rules.Interoperability.Com {
 		}
 
 		// Finds a CustomAttribute on a type from the given name.
-		private static CustomAttribute FindCustomAttribute (ICustomAttributeProvider type, string fullName)
+		private static CustomAttribute FindComAttribute (ICustomAttributeProvider type, string name)
 		{
 			foreach (var attribute in type.CustomAttributes) {
-				if (attribute.AttributeType.FullName == fullName)
+				if (!attribute.HasConstructorArguments)
+					continue;
+
+				TypeReference atype = attribute.AttributeType;
+				if (atype.Namespace != "System.Runtime.InteropServices")
+					continue;
+
+				if (atype.Name == name)
 					return attribute;
 			}
 			return null;
@@ -108,21 +115,15 @@ namespace Gendarme.Rules.Interoperability.Com {
 				Runner.Report (def, Severity.High, Confidence.Total, "No attributes are present on a specified interface");
 				return;
 			}
-			var attribute = FindCustomAttribute (def,
-						"System.Runtime.InteropServices.InterfaceTypeAttribute");
+			var attribute = FindComAttribute (def, "InterfaceTypeAttribute");
 			if (attribute == null) {
 				Runner.Report (def, Severity.High, Confidence.Total, "No [InterfaceType] attribute is present on a specified interface");
 				return;
 			}
 
-			// default to bad value - anything not InterfaceIsIDispatch will be reported
-			ComInterfaceType cit = ComInterfaceType.InterfaceIsDual;
-			object o = attribute.ConstructorArguments [0].Value;
-			if (o is int)
-				cit = (ComInterfaceType) o;
-			else if (o is short)
-				cit = (ComInterfaceType) (short) o;
-			if (cit != ComInterfaceType.InterfaceIsIDispatch)
+			// default to bad value - anything not InterfaceIsIDispatch (2) will be reported
+			// ToString covers both the ComInterfaceType (int) and short ctor variations
+			if (attribute.ConstructorArguments [0].Value.ToString () != "2")
 				Runner.Report (def, Severity.High, Confidence.Total, "The [InterfaceType] attribute is not set to InterfaceIsIDispatch");
 		}
 
@@ -144,8 +145,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 			if (!type.IsClass || !type.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
-			var attribute = FindCustomAttribute (type,
-						"System.Runtime.InteropServices.ComSourceInterfacesAttribute");
+			var attribute = FindComAttribute (type, "ComSourceInterfacesAttribute");
 			if (attribute == null)
 				return RuleResult.DoesNotApply;
 			// The attribute's paramemters may be a single null-delimited string, or up to four System.Types.
