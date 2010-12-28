@@ -155,6 +155,9 @@ namespace Gendarme.Rules.Correctness {
 			IMetadataTokenProvider metadataProvider = provider as IMetadataTokenProvider;
 	
 			foreach (CustomAttribute attribute in provider.CustomAttributes) {
+				// if the attribute has no argument then there will be nothing to check later, skip it
+				if (!attribute.HasConstructorArguments)
+					continue;
 				MethodReference ctor = attribute.Constructor;
 				if (ctor.HasParameters)
 					CheckParametersAndValues (metadataProvider, ctor, attribute.ConstructorArguments);

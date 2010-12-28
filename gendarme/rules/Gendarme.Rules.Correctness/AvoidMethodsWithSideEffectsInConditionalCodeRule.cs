@@ -197,15 +197,18 @@ namespace Gendarme.Rules.Correctness {
 		internal static string ConditionalOn (MethodReference mr)
 		{
 			MethodDefinition method = mr.Resolve ();
-			
-			if (method != null) {
-				if (method.HasCustomAttributes) {
-					foreach (CustomAttribute attr in method.CustomAttributes) {
-						if (StringConstructor.Matches (attr.Constructor)) {
-							if (attr.AttributeType.FullName == "System.Diagnostics.ConditionalAttribute") {
-								return (string) attr.ConstructorArguments [0].Value;
-							}
-						}
+			if ((method == null) || !method.HasCustomAttributes)
+				return null;
+
+			foreach (CustomAttribute attr in method.CustomAttributes) {
+				// ConditionalAttribute has a single ctor taking a string value
+				// http://msdn.microsoft.com/en-us/library/system.diagnostics.conditionalattribute.conditionalattribute.aspx
+				// any attribute without arguments can be skipped
+				if (!attr.HasConstructorArguments)
+					continue;
+				if (StringConstructor.Matches (attr.Constructor)) {
+					if (attr.AttributeType.FullName == "System.Diagnostics.ConditionalAttribute") {
+						return (string) attr.ConstructorArguments [0].Value;
 					}
 				}
 			}
