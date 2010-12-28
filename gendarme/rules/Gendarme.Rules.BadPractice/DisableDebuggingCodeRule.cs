@@ -96,13 +96,13 @@ namespace Gendarme.Rules.BadPractice {
 		private static bool HasConditionalAttributeForDebugging (IList<CustomAttribute> cac)
 		{
 			foreach (CustomAttribute ca in cac) {
+				// ConditionalAttribute has a single ctor taking a string value
+				// http://msdn.microsoft.com/en-us/library/system.diagnostics.conditionalattribute.conditionalattribute.aspx
+				// any attribute without arguments can be skipped
+				if (!ca.HasConstructorArguments)
+					continue;
 				if (ca.AttributeType.FullName == ConditionalAttribute) {
-					// this should not happen since there's a single ctor accepting a string
-					// but we never know what the next framework version can throw at us...
-					IList<CustomAttributeArgument> cp = ca.ConstructorArguments;
-					if (cp.Count < 1)
-						continue;
-					switch (cp [0].Value as string) {
+					switch (ca.ConstructorArguments [0].Value as string) {
 					case "DEBUG":
 					case "TRACE":
 						return true;
