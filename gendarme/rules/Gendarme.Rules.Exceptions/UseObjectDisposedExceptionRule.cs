@@ -114,6 +114,7 @@ namespace Gendarme.Rules.Exceptions {
 
 	[Problem ("A method of an IDisposable type does not throw System.ObjectDisposedException.")]
 	[Solution ("Throw ObjectDisposedException if the object has been disposed.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class UseObjectDisposedExceptionRule : Rule, IMethodRule {
 		
 		public RuleResult CheckMethod (MethodDefinition method)

@@ -127,6 +127,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.NewExceptionsRule::Ch
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.DefectsMustBeReportedRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.DoNotThrowExceptionRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.MissingEngineDependencyRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.UseCorrectSuffixRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.CentralizePInvokesIntoNativeMethodsTypeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.CentralizePInvokesIntoNativeMethodsTypeRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -343,6 +344,10 @@ T: NDesk.Options.OptionSet
 M: System.String Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::GetName(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule::CheckMethod(Mono.Cecil.MethodDefinition)
+# CheckType and GetEngineDependencyValue
+T: Gendarme.Rules.Gendarme.MissingEngineDependencyRule
+# DoNotThrowExceptionRule::CheckMethod and MissingEngineDependencyRule::CheckType
+T: Gendarme.Rules.Gendarme.GendarmeRule
 
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
