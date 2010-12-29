@@ -45,6 +45,7 @@
     <Compile Include="DefectsMustBeReportedRule.cs" />
     <Compile Include="DoNotThrowExceptionRule.cs" />
     <Compile Include="GendarmeRule.cs" />
+    <Compile Include="MissingEngineDependencyRule.cs" />
     <Compile Include="UseCorrectSuffixRule.cs" />
   </ItemGroup>
   <ItemGroup>
