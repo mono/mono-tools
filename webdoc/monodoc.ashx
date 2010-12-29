@@ -29,6 +29,14 @@ namespace Mono.Website.Handlers
 {
 	public class MonodocHandler : IHttpHandler
 	{
+		static DateTime monodoc_timestamp, handler_timestamp;
+
+		static MonodocHandler ()
+		{
+			monodoc_timestamp = File.GetCreationTimeUtc (typeof (Node).Assembly.Location);
+			handler_timestamp = File.GetCreationTimeUtc (typeof (MonodocHandler).Assembly.Location);
+		}
+
 		void IHttpHandler.ProcessRequest (HttpContext context)
 		{
 			string s;
@@ -103,15 +111,19 @@ namespace Mono.Website.Handlers
 				if (strHeader != null && lastHelpSourceTime != DateTime.MinValue) {
 					DateTime dtIfModifiedSince = DateTime.ParseExact (strHeader, "r", null);
 					DateTime ftime = lastHelpSourceTime.ToUniversalTime ();
-					if (ftime <= dtIfModifiedSince) {
+					if (ftime <= dtIfModifiedSince && 
+					    monodoc_timestamp <= dtIfModifiedSince && 
+					    handler_timestamp <= dtIfModifiedSince) {
 						context.Response.StatusCode = 304;
 						return;
 					}
 				}
 			} catch { } 
 
+			long ticks = System.Math.Max (monodoc_timestamp.Ticks, handler_timestamp.Ticks);
 			if (lastHelpSourceTime != DateTime.MinValue) {
-				DateTime lastWT = lastHelpSourceTime.ToUniversalTime ();
+				ticks = System.Math.Max (ticks, lastHelpSourceTime.Ticks);
+				DateTime lastWT = new DateTime (ticks).ToUniversalTime ();
 				context.Response.AddHeader ("Last-Modified", lastWT.ToString ("r"));
 			}
 
