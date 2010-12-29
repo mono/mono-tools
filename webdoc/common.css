@@ -8,10 +8,6 @@ body {
 	border: 2px solid #99aadd;
 }
 
-.Content {
-	margin: 1em;
-}
-
 body, td, th {
 	font-family: Verdana, sans-serif; font-size: 12px;
 	color: black;
