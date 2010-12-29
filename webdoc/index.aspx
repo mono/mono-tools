@@ -30,7 +30,7 @@
                 }
         </script>
 
-<frameset rows="75,*" frameborder="0" border="1">
+<frameset rows="40,*" frameborder="0" border="1">
  <frame src="header.aspx" name="Header" id='header' scrolling="no" noresize="true" />
   <frameset cols="20%,80%" frameborder="1" border="1">
     <frame src="monodoc.ashx?tree=boot" name="Tree" />
