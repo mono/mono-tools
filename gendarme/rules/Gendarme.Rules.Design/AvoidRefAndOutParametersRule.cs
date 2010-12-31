@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Design {
 					}
 
 					how = "out";
-				} else if (parameter.IsRef ()) {
+				} else if (parameter.ParameterType.IsByReference) {
 					how = "ref";
 				}
 

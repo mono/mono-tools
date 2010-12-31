@@ -146,6 +146,9 @@ namespace Gendarme.Rules.Concurrency {
 				return null;
 
 			foreach (CustomAttribute attr in provider.CustomAttributes) {
+				// ThreadModelAttribute ctor has a single parameter, skip param-less attributes
+				if (!attr.HasConstructorArguments)
+					continue;
 				if (attr.AttributeType.Name != "ThreadModelAttribute")
 					continue;
 

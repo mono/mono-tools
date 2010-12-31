@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			MethodReturnType mrt = method.MethodReturnType;
-			if (IsSpecificXmlType (mrt.ReturnType))
+			if (IsSpecificXmlType (mrt.ReturnType.FullName))
 				Runner.Report (mrt, GetSeverity (method), Confidence.High);
 
 			if (method.HasParameters) {
@@ -127,7 +127,7 @@ namespace Gendarme.Rules.Design {
 					if (parameter.IsOut)
 						continue; //out params already have their rule
 
-					if (IsSpecificXmlType (parameter.ParameterType))
+					if (IsSpecificXmlType (parameter.ParameterType.FullName))
 						Runner.Report (parameter, GetSeverity (method), Confidence.High);
 				}
 			}
@@ -135,10 +135,9 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		static bool IsSpecificXmlType (TypeReference type)
+		static bool IsSpecificXmlType (string name)
 		{
-			string tname = type.FullName;
-			return tname == XmlDocumentClass || tname == XPathDocumentClass || tname == XmlNodeClass;
+			return name == XmlDocumentClass || name == XPathDocumentClass || name == XmlNodeClass;
 		}
 
 		static Severity GetSeverity (MethodDefinition method)

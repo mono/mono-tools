@@ -39,7 +39,7 @@ namespace Gendarme {
 
 	public class IgnoreFileList : BasicIgnoreList {
 
-		private string rule;
+		private string current_rule;
 		private Dictionary<string, HashSet<string>> assemblies = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> types = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> methods = new Dictionary<string, HashSet<string>> ();
@@ -86,26 +86,26 @@ namespace Gendarme {
 			case '#': // comment
 				break;
 			case 'R': // rule
-				rule = line.Substring (line.LastIndexOf (' ') + 1);
+				current_rule = line.Substring (line.LastIndexOf (' ') + 1);
 				break;
 			case 'A': // assembly - we support Name, FullName and *
 				string target = line.Substring (2).Trim ();
 				if (target == "*") {
 					foreach (AssemblyDefinition assembly in Runner.Assemblies) {
-						Add (assemblies, rule, assembly.Name.FullName);
+						Add (assemblies, current_rule, assembly.Name.FullName);
 					}
 				} else {
-					Add (assemblies, rule, target);
+					Add (assemblies, current_rule, target);
 				}
 				break;
 			case 'T': // type (no space allowed)
-				Add (types, rule, line.Substring (line.LastIndexOf (' ') + 1));
+				Add (types, current_rule, line.Substring (line.LastIndexOf (' ') + 1));
 				break;
 			case 'M': // method
-				Add (methods, rule, line.Substring (2).Trim ());
+				Add (methods, current_rule, line.Substring (2).Trim ());
 				break;
 			case 'N': // namespace - special case (no need to resolve)
-				base.Add (rule, NamespaceDefinition.GetDefinition (line.Substring (2).Trim ()));
+				base.Add (current_rule, NamespaceDefinition.GetDefinition (line.Substring (2).Trim ()));
 				break;
 			default:
 				Console.Error.WriteLine ("Bad ignore entry : '{0}'", line);

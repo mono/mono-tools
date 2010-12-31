@@ -19,4 +19,5 @@ tests_sources = \
 	ReviewNonVirtualMethodWithInheritanceDemandTest.cs \
 	ReviewSealedTypeWithInheritanceDemandTest.cs \
 	ReviewSuppressUnmanagedCodeSecurityUsageTest.cs \
-	SecureGetObjectDataOverridesTest.cs
+	SecureGetObjectDataOverridesTest.cs \
+	SecurityDeclarationRocksTest.cs

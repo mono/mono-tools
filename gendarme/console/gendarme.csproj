@@ -117,7 +117,8 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>copy "$(TargetDir)..\..\..\rules\rules.xml" "$(TargetDir)"
-copy "$(TargetDir)..\..\..\..\..\cecil\symbols\pdb\$(OutDir)\Mono.Cecil.Pdb.*" "$(TargetDir)"</PostBuildEvent>
+copy "$(TargetDir)..\..\..\..\..\cecil\bin\net_3_5_Release\Mono.Cecil.Pdb.*" "$(TargetDir)"
+copy "$(TargetDir)..\..\..\..\..\cecil\bin\net_3_5_Release\Mono.Cecil.Mdb.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <MonoDevelop>

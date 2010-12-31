@@ -31,17 +31,15 @@ using System;
 namespace Gendarme.Framework {
 	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class SolutionAttribute : Attribute {
-		private string solution;
 		
 		public SolutionAttribute (string solution) 
 		{
-			this.solution = solution;
+			Solution = solution;
 		}
 
 		public string Solution {
-			get {
-				return solution;
-			}
+			get;
+			private set;
 		}
 	}
 }

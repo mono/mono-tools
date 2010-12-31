@@ -102,10 +102,12 @@ namespace Gendarme.Rules.Performance {
 			if (!method.HasBody || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
-			var variables = method.Body.Variables;
-			int count = variables.Count;
-			if (count == 0)
+			MethodBody body = method.Body;
+			if (!body.HasVariables)
 				return RuleResult.Success;
+
+			var variables = body.Variables;
+			int count = variables.Count;
 
 			if (used == null) {
 				used = new BitArray (Math.Max (DefaultLength, count));
@@ -114,7 +116,7 @@ namespace Gendarme.Rules.Performance {
 			}
 			used.SetAll (false);
 
-			foreach (Instruction ins in method.Body.Instructions) {
+			foreach (Instruction ins in body.Instructions) {
 				VariableDefinition vd = ins.GetVariable (method);
 				if (vd != null)
 					used [vd.Index] = true;
@@ -127,12 +129,11 @@ namespace Gendarme.Rules.Performance {
 					// to determine if the variable is "genuine" or a compiler
 					// (*) seen in a while (true) loop over a switch
 					VariableDefinition variable = variables [i];
-					string var_name = variable.Name;
-					if (var_name.StartsWith ("V_") || var_name.Contains ("$"))
+					if (variable.IsGeneratedName ())
 						continue;
 
 					string s = String.Format ("Variable '{0}' of type '{1}'", 
-						var_name, variable.VariableType.FullName);
+						variable.Name, variable.VariableType.FullName);
 					Runner.Report (method, Severity.Low, Confidence.Normal, s);
 				}
 			}

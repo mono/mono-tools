@@ -76,13 +76,16 @@ namespace Gendarme.Rules.Interoperability.Com {
 				return RuleResult.DoesNotApply;
 
 			// Ensure class is explicitly ComVisible.
-			if (!(type.IsComVisible () ?? false))
+			if (!type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 
 			// Report success if a default public constructor is found or no parameterized constructor is found.
 			bool hasParameterizedCtor = false;
 			bool hasDefaultCtor = false;
-			foreach (var ctor in type.GetConstructors ()) {
+			foreach (var ctor in type.Methods) {
+				if (!ctor.IsConstructor)
+					continue;
+
 				if (ctor.IsPublic && ctor.HasParameters) {
 					hasParameterizedCtor = true;
 					continue;

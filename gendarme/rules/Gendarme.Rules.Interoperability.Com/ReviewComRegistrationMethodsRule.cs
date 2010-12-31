@@ -99,7 +99,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.HasGenericParameters || !type.IsVisible () || !IsTypeComVisible (type))
+			if (type.HasGenericParameters || !type.IsVisible () || !type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 
 			bool foundRegister = false; // type level variables
@@ -137,27 +137,6 @@ namespace Gendarme.Rules.Interoperability.Com {
 			}
 
 			return Runner.CurrentRuleResult;
-		}
-
-		// Checks whether specific type is COM visible or not
-		// considering nested types/modules/assemblies attributes and default values
-		private static bool IsTypeComVisible (TypeDefinition type)
-		{
-			bool? t = type.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			if (type.IsNested) {
-				t = type.DeclaringType.IsComVisible ();
-				if (t.HasValue)
-					return (bool)t;
-			}
-			t = type.Module.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			t = type.Module.Assembly.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			return true;
 		}
 	}
 }

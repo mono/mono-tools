@@ -79,15 +79,15 @@ namespace Gendarme.Rules.Design {
 		static bool IsAllStatic (TypeDefinition type)
 		{
 			if (type.HasMethods) {
-				foreach (MethodDefinition ctor in type.GetConstructors ()) {
-					// let's the default ctor pass (since it's always here for 1.x code)
-					if (!ctor.IsStatic && ctor.HasParameters)
-						return false;
-				}
-
-				foreach (MethodDefinition method in type.GetMethods ()) {
-					if (!method.IsStatic)
-						return false;
+				foreach (MethodDefinition method in type.Methods) {
+					if (method.IsConstructor) {
+						// let's the default ctor pass (since it's always here for 1.x code)
+						if (!method.IsStatic && method.HasParameters)
+							return false;
+					} else {
+						if (!method.IsStatic)
+							return false;
+					}
 				}
 			}
 			if (type.HasFields) {

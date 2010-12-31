@@ -35,6 +35,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Maintainability {
 
@@ -73,15 +74,15 @@ namespace Gendarme.Rules.Maintainability {
 		// in the long run.
 		HashSet<string> fields;
 
-		public VariableNamesShouldNotMatchFieldNamesRule()
+		public VariableNamesShouldNotMatchFieldNamesRule ()
 		{
 			fields = new HashSet<string> ();
 		}
 
-		public RuleResult CheckType(TypeDefinition type)
+		public RuleResult CheckType (TypeDefinition type)
 		{
 			// We only like types with fields AND methods.
-			if (!type.HasFields || !type.HasMethods)
+			if (!type.HasFields || !type.HasMethods || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			fields.Clear ();
@@ -98,13 +99,16 @@ namespace Gendarme.Rules.Maintainability {
 				}
 
 				// Method bodies w/o variables don't interest me.
-				if (!method.HasBody || !method.Body.HasVariables)
+				if (!method.HasBody)
 					continue;
 
-				// Iterate through all variables in the method body.
-				foreach (VariableDefinition var in method.Body.Variables) {
-					if (fields.Contains (var.Name))
-						Runner.Report (method, Severity.Low, Confidence.Total);
+				MethodBody body = method.Body;
+				if (body.HasVariables) {
+					// Iterate through all variables in the method body.
+					foreach (VariableDefinition var in body.Variables) {
+						if (fields.Contains (var.Name))
+							Runner.Report (method, Severity.Low, Confidence.Total);
+					}
 				}
 			}
 

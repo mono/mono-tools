@@ -165,7 +165,7 @@ namespace Gendarme.Rules.Design.Generic {
 
 				// special cases not directly usable with Action/Func
 				foreach (ParameterDefinition pd in pdc) {
-					if (pd.IsOut || pd.IsRef () || pd.IsParams ())
+					if (pd.IsOut || pd.ParameterType.IsByReference || pd.IsParams ())
 						return RuleResult.Success;
 				}
 			}

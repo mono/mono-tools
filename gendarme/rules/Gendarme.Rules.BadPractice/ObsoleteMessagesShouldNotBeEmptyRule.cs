@@ -90,6 +90,8 @@ namespace Gendarme.Rules.BadPractice {
 				return;
 
 			foreach (CustomAttribute ca in cap.CustomAttributes) {
+				// ObsoleteAttribute has a three (3) ctors, including a default (parameter-less) ctor
+				// http://msdn.microsoft.com/en-us/library/68k270ch.aspx
 				if (ca.AttributeType.FullName != ObsoleteAttribute)
 					continue;
 
@@ -98,8 +100,7 @@ namespace Gendarme.Rules.BadPractice {
 
 				// no parameter == empty description
 				// note: Message is the first parameter in both ctors (with params)
-				IList<CustomAttributeArgument> cpc = ca.ConstructorArguments;
-				if ((cpc.Count == 0) || String.IsNullOrEmpty ((string) cpc [0].Value))
+				if (!ca.HasConstructorArguments || String.IsNullOrEmpty ((string) ca.ConstructorArguments [0].Value))
 					Runner.Report ((IMetadataTokenProvider) cap, Severity.Medium, Confidence.High);
 			}
 			// no System.ObsoleteAttribute found inside the collection

@@ -96,7 +96,9 @@ namespace Gendarme.Rules.Maintainability {
 					case Code.Stfld:
 					case Code.Stsfld:
 						field = ins.GetField ();
-						
+						// if non-resolved then it will not be a field of this type
+						if (field == null)
+							continue;
 						// FIXME: we'd catch more cases (and avoid some false positives) 
 						// if we used a null value tracker.
 						if (ins.Previous != null && ins.Previous.OpCode.Code == Code.Ldnull) {
@@ -111,6 +113,9 @@ namespace Gendarme.Rules.Maintainability {
 					case Code.Ldflda:	// if the field address is taken we have to assume the field has been set
 					case Code.Ldsflda:
 						field = ins.GetField ();
+						// if non-resolved then it will not be a field of this type
+						if (field == null)
+							continue;
 						nullFields.Remove (field);	
 						Log.WriteLine (this, "{0} is set at {1:X4}", field.Name, ins.Offset);
 						break;
@@ -118,6 +123,9 @@ namespace Gendarme.Rules.Maintainability {
 					case Code.Ldfld:
 					case Code.Ldsfld:
 						field = ins.GetField ();
+						// if non-resolved then it will not be a field of this type
+						if (field == null)
+							continue;
 						usedFields.Add (field);
 						Log.WriteLine (this, "{0} is used at {1:X4}", field.Name, ins.Offset);
 						break;

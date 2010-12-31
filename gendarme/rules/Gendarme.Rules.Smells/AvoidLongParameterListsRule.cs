@@ -93,15 +93,14 @@ namespace Gendarme.Rules.Smells {
 			}
 		}
 
-		private static MethodDefinition GetSmallestConstructorFrom (TypeReference type)
+		private static MethodDefinition GetSmallestConstructorFrom (TypeDefinition type)
 		{
-			IList<MethodDefinition> ctors = type.GetConstructors ().ToList ();
-			if (ctors.Count == 1)
-				return ctors [0];
-
 			MethodDefinition smallest = null;
 			int scount = 0;
-			foreach (MethodDefinition constructor in ctors) {
+			foreach (MethodDefinition constructor in type.Methods) {
+				if (!constructor.IsConstructor)
+					continue;
+
 				// skip the static ctor since it will always be the smallest one
 				if (constructor.IsStatic)
 					continue;
@@ -143,11 +142,11 @@ namespace Gendarme.Rules.Smells {
 
 		//TODO: Perhaps we can perform this action with linq instead of
 		//loop + hashtable
-		private static IEnumerable<MethodDefinition> GetSmallestOverloaded (TypeReference type)
+		private static IEnumerable<MethodDefinition> GetSmallestOverloaded (TypeDefinition type)
 		{
 			IDictionary<string, MethodDefinition> possibleOverloaded = new Dictionary<string, MethodDefinition> ();
-			foreach (MethodDefinition method in type.GetMethods ()) {
-				if (method.IsPInvokeImpl)
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor || method.IsPInvokeImpl)
 					continue;
 
 				string name = method.Name;
@@ -164,10 +163,12 @@ namespace Gendarme.Rules.Smells {
 			return possibleOverloaded.Values;
 		}
 
-		private static bool OnlyContainsExternalMethods (TypeReference type)
+		private static bool OnlyContainsExternalMethods (TypeDefinition type)
 		{
 			bool has_methods = false;
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				has_methods = true;
 				if (!method.IsPInvokeImpl)
 					return false;

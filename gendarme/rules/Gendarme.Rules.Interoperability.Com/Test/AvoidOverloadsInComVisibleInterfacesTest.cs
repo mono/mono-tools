@@ -94,6 +94,9 @@ namespace Test.Rules.Interoperability.Com {
 
 			// Non-interface.
 			AssertRuleDoesNotApply<ComVisibleGood> ();
+
+			// Non ComVisible interface.
+			AssertRuleDoesNotApply<NonComVisibleInterface> ();
 		}
 
 		[Test]
@@ -101,9 +104,6 @@ namespace Test.Rules.Interoperability.Com {
 		{
 			// ComVisible interface with no method overloading.
 			AssertRuleSuccess<ComVisibleInterfaceGood> ();
-
-			// Non ComVisible interface.
-			AssertRuleSuccess<NonComVisibleInterface> ();
 
 			// ComVisible interface with non-ComVisible overload
 			AssertRuleSuccess<ComVisibleInterfaceGood2> ();

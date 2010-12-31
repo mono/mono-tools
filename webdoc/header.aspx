@@ -54,6 +54,26 @@ img.toolbar:active {
         float: right;
         padding: 5px;
 }
+#header {
+  background: #679EF1 url(mdocimages/headerbg.png) no-repeat 100% 50%;
+  background-color: #679EF1;
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+  border-bottom: 1px dotted #3363BD;
+  color: black;
+  height: 40px;
+  margin-bottom: 0px;
+  padding: 0px 0px 0px 15px;
+  position: relative;
+}
+#header h1 {
+   color: white;
+   font-family: arial, helvetica, verdana, sans-serif;
+   font-size: 22px;
+   font-weight: bold;
+   line-height: 1.8em;
+}
+
   </style>
 
   <script language="C#" runat=server>
@@ -74,11 +94,9 @@ img.toolbar:active {
 <body
 style="color: rgb(255, 255, 255); background-color: #c0dda2;"
 link="#ffffff" alink="#ffffff" vlink="#ffffff">
-
-<a href="index.aspx" class="headerlink" target="_top"><img
- src="images/mono-logo.png" alt="Mono"
- style="border: 0px solid ; height:75;" /></a>
-
+<div id="header">
+   <h1>Mono Documentation</h1>
+</div>
 <div id="dlogin">
    <asp:HyperLink id="login" runat="server" target="_top"/>
 </div>

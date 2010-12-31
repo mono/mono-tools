@@ -42,7 +42,6 @@ namespace Gendarme.Framework {
 	/// </summary>
 	public class BasicIgnoreList : IIgnoreList {
 
-		private IRunner runner;
 		private Dictionary<string, HashSet<IMetadataTokenProvider>> ignore;
 
 		// note: we should keep statistics here
@@ -51,12 +50,13 @@ namespace Gendarme.Framework {
 
 		public BasicIgnoreList (IRunner runner)
 		{
-			this.runner = runner;
+			Runner = runner;
 			ignore = new Dictionary<string, HashSet<IMetadataTokenProvider>> ();
 		}
 
 		public IRunner Runner {
-			get { return runner; }
+			get;
+			private set;
 		}
 
 		public void Add (string rule, IMetadataTokenProvider metadata)

@@ -83,21 +83,18 @@ namespace Gendarme.Rules.Design {
 		{
 			values.Clear ();
 			
-			Type ftype = null;
 			foreach (FieldDefinition field in type.Fields) {
 				if (field.IsStatic) {
-					if (ftype == null)
-						ftype = field.Constant.GetType ();
-						
+					object o = field.Constant;
 					ulong value;
-					if (ftype == typeof (ulong)) {
-						value = (ulong) field.Constant;
+					if (o is ulong) {
+						value = (ulong) o;
 
 						if (value != 0 && !values.Contains (value))
 							values.Add (value);
 
 					} else {
-						long v = Convert.ToInt64 (field.Constant);
+						long v = Convert.ToInt64 (o);
 
 						if (v > 0) {
 							value = (ulong) v;

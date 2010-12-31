@@ -34,7 +34,7 @@ using Mono.Cecil;
 
 namespace Gendarme.Rules.Security.Cas {
 
-	static class SecurityDeclarationRocks {
+	static public class SecurityDeclarationRocks {
 
 		public static PermissionSet ToPermissionSet (this SecurityDeclaration self)
 		{
@@ -52,27 +52,44 @@ namespace Gendarme.Rules.Security.Cas {
 		{
 			set = null;
 
-			if (!declaration.HasSecurityAttributes && declaration.SecurityAttributes.Count != 1)
+			if (!declaration.HasSecurityAttributes)
 				return false;
 
-			var security_attribute = declaration.SecurityAttributes [0];
+			var attributes = declaration.SecurityAttributes;
+			if (attributes.Count != 1)
+				return false;
+
+			var security_attribute = attributes [0];
 			var attribute_type = security_attribute.AttributeType;
 			if (attribute_type.Name != "PermissionSetAttribute" || attribute_type.Namespace != "System.Security.Permissions")
 				return false;
 
 			var attribute = new SSP.PermissionSetAttribute ((SSP.SecurityAction) declaration.Action);
 
-			var named_argument = security_attribute.Properties [0];
-			string value = (string) named_argument.Argument.Value;
-			switch (named_argument.Name) {
-			case "XML":
-				attribute.XML = value;
-				break;
-			case "Name":
-				attribute.Name = value;
-				break;
-			default:
-				throw new NotImplementedException (named_argument.Name);
+			foreach (var named_argument in security_attribute.Properties) {
+				object value = named_argument.Argument.Value;
+				switch (named_argument.Name) {
+				case "Unrestricted":
+					attribute.Unrestricted = (bool) value;
+					break;
+				case "UnicodeEncoded":
+					attribute.UnicodeEncoded = (bool) value;
+					break;
+				case "XML":
+					attribute.XML = (string) value;
+					break;
+				case "Name":
+					attribute.Name = (string) value;
+					break;
+				case "File":
+					attribute.File = (string) value;
+					break;
+				case "Hex":
+					attribute.Hex = (string) value;
+					break;
+				default:
+					throw new NotImplementedException (named_argument.Name);
+				}
 			}
 
 			set = attribute.CreatePermissionSet ();
@@ -93,7 +110,17 @@ namespace Gendarme.Rules.Security.Cas {
 
 		static IPermission CreatePermission (SecurityDeclaration declaration, SecurityAttribute attribute)
 		{
-			var attribute_type = Type.GetType (attribute.AttributeType.FullName);
+			TypeReference atype = attribute.AttributeType;
+			string name = atype.FullName;
+
+			// most of the permissions resides inside mscorlib.dll
+			Type attribute_type = Type.GetType (name);
+			if (attribute_type == null) {
+				// but not all of them, so we need to try harder :-)
+				TypeDefinition rtype = atype.Resolve ();
+				AssemblyDefinition ad = rtype == null ? atype.Module.Assembly : rtype.Module.Assembly;
+				attribute_type = Type.GetType (name + ", " + ad.FullName);
+			}
 			if (attribute_type == null)
 				throw new ArgumentException ("attribute");
 
@@ -115,7 +142,7 @@ namespace Gendarme.Rules.Security.Cas {
 				CompleteSecurityAttributeProperties (security_attribute, attribute);
 		}
 
-		static void CompleteSecurityAttributeFields (SSP.SecurityAttribute security_attribute, SecurityAttribute attribute)
+		static void CompleteSecurityAttributeFields (SSP.SecurityAttribute security_attribute, ICustomAttribute attribute)
 		{
 			var type = security_attribute.GetType ();
 
@@ -123,7 +150,7 @@ namespace Gendarme.Rules.Security.Cas {
 				type.GetField (named_argument.Name).SetValue (security_attribute, named_argument.Argument.Value);
 		}
 
-		static void CompleteSecurityAttributeProperties (SSP.SecurityAttribute security_attribute, SecurityAttribute attribute)
+		static void CompleteSecurityAttributeProperties (SSP.SecurityAttribute security_attribute, ICustomAttribute attribute)
 		{
 			var type = security_attribute.GetType ();
 

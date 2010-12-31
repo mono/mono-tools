@@ -104,8 +104,8 @@ namespace Gendarme.Rules.Correctness {
 				return String.Empty;
 
 			// check that we're assigning the same field twice
-			FieldDefinition fd1 = next.GetField ();
-			FieldDefinition fd2 = stfld.GetField ();
+			FieldReference fd1 = (next.Operand as FieldReference);
+			FieldReference fd2 = (stfld.Operand as FieldReference);
 			if (fd1.MetadataToken.RID != fd2.MetadataToken.RID)
 				return String.Empty;
 

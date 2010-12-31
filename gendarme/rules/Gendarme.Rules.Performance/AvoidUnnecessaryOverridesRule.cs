@@ -70,105 +70,123 @@ namespace Gendarme.Rules.Performance {
 
 	[Problem ("This override of a base class method is unnecessary.")]
 	[Solution ("Remove the override method or extend the functionality of the method.")]
-	public class AvoidUnnecessaryOverridesRule : Rule, ITypeRule {
+	public class AvoidUnnecessaryOverridesRule : Rule, IMethodRule {
 
-		public RuleResult CheckType(TypeDefinition type)
+		static bool IsBase (MethodReference method, MethodReference mr)
 		{
-			if (!type.HasMethods)
+			if (mr.Name != method.Name)
+				return false;
+
+			if (!mr.CompareSignature (method))
+				return false;
+
+			foreach (TypeDefinition baseType in method.DeclaringType.AllSuperTypes ()) {
+				if (mr.DeclaringType.FullName == baseType.FullName)
+					return true;
+			}
+			return false;
+		}
+
+		static bool CompareCustomAttributes (ICustomAttributeProvider a, ICustomAttributeProvider b)
+		{
+			bool ha = a.HasCustomAttributes;
+			bool hb = b.HasCustomAttributes;
+			// if only one of them has custom attributes
+			if (ha != hb)
+				return false;
+			// if both do not have custom attributes
+			if (!ha && !hb)
+				return true;
+			// compare attributes
+			foreach (CustomAttribute attr in a.CustomAttributes) {
+				if (!b.CustomAttributes.Contains (attr))
+					return false;
+			}
+			return true;
+		}
+
+		static bool CompareSecurityDeclarations (ISecurityDeclarationProvider a, ISecurityDeclarationProvider b)
+		{
+			bool ha = a.HasSecurityDeclarations;
+			bool hb = b.HasSecurityDeclarations;
+			// if only one of them has custom attributes
+			if (ha != hb)
+				return false;
+			// if both do not have custom attributes
+			if (!ha && !hb)
+				return true;
+			// compare attributes
+			foreach (SecurityDeclaration sd in a.SecurityDeclarations) {
+				if (!b.SecurityDeclarations.Contains (sd))
+					return false;
+			}
+			return true;
+		}
+
+		public RuleResult CheckMethod (MethodDefinition method)
+		{
+			// default ctor is non-virtual
+			// static ctor is also not virtual
+			// abstract methods do not have a body
+			if (!method.HasBody || !method.IsVirtual)
 				return RuleResult.DoesNotApply;
 
-			// Iterate through all methods...
-			foreach (MethodDefinition method in type.Methods) {
-				// ...throw them out if they're not an override.
-				if (!method.IsOverride ())
-					continue;
+			// We need to check for a simple IL code pattern.
+			// load args (if necessary), call method, return.
+			// CSC emits some superflulous nops, starg, jmp, ldarg, return in debug mode, 
+			// so that has to be checked as well.
 
-				// We need to check for a simple IL code pattern.
-				// load args (if necessary), call method, return.
-				// CSC emits some superflulous nops, starg, jmp, ldarg, return in debug mode, 
-				// so that has to be checked as well.
-				if (!method.HasBody)
-					continue;
+			int i = 0;
+			var instrs = method.Body.Instructions;
 
-				int i = 0;
-				var instrs = method.Body.Instructions;
-
-				// Skip over the nops and load arguments.
-				while (i < instrs.Count && (instrs[i].Is (Code.Nop) || instrs[i].IsLoadArgument ()))
-					i++;
-
-				// If the next instruction is not a call we are good.
-				if (!instrs[i].Is (Code.Call) && !instrs[i].Is (Code.Callvirt))
-					continue;
-				// Check to make sure the call is to the base class, and the same method name...
-				MethodReference mr = instrs[i].Operand as MethodReference;
-				bool isBase = false;
-				foreach (TypeDefinition baseType in method.DeclaringType.AllSuperTypes ())
-					if (mr.DeclaringType.FullName == baseType.FullName)
-						isBase = true;
-				if (!isBase)
-					continue;
-				if (mr.Name != method.Name)
-					continue;
-				// Account for calling overrides.
-				if (mr.HasParameters != method.HasParameters)
-					continue;
-				// Check the parameter count and type.
-				if (mr.HasParameters && (mr.Parameters.Count != method.Parameters.Count))
-					continue;
-				// Check for equality.
-				bool sameParam = true;
-				for (int o = 0; o < mr.Parameters.Count; o++) {
-					var p1 = mr.Parameters[o];
-					var p2 = method.Parameters[o];
-					sameParam = true;
-					sameParam &= p1.Attributes == p2.Attributes;
-					sameParam &= p1.ParameterType == p2.ParameterType;
-					if (!sameParam)
-						break;
-				}
-				if (!sameParam)
-					continue;
-
-				i++;
-				// If the return type is void, all we should have is nop and return.
-				if (method.ReturnType.FullName == "System.Void") {
-					if (!instrs[i].Is (Code.Nop) || !instrs[i].Next.Is (Code.Ret))
-						continue;
-				} else {
-					while (i < instrs.Count &&
-						(instrs[i].Is (Code.Nop) || instrs[i].Is (Code.Jmp) || instrs[i].IsStoreLocal () || instrs[i].IsLoadLocal ()))
-						i++;
-
-					if (!instrs[i].Is (Code.Ret))
-						continue;
-				}
-
-				// If we've gotten this far, that means the code is just a call to the base method.
-				// We need to check for attributes/security declarations that aren't in the
-				// base.
-				bool same = true;
-				MethodDefinition md = mr.Resolve ();
-				// If we can't resolve the definition of the original method, we can't get
-				// the original attributes, so we'll say something with low confidence.
-				if (md == null) {
-					Runner.Report (method, Severity.Low, Confidence.Low);
-					continue;
-				}
-
-				foreach (SecurityDeclaration sec in method.SecurityDeclarations)
-					if (!md.SecurityDeclarations.Contains (sec))
-						same = false;
-				foreach (CustomAttribute attr in method.CustomAttributes)
-					if (!md.CustomAttributes.Contains (attr))
-						same = false;
-				if (!same)
-					continue;
-
-				Runner.Report (method, Severity.Low, Confidence.High);
+			Instruction ins = null;
+			// Skip over the nops and load arguments.
+			while (i < instrs.Count) {
+				ins = instrs [i++];
+				if (!ins.Is (Code.Nop) && !ins.IsLoadArgument ())
+					break;
 			}
 
+			// If the next instruction is not a call we are good.
+			if (!ins.Is (Code.Call) && !ins.Is (Code.Callvirt))
+				return RuleResult.Success;
+			// Check to make sure the call is to the base class, and the same method name...
+			MethodReference mr = ins.Operand as MethodReference;
+			if (!IsBase (method, mr))
+				return RuleResult.Success;
+
+			ins = instrs [i++];
+			// If the return type is void, all we should have is nop and return.
+			if (method.ReturnType.FullName == "System.Void") {
+				if (!ins.Is (Code.Nop) || !ins.Next.Is (Code.Ret))
+					return RuleResult.Success;
+			} else {
+				while (i < instrs.Count) {
+					if (ins.Is (Code.Nop) || ins.Is (Code.Jmp) || ins.IsStoreLocal () || ins.IsLoadLocal ())
+						break;
+					ins = instrs [i++];
+				}
+				if (!ins.Is (Code.Ret))
+					return RuleResult.Success;
+			}
+
+			// If we've gotten this far, that means the code is just a call to the base method.
+			// We need to check for attributes/security declarations that aren't in the
+			// base.
+			MethodDefinition md = mr.Resolve ();
+			// If we can't resolve the definition of the original method, we can't get
+			// the original attributes, so we'll say something with low confidence.
+			if (md == null) {
+				Runner.Report (method, Severity.Medium, Confidence.Low);
+				return RuleResult.Success;
+			}
+
+			if (!CompareCustomAttributes (method, md) || !CompareSecurityDeclarations (method, md))
+				return RuleResult.Success;
+			
+			Runner.Report (method, Severity.Medium, Confidence.High);
 			return Runner.CurrentRuleResult;
 		}
 	}
 }
+

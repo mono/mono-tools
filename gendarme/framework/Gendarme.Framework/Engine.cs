@@ -30,14 +30,13 @@ namespace Gendarme.Framework {
 	// FIXME: do a IEngine interface once this is stable
 	abstract public class Engine {
 
-		private EngineController controller;
-
 		protected Engine ()
 		{
 		}
 
 		protected EngineController Controller {
-			get { return controller; }
+			get;
+			private set;
 		}
 
 		/// <summary>
@@ -46,7 +45,7 @@ namespace Gendarme.Framework {
 		/// <param name="controller"></param>
 		public virtual void Initialize (EngineController controller)
 		{
-			this.controller = controller;
+			Controller = controller;
 		}
 
 		/// <summary>
@@ -55,7 +54,7 @@ namespace Gendarme.Framework {
 		/// </summary>
 		public virtual void TearDown ()
 		{
-			controller = null;
+			Controller = null;
 		}
 	}
 }

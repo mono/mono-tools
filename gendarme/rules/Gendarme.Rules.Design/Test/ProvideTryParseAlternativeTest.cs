@@ -44,7 +44,6 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleDoesNotApply (SimpleTypes.Delegate);
 			AssertRuleDoesNotApply (SimpleTypes.Enum);
-			AssertRuleDoesNotApply<ClassWithoutMethods> ();
 		}
 
 		interface IParseOnly {
@@ -88,6 +87,7 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleFailure<ClassParseOnly> (1);
 			AssertRuleSuccess<ClassTryParseToo> ();
+			AssertRuleSuccess<ClassWithoutMethods> ();
 		}
 
 		class StructParseOnly {

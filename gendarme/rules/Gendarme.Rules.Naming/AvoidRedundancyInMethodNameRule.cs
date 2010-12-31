@@ -115,12 +115,13 @@ namespace Gendarme.Rules.Naming {
 				return RuleResult.DoesNotApply;
 
 			ParameterDefinition p0 = method.Parameters [0];
-			string name = p0.ParameterType.Name;
+			TypeReference p0type = p0.ParameterType;
 
 			//param is out/ref, it is already not obvious (there is a rule for that)
-			if (p0.IsOut || p0.IsRef ())
+			if (p0.IsOut || p0type.IsByReference)
 				return RuleResult.DoesNotApply;
 
+			string name = p0type.Name;
 			string method_name = method.Name;
 			if (name.Length == 1 || method_name.Length <= name.Length)
 				return RuleResult.DoesNotApply;

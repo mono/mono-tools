@@ -117,8 +117,8 @@ namespace Gendarme.Rules.Serialization {
 			bool deserialized_candidate = false;
 			bool deserializing_candidate = false;
 			if (type.HasMethods) {
-				foreach (MethodDefinition method in type.GetMethods ()) {
-					if (!method.HasCustomAttributes)
+				foreach (MethodDefinition method in type.Methods) {
+					if (method.IsConstructor || !method.HasCustomAttributes)
 						continue;
 
 					if (method.HasAttribute (OnDeserializedAttribute))

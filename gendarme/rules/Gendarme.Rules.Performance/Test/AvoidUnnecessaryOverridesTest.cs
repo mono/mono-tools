@@ -1,4 +1,4 @@
-﻿//
+//
 // Unit tests for AvoidUnnecessaryOverridesRule
 //
 // Authors:
@@ -40,28 +40,59 @@ using Test.Rules.Helpers;
 namespace Tests.Rules.Performance {
 
 	[TestFixture]
-	public class AvoidUnnecessaryOverridesTest : TypeRuleTestFixture <AvoidUnnecessaryOverridesRule> {
+	public class AvoidUnnecessaryOverridesTest : MethodRuleTestFixture<AvoidUnnecessaryOverridesRule> {
 
 		private class TestBaseClass {
+
+			~TestBaseClass ()
+			{
+				Console.WriteLine ("the end");
+			}
+
+			public string NonVirtualDoSomething (int i)
+			{
+				return i.ToString ();
+			}
+
 			public virtual string DoSomething (string s)
 			{
 				return s;
 			}
+
 			public virtual string DoSomething ()
 			{
 				return ":D";
 			}
+
+			public virtual void DoNothing ()
+			{
+			}
+		}
+
+
+		abstract class AbstractTestClass : TestBaseClass {
+			~AbstractTestClass ()
+			{
+				Console.WriteLine ("abstract");
+			}
+
+			public abstract void DoSomething (int i);
+
+			public override void DoNothing ()
+			{
+				base.DoNothing ();
+			}
 		}
 
 		private class TestClassGood : TestBaseClass {
-			[STAThread]
 			public override string DoSomething (string s)
 			{
-				return base.DoSomething (s);
+				return base.DoSomething ();
 			}
+			[STAThread]
 			public override string DoSomething ()
 			{
-				return base.DoSomething (":P");
+				return base.DoSomething ();
 			}
 			[FileIOPermission (SecurityAction.Demand)]
 			public override string ToString ()
@@ -74,7 +105,7 @@ namespace Tests.Rules.Performance {
 					return false;
 				else
 					return base.Equals (obj);
-			}	
+			}
 		}
 
 		private class TestClassAlsoGood : ApplicationException {
@@ -109,37 +140,33 @@ namespace Tests.Rules.Performance {
 			}
 		}
 
-		private class MySimpleClass {
-		}
-
-		private Mono.Cecil.TypeDefinition SimpleClassNoMethods;
-
-		[SetUp]
-		public void SetUp ()
-		{
-			// Classes always have a constuctor so we hack our own methodless class.
-			SimpleClassNoMethods = DefinitionLoader.GetTypeDefinition<MySimpleClass> ();
-			SimpleClassNoMethods.Methods.Clear ();
-		}
-
 		[Test]
 		public void Good ()
 		{
-			AssertRuleSuccess<TestClassGood> ();
-			AssertRuleSuccess<TestClassAlsoGood> ();
+			AssertRuleSuccess<TestClassGood> ("DoSomething", new Type [] { typeof (string) });
+			AssertRuleSuccess<TestClassGood> ("DoSomething", Type.EmptyTypes);
+			AssertRuleSuccess<TestClassGood> ("Equals");
+			AssertRuleSuccess<TestClassGood> ("ToString");
+			AssertRuleSuccess<TestClassAlsoGood> ("Equals");
+			AssertRuleSuccess<AbstractTestClass> ("DoNothing");
 		}
 
 		[Test]
 		public void Bad ()
 		{
-			AssertRuleFailure<TestClassBad> (3);
-			AssertRuleFailure<TestClassAlsoBad> (1);
+			AssertRuleFailure<TestClassBad> ("ToString", 1);
+			AssertRuleFailure<TestClassBad> ("DoSomething", new Type [] { typeof (string) }, 1);
+			AssertRuleFailure<TestClassBad> ("DoSomething", Type.EmptyTypes, 1);
+			AssertRuleFailure<TestClassAlsoBad> ("GetBaseException", 1);
 		}
 
 		[Test]
 		public void DoesNotApply ()
 		{
-			AssertRuleDoesNotApply (SimpleClassNoMethods);
+			AssertRuleDoesNotApply<TestBaseClass> ("NonVirtualDoSomething");
+			AssertRuleDoesNotApply<TestClassGood> (".ctor");
+			AssertRuleDoesNotApply<TestClassBad> (".ctor");
+			AssertRuleDoesNotApply<AbstractTestClass> ("DoSomething");
 		}
 	}
 }

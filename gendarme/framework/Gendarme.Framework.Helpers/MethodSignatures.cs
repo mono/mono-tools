@@ -127,10 +127,11 @@ namespace Gendarme.Framework.Helpers {
 				if (pdc [0].ParameterType.FullName != "System.String")
 					return false;
 
-				string pt_name = pdc [pdc.Count - 1].ParameterType.FullName;
-				if (pt_name [pt_name.Length - 1] != '&')
+				TypeReference last = pdc [pdc.Count - 1].ParameterType;
+				if (!last.IsByReference)
 					return false;
 
+				string pt_name = last.FullName;
 				return (String.Compare (pt_name, 0, method.DeclaringType.FullName, 0, pt_name.Length - 1) == 0);
 			}
 		);

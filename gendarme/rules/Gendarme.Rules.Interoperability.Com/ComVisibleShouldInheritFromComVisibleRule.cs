@@ -91,38 +91,21 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (!IsTypeComVisible (type) || type.BaseType == null)
+			if (type.BaseType == null)
+				return RuleResult.DoesNotApply;
+
+			// Checks whether specific type is COM visible or not
+			// considering nested types, assemblies attributes and default values
+			if (!type.IsTypeComVisible ())
 				return RuleResult.DoesNotApply;
 
 			TypeDefinition baseType = type.BaseType.Resolve ();
-			if ((baseType != null) && !IsTypeComVisible (baseType)) {
+			if ((baseType != null) && !baseType.IsTypeComVisible ()) {
 				Runner.Report (type, Severity.High, Confidence.Total,
 					String.Format ("Type is derived from invisible from COM type {0}",
 						baseType.FullName));
 			}
 			return Runner.CurrentRuleResult;
 		}
-
-
-		// Checks whether specific type is COM visible or not
-		// considering nested types/modules/assemblies attributes and default values
-		private static bool IsTypeComVisible (TypeDefinition type)
-		{
-			bool? t = type.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			if (type.IsNested) {
-				t = type.DeclaringType.IsComVisible ();
-				if (t.HasValue)
-					return (bool)t;
-			}
-			var module = type.Module;
-			t = module.IsComVisible ();
-			if (t.HasValue)
-				return (bool)t;
-			t = module.Assembly.IsComVisible ();
-			return t ?? true;
-		}
-
 	}
 }

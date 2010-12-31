@@ -78,8 +78,8 @@ namespace Gendarme.Rules.Interoperability {
 				return false;
 
 			if (type.IsSealed && type.HasMethods) {
-				foreach (MethodDefinition ctor in type.GetConstructors ()) {
-					if (ctor.IsVisible ())
+				foreach (MethodDefinition ctor in type.Methods) {
+					if (ctor.IsConstructor && ctor.IsVisible ())
 						return true;
 				}
 				return false;

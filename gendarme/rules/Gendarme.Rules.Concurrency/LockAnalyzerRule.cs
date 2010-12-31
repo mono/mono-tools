@@ -67,10 +67,7 @@ namespace Gendarme.Rules.Concurrency {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (ins.OpCode.FlowControl != FlowControl.Call)
-					continue;
-
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.GetMethod ();
 				if (mr == null)
 					continue;
 				if (mr.DeclaringType.FullName != "System.Threading.Monitor")

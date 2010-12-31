@@ -105,12 +105,16 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.PreferEventsOverMethodsRu
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.PreferIntegerOrStringForIndexersRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ProvideAlternativeNamesForOperatorOverloadsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ProvideTryParseAlternativeRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.StronglyTypedRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesShouldBeInsideNamespacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesWithDisposableFieldsShouldBeDisposableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.TypesWithNativeFieldsShouldBeDisposableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.UseFlagsAttributeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.UseCorrectDisposeSignaturesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.AvoidExcessiveParametersOnGenericTypesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotDeclareStaticMembersOnGenericTypesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotExposeGenericListsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.ImplementGenericCollectionInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.PreferGenericsOverRefObjectRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.AvoidArgumentExceptionDefaultConstructorRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -121,6 +125,10 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.ExceptionShouldBeVisi
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.InstantiateArgumentExceptionCorrectlyRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.NewExceptionsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.UseObjectDisposedExceptionRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.DefectsMustBeReportedRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.DoNotThrowExceptionRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.MissingEngineDependencyRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Gendarme.UseCorrectSuffixRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.CentralizePInvokesIntoNativeMethodsTypeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.CentralizePInvokesIntoNativeMethodsTypeRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -135,6 +143,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidInt64A
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidNonPublicFieldsInComVisibleValueTypesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidOverloadsInComVisibleInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.AvoidStaticMembersInComVisibleTypesRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.Com.ReviewComRegistrationMethodsRule::CheckType(Mono.Cecil.TypeDefinition)
@@ -167,12 +176,12 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidConcatenatingCh
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidLargeNumberOfLocalVariablesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidLargeStructureRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidLocalDataStoreSlotRule::CheckMethod(Mono.Cecil.MethodDefinition)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSize::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSizeRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidRepetitiveCastsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidTypeGetTypeForConstantStringsRule::CheckMethod(Mono.Cecil.MethodDefinition)
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededCallsOnStringRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededFieldInitializationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Performance.AvoidUnneededUnboxingRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -239,8 +248,6 @@ M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::Proces
 M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckHashMethod()
 M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::CheckCloneMethod()
 M: System.Void Gendarme.Rules.Correctness.ProvideCorrectArgumentsToFormattingMethodsRule::CheckCallToFormatter(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)
-M: System.Void Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckCall(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
-M: System.Void Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckCall(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DisposableTypesShouldHaveFinalizerRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotExposeNestedGenericSignaturesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: System.String Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::ExplainThrow(Mono.Cecil.Cil.Instruction)
@@ -264,6 +271,33 @@ M: System.Void Gendarme.Wizard::UpdateReportUI()
 M: Gendarme.ResultWriter Gendarme.Wizard::GetSelectedWriter(System.Int32,System.String)
 # CSC only - System.Int32 System.Collections.CollectionBase::get_Count() > 20 (22) but MS.NET use an higher limit to inline...
 M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule::SignatureMatches(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
+# 'type' might be re-assigned so the second call to FullName is required
+M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::Analyze(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.Instruction)
+# different code path / switch
+M: System.Void Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
+M: System.Void Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
+
+# mono bug wrt metatoken id with generics
+R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
+M: System.Nullable`1<Gendarme.Framework.ThreadModel> Gendarme.Rules.Concurrency.ThreadRocks::Lookup(Mono.Cecil.MemberReference,System.Collections.Generic.IEnumerable`1<TDefinition>)
+
+# mono compiler bug wrt naming autogenerated variables #660530
+R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
+M: System.Void Gendarme.IgnoreFileList::Resolve()
+M: System.Boolean Gendarme.Settings::Load()
+M: System.Void Gendarme.XmlResultWriter::CreateDefects()
+M: System.Void Gendarme.Framework.Engines.SuppressMessageEngine::Resolve(System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.HashSet`1<System.String>>)
+M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave> Gendarme.Framework.Helpers.StackEntryAnalysis::FindLoad(Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave,Gendarme.Framework.Helpers.StackEntryAnalysis/StoreSlot)
+M: System.Void Gendarme.Framework.EngineController::Build(System.Collections.Generic.IList`1<Mono.Cecil.AssemblyDefinition>)
+M: System.Void Gendarme.Framework.Runner::Initialize()
+M: System.Void Gendarme.Framework.Runner::Run()
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.AvoidSmallNamespaceRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
+M: System.Void Gendarme.Rules.Design.AvoidSmallNamespaceRule::TearDown()
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.InternalNamespacesShouldNotExposeTypesRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
+M: System.Void Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::FindInterfaces()
+M: System.Boolean Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::HasExpectedInheritedTypeCount(Mono.Cecil.MemberReference,System.Int32)
+M: System.Void Gendarme.XmlResultWriter::CreateDefects()
+M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
 
 # ---------------------------------------------------------
 # We might want to fix these.
@@ -302,15 +336,25 @@ T: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
 # CheckForAny and CheckMethod
 T: Gendarme.Rules.Performance.ReviewLinqMethodRule
+# CheckType and ProcessMethods, ProcessMethods and ProcessProperties
+T: Gendarme.Rules.Design.StronglyTypedRule
 # CSC only - AddImpl and GetArgumentName
 T: NDesk.Options.OptionSet
+# 2.8+
+M: System.String Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::GetName(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
+R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule::CheckMethod(Mono.Cecil.MethodDefinition)
+# CheckType and GetEngineDependencyValue
+T: Gendarme.Rules.Gendarme.MissingEngineDependencyRule
+# DoNotThrowExceptionRule::CheckMethod and MissingEngineDependencyRule::CheckType
+T: Gendarme.Rules.Gendarme.GendarmeRule
 
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
 T: Gendarme.Framework.Helpers.MethodSignatures
 
 # FIXME - note: some seems to be related to an xMCS bug
-R: Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSize
+R: Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSizeRule
 # Found 1110 maximum stack size (maximum 100). ### autogenerated - should be ignored
 M: System.Void Gendarme.Wizard::InitializeComponent()
 # Found 129 maximum stack size (maximum 100).
@@ -320,9 +364,6 @@ M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(M
 # Found 121 maximum stack size (maximum 100).
 M: System.Void Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule::ProcessMethod(Mono.Cecil.TypeDefinition,Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule/MethodInfo)
 # Found 188 maximum stack size (maximum 100).
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
-# Found 103 maximum stack size (maximum 100). when compiled with CSC maxstack is 5 !!!
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Maintainability.AvoidAlwaysNullFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 
 # FIXME
 R: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule
@@ -332,9 +373,7 @@ M: System.Void Gendarme.Framework.Helpers.MethodSignatures::.cctor()
 M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave> Gendarme.Framework.Helpers.StackEntryAnalysis::FindLoad(Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave,Gendarme.Framework.Helpers.StackEntryAnalysis/StoreSlot)
 # CC 43
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
-# CC 31
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
-# CC 25 (CSC only)
+# CC 41
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
 # FIXME
@@ -343,8 +382,6 @@ R: Gendarme.Rules.Smells.AvoidLongMethodsRule
 M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave> Gendarme.Framework.Helpers.StackEntryAnalysis::FindLoad(Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave,Gendarme.Framework.Helpers.StackEntryAnalysis/StoreSlot)
 # Logical SLOC: 64. Maximum : 40
 M: System.Void Gendarme.Rules.Concurrency.DecorateThreadsRule::CheckMethodBody(Mono.Cecil.MethodDefinition)
-# Logical SLOC: 62. Maximum : 40
-M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 
 # some fixes possible, needs to be reviewed
 R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
@@ -373,6 +410,9 @@ T: Gendarme.Wizard
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckConstructor(Mono.Cecil.MethodDefinition)
 M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: System.Boolean Gendarme.Rules.Interoperability.Com.ComRocks::IsTypeComVisible(Mono.Cecil.TypeDefinition)
+M: System.Boolean Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::IsBase(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)
+M: System.Boolean Gendarme.Rules.Correctness.BadRecursiveInvocationRule::CompareMethods(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
 
 # ---------------------------------------------------------
 # These are all OK.
@@ -480,6 +520,17 @@ R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
 T: NDesk.Options.OptionContext
 R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
 M: System.String NDesk.Options.OptionValueCollection::get_Item(System.Int32)
+R: Gendarme.Rules.Maintainability.VariableNamesShouldNotMatchFieldNamesRule
+T: NDesk.Options.OptionValueCollection
+T: NDesk.Options.OptionContext
+T: NDesk.Options.Option
+T: NDesk.Options.OptionSet
+T: NDesk.Options.OptionSet/ActionOption
+T: NDesk.Options.OptionSet/ActionOption`1
+T: NDesk.Options.OptionSet/ActionOption`2
+R: Gendarme.Rules.Design.Generic.DoNotExposeGenericListsRule
+T: NDesk.Options.OptionValueCollection
+T: NDesk.Options.OptionSet
 
 # The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
 # fire because Gendarme code, like the rules and the runners, are not marked as
@@ -527,11 +578,6 @@ R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Void Gendarme.Rules.Performance.AvoidUninstantiatedInternalClassesRule::AddType(System.Collections.Generic.HashSet`1<Mono.Cecil.TypeReference>,Mono.Cecil.TypeReference)
 M: System.Void Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule::BuildMethodUsage(System.Collections.Generic.HashSet`1<System.UInt32>,Mono.Cecil.MethodDefinition)
 
-# OK - use is on different code paths
-M: System.Boolean Gendarme.Rules.Interoperability.Com.ComVisibleShouldInheritFromComVisibleRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
-M: System.Boolean Gendarme.Rules.Interoperability.Com.DoNotUseAutoDualClassInterfaceTypeRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
-M: System.Boolean Gendarme.Rules.Interoperability.Com.ReviewComRegistrationMethodsRule::IsTypeComVisible(Mono.Cecil.TypeDefinition)
-
 # OK
 R: Gendarme.Rules.Naming.AvoidRedundancyInTypeNameRule
 # ComRocks is not directly used
@@ -542,8 +588,17 @@ T: Gendarme.Rules.Interoperability.Com.ComVisibleTypesShouldBeCreatableRule
 # NUnitRocks is not directly used
 T: Gendarme.Rules.NUnit.NUnitRocks
 
+# OK - different code paths
+R: Gendarme.Rules.Performance.AvoidRepetitiveCastsRule
+M: System.Boolean Gendarme.Rules.Security.Cas.SecurityDeclarationRocks::TryProcessPermissionSetAttribute(Mono.Cecil.SecurityDeclaration,System.Security.PermissionSet&)
+R: Gendarme.Rules.Performance.AvoidUnneededUnboxingRule
+M: System.Boolean Gendarme.Rules.Security.Cas.SecurityDeclarationRocks::TryProcessPermissionSetAttribute(Mono.Cecil.SecurityDeclaration,System.Security.PermissionSet&)
+
 # OK - Runner.Report is being called in a base type or in another type (for Smells)
 R: Gendarme.Rules.Gendarme.DefectsMustBeReportedRule
+T: Gendarme.Rules.Design.EnumeratorsShouldBeStronglyTypedRule
+T: Gendarme.Rules.Design.StronglyTypeICollectionMembersRule
+T: Gendarme.Rules.Design.ListsAreStronglyTypedRule
 T: Gendarme.Rules.Design.MarkAssemblyWithComVisibleRule
 T: Gendarme.Rules.Design.MarkAssemblyWithCLSCompliantRule
 T: Gendarme.Rules.Exceptions.DoNotThrowReservedExceptionRule
@@ -552,3 +607,7 @@ T: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
 T: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 T: Gendarme.Rules.UI.SystemWindowsFormsExecutableTargetRule
 T: Gendarme.Rules.UI.GtkSharpExecutableTargetRule
+
+# OK - Gendarme.Framework.Rule may throw exceptions as it is not a real rule
+R: Gendarme.Rules.Gendarme.DoNotThrowExceptionRule
+T: Gendarme.Framework.Rule

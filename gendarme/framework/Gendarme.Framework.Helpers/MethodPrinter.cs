@@ -27,12 +27,12 @@ namespace Gendarme.Framework.Helpers {
 		private MethodDefinition method;
 		private IDictionary branchTable;
 
-		public MethodPrinter(MethodDefinition method)
+		public MethodPrinter (MethodDefinition m)
 		{
-			if (method == null)
-				throw new ArgumentNullException ("method");
+			if (m == null)
+				throw new ArgumentNullException ("m");
 			
-			this.method = method;
+			method = m;
 			if (method.HasBody)
 				instructions = method.Body.Instructions;
 			

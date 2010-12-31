@@ -41,10 +41,11 @@ namespace Gendarme.Rules.Design {
 
 			foreach (FieldDefinition field in type.Fields) {
 				// the special __value field is not static like the others (user defined)
-				if (field.IsStatic && (field.Constant is int)) {
-					if (((int) (field.Constant)) == 0)
-						return field;
-				}
+				if (!field.IsStatic)
+					continue;
+				object o = field.Constant;
+				if ((o is int) && ((int) o == 0))
+					return field;
 			}
 			return null;
 		}

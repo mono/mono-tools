@@ -35,25 +35,15 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Smells {
 	internal static class InstructionMatcher {
-		static MethodDefinition current;
-		static MethodDefinition target;
 
 		internal static MethodDefinition Current {
-			get {
-				return current;
-			}
-			set {
-				current = value;
-			}
+			get;
+			set;
 		}
 
 		internal static MethodDefinition Target {
-			get {
-				return target;
-			}
-		 	set {
-				target = value;
-			}
+			get;
+			set;
 		}
 
 		static bool AreEquivalent (ParameterReference source, ParameterReference target)

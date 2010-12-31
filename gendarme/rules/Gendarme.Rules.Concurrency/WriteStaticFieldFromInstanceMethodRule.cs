@@ -78,6 +78,26 @@ namespace Gendarme.Rules.Concurrency {
 
 		private const string ThreadStaticAttribute = "System.ThreadStaticAttribute";
 
+		static bool CheckField (FieldReference field)
+		{
+			// skip instance fields and generated static field (likely by the compiler)
+			if ((field == null) || field.IsGeneratedCode ())
+				return false;
+
+			// check if the field could be resolved
+			FieldDefinition fd = field.Resolve ();
+			if (fd == null)
+				return false;
+
+			// skip fields decorated with [ThreadStatic] (the runtime will use
+			// thread local storage for these so they are thread safe)
+			if (fd.HasCustomAttributes) {
+				if (fd.CustomAttributes.ContainsType (ThreadStaticAttribute))
+					return false;
+			}
+			return true;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply if 
@@ -97,15 +117,9 @@ namespace Gendarme.Rules.Concurrency {
 				// look for stsfld instructions
 				if (ins.OpCode.Code == Code.Stsfld) {
 					FieldReference fr = (ins.Operand as FieldReference);
-					// skip instance fields and generated static field (likely by the compiler)
-					if ((fr != null) && !fr.IsGeneratedCode ()) {
-						// skip fields decorated with [ThreadStatic] (the runtime will use
-						// thread local storage for these so they are thread safe)
-						FieldDefinition fd = fr.Resolve ();
-						if (fd == null || !fd.CustomAttributes.ContainsType (ThreadStaticAttribute)) {
-							string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fr.Name, fr.FieldType);
-							Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
-						}
+					if (CheckField (fr)) {
+						string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fr.Name, fr.FieldType);
+						Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
 					}
 				}
 			}

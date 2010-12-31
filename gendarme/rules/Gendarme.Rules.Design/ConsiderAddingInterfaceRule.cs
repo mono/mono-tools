@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeReference iface)
+		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
 		{
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.GetAllTypes ()) {
@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Design {
 			}
 		}
 
-		private static bool DoesTypeStealthilyImplementInterface (TypeDefinition type, TypeReference iface)
+		private static bool DoesTypeStealthilyImplementInterface (TypeDefinition type, TypeDefinition iface)
 		{
 			//ignore already uninteresting types below (self, enum, struct, static class)
 			if (type == iface || type.IsEnum || type.IsValueType || type.IsStatic ())
@@ -134,7 +134,7 @@ namespace Gendarme.Rules.Design {
 			//if type has less methods than the interface no need to check further
 			if (!type.HasMethods)
 				return false;
-			IList<MethodDefinition> mdc = iface.GetMethods ().ToList ();
+			IList<MethodDefinition> mdc = iface.Methods;
 			if (type.Methods.Count < mdc.Count)
 				return false;
 
@@ -150,40 +150,11 @@ namespace Gendarme.Rules.Design {
 					return false;
 
 				//ok interesting candidate! let's check if it matches the signature
-				if (!AreSameElementTypes (m.ReturnType, candidate.ReturnType))
-					return false;
-
-				if (!CompareParameters (m, candidate))
+				if (!m.CompareSignature (candidate))
 					return false;
 			}
 
 			return true;
-		}
-
-		private static bool CompareParameters (IMethodSignature m1, IMethodSignature m2)
-		{
-			bool h1 = m1.HasParameters;
-			bool h2 = m2.HasParameters;
-			if (h1 != h2)
-				return false;
-			if (!h1 && !h2)
-				return true;
-
-			IList<ParameterDefinition> pdc1 = m1.Parameters;
-			IList<ParameterDefinition> pdc2 = m2.Parameters;
-			if (pdc1.Count != pdc2.Count)
-				return false;
-
-			for (int i = 0; i < pdc1.Count; ++i) {
-				if (!AreSameElementTypes (pdc1 [i].ParameterType, pdc2 [i].ParameterType))
-					return false;
-			}
-			return true;
-		}
-
-		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
-		{
-			return a.GetElementType ().FullName == b.GetElementType ().FullName;
 		}
 	}
 }

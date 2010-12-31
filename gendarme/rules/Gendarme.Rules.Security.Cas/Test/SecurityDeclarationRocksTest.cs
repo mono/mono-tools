@@ -1,10 +1,10 @@
 //
-// Gendarme.Rules.Smells.Utilities class
+// Unit tests for SecurityDeclarationRocks
 //
 // Authors:
-//	Néstor Salceda <nestor.salceda@gmail.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
-// 	(C) 2007 Néstor Salceda
+// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -13,10 +13,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,25 +27,39 @@
 //
 
 using System;
-using System.Collections.Generic;
+using System.Security;
+using SSP = System.Security.Permissions;
 
-using Gendarme.Framework;
-using Gendarme.Framework.Rocks;
+using NUnit.Framework;
+using Test.Rules.Helpers;
 
 using Mono.Cecil;
+using Gendarme.Rules.Security.Cas;
 
-namespace Gendarme.Rules.Smells {
+namespace Tests.Rules.Security.Cas {
 
-	internal static class Utilities {
+	[SSP.PermissionSet (SSP.SecurityAction.InheritanceDemand, Unrestricted = true, UnicodeEncoded = true)]
+	public abstract class UnrestrictedTrue {
+	}
 
-		public static ICollection<TypeDefinition> GetInheritedClassesFrom (TypeReference baseType)
+	[SSP.PermissionSet (SSP.SecurityAction.InheritanceDemand, Unrestricted = false)]
+	public abstract class UnrestrictedFalse {
+	}
+
+	[TestFixture]
+	public class SecurityDeclarationRocksTest {
+
+		[Test]
+		public void Unrestricted_Boolean ()
 		{
-			List<TypeDefinition> inheritedClasses = new List<TypeDefinition> ();
-			foreach (TypeDefinition type in baseType.Module.GetAllTypes ()) {
-				if ((type.BaseType != null) && type.BaseType.Equals (baseType))
-					inheritedClasses.Add (type);
-			}
-			return inheritedClasses;
+			TypeDefinition t = DefinitionLoader.GetTypeDefinition<UnrestrictedTrue> ();
+			PermissionSet ps = t.SecurityDeclarations [0].ToPermissionSet ();
+			Assert.IsTrue (ps.IsUnrestricted (), "IsUnrestricted");
+
+			t = DefinitionLoader.GetTypeDefinition<UnrestrictedFalse> ();
+			ps = t.SecurityDeclarations [0].ToPermissionSet ();
+			Assert.IsFalse (ps.IsUnrestricted (), "!IsUnrestricted");
 		}
 	}
 }
+

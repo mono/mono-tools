@@ -30,6 +30,7 @@ using System.Runtime.CompilerServices;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -167,8 +168,14 @@ namespace GuiCompare {
 							continue;
 					}
 
-					if (IsFinalizer (md))
-						continue;
+					if (IsFinalizer (md)) {
+						string name = md.DeclaringType.Name;
+						int arity = name.IndexOf ('`');
+						if (arity > 0)
+							name = name.Substring (0, arity);
+
+						md.Name = "~" + name;
+					}
 
 					if (md.IsPrivate || md.IsAssembly)
 						continue;
@@ -276,8 +283,7 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if (type_def.BaseType.FullName == "System.MulticastDelegate"
-				         || type_def.BaseType.FullName == "System.Delegate") {
+				else if (type_def.BaseType.FullName == "System.MulticastDelegate") {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -453,8 +459,7 @@ namespace GuiCompare {
 				else if (type_def.IsInterface) {
 					interface_list.Add (new CecilInterface (type_def));
 				}
-				else if ((type_def.BaseType != null && type_def.BaseType.FullName == "System.MulticastDelegate")
-				         || (type_def.BaseType != null && type_def.BaseType.FullName == "System.Delegate")) {
+				else if (type_def.BaseType != null && type_def.BaseType.FullName == "System.MulticastDelegate") {
 					delegate_list.Add (new CecilDelegate (type_def));
 				}
 				else {
@@ -865,8 +870,13 @@ namespace GuiCompare {
 
 		public override string GetLiteralValue ()
 		{
-			if (field_def.IsLiteral && field_def.Constant != null)
-				return field_def.Constant.ToString();
+			if (field_def.IsLiteral && field_def.Constant != null) {
+				if (field_def.Constant is char)
+					return string.Format (CultureInfo.InvariantCulture, (char) field_def.Constant < 0x80 ? "\\x{0:X02}" : "\\u{0:X04}", (int)(char) field_def.Constant);
+				
+				return Convert.ToString (field_def.Constant, CultureInfo.InvariantCulture);
+			}
+			
 			return null;
 		}
 		

@@ -40,10 +40,11 @@ namespace Gendarme.Rules.Smells {
 		bool? compilerGeneratedBlock;
 		bool? extractableToMethodBlock;
 
-		internal Pattern (Instruction[] instructions) {
-			if (instructions == null)
-				throw new ArgumentNullException ("instructions");
-			this.instructions = instructions;
+		internal Pattern (Instruction[] block)
+		{
+			if (block == null)
+				throw new ArgumentNullException ("block");
+			this.instructions = block;
 		}
 
 		// look for: isinst System.IDisposable

@@ -104,9 +104,14 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {
-				if (primitiveTypeInterfaces.Contains (parameter.ParameterType.FullName)) {
+				TypeReference type = parameter.ParameterType;
+				if (type.Namespace != "System")
+					continue;
+
+				string tname = type.FullName;
+				if (primitiveTypeInterfaces.Contains (tname)) {
 					string msg = String.Format ("You are using {0} as parameter, which cause boxing with value type as argument",
-					                            parameter.ParameterType.FullName);
+						tname);
 					Runner.Report (method, Severity.Low, Confidence.Total, msg);
 				}
 			}

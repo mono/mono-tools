@@ -120,11 +120,12 @@ namespace Gendarme.Rules.Exceptions {
 				return RuleResult.DoesNotApply;
 
 			// and if the method has, at least one, exception handler(s)
-			if (!method.Body.HasExceptionHandlers)
+			MethodBody body = method.Body;
+			if (!body.HasExceptionHandlers)
 				return RuleResult.DoesNotApply;
 
 			bool has_rethrow = OpCodeEngine.GetBitmask (method).Get (Code.Rethrow);
-			foreach (ExceptionHandler exceptionHandler in method.Body.ExceptionHandlers) {
+			foreach (ExceptionHandler exceptionHandler in body.ExceptionHandlers) {
 				if (exceptionHandler.HandlerType == ExceptionHandlerType.Catch) {
 					string catchTypeName = exceptionHandler.CatchType.FullName;
 					if (IsForbiddenTypeInCatches (catchTypeName)) {

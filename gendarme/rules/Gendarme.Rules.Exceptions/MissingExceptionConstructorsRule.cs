@@ -131,9 +131,9 @@ namespace Gendarme.Rules.Exceptions {
 			bool inner_exception_ctor = false;	// MyException (string message, Exception innerException)
 			bool serialization_ctor = false;	// MyException (SerializationInfo info, StreamingContext context)
 
-			foreach (MethodDefinition ctor in type.GetConstructors ()) {
-				// skip cctor
-				if (ctor.IsStatic)
+			foreach (MethodDefinition ctor in type.Methods) {
+				// skip non-constructors and cctor
+				if (!ctor.IsConstructor || ctor.IsStatic)
 					continue;
 
 				if (!ctor.HasParameters) {

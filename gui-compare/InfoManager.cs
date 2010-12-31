@@ -159,6 +159,45 @@ namespace GuiCompare
 			"System.Windows.Controls",
 			"System.Windows.Controls.Data",
 		};
+		
+		string [] api_sl4 = {
+			"mscorlib",
+			"System",
+			"System.Core",
+			"System.Net",
+			"System.Runtime.Serialization",
+			"System.ServiceModel",
+			"System.ServiceModel.Web",
+			"System.Windows",
+			"System.Windows.Browser",
+			"System.Xml",
+			"Microsoft.VisualBasic",
+			"",
+			// sdk assemblies:
+			"Microsoft.CSharp",
+			"System.ComponentModel.Composition",
+			"System.ComponentModel.Composition.Initialization",
+			"System.ComponentModel.DataAnnotations",
+			"System.Data.Services.Client",
+			"System.Json",
+			"System.Numerics",
+			"System.Runtime.Serialization.Json",
+			"System.ServiceModel.Extensions",
+			"System.ServiceModel.NetTcp",
+			"System.ServiceModel.PollingDuplex",
+			"System.ServiceModel.Syndication",
+			"System.ServiceModel.Web.Extensions",
+			"System.Windows.Controls.Data",
+			"System.Windows.Controls.Data.Input",
+			"System.Windows.Controls",
+			"System.Windows.Controls.Input",
+			"System.Windows.Controls.Navigation",
+			"System.Windows.Data",
+			"System.Xml.Linq",
+			"System.Xml.Serialization",
+			"System.Xml.Utils",
+			"System.Xml.XPath"
+		};
 
 		string [] api_3_5 = {
 			"mscorlib",
@@ -199,6 +238,8 @@ namespace GuiCompare
 			"Microsoft.Build.Framework",
 			"Microsoft.Build.Tasks",
 			"Microsoft.Build.Utilities",
+			"Microsoft.Build.Conversion.v3.5",
+			"Microsoft.Build.Utilities.v3.5",
 			"",
 			"System.Configuration.Install",
 			"System.Design",
@@ -255,7 +296,6 @@ namespace GuiCompare
 			"System.Net",
 			"System.Numerics",
 			"System.Printing",
-			"System.Runtime",
 			"System.Runtime.Caching",
 			"System.Runtime.Remoting",
 			"System.Runtime.Serialization",
@@ -325,7 +365,7 @@ namespace GuiCompare
 		//	"XamlBuildTask"
 		};
 		
-		const string masterinfos_version = "2.6";
+		const string masterinfos_version = "2.8";
 
 		static Uri GetMasterInfoUri (string file)
 		{
@@ -684,13 +724,13 @@ namespace GuiCompare
 			sub.Add (separator);
 			
 			Populate (sub, "API 1.1", GetVersionPath ("1.0", "net_1_1"), "1.0", api_1_1);
-			Populate (sub, "API 2.0 sp1", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
+			Populate (sub, "API 2.0 sp2", GetVersionPath ("2.0", "net_2_0"), "2.0", api_2_0);
 			Populate (sub, "API 3.0 sp1", GetVersionPath ("2.0", "net_2_0"), "3.0", api_3_0);
 			Populate (sub, "API 3.5 sp1", GetVersionPath ("2.0", "net_2_0"), "3.5", api_3_5);
 			Populate (sub, "API 4.0", GetVersionPath ("4.0", "net_4_0"), "4.0", api_4_0);
-			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
-			Populate (sub, "Silverlight 3.0", GetVersionPath ("2.1", "net_2_1"), "SL3", api_sl2);
-			Populate (sub, "Silverlight 4.0", GetVersionPath ("2.1", "net_2_1"), "SL4", api_sl2);
+//			Populate (sub, "Silverlight 2.0", GetVersionPath ("2.1", "net_2_1"), "SL2", api_sl2);
+//			Populate (sub, "Silverlight 3.0", GetVersionPath ("2.1", "net_2_1"), "SL3", api_sl2);
+			Populate (sub, "Silverlight 4.0", GetVersionPath ("2.1", "net_2_1"), "SL4", api_sl4);
 		}
 		
 		static string GetVersionPath (string version, string profile)

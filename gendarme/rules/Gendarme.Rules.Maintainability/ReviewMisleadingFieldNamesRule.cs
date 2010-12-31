@@ -67,9 +67,8 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsStatic && field.Name.StartsWith ("s_"))
-					Runner.Report (field, Severity.Low, Confidence.Total);
-				else if (field.IsStatic && field.Name.StartsWith ("m_"))
+				string name = field.Name;
+				if (field.IsStatic ? name.StartsWith ("m_") : name.StartsWith ("s_"))
 					Runner.Report (field, Severity.Low, Confidence.Total);
 			}
 

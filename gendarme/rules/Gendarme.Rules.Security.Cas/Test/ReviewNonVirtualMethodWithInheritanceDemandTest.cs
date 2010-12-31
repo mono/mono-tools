@@ -120,7 +120,9 @@ namespace Test.Rules.Security.Cas {
 		public void AbstractMethods ()
 		{
 			TypeDefinition type = GetTest ("AbstractMethodsClass");
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), method.ToString ());
 			}
 		}
@@ -129,7 +131,7 @@ namespace Test.Rules.Security.Cas {
 		public void VirtualMethods ()
 		{
 			TypeDefinition type = GetTest ("VirtualMethodsClass");
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
 				switch (method.Name) {
 				case "Abstract":
 					Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.Name);
@@ -145,7 +147,9 @@ namespace Test.Rules.Security.Cas {
 		public void NoVirtualMethods ()
 		{
 			TypeDefinition type = GetTest ("NoVirtualMethodsClass");
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), method.ToString ());
 			}
 		}
@@ -154,7 +158,9 @@ namespace Test.Rules.Security.Cas {
 		public void NotInheritanceDemand ()
 		{
 			TypeDefinition type = GetTest ("NotInheritanceDemandClass");
-			foreach (MethodDefinition method in type.GetMethods ()) {
+			foreach (MethodDefinition method in type.Methods) {
+				if (method.IsConstructor)
+					continue;
 				Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), method.ToString ());
 			}
 		}

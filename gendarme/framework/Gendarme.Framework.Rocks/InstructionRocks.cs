@@ -66,6 +66,24 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Get the MethodReference or MethodDefinition (but not a CallSite) associated with the Instruction
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <returns></returns>
+		/// <remarks>Older (pre 0.9) Cecil CallSite did not inherit from MethodReference so this was not an issue</remarks>
+		public static MethodReference GetMethod (this Instruction self)
+		{
+			if ((self == null) || (self.OpCode.FlowControl != FlowControl.Call))
+				return null;
+			// we want to avoid InlineSig which is a CallSite (inheriting from MethodReference) 
+			// but without a DeclaringType
+			if (self.OpCode.OperandType != OperandType.InlineMethod)
+				return null;
+
+			return (self.Operand as MethodReference);
+		}
+
+		/// <summary>
 		/// Return the operand of the Instruction. For macro instruction the operand is constructed.
 		/// </summary>
 		/// <param name="self">The Instruction on which the extension method can be called.</param>

@@ -46,11 +46,11 @@ namespace Gendarme.Rules.Smells {
 		HashSet<string> methods = new HashSet<string> ();
 		HashSet<string> types = new HashSet<string> ();
 		Dictionary<MethodDefinition, IList<Pattern>> patternsCached = new Dictionary<MethodDefinition, IList<Pattern>> ();
-		IRule rule;
+		IRule parent_rule;
 
 		internal CodeDuplicatedLocator (IRule rule) 
 		{
-			this.rule = rule;
+			parent_rule = rule;
 		}
 
 		internal ICollection<string> CheckedMethods {
@@ -71,18 +71,18 @@ namespace Gendarme.Rules.Smells {
 			types.Clear ();
 		}
 
-		internal void CompareMethodAgainstTypeMethods (MethodDefinition current, TypeReference targetType)
+		internal void CompareMethodAgainstTypeMethods (MethodDefinition current, TypeDefinition targetType)
 		{
 			if (CheckedTypes.Contains (targetType.Name)) 
 				return;
 			
-			foreach (MethodDefinition target in targetType.GetMethods ()) {
-				if (target.IsGeneratedCode ())
+			foreach (MethodDefinition target in targetType.Methods) {
+				if (target.IsConstructor || target.IsGeneratedCode ())
 					continue;
 
 				Pattern duplicated = GetDuplicatedCode (current, target);
 				if (duplicated != null && duplicated.Count > 0)
-					rule.Runner.Report (current, duplicated[0], Severity.High, Confidence.Normal, String.Format ("Duplicated code with {0}", target));
+					parent_rule.Runner.Report (current, duplicated[0], Severity.High, Confidence.Normal, String.Format ("Duplicated code with {0}", target));
 			}
 		}
 
@@ -148,9 +148,10 @@ namespace Gendarme.Rules.Smells {
 			Stack<Stack<Instruction>> result = new Stack<Stack<Instruction>> ();
 			Stack<Instruction> current = new Stack<Instruction> ();
 			int stackCounter = 0;
-			
-			for (int index = method.Body.Instructions.Count - 1; index >= 0; index--) {
-				Instruction currentInstruction = method.Body.Instructions[index];
+
+			var instructions = method.Body.Instructions;
+			for (int index = instructions.Count - 1; index >= 0; index--) {
+				Instruction currentInstruction = instructions [index];
 				stackCounter += currentInstruction.GetPushCount ();
 				stackCounter -= currentInstruction.GetPopCount (method);	
 				

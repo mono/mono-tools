@@ -1,4 +1,4 @@
-EXTRA_DIST = $(xmldoc2wiki_sources) FxCopMapBuilder.csproj fxcop.missing
+EXTRA_DIST = $(xmldoc2wiki_sources) fxcop.missing
 
 mapper_sources =  \
 	../../../AssemblyStaticInfo.cs	\

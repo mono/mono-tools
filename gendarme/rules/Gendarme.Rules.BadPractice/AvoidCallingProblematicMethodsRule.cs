@@ -36,6 +36,7 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
@@ -140,7 +141,7 @@ namespace Gendarme.Rules.BadPractice {
 
 		private Severity? IsProblematicCall (Instruction call)
 		{
-			MethodReference method = (call.Operand as MethodReference);
+			MethodReference method = call.GetMethod ();
 			if (method != null) {
 				Func<MethodReference, Instruction, Severity?> sev;
 				if (problematicMethods.TryGetValue (method.Name, out sev))

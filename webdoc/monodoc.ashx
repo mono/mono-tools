@@ -29,6 +29,42 @@ namespace Mono.Website.Handlers
 {
 	public class MonodocHandler : IHttpHandler
 	{
+		static DateTime monodoc_timestamp, handler_timestamp;
+
+		static MonodocHandler ()
+		{
+			monodoc_timestamp = File.GetCreationTimeUtc (typeof (Node).Assembly.Location);
+			handler_timestamp = File.GetCreationTimeUtc (typeof (MonodocHandler).Assembly.Location);
+
+			DumpEmbeddedImages ();
+		}
+
+		// Dumps the embedded images from monodoc.dll
+		static void DumpEmbeddedImages ()
+		{
+			try {
+				Directory.CreateDirectory ("mdocimages");
+			} catch {}
+
+			var mass = typeof (Node).Assembly;
+		      	var buffer = new byte [4096];
+			foreach (string image in mass.GetManifestResourceNames ()){
+				if (!(image.EndsWith ("png") || image.EndsWith ("jpg")))
+					continue;
+				var target = Path.Combine ("mdocimages", image);
+				if (File.Exists (target))
+					continue;
+
+				using (var output = File.Create (target)){
+					var input = mass.GetManifestResourceStream (image);
+					int n;
+					while ((n = input.Read (buffer, 0, buffer.Length)) > 0){
+						output.Write (buffer, 0, n);
+					}
+				}
+			}
+		}
+
 		void IHttpHandler.ProcessRequest (HttpContext context)
 		{
 			string s;
@@ -101,17 +137,28 @@ namespace Mono.Website.Handlers
 			DateTime lastHelpSourceTime = Global.help_tree.LastHelpSourceTime;
 			try {
 				if (strHeader != null && lastHelpSourceTime != DateTime.MinValue) {
-					DateTime dtIfModifiedSince = DateTime.ParseExact (strHeader, "r", null);
+				   	// Console.WriteLine ("Got this: {0}", strHeader);
+					DateTime dtIfModifiedSince = DateTime.ParseExact (strHeader, "r", null).ToUniversalTime ();
 					DateTime ftime = lastHelpSourceTime.ToUniversalTime ();
-					if (ftime <= dtIfModifiedSince) {
+					//Console.WriteLine ("Times:");
+					//Console.WriteLine ("   ftime: {0}", ftime);
+					//Console.WriteLine ("   monod: {0}", monodoc_timestamp);
+					//Console.WriteLine ("   handl: {0}", handler_timestamp);
+					//Console.WriteLine ("    dtIf: {0}", dtIfModifiedSince);
+					if (dtIfModifiedSince < DateTime.UtcNow &&
+					    ftime <= dtIfModifiedSince && 
+					    monodoc_timestamp <= dtIfModifiedSince && 
+					    handler_timestamp <= dtIfModifiedSince) {
 						context.Response.StatusCode = 304;
 						return;
 					}
 				}
 			} catch { } 
 
+			long ticks = System.Math.Max (monodoc_timestamp.Ticks, handler_timestamp.Ticks);
 			if (lastHelpSourceTime != DateTime.MinValue) {
-				DateTime lastWT = lastHelpSourceTime.ToUniversalTime ();
+				ticks = System.Math.Max (ticks, lastHelpSourceTime.Ticks);
+				DateTime lastWT = new DateTime (ticks).ToUniversalTime ();
 				context.Response.AddHeader ("Last-Modified", lastWT.ToString ("r"));
 			}
 
@@ -154,10 +201,14 @@ namespace Mono.Website.Handlers
 			if (Global.help_tree == null)
 				return;
 			Node n;
+			//Console.WriteLine ("Considering {0}", link);
 			string content = Global.help_tree.RenderUrl (link, out n);
 			CheckLastModified (context);
-			if (context.Response.StatusCode == 304)
+			if (context.Response.StatusCode == 304){
+	   			//Console.WriteLine ("Keeping", link);
+
 				return;
+			}
 
 			PrintDocs (content, n, context, GetHelpSource (n));
 		}

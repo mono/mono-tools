@@ -141,7 +141,9 @@ namespace Gendarme.Rules.Performance {
 
 			// we limit ourselves to the first 64 parameters (so we can use a bitmask)
 			IList<ParameterDefinition> pdc = method.Parameters;
-			int pcount = pdc.Count > 64 ? 64 : pdc.Count;
+			int pcount = pdc.Count;
+			if (pcount > 64)
+				pcount = 64;
 			ulong mask = 0;
 
 			// scan IL to see which parameter is being used

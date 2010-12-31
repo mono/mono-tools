@@ -68,17 +68,36 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseFileOpenOnlyWithFileAccessRule : Rule, IMethodRule {
 
-		HashSet<string> methods = new HashSet<string> {
-			"System.IO.File::Open",
-			"System.IO.FileInfo::Open",
-			"System.IO.FileStream::.ctor",
-			"System.IO.IsolatedStorage.IsolatedStorageFileStream::.ctor",
-			
-		};
-
 		const string fileMode = "System.IO.FileMode";
 		const string fileAccess = "System.IO.FileAccess";
 		const string fileSystemRights = "System.Security.AccessControl.FileSystemRights";
+
+		// System.IO.File::Open
+		// System.IO.FileInfo::Open
+		// System.IO.FileStream::.ctor
+		// System.IO.IsolatedStorage.IsolatedStorageFileStream::.ctor
+		static bool IsCandidate (MemberReference method)
+		{
+			TypeReference type = method.DeclaringType;
+			string tname = type.Name;
+			string mname = method.Name;
+			switch (type.Namespace) {
+			case "System.IO":
+				switch (tname) {
+				case "File":
+				case "FileInfo":
+					return (mname == "Open");
+				case "FileStream":
+					return (mname == ".ctor");
+				default:
+					return false;
+				}
+			case "System.IO.IsolatedStorage":
+				return ((tname == "IsolatedStorageFileStream") && (mname == ".ctor"));
+			default:
+				return false;
+			}
+		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
@@ -89,29 +108,23 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction instruction in method.Body.Instructions) {
-				if (instruction.OpCode.FlowControl != FlowControl.Call)
-					continue;
-				
-				MethodReference m = (instruction.Operand as MethodReference);
-				// note: namespace check should be extended if anything outside of System.IO.* 
-				// was added to the 'methods'
-				if (m == null || !m.HasParameters || !m.DeclaringType.Namespace.StartsWith("System.IO"))
+				MethodReference m = instruction.GetMethod ();
+				if (m == null || !m.HasParameters || !IsCandidate (m))
 					continue;
 
-				if (methods.Contains (m.DeclaringType.FullName + "::" + m.Name)) {
-					bool foundFileMode = false;
-					bool foundFileAccess = false;
-					foreach (ParameterDefinition parameter in m.Parameters) {
-						if (!foundFileMode && parameter.ParameterType.FullName == fileMode)
-							foundFileMode = true;
-						if (!foundFileAccess && (parameter.ParameterType.FullName == fileAccess ||
-							parameter.ParameterType.FullName == fileSystemRights))
-							foundFileAccess = true;
-					}
-					if (foundFileMode && !foundFileAccess)
-						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal,
-							String.Format("{0}::{1} being called with FileMode parameter but without FileAccess.",
-								m.DeclaringType.FullName, m.Name));
+				bool foundFileMode = false;
+				bool foundFileAccess = false;
+				foreach (ParameterDefinition parameter in m.Parameters) {
+					string ptname = parameter.ParameterType.FullName;
+					if (!foundFileMode && ptname == fileMode)
+						foundFileMode = true;
+					if (!foundFileAccess && (ptname == fileAccess || ptname == fileSystemRights))
+						foundFileAccess = true;
+				}
+				if (foundFileMode && !foundFileAccess) {
+					Runner.Report (method, instruction, Severity.Medium, Confidence.Normal,
+						String.Format("{0}::{1} being called with FileMode parameter but without FileAccess.",
+							m.DeclaringType.FullName, m.Name));
 				}
 			}
 			return Runner.CurrentRuleResult;

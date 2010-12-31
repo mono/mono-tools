@@ -126,9 +126,9 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			// check each constructor
-			foreach (MethodDefinition constructor in type.GetConstructors ()) {
+			foreach (MethodDefinition constructor in type.Methods) {
 				// early checks to avoid stack creation
-				if (constructor.IsStatic || !constructor.HasBody)
+				if (!constructor.IsConstructor || constructor.IsStatic || !constructor.HasBody)
 					continue;
 
 				CheckConstructor (constructor);
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.BadPractice {
 		private void CheckConstructor (MethodDefinition constructor)
 		{
 			stack.Clear ();
-			CheckMethod (constructor, stack);
+			CheckMethod (constructor);
 		}
 
 		private static bool IsSubsclass (TypeReference sub, TypeReference type)
@@ -187,7 +187,7 @@ namespace Gendarme.Rules.BadPractice {
 			return false;
 		}
 
-		private void CheckMethod (MethodDefinition method, Stack<string> stack)
+		private void CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return;
@@ -225,7 +225,7 @@ namespace Gendarme.Rules.BadPractice {
 						Runner.Report (method, current, Severity.High, Confidence.High, s);
 					} else {
 						stack.Push (method_name);
-						CheckMethod (md, stack);
+						CheckMethod (md);
 						stack.Pop ();
 					}
 					break;

@@ -95,6 +95,11 @@ namespace Gendarme.Rules.BadPractice {
 
 			Version file_version = null;
 			foreach (CustomAttribute ca in assembly.CustomAttributes) {
+				// AssemblyFileVersionAttribute has a single ctor taking a string value
+				// http://msdn.microsoft.com/en-us/library/system.reflection.assemblyfileversionattribute.assemblyfileversionattribute.aspx
+				// any attribute without arguments can be skipped
+				if (!ca.HasConstructorArguments)
+					continue;
 				if (ca.AttributeType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
 					continue;
 

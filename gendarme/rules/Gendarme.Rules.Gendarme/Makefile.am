@@ -2,8 +2,14 @@ include ../common.make
 
 rules_sources =  \
 	GendarmeRule.cs \
-	DefectsMustBeReportedRule.cs
+	DefectsMustBeReportedRule.cs \
+	DoNotThrowExceptionRule.cs \
+	MissingEngineDependencyRule.cs \
+	UseCorrectSuffixRule.cs
 
 tests_sources = \
-	DefectsMustBeReportedTest.cs
+	DefectsMustBeReportedTest.cs \
+	DoNotThrowExceptionTest.cs \
+	MissingEngineDependencyTest.cs \
+	UseCorrectSuffixTest.cs
 
