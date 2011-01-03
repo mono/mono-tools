@@ -80,12 +80,7 @@ namespace Gendarme.Rules.Correctness {
 			return original.IndexOf (value, 0, StringComparison.OrdinalIgnoreCase) != -1;
 		}
 		
-		static bool TryParseUri (string uri)
-		{
-			Uri parsed = null;
-			return Uri.TryCreate (uri, UriKind.Absolute, out parsed);
-		}
-
+		// FIXME : FX4 Version.TryParse @ http://msdn.microsoft.com/en-us/library/system.version.tryparse.aspx
 		static bool TryParseVersion (string version)
 		{
 			try {
@@ -100,6 +95,7 @@ namespace Gendarme.Rules.Correctness {
 			}
 		}
 
+		// FIXME : FX4 Guid.TryParse @ http://msdn.microsoft.com/en-us/library/system.guid.tryparse.aspx
 		static bool TryParseGuid (string guid)
 		{
 			try {
@@ -127,7 +123,8 @@ namespace Gendarme.Rules.Correctness {
 					if (Contains (parameter.Name, "url") ||
 						Contains (parameter.Name, "uri") ||
 						Contains (parameter.Name, "urn")) {
-						if (!TryParseUri (value)) {
+						Uri parsed = null;
+						if (!Uri.TryCreate (value, UriKind.Absolute, out parsed)) {
 							string msg = String.Format ("The valued passed {0} can't be parsed to a valid Uri.", value);
 							Runner.Report (provider, Severity.High, Confidence.High, msg);
 						}

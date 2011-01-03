@@ -49,6 +49,7 @@ framework_sources =  \
 	Gendarme.Framework.Rocks/MethodRocks.cs \
 	Gendarme.Framework.Rocks/ModuleRocks.cs \
 	Gendarme.Framework.Rocks/ParameterRocks.cs \
+	Gendarme.Framework.Rocks/PropertyRocks.cs \
 	Gendarme.Framework.Rocks/TypeRocks.cs \
 	Gendarme.Framework.Rocks/VariableDefinitionRocks.cs \
 	Gendarme.Framework/ApplicabilityScope.cs \

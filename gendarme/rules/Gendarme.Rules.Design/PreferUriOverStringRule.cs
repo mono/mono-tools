@@ -157,6 +157,11 @@ namespace Gendarme.Rules.Design {
 
 		private void CheckParameters (MethodDefinition method)
 		{
+			// attributes are a special case where Uri cannot be used and has it's own
+			// rule to cover this: Gendarme.Rules.Correctness.AttributeStringLiteralShouldParseCorrectlyRule
+			if (method.IsConstructor && method.DeclaringType.Inherits ("System.Attribute"))
+				return;
+
 			var methodParams = method.Parameters;
 			if (!FindBadParameters (methodParams))
 				return;
@@ -196,23 +201,26 @@ namespace Gendarme.Rules.Design {
 		{
 			// Check property getters/setters. In order to prevent the property from
 			// being reported twice, setters are only checked if the property has no getter.
-			PropertyDefinition property;
-			if (method.IsProperty () && (property = method.GetPropertyByAccessor ()) != null) {
-				if (method.IsSetter && property.GetMethod != null)
+			PropertyDefinition property = method.IsProperty () ? method.GetPropertyByAccessor () : null;
+			if (property != null) {
+				// however do not exclude automatic properties (getter/setter marked a generated code)
+				if ((method.IsSetter && property.GetMethod != null) || property.IsGeneratedCode ())
 					return RuleResult.DoesNotApply;
 				if (!IsOkay (property.PropertyType, property.Name))
 					Runner.Report (property, Severity.Medium, Confidence.Normal);
-				return Runner.CurrentRuleResult;
+			} else {
+				// exclude generated code like webservices
+				if (method.IsGeneratedCode ())
+					return RuleResult.DoesNotApply;
+
+				// Check the method's parameters.
+				if (method.HasParameters)
+					CheckParameters (method);
+
+				// Check the method's return type.
+				if (!IsOkay (method.ReturnType, method.Name))
+					Runner.Report (method, Severity.Medium, Confidence.Normal);
 			}
-
-			// Check the method's parameters.
-			if (method.HasParameters)
-				CheckParameters (method);
-
-			// Check the method's return type.
-			if (!IsOkay (method.ReturnType, method.Name))
-				Runner.Report (method, Severity.Medium, Confidence.Normal);
-
 			return Runner.CurrentRuleResult;
 		}
 	}

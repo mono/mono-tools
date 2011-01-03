@@ -83,6 +83,25 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	public class UriAttribute : Attribute {
+
+		public UriAttribute (string uri)
+		{
+			Uri = uri;
+		}
+
+		// note: automatic properties are, alas, decorated as generated code
+		public string Uri { get; set; }
+	}
+
+	[System.CodeDom.Compiler.GeneratedCodeAttribute ("System.Web.Services", "2.0.50727.42")]
+	public class WebService {
+		private bool IsLocalFileSystemWebService (string url)
+		{
+			return false;
+		}
+	}
+
 	[TestFixture]
 	public class PreferUriOverStringTest : MethodRuleTestFixture<PreferUriOverStringRule> {
 
@@ -107,6 +126,19 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleFailure<BadUris> ("get_SomeUri", 1);
 			AssertRuleFailure<BadUris> ("BadUrnMethod", 2);
+		}
+
+		[Test]
+		public void Attribute ()
+		{
+			AssertRuleSuccess<UriAttribute> (".ctor");
+			AssertRuleFailure<UriAttribute> ("get_Uri", 1);
+		}
+
+		[Test]
+		public void GeneratedCode ()
+		{
+			AssertRuleDoesNotApply<WebService> ("IsLocalFileSystemWebService");
 		}
 	}
 }

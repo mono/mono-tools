@@ -34,10 +34,10 @@ namespace Gendarme.Framework {
 		
 		public DocumentationUriAttribute (string documentationUri) 
 		{
-			DocumentationUri = documentationUri;
+			DocumentationUri = new Uri (documentationUri);
 		}
 
-		public string DocumentationUri {
+		public Uri DocumentationUri {
 			get;
 			private set;
 		}

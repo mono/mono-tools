@@ -4,9 +4,6 @@ CA1026	Default parameters should not be used                                    
 CA1033	Interface methods should be callable by child types                                          http://msdn.microsoft.com/en-us/library/ms182153.aspx
 CA1046	Do not overload operator equals on reference types                                           http://msdn.microsoft.com/en-us/library/ms182145.aspx
 CA1052	Static holder types should be sealed                                                         http://msdn.microsoft.com/en-us/library/ms182168.aspx
-CA1054	URI parameters should not be strings                                                         http://msdn.microsoft.com/en-us/library/ms182174.aspx
-CA1055	URI return values should not be strings                                                      http://msdn.microsoft.com/en-us/library/ms182176.aspx
-CA1056	URI properties should not be strings                                                         http://msdn.microsoft.com/en-us/library/ms182175.aspx
 CA1058	Types should not extend certain base types                                                   http://msdn.microsoft.com/en-us/library/ms182171.aspx
 CA1061	Do not hide base class methods                                                               http://msdn.microsoft.com/en-us/library/ms182143.aspx
 CA1063	Implement IDisposable correctly                                                              http://msdn.microsoft.com/en-us/library/ms244737.aspx

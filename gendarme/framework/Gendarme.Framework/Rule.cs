@@ -138,14 +138,13 @@ namespace Gendarme.Framework {
 			get {
 				if (uri == null) {
 					object [] attributes = Type.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
-					string url;
 					if (attributes.Length == 0) {
-						url = String.Format (CultureInfo.InvariantCulture, 
+						string url = String.Format (CultureInfo.InvariantCulture, 
 							"http://www.mono-project.com/{0}#{1}", type.Namespace, Name);
+						uri = new Uri (url);
 					} else {
-						url = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
+						uri = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
 					}
-					uri = new Uri (url);
 				}
 				return uri;
 			}
