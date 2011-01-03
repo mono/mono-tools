@@ -44,6 +44,7 @@
     <Compile Include="DefectsMustBeReportedTest.cs" />
     <Compile Include="DoNotThrowExceptionTest.cs" />
     <Compile Include="MissingEngineDependencyTest.cs" />
+    <Compile Include="ReviewAttributesOnRulesTest.cs" />
     <Compile Include="UseCorrectSuffixTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,13 @@ rules_sources =  \
 	DefectsMustBeReportedRule.cs \
 	DoNotThrowExceptionRule.cs \
 	MissingEngineDependencyRule.cs \
+	ReviewAttributesOnRulesRule.cs \
 	UseCorrectSuffixRule.cs
 
 tests_sources = \
 	DefectsMustBeReportedTest.cs \
 	DoNotThrowExceptionTest.cs \
 	MissingEngineDependencyTest.cs \
+	ReviewAttributesOnRulesTest.cs \
 	UseCorrectSuffixTest.cs
 
