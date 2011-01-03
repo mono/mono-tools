@@ -7,6 +7,7 @@ rules/Gendarme.Rules.Design.Generic/Test.Rules.Design.Generic.dll
 rules/Gendarme.Rules.Design.Linq/Test.Rules.Design.Linq.dll
 rules/Gendarme.Rules.Exceptions/Test.Rules.Exceptions.dll
 rules/Gendarme.Rules.Gendarme/Test.Rules.Gendarme.dll
+rules/Gendarme.Rules.Globalization/Test.Rules.Globalization.dll
 rules/Gendarme.Rules.Interoperability/Test.Rules.Interoperability.dll
 rules/Gendarme.Rules.Interoperability.Com/Test.Rules.Interoperability.Com.dll
 rules/Gendarme.Rules.Maintainability/Test.Rules.Maintainability.dll
