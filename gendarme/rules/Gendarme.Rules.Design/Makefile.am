@@ -39,6 +39,7 @@ rules_sources =  \
 	OverrideEqualsMethodRule.cs \
 	PreferEventsOverMethodsRule.cs \
 	PreferIntegerOrStringForIndexersRule.cs \
+	PreferUriOverStringRule.cs \
 	PreferXmlAbstractionsRule.cs \
 	ProvideAlternativeNamesForOperatorOverloadsRule.cs \
 	ProvideTryParseAlternativeRule.cs \
@@ -91,6 +92,7 @@ tests_sources = \
 	OverrideEqualsMethodTest.cs \
 	PreferEventsOverMethodsTest.cs \
 	PreferIntegerOrStringForIndexersTest.cs \
+	PreferUriOverStringTest.cs \
 	PreferXmlAbstractionsTest.cs \
 	ProvideTryParseAlternativeTest.cs \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
