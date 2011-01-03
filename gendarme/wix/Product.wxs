@@ -47,6 +47,7 @@
             <File Name="Gendarme.Rules.Design.Linq.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Design.Linq.dll" />
             <File Name="Gendarme.Rules.Exceptions.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Exceptions.dll" />
             <File Name="Gendarme.Rules.Gendarme.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Gendarme.dll" />
+            <File Name="Gendarme.Rules.Globalization.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Globalization.dll" />
             <File Name="Gendarme.Rules.Interoperability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Interoperability.dll" />
             <File Name="Gendarme.Rules.Interoperability.Com.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Interoperability.Com.dll" />
             <File Name="Gendarme.Rules.Maintainability.dll" Source="$(var.GendarmeBin)\Gendarme.Rules.Maintainability.dll" />

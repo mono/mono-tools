@@ -5,6 +5,7 @@ RULEDIRS= Gendarme.Rules.BadPractice \
 	 Gendarme.Rules.Design.Generic \
 	 Gendarme.Rules.Design.Linq \
 	 Gendarme.Rules.Exceptions \
+	 Gendarme.Rules.Globalization \
 	 Gendarme.Rules.Gendarme \
 	 Gendarme.Rules.Interoperability \
 	 Gendarme.Rules.Interoperability.Com \

@@ -264,6 +264,8 @@ gendarme/rules/Gendarme.Rules.Serialization/Makefile
 gendarme/rules/Gendarme.Rules.Serialization/Test/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Makefile
 gendarme/rules/Gendarme.Rules.Maintainability/Test/Makefile
+gendarme/rules/Gendarme.Rules.Globalization/Makefile
+gendarme/rules/Gendarme.Rules.Globalization/Test/Makefile
 gendarme/rules/Gendarme.Rules.Gendarme/Makefile
 gendarme/rules/Gendarme.Rules.Gendarme/Test/Makefile
 gendarme/swf-wizard-runner/Makefile
