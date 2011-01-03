@@ -117,6 +117,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotDeclareStati
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.DoNotExposeGenericListsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.ImplementGenericCollectionInterfacesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.PreferGenericsOverRefObjectRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Globalization.SatelliteResourceMismatchRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.AvoidArgumentExceptionDefaultConstructorRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotDestroyStackTraceRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -394,6 +395,7 @@ T: Gendarme.Framework.EngineController
 T: Gendarme.Rules.Concurrency.DecorateThreadsRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule
 T: Gendarme.Rules.Correctness.ReviewInconsistentIdentityRule/MethodInfo
+T: Gendarme.Rules.Globalization.SatelliteResourceMismatchRule/AssemblyResourceCache
 T: Gendarme.Rules.Interoperability.DelegatesPassedToNativeCodeMustIncludeExceptionHandlingRule
 T: Gendarme.Rules.Interoperability.UseManagedAlternativesToPInvokeRule/ManagedAlternatives
 T: Gendarme.Rules.Maintainability.AvoidComplexMethodsRule

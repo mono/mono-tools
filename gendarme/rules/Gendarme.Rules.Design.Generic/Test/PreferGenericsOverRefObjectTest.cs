@@ -129,5 +129,17 @@ namespace Test.Rules.Design.Generic {
 			AssertRuleSuccess<PreferGenericsOverRefObjectTest> ("GetGenericRef");
 			AssertRuleSuccess<PreferGenericsOverRefObjectTest> ("GetGenericOut");
 		}
+
+		public bool Try (out object o)
+		{
+			o = this;
+			return true;
+		}
+
+		[Test]
+		public void SpecialCase ()
+		{
+			AssertRuleDoesNotApply<PreferGenericsOverRefObjectTest> ("SpecialCase");
+		}
 	}
 }
