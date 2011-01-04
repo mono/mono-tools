@@ -114,7 +114,9 @@ namespace Test.Rules.Maintainability {
 		[Test]
 		public void Ignores ()
 		{
-			AssertRuleFailure<BadIgnore> (2);
+			AssemblyDefinition assembly = DefinitionLoader.GetAssemblyDefinition<BadIgnore> ();
+			int expected = assembly.MainModule.HasSymbols ? 2 : 1;
+			AssertRuleFailure<BadIgnore> (expected);
 		}
 	}
 }
