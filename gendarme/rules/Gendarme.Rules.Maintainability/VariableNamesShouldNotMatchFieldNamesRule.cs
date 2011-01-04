@@ -28,8 +28,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -40,15 +38,19 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
-	/// This rule checks for local variables/parameters whose names match an instance field name.
+	/// This rule checks for local variables or parameters whose names match (case sensitive) an instance field name.
+	/// Note that variable names can only be verified when debugging symbols (pdb or mdb) are available.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
 	///	public class Bad {
-	///		public int Value;
-	///		public void DoSomething(int Value)
+	///		public int value;
+	///
+	///		public void DoSomething (int value)
 	///		{
+	///			// without 'this.' the field will never be set
+	///			this.value = value;
 	///		}
 	///	}
 	/// </code>
@@ -57,9 +59,11 @@ namespace Gendarme.Rules.Maintainability {
 	/// Good example:
 	/// <code>
 	///	public class Good {
-	///		public int Value;
-	///		public void DoSomething(int IntValue)
+	///		public int value;
+	///
+	///		public void DoSomething (int integralValue)
 	///		{
+	///			value = integralValue;
 	///		}
 	///	}
 	/// </code>
@@ -110,7 +114,7 @@ namespace Gendarme.Rules.Maintainability {
 						if (var.IsGeneratedName ())
 							continue;
 						if (fields.Contains (var.Name))
-							Runner.Report (method, Severity.Low, Confidence.Normal);
+							Runner.Report (method, Severity.Medium, Confidence.Normal, var.Name);
 					}
 				}
 			}
