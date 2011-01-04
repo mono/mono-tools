@@ -198,7 +198,10 @@ namespace Gendarme.Rules.Gendarme {
 
 		private void CheckEngineDependencyAttribute (CustomAttribute attribute, ICustomAttributeProvider provider)
 		{
-			CheckIfAttributeUsedOnRule (attribute, provider);
+			TypeDefinition td = (provider as TypeDefinition);
+			if (td == null || !(IsRule (td) || td.Implements ("Gendarme.Framework.IRunner")))
+				Runner.Report (td, Severity.Medium, Confidence.High, "[EngineDependency] can only be used on rules and runners");
+
 			CheckIfStringArgumentsAreNotNullOrEmpty (attribute, provider);
 
 			if (!attribute.HasConstructorArguments)
