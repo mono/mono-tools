@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,7 +39,9 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\cecil\Mono.Cecil.csproj">
@@ -69,6 +71,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InternalResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InternalResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="AvoidUnusedInternalResourceTest.cs" />
+    <Compile Include="PublicResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PublicResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="SatelliteResourceMismatchTest.cs" />
     <Compile Include="Resource.Designer.cs">
       <DependentUpon>Resource.resx</DependentUpon>
@@ -98,7 +111,21 @@
     <EmbeddedResource Include="Resources\XMLFileNotInResX.fr.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="InternalResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InternalResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PublicResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PublicResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\XMLFileNotInResXOnlyInFrench.fr.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageUnused.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ImageUsed.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
