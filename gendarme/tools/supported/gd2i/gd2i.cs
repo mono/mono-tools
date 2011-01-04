@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2010-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -37,10 +38,14 @@ using NDesk.Options;
 
 namespace Gendarme.Tools {
 
-	class DefectsToIgnoreList {
+	[SuppressMessage ("Gendarme.Rules.Maintainability", "AvoidLackOfCohesionOfMethodsRule", Justification = "kiss")]
+	sealed class DefectsToIgnoreList {
 
-		Dictionary<string, HashSet<string>> ignore_list = new Dictionary<string, HashSet<string>> ();
+		Dictionary<string, HashSet<string>> entries = new Dictionary<string, HashSet<string>> ();
 
+		[SuppressMessage ("Gendarme.Rules.Smells", "AvoidSwitchStatementsRule", Justification = "kiss")]
+		[SuppressMessage ("Gendarme.Rules.Performance", "AvoidRepetitiveCallsToPropertiesRule",
+			Justification = "reader.Name and Has Attributes are called very often (on purpose) inside loops")]
 		void ReadDefects (string filename)
 		{
 			using (XmlTextReader reader = new XmlTextReader (filename)) {
@@ -54,28 +59,29 @@ namespace Gendarme.Tools {
 				// look for 'gendarme-output/results/
 				while (reader.Read () && (reader.Name != "results"));
 
-				HashSet<string> defects = null;
+				HashSet<string> targets = null;
 				while (reader.Read ()) {
 					if (!reader.HasAttributes)
 						continue;
 
 					switch (reader.Name) {
 					case "rule":
-						defects = new HashSet<string> ();
-						ignore_list.Add (full_names [reader ["Name"]], defects);
+						targets = new HashSet<string> ();
+						entries.Add (full_names [reader ["Name"]], targets);
 						break;
 					case "target":
 						string target = reader ["Name"];
 						if (target.IndexOf (' ') != -1)
-							defects.Add ("M: " + target);
+							targets.Add ("M: " + target);
 						else
-							defects.Add ("T: " + target);
+							targets.Add ("T: " + target);
 						break;
 					}
 				}
 			}
 		}
 
+		[SuppressMessage ("Gendarme.Rules.Smells", "AvoidSwitchStatementsRule", Justification = "kiss")]
 		void ReadIgnoreList (string filename)
 		{
 			HashSet<string> entries_for_rule = null;
@@ -94,9 +100,9 @@ namespace Gendarme.Tools {
 					case 'R':
 						// rule
 						rule = line.Trim ();
-						if (!ignore_list.TryGetValue (rule, out entries_for_rule)) {
+						if (!entries.TryGetValue (rule, out entries_for_rule)) {
 							entries_for_rule = new HashSet<string> ();
-							ignore_list.Add (rule, entries_for_rule);
+							entries.Add (rule, entries_for_rule);
 						}
 						break;
 					case '#':
@@ -134,11 +140,11 @@ namespace Gendarme.Tools {
 
 		string BuildIgnoreData ()
 		{
-			if (ignore_list.Count == 0)
+			if (entries.Count == 0)
 				return String.Empty;
 
 			StringBuilder ignore_data = new StringBuilder ();
-			foreach (KeyValuePair<string, HashSet<string>> entry in ignore_list) {
+			foreach (KeyValuePair<string, HashSet<string>> entry in entries) {
 				if (entry.Value.Count == 0)
 					continue;
 				ignore_data.AppendLine (entry.Key);
@@ -183,7 +189,7 @@ namespace Gendarme.Tools {
 		string defects;
 		string ignores;
 
-		void Header ()
+		static void Header ()
 		{
 			Assembly a = Assembly.GetExecutingAssembly ();
 			Version v = a.GetName ().Version;
@@ -233,6 +239,8 @@ namespace Gendarme.Tools {
 			return (byte) 0;
 		}
 
+		[SuppressMessage ("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", 
+			Justification = "single reporting point for all failures inside the tool")]
 		byte Execute (string [] args)
 		{
 			byte result = 1;

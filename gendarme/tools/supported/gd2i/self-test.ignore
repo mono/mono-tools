@@ -1,9 +1,0 @@
-# OK - kiss
-R: Gendarme.Rules.Smells.AvoidSwitchStatementsRule
-M: System.Void Gendarme.Tools.DefectsToIgnoreList::ReadDefects(System.String)
-M: System.Void Gendarme.Tools.DefectsToIgnoreList::ReadIgnoreList(System.String)
-
-# reader.Name and Has Attributes are called very often (on purpose) inside loops
-R: R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
-M: System.Void Gendarme.Tools.DefectsToIgnoreList::ReadDefects(System.String)
-

@@ -22,7 +22,7 @@ self-update: gd2i.exe self-test
 
 self-test: all
 	mono --debug ../../../bin/gendarme.exe --config ../../../rules/rules.xml --set self-test --xml self-test.xml --html self-test.html \
-		--ignore=self-test.ignore --severity=all --confidence=all $(gd2i_SCRIPTS)
+		--ignore=../../../mono-options.ignore --severity=all --confidence=all $(gd2i_SCRIPTS)
 
 clean:
 	rm -f self-test.xml self-test.html
