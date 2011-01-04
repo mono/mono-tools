@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -43,22 +43,32 @@ namespace Gendarme {
 		private Dictionary<string, HashSet<string>> assemblies = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> types = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> methods = new Dictionary<string, HashSet<string>> ();
+		private Stack<string> files = new Stack<string> ();
 
 		public IgnoreFileList (IRunner runner, string fileName)
 			: base (runner)
 		{
-			if (!String.IsNullOrEmpty (fileName) && File.Exists (fileName)) {
-				Parse (fileName);
+			Push (fileName);
+			Parse ();
+		}
+
+		private void Push (string fileName)
+		{
+			if (!String.IsNullOrEmpty (fileName) && File.Exists (fileName) && !files.Contains (fileName)) {
+				files.Push (fileName);
 			}
 		}
 
-		private void Parse (string fileName)
+		private void Parse ()
 		{
-			using (StreamReader sr = new StreamReader (fileName)) {
-				string s = sr.ReadLine ();
-				while (s != null) {
-					ProcessLine (s);
-					s = sr.ReadLine ();
+			while (files.Count > 0) {
+				string fileName = files.Pop ();
+				using (StreamReader sr = new StreamReader (fileName)) {
+					string s = sr.ReadLine ();
+					while (s != null) {
+						ProcessLine (s);
+						s = sr.ReadLine ();
+					}
 				}
 			}
 			Resolve ();
@@ -106,6 +116,9 @@ namespace Gendarme {
 				break;
 			case 'N': // namespace - special case (no need to resolve)
 				base.Add (current_rule, NamespaceDefinition.GetDefinition (line.Substring (2).Trim ()));
+				break;
+			case '@': // include file
+				files.Push (line.Substring (2).Trim ());
 				break;
 			default:
 				Console.Error.WriteLine ("Bad ignore entry : '{0}'", line);

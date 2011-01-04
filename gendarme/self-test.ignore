@@ -1,3 +1,5 @@
+@ mono-options.ignore
+
 # ---------------------------------------------------------
 # TODO: These should be fixed.
 
@@ -339,8 +341,6 @@ T: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule
 T: Gendarme.Rules.Performance.ReviewLinqMethodRule
 # CheckType and ProcessMethods, ProcessMethods and ProcessProperties
 T: Gendarme.Rules.Design.StronglyTypedRule
-# CSC only - AddImpl and GetArgumentName
-T: NDesk.Options.OptionSet
 # 2.8+
 M: System.String Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::GetName(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
@@ -487,52 +487,6 @@ A: *
 # OK - small, but slowly growing, namespace
 R: Gendarme.Rules.Design.AvoidSmallNamespaceRule
 N: Gendarme.Framework.Engines
-
-# non-gendarme code / NDesk.Options
-R: Gendarme.Rules.Performance.AvoidConcatenatingCharsRule
-M: System.Boolean NDesk.Options.OptionSet::ParseBundledValue(System.String,System.String,NDesk.Options.OptionContext)
-M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
-R: Gendarme.Rules.Design.Generic.AvoidDeclaringCustomDelegatesRule
-T: NDesk.Options.OptionAction`2
-R: Gendarme.Rules.Design.AvoidRefAndOutParametersRule
-M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
-R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
-M: System.Boolean NDesk.Options.OptionSet::GetOptionParts(System.String,System.String&,System.String&,System.String&,System.String&)
-R: Gendarme.Rules.Performance.AvoidReturningArraysOnPropertiesRule
-M: System.String[] NDesk.Options.Option::get_Names()
-M: System.String[] NDesk.Options.Option::get_ValueSeparators()
-R: Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule
-M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Exceptions.InstantiateArgumentExceptionCorrectlyRule
-M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.ICollection`1<System.String>)
-M: System.String NDesk.Options.OptionSet::GetKeyForItem(NDesk.Options.Option)
-R: Gendarme.Rules.Serialization.MarkEnumerationsAsSerializableRule
-T: NDesk.Options.OptionValueType
-R: Gendarme.Rules.Performance.PreferCharOverloadRule
-M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
-R: Gendarme.Rules.Naming.UseCorrectSuffixRule
-T: NDesk.Options.OptionSet
-R: Gendarme.Rules.Design.Generic.AvoidMethodWithUnusedGenericTypeRule
-M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Correctness.CheckParametersNullityInVisibleMethodsRule
-M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
-M: System.Collections.Generic.List`1<System.String> NDesk.Options.OptionSet::Parse(System.Collections.Generic.IEnumerable`1<System.String>)
-M: System.Boolean NDesk.Options.OptionSet::Parse(System.String,NDesk.Options.OptionContext)
-R: Gendarme.Rules.Maintainability.AvoidLackOfCohesionOfMethodsRule
-T: NDesk.Options.OptionContext
-R: Gendarme.Rules.BadPractice.PreferEmptyInstanceOverNullRule
-M: System.String NDesk.Options.OptionValueCollection::get_Item(System.Int32)
-R: Gendarme.Rules.Maintainability.VariableNamesShouldNotMatchFieldNamesRule
-T: NDesk.Options.OptionValueCollection
-T: NDesk.Options.OptionContext
-T: NDesk.Options.Option
-T: NDesk.Options.OptionSet
-T: NDesk.Options.OptionSet/ActionOption
-T: NDesk.Options.OptionSet/ActionOption`1
-T: NDesk.Options.OptionSet/ActionOption`2
-R: Gendarme.Rules.Design.Generic.DoNotExposeGenericListsRule
-T: NDesk.Options.OptionValueCollection
-T: NDesk.Options.OptionSet
 
 # The winforms wizard uses Gendarme from a thread so the DecorateThreadsRule will
 # fire because Gendarme code, like the rules and the runners, are not marked as
