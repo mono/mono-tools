@@ -62,19 +62,12 @@ namespace Gendarme.Rules.Globalization {
 
 			// Ignore well known static getters of resources classes
 			string name = method.Name;
-			if ("get_Culture".Equals(name, StringComparison.InvariantCulture) ||
-				"get_ResourceManager".Equals(name, StringComparison.InvariantCulture))
+			if ("get_Culture".Equals (name, StringComparison.InvariantCulture) ||
+				"get_ResourceManager".Equals (name, StringComparison.InvariantCulture))
 				return false;
 
 			// rule apply only to static getters in a generated resx class
-			if (!IsResxClass (method.DeclaringType))
-				return false;
-
-			return true;
-		}
-
-		private static bool IsResxClass (TypeDefinition typeDefinition)
-		{
+			TypeDefinition typeDefinition = method.DeclaringType;
 			if (!typeDefinition.HasCustomAttributes)
 				return false;
 
@@ -98,6 +91,8 @@ namespace Gendarme.Rules.Globalization {
 			Runner.Report (method, Severity.Medium, Confidence.Normal, "The resource is not visible outside its declaring assembly, nor used within.");
 			return RuleResult.Failure;
 		}
+
+		#region FIXME (following code is a copy of AvoidUncalledPrivateCodeRule)
 
 		public override void TearDown ()
 		{
@@ -182,6 +177,8 @@ namespace Gendarme.Rules.Globalization {
 				methods.Add (GetToken (mr));
 			}
 		}
+
+		#endregion
 	}
 }
 
