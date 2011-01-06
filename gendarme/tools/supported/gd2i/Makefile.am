@@ -12,20 +12,17 @@ gd2i_sources =  \
 	gd2i.cs
 
 $(gd2i_SCRIPTS):  $(gd2i_sources)
-	$(GMCS) -debug $^ -out:$@
+	$(GMCS) -d:CODE_ANALYSIS -debug $^ -out:$@
 
 update: $(gd2i_SCRIPTS)
 	mono --debug $(gd2i_SCRIPTS) ../../../bin/self-test.xml ../../../self-test.ignore
 
-self-update: gd2i.exe self-test
-	mono --debug $(gd2i_SCRIPTS) self-test.xml self-test.ignore
-
 self-test: all
 	mono --debug ../../../bin/gendarme.exe --config ../../../rules/rules.xml --set self-test --xml self-test.xml --html self-test.html \
-		--ignore=self-test.ignore --severity=all --confidence=all $(gd2i_SCRIPTS)
+		--ignore=../../../mono-options.ignore --severity=all --confidence=all $(gd2i_SCRIPTS)
 
 clean:
-	rm -f self-test.xml self-test.html
+	rm -f $(CLEANFILES) self-test.xml self-test.html
 
 all: $(gd2i_SCRIPTS)
 

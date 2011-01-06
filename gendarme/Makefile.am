@@ -1,7 +1,7 @@
 TESTDIRS = framework rules
 SUBDIRS = $(TESTDIRS) console swf-wizard-runner man wix tools
 bin_SCRIPTS = gendarme gendarme-wizard gd2i
-EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.sln self-test.ignore gendarme.svg options.make
+EXTRA_DIST = gendarme.in gendarme-wizard.in AssemblyInfo.cs.in MIT.X11 gendarme.sln self-test.ignore mono-options.ignore gendarme.svg options.make
 
 CLEANFILES = gendarme gendarme-wizard bin/rules.xml
 

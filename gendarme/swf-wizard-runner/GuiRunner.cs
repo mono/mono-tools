@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -33,11 +33,13 @@ using System.Reflection;
 using System.Text;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 
 using Mono.Cecil;
 
 namespace Gendarme {
 
+	[EngineDependency (typeof (SuppressMessageEngine))]
 	public class GuiRunner : Runner {
 
 		private Wizard wizard;
