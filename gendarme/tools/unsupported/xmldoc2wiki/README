@@ -1,0 +1,15 @@
+﻿This tool converts xmldoc files to the Markdown files which are supported by the github's wiki.
+
+Usage: xmldoc2wiki filepattern [outputdir]
+  filepattern: files that match this pattern will be processed. Wildcards '*' and '?' allowed.
+  outputdir: directory, whereto output documentation files will be saved. Default value is '.' (current directory)
+
+Examples:
+  xmldoc2wiki *Rules.xml
+  xmldoc2wiki /home/user/mono-tools/gendarme/bin/*.xml /home/user/mono-tools/gendarme/doc
+  xmldoc2wiki *Rules.xml doc
+  xmldoc2wiki bin/*.xml 2-8-doc
+
+Local wiki access:
+  You can access the wiki locally by using github's gollum: https://github.com/github/gollum#readme
+  The installation is pretty simple, don't forget to install rdiscount gem that provides Markdown support.

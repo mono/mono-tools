@@ -4,22 +4,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
-class Program {
+static class Program {
+
+	static HashSet<string> assembliesIndex = new HashSet<string> ();
+
+	static string outputdir;
+
+	static string CleanUp (this string s)
+	{
+		// escape special markdown characters
+		return Regex.Replace (s, @"([\`\*])", @"\$1");
+	}
 
 	static void Header (TextWriter tw)
 	{
-		tw.WriteLine ("= Rules =");
-		tw.WriteLine ();
+		// tw.WriteLine ("# Rules");
+		// tw.WriteLine ();
 	}
 
 	static void Footer (TextWriter tw)
 	{
-		tw.WriteLine (@"= Feedback =
+		tw.WriteLine (@"## Feedback
 
 Please report any documentation errors, typos or suggestions to the 
-[http://groups.google.com/group/gendarme Gendarme Google Group]. Thanks!
-[[Category:Gendarme]]");
+[[Gendarme Google Group|http://groups.google.com/group/gendarme]]. Thanks!");
 	}
 
 	static void AppendIndentedLine (StringBuilder sb, string line, int indentation)
@@ -82,13 +92,14 @@ Please report any documentation errors, typos or suggestions to the
 		while (Char.IsWhiteSpace (s [i]) && i < s.Length)
 			i++;
 
+		s = s.CleanUp ();
+
 		for (; i < s.Length; i++) {
 			char c = s [i];
 			if (c == '\r')
 				continue;
 			if (c == '\n')
 				c = ' ';
-
 			// compress spaces
 			if (Char.IsWhiteSpace (c)) {
 				if (i < (s.Length - 1)) {
@@ -127,7 +138,7 @@ Please report any documentation errors, typos or suggestions to the
 			case "code":
 			case "c":
 				// bold
-				tw.AppendFormat ("'''{0}'''", code.Value);
+				tw.AppendFormat ("**{0}**", code.Value.CleanUp ());
 				insert_space = true;
 				break;
 			case "list":
@@ -142,23 +153,27 @@ Please report any documentation errors, typos or suggestions to the
 
 	static void ProcessList (StringBuilder tw, XElement list)
 	{
+		tw.AppendLine ();
 		foreach (XElement item in list.Elements ("item")) {
 			tw.AppendLine ();
 			tw.Append ("* ");
 			XElement term = item.Element ("term");
 			if (term != null) {
-				tw.Append ("'''");
+				tw.Append ("**");
 				ProcessText (tw, term.Nodes ());
-				tw.Append ("''' : ");
+				tw.Append ("** : ");
 			}
-			ProcessText (tw, item.Element ("description").Nodes ());
+			var description = item.Element ("description");
+			if (description != null)
+				ProcessText (tw, description.Nodes ());
 		}
 		tw.AppendLine ();
 	}
 
-	static void ProcessRules (TextWriter writer, IEnumerable<XElement> rules)
+	static void ProcessRules (IEnumerable<XElement> rules, string assembly)
 	{
 		SortedList<string, StringBuilder> properties = new SortedList<string, StringBuilder> ();
+		HashSet<string> rulesIndex = new HashSet<string> ();
 		foreach (var member in rules) {
 			XElement item = member.Element ("summary");
 			if (item == null)
@@ -166,6 +181,7 @@ Please report any documentation errors, typos or suggestions to the
 
 			StringBuilder rsb = new StringBuilder ();
 			string name = member.Attribute ("name").Value;
+
 			if (name.StartsWith ("P:")) {
 				StringBuilder sb;
 				int pp = name.LastIndexOf ('.') + 1;
@@ -178,25 +194,39 @@ Please report any documentation errors, typos or suggestions to the
 				} else
 					sb.AppendLine ();
 
-				sb.AppendFormat ("==== {0} ===={1}{1}", property, Environment.NewLine);
+				sb.AppendFormat ("#### {0} {1}{1}", property, Environment.NewLine);
 				ProcessText (sb, item.Nodes ());
 				continue;
 			}
 
-			name = name.Substring (name.LastIndexOf ('.') + 1);
-			rsb.AppendFormat ("=== {0} ===", name);
-			rsb.AppendLine ();
 
-//			tw.WriteLine (ProcessSummary (item));
+			if (!name.StartsWith ("T:") || !name.EndsWith ("Rule"))
+				continue;
+
+			name = name.Substring (name.LastIndexOf ('.') + 1);
+
+			rulesIndex.Add (name);
+
+			TextWriter writer = File.CreateText (Path.Combine(Path.Combine(outputdir, assembly), Path.ChangeExtension (name, "md")));
+			Header (writer);
+
+			rsb.AppendFormat ("# {0}", name);
+			rsb.AppendFormat ("{1}**{0}**{1}{1}", assembly, Environment.NewLine);
+			rsb.AppendLine ("## Description");
+
+			//			tw.WriteLine (ProcessSummary (item));
 			ProcessText (rsb, item.Nodes ());
 			rsb.AppendLine ();
 			rsb.AppendLine ();
 
-			foreach (XNode example in member.Elements ("example").Nodes ()) {
+			var examples = member.Elements ("example");
+			if (examples != null)
+				rsb.AppendLine ("## Examples");
+			foreach (XNode example in examples.Nodes ()) {
 				XText node = (example as XText);
 				if (node != null) {
-					string text = example.ToString ().Replace ("Bad", "'''Bad'''");
-					text = text.Replace ("Good", "'''Good'''");
+					string text = example.ToString ().CleanUp ().Replace ("Bad", "**Bad**");
+					text = text.Replace ("Good", "**Good**");
 					rsb.AppendFormat ("{0}{1}{1}", text.Trim (), Environment.NewLine);
 					continue;
 				}
@@ -204,10 +234,10 @@ Please report any documentation errors, typos or suggestions to the
 				XElement code = (example as XElement);
 				if (code == null)
 					continue;
-				
+
 				switch (code.Name.LocalName) {
 				case "code":
-					rsb.AppendFormat ("<csharp>{0}</csharp>{1}{1}", ProcessCode (code.Value),
+					rsb.AppendFormat ("```csharp{1}{0}{1}```{1}{1}", ProcessCode (code.Value),
 						Environment.NewLine);
 					break;
 				case "c":
@@ -220,24 +250,40 @@ Please report any documentation errors, typos or suggestions to the
 			if (container != null) {
 				IEnumerable<XNode> remarks = container.Nodes ();
 				if (remarks.Count () > 0) {
-					rsb.AppendLine ("'''Notes'''");
-					foreach (XNode element in remarks) {
-						rsb.AppendFormat ("* {0}", element.ToString ());
-					}
+					rsb.AppendFormat ("## Notes{0}{0}", Environment.NewLine);
+					rsb.Append ("* ");
+
+					ProcessText (rsb, remarks);
 					rsb.AppendLine ();
 				}
 			}
 
 			StringBuilder psb;
 			if (properties.TryGetValue (name, out psb)) {
-				rsb.AppendFormat ("'''Configuration'''{0}{0}", Environment.NewLine);
+				rsb.AppendFormat ("## Configuration{0}{0}", Environment.NewLine);
 				rsb.AppendFormat ("Some elements of this rule can be customized to better fit your needs.{0}{0}", Environment.NewLine);
 				rsb.Append (psb);
 				rsb.AppendLine ();
 			}
 
 			writer.WriteLine (rsb);
+
+			Footer (writer);
+			writer.Close ();
 		}
+
+		var rulesList =
+			from rule in rulesIndex
+			orderby rule
+			select rule;
+		TextWriter indexWriter = File.CreateText (Path.Combine(outputdir, Path.Combine(assembly, assembly + ".md")));
+
+		foreach (var rule in rulesList) {
+			indexWriter.WriteLine ("[[{0}]]  ", rule);
+		}
+
+		indexWriter.Close ();
+
 	}
 
 	static void ProcessFile (string filename)
@@ -245,26 +291,59 @@ Please report any documentation errors, typos or suggestions to the
 		XDocument doc = XDocument.Load (filename);
 		IEnumerable<XElement> members =
 			from member in doc.Descendants ("member")
-			orderby (string) member.Attribute ("name") ascending
+			orderby (string)member.Attribute ("name") ascending
 			select member;
 
-		string outname = Path.ChangeExtension (filename, "wiki");
-		using (TextWriter tw = File.CreateText (outname)) {
-			Header (tw);
-			ProcessRules (tw, members);
-			Footer (tw);
-		}
+		string assembly =
+			(from a in doc.Descendants ("assembly")
+			 select a.Element ("name").Value).FirstOrDefault();
+		
+		if (assembly == null || !assembly.StartsWith("Gendarme"))
+			return;
+
+		assembliesIndex.Add (assembly);
+		Directory.CreateDirectory (Path.Combine(outputdir, assembly));
+		ProcessRules (members, assembly); 
 	}
 
 	static void Main (string [] args)
 	{
-		string[] files = args;
-		if (args.Length == 1)
-			files = Directory.GetFiles (".", args [0]);
+		string [] files;
+		if (args.Length < 1) {
+			Console.WriteLine ("Usage: xmldoc2wiki filepattern [outputdir]");
+			return;
+		}
+
+		int index = args [0].LastIndexOfAny (new char [] { '/', '\\' });
+		string dir, pattern;
+		if (index >= 0) {
+			dir = args [0].Substring (0, index);
+			pattern = args [0].Substring (args [0].LastIndexOfAny (new char [] { '/', '\\' }) + 1);
+		} else {
+			dir = ".";
+			pattern = args [0];
+		}
+
+		files = Directory.GetFiles (dir, pattern);
+		if (args.Length >= 2)
+			outputdir = args [1];
+		else
+			outputdir = ".";
 
 		foreach (string file in files) {
 			ProcessFile (file);
 		}
+
+		TextWriter writer = File.CreateText (Path.Combine(outputdir, "index.md"));
+
+		var assemblies =
+			from assembly in assembliesIndex
+			orderby assembly
+			select assembly;
+
+		foreach (var assembly in assemblies) {
+			writer.WriteLine ("[[{0}]]  ", assembly);
+		}
+		writer.Close ();
 	}
 }
-
