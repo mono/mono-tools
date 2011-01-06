@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -52,13 +52,13 @@ namespace Gendarme.Framework {
 
 		public void Subscribe (string engineName)
 		{
-			if (engines.ContainsKey (engineName))
-				return;
-
-			Type type = Type.GetType (engineName);
-			Engine engine = (Engine) Activator.CreateInstance (type);
+			Engine engine;
+			if (!engines.TryGetValue (engineName, out engine)) {
+				Type type = Type.GetType (engineName);
+				engine = (Engine) Activator.CreateInstance (type);
+				engines.Add (type.FullName, engine);
+			}
 			engine.Initialize (this);
-			engines.Add (type.FullName, engine);
 		}
 
 		public void Unsubscribe (string engineName)
@@ -200,6 +200,8 @@ namespace Gendarme.Framework {
 			BuildingCustomAttributes = null;
 			BuildingMethodBody = null;
 			BuildingType = null;
+			BuildingModule = null;
+			BuildingAssembly = null;
 
 			foreach (Engine engine in engines.Values) {
 				engine.TearDown ();

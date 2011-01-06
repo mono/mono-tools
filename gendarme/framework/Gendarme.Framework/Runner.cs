@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008, 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,7 @@ namespace Gendarme.Framework {
 		private IMetadataTokenProvider currentTarget;
 		private IIgnoreList ignoreList;
 		private int defectCountBeforeCheck;
+		private object [] engine_dependencies;
 
 		public event EventHandler<RunnerEventArgs> AnalyzeAssembly;
 		public event EventHandler<RunnerEventArgs> AnalyzeModule;
@@ -160,6 +161,14 @@ namespace Gendarme.Framework {
 				}
 			}
 
+			engine_dependencies = GetType ().GetCustomAttributes (typeof (EngineDependencyAttribute), true);
+			if (engine_dependencies.Length > 0) {
+				// subscribe to each engine the rule depends on
+				foreach (EngineDependencyAttribute eda in engine_dependencies) {
+					Engines.Subscribe (eda.EngineType);
+				}
+			}
+		
 			Engines.Build (assemblies);
 
 			assembly_rules = rules.OfType<IAssemblyRule> ();
@@ -393,7 +402,13 @@ namespace Gendarme.Framework {
 			}
 
 			currentRule = null;
-			Engines.TearDown ();
+
+			if ((engine_dependencies != null) && (engine_dependencies.Length >= 0)) {
+				foreach (EngineDependencyAttribute eda in engine_dependencies)
+					ec.Unsubscribe (eda.EngineType);
+			}
+
+			ec.TearDown ();
 		}
 
 		// This is for unit tests.

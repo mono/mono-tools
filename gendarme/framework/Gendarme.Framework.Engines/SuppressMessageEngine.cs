@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2010-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,14 +40,15 @@ namespace Gendarme.Framework.Engines {
 		const string SuppressMessage = "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute";
 
 		static Type fxCopCompatibility = typeof (FxCopCompatibilityAttribute);
-		private Dictionary<string, string> mapper;
+		private Dictionary<string, HashSet <string>> mapper;
+		Dictionary<string, HashSet<string>> targets;
 
 		public override void Initialize (EngineController controller)
 		{
 			base.Initialize (controller);
 			controller.BuildingAssembly += new EventHandler<EngineEventArgs> (OnAssembly);
 
-			mapper = new Dictionary<string,string> ();
+			mapper = new Dictionary<string, HashSet<string>> ();
 			foreach (IRule rule in Controller.Runner.Rules) {
 				Type type = rule.GetType ();
 				object [] attrs = type.GetCustomAttributes (fxCopCompatibility, true);
@@ -56,7 +57,12 @@ namespace Gendarme.Framework.Engines {
 				// one Gendarme rule can be mapped to several FxCop rules
 				// one FxCop rules can be split across several Gendarme rules
 				foreach (FxCopCompatibilityAttribute attr in attrs) {
-					mapper.Add (attr.Category + "." + attr.CheckId, rule.FullName);
+					HashSet<string> grules = null;
+					if (!mapper.TryGetValue (attr.CheckId, out grules)) {
+						grules = new HashSet<string> ();
+						mapper.Add (attr.CheckId, grules);
+					}
+					grules.Add (rule.FullName);
 				}
 			}
 		}
@@ -72,17 +78,17 @@ namespace Gendarme.Framework.Engines {
 			}
 		}
 
-		static bool TryGetPropertyArgument (ICustomAttribute attribute, string name, out CustomAttributeArgument argument)
+		static string GetPropertyString (ICustomAttribute attribute, string name)
 		{
+			if (!attribute.HasProperties)
+				return String.Empty;
+
 			foreach (var namedArg in attribute.Properties) {
 				if (namedArg.Name == name) {
-					argument = namedArg.Argument;
-					return true;
+					return (namedArg.Argument.Value as string);
 				}
 			}
-
-			argument = default (CustomAttributeArgument);
-			return false;
+			return String.Empty;
 		}
 
 		void OnCustomAttributes (object sender, EngineEventArgs e)
@@ -91,12 +97,12 @@ namespace Gendarme.Framework.Engines {
 			if (!cap.HasCustomAttributes)
 				return;
 
-			Dictionary<string, HashSet<string>> targets = null;
-
 			// deal with Target only for global (asembly-level) attributes
 			bool global = (sender is AssemblyDefinition);
 
 			foreach (CustomAttribute ca in cap.CustomAttributes) {
+				if (!ca.HasConstructorArguments)
+					continue;
 				if (ca.AttributeType.FullName != SuppressMessage)
 					continue;
 
@@ -107,54 +113,58 @@ namespace Gendarme.Framework.Engines {
 					continue;
 
 				IMetadataTokenProvider token = (sender as IMetadataTokenProvider);
-				string name = category + "." + checkId;
-
 				// map from FxCop - otherwise keep the Gendarme syntax
-				string mapped_name;
-				if (!mapper.TryGetValue (name, out mapped_name))
-					mapped_name = name;
+				HashSet<string> mapped_names = null;
+				if (!mapper.TryGetValue (checkId, out mapped_names)) {
+					mapped_names = new HashSet<string> ();
+					mapped_names.Add (category + "." + checkId);
+				}
 
 				// FIXME: Scope ? "member", "resource", "module", "type", "method", or "namespace"
 
-				string target = null;
-				if (global) {
-					CustomAttributeArgument targetArgument;
-					if (TryGetPropertyArgument (ca, "Target", out targetArgument))
-						target = (string) targetArgument.Value;
-				}
-
+				string target = global ? GetPropertyString (ca, "Target") : null;
 				if (String.IsNullOrEmpty (target)) {
-					Controller.Runner.IgnoreList.Add (mapped_name, token);
+					IIgnoreList ignore = Controller.Runner.IgnoreList;
+					foreach (string name in mapped_names)
+						ignore.Add (name, token);
 					// continue loop - [SuppressMessage] has AllowMultiple == true
 					continue;
+				} else {
+					// we do not want to look for each target individually since we do not know
+					// what they represent. Running the "big" loop one time is more than enough
+					AddTargets (target, mapped_names);
 				}
-
-				// we do not want to look for each target individually since we do not know
-				// what they represent. Running the "big" loop one time is more than enough
-
-				HashSet<string> list = null;
-				if (targets == null)
-					targets = new Dictionary<string,HashSet<string>> ();
-
-				// inner types syntax fix
-				target = target.Replace ('+', '/');
-				// method/member syntax fix
-				target = target.Replace (".#", "::");
-
-				if (!targets.TryGetValue (target, out list)) {
-					list = new HashSet<string> ();
-					targets.Add (target, list);
-				}
-				list.AddIfNew (mapped_name);
 			}
 
-			if (targets != null)
-				Resolve (targets);
+			ResolveTargets ();
+		}
+
+		private void AddTargets (string target, IEnumerable<string> mapped_names)
+		{
+			if (targets == null)
+				targets = new Dictionary<string, HashSet<string>> ();
+
+			// inner types syntax fix
+			target = target.Replace ('+', '/');
+			// method/member syntax fix
+			target = target.Replace (".#", "::");
+
+			HashSet<string> list = null;
+			if (!targets.TryGetValue (target, out list)) {
+				list = new HashSet<string> ();
+				targets.Add (target, list);
+			}
+
+			foreach (string name in mapped_names)
+				list.AddIfNew (name);
 		}
 
 		// scan the analysis code a single time looking for targets
-		private void Resolve (Dictionary<string,HashSet<string>> targets)
+		private void ResolveTargets ()
 		{
+			if (targets == null || targets.Count == 0)
+				return;
+
 			HashSet<string> rules;
 			// scan all code and look for targets
 			foreach (AssemblyDefinition assembly in Controller.Runner.Assemblies) {
@@ -167,14 +177,15 @@ namespace Gendarme.Framework.Engines {
 
 						if (type.HasMethods) {
 							foreach (MethodDefinition method in type.Methods)
-								ResolveMethod (method, targets);
+								ResolveMethod (method);
 						}
 					}
 				}
 			}
+			targets.Clear ();
 		}
 
-		private void ResolveMethod (IMetadataTokenProvider method, IDictionary<string, HashSet<string>> targets)
+		private void ResolveMethod (IMetadataTokenProvider method)
 		{
 			HashSet<string> rules;
 
@@ -193,3 +204,4 @@ namespace Gendarme.Framework.Engines {
 		}
 	}
 }
+

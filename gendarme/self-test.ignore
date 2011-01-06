@@ -289,7 +289,7 @@ R: Gendarme.Rules.Performance.AvoidRepetitiveCallsToPropertiesRule
 M: System.Void Gendarme.IgnoreFileList::Resolve()
 M: System.Boolean Gendarme.Settings::Load()
 M: System.Void Gendarme.XmlResultWriter::CreateDefects()
-M: System.Void Gendarme.Framework.Engines.SuppressMessageEngine::Resolve(System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.HashSet`1<System.String>>)
+M: System.Void Gendarme.Framework.Engines.SuppressMessageEngine::ResolveTargets()
 M: System.Collections.Generic.List`1<Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave> Gendarme.Framework.Helpers.StackEntryAnalysis::FindLoad(Gendarme.Framework.Helpers.StackEntryAnalysis/InstructionWithLeave,Gendarme.Framework.Helpers.StackEntryAnalysis/StoreSlot)
 M: System.Void Gendarme.Framework.EngineController::Build(System.Collections.Generic.IList`1<Mono.Cecil.AssemblyDefinition>)
 M: System.Void Gendarme.Framework.Runner::Initialize()
