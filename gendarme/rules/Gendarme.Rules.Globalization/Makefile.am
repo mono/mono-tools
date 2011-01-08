@@ -1,11 +1,11 @@
 include ../common.make
-common_tests=../Test.Rules/Test.Rules.dll,System.Drawing
 
 rules_sources =  \
 	AvoidUnusedInternalResourceRule.cs \
 	SatelliteResourceMismatchRule.cs
 
-EXTRA_TESTS_OPTIONS += -d:DEBUG -resource:Test/Resource.resources -resource:Test/InternalResource.resources -resource:Test/PublicResource.resources -resource:Test/Resources/XMLFileNotInResX.xml
+EXTRA_TESTS_OPTIONS += -r:System.Drawing -d:DEBUG -resource:Test/Resource.resources -resource:Test/InternalResource.resources \
+	-resource:Test/PublicResource.resources -resource:Test/Resources/XMLFileNotInResX.xml
 
 EXTRA_DIST += Test/Resource.resx Test/Resource.fr.resx Test/MainResourceMissing.fr.resx Test/InternalResource.resx Test/PublicResource.resx
 

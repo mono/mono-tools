@@ -1,5 +1,4 @@
 include ../common.make
-common_tests=../Test.Rules/Test.Rules.dll,System.Configuration
 
 rules_sources =  \
 	AttributeStringLiteralsShouldParseCorrectlyRule.cs \
@@ -33,7 +32,7 @@ rules_sources =  \
 	UseNoInliningWithGetCallingAssemblyRule.cs \
 	UseValueInPropertySetterRule.cs
 
-EXTRA_TESTS_OPTIONS += -d:DEBUG -resource:Test/Resources.resources,Tests.Rules.Correctness.Resource.resources
+EXTRA_TESTS_OPTIONS += -r:System.Configuration -d:DEBUG -resource:Test/Resources.resources,Tests.Rules.Correctness.Resource.resources
 
 EXTRA_DIST += Test/Resource.resx
 
