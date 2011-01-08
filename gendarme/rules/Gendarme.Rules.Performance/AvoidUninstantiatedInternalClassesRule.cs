@@ -200,6 +200,10 @@ namespace Gendarme.Rules.Performance {
 					return false; // more than one ctor
 				constructor = method;
 			}
+
+			if (constructor == null)
+				return false;
+
 			return (constructor.IsPrivate && !constructor.HasParameters);
 		}
 
