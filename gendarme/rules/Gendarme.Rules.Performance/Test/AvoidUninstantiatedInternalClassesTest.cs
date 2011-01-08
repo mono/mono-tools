@@ -90,6 +90,30 @@ namespace Test.Rules.Performance {
 		}
 	}
 
+	internal struct InternalUninstantiatedStruct {
+
+		public void display ()
+		{
+		}
+
+		public static void Main (string [] args)
+		{
+		}
+	}
+
+	internal struct InternalInstantiatedStruct {
+
+		public void display ()
+		{
+		}
+
+		public static void Main (string [] args)
+		{
+			InternalInstantiatedStruct i = new InternalInstantiatedStruct ();
+			i.display ();
+		}
+	}
+
 	// people may use the following two patterns to have
 	// static classes in C# 1.
 	internal sealed class InternalSealedClassWithPrivateCtor {
@@ -297,6 +321,18 @@ namespace Test.Rules.Performance {
 		public void NonInternalClassNotInstantiatedTest ()
 		{
 			AssertRuleDoesNotApply<NonInternalClassNotInstantiated> ();
+		}
+
+		[Test]
+		public void InternalInstantiatedStructTest ()
+		{
+			AssertRuleSuccess<InternalInstantiatedStruct> ();
+		}
+
+		[Test]
+		public void InternalUninstantiatedStructTest ()
+		{
+			AssertRuleFailure<InternalUninstantiatedStruct> ();
 		}
 
 		[Test]
