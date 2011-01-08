@@ -258,11 +258,11 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		static Dictionary<TypeDefinition, HashSet<uint>> cache = new Dictionary<TypeDefinition, HashSet<uint>> ();
+		static Dictionary<TypeDefinition, HashSet<ulong>> cache = new Dictionary<TypeDefinition, HashSet<ulong>> ();
 
-		private static uint GetToken (MethodReference method)
+		private static ulong GetToken (MethodReference method)
 		{
-			return method.GetElementMethod ().MetadataToken.ToUInt32 ();
+			return (ulong) method.DeclaringType.Module.Assembly.GetHashCode () << 32 | method.GetElementMethod ().MetadataToken.ToUInt32 ();
 		}
 
 		private static bool CheckTypeForMethodUsage (TypeDefinition type, MethodReference method)
@@ -270,7 +270,7 @@ namespace Gendarme.Rules.Performance {
 			if (type.HasGenericParameters)
 				type = type.GetElementType ().Resolve ();
 
-			HashSet<uint> methods = GetCache (type);
+			HashSet<ulong> methods = GetCache (type);
 			if (methods.Contains (GetToken (method)))
 				return true;
 
@@ -284,11 +284,11 @@ namespace Gendarme.Rules.Performance {
 			return false;
 		}
 
-		private static HashSet<uint> GetCache (TypeDefinition type)
+		private static HashSet<ulong> GetCache (TypeDefinition type)
 		{
-			HashSet<uint> methods;
+			HashSet<ulong> methods;
 			if (!cache.TryGetValue (type, out methods)) {
-				methods = new HashSet<uint> ();
+				methods = new HashSet<ulong> ();
 				cache.Add (type, methods);
 				if (type.HasMethods) {
 					foreach (MethodDefinition md in type.Methods) {
@@ -301,7 +301,7 @@ namespace Gendarme.Rules.Performance {
 			return methods;
 		}
 
-		private static void BuildMethodUsage (HashSet<uint> methods, MethodDefinition method)
+		private static void BuildMethodUsage (HashSet<ulong> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = (ins.Operand as MethodReference);
@@ -313,8 +313,9 @@ namespace Gendarme.Rules.Performance {
 					// if (type.GetElementType ().HasGenericParameters)
 					// the simpler ^^^ does not work under Mono but works on MS
 					type = type.Resolve ();
-					if (type != null && type.HasGenericParameters)
+					if (type != null && type.HasGenericParameters) {
 						methods.Add (GetToken (type.GetMethod (mr.Name)));
+					}
 				}
 				methods.Add (GetToken (mr));
 			}
