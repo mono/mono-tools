@@ -8,8 +8,8 @@
     <ProjectGuid>{FE98135B-0CD0-4C0A-942D-2E5FF9E3A20F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>Tests.Rules.NUnit</RootNamespace>
+    <AssemblyName>Tests.Rules.NUnit</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
