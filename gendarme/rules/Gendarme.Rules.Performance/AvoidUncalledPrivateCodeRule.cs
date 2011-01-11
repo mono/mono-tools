@@ -304,8 +304,9 @@ namespace Gendarme.Rules.Performance {
 		private static void BuildMethodUsage (HashSet<ulong> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
-				MethodReference mr = ins.GetMethod ();
-				if (mr == null)
+				MethodReference mr = (ins.Operand as MethodReference);
+				// avoid CallSite - but do not limit ourselves to Call[virt]+Newobj (e.g. ldftn)
+				if ((mr == null) || (ins.OpCode.Code == Code.Calli))
 					continue;
 
 				TypeReference type = mr.DeclaringType;
