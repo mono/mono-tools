@@ -97,8 +97,12 @@ namespace Gendarme.Rules.Exceptions {
 				if (eh.HandlerType != ExceptionHandlerType.Catch)
 					continue;
 
-				foreach (ExecutionPathCollection catchPath in epf.CreatePaths (eh.HandlerStart, eh.HandlerEnd)) {
-					ProcessCatchPath (catchPath, method);
+				var list = epf.CreatePaths (eh.HandlerStart, eh.HandlerEnd);
+				if (list.Count == 0) {
+					Runner.Report (method, eh.HandlerStart, Severity.Medium, Confidence.Normal, "Handler too complex for analysis");
+				}  else {
+					foreach (ExecutionPathCollection catchPath in list)
+						ProcessCatchPath (catchPath, method);
 				}
 			}
 
