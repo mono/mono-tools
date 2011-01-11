@@ -10,15 +10,7 @@ pixmap_DATA = gendarme.svg
 
 DISTCLEANFILES = \
 	AssemblyInfo.cs \
-	configure \
-	config.guess \
-	config.sub \
-	Makefile.in \
-	install-sh \
-	aclocal.m4 \
-	INSTALL \
-	COPYING \
-	missing
+	Makefile.in
 	
 wdir = $(shell pwd)
 
