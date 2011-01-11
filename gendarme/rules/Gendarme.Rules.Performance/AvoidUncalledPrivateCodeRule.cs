@@ -304,7 +304,7 @@ namespace Gendarme.Rules.Performance {
 		private static void BuildMethodUsage (HashSet<ulong> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.GetMethod ();
 				if (mr == null)
 					continue;
 
