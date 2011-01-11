@@ -70,6 +70,7 @@ namespace Gendarme.Rules.Concurrency {
 
 	[Problem ("This type has some static fields that are not constant. They may represent problems in multithreaded applications.")]
 	[Solution ("Change the field to read-only, or mark it [ThreadStatic], or make it non visible outside the assembly.")]
+	[FxCopCompatibility ("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
 	public class NonConstantStaticFieldsShouldNotBeVisibleRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
