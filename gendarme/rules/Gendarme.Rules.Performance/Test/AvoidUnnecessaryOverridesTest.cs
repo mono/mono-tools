@@ -148,7 +148,6 @@ namespace Tests.Rules.Performance {
 			AssertRuleSuccess<TestClassGood> ("Equals");
 			AssertRuleSuccess<TestClassGood> ("ToString");
 			AssertRuleSuccess<TestClassAlsoGood> ("Equals");
-			AssertRuleSuccess<AbstractTestClass> ("DoNothing");
 		}
 
 		[Test]
@@ -158,6 +157,7 @@ namespace Tests.Rules.Performance {
 			AssertRuleFailure<TestClassBad> ("DoSomething", new Type [] { typeof (string) }, 1);
 			AssertRuleFailure<TestClassBad> ("DoSomething", Type.EmptyTypes, 1);
 			AssertRuleFailure<TestClassAlsoBad> ("GetBaseException", 1);
+			AssertRuleFailure<AbstractTestClass> ("DoNothing", 1);
 		}
 
 		[Test]
@@ -167,6 +167,29 @@ namespace Tests.Rules.Performance {
 			AssertRuleDoesNotApply<TestClassGood> (".ctor");
 			AssertRuleDoesNotApply<TestClassBad> (".ctor");
 			AssertRuleDoesNotApply<AbstractTestClass> ("DoSomething");
+		}
+
+		public class BaseClass {
+			public virtual string DoSomething (int i)
+			{
+				return i.ToString();
+			}
+		}
+
+		public class GoodClass : BaseClass {
+			public string Property { get; set; }
+
+			public override string DoSomething (int i)
+			{
+				Property = base.DoSomething (i);
+				return Property;
+			}
+		}
+
+		[Test]
+		public void Bug663492 ()
+		{
+			AssertRuleSuccess<GoodClass> ("DoSomething");
 		}
 	}
 }

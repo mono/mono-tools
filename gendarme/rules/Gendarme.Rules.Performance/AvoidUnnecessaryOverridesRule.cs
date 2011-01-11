@@ -44,27 +44,27 @@ namespace Gendarme.Rules.Performance {
 	/// <code>
 	/// public override string ToString ()
 	/// {
-	///		return base.ToString ();
-	///	}
+	///	return base.ToString ();
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example (1):
+	/// Good example (different attributes):
 	/// <code>
 	/// [FileIOPermission (SecurityAction.Demand, @"c:\dir\file")]
 	/// public override string ToString ()
 	/// {
-	///		return base.ToString ();
-	///	}
+	///	return base.ToString ();
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example (2):
+	/// Good example (remove override):
 	/// <code>
 	/// /*public override string ToString ()
 	/// {
-	///		return base.ToString ();
-	///	}*/
+	///	return base.ToString ();
+	/// }*/
 	/// </code>
 	/// </example>
 
@@ -133,14 +133,12 @@ namespace Gendarme.Rules.Performance {
 
 			// We need to check for a simple IL code pattern.
 			// load args (if necessary), call method, return.
-			// CSC emits some superflulous nops, starg, jmp, ldarg, return in debug mode, 
-			// so that has to be checked as well.
 
 			int i = 0;
 			var instrs = method.Body.Instructions;
 
 			Instruction ins = null;
-			// Skip over the nops and load arguments.
+			// prolog - skip over the nops and load arguments.
 			while (i < instrs.Count) {
 				ins = instrs [i++];
 				if (!ins.Is (Code.Nop) && !ins.IsLoadArgument ())
@@ -150,25 +148,30 @@ namespace Gendarme.Rules.Performance {
 			// If the next instruction is not a call we are good.
 			if (!ins.Is (Code.Call) && !ins.Is (Code.Callvirt))
 				return RuleResult.Success;
-			// Check to make sure the call is to the base class, and the same method name...
 			MethodReference mr = ins.Operand as MethodReference;
+
+			// check epilog - all we should have are (maybe) NOPs and RETurn
+			// note: checked before 'base call' since it's an heavier check (that we would like to avoid)
+			while (i < instrs.Count) {
+				ins = instrs [i++];
+				switch (ins.OpCode.Code) {
+				case Code.Nop:
+					continue;
+				case Code.Ret:
+					break;
+				case Code.Stloc_0:
+				case Code.Br_S:
+				case Code.Ldloc_0:
+					// ignore CSC non-optimized extra (i.e. junk) code
+					continue;
+				default:
+					return RuleResult.Success;
+				}
+			}
+
+			// Check to make sure the call is to the base class, and the same method name...
 			if (!IsBase (method, mr))
 				return RuleResult.Success;
-
-			ins = instrs [i++];
-			// If the return type is void, all we should have is nop and return.
-			if (method.ReturnType.FullName == "System.Void") {
-				if (!ins.Is (Code.Nop) || !ins.Next.Is (Code.Ret))
-					return RuleResult.Success;
-			} else {
-				while (i < instrs.Count) {
-					if (ins.Is (Code.Nop) || ins.Is (Code.Jmp) || ins.IsStoreLocal () || ins.IsLoadLocal ())
-						break;
-					ins = instrs [i++];
-				}
-				if (!ins.Is (Code.Ret))
-					return RuleResult.Success;
-			}
 
 			// If we've gotten this far, that means the code is just a call to the base method.
 			// We need to check for attributes/security declarations that aren't in the
