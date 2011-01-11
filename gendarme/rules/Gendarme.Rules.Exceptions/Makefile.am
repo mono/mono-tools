@@ -14,7 +14,6 @@ rules_sources =  \
 	InstantiateArgumentExceptionCorrectlyRule.cs \
 	MissingExceptionConstructorsRule.cs \
 	NewExceptionRule.cs \
-	SEHHandlerType.cs \
 	UseObjectDisposedExceptionRule.cs
 
 tests_sources = \
