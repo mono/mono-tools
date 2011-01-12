@@ -80,7 +80,6 @@
     <Compile Include="InstantiateArgumentExceptionCorrectlyRule.cs" />
     <Compile Include="MissingExceptionConstructorsRule.cs" />
     <Compile Include="NewExceptionRule.cs" />
-    <Compile Include="SEHHandlerType.cs" />
     <Compile Include="UseObjectDisposedExceptionRule.cs" />
   </ItemGroup>
   <ItemGroup>
