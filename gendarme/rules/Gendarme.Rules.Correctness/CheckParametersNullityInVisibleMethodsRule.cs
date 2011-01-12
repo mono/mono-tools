@@ -191,8 +191,9 @@ namespace Gendarme.Rules.Correctness {
 			// note: not perfect but greatly reduce false positives
 			if (!md.HasParameters)
 				return;
+			int base_index = md.IsStatic ? 0 : -1;
 			for (int i = 0; i < md.Parameters.Count; i++) {
-				Instruction pi = ins.TraceBack (method, -(md.IsStatic ? 0 : 1 + i));
+				Instruction pi = ins.TraceBack (method, base_index - i);
 				if (pi == null)
 					continue;
 				// generic types will be be boxed, skip that

@@ -738,5 +738,22 @@ namespace Tests.Rules.Correctness {
 			AssertRuleSuccess<GenericClass> ("Test3Equals");
 			AssertRuleSuccess<GenericClass> ("Test3EqualsDefault");
 		}
+
+		// test case provided by Iristyle, extracted from
+		// https://github.com/Iristyle/mono-tools/commit/0c5649353619fc76b04ce406193f3e06e8654d69
+		public void ChecksObjectAndMember (Uri url)
+		{
+			if (null == url)
+				throw new ArgumentNullException ("url");
+
+			string requestDetails = null != url && null != url.AbsoluteUri ?
+				String.Format ("URL: {0}{1}", url.AbsoluteUri, Environment.NewLine) : String.Empty;
+		}
+
+		[Test]
+		public void StaticWithParameter ()
+		{
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ChecksObjectAndMember");                        
+		}
 	}
 }
