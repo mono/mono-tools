@@ -71,7 +71,7 @@ namespace Gendarme.Rules.Gendarme {
 
 	[Problem ("Attributes should be correctly placed and have correct values provided in their arguments")]
 	[Solution ("Change the code so that it satisfies attribute usage rules")]
-	public class ReviewAttributesOnRulesRule : Rule, ITypeRule {
+	public class ReviewAttributesOnRulesRule : GendarmeRule, ITypeRule {
 
 		Dictionary<string, Action<CustomAttribute, ICustomAttributeProvider>> attributes;
 
