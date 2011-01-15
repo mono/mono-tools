@@ -140,7 +140,8 @@ namespace Gendarme.Framework {
 					object [] attributes = Type.GetCustomAttributes (typeof (DocumentationUriAttribute), true);
 					if (attributes.Length == 0) {
 						string url = String.Format (CultureInfo.InvariantCulture, 
-							"http://www.mono-project.com/{0}#{1}", type.Namespace, Name);
+							"https://github.com/spouliot/gendarme/wiki/{0}.{1}({2})",
+							type.Namespace, Name, "2.10");
 						uri = new Uri (url);
 					} else {
 						uri = (attributes [0] as DocumentationUriAttribute).DocumentationUri;
