@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define ProductShortName = "Gendarme" ?>
-<?define ProductVersion = "2.9.0" ?>
-<?define ProductVersionText = "2.9" ?>
+<?define ProductVersion = "2.10.0" ?>
+<?define ProductVersionText = "2.10" ?>
 <?define Manufacturer = "Novell" ?>
 <?define UpgradeCode = "D7C83968-DEF2-4614-81F2-A3EEFC9BC6B3" ?>
 
