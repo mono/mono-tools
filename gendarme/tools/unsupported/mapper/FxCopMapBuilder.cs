@@ -222,7 +222,8 @@ namespace FxCopMapBuilder {
 					idName [0], idName [1], rule.Attribute ("category").Value);
 			}
 			if (rule.Attribute ("type").Value == "gendarme") {
-				return String.Format ("[[{0}]]", rule.Attribute ("id").Value);
+				return String.Format ("[[{1}|{0}.{1}{2}]]", rule.Attribute ("category").Value, 
+					rule.Attribute ("id").Value, "(2.10)");
 			}
 			return String.Empty;
 		}
