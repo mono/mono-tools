@@ -19,6 +19,7 @@
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
 		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
 		<rules include="*" from="Gendarme.Rules.Gendarme.dll"/>
+		<rules include="*" from="Gendarme.Rules.Globalization.dll"/>
 	</ruleset>
 
 	<ruleset name="default">
@@ -38,7 +39,11 @@
 		<rules include="*" from="Gendarme.Rules.Serialization.dll" />
 		<rules include="*" from="Gendarme.Rules.Ui.dll" />
 		<rules include="*" from="Gendarme.Rules.Maintainability.dll"/>
-		<!-- no rule from Smells is included in this set -->
+		<rules include="*" from="Gendarme.Rules.Globalization.dll"/>
+		<!-- no rule from Gendarme.Rules.Gendarme is included in this set -->
+		<!-- no rule from Gendarme.Rules.Interoperability.Com is included in this set -->
+		<!-- no rule from Gendarme.Rules.NUnit is included in this set -->
+		<!-- no rule from Gendarme.Rules.Smells is included in this set -->
 	</ruleset>
 
 	<ruleset name="mono-bcl">
@@ -118,5 +123,8 @@
 	</ruleset>
 	<ruleset name="gendarme">
 		<rules include="*" from="Gendarme.Rules.Gendarme.dll"/>
+	</ruleset>
+	<ruleset name="globalization">
+		<rules include="*" from="Gendarme.Rules.Globalization.dll"/>
 	</ruleset>
 </gendarme>
