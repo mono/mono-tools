@@ -11,5 +11,16 @@ Examples:
   xmldoc2wiki bin/*.xml 2-8-doc
 
 Local wiki access:
-  You can access the wiki locally by using github's gollum: https://github.com/github/gollum#readme
-  The installation is pretty simple, don't forget to install rdiscount gem that provides Markdown support.
+
+  a) Install gollum (https://github.com/github/gollum#readme). This requires Ruby.
+
+	% gem install gollum
+
+  b) Install rdiscount (http://daringfireball.net/projects/markdown/) for Markdown support
+
+	% gem install rdiscount
+
+  c) Install Pygments (http://pygments.org/) for syntax highlightning. This requires Python.
+
+	% easy_install Pygments
+
