@@ -1,0 +1,24 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>Method Rule.cs</DefaultName>
+    <Name>Method Rule</Name>
+    <Description>A gendarme rule that checks a method.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Mono.Cecil</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>Gendarme.Framework</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System.Core</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="Code" TargetFileName="$fileinputname$.cs" ReplaceParameters="true">MethodRule.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

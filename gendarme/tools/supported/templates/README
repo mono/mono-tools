@@ -1,0 +1,8 @@
+Here are uncompressed C# templates for Gendarme rules, tests and projects.
+
+To build the compressed templates required by VS.NET (2008/2010) just issue a:
+
+% make vsnet
+
+and read the README.vsnet file (also part of the archive).
+

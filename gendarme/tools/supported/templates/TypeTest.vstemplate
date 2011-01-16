@@ -1,0 +1,27 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
+  <TemplateData>
+    <DefaultName>Type Rule Test.cs</DefaultName>
+    <Name>Type Rule Test</Name>
+    <Description>A unit test for a gendarme type rule.</Description>
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>10</SortOrder>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <References>
+      <Reference>
+        <Assembly>Mono.Cecil</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>Gendarme.Framework</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>Test.Rules</Assembly>
+      </Reference>
+      <Reference>
+        <Assembly>System.Core</Assembly>
+      </Reference>
+    </References>
+    <ProjectItem SubType="Code" TargetFileName="$fileinputname$.cs" ReplaceParameters="true">TypeTest.cs</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

@@ -1,2 +1,2 @@
-SUBDIRS = gd2i
+SUBDIRS = gd2i templates
 

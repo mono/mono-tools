@@ -1,0 +1,12 @@
+Gendarme Item/Project Templates for Visual Studio
+
+To Install:
+- Extract this file to your My Documents\Visual Studio 20x folder.
+- Optionally, open the .vstemplate file in each item template.
+  In the <TemplateContent> section, add the following:
+    <CustomParameters>
+        <CustomParameter Name="$name$" Value="(your name)"/>
+        <CustomParameter Name="$email$" Value="(your email)"/>
+    </CustomParameters>
+  This will allow your name and e-mail address to be automatically
+  entered into rules and tests you create.
