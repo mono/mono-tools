@@ -293,5 +293,18 @@ namespace Test.Rules.Performance {
 
 			AssertRuleSuccess<Bug656790> ("CanExecute");
 		}
+
+		class Bug664556 {
+			public int DoSomething (Bug664556 [] ic)
+			{
+				return ic.Count ();
+			}
+		}
+
+		[Test]
+		public void Array ()
+		{
+			AssertRuleFailure<Bug664556> ("DoSomething", 1);
+		}
 	}
 }
