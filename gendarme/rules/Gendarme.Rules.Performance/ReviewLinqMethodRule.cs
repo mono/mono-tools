@@ -124,7 +124,8 @@ namespace Gendarme.Rules.Performance {
 				Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
 
-			} else if (HasMethod (type, LengthProperty)) {
+			} else if (type.IsArray || HasMethod (type, LengthProperty)) {
+				// note: arrays [] always have a Length property but resolving arrays return the element type
 				string message = "Use the Length property instead of the Count () method.";
 				Log.WriteLine (this, "{0:X4} {1}", ins.Offset, message);
 				Runner.Report (method, ins, Severity.Medium, Confidence.High, message);
