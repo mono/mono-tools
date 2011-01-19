@@ -30,6 +30,7 @@ using System.Xml;
 using System.Collections.Generic;
 using NUnit.Framework;
 
+using Gendarme.Framework;
 using Gendarme.Rules.Correctness;
 
 using Test.Rules.Fixtures;
@@ -203,6 +204,7 @@ namespace Test.Rules.Correctness {
 		public void DoesNotApply0 ()
 		{
 			AssertRuleDoesNotApply (SimpleMethods.EmptyMethod);
+			AssertRuleDoesNotApply (SimpleMethods.ExternalMethod);
 		}
 
 		[Test]
@@ -335,6 +337,56 @@ namespace Test.Rules.Correctness {
 		public void Failure9 ()
 		{
 			AssertRuleFailure<DisposalCases> ("Failure9", 1);
+		}
+
+		// test case based on:
+		// https://github.com/Iristyle/mono-tools/commit/2cccfd0efd406434e1309d0740826ff06d32de20
+
+		string FluentTestCase ()
+		{
+			using (StringWriter sw = new StringWriter ()) {
+				// while analyzing 'FluentTestCase' we cannot know what's inside
+				// 'NestedFluentCall[Two|Three]' except that they _looks_like_ fluent APIs
+				return NestedFluentCall (sw).ToString () + 
+					NestedFluentCallTwo (sw).ToString () +
+					NestedFluentCallThree (sw).ToString ();
+			}
+		}
+
+		StringWriter NestedFluentCall (StringWriter stringWriter)
+		{
+			// same instance is returned and does not need to be disposed (the caller does it)
+			return stringWriter;
+		}
+
+		StringWriter NestedFluentCallTwo (StringWriter stringWriter)
+		{
+			// a new instance is being returned and someone should be disposing it
+			// without source code or (good) documentation it behaves exactly like
+			// the previous method
+			StringWriter sw = new StringWriter ();
+			sw.Write (stringWriter);
+			return sw;
+		}
+
+		StringWriter NestedFluentCallThree (StringWriter stringWriter)
+		{
+			// really bad code to show that we cannot determine with 100% exactitude
+			// what some methods returns to us
+			if (stringWriter.GetHashCode () % 2 == 1)
+				return NestedFluentCall (stringWriter);
+			else
+				return NestedFluentCallTwo (stringWriter);
+		}
+
+		[Test]
+		public void FluentApi ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("FluentTestCase", 3);
+			// confidence is lower (normal instead of high) for fluent-like API
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence, "0");
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [1].Confidence, "1");
+			Assert.AreEqual (Confidence.Normal, Runner.Defects [2].Confidence, "2");
 		}
 	}
 }
