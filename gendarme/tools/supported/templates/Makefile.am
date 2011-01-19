@@ -11,6 +11,7 @@ EXTRA_DIST = README README.vsnet \
 GENDARME_ICON = ../../../swf-wizard-runner/Resources/gendarme.ico
 
 vsnet-item-assembly-rule:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp AssemblyRule.cs temp/AssemblyRule.cs
 	cp AssemblyRule.vstemplate temp/MyTemplate.vstemplate
@@ -18,6 +19,7 @@ vsnet-item-assembly-rule:
 	rm -rf temp/*
 
 vsnet-item-assembly-test:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp AssemblyTest.cs temp/AssemblyTest.cs
 	cp AssemblyTest.vstemplate temp/MyTemplate.vstemplate
@@ -25,6 +27,7 @@ vsnet-item-assembly-test:
 	rm -rf temp/*
 
 vsnet-item-method-rule:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp MethodRule.cs temp/MethodRule.cs
 	cp MethodRule.vstemplate temp/MyTemplate.vstemplate
@@ -32,6 +35,7 @@ vsnet-item-method-rule:
 	rm -rf temp/*
 
 vsnet-item-method-test:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp MethodTest.cs temp/MethodTest.cs
 	cp MethodTest.vstemplate temp/MyTemplate.vstemplate
@@ -39,6 +43,7 @@ vsnet-item-method-test:
 	rm -rf temp/*
 
 vsnet-item-type-rule:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp TypeRule.cs temp/TypeRule.cs
 	cp TypeRule.vstemplate temp/MyTemplate.vstemplate
@@ -46,6 +51,7 @@ vsnet-item-type-rule:
 	rm -rf temp/*
 
 vsnet-item-type-test:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp TypeTest.cs temp/TypeTest.cs
 	cp TypeTest.vstemplate temp/MyTemplate.vstemplate
@@ -57,6 +63,7 @@ vsnet-item-templates: vsnet-item-assembly-rule vsnet-item-assembly-test \
 	vsnet-item-type-rule vsnet-item-type-test
 
 vsnet-project-rules:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp Templates.RuleProject.csproj temp/Templates.RuleProject.csproj
 	cp Templates.RuleProject.vstemplate temp/MyTemplate.vstemplate
@@ -64,6 +71,7 @@ vsnet-project-rules:
 	rm -rf temp/*
 
 vsnet-project-tests:
+	mkdir -p temp
 	cp $(GENDARME_ICON) temp/__TemplateIcon.ico
 	cp Templates.TestProject.csproj temp/Templates.TestProject.csproj
 	cp Templates.TestProject.vstemplate temp/MyTemplate.vstemplate
@@ -73,7 +81,6 @@ vsnet-project-tests:
 vsnet-project-templates: vsnet-project-rules vsnet-project-tests
 
 vsnet: vsnet-item-templates vsnet-project-templates
-	mkdir -p temp
 	zip gendarme-vsnet-templates.zip README.vsnet \
 		"Templates\ItemTemplates\Visual C#\Gendarme Items\Assembly Rule.zip" \
 		"Templates\ItemTemplates\Visual C#\Gendarme Items\Assembly Rule Test.zip" \
@@ -84,6 +91,10 @@ vsnet: vsnet-item-templates vsnet-project-templates
 		"Templates\ProjectTemplates\Visual C#\Gendarme Projects\Rule Assembly.zip" \
 		"Templates\ProjectTemplates\Visual C#\Gendarme Projects\Rule Test Assembly.zip"
 	rmdir temp
+
+gendarme-vsnet-templates.zip: vsnet
+
+all: gendarme-vsnet-templates.zip
 
 clean:
 	rm -f *.zip
