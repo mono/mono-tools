@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,17 +34,20 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design {
 
-	// TODO: MS is thinking of adding support for tuples to C#. If this is happens we
-	// should mention them in the solution.
-
 	/// <summary>
 	/// This rule fires if a method uses <c>ref</c> or <c>out</c> parameters. 
-	/// These are advanced features that can easily be misunderstood (by the consumer)
-	/// and misused (by the consumer) and can result in an API that is difficult to use. 
-	/// Avoid them whenever 
-	/// possible or, if needed, provide simpler alternatives for most use cases.
-	/// An exception is made, i.e. no defect are reported, for the <c>bool Try*(X out)</c> 
-	/// pattern.
+	/// These are advanced features that can easily be misunderstood and misused 
+	/// (by the consumer). This can result in an API that is difficult to use so
+	/// avoid them whenever possible. 
+	/// An alternative is to use one of the new generic <c>Tuple</c> types (FX v4 and later)
+	/// as the return value.
+	/// No defect will be reported if the method:
+	/// <list>
+	/// <item>follows the <c>bool Try*(X out)</c> pattern; or</item>
+	/// <item>implement an interface requiring the use of <c>ref</c> or <c>out</c> parameters.
+	/// In the later case defects will be reported against the interface itself (if analyzed
+	/// by Gendarme).</item>
+	/// </list>
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -83,6 +86,45 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1045:DoNotPassTypesByReference")]
 	public class AvoidRefAndOutParametersRule : Rule, IMethodRule {
 
+		static bool IsSignatureDictatedByInterface (MethodDefinition method, TypeReference type)
+		{
+			if (type == null)
+				return false;
+
+			TypeDefinition td = type.Resolve ();
+			foreach (TypeReference intf_ref in td.Interfaces) {
+				TypeDefinition intr = intf_ref.Resolve ();
+				if (intr == null)
+					continue;
+
+				if (intr.HasMethods) {
+					foreach (MethodDefinition md in intr.Methods) {
+						if (method.CompareSignature (md))
+							return true;
+					}
+				}
+				// check if the interface inherits from another interface with this signature
+				if (IsSignatureDictatedByInterface (method, intr.BaseType))
+					return true;
+			}
+			// check if a base type is implementing an interface with this signature
+			return IsSignatureDictatedByInterface (method, td.BaseType);
+		}
+
+		static bool IsSignatureDictatedByInterface (MethodDefinition method)
+		{
+			// quick-out: if the method implements an interface then it's virtual
+			if (!method.IsVirtual)
+				return false;
+
+			// check if the interface itself has the defect (always reported)
+			TypeDefinition type = method.DeclaringType;
+			if (type.IsInterface)
+				return false;
+
+			return IsSignatureDictatedByInterface (method, type);
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule only applies to visible methods with parameters
@@ -104,7 +146,8 @@ namespace Gendarme.Rules.Design {
 					how = "ref";
 				}
 
-				if (how != null) {
+				// report the method is it is not dictated by an interface
+				if ((how != null) && !IsSignatureDictatedByInterface (method)) {
 					// goal is to keep the API as simple as possible so this is more severe for public than protected methods
 					Severity severity = method.IsPublic ? Severity.Medium : Severity.Low;
 					string msg = String.Format ("Parameter '{0}' passed by reference ({1}).", parameter.Name, how);
