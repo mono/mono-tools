@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -87,6 +87,72 @@ namespace Test.Rules.Design {
 			AssertRuleFailure<AvoidRefAndOutParametersTest> ("ProtectedOut", 1);
 			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Severity");
 			AssertRuleSuccess<AvoidRefAndOutParametersTest> ("TrySomething");
+		}
+
+		public interface InterfaceWithRef {
+			void Ref (string input, ref string output);
+		}
+
+		public interface InterfaceWithOut {
+			bool Out (int input, out long output);
+		}
+
+		public abstract class PoorType : InterfaceWithOut, InterfaceWithRef {
+
+			public bool Out (int input, out long output)
+			{
+				throw new NotImplementedException ();
+			}
+
+			abstract public void Ref (string input, ref string output);
+		}
+
+		public class InheritedButStillPoor : PoorType {
+
+			public override void Ref (string input, ref string output)
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		public interface InterfaceHidingAnOut : InterfaceWithOut {
+			bool TryOut (int input, out long output);
+		}
+
+		public class InheritedHiddenOut : InterfaceHidingAnOut {
+
+			public bool TryOut (int input, out long output)
+			{
+				throw new NotImplementedException ();
+			}
+
+			public bool Out (int input, out long output)
+			{
+				throw new NotImplementedException ();
+			}
+		}
+
+		[Test]
+		public void Interfaces ()
+		{
+			AssertRuleFailure<InterfaceWithRef> ("Ref", 1);
+			AssertRuleFailure<InterfaceWithOut> ("Out", 1);
+
+			// PoorType did not had any choice (but we'll only blame the interfaces)
+			AssertRuleSuccess<PoorType> ("Ref");
+			AssertRuleSuccess<PoorType> ("Out");
+
+			// neither did InheritedButStillPoor
+			AssertRuleSuccess<InheritedButStillPoor> ("Ref");
+
+			// Try pattern in an interface
+			AssertRuleSuccess<InterfaceHidingAnOut> ("TryOut");
+
+			// Try pattern dictated by interface (does not matter)
+			AssertRuleSuccess<InheritedHiddenOut> ("TryOut");
+
+			// again the type has no choice but implement InterfaceWithOut.Out
+			AssertRuleSuccess<InheritedHiddenOut> ("Out");
 		}
 	}
 }
