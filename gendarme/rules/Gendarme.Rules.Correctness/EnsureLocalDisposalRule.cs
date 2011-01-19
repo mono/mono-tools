@@ -235,9 +235,7 @@ namespace Gendarme.Rules.Correctness {
 					if (IsSetter (nextInstruction.Operand as MethodReference))
 						continue;
 
-					TypeReference type = ins.Is (Code.Newobj) ? call.DeclaringType : call.ReturnType;
-					string msg = string.Format ("Local of type '{0}' is not disposed of (at least not locally).", type.Name);
-					Runner.Report (method, ins, Severity.High, Confidence.High, msg);
+					ReportCall (method, ins, call);
 					continue;
 				}
 				
@@ -254,13 +252,30 @@ namespace Gendarme.Rules.Correctness {
 			return Runner.CurrentRuleResult;
 		}
 
+		static bool IsFluentLike (MethodReference method)
+		{
+			string rtype = method.ReturnType.FullName;
+			// StringBuilder StringBuilder.Append (...)
+			if (rtype == method.DeclaringType.FullName)
+				return true;
+			return (method.HasParameters && rtype == method.Parameters [0].ParameterType.FullName);
+		}
+
+		void ReportCall (MethodDefinition method, Instruction ins, MethodReference call)
+		{
+			TypeReference type = ins.Is (Code.Newobj) ? call.DeclaringType : call.ReturnType;
+			bool fluent = IsFluentLike (call);
+			string msg = string.Format ("Local of type '{0}' is not disposed of ({1}).",
+				type.Name, fluent ? "is this a fluent-like API ?" : "at least not locally");
+			Runner.Report (method, ins, Severity.High, fluent ? Confidence.Normal : Confidence.High, msg);
+		}
+
 		static string GetFriendlyNameOrEmpty (VariableReference variable)
 		{
-			string vname = variable.Name;
 			string tname = variable.VariableType.Name;
-			if (null == vname || vname.StartsWith ("V_"))
+			if (variable.IsGeneratedName ())
 				return string.Format ("of type '{0}' ", tname);
-			return string.Format ("'{0}' of type '{1}' ", vname, tname);
+			return string.Format ("'{0}' of type '{1}' ", variable.Name, tname);
 		}
 
 		static OpCodeBitmask BuildCallsAndNewobjOpCodeBitmask ()
