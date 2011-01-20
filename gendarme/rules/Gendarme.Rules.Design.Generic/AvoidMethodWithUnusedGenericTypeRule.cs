@@ -31,6 +31,7 @@ using System;
 using Mono.Cecil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Design.Generic {
 
@@ -114,7 +115,7 @@ namespace Gendarme.Rules.Design.Generic {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applies only if the method has generic type parameters
-			if (!method.HasGenericParameters)
+			if (!method.HasGenericParameters || method.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 
 			// look if every generic type parameter...
