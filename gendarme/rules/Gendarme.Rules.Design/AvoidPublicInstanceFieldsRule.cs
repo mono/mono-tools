@@ -76,7 +76,7 @@ namespace Gendarme.Rules.Design {
 		{
 			// rule doesn't apply on enums, interfaces, delegates or to compiler/tools-generated code
 			// e.g. CSC compiles anonymous methods as an inner type that expose public fields
-			if (type.IsEnum || type.IsInterface || type.IsDelegate () || type.IsGeneratedCode ())
+			if (type.IsEnum || type.IsInterface || !type.HasFields || type.IsDelegate () || type.IsGeneratedCode ())
 				return RuleResult.DoesNotApply;
 			
 			// rule doesn't apply to type non (externally) visible
