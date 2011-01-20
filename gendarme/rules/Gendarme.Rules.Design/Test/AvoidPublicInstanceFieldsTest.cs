@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 // Copyright (c) 2007 Adrian Tsai
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 
 using Gendarme.Rules.Design;
 
@@ -138,6 +139,24 @@ namespace Test.Rules.Design {
 			AssertRuleFailure<NestedProtected> (1);
 			AssertRuleDoesNotApply<NestedPrivate> ();
 			AssertRuleDoesNotApply<NestedInternal> ();
+		}
+
+		public class EventOnly {
+			public event EventHandler<EventArgs> Event;
+		}
+
+		public class NonEvent {
+			public /* event */ EventHandler<EventArgs> Event;
+		}
+
+		[Test]
+		public void Events ()
+		{
+			// a backing-field name 'Event' (like the event itself) will be added
+			// by the compiler but it will not be visible (it will be private)
+			AssertRuleSuccess<EventOnly> ();
+			// but there will be a failure if 'event' keyword is missing
+			AssertRuleFailure<NonEvent> (1);
 		}
 	}
 }
