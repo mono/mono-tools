@@ -301,6 +301,7 @@ M: System.Void Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDis
 M: System.Boolean Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::HasExpectedInheritedTypeCount(Mono.Cecil.MemberReference,System.Int32)
 M: System.Void Gendarme.XmlResultWriter::CreateDefects()
 M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
+M: System.Void Gendarme.Framework.Engines.SuppressMessageEngine::AddIgnore(Mono.Cecil.IMetadataTokenProvider,System.Collections.Generic.IEnumerable`1<System.String>)
 
 # ---------------------------------------------------------
 # We might want to fix these.

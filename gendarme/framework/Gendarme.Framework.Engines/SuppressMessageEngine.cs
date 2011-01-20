@@ -124,9 +124,7 @@ namespace Gendarme.Framework.Engines {
 
 				string target = global ? GetPropertyString (ca, "Target") : null;
 				if (String.IsNullOrEmpty (target)) {
-					IIgnoreList ignore = Controller.Runner.IgnoreList;
-					foreach (string name in mapped_names)
-						ignore.Add (name, token);
+					AddIgnore (token, mapped_names);
 					// continue loop - [SuppressMessage] has AllowMultiple == true
 					continue;
 				} else {
@@ -137,6 +135,36 @@ namespace Gendarme.Framework.Engines {
 			}
 
 			ResolveTargets ();
+		}
+
+		private void AddIgnore (IMetadataTokenProvider token, IEnumerable<string> mapped_names)
+		{
+			IIgnoreList ignore = Controller.Runner.IgnoreList;
+			switch (token.MetadataToken.TokenType) {
+			case TokenType.Property:
+				PropertyDefinition pd = (token as PropertyDefinition);
+				foreach (string name in mapped_names) {
+					ignore.Add (name, pd.GetMethod);
+					ignore.Add (name, pd.SetMethod);
+				}
+				break;
+			case TokenType.Event:
+				EventDefinition ed = (token as EventDefinition);
+				foreach (string name in mapped_names) {
+					ignore.Add (name, ed.AddMethod);
+					ignore.Add (name, ed.RemoveMethod);
+					ignore.Add (name, ed.InvokeMethod);
+					if (ed.HasOtherMethods) {
+						foreach (MethodDefinition md in ed.OtherMethods) {
+							ignore.Add (name, md);
+						}
+					}
+				}
+				break;
+			}
+			// the 'token' itself is always added (i.e. for properties and events too)
+			foreach (string name in mapped_names)
+				ignore.Add (name, token);
 		}
 
 		private void AddTargets (string target, IEnumerable<string> mapped_names)

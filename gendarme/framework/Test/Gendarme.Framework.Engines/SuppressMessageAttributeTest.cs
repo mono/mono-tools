@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2010, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -373,6 +373,11 @@ namespace Test.Framework {
 			{
 				return null;
 			}
+
+			[SuppressMessage ("Test.Framework", "SuppressMethodRule")]
+			public int PropertySuppressed { get; set; }
+
+			public int PropertyNotSuppressed { get; set; }
 		}
 
 		[Test]
@@ -418,6 +423,17 @@ namespace Test.Framework {
 			// since the rule is executed, then the defect ignored, the result is Success
 			AssertRuleSuccess<TestCases> ("ReturnValueDirectlySuppressed");
 			AssertRuleFailure<TestCases> ("ReturnValueNotSuppressed");
+		}
+
+		[Test]
+		// AttributeTargets.Property
+		public void Properties ()
+		{
+			// suppressing on the properties also means ignoring getters and setters
+			AssertRuleDoesNotApply<TestCases> ("get_PropertySuppressed");
+			AssertRuleDoesNotApply<TestCases> ("set_PropertySuppressed");
+			AssertRuleFailure<TestCases> ("get_PropertyNotSuppressed", 1);
+			AssertRuleFailure<TestCases> ("set_PropertyNotSuppressed", 1);
 		}
 	}
 }
