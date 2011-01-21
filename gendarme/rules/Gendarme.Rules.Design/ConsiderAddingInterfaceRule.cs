@@ -154,6 +154,15 @@ namespace Gendarme.Rules.Design {
 					return false;
 			}
 
+			if (iface.HasInterfaces) {
+				foreach (TypeReference tr in iface.Interfaces) {
+					TypeDefinition td = tr.Resolve ();
+					if (td == null)
+						continue;
+					if (!DoesTypeStealthilyImplementInterface (type, td))
+						return false;
+				}
+			}
 			return true;
 		}
 	}

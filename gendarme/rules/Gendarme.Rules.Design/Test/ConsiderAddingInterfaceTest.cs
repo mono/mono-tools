@@ -5,6 +5,7 @@
 //	Cedric Vivier  <cedricv@neonux.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,6 +30,7 @@
 using Gendarme.Framework;
 using Gendarme.Rules.Design;
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Test.Rules.Fixtures;
@@ -83,6 +85,16 @@ namespace Test.Rules.Design {
 		bool GenericMethod<T>(T l);
 	}
 
+	interface IExtra : IImplementedInterface2 {
+		string Name { get; }
+	}
+
+	// looks like IExtra but it does not implement anything from IImplementedInterface2
+	public class Extra {
+		public string Name { 
+			get { return String.Empty; } 
+		}
+	}
 
 	static class Never2BecauseStatic {
 		public static bool Never2(string bar) { return true; }
@@ -157,6 +169,18 @@ namespace Test.Rules.Design {
 		public bool GenericMethod<T>(T l) { return true; }
 	}
 
+	interface IConstrainedGeneric<T> where T : IFormattable {
+
+		T GetIt ();
+	}
+
+	class ConstrainedGeneric<T> where T : IDisposable {
+
+		public T GetIt () 
+		{
+			return default(T); 
+		}
+	}
 
 	[TestFixture]
 	public class ConsiderAddingInterfaceTest : TypeRuleTestFixture<ConsiderAddingInterfaceRule> {
@@ -192,6 +216,20 @@ namespace Test.Rules.Design {
 			AssertRuleFailure<IImplementedInterface2> (1);
 		}
 
+		[Test] // bnc 665161
+		public void BaseInterface ()
+		{
+			// Extra implement IExtra but not IImplementedInterface2 (which IExtra is derived from)
+			AssertRuleSuccess<IExtra> ();
+		}
+
+		[Test] // bnc 665161
+		[Ignore ("to be fixed")]
+		public void GenericConstraints ()
+		{
+			// generic constaints are not compatible between IConstrainedGeneric and ConstrainedGeneric
+			AssertRuleSuccess<IConstrainedGeneric<IFormattable>> ();
+		}
 	}
 }
 
