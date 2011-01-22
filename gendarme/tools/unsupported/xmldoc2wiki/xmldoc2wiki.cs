@@ -227,7 +227,7 @@ static class Program {
 				outputdir, Path.DirectorySeparatorChar, version, assembly, name);
 			using (TextWriter writer = File.CreateText (rule_file)) {
 				rsb.AppendFormat ("# {0}{1}{1}", name, Environment.NewLine);
-				rsb.AppendFormat ("Assembly: **{0}**<br/>", assembly);
+				rsb.AppendFormat ("Assembly: **[[{0}|{0}({1})]]**<br/>", assembly, version);
 				rsb.AppendFormat ("Version: **{0}**{1}{1}", version, Environment.NewLine);
 				rsb.AppendLine ("## Description");
 
@@ -305,7 +305,7 @@ You can browse the latest [[source code|https://github.com/mono/mono-tools/tree/
 		using (TextWriter writer = File.CreateText (assembly_index)) {
 			writer.WriteLine ("# {0} Rules", assembly);
 			writer.WriteLine ();
-			writer.WriteLine ("The following ({0}) rules are available in version {1} of {2}:", 
+			writer.WriteLine ("The following ({0}) rules are available in version [[{1}|Gendarme.Rules({1})]] of {2}:", 
 				rulesList.Count (), version, assembly);
 			writer.WriteLine ();
 			foreach (var rule in rulesList) {
