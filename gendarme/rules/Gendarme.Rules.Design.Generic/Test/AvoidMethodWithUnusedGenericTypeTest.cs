@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -123,6 +123,10 @@ namespace Test.Rules.Design.Generic {
 			public void SingleArray<T> (T [] values)
 			{
 			}
+
+			public void GenericParameter<T> (IEnumerable<T> values)
+			{
+			}
 		}
 
 		[Test]
@@ -135,6 +139,8 @@ namespace Test.Rules.Design.Generic {
 			AssertRuleSuccess<GoodCases> ("Duplicate");
 
 			AssertRuleSuccess<GoodCases> ("SingleArray");
+
+			AssertRuleSuccess<GoodCases> ("GenericParameter");
 		}
 
 		// from CommonRocks
@@ -157,10 +163,18 @@ namespace Test.Rules.Design.Generic {
 			return default (T);
 		}
 
+		public IEnumerable<T> ParseList<T> (string s)
+		{
+			return null;
+		}
+
 		[Test]
 		public void ReturnValue ()
 		{
 			AssertRuleFailure<AvoidMethodWithUnusedGenericTypeTest> ("Parse", 1);
+			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Low");
+
+			AssertRuleFailure<AvoidMethodWithUnusedGenericTypeTest> ("ParseList", 1);
 			Assert.AreEqual (Severity.Low, Runner.Defects [0].Severity, "Low");
 		}
 	}
