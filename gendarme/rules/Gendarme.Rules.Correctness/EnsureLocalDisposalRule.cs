@@ -110,6 +110,7 @@ namespace Gendarme.Rules.Correctness {
 
 	[Problem ("This disposable local is not guaranteed to be disposed of before the method returns.")]
 	[Solution ("Use a 'using' statement or surround the local's usage with a try/finally block.")]
+	[FxCopCompatibility("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class EnsureLocalDisposalRule : Rule, IMethodRule {
 
