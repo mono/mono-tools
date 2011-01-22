@@ -157,6 +157,9 @@ namespace Gendarme.Rules.Correctness {
 				next = next.Next;
 				nc = next.OpCode.Code;
 				break;
+			case Code.Isinst:
+				has_null_check.Set (parameter.GetSequence ());
+				return;
 			}
 
 			if (null_compare.Get (nc)) {

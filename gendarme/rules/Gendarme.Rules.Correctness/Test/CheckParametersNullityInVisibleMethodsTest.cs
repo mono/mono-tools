@@ -778,5 +778,21 @@ namespace Tests.Rules.Correctness {
 		{
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ReassignsRefBeforeCheck");
 		}
+
+		// test case provided by Iristyle - bnc665193
+		// https://github.com/Iristyle/mono-tools/commit/5afbd0a3ef746ff6fdb3db4e1be53995c1734be4
+		public void ChecksIsType (Exception ex)
+		{
+			//only non-nulls may pass
+			if (ex is ArgumentException) {
+				ex.ToString ();
+			}            
+		}
+
+		[Test]
+		public void AllowsIsCheck ()
+		{
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ChecksIsType");
+		}
 	}
 }
