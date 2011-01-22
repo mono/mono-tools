@@ -3,6 +3,7 @@
 //
 // Authors:
 //	Cedric Vivier  <cedricv@neonux.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
 // Copyright (C) 2011 Novell, Inc (http://www.novell.com)
@@ -169,6 +170,11 @@ namespace Test.Rules.Design {
 		public bool GenericMethod<T>(T l) { return true; }
 	}
 
+	interface IUnconstrainedGeneric<T> {
+
+		T GetIt ();
+	}
+
 	interface IConstrainedGeneric<T> where T : IFormattable {
 
 		T GetIt ();
@@ -179,6 +185,38 @@ namespace Test.Rules.Design {
 		public T GetIt () 
 		{
 			return default(T); 
+		}
+	}
+
+	class ConstrainedGenericSame<T> where T : IFormattable {
+
+		public T GetIt ()
+		{
+			return default (T);
+		}
+	}
+
+	public interface IUnconstrained {
+
+		void SetIt<T> (T value);
+	}
+
+	public interface IConstrained {
+
+		void SetIt<T> (T value) where T : IFormattable;
+	}
+
+	class Constrained {
+
+		public void SetIt<T>(T value) where T : IDisposable
+		{
+		}
+	}
+
+	class ConstrainedSame {
+
+		public void SetIt<T> (T value) where T : IFormattable
+		{
 		}
 	}
 
@@ -224,11 +262,14 @@ namespace Test.Rules.Design {
 		}
 
 		[Test] // bnc 665161
-		[Ignore ("to be fixed")]
 		public void GenericConstraints ()
 		{
-			// generic constaints are not compatible between IConstrainedGeneric and ConstrainedGeneric
+			// generic constraints on types
+			AssertRuleSuccess<IUnconstrainedGeneric<IFormattable>> ();
 			AssertRuleSuccess<IConstrainedGeneric<IFormattable>> ();
+			// generic constraints on methods
+			AssertRuleSuccess<IUnconstrained> ();
+			AssertRuleSuccess<IConstrained> ();
 		}
 	}
 }
