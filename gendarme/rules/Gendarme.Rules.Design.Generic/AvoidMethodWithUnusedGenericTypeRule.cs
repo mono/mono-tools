@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008,2010 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2010-2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -112,6 +112,23 @@ namespace Gendarme.Rules.Design.Generic {
 			return ((gp != null) && (gp.FullName == fullname));
 		}
 
+		static bool IsGenericType (MemberReference type, string fullname)
+		{
+			if (type.FullName == fullname)
+				return true;
+
+			var type_spec = type as TypeSpecification;
+			if (type_spec != null && type_spec.ElementType.FullName == fullname)
+				return true;
+
+			// handle things like ICollection<T>
+			GenericInstanceType git = (type as GenericInstanceType);
+			if (git == null)
+				return false;
+
+			return FindGenericType (git, fullname);
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule applies only if the method has generic type parameters
@@ -125,32 +142,14 @@ namespace Gendarme.Rules.Design.Generic {
 				string gp_fullname = gp.FullName;
 				// ... is being used by the method parameters
 				foreach (ParameterDefinition pd in method.Parameters) {
-					var parameter_type = pd.ParameterType;
-
-					if (parameter_type.FullName == gp_fullname) {
-						found = true;
-						break;
-					}
-
-					var type_spec = parameter_type as TypeSpecification;
-					if (type_spec != null && type_spec.ElementType.FullName == gp_fullname) {
-						found = true;
-						break;
-					}
-
-					// handle things like ICollection<T>
-					GenericInstanceType git = (parameter_type as GenericInstanceType);
-					if (git == null)
-						continue;
-
-					if (FindGenericType (git, gp_fullname)) {
+					if (IsGenericType (pd.ParameterType, gp_fullname)) {
 						found = true;
 						break;
 					}
 				}
 				if (!found) {
 					// it's a defect when used only for the return value - but we reduce its severity
-					if (IsGenericParameter (method.ReturnType, gp_fullname))
+					if (IsGenericType (method.ReturnType, gp_fullname))
 						severity = Severity.Low;
 				}
 				if (!found) {
