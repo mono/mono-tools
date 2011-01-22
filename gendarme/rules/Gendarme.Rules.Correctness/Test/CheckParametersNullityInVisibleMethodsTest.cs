@@ -755,5 +755,44 @@ namespace Tests.Rules.Correctness {
 		{
 			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ChecksObjectAndMember");                        
 		}
+
+		// test case from Iristyle
+		// https://github.com/Iristyle/mono-tools/commit/d27c6d10ccebde1d1c3d600279fc35802581f266
+		public void ReassignsRefBeforeCheck (ref object test)
+		{
+			//uncommenting this line makes the test succeed
+			//if (null == test) { throw new ArgumentNullException("test"); }
+
+			//follow this general pattern because of FxCop false positive on CA1062
+			//http://connect.microsoft.com/VisualStudio/feedback/details/560099/ca1062-false-positive-with-byref-arguments
+			object testCopy = test;
+			
+			if (null == testCopy)
+				throw new ArgumentNullException ("test");
+			test = testCopy;
+		}
+
+		[Test]
+		[Ignore ("by design the rule only checks parameter arguments, not variables, fields, return value...")]
+		public void ParameterAssignedToVariableBeforeCheck ()
+		{
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ReassignsRefBeforeCheck");
+		}
+
+		// test case provided by Iristyle - bnc665193
+		// https://github.com/Iristyle/mono-tools/commit/5afbd0a3ef746ff6fdb3db4e1be53995c1734be4
+		public void ChecksIsType (Exception ex)
+		{
+			//only non-nulls may pass
+			if (ex is ArgumentException) {
+				ex.ToString ();
+			}            
+		}
+
+		[Test]
+		public void AllowsIsCheck ()
+		{
+			AssertRuleSuccess<CheckParametersNullityInVisibleMethodsTest> ("ChecksIsType");
+		}
 	}
 }
