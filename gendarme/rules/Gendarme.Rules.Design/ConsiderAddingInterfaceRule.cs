@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier  <cedricv@neonux.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -70,6 +72,7 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
+	/// <remarks>Types and methods with generic constraints are presently ignored by the rule.</remarks>
 
 	[Problem ("This type implements an interface's members, but does not implement the interface.")]
 	[Solution ("If the semantics of the type's  members are compatible with the interface then inherit from the interface. Otherwise ignore the defect.")]
@@ -112,14 +115,37 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
+		static bool HasConstraints (IEnumerable<GenericParameter> genericParameters)
+		{
+			foreach (GenericParameter gp in genericParameters) {
+				if (gp.HasConstraints || (gp.Attributes != GenericParameterAttributes.NonVariant))
+					return true;
+			}
+			return false;
+		}
+
+		static bool HasConstraints (IGenericParameterProvider gp)
+		{
+			if (!gp.HasGenericParameters)
+				return false;
+			return HasConstraints (gp.GenericParameters);
+		}
+
 		private void CheckAssemblyTypes (AssemblyDefinition assembly, TypeDefinition iface)
 		{
+			// FIXME: ignore interfaces with generic constraints
+			if (HasConstraints (iface))
+				return;
+
 			foreach (ModuleDefinition module in assembly.Modules) {
 				foreach (TypeDefinition type in module.GetAllTypes ()) {
+					// FIXME: ignore type with generic constraints
+					if (HasConstraints (type))
+						continue;
 					if (DoesTypeStealthilyImplementInterface (type, iface)) {
 						string msg = string.Format ("Type implements '{0}' interface but does not declare it.", iface);
 						// use our own Defect since the *real* target (of analysis) is 'type' not 'iface'
-						Runner.Report (new Defect (this, type, iface, Severity.Medium, Confidence.High, msg));
+						Runner.Report (new Defect (this, type, type, Severity.Medium, Confidence.High, msg));
 					}
 				}
 			}
@@ -143,6 +169,10 @@ namespace Gendarme.Rules.Design {
 				return false;
 
 			foreach (MethodDefinition m in mdc) {
+				// FIXME: ignore methods with generic constraints
+				if (HasConstraints (m))
+					return false;
+
 				//if any candidate fails we can return right away
 				//since the interface will never be fully implemented
 				MethodDefinition candidate = type.GetMethod (MethodAttributes.Public, m.Name);
@@ -151,6 +181,9 @@ namespace Gendarme.Rules.Design {
 
 				//ok interesting candidate! let's check if it matches the signature
 				if (!m.CompareSignature (candidate))
+					return false;
+				// FIXME: ignore methods with generic constraints
+				if (HasConstraints (candidate))
 					return false;
 			}
 
