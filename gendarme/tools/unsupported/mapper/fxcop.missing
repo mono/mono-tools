@@ -52,7 +52,6 @@ CA1900	Value type fields should be portable                                     
 CA1903	Use only API from targeted framework                                                         http://msdn.microsoft.com/en-us/library/cc667408.aspx
 
 Microsoft.Reliability
-CA2000	Dispose objects before losing scope                                                          http://msdn.microsoft.com/en-us/library/ms182289.aspx
 CA2003	Do not treat fibers as threads                                                               http://msdn.microsoft.com/en-us/library/ms182291.aspx
 
 Microsoft.Security
