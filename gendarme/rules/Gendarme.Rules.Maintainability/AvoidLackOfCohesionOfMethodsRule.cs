@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
-// 	(C) 2008 Cedric Vivier
+// (C) 2008 Cedric Vivier
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -42,6 +44,8 @@ namespace Gendarme.Rules.Maintainability {
 	/// This rule checks every type for lack of cohesion between the fields and the methods. Low cohesion is often
 	/// a sign that a type is doing too many, different and unrelated things. The cohesion score is given for each defect 
 	/// (higher is better).
+	/// Automatic properties (e.g. available in C# 3) are considered as fields since their 'backing field' cannot be
+	/// directly used and the getter/setter is only used to update a single field.
 	/// </summary>
 	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
@@ -60,8 +64,8 @@ namespace Gendarme.Rules.Maintainability {
 		private double medCoh = DefaultMediumCoh;
 		private int method_minimum_count = DefaultMethodMinimumCount;
 		private int field_minimum_count = DefaultFieldMinimumCount;
-		private Dictionary<FieldReference, int> F  = new Dictionary<FieldReference, int>();
-		private List<FieldReference> Fset = new List<FieldReference>();
+		private Dictionary<MemberReference, int> F = new Dictionary<MemberReference, int> ();
+		private List<MemberReference> Fset = new List<MemberReference> ();
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -88,6 +92,21 @@ namespace Gendarme.Rules.Maintainability {
 			return RuleResult.Failure;
 		}
 
+		// works with "field-like" automatic properties
+		private bool SetField (MemberReference field, TypeReference type)
+		{
+			if ((field.DeclaringType != type) || Fset.Contains (field))
+				return false;
+
+			if (F.ContainsKey (field)) {
+				F [field]++;
+			} else {
+				F.Add (field, 1);
+			}
+			Fset.Add (field);
+			return true;
+		}
+
 		public double GetCohesivenessForType (TypeDefinition type)
 		{
 			if (type == null)
@@ -106,36 +125,38 @@ namespace Gendarme.Rules.Maintainability {
 				//Fset keeps the fields already addressed in the current method
 				Fset.Clear ();
 
-				foreach (Instruction inst in method.Body.Instructions)
-				{
-					if (OperandType.InlineField == inst.OpCode.OperandType)
-					{
+				foreach (Instruction inst in method.Body.Instructions) {
+					MemberReference mr = null;
+
+					switch (inst.OpCode.OperandType) {
+					case OperandType.InlineField:
 						FieldDefinition fd = inst.Operand as FieldDefinition;
-						if (null == fd || !fd.IsPrivate || fd.IsStatic)
+						if (null == fd || !fd.IsPrivate || fd.IsStatic || fd.IsGeneratedCode ())
 							continue; //does not make sense for LCOM calculation
-						if (fd.DeclaringType == type && !Fset.Contains (fd))
-						{
-							if (!Mset) M++;
+						mr = fd;
+						break;
+					case OperandType.InlineMethod:
+						// special case for automatic properties since the 'backing' fields won't be used
+						MethodDefinition md = inst.Operand as MethodDefinition;
+						if (md == null || md.IsPrivate || md.IsStatic || !md.IsProperty () || !md.IsGeneratedCode ())
+							continue;
+						mr = md.GetPropertyByAccessor ();
+						break;
+					}
+
+					if (mr != null) {
+						bool result = SetField (mr, type);
+						if (result && !Mset) {
+							M++;
 							Mset = true;
-							if (F.ContainsKey(fd))
-							{
-								F[fd]++;
-							}
-							else
-							{
-								F.Add(fd, 1);
-							}
-							Fset.Add(fd);
 						}
 					}
 				}
 			}
 
-			if (M > MinimumMethodCount && F.Count > MinimumFieldCount)
-			{
+			if (M > MinimumMethodCount && F.Count > MinimumFieldCount) {
 				double r = 0;
-				foreach (KeyValuePair<FieldReference,int> f in F)
-				{
+				foreach (KeyValuePair<MemberReference,int> f in F) {
 					r += f.Value;
 				}
 				double rm = r / F.Count;
