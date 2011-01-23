@@ -12,6 +12,8 @@ rules_sources =  \
 	ReviewMisleadingFieldNamesRule.cs \
 	VariableNamesShouldNotMatchFieldNamesRule.cs
 
+EXTRA_TESTS_OPTIONS += -r:System.Runtime.Serialization.dll
+
 tests_sources = \
 	AvoidAlwaysNullFieldTest.cs \
 	AvoidComplexMethodsTest.cs \
