@@ -66,6 +66,7 @@
     <Compile Include="FinalizersShouldBeProtectedTest.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueTest.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="PreferUriOverStringTest.cs" />
     <Compile Include="StronglyTypeICollectionMembersTest.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairTest.cs" />
     <Compile Include="ImplementIComparableCorreclyTest.cs" />
