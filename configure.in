@@ -181,6 +181,7 @@ GENDARME_VERSION=$TOOLS_VERSION
 AC_SUBST(GENDARME_VERSION)
 
 AC_OUTPUT([
+mono-tools.spec
 Makefile
 gsharp/Makefile
 gsharp/gsharp

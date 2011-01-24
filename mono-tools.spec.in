@@ -1,44 +1,102 @@
-Summary: Tools for use with the Mono Runtime
-Name: mono-tools
-Version: @VERSION@
-Release: 1
-License: Various (X11, GPL)
-Group: Development/Tools
-Source: http://www.go-mono.com/archive/mono-tools-0.1.tar.gz
-URL: http://www.go-mono.com/
-BuildRoot: %{_tmppath}/%{name}-root
-Requires: mono, gtk-sharp
-BuildRequires: mono-devel
-Packager: Jonathan Pryor <jonpryor@vt.edu>
+Name:           mono-tools
+Version:        @VERSION@
+Release:        0
+License:        GPL v2 only ; LGPL v2.0 only ; MIT License (or similar)
+BuildArch:      noarch
+Url:            http://go-mono.org/
+Source0:        %{name}-%{version}.tar.bz2
+Summary:        Collection of Tools and Utilities for Mono
+Group:          Development/Tools/Other
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+BuildRequires:  mono-devel mono-nunit monodoc-core
+BuildRequires:  update-desktop-files
+BuildRequires:  webkit-sharp
+BuildRequires:  glade-sharp2
 
 %description
-A collection of tools and utilities for use with the Mono runtime environment.
+Mono Tools is a collection of development and testing programs and
+utilities for use with Mono.
+
+%files -f %{name}.lang
+%defattr(-, root, root)
+%_bindir/create-native-map
+%_bindir/emveepee
+%_bindir/gendarme
+%_bindir/gendarme-wizard
+%_bindir/gd2i
+%_bindir/gsharp
+%_bindir/gui-compare
+%_bindir/ilcontrast
+%_bindir/minvoke
+%_bindir/monodoc
+%_bindir/mperfmon
+%_bindir/mprof-decoder
+%_bindir/mprof-heap-viewer
+%_datadir/applications/gendarme-wizard.desktop
+%_datadir/applications/gsharp.desktop
+%_datadir/applications/ilcontrast.desktop
+%_datadir/applications/monodoc.desktop
+%_datadir/create-native-map
+%_datadir/icons/hicolor/*/apps/monodoc.png
+%_datadir/pixmaps/gendarme.svg
+%_datadir/pixmaps/ilcontrast.png
+%_datadir/pixmaps/monodoc.png
+%_datadir/pkgconfig/create-native-map.pc
+%_datadir/pkgconfig/gendarme-framework.pc
+%_mandir/man1/create-native-map*
+%_mandir/man1/gd2i*
+%_mandir/man1/gendarme*
+%_mandir/man1/mperfmon*
+%_mandir/man1/mprof-decoder*
+%_mandir/man1/mprof-heap-viewer*
+%_mandir/man5/gendarme*
+%_prefix/lib/create-native-map
+%_prefix/lib/gendarme
+%_prefix/lib/gsharp
+%_prefix/lib/gui-compare
+%_prefix/lib/ilcontrast
+%_prefix/lib/minvoke
+%_prefix/lib/mono-tools
+%_prefix/lib/monodoc/*.dll*
+%_prefix/lib/monodoc/*.exe*
+%_prefix/lib/monodoc/sources
+%_prefix/lib/mperfmon
+
+%package -n monodoc-http
+License:        X11/MIT
+Summary:        ASP.NET front-end for displaying Monodoc documentation
+Group:          Development/Tools/Other
+
+%description -n monodoc-http
+Monodoc-http provides an ASP.NET front-end for displaying installed 
+Monodoc documentation.
+
+%files -n monodoc-http
+%defattr(-, root, root)
+%_prefix/lib/monodoc/web
 
 %prep
 %setup -q
 
 %build
-./configure
-make
+./configure --prefix=%{_prefix} --libdir=%{_prefix}/lib --sysconfdir=%{_sysconfdir} --mandir=%{_mandir}
 
 %install
-rm -rf %{buildroot}
-%makeinstall
+make install DESTDIR=%{buildroot}
+%suse_update_desktop_file monodoc
+%suse_update_desktop_file ilcontrast
+%suse_update_desktop_file gendarme-wizard
+%suse_update_desktop_file gsharp
+# Move create-native-map stuff out of lib into share
+mkdir $RPM_BUILD_ROOT/%_prefix/share/create-native-map
+mv $RPM_BUILD_ROOT/%_prefix/lib/create-native-map/MapAttribute.cs $RPM_BUILD_ROOT/%_prefix/share/create-native-map
+mv $RPM_BUILD_ROOT/%_prefix/lib/pkgconfig $RPM_BUILD_ROOT/%_prefix/share
+%find_lang %{name}
 
 %clean
-rm -rf %{buildroot}
+rm -Rf %{buildroot}
 
-%post 
-
-%postun 
-
-%files
-%defattr(-, root, root)
-%doc AUTHORS LICENSE MIT.X11 COPYING COPYING.LIB ChangeLog NEWS README
-%{_bindir}/type-reflector
-%{_bindir}/type-reflector.exe
-%{_bindir}/type-reflector.exe.config
+%post
+%{_bindir}/monodoc --make-index
 
 %changelog
-* Mon Oct 06 2003 Jonathan Pryor <jonpryor@vt.edu>
-- Initial RPM release.
