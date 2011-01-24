@@ -69,6 +69,7 @@
     <Compile Include="EnumsShouldUseInt32Rule.cs" />
     <Compile Include="FinalizersShouldBeProtectedRule.cs" />
     <Compile Include="FlagsShouldNotDefineAZeroValueRule.cs" />
+    <Compile Include="PreferUriOverStringRule.cs" />
     <Compile Include="StronglyTypeICollectionMembersRule.cs" />
     <Compile Include="ImplementEqualsAndGetHashCodeInPairRule.cs" />
     <Compile Include="ImplementIComparableCorreclyRule.cs" />
