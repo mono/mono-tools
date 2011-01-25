@@ -53,7 +53,7 @@ namespace Gendarme.Tools {
 				// look for 'gendarme-output/rules/rule/'
 				while (reader.Read () && (reader.Name != "rule"));
 				do {
-					full_names.Add (reader ["Name"], "R: " + reader.ReadInnerXml ());
+					full_names.Add (reader ["Uri"], "R: " + reader.ReadInnerXml ());
 				} while (reader.Read () && reader.HasAttributes);
 
 				// look for 'gendarme-output/results/
@@ -67,18 +67,29 @@ namespace Gendarme.Tools {
 					switch (reader.Name) {
 					case "rule":
 						targets = new HashSet<string> ();
-						entries.Add (full_names [reader ["Name"]], targets);
+						entries.Add (full_names [reader ["Uri"]], targets);
 						break;
 					case "target":
 						string target = reader ["Name"];
-						if (target.IndexOf (' ') != -1)
-							targets.Add ("M: " + target);
-						else
-							targets.Add ("T: " + target);
+						if (target.IndexOf (' ') != -1) {
+							targets.Add ((IsTargetAssembly (target) ? "A: " : "M: ") + target);
+						} else {
+							targets.Add ((IsAllAssembly (reader ["Assembly"]) ? "N: " : "T: ") + target);
+						}
 						break;
 					}
 				}
 			}
+		}
+
+		static bool IsTargetAssembly (string target)
+		{
+			return (target.Contains (", Version=") && target.Contains (", Culture") && target.Contains (", PublicKeyToken="));
+		}
+
+		static bool IsAllAssembly (string assembly)
+		{
+			return (assembly == "[across all assemblies analyzed]");
 		}
 
 		[SuppressMessage ("Gendarme.Rules.Smells", "AvoidSwitchStatementsRule", Justification = "kiss")]
