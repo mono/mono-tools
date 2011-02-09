@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -163,10 +164,10 @@ namespace Test.Rules.Maintainability {
 			}
 		}
 
-		private class Ignore1 {
-			private string name;	
-			
-			public Ignore1 (bool flag)
+		private class TernaryIf {
+			private string name;
+
+			public TernaryIf (bool flag)
 			{
 				name = flag ? "hmm" : null;	// we don't handle this properly
 			}
@@ -203,11 +204,32 @@ namespace Test.Rules.Maintainability {
 			AssertRuleFailure<Bad4> (1);
 		}
 
+		class Bug667692a {
+
+			private string [] bar = null;
+
+			public void SetBar (IEnumerable<string> boo)
+			{
+				bar = boo == null ? null : boo.ToArray ();
+			}
+		}
+
+		class Bug667692b {
+
+			private string [] bar = null;
+
+			public void SetBar (IEnumerable<string> boo)
+			{
+				bar = boo != null ? boo.ToArray () : null;
+			}
+		}
+
 		[Test]
-		[Ignore ("we don't track null values")]
-		public void Ignores ()
+		public void MultipleAssignment ()
 		{
-			AssertRuleFailure<Ignore1> (1);
+			AssertRuleSuccess<TernaryIf> ();
+			AssertRuleSuccess<Bug667692a> ();
+			AssertRuleSuccess<Bug667692b> ();
 		}
 	}
 }
