@@ -192,12 +192,14 @@ namespace Gendarme.Rules.Maintainability {
 			return ifaceDef;
 		}
 
+		static string [] Empty = new string [0];
+
 		private static MethodSignature GetSignature (MethodReference method)
 		{
 			string name = method.Name;
 			string rtype = GetReturnTypeSignature (method);
 			if (!method.HasParameters)
-				return new MethodSignature (name, rtype);
+				return new MethodSignature (name, rtype, Empty);
 
 			IList<ParameterDefinition> pdc = method.Parameters;
 			int count = pdc.Count;
