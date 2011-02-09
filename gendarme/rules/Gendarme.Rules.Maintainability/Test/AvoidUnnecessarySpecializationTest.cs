@@ -181,6 +181,11 @@ namespace Test.Rules.Maintainability {
 			Type [] types = new Type [0];
 			return Array.IndexOf<Type> (types, type);
 		}
+
+		public FieldInfo [] OverloadNotSupportedByInterface (Type type)
+		{
+			return type.GetFields ();
+		}
 	}
 
 	public class SpecializedClass {
@@ -275,6 +280,12 @@ namespace Test.Rules.Maintainability {
 		{
 			MemberInfo [] types = new MemberInfo [0];
 			return Array.IndexOf<MemberInfo> (types, type);
+		}
+
+		public FieldInfo [] OverloadNotSupportedByInterface (Type type)
+		{
+			//IReflect support this GetFields overload
+			return type.GetFields (BindingFlags.Public);
 		}
 	}
 
@@ -533,15 +544,13 @@ namespace Test.Rules.Maintainability {
 
 		// extracted from AvoidLongParameterListsRule where IMethodSignature was suggested
 		// but could not be cast (when compiled) into Mono.Cecil.IMetadataTokenProvider
-		// the rule select one of the two incompatible interfaces instead of a base type
-		private void CheckConstructor (MethodDefinition constructor)
+		private void CheckConstructor (IMethodSignature constructor)
 		{
 			if (HasMoreParametersThanAllowed (constructor))
 				Runner.Report (constructor, Severity.Medium, Confidence.Normal, "This constructor contains a long parameter list.");
 		}
 
 		[Test]
-		[Ignore ("see self-test.ignore")]
 		public void UncompilableSuggestion ()
 		{
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("CheckConstructor");
@@ -614,6 +623,13 @@ namespace Test.Rules.Maintainability {
 		public void MultiDimSet ()
 		{
 			AssertRuleSuccess<AvoidUnnecessarySpecializationTest> ("Fill");
+		}
+
+		[Test]
+		public void OverloadNotSupportedByInterface ()
+		{
+			AssertRuleSuccess<GeneralizedClass> ("OverloadNotSupportedByInterface");
+			AssertRuleFailure<SpecializedClass> ("OverloadNotSupportedByInterface", 1);
 		}
 	}
 }

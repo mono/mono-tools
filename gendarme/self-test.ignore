@@ -411,8 +411,6 @@ T: Gendarme.Wizard
 # BUG - suggestion won't compile - two different, incompatible interfaces are used IMethodSignature and IMetadataTokenProvider
 # rule suggest the first one (same depth) but since it cannot be casted it should propose a base class
 R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckConstructor(Mono.Cecil.MethodDefinition)
-M: System.Void Gendarme.Rules.Smells.AvoidLongParameterListsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: System.Boolean Gendarme.Rules.Interoperability.Com.ComRocks::IsTypeComVisible(Mono.Cecil.TypeDefinition)
 M: System.Boolean Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::IsBase(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)
 M: System.Boolean Gendarme.Rules.Correctness.BadRecursiveInvocationRule::CompareMethods(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)

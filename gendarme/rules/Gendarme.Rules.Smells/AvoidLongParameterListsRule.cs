@@ -124,7 +124,7 @@ namespace Gendarme.Rules.Smells {
 			return (method.HasParameters ? method.Parameters.Count : 0) >= MaxParameters;
 		}
 
-		private void CheckConstructor (MethodDefinition constructor)
+		private void CheckConstructor (IMethodSignature constructor)
 		{
 			//Skip enums, interfaces, <Module>, static classes ...
 			//All stuff that doesn't contain a constructor
@@ -134,7 +134,7 @@ namespace Gendarme.Rules.Smells {
 				Runner.Report (constructor, Severity.Medium, Confidence.Normal, "This constructor contains a long parameter list.");
 		}
 
-		private void CheckMethod (MethodDefinition method)
+		private void CheckMethod (IMethodSignature method)
 		{
 			if (HasMoreParametersThanAllowed (method))
 				Runner.Report (method, Severity.Medium, Confidence.Normal, "This method contains a long parameter list.");
