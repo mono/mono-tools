@@ -17,8 +17,6 @@ namespace Gendarme.Rules.Exceptions.Impl {
 		{
 			if (start == null)
 				throw new ArgumentNullException ("start");
-			if (end == null)
-				throw new ArgumentNullException ("end");
 
 			List<ExecutionPathCollection> paths = new List<ExecutionPathCollection> ();
 			CreatePathHelper (start, end, new ExecutionPathCollection (), paths);
