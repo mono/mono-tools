@@ -167,7 +167,7 @@ namespace Gendarme.Rules.Globalization {
 					continue;
 
 				TypeReference type = mr.DeclaringType;
-				if (!(type is ArrayType)) {
+				if (!type.IsArray) {
 					// if (type.GetElementType ().HasGenericParameters)
 					// the simpler ^^^ does not work under Mono but works on MS
 					type = type.Resolve ();
