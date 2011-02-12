@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -37,8 +37,8 @@ namespace Gendarme.Rules.Design {
 
 	/// <summary>
 	/// This rule checks for types that contain only static members and, if the assembly
-	/// targets the CLR version 2.0 or later, suggests that the type be made <c>static</c>.
-	/// The rule will ignore assemblies targeting earlier versions of the CLR.
+	/// targets the CLR version 2.0 or later, suggests that the type be made <c>static</c>
+	/// or, for earlier versions, that the type be made <c>sealed</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -51,7 +51,7 @@ namespace Gendarme.Rules.Design {
 	/// </code>
 	/// </example>
 	/// <example>
-	/// Good example:
+	/// Good example (targetting CLR 2.0 and later):
 	/// <code>
 	/// public static class Class {
 	///	public static void Method ()
@@ -60,21 +60,21 @@ namespace Gendarme.Rules.Design {
 	/// }
 	/// </code>
 	/// </example>
+	/// <example>
+	/// Good example (targetting CLR 1.x):
+	/// <code>
+	/// public sealed class Class {
+	///	public static void Method ()
+	///	{
+	///	}
+	/// }
+	/// </code>
+	/// </example>
 
 	[Problem ("This type contains only static fields and methods and should be static.")]
-	[Solution ("Change this type into a static type to gain clarity and better error reporting.")]
+	[Solution ("Change this type into a static (or sealed for 1.x) type gain clarity and better error reporting.")]
+	[FxCopCompatibility ("Microsoft.Design", "CA1052:StaticHolderTypesShouldBeSealed")]
 	public class ConsiderUsingStaticTypeRule : Rule, ITypeRule {
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// Static type exists only since 2.0 so there's no point to execute this
-			// rule on every type if the assembly target runtime is earlier than 2.0
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
-			};
-		}
 
 		static bool IsAllStatic (TypeDefinition type)
 		{
@@ -99,31 +99,15 @@ namespace Gendarme.Rules.Design {
 			return true;
 		}
 
-		static int GetMethodCount (TypeDefinition type)
-		{
-			if (!type.HasMethods)
-				return 0;
-
-			int methods = 0;
-
-			foreach (var method in type.Methods) {
-				if (!method.IsConstructor)
-					methods++;
-			}
-
-			return methods;
-		}
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only if the type isn't: an enum, an interface, a struct, a delegate or compiler generated
-			if (type.IsEnum || type.IsInterface || type.IsValueType || !type.HasFields && GetMethodCount (type) == 0
-				|| type.IsDelegate () || type.IsGeneratedCode () 
+			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsDelegate () || type.IsGeneratedCode () 
 				|| type.BaseType != null && type.BaseType.FullName != "System.Object")
 				return RuleResult.DoesNotApply;
 			
-			// success if the type is already static
-			if (type.IsStatic ())
+			// success if the type is already static or, before 2.0, is it's sealed
+			if ((type.Module.Runtime >= TargetRuntime.Net_2_0) ? type.IsStatic () : type.IsSealed)
 				return RuleResult.Success;
 			
 			if (IsAllStatic (type)) {

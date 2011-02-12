@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -84,9 +84,9 @@ namespace Test.Rules.Design {
 		}
 
 		[Test]
-		public void SkipOnEmptyClassTest ()
+		public void EmptyClassHasDefaultPublicInstanceCtor ()
 		{
-			AssertRuleDoesNotApply<EmptyClass> ();
+			AssertRuleFailure<EmptyClass> ();
 		}
 
 		//You cannot do this class static

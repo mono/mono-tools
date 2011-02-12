@@ -3,7 +3,6 @@ CA1025	Replace repetitive arguments with params array                           
 CA1026	Default parameters should not be used                                                        http://msdn.microsoft.com/en-us/library/ms182135.aspx
 CA1033	Interface methods should be callable by child types                                          http://msdn.microsoft.com/en-us/library/ms182153.aspx
 CA1046	Do not overload operator equals on reference types                                           http://msdn.microsoft.com/en-us/library/ms182145.aspx
-CA1052	Static holder types should be sealed                                                         http://msdn.microsoft.com/en-us/library/ms182168.aspx
 CA1058	Types should not extend certain base types                                                   http://msdn.microsoft.com/en-us/library/ms182171.aspx
 CA1061	Do not hide base class methods                                                               http://msdn.microsoft.com/en-us/library/ms182143.aspx
 CA1063	Implement IDisposable correctly                                                              http://msdn.microsoft.com/en-us/library/ms244737.aspx
