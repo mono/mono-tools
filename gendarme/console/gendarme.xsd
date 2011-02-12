@@ -34,7 +34,7 @@
 	<xs:complexType name="parameterType">
 		<xs:attribute name="rule" type="notEmptyString" use="required"/>
 		<xs:attribute name="property" type="notEmptyString" use="required"/>
-		<xs:attribute name="value" type="xs:integer" use="required"/>
+		<xs:attribute name="value" type="xs:string" use="required"/>
 	</xs:complexType>
 
 	<!-- Facets -->
