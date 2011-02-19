@@ -215,7 +215,7 @@ namespace Gendarme.Rules.Gendarme {
 			// if possible, check if argument type implements IEngine
 			if (argument.Type.IsNamed ("System", "Type")) {
 				TypeReference tr = (argument.Value as TypeReference);
-				if (tr == null || !tr.Inherits ("Gendarme.Framework.Engine")) // IEngine does not exist yet
+				if (tr == null || !tr.Inherits ("Gendarme.Framework", "Engine")) // IEngine does not exist yet
 					Runner.Report (provider, Severity.Medium, Confidence.High,
 						"EngineDependency attribute argument should implement IEngine interface");
 

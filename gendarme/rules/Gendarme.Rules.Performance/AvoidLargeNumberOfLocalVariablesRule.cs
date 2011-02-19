@@ -70,7 +70,7 @@ namespace Gendarme.Rules.Performance {
 			// special case for System.Windows.Forms since it's designer does not
 			// mark this code as generated :-(
 			if (method.Name == "InitializeComponent") {
-				if (method.DeclaringType.Inherits ("System.Windows.Forms.Form"))
+				if (method.DeclaringType.Inherits ("System.Windows.Forms", "Form"))
 					return RuleResult.DoesNotApply;
 			}
 

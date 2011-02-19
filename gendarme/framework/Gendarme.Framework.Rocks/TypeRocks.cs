@@ -331,21 +331,23 @@ namespace Gendarme.Framework.Rocks {
 		/// where the information resides could be unavailable.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
-		/// <param name="className">Full name of the base class</param>
+		/// <param name="nameSpace">The namespace of the base class to be matched</param>
+		/// <param name="name">The name of the base class to be matched</param>
 		/// <returns>True if the type inherits from specified class, False otherwise</returns>
-		public static bool Inherits (this TypeReference self, string className)
+		public static bool Inherits (this TypeReference self, string nameSpace, string name)
 		{
-			if (className == null)
-				throw new ArgumentNullException ("className");
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+			if (name == null)
+				throw new ArgumentNullException ("name");
 			if (self == null)
 				return false;
 
 			TypeReference current = self.Resolve ();
 			while (current != null) {
-				string fullname = current.GetFullName ();
-				if (fullname == className)
+				if (current.IsNamed (nameSpace, name))
 					return true;
-				if (fullname == "System.Object")
+				if (current.IsNamed ("System", "Object"))
 					return false;
 
 				TypeDefinition td = current.Resolve ();
@@ -356,6 +358,14 @@ namespace Gendarme.Framework.Rocks {
 			return false;
 		}
 
+		/// <summary>
+		/// Check if the type and its namespace are named like the provided parameters.
+		/// This is preferred to checking the FullName property since the later can allocate (string) memory.
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <param name="nameSpace">The namespace to be matched</param>
+		/// <param name="name">The type name to be matched</param>
+		/// <returns>True if the type is namespace and name match the arguments, False otherwise</returns>
 		public static bool IsNamed (this TypeReference self, string nameSpace, string name)
 		{
 			if (nameSpace == null)
@@ -380,7 +390,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			return self.Inherits ("System.Attribute");
+			return self.Inherits ("System", "Attribute");
 		}
 
 		/// <summary>

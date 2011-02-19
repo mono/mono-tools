@@ -86,7 +86,7 @@ namespace Gendarme.Rules.BadPractice {
 				MethodReference call = (ins.Operand as MethodReference);
 				if (call.Name != "GetInterface")
 					continue;
-				if (!call.DeclaringType.Inherits ("System.Type")) // not a sealed type
+				if (!call.DeclaringType.Inherits ("System", "Type")) // not a sealed type
 					continue;
 
 				// check for a null compare

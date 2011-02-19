@@ -83,29 +83,30 @@ namespace Gendarme.Rules.Naming {
 	public class UseCorrectSuffixRule : Rule, ITypeRule {
 
 		static Dictionary<string, HashSet<string>> definedSuffixes = new Dictionary<string, HashSet<string>> ();
+		static Dictionary<string, string> namespaces = new Dictionary<string, string> ();
 		static SortedDictionary<string, Func<TypeDefinition, string>> reservedSuffixes = new SortedDictionary<string, Func<TypeDefinition, string>> ();
 
 		static UseCorrectSuffixRule ()
 		{
-			Add ("Attribute", "System.Attribute", true);
-			Add ("Collection", "System.Collections.ICollection", false);
-			Add ("Collection", "System.Collections.IEnumerable", false);
-			Add ("Collection", "System.Collections.Queue", false);
-			Add ("Collection", "System.Collections.Stack", false);
-			Add ("Collection", "System.Collections.Generic.ICollection`1", false);
-			Add ("Collection", "System.Data.DataSet", false);
-			Add ("Collection", "System.Data.DataTable", false);
-			Add ("Condition", "System.Security.Policy.IMembershipCondition", true);
-			Add ("DataSet", "System.Data.DataSet", true);
-			Add ("DataTable", "System.Data.DataTable", true);
-			Add ("Dictionary", "System.Collections.IDictionary", false);
-			Add ("Dictionary", "System.Collections.IDictionary`2", false);
-			Add ("EventArgs", "System.EventArgs", true);
-			Add ("Exception", "System.Exception", true);
-			Add ("Permission", "System.Security.IPermission", true);
-			Add ("Queue", "System.Collections.Queue", true);
-			Add ("Stack", "System.Collections.Stack", true);
-			Add ("Stream", "System.IO.Stream", true);
+			Add ("Attribute", "System", "Attribute", true);
+			Add ("Collection", "System.Collections", "ICollection", false);
+			Add ("Collection", "System.Collections", "IEnumerable", false);
+			Add ("Collection", "System.Collections", "Queue", false);
+			Add ("Collection", "System.Collections", "Stack", false);
+			Add ("Collection", "System.Collections.Generic", "ICollection`1", false);
+			Add ("Collection", "System.Data", "DataSet", false);
+			Add ("Collection", "System.Data", "DataTable", false);
+			Add ("Condition", "System.Security.Policy", "IMembershipCondition", true);
+			Add ("DataSet", "System.Data", "DataSet", true);
+			Add ("DataTable", "System.Data", "DataTable", true);
+			Add ("Dictionary", "System.Collections", "IDictionary", false);
+			Add ("Dictionary", "System.Collections", "IDictionary`2", false);
+			Add ("EventArgs", "System", "EventArgs", true);
+			Add ("Exception", "System", "Exception", true);
+			Add ("Permission", "System.Security", "IPermission", true);
+			Add ("Queue", "System.Collections", "Queue", true);
+			Add ("Stack", "System.Collections", "Stack", true);
+			Add ("Stream", "System.IO", "Stream", true);
 
 			// special cases
 			reservedSuffixes.Add ("Collection", message => CheckCollection (message));
@@ -119,23 +120,25 @@ namespace Gendarme.Rules.Naming {
 			reservedSuffixes.Add ("Impl", message => "Use the 'Core' prefix instead of 'Impl'.");
 		}
 
-		static void Add (string suffix, string type, bool reserved)
+		static void Add (string suffix, string nameSpace, string name, bool reserved)
 		{
 			if (reserved) {
-				reservedSuffixes.Add (suffix, message => InheritsOrImplements (message, type));
+				reservedSuffixes.Add (suffix, message => InheritsOrImplements (message, nameSpace, name));
 			}
 
 			HashSet<string> set;
-			if (!definedSuffixes.TryGetValue (type, out set)) {
+			if (!definedSuffixes.TryGetValue (name, out set)) {
 				set = new HashSet<string> ();
-				definedSuffixes.Add (type, set);
+				definedSuffixes.Add (name, set);
+				namespaces.Add (name, nameSpace);
 			}
 			set.Add (suffix);
 		}
 
-		static string InheritsOrImplements (TypeReference type, string subtype)
+		static string InheritsOrImplements (TypeReference type, string nameSpace, string name)
 		{
-			if (type.Inherits (subtype) || type.Implements (subtype))
+			string subtype = nameSpace + "." + name; //FIXME temp until Implements is fixed
+			if (type.Inherits (nameSpace, name) || type.Implements (subtype))
 				return String.Empty;
 			return String.Format ("'{0}' should only be used for types that inherits or implements {1}.", type.Name, subtype);
 		}
@@ -147,8 +150,8 @@ namespace Gendarme.Rules.Naming {
 				type.Implements ("System.Collections.Generic.ICollection`1"))
 				return String.Empty;
 
-			if (type.Inherits ("System.Collections.Queue") || type.Inherits ("System.Collections.Stack") || 
-				type.Inherits ("System.Data.DataSet") || type.Inherits ("System.Data.DataTable"))
+			if (type.Inherits ("System.Collections", "Queue") || type.Inherits ("System.Collections", "Stack") || 
+				type.Inherits ("System.Data", "DataSet") || type.Inherits ("System.Data", "DataTable"))
 				return String.Empty;
 
 			return "'Collection' should only be used for implementing ICollection or IEnumerable or inheriting from Queue, Stack, DataSet and DataTable.";
@@ -168,16 +171,24 @@ namespace Gendarme.Rules.Naming {
 			return "'EventHandler' should only be used for event handler delegates.";
 		}
 
-		// handle types using generics
-		private static string GetFullName (TypeReference type)
+		static bool TryGetCandidates (TypeReference type, out HashSet<string> candidates)
 		{
-			string name = type.GetFullName ();
-			// handle types using generics
+			string name = type.Name;
 			if ((type is GenericInstanceType) || type.HasGenericParameters) {
 				int pos = name.IndexOf ('`');
-				name = name.Substring (0, pos);
+				if (pos != -1)
+					name = name.Substring (0, pos);
 			}
-			return name;
+			
+			if (definedSuffixes.TryGetValue (name, out candidates)) {
+				string nspace;
+				if (namespaces.TryGetValue (name, out nspace)) {
+					if (nspace == type.Namespace)
+						return true;
+				}
+			}
+			candidates = null;
+			return false;
 		}
 
 		// checks if type name ends with an approriate suffix
@@ -189,18 +200,15 @@ namespace Gendarme.Rules.Naming {
 			currentTypeSuffix = false;
 
 			while (current != null && current.BaseType != null) {
-				string base_name = GetFullName (current.BaseType);
-
 				HashSet<string> candidates;
-				if (definedSuffixes.TryGetValue (base_name, out candidates)) {
+				if (TryGetCandidates (current.BaseType, out candidates)) {
 					suffixes.AddRangeIfNew (candidates);
 					if (current == type)
 						currentTypeSuffix = true;
 				} else {
 					// if no suffix for base type is found, we start looking through interfaces
 					foreach (TypeReference iface in current.Interfaces) {
-						string interface_name = GetFullName (iface);
-						if (definedSuffixes.TryGetValue (interface_name, out candidates)) {
+						if (TryGetCandidates (iface, out candidates)) {
 							suffixes.AddRangeIfNew (candidates);
 							if (current == type)
 								currentTypeSuffix = true;
@@ -210,8 +218,9 @@ namespace Gendarme.Rules.Naming {
 				if (suffixes.Count > 0) {
 					// if any suffixes found
 					// check whether type name ends with any of these suffixes
+					string tname = type.Name;
 					return suffixes.Exists (delegate (string suffix) {
-						return GetFullName (type).EndsWith (suffix, StringComparison.Ordinal);
+						return HasSuffix (tname, suffix);
 					});
 				} else {
 					// inspect base type
@@ -239,6 +248,21 @@ namespace Gendarme.Rules.Naming {
 
 		private List<string> proposedSuffixes = new List<string> ();
 
+		static bool HasSuffix (string typeName, string suffix)
+		{
+			if (suffix.Length > typeName.Length)
+				return false;
+
+			// generic aware
+			int gpos = typeName.LastIndexOf ('`');
+			if (gpos == -1)
+				gpos = typeName.Length;
+			else if (suffix.Length > gpos)
+				return false;
+
+			return (String.Compare (suffix, 0, typeName, gpos - suffix.Length, suffix.Length, StringComparison.OrdinalIgnoreCase) == 0);
+		}
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to generated code (outside developer's control)
@@ -247,10 +271,11 @@ namespace Gendarme.Rules.Naming {
 
 			// ok, rule applies
 
+			string tname = type.Name;
 			// first check if the current suffix is correct
 			// e.g. MyAttribute where the type does not inherit from Attribute
 			foreach (string suffix in reservedSuffixes.Keys) {
-				if (type.Name.EndsWith (suffix, StringComparison.OrdinalIgnoreCase)) {
+				if (HasSuffix (tname, suffix)) {
 					Func<TypeDefinition, string> f;
 					if (reservedSuffixes.TryGetValue (suffix, out f)) {
 						string msg = f (type);

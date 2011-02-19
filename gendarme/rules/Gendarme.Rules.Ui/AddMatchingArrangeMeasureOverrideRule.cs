@@ -89,7 +89,7 @@ namespace Gendarme.Rules.UI {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (!type.IsClass || !type.HasMethods || !type.Inherits ("System.Windows.FrameworkElement"))
+			if (!type.IsClass || !type.HasMethods || !type.Inherits ("System.Windows", "FrameworkElement"))
 				return RuleResult.DoesNotApply;
 			var arrangeOverride = type.GetMethod (arrangeSignature);
 			var measureOverride = type.GetMethod (measureSignature);

@@ -159,7 +159,7 @@ namespace Gendarme.Rules.Design {
 		{
 			// attributes are a special case where Uri cannot be used and has it's own
 			// rule to cover this: Gendarme.Rules.Correctness.AttributeStringLiteralShouldParseCorrectlyRule
-			if (method.IsConstructor && method.DeclaringType.Inherits ("System.Attribute"))
+			if (method.IsConstructor && method.DeclaringType.Inherits ("System", "Attribute"))
 				return;
 
 			var methodParams = method.Parameters;

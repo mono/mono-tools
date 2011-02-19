@@ -279,6 +279,7 @@ M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::An
 # different code path / switch
 M: System.Void Gendarme.Rules.Correctness.ProvideValidXmlStringRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
 M: System.Void Gendarme.Rules.Correctness.ProvideValidXPathExpressionRule::CheckCall(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodReference)
+M: System.Boolean Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::IsWeakSealedType(Mono.Cecil.TypeReference)
 
 # mono bug wrt metatoken id with generics
 R: Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule

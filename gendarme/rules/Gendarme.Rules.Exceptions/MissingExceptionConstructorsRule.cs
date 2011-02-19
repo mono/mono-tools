@@ -86,9 +86,6 @@ namespace Gendarme.Rules.Exceptions {
 	[FxCopCompatibility ("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
 	public class MissingExceptionConstructorsRule : Rule, ITypeRule {
 
-		// non-localizable
-		private const string Exception = "System.Exception";
-
 		// localizable
 		private const string MissingConstructor = "Exception is missing '{0} {1}{2}' constructor.";
 
@@ -119,7 +116,7 @@ namespace Gendarme.Rules.Exceptions {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule apply only to type that inherits from System.Exception
-			if (!type.Inherits (Exception))
+			if (!type.Inherits ("System", "Exception"))
 				return RuleResult.DoesNotApply;
 
 			// rule applies, only Success or Failure from the point on

@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Design.Generic {
 				return RuleResult.Success;
 			if (!pdc [0].ParameterType.IsNamed ("System", "Object"))
 				return RuleResult.Success;
-			if (!pdc [1].ParameterType.Inherits ("System.EventArgs"))
+			if (!pdc [1].ParameterType.Inherits ("System", "EventArgs"))
 				return RuleResult.Success;
 
 			Runner.Report (type, Severity.Medium, Confidence.High);

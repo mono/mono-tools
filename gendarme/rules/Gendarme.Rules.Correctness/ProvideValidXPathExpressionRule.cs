@@ -74,8 +74,6 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class ProvideValidXPathExpressionRule : Rule, IMethodRule {
 
-		const string XPathNavigatorClass = "System.Xml.XPath.XPathNavigator";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -135,7 +133,7 @@ namespace Gendarme.Rules.Correctness {
 			switch (mref.Name) {
 			case "Compile":
 				TypeReference tr = mref.DeclaringType;
-				if (tr.IsNamed ("System.Xml.XPath", "XPathExpression") || tr.Inherits (XPathNavigatorClass))
+				if (tr.IsNamed ("System.Xml.XPath", "XPathExpression") || tr.Inherits ("System.Xml.XPath", "XPathNavigator"))
 					CheckString (method, ins, GetFirstArgumentOffset (mref));
 				break;
 			case "SelectNodes":
@@ -157,7 +155,7 @@ namespace Gendarme.Rules.Correctness {
 		void CheckXPathNavigatorString (MethodDefinition method, Instruction ins, MethodReference mref)
 		{
 			if (mref.Parameters [0].ParameterType.IsNamed ("System", "String")) {
-				if (mref.DeclaringType.Inherits (XPathNavigatorClass))
+				if (mref.DeclaringType.Inherits ("System.Xml.XPath", "XPathNavigator"))
 					CheckString (method, ins, -1);
 			}
 		}

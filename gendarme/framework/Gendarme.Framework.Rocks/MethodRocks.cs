@@ -238,7 +238,7 @@ namespace Gendarme.Framework.Rocks {
 			TypeReference type = parameters [1].ParameterType;
 			GenericParameter gp = (type as GenericParameter);
 			if (gp == null)
-				return type.Inherits ("System.EventArgs");
+				return type.Inherits ("System", "EventArgs");
 
 			if (gp.HasConstraints) {
 				IList<TypeReference> cc = gp.Constraints;

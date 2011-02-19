@@ -222,33 +222,40 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void Inherits_Null ()
+		public void Inherits_Namespace_Null ()
 		{
-			GetType (String.Empty).Inherits (null);
+			GetType (String.Empty).Inherits (null, "a");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void Inherits_Name_Null ()
+		{
+			GetType (String.Empty).Inherits ("a", null);
 		}
 
 		[Test]
 		public void Inherits ()
 		{
-			Assert.IsFalse (GetType ("/NotAttribute").Inherits ("System.Attribute"), "NotAttribute");
-			Assert.IsTrue (GetType ("/AnAttribute").Inherits ("System.Attribute"), "AnAttribute");
-			Assert.IsFalse (GetType ("/ClassInheritsNotAttribute").Inherits ("System.Attribute"), "ClassInheritsNotAttribute");
-			Assert.IsTrue (GetType ("/AttributeInheritsAnAttribute").Inherits ("System.Attribute"), "AttributeInheritsAnAttribute");
+			Assert.IsFalse (GetType ("/NotAttribute").Inherits ("System", "Attribute"), "NotAttribute");
+			Assert.IsTrue (GetType ("/AnAttribute").Inherits ("System", "Attribute"), "AnAttribute");
+			Assert.IsFalse (GetType ("/ClassInheritsNotAttribute").Inherits ("System", "Attribute"), "ClassInheritsNotAttribute");
+			Assert.IsTrue (GetType ("/AttributeInheritsAnAttribute").Inherits ("System", "Attribute"), "AttributeInheritsAnAttribute");
 		}
 
 		[Test]
 		public void Inherits_FromAnotherAssembly ()
 		{
 			// we can't be sure here so to avoid false positives return false
-			Assert.IsTrue (GetType ("/AttributeInheritsOuterAttribute").Inherits ("System.Attribute"), "AttributeInheritsOuterAttribute");
-			Assert.IsTrue (GetType ("/AttributeInheritsOuterAttributeDerivingAttribute").Inherits ("System.Attribute"), "AttributeInheritsOuterAttributeDerivingAttribute");
+			Assert.IsTrue (GetType ("/AttributeInheritsOuterAttribute").Inherits ("System", "Attribute"), "AttributeInheritsOuterAttribute");
+			Assert.IsTrue (GetType ("/AttributeInheritsOuterAttributeDerivingAttribute").Inherits ("System", "Attribute"), "AttributeInheritsOuterAttributeDerivingAttribute");
 		}
 
 		[Test]
 		public void Inherits_Itself ()
 		{
 			TypeDefinition type = GetType (String.Empty);
-			Assert.IsTrue (type.Inherits (type.FullName), "itself");
+			Assert.IsTrue (type.Inherits (type.Namespace, type.Name), "itself");
 		}
 
 		[Test]

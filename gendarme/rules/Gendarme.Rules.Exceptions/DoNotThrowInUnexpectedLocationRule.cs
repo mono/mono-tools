@@ -28,6 +28,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Text;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -160,10 +162,27 @@ namespace Gendarme.Rules.Exceptions {
 		private static readonly OpCodeBitmask OverflowThrowers = new OpCodeBitmask (0x0, 0x8000000000000000, 0x3FC07F8000001FF, 0x0);
 		private static readonly OpCodeBitmask Casts = new OpCodeBitmask (0x0, 0x48000000000000, 0x400000000, 0x0);
 
-		private static readonly string [] GetterExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException"};
-		private static readonly string [] IndexerExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException", "System.ArgumentException", "System.Collections.Generic.KeyNotFoundException"};
-		private static readonly string [] EventExceptions = new string [] {"System.InvalidOperationException", "System.NotSupportedException", "System.ArgumentException"};
-		private static readonly string [] HashCodeExceptions = new string [] {"System.ArgumentException"};
+		private static readonly string [][] GetterExceptions = new string [][] {
+			new string [] { "System", "InvalidOperationException" },
+			new string [] { "System", "NotSupportedException"}
+		};
+
+		private static readonly string [][] IndexerExceptions = new string [][] {
+			new string [] { "System", "InvalidOperationException" }, 
+			new string [] { "System", "NotSupportedException" }, 
+			new string [] { "System", "ArgumentException" }, 
+			new string [] { "System.Collections.Generic", "KeyNotFoundException" }
+		};
+
+		private static readonly string [][] EventExceptions = new string [][] {
+			new string [] { "System", "InvalidOperationException" }, 
+			new string [] { "System", "NotSupportedException" }, 
+			new string [] { "System", "ArgumentException" }
+		};
+
+		private static readonly string [][] HashCodeExceptions = new string [][] {
+			new string [] { "System", "ArgumentException" }
+		};
 
 		private static bool CheckAttributes (MethodReference method, MethodAttributes attrs)
 		{
@@ -180,7 +199,7 @@ namespace Gendarme.Rules.Exceptions {
 		
 		private MethodSignature equals_signature;
 		private MethodSignature hashcode_signature;
-		private string [] allowedExceptions;
+		private string [][] allowedExceptions;
 		private Severity severity;
 		private bool is_equals;
 
@@ -360,7 +379,7 @@ namespace Gendarme.Rules.Exceptions {
 						if (ins.Previous.Is (Code.Newobj)) {
 							MethodReference mr = (MethodReference) ins.Previous.Operand;
 							TypeReference tr = mr.DeclaringType;
-							if (tr.IsNamed ("System", "NotImplementedException") || tr.Inherits ("System.NotImplementedException"))
+							if (tr.IsNamed ("System", "NotImplementedException") || tr.Inherits ("System", "NotImplementedException"))
 								continue;
 						}	
 					
@@ -372,13 +391,22 @@ namespace Gendarme.Rules.Exceptions {
 						// If the throw does not one of the enumerated exceptions  (or 
 						// a subclass) then we have a problem.
 						else if (ins.Previous.Is (Code.Newobj)) {
-							MethodReference mr = (MethodReference) ins.Previous.Operand;
-							string name = mr.DeclaringType.GetFullName ();
-							if (Array.IndexOf (allowedExceptions, name) < 0) {
-								if (!allowedExceptions.Any (e => mr.DeclaringType.Inherits (e))) {
-									Report (method, ins, methodLabel);
+							TypeReference type = (ins.Previous.Operand as MethodReference ).DeclaringType;
+							bool allowed = false;
+							foreach (string[] entry in allowedExceptions) {
+								if (type.IsNamed (entry [0], entry [1]))
+									allowed = true;
+							}
+							if (!allowed) {
+								foreach (string [] entry in allowedExceptions) {
+									if (type.Inherits (entry [0], entry [1])) {
+										allowed = true;
+										break;
+									}
 								}
 							}
+							if (!allowed)
+								Report (method, ins, methodLabel);
 						}	
 					}
 				}
@@ -390,8 +418,18 @@ namespace Gendarme.Rules.Exceptions {
 			string mesg;
 			if (allowedExceptions == null)
 				mesg = string.Format ("{0} should not throw{1}.", methodLabel, ExplainThrow (ins));
-			else
-				mesg = string.Format ("{0} should only throw {1} or a subclass{2}.", methodLabel, string.Join (", ", allowedExceptions), ExplainThrow (ins));
+			else {
+				StringBuilder sb = new StringBuilder ();
+				sb.Append (methodLabel).Append (" should only throw ");
+				for (int i = 0; i < allowedExceptions.Length; i++) {
+					string [] entry = allowedExceptions [i];
+					sb.Append (entry [0]).Append ('.').Append (entry [1]);
+					if (i < allowedExceptions.Length - 1)
+						sb.Append (", ");
+				}
+				sb.Append (" or a subclass").Append (ExplainThrow (ins)).Append ('.');
+				mesg = sb.ToString ();
+			}
 
 			Log.WriteLine (this, "{0:X4}: {1}", ins.Offset, mesg);
 			Runner.Report (method, ins, severity, Confidence.High, mesg);

@@ -105,7 +105,7 @@ namespace Gendarme.Rules.Gendarme {
 					continue;
 
 				TypeReference type = m.DeclaringType;
-				if (type.Inherits ("System.Exception"))
+				if (type.Inherits ("System", "Exception"))
 					Runner.Report (method, instruction, Severity.Medium, Confidence.High);
 			}
 

@@ -110,7 +110,7 @@ namespace Gendarme.Rules.Exceptions {
 				}
 
 				if (name.EndsWith ("Exception", StringComparison.Ordinal)) {
-					if (type.Inherits ("System.ArgumentException"))
+					if (type.Inherits ("System", "ArgumentException"))
 						Runner.Report (method, ins, Severity.Medium, Confidence.Total, type.GetFullName ());
 				}
 			}

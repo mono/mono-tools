@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Design {
 				}
 			}
 			if (count >= 2) {
-				if (!pdc [1].ParameterType.Inherits ("System.EventArgs")) {
+				if (!pdc [1].ParameterType.Inherits ("System", "EventArgs")) {
 					Runner.Report (eventType, Severity.Medium, Confidence.High, "The second parameter should be a subclass of System.EventArgs");
 					ok = false;
 				}

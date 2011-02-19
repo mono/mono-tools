@@ -96,7 +96,7 @@ namespace Gendarme.Rules.BadPractice {
 
 				MethodReference constructor = (MethodReference) ins.Operand;
 
-				if (!constructor.DeclaringType.Inherits ("System.Exception"))
+				if (!constructor.DeclaringType.Inherits ("System", "Exception"))
 					continue;
 
 				// quick check to save resources

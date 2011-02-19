@@ -77,10 +77,6 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class ProvideValidXmlStringRule : Rule, IMethodRule {
 
-		const string XmlDocumentClass = "System.Xml.XmlDocument";
-		const string XmlNodeClass = "System.Xml.XmlNode";
-		const string XPathNavigatorClass = "System.Xml.XPath.XPathNavigator";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -145,7 +141,7 @@ namespace Gendarme.Rules.Correctness {
 			case "set_InnerXml":
 			case "set_OuterXml":
 				TypeReference tr = mref.DeclaringType;
-				if (tr.Inherits (XmlNodeClass) || tr.Inherits (XPathNavigatorClass))
+				if (tr.Inherits ("System.Xml", "XmlNode") || tr.Inherits ("System.Xml.XPath", "XPathNavigator"))
 					CheckString (method, ins, -1);
 				break;
 			case "AppendChild":
@@ -155,7 +151,7 @@ namespace Gendarme.Rules.Correctness {
 				IList<ParameterDefinition> pdc = mref.Parameters;
 				if (pdc.Count == 1
 					&& pdc [0].ParameterType.IsNamed ("System", "String")
-					&& mref.DeclaringType.Inherits (XPathNavigatorClass))
+					&& mref.DeclaringType.Inherits ("System.Xml.XPath", "XPathNavigator"))
 					CheckString (method, ins, -1);
 				break;
 			}

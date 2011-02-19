@@ -175,7 +175,7 @@ namespace Gendarme.Rules.Maintainability {
 			Log.WriteLine (this);
 			Log.WriteLine (this, "----------------------------------");
 			
-			bool isWinFormControl = usesWinForms && type.Inherits("System.Windows.Forms.Control");
+			bool isWinFormControl = usesWinForms && type.Inherits ("System.Windows.Forms", "Control");
 
 			// All fields start out as always null and unused.
 			foreach (FieldDefinition field in type.Fields) {

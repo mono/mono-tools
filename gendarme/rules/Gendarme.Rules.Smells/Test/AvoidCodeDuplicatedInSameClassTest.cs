@@ -698,8 +698,8 @@ namespace Test.Rules.Smells {
 					type.Implements ("System.Collections.Generic.ICollection`1"))
 					return null;
 
-				if (type.Inherits ("System.Collections.Queue") || type.Inherits ("System.Collections.Stack") || 
-					type.Inherits ("System.Data.DataSet") || type.Inherits ("System.Data.DataTable"))
+				if (type.Inherits ("System.Collections", "Queue") || type.Inherits ("System.Collections", "Stack") || 
+					type.Inherits ("System.Data", "DataSet") || type.Inherits ("System.Data", "DataTable"))
 					return null;
 
 				return "'Collection' should only be used for implementing ICollection or IEnumerable or inheriting from Queue, Stack, DataSet and DataTable.";
