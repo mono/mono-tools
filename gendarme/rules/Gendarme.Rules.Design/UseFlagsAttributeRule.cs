@@ -159,7 +159,7 @@ namespace Gendarme.Rules.Design {
 #if DEBUG
 			Log.WriteLine (this);
 			Log.WriteLine (this, "------------------------------------");
-			Log.WriteLine (this, type.FullName);
+			Log.WriteLine (this, type.GetFullName ());
 			Log.WriteLine (this, "values: {0}", string.Join (" ", (from x in values select x.ToString ("X4")).ToArray ()));
 #endif
 

@@ -80,12 +80,14 @@ namespace Gendarme.Rules.Gendarme {
 			"Gendarme.Framework.Engines.NamespaceEngine"
 		};
 
+		private HashSet<string> declaredEngines = new HashSet<string> ();
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.HasMethods)
 				return RuleResult.DoesNotApply;
 
-			HashSet<string> declaredEngines = GetEngineDependencyValue (type);
+			GetEngineDependencyValue (type);
 
 			foreach (MethodDefinition method in type.Methods) {
 				if (!method.HasBody || !OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
@@ -95,8 +97,14 @@ namespace Gendarme.Rules.Gendarme {
 					MethodReference m = (instruction.Operand as MethodReference);
 					if (m == null)
 						continue;
-					string declaringType = m.DeclaringType.FullName;
-					if (!engines.Contains (declaringType) || declaredEngines.Contains(declaringType))
+
+					TypeReference dtype = m.DeclaringType;
+					// short-cut to avoid FullName - will work as long as all Engines comes from the same namespace (otherwise remove it)
+					if (dtype.Namespace != "Gendarme.Framework.Engines")
+						continue;
+
+					string declaringType = dtype.GetFullName ();
+					if (!engines.Contains (declaringType) || declaredEngines.Contains (declaringType))
 						continue;
 					Runner.Report (method, instruction, Severity.High, Confidence.High, 
 						"An engine " + declaringType + " is being used without type being subscribed to it with EngineDependency attribute.");
@@ -107,27 +115,28 @@ namespace Gendarme.Rules.Gendarme {
 			return Runner.CurrentRuleResult;
 		}
 
-		private HashSet<string> GetEngineDependencyValue (TypeDefinition type)
+		private void GetEngineDependencyValue (TypeDefinition type)
 		{
-			HashSet<string> retval = new HashSet<string> ();
+			declaredEngines.Clear ();
 			TypeDefinition td = type;
-			while (retval.Count < engines.Count) {
+			while (declaredEngines.Count < engines.Count) {
 				if (td.HasCustomAttributes)
 					foreach (CustomAttribute attribute in td.CustomAttributes) {
 						if (!attribute.HasConstructorArguments ||
-							attribute.AttributeType.FullName != "Gendarme.Framework.EngineDependencyAttribute")
+							!attribute.AttributeType.IsNamed ("Gendarme.Framework", "EngineDependencyAttribute"))
 							continue;
-						// ToString for both constuctors (Type and String) will return the type name we need
-						retval.Add (attribute.ConstructorArguments [0].Value.ToString ());
+
+						object value = attribute.ConstructorArguments [0].Value;
+						MemberReference mr = (value as MemberReference);
+						declaredEngines.Add (mr == null ? value.ToString () : mr.GetFullName ());
 					}
 				if (td.BaseType == null)
 					break;
-				TypeDefinition baseType = td.BaseType.Resolve();
+				TypeDefinition baseType = td.BaseType.Resolve ();
 				if (baseType == null)
 					break;
 				td = baseType;
 			}
-			return retval;
 		}
 	}
 }

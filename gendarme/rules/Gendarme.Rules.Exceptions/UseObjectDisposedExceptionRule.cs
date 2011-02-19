@@ -150,7 +150,9 @@ namespace Gendarme.Rules.Exceptions {
 		
 		private void CheckBody (MethodDefinition method)
 		{
-			string fullname = method.DeclaringType.FullName;
+			TypeReference type = method.DeclaringType;
+			string nspace = type.Namespace;
+			string name = type.Name;
 			foreach (Instruction ins in method.Body.Instructions) {
 				switch (ins.OpCode.Code) {
 				case Code.Call:
@@ -160,7 +162,7 @@ namespace Gendarme.Rules.Exceptions {
 						MethodDefinition callee = target.Resolve ();
 						if (callee != null) {
 							if (!callee.IsPublic && !callee.IsStatic) {
-								if (callee.DeclaringType.FullName == fullname) {
+								if (callee.DeclaringType.IsNamed (nspace, name)) {
 									Instruction instance = ins.TraceBack (method);
 									if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 										Log.WriteLine (this, "found non-public this call at {0:X4}", ins.Offset);
@@ -187,7 +189,7 @@ namespace Gendarme.Rules.Exceptions {
 				case Code.Ldflda:
 					if (!field_access_using_this) {
 						FieldReference field = (FieldReference) ins.Operand;
-						if (field.DeclaringType.FullName == fullname) {
+						if (field.DeclaringType.IsNamed (nspace, name)) {
 							Instruction instance = ins.TraceBack (method);
 							if (instance != null && instance.OpCode.Code == Code.Ldarg_0) {
 								Log.WriteLine (this, "found field access at {0:X4}", ins.Offset);
@@ -200,7 +202,7 @@ namespace Gendarme.Rules.Exceptions {
 				case Code.Newobj:
 					if (!creates_exception) {
 						MethodReference ctor = (MethodReference) ins.Operand;
-						if (ctor.DeclaringType.FullName == "System.ObjectDisposedException") {
+						if (ctor.DeclaringType.IsNamed ("System", "ObjectDisposedException")) {
 							Log.WriteLine (this, "creates exception at {0:X4}", ins.Offset);
 							creates_exception = true;
 						}

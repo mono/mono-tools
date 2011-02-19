@@ -32,6 +32,8 @@
 
 using Mono.Cecil;
 
+using Gendarme.Framework.Rocks;
+
 namespace Gendarme.Rules.Interoperability.Com {
 
 	/// <summary>
@@ -56,7 +58,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 					// any attribute without arguments can be skipped
 					if (!attribute.HasConstructorArguments)
 						continue;
-					if (attribute.Constructor.DeclaringType.FullName != "System.Runtime.InteropServices.ComVisibleAttribute")
+					if (!attribute.Constructor.DeclaringType.IsNamed ("System.Runtime.InteropServices", "ComVisibleAttribute"))
 						continue;
 					return (bool) attribute.ConstructorArguments[0].Value;
 				}

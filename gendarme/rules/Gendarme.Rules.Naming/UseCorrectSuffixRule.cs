@@ -171,7 +171,7 @@ namespace Gendarme.Rules.Naming {
 		// handle types using generics
 		private static string GetFullName (TypeReference type)
 		{
-			string name = type.FullName;
+			string name = type.GetFullName ();
 			// handle types using generics
 			if ((type is GenericInstanceType) || type.HasGenericParameters) {
 				int pos = name.IndexOf ('`');

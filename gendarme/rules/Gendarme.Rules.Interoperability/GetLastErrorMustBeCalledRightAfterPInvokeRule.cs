@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Interoperability {
 							break;
 						}
 
-						string s = (mDef == null) ? String.Empty : mDef.DeclaringType.FullName;
+						string s = (mDef == null) ? String.Empty : mDef.DeclaringType.GetFullName ();
 						switch (s) {
 						case "System.Runtime.InteropServices.Marshal":
 							getLastErrorFound = (mDef.Name == "GetLastWin32Error");

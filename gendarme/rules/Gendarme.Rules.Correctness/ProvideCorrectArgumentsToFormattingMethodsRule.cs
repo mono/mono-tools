@@ -131,7 +131,7 @@ namespace Gendarme.Rules.Correctness {
 				return null;
 
 			AssemblyDefinition ad = md.GetAssembly ();
-			string resourceClassName = md.DeclaringType.FullName + ".resources";
+			string resourceClassName = md.DeclaringType.GetFullName () + ".resources";
 			EmbeddedResource resource = GetEmbeddedResource (ad, resourceClassName);
 			if (resource == null)
 				return null;
@@ -242,13 +242,13 @@ namespace Gendarme.Rules.Correctness {
 			// String.Format (string, object, object, object) -> elementsPushed = 3
 			// String.Format (string, object[]) -> compute
 			// String.Format (IFormatProvider, string, object[]) -> compute
-			if (pdc [nbParameters - 1].ParameterType.FullName != "System.Object") {
+			if (!pdc [nbParameters - 1].ParameterType.IsNamed ("System", "Object")) {
 				// If we cannot determine the array size, we succeed (well we don't fail/report)
 				if (!TryComputeArraySize (call, method, nbParameters - 1, out elementsPushed))
 					return;
 
 				// String.Format (IFormatProvider, string, object[]) -> formatPosition = 1
-				if (pdc [0].ParameterType.FullName != "System.String")
+				if (!pdc [0].ParameterType.IsNamed ("System", "String"))
 					formatPosition = 1;
 			}
 
@@ -289,7 +289,7 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				MethodReference mr = (instruction.Operand as MethodReference);
-				if (formatSignature.Matches (mr) && (mr.DeclaringType.FullName == "System.String"))
+				if (formatSignature.Matches (mr) && mr.DeclaringType.IsNamed ("System", "String"))
 					CheckCallToFormatter (instruction, method);
 			}
 

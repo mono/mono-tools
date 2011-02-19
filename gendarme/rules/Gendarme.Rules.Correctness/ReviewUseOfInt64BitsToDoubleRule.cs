@@ -107,9 +107,7 @@ namespace Gendarme.Rules.Correctness {
 					continue;
 
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.Name != "Int64BitsToDouble")
-					continue;
-				if (mr.DeclaringType.FullName != BitConverter)
+				if (!mr.IsNamed ("System", "BitConverter", "Int64BitsToDouble"))
 					continue;
 
 				// if the previous call convert a value into a long (int64)

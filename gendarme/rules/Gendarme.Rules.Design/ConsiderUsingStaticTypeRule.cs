@@ -103,7 +103,7 @@ namespace Gendarme.Rules.Design {
 		{
 			// rule applies only if the type isn't: an enum, an interface, a struct, a delegate or compiler generated
 			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsDelegate () || type.IsGeneratedCode () 
-				|| type.BaseType != null && type.BaseType.FullName != "System.Object")
+				|| type.BaseType != null && !type.BaseType.IsNamed ("System", "Object"))
 				return RuleResult.DoesNotApply;
 			
 			// success if the type is already static or, before 2.0, is it's sealed

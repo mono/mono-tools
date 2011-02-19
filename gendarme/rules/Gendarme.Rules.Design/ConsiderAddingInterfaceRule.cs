@@ -165,7 +165,7 @@ namespace Gendarme.Rules.Design {
 				return false;
 
 			//type already publicly says it implements the interface
-			if (type.Implements (iface.FullName))
+			if (type.Implements (iface.GetFullName ()))
 				return false;
 
 			foreach (MethodDefinition m in mdc) {

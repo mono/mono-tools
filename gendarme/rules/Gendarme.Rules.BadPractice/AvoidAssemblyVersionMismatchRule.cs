@@ -100,7 +100,7 @@ namespace Gendarme.Rules.BadPractice {
 				// any attribute without arguments can be skipped
 				if (!ca.HasConstructorArguments)
 					continue;
-				if (ca.AttributeType.FullName != "System.Reflection.AssemblyFileVersionAttribute")
+				if (!ca.AttributeType.IsNamed ("System.Reflection", "AssemblyFileVersionAttribute"))
 					continue;
 
 				// FIXME: replace with Version.TryParse once we upgrade to FX4.0

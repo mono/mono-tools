@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Metadata;
@@ -156,6 +157,22 @@ namespace Gendarme.Framework.Rocks {
 			AssemblyDefinition other_assembly = GetAssembly (other);
 			// compare assemblies tokens (but do not recurse)
 			return other == null ? false : self_assembly.MetadataToken.Equals (other_assembly.MetadataToken);
+		}
+
+		static Dictionary<MemberReference, string> full_name_cache = new Dictionary<MemberReference, string> ();
+
+		public static string GetFullName (this MemberReference member)
+		{
+			string full_name = null;
+			if (member == null)
+				return full_name;
+
+			if (!full_name_cache.TryGetValue (member, out full_name)) {
+				full_name = member.FullName;
+				full_name_cache.Add (member, full_name);
+			}
+
+			return full_name;
 		}
 	}
 }

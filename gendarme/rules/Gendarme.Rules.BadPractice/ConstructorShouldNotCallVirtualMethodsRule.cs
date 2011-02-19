@@ -177,7 +177,7 @@ namespace Gendarme.Rules.BadPractice {
 						if (mr.HasThis)
 							parameters++;
 						parameters += mr.Parameters.Count;
-						if (mr.ReturnType.FullName != "System.Void")
+						if (!mr.ReturnType.IsNamed ("System", "Void"))
 							parameters--;
 					}
 					break;
@@ -196,7 +196,7 @@ namespace Gendarme.Rules.BadPractice {
 			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return;
 
-			string method_name = method.ToString ();
+			string method_name = method.GetFullName ();
 			// check to avoid constructors calling recursive methods
 			if (stack.Contains (method_name))
 				return;
@@ -216,7 +216,8 @@ namespace Gendarme.Rules.BadPractice {
 						continue;
 
 					// check that we're not calling the method on another object
-					if (!IsCallFromInstance (current.Previous, md.Parameters.Count))
+					int n = md.HasParameters ? md.Parameters.Count : 0;
+					if (!IsCallFromInstance (current.Previous, n))
 						continue;
 
 					if (md.IsVirtual && !md.IsFinal) {

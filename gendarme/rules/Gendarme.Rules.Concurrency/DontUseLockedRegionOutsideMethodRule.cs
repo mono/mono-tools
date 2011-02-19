@@ -157,9 +157,9 @@ namespace Gendarme.Rules.Concurrency {
 				if (m == null)
 					continue;
 
-				if (IsMonitorMethod (m, "Enter")) {
+				if (m.IsNamed ("System.Threading", "Monitor", "Enter")) {
 					enter++;
-				} else if (IsMonitorMethod (m, "Exit")) {
+				} else if (m.IsNamed ("System.Threading", "Monitor", "Exit")) {
 					exit++;
 				}
 			}
@@ -169,14 +169,6 @@ namespace Gendarme.Rules.Concurrency {
 
 			Runner.Report (method, Severity.High, Confidence.Normal);
 			return RuleResult.Failure;
-		}
-		
-		//FIXME: copied from DoubleCheckLockingRule, we need to share this
-		private static bool IsMonitorMethod (MemberReference method, string methodName)
-		{
-			if (method.Name != methodName)
-				return false;
-			return (method.DeclaringType.FullName == "System.Threading.Monitor");
 		}
 	}
 }

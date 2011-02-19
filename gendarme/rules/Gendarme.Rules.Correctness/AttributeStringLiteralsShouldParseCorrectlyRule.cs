@@ -111,7 +111,7 @@ namespace Gendarme.Rules.Correctness {
 		{
 			for (int index = 0; index < arguments.Count; index++) {
 				ParameterDefinition parameter = constructor.Parameters[index];
-				if (String.Compare (parameter.ParameterType.FullName, "System.String") == 0) {
+				if (parameter.ParameterType.IsNamed ("System", "String")) {
 					string value = (string) arguments [index].Value;
 					if (Contains (parameter.Name, "version")) { 
 						if (!TryParseVersion (value)) {

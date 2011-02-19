@@ -100,7 +100,7 @@ namespace Gendarme.Rules.Design.Linq {
 			if (!IsExtension (method))
 				return RuleResult.DoesNotApply;
 
-			if (method.Parameters [0].ParameterType.FullName != "System.Object")
+			if (!method.Parameters [0].ParameterType.IsNamed ("System", "Object"))
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.High, Confidence.High);

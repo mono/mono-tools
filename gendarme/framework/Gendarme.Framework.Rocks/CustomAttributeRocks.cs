@@ -64,7 +64,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (CustomAttribute ca in self) {
-				if (ca.AttributeType.FullName == attributeTypeName)
+				if (ca.AttributeType.GetFullName () == attributeTypeName)
 					return true;
 			}
 			return false;
@@ -85,7 +85,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (CustomAttribute ca in self) {
-				string fullname = ca.AttributeType.FullName;
+				string fullname = ca.AttributeType.GetFullName ();
 				foreach (string attribute_full_name in attributeTypeNames) {
 					if (fullname == attribute_full_name)
 						return true;

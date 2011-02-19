@@ -95,7 +95,6 @@ namespace Gendarme.Rules.Performance {
 		private static string Previous (MethodDefinition method, Instruction ins)
 		{
 			string kind, name;
-			string type = (ins.Operand as TypeReference).FullName;
 
 			ins = ins.Previous;
 			Code previous_op_code = ins.OpCode.Code;
@@ -139,7 +138,8 @@ namespace Gendarme.Rules.Performance {
 			default:
 				return String.Empty;
 			}
-			return String.Format ("{0} '{1}' unboxed to type '{2}' {{0}} times.", kind, name, type);
+			return String.Format ("{0} '{1}' unboxed to type '{2}' {{0}} times.", 
+				kind, name, (ins.Operand as TypeReference).GetFullName ());
 		}
 
 		// unboxing is never critical - but a high amount can be a sign of other problems too

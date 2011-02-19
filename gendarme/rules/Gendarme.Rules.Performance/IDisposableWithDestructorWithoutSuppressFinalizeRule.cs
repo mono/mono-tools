@@ -128,7 +128,7 @@ namespace Gendarme.Rules.Performance {
 				case Code.Callvirt:
 					// are we calling GC.SuppressFinalize ?
 					MethodReference callee = (ins.Operand as MethodReference);
-					if ((callee.Name == "SuppressFinalize") && (callee.DeclaringType.FullName == "System.GC")) {
+					if (callee.IsNamed ("System", "GC", "SuppressFinalize")) {
 						return true;
 					} else if (level < 3) {
 						if (Recurse (callee.Resolve (), level + 1))

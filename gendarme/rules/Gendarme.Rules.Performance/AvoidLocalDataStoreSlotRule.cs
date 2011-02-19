@@ -119,9 +119,18 @@ namespace Gendarme.Rules.Performance {
 					if (mr == null)
 						continue;
 
-					switch (mr.DeclaringType.FullName) {
-					case "System.Threading.Thread":
-					case "System.Runtime.Remoting.Contexts.Context":
+					TypeReference type = mr.DeclaringType;
+					switch (type.Namespace) {
+					case "System.Threading":
+					case "System.Runtime.Remoting.Contexts":
+						break;
+					default:
+						continue;
+					}
+
+					switch (type.Name) {
+					case "Thread":
+					case "Context":
 						break;
 					default:
 						continue;

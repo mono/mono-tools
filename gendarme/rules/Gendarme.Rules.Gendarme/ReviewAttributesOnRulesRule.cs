@@ -122,10 +122,14 @@ namespace Gendarme.Rules.Gendarme {
 				while (!foundSolution || !foundProblem) {
 					if (td.HasCustomAttributes)
 						foreach (CustomAttribute attribute in td.CustomAttributes) {
-							var attributeTypeName = attribute.AttributeType.FullName;
-							if (attributeTypeName == "Gendarme.Framework.SolutionAttribute")
+							TypeReference atype = attribute.AttributeType;
+							if (atype.Namespace != "Gendarme.Framework")
+								continue;
+
+							string name = atype.Name;
+							if (name == "SolutionAttribute")
 								foundSolution = true;
-							if (attributeTypeName == "Gendarme.Framework.ProblemAttribute")
+							else if (name == "ProblemAttribute")
 								foundProblem = true;
 						}
 
@@ -149,16 +153,16 @@ namespace Gendarme.Rules.Gendarme {
 				return;
 
 			foreach (CustomAttribute attribute in provider.CustomAttributes) {
-				var attributeTypeName = attribute.AttributeType.FullName;
+				var attributeTypeName = attribute.AttributeType.GetFullName ();
 				Action<CustomAttribute, ICustomAttributeProvider> f;
-				if (attributes.TryGetValue(attributeTypeName, out f))
+				if (attributes.TryGetValue (attributeTypeName, out f))
 					f (attribute, provider);
 			}
 		}
 
 		private bool IsRule (TypeReference type)
 		{
-			var typeName = type.FullName;
+			var typeName = type.GetFullName ();
 			bool result;
 			if (!typeIsRule.TryGetValue (typeName, out result)) {
 				result = type.Implements ("Gendarme.Framework.IRule");
@@ -182,7 +186,7 @@ namespace Gendarme.Rules.Gendarme {
 			// check if second argument has correct format
 			if (!attribute.HasConstructorArguments)
 				return;
-			var attributeTypeName = attribute.AttributeType.FullName;
+			var attributeTypeName = attribute.AttributeType.GetFullName ();
 			var argumentValue = attribute.ConstructorArguments [1].Value.ToString ();
 			var length = argumentValue.Length;
 			if (!((length == 6 || (length > 8 && argumentValue [6] == ':')) && 
@@ -209,7 +213,7 @@ namespace Gendarme.Rules.Gendarme {
 			var argument = attribute.ConstructorArguments [0];
 
 			// if possible, check if argument type implements IEngine
-			if (argument.Type.FullName == "System.Type") {
+			if (argument.Type.IsNamed ("System", "Type")) {
 				TypeReference tr = (argument.Value as TypeReference);
 				if (tr == null || !tr.Inherits ("Gendarme.Framework.Engine")) // IEngine does not exist yet
 					Runner.Report (provider, Severity.Medium, Confidence.High,
@@ -229,7 +233,7 @@ namespace Gendarme.Rules.Gendarme {
 			TypeDefinition td = (provider as TypeDefinition);
 			if (td == null || !IsRule (td))
 				Runner.Report (td, Severity.Medium, Confidence.High,
-					attribute.AttributeType.FullName + " can be used on rules only");
+					attribute.AttributeType.GetFullName () + " can be used on rules only");
 		}
 
 		private void CheckIfAttributeUsedOnRulesProperty (ICustomAttribute attribute, ICustomAttributeProvider provider)
@@ -238,7 +242,7 @@ namespace Gendarme.Rules.Gendarme {
 			if (property == null || !IsRule (property.DeclaringType) || 
 				!property.GetMethod.IsPublic || !property.SetMethod.IsPublic)
 				Runner.Report (provider, Severity.High, Confidence.High,
-					attribute.AttributeType.FullName + " should be used only on rules' public properties");
+					attribute.AttributeType.GetFullName () + " should be used only on rules' public properties");
 		}
 
 		// returns true when all arguments are fine, false otherwise
@@ -247,11 +251,11 @@ namespace Gendarme.Rules.Gendarme {
 			if (!attribute.HasConstructorArguments)
 				return true;
 			foreach (CustomAttributeArgument argument in attribute.ConstructorArguments) {
-				if (argument.Type.FullName != "System.String")
+				if (!argument.Type.IsNamed ("System", "String"))
 					continue;
 				if (String.IsNullOrEmpty ((string) argument.Value)) {
 					Runner.Report (provider, Severity.Medium, Confidence.High,
-						attribute.AttributeType.FullName + " argument cannot be null or empty");
+						attribute.AttributeType.GetFullName () + " argument cannot be null or empty");
 					return false;
 				}
 			}

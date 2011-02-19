@@ -34,6 +34,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Mono.Cecil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework.Helpers {
 
@@ -121,7 +122,7 @@ namespace Gendarme.Framework.Helpers {
 			if (Name != null && method.Name != Name)
 				return false;
 
-			if (ReturnType != null && method.ReturnType.FullName != ReturnType)
+			if (ReturnType != null && method.ReturnType.GetFullName () != ReturnType)
 				return false;
 
 			if (Parameters != null) {
@@ -132,7 +133,7 @@ namespace Gendarme.Framework.Helpers {
 					for (int i = 0; i < Parameters.Count; i++) {
 						if (Parameters [i] == null)
 							continue;//ignore parameter
-						if (Parameters [i] != pdc [i].ParameterType.FullName) {
+						if (Parameters [i] != pdc [i].ParameterType.GetFullName ()) {
 							return false;
 						}
 					}

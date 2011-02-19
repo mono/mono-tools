@@ -117,15 +117,14 @@ namespace Gendarme.Rules.Smells {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidSpeculativeGeneralityRule : Rule, ITypeRule {
 
-		private bool HasExpectedInheritedTypeCount (MemberReference baseType, int expected)
+		private bool HasExpectedInheritedTypeCount (TypeReference baseType, int expected)
 		{
 			int count = 0;
-			string base_name = baseType.FullName;
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						if ((baseType == type.BaseType) || (type.BaseType != null &&
-							(base_name == type.BaseType.FullName))) {
+							type.BaseType.IsNamed (baseType.Namespace, baseType.Name))) {
 							if (++count > expected)
 								return false;
 						}
@@ -168,7 +167,7 @@ namespace Gendarme.Rules.Smells {
 
 		private static bool InheritsOnlyFromObject (TypeDefinition type)
 		{
-			return !type.HasInterfaces && type.BaseType.FullName == "System.Object";
+			return !type.HasInterfaces && type.BaseType.IsNamed ("System", "Object");
 		}
 
 		private static bool MostlyMethodsDelegatesCall (TypeDefinition type)

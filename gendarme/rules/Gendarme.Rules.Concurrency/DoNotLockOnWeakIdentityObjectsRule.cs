@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Concurrency {
 			if (first.OpCode.Code == Code.Dup)
 				first = first.Previous;
 			type = first.GetOperandType (method);
-			if (type.FullName == "System.Object") {
+			if (type.IsNamed ("System", "Object")) {
 				// newer GMCS use a temporary local that hides the real type
 				Instruction prev = first.Previous;
 				if (first.IsLoadLocal () && prev.IsStoreLocal ()) {
@@ -132,7 +132,7 @@ namespace Gendarme.Rules.Concurrency {
 				return;
 
 			// fast check for sealed types
-			string full_name = type.FullName;
+			string full_name = type.GetFullName ();
 			switch (full_name) {
 			case "System.ExecutionEngineException":
 			case "System.StackOverflowException":

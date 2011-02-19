@@ -94,13 +94,16 @@ namespace Gendarme.Rules.Performance {
 				case "Equals":
 					if (mref.Parameters.Count > 1)
 						continue;
-					string tname = mref.DeclaringType.FullName;
-					if ((tname != "System.String") && (tname != "System.Object"))
+					TypeReference type = mref.DeclaringType;
+					if (type.Namespace != "System")
+						continue;
+					string name = type.Name;
+					if ((name != "String") && (name != "Object"))
 						continue;
 					break;
 				case "op_Equality":
 				case "op_Inequality":
-					if (mref.DeclaringType.FullName != "System.String")
+					if (!mref.DeclaringType.IsNamed ("System", "String"))
 						continue;
 					break;
 				default:
@@ -115,7 +118,7 @@ namespace Gendarme.Rules.Performance {
 					break;
 				case Code.Ldsfld:
 					FieldReference field = (prev.Operand as FieldReference);
-					if (field.DeclaringType.FullName != "System.String")
+					if (!field.DeclaringType.IsNamed ("System", "String"))
 						continue;
 					// unlikely to be anything else (at least with released fx)
 					if (field.Name != "Empty")

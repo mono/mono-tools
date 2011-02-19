@@ -105,8 +105,8 @@ namespace Gendarme.Rules.Correctness {
 				if (rv.IsFloatingPoint ())
 					return null;
 				// but convertion into decimals are not...
-				if (rv.FullName == "System.Decimal") {
-					if (mr.DeclaringType.FullName != "System.Decimal")
+				if (rv.IsNamed ("System", "Decimal")) {
+					if (!mr.DeclaringType.IsNamed ("System", "Decimal"))
 						return null;
 
 					// ... unless it's a convertion from a FP value
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Correctness {
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = ins.GetMethod ();
-				if ((mr == null) || (mr.DeclaringType.FullName != "System.Math"))
+				if ((mr == null) || !mr.DeclaringType.IsNamed ("System", "Math"))
 					continue;
 
 				Instruction value = null;
@@ -171,7 +171,7 @@ namespace Gendarme.Rules.Correctness {
 				if (type == null)
 					continue;
 
-				string msg = string.Format ("Math.{0} called on a {1}.", name, type.FullName);
+				string msg = string.Format ("Math.{0} called on a {1}.", name, type.GetFullName ());
 				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;

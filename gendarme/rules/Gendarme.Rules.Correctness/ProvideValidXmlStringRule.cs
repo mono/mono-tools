@@ -108,7 +108,7 @@ namespace Gendarme.Rules.Correctness {
 				break;
 			case Code.Ldsfld:
 				FieldReference f = (FieldReference) ld.Operand;
-				if (f.Name == "Empty" && f.DeclaringType.FullName == "System.String")
+				if (f.Name == "Empty" && f.DeclaringType.IsNamed ("System", "String"))
 					CheckString (method, ins, null);
 				break;
 			case Code.Ldnull:
@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Correctness {
 
 			switch (mref.Name) {
 			case "LoadXml":
-				if (mref.DeclaringType.FullName == XmlDocumentClass)
+				if (mref.DeclaringType.IsNamed ("System.Xml", "XmlDocument"))
 					CheckString (method, ins, -1);
 				break;
 			case "set_InnerXml":
@@ -154,7 +154,7 @@ namespace Gendarme.Rules.Correctness {
 			case "InsertBefore":
 				IList<ParameterDefinition> pdc = mref.Parameters;
 				if (pdc.Count == 1
-					&& pdc [0].ParameterType.FullName == "System.String"
+					&& pdc [0].ParameterType.IsNamed ("System", "String")
 					&& mref.DeclaringType.Inherits (XPathNavigatorClass))
 					CheckString (method, ins, -1);
 				break;

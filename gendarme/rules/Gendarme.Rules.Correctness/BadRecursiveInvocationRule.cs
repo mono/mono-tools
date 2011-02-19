@@ -99,10 +99,9 @@ namespace Gendarme.Rules.Correctness {
 			if (!explicit_interface && (t2r != null) && !t2r.IsInterface)
 				return true;
 
-			string t2name = t2.FullName;
 			// we're calling into an interface and this could be us!
 			foreach (MethodReference mr in method1.Resolve ().Overrides) {
-				if (t2name == mr.DeclaringType.FullName)
+				if (mr.DeclaringType.IsNamed (t2.Namespace, t2.Name))
 					return true;
 			}
 			return false;

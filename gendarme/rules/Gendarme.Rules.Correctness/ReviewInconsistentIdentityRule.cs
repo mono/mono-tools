@@ -125,7 +125,7 @@ namespace Gendarme.Rules.Correctness {
 		
 		private void GetMethods (TypeReference type)	
 		{
-			string full_name = type.FullName;
+			string full_name = type.GetFullName ();
 			args1 [0] = full_name;
 			AddMethod (type.GetMethod (MethodSignatures.Equals));
 			AddMethod (type.GetMethod ("Equals", "System.Boolean", args1));
@@ -349,7 +349,7 @@ namespace Gendarme.Rules.Correctness {
 			
 			Log.WriteLine (this);
 			Log.WriteLine (this, "------------------------------------");
-			Log.WriteLine (this, type.FullName);
+			Log.WriteLine (this, type.GetFullName ());
 			
 			GetMethods (type);
 			if (methods.Count > 0) {

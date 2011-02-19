@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Performance {
 				// and report constant stuff
 				if (Constant.Get (previous.OpCode.Code)) {
 					// adjust severity based on the field visibility and it's type
-					Severity s = (field.FieldType.FullName == "System.String" || !field.IsVisible ()) ?
+					Severity s = (field.FieldType.IsNamed ("System", "String") || !field.IsVisible ()) ?
 						Severity.High : Severity.Medium;
 					Runner.Report (field, s, Confidence.Normal);
 				}

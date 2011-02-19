@@ -133,7 +133,7 @@ namespace Gendarme.Rules.Performance {
 						continue;
 
 					string s = String.Format ("Variable '{0}' of type '{1}'", 
-						variable.Name, variable.VariableType.FullName);
+						variable.Name, variable.VariableType.GetFullName ());
 					Runner.Report (method, Severity.Low, Confidence.Normal, s);
 				}
 			}

@@ -187,7 +187,7 @@ namespace Gendarme.Rules.Security {
 
 			IList<ParameterDefinition> pdc = method.Parameters;
 			int count = pdc.Count;
-			if ((count != 4) || (method.ReturnType.FullName != "System.Boolean"))
+			if ((count != 4) || !method.ReturnType.IsNamed ("System", "Boolean"))
 				return RuleResult.DoesNotApply;
 
 			// this method could be a candidate for both policy or callback
@@ -195,7 +195,7 @@ namespace Gendarme.Rules.Security {
 			bool callback = true;
 			// if all the parameters match
 			for (int i = 0; i < count; i++) {
-				string name = pdc [i].ParameterType.FullName;
+				string name = pdc [i].ParameterType.GetFullName ();
 				if (policy && (name != CertificatePolicyParameters [i]))
 					policy = false;
 				if (callback && (name != RemoteCertificateValidationParameters [i]))

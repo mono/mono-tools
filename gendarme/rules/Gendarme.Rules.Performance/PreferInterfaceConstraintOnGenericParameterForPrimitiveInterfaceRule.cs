@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 using Mono.Cecil;
 
 namespace Gendarme.Rules.Performance {
@@ -108,7 +109,7 @@ namespace Gendarme.Rules.Performance {
 				if (type.Namespace != "System")
 					continue;
 
-				string tname = type.FullName;
+				string tname = type.GetFullName ();
 				if (primitiveTypeInterfaces.Contains (tname)) {
 					string msg = String.Format ("You are using {0} as parameter, which cause boxing with value type as argument",
 						tname);

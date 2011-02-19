@@ -91,16 +91,13 @@ namespace Gendarme.Rules.Exceptions {
 		//}
 		//catch {
 		//}
-		private static bool IsForbiddenTypeInCatches (string typeName)
+		private static bool IsForbiddenTypeInCatches (TypeReference type)
 		{
-			switch (typeName) {
-			case "System.Exception":
-			case "System.SystemException":
-			case "System.Object":
-				return true;
-			default:
+			if (type.Namespace != "System")
 				return false;
-			}
+
+			string name = type.Name;
+			return ((name == "Exception") || (name == "SystemException") || (name == "Object"));
 		}
 
 		// will always return exceptionHandler.HandlerStart if there's no 'rethrow' inside the method
@@ -127,8 +124,7 @@ namespace Gendarme.Rules.Exceptions {
 			bool has_rethrow = OpCodeEngine.GetBitmask (method).Get (Code.Rethrow);
 			foreach (ExceptionHandler exceptionHandler in body.ExceptionHandlers) {
 				if (exceptionHandler.HandlerType == ExceptionHandlerType.Catch) {
-					string catchTypeName = exceptionHandler.CatchType.FullName;
-					if (IsForbiddenTypeInCatches (catchTypeName)) {
+					if (IsForbiddenTypeInCatches (exceptionHandler.CatchType)) {
 						// quickly find 'throw_instruction' if there's no 'rethrow' used in this method
 						Instruction throw_instruction = has_rethrow ?
 							ThrowsGeneralException (exceptionHandler) :

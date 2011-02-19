@@ -91,12 +91,7 @@ namespace Gendarme.Rules.Correctness {
 			if (code != Code.Call && code != Code.Callvirt)
 				return false;
 
-			var method = instruction.Operand as MethodReference;
-			if (method == null)
-				return false;
-
-			return method.Name == "GetCallingAssembly"
-				&& method.DeclaringType.FullName == Assembly;
+			return instruction.GetMethod ().IsNamed ("System.Reflection", "Assembly", "GetCallingAssembly");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

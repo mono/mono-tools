@@ -91,7 +91,7 @@ namespace Gendarme.Rules.Design.Generic {
 						// nullable are an exception because there is syntaxic sugar (at 
 						// least in some language like C#) to make them easier to use
 						// note: FxCop does not ignore them
-						if (git.ElementType.FullName == "System.Nullable`1")
+						if (git.ElementType.IsNamed ("System", "Nullable`1"))
 							return null;
 						// FIXME: we should look at ignoring LINQ queries too, because it
 						// too pretty much hides the complexity of nested generics

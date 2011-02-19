@@ -93,32 +93,31 @@ namespace Gendarme.Rules.Design.Generic {
 			};
 		}
 
-		static bool FindGenericType (IGenericInstance git, string fullname)
+		static bool FindGenericType (IGenericInstance git, string nameSpace, string name)
 		{
 			foreach (object o in git.GenericArguments) {
-				if (IsGenericParameter (o, fullname))
+				if (IsGenericParameter (o, nameSpace, name))
 					return true;
 
 				GenericInstanceType inner = (o as GenericInstanceType);
-				if ((inner != null) && (FindGenericType (inner, fullname)))
+				if ((inner != null) && (FindGenericType (inner, nameSpace, name)))
 					return true;
 			}
 			return false;
 		}
 
-		static bool IsGenericParameter (object obj, string fullname)
+		static bool IsGenericParameter (object obj, string nameSpace, string name)
 		{
-			GenericParameter gp = (obj as GenericParameter);
-			return ((gp != null) && (gp.FullName == fullname));
+			return (obj as GenericParameter).IsNamed (nameSpace, name);
 		}
 
-		static bool IsGenericType (MemberReference type, string fullname)
+		static bool IsGenericType (TypeReference type, string nspace, string name)
 		{
-			if (type.FullName == fullname)
+			if (type.IsNamed (nspace, name))
 				return true;
 
 			var type_spec = type as TypeSpecification;
-			if (type_spec != null && type_spec.ElementType.FullName == fullname)
+			if (type_spec != null && type_spec.ElementType.IsNamed (nspace, name))
 				return true;
 
 			// handle things like ICollection<T>
@@ -126,7 +125,7 @@ namespace Gendarme.Rules.Design.Generic {
 			if (git == null)
 				return false;
 
-			return FindGenericType (git, fullname);
+			return FindGenericType (git, nspace, name);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -139,21 +138,22 @@ namespace Gendarme.Rules.Design.Generic {
 			foreach (GenericParameter gp in method.GenericParameters) {
 				Severity severity = Severity.Medium;
 				bool found = false;
-				string gp_fullname = gp.FullName;
+				string nspace = gp.Namespace;
+				string name = gp.Name;
 				// ... is being used by the method parameters
 				foreach (ParameterDefinition pd in method.Parameters) {
-					if (IsGenericType (pd.ParameterType, gp_fullname)) {
+					if (IsGenericType (pd.ParameterType, nspace, name)) {
 						found = true;
 						break;
 					}
 				}
 				if (!found) {
 					// it's a defect when used only for the return value - but we reduce its severity
-					if (IsGenericType (method.ReturnType, gp_fullname))
+					if (IsGenericType (method.ReturnType, nspace, name))
 						severity = Severity.Low;
 				}
 				if (!found) {
-					string msg = String.Format ("Generic parameter '{0}' is not used by the method parameters.", gp_fullname);
+					string msg = String.Format ("Generic parameter '{0}.{1}' is not used by the method parameters.", nspace, name);
 					Runner.Report (method, severity, Confidence.High, msg);
 				}
 			}

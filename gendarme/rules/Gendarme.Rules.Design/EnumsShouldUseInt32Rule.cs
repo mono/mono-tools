@@ -94,7 +94,7 @@ namespace Gendarme.Rules.Design {
 			foreach (FieldDefinition field in type.Fields) {
 				// we looking for the special value__
 				if (!field.IsStatic) {
-					value_type = field.FieldType.FullName;
+					value_type = field.FieldType.GetFullName ();
 					break;
 				}
 			}

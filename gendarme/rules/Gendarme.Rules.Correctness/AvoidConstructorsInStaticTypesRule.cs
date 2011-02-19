@@ -106,7 +106,7 @@ namespace Gendarme.Rules.Correctness {
 				}
 			}
 
-			if (type.BaseType.FullName == "System.Object")
+			if (type.BaseType.IsNamed ("System", "Object"))
 				return true;
 
 			return IsAllStatic (type.BaseType.Resolve ());

@@ -103,7 +103,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 			if ((baseType != null) && !baseType.IsTypeComVisible ()) {
 				Runner.Report (type, Severity.High, Confidence.Total,
 					String.Format ("Type is derived from invisible from COM type {0}",
-						baseType.FullName));
+						baseType.GetFullName ()));
 			}
 			return Runner.CurrentRuleResult;
 		}

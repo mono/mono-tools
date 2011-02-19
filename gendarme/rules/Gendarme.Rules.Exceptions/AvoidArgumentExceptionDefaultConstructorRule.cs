@@ -96,21 +96,22 @@ namespace Gendarme.Rules.Exceptions {
 					continue;
 
 				TypeReference type = ctor.DeclaringType;
-				string name = type.FullName;
-				switch (name) {
-				// most common cases
-				case "System.ArgumentException":
-				case "System.ArgumentNullException":
-				case "System.ArgumentOutOfRangeException":
-				case "System.DuplicateWaitObjectException":
-					Runner.Report (method, ins, Severity.Medium, Confidence.Total, name);
-					break;
-				default:
-					if (!name.EndsWith ("Exception", StringComparison.Ordinal))
-						break;
+				string name = type.Name;
+				if (type.Namespace == "System") {
+					// most common cases
+					switch (name) {
+					case "ArgumentException":
+					case "ArgumentNullException":
+					case "ArgumentOutOfRangeException":
+					case "DuplicateWaitObjectException":
+						Runner.Report (method, ins, Severity.Medium, Confidence.Total, type.GetFullName ());
+						continue;
+					}
+				}
+
+				if (name.EndsWith ("Exception", StringComparison.Ordinal)) {
 					if (type.Inherits ("System.ArgumentException"))
-						Runner.Report (method, ins, Severity.Medium, Confidence.Total, name);
-					break;
+						Runner.Report (method, ins, Severity.Medium, Confidence.Total, type.GetFullName ());
 				}
 			}
 			return Runner.CurrentRuleResult;

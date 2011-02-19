@@ -144,7 +144,7 @@ namespace Gendarme.Rules.Design {
 			if (type.Implements ("System.IDisposable")) {
 				Log.WriteLine (this);
 				Log.WriteLine (this, "----------------------------------");
-				Log.WriteLine (this, type.FullName);
+				Log.WriteLine (this, type.GetFullName ());
 				
 				MethodDefinition dispose0 = null;
 				MethodDefinition dispose1 = null;
@@ -236,7 +236,7 @@ namespace Gendarme.Rules.Design {
 		{
 			if (type.HasInterfaces) {
 				foreach (TypeReference candidate in type.Interfaces) {
-					if (candidate.FullName == "System.IDisposable")
+					if (candidate.IsNamed ("System", "IDisposable"))
 						return true;
 				}
 			}

@@ -31,6 +31,7 @@ using System.Security;
 using SSP = System.Security.Permissions;
 
 using Mono.Cecil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Security.Cas {
 

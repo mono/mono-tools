@@ -148,14 +148,13 @@ namespace Gendarme {
 
 				foreach (ModuleDefinition module in assembly.Modules) {
 					foreach (TypeDefinition type in module.GetAllTypes ()) {
-						if (types.TryGetValue (type.FullName, out rules)) {
+						if (types.TryGetValue (type.GetFullName (), out rules)) {
 							AddList (type, rules);
 						}
 
 						if (type.HasMethods) {
 							foreach (MethodDefinition method in type.Methods) {
-								// FIXME avoid (allocations in) ToString call
-								if (methods.TryGetValue (method.ToString (), out rules)) {
+								if (methods.TryGetValue (method.GetFullName (), out rules)) {
 									AddList (method, rules);
 								}
 							}

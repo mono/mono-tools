@@ -89,7 +89,6 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class DisableDebuggingCodeRule : Rule, IMethodRule {
 
-		private const string ConditionalAttribute = "System.Diagnostics.ConditionalAttribute";
 		private const string Console = "System.Console";
 
 		// note: there can be multiple [Conditional] attribute on a method
@@ -101,7 +100,7 @@ namespace Gendarme.Rules.BadPractice {
 				// any attribute without arguments can be skipped
 				if (!ca.HasConstructorArguments)
 					continue;
-				if (ca.AttributeType.FullName == ConditionalAttribute) {
+				if (ca.AttributeType.IsNamed ("System.Diagnostics", "ConditionalAttribute")) {
 					switch (ca.ConstructorArguments [0].Value as string) {
 					case "DEBUG":
 					case "TRACE":
@@ -153,7 +152,7 @@ namespace Gendarme.Rules.BadPractice {
 
 				// ... to System.Console ...
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.DeclaringType.FullName != Console)
+				if (mr.DeclaringType.GetFullName () != Console)
 					continue;
 
 				// ... Write* methods

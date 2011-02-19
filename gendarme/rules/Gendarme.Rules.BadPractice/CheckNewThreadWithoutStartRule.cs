@@ -141,11 +141,11 @@ namespace Gendarme.Rules.BadPractice {
 
 				MethodReference constructor = (MethodReference) ins.Operand;
 
-				if (constructor.DeclaringType.FullName != Thread)
+				if (!constructor.DeclaringType.IsNamed ("System.Threading", "Thread"))
 					continue;
 				if (ins.Next != null && (ins.Next.OpCode.Code == Code.Call || ins.Next.OpCode.Code == Code.Callvirt)) { //quick check to safe resources
 					MethodReference calledMethod = (MethodReference) ins.Next.Operand;
-					if ((calledMethod.DeclaringType.FullName == Thread) && (calledMethod.Name == "Start"))
+					if (calledMethod.IsNamed ("System.Threading", "Thread", "Start"))
 						continue;
 				}
 

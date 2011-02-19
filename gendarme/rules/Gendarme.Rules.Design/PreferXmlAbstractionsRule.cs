@@ -94,10 +94,6 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1059:MembersShouldNotExposeCertainConcreteTypes")]
 	public class PreferXmlAbstractionsRule : Rule, IMethodRule {
 
-		const string XmlDocumentClass = "System.Xml.XmlDocument";
-		const string XPathDocumentClass = "System.Xml.XPath.XPathDocument";
-		const string XmlNodeClass = "System.Xml.XmlNode";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -119,7 +115,7 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			MethodReturnType mrt = method.MethodReturnType;
-			if (IsSpecificXmlType (mrt.ReturnType.FullName))
+			if (IsSpecificXmlType (mrt.ReturnType))
 				Runner.Report (mrt, GetSeverity (method), Confidence.High);
 
 			if (method.HasParameters) {
@@ -127,7 +123,7 @@ namespace Gendarme.Rules.Design {
 					if (parameter.IsOut)
 						continue; //out params already have their rule
 
-					if (IsSpecificXmlType (parameter.ParameterType.FullName))
+					if (IsSpecificXmlType (parameter.ParameterType))
 						Runner.Report (parameter, GetSeverity (method), Confidence.High);
 				}
 			}
@@ -135,9 +131,13 @@ namespace Gendarme.Rules.Design {
 			return Runner.CurrentRuleResult;
 		}
 
-		static bool IsSpecificXmlType (string name)
+		static bool IsSpecificXmlType (TypeReference type)
 		{
-			return name == XmlDocumentClass || name == XPathDocumentClass || name == XmlNodeClass;
+			if (type.Namespace == "System.Xml") {
+				string name = type.Name;
+				return ((name == "XmlDocument") || (name == "XmlNode"));
+			}
+			return type.IsNamed ("System.Xml.XPath", "XPathDocument");
 		}
 
 		static Severity GetSeverity (MethodDefinition method)

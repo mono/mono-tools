@@ -207,7 +207,7 @@ namespace Gendarme.Rules.Correctness {
 				if (!attr.HasConstructorArguments)
 					continue;
 				if (StringConstructor.Matches (attr.Constructor)) {
-					if (attr.AttributeType.FullName == "System.Diagnostics.ConditionalAttribute") {
+					if (attr.AttributeType.IsNamed ("System.Diagnostics", "ConditionalAttribute")) {
 						return (string) attr.ConstructorArguments [0].Value;
 					}
 				}
@@ -258,7 +258,7 @@ namespace Gendarme.Rules.Correctness {
 			
 			if (method != null) {
 				TypeDefinition type = method.DeclaringType;
-				string type_name = type.FullName;
+				string type_name = type.GetFullName ();
 				string method_name = method.Name;
 
 				// getters
@@ -317,7 +317,7 @@ namespace Gendarme.Rules.Correctness {
 		static bool HasPureAttribute (IList<CustomAttribute> attrs)
 		{
 			foreach (CustomAttribute attr in attrs) {
-				if (attr.AttributeType.FullName.Contains ("PureAttribute")) {
+				if (attr.AttributeType.GetFullName ().Contains ("PureAttribute")) {
 					return true;
 				}
 			}

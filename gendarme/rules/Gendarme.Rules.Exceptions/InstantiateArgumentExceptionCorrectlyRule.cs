@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Exceptions {
 				return;
 
 			// OK		public ArgumentException (string message, Exception innerException)
-			if (pdc [1].ParameterType.FullName != "System.String")
+			if (!pdc [1].ParameterType.IsNamed ("System", "String"))
 				return;
 
 			// CHECK	public ArgumentException (string message, string paramName)
@@ -153,7 +153,7 @@ namespace Gendarme.Rules.Exceptions {
 			// OK		protected ArgumentNullException (SerializationInfo info, StreamingContext context)
 			// OK		public ArgumentNullException (string message, Exception innerException)
 			IList<ParameterDefinition> pdc = constructor.Parameters;
-			if ((pdc.Count == 2) && (pdc [1].ParameterType.FullName != "System.String"))
+			if ((pdc.Count == 2) && !pdc [1].ParameterType.IsNamed ("System", "String"))
 				return;
 
 			// CHECK	public ArgumentNullException (string paramName)
@@ -187,18 +187,19 @@ namespace Gendarme.Rules.Exceptions {
 					continue;
 
 				MethodReference ctor = (current.Operand as MethodReference);
+				TypeReference type = ctor.DeclaringType;
+				if (type.Namespace != "System")
+					continue;
 
-				switch (ctor.DeclaringType.FullName) {
-				case "System.ArgumentException":
+				switch (type.Name) {
+				case "ArgumentException":
 					CheckArgumentException (ctor, current, method);
 					break;
-				case "System.ArgumentNullException":
-				case "System.ArgumentOutOfRangeException":
-				case "System.DuplicateWaitObjectException":
+				case "ArgumentNullException":
+				case "ArgumentOutOfRangeException":
+				case "DuplicateWaitObjectException":
 					CheckOtherExceptions (ctor, current, method);
 					break;
-				default:
-					continue;
 				}
 			}
 

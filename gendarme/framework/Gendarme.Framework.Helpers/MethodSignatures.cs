@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 
 using Mono.Cecil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework.Helpers {
 
@@ -120,11 +121,11 @@ namespace Gendarme.Framework.Helpers {
 		// TryParse
 		public static readonly MethodSignature TryParse = new MethodSignature ("TryParse",
 			delegate (MethodReference method) {
-				if (method.ReturnType.FullName != "System.Boolean")
+				if (!method.ReturnType.IsNamed ("System", "Boolean"))
 					return false;
 
 				IList<ParameterDefinition> pdc = method.Parameters;
-				if (pdc [0].ParameterType.FullName != "System.String")
+				if (!pdc [0].ParameterType.IsNamed ("System", "String"))
 					return false;
 
 				TypeReference last = pdc [pdc.Count - 1].ParameterType;
@@ -132,7 +133,7 @@ namespace Gendarme.Framework.Helpers {
 					return false;
 
 				string pt_name = last.FullName;
-				return (String.Compare (pt_name, 0, method.DeclaringType.FullName, 0, pt_name.Length - 1) == 0);
+				return (String.Compare (pt_name, 0, method.DeclaringType.GetFullName (), 0, pt_name.Length - 1) == 0);
 			}
 		);
 
@@ -141,9 +142,9 @@ namespace Gendarme.Framework.Helpers {
 			delegate (MethodReference method) {
 				if (!method.HasParameters)
 					return false;
-				if (method.ReturnType.FullName != method.DeclaringType.FullName)
+				if (!method.ReturnType.IsNamed (method.DeclaringType.Namespace, method.DeclaringType.Name))
 					return false;
-				return (method.Parameters [0].ParameterType.FullName == "System.String");
+				return method.Parameters [0].ParameterType.IsNamed ("System", "String");
 			}
 		);
 	}

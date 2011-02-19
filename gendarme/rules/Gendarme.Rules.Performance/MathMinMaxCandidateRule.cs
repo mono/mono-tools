@@ -83,18 +83,21 @@ namespace Gendarme.Rules.Performance {
 		// unlikely than any JIT inlines it
 		private static bool IsSupported (TypeReference type)
 		{
-			// GetOriginalType will remove the '&' for references
-			switch (type.GetElementType ().FullName) {
-			case "System.Byte":
-			case "System.Double":
-			case "System.Int16":
-			case "System.Int32":
-			case "System.Int64":
-			case "System.SByte":
-			case "System.Single":
-			case "System.UInt16":
-			case "System.UInt32":
-			case "System.UInt64":
+			if (type.Namespace != "System")
+				return false;
+			// GetElementType will remove the '&' for references
+			TypeReference tr = type.GetElementType ();
+			switch (tr.Name) {
+			case "Byte":
+			case "Double":
+			case "Int16":
+			case "Int32":
+			case "Int64":
+			case "SByte":
+			case "Single":
+			case "UInt16":
+			case "UInt32":
+			case "UInt64":
 				return true;
 			default:
 				return false;

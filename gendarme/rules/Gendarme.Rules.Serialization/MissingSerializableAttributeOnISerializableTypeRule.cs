@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Serialization {
 				return RuleResult.DoesNotApply;
 
 			// rule applies only if base type is serializable
-			if (type.BaseType.FullName != "System.Object") {
+			if (!type.BaseType.IsNamed ("System", "Object")) {
 				TypeDefinition base_type = type.BaseType.Resolve ();
 				// in doubt don't report
 				if ((base_type == null) || !base_type.IsSerializable)

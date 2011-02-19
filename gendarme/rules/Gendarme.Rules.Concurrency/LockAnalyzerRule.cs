@@ -68,14 +68,8 @@ namespace Gendarme.Rules.Concurrency {
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = ins.GetMethod ();
-				if (mr == null)
-					continue;
-				if (mr.DeclaringType.FullName != "System.Threading.Monitor")
-					continue;
-				if (mr.Name != "Enter")
-					continue;
-
-				Analyze (method, mr, ins);
+				if (mr.IsNamed ("System.Threading", "Monitor", "Enter"))
+					Analyze (method, mr, ins);
 			}
 			return Runner.CurrentRuleResult;
 		}

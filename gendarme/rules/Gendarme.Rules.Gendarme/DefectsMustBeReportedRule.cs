@@ -75,11 +75,11 @@ namespace Gendarme.Rules.Gendarme {
 	public class DefectsMustBeReportedRule : GendarmeRule, ITypeRule {
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsAbstract || !type.Implements ("Gendarme.Framework.IRule") || !type.HasMethods)
+			if (type.IsAbstract || !type.HasMethods || !type.Implements ("Gendarme.Framework.IRule"))
 				return RuleResult.DoesNotApply;
 
 			foreach (MethodDefinition method in type.Methods) {
-				if (!method.HasBody || !OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)) || method.IsConstructor)
+				if (method.IsConstructor || !method.HasBody || !OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 					continue;
 
 				foreach (Instruction instruction in method.Body.Instructions) {
@@ -87,9 +87,9 @@ namespace Gendarme.Rules.Gendarme {
 						continue;
 					
 					MethodReference m = (instruction.Operand as MethodReference);
-					if (m == null || m.DeclaringType.FullName != "Gendarme.Framework.IRunner")
+					if (m == null || (m.Name != "Report"))
 						continue;
-					if (m.Name == "Report")
+					if (m.DeclaringType.IsNamed ("Gendarme.Framework", "IRunner"))
 						return RuleResult.Success;
 				}
 				

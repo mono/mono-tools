@@ -83,9 +83,7 @@ namespace Gendarme.Rules.Performance {
 				if (ins.OpCode != OpCodes.Newarr)
 					continue;
 
-				var type = (TypeReference) ins.Operand;
-
-				if (type.FullName != "System.Type")
+				if (!(ins.Operand as TypeReference).IsNamed ("System", "Type"))
 					continue;
 
 				if (ins.Previous.IsOperandZero ())

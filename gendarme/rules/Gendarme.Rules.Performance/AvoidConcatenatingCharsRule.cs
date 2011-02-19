@@ -74,26 +74,20 @@ namespace Gendarme.Rules.Performance {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidConcatenatingCharsRule : Rule, IMethodRule {
 
-		static bool IsStringConcat (MemberReference member)
-		{
-			if (member == null || (member.Name != "Concat"))
-				return false;
-
-			return (member.DeclaringType.FullName == "System.String");
-		}
-
 		static bool HasReferenceToStringConcatObject (ModuleDefinition module)
 		{
 			foreach (MemberReference mr in module.GetMemberReferences ()) {
-				if (IsStringConcat (mr)) {
+				if (mr.IsNamed ("System", "String", "Concat")) {
 					MethodReference method = (mr as MethodReference);
 					// catch both System.Object and System.Object[]
 					if (!method.HasParameters)
 						continue;
-					switch (method.Parameters [0].ParameterType.FullName) {
-					case "System.Object":
-					case "System.Object[]":
-						return true;
+
+					TypeReference ptype = method.Parameters [0].ParameterType;
+					switch (ptype.Name) {
+					case "Object":
+					case "Object[]":
+						return (ptype.Namespace == "System");
 					}
 				}
 			}
@@ -113,7 +107,7 @@ namespace Gendarme.Rules.Performance {
 
 		private void ReportBoxing (MethodDefinition method, Instruction ins, Confidence confidence)
 		{
-			string msg = String.Format ("Type '{0}' is being boxed.", (ins.Operand as TypeReference).FullName);
+			string msg = String.Format ("Type '{0}' is being boxed.", (ins.Operand as TypeReference).GetFullName ());
 			Runner.Report (method, ins, Severity.High, confidence, msg);
 		}
 
@@ -159,14 +153,18 @@ namespace Gendarme.Rules.Performance {
 
 				// look for String.Concat overloads using System.Object
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (!IsStringConcat (mr) || !mr.HasParameters)
+				if (!mr.HasParameters || !mr.IsNamed ("System", "String", "Concat"))
 					continue;
 
-				switch (mr.Parameters [0].ParameterType.FullName) {
-				case "System.Object":
+				TypeReference ptype = mr.Parameters [0].ParameterType;
+				if (ptype.Namespace != "System")
+					continue; // very unlikely
+
+				switch (ptype.Name) {
+				case "Object":
 					CheckParameters (mr, method, ins);
 					break;
-				case "System.Object[]":
+				case "Object[]":
 					if ((ins.Previous.OpCode.Code == Code.Stelem_Ref) || ins.Previous.IsLoadLocal ())
 						ScanArray (method, ins.Previous);
 					break;

@@ -103,7 +103,7 @@ namespace Gendarme.Framework.Engines {
 			foreach (CustomAttribute ca in cap.CustomAttributes) {
 				if (!ca.HasConstructorArguments)
 					continue;
-				if (ca.AttributeType.FullName != SuppressMessage)
+				if (!ca.AttributeType.IsNamed ("System.Diagnostics.CodeAnalysis", "SuppressMessageAttribute"))
 					continue;
 
 				var arguments = ca.ConstructorArguments;
@@ -200,7 +200,7 @@ namespace Gendarme.Framework.Engines {
 				foreach (ModuleDefinition module in assembly.Modules) {
 					// TODO ...
 					foreach (TypeDefinition type in module.GetAllTypes ()) {
-						if (targets.TryGetValue (type.FullName, out rules))
+						if (targets.TryGetValue (type.GetFullName (), out rules))
 							Add (type, rules);
 
 						if (type.HasMethods) {
@@ -213,11 +213,11 @@ namespace Gendarme.Framework.Engines {
 			targets.Clear ();
 		}
 
-		private void ResolveMethod (IMetadataTokenProvider method)
+		private void ResolveMethod (MemberReference method)
 		{
 			HashSet<string> rules;
 
-			string m = method.ToString ();
+			string m = method.GetFullName ();
 			m = m.Substring (m.IndexOf (' ') + 1);
 
 			if (targets.TryGetValue (m, out rules))

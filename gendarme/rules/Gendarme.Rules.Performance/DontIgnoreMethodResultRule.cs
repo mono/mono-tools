@@ -99,17 +99,17 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool IsCallException (MethodReference method)
 		{
-			switch (method.DeclaringType.FullName) {
+			switch (method.DeclaringType.GetFullName ()) {
 			case "System.String":
 				// Since strings are immutable, calling System.String methods that returns strings 
 				// better be assigned to something
-				return (method.ReturnType.FullName != "System.String");
+				return !method.ReturnType.IsNamed ("System", "String");
 			case "System.IO.DirectoryInfo":
 				// GetDirectories overloads don't apply to the instance
 				return (method.Name != "GetDirectories");
 			case "System.Security.PermissionSet":
 				// Intersection and Union returns a new PermissionSet (it does not change the instance)
-				return (method.ReturnType.FullName != "System.Security.PermissionSet");
+				return !method.ReturnType.IsNamed ("System.Security", "PermissionSet");
 			default:
 				// this is useless anytime, if unassigned, more in cases like a StringBuilder
 				return (method.Name != "ToString");
@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Performance {
 
 		private static bool IsNewException (MemberReference method)
 		{
-			switch (method.ToString ()) {
+			switch (method.GetFullName ()) {
 			// supplying a callback is enough to make the Timer creation worthwhile
 			case "System.Void System.Threading.Timer::.ctor(System.Threading.TimerCallback,System.Object,System.Int32,System.Int32)":
 				return true;
@@ -132,7 +132,7 @@ namespace Gendarme.Rules.Performance {
 			if ((instruction.OpCode.Code == Code.Newobj || instruction.OpCode.Code == Code.Newarr)) {
 				MemberReference member = (instruction.Operand as MemberReference);
 				if ((member != null) && !IsNewException (member)) {
-					string s = String.Format ("Unused object of type '{0}' created.", member.ToString ());
+					string s = String.Format ("Unused object of type '{0}' created.", member.GetFullName ());
 					Runner.Report (method, instruction, Severity.High, Confidence.Normal, s);
 				}
 			}
@@ -142,7 +142,7 @@ namespace Gendarme.Rules.Performance {
 				if (callee != null && !callee.ReturnType.IsValueType) {
 					// check for some common exceptions (to reduce false positive)
 					if (!IsCallException (callee)) {
-						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.ToString ());
+						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.GetFullName ());
 						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, s);
 					}
 				}

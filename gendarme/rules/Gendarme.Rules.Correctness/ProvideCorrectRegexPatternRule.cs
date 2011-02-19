@@ -127,7 +127,7 @@ namespace Gendarme.Rules.Correctness {
 				return CheckPattern (method, ins, (string) ld.Operand, confidence);
 			case Code.Ldsfld:
 				FieldReference f = (FieldReference) ld.Operand;
-				if (f.Name != "Empty" || f.DeclaringType.FullName != "System.String")
+				if (f.Name != "Empty" || !f.DeclaringType.IsNamed ("System", "String"))
 					return false;
 				return CheckPattern (method, ins, null, confidence);
 			case Code.Ldnull:
@@ -161,8 +161,9 @@ namespace Gendarme.Rules.Correctness {
 				return;
 			if (!call.HasParameters)
 				return;
-			string tname = call.DeclaringType.FullName;
-			if (tname != RegexClass && tname != ValidatorClass)
+
+			TypeReference type = call.DeclaringType;
+			if (!type.IsNamed ("System.Text.RegularExpressions", "Regex") && !type.IsNamed ("System.Configuration", "RegexStringValidator"))
 				return;
 
 			MethodDefinition mdef = call.Resolve ();
@@ -174,7 +175,7 @@ namespace Gendarme.Rules.Correctness {
 
 			foreach (ParameterDefinition p in mdef.Parameters) {
 				string pname = p.Name;
-				if ((pname == "pattern" || pname == "regex") && p.ParameterType.FullName == "System.String") {
+				if ((pname == "pattern" || pname == "regex") && p.ParameterType.IsNamed ("System", "String")) {
 					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : -1 + p.GetSequence ()));
 					if (ld != null)
 						CheckArguments (method, ins, ld);

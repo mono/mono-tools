@@ -73,7 +73,7 @@ namespace Gendarme.Rules.Exceptions {
 				MethodReference ctor = (ins.Operand as MethodReference);
 
 				// what type is it?
-				string name = ctor.DeclaringType.FullName;
+				string name = ctor.DeclaringType.GetFullName ();
 				foreach (string exception_type in GetExceptionTypes ()) {
 					if (name == exception_type) {
 						// report a defect including the offending exception type found

@@ -100,22 +100,22 @@ namespace Gendarme.Rules.BadPractice {
 		public AvoidCallingProblematicMethodsRule ()
 		{
 			problematicMethods.Add ("Collect", (m, i) => 
-				(m.DeclaringType.FullName == "System.GC") ? Severity.Critical : (Severity?) null);
+				m.DeclaringType.IsNamed ("System", "GC") ? Severity.Critical : (Severity?) null);
 			problematicMethods.Add ("Suspend", (m, i) => 
-				(m.DeclaringType.FullName == "System.Threading.Thread") ? Severity.Medium : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Threading", "Thread") ? Severity.Medium : (Severity?) null);
 			problematicMethods.Add ("Resume", (m, i) => 
-				(m.DeclaringType.FullName == "System.Threading.Thread") ? Severity.Medium : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Threading", "Thread") ? Severity.Medium : (Severity?) null);
 			problematicMethods.Add ("DangerousGetHandle", (m, i) => 
-				(m.DeclaringType.FullName == "System.Runtime.InteropServices.SafeHandle") ? Severity.Critical : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Runtime.InteropServices", "SafeHandle") ? Severity.Critical : (Severity?) null);
 			problematicMethods.Add ("LoadFrom", (m, i) => 
-				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Reflection", "Assembly") ? Severity.High : (Severity?) null);
 			problematicMethods.Add ("LoadFile", (m, i) => 
-				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Reflection", "Assembly") ? Severity.High : (Severity?) null);
 			problematicMethods.Add ("LoadWithPartialName", (m, i) => 
-				(m.DeclaringType.FullName == "System.Reflection.Assembly") ? Severity.High : (Severity?) null);
+				m.DeclaringType.IsNamed ("System.Reflection", "Assembly") ? Severity.High : (Severity?) null);
 			problematicMethods.Add ("InvokeMember", (m, i) => 
-				(m.DeclaringType.FullName != "System.Type") ? (Severity?) null :
-				IsAccessingWithNonPublicModifiers (i) ? Severity.Critical : (Severity?) null);
+				!m.DeclaringType.IsNamed ("System", "Type") ? (Severity?) null :
+					IsAccessingWithNonPublicModifiers (i) ? Severity.Critical : (Severity?) null);
 		}
 
 		private static bool OperandIsNonPublic (BindingFlags operand)

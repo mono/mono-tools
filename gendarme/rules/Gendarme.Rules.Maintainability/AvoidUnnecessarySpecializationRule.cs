@@ -215,7 +215,7 @@ namespace Gendarme.Rules.Maintainability {
 				if (pType is GenericParameter)
 					parameters [i] = null; //TODO: constructed mapping?
 				else
-					parameters [i] = pType.FullName;
+					parameters [i] = pType.GetFullName ();
 			}
 			return new MethodSignature (name, rtype, parameters);
 		}
@@ -225,7 +225,7 @@ namespace Gendarme.Rules.Maintainability {
 			//special exception
 			if (!method.HasParameters && (method.Name == "GetEnumerator"))
 				return null;
-			return method.ReturnType.FullName;
+			return method.ReturnType.GetFullName ();
 		}
 
 		private static bool IsSystemObjectMethod (MethodReference method)
@@ -250,7 +250,7 @@ namespace Gendarme.Rules.Maintainability {
 			//HACK: BOO:
 			case "EqualityOperator" :
 				return (method.HasParameters && (method.Parameters.Count == 2) && 
-					(method.DeclaringType.FullName == "Boo.Lang.Runtime.RuntimeServices"));
+					(method.DeclaringType.IsNamed ("Boo.Lang.Runtime", "RuntimeServices")));
 			}
 			return false;
 		}
@@ -262,7 +262,7 @@ namespace Gendarme.Rules.Maintainability {
 
 		private static bool IsIgnoredSuggestionType (TypeReference type)
 		{
-			return ((type.FullName == "System.Object") || IsFromNonGenericCollectionNamespace (type.Namespace));
+			return (type.IsNamed ("System", "Object") || IsFromNonGenericCollectionNamespace (type.Namespace));
 		}
 
 		private static List<MethodSignature> GetSignatures (IEnumerable<StackEntryUsageResult> usageResults)
@@ -540,7 +540,7 @@ namespace Gendarme.Rules.Maintainability {
 			else
 				nRemoveTrail = 3;
 
-			string fullname = type.FullName;
+			string fullname = type.GetFullName ();
 			sb.Append (fullname.Substring (0, fullname.Length - nRemoveTrail));
 			if (count > 0) {
 				int n = 0;

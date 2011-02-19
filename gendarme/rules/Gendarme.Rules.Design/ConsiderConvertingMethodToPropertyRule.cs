@@ -90,9 +90,9 @@ namespace Gendarme.Rules.Design {
 		string ReportAssociatedSetter (MethodDefinition getter)
 		{
 			string name = "Set" + getter.Name.Substring (3);
-			parameter [0] = getter.ReturnType.FullName;
+			parameter [0] = getter.ReturnType.GetFullName ();
 			MethodDefinition setter = getter.DeclaringType.GetMethod (name, Void, parameter);
-			return setter == null ? String.Empty : setter.ToString ();
+			return setter == null ? String.Empty : setter.GetFullName ();
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Design {
 			bool get = name.StartsWith ("get", StringComparison.OrdinalIgnoreCase);
 			bool isp = name.StartsWith ("is", StringComparison.OrdinalIgnoreCase);
 			bool has = name.StartsWith ("has", StringComparison.OrdinalIgnoreCase);
-			if ((get || isp || has) && (method.Parameters.Count == 0) && (return_type.FullName != Void)) {
+			if ((get || isp || has) && (method.Parameters.Count == 0) && !return_type.IsNamed ("System", "Void")) {
 				// if it's a getter then look for a setter (to complete the report)
 				string msg = get ? ReportAssociatedSetter (method) : String.Empty;
 				Runner.Report (method, Severity.Low, Confidence.Normal, msg);

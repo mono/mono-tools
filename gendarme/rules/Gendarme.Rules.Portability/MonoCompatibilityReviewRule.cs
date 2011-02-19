@@ -40,6 +40,7 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -344,7 +345,7 @@ namespace Gendarme.Rules.Portability {
 					continue;
 
 				// MethodReference.ToString is costly so we do it once for the three checks
-				string callee = mr.ToString ();
+				string callee = mr.GetFullName ();
 
 				// calling not implemented method is very likely not to work == High
 				if ((NotImplemented != null) && NotImplementedInternal.Contains (callee)) {

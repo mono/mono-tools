@@ -97,15 +97,15 @@ namespace Gendarme.Rules.Exceptions {
 			if (!ctor.IsPublic)
 				return false;
 
-			return (ctor.Parameters [0].ParameterType.FullName == "System.String");
+			return (ctor.Parameters [0].ParameterType.IsNamed ("System", "String"));
 		}
 
 		private static bool CheckForInnerExceptionConstructor (IMethodSignature ctor)
 		{
 			IList<ParameterDefinition> pdc = ctor.Parameters;
-			string first = pdc [0].ParameterType.FullName;
-			string last = pdc [pdc.Count - 1].ParameterType.FullName;
-			return ((first == "System.String") && (last == Exception));
+			if (!pdc [0].ParameterType.IsNamed ("System", "String"))
+				return false;
+			return pdc [pdc.Count - 1].ParameterType.IsNamed ("System", "Exception");
 		}
 
 		private static bool CheckForSerializationConstructor (MethodDefinition ctor)

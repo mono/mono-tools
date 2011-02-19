@@ -177,7 +177,7 @@ namespace Gendarme.Rules.Correctness {
 		private void CheckBaseDispose (TypeDefinition type, MethodDefinition implicitDisposeMethod, MethodDefinition explicitDisposeMethod)
 		{
 			TypeDefinition baseType = type;
-			while (baseType.BaseType.FullName != "System.Object") {
+			while (!baseType.BaseType.IsNamed ("System", "Object")) {
 				baseType = baseType.BaseType.Resolve ();
 				// also checks parents, so no need to search further
 				if ((baseType == null) || !baseType.Implements ("System.IDisposable"))

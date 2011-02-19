@@ -105,7 +105,7 @@ namespace Gendarme.Rules.Gendarme {
 					continue;
 
 				TypeReference type = m.DeclaringType;
-				if (type.FullName != "System.NotImplementedException" && !type.Inherits ("System.NotImplementedException"))
+				if (type.Inherits ("System.Exception"))
 					Runner.Report (method, instruction, Severity.Medium, Confidence.High);
 			}
 

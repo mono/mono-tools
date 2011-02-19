@@ -184,7 +184,7 @@ namespace Gendarme.Rules.Naming {
 
 		private static string GetSuggestionMemberKind (IMethodSignature method)
 		{
-			if (method.Parameters.Count == 1 && method.ReturnType.FullName != "System.Void")
+			if (method.Parameters.Count == 1 && !method.ReturnType.IsNamed ("System", "Void"))
 				return "property";
 			return "method";
 		}

@@ -170,7 +170,7 @@ namespace Gendarme.Rules.Design.Generic {
 				}
 			}
 
-			string msg = (invoke.ReturnType.FullName == "System.Void") ? ActionMessage [n] : FuncMessage [n];
+			string msg = invoke.ReturnType.IsNamed ("System", "Void") ? ActionMessage [n] : FuncMessage [n];
 			if (use_structure)
 				msg += " and use a structure to hold all your parameters into <T>.";
 			Runner.Report (type, severity, Confidence.High, msg);

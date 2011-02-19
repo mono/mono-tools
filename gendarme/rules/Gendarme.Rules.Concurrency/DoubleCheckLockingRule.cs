@@ -213,7 +213,7 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			if (method.Name != methodName)
 				return false;
-			if (method.DeclaringType.FullName != "System.Threading.Monitor")
+			if (!method.DeclaringType.IsNamed ("System.Threading", "Monitor"))
 				return false;
 			// exclude Monitor.Enter(object, ref bool) since the comparison would be made
 			// againt the 'lockTaken' parameter and would report failures for every cases.

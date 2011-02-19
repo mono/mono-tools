@@ -220,7 +220,7 @@ namespace Gendarme.Rules.Exceptions {
 				return PreflightVirtualMethod (method);
 			} else if (method.HasParameters && (method.Name == "Dispose")) {
 				IList<ParameterDefinition> pdc = method.Parameters;
-				if ((pdc.Count == 1) && (pdc [0].ParameterType.FullName == "System.Boolean"))
+				if ((pdc.Count == 1) && pdc [0].ParameterType.IsNamed ("System", "Boolean"))
 					return "Dispose (bool)";
 			} else if (MethodSignatures.TryParse.Matches (method)) {
 				return "TryParse";
@@ -360,7 +360,7 @@ namespace Gendarme.Rules.Exceptions {
 						if (ins.Previous.Is (Code.Newobj)) {
 							MethodReference mr = (MethodReference) ins.Previous.Operand;
 							TypeReference tr = mr.DeclaringType;
-							if (tr.FullName == "System.NotImplementedException" || tr.Inherits ("System.NotImplementedException"))
+							if (tr.IsNamed ("System", "NotImplementedException") || tr.Inherits ("System.NotImplementedException"))
 								continue;
 						}	
 					
@@ -373,7 +373,7 @@ namespace Gendarme.Rules.Exceptions {
 						// a subclass) then we have a problem.
 						else if (ins.Previous.Is (Code.Newobj)) {
 							MethodReference mr = (MethodReference) ins.Previous.Operand;
-							string name = mr.DeclaringType.FullName;
+							string name = mr.DeclaringType.GetFullName ();
 							if (Array.IndexOf (allowedExceptions, name) < 0) {
 								if (!allowedExceptions.Any (e => mr.DeclaringType.Inherits (e))) {
 									Report (method, ins, methodLabel);

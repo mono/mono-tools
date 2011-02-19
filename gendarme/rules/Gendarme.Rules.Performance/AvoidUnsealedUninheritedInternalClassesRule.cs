@@ -74,10 +74,10 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.Success;
 
 			ModuleDefinition module = type.Module;
-			string type_name = type.FullName;
+			string type_name = type.GetFullName ();
 			foreach (TypeDefinition type_definition in module.GetAllTypes ()) {
 				// skip ourself
-				if (type_definition.FullName == type_name)
+				if (type_definition.IsNamed (type.Namespace, type.Name))
 					continue;
 				if (type_definition.Inherits (type_name))
 					return RuleResult.Success;

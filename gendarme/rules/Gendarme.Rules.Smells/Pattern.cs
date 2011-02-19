@@ -52,16 +52,7 @@ namespace Gendarme.Rules.Smells {
 		{
 			if (ins.OpCode.Code != Code.Isinst)
 				return false;
-			return ((ins.Operand as TypeReference).FullName == "System.IDisposable");
-		}
-
-		// look for a virtual call to a specific method
-		static bool IsCallVirt (Instruction ins, string typeName, string methodName)
-		{
-			if (ins.OpCode.Code != Code.Callvirt)
-				return false;
-			MethodReference mr = (ins.Operand as MethodReference);
-			return ((mr != null) && (mr.Name == methodName) && (mr.DeclaringType.FullName == typeName));
+			return (ins.Operand as TypeReference).IsNamed ("System", "IDisposable");
 		}
 
 		// look for:
@@ -69,7 +60,9 @@ namespace Gendarme.Rules.Smells {
 		//	endfinally 
 		static bool IsIDisposableDisposePattern (Instruction ins)
 		{
-			if (!IsCallVirt (ins, "System.IDisposable", "Dispose"))
+			if (ins.OpCode.Code != Code.Callvirt)
+				return false;
+			if (!(ins.Operand as MethodReference).IsNamed ("System", "IDisposable", "Dispose"))
 				return false;
 			return ins.Next.Is (Code.Endfinally);
 		}
@@ -89,10 +82,13 @@ namespace Gendarme.Rules.Smells {
 			for (int i = 0; i < Count; i++) {
 				Instruction ins = instructions [i];
 				// foreach
-				if (IsCallVirt (ins, "System.Collections.IEnumerator", "get_Current"))
-					return true;
-				if (IsCallVirt (ins, "System.Collections.IEnumerator", "MoveNext"))
-					return !call;
+				if (ins.OpCode.Code == Code.Callvirt) {
+					MethodReference mr = (ins.Operand as MethodReference);
+					if (mr.IsNamed ("System.Collections", "IEnumerator", "get_Current"))
+						return true;
+					if (mr.IsNamed ("System.Collections", "IEnumerator", "MoveNext"))
+						return !call;
+				}
 				// if there's a unknown call then it's likely not (totally) compiler generated
 				call |= (ins.OpCode.FlowControl == FlowControl.Call);
 				// foreach

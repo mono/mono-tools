@@ -116,7 +116,14 @@ namespace Gendarme.Rules.Maintainability {
 			case Code.Ldloc_S:
 				return (ins.Operand as VariableDefinition).Name;
 			default:
-				return (ins.Operand == null) ? String.Empty : ins.Operand.ToString ();
+				object o = ins.Operand;
+				MemberReference mr = (o as MemberReference);
+				if (mr != null)
+					return mr.GetFullName ();
+				else if (o != null)
+					return o.ToString ();
+				else
+					return String.Empty;
 			}
 		}
 
@@ -196,7 +203,7 @@ namespace Gendarme.Rules.Maintainability {
 					continue;
 
 				MethodReference mr = (current.Operand as MethodReference);
-				if ((mr.Name == "get_Length") && (mr.DeclaringType.FullName == "System.String")) {
+				if (mr.IsNamed ("System", "String", "get_Length")) {
 					// now that we found it we check that
 					// 1 - we previously did a check null on the same value (that we already know is a string)
 					Instruction branch = PreLengthCheck (method, current.Previous);

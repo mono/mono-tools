@@ -80,16 +80,22 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.Success;
 
 			foreach (ParameterDefinition parameter in method.Parameters) {
-				switch (parameter.ParameterType.FullName) {
-				case "System.Int32":
-				case "System.Int64":
-				case "System.String":
-				case "System.Object": // tolerable in some circumstances
-					break;
-				default:
-					Runner.Report (parameter, Severity.Medium, Confidence.Total);
-					break;
+				TypeReference ptype = parameter.ParameterType;
+				bool ok = (ptype.Namespace == "System");
+				if (ok) {
+					switch (ptype.Name) {
+					case "Int32":
+					case "Int64":
+					case "String":
+					case "Object": // tolerable in some circumstances
+						break;
+					default:
+						ok = false;
+						break;
+					}
 				}
+				if (!ok)
+					Runner.Report (parameter, Severity.Medium, Confidence.Total);
 			}
 			return Runner.CurrentRuleResult;
 		}

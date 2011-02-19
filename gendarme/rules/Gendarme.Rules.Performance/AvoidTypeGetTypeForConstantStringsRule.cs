@@ -34,6 +34,7 @@ using Mono.Cecil.Cil;
 using Gendarme.Framework;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Performance {
 
@@ -84,9 +85,9 @@ namespace Gendarme.Rules.Performance {
 
 				// look for calls to: static Type System.Type.GetType(string...)
 				MethodReference mr = (ins.Operand as MethodReference);
-				if ((mr == null) || !mr.HasParameters || (mr.Name != "GetType"))
+				if ((mr == null) || !mr.HasParameters)
 					continue;
-				if (mr.DeclaringType.FullName != "System.Type")
+				if (!mr.IsNamed ("System", "Type", "GetType"))
 					continue;
 
 				if (ins.Previous.OpCode.Code != Code.Ldstr)

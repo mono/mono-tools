@@ -281,11 +281,12 @@ namespace Gendarme.Rules.Concurrency {
 				bool new_slot = method.IsNewSlot;
 				superTypes = from s in superTypes where (s.IsInterface == new_slot) select s;
 				string [] parameters = pdc != null
-					? (from p in pdc.Cast<ParameterDefinition> () select p.ParameterType.FullName).ToArray ()
+					? (from p in pdc.Cast<ParameterDefinition> () select p.ParameterType.GetFullName ()).ToArray ()
 					: null;
 
+				string return_type_name = method.ReturnType.GetFullName ();
 				foreach (TypeDefinition type in superTypes) {
-					MethodDefinition superMethod = type.GetMethod (name, method.ReturnType.FullName, parameters);
+					MethodDefinition superMethod = type.GetMethod (name, return_type_name, parameters);
 					if (superMethod != null && !ThreadRocks.ThreadedNamespace (superMethod.DeclaringType.Namespace)) {
 						ThreadModel superModel = superMethod.ThreadingModel ();
 						if (model != superModel) {
@@ -431,7 +432,7 @@ namespace Gendarme.Rules.Concurrency {
 							methods.AddIfNew ((MethodReference) ins.Previous.Previous.Operand);
 						
 						// Misc threaded events.
-						} else if (call_type.FullName == "System.ComponentModel.BackgroundWorker") {
+						} else if (call_type.IsNamed ("System.ComponentModel", "BackgroundWorker")) {
 							if (call.Name == "add_DoWork") {
 								candidate = (MethodReference) ins.Previous.Previous.Operand;
 							}
@@ -490,9 +491,8 @@ namespace Gendarme.Rules.Concurrency {
 			// but mono doesn't.
 			case "add_ErrorDataReceived":
 			case "add_OutputDataReceived":
-				TypeReference type = method.DeclaringType;
-				if (type.Name == "Process")
-					return (type.Namespace == "System.Diagnostics");
+				if (method.DeclaringType.IsNamed ("System.Diagnostics", "Process"))
+					return true;
 				break;
 			}
 			return false;

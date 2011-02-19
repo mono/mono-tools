@@ -74,9 +74,7 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class ProvideValidXPathExpressionRule : Rule, IMethodRule {
 
-		const string XmlNodeClass = "System.Xml.XmlNode";
 		const string XPathNavigatorClass = "System.Xml.XPath.XPathNavigator";
-		const string XPathExpressionClass = "System.Xml.XPath.XPathExpression";
 
 		public override void Initialize (IRunner runner)
 		{
@@ -105,7 +103,7 @@ namespace Gendarme.Rules.Correctness {
 				break;
 			case Code.Ldsfld:
 				FieldReference f = (FieldReference) ld.Operand;
-				if (f.Name == "Empty" && f.DeclaringType.FullName == "System.String")
+				if (f.Name == "Empty" && f.DeclaringType.IsNamed ("System", "String"))
 					CheckString (method, ins, null);
 				break;
 			case Code.Ldnull:
@@ -137,11 +135,11 @@ namespace Gendarme.Rules.Correctness {
 			switch (mref.Name) {
 			case "Compile":
 				TypeReference tr = mref.DeclaringType;
-				if (tr.FullName == XPathExpressionClass || tr.Inherits (XPathNavigatorClass))
+				if (tr.IsNamed ("System.Xml.XPath", "XPathExpression") || tr.Inherits (XPathNavigatorClass))
 					CheckString (method, ins, GetFirstArgumentOffset (mref));
 				break;
 			case "SelectNodes":
-				if (mref.DeclaringType.FullName == XmlNodeClass)
+				if (mref.DeclaringType.IsNamed ("System.Xml", "XmlNode"))
 					CheckString (method, ins, -1);
 				break;
 			case "Evaluate":
@@ -150,7 +148,7 @@ namespace Gendarme.Rules.Correctness {
 				break;
 			case "SelectSingleNode":
 				CheckXPathNavigatorString (method, ins, mref);
-				if (mref.DeclaringType.FullName == XmlNodeClass)
+				if (mref.DeclaringType.IsNamed ("System.Xml", "XmlNode"))
 					CheckString (method, ins, -1);
 				break;
 			}
@@ -158,7 +156,7 @@ namespace Gendarme.Rules.Correctness {
 
 		void CheckXPathNavigatorString (MethodDefinition method, Instruction ins, MethodReference mref)
 		{
-			if (mref.Parameters [0].ParameterType.FullName == "System.String") {
+			if (mref.Parameters [0].ParameterType.IsNamed ("System", "String")) {
 				if (mref.DeclaringType.Inherits (XPathNavigatorClass))
 					CheckString (method, ins, -1);
 			}

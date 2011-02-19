@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Performance {
 				return Runner.CurrentRuleResult;
 			}
 
-			parameters [0] = type.FullName;
+			parameters [0] = type.GetFullName ();
 			if (type.GetMethod (MethodAttributes.Public, "Equals", "System.Boolean", parameters) != null)
 				return RuleResult.Success;
 

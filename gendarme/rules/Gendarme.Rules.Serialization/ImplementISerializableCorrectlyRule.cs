@@ -122,12 +122,12 @@ namespace Gendarme.Rules.Serialization {
 
 		static private FieldDefinition CheckProperty (MethodDefinition getter)
 		{
-			string return_type = getter.ReturnType.FullName;
+			TypeReference return_type = getter.ReturnType;
 			foreach (Instruction ins in getter.Body.Instructions) {
 				if (ins.OpCode.OperandType != OperandType.InlineField)
 					continue;
 				FieldDefinition field = (ins.Operand as FieldDefinition);
-				if ((field != null) && (field.FieldType.FullName == return_type))
+				if ((field != null) && field.FieldType.IsNamed (return_type.Namespace, return_type.Name))
 					return field;
 			}
 			return null;
@@ -143,7 +143,7 @@ namespace Gendarme.Rules.Serialization {
 					if (!mr.HasParameters || (mr.Name != "AddValue") || (mr.Parameters.Count < 2))
 						continue;
 					// type is sealed so this check is ok
-					if (mr.DeclaringType.FullName != "System.Runtime.Serialization.SerializationInfo")
+					if (!mr.DeclaringType.IsNamed ("System.Runtime.Serialization", "SerializationInfo"))
 						continue;
 
 					// look at the second parameter, which should be (or return) the field

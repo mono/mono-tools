@@ -98,7 +98,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (TypeReference type in self) {
-				if (type.FullName == typeName)
+				if (type.GetFullName () == typeName)
 					return true;
 			}
 			return false;
@@ -119,7 +119,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			foreach (TypeReference type in self) {
-				string fullname = type.FullName;
+				string fullname = type.GetFullName ();
 				foreach (string type_full_name in typeNames) {
 					if (fullname == type_full_name)
 						return true;
@@ -177,7 +177,7 @@ namespace Gendarme.Framework.Rocks {
 					continue;
 				if ((method.Attributes & attributes) != attributes)
 					continue;
-				if (returnType != null && method.ReturnType.FullName != returnType)
+				if (returnType != null && method.ReturnType.GetFullName () != returnType)
 					continue;
 				if (parameters != null) {
 					if (method.HasParameters) {
@@ -188,7 +188,7 @@ namespace Gendarme.Framework.Rocks {
 						for (int i = 0; i < parameters.Length; i++) {
 							if (parameters [i] == null)
 								continue;//ignore parameter
-							if (parameters [i] != pdc [i].ParameterType.GetElementType ().FullName) {
+							if (parameters [i] != pdc [i].ParameterType.GetElementType ().GetFullName ()) {
 								parameterError = true;
 								break;
 							}
@@ -299,7 +299,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;	// not enough information available
 
 			// special case, check if we implement ourselves
-			if (type.IsInterface && (type.FullName == interfaceName))
+			if (type.IsInterface && (type.GetFullName () == interfaceName))
 				return true;
 
 			return Implements (type, interfaceName, (interfaceName.IndexOf ('`') >= 0));
@@ -311,7 +311,7 @@ namespace Gendarme.Framework.Rocks {
 				// does the type implements it itself
 				if (type.HasInterfaces) {
 					foreach (TypeReference iface in type.Interfaces) {
-						string fullname = (generic) ? iface.GetElementType ().FullName : iface.FullName;
+						string fullname = (generic) ? iface.GetElementType ().GetFullName () : iface.GetFullName ();
 						if (fullname == interfaceName)
 							return true;
 						//if not, then maybe one of its parent interfaces does
@@ -342,7 +342,7 @@ namespace Gendarme.Framework.Rocks {
 
 			TypeReference current = self.Resolve ();
 			while (current != null) {
-				string fullname = current.FullName;
+				string fullname = current.GetFullName ();
 				if (fullname == className)
 					return true;
 				if (fullname == "System.Object")
@@ -354,6 +354,17 @@ namespace Gendarme.Framework.Rocks {
 				current = td.BaseType;
 			}
 			return false;
+		}
+
+		public static bool IsNamed (this TypeReference self, string nameSpace, string name)
+		{
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+			if (name == null)
+				throw new ArgumentNullException ("name");
+			if (self == null)
+				return false;
+			return ((self.Namespace == nameSpace) && (self.Name == name));
 		}
 
 		/// <summary>
@@ -387,13 +398,11 @@ namespace Gendarme.Framework.Rocks {
 			if (null == type || type.BaseType == null)
 				return false;
 
-			switch (type.BaseType.FullName) {
-			case "System.Delegate":
-			case "System.MulticastDelegate":
-				return true;
-			default:
+			if (type.BaseType.Namespace != "System")
 				return false;
-			}
+
+			string name = type.BaseType.Name;
+			return ((name == "Delegate") || (name == "MulticastDelegate"));
 		}
 
 		/// <summary>
@@ -423,9 +432,11 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			string full_name = self.FullName;
-			return ((full_name == "System.Single") ||
-				(full_name == "System.Double"));
+			if (self.Namespace != "System")
+				return false;
+
+			string name = self.Name;
+			return ((name == "Single") || (name == "Double"));
 		}
 
 		/// <summary>
@@ -471,14 +482,11 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			switch (self.FullName) {
-			case "System.IntPtr":
-			case "System.UIntPtr":
-			case "System.Runtime.InteropServices.HandleRef":
-				return true;
-			default:
-				return false;
+			if (self.Namespace == "System") {
+				string name = self.Name;
+				return ((name == "IntPtr") || (name == "UIntPtr"));
 			}
+			return self.IsNamed ("System.Runtime.InteropServices", "HandleRef");
 		}
 
 		/// <summary>

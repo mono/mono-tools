@@ -110,8 +110,10 @@ namespace Gendarme.Rules.Design {
 			// Note: we do not use Implements rock because we do not want a recursive answer
 			bool icomparable = false;
 			foreach (TypeReference iface in type.Interfaces) {
+				if (iface.Namespace != "System")
+					continue;
 				// catch both System.IComparable and System.IComparable`1<X>
-				if (iface.FullName.StartsWith ("System.IComparable", StringComparison.Ordinal)) {
+				if (iface.Name.StartsWith ("IComparable", StringComparison.Ordinal)) {
 					icomparable = true;
 					break;
 				}

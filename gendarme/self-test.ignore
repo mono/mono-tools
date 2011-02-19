@@ -298,7 +298,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.AvoidSmallNamespaceRule::
 M: System.Void Gendarme.Rules.Design.AvoidSmallNamespaceRule::TearDown()
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.InternalNamespacesShouldNotExposeTypesRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: System.Void Gendarme.Rules.Interoperability.Com.MarkComSourceInterfacesAsIDispatchRule::FindInterfaces()
-M: System.Boolean Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::HasExpectedInheritedTypeCount(Mono.Cecil.MemberReference,System.Int32)
+M: System.Boolean Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule::HasExpectedInheritedTypeCount(Mono.Cecil.TypeReference,System.Int32)
 M: System.Void Gendarme.XmlResultWriter::CreateDefects()
 M: System.Boolean Gendarme.Wizard::UpdateActiveRules()
 M: System.Void Gendarme.Framework.Engines.SuppressMessageEngine::AddIgnore(Mono.Cecil.IMetadataTokenProvider,System.Collections.Generic.IEnumerable`1<System.String>)
@@ -414,6 +414,7 @@ R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
 M: System.Boolean Gendarme.Rules.Interoperability.Com.ComRocks::IsTypeComVisible(Mono.Cecil.TypeDefinition)
 M: System.Boolean Gendarme.Rules.Performance.AvoidUnnecessaryOverridesRule::IsBase(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)
 M: System.Boolean Gendarme.Rules.Correctness.BadRecursiveInvocationRule::CompareMethods(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
+M: System.Boolean Gendarme.Rules.Naming.ParameterNamesShouldMatchOverriddenMethodRule::SignatureMatches(Mono.Cecil.MethodReference,Mono.Cecil.MethodReference,System.Boolean)
 
 # ---------------------------------------------------------
 # These are all OK.

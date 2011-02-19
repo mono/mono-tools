@@ -78,7 +78,6 @@ namespace Gendarme.Rules.Maintainability {
 	public class ConsiderUsingStopwatchRule : Rule, IMethodRule {
 
 		private const string DateTime = "System.DateTime";
-		private const string GetNow = "get_Now";
 
 		public override void Initialize (IRunner runner)
 		{
@@ -106,7 +105,7 @@ namespace Gendarme.Rules.Maintainability {
 				return false;
 
 			MethodReference calledMethod = (MethodReference) ins.Operand;
-			return calledMethod.DeclaringType.FullName == DateTime && calledMethod.Name == GetNow;
+			return calledMethod.IsNamed ("System", "DateTime", "get_Now");
 		}
 		
 		private static bool CheckParameters (MethodDefinition method, Instruction ins)
@@ -161,11 +160,10 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
-				if (!calls.Get (ins.OpCode.Code))
+				MethodReference calledMethod = ins.GetMethod ();
+				if (calledMethod == null)
 					continue;
-
-				MethodReference calledMethod = (MethodReference) ins.Operand;
-				if (calledMethod.DeclaringType.FullName != DateTime)
+				if (!calledMethod.DeclaringType.IsNamed ("System", "DateTime"))
 					continue;
 				if (!MethodSignatures.op_Subtraction.Matches (calledMethod))
 					continue;

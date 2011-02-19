@@ -97,7 +97,7 @@ namespace Gendarme.Rules.Naming {
 			if (name != base_name) {
 				if (!explicitInterfaceCheck)
 					return false;
-				string full_name = baseMethod.DeclaringType.FullName;
+				string full_name = baseMethod.DeclaringType.GetFullName ();
 				if (!name.StartsWith (full_name, StringComparison.Ordinal))
 					return false;
 				if (name [full_name.Length] != '.')
@@ -105,21 +105,7 @@ namespace Gendarme.Rules.Naming {
 				if (name.LastIndexOf (base_name, StringComparison.Ordinal) != full_name.Length + 1)
 					return false;
 			}
-			if (method.ReturnType.FullName != baseMethod.ReturnType.FullName)
-				return false;
-			if (method.HasParameters != baseMethod.HasParameters)
-				return false;
-
-			IList<ParameterDefinition> pdc = method.Parameters;
-			IList<ParameterDefinition> base_pdc = baseMethod.Parameters;
-			if (pdc.Count != base_pdc.Count)
-				return false;
-
-			for (int i = 0; i < pdc.Count; i++) {
-				if (pdc [i].ParameterType != base_pdc [i].ParameterType)
-					return false;
-			}
-			return true;
+			return method.CompareSignature (baseMethod);
 		}
 
 		private static MethodDefinition GetBaseMethod (MethodDefinition method)
@@ -199,7 +185,7 @@ namespace Gendarme.Rules.Naming {
 
 		private static bool IsBooMacroParameter (ParameterReference p)
 		{
-			return p.Name == "macro" && p.ParameterType.FullName == BooMacroStatement;
+			return p.Name == "macro" && p.ParameterType.IsNamed ("Boo.Lang.Compiler.Ast", "MacroStatement");
 		}
 	}
 }

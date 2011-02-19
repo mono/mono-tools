@@ -68,10 +68,6 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseFileOpenOnlyWithFileAccessRule : Rule, IMethodRule {
 
-		const string fileMode = "System.IO.FileMode";
-		const string fileAccess = "System.IO.FileAccess";
-		const string fileSystemRights = "System.Security.AccessControl.FileSystemRights";
-
 		// System.IO.File::Open
 		// System.IO.FileInfo::Open
 		// System.IO.FileStream::.ctor
@@ -115,16 +111,16 @@ namespace Gendarme.Rules.BadPractice {
 				bool foundFileMode = false;
 				bool foundFileAccess = false;
 				foreach (ParameterDefinition parameter in m.Parameters) {
-					string ptname = parameter.ParameterType.FullName;
-					if (!foundFileMode && ptname == fileMode)
+					TypeReference ptype = parameter.ParameterType;
+					if (!foundFileMode && ptype.IsNamed ("System.IO", "FileMode"))
 						foundFileMode = true;
-					if (!foundFileAccess && (ptname == fileAccess || ptname == fileSystemRights))
+					if (!foundFileAccess && (ptype.IsNamed ("System.IO", "FileAccess") || ptype.IsNamed ("System.Security.AccessControl", "FileSystemRights")))
 						foundFileAccess = true;
 				}
 				if (foundFileMode && !foundFileAccess) {
 					Runner.Report (method, instruction, Severity.Medium, Confidence.Normal,
 						String.Format("{0}::{1} being called with FileMode parameter but without FileAccess.",
-							m.DeclaringType.FullName, m.Name));
+							m.DeclaringType.GetFullName (), m.Name));
 				}
 			}
 			return Runner.CurrentRuleResult;

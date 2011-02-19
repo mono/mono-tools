@@ -107,14 +107,19 @@ namespace Gendarme.Rules.Performance {
 		static string GetKey (MethodDefinition caller, MethodDefinition callee, Instruction ins)
 		{
 			if (callee.IsStatic)
-				return callee.ToString ();
+				return callee.GetFullName ();
 
 			IMetadataTokenProvider chain = callee;
 			Instruction instance = ins.TraceBack (caller);
 
 			StringBuilder sb = new StringBuilder ();
 			while (instance != null) {
-				sb.Append (chain.ToString () ?? "null").Append ('.');
+				MemberReference mr = (chain as MemberReference);
+				if (mr == null)
+					sb.Append (chain.ToString ()); // ?? "null")
+				else
+					sb.Append (mr.GetFullName ());
+				sb.Append ('.');
 				chain = (instance.Operand as IMetadataTokenProvider);
 				if (chain == null) {
 					sb.Append (instance.GetOperand (caller));
@@ -151,16 +156,15 @@ namespace Gendarme.Rules.Performance {
 
 		static bool Filter (MethodDefinition method)
 		{
-			switch (method.DeclaringType.FullName) {
+			TypeReference type = method.DeclaringType;
 			// Elapsed* and IsRunning
-			case "System.Diagnostics.Stopwatch":
+			if (type.IsNamed ("System.Diagnostics", "Stopwatch"))
 				return true;
 			// Now and UtcNow
-			case "System.DateTime":
+			else if (type.IsNamed ("System", "DateTime"))
 				return method.IsStatic;
-			default:
-				return false;
-			}
+
+			return false;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

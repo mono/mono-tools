@@ -237,7 +237,7 @@ namespace Gendarme.Rules.Performance {
 			return match;
 		}
 
-		private int FindDuplicates (MethodDefinition method, string type, Instruction origin)
+		private int FindDuplicates (MethodDefinition method, TypeReference type, Instruction origin)
 		{
 			// we already had our first cast if we got here
 			int count = 1;
@@ -245,7 +245,7 @@ namespace Gendarme.Rules.Performance {
 			// don't check 0 since it's the one we compare with
 			for (int i = 1; i < casts.Count; i++) {
 				Instruction ins = casts [i];
-				if (type != (ins.Operand as TypeReference).FullName)
+				if (!(ins.Operand as TypeReference).IsNamed (type.Namespace, type.Name))
 					continue;
 				if (!OriginsMatch(method, origin, GetOrigin (ins)))
 					continue;
@@ -287,7 +287,7 @@ namespace Gendarme.Rules.Performance {
 			// if there's only one then it can't be a duplicate cast
 			while (casts.Count > 1) {
 				Instruction ins = casts [0];
-				string type = (ins.Operand as TypeReference).FullName;
+				TypeReference type = (ins.Operand as TypeReference);
 				Instruction origin = GetOrigin (ins);
 
 				int count = FindDuplicates (method, type, origin);
@@ -296,7 +296,7 @@ namespace Gendarme.Rules.Performance {
 
 					// rare, but it's possible to cast a null value (ldnull)
 					object name = origin.GetOperand (method) ?? "Null";
-					string msg = String.Format ("'{0}' is casted {1} times for type '{2}'.", name, count, type);
+					string msg = String.Format ("'{0}' is casted {1} times for type '{2}'.", name, count, type.GetFullName ());
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 				}
 				casts.RemoveAt (0);

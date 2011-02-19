@@ -92,7 +92,7 @@ namespace Gendarme.Rules.BadPractice {
 			foreach (CustomAttribute ca in cap.CustomAttributes) {
 				// ObsoleteAttribute has a three (3) ctors, including a default (parameter-less) ctor
 				// http://msdn.microsoft.com/en-us/library/68k270ch.aspx
-				if (ca.AttributeType.FullName != ObsoleteAttribute)
+				if (!ca.AttributeType.IsNamed ("System", "ObsoleteAttribute"))
 					continue;
 
 				// note: we don't have to check fields since they cannot be used

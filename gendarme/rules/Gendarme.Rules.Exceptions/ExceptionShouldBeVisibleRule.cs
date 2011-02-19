@@ -74,18 +74,16 @@ namespace Gendarme.Rules.Exceptions {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.BaseType == null)
+			TypeReference btype = type.BaseType;
+			if (btype == null)
 				return RuleResult.DoesNotApply;
 
 			// rule apply only to type that inherits from the base exceptions
-			switch (type.BaseType.FullName) {
-			case "System.Exception":
-			case "System.SystemException":
-			case "System.ApplicationException":
-				break;
-			default:
+			if (btype.Namespace != "System")
 				return RuleResult.DoesNotApply;
-			}
+			string name = btype.Name;
+			if ((name != "Exception") && (name != "SystemException") && (name != "ApplicationException"))
+				return RuleResult.DoesNotApply;
 
 			if (type.IsAbstract || type.IsVisible ())
 				return RuleResult.Success;

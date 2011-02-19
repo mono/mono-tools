@@ -30,6 +30,7 @@ using System;
 
 using Mono.Cecil;
 using Gendarme.Framework;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Interoperability {
 
@@ -69,13 +70,8 @@ namespace Gendarme.Rules.Interoperability {
 
 		private static bool IsStringOrSBuilder (TypeReference reference)
 		{
-			switch (reference.GetElementType ().FullName) {
-			case "System.String":
-			case "System.Text.StringBuilder":
-				return true;
-			default:
-				return false;
-			}
+			TypeReference type = reference.GetElementType ();
+			return (type.IsNamed ("System", "String") || type.IsNamed ("System.Text", "StringBuilder"));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

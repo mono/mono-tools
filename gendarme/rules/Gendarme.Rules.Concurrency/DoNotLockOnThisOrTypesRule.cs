@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Concurrency {
 			case Code.Call:
 			case Code.Callvirt:
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.ReturnType.FullName != "System.Type")
+				if (!mr.ReturnType.IsNamed ("System", "Type"))
 					return String.Empty;
 
 				if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {

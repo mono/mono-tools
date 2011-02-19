@@ -96,11 +96,15 @@ namespace Gendarme.Rules.Design {
 		{
 			TypeReference baseType = type;
 			while (baseType != null) {
-				string name = baseType.FullName;
-				if (name == "System.Collections.CollectionBase" ||
-					name == "System.Collections.DictionaryBase" ||
-					name == "System.Collections.ReadOnlyCollectionBase")
-					return RuleResult.DoesNotApply;
+				if (baseType.Namespace == "System.Collections") {
+					switch (baseType.Name) {
+					case "CollectionBase":
+					case "DictionaryBase":
+					case "ReadOnlyCollectionBase":
+						return RuleResult.DoesNotApply;
+					}
+				}
+
 				TypeDefinition td = baseType.Resolve ();
 				if (td != null)
 					baseType = td.BaseType;

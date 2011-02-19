@@ -109,10 +109,8 @@ namespace Gendarme.Rules.BadPractice {
 				case Code.Call:
 				case Code.Callvirt:
 					MethodReference mr = (current.Operand as MethodReference);
-					if ((mr != null) && (mr.Name == "GetEntryAssembly")
-						&& (mr.DeclaringType.FullName == Assembly)) {
-						Runner.Report (method, current, Severity.Medium, Confidence.Total, String.Empty);
-					}
+					if (mr.IsNamed ("System.Reflection", "Assembly", "GetEntryAssembly"))
+						Runner.Report (method, current, Severity.Medium, Confidence.Total);
 					break;
 				}
 			}

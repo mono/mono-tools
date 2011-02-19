@@ -63,7 +63,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 	[Solution ("Add an InterfaceTypeAttribute set to InterfaceIsIDispatch for all specified interfaces.")]
 	[FxCopCompatibility ("Microsoft.Interoperability", "CA1412:MarkComSourceInterfacesAsIDispatch")]
 	public class MarkComSourceInterfacesAsIDispatchRule : Rule, ITypeRule {
-		private List<TypeDefinition> interfaces = new List<TypeDefinition> ();
+		private SortedDictionary<string, TypeDefinition> interfaces = new SortedDictionary<string, TypeDefinition> ();
 
 		// Iterate through all assemblies and add the interfaces found to a list.
 		private void FindInterfaces ()
@@ -73,33 +73,17 @@ namespace Gendarme.Rules.Interoperability.Com {
 					foreach (TypeDefinition type in module.GetAllTypes ()) {
 						if (!type.IsInterface)
 							continue;
-						interfaces.Add (type);
+						interfaces.Add (type.GetFullName (), type);
 					}
 				}
 			}
 		}
 
-		// Find a TypeDefinition for an interface with the given name.
-		private TypeDefinition FindInterfaceDefinition (string fullName)
-		{
-			foreach (var def in interfaces)
-				if (fullName == def.FullName)
-					return def;
-			return null;
-		}
-
 		// Finds a CustomAttribute on a type from the given name.
-		private static CustomAttribute FindComAttribute (ICustomAttributeProvider type, string name)
+		private static CustomAttribute FindCustomAttribute (ICustomAttributeProvider type, string nameSpace, string name)
 		{
 			foreach (var attribute in type.CustomAttributes) {
-				if (!attribute.HasConstructorArguments)
-					continue;
-
-				TypeReference atype = attribute.AttributeType;
-				if (atype.Namespace != "System.Runtime.InteropServices")
-					continue;
-
-				if (atype.Name == name)
+				if (attribute.AttributeType.IsNamed (nameSpace, name))
 					return attribute;
 			}
 			return null;
@@ -115,7 +99,8 @@ namespace Gendarme.Rules.Interoperability.Com {
 				Runner.Report (def, Severity.High, Confidence.Total, "No attributes are present on a specified interface");
 				return;
 			}
-			var attribute = FindComAttribute (def, "InterfaceTypeAttribute");
+
+			var attribute = FindCustomAttribute (def, "System.Runtime.InteropServices", "InterfaceTypeAttribute");
 			if (attribute == null) {
 				Runner.Report (def, Severity.High, Confidence.Total, "No [InterfaceType] attribute is present on a specified interface");
 				return;
@@ -129,7 +114,9 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		private void CheckInterface (string interface_name)
 		{
-			CheckInterface (FindInterfaceDefinition (interface_name));
+			TypeDefinition td;
+			if (interfaces.TryGetValue (interface_name, out td))
+				CheckInterface (td);
 		}
 
 		public override void Initialize (IRunner runner)
@@ -145,7 +132,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 			if (!type.IsClass || !type.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
-			var attribute = FindComAttribute (type, "ComSourceInterfacesAttribute");
+			var attribute = FindCustomAttribute (type, "System.Runtime.InteropServices", "ComSourceInterfacesAttribute");
 			if (attribute == null)
 				return RuleResult.DoesNotApply;
 			// The attribute's paramemters may be a single null-delimited string, or up to four System.Types.

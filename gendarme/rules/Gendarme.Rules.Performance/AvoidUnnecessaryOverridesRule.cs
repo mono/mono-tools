@@ -80,8 +80,9 @@ namespace Gendarme.Rules.Performance {
 			if (!mr.CompareSignature (method))
 				return false;
 
+			TypeReference type = mr.DeclaringType;
 			foreach (TypeDefinition baseType in method.DeclaringType.AllSuperTypes ()) {
-				if (mr.DeclaringType.FullName == baseType.FullName)
+				if (baseType.IsNamed (type.Namespace, type.Name))
 					return true;
 			}
 			return false;

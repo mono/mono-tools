@@ -86,7 +86,7 @@ namespace Gendarme.Rules.Design.Generic {
 			if (invoke == null)
 				return RuleResult.DoesNotApply;
 
-			if (invoke.ReturnType.FullName != "System.Void")
+			if (!invoke.ReturnType.IsNamed ("System", "Void"))
 				return RuleResult.Success;
 
 			if (!invoke.HasParameters)
@@ -95,7 +95,7 @@ namespace Gendarme.Rules.Design.Generic {
 			IList<ParameterDefinition> pdc = invoke.Parameters;
 			if (pdc.Count != 2)
 				return RuleResult.Success;
-			if (pdc [0].ParameterType.FullName != "System.Object")
+			if (!pdc [0].ParameterType.IsNamed ("System", "Object"))
 				return RuleResult.Success;
 			if (!pdc [1].ParameterType.Inherits ("System.EventArgs"))
 				return RuleResult.Success;

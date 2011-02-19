@@ -85,11 +85,11 @@ namespace Gendarme.Rules.Design {
 
 		private bool CheckReturnVoid (IMetadataTokenProvider eventType, IMethodSignature invoke)
 		{
-			string full_name = invoke.ReturnType.FullName;
-			if (String.Compare (full_name, "System.Void") == 0)
+			TypeReference rtype = invoke.ReturnType;
+			if (rtype.IsNamed ("System", "Void"))
 				return true;
 
-			string msg = String.Format ("The delegate should return void, not {0}", full_name);
+			string msg = String.Format ("The delegate should return void, not {0}", rtype.GetFullName ());
 			Runner.Report (eventType, Severity.Medium, Confidence.High, msg);
 			return false;
 		}
@@ -112,9 +112,9 @@ namespace Gendarme.Rules.Design {
 			IList<ParameterDefinition> pdc = invoke.Parameters;
 			int count = pdc.Count;
 			if (count >= 1) {
-				string type_name = pdc [0].ParameterType.FullName;
-				if (String.Compare (type_name, "System.Object") != 0) {
-					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", type_name));
+				TypeReference ptype = pdc [0].ParameterType;
+				if (!ptype.IsNamed ("System", "Object")) {
+					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", ptype.GetFullName ()));
 					ok = false;
 				}
 			}
@@ -189,9 +189,9 @@ namespace Gendarme.Rules.Design {
 			return valid;
 		}
 
-		private bool CheckGenericDelegate (MemberReference type)
+		private bool CheckGenericDelegate (TypeReference type)
 		{
-			if (type.FullName == "System.EventHandler`1")
+			if (type.IsNamed ("System", "EventHandler`1"))
 				return true;
 
 			Runner.Report (type, Severity.Medium, Confidence.High, "Generic delegates should use EventHandler<TEventArgs>");

@@ -271,7 +271,7 @@ namespace Gendarme.Rules.Interoperability {
 			locals.Clear ();
 			stack.Clear ();
 			
-			Log.WriteLine (this, "\n\nChecking method: {0} on type: {1}", method.Name, method.DeclaringType.FullName);
+			Log.WriteLine (this, "\n\nChecking method: {0} on type: {1}", method.Name, method.DeclaringType.GetFullName ());
 			Log.WriteLine (this, method);
 
 			MethodBody body = method.Body;
@@ -497,8 +497,8 @@ namespace Gendarme.Rules.Interoperability {
 						continue;
 					
 					// check for catch all clauses
-					string exception_typename = eh.CatchType == null ? null : eh.CatchType.FullName;
-					if (!(exception_typename == null || exception_typename == "System.Object" || exception_typename == "System.Exception"))
+					TypeReference ctype = eh.CatchType;
+					if (!(ctype == null || ctype.IsNamed ("System", "Object") || ctype.IsNamed ("System", "Exception")))
 						continue;
 					
 					// Mark the code this exception handler handles as safe.

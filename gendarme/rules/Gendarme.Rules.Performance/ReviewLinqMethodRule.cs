@@ -96,10 +96,6 @@ namespace Gendarme.Rules.Performance {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public sealed class ReviewLinqMethodRule : Rule, IMethodRule {
 
-		private const string EnumerableName = "System.Linq.Enumerable";
-
-		//private readonly OpCodeBitmask Comparisons = ComparisonsBitmask ();
-		//private readonly OpCodeBitmask Conditions = ConditionsBitmask ();
 		private readonly OpCodeBitmask Comparisons = new OpCodeBitmask (0x2801400000000000, 0x0, 0x0, 0xB);
 		private readonly OpCodeBitmask Conditions = new OpCodeBitmask (0x300180000000000, 0x0, 0x0, 0x0);
 
@@ -251,7 +247,7 @@ namespace Gendarme.Rules.Performance {
 				
 				// and the method is a System.Linq.Enumerable method then,
 				var target = ins.Operand as MethodReference;
-				if ((target == null) || (target.DeclaringType.FullName != EnumerableName))
+				if (!target.DeclaringType.IsNamed ("System.Linq", "Enumerable"))
 					continue;
 
 				string tname = target.Name;

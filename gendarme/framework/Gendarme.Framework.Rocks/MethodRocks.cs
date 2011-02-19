@@ -55,6 +55,15 @@ namespace Gendarme.Framework.Rocks {
 	/// </summary>
 	public static class MethodRocks {
 
+		public static bool IsNamed (this MemberReference self, string nameSpace, string typeName, string methodName)
+		{
+			if (methodName == null)
+				throw new ArgumentNullException ("methodName");
+			if (self == null)
+				return false;
+			return ((self.Name == methodName) && self.DeclaringType.IsNamed (nameSpace, typeName));
+		}
+
 		/// <summary>
 		/// Check if the MethodReference is defined as the entry point of it's assembly.
 		/// </summary>
@@ -76,7 +85,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			return (self.HasThis && !self.HasParameters && (self.Name == "Finalize") &&
-				(self.ReturnType.FullName == "System.Void"));
+				self.ReturnType.IsNamed ("System", "Void"));
 		}
 
 		/// <summary>
@@ -161,27 +170,10 @@ namespace Gendarme.Framework.Rocks {
 			TypeDefinition parent = declaring.BaseType != null ? declaring.BaseType.Resolve () : null;
 			while (parent != null) {
 				string name = method.Name;
-				string retval = method.ReturnType.FullName;
-				int pcount = method.HasParameters ? method.Parameters.Count : 0;
 				foreach (MethodDefinition md in parent.Methods) {
 					if (name != md.Name)
 						continue;
-					if (retval != md.ReturnType.FullName)
-						continue;
-					if (md.HasParameters && (pcount == 0))
-						continue;
-					IList<ParameterDefinition> ppdc = md.Parameters;
-					if (pcount != ppdc.Count)
-						continue;
-
-					bool ok = true;
-					for (int i = 0; i < pcount; i++) {
-						if (method.Parameters [i].ParameterType.FullName != ppdc [i].ParameterType.FullName) {
-							ok = false;
-							break;
-						}
-					}
-					if (!ok)
+					if (!method.CompareSignature (md))
 						continue;
 
 					return md.IsVirtual;
@@ -250,7 +242,7 @@ namespace Gendarme.Framework.Rocks {
 
 			if (gp.HasConstraints) {
 				IList<TypeReference> cc = gp.Constraints;
-				return ((cc.Count == 1) && (cc [0].FullName == "System.EventArgs"));
+				return ((cc.Count == 1) && cc [0].IsNamed ("System", "EventArgs"));
 			}
 
 			return false;
@@ -283,7 +275,7 @@ namespace Gendarme.Framework.Rocks {
 
 		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
 		{
-			return a.GetElementType ().FullName == b.GetElementType ().FullName;
+			return a.GetElementType ().GetFullName () == b.GetElementType ().GetFullName ();
 		}
 
 		/// <summary>

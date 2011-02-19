@@ -154,9 +154,7 @@ namespace Gendarme.Rules.Concurrency {
 				return false;
 
 			MethodReference method = (ins.Operand as MethodReference);
-			if (method == null)
-				return false;
-			if ((method.Name != "Enter") || (method.DeclaringType.FullName != "System.Threading.Monitor"))
+			if (!method.IsNamed ("System.Threading", "Monitor", "Enter"))
 				return false;
 			return (parametersCount == method.Parameters.Count);
 		}

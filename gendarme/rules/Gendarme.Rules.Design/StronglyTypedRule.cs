@@ -112,7 +112,7 @@ namespace Gendarme.Rules.Design {
 				for (int i = 0; i < propertyNames.Length; i++) {
 					if (propertyNames [i] == null || propertyNames [i] != property.Name)
 						continue;
-					if (!weakTypes.Contains (property.PropertyType.FullName)) {
+					if (!weakTypes.Contains (property.PropertyType.GetFullName ())) {
 						propertiesLeft--;
 						propertyNames [i] = null;
 					}
@@ -135,7 +135,7 @@ namespace Gendarme.Rules.Design {
 					for (int j = 0; j < methodParameters.Count; j++) {
 						if (!weakTypes.Contains (signatures [i].Parameters [j]))
 							continue;
-						if (weakTypes.Contains (methodParameters [j].ParameterType.FullName))
+						if (weakTypes.Contains (methodParameters [j].ParameterType.GetFullName ()))
 							foundStrong = false;
 					}
 

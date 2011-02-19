@@ -96,7 +96,7 @@ namespace Gendarme.Rules.Naming {
 			TypeDefinition candidate = type.Module.GetType (candidate_name);
 			if (candidate != null) {
 				// does Foo implement IFoo ?
-				if (!candidate.Implements (type.FullName)) {
+				if (!candidate.Implements (type.GetFullName ())) {
 					Runner.Report (candidate, Severity.High, Confidence.High);
 				}
 			}
