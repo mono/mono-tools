@@ -23,5 +23,5 @@ using System.Security.Permissions;
 [assembly: ComVisible (false)]
 
 #if RELEASE
-[assembly: AssemblyVersion ("2.10.0.0")]
+[assembly: AssemblyVersion ("2.11.0.0")]
 #endif
