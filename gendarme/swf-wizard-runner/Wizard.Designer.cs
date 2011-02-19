@@ -146,7 +146,7 @@ namespace Gendarme {
 			this.label1.Padding = new System.Windows.Forms.Padding (12, 0, 0, 1);
 			this.label1.Size = new System.Drawing.Size (265, 14);
 			this.label1.TabIndex = 1;
-			this.label1.Text = "Copyright © 2005-2010 Novell, Inc. and contributors";
+			this.label1.Text = "Copyright © 2005-2011 Novell, Inc. and contributors";
 			// 
 			// welcome_link_label
 			// 
