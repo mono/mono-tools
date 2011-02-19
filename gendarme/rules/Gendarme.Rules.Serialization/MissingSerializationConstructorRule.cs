@@ -89,9 +89,6 @@ namespace Gendarme.Rules.Serialization {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2229:ImplementSerializationConstructors")]
 	public class MissingSerializationConstructorRule : Rule, ITypeRule {
 
-		// non-localizable
-		private const string ISerializable = "System.Runtime.Serialization.ISerializable";
-
 		// localizable
 		private const string NoSerializationCtorText = "The required constructor for ISerializable is not present in this type.";
 		private const string CtorSealedTypeText = "The serialization constructor should be private since this type is sealed.";
@@ -100,7 +97,7 @@ namespace Gendarme.Rules.Serialization {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to interfaces, delegates or types that does not implement ISerializable
-			if (type.IsInterface || type.IsDelegate () || !type.Implements (ISerializable))
+			if (type.IsInterface || type.IsDelegate () || !type.Implements ("System.Runtime.Serialization", "ISerializable"))
 				return RuleResult.DoesNotApply;
 
 			// rule applies, only Success or Failure from the point on

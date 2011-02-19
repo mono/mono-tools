@@ -137,17 +137,17 @@ namespace Gendarme.Rules.Naming {
 
 		static string InheritsOrImplements (TypeReference type, string nameSpace, string name)
 		{
-			string subtype = nameSpace + "." + name; //FIXME temp until Implements is fixed
-			if (type.Inherits (nameSpace, name) || type.Implements (subtype))
+			if (type.Inherits (nameSpace, name) || type.Implements (nameSpace, name))
 				return String.Empty;
-			return String.Format ("'{0}' should only be used for types that inherits or implements {1}.", type.Name, subtype);
+			return String.Format ("'{0}' should only be used for types that inherits or implements '{1}.{2}'.", 
+				type.Name, nameSpace, name);
 		}
 
 		static string CheckCollection (TypeReference type)
 		{
-			if (type.Implements ("System.Collections.ICollection") ||
-				type.Implements ("System.Collections.IEnumerable") ||
-				type.Implements ("System.Collections.Generic.ICollection`1"))
+			if (type.Implements ("System.Collections", "ICollection") ||
+				type.Implements ("System.Collections", "IEnumerable") ||
+				type.Implements ("System.Collections.Generic", "ICollection`1"))
 				return String.Empty;
 
 			if (type.Inherits ("System.Collections", "Queue") || type.Inherits ("System.Collections", "Stack") || 
@@ -159,7 +159,7 @@ namespace Gendarme.Rules.Naming {
 
 		static string CheckDictionary (TypeReference type)
 		{
-			if (type.Implements ("System.Collections.IDictionary") || type.Implements ("System.Collections.Generic.IDictionary`2"))
+			if (type.Implements ("System.Collections", "IDictionary") || type.Implements ("System.Collections.Generic", "IDictionary`2"))
 				return String.Empty;
 			return "'Dictionary' should only be used for types implementing IDictionary and IDictionary<TKey,TValue>.";
 		}

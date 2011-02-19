@@ -160,7 +160,7 @@ namespace Gendarme.Rules.Security {
 			// since ICertificatePolicy is an interface we need to check its name
 			string name = method.Name;
 			if (name == "CheckValidationResult") {
-				if (!method.DeclaringType.Implements ("System.Net.ICertificatePolicy"))
+				if (!method.DeclaringType.Implements ("System.Net", "ICertificatePolicy"))
 					return RuleResult.Success;
 			} else if (name != "System.Net.ICertificatePolicy.CheckValidationResult")
 				return RuleResult.Success;

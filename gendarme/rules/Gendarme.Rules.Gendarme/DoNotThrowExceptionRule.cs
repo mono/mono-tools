@@ -74,7 +74,7 @@ namespace Gendarme.Rules.Gendarme {
 
 			Runner.AnalyzeType += (object sender, RunnerEventArgs e) =>
 			{
-				Active = e.CurrentType.Implements ("Gendarme.Framework.IRule");
+				Active = e.CurrentType.Implements ("Gendarme.Framework", "IRule");
 			};
 		}
 

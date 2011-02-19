@@ -64,8 +64,6 @@ namespace Gendarme.Rules.Serialization {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
 	public class MissingSerializableAttributeOnISerializableTypeRule : Rule, ITypeRule {
 
-		private const string ISerializable = "System.Runtime.Serialization.ISerializable";
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule does not apply to interface (since [Serializable] is not applicable to interfaces)
@@ -74,7 +72,7 @@ namespace Gendarme.Rules.Serialization {
 				return RuleResult.DoesNotApply;
 
 			// rule does not apply if the type does not implements ISerializable 
-			if (!type.Implements (ISerializable))
+			if (!type.Implements ("System.Runtime.Serialization", "ISerializable"))
 				return RuleResult.DoesNotApply;
 
 			// rule applies only if base type is serializable

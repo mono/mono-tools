@@ -208,7 +208,7 @@ namespace Gendarme.Rules.Exceptions {
 			base.Initialize (runner);
 
 			Runner.AnalyzeType += delegate (object sender, RunnerEventArgs e) {
-				if (e.CurrentType.Implements ("System.Collections.Generic.IEqualityComparer`1")) {
+				if (e.CurrentType.Implements ("System.Collections.Generic", "IEqualityComparer`1")) {
 					equals_signature = EqualityComparer_Equals;
 					hashcode_signature = EqualityComparer_GetHashCode;
 				} else {
@@ -288,7 +288,7 @@ namespace Gendarme.Rules.Exceptions {
 			} else if (MethodSignatures.Finalize.Matches (method)) {
 				return "Finalizers";
 			} else if (MethodSignatures.Dispose.Matches (method) || MethodSignatures.DisposeExplicit.Matches (method)) {
-				if (method.DeclaringType.Implements ("System.IDisposable"))
+				if (method.DeclaringType.Implements ("System", "IDisposable"))
 					return "IDisposable.Dispose";
 			} else if (equals_signature != null && equals_signature.Matches (method)) {
 				return "IEqualityComparer<T>.Equals";

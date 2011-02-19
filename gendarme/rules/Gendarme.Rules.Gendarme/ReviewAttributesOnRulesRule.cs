@@ -165,7 +165,7 @@ namespace Gendarme.Rules.Gendarme {
 			var typeName = type.GetFullName ();
 			bool result;
 			if (!typeIsRule.TryGetValue (typeName, out result)) {
-				result = type.Implements ("Gendarme.Framework.IRule");
+				result = type.Implements ("Gendarme.Framework", "IRule");
 				typeIsRule [typeName] = result;
 			}
 			return result;
@@ -203,7 +203,7 @@ namespace Gendarme.Rules.Gendarme {
 		private void CheckEngineDependencyAttribute (CustomAttribute attribute, ICustomAttributeProvider provider)
 		{
 			TypeDefinition td = (provider as TypeDefinition);
-			if (td == null || !(IsRule (td) || td.Implements ("Gendarme.Framework.IRunner")))
+			if (td == null || !(IsRule (td) || td.Implements ("Gendarme.Framework", "IRunner")))
 				Runner.Report (td, Severity.Medium, Confidence.High, "[EngineDependency] can only be used on rules and runners");
 
 			CheckIfStringArgumentsAreNotNullOrEmpty (attribute, provider);

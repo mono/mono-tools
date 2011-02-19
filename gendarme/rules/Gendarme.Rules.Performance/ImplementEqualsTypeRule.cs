@@ -107,7 +107,7 @@ namespace Gendarme.Rules.Performance {
 			// * the assembly targets the 2.0 (or later) runtime
 			// * and it does not already implement it
 			if (type.Module.Runtime >= TargetRuntime.Net_2_0) {
-				if (!type.Implements ("System.IEquatable`1")) {
+				if (!type.Implements ("System", "IEquatable`1")) {
 					Runner.Report (type, Severity.Medium, Confidence.Total, "Implement System.IEquatable<T>");
 				}
 				return Runner.CurrentRuleResult;

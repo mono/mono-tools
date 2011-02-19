@@ -92,11 +92,11 @@ namespace Gendarme.Rules.Naming {
 			if (name [0] != 'I')
 				return RuleResult.DoesNotApply;
 
-			string candidate_name = String.Concat (type.Namespace, ".", name.Substring (1));
-			TypeDefinition candidate = type.Module.GetType (candidate_name);
+			string nspace = type.Namespace;
+			TypeDefinition candidate = type.Module.GetType (nspace, name.Substring (1));
 			if (candidate != null) {
 				// does Foo implement IFoo ?
-				if (!candidate.Implements (type.GetFullName ())) {
+				if (!candidate.Implements (nspace, name)) {
 					Runner.Report (candidate, Severity.High, Confidence.High);
 				}
 			}

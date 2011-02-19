@@ -42,6 +42,7 @@ namespace Gendarme.Rules.Design {
 		abstract protected MethodSignature [] GetMethods ();
 		abstract protected string [] GetProperties ();
 		abstract protected string InterfaceName { get; }
+		abstract protected string InterfaceNamespace { get; }
 
 		HashSet<string> weakTypes = new HashSet<string> {
 			"System.Object",
@@ -55,7 +56,7 @@ namespace Gendarme.Rules.Design {
 
 		virtual public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsAbstract || type.IsGeneratedCode () || !type.Implements (InterfaceName))
+			if (type.IsAbstract || type.IsGeneratedCode () || !type.Implements (InterfaceNamespace, InterfaceName))
 				return RuleResult.DoesNotApply;
 
 			signatures = GetMethods ();

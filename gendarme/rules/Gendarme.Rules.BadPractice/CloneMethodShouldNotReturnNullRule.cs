@@ -90,7 +90,7 @@ namespace Gendarme.Rules.BadPractice {
 				return RuleResult.DoesNotApply;
 
 			// where the type implements ICloneable
-			if (!method.DeclaringType.Implements (ICloneable))
+			if (!method.DeclaringType.Implements ("System", "ICloneable"))
 				return RuleResult.DoesNotApply;
 
 			// call base class to detect if the method can return null

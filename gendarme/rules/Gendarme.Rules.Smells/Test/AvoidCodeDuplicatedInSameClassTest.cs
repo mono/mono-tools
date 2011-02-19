@@ -686,16 +686,16 @@ namespace Test.Rules.Smells {
 		class NonDuplicatedComparingAndReturningNull {
 			string CheckTwoOptions (TypeReference type) 
 			{
-				if (type.Implements ("System.Collections.IDictionary") || type.Implements ("System.Collections.Generic.IDictionary`2"))
+				if (type.Implements ("System.Collections", "IDictionary") || type.Implements ("System.Collections.Generic", "IDictionary`2"))
 					return null;
 				return "'Dictionary' should only be used for types implementing IDictionary and IDictionary<TKey,TValue>.";
 			}
 
 			string CheckThreeOptions (TypeReference type)
 			{
-				if (type.Implements ("System.Collections.ICollection") ||
-					type.Implements ("System.Collections.IEnumerable") ||
-					type.Implements ("System.Collections.Generic.ICollection`1"))
+				if (type.Implements ("System.Collections", "ICollection") ||
+					type.Implements ("System.Collections", "IEnumerable") ||
+					type.Implements ("System.Collections.Generic", "ICollection`1"))
 					return null;
 
 				if (type.Inherits ("System.Collections", "Queue") || type.Inherits ("System.Collections", "Stack") || 

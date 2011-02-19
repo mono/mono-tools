@@ -134,10 +134,10 @@ namespace Gendarme.Rules.Correctness {
 			if (method.IsConstructor) {
 				if (method.DeclaringType.IsGeneratedCode ())
 					return false; //eg. generators
-				return method.DeclaringType.Implements ("System.IDisposable");
+				return method.DeclaringType.Implements ("System", "IDisposable");
 			}
 
-			return method.ReturnType.Implements ("System.IDisposable");
+			return method.ReturnType.Implements ("System", "IDisposable");
 		}
 
 		static bool AreBothInstructionsInSameTryFinallyBlock (MethodBody body, Instruction a, Instruction b)

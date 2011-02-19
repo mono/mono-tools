@@ -189,7 +189,7 @@ namespace Gendarme.Rules.Serialization {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (!type.IsSerializable || !type.Implements ("System.Runtime.Serialization.ISerializable"))
+			if (!type.IsSerializable || !type.Implements ("System.Runtime.Serialization", "ISerializable"))
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition getObjectData = type.GetMethod (MethodSignatures.GetObjectData);

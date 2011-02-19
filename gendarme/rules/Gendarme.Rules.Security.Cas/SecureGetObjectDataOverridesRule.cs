@@ -87,7 +87,7 @@ namespace Gendarme.Rules.Security.Cas {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to types that implements ISerializable
-			if (!type.Implements ("System.Runtime.Serialization.ISerializable"))
+			if (!type.Implements ("System.Runtime.Serialization", "ISerializable"))
 				return RuleResult.DoesNotApply;
 
 			MethodDefinition method = type.GetMethod (MethodSignatures.GetObjectData);

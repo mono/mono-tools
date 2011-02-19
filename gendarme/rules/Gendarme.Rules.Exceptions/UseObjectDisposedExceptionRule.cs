@@ -222,7 +222,7 @@ namespace Gendarme.Rules.Exceptions {
 			
 			if (method.IsPublic) {
 				if (OpCodeEngine.GetBitmask (method).Intersect (CallsAndFields)) {
-					if (method.DeclaringType.Implements ("System.IDisposable")) {
+					if (method.DeclaringType.Implements ("System", "IDisposable")) {
 						if (AllowedToThrow (method)) {
 							needs = true;
 						}

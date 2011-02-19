@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Design {
 				return RuleResult.DoesNotApply;
 
 			// rule onyly applies to type that implements IDisposable
-			if (!type.Implements ("System.IDisposable"))
+			if (!type.Implements ("System", "IDisposable"))
 				return RuleResult.DoesNotApply;
 
 			// no problem is a finalizer is found

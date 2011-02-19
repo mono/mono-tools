@@ -72,24 +72,30 @@ namespace Gendarme.Rules.Design {
 	[Problem ("Types that implement ICollection interface should have strongly typed version of ICollection.CopyTo method")]
 	[Solution ("Explicitly implement ICollection.CopyTo and add strongly typed alternative to it")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1035:ICollectionImplementationsHaveStronglyTypedMembers")]
-	public class StronglyTypeICollectionMembersRule : StronglyTypedRule, ITypeRule
-	{
+	public class StronglyTypeICollectionMembersRule : StronglyTypedRule, ITypeRule {
 
-		private static MethodSignature CopyTo = new MethodSignature("CopyTo", "System.Void",
-		                                                            new string[] {"System.Array", "System.Int32"});
+		private static string [] Empty = new string [] { };
+
+		private static MethodSignature [] CopyTo = new MethodSignature [] {
+			new MethodSignature ("CopyTo", "System.Void", new string [] { "System.Array", "System.Int32" })
+		};
 
 		protected override MethodSignature [] GetMethods ()
 		{
-			return new MethodSignature [] { CopyTo };
+			return CopyTo;
 		}
 
 		protected override string [] GetProperties ()
 		{
-			return new string [] { };
+			return Empty;
 		}
 
 		protected override string InterfaceName {
-			get { return "System.Collections.ICollection"; }
+			get { return "ICollection"; }
+		}
+
+		protected override string InterfaceNamespace {
+			get { return "System.Collections"; }
 		}
 	}
 }

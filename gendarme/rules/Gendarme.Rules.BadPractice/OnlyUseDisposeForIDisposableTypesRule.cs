@@ -96,7 +96,7 @@ namespace Gendarme.Rules.BadPractice {
 			Log.WriteLine (this, "----------------------------------");
 			Log.WriteLine (this, type.GetFullName ());
 			
-			if (!type.Implements ("System.IDisposable")) {
+			if (!type.Implements ("System", "IDisposable")) {
 				Log.WriteLine (this, "type does not implement IDisposable");
 
 				foreach (MethodDefinition method in type.Methods.Where (m => m.Name == "Dispose"))

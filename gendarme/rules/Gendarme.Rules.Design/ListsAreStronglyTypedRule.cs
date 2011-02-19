@@ -74,8 +74,9 @@ namespace Gendarme.Rules.Design {
 	[Problem ("Types that implement IList should have strongly typed versions of IList.Item, IList.Add, IList.Contains, IList.IndexOf, IList.Insert and IList.Remove")]
 	[Solution ("Explicitly implement IList members and provide strongly typed alternatives to them.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1039:ListsAreStronglyTyped")]
-	public class ListsAreStronglyTypedRule : StronglyTypedRule, ITypeRule
-	{
+	public class ListsAreStronglyTypedRule : StronglyTypedRule, ITypeRule {
+
+		private static string [] Item = new string [] { "Item" };
 
 		private static string[] SystemObject = new string[] {"System.Object"};
 		private static MethodSignature Add = new MethodSignature ("Add", "System.Int32", SystemObject);
@@ -83,25 +84,31 @@ namespace Gendarme.Rules.Design {
 		private static MethodSignature IndexOf = new MethodSignature ("IndexOf", "System.Int32", SystemObject);
 		private static MethodSignature Insert = new MethodSignature ("Insert", "System.Void", new string [] { "System.Int32", "System.Object" });
 		private static MethodSignature Remove = new MethodSignature ("Remove", "System.Void", SystemObject);
-		
+
+		private static MethodSignature [] Signatures = {
+			Add,
+			Contains,
+			IndexOf,
+			Insert,
+			Remove,
+		};
+
 		protected override MethodSignature [] GetMethods ()
 		{
-			return new MethodSignature[] {
-				Add,
-				Contains,
-				IndexOf,
-				Insert,
-				Remove,
-			};
+			return Signatures;
 		}
 
 		protected override string [] GetProperties ()
 		{
-			return new string [] { "Item" };
+			return Item;
 		}
 
 		protected override string InterfaceName {
-			get { return "System.Collections.IList"; }
+			get { return "IList"; }
+		}
+
+		protected override string InterfaceNamespace {
+			get { return "System.Collections"; }
 		}
 	}
 }

@@ -284,13 +284,16 @@ namespace Gendarme.Framework.Rocks {
 		/// where the information resides could be unavailable. False is returned in this case.
 		/// </summary>
 		/// <param name="self">The TypeDefinition on which the extension method can be called.</param>
-		/// <param name="interfaceName">Full name of the interface</param>
+		/// <param name="nameSpace">The namespace of the interface to be matched</param>
+		/// <param name="name">The name of the interface to be matched</param>
 		/// <returns>True if we found that the type implements the interface, False otherwise (either it
 		/// does not implement it, or we could not find where it does).</returns>
-		public static bool Implements (this TypeReference self, string interfaceName)
+		public static bool Implements (this TypeReference self, string nameSpace, string name)
 		{
-			if (interfaceName == null)
-				throw new ArgumentNullException ("interfaceName");
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+			if (name == null)
+				throw new ArgumentNullException ("name");
 			if (self == null)
 				return false;
 
@@ -299,28 +302,44 @@ namespace Gendarme.Framework.Rocks {
 				return false;	// not enough information available
 
 			// special case, check if we implement ourselves
-			if (type.IsInterface && (type.GetFullName () == interfaceName))
+			if (type.IsInterface && Match (type, nameSpace, name))
 				return true;
 
-			return Implements (type, interfaceName, (interfaceName.IndexOf ('`') >= 0));
+			return Implements (type, nameSpace, name);
 		}
 
-		private static bool Implements (TypeDefinition type, string interfaceName, bool generic)
+		private static bool Implements (TypeDefinition type, string nameSpace, string iname)
 		{
 			while (type != null) {
 				// does the type implements it itself
 				if (type.HasInterfaces) {
 					foreach (TypeReference iface in type.Interfaces) {
-						string fullname = (generic) ? iface.GetElementType ().GetFullName () : iface.GetFullName ();
-						if (fullname == interfaceName)
+						if (Match (iface, nameSpace, iname))
 							return true;
 						//if not, then maybe one of its parent interfaces does
-						if (Implements (iface.Resolve (), interfaceName, generic))
+						if (Implements (iface.Resolve (), nameSpace, iname))
 							return true;
 					}
 				}
 
 				type = type.BaseType != null ? type.BaseType.Resolve () : null;
+			}
+			return false;
+		}
+
+		private static bool Match (TypeReference type, string nameSpace, string name)
+		{
+			int np = name.IndexOf ('/');
+			if (np == -1) {
+				if (type.IsNamed (nameSpace, name))
+					return true;
+			} else if (type.IsNested) {
+				string tname = type.Name;
+				TypeReference dt = type.DeclaringType;
+				if ((nameSpace == dt.Namespace) &&
+					(String.CompareOrdinal (name, 0, dt.Name, 0, np) == 0) &&
+					(String.CompareOrdinal (name, np + 1, tname, 0, tname.Length) == 0))
+					return true;
 			}
 			return false;
 		}

@@ -154,7 +154,7 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// rule applies to types that implements System.IDisposable
-			if (!type.Implements ("System.IDisposable"))
+			if (!type.Implements ("System", "IDisposable"))
 				return RuleResult.DoesNotApply;
 
 			// and provide a finalizer

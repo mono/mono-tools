@@ -95,7 +95,7 @@ namespace Gendarme.Rules.Design {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies to type that doesn't implement System.IClonable
-			if (type.Implements ("System.ICloneable"))
+			if (type.Implements ("System", "ICloneable"))
 				return RuleResult.DoesNotApply;
 
 			foreach (MethodDefinition method in type.Methods) {

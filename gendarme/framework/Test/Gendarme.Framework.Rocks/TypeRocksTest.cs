@@ -204,20 +204,27 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void Implements_Null ()
+		public void Implements_Namespace_Null ()
 		{
-			GetType (String.Empty).Implements (null);
+			GetType (String.Empty).Implements (null, "a");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void Implements_Name_Null ()
+		{
+			GetType (String.Empty).Implements ("a", null);
 		}
 
 		[Test]
 		public void Implements ()
 		{
-			Assert.IsFalse (GetType (String.Empty).Implements ("System.ICloneable"), "ICloneable");
-			Assert.IsTrue (GetType ("/IDeepCloneable").Implements ("Test.Framework.Rocks.TypeRocksTest/IDeepCloneable"), "itself");
-			Assert.IsTrue (GetType ("/IDeepCloneable").Implements ("System.ICloneable"), "interface inheritance");
-			Assert.IsTrue (GetType ("/Deep").Implements ("Test.Framework.Rocks.TypeRocksTest/IDeepCloneable"), "IDeepCloneable");
-			Assert.IsTrue (GetType ("/Deep").Implements ("System.ICloneable"), "second-level ICloneable");
-			Assert.IsTrue (GetType ("/Mixin").Implements ("Test.Framework.Rocks.TypeRocksTest/IDeepCloneable"), "parent interface inheritance");
+			Assert.IsFalse (GetType (String.Empty).Implements ("System", "ICloneable"), "ICloneable");
+			Assert.IsTrue (GetType ("/IDeepCloneable").Implements ("Test.Framework.Rocks", "TypeRocksTest/IDeepCloneable"), "itself");
+			Assert.IsTrue (GetType ("/IDeepCloneable").Implements ("System", "ICloneable"), "interface inheritance");
+			Assert.IsTrue (GetType ("/Deep").Implements ("Test.Framework.Rocks", "TypeRocksTest/IDeepCloneable"), "IDeepCloneable");
+			Assert.IsTrue (GetType ("/Deep").Implements ("System", "ICloneable"), "second-level ICloneable");
+			Assert.IsTrue (GetType ("/Mixin").Implements ("Test.Framework.Rocks", "TypeRocksTest/IDeepCloneable"), "parent interface inheritance");
 		}
 
 		[Test]

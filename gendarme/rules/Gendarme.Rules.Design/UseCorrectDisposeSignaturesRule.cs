@@ -141,7 +141,7 @@ namespace Gendarme.Rules.Design {
 			if (type.IsInterface || type.IsEnum || type.IsDelegate ())
 				return RuleResult.DoesNotApply;
 			
-			if (type.Implements ("System.IDisposable")) {
+			if (type.Implements ("System", "IDisposable")) {
 				Log.WriteLine (this);
 				Log.WriteLine (this, "----------------------------------");
 				Log.WriteLine (this, type.GetFullName ());

@@ -98,7 +98,7 @@ namespace Gendarme.Rules.Design {
 
 			bool abstractWarning = false;
 
-			if (type.Implements ("System.IDisposable")) {
+			if (type.Implements ("System", "IDisposable")) {
 				implicitDisposeMethod = type.GetMethod (MethodSignatures.Dispose);
 				explicitDisposeMethod = type.GetMethod (MethodSignatures.DisposeExplicit);
 
@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Design {
 				// enums and primitives don't implement IDisposable
 				if (fieldType.IsEnum || fieldType.IsPrimitive)
 					continue;
-				if (fieldType.Implements ("System.IDisposable")) {
+				if (fieldType.Implements ("System", "IDisposable")) {
 					Runner.Report (field, Severity.High, Confidence.High,
 						abstractWarning ? AbstractTypeMessage : TypeMessage);
 				}

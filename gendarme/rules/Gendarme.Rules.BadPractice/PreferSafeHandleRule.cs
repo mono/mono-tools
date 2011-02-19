@@ -225,7 +225,7 @@ namespace Gendarme.Rules.BadPractice {
 				if (finalizer != null) 
 					confidence = (Confidence) ((int) confidence - 1);	// lower numbers have higher confidence
 
-				if (type.Implements ("System.IDisposable"))
+				if (type.Implements ("System", "IDisposable"))
 					confidence = (Confidence) ((int) confidence - 1);
 
 				Log.WriteLine (this, "'{0}' is an IntPtr.", field.Name);

@@ -75,7 +75,7 @@ namespace Gendarme.Rules.Gendarme {
 	public class DefectsMustBeReportedRule : GendarmeRule, ITypeRule {
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (type.IsAbstract || !type.HasMethods || !type.Implements ("Gendarme.Framework.IRule"))
+			if (type.IsAbstract || !type.HasMethods || !type.Implements ("Gendarme.Framework", "IRule"))
 				return RuleResult.DoesNotApply;
 
 			foreach (MethodDefinition method in type.Methods) {
