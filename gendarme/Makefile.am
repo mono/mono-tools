@@ -101,16 +101,3 @@ zip-bin: bin extra-bin
 	cd ..; \
 	rm -rf gendarme.$(GENDARME_VERSION);
 
-instruct.xsd:
-	wget http://www.ohloh.net/instruct.xsd
-
-push: instruct.xsd
-	xmllint --schema instruct.xsd gendarme.xml
-#	scp gendarme-2.8preview1-bin.zip $(USER)@upload.ohloh.net:gendarme/files; \
-#	scp gendarme-2.8preview1-win32-setup.zip $(USER)@upload.ohloh.net:gendarme/files; \
-#	scp gendarme.xml $(USER)@upload.ohloh.net:gendarme/instructs
-
-pull-log:
-	scp $(USER)@upload.ohloh.net:gendarme/logs/upload.log .
-	cat upload.log
-
