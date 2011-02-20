@@ -179,20 +179,27 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void HasAttribute_Null ()
+		public void HasAttribute_Namespace_Null ()
 		{
-			GetType (String.Empty).HasAttribute (null);
+			GetType (String.Empty).HasAttribute (null, "a");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void HasAttribute_Name_Null ()
+		{
+			GetType (String.Empty).HasAttribute ("a", null);
 		}
 
 		[Test]
 		public void HasAttribute ()
 		{
-			Assert.IsTrue (GetType (String.Empty).HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "TypeRocksTest");
-			Assert.IsFalse (GetType ("/Enum").HasAttribute ("System.FlagsAttribute"), "Enum/System.FlagsAttribute");
-			Assert.IsTrue (GetType ("/Flags").HasAttribute ("System.FlagsAttribute"), "Flags/System.FlagsAttribute");
+			Assert.IsTrue (GetType (String.Empty).HasAttribute ("NUnit.Framework", "TestFixtureAttribute"), "TypeRocksTest");
+			Assert.IsFalse (GetType ("/Enum").HasAttribute ("System", "FlagsAttribute"), "Enum/System.FlagsAttribute");
+			Assert.IsTrue (GetType ("/Flags").HasAttribute ("System", "FlagsAttribute"), "Flags/System.FlagsAttribute");
 			// fullname is required
-			Assert.IsFalse (GetType ("/Flags").HasAttribute ("System.Flags"), "Flags/System.Flags");
-			Assert.IsFalse (GetType ("/Flags").HasAttribute ("FlagsAttribute"), "Flags/FlagsAttribute");
+			Assert.IsFalse (GetType ("/Flags").HasAttribute ("System", "Flags"), "Flags/System.Flags");
+			Assert.IsFalse (GetType ("/Flags").HasAttribute ("", "FlagsAttribute"), "Flags/FlagsAttribute");
 		}
 
 		[Test]

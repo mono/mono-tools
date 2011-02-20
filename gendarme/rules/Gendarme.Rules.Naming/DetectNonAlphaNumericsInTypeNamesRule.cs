@@ -98,9 +98,6 @@ namespace Gendarme.Rules.Naming {
 	[FxCopCompatibility ("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores")]
 	public class AvoidNonAlphanumericIdentifierRule : Rule, IAssemblyRule, IMethodRule, ITypeRule {
 
-		private const string GuidAttribute = "System.Runtime.InteropServices.GuidAttribute";
-		private const string InterfaceTypeAttribute = "System.Runtime.InteropServices.InterfaceTypeAttribute";
-
 		// Compiler generates an error for any other non alpha-numerics than underscore ('_'), 
 		// so we just need to check the presence of underscore in method names
 		private static bool CheckName (string name, bool special)
@@ -111,8 +108,8 @@ namespace Gendarme.Rules.Naming {
 
 		private static bool UsedForComInterop (TypeDefinition type)
 		{
-			return (type.IsInterface && type.HasAttribute (GuidAttribute) &&
-				type.HasAttribute (InterfaceTypeAttribute));
+			return (type.IsInterface && type.HasAttribute ("System.Runtime.InteropServices", "GuidAttribute") &&
+				type.HasAttribute ("System.Runtime.InteropServices", "InterfaceTypeAttribute"));
 		}
 
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)

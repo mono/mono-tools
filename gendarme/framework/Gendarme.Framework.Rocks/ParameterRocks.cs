@@ -39,9 +39,7 @@ namespace Gendarme.Framework.Rocks {
 		/// <returns>True if the parameter represents a list of parameters, false otherwise.</returns>
 		public static bool IsParams (this ParameterDefinition self)
 		{
-			if (self == null || !self.HasCustomAttributes)
-				return false;
-			return self.CustomAttributes.ContainsType ("System.ParamArrayAttribute");
+			return self.HasAttribute ("System", "ParamArrayAttribute");
 		}
 
 		/// <summary>

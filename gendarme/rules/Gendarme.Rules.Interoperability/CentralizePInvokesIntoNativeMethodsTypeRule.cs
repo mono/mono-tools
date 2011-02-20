@@ -101,10 +101,10 @@ namespace Gendarme.Rules.Interoperability {
 			}
 		}
 
-		private void CheckSuppressUnmanagedCodeSecurity (TypeDefinition type, bool required)
+		private void CheckSuppressUnmanagedCodeSecurity (ICustomAttributeProvider type, bool required)
 		{
 			string msg = null;
-			if (type.HasCustomAttributes && type.CustomAttributes.ContainsType ("System.Security.SuppressUnmanagedCodeSecurityAttribute")) {
+			if (type.HasAttribute ("System.Security", "SuppressUnmanagedCodeSecurityAttribute")) {
 				if (!required)
 					 msg = "Remove [SuppressUnmanagedCodeSecurity] attribute on the type declaration.";
 			} else {

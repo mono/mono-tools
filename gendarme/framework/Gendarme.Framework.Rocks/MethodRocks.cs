@@ -100,10 +100,9 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			MethodDefinition method = self.Resolve ();
-			if ((method != null) && method.HasCustomAttributes) {
-				if (method.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
-					return true;
-			}
+			if (method.HasAnyGeneratedCodeAttribute ())
+				return true;
+
 			return self.DeclaringType.IsGeneratedCode ();
 		}
 

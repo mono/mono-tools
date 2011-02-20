@@ -112,18 +112,26 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void HasAttribute_Null ()
+		public void HasAttribute_Namespace_Null ()
 		{
 			MethodDefinition method = GetMethod ("FixtureSetUp");
-			method.HasAttribute ((string) null);
+			method.HasAttribute (null, "a");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void HasAttribute_Name_Null ()
+		{
+			MethodDefinition method = GetMethod ("FixtureSetUp");
+			method.HasAttribute ("a", null);
 		}
 
 		[Test]
 		public void HasAttribute ()
 		{
 			MethodDefinition method = GetMethod ("FixtureSetUp");
-			Assert.IsTrue (method.HasAttribute ("NUnit.Framework.TestFixtureSetUpAttribute"), "NUnit.Framework.TestFixtureSetUpAttribute");
-			Assert.IsFalse (method.HasAttribute ("NUnit.Framework.TestFixtureSetUp"), "NUnit.Framework.TestFixtureSetUp");
+			Assert.IsTrue (method.HasAttribute ("NUnit.Framework", "TestFixtureSetUpAttribute"), "NUnit.Framework.TestFixtureSetUpAttribute");
+			Assert.IsFalse (method.HasAttribute ("NUnit.Framework", "TestFixtureSetUp"), "NUnit.Framework.TestFixtureSetUp");
 		}
 
 		[Test]

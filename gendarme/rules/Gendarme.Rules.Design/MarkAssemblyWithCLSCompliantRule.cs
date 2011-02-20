@@ -56,8 +56,12 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1014:MarkAssembliesWithClsCompliant")]
 	public class MarkAssemblyWithCLSCompliantRule : MarkAssemblyWithAttributeRule {
 
+		protected override string AttributeNamespace {
+			get { return "System"; }
+		}
+
 		protected override string AttributeName {
-			get { return "System.CLSCompliantAttribute"; }
+			get { return "CLSCompliantAttribute"; }
 		}
 
 		protected override Severity Severity {

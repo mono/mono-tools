@@ -101,8 +101,6 @@ namespace Gendarme.Rules.Maintainability {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class RemoveDependenceOnObsoleteCodeRule : Rule, ITypeRule, IMethodRule {
 
-		const string Obsolete = "System.ObsoleteAttribute";
-
 		static Dictionary<TypeReference, bool> types = new Dictionary<TypeReference, bool> ();
 		static Dictionary<MethodReference, bool> methods = new Dictionary<MethodReference, bool> ();
 		static Dictionary<FieldReference, bool> fields = new Dictionary<FieldReference, bool> ();
@@ -115,7 +113,7 @@ namespace Gendarme.Rules.Maintainability {
 			bool obsolete = false;
 			if (!types.TryGetValue (type, out obsolete)) {
 				TypeDefinition t = type.Resolve ();
-				obsolete = t == null ? false : t.HasAttribute (Obsolete);
+				obsolete = t.HasAttribute ("System", "ObsoleteAttribute");
 				types.Add (type, obsolete);
 			}
 			return obsolete;
@@ -129,7 +127,7 @@ namespace Gendarme.Rules.Maintainability {
 			bool obsolete = false;
 			if (!methods.TryGetValue (method, out obsolete)) {
 				MethodDefinition md = method.Resolve ();
-				obsolete = (md == null) ? false : md.HasAttribute (Obsolete);
+				obsolete = md.HasAttribute ("System", "ObsoleteAttribute");
 				methods.Add (method, obsolete);
 			}
 			return obsolete;
@@ -143,7 +141,7 @@ namespace Gendarme.Rules.Maintainability {
 			bool obsolete = false;
 			if (!fields.TryGetValue (field, out obsolete)) {
 				FieldDefinition fd = field.Resolve ();
-				obsolete = (fd == null) ? false : fd.HasAttribute (Obsolete);
+				obsolete = fd.HasAttribute ("System", "ObsoleteAttribute");
 				fields.Add (field, obsolete);
 			}
 			return obsolete;
@@ -220,7 +218,7 @@ namespace Gendarme.Rules.Maintainability {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// we're not interested in the details of [Obsolete] types
-			if (type.HasAttribute (Obsolete))
+			if (type.HasAttribute ("System", "ObsoleteAttribute"))
 				return RuleResult.DoesNotApply;
 
 			// check if we inherit from an [Obsolete] class / struct / enum
@@ -339,7 +337,7 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			// if the method is obsolete (directly or because it's type is)
-			if (method.HasAttribute (Obsolete) || method.DeclaringType.HasAttribute (Obsolete))
+			if (method.HasAttribute ("System", "ObsoleteAttribute") || method.DeclaringType.HasAttribute ("System", "ObsoleteAttribute"))
 				return RuleResult.DoesNotApply;
 
 			// check method signature (parameters, return value)

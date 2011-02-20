@@ -59,10 +59,9 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			if (self.HasCustomAttributes) {
-				if (self.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
-					return true;
-			}
+			if (self.HasAnyGeneratedCodeAttribute ())
+				return true;
+
 			return self.DeclaringType.IsGeneratedCode ();
 		}
 	}

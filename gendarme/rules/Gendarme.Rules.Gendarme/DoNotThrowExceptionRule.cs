@@ -89,7 +89,7 @@ namespace Gendarme.Rules.Gendarme {
 
 			if (method.IsSetter && method.IsPublic) {
 				PropertyDefinition property = method.GetPropertyByAccessor ();
-				if (property != null && property.HasCustomAttributes && property.HasAttribute ("System.ComponentModel.DescriptionAttribute"))
+				if (property.HasAttribute ("System.ComponentModel", "DescriptionAttribute"))
 					return RuleResult.Success;
 			}
 

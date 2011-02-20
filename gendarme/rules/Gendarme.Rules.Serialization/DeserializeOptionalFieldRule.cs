@@ -86,8 +86,6 @@ namespace Gendarme.Rules.Serialization {
 		private const string MessageSerializable = "Optional fields '{0}' in non-serializable type.";
 
 		private const string OptionalFieldAttribute = "System.Runtime.Serialization.OptionalFieldAttribute";
-		private const string OnDeserializedAttribute = "System.Runtime.Serialization.OnDeserializedAttribute";
-		private const string OnDeserializingAttribute = "System.Runtime.Serialization.OnDeserializingAttribute";
 
 		public override void Initialize (IRunner runner)
 		{
@@ -121,9 +119,9 @@ namespace Gendarme.Rules.Serialization {
 					if (method.IsConstructor || !method.HasCustomAttributes)
 						continue;
 
-					if (method.HasAttribute (OnDeserializedAttribute))
+					if (method.HasAttribute ("System.Runtime.Serialization", "OnDeserializedAttribute"))
 						deserialized_candidate = true;
-					if (method.HasAttribute (OnDeserializingAttribute))
+					if (method.HasAttribute ("System.Runtime.Serialization", "OnDeserializingAttribute"))
 						deserializing_candidate = true;
 
 					if (deserialized_candidate && deserializing_candidate)
@@ -133,9 +131,7 @@ namespace Gendarme.Rules.Serialization {
 
 			// check if we found some optional fields, if none then it's all ok
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.HasCustomAttributes)
-					continue;
-				if (field.CustomAttributes.ContainsType (OptionalFieldAttribute)) {
+				if (field.HasAttribute ("System.Runtime.Serialization", "OptionalFieldAttribute")) {
 					if (type.IsSerializable) {
 						// report if we didn't find a deserialization method
 						if (!deserialized_candidate || !deserializing_candidate) {

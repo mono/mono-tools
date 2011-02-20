@@ -49,16 +49,23 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void HasAttribute_Null ()
+		public void HasAttribute_Namespace_Null ()
 		{
-			assembly.HasAttribute (null);
+			assembly.HasAttribute (null, "a");
+		}
+
+		[Test]
+		[ExpectedException (typeof (ArgumentNullException))]
+		public void HasAttribute_Name_Null ()
+		{
+			assembly.HasAttribute ("a", null);
 		}
 
 		[Test]
 		public void HasAttribute ()
 		{
-			Assert.IsTrue (assembly.HasAttribute ("System.Runtime.CompilerServices.RuntimeCompatibilityAttribute"), "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute");
-			Assert.IsFalse (assembly.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "TestFixtureAttribute");
+			Assert.IsTrue (assembly.HasAttribute ("System.Runtime.CompilerServices", "RuntimeCompatibilityAttribute"), "System.Runtime.CompilerServices.RuntimeCompatibilityAttribute");
+			Assert.IsFalse (assembly.HasAttribute ("NUnit.Framework", "TestFixtureAttribute"), "TestFixtureAttribute");
 		}
 	}
 }

@@ -66,15 +66,13 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage")]
 	public class MissingAttributeUsageOnCustomAttributeRule : Rule, ITypeRule {
 
-		private const string AttributeUsageAttribute = "System.AttributeUsageAttribute";
-
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			// rule applies only to attributes
 			if (!type.IsAttribute ())
 				return RuleResult.DoesNotApply;
 
-			if (type.HasAttribute (AttributeUsageAttribute)) // it's ok
+			if (type.HasAttribute ("System", "AttributeUsageAttribute")) // it's ok
 				return RuleResult.Success;
 
 			Runner.Report (type, Severity.High, Confidence.Total);

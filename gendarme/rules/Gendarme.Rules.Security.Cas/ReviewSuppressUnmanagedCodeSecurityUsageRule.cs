@@ -78,7 +78,7 @@ namespace Gendarme.Rules.Security.Cas {
 			if (type.IsEnum)
 				return RuleResult.DoesNotApply;
 
-			if (!type.HasAttribute (SUCS))
+			if (!type.HasAttribute ("System.Security", "SuppressUnmanagedCodeSecurityAttribute"))
 				return RuleResult.Success;
 
 			Runner.Report (type, Severity.Audit, Confidence.Total);
@@ -87,7 +87,7 @@ namespace Gendarme.Rules.Security.Cas {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
-			if (!method.HasAttribute (SUCS))
+			if (!method.HasAttribute ("System.Security", "SuppressUnmanagedCodeSecurityAttribute"))
 				return RuleResult.Success;
 
 			Runner.Report (method, Severity.Audit, Confidence.Total);

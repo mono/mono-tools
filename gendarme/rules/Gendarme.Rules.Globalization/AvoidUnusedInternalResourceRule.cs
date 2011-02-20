@@ -44,12 +44,6 @@ namespace Gendarme.Rules.Globalization {
 	[Solution ("Remove the unused resource or add code to call it.")]
 	public class AvoidUnusedInternalResourceRule : Rule, IMethodRule {
 
-		private static readonly string [] resXAttributes = {
-			"System.CodeDom.Compiler.GeneratedCodeAttribute",
-			"System.Diagnostics.DebuggerNonUserCodeAttribute",
-			"System.Runtime.CompilerServices.CompilerGeneratedAttribute"
-		};
-
 		static private bool Applicable (MethodDefinition method)
 		{
 			// only internal resources
@@ -71,11 +65,14 @@ namespace Gendarme.Rules.Globalization {
 			if (!typeDefinition.HasCustomAttributes)
 				return false;
 
-			var attributes = typeDefinition.CustomAttributes;
-			if (!resXAttributes.All (a => attributes.ContainsType (a)))
-				return false;
+			if (typeDefinition.HasAttribute ("System.CodeDom.Compiler", "GeneratedCodeAttribute"))
+				return true;
+			if (typeDefinition.HasAttribute ("System.Diagnostics", "DebuggerNonUserCodeAttribute"))
+				return true;
+			if (typeDefinition.HasAttribute ("System.Runtime.CompilerServices", "CompilerGeneratedAttribute"))
+				return true;
 
-			return true;
+			return false;
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

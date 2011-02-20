@@ -448,7 +448,7 @@ namespace Gendarme.Framework.Rocks {
 			if ((type == null) || !type.IsEnum || !type.HasCustomAttributes)
 				return false;
 
-			return type.HasAttribute ("System.FlagsAttribute");
+			return type.HasAttribute ("System", "FlagsAttribute");
 		}
 
 		/// <summary>
@@ -483,7 +483,7 @@ namespace Gendarme.Framework.Rocks {
 				TypeDefinition type = self.Resolve ();
 				// both helpful attributes only exists in 2.0 and more recent frameworks
 				if (type.Module.Runtime >= TargetRuntime.Net_2_0) {
-					if (type.CustomAttributes.ContainsAnyType (CustomAttributeRocks.GeneratedCodeAttributes))
+					if (type.HasAnyGeneratedCodeAttribute ())
 						return true;
 				}
 			}

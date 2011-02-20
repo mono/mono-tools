@@ -50,59 +50,29 @@ namespace Test.Framework.Rocks {
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void Contains_Null ()
-		{
-			Collection<CustomAttribute> cac = new Collection<CustomAttribute> ();
-			cac.ContainsType ((string) null);
-		}
-
-		[Test]
-		public void Contains ()
+		public void HasAttribute_Namespace_Null ()
 		{
 			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
-			Collection<CustomAttribute> cac = type.CustomAttributes;
-			Assert.IsTrue (cac.ContainsType ("NUnit.Framework.TestFixtureAttribute"), "NUnit.Framework.TestFixtureAttribute");
-			Assert.IsFalse (cac.ContainsType ("NUnit.Framework.TestFixture"), "NUnit.Framework.TestFixture");
+			type.HasAttribute (null, "a");
 		}
 
 		[Test]
 		[ExpectedException (typeof (ArgumentNullException))]
-		public void ContainsAny_Null ()
-		{
-			Collection<CustomAttribute> cac = new Collection<CustomAttribute> ();
-			cac.ContainsAnyType (null);
-		}
-
-		[Test]
-		public void ContainsAny ()
+		public void HasAttribute_Name_Null ()
 		{
 			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
-			Collection<CustomAttribute> cac = type.CustomAttributes;
-			Assert.IsTrue (cac.ContainsAnyType (new string[] {
-				"NUnit.Framework.TestFixtureAttribute",
-				null,
-				"System.ICloneable"
-			}), "NUnit.Framework.TestFixtureAttribute");
-			Assert.IsFalse (cac.ContainsAnyType (new string[] {}), "NUnit.Framework.TestFixture");
-		}
-
-		[Test]
-		[ExpectedException (typeof (ArgumentNullException))]
-		public void HasAttribute_Null ()
-		{
-			TypeDefinition type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
-			type.HasAttribute (null);
+			type.HasAttribute ("a", null);
 		}
 		
 		[Test]
 		public void HasAttribute ()
 		{
 			TypeDefinition type = null;
-			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "null-type");
+			Assert.IsFalse (type.HasAttribute ("NUnit.Framework", "TestFixtureAttribute"), "null-type");
 
 			type = assembly.MainModule.GetType ("Test.Framework.Rocks.CustomAttributeRocksTest");
-			Assert.IsTrue (type.HasAttribute ("NUnit.Framework.TestFixtureAttribute"), "true");
-			Assert.IsFalse (type.HasAttribute ("NUnit.Framework.TestAttribute"), "false");
+			Assert.IsTrue (type.HasAttribute ("NUnit.Framework", "TestFixtureAttribute"), "true");
+			Assert.IsFalse (type.HasAttribute ("NUnit.Framework", "TestAttribute"), "false");
 		}
 	}
 }

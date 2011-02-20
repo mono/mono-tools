@@ -76,8 +76,6 @@ namespace Gendarme.Rules.Concurrency {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class WriteStaticFieldFromInstanceMethodRule : Rule, IMethodRule {
 
-		private const string ThreadStaticAttribute = "System.ThreadStaticAttribute";
-
 		static bool CheckField (FieldReference field)
 		{
 			// skip instance fields and generated static field (likely by the compiler)
@@ -92,7 +90,7 @@ namespace Gendarme.Rules.Concurrency {
 			// skip fields decorated with [ThreadStatic] (the runtime will use
 			// thread local storage for these so they are thread safe)
 			if (fd.HasCustomAttributes) {
-				if (fd.CustomAttributes.ContainsType (ThreadStaticAttribute))
+				if (fd.HasAttribute ("System", "ThreadStaticAttribute"))
 					return false;
 			}
 			return true;

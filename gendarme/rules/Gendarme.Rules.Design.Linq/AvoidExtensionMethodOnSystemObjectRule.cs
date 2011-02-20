@@ -92,7 +92,7 @@ namespace Gendarme.Rules.Design.Linq {
 			if (!method.HasParameters)
 				return false;
 
-			return method.HasAttribute ("System.Runtime.CompilerServices.ExtensionAttribute");
+			return method.HasAttribute ("System.Runtime.CompilerServices", "ExtensionAttribute");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

@@ -81,7 +81,7 @@ namespace Gendarme.Rules.NUnit {
 			// check if TestFixture is applied to any type in the hierarchy
 			TypeDefinition testingType = type;
 			while (testingType != null) {
-				if (testingType.HasAttribute ("NUnit.Framework.TestFixtureAttribute"))
+				if (testingType.HasAttribute ("NUnit.Framework", "TestFixtureAttribute"))
 					return RuleResult.Success;
 				if (testingType.BaseType != null)
 					testingType = testingType.BaseType.Resolve ();

@@ -55,8 +55,12 @@ namespace Gendarme.Rules.Design {
 	[FxCopCompatibility ("Microsoft.Design", "CA1017:MarkAssembliesWithComVisible")]
 	public class MarkAssemblyWithComVisibleRule : MarkAssemblyWithAttributeRule {
 
+		protected override string AttributeNamespace	{
+			get { return "System.Runtime.InteropServices"; }
+		}
+
 		protected override string AttributeName	{
-			get { return "System.Runtime.InteropServices.ComVisibleAttribute"; }
+			get { return "ComVisibleAttribute"; }
 		}
 
 		protected override Severity Severity {

@@ -38,6 +38,7 @@ namespace Gendarme.Rules.Design {
 
 	abstract public class MarkAssemblyWithAttributeRule : Rule, IAssemblyRule {
 
+		abstract protected string AttributeNamespace { get; }
 		abstract protected string AttributeName { get; }
 
 		abstract protected Severity Severity { get; }
@@ -47,7 +48,7 @@ namespace Gendarme.Rules.Design {
 			if (!assembly.HasCustomAttributes)
 				return RuleResult.DoesNotApply;
 
-			if (assembly.HasAttribute (AttributeName))
+			if (assembly.HasAttribute (AttributeNamespace, AttributeName))
 				return RuleResult.Success;
 
 			Runner.Report (assembly, Severity, Confidence.Total);

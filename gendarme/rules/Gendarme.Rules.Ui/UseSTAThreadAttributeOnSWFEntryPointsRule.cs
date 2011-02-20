@@ -92,9 +92,6 @@ namespace Gendarme.Rules.UI {
 
 		private const string SystemWindowsForms = "System.Windows.Forms";
 
-		private const string STAThread = "System.STAThreadAttribute";
-		private const string MTAThread = "System.MTAThreadAttribute";
-
 		public RuleResult CheckAssembly (AssemblyDefinition assembly)
 		{
 			MethodDefinition entry_point = assembly.EntryPoint;
@@ -115,8 +112,8 @@ namespace Gendarme.Rules.UI {
 			if (!referencesSWF)
 				return RuleResult.DoesNotApply;
 
-			bool hasSTA = entry_point.HasAttribute (STAThread);
-			bool hasMTA = entry_point.HasAttribute (MTAThread);
+			bool hasSTA = entry_point.HasAttribute ("System", "STAThreadAttribute");
+			bool hasMTA = entry_point.HasAttribute ("System", "MTAThreadAttribute");
 
 			// success if only [STAThread] attribute is present
 			if (hasSTA && !hasMTA)

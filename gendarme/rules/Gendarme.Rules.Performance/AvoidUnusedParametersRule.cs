@@ -132,10 +132,8 @@ namespace Gendarme.Rules.Performance {
 				return RuleResult.DoesNotApply;
 
 			// methods with [Conditional] can be empty (not using any parameter) IL-wise but not source-wise, ignore them
-			if (method.HasCustomAttributes) {
-				if (method.CustomAttributes.ContainsType ("System.Diagnostics.ConditionalAttribute"))
-					return RuleResult.DoesNotApply;
-			}
+			if (method.HasAttribute ("System.Diagnostics", "ConditionalAttribute"))
+				return RuleResult.DoesNotApply;
 
 			// rule applies
 

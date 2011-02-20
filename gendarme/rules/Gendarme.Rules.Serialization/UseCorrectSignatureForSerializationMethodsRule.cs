@@ -101,6 +101,26 @@ namespace Gendarme.Rules.Serialization {
 			};
 		}
 
+		static bool HasAnySerializationAttribute (ICustomAttributeProvider method)
+		{
+			if (!method.HasCustomAttributes)
+				return false;
+
+			foreach (CustomAttribute ca in method.CustomAttributes) {
+				TypeReference cat = ca.AttributeType;
+				if (cat.Namespace != "System.Runtime.Serialization")
+					continue;
+				switch (cat.Name) {
+				case "OnSerializingAttribute":
+				case "OnSerializedAttribute":
+				case "OnDeserializingAttribute":
+				case "OnDeserializedAttribute":
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			// rule does not apply to constructor or to methods without custom attributes
@@ -108,7 +128,7 @@ namespace Gendarme.Rules.Serialization {
 				return RuleResult.DoesNotApply;
 
 			// marked with any of On[Des|S]erializ[ed|ing]Attribute ?
-			if (!method.CustomAttributes.ContainsAnyType (Attributes))
+			if (!HasAnySerializationAttribute (method))
 				return RuleResult.DoesNotApply;
 
 			// rule apply!

@@ -44,51 +44,16 @@ namespace Gendarme.Framework.Rocks {
 	/// </summary>
 	public static class CustomAttributeRocks {
 
-		internal static string [] GeneratedCodeAttributes = {
-			 "System.CodeDom.Compiler.GeneratedCodeAttribute",
-			 "System.Runtime.CompilerServices.CompilerGeneratedAttribute"
-		};
-
-		/// <summary>
-		/// Check if the custom attribute collection contains an attribute of a specified type.
-		/// </summary>
-		/// <param name="self">The CustomAttribute enumerable on which the extension method can be called.</param>
-		/// <param name="attributeTypeName">Full type name of the attribute class.</param>
-		/// <returns>True if the collection contains an attribute of the same name,
-		/// False otherwise.</returns>
-		public static bool ContainsType (this IEnumerable<CustomAttribute> self, string attributeTypeName)
+		internal static bool HasAnyGeneratedCodeAttribute (this ICustomAttributeProvider self)
 		{
-			if (attributeTypeName == null)
-				throw new ArgumentNullException ("attributeTypeName");
-			if (self == null)
+			if ((self == null) || !self.HasCustomAttributes)
 				return false;
 
-			foreach (CustomAttribute ca in self) {
-				if (ca.AttributeType.GetFullName () == attributeTypeName)
+			foreach (CustomAttribute ca in self.CustomAttributes) {
+				TypeReference cat = ca.AttributeType;
+				if (cat.IsNamed ("System.CodeDom.Compiler", "GeneratedCodeAttribute") ||
+					cat.IsNamed ("System.Runtime.CompilerServices", "CompilerGeneratedAttribute")) {
 					return true;
-			}
-			return false;
-		}
-
-		/// <summary>
-		/// Check if the custom attribute collection contains any of the specified type.
-		/// </summary>
-		/// <param name="self">The CustomAttribute enumerable on which the extension method can be called.</param>
-		/// <param name="attributeTypeNames">A strings array of full type names of the attributes.</param>
-		/// <returns>True if the collection contains any attribute matching one specified,
-		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this IEnumerable<CustomAttribute> self, string[] attributeTypeNames)
-		{
-			if (attributeTypeNames == null)
-				throw new ArgumentNullException ("attributeTypeNames");
-			if (self == null)
-				return false;
-
-			foreach (CustomAttribute ca in self) {
-				string fullname = ca.AttributeType.GetFullName ();
-				foreach (string attribute_full_name in attributeTypeNames) {
-					if (fullname == attribute_full_name)
-						return true;
 				}
 			}
 			return false;
@@ -99,17 +64,25 @@ namespace Gendarme.Framework.Rocks {
 		/// </summary>
 		/// <param name="self">The ICustomAttributeProvider (e.g. AssemblyDefinition, TypeReference, MethodReference,
 		/// FieldReference...) on which the extension method can be called.</param>
-		/// <param name="attributeName">Full name of the attribute class</param>
+		/// <param name="nameSpace">The namespace of the attribute to be matched</param>
+		/// <param name="name">The name of the attribute to be matched</param>
 		/// <returns>True if the provider contains an attribute of the same name,
 		/// False otherwise.</returns>
-		public static bool HasAttribute (this ICustomAttributeProvider self, string attributeName)
+		public static bool HasAttribute (this ICustomAttributeProvider self, string nameSpace, string name)
 		{
-			if (attributeName == null)
-				throw new ArgumentNullException ("attributeName");
+			if (nameSpace == null)
+				throw new ArgumentNullException ("nameSpace");
+			if (name == null)
+				throw new ArgumentNullException ("name");
 
 			if ((self == null) || !self.HasCustomAttributes)
 				return false;
-			return self.CustomAttributes.ContainsType (attributeName);
+
+			foreach (CustomAttribute ca in self.CustomAttributes) {
+				if (ca.AttributeType.IsNamed (nameSpace, name))
+					return true;
+			}
+			return false;
 		}
 	}
 }
