@@ -84,51 +84,6 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
-		/// Check if a type reference collection contains a type of a specific name.
-		/// </summary>
-		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>
-		/// <param name="typeName">Full name of the type.</param>
-		/// <returns>True if the collection contains an type of the same name,
-		/// False otherwise.</returns>
-		public static bool ContainsType (this IEnumerable<TypeReference> self, string typeName)
-		{
-			if (typeName == null)
-				throw new ArgumentNullException ("typeName");
-			if (self == null)
-				return false;
-
-			foreach (TypeReference type in self) {
-				if (type.GetFullName () == typeName)
-					return true;
-			}
-			return false;
-		}
-
-		/// <summary>
-		/// Check if a type reference collection contains any of the specified type names.
-		/// </summary>
-		/// <param name="self">The TypeReferenceCollection on which the extension method can be called.</param>
-		/// <param name="typeNames">A string array of full type names.</param>
-		/// <returns>True if the collection contains any types matching one specified,
-		/// False otherwise.</returns>
-		public static bool ContainsAnyType (this IEnumerable<TypeReference> self, string [] typeNames)
-		{
-			if (typeNames == null)
-				throw new ArgumentNullException ("typeNames");
-			if (self == null)
-				return false;
-
-			foreach (TypeReference type in self) {
-				string fullname = type.GetFullName ();
-				foreach (string type_full_name in typeNames) {
-					if (fullname == type_full_name)
-						return true;
-				}
-			}
-			return false;
-		}
-
-		/// <summary>
 		/// Returns the first MethodDefinition that satisfies a given MethodSignature.
 		/// </summary>
 		/// <param name="self">The TypeReference on which the extension method can be called.</param>
@@ -177,7 +132,7 @@ namespace Gendarme.Framework.Rocks {
 					continue;
 				if ((method.Attributes & attributes) != attributes)
 					continue;
-				if (returnType != null && method.ReturnType.GetFullName () != returnType)
+				if (returnType != null && !method.ReturnType.IsNamed (returnType))
 					continue;
 				if (parameters != null) {
 					if (method.HasParameters) {
@@ -188,7 +143,7 @@ namespace Gendarme.Framework.Rocks {
 						for (int i = 0; i < parameters.Length; i++) {
 							if (parameters [i] == null)
 								continue;//ignore parameter
-							if (parameters [i] != pdc [i].ParameterType.GetElementType ().GetFullName ()) {
+							if (!pdc [i].ParameterType.GetElementType ().IsNamed (parameters [i])) {
 								parameterError = true;
 								break;
 							}
@@ -394,6 +349,40 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 			return ((self.Namespace == nameSpace) && (self.Name == name));
+		}
+
+		/// <summary>
+		/// Check if the type full name match the provided parameter.
+		/// Note: prefer the overload where the namespace and type name can be supplied individually
+		/// </summary>
+		/// <param name="self">The TypeReference on which the extension method can be called.</param>
+		/// <param name="fullName">The full name to be matched</param>
+		/// <returns>True if the type is namespace and name match the arguments, False otherwise</returns>
+		public static bool IsNamed (this TypeReference self, string fullName)
+		{
+			if (fullName == null)
+				throw new ArgumentNullException ("fullName");
+			if (self == null)
+				return false;
+
+			if (self.IsNested) {
+				int spos = fullName.LastIndexOf ('/');
+				if (spos == -1)
+					return false;
+				// FIXME: GetFullName could be optimized away but it's a fairly uncommon case
+				return (fullName == self.GetFullName ());
+			}
+
+			int dpos = fullName.LastIndexOf ('.');
+			string nspace = self.Namespace;
+			if (dpos != nspace.Length)
+				return false;
+
+			if (String.CompareOrdinal (nspace, 0, fullName, 0, dpos) != 0)
+				return false;
+
+			string name = self.Name;
+			return (String.CompareOrdinal (name, 0, fullName, dpos + 1, fullName.Length - dpos - 1) == 0);
 		}
 
 		/// <summary>

@@ -274,7 +274,8 @@ namespace Gendarme.Framework.Rocks {
 
 		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
 		{
-			return a.GetElementType ().GetFullName () == b.GetElementType ().GetFullName ();
+			TypeReference eta = a.GetElementType ();
+			return b.GetElementType ().IsNamed (eta.Namespace, eta.Name);
 		}
 
 		/// <summary>

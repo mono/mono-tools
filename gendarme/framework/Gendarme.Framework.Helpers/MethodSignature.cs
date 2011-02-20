@@ -122,7 +122,7 @@ namespace Gendarme.Framework.Helpers {
 			if (Name != null && method.Name != Name)
 				return false;
 
-			if (ReturnType != null && method.ReturnType.GetFullName () != ReturnType)
+			if (ReturnType != null && !method.ReturnType.IsNamed (ReturnType))
 				return false;
 
 			if (Parameters != null) {
@@ -133,7 +133,7 @@ namespace Gendarme.Framework.Helpers {
 					for (int i = 0; i < Parameters.Count; i++) {
 						if (Parameters [i] == null)
 							continue;//ignore parameter
-						if (Parameters [i] != pdc [i].ParameterType.GetFullName ()) {
+						if (!pdc [i].ParameterType.IsNamed (Parameters [i])) {
 							return false;
 						}
 					}

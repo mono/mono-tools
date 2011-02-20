@@ -132,8 +132,12 @@ namespace Gendarme.Framework.Helpers {
 				if (!last.IsByReference)
 					return false;
 
-				string pt_name = last.FullName;
-				return (String.Compare (pt_name, 0, method.DeclaringType.GetFullName (), 0, pt_name.Length - 1) == 0);
+				TypeReference mtype = method.DeclaringType;
+				if (last.Namespace != mtype.Namespace)
+					return false;
+
+				string pt_name = last.Name;
+				return (String.Compare (pt_name, 0, mtype.Name, 0, pt_name.Length - 1) == 0);
 			}
 		);
 
