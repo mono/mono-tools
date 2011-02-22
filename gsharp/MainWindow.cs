@@ -80,7 +80,7 @@ namespace Mono.CSharp.Gui
 			}
 				
 			foreach (string file in libraries){
-				Evaluator.LoadAssembly (file);
+				Shell.Evaluator.LoadAssembly (file);
 			}
 			
 			foreach (string file in sources){
@@ -101,7 +101,7 @@ namespace Mono.CSharp.Gui
 			object result;
 
 			try {
-				input = Evaluator.Evaluate (input, out result, out result_set);
+				input = Shell.Evaluator.Evaluate (input, out result, out result_set);
 			} catch (Exception e){
 				Console.WriteLine (e);
 				return null;

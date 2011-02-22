@@ -50,7 +50,9 @@ namespace Mono.CSharp.Gui
 	public class Shell : TextView
 	{        
 		TextMark end_of_last_processing;
-		string expr = null;
+		string expr;
+		Evaluator evaluator;
+		Report report;
 
 		List<string> history = new List<string> ();
 		int history_cursor;
@@ -72,10 +74,13 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
 			ShowPrompt (false);
 			
-			Evaluator.Init (new string [0]);
-			Evaluator.SetInteractiveBaseClass (typeof (InteractiveGraphicsBase));
-			Evaluator.Run ("LoadAssembly (\"System.Drawing\");");
-			Evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
+			report = new Report (new ConsoleReportPrinter ());
+			evaluator = new Evaluator (new CompilerSettings (), report);
+			evaluator.DescribeTypeExpressions = true;
+			
+			evaluator.InteractiveBaseClass = typeof (InteractiveGraphicsBase);
+			evaluator.Run ("LoadAssembly (\"System.Drawing\");");
+			evaluator.Run ("using System; using System.Linq; using System.Collections; using System.Collections.Generic; using System.Drawing;");
 
 			if (!MainClass.Debug){
 				GuiStream error_stream = new GuiStream ("Error", (x, y) => Output (x, y));
@@ -139,16 +144,18 @@ namespace Mono.CSharp.Gui
 			object result;
 			bool result_set;
 			StringWriter errorwriter = new StringWriter ();
-
-			Evaluator.MessageOutput = errorwriter;
+			
+			var old_printer = report.SetPrinter (new StreamReportPrinter (errorwriter));
 			
 			try {
-				res = Evaluator.Evaluate (s, out result, out result_set);
+				res = evaluator.Evaluate (s, out result, out result_set);
 			} catch (Exception e){
 				expr = null;
 				ShowError (e.ToString ());
 				ShowPrompt (true, false);
 				return true;
+			} finally {
+				report.SetPrinter (old_printer);
 			}
 
 			// Partial input
@@ -262,7 +269,7 @@ namespace Mono.CSharp.Gui
 			case Gdk.Key.Tab:
 				string saved_text = InputLine;
 				string prefix;
-				string [] completions = Evaluator.GetCompletions (LineUntilCursor, out prefix);
+				string [] completions = evaluator.GetCompletions (LineUntilCursor, out prefix);
 				if (completions == null)
 					return true;
 
@@ -405,6 +412,12 @@ namespace Mono.CSharp.Gui
 		TextIter Cursor {
 			get { return Buffer.GetIterAtMark(Buffer.InsertMark); }
 		}
+		
+		public Evaluator Evaluator {
+			get {
+				return evaluator;
+			}
+		}		
 
 		string InputLine {
 			get { return Buffer.GetText(InputLineBegin, InputLineEnd, false); }

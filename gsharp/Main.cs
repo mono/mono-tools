@@ -19,6 +19,7 @@ namespace Mono.CSharp.Gui
 		public static bool Attached;
 		public static bool HostHasGtkRunning;
 		public static bool Debug;
+		static Evaluator evaluator;
 		
 		public static void ShowHelp (OptionSet p)
 		{
@@ -59,10 +60,10 @@ namespace Mono.CSharp.Gui
 			else
 				Start ("C# InteractiveBase Shell", extra);
 		}
-
+		
 		static void AssemblyLoaded (object sender, AssemblyLoadEventArgs e)
 		{
-			Evaluator.ReferenceAssembly (e.LoadedAssembly);
+			evaluator.ReferenceAssembly (e.LoadedAssembly);
 		}
 
 		internal static object RenderBitmaps (object o)
@@ -92,7 +93,7 @@ namespace Mono.CSharp.Gui
 			InteractiveGraphicsBase.Attached = true;
 			Gtk.Application.Invoke (delegate {
 				try {
-					Evaluator.Init (new string [0]);
+					evaluator = new Evaluator (new CompilerSettings (), new Report (new ConsoleReportPrinter ()));
 				} catch {
 					return;
 				}
@@ -103,7 +104,7 @@ namespace Mono.CSharp.Gui
 					
 					// Add all currently loaded assemblies
 					foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ())
-						Evaluator.ReferenceAssembly (a);
+						evaluator.ReferenceAssembly (a);
 					
 					Start (String.Format ("Attached C# Interactive Shell at Process {0}", Process.GetCurrentProcess ().Id), null);
 				} finally {
@@ -129,7 +130,6 @@ namespace Mono.CSharp.Gui
 			if (files != null)
 				m.LoadFiles (files, false);
 			m.ShowAll ();
-			Evaluator.DescribeTypeExpressions = true;
 
 			if (!HostHasGtkRunning){
 				try {

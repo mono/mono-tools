@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.CSharp.Gui", "Mono.CSharp.Gui.csproj", "{40181081-3764-45F5-BF63-C8F6D77C6A2A}"
 EndProject
 Global
@@ -15,10 +15,9 @@ Global
 		{40181081-3764-45F5-BF63-C8F6D77C6A2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		name = gsharp
-		version = 0.1
 		StartupItem = Mono.CSharp.Gui.csproj
 		MonoDevelop.ChangeLogAddIn.ChangeLogInfo = $0
 		$0.policy = OneChangeLogInProjectRootDirectory
+		name = gsharp
 	EndGlobalSection
 EndGlobal
