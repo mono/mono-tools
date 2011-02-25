@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 using Mono.Cecil;
+using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Framework.Helpers {
 
@@ -83,9 +84,9 @@ namespace Gendarme.Framework.Helpers {
 		}
 		
 		[Conditional ("DEBUG")]
-		public static void WriteLine<T> (T category, MethodDefinition method)
+		public static void WriteLine<T> (T category, MemberReference member)
 		{
-			WriteLine (typeof (T).Name, method);
+			WriteLine (typeof (T).Name, member);
 		}
 		
 		// WriteLine (string)
@@ -104,10 +105,15 @@ namespace Gendarme.Framework.Helpers {
 		}
 		
 		[Conditional ("DEBUG")]
-		public static void WriteLine (string category, MethodDefinition method)
+		public static void WriteLine (string category, MemberReference member)
 		{
-			if (IsEnabled (category))
-				Debug.WriteLine (new MethodPrinter (method).ToString ());
+			if (IsEnabled (category)) {
+				MethodDefinition md = (member as MethodDefinition);
+				if (md != null)
+					Debug.WriteLine (new MethodPrinter (md).ToString ());
+				else
+					Debug.WriteLine (member.GetFullName ());
+			}
 		}
 		
 		// Misc

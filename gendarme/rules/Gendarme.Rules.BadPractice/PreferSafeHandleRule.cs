@@ -215,7 +215,7 @@ namespace Gendarme.Rules.BadPractice {
 
 			Log.WriteLine (this);
 			Log.WriteLine (this, "----------------------------------");
-			Log.WriteLine (this, type.GetFullName ());
+			Log.WriteLine (this, type);
 						
 			FieldDefinition field = FindIntPtr (type);
 			if (field != null) {

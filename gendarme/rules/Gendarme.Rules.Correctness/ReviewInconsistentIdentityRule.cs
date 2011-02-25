@@ -349,7 +349,7 @@ namespace Gendarme.Rules.Correctness {
 			
 			Log.WriteLine (this);
 			Log.WriteLine (this, "------------------------------------");
-			Log.WriteLine (this, type.GetFullName ());
+			Log.WriteLine (this, type);
 			
 			GetMethods (type);
 			if (methods.Count > 0) {

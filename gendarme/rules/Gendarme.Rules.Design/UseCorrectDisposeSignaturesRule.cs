@@ -144,7 +144,7 @@ namespace Gendarme.Rules.Design {
 			if (type.Implements ("System", "IDisposable")) {
 				Log.WriteLine (this);
 				Log.WriteLine (this, "----------------------------------");
-				Log.WriteLine (this, type.GetFullName ());
+				Log.WriteLine (this, type);
 				
 				MethodDefinition dispose0 = null;
 				MethodDefinition dispose1 = null;
