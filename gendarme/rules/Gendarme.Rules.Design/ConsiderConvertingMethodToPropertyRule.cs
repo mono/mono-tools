@@ -130,7 +130,7 @@ namespace Gendarme.Rules.Design {
 			bool get = name.StartsWith ("get", StringComparison.OrdinalIgnoreCase);
 			bool isp = name.StartsWith ("is", StringComparison.OrdinalIgnoreCase);
 			bool has = name.StartsWith ("has", StringComparison.OrdinalIgnoreCase);
-			if ((get || isp || has) && (method.Parameters.Count == 0) && !return_type.IsNamed ("System", "Void")) {
+			if ((get || isp || has) && !method.HasParameters && !return_type.IsNamed ("System", "Void")) {
 				// if it's a getter then look for a setter (to complete the report)
 				string msg = get ? ReportAssociatedSetter (method) : String.Empty;
 				Runner.Report (method, Severity.Low, Confidence.Normal, msg);

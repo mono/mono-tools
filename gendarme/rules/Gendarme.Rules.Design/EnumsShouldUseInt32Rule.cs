@@ -89,33 +89,35 @@ namespace Gendarme.Rules.Design {
 
 			// rule applies!
 
-			string value_type = null;
+			TypeReference ftype = null;
 
 			foreach (FieldDefinition field in type.Fields) {
 				// we looking for the special value__
 				if (!field.IsStatic) {
-					value_type = field.FieldType.GetFullName ();
+					ftype = field.FieldType;
 					break;
 				}
 			}
 
-			Severity severity;
-			switch (value_type) {
-			case "System.Int32":
-				return RuleResult.Success;
-			// some are bad choice (when possible) but usable by all CLS compliant languages
-			case "System.Byte":
-			case "System.Int16":
-			case "System.Int64":
+			Severity severity = Severity.Critical;
+			if ((ftype != null) && (ftype.Namespace == "System")) {
+				switch (ftype.Name) {
+				case "Int32":
+					return RuleResult.Success;
+				// some are bad choice (when possible) but usable by all CLS compliant languages
+				case "Byte":
+				case "Int16":
+				case "Int64":
 				severity = Severity.High;
-				break;
-			// while others are not usable in non-CLS compliant languages
-			default: // System.SByte, System.UInt16, System.UInt32, System.UInt64
-				severity = Severity.Critical;
-				break;
+					break;
+				// while others are not usable in non-CLS compliant languages
+				default: // System.SByte, System.UInt16, System.UInt32, System.UInt64
+					severity = Severity.Critical;
+					break;
+				}
 			}
 
-			string text = String.Format ("Enums should use System.Int32 instead of '{0}'.", value_type);
+			string text = String.Format ("Enums should use System.Int32 instead of '{0}'.", ftype.GetFullName ());
 			Runner.Report (type, severity, Confidence.Total, text);
 			return RuleResult.Failure;
 		}

@@ -44,12 +44,6 @@ namespace Gendarme.Rules.Design {
 		abstract protected string InterfaceName { get; }
 		abstract protected string InterfaceNamespace { get; }
 
-		HashSet<string> weakTypes = new HashSet<string> {
-			"System.Object",
-			"System.Array",
-			"System.Object[]",
-		};
-
 		MethodSignature [] signatures;
 		string [] propertyNames;
 		int methodsLeft, propertiesLeft;
@@ -107,13 +101,26 @@ namespace Gendarme.Rules.Design {
 				ProcessProperties (baseType);
 		}
 
+		static bool IsWeak (TypeReference type)
+		{
+			if (type.Namespace != "System")
+				return false;
+			string name = type.Name;
+			return ((name == "Object") || (name == "Array") || (name == "Object[]"));
+		}
+
+		static bool IsWeak (string typeName)
+		{
+			return ((typeName == "System.Object") || (typeName == "System.Array") || (typeName == "System.Object[]"));
+		}
+
 		private void ProcessProperties (TypeDefinition baseType)
 		{
 			foreach (PropertyDefinition property in baseType.Properties) {
 				for (int i = 0; i < propertyNames.Length; i++) {
 					if (propertyNames [i] == null || propertyNames [i] != property.Name)
 						continue;
-					if (!weakTypes.Contains (property.PropertyType.GetFullName ())) {
+					if (!IsWeak (property.PropertyType)) {
 						propertiesLeft--;
 						propertyNames [i] = null;
 					}
@@ -134,9 +141,9 @@ namespace Gendarme.Rules.Design {
 
 					bool foundStrong = true;
 					for (int j = 0; j < methodParameters.Count; j++) {
-						if (!weakTypes.Contains (signatures [i].Parameters [j]))
+						if (!IsWeak (signatures [i].Parameters [j]))
 							continue;
-						if (weakTypes.Contains (methodParameters [j].ParameterType.GetFullName ()))
+						if (IsWeak (methodParameters [j].ParameterType))
 							foundStrong = false;
 					}
 
