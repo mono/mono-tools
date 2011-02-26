@@ -255,11 +255,13 @@ namespace Gendarme.Rules.Correctness {
 
 		static bool IsFluentLike (MethodReference method)
 		{
-			string rtype = method.ReturnType.FullName;
+			TypeReference rtype = method.ReturnType;
+			string nspace = rtype.Namespace;
+			string name = rtype.Name;
 			// StringBuilder StringBuilder.Append (...)
-			if (rtype == method.DeclaringType.FullName)
+			if (method.DeclaringType.IsNamed (nspace, name))
 				return true;
-			return (method.HasParameters && rtype == method.Parameters [0].ParameterType.FullName);
+			return (method.HasParameters && method.Parameters [0].ParameterType.IsNamed (nspace, name));
 		}
 
 		void ReportCall (MethodDefinition method, Instruction ins, MethodReference call)

@@ -91,20 +91,23 @@ namespace Gendarme.Rules.Correctness {
 
 		static OpCodeBitmask callsAndNewobjBitmask = BuildCallsAndNewobjOpCodeBitmask ();
 
-		const string RegexClass = "System.Text.RegularExpressions.Regex";
-		const string ValidatorClass = "System.Configuration.RegexStringValidator";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
 
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				bool usingRegexClass = e.CurrentAssembly.Name.Name == "System"
-				                       || e.CurrentModule.HasTypeReference (RegexClass);
-				bool usingValidatorClass = e.CurrentModule.Runtime >= TargetRuntime.Net_2_0
-				                           && (e.CurrentAssembly.Name.Name == "System.Configuration"
-				                              || e.CurrentModule.HasTypeReference (ValidatorClass));
-				Active = usingRegexClass | usingValidatorClass;
+				string assembly_name = e.CurrentAssembly.Name.Name;
+				bool usingRegexClass = (assembly_name == "System");
+				bool usingValidatorClass = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0) && (assembly_name == "System.Configuration");
+				// if we're not analyzing System.dll or System.Configuration.dll then check if we're using them
+				if (!usingRegexClass && !usingValidatorClass) {
+					Active = e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.Text.RegularExpressions", "Regex") ||
+							tr.IsNamed ("System.Configuration", "RegexStringValidator");
+					});
+				} else {
+					Active = true;
+				}
 			};
 		}
 

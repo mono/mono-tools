@@ -317,7 +317,7 @@ namespace Gendarme.Rules.Correctness {
 		static bool HasPureAttribute (IList<CustomAttribute> attrs)
 		{
 			foreach (CustomAttribute attr in attrs) {
-				if (attr.AttributeType.GetFullName ().Contains ("PureAttribute")) {
+				if (attr.AttributeType.Name == "PureAttribute") {
 					return true;
 				}
 			}

@@ -41,8 +41,6 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	abstract public class FloatingComparisonRule : Rule {
 
-		private static string[] FloatingPointTypes = { "System.Single", "System.Double" };
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -52,7 +50,9 @@ namespace Gendarme.Rules.Correctness {
 			// note: mscorlib.dll is an exception since it defines, not refer, System.Single and Double
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
 				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
-					e.CurrentModule.HasAnyTypeReference (FloatingPointTypes);
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsFloatingPoint ();
+					});
 			};
 		}
 

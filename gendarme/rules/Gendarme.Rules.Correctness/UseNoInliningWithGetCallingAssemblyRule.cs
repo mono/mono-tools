@@ -71,18 +71,24 @@ namespace Gendarme.Rules.Correctness {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseNoInliningWithGetCallingAssemblyRule : Rule, IMethodRule {
 
-		private const string Assembly = "System.Reflection.Assembly";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
 
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				// if the module does not reference System.Reflection.Assembly 
-				// then no method inside it will be calling GetCallingAssembly
+				// if the module does not reference System.Reflection.Assembly.GetCallingAssembly
+				// then there's no point in enabling the rule
 				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
-					e.CurrentModule.HasTypeReference (Assembly));
+					e.CurrentModule.AnyMemberReference ((MemberReference mr) => {
+						return IsGetCallingAssembly (mr);
+					})
+				);
 			};
+		}
+
+		static bool IsGetCallingAssembly (MemberReference method)
+		{
+			return method.IsNamed ("System.Reflection", "Assembly", "GetCallingAssembly");
 		}
 
 		static bool IsCallToGetCallingAssembly (Instruction instruction)
@@ -91,7 +97,7 @@ namespace Gendarme.Rules.Correctness {
 			if (code != Code.Call && code != Code.Callvirt)
 				return false;
 
-			return instruction.GetMethod ().IsNamed ("System.Reflection", "Assembly", "GetCallingAssembly");
+			return IsGetCallingAssembly (instruction.GetMethod ());
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

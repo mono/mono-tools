@@ -75,18 +75,24 @@ namespace Gendarme.Rules.Correctness {
 		// Conv_I8, Conv_U8, Conv_Ovf_I8, Conv_Ovf_I8_Un, Conv_Ovf_U8, Conv_Ovf_U8_Un
 		private static OpCodeBitmask Convert8 = new OpCodeBitmask (0x0, 0x220000000000, 0x60000000044, 0x0);
 		
-		private const string BitConverter = "System.BitConverter";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
 
-			// if the module does not reference System.BitConverter then no
-			// method inside it will be calling any BitConverter.Int64BitsToDouble method
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
-					e.CurrentModule.HasTypeReference (BitConverter);
+				// if the module does not reference System.BitConverter.Int64BitsToDouble then no
+				// then there's no point in enabling the rule
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyMemberReference ((MemberReference mr) => {
+						return IsInt64BitsToDouble (mr);
+					})
+				);
 			};
+		}
+
+		static bool IsInt64BitsToDouble (MemberReference method)
+		{
+			return method.IsNamed ("System", "BitConverter", "Int64BitsToDouble");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -106,8 +112,7 @@ namespace Gendarme.Rules.Correctness {
 				if (ins.OpCode.FlowControl != FlowControl.Call)
 					continue;
 
-				MethodReference mr = (ins.Operand as MethodReference);
-				if (!mr.IsNamed ("System", "BitConverter", "Int64BitsToDouble"))
+				if (!IsInt64BitsToDouble (ins.Operand as MethodReference))
 					continue;
 
 				// if the previous call convert a value into a long (int64)
