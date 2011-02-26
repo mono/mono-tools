@@ -107,7 +107,9 @@ namespace Gendarme.Rules.Portability {
 			// but we want to avoid checking all methods if the Environment type
 			// isn't referenced in a module (big performance difference)
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = e.CurrentAssembly.MainModule.HasTypeReference ("System.Environment");
+				Active = e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+					return tr.IsNamed ("System", "Environment");
+				});
 			};
 		}
 
@@ -141,7 +143,7 @@ namespace Gendarme.Rules.Portability {
 			// FIXME: entryPoint.ReturnType should not be null with void Main ()
 			// either bad unit tests or bug in cecil
 			TypeReference rt = entry_point.ReturnType;
-			if (rt == null || rt.FullName != "System.Int32")
+			if (!rt.IsNamed ("System", "Int32"))
 				return RuleResult.DoesNotApply;
 
 			Instruction previous = null;
@@ -188,7 +190,7 @@ namespace Gendarme.Rules.Portability {
 				return (a >= 0 && a <= 255) ? InspectionResult.Good : InspectionResult.Bad;
 			case Code.Call:
 			case Code.Callvirt:
-				if ((instruction.Operand as MethodReference).ReturnType.FullName == "System.Byte")
+				if ((instruction.Operand as MethodReference).ReturnType.IsNamed ("System", "Byte"))
 					return InspectionResult.Good;
 				else
 					return InspectionResult.Unsure; // could be within 0-255 or not
@@ -217,7 +219,7 @@ namespace Gendarme.Rules.Portability {
 					string name = calledMethod.Name;
 					if ((name != "set_ExitCode") && (name != "Exit"))
 						break;
-					if (calledMethod.DeclaringType.FullName != "System.Environment")
+					if (!calledMethod.DeclaringType.IsNamed ("System", "Environment"))
 						break;
 
 					InspectionResult result = CheckInstruction (previous);

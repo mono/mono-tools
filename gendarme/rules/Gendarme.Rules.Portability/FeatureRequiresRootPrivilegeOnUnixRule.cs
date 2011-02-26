@@ -84,10 +84,6 @@ namespace Gendarme.Rules.Portability {
 		private const string ProcessMessage = "Setting Process.PriorityClass to something else than ProcessPriorityClass.Normal requires root privileges.";
 		private const string PingMessage = "Usage of System.Net.NetworkInformation.Ping requires root privileges.";
 
-		// non-localizable
-		private const string Ping = "System.Net.NetworkInformation.Ping";
-		private const string Process = "System.Diagnostics.Process";
-
 		private bool ping_present = true;
 		private bool process_present = true;
 
@@ -98,8 +94,13 @@ namespace Gendarme.Rules.Portability {
 			// if the module does not reference either Ping or Process
 			// then it's not being used inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				ping_present = e.CurrentModule.HasTypeReference (Ping);
-				process_present = e.CurrentModule.HasTypeReference (Process);
+				Active = e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+					ping_present = tr.IsNamed ("System.Net.NetworkInformation", "Ping");
+					process_present = tr.IsNamed ("System.Diagnostics", "Process");
+					// return true to stop looping when both Ping and Process are found
+					return (ping_present && process_present);
+				});
+				// activate the rule if any (or both) is/are present(s)
 				Active = (ping_present || process_present);
 			};
 			// note: this ignores on purpose System.dll since there's
@@ -112,7 +113,7 @@ namespace Gendarme.Rules.Portability {
 			MethodReference method = (ins.Operand as MethodReference);
 			if ((method == null) || (method.Name != "set_PriorityClass"))
 				return false;
-			if (method.DeclaringType.FullName != "System.Diagnostics.Process")
+			if (!method.DeclaringType.IsNamed ("System.Diagnostics", "Process"))
 				return false;
 
 			Instruction prev = ins.Previous; //check stack
@@ -132,7 +133,7 @@ namespace Gendarme.Rules.Portability {
 		private static bool CheckPing (Instruction ins)
 		{
 			MethodReference method = (ins.Operand as MethodReference);
-			return ((method != null) && (method.DeclaringType.FullName == Ping));
+			return ((method != null) && (method.DeclaringType.IsNamed ("System.Net.NetworkInformation", "Ping")));
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

@@ -363,11 +363,13 @@ namespace Gendarme.Rules.Portability {
 
 				// we can avoid some false positives by doing additional checks here
 
+				TypeReference tr = target.DeclaringType;
+				string nameSpace = tr.Namespace;
+				string typeName = tr.Name;
 				string methodName = target.Name;
-				string typeName = target.DeclaringType.FullName;
 
-				if (typeName.StartsWith ("Microsoft.Win32.Registry", StringComparison.Ordinal) // registry keys
-				    || (typeName.StartsWith ("System.Xml", StringComparison.Ordinal) // xpath expressions
+				if (nameSpace == "Microsoft.Win32" && typeName.StartsWith ("Registry", StringComparison.Ordinal) // registry keys
+				    || (nameSpace.StartsWith ("System.Xml", StringComparison.Ordinal) // xpath expressions
 					&& methodName.StartsWith ("Select", StringComparison.Ordinal))) {
 					AddPoints (-42);
 					return true; // handled
@@ -389,10 +391,8 @@ namespace Gendarme.Rules.Portability {
 			case Code.Newobj:
 				// this is a constructor call
 				MethodReference ctor = (MethodReference) ins.Operand;
-				string createdTypeName = ctor.DeclaringType.FullName;
-
 				// avoid catching regular expressions
-				if (createdTypeName == "System.Text.RegularExpressions.Regex")
+				if (ctor.DeclaringType.IsNamed ("System.Text.RegularExpressions", "Regex"))
 					AddPoints (-42);
 
 				break;
