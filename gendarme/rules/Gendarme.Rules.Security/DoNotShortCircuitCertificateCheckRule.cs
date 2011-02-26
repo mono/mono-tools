@@ -122,8 +122,11 @@ namespace Gendarme.Rules.Security {
 			// if the module does not reference System.Math then 
 			// none of its method is being called with constants
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
-					e.CurrentModule.HasTypeReference ("System.Net.ICertificatePolicy");
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.Net", "ICertificatePolicy");
+					})
+				);
 			};
 		}
 
@@ -195,10 +198,10 @@ namespace Gendarme.Rules.Security {
 			bool callback = true;
 			// if all the parameters match
 			for (int i = 0; i < count; i++) {
-				string name = pdc [i].ParameterType.GetFullName ();
-				if (policy && (name != CertificatePolicyParameters [i]))
+				TypeReference ptype = pdc [i].ParameterType;
+				if (policy && !ptype.IsNamed (CertificatePolicyParameters [i]))
 					policy = false;
-				if (callback && (name != RemoteCertificateValidationParameters [i]))
+				if (callback && !ptype.IsNamed (RemoteCertificateValidationParameters [i]))
 					callback = false;
 			}
 
