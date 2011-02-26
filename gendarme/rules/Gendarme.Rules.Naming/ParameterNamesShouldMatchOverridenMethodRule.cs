@@ -84,8 +84,10 @@ namespace Gendarme.Rules.Naming {
 			base.Initialize (runner);
 
 			//check if this is a Boo assembly using macros
-			Runner.AnalyzeAssembly += delegate (object o, RunnerEventArgs e) {
-				IsBooAssemblyUsingMacro = (e.CurrentAssembly.MainModule.HasTypeReference (BooMacroStatement));
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				IsBooAssemblyUsingMacro = (e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+					return tr.IsNamed ("Boo.Lang.Compiler.Ast", "MacroStatement");
+				}));
 			};
 		}
 
@@ -97,12 +99,23 @@ namespace Gendarme.Rules.Naming {
 			if (name != base_name) {
 				if (!explicitInterfaceCheck)
 					return false;
-				string full_name = baseMethod.DeclaringType.GetFullName ();
-				if (!name.StartsWith (full_name, StringComparison.Ordinal))
+
+				TypeReference btype = baseMethod.DeclaringType;
+				string bnspace = btype.Namespace;
+				if (!name.StartsWith (bnspace, StringComparison.Ordinal))
 					return false;
-				if (name [full_name.Length] != '.')
+				if (name [bnspace.Length] != '.')
 					return false;
-				if (name.LastIndexOf (base_name, StringComparison.Ordinal) != full_name.Length + 1)
+
+				string bname = btype.Name;
+				if (String.CompareOrdinal (bname, 0, name, bnspace.Length + 1, bname.Length) != 0)
+					return false;
+
+				int dot = bnspace.Length + bname.Length + 1;
+				if (name [dot] != '.')
+					return false;
+
+				if (name.LastIndexOf (base_name, StringComparison.Ordinal) != dot + 1)
 					return false;
 			}
 			return method.CompareSignature (baseMethod);
@@ -171,17 +184,7 @@ namespace Gendarme.Rules.Naming {
 			return Runner.CurrentRuleResult;
 		}
 
-		private const string BooMacroStatement = "Boo.Lang.Compiler.Ast.MacroStatement";
-
-		private bool IsBooAssemblyUsingMacro {
-			get {
-				return isBooAssemblyUsingMacro;
-			}
-			set {
-				isBooAssemblyUsingMacro = value;
-			}
-		}
-		private bool isBooAssemblyUsingMacro;
+		private bool IsBooAssemblyUsingMacro { get; set; }
 
 		private static bool IsBooMacroParameter (ParameterReference p)
 		{
