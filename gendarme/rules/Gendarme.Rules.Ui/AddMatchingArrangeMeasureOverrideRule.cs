@@ -81,9 +81,12 @@ namespace Gendarme.Rules.UI {
 			// if the module does not reference System.Windows.Size, 
 			// then it will not be using the overrides
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = ((e.CurrentAssembly.Name.Name == "WindowsBase" ||
-					 e.CurrentAssembly.Name.Name == "System.Windows") ||
-					 e.CurrentModule.HasTypeReference (Size));
+				string assembly_name = e.CurrentAssembly.Name.Name;
+				Active = ((assembly_name == "WindowsBase" || assembly_name == "System.Windows") ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.Windows", "Size");
+					})
+				);
 			};
 		}
 
