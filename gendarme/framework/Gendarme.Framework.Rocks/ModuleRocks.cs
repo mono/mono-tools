@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -155,6 +155,61 @@ namespace Gendarme.Framework.Rocks {
 				yield return type;
 		}
 
+		static Dictionary<ModuleDefinition, IEnumerable<MemberReference>> member_ref_cache = new Dictionary<ModuleDefinition, IEnumerable<MemberReference>> ();
+
+		/// <summary>
+		/// Check if any MemberReference, referenced by the current ModuleDefinition, satisfies the
+		/// specified predicate.
+		/// </summary>
+		/// <param name="self">The ModuleDefinition on which the extension method can be called.</param>
+		/// <param name="predicate">The condition to execute on a provided MemberReference</param>
+		/// <returns>True if 'predicate' returns true for any MemberReference in the module's referenced types.</returns>
+		/// <remarks>Cecil's GetMemberReferences method will allocate a new array each time it is called.
+		/// This extension method will cache the IEnumerable, on the first use, to reduce memory consumption.</remarks>
+		public static bool AnyMemberReference (this ModuleDefinition self, Func<MemberReference, bool> predicate)
+		{
+			if (self == null)
+				return false;
+
+			// since ModuleDefinition.GetMemberReferences allocates an array (always identical if the
+			// assembly is opened "read-only", like Gendarme does) we'll cache and retrieve the array
+			IEnumerable<MemberReference> refs;
+			if (!member_ref_cache.TryGetValue (self, out refs)) {
+				refs = self.GetMemberReferences ();
+				member_ref_cache.Add (self, refs);
+			}
+
+			return refs.Any (predicate);
+		}
+
+		static Dictionary<ModuleDefinition, IEnumerable<TypeReference>> type_ref_cache = new Dictionary<ModuleDefinition, IEnumerable<TypeReference>> ();
+
+		/// <summary>
+		/// Check if any TypeReference, referenced by the current ModuleDefinition, satisfies the
+		/// specified predicate.
+		/// </summary>
+		/// <param name="self">The ModuleDefinition on which the extension method can be called.</param>
+		/// <param name="predicate">The condition to execute on a provided TypeReference</param>
+		/// <returns>True if 'predicate' returns true for any TypeReference in the module's referenced types.</returns>
+		/// <remarks>Cecil's GetTypeReferences method will allocate a new array each time it is called.
+		/// This extension method will cache the IEnumerable, on the first use, to reduce memory consumption.</remarks>
+		public static bool AnyTypeReference (this ModuleDefinition self, Func<TypeReference, bool> predicate)
+		{
+			if (self == null)
+				return false;
+
+			// since ModuleDefinition.GetTypeReferences allocates an array (always identical if the
+			// assembly is opened "read-only", like Gendarme does) we'll cache and retrieve the array
+			IEnumerable<TypeReference> refs;
+			if (!type_ref_cache.TryGetValue (self, out refs)) {
+				refs = self.GetTypeReferences ();
+				type_ref_cache.Add (self, refs);
+			}
+
+			return refs.Any (predicate);
+		}
+
+		// FIXME: to be removed asap
 		public static bool HasAnyTypeReference (this ModuleDefinition self, string [] typeNames)
 		{
 			if (self == null)
