@@ -52,7 +52,17 @@ namespace Tests.Rules.Performance {
 
 			}
 
-			private void MethodWithGenericInterfaceOfBaseTypeParameter2 (IComparable<int> comparable)
+			private void MethodWithGenericInterfaceOfBaseTypeParameter2a (IComparable<int> comparable)
+			{
+
+			}
+
+			private void MethodWithGenericInterfaceOfBaseTypeParameter2b (IComparable<decimal> comparable)
+			{
+
+			}
+
+			private void MethodWithGenericInterfaceOfBaseTypeParameter2c (IComparable<object> comparable)
 			{
 
 			}
@@ -101,25 +111,27 @@ namespace Tests.Rules.Performance {
 		[Test]
 		public void MethodWithInterfaceOfBaseTypeParameter ()
 		{
-			AssertRuleFailure<TestCase> ("MethodWithInterfaceOfBaseTypeParameter");
+			AssertRuleFailure<TestCase> ("MethodWithInterfaceOfBaseTypeParameter", 1);
 		}
 
 		[Test]
 		public void MethodWithGenericInterfaceOfBaseTypeParameter ()
 		{
-			AssertRuleFailure<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter");
+			AssertRuleFailure<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter", 1);
 		}
 
 		[Test]
 		public void MethodWithGenericInterfaceOfBaseTypeParameter2 ()
 		{
-			AssertRuleFailure<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter2");
+			AssertRuleFailure<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter2a", 1);
+			AssertRuleFailure<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter2b", 1);
+			AssertRuleSuccess<TestCase> ("MethodWithGenericInterfaceOfBaseTypeParameter2c");
 		}
 
 		[Test]
 		public void MethodWithMultipleParameters ()
 		{
-			AssertRuleFailure<TestCase> ("MethodWithMultipleParameters");
+			AssertRuleFailure<TestCase> ("MethodWithMultipleParameters", 1);
 		}
 
 		[Test]

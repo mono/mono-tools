@@ -62,41 +62,49 @@ namespace Gendarme.Rules.Performance {
 	[Solution("Replace the interface parameter with interface constraint on generic type parameter.")]
 	public class PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule : Rule, IMethodRule {
 
-		private readonly HashSet<string> primitiveTypeInterfaces = new HashSet<string> ();
-
-		public PreferInterfaceConstraintOnGenericParameterForPrimitiveInterfaceRule ()
+		static bool CheckGenericArgument (GenericInstanceType git)
 		{
-			primitiveTypeInterfaces.Add ("System.IComparable");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<T>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Boolean>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Byte>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Char>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Decimal>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Double>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Float>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Int32>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Int64>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.SByte>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.Short>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.UInt16>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.UInt32>");
-			primitiveTypeInterfaces.Add ("System.IComparable`1<System.UInt64>");
-			primitiveTypeInterfaces.Add ("System.IFormattable");
-			primitiveTypeInterfaces.Add ("System.IConvertible");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<T>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Boolean>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Byte>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Char>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Decimal>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Double>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Float>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Int32>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Int64>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.SByte>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.Short>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.UInt16>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.UInt32>");
-			primitiveTypeInterfaces.Add ("System.IEquatable`1<System.UInt64>");
+			if ((git == null) || !git.HasGenericArguments)
+				return false; // should not happen with the '`1' but...
+
+			TypeReference arg = git.GenericArguments [0];
+			switch (arg.MetadataType) {
+			case MetadataType.MVar:
+				return (arg.IsGenericParameter && arg.IsNamed (String.Empty, "T"));
+			case MetadataType.ValueType:
+				return arg.IsNamed ("System", "Decimal");
+			case MetadataType.Boolean:
+			case MetadataType.Byte:
+			case MetadataType.Char:
+			case MetadataType.Double:
+			case MetadataType.Single:
+			case MetadataType.Int16:
+			case MetadataType.Int32:
+			case MetadataType.Int64:
+			case MetadataType.SByte:
+			case MetadataType.UInt16:
+			case MetadataType.UInt32:
+			case MetadataType.UInt64:
+				return true;
+			default:
+				return false;
+			}
+		}
+
+		static bool IsPrimitiveInterface (MemberReference type)
+		{
+			switch (type.Name) {
+			case "IComparable":
+			case "IFormattable":
+			case "IConvertible":
+				return true; // no doubt
+			case "IComparable`1":
+			case "IEquatable`1":
+				// maybe, check generic argument type
+				return CheckGenericArgument (type as GenericInstanceType);
+			default:
+				return false;
+			}
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -109,10 +117,9 @@ namespace Gendarme.Rules.Performance {
 				if (type.Namespace != "System")
 					continue;
 
-				string tname = type.GetFullName ();
-				if (primitiveTypeInterfaces.Contains (tname)) {
+				if (IsPrimitiveInterface (type)) {
 					string msg = String.Format ("You are using {0} as parameter, which cause boxing with value type as argument",
-						tname);
+						type.GetFullName ());
 					Runner.Report (method, Severity.Low, Confidence.Total, msg);
 				}
 			}
