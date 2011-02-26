@@ -76,13 +76,6 @@ namespace Gendarme.Rules.Serialization {
 		private const string NotSerializableText = "The type of this method is not marked as [Serializable].";
 		private const string WrongSignatureText = "The method has the wrong signature, it should return System.Void and have a single parameter of type 'System.Runtime.Serialization.StreamingContext' and be private.";
 
-		static string [] Attributes = {
-			"System.Runtime.Serialization.OnSerializingAttribute",
-			"System.Runtime.Serialization.OnSerializedAttribute",
-			"System.Runtime.Serialization.OnDeserializingAttribute",
-			"System.Runtime.Serialization.OnDeserializedAttribute"
-		};
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -97,8 +90,26 @@ namespace Gendarme.Rules.Serialization {
 					// if the module does not have a reference to any of the attributes
 					// then nothing will be reported by this rule
 					(e.CurrentAssembly.Name.Name == "mscorlib" ||
-					e.CurrentModule.HasAnyTypeReference (Attributes));
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return IsSerializationAttribute (tr);
+					}));
 			};
+		}
+
+		static bool IsSerializationAttribute (TypeReference type)
+		{
+			if (type.Namespace != "System.Runtime.Serialization")
+				return false;
+
+			switch (type.Name) {
+			case "OnSerializingAttribute":
+			case "OnSerializedAttribute":
+			case "OnDeserializingAttribute":
+			case "OnDeserializedAttribute":
+				return true;
+			default:
+				return false;
+			}
 		}
 
 		static bool HasAnySerializationAttribute (ICustomAttributeProvider method)
@@ -107,16 +118,8 @@ namespace Gendarme.Rules.Serialization {
 				return false;
 
 			foreach (CustomAttribute ca in method.CustomAttributes) {
-				TypeReference cat = ca.AttributeType;
-				if (cat.Namespace != "System.Runtime.Serialization")
-					continue;
-				switch (cat.Name) {
-				case "OnSerializingAttribute":
-				case "OnSerializedAttribute":
-				case "OnDeserializingAttribute":
-				case "OnDeserializedAttribute":
+				if (IsSerializationAttribute (ca.AttributeType))
 					return true;
-				}
 			}
 			return false;
 		}

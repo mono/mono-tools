@@ -85,8 +85,6 @@ namespace Gendarme.Rules.Serialization {
 		private const string MessageOptional = "Optional fields '{0}' is not deserialized.";
 		private const string MessageSerializable = "Optional fields '{0}' in non-serializable type.";
 
-		private const string OptionalFieldAttribute = "System.Runtime.Serialization.OptionalFieldAttribute";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -101,7 +99,10 @@ namespace Gendarme.Rules.Serialization {
 					// if the module does not have a reference to System.Runtime.Serialization.OptionalFieldAttribute
 					// then nothing will be reported by this rule
 					(e.CurrentAssembly.Name.Name == "mscorlib" ||
-					e.CurrentModule.HasTypeReference (OptionalFieldAttribute));
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.Runtime.Serialization", "OptionalFieldAttribute");
+					})
+				);
 			};
 		}
 
