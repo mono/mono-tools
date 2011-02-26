@@ -70,8 +70,6 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class GetEntryAssemblyMayReturnNullRule : Rule, IMethodRule {
 
-		private const string Assembly = "System.Reflection.Assembly";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -81,11 +79,18 @@ namespace Gendarme.Rules.BadPractice {
 					// GetEntryAssembly will work inside executables
 					e.CurrentAssembly.EntryPoint == null &&
 					
-					// if the module does not reference System.Reflection.Assembly 
-					// then no method inside it will be calling GetEntryAssembly
+					// if the module does not reference System.Reflection.Assembly.GetEntryAssembly
+					// then there's no point in enabling the rule
 					(e.CurrentAssembly.Name.Name == "mscorlib" ||
-					e.CurrentModule.HasTypeReference (Assembly));
+					e.CurrentModule.AnyMemberReference ((MemberReference mr) => {
+						return IsGetEntryAssembly (mr);
+					}));
 			};
+		}
+
+		static bool IsGetEntryAssembly (MemberReference method)
+		{
+			return method.IsNamed ("System.Reflection", "Assembly", "GetEntryAssembly");
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -108,8 +113,7 @@ namespace Gendarme.Rules.BadPractice {
 				switch (current.OpCode.Code) {
 				case Code.Call:
 				case Code.Callvirt:
-					MethodReference mr = (current.Operand as MethodReference);
-					if (mr.IsNamed ("System.Reflection", "Assembly", "GetEntryAssembly"))
+					if (IsGetEntryAssembly (current.Operand as MethodReference))
 						Runner.Report (method, current, Severity.Medium, Confidence.Total);
 					break;
 				}

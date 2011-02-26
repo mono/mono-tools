@@ -70,8 +70,6 @@ namespace Gendarme.Rules.BadPractice {
 	[FxCopCompatibility ("Microsoft.Design", "CA1041:ProvideObsoleteAttributeMessage")]
 	public class ObsoleteMessagesShouldNotBeEmptyRule : Rule, ITypeRule {
 
-		private const string ObsoleteAttribute = "System.ObsoleteAttribute";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -79,8 +77,10 @@ namespace Gendarme.Rules.BadPractice {
 			// if the module does not have a reference to System.ObsoleteAttribute 
 			// then nothing will be marked as obsolete inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
-					e.CurrentModule.HasTypeReference (ObsoleteAttribute);
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System", "ObsoleteAttribute");
+					}));
 			};
 		}
 
