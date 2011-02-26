@@ -355,6 +355,7 @@ T: Gendarme.Rules.Gendarme.GendarmeRule
 R: Gendarme.Rules.Smells.AvoidSpeculativeGeneralityRule
 T: Gendarme.Framework.EngineController
 T: Gendarme.Framework.Helpers.MethodSignatures
+T: Gendarme.Framework.Rocks.ParameterRocks
 
 # FIXME - note: some seems to be related to an xMCS bug
 R: Gendarme.Rules.Performance.AvoidMethodWithLargeMaximumStackSizeRule
