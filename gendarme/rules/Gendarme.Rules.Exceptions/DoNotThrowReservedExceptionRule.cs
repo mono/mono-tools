@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Mono.Cecil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
@@ -65,16 +66,20 @@ namespace Gendarme.Rules.Exceptions {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class DoNotThrowReservedExceptionRule : NewExceptionsRule {
 
-		static string [] ReservedExceptions = { 
-			"System.ExecutionEngineException", 
-			"System.IndexOutOfRangeException", 
-			"System.NullReferenceException", 
-			"System.OutOfMemoryException" 
-		};
-
-		protected override string [] GetExceptionTypes ()
+		protected override bool CheckException (TypeReference type)
 		{
-			return ReservedExceptions;
+			if (type == null)
+				return false;
+
+			switch (type.Name) {
+			case "ExecutionEngineException":
+			case "IndexOutOfRangeException":
+			case "NullReferenceException":
+			case "OutOfMemoryException":
+				return (type.Namespace == "System");
+			default:
+				return false;
+			}
 		}
 
 		protected override Severity Severity {

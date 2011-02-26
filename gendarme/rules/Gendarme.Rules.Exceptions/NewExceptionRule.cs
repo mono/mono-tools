@@ -46,12 +46,14 @@ namespace Gendarme.Rules.Exceptions {
 			// if the module does not reference any of these types, don't analyze it
 			// (unless this is corlib itself since they're defined in it :-)
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == "mscorlib") ||
-					e.CurrentModule.HasAnyTypeReference (GetExceptionTypes ());
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return CheckException (tr);
+					}));
 			};
 		}
 
-		abstract protected string [] GetExceptionTypes ();
+		abstract protected bool CheckException (TypeReference type);
 		abstract protected Severity Severity { get; }
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -69,18 +71,12 @@ namespace Gendarme.Rules.Exceptions {
 				if (ins.OpCode.Code != Code.Newobj)
 					continue;
 
-				// obtain a reference to constructor
-				MethodReference ctor = (ins.Operand as MethodReference);
+				// obtain a reference to the constructor's type
+				TypeReference ctype = (ins.Operand as MethodReference).DeclaringType;
 
-				// what type is it?
-				string name = ctor.DeclaringType.GetFullName ();
-				foreach (string exception_type in GetExceptionTypes ()) {
-					if (name == exception_type) {
-						// report a defect including the offending exception type found
-						Runner.Report (method, ins, Severity, Confidence.High, name);
-						break;
-					}
-				}
+				// report a defect if an offending exception type is found
+				if (CheckException (ctype))
+					Runner.Report (method, ins, Severity, Confidence.High, ctype.Name);
 			}
 
 			return Runner.CurrentRuleResult;

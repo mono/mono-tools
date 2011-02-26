@@ -26,6 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Mono.Cecil;
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Exceptions {
@@ -67,15 +68,12 @@ namespace Gendarme.Rules.Exceptions {
 	[FxCopCompatibility ("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
 	public class AvoidThrowingBasicExceptionsRule : NewExceptionsRule {
 
-		static string [] BasicExceptions = { 
-			"System.Exception", 
-			"System.ApplicationException", 
-			"System.SystemException"
-		};
-
-		protected override string [] GetExceptionTypes ()
+		protected override bool CheckException (TypeReference type)
 		{
-			return BasicExceptions;
+			if ((type == null) || (type.Namespace != "System"))
+				return false;
+			string name = type.Name;
+			return ((name == "Exception") || (name == "ApplicationException") || (name == "SystemException"));
 		}
 
 		protected override Severity Severity {
