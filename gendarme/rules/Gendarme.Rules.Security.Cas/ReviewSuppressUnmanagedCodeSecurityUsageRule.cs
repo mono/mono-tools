@@ -56,8 +56,6 @@ namespace Gendarme.Rules.Security.Cas {
 	[FxCopCompatibility ("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage")]
 	public class ReviewSuppressUnmanagedCodeSecurityUsageRule : Rule, ITypeRule, IMethodRule {
 
-		private const string SUCS = "System.Security.SuppressUnmanagedCodeSecurityAttribute";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -65,8 +63,10 @@ namespace Gendarme.Rules.Security.Cas {
 			// if the module does not reference [SuppressUnmanagedCodeSecurityAttribute]
 			// then it's not being used inside it
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentAssembly.Name.Name == "mscorlib"
-					|| e.CurrentModule.HasTypeReference (SUCS));
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.Security", "SuppressUnmanagedCodeSecurityAttribute");
+					}));
 			};
 		}
 
