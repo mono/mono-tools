@@ -240,8 +240,8 @@ namespace Test.Rules.Performance {
 			if ((source == null) || (target == null))
 				return false;
 
-			int ss = source.GetSequence () - 1;
-			int ts = target.GetSequence () - 1;
+			int ss = source.Index;
+			int ts = target.Index;
 			if ((ss <= 0) || (ts <= 0))
 				return false;
 

@@ -133,7 +133,7 @@ namespace Gendarme.Rules.Correctness {
 					ParameterDefinition param = (ParameterDefinition) insn.Operand;
 					if (method.IsStatic)
 						paramNum++;
-					return (param.GetSequence () == paramNum);
+					return (param.Index == paramNum - 1);
 				case Code.Ldarg_0:
 				case Code.Ldarg_1:
 				case Code.Ldarg_2:

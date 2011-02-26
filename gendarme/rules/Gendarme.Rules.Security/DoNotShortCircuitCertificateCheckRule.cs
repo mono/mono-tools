@@ -141,11 +141,11 @@ namespace Gendarme.Rules.Security {
 						if (pd == null)
 							continue;
 
-						switch (pd.GetSequence ()) {
-						case 2:
-						case 4:
-							return RuleResult.Success;
+						switch (pd.Index) {
+						case 1:
 						case 3:
+							return RuleResult.Success;
+						case 2:
 							if (third)
 								return RuleResult.Success;
 							break;

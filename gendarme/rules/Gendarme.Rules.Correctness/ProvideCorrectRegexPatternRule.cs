@@ -179,7 +179,7 @@ namespace Gendarme.Rules.Correctness {
 			foreach (ParameterDefinition p in mdef.Parameters) {
 				string pname = p.Name;
 				if ((pname == "pattern" || pname == "regex") && p.ParameterType.IsNamed ("System", "String")) {
-					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : -1 + p.GetSequence ()));
+					Instruction ld = ins.TraceBack (method, -(call.HasThis ? 0 : p.Index));
 					if (ld != null)
 						CheckArguments (method, ins, ld);
 					return;

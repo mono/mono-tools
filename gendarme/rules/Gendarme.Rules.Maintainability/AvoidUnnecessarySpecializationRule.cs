@@ -285,7 +285,7 @@ namespace Gendarme.Rules.Maintainability {
 
 		private void UpdateParameterLeastType (ParameterReference parameter, IEnumerable<StackEntryUsageResult> usageResults)
 		{
-			int pIndex = parameter.GetSequence () - 1;
+			int pIndex = parameter.Index;
 			int parameterDepth = GetActualTypeDepth (parameter.ParameterType);
 
 			int currentLeastDepth = 0;
@@ -366,7 +366,7 @@ namespace Gendarme.Rules.Maintainability {
 
 				ParameterDefinition parameter = ins.GetParameter (method);
 				// this is `this`, we do not care
-				if ((parameter == null) || (parameter.GetSequence () == 0))
+				if ((parameter == null) || (parameter.Index == -1))
 					continue;
 
 				// is parameter already known ?
@@ -474,7 +474,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (ParameterDefinition parameter in method.Parameters){
 
-				int i = parameter.GetSequence () - 1;
+				int i = parameter.Index;
 				if (null == types_least [i])
 					continue; //argument is not used
 

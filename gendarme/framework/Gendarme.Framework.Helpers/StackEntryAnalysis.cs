@@ -527,7 +527,7 @@ namespace Gendarme.Framework.Helpers {
 				return new StoreSlot (StoreType.Argument, ins.OpCode.Code - Code.Ldarg_0);
 			case Code.Ldarg_S:
 			case Code.Ldarg: {
-					int sequence = ((ParameterDefinition) ins.Operand).GetSequence ();
+					int sequence = ((ParameterDefinition) ins.Operand).Index + 1;
 					if (!this.Method.HasThis)
 						sequence--;
 					return new StoreSlot (StoreType.Argument, sequence);
@@ -581,7 +581,7 @@ namespace Gendarme.Framework.Helpers {
 
 			case Code.Starg_S: //store arg (not ref / out etc)
 			case Code.Starg: {
-					int sequence = ((ParameterDefinition) ins.Operand).GetSequence ();
+					int sequence = ((ParameterDefinition) ins.Operand).Index + 1;
 					if (!this.Method.HasThis)
 						sequence--;
 					return new StoreSlot (StoreType.Argument, sequence);

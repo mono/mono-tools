@@ -149,7 +149,7 @@ namespace Gendarme.Rules.Performance {
 				ParameterDefinition parameter = ins.GetParameter (method);
 				if (parameter == null)
 					continue;
-				mask |= ((ulong)1 << (parameter.GetSequence () - 1));
+				mask |= ((ulong)1 << parameter.Index);
 			}
 
 			// quick out based on value - i.e. every parameter is being used

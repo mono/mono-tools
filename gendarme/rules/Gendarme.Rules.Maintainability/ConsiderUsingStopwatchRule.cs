@@ -125,14 +125,14 @@ namespace Gendarme.Rules.Maintainability {
 				ParameterDefinition p = prev.GetParameter (method);
 				if (p == null)
 					return false;
-				int arg = p.GetSequence ();
+				int arg = p.Index;
 				prev = prev.Previous;
 				while (null != prev) {
 					// look for a STOBJ instruction and compare the objects
 					if (prev.OpCode.Code == Code.Stobj) {
 						prev = prev.TraceBack (method);
 						p = prev.GetParameter (method);
-						return (p == null) ? false : (arg == p.GetSequence ());
+						return (p == null) ? false : (arg == p.Index);
 					}
 					prev = prev.Previous;
 				}

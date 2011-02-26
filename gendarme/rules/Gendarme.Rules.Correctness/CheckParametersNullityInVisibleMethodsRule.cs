@@ -106,9 +106,9 @@ namespace Gendarme.Rules.Correctness {
 			if (parameter.IsOut)
 				return;
 
-			int sequence = parameter.GetSequence ();
+			int sequence = parameter.Index;
 			// ldarg this - 'this' cannot be null
-			if (sequence == 0)
+			if (sequence == -1)
 				return;
 
 			// was there a null check done before ?	
@@ -146,7 +146,7 @@ namespace Gendarme.Rules.Correctness {
 				return;
 
 			// avoid checking parameters where a null check was already found
-			if (has_null_check.Get (parameter.GetSequence ()))
+			if (has_null_check.Get (parameter.Index))
 				return;
 
 			Instruction next = ins.Next;
@@ -158,21 +158,21 @@ namespace Gendarme.Rules.Correctness {
 				nc = next.OpCode.Code;
 				break;
 			case Code.Isinst:
-				has_null_check.Set (parameter.GetSequence ());
+				has_null_check.Set (parameter.Index);
 				return;
 			}
 
 			if (null_compare.Get (nc)) {
-				has_null_check.Set (parameter.GetSequence ());
+				has_null_check.Set (parameter.Index);
 			} else {
 				// compare with null (next or previous to current instruction)
 				// followed by a CEQ instruction
 				if (nc == Code.Ldnull) {
 					if (next.Next.OpCode.Code == Code.Ceq)
-						has_null_check.Set (parameter.GetSequence ());
+						has_null_check.Set (parameter.Index);
 				} else if (nc == Code.Ceq) {
 					if (ins.Previous.OpCode.Code == Code.Ldnull)
-						has_null_check.Set (parameter.GetSequence ());
+						has_null_check.Set (parameter.Index);
 				}
 			}
 		}
@@ -204,7 +204,7 @@ namespace Gendarme.Rules.Correctness {
 					pi = pi.Previous;
 				ParameterDefinition p = pi.GetParameter (method);
 				if (p != null)
-					has_null_check.Set (p.GetSequence ());
+					has_null_check.Set (p.Index);
 			}
 		}
 

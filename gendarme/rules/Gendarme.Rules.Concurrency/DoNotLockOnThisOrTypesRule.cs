@@ -113,7 +113,7 @@ namespace Gendarme.Rules.Concurrency {
 			case Code.Ldarg:
 			case Code.Ldarg_S:
 				ParameterDefinition pd = (ins.Operand as ParameterDefinition);
-				if ((pd == null) || (pd.GetSequence () != 0))
+				if ((pd == null) || (pd.Index != -1))
 					msg = LockThis;
 				break;
 			case Code.Call:
