@@ -77,8 +77,6 @@ namespace Gendarme.Rules.Maintainability {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class ConsiderUsingStopwatchRule : Rule, IMethodRule {
 
-		private const string DateTime = "System.DateTime";
-
 		public override void Initialize (IRunner runner)
 		{
 			base.Initialize (runner);
@@ -89,8 +87,11 @@ namespace Gendarme.Rules.Maintainability {
 			// did not exist back then.
 			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
 				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0
-					&& (e.CurrentAssembly.Name.Name == "mscorlib"
-					|| e.CurrentModule.HasTypeReference (DateTime)));
+					&& (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System", "DateTime");
+					}
+				)));
 			};
 		}
 
