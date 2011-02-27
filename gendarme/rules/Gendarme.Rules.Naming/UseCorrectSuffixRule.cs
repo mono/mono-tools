@@ -279,8 +279,11 @@ namespace Gendarme.Rules.Naming {
 					Func<TypeDefinition, string> f;
 					if (reservedSuffixes.TryGetValue (suffix, out f)) {
 						string msg = f (type);
-						if (!String.IsNullOrEmpty (msg))
-							Runner.Report (type, Severity.Medium, Confidence.High, msg);
+						// if this is a valid suffix then there's not need to check for invalid later
+						if (String.IsNullOrEmpty (msg))
+							return RuleResult.Success;
+
+						Runner.Report (type, Severity.Medium, Confidence.High, msg);
 					}
 				}
 			}

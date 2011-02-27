@@ -176,13 +176,8 @@ namespace Test.Rules.Naming {
 		}
 	}
 
-	public class DerivingClassImplementingInterfaces : EventArgs, IEnumerable, IPermission {		 
+	public class DerivingClassImplementingInterfaces : EventArgs, IPermission {		 
 		
-		public IEnumerator GetEnumerator ()
-		{
-			throw new NotImplementedException();
-		}
-
 		public void FromXml (SecurityElement e)
 		{
 			throw new NotImplementedException();
@@ -246,16 +241,27 @@ namespace Test.Rules.Naming {
 	public class DictionaryIncorrectDerived<T, V> : DictionaryIncorrect<T, V> {
 	}
 
+	// test case from https://github.com/Iristyle/mono-tools/commit/40bfb2260511cfe4171e9153c3c434fedd8a4d4a.diff
+
+	public class CorrectCollectionAndDictionary<T, V> : Dictionary<T, V>, ICollection<V> {
+		public void Add(V item) { throw new NotImplementedException(); }
+		public bool Contains(V item) { throw new NotImplementedException(); }
+		public void CopyTo(V[] array, int arrayIndex) { throw new NotImplementedException(); }
+		public bool IsReadOnly { get { throw new NotImplementedException(); } }
+		public bool Remove(V item) { throw new NotImplementedException(); }
+		public new IEnumerator<V> GetEnumerator() { throw new NotImplementedException(); }
+	}
+
 	[TestFixture]
 	public class UseCorrectSuffixTest : TypeRuleTestFixture<UseCorrectSuffixRule> {
 
-		void AssertRuleFailureWithHighConfidence<T>()
+		void AssertRuleFailureWithHighConfidence<T> (int num)
 		{
-			AssertRuleFailure<T> (1);
+			AssertRuleFailure<T> (num);
 			Assert.AreEqual (Confidence.High, Runner.Defects [0].Confidence, typeof (T).Name);
 		}
 
-		void AssertRuleFailureWithLowConfidence<T>()
+		void AssertRuleFailureWithLowConfidence<T> ()
 		{
 			AssertRuleFailure<T> (1);
 			Assert.AreEqual (Confidence.Low, Runner.Defects [0].Confidence, typeof (T).Name);
@@ -270,7 +276,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestOneLevelInheritanceIncorrectName () 
 		{
-			AssertRuleFailureWithHighConfidence<IncorrectAttr> ();
+			AssertRuleFailureWithHighConfidence<IncorrectAttr> (1);
 		}
 		
 		[Test]
@@ -288,7 +294,7 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestVariousLevelInheritanceIncorrectName () 
 		{
-			AssertRuleFailureWithHighConfidence<OtherAttr> ();
+			AssertRuleFailureWithHighConfidence<OtherAttr> (1);
 		}
 		
 		[Test]
@@ -326,7 +332,7 @@ namespace Test.Rules.Naming {
        		[Test]
 		public void TestMultipleInterfaceImplementerIncorrectName () 
 		{
-			AssertRuleFailureWithHighConfidence<MultipleInterfaceImplementer> ();
+			AssertRuleFailureWithHighConfidence<MultipleInterfaceImplementer> (1);
 		}
 
 		[Test]
@@ -342,7 +348,7 @@ namespace Test.Rules.Naming {
 		{
 			//this type derives from an incorrect base type, but also introduce its own defect
 			//hence it has high confidence
-			AssertRuleFailureWithHighConfidence<IncorrectICollectionImplementer> ();
+			AssertRuleFailureWithHighConfidence<IncorrectICollectionImplementer> (1);
 		}
 		
 		[Test]
@@ -360,23 +366,24 @@ namespace Test.Rules.Naming {
 		[Test]
 		public void TestDerivingClassImplementingInterfacesAnotherIncorrectName ()
 		{
-			//this type derives from an incorrect base type, *without* introducing its own defect
-			//hence it has low confidence
-			AssertRuleFailureWithLowConfidence<IncorrectDerivingClassImplementingInterfacesCollection> ();
+			//this type derives from an incorrect base type
+			AssertRuleFailureWithHighConfidence<IncorrectDerivingClassImplementingInterfacesCollection> (2);
 		}
 
 		[Test]
 		public void GenericCollection ()
 		{
 			AssertRuleSuccess<CorrectCollection<int>> ();
-			AssertRuleFailureWithHighConfidence<CollectionIncorrect<int>> ();
+			AssertRuleFailureWithHighConfidence<CollectionIncorrect<int>> (1);
 		}
 
 		[Test]
 		public void GenericDictionary ()
 		{
 			AssertRuleSuccess<CorrectDictionary<int,int>> ();
-			AssertRuleFailureWithHighConfidence<DictionaryIncorrect<int,int>> ();
+			// to be consistent with FxCop, a class implementing IDictionary and ICollection should end in Dictionary
+			AssertRuleSuccess<CorrectCollectionAndDictionary<int, int>> ();
+			AssertRuleFailureWithHighConfidence<DictionaryIncorrect<int, int>> (1);
 		}
 
 		[Test]
@@ -410,11 +417,11 @@ namespace Test.Rules.Naming {
 		public void CheckShouldNeverBeUsedSuffixes ()
 		{
 			AssertRuleSuccess<My> ();
-			AssertRuleFailureWithHighConfidence<MyDelegate> ();
-			AssertRuleFailureWithHighConfidence<MyEnum> ();
-			AssertRuleFailureWithHighConfidence<MyFlags> ();
-			AssertRuleFailureWithHighConfidence<MyEx> ();
-			AssertRuleFailureWithHighConfidence<MyImpl> ();
+			AssertRuleFailureWithHighConfidence<MyDelegate> (1);
+			AssertRuleFailureWithHighConfidence<MyEnum> (1);
+			AssertRuleFailureWithHighConfidence<MyFlags> (1);
+			AssertRuleFailureWithHighConfidence<MyEx> (1);
+			AssertRuleFailureWithHighConfidence<MyImpl> (1);
 		}
 
 		class MyCollection : EventArgs {
@@ -467,16 +474,16 @@ namespace Test.Rules.Naming {
 		public void EnumName ()
 		{
 			AssertRuleSuccess<ReturnValue> ();
-			AssertRuleFailureWithHighConfidence<ReturnValueEnum> ();
-			AssertRuleFailureWithHighConfidence<returnvalueenum> ();
+			AssertRuleFailureWithHighConfidence<ReturnValueEnum> (1);
+			AssertRuleFailureWithHighConfidence<returnvalueenum> (1);
 		}
 
 		[Test]
 		public void FlagsName ()
 		{
 			AssertRuleSuccess<ReturnValues> ();
-			AssertRuleFailureWithHighConfidence<ReturnValuesFlags> ();
-			AssertRuleFailureWithHighConfidence<returnvaluesflags> ();
+			AssertRuleFailureWithHighConfidence<ReturnValuesFlags> (1);
+			AssertRuleFailureWithHighConfidence<returnvaluesflags> (1);
 		}
 	}
 }
