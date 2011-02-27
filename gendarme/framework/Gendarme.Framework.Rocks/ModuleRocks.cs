@@ -208,21 +208,5 @@ namespace Gendarme.Framework.Rocks {
 
 			return refs.Any (predicate);
 		}
-
-		// FIXME: to be removed asap
-		public static bool HasAnyTypeReference (this ModuleDefinition self, string [] typeNames)
-		{
-			if (self == null)
-				return false;
-
-			if (typeNames == null)
-				throw new ArgumentNullException ("typeNames");
-
-			foreach (var typeName in typeNames)
-				if (self.HasTypeReference (typeName))
-					return true;
-
-			return false;
-		}
 	}
 }
