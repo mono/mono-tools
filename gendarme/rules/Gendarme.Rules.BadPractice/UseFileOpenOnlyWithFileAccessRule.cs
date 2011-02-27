@@ -68,6 +68,20 @@ namespace Gendarme.Rules.BadPractice {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class UseFileOpenOnlyWithFileAccessRule : Rule, IMethodRule {
 
+		public override void Initialize (IRunner runner)
+		{
+			base.Initialize (runner);
+
+			// if the module does not reference System.IO.FileMode
+			// then no code inside the module will be using it
+			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
+				Active = (e.CurrentAssembly.Name.Name == "mscorlib" ||
+					e.CurrentModule.AnyTypeReference ((TypeReference tr) => {
+						return tr.IsNamed ("System.IO", "FileMode");
+					}));
+			};
+		}
+
 		// System.IO.File::Open
 		// System.IO.FileInfo::Open
 		// System.IO.FileStream::.ctor
