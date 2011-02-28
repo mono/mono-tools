@@ -103,11 +103,20 @@ namespace Test.Rules.Concurrency {
 			}
 		}
 
+		static bool TryEnter (object obj)
+		{
+			lock (obj) {
+				Console.WriteLine ();
+			}
+			return true;
+		}
+
 		[Test]
 		public void StaticType ()
 		{
 			AssertRuleFailure<DoNotLockOnThisOrTypesTest> ("StaticLockType", 1);
 			AssertRuleFailure<DoNotLockOnThisOrTypesTest> ("StaticLockTypes", 2);
+			AssertRuleSuccess<DoNotLockOnThisOrTypesTest> ("TryEnter");
 		}
 
 		object instance_locker = new object ();

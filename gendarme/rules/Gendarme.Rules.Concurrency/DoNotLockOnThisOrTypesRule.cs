@@ -108,13 +108,16 @@ namespace Gendarme.Rules.Concurrency {
 
 			switch (ins.OpCode.Code) {
 			case Code.Ldarg_0:
-				msg = LockThis;
+				if (!method.IsStatic)
+					msg = LockThis;
 				break;
 			case Code.Ldarg:
 			case Code.Ldarg_S:
-				ParameterDefinition pd = (ins.Operand as ParameterDefinition);
-				if ((pd == null) || (pd.Index != -1))
-					msg = LockThis;
+				if (!method.IsStatic) {
+					ParameterDefinition pd = (ins.Operand as ParameterDefinition);
+					if ((pd == null) || (pd.Index == 0))
+						msg = LockThis;
+				}
 				break;
 			case Code.Call:
 			case Code.Callvirt:
