@@ -38,6 +38,29 @@ using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.BadPractice {
 
+	/// <summary>
+	/// The rule will detect if a null check is done before using the <c>as</c> operator. 
+	/// This null check is not needed, a <c>null</c> instance will return <c>null</c>,
+	/// and the code will need to deal with <c>as</c> returning a null value anyway.
+	/// </summary>
+	/// <example>
+	/// Bad example:
+	/// <code>
+	/// public string AsString (object obj)
+	/// {
+	///	return (o == null) ? null : o as string;
+	/// }
+	/// </code>
+	/// </example>
+	/// <example>
+	/// Good example:
+	/// <code>
+	/// public string AsString (object obj)
+	/// {
+	///	return (o as string);
+	/// }
+	/// </code>
+	/// </example>
 	// as suggested in https://bugzilla.novell.com/show_bug.cgi?id=651305
 	[Problem ("An unneeded null check is done before using the 'as' operator.")]
 	[Solution ("Remove the extraneous null check")]
@@ -55,7 +78,7 @@ namespace Gendarme.Rules.BadPractice {
 			if (!(ins.Operand as Instruction).Is (Code.Ldnull))
 				return false;
 
-			return next.Next.Is (Code.Isinst);
+			return CheckIsinst (next.Next);
 		}
 
 		static bool CheckTrueBranch (Instruction ins)
@@ -67,7 +90,14 @@ namespace Gendarme.Rules.BadPractice {
 			if (ins.Previous.OpCode.Code != br.OpCode.Code)
 				return false;
 
-			return br.Next.Is (Code.Isinst);
+			return CheckIsinst (br.Next);
+		}
+
+		static bool CheckIsinst (Instruction ins)
+		{
+			if (!ins.Is (Code.Isinst))
+				return false;
+			return (ins.Next.OpCode.FlowControl != FlowControl.Cond_Branch);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

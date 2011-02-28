@@ -97,6 +97,19 @@ namespace Test.Rules.BadPractice {
 			Console.WriteLine (a);
 		}
 
+		// extracted from: moon/class/System.Windows/Mono.Xaml/XamlPropertySetter.cs
+		// no 'as' has been harmed by this test
+		object ConvertValue (object value)
+		{
+			if (value == null)
+				return null;
+
+			if (value is Type || value is SimpleMethods)
+				return value;
+
+			return value.ToString ();
+		}
+
 		[Test]
 		public void DoesNotApply ()
 		{
@@ -111,6 +124,7 @@ namespace Test.Rules.BadPractice {
 		public void Success ()
 		{
 			AssertRuleSuccess<AvoidNullCheckWithAsOperatorTest> ("AsString_Good3");
+			AssertRuleSuccess<AvoidNullCheckWithAsOperatorTest> ("ConvertValue");
 		}
 
 		[Test]
