@@ -24,6 +24,7 @@ M: System.Void Gendarme.Rules.Concurrency.DoNotLockOnWeakIdentityObjectsRule::An
 # all > 200 rules expose a Check* method that does not check for null (by contract) but we need code contracts to show this
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.AvoidAssemblyVersionMismatchRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.AvoidCallingProblematicMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.AvoidNullCheckWithAsOperatorRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.AvoidVisibleConstantFieldRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewExceptionWithoutThrowingRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewThreadWithoutStartRule::CheckMethod(Mono.Cecil.MethodDefinition)
@@ -122,6 +123,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.Generic.PreferGenericsOve
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Globalization.SatelliteResourceMismatchRule::CheckAssembly(Mono.Cecil.AssemblyDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.AvoidArgumentExceptionDefaultConstructorRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotDestroyStackTraceRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotThrowInNonCatchClausesRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotThrowInUnexpectedLocationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.DoNotSwallowErrorsCatchingNonSpecificExceptionsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Exceptions.ExceptionShouldBeVisibleRule::CheckType(Mono.Cecil.TypeDefinition)

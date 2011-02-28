@@ -96,7 +96,6 @@ CA2207	Initialize value type static fields inline                               
 CA2212	Do not mark serviced components with WebMethod                                               http://msdn.microsoft.com/en-us/library/ms182336.aspx
 CA2215	Dispose methods should call base class dispose                                               http://msdn.microsoft.com/en-us/library/ms182330.aspx
 CA2217	Do not mark enums with FlagsAttribute                                                        http://msdn.microsoft.com/en-us/library/ms182335.aspx
-CA2219	Do not raise exceptions in exception clauses                                                 http://msdn.microsoft.com/en-us/library/bb386041.aspx
 CA2222	Do not decrease inherited member visibility                                                  http://msdn.microsoft.com/en-us/library/ms182332.aspx
 CA2223	Members should differ by more than return type                                               http://msdn.microsoft.com/en-us/library/ms182352.aspx
 CA2227	Collection properties should be read only                                                    http://msdn.microsoft.com/en-us/library/ms182327.aspx
