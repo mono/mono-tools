@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008,2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Gendarme.Rules.Design;
@@ -103,7 +104,7 @@ namespace Test.Rules.Design {
 		}
 
 		public abstract class AbstractClass {
-			public abstract string GetIt ();
+			public abstract string GetZit ();
 		}
 
 		public sealed class SealedClass : AbstractClass {
@@ -113,7 +114,7 @@ namespace Test.Rules.Design {
 				return 42;
 			}
 
-			public override string GetIt ()
+			public override string GetZit ()
 			{
 				return String.Empty;
 			}
@@ -129,6 +130,35 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleDoesNotApply<AbstractClass> ();
 			AssertRuleSuccess<SealedClass> ();
+		}
+
+		// extracted from mono/mcs/class/corlib/System.Collections.Generic/EqualityComparer.cs
+		// they override 'T', not string, base methods
+		sealed class InternalStringComparer : EqualityComparer<string> {
+
+			public override int GetHashCode (string obj)
+			{
+				if (obj == null)
+					return 0;
+				return obj.GetHashCode ();
+			}
+
+			public override bool Equals (string x, string y)
+			{
+				if (x == null)
+					return y == null;
+
+				if ((object) x == (object) y)
+					return true;
+
+				return x.Equals (y);
+			}
+		}
+
+		[Test]
+		public void Generic ()
+		{
+			AssertRuleSuccess<InternalStringComparer> ();
 		}
 	}
 }

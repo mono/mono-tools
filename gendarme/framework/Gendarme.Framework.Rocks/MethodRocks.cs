@@ -274,7 +274,7 @@ namespace Gendarme.Framework.Rocks {
 
 		private static bool AreSameElementTypes (TypeReference a, TypeReference b)
 		{
-			return b.IsNamed (a.Namespace, a.Name);
+			return a.IsGenericParameter || b.IsGenericParameter || b.IsNamed (a.Namespace, a.Name);
 		}
 
 		/// <summary>
