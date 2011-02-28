@@ -96,9 +96,9 @@ namespace Gendarme.Framework {
 			return this == rhs;
 		}
 		
-		public bool Equals (ThreadModelAttribute rhs)
+		public bool Equals (ThreadModelAttribute other)
 		{
-			return this == rhs;
+			return this == other;
 		}
 		
 		public static bool operator== (ThreadModelAttribute lhs, ThreadModelAttribute rhs)

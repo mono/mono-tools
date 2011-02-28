@@ -61,9 +61,9 @@ namespace Gendarme.Framework.Helpers {
 			return false;
 		}
 
-		public bool Equals (StackEntryUsageResult usageResult)
+		public bool Equals (StackEntryUsageResult other)
 		{
-			return (Instruction == usageResult.Instruction) && (StackOffset == usageResult.StackOffset);
+			return (Instruction == other.Instruction) && (StackOffset == other.StackOffset);
 		}
 
 		public override int GetHashCode ()

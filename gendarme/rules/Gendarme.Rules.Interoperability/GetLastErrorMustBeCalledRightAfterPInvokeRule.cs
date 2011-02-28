@@ -98,9 +98,9 @@ namespace Gendarme.Rules.Interoperability {
 				return false;
 			}
 
-			public bool Equals (Branch branch)
+			public bool Equals (Branch other)
 			{
-				return (Instruction == branch.Instruction) && (DirtyMethodCalled == branch.DirtyMethodCalled);
+				return (Instruction == other.Instruction) && (DirtyMethodCalled == other.DirtyMethodCalled);
 			}
 
 			public override int GetHashCode ()

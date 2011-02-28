@@ -97,9 +97,9 @@ namespace Gendarme.Framework.Helpers {
 				return this == other;
 			}
 
-			public bool Equals (StoreSlot storeSlot)
+			public bool Equals (StoreSlot other)
 			{
-				return this == storeSlot;
+				return this == other;
 			}
 
 			public override int GetHashCode ()
@@ -182,22 +182,22 @@ namespace Gendarme.Framework.Helpers {
 				return false;
 			}
 
-			public bool Equals (InstructionWithLeave iwl)
+			public bool Equals (InstructionWithLeave other)
 			{
-				if (Instruction != iwl.Instruction)
+				if (Instruction != other.Instruction)
 					return false;
 
 				if (LeaveStack == null)
-					return (iwl.LeaveStack == null);
+					return (other.LeaveStack == null);
 
-				if (iwl.LeaveStack == null)
+				if (other.LeaveStack == null)
 					return false;
 
-				if (LeaveStack.Length != iwl.LeaveStack.Length)
+				if (LeaveStack.Length != other.LeaveStack.Length)
 					return false;
 
 				for (int i = 0; i < LeaveStack.Length; i++) {
-					if (LeaveStack [i] != iwl.LeaveStack [i])
+					if (LeaveStack [i] != other.LeaveStack [i])
 						return false;
 				}
 				return true;
