@@ -45,7 +45,8 @@ check-test: all bin/gendarme.exe.config test
 		--ignore=unit-test.ignore --severity=all --confidence=all @unit-test.list
 
 test-regress: all
-	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --log regress.log testcases/*.dll testcases/*.exe
+	mono --debug bin/gendarme.exe --config rules/rules.xml --set self-test --log regress.log \
+		--severity=all --confidence=all testcases/*.dll testcases/*.exe
 	
 TEST1 ?= AvoidVisibleConstantFieldTest
 test1_file = $(shell find rules -name "\.svn" -prune -o  -name "*$(TEST1)*" -print)
