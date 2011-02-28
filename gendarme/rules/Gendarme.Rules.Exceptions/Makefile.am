@@ -4,6 +4,7 @@ rules_sources =  \
 	AvoidArgumentExceptionDefaultConstructorRule.cs \
 	AvoidThrowingBasicExceptionsRule.cs \
 	DoNotDestroyStackTraceRule.cs \
+	DoNotThrowInNonCatchClausesRule.cs \
 	DoNotThrowInUnexpectedLocationRule.cs \
 	DoNotThrowReservedExceptionRule.cs \
 	DontSwallowErrorsCatchingNonspecificExceptionsRule.cs \
@@ -19,6 +20,7 @@ rules_sources =  \
 tests_sources = \
 	AvoidArgumentExceptionDefaultConstructorTest.cs \
 	AvoidThrowingBasicExceptionsTest.cs \
+	DoNotThrowInNonCatchClausesTest.cs \
 	DoNotThrowInUnexpectedLocationTest.cs \
 	DontDestroyStackTraceTest.cs \
 	DontSwallowErrorsCatchingNonspecificExceptionsTest.cs \
