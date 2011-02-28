@@ -374,5 +374,24 @@ namespace Test.Rules.Correctness {
 		{
 			AssertRuleSuccess<BadRec> ("StaticGoodOverload", new Type [] { typeof (object) });
 		}
+
+		class Array {
+
+			public virtual void SetProperty (string name, object value)
+			{
+				Console.WriteLine ("{0}: {1}", name, value);
+			}
+
+			internal virtual void SetProperty (string name, object [] args)
+			{
+				SetProperty (name, args [0]);
+			}
+		}
+
+		[Test]
+		public void ArrayOverload ()
+		{
+			AssertRuleSuccess<Array> ("SetProperty", new Type [] { typeof (string), typeof (object[]) });
+		}
 	}
 }
