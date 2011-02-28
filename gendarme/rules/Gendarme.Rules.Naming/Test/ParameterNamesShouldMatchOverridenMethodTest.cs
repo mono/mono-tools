@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,15 +29,12 @@
 //
 
 using System;
-using System.Reflection;
 
-using Gendarme.Framework;
+using Gendarme.Framework.Helpers;
 using Gendarme.Rules.Naming;
-using Gendarme.Framework.Rocks;
-using Mono.Cecil;
 
 using NUnit.Framework;
-using Test.Rules.Helpers;
+using Test.Rules.Fixtures;
 
 namespace Test.Rules.Naming {
 
@@ -75,141 +74,94 @@ namespace Test.Rules.Naming {
 	}
 
 	[TestFixture]
-	public class ParameterNamesShouldMatchOverridenMethodTest : BaseClass, ISomeInterface, ISomeInterface2 {
+	public class ParameterNamesShouldMatchOverridenMethodTest : MethodRuleTestFixture<ParameterNamesShouldMatchOverriddenMethodRule> {
 
-		private ParameterNamesShouldMatchOverriddenMethodRule rule;
-		private AssemblyDefinition assembly;
-		private TypeDefinition type;
-		private TestRunner runner;
-
-		[TestFixtureSetUp]
-		public void FixtureSetUp ()
-		{
-			string unit = Assembly.GetExecutingAssembly ().Location;
-			assembly = AssemblyDefinition.ReadAssembly (unit);
-			type = assembly.MainModule.GetType ("Test.Rules.Naming.ParameterNamesShouldMatchOverridenMethodTest");
-			rule = new ParameterNamesShouldMatchOverriddenMethodRule ();
-			runner = new TestRunner (rule);
-		}
-
-		private MethodDefinition GetTest (string name)
-		{
-			foreach (MethodDefinition method in type.Methods) {
-				if (method.Name == name)
-					return method;
+		class TestCase : BaseClass, ISomeInterface, ISomeInterface2, IEquatable<string> {
+			protected override void VirtualCorrect (int vc1, int vc2)
+			{
 			}
-			return null;
-		}
 
-		protected override void VirtualCorrect (int vc1, int vc2)
-		{
-		}
+			protected override void VirtualIncorrect (int vi1, int vi2a)
+			{
+			}
 
-		[Test]
-		public void TestVirtualCorrect ()
-		{
-			MethodDefinition method = GetTest ("VirtualCorrect");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
+			protected override void VirtualSuperIncorrect (int vsi1, bool vsi2_)
+			{
+			}
 
-		protected override void VirtualIncorrect (int vi1, int vi2a)
-		{
-		}
+			protected override void AbstractCorrect (int ac1, int ac2)
+			{
+				throw new NotImplementedException ();
+			}
 
-		[Test]
-		public void TestVirtualIncorrect ()
-		{
-			MethodDefinition method = GetTest ("VirtualIncorrect");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
+			protected override void AbstractIncorrect (int ai1, int ai2_)
+			{
+				throw new NotImplementedException ();
+			}
 
-		protected override void VirtualSuperIncorrect (int vsi1, bool vsi2_)
-		{
-		}
+			protected virtual void NoOverwrite (int a, int bb)
+			{
+			}
 
-		[Test]
-		public void TestVirtualSuperIncorrect ()
-		{
-			MethodDefinition method = GetTest ("VirtualSuperIncorrect");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
+			public bool InterfaceMethod (int im_)
+			{
+				return false;
+			}
 
-		protected override void AbstractCorrect (int ac1, int ac2)
-		{
-			throw new NotImplementedException ();
-		}
+			bool ISomeInterface2.InterfaceMethod2 (int im_)
+			{
+				return false;
+			}
 
-		[Test]
-		public void TestAbstractCorrect ()
-		{
-			MethodDefinition method = GetTest ("AbstractCorrect");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
+			void NoParameter ()
+			{
+			}
 
-		protected override void AbstractIncorrect (int ai1, int ai2_)
-		{
-			throw new NotImplementedException ();
+			public bool Equals (string s)
+			{
+				throw new NotImplementedException ();
+			}
 		}
 
 		[Test]
-		public void TestAbstractIncorrect ()
+		public void TestVirtual ()
 		{
-			MethodDefinition method = GetTest ("AbstractIncorrect");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
+			AssertRuleSuccess<TestCase> ("VirtualCorrect");
+			AssertRuleFailure<TestCase> ("VirtualIncorrect", 1);
+			AssertRuleFailure<TestCase> ("VirtualSuperIncorrect", 1);
 		}
 
-		protected virtual void NoOverwrite (int a, int bb)
+		[Test]
+		public void TestAbstract ()
 		{
+			AssertRuleSuccess<TestCase> ("AbstractCorrect");
+			AssertRuleFailure<TestCase> ("AbstractIncorrect", 1);
 		}
 
 		[Test]
 		public void TestNoOverwrite ()
 		{
-			MethodDefinition method = GetTest ("NoOverwrite");
-			Assert.AreEqual (RuleResult.Success, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (0, runner.Defects.Count, "Count");
-		}
-
-		public bool InterfaceMethod (int im_)
-		{
-			return false;
+			AssertRuleSuccess<TestCase> ("NoOverwrite");
 		}
 
 		[Test]
 		public void TestInterfaceMethod ()
 		{
-			MethodDefinition method = GetTest ("InterfaceMethod");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		bool ISomeInterface2.InterfaceMethod2 (int im_)
-		{
-			return false;
-		}
-
-		[Test]
-		public void TestInterfaceMethod2 ()
-		{
-			MethodDefinition method = GetTest ("Test.Rules.Naming.ISomeInterface2.InterfaceMethod2");
-			Assert.AreEqual (RuleResult.Failure, runner.CheckMethod (method), "RuleResult");
-			Assert.AreEqual (1, runner.Defects.Count, "Count");
-		}
-
-		void NoParameter ()
-		{
+			AssertRuleFailure<TestCase> ("InterfaceMethod", 1);
+			AssertRuleFailure<TestCase> ("Test.Rules.Naming.ISomeInterface2.InterfaceMethod2", 1);
 		}
 
 		[Test]
 		public void TestDoesNotApply ()
 		{
-			MethodDefinition method = GetTest ("NoParameter");
-			Assert.AreEqual (RuleResult.DoesNotApply, runner.CheckMethod (method), "RuleResult");
+			AssertRuleDoesNotApply<TestCase> ("NoParameter");
+		}
+
+		[Test]
+		public void GenericInterface ()
+		{
+			AssertRuleSuccess<OpCodeBitmask> ("Equals", new Type [] { typeof (OpCodeBitmask) });
+			AssertRuleFailure<TestCase> ("Equals", 1);
 		}
 	}
 }

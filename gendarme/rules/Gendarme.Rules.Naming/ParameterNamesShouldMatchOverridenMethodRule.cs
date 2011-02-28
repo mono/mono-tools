@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -129,7 +131,7 @@ namespace Gendarme.Rules.Naming {
 
 			while ((baseType.BaseType != null) && (baseType != baseType.BaseType)) {
 				baseType = baseType.BaseType.Resolve ();
-				if (baseType == null)
+				if ((baseType == null) || !baseType.HasMethods)
 					return null;		// could not resolve
 
 				foreach (MethodDefinition baseMethodCandidate in baseType.Methods) {
@@ -142,11 +144,15 @@ namespace Gendarme.Rules.Naming {
 
 		private static MethodDefinition GetInterfaceMethod (MethodDefinition method)
 		{
-			TypeDefinition type = (TypeDefinition) method.DeclaringType;
+			TypeDefinition type = (method.DeclaringType as TypeDefinition);
+			if (!type.HasInterfaces)
+				return null;
+
 			foreach (TypeReference interfaceReference in type.Interfaces) {
 				TypeDefinition interfaceCandidate = interfaceReference.Resolve ();
-				if (interfaceCandidate == null)
+				if ((interfaceCandidate == null) || !interfaceCandidate.HasMethods)
 					continue;
+
 				foreach (MethodDefinition interfaceMethodCandidate in interfaceCandidate.Methods) {
 					if (SignatureMatches (method, interfaceMethodCandidate, true))
 						return interfaceMethodCandidate;
