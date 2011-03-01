@@ -37,9 +37,11 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Interoperability.Com {
 
 	/// <summary>
-	///  This rule checks for ComVisible value types which have StructLayout
-	///  attribute set to LayoutKind.Auto because auto layout can change 
-	///  between Mono and .NET or even between releases of the .NET/Mono frameworks
+	/// This rule checks for <c>[System.Runtime.InteropServices.ComVisible]</c> decorated value 
+	/// types which have <c>[System.Runtime.InteropServices.StructLayout]</c> attribute set to 
+	/// <c>System.Runtime.InteropServices.LayoutKind</c>.<c>Auto</c> because auto layout can 
+	/// change between Mono and .NET or even between releases of the .NET/Mono frameworks.
+	/// Note that this does not affect <c>System.Enum</c>-based types.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -80,7 +82,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 		public RuleResult CheckType (TypeDefinition type)
 		{
-			if (!type.IsValueType || !type.HasCustomAttributes || 
+			if (type.IsEnum || !type.IsValueType || !type.HasCustomAttributes || 
 				(!type.IsPublic && !type.IsNestedPublic) || type.HasGenericParameters)
 				return RuleResult.DoesNotApply;
 

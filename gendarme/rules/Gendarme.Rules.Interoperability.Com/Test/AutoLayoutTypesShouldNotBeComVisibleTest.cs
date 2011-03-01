@@ -137,5 +137,23 @@ namespace Test.Rules.Interoperability.Com {
 			AssertRuleDoesNotApply (SimpleTypes.Structure);
 
 		}
+
+		[ComVisible (true)]
+		public enum Enum {
+			Zero = 0
+		}
+
+		[Flags]
+		[ComVisible (true)]
+		public enum Flags {
+			One = 1
+		}
+
+		[Test]
+		public void SpecialCases ()
+		{
+			AssertRuleDoesNotApply<Enum> ();
+			AssertRuleDoesNotApply<Flags> ();
+		}
 	}
 }
