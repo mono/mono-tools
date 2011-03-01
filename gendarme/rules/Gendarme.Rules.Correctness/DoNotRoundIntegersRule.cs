@@ -32,6 +32,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
+using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
 namespace Gendarme.Rules.Correctness {
@@ -41,8 +43,8 @@ namespace Gendarme.Rules.Correctness {
 	// ICAST: int value cast to float and then passed to Math.round (ICAST_INT_CAST_TO_FLOAT_PASSED_TO_ROUND)
 
 	/// <summary>
-	/// This rule check for attempts to call <c>Round</c>, <c>Ceiling</c>, <c>Floor</c> or
-	/// <c>Truncate</c> on an integral type. This often indicate a typo in the source code
+	/// This rule check for attempts to call <c>System.Math.Round</c>, <c>System.Math.Ceiling</c>, <c>System.Math.Floor</c> or
+	/// <c>System.Math.Truncate</c> on an integral type. This often indicate a typo in the source code
 	/// (e.g. wrong variable) or an unnecessary operation.
 	/// </summary>
 	/// <example>
@@ -63,10 +65,10 @@ namespace Gendarme.Rules.Correctness {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.0</remarks>
 
 	[Problem ("This method calls round/ceil/floor/truncate with an integer value.")]
 	[Solution ("Verify the code logic. This could be a typo (wrong variable) or an unnecessary operation.")]
+	[EngineDependency (typeof (OpCodeEngine))]
 	public class DoNotRoundIntegersRule : Rule, IMethodRule {
 
 		static TypeReference GetType (Instruction ins, MethodDefinition method)
@@ -135,6 +137,10 @@ namespace Gendarme.Rules.Correctness {
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
+				return RuleResult.DoesNotApply;
+
+			// exclude methods that don't have calls
+			if (!OpCodeBitmask.Calls.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
 			foreach (Instruction ins in method.Body.Instructions) {
