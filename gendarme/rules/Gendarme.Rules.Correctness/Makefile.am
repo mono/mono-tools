@@ -6,6 +6,7 @@ rules_sources =  \
 	AvoidConstructorsInStaticTypesRule.cs \
 	AvoidFloatingPointEqualityRule.cs \
 	AvoidMethodsWithSideEffectsInConditionalCodeRule.cs \
+	DeclareEventsExplicitlyRule.cs \
 	DoNotRecurseInEqualityRule.cs \
 	BadRecursiveInvocationRule.cs \
 	CallingEqualsWithNullArgRule.cs \
@@ -50,6 +51,7 @@ tests_sources = \
 	AvoidConstructorsInStaticTypesTest.cs \
 	AvoidFloatingPointEqualityTest.cs \
 	AvoidMethodsWithSideEffectsInConditionalCodeTest.cs \
+	DeclareEventsExplicitlyTest.cs \
 	DoNotRecurseInEqualityTest.cs \
 	BadRecursiveInvocationTest.cs \
 	CallingEqualsWithNullArgTest.cs \

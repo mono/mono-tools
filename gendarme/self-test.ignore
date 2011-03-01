@@ -59,6 +59,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.DoNotRecurseInEquali
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.BadRecursiveInvocationRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.CallingEqualsWithNullArgRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.CheckParametersNullityInVisibleMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.DeclareEventsExplicitlyRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.DisposableFieldsShouldBeDisposedRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.DoNotRoundIntegersRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.EnsureLocalDisposalRule::CheckMethod(Mono.Cecil.MethodDefinition)
