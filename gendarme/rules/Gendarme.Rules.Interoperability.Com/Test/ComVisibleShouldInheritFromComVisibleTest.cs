@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Runtime.InteropServices;
 
 using Mono.Cecil;
@@ -57,6 +58,10 @@ namespace Test.Rules.Interoperability.Com {
 		public class ComVisibleInheritsFromInvisibleClass : ComInvisibleClass {
 		}
 
+		[ComVisible (true)]
+		class NotReallyComVisibleInheritsFromInvisibleClass : ComInvisibleClass {
+		}
+
 		[ComVisible (false)]
 		public class ComInvisibleInheritsFromVisibleClass : ComVisibleClass {
 		}
@@ -64,9 +69,6 @@ namespace Test.Rules.Interoperability.Com {
 		[Test]
 		public void Good ()
 		{
-			// no ComVisible attributes in inheritance chain
-			AssertRuleSuccess (SimpleTypes.Class);
-
 			AssertRuleSuccess<ComVisibleClass> ();
 		}
 
@@ -79,8 +81,15 @@ namespace Test.Rules.Interoperability.Com {
 		[Test]
 		public void DoesNotApply ()
 		{
+			// BaseType is null
+			AssertRuleDoesNotApply<ICollection> ();
+
+			// not visible / no ComVisible attributes in inheritance chain
+			AssertRuleDoesNotApply (SimpleTypes.Class);
+
 			AssertRuleDoesNotApply<ComInvisibleClass> ();
 			AssertRuleDoesNotApply<ComInvisibleInheritsFromVisibleClass> ();
+			AssertRuleDoesNotApply<NotReallyComVisibleInheritsFromInvisibleClass> ();
 		}
 	}
 }

@@ -94,6 +94,10 @@ namespace Gendarme.Rules.Interoperability.Com {
 			if (type.BaseType == null)
 				return RuleResult.DoesNotApply;
 
+			// [ComVisible] attribute will be ignored on non-visible types
+			if (!type.IsVisible ())
+				return RuleResult.DoesNotApply;
+
 			// Checks whether specific type is COM visible or not
 			// considering nested types, assemblies attributes and default values
 			if (!type.IsTypeComVisible ())
