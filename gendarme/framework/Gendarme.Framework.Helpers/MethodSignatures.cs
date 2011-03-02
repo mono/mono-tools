@@ -137,7 +137,7 @@ namespace Gendarme.Framework.Helpers {
 					return false;
 
 				string pt_name = last.Name;
-				return (String.Compare (pt_name, 0, mtype.Name, 0, pt_name.Length - 1) == 0);
+				return (String.Compare (pt_name, 0, mtype.Name, 0, pt_name.Length - 1, StringComparison.Ordinal) == 0);
 			}
 		);
 

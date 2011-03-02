@@ -179,7 +179,7 @@ namespace Gendarme.Rules.Correctness {
 				case Code.Call:
 				case Code.Callvirt:
 					MemberReference member = instruction.Operand as MemberReference;
-					if ((member != null) && member.Name.Equals ("Equals") && member.DeclaringType.IsFloatingPoint ()) {
+					if ((member != null) && (member.Name == "Equals") && member.DeclaringType.IsFloatingPoint ()) {
 						Runner.Report (method, instruction, Severity.High, Confidence.Total, EqualsMessage);
 					}
 					break;

@@ -38,7 +38,7 @@ namespace Gendarme {
 		{
 			Assembly executing = Assembly.GetExecutingAssembly ();
 			foreach (string resource in executing.GetManifestResourceNames ()) {
-				if (resource.EndsWith (resourceName))
+				if (resource.EndsWith (resourceName, StringComparison.Ordinal))
 					return executing.GetManifestResourceStream (resource);
 			}
 			return null;

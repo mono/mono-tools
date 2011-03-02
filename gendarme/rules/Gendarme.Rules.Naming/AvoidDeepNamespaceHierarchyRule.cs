@@ -139,7 +139,7 @@ namespace Gendarme.Rules.Naming {
 				if (levels == MaxDepth + 1) {
 					if (NamespaceDefinition.IsSpecialized (ns)) {
 						continue;
-					} else if (ns.EndsWith (".Internal") || ns.EndsWith (".Impl")) {
+					} else if (ns.EndsWith (".Internal", StringComparison.Ordinal) || ns.EndsWith (".Impl", StringComparison.Ordinal)) {
 						continue;
 					}
 				}

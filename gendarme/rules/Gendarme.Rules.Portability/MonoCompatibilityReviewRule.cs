@@ -140,7 +140,7 @@ namespace Gendarme.Rules.Portability {
 
 			try {
 				string latest = def_files [def_files.Length - 1];
-				int s = latest.LastIndexOf ("definitions-") + 12;
+				int s = latest.LastIndexOf ("definitions-", StringComparison.Ordinal) + 12;
 				return new Version (latest.Substring (s, latest.Length - s - 4)); // remove .zip
 			}
 			catch (FormatException) {

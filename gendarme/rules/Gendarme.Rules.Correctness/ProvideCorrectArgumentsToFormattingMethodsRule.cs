@@ -115,7 +115,7 @@ namespace Gendarme.Rules.Correctness {
 		{
 			IList<Resource> resources = ad.MainModule.Resources;
 			foreach (EmbeddedResource resource in resources)
-				if (resourceClassName.Equals (resource.Name))
+				if (resourceClassName == resource.Name)
 					return resource;
 			return null;
 		}

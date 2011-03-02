@@ -203,7 +203,7 @@ namespace Gendarme.Rules.Globalization {
 
 			string cultureExtension = "." + culture;
 
-			if (!nameWithoutExtension.EndsWith (cultureExtension))
+			if (!nameWithoutExtension.EndsWith (cultureExtension, StringComparison.Ordinal))
 				return name;
 
 			string nameWithoutCulture = Path.GetFileNameWithoutExtension (nameWithoutExtension);
@@ -212,7 +212,7 @@ namespace Gendarme.Rules.Globalization {
 
 		private static bool IsResXResources (Resource resource)
 		{
-			return resource.Name.EndsWith (resXResourcesExtension);
+			return resource.Name.EndsWith (resXResourcesExtension, StringComparison.Ordinal);
 		}
 
 		private sealed class AssemblyResourceCache {

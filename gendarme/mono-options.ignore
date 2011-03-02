@@ -67,3 +67,6 @@ T: NDesk.Options.OptionSet
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 T: NDesk.Options.OptionSet
 
+R: Gendarme.Rules.Globalization.PreferStringComparisonOverrideRule
+M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
+

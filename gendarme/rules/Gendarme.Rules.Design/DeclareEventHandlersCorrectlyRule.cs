@@ -129,7 +129,7 @@ namespace Gendarme.Rules.Design {
 
 		private bool CheckParameterName (IMetadataTokenProvider eventType, ParameterReference invokeParameter, string expectedName)
 		{
-			if (String.Compare (invokeParameter.Name, expectedName) == 0)
+			if (invokeParameter.Name == expectedName)
 				return true;
 
 			Runner.Report (eventType, Severity.Low, Confidence.High, String.Format ("The expected name is {0}, not {1}", expectedName, invokeParameter.Name));

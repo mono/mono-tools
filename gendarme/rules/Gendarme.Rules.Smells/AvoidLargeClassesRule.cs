@@ -108,7 +108,7 @@ namespace Gendarme.Rules.Smells {
 			int counter = 1; // include self
 			for (int i = fields.Count - 1; i > start; i--) {
 				FieldDefinition field = fields [i];
-				if (field.Name.StartsWith (prefix)) {
+				if (field.Name.StartsWith (prefix, StringComparison.Ordinal)) {
 					fields.RemoveAt (i);
 					counter++;
 				}

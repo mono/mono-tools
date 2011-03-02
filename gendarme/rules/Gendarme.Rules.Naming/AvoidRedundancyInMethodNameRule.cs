@@ -138,7 +138,7 @@ namespace Gendarme.Rules.Naming {
 			if (method_name.StartsWith (name, StringComparison.Ordinal))
 				return RuleResult.Success;
 
-			int pos = method_name.LastIndexOf (name);
+			int pos = method_name.LastIndexOf (name, StringComparison.Ordinal);
 			if (-1 == pos)
 				return RuleResult.Success;
 

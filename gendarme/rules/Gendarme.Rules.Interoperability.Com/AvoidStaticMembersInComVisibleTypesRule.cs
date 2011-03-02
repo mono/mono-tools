@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Interoperability.Com {
 		{
 			return !(!method.IsStatic || !method.IsPublic || method.HasGenericParameters || 
 				method.IsAddOn || method.IsRemoveOn || method.IsGetter || method.IsSetter ||
-				((method.Attributes & MethodAttributes.SpecialName) != 0 && method.Name.StartsWith ("op_")) ||
+				((method.Attributes & MethodAttributes.SpecialName) != 0 && method.Name.StartsWith ("op_", StringComparison.Ordinal)) ||
 				method.DeclaringType.HasGenericParameters || method.DeclaringType.IsEnum ||
 				method.DeclaringType.IsInterface);
 		}

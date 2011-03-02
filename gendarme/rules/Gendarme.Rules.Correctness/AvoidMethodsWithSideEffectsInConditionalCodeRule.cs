@@ -274,7 +274,7 @@ namespace Gendarme.Rules.Correctness {
 					return true;
 				
 				// operators
-				if (method_name.StartsWith ("op_") && method_name != "op_Implicit" && method_name != "op_Explicit")
+				if (method_name.StartsWith ("op_", StringComparison.Ordinal) && method_name != "op_Implicit" && method_name != "op_Explicit")
 					return true;
 					
 				// Contract methods (skip namespace)
@@ -282,10 +282,10 @@ namespace Gendarme.Rules.Correctness {
 					return true;
 					
 				// System.Predicate<T> and System.Comparison<T>
-				if (type_name.StartsWith ("System.Predicate`1"))
+				if (type_name.StartsWith ("System.Predicate`1", StringComparison.Ordinal))
 					return true;
 					
-				if (type_name.StartsWith ("System.Comparison`1"))
+				if (type_name.StartsWith ("System.Comparison`1", StringComparison.Ordinal))
 					return true;
 					
 				// delegate invocation

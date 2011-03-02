@@ -119,7 +119,7 @@ namespace Gendarme.Rules.Concurrency {
 				}
 				
 			} else if (method.IsStatic) {
-				if (model == ThreadModel.Serializable && !method.Name.StartsWith ("op_")) {
+				if (model == ThreadModel.Serializable && !method.Name.StartsWith ("op_", StringComparison.Ordinal)) {
 					return ThreadModel.MainThread;
 				}
 			}

@@ -66,7 +66,7 @@ namespace Gendarme.Rules.Design.Generic {
 		private static bool IsList (TypeReference type)
 		{			
 			return type.Namespace == "System.Collections.Generic" &&
-				type.Name.StartsWith (List);
+				type.Name.StartsWith (List, StringComparison.Ordinal);
 		}
 
 		private void CheckField (FieldReference field)

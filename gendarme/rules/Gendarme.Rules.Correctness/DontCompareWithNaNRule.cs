@@ -128,7 +128,7 @@ namespace Gendarme.Rules.Correctness {
 				case Code.Call:
 				case Code.Callvirt:
 					MemberReference callee = ins.Operand as MemberReference;
-					if ((callee != null) && callee.Name.Equals ("Equals") && callee.DeclaringType.IsFloatingPoint ()) {
+					if ((callee != null) && (callee.Name == "Equals") && callee.DeclaringType.IsFloatingPoint ()) {
 						if (!CheckPrevious (il, i - 1)) {
 							Runner.Report (method, ins, Severity.Critical, Confidence.Total, EqualsMessage);
 						}

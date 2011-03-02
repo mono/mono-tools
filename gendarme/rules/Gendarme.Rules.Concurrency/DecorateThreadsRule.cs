@@ -300,7 +300,7 @@ namespace Gendarme.Rules.Concurrency {
 			
 			// Serializable cannot be applied to static methods, but can be applied to
 			// operators because they're just sugar for normal calls.
-			if (method.IsStatic && model.Is (ThreadModel.Serializable) && !name.StartsWith ("op_")) {
+			if (method.IsStatic && model.Is (ThreadModel.Serializable) && !name.StartsWith ("op_", StringComparison.Ordinal)) {
 				string mesg = "Static members cannot be decorated with Serializable.";
 				ReportDefect (method, Severity.High, Confidence.High, mesg);
 			}

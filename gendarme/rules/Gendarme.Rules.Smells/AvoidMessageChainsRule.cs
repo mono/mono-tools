@@ -116,7 +116,7 @@ namespace Gendarme.Rules.Smells {
 
 				// operators "break" chains
 				MethodReference mr = (ins.Operand as MethodReference);
-				if (mr.Name.StartsWith ("op_"))
+				if (mr.Name.StartsWith ("op_", StringComparison.Ordinal))
 					continue;
 
 				int counter = 1;

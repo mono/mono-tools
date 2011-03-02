@@ -26,32 +26,32 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-
+using System;
 using Mono.Cecil;
-
 using Gendarme.Framework;
 
 namespace Gendarme.Rules.Maintainability {
 
 	/// <summary>
 	/// This rule checks for fields which have misleading names, e.g. instance fields beginning with "s_"
+	/// or static fields beginning with "m_", since they can be confusing when reading source code.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
-	///	public class Bad {
-	///		public int s_Value;
-	///		public static int m_OtherValue;
-	///	}
+	/// public class Bad {
+	///	int s_value;
+	///	static int m_other_value;
+	/// }
 	/// </code>
 	/// </example>
 	/// <example>
 	/// Good example:
 	/// <code>
-	///	public class Good {
-	///		public int m_Value;
-	///		public static int s_OtherValue;
-	///	}
+	/// public class Good {
+	///	int value;
+	///	static int other_value;
+	/// }
 	/// </code>
 	/// </example>
 
@@ -68,7 +68,8 @@ namespace Gendarme.Rules.Maintainability {
 
 			foreach (FieldDefinition field in type.Fields) {
 				string name = field.Name;
-				if (field.IsStatic ? name.StartsWith ("m_") : name.StartsWith ("s_"))
+				string prefix = field.IsStatic ? "m_" : "s_";
+				if (name.StartsWith (prefix, StringComparison.Ordinal))
 					Runner.Report (field, Severity.Low, Confidence.Total);
 			}
 
