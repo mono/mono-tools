@@ -37,8 +37,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// A type has an externally visible member that is, returns, or has a signature containing a 
-	/// System.Collections.Generic.List&lt;T&gt;.
+	/// A type has an externally visible member that is, returns or has a signature containing a 
+	/// <c>System.Collections.Generic.List&lt;T&gt;</c>.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -56,11 +56,11 @@ namespace Gendarme.Rules.Design.Generic {
 	/// }
 	/// </code>
 	/// </example>
-
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("The type exposes System.Collections.Generic.List<T>.")]
 	[Solution ("Use a type such as System.Collections.ObjectModel.Collection<T> instead.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-	public class DoNotExposeGenericListsRule : Rule, ITypeRule {
+	public class DoNotExposeGenericListsRule : GenericsBaseRule, ITypeRule {
 		private const string List = "List`1";
 
 		private static bool IsList (TypeReference type)
@@ -80,9 +80,7 @@ namespace Gendarme.Rules.Design.Generic {
 			if (!IsList (property.PropertyType))
 				return;
 
-			MethodDefinition getm = property.GetMethod;
-			MethodDefinition setm = property.SetMethod;
-			if (((getm != null) && getm.IsVisible ()) || ((setm != null) && setm.IsVisible ()))
+			if (property.GetMethod.IsVisible () || property.SetMethod.IsVisible ())
 				Runner.Report (property, Severity.Medium, Confidence.Total);
 		}
 

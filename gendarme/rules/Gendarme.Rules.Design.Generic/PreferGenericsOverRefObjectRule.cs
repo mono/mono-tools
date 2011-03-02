@@ -38,7 +38,7 @@ namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
 	/// This rule fires if a method has a reference argument (<c>ref</c> or
-	/// <c>out</c> in C#) to System.Object. These methods can generally be
+	/// <c>out</c> in C#) to <c>System.Object</c>. These methods can generally be
 	/// rewritten in .NET 2.0 using generics which provides type safety, eliminates
 	/// casts, and makes the API easier to consume.
 	/// </summary>
@@ -61,23 +61,11 @@ namespace Gendarme.Rules.Design.Generic {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.2</remarks>
-
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("This method contains a reference parameter to System.Object which is often an indication that the code is not type safe.")]
 	[Solution ("Change the parameter to use a generic type where the caller will provide the type.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
-	public class PreferGenericsOverRefObjectRule : Rule, IMethodRule {
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// we only want to run this on assemblies that use 2.0 or later
-			// since generics were not available before
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
-			};
-		}
+	public class PreferGenericsOverRefObjectRule : GenericsBaseRule, IMethodRule {
 
 		public RuleResult CheckMethod (MethodDefinition method)
 		{

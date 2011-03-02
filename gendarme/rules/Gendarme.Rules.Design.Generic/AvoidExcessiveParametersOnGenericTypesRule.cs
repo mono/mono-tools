@@ -37,7 +37,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// A type should not have more than two generic parameters.
+	/// A visible type should not have more than two generic parameters. This makes it
+	/// hard for consumers to remember what each parameter is required for.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -53,11 +54,12 @@ namespace Gendarme.Rules.Design.Generic {
 	/// }
 	/// </code>
 	/// </example>
-
-	[Problem ("A type has more than two generic parameters.")]
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
+	[Problem ("A visible type has more than two generic parameters.")]
 	[Solution ("Redesign the type so it doesn't take more than two generic parameters.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1005:AvoidExcessiveParametersOnGenericTypes")]
-	public class AvoidExcessiveParametersOnGenericTypesRule : Rule, ITypeRule {
+	public class AvoidExcessiveParametersOnGenericTypesRule : GenericsBaseRule, ITypeRule {
+
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.IsClass || !type.HasGenericParameters || !type.IsVisible ())

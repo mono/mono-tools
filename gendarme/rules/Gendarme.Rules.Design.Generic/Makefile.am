@@ -7,6 +7,7 @@ rules_sources =  \
 	DoNotDeclareStaticMembersOnGenericTypesRule.cs \
 	DoNotExposeGenericListsRule.cs \
 	DoNotExposeNestedGenericSignaturesRule.cs \
+	GenericsBaseRule.cs \
 	ImplementGenericCollectionInterfacesRule.cs \
 	PreferGenericsOverRefObjectRule.cs \
 	UseGenericEventHandlerRule.cs

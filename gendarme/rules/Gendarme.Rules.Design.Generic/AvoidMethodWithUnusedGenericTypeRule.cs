@@ -75,23 +75,11 @@ namespace Gendarme.Rules.Design.Generic {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.2</remarks>
-
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("One or more generic type parameters are not used in the formal parameter list.")]
 	[Solution ("This prevents the compiler from inferring types when the method is used which results in hard to use API definitions.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-	public class AvoidMethodWithUnusedGenericTypeRule : Rule, IMethodRule {
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// we only want to run this on assemblies that use 2.0 or later
-			// since generics were not available before
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
-			};
-		}
+	public class AvoidMethodWithUnusedGenericTypeRule : GenericsBaseRule, IMethodRule {
 
 		static bool FindGenericType (IGenericInstance git, string nameSpace, string name)
 		{

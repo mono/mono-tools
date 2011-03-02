@@ -38,9 +38,8 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule will fire if custom delegates are defined when either pre-defined
-	/// <code>Action</code>, <code>Action&lt;T[,...]&gt;</code> or <code>Func&lt;[Tx,...]TResult&gt;</code>
-	/// could have been used. This rule applies only to code using the framework version 2.0 (or later).
+	/// This rule will fire if custom delegates are defined when either pre-defined <code>System.Action</code>, 
+	/// <code>Action&lt;T[,...]&gt;</code> or <code>Func&lt;[Tx,...]TResult&gt;</code> could have been used.
 	/// </summary>
 	/// <example>
 	/// Bad example (without return value):
@@ -68,32 +67,10 @@ namespace Gendarme.Rules.Design.Generic {
 	/// private Func&lt;int,string,int&gt; func_delegate;
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.8</remarks>
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("This delegate could be replaced with an existing framework delegate.")]
 	[Solution ("Prefer the use of Action, Action<T...> and Func<...,TResult> types.")]
-	public class AvoidDeclaringCustomDelegatesRule : Rule, ITypeRule {
-
-		private int MaxParameter = 4; // NET_2_0
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// we only want to run this on assemblies that use 2.0 or later
-			// since generics were not available before
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				TargetRuntime runtime = e.CurrentModule.Runtime;
-				if (runtime >= TargetRuntime.Net_4_0) {
-					MaxParameter = 16;
-					Active = true;
-				} else if (runtime >= TargetRuntime.Net_2_0) {
-					MaxParameter = 4;
-					Active = true;
-				} else {
-					Active = false;
-				}
-			};
-		}
+	public class AvoidDeclaringCustomDelegatesRule : GenericsBaseRule, ITypeRule {
 
 		static string[] ActionMessage = {
 			"Replace with Action()",
@@ -157,7 +134,7 @@ namespace Gendarme.Rules.Design.Generic {
 				n = pdc.Count;
 				// too many parameters to directly use Action/Func
 				// so we lower severity and suggest grouping them
-				if (n > MaxParameter) {
+				if (n > ((type.Module.Runtime >= TargetRuntime.Net_4_0) ? 16 : 4)) {
 					severity = Severity.Low;
 					n = 1;
 					use_structure = true;

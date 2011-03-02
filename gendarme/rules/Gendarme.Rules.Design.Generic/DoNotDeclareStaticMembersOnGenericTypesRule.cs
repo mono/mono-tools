@@ -33,13 +33,14 @@ using Gendarme.Framework.Rocks;
 namespace Gendarme.Rules.Design.Generic {
 
 	/// <summary>
-	/// This rule checks for generic types that contain static members.
+	/// This rule checks for generic types that contain static members. Such members requires the type argument
+	/// to be specified when consumed, leading to harder to use or confusing API.
 	/// </summary>
 	/// <example>
 	/// Bad example:
 	/// <code>
 	/// public class BadClass&lt;T&gt; {
-	///	public static string member () {
+	///	public static string Member () {
 	///	}
 	/// }
 	/// </code>
@@ -48,16 +49,16 @@ namespace Gendarme.Rules.Design.Generic {
 	/// Good example:
 	/// <code>
 	/// public class GoodClass&lt;T&gt; {
-	///	public string member () {
+	///	public string Member () {
 	///	}
 	/// }
 	/// </code>
 	/// </example>
-
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("An externally visible generic type has a static member.")]
 	[Solution ("Remove the static member or change it to an instance member.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
-	public class DoNotDeclareStaticMembersOnGenericTypesRule : Rule, ITypeRule {
+	public class DoNotDeclareStaticMembersOnGenericTypesRule : GenericsBaseRule, ITypeRule {
 		public RuleResult CheckType (TypeDefinition type)
 		{
 			if (!type.IsClass || !type.HasGenericParameters || !type.IsVisible ())

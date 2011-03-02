@@ -41,7 +41,7 @@ namespace Gendarme.Rules.Design.Generic {
 	/// <c>List&lt;List&lt;int&gt;&gt;</c>. Such types are hard to construct and should
 	/// be avoided because simpler alternatives generally exist.
 	/// Since some language, like C#, have direct support for nullable types, i.e. 
-	/// <c>Nullable&lt;T&gt;</c> this specific case is ignored by the rule.
+	/// <c>System.Nullable&lt;T&gt;</c> this specific case is ignored by the rule.
 	/// </summary>
 	/// <example>
 	/// Bad example:
@@ -63,23 +63,11 @@ namespace Gendarme.Rules.Design.Generic {
 	/// }
 	/// </code>
 	/// </example>
-	/// <remarks>This rule is available since Gendarme 2.4</remarks>
-
+	/// <remarks>This rule applies only to assemblies targeting .NET 2.0 and later.</remarks>
 	[Problem ("This method exposes a nested generic type in its signature.")]
 	[Solution ("Remove the nested generics to keep the visible API simple to use.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
-	public class DoNotExposeNestedGenericSignaturesRule : Rule, IMethodRule {
-
-		public override void Initialize (IRunner runner)
-		{
-			base.Initialize (runner);
-
-			// we only want to run this on assemblies that use 2.0 or later
-			// since generics were not available before
-			Runner.AnalyzeModule += delegate (object o, RunnerEventArgs e) {
-				Active = (e.CurrentModule.Runtime >= TargetRuntime.Net_2_0);
-			};
-		}
+	public class DoNotExposeNestedGenericSignaturesRule : GenericsBaseRule, IMethodRule {
 
 		static Severity? Check (TypeReference type)
 		{
