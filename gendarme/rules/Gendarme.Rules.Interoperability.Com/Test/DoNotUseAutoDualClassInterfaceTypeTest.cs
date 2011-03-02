@@ -43,30 +43,30 @@ namespace Test.Rules.Interoperability.Com {
 
 		[ComVisible (true)]
 		[ClassInterface (ClassInterfaceType.AutoDual)]
-		class BadClass {
+		public class BadClass {
 			// do something
 		}
 
 		[ComVisible (true)]
 		[ClassInterface (2)]
-		class BadClassShortConstuctor {
+		public class BadClassShortConstuctor {
 			// do something
 		}
 
 		[ComVisible (false)]
 		[ClassInterface (ClassInterfaceType.AutoDual)]
-		class DoesNotApplyInvisible {
+		public class DoesNotApplyInvisible {
 			// do something
 		}
 
 		[ComVisible (true)]
-		class GoodNoInterfaceAttribute {
+		public class GoodNoInterfaceAttribute {
 			// do something
 		}
 
 		[ComVisible (true)]
 		[ClassInterface (ClassInterfaceType.None)]
-		class GoodClassNone : ICloneable {
+		public class GoodClassNone : ICloneable {
 			public object Clone ()
 			{
 				return new object ();
@@ -75,7 +75,7 @@ namespace Test.Rules.Interoperability.Com {
 
 		[ComVisible (true)]
 		[ClassInterface ((short)0)]
-		class GoodClassNoneShortConstructor : ICloneable {
+		public class GoodClassNoneShortConstructor : ICloneable {
 			public object Clone ()
 			{
 				return new object ();

@@ -76,6 +76,10 @@ namespace Gendarme.Rules.Interoperability.Com {
 		// considering nested types, assemblies attributes and default values
 		public static bool IsTypeComVisible (this TypeDefinition self)
 		{
+			// [ComVisible] attribute will be ignored on non-visible types
+			if (!self.IsVisible ())
+				return false;
+
 			return (self.IsComVisible () ?? self.Module.Assembly.IsComVisible () ?? true);
 		}
 	}

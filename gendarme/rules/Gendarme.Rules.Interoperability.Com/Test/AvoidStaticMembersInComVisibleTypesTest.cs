@@ -42,7 +42,7 @@ namespace Test.Rules.Interoperability.Com {
 	public class AvoidStaticMembersInComVisibleTypesTest : MethodRuleTestFixture<AvoidStaticMembersInComVisibleTypesRule> {
 
 		[ComVisible (true)]
-		class ComVisibleClass {
+		public class ComVisibleClass {
 			public static void Bad ()
 			{
 			}
@@ -103,20 +103,20 @@ namespace Test.Rules.Interoperability.Com {
 		}
 
 		[ComVisible (false)]
-		class ComInvisibleClass {
+		public class ComInvisibleClass {
 			public static void DoesNotApply ()
 			{
 			}
 		}
 
-		class NoAttributesClass {
+		public class NoAttributesClass {
 			public static void DoesNotApply ()
 			{
 			}
 		}
 
 		[ComVisible (true)]
-		interface Interface {
+		public interface Interface {
 			void DoesNotApply ();
 		}
 
