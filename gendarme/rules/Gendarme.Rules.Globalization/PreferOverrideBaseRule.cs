@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
@@ -40,6 +42,10 @@ namespace Gendarme.Rules.Globalization {
 	[EngineDependency (typeof (OpCodeEngine))]
 	public abstract class PreferOverrideBaseRule : Rule, IMethodRule {
 
+		protected virtual bool CheckFirstParameter {
+			get { return false; }
+		}
+
 		protected abstract bool IsPrefered (TypeReference type);
 
 		protected virtual bool IsSpecialCase (MethodReference method)
@@ -48,6 +54,21 @@ namespace Gendarme.Rules.Globalization {
 		}
 
 		protected abstract void Report (MethodDefinition method, Instruction instruction, MethodReference prefered);
+
+		static bool MatchParameters (Collection<ParameterDefinition> pmethod, Collection<ParameterDefinition> candidate, int offset)
+		{
+			int ccount = candidate.Count - offset;
+			int count = Math.Min (pmethod.Count, ccount - offset);
+			for (int i = 0; i < count; i++) {
+				ParameterDefinition pd = candidate [i + offset];
+				if (pd.IsParams ())
+					return true;
+				TypeReference ptype = pd.ParameterType;
+				if (!pmethod [i].ParameterType.IsNamed (ptype.Namespace, ptype.Name))
+					return false;
+			}
+			return (ccount - count <= 1);
+		}
 
 		// look for a signature identical to ours but that accept an extra parameter
 		MethodReference LookForPreferredOverride (MethodReference method)
@@ -76,13 +97,7 @@ namespace Gendarme.Rules.Globalization {
 					continue;
 
 				Collection<ParameterDefinition> pdc = md.Parameters;
-				if (pcount != pdc.Count - 1)
-					continue;
 				if (name != md.Name)
-					continue;
-
-				// last parameter must be our "prefered" type
-				if (!IsPrefered (pdc [pcount].ParameterType))
 					continue;
 
 				// compare parameters and return value
@@ -90,16 +105,17 @@ namespace Gendarme.Rules.Globalization {
 				if (!method.ReturnType.IsNamed (rtype.Namespace, rtype.Name))
 					continue;
 
-				bool match = true;
-				for (int i = 0; i < pcount; i++) {
-					TypeReference ptype = pdc [i].ParameterType;
-					if (!mparams [i].ParameterType.IsNamed (ptype.Namespace, ptype.Name)) {
-						match = false;
-						break;
-					}
+				// last parameter could be our "prefered" type
+				if (IsPrefered (pdc [pdc.Count - 1].ParameterType)) {
+					// special case where the method has no parameter, override has only one (the prefered)
+					if ((pcount == 0) && (mparams == null))
+						return md;
+					if (MatchParameters (mparams, pdc, 0))
+						return md;
+				} else if (CheckFirstParameter && IsPrefered (pdc [0].ParameterType)) {
+					if (MatchParameters (mparams, pdc, 1))
+						return md;
 				}
-				if (match)
-					return md;
 			}
 			return null;
 		}
@@ -119,9 +135,11 @@ namespace Gendarme.Rules.Globalization {
 				if (IsSpecialCase (mr))
 					continue;
 
-				// check if the call ends with our 'prefered' override
+				// check if the call starts or ends with our 'prefered' override
 				if (mr.HasParameters) {
 					Collection<ParameterDefinition> pdc = mr.Parameters;
+					if (CheckFirstParameter && IsPrefered (pdc [0].ParameterType))
+						continue;
 					if (IsPrefered (pdc [pdc.Count - 1].ParameterType))
 						continue;
 				}
@@ -136,3 +154,4 @@ namespace Gendarme.Rules.Globalization {
 		}
 	}
 }
+
