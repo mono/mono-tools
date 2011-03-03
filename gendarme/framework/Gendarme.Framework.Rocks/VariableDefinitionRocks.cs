@@ -24,8 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Mono.Cecil.Cil;
 using System;
+using System.Globalization;
+using Mono.Cecil.Cil;
 
 namespace Gendarme.Framework.Rocks {
 	
@@ -53,7 +54,7 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (self == null)
 				return String.Empty;
-			return !string.IsNullOrEmpty (self.Name) ? self.Name : "V_" + self.Index.ToString ();
+			return !string.IsNullOrEmpty (self.Name) ? self.Name : "V_" + self.Index.ToString (CultureInfo.InvariantCulture);
 		}
 	}
 }

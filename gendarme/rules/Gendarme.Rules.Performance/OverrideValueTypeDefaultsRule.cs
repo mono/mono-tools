@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -118,7 +119,7 @@ namespace Gendarme.Rules.Performance {
 			// drop severity one level if only operators are missing (since overloading them
 			// is not available in every language)
 			Severity severity = (equals || gethashcode) ? Severity.Medium : Severity.Low;
-			string msg = String.Format (MissingImplementationMessage,
+			string msg = String.Format (CultureInfo.InvariantCulture, MissingImplementationMessage,
 				!equals && !gethashcode ? "Equals(object)' and 'GetHashCode()" : equals ? "GetHashCode()" : "Equals(object)",
 				operators ? String.Empty : MissingOperatorsMessage);
 

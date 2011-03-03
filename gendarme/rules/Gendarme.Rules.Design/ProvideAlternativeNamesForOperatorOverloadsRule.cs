@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Mono.Cecil;
 
 using Gendarme.Framework;
@@ -171,7 +172,8 @@ namespace Gendarme.Rules.Design {
 				}
 
 				if (!alternativeDefined) {
-					string s = String.Format ("This type implements the '{0}' operator. Some languages do not support overloaded operators so an alternative '{1}' method should be provided.",
+					string s = String.Format (CultureInfo.InvariantCulture,
+						"This type implements the '{0}' operator. Some languages do not support overloaded operators so an alternative '{1}' method should be provided.",
 						kv.Key.Name, kv.Value.Name);
 					Runner.Report (op, Severity.Medium, Confidence.High, s);
 				}

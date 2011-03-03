@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -93,7 +94,8 @@ namespace Gendarme.Rules.Performance {
 
 		void Report (MethodDefinition method, Instruction ins, Confidence confidence, MemberReference call, string parameter)
 		{
-			string msg = String.Format ("Prefer the use of: {0}('{1}'...);", call.Name, parameter);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Prefer the use of: {0}('{1}'...);", 
+				call.Name, parameter);
 			Runner.Report (method, ins, Severity.Medium, confidence, msg);
 		}
 
@@ -140,7 +142,8 @@ namespace Gendarme.Rules.Performance {
 			if (p2.Length != 1)
 				return;
 
-			string msg = String.Format ("Prefer the use of: Replace('{0}','{1}');", p1, p2);
+			string msg = String.Format (CultureInfo.InvariantCulture, 
+				"Prefer the use of: Replace('{0}','{1}');", p1, p2);
 			// confidence is higher since there's no StringComparison to consider
 			Runner.Report (method, ins, Severity.Medium, Confidence.High, msg);
 		}

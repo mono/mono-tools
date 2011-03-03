@@ -30,6 +30,7 @@ using System;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -98,7 +99,7 @@ namespace Gendarme {
 			if ((v.Major == 0) && (v.Minor == 0))
 				welcome_gendarme_label.Text = "Gendarme (development snapshot)";
 			else
-				welcome_gendarme_label.Text = String.Format ("Gendarme, version {0}", v);
+				welcome_gendarme_label.Text = String.Format (CultureInfo.CurrentCulture, "Gendarme, version {0}", v);
 
 			assembly_loader = UpdateAssemblies;
 
@@ -265,7 +266,7 @@ namespace Gendarme {
 			next_button.Enabled = has_files;
 			remove_file_button.Enabled = has_files;
 			if (has_files) {
-				add_files_count_label.Text = String.Format ("{0} assembl{1} selected",
+				add_files_count_label.Text = String.Format (CultureInfo.CurrentCulture, "{0} assembl{1} selected",
 					files_count, files_count == 1 ? "y" : "ies");
 			} else {
 				add_files_count_label.Text = "No assembly selected.";
@@ -344,7 +345,8 @@ namespace Gendarme {
 			// asynchronously load assemblies (or the one that changed)
 			assemblies_loading = assembly_loader.BeginInvoke (EndCallback, assembly_loader);
 
-			rules_count_label.Text = String.Format ("{0} rules are available.", Runner.Rules.Count);
+			rules_count_label.Text = String.Format (CultureInfo.CurrentCulture, 
+				"{0} rules are available.", Runner.Rules.Count);
 			if (rules_loading == null)
 				throw new InvalidOperationException ("rules_loading");
 
@@ -390,7 +392,8 @@ namespace Gendarme {
 					parent.Checked = true;
 			}
 			foreach (TreeNode node in rules_tree_view.Nodes) {
-				node.ToolTipText = String.Format ("{0} rules available", node.Nodes.Count);
+				node.ToolTipText = String.Format (CultureInfo.CurrentCulture,
+					"{0} rules available", node.Nodes.Count);
 			}
 			nodes.Clear ();
 			rules_tree_view.AfterCheck += RulesTreeViewAfterCheck;
@@ -527,8 +530,8 @@ namespace Gendarme {
 			// update UI before waiting for assemblies to be loaded
 			progress_bar.Value = 0;
 			next_button.Enabled = false;
-			analyze_status_label.Text = String.Format ("Processing assembly 1 of {0}",
-				assemblies.Count);
+			analyze_status_label.Text = String.Format (CultureInfo.CurrentCulture,
+				"Processing assembly 1 of {0}", assemblies.Count);
 			analyze_defect_label.Text = "Defects Found: 0";
 			// make sure all assemblies are loaded into memory
 			assemblies_loading.AsyncWaitHandle.WaitOne ();
@@ -597,7 +600,8 @@ namespace Gendarme {
 
 		private bool ConfirmAnalyzeAbort (bool quit)
 		{
-			string message = String.Format ("Abort the current analysis being executed {0}Gendarme ?",
+			string message = String.Format (CultureInfo.CurrentCulture,
+				"Abort the current analysis being executed {0}Gendarme ?",
 				quit ? "and quit " : String.Empty);
 			return (MessageBox.Show (this, message, "Gendarme", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
 				MessageBoxDefaultButton.Button2) == DialogResult.Yes);
@@ -610,7 +614,8 @@ namespace Gendarme {
 		internal void PreAssemblyUpdate (RunnerEventArgs e)
 		{
 			progress_bar.Value = counter++;
-			analyze_status_label.Text = String.Format ("Processing assembly {0} of {1}",
+			analyze_status_label.Text = String.Format (CultureInfo.CurrentCulture,
+				"Processing assembly {0} of {1}",
 				counter, e.Runner.Assemblies.Count);
 			analyze_assembly_label.Text = "Assembly: " + e.CurrentAssembly.Name.FullName;
 		}
@@ -621,7 +626,8 @@ namespace Gendarme {
 		/// <param name="e">RunnerEventArgs that contains the Assembly being analyzed and the Runner</param>
 		internal void PostTypeUpdate (RunnerEventArgs e)
 		{
-			analyze_defect_label.Text = String.Format ("Defects Found: {0}", e.Runner.Defects.Count);
+			analyze_defect_label.Text = String.Format (CultureInfo.CurrentCulture, 
+				"Defects Found: {0}", e.Runner.Defects.Count);
 		}
 
 		#endregion
@@ -633,8 +639,9 @@ namespace Gendarme {
 			bool has_defects = (Runner.Defects.Count > 0);
 			save_report_button.Enabled = has_defects;
 			view_report_button.Enabled = has_defects;
-			report_subtitle_label.Text = String.Format ("Gendarme has found {0} defects during analysis.",
-				has_defects ? Runner.Defects.Count.ToString () : "no");
+			report_subtitle_label.Text = String.Format (CultureInfo.CurrentCulture,
+				"Gendarme has found {0} defects during analysis.",
+				has_defects ? Runner.Defects.Count.ToString (CultureInfo.CurrentCulture) : "no");
 			cancel_button.Text = "Close";
 			next_button.Enabled = false;
 

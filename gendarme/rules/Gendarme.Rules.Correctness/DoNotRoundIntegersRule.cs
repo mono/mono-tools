@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -177,7 +178,8 @@ namespace Gendarme.Rules.Correctness {
 				if (type == null)
 					continue;
 
-				string msg = string.Format ("Math.{0} called on a {1}.", name, type.GetFullName ());
+				string msg = String.Format (CultureInfo.InvariantCulture, "Math.{0} called on a {1}.", 
+					name, type.GetFullName ());
 				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;

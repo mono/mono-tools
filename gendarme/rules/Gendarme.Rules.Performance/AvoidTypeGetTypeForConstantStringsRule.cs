@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -101,7 +102,8 @@ namespace Gendarme.Rules.Performance {
 				if (type_name == "Mono.Runtime")
 					continue;
 
-				string msg = string.Format ("Replace call to Type.GetType(\"{0}\") into typeof({0}).", type_name);
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"Replace call to Type.GetType(\"{0}\") into typeof({0}).", type_name);
 				Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 			}
 			return Runner.CurrentRuleResult;

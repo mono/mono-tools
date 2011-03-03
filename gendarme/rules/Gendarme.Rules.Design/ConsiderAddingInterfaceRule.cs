@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Mono.Cecil;
@@ -143,7 +144,8 @@ namespace Gendarme.Rules.Design {
 					if (HasConstraints (type))
 						continue;
 					if (DoesTypeStealthilyImplementInterface (type, iface)) {
-						string msg = string.Format ("Type implements '{0}' interface but does not declare it.", iface);
+						string msg = string.Format (CultureInfo.InvariantCulture,
+							"Type implements '{0}' interface but does not declare it.", iface);
 						// use our own Defect since the *real* target (of analysis) is 'type' not 'iface'
 						Runner.Report (new Defect (this, type, type, Severity.Medium, Confidence.High, msg));
 					}

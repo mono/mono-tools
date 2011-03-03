@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -332,7 +333,8 @@ namespace Gendarme.Rules.Smells {
 				if (sloc <= max)
 					return RuleResult.Success;
 
-				string message = String.Format ("Logical SLOC: {0}. Maximum : {1}", sloc, max);
+				string message = String.Format (CultureInfo.CurrentCulture, 
+					"Logical SLOC: {0}. Maximum : {1}", sloc, max);
 				Runner.Report (method, Severity.High, Confidence.High, message);
 			} else {
 				// success if the instruction count is below the defined threshold
@@ -342,7 +344,8 @@ namespace Gendarme.Rules.Smells {
 				if (count <= max)
 					return RuleResult.Success;
 
-				string message = String.Format ("Method IL Size: {0}. Maximum Size: {1}", count, max);
+				string message = String.Format (CultureInfo.CurrentCulture,
+					"Method IL Size: {0}. Maximum Size: {1}", count, max);
 				Runner.Report (method, Severity.High, Confidence.Normal, message);
 			}
 

@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -164,13 +165,13 @@ namespace Gendarme.Rules.Concurrency {
 				Instruction caller = ins.TraceBack (method);
 				FieldDefinition field = caller.GetField ();
 				if (field != null) {
-					string msg = String.Format ("Possible race condition since field '{0}' is accessed directly.", field.Name);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Possible race condition since field '{0}' is accessed directly.", field.Name);
 					Runner.Report (method, ins, Severity.High, Confidence.High, msg);
 				} else {
 					// look for the variable, if it's not then stop analysis
 					VariableDefinition load = caller.GetVariable (method);
 					if ((load != null) && !CheckVariable (method, caller, load)) {
-						string msg = String.Format ("Variable '{0}' does not seems to be checked against null.", load.Name);
+						string msg = String.Format (CultureInfo.InvariantCulture, "Variable '{0}' does not seems to be checked against null.", load.Name);
 						Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 					}
 				}

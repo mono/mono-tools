@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -132,9 +133,10 @@ namespace Gendarme.Rules.BadPractice {
 						foundFileAccess = true;
 				}
 				if (foundFileMode && !foundFileAccess) {
-					Runner.Report (method, instruction, Severity.Medium, Confidence.Normal,
-						String.Format("{0}::{1} being called with FileMode parameter but without FileAccess.",
-							m.DeclaringType.GetFullName (), m.Name));
+					string msg = String.Format (CultureInfo.InvariantCulture, 
+						"{0}::{1} being called with FileMode parameter but without FileAccess.",
+						m.DeclaringType.GetFullName (), m.Name);
+					Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, msg);
 				}
 			}
 			return Runner.CurrentRuleResult;

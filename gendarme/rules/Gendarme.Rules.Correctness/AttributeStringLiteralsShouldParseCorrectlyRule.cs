@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
@@ -115,7 +116,7 @@ namespace Gendarme.Rules.Correctness {
 					string value = (string) arguments [index].Value;
 					if (Contains (parameter.Name, "version")) { 
 						if (!TryParseVersion (value)) {
-							string msg = String.Format ("The value passed: {0} can't be parsed to a valid Version.", value);
+							string msg = String.Format (CultureInfo.InvariantCulture, "The value passed: {0} can't be parsed to a valid Version.", value);
 							Runner.Report (provider, Severity.High, Confidence.High, msg);
 						}
 						continue;
@@ -125,14 +126,14 @@ namespace Gendarme.Rules.Correctness {
 						Contains (parameter.Name, "urn")) {
 						Uri parsed = null;
 						if (!Uri.TryCreate (value, UriKind.Absolute, out parsed)) {
-							string msg = String.Format ("The valued passed {0} can't be parsed to a valid Uri.", value);
+							string msg = String.Format (CultureInfo.InvariantCulture, "The valued passed {0} can't be parsed to a valid Uri.", value);
 							Runner.Report (provider, Severity.High, Confidence.High, msg);
 						}
 						continue;
 					}
 					if (Contains (parameter.Name, "guid")) {
 						if (!TryParseGuid (value)) {
-							string msg = String.Format ("The valued passed {0} can't be parsed to a valid Guid.", value);
+							string msg = String.Format (CultureInfo.InvariantCulture, "The valued passed {0} can't be parsed to a valid Guid.", value);
 							Runner.Report (provider, Severity.High, Confidence.High, msg);
 						}
 						continue;

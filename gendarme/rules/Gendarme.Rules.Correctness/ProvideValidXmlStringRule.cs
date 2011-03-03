@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -123,7 +124,8 @@ namespace Gendarme.Rules.Correctness {
 			try {
 				(new XmlDocument ()).LoadXml (xml);
 			} catch (XmlException e) {
-				string msg = string.Format ("XML string '{0}' is invalid. Details: {1}", xml, e.Message);
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"XML string '{0}' is invalid. Details: {1}", xml, e.Message);
 				Runner.Report (method, ins, Severity.High, Confidence.High, msg);
 			}
 		}

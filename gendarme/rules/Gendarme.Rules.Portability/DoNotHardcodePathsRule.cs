@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -494,7 +495,8 @@ namespace Gendarme.Rules.Portability {
 				// if sure enough, report the problem with the candidate string
 				// important as this allows a quick false positive check without checking the source code
 				if (conf.HasValue) {
-					string msg = String.Format ("string \"{0}\" looks quite like a filename.", candidate);
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"string \"{0}\" looks quite like a filename.", candidate);
 					Runner.Report (method, ins, Severity.High, conf.Value, msg);
 				}
 			}

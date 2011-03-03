@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Gendarme.Framework.Helpers;
@@ -89,7 +90,8 @@ namespace Gendarme.Rules.Design {
 			if (rtype.IsNamed ("System", "Void"))
 				return true;
 
-			string msg = String.Format ("The delegate should return void, not {0}", rtype.GetFullName ());
+			string msg = String.Format (CultureInfo.InvariantCulture, 
+				"The delegate should return void, not {0}", rtype.GetFullName ());
 			Runner.Report (eventType, Severity.Medium, Confidence.High, msg);
 			return false;
 		}
@@ -114,7 +116,9 @@ namespace Gendarme.Rules.Design {
 			if (count >= 1) {
 				TypeReference ptype = pdc [0].ParameterType;
 				if (!ptype.IsNamed ("System", "Object")) {
-					Runner.Report (eventType, Severity.Medium, Confidence.High, String.Format ("The first parameter should have an object, not {0}", ptype.GetFullName ()));
+					string msg = String.Format (CultureInfo.InvariantCulture, 
+						"The first parameter should have an object, not {0}", ptype.GetFullName ());
+					Runner.Report (eventType, Severity.Medium, Confidence.High, msg);
 					ok = false;
 				}
 			}
@@ -132,7 +136,9 @@ namespace Gendarme.Rules.Design {
 			if (invokeParameter.Name == expectedName)
 				return true;
 
-			Runner.Report (eventType, Severity.Low, Confidence.High, String.Format ("The expected name is {0}, not {1}", expectedName, invokeParameter.Name));
+			string msg = String.Format (CultureInfo.InvariantCulture, "The expected name is {0}, not {1}", 
+				expectedName, invokeParameter.Name);
+			Runner.Report (eventType, Severity.Low, Confidence.High, msg);
 			return false;
 		}
 		

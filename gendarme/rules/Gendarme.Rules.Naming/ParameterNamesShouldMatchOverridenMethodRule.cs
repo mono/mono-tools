@@ -182,7 +182,8 @@ namespace Gendarme.Rules.Naming {
 			IList<ParameterDefinition> pdc = method.Parameters;
 			for (int i = 0; i < pdc.Count; i++) {
 				if (pdc [i].Name != base_pdc [i].Name) {
-					string s = string.Format ("The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
+					string s = String.Format (CultureInfo.InvariantCulture,
+						"The name of parameter #{0} ({1}) does not match the name of the parameter in the overriden method ({2}).", 
 						i + 1, pdc [i].Name, base_pdc [i].Name);
 					Runner.Report (method, Severity.Medium, Confidence.High, s);
 				}

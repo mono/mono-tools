@@ -31,6 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -127,7 +128,8 @@ namespace Gendarme.Rules.Maintainability {
 			//how's severity?
 			Severity sev = GetCyclomaticComplexitySeverity(cc);
 
-			Runner.Report (method, sev, Confidence.High, String.Format ("Method's cyclomatic complexity : {0}.", cc));
+			string msg = String.Format (CultureInfo.CurrentCulture, "Method's cyclomatic complexity : {0}.", cc);
+			Runner.Report (method, sev, Confidence.High, msg);
 			return RuleResult.Failure;
 		}
 

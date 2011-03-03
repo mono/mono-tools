@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -310,7 +311,8 @@ namespace Gendarme.Framework.Rocks {
 			case StackBehaviour.PopAll:
 				return -1;
 			default:
-				string unknown = String.Format ("'{0}' is not a valid value for instruction '{1}'.",
+				string unknown = String.Format (CultureInfo.InvariantCulture,
+					"'{0}' is not a valid value for instruction '{1}'.",
 					self.OpCode.StackBehaviourPush, self.OpCode);
 				throw new InvalidOperationException (unknown);
 			}
@@ -348,7 +350,8 @@ namespace Gendarme.Framework.Rocks {
 
 				throw new NotImplementedException ("Varpush not supported for this Instruction.");
 			default:
-				string unknown = String.Format ("'{0}' is not a valid value for instruction '{1}'.",
+				string unknown = String.Format (CultureInfo.InvariantCulture,
+					"'{0}' is not a valid value for instruction '{1}'.",
 					self.OpCode.StackBehaviourPush, self.OpCode);
 				throw new InvalidOperationException (unknown);
 			}

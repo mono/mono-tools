@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -380,7 +381,7 @@ namespace Gendarme {
 		private static string TimeToString (TimeSpan time)
 		{
 			if (time >= TimeSpan.FromMilliseconds (100))
-				return string.Format ("{0:0.0} seconds", time.TotalSeconds);
+				return String.Format (CultureInfo.CurrentCulture, "{0:0.0} seconds", time.TotalSeconds);
 			else
 				return "<0.1 seconds";
 		}
@@ -441,9 +442,10 @@ namespace Gendarme {
 				if (null != log_file || null != xml_file || null != html_file) {
 					List<string> files = new List<string> (new string [] { log_file, xml_file, html_file });
 					files.RemoveAll (string.IsNullOrEmpty);
-					hint = string.Format ("Report{0} written to: {1}.",
+					hint = String.Format (CultureInfo.CurrentCulture, "Report{0} written to: {1}.",
 						(files.Count > 1) ? "s" : string.Empty,
-						string.Join (",", files.Select (file => string.Format ("`{0}'", file)).ToArray ()));
+						string.Join (",", files.Select (file => 
+							String.Format (CultureInfo.CurrentCulture, "`{0}'", file)).ToArray ()));
 				}
 
 				if (Defects.Count == 0)

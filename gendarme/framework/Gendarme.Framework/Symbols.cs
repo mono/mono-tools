@@ -112,7 +112,7 @@ namespace Gendarme.Framework {
 		// include line and column.
 		private static string FormatSequencePoint (string document, int line, int column, bool exact)
 		{
-			string sline = (line == PdbHiddenLine) ? "unavailable" : line.ToString ();
+			string sline = (line == PdbHiddenLine) ? "unavailable" : line.ToString (CultureInfo.InvariantCulture);
 
 			// MDB (mono symbols) does not provide any column information (so we don't show any)
 			// there's also no point in showing a column number if we're not totally sure about the line

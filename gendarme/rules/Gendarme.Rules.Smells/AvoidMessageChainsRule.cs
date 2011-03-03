@@ -31,6 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -131,7 +132,8 @@ namespace Gendarme.Rules.Smells {
 				Log.WriteLine (this, "chain of length {0} at {1:X4}", counter, ins.Offset);
 
 				if (counter > MaxChainLength) {
-					string msg = String.Format ("Chain length {0} versus maximum of {1}.", counter, MaxChainLength);
+					string msg = String.Format (CultureInfo.CurrentCulture, 
+						"Chain length {0} versus maximum of {1}.", counter, MaxChainLength);
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 				}
 			}

@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -117,7 +118,8 @@ namespace Gendarme.Rules.Design {
 				}
 			}
 
-			string text = String.Format ("Enums should use System.Int32 instead of '{0}'.", ftype.GetFullName ());
+			string text = String.Format (CultureInfo.InvariantCulture, 
+				"Enums should use System.Int32 instead of '{0}'.", ftype.GetFullName ());
 			Runner.Report (type, severity, Confidence.Total, text);
 			return RuleResult.Failure;
 		}

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -119,9 +120,11 @@ namespace Gendarme.Rules.Design {
 
 				foreach (ParameterDefinition param in constructor.Parameters) {
 					 // pascal case it
-					string correspondingPropertyName = Char.ToUpper (param.Name [0]).ToString () + param.Name.Substring (1);
+					string correspondingPropertyName = Char.ToUpper (param.Name [0], CultureInfo.InvariantCulture).ToString (CultureInfo.InvariantCulture) +
+						param.Name.Substring (1);
 					if (!allProperties.Contains (correspondingPropertyName)) {
-						string s = String.Format ("Add '{0}' property to the attribute class.", correspondingPropertyName);
+						string s = String.Format (CultureInfo.InvariantCulture, 
+							"Add '{0}' property to the attribute class.", correspondingPropertyName);
 						Runner.Report (param, Severity.Medium, Confidence.High, s);
 						allProperties.Add (correspondingPropertyName); // to avoid double catching same property (e.g. from different constructors)
 					}

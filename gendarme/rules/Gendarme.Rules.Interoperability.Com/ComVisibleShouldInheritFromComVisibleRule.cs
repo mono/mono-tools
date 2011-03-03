@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 using Mono.Cecil;
@@ -101,9 +102,9 @@ namespace Gendarme.Rules.Interoperability.Com {
 
 			TypeDefinition baseType = type.BaseType.Resolve ();
 			if ((baseType != null) && !baseType.IsTypeComVisible ()) {
-				Runner.Report (type, Severity.High, Confidence.Total,
-					String.Format ("Type is derived from invisible from COM type {0}",
-						baseType.GetFullName ()));
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"Type is derived from invisible from COM type {0}", baseType.GetFullName ());
+				Runner.Report (type, Severity.High, Confidence.Total, msg);
 			}
 			return Runner.CurrentRuleResult;
 		}

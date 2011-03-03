@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -127,7 +128,8 @@ namespace Gendarme.Rules.BadPractice {
 			else if (assembly_version.Revision == file_version.Revision)
 				return RuleResult.Success;
 
-			string msg = String.Format ("Assembly version is '{0}' while file version is '{1}'.", assembly_version, file_version);
+			string msg = String.Format (CultureInfo.InvariantCulture,
+				"Assembly version is '{0}' while file version is '{1}'.", assembly_version, file_version);
 			Runner.Report (assembly, s, Confidence.High, msg);
 			return RuleResult.Failure;
 		}

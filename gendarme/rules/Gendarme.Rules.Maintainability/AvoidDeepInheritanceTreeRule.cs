@@ -28,6 +28,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -99,7 +100,8 @@ namespace Gendarme.Rules.Maintainability {
 			// where it's possible we can't resolve up to System.Object
 			Confidence confidence = countExternalDepth ? Confidence.High : Confidence.Total;
 			// Severity is based on the depth
-			Runner.Report (type, GetSeverity (depth), confidence, String.Format ("Inheritance tree depth : {0}.", depth));
+			string msg = String.Format (CultureInfo.CurrentCulture, "Inheritance tree depth : {0}.", depth);
+			Runner.Report (type, GetSeverity (depth), confidence, msg);
 			return RuleResult.Failure;
 		}
 	}

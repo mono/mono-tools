@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -116,7 +117,9 @@ namespace Gendarme.Rules.Concurrency {
 				if (ins.OpCode.Code == Code.Stsfld) {
 					FieldReference fr = (ins.Operand as FieldReference);
 					if (CheckField (fr)) {
-						string text = String.Format ("The static field '{0}', of type '{1}'. is being set in an instance method.", fr.Name, fr.FieldType);
+						string text = String.Format (CultureInfo.InvariantCulture,
+							"The static field '{0}', of type '{1}'. is being set in an instance method.", 
+							fr.Name, fr.FieldType);
 						Runner.Report (method, ins, Severity.Medium, Confidence.High, text);
 					}
 				}

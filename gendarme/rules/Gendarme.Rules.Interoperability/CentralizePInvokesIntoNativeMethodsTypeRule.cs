@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -91,12 +92,14 @@ namespace Gendarme.Rules.Interoperability {
 		{
 			// *NativeMethods types should never be visible outside the assembly
 			if (type.IsVisible ()) {
-				string msg = String.Format ("'{0}' should not be visible outside the assembly.", type);
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"'{0}' should not be visible outside the assembly.", type.GetFullName ());
 				Runner.Report (type, Severity.High, Confidence.Total, msg);
 			}
 
 			if (CanInstantiateType (type)) {
-				string msg = String.Format ("'{0}' should not be static or sealed with no visible constructor.", type);
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"'{0}' should not be static or sealed with no visible constructor.", type.GetFullName ());
 				Runner.Report (type, Severity.High, Confidence.Total, msg);
 			}
 		}

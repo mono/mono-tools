@@ -34,6 +34,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Gendarme.Rules.Correctness {
 
@@ -114,7 +115,8 @@ namespace Gendarme.Rules.Correctness {
 						
 						string name = Mutates (method, ins);
 						if (name != null) {
-							string mesg = string.Format ("{0}::{1} is conditionally compiled on {2} but mutates {3}",
+							string mesg = String.Format (CultureInfo.InvariantCulture, 
+								"{0}::{1} is conditionally compiled on {2} but mutates {3}",
 								target.DeclaringType.Name, target.Name, define, name);
 							Log.WriteLine (this, mesg);
 							

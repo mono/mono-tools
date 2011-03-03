@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Mono.Cecil;
 
 using Gendarme.Framework;
@@ -124,7 +125,7 @@ namespace Gendarme.Rules.Design {
 					return; //both are defined
 			}
 
-			string s = string.Format (Message, pair.Key.Name, pair.Value.Name);
+			string s = string.Format (CultureInfo.InvariantCulture, Message, pair.Key.Name, pair.Value.Name);
 			Runner.Report (op, severity, Confidence.Total, s);
 		}
 	}

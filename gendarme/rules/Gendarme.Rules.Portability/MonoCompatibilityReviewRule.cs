@@ -31,6 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Net;
 
@@ -127,7 +128,7 @@ namespace Gendarme.Rules.Portability {
 
 		private string GetFileName (Version v)
 		{
-			return Path.Combine (DefinitionsFolder, String.Format ("definitions-{0}.zip", v));
+			return Path.Combine (DefinitionsFolder, String.Format (CultureInfo.InvariantCulture, "definitions-{0}.zip", v));
 		}
 
 		private Version FindLastestLocalVersion ()
@@ -349,14 +350,14 @@ namespace Gendarme.Rules.Portability {
 
 				// calling not implemented method is very likely not to work == High
 				if ((NotImplemented != null) && NotImplementedInternal.Contains (callee)) {
-					string message = String.Format (NotImplementedMessage, callee);
+					string message = String.Format (CultureInfo.InvariantCulture, NotImplementedMessage, callee);
 					// confidence is Normal since we can't be sure if MoMA data is up to date
 					Runner.Report (method, ins, Severity.High, Confidence.Normal, message);
 				}
 
 				// calling missing methods can't work == Critical
 				if ((Missing != null) && Missing.Contains (callee)) {
-					string message = String.Format (MissingMessage, callee);
+					string message = String.Format (CultureInfo.InvariantCulture, MissingMessage, callee);
 					Runner.Report (method, ins, Severity.Critical, Confidence.Normal, message);
 				}
 
@@ -364,7 +365,7 @@ namespace Gendarme.Rules.Portability {
 				if (ToDo != null) {
 					string value;
 					if (ToDo.TryGetValue (callee, out value)) {
-						string message = String.Format (TodoMessage, callee, value);
+						string message = String.Format (CultureInfo.InvariantCulture, TodoMessage, callee, value);
 						Runner.Report (method, ins,  Severity.Medium, Confidence.Normal, message);
 					}
 				}

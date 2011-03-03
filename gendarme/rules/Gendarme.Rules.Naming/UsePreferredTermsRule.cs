@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -140,7 +141,7 @@ namespace Gendarme.Rules.Naming {
 					continue;
 				if (index > 0 && char.IsLetter (name, index - 1) && char.IsLower (name, index))
 					continue; //term is part of a larger word
-				string s = String.Format (Message, pair.Key, pair.Value);
+				string s = String.Format (CultureInfo.InvariantCulture, Message, pair.Key, pair.Value);
 				Runner.Report (identifier, severity, Confidence.High, s);
 			}
 		}

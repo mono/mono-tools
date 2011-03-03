@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Mono.Cecil;
@@ -96,7 +97,7 @@ namespace Gendarme.Rules.Naming {
 				return name.ToUpperInvariant ();
 
 			int index = IndexOfFirstCorrectChar (name);
-			return Char.ToUpperInvariant (name [index]).ToString () + name.Substring (index + 1);
+			return Char.ToUpperInvariant (name [index]).ToString (CultureInfo.InvariantCulture) + name.Substring (index + 1);
 		}
 
 		// check if name is camelCased
@@ -118,7 +119,7 @@ namespace Gendarme.Rules.Naming {
 				return name.ToLowerInvariant ();
 
 			int index = IndexOfFirstCorrectChar (name);
-			return Char.ToLowerInvariant (name [index]).ToString () + name.Substring (index + 1);
+			return Char.ToLowerInvariant (name [index]).ToString (CultureInfo.InvariantCulture) + name.Substring (index + 1);
 		}
 
 		private static int IndexOfFirstCorrectChar (string s)
@@ -144,14 +145,15 @@ namespace Gendarme.Rules.Naming {
 			foreach (string ns in nspace.Split ('.')) {
 				switch (ns.Length) {
 				case 1:
-					ReportCasingError (nd, string.Format (
+					ReportCasingError (nd, String.Format (CultureInfo.InvariantCulture,
 						"Use of single character namespace is discouraged. Rename namespace {0}", ns));
 
 					break;
 				case 2:
 					// if the subnamespace is made of 2 chars, each letter have to be uppercase
 					if (ns.Any (c => Char.IsLetter (c) && Char.IsLower (c))) {
-						string msg = String.Format ("In namespaces made of two characters, both characters should uppercase. Rename namespace '{0}' to '{1}'",
+						string msg = String.Format (CultureInfo.InvariantCulture,
+							"In namespaces made of two characters, both characters should uppercase. Rename namespace '{0}' to '{1}'",
 							ns, ns.ToUpperInvariant ());
 						ReportCasingError (nd, msg);
 					}
@@ -159,11 +161,13 @@ namespace Gendarme.Rules.Naming {
 				default:
 					// if the sub namespace is made of 3 or more chars, make sure they're not all uppercase
 					if (ns.All (c => Char.IsLetter (c) && Char.IsUpper (c))) {
-						string msg = String.Format ("Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}{2}'",
-							ns, ns [0].ToString (), ns.Substring (1).ToLowerInvariant ());
+						string msg = String.Format (CultureInfo.InvariantCulture,
+							"Namespaces longer than two characters should not be all uppercase. Rename namespace '{0}' to '{1}{2}'",
+							ns, ns [0].ToString (CultureInfo.InvariantCulture), ns.Substring (1).ToLowerInvariant ());
 						ReportCasingError (nd, msg);
 					} else if (!IsPascalCase (ns)) {
-						string msg = String.Format ("Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
+						string msg = String.Format (CultureInfo.InvariantCulture,
+							"Namespaces longer than two characters should be pascal cased. Rename namespace '{0}' to '{1}'",
 							ns, PascalCase (ns));
 						ReportCasingError (nd, msg);
 					}
@@ -189,7 +193,7 @@ namespace Gendarme.Rules.Naming {
 			// types should all be PascalCased
 			string name = type.Name;
 			if (!IsPascalCase (name)) {
-				ReportCasingError (type, string.Format (
+				ReportCasingError (type, String.Format (CultureInfo.InvariantCulture,
 					"Type names should all be pascal-cased. Rename '{0}' type to '{1}'.", 
 					name, PascalCase (name)));
 			}
@@ -222,7 +226,8 @@ namespace Gendarme.Rules.Naming {
 
 			// like types, methods/props should all be PascalCased, too
 			if (!IsPascalCase (name)) {
-				string errorMessage = String.Format ("By existing naming conventions, all the method and property names should all be pascal-cased (e.g. MyOperation). Rename '{0}' to '{1}'.",
+				string errorMessage = String.Format (CultureInfo.InvariantCulture,
+					"By existing naming conventions, all the method and property names should all be pascal-cased (e.g. MyOperation). Rename '{0}' to '{1}'.",
 					name, PascalCase (name));
 				Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
 			}
@@ -232,7 +237,8 @@ namespace Gendarme.Rules.Naming {
 				foreach (ParameterDefinition param in method.Parameters) {
 					// params should all be camelCased
 					if (!IsCamelCase (param.Name)) {
-						string errorMessage = String.Format ("By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
+						string errorMessage = String.Format (CultureInfo.InvariantCulture,
+							"By existing naming conventions, the parameter names should all be camel-cased (e.g. myParameter). Rename '{0}' parameter to '{1}'.",
 							param, CamelCase (param.Name));
 						Runner.Report (method, Severity.Medium, Confidence.High, errorMessage);
 					}

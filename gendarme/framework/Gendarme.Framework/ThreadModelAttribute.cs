@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 // Note that these types are extended version of what we recommend
 // that users use. See DecorateThreadsRule documentation for a smaller version
@@ -82,7 +83,7 @@ namespace Gendarme.Framework {
 		public override string ToString ()
 		{
 			if (AllowsEveryCaller)
-				return string.Format ("{0} | AllowEveryCaller", Model);
+				return String.Format (CultureInfo.InvariantCulture, "{0} | AllowEveryCaller", Model);
 				
 			return Model.ToString ();
 		}

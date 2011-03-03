@@ -34,6 +34,7 @@ using Gendarme.Framework.Rocks;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Gendarme.Rules.Design {
 
@@ -100,7 +101,7 @@ namespace Gendarme.Rules.Design {
 			// We assume the name is pascal- or camel- cased: to prevent false-positives (such as the urn in return),
 			// the position is only returned if the character is the first in the string, or is an uppercase letter.
 			while ((index = memberName.IndexOf (token, index, StringComparison.OrdinalIgnoreCase)) != -1) {
-				if (index == 0 || char.IsUpper (memberName [index]))
+				if (index == 0 || Char.IsUpper (memberName [index]))
 					break;
 				index += token.Length;
 			}
@@ -113,7 +114,7 @@ namespace Gendarme.Rules.Design {
 			while ((index = FindTokenStart (memberName, "ur", index)) != -1) {
 				if (memberName.Length < index + 2)
 					break;
-				if (url_enders.Contains (char.ToLower (memberName [index + 2])))
+				if (url_enders.Contains (Char.ToLower (memberName [index + 2], CultureInfo.InvariantCulture)))
 					return true;
 				index += 2;
 			}

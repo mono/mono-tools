@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -107,7 +108,8 @@ namespace Gendarme.Rules.Performance {
 
 		private void ReportBoxing (MethodDefinition method, Instruction ins, Confidence confidence)
 		{
-			string msg = String.Format ("Type '{0}' is being boxed.", (ins.Operand as TypeReference).GetFullName ());
+			string msg = String.Format (CultureInfo.InvariantCulture,
+				"Type '{0}' is being boxed.", (ins.Operand as TypeReference).GetFullName ());
 			Runner.Report (method, ins, Severity.High, confidence, msg);
 		}
 

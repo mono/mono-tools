@@ -15,6 +15,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -60,17 +61,28 @@ namespace Gendarme.Framework.Helpers {
 						buffer.Append ("* ");
 					else
 						buffer.Append ("  ");
-					buffer.AppendFormat ("  {0}: {1}", instr.Offset.ToString ("X4"),
-							instr.OpCode.Name);
+
+					buffer.Append ("  ");
+					buffer.Append (instr.Offset.ToString ("X4", CultureInfo.InvariantCulture));
+					buffer.Append (": ");
+					buffer.Append (instr.OpCode.Name);
+
 					int[] targets = BranchTargets (instr);
-					if (targets != null)
-						foreach (int target in targets)
-							buffer.AppendFormat (" {0}", target.ToString ("X4"));
-					else if (instr.Operand is string)
-						buffer.AppendFormat (" \"{0}\"", instr.Operand.ToString ());
-					else if (instr.Operand != null)
-						buffer.AppendFormat (" {0}", instr.Operand.ToString ());
-					buffer.AppendLine (string.Empty);
+					if (targets != null) {
+						foreach (int target in targets) {
+							buffer.Append (' ');
+							buffer.Append (target.ToString ("X4", CultureInfo.InvariantCulture));
+						}
+					} else if (instr.Operand is string) {
+						buffer.Append (" \"");
+						buffer.Append (instr.Operand);
+						buffer.Append ('"');
+					} else if (instr.Operand != null) {
+						buffer.Append (" ");
+						buffer.Append (instr.Operand);
+					}
+					buffer.AppendLine ();
+
 					prevInstr = instr;
 					if (EndsTryRegion (instr) != null)
 						buffer.AppendLine ("} (Try)");

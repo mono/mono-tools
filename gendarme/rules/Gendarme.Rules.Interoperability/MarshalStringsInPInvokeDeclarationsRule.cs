@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Gendarme.Framework;
@@ -89,7 +90,8 @@ namespace Gendarme.Rules.Interoperability {
 
 			foreach (ParameterDefinition parameter in method.Parameters) {
 				if (IsStringOrSBuilder (parameter.ParameterType) && (parameter.MarshalInfo == null)) {
-					string text = string.Format ("Parameter '{0}', of type '{1}', does not have [MarshalAs] attribute, yet no [DllImport CharSet=] is set for the method '{2}'.",
+					string text = String.Format (CultureInfo.InvariantCulture, 
+						"Parameter '{0}', of type '{1}', does not have [MarshalAs] attribute, yet no [DllImport CharSet=] is set for the method '{2}'.",
 						parameter.Name, parameter.ParameterType.Name, method.Name);
 					Runner.Report (parameter, Severity.High, Confidence.Total, text);
 				}

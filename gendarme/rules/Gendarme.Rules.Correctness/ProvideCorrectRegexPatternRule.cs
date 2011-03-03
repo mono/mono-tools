@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -152,7 +153,8 @@ namespace Gendarme.Rules.Correctness {
 			} catch (Exception e) {
 				/* potential set of exceptions is not well documented and potentially changes with regarts to
 				   different runtime and/or runtime version. */
-				string msg = string.Format ("Pattern '{0}' is invalid. Reason: {1}", pattern, e.Message);
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"Pattern '{0}' is invalid. Reason: {1}", pattern, e.Message);
 				Runner.Report (method, ins, Severity.High, confidence, msg);
 				return false;
 			}

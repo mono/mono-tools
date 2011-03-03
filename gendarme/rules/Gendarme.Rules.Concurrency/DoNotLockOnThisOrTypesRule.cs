@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -127,7 +128,7 @@ namespace Gendarme.Rules.Concurrency {
 
 				if ((mr.Name == "GetTypeFromHandle") && (mr.DeclaringType.Name == "Type")) {
 					// ldtoken
-					msg = String.Format (LockType, (ins.Previous.Operand as TypeReference).Name);
+					msg = String.Format (CultureInfo.InvariantCulture, LockType, (ins.Previous.Operand as TypeReference).Name);
 				} else {
 					msg = mr.ToString ();
 				}

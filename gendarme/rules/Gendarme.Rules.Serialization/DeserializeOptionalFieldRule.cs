@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -137,12 +138,12 @@ namespace Gendarme.Rules.Serialization {
 						// report if we didn't find a deserialization method
 						if (!deserialized_candidate || !deserializing_candidate) {
 							// Medium since it's possible that the optional fields don't need to be re-computed
-							string s = String.Format (MessageOptional, field.Name);
+							string s = String.Format (CultureInfo.InvariantCulture, MessageOptional, field.Name);
 							Runner.Report (field, Severity.Medium, Confidence.High, s);
 						}
 					} else {
 						// [OptionalField] without [Serializable] is a bigger problem
-						string s = String.Format (MessageSerializable, field.Name);
+						string s = String.Format (CultureInfo.InvariantCulture, MessageSerializable, field.Name);
 						Runner.Report (field, Severity.Critical, Confidence.High, s);
 					}
 				}

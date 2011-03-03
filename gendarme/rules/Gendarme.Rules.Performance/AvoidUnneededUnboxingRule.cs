@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -138,7 +139,7 @@ namespace Gendarme.Rules.Performance {
 			default:
 				return String.Empty;
 			}
-			return String.Format ("{0} '{1}' unboxed to type '{2}' {{0}} times.", 
+			return String.Format (CultureInfo.InvariantCulture, "{0} '{1}' unboxed to type '{2}' {{0}} times.", 
 				kind, name, (ins.Operand as TypeReference).GetFullName ());
 		}
 
@@ -189,7 +190,7 @@ namespace Gendarme.Rules.Performance {
 				// we can't (always) avoid unboxing one time
 				if (kvp.Value < 2)
 					continue;
-				string s = String.Format (kvp.Key, kvp.Value);
+				string s = String.Format (CultureInfo.InvariantCulture, kvp.Key, kvp.Value);
 				Runner.Report (method, GetSeverityFromCount (kvp.Value), Confidence.Normal, s);
 			}
 

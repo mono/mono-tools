@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Gendarme.Framework;
@@ -118,13 +119,16 @@ namespace Gendarme.Rules.Naming {
 			if (type.IsInterface) {
 				// interfaces should look like 'ISomething'
 				if (!IsCorrectInterfaceName (name)) { 
-					string s = String.Format ("The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", name);
+					string s = String.Format (CultureInfo.InvariantCulture,
+						"The '{0}' interface name doesn't have the required 'I' prefix. Acoording to existing naming conventions, all interface names should begin with the 'I' letter followed by another capital letter.", 
+						name);
 					Runner.Report (type, Severity.Critical, Confidence.High, s);
 				}
 			} else {
 				// class should _not_ look like 'CSomething" or like an interface 'IOops'
 				if (!IsCorrectTypeName (name)) { 
-					string s = String.Format ("The '{0}' type name starts with '{1}' prefix but, according to existing naming conventions, type names should not have any specific prefix.", 
+					string s = String.Format (CultureInfo.InvariantCulture,
+						"The '{0}' type name starts with '{1}' prefix but, according to existing naming conventions, type names should not have any specific prefix.", 
 						name, name [0]);
 					Runner.Report (type, Severity.Medium, Confidence.High, s);
 				}
@@ -137,7 +141,9 @@ namespace Gendarme.Rules.Naming {
 				foreach (GenericParameter parameter in type.GenericParameters) {
 					string param_name = parameter.Name;
 					if (IsCorrectGenericParameterName (param_name)) {
-						string s = String.Format ("The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", param_name);
+						string s = String.Format (CultureInfo.InvariantCulture,
+							"The generic parameter '{0}' should be prefixed with 'T' or be a single, uppercased letter.", 
+							param_name);
 						Runner.Report (type, Severity.High, Confidence.High, s);
 					}
 				}

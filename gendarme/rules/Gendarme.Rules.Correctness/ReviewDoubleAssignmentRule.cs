@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -113,7 +114,7 @@ namespace Gendarme.Rules.Correctness {
 			if (stfld.TraceBack (method).GetOperand (method) != next.TraceBack (method).GetOperand (method))
 				return String.Empty;
 
-			return String.Format ("Instance field '{0}' on same variable '{1}'.", fd1.Name, vd1.Name);
+			return String.Format (CultureInfo.InvariantCulture, "Instance field '{0}' on same variable '{1}'.", fd1.Name, vd1.Name);
 		}
 
 		static string CheckDoubleAssignement (MethodDefinition method, Instruction ins, Instruction next)
@@ -130,7 +131,7 @@ namespace Gendarme.Rules.Correctness {
 				if (fd1.MetadataToken.RID != fd2.MetadataToken.RID)
 					return String.Empty;
 
-				return String.Format ("Static field '{0}'.", fd1.Name);
+				return String.Format (CultureInfo.InvariantCulture, "Static field '{0}'.", fd1.Name);
 			} else if (ins.IsStoreLocal ()) {
 				// for a local variable the pattern is
 				// DUP, STLOC, STLOC
@@ -141,7 +142,7 @@ namespace Gendarme.Rules.Correctness {
 					if (vd1.Index != vd2.Index)
 						return String.Empty;
 
-					return String.Format ("Local variable '{0}'.", vd1.Name);
+					return String.Format (CultureInfo.InvariantCulture, "Local variable '{0}'.", vd1.Name);
 				} else if (next.OpCode.Code == Code.Stfld) {
 					// instance fields are a bit more complex...
 					return CheckDoubleAssignementOnInstanceFields (method, ins, next);

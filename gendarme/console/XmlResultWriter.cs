@@ -31,6 +31,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -70,7 +71,7 @@ namespace Gendarme {
 		{
 			writer.WriteStartDocument ();
 			writer.WriteStartElement ("gendarme-output");
-			writer.WriteAttributeString ("date", DateTime.UtcNow.ToString ());
+			writer.WriteAttributeString ("date", DateTime.UtcNow.ToString (CultureInfo.InvariantCulture));
 		}
 
 		protected override void Write ()

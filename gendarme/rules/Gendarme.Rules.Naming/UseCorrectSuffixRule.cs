@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 using Mono.Cecil;
@@ -139,7 +140,9 @@ namespace Gendarme.Rules.Naming {
 		{
 			if (type.Inherits (nameSpace, name) || type.Implements (nameSpace, name))
 				return String.Empty;
-			return String.Format ("'{0}' should only be used for types that inherits or implements '{1}.{2}'.", 
+
+			return String.Format (CultureInfo.InvariantCulture,
+				"'{0}' should only be used for types that inherits or implements '{1}.{2}'.", 
 				type.Name, nameSpace, name);
 		}
 
@@ -233,8 +236,11 @@ namespace Gendarme.Rules.Naming {
 
 		private static string ComposeMessage (List<string> candidates)
 		{
-			if (candidates.Count == 1)
-				return String.Format ("The type name does not end with '{0}' suffix. Append it to the type name.", candidates [0]);
+			if (candidates.Count == 1) {
+				return String.Format (CultureInfo.InvariantCulture, 
+					"The type name does not end with '{0}' suffix. Append it to the type name.", 
+					candidates [0]);
+			}
 
 			StringBuilder sb = new StringBuilder ("The type name does not end with one of the following suffixes: ");
 			sb.Append (candidates [0]);

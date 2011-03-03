@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -116,7 +117,8 @@ namespace Gendarme.Rules.Concurrency {
 		{
 			if (!type.Inherits (nameSpace, name))
 				return String.Empty;
-			return String.Format ("'{0}' inherits from '{1}.{2}'.", type.GetFullName (), nameSpace, name);
+			return String.Format (CultureInfo.InvariantCulture, "'{0}' inherits from '{1}.{2}'.", 
+				type.GetFullName (), nameSpace, name);
 		}
 
 		public override void Analyze (MethodDefinition method, MethodReference enter, Instruction ins)

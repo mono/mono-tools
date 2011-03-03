@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -141,7 +142,8 @@ namespace Gendarme.Rules.Design.Generic {
 						severity = Severity.Low;
 				}
 				if (!found) {
-					string msg = String.Format ("Generic parameter '{0}.{1}' is not used by the method parameters.", nspace, name);
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"Generic parameter '{0}.{1}' is not used by the method parameters.", nspace, name);
 					Runner.Report (method, severity, Confidence.High, msg);
 				}
 			}

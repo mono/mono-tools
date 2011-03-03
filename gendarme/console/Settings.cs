@@ -4,7 +4,7 @@
 // Authors:
 //	Sebastien Pouliot <sebastien@ximian.com>
 //
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
@@ -150,7 +151,8 @@ namespace Gendarme {
 
 		private void OnValidationErrors (object sender, ValidationEventArgs args)
 		{
-			validation_errors.Add (args.Exception.Message.Replace ("XmlSchema error", String.Format ("Error in the configuration file {0}", config_file)));
+			validation_errors.Add (args.Exception.Message.Replace ("XmlSchema error", 
+				String.Format (CultureInfo.CurrentCulture, "Error in the configuration file {0}", config_file)));
 		}
 
 		private void ValidateXmlDocument ()
@@ -228,7 +230,8 @@ namespace Gendarme {
 
 		static Exception GetException (string message, string ruleName, string propertyName, string value)
 		{
-			return new XmlException (String.Format (message + ".  Review your configuration file.", ruleName, propertyName, value));
+			return new XmlException (String.Format (CultureInfo.CurrentCulture, 
+				message + ".  Review your configuration file.", ruleName, propertyName, value));
 		}
 
 		public bool Load ()

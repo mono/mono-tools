@@ -24,6 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Globalization;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -84,7 +86,8 @@ namespace Gendarme.Rules.BadPractice {
 				if (!ftype.IsValueType && !ftype.IsNamed ("System", "String"))
 					continue;
 
-				string msg = string.Format ("'{0}' of type {1}.", field.Name, ftype.GetFullName ());
+				string msg = string.Format (CultureInfo.InvariantCulture, "'{0}' of type {1}.", 
+					field.Name, ftype.GetFullName ());
 				Runner.Report (field, Severity.High, Confidence.High, msg);
 
 			}

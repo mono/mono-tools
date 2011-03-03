@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -87,7 +88,7 @@ namespace Gendarme.Rules.Interoperability {
 
 		private void Report (MethodDefinition method, Instruction ins, string typeName)
 		{
-			string msg = String.Format ("Type cast to '{0}'.", typeName);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Type cast to '{0}'.", typeName);
 			Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 		}
 
@@ -165,7 +166,8 @@ namespace Gendarme.Rules.Interoperability {
 				if (m.Name != "op_Explicit")
 					return;
 
-				string msg = String.Format ("A '{0}' value is casted into an '{1}' when reading marshalled memory.",
+				string msg = String.Format (CultureInfo.InvariantCulture,
+					"A '{0}' value is casted into an '{1}' when reading marshalled memory.",
 					mr.ReturnType.GetFullName (), m.Parameters [0].ParameterType.GetFullName ());
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 			}

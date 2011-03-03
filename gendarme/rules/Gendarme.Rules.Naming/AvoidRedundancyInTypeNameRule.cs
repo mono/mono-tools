@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -153,7 +154,7 @@ namespace Gendarme.Rules.Naming {
 			//main goal is to keep the API as simple as possible so this is more severe for visible types
 			Severity severity = type.IsVisible () ? Severity.Medium : Severity.Low;
 
-			string msg = String.Format ("Consider renaming type to '{0}'.", suggestion);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Consider renaming type to '{0}'.", suggestion);
 			Runner.Report (type, severity, Confidence.Normal, msg);
 			return RuleResult.Failure;
 		}

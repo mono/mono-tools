@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -83,7 +84,7 @@ namespace Gendarme.Rules.Smells {
 				Pattern duplicated = GetDuplicatedCode (current, target);
 				if (duplicated != null && duplicated.Count > 0) {
 					parent_rule.Runner.Report (current, duplicated[0], Severity.High, Confidence.Normal, 
-						String.Format ("Duplicated code with {0}", target.GetFullName ()));
+						String.Format (CultureInfo.InvariantCulture, "Duplicated code with {0}", target.GetFullName ()));
 				}
 			}
 		}

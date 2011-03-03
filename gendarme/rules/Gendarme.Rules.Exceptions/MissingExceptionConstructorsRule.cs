@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -163,21 +164,24 @@ namespace Gendarme.Rules.Exceptions {
 			}
 
 			if (!empty_ctor) {
-				string s = String.Format (MissingConstructor, "public", type.Name, "()");
+				string s = String.Format (CultureInfo.InvariantCulture, MissingConstructor, "public", 
+					type.Name, "()");
 				Runner.Report (type, Severity.High, Confidence.Total, s);
 			}
 			if (!string_ctor) {
-				string s = String.Format (MissingConstructor, "public", type.Name, "(string message)");
+				string s = String.Format (CultureInfo.InvariantCulture, MissingConstructor, "public", 
+					type.Name, "(string message)");
 				Runner.Report (type, Severity.High, Confidence.Total, s);
 			}
 			if (!inner_exception_ctor) {
-				string s = String.Format (MissingConstructor, "public", type.Name,
-					"(string message, Exception innerException)");
+				string s = String.Format (CultureInfo.InvariantCulture, MissingConstructor, "public", 
+					type.Name, "(string message, Exception innerException)");
 				Runner.Report (type, Severity.High, Confidence.Total, s);
 			}
 			if (!serialization_ctor) {
-				string s = String.Format (MissingConstructor, (type.IsSealed) ? "private" : "protected",
-					type.Name, "(SerializationInfo info, StreamingContext context)");
+				string s = String.Format (CultureInfo.InvariantCulture, MissingConstructor, 
+					(type.IsSealed) ? "private" : "protected", type.Name, 
+					"(SerializationInfo info, StreamingContext context)");
 				Runner.Report (type, Severity.High, Confidence.Total, s);
 			}
 

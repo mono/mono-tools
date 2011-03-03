@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -122,7 +123,9 @@ namespace Gendarme.Rules.Design {
 					&& HasValueTypeField(type, string.Concat(prefix,suffix)) ) {
 					//TODO: check if they are both used in the same method? does the complexity worth it?
 					string s = (Runner.VerbosityLevel > 0)
-						? String.Format ("Field '{0}' should probably be a nullable if '{1}' purpose is to inform if '{0}' has been set.", fd.Name, suffix)
+						? String.Format (CultureInfo.InvariantCulture, 
+							"Field '{0}' should probably be a nullable if '{1}' purpose is to inform if '{0}' has been set.", 
+							fd.Name, suffix)
 						: string.Empty;
 					Runner.Report (fd, Severity.Low, Confidence.Low, s);
 				}

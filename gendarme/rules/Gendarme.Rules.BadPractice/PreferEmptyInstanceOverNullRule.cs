@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -158,7 +159,7 @@ namespace Gendarme.Rules.BadPractice {
 
 		protected override void Report (MethodDefinition method, Instruction ins)
 		{
-			string msg = string.Format ("Replace null with {0}.", SuggestReturnType ());
+			string msg = String.Format (CultureInfo.InvariantCulture, "Replace null with {0}.", SuggestReturnType ());
 			Runner.Report (method, ins, method.IsVisible () ? Severity.Medium : Severity.Low, Confidence.Normal, msg);
 		}
 
@@ -167,7 +168,7 @@ namespace Gendarme.Rules.BadPractice {
 			if (string_return_type)
 				return "string.Empty";
 			else if (array_return_type)
-				return string.Format ("an empty {0} array", return_type.Name);
+				return String.Format (CultureInfo.InvariantCulture, "an empty {0} array", return_type.Name);
 			else if (ienumerable_return_type)
 				return "yield break (or equivalent)";
 			return "an empty collection";

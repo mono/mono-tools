@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.Text;
 
 using Mono.Cecil;
@@ -115,7 +116,7 @@ namespace Gendarme.Rules.Portability {
 				else if (c == '\t')
 					result.Append ("\\t");
 				else
-					result.AppendFormat ("\\x").Append (((short) c).ToString ("x"));
+					result.Append ("\\x").Append (((short) c).ToString ("x", CultureInfo.InvariantCulture));
 			}
 			return result.Append ("\".").ToString ();
 		}

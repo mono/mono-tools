@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -131,7 +132,8 @@ namespace Gendarme.Rules.Performance {
 
 			// finalizer is empty (bad / useless)
 			string msg = nullify_fields == 0 ? String.Empty : 
-				String.Format ("Contains {0} fields being nullified needlessly", nullify_fields);
+				String.Format (CultureInfo.InvariantCulture, 
+					"Contains {0} fields being nullified needlessly", nullify_fields);
 			Runner.Report (type, Severity.Medium, Confidence.Normal, msg);
 			return RuleResult.Failure;
 		}

@@ -28,6 +28,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System.Globalization;
 using System.Text;
 
 using Mono.Cecil;
@@ -307,14 +308,16 @@ namespace Gendarme.Rules.Exceptions {
 		{
 			switch (ins.OpCode.Code) {
 			case Code.Castclass:
-				return string.Format (" (cast to {0})", ((TypeReference) ins.Operand).Name);
+				return String.Format (CultureInfo.InvariantCulture, " (cast to {0})", 
+					((TypeReference) ins.Operand).Name);
 
 			case Code.Throw:					// this one is obvious
 				return string.Empty;
 
 			case Code.Unbox:
 			case Code.Unbox_Any:
-				return string.Format (" (unbox from {0})", ((TypeReference) ins.Operand).Name);
+				return String.Format (CultureInfo.InvariantCulture, " (unbox from {0})", 
+					((TypeReference) ins.Operand).Name);
 				
 			case Code.Ckfinite:
 				return " (the expression will throw if the value is a NAN or an infinity)";
@@ -416,9 +419,10 @@ namespace Gendarme.Rules.Exceptions {
 		private void Report (MethodDefinition method, Instruction ins, string methodLabel)
 		{
 			string mesg;
-			if (allowedExceptions == null)
-				mesg = string.Format ("{0} should not throw{1}.", methodLabel, ExplainThrow (ins));
-			else {
+			if (allowedExceptions == null) {
+				mesg = String.Format (CultureInfo.InvariantCulture,
+					"{0} should not throw{1}.", methodLabel, ExplainThrow (ins));
+			} else {
 				StringBuilder sb = new StringBuilder ();
 				sb.Append (methodLabel).Append (" should only throw ");
 				for (int i = 0; i < allowedExceptions.Length; i++) {

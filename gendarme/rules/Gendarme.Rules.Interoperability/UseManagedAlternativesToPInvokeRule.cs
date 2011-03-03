@@ -29,8 +29,9 @@
 //
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 using Gendarme.Framework;
 using Mono.Cecil;
@@ -129,7 +130,8 @@ namespace Gendarme.Rules.Interoperability {
 			if (alternatives == null)
 				return RuleResult.Success;
 
-			string message = string.Format ("Try to replace the platform-dependent call '{0}' by (one of) the following alternative(s): {1}.",
+			string message = String.Format (CultureInfo.InvariantCulture, 
+				"Try to replace the platform-dependent call '{0}' by (one of) the following alternative(s): {1}.",
 				method.Name, alternatives.Alternatives);
 			Runner.Report (method, Severity.Low, Confidence.High, message);
 			return RuleResult.Failure;

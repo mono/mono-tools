@@ -27,6 +27,7 @@
 // THE SOFTWARE.
 				
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -99,13 +100,13 @@ namespace Gendarme.Rules.Design {
 
 			// if we have Equals but no GetHashCode method
 			if (equals && !getHashCode) {
-				string text = String.Format (Message, MethodSignatures.Equals, MethodSignatures.GetHashCode);
+				string text = String.Format (CultureInfo.InvariantCulture, Message, MethodSignatures.Equals, MethodSignatures.GetHashCode);
 				Runner.Report (type, Severity.Critical, Confidence.High, text);
 			}
 
 			// if we have GetHashCode but no Equals method
 			if (!equals && getHashCode) {
-				string text = String.Format (Message, MethodSignatures.GetHashCode, MethodSignatures.Equals);
+				string text = String.Format (CultureInfo.InvariantCulture, Message, MethodSignatures.GetHashCode, MethodSignatures.Equals);
 				Runner.Report (type, Severity.Medium, Confidence.High, text);
 			}
 

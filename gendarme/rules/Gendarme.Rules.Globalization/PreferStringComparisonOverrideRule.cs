@@ -27,6 +27,8 @@
 //
 
 using System;
+using System.Globalization;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Gendarme.Framework;
@@ -72,7 +74,8 @@ namespace Gendarme.Rules.Globalization {
 
 		protected override void Report (MethodDefinition method, Instruction instruction, MethodReference prefered)
 		{
-			string msg = String.Format ("Consider using the perfered '{0}' override.", prefered.GetFullName ());
+			string msg = String.Format (CultureInfo.InvariantCulture, 
+				"Consider using the perfered '{0}' override.", prefered.GetFullName ());
 			Runner.Report (method, instruction, Severity.Medium, Confidence.High, msg);
 		}
 	}

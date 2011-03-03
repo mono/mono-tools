@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -215,7 +216,9 @@ namespace Gendarme.Rules.Correctness {
 					Instruction local = FindRelatedSuspectLocal (method, ins);
 					if (local != null) {
 						if (!AreBothInstructionsInSameTryFinallyBlock (body, local, ins)) {
-							string msg = string.Format ("Local {0}is not guaranteed to be disposed of.", GetFriendlyNameOrEmpty (local.GetVariable (method)));
+							string msg = String.Format (CultureInfo.InvariantCulture, 
+								"Local {0}is not guaranteed to be disposed of.", 
+								GetFriendlyNameOrEmpty (local.GetVariable (method)));
 							Runner.Report (method, local, Severity.Medium, Confidence.Normal, msg);
 						}
 						suspectLocals.Remove (local);
@@ -246,7 +249,9 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			foreach (var local in suspectLocals) {
-				string msg = string.Format ("Local {0}is not disposed of (at least not locally).", GetFriendlyNameOrEmpty (local.GetVariable (method)));
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"Local {0}is not disposed of (at least not locally).", 
+					GetFriendlyNameOrEmpty (local.GetVariable (method)));
 				Runner.Report (method, local, Severity.High, Confidence.Normal, msg);
 			}
 
@@ -268,7 +273,7 @@ namespace Gendarme.Rules.Correctness {
 		{
 			TypeReference type = ins.Is (Code.Newobj) ? call.DeclaringType : call.ReturnType;
 			bool fluent = IsFluentLike (call);
-			string msg = string.Format ("Local of type '{0}' is not disposed of ({1}).",
+			string msg = String.Format (CultureInfo.InvariantCulture, "Local of type '{0}' is not disposed of ({1}).",
 				type.Name, fluent ? "is this a fluent-like API ?" : "at least not locally");
 			Runner.Report (method, ins, Severity.High, fluent ? Confidence.Normal : Confidence.High, msg);
 		}
@@ -277,8 +282,8 @@ namespace Gendarme.Rules.Correctness {
 		{
 			string tname = variable.VariableType.Name;
 			if (variable.IsGeneratedName ())
-				return string.Format ("of type '{0}' ", tname);
-			return string.Format ("'{0}' of type '{1}' ", variable.Name, tname);
+				return String.Format (CultureInfo.InvariantCulture, "of type '{0}' ", tname);
+			return String.Format (CultureInfo.InvariantCulture, "'{0}' of type '{1}' ", variable.Name, tname);
 		}
 
 		static OpCodeBitmask BuildCallsAndNewobjOpCodeBitmask ()

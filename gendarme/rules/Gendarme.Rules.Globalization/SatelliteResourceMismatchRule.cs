@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Resources;
@@ -81,8 +82,10 @@ namespace Gendarme.Rules.Globalization {
 				EmbeddedResource mainResource;
 				string resourceName = GetNameInSatellite (resource, culture);
 				if (!mainAssemblyResourceCache.TryGetMainResourceFile (resourceName, out mainResource)) {
-					Runner.Report (satellite, Severity.Low, Confidence.High,
-						String.Format ("The resource file {0} exist in the satellite assembly but not in the main assembly", resource.Name));
+					string msg = String.Format (CultureInfo.InvariantCulture, 
+						"The resource file {0} exist in the satellite assembly but not in the main assembly", 
+						resource.Name);
+					Runner.Report (satellite, Severity.Low, Confidence.High, msg);
 					continue;
 				}
 
@@ -102,16 +105,20 @@ namespace Gendarme.Rules.Globalization {
 					object satelliteValue = entry.Value;
 					object mainValue;
 					if (!mainAssemblyResourceCache.TryGetMainResource (mainResource, resourceName, out mainValue)) {
-						Runner.Report (satelliteAssembly, Severity.Low, Confidence.High,
-							String.Format ("The resource {0} in the file {1} exist in the satellite assembly but not in the main assembly", resourceName, satelliteResource.Name));
+						string msg = String.Format (CultureInfo.InvariantCulture, 
+							"The resource {0} in the file {1} exist in the satellite assembly but not in the main assembly", 
+							resourceName, satelliteResource.Name);
+						Runner.Report (satelliteAssembly, Severity.Low, Confidence.High, msg);
 						continue;
 					}
 
 					Type satelliteType = satelliteValue.GetType ();
 					Type mainType = mainValue.GetType ();
 					if (!satelliteType.Equals (mainType)) {
-						Runner.Report (satelliteAssembly, Severity.High, Confidence.High,
-							String.Format ("The resource {0} in the file {1} is of type {2} in the satellite assembly but of type {3} in the main assembly", resourceName, satelliteResource.Name, satelliteType, mainType));
+						string msg = String.Format (CultureInfo.InvariantCulture, 
+							"The resource {0} in the file {1} is of type {2} in the satellite assembly but of type {3} in the main assembly", 
+							resourceName, satelliteResource.Name, satelliteType, mainType);
+						Runner.Report (satelliteAssembly, Severity.High, Confidence.High, msg);
 						continue;
 					}
 
@@ -119,9 +126,12 @@ namespace Gendarme.Rules.Globalization {
 						Bitmask<int> mainParameters = GetStringFormatExpectedParameters ((string) mainValue);
 						Bitmask<int> satelliteParameters = GetStringFormatExpectedParameters ((string) satelliteValue);
 
-						if (!mainParameters.Equals (satelliteParameters))
-							Runner.Report (satelliteAssembly, Severity.High, Confidence.Normal,
-								String.Format ("The string resource {0} in the file {1} does not use the same string format parameters in the satellite and main assemblies", resourceName, satelliteResource.Name));
+						if (!mainParameters.Equals (satelliteParameters)) {
+							string msg = String.Format (CultureInfo.InvariantCulture, 
+								"The string resource {0} in the file {1} does not use the same string format parameters in the satellite and main assemblies", 
+								resourceName, satelliteResource.Name);
+							Runner.Report (satelliteAssembly, Severity.High, Confidence.Normal, msg);
+						}
 					}
 				}
 			}

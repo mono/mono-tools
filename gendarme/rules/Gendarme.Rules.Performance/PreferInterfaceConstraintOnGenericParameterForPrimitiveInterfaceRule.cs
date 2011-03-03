@@ -28,6 +28,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+
 using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Mono.Cecil;
@@ -118,7 +120,8 @@ namespace Gendarme.Rules.Performance {
 					continue;
 
 				if (IsPrimitiveInterface (type)) {
-					string msg = String.Format ("You are using {0} as parameter, which cause boxing with value type as argument",
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"You are using {0} as parameter, which cause boxing with value type as argument",
 						type.GetFullName ());
 					Runner.Report (method, Severity.Low, Confidence.Total, msg);
 				}

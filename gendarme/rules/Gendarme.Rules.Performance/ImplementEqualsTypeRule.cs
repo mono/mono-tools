@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -120,7 +121,7 @@ namespace Gendarme.Rules.Performance {
 			// we consider this a step more severe for value types since it will need 
 			// boxing/unboxing with Equals(object)
 			Severity severity = type.IsValueType ? Severity.Medium : Severity.Low;
-			string msg = String.Format ("Implement 'bool Equals({0})'", type.Name);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Implement 'bool Equals({0})'", type.Name);
 			Runner.Report (type, severity, Confidence.High, msg);
 			return RuleResult.Failure;
 		}

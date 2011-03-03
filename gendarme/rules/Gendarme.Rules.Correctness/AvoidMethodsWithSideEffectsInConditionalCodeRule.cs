@@ -34,6 +34,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Gendarme.Rules.Correctness {
 
@@ -157,7 +158,8 @@ namespace Gendarme.Rules.Correctness {
 						
 						MethodReference impure = FindImpurity (method, ins);
 						if (impure != null) {
-							string mesg = string.Format ("{0}::{1} is conditionally compiled on {2} but uses the impure {3}::{4}",
+							string mesg = String.Format (CultureInfo.InvariantCulture, 
+								"{0}::{1} is conditionally compiled on {2} but uses the impure {3}::{4}",
 								target.DeclaringType.Name, target.Name, define, impure.DeclaringType.Name, impure.Name);
 							Log.WriteLine (this, mesg);
 							

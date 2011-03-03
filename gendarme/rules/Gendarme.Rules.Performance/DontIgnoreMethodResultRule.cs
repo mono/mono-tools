@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -132,7 +133,8 @@ namespace Gendarme.Rules.Performance {
 			if ((instruction.OpCode.Code == Code.Newobj || instruction.OpCode.Code == Code.Newarr)) {
 				MemberReference member = (instruction.Operand as MemberReference);
 				if ((member != null) && !IsNewException (member)) {
-					string s = String.Format ("Unused object of type '{0}' created.", member.GetFullName ());
+					string s = String.Format (CultureInfo.InvariantCulture,
+						"Unused object of type '{0}' created.", member.GetFullName ());
 					Runner.Report (method, instruction, Severity.High, Confidence.Normal, s);
 				}
 			}
@@ -142,7 +144,8 @@ namespace Gendarme.Rules.Performance {
 				if (callee != null && !callee.ReturnType.IsValueType) {
 					// check for some common exceptions (to reduce false positive)
 					if (!IsCallException (callee)) {
-						string s = String.Format ("Do not ignore method results from call to '{0}'.", callee.GetFullName ());
+						string s = String.Format (CultureInfo.InvariantCulture,
+							"Do not ignore method results from call to '{0}'.", callee.GetFullName ());
 						Runner.Report (method, instruction, Severity.Medium, Confidence.Normal, s);
 					}
 				}

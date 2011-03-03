@@ -26,6 +26,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.Text;
 
 using Mono.Cecil.Cil;
@@ -159,7 +160,8 @@ namespace Gendarme.Framework.Helpers {
 
 		public override string ToString ()
 		{
-			return String.Format ("0x{0:X}:0x{1:X}:0x{2:X}:0x{3:X}", mask [0], mask [1], mask [2], mask [3]);
+			return String.Format (CultureInfo.InvariantCulture, "0x{0:X}:0x{1:X}:0x{2:X}:0x{3:X}", 
+				mask [0], mask [1], mask [2], mask [3]);
 		}
 
 

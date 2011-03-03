@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -152,7 +153,7 @@ namespace Gendarme.Rules.Maintainability {
 			if (!IsObsolete (type.BaseType))
 				return;
 
-			string msg = String.Format ("Inherit from obsolete type '{0}'.", type.BaseType);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Inherit from obsolete type '{0}'.", type.BaseType);
 			Runner.Report (type, type.IsVisible () ? Severity.High : Severity.Medium, Confidence.Total, msg);
 		}
 
@@ -160,7 +161,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (TypeReference intf in type.Interfaces) {
 				if (IsObsolete (intf)) {
-					string msg = String.Format ("Implement obsolete interface '{0}'.", intf);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Implement obsolete interface '{0}'.", intf);
 					Runner.Report (type, type.IsVisible () ? Severity.Medium : Severity.Low, Confidence.Total, msg);
 				}
 			}
@@ -170,7 +171,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (FieldDefinition field in type.Fields) {
 				if (IsObsolete (field.FieldType)) {
-					string msg = String.Format ("Field type '{0}' is obsolete.", field.FieldType);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Field type '{0}' is obsolete.", field.FieldType);
 					Runner.Report (field, field.IsVisible () ? Severity.Medium : Severity.Low, Confidence.Total, msg);
 				}
 			}
@@ -181,7 +182,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (PropertyDefinition property in type.Properties) {
 				if (IsObsolete (property.PropertyType)) {
-					string msg = String.Format ("Property type '{0}' is obsolete.", property.PropertyType);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Property type '{0}' is obsolete.", property.PropertyType);
 					bool visible = (IsVisible (property.GetMethod) || IsVisible (property.SetMethod));
 					Runner.Report (property, visible ? Severity.High : Severity.Medium, Confidence.Total, msg);
 				}
@@ -192,7 +193,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (EventDefinition evnt in type.Events) {
 				if (IsObsolete (evnt.EventType)) {
-					string msg = String.Format ("Event type '{0}' is obsolete.", evnt.EventType);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Event type '{0}' is obsolete.", evnt.EventType);
 					bool visible = (IsVisible (evnt.AddMethod) || IsVisible (evnt.RemoveMethod) || 
 						IsVisible (evnt.InvokeMethod));
 					Runner.Report (evnt, visible ? Severity.High : Severity.Medium, Confidence.Total, msg);
@@ -247,7 +248,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (ParameterDefinition p in method.Parameters) {
 				if (IsObsolete (p.ParameterType)) {
-					string msg = String.Format ("Parameter type '{0}' is obsolete.", p.ParameterType);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Parameter type '{0}' is obsolete.", p.ParameterType);
 					Runner.Report (p, method.IsVisible () ? Severity.High : Severity.Medium, Confidence.Total, msg);
 				}
 			}
@@ -259,7 +260,7 @@ namespace Gendarme.Rules.Maintainability {
 			if (!IsObsolete (rt))
 				return;
 
-			string msg = String.Format ("Return type '{0}' is obsolete.", rt);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Return type '{0}' is obsolete.", rt);
 			Runner.Report (method, method.IsVisible () ? Severity.High : Severity.Medium, Confidence.Total, msg);
 		}
 
@@ -267,7 +268,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			foreach (VariableDefinition v in method.Body.Variables) {
 				if (IsObsolete (v.VariableType)) {
-					string msg = String.Format ("Variable type '{0}' is obsolete.", v.VariableType);
+					string msg = String.Format (CultureInfo.InvariantCulture, "Variable type '{0}' is obsolete.", v.VariableType);
 					Runner.Report (method, Severity.Low, Confidence.High, msg);
 				}
 			}
@@ -278,7 +279,7 @@ namespace Gendarme.Rules.Maintainability {
 			if (!IsObsolete (type))
 				return;
 
-			string msg = String.Format ("Type '{0}' is obsolete.", type);
+			string msg = String.Format (CultureInfo.InvariantCulture, "Type '{0}' is obsolete.", type);
 			Severity severity = type.IsVisible () ? Severity.Medium : Severity.Low;
 			Runner.Report (method, ins, severity, Confidence.High, msg);
 		}
@@ -290,11 +291,11 @@ namespace Gendarme.Rules.Maintainability {
 
 			string msg = null;
 			if (IsObsolete (call)) {
-				msg = String.Format ("Method '{0}' is obsolete.", call);
+				msg = String.Format (CultureInfo.InvariantCulture, "Method '{0}' is obsolete.", call);
 			} else {
 				TypeReference type = call.DeclaringType;
 				if (IsObsolete (type))
-					msg = String.Format ("Type '{0}' is obsolete.", type);
+					msg = String.Format (CultureInfo.InvariantCulture, "Type '{0}' is obsolete.", type);
 			}
 
 			if (msg != null) {
@@ -310,9 +311,9 @@ namespace Gendarme.Rules.Maintainability {
 
 			string msg = null;
 			if (IsObsolete (field)) {
-				msg = String.Format ("Field '{0}' is obsolete.", field.Name);
+				msg = String.Format (CultureInfo.InvariantCulture, "Field '{0}' is obsolete.", field.Name);
 			} else if (IsObsolete (field.DeclaringType)) {
-				msg = String.Format ("Field type '{0}' is obsolete.", field.FieldType);
+				msg = String.Format (CultureInfo.InvariantCulture, "Field type '{0}' is obsolete.", field.FieldType);
 			} else {
 				return;
 			}

@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -164,7 +165,8 @@ namespace Gendarme.Rules.Design {
 				// e.g. VS.NET adds a .Properties namespace to SWF apps
 				if ((count > 0) && (count < Minimum)) {
 					NamespaceDefinition n = NamespaceDefinition.GetDefinition (ns);
-					string msg = String.Format ("Only {0} visible types are defined inside this namespace.", count);
+					string msg = String.Format (CultureInfo.CurrentCulture, 
+						"Only {0} visible types are defined inside this namespace.", count);
 					// overloads of Report cannot be used here since the 'target' has been lost in the runner
 					Runner.Report (new Defect (this, n, n, Severity.Low, Confidence.Total, msg));
 				}

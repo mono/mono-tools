@@ -37,6 +37,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 
 namespace Gendarme.Rules.Concurrency {
@@ -268,7 +269,8 @@ namespace Gendarme.Rules.Concurrency {
 				if (delegateType != null && !ThreadRocks.ThreadedNamespace (delegateType.Namespace)) {
 					ThreadModel delegateModel = delegateType.ThreadingModel ();
 					if (model != delegateModel && !delegateModel.AllowsEveryCaller ()) {
-						string mesg = string.Format ("{0} event must match {1} delegate.", model, delegateModel);
+						string mesg = String.Format (CultureInfo.InvariantCulture, 
+							"{0} event must match {1} delegate.", model, delegateModel);
 						ReportDefect (method, Severity.High, Confidence.High, mesg);
 					}
 				}
@@ -290,7 +292,8 @@ namespace Gendarme.Rules.Concurrency {
 					if (superMethod != null && !ThreadRocks.ThreadedNamespace (superMethod.DeclaringType.Namespace)) {
 						ThreadModel superModel = superMethod.ThreadingModel ();
 						if (model != superModel) {
-							string mesg = string.Format ("{0} {1} must match {2} {3} method.", model, name, superModel,
+							string mesg = String.Format (CultureInfo.InvariantCulture, 
+								"{0} {1} must match {2} {3} method.", model, name, superModel,
 								new_slot ? "interface" : "base");
 							ReportDefect (method, Severity.High, Confidence.High, mesg);
 						}
@@ -316,21 +319,23 @@ namespace Gendarme.Rules.Concurrency {
 			foreach (MethodDefinition caller in anonymous_entry_points) {
 				foreach (Instruction ins in caller.Body.Instructions) {
 					switch (ins.OpCode.Code) {
-						case Code.Call:
-						case Code.Callvirt:
-							MethodDefinition target = ((MethodReference) ins.Operand).Resolve ();
-							if (target != null) {
-								ThreadModel targetModel = target.ThreadingModel ();
-								if (targetModel == ThreadModel.MainThread) {
-									string mesg = string.Format ("An anonymous thread entry point cannot call MainThread {0}.", target.Name);
-									
-									++DefectCount;
-									Log.WriteLine (this, "Defect: {0}", mesg);
-									Defect defect = new Defect (this, caller, caller, ins, Severity.High, Confidence.High, mesg);
-									Runner.Report (defect);
-								}
+					case Code.Call:
+					case Code.Callvirt:
+						MethodDefinition target = ((MethodReference) ins.Operand).Resolve ();
+						if (target != null) {
+							ThreadModel targetModel = target.ThreadingModel ();
+							if (targetModel == ThreadModel.MainThread) {
+								string mesg = String.Format (CultureInfo.InvariantCulture, 
+									"An anonymous thread entry point cannot call MainThread {0}.", 
+									target.Name);
+								
+								++DefectCount;
+								Log.WriteLine (this, "Defect: {0}", mesg);
+								Defect defect = new Defect (this, caller, caller, ins, Severity.High, Confidence.High, mesg);
+								Runner.Report (defect);
 							}
-							break;
+						}
+						break;
 					}
 				}
 			}
@@ -386,8 +391,9 @@ namespace Gendarme.Rules.Concurrency {
 									if (!target.IsGeneratedCode () || target.IsProperty ()) {
 										ThreadModel targetModel = target.ThreadingModel ();
 										if (!IsValidCall (callerModel, targetModel)) {
-											string mesg = string.Format ("{0} delegate cannot be bound to {1} {2} method.", callerModel, targetModel, target.Name);
-											
+											string mesg = String.Format (CultureInfo.InvariantCulture,
+												"{0} delegate cannot be bound to {1} {2} method.", 
+												callerModel, targetModel, target.Name);
 											++DefectCount;
 											Log.WriteLine (this, "Defect: {0}", mesg);
 											Defect defect = new Defect (this, method, method, ins, Severity.High, Confidence.High, mesg);
@@ -466,7 +472,9 @@ namespace Gendarme.Rules.Concurrency {
 						if (target != null) {
 							ThreadModel targetModel = target.ThreadingModel ();
 							if (!IsValidCall (method_model.Value, targetModel)) {
-								string mesg = string.Format ("{0} {1} cannot be bound to {2} {3} method.", method_model, entry.Key, targetModel, target.Name);
+								string mesg = String.Format (CultureInfo.InvariantCulture, 
+									"{0} {1} cannot be bound to {2} {3} method.", 
+									method_model, entry.Key, targetModel, target.Name);
 								ReportDefect (method, Severity.High, Confidence.High, mesg);
 							}
 						}
@@ -523,7 +531,8 @@ namespace Gendarme.Rules.Concurrency {
 						anonymous_entry_points.Add (method);
 					
 					} else if (model == ThreadModel.MainThread) {
-						string mesg = string.Format ("{0} is a thread entry point and so cannot be MainThread.", method.Name);
+						string mesg = String.Format (CultureInfo.InvariantCulture, 
+							"{0} is a thread entry point and so cannot be MainThread.", method.Name);
 						ReportDefect (method, Severity.High, Confidence.High, mesg);
 					}
 				}
@@ -537,7 +546,8 @@ namespace Gendarme.Rules.Concurrency {
 				ThreadModel callerModel = caller.ThreadingModel ();
 				ThreadModel targetModel = target.ThreadingModel ();
 				if (!IsValidCall (callerModel, targetModel)) {
-					string mesg = string.Format ("{0} {1} cannot call {2} {3}.", callerModel, caller.Name, targetModel, target.Name);
+					string mesg = String.Format (CultureInfo.InvariantCulture, "{0} {1} cannot call {2} {3}.", 
+						callerModel, caller.Name, targetModel, target.Name);
 					
 					++DefectCount;
 					Log.WriteLine (this, "Defect: {0}", mesg);

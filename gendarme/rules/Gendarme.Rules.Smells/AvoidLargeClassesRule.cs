@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -167,7 +168,8 @@ namespace Gendarme.Rules.Smells {
 					continue;
 				int count = CountPrefixedFields (prefix, i);
 				if (count > 1) {
-					string msg = String.Format ("This type contains fields common prefixes: {0} fields prefixed with '{1}'.",
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"This type contains fields common prefixes: {0} fields prefixed with '{1}'.",
 						count, prefix);
 					Runner.Report (type, Severity.Medium, Confidence.High, msg);
 				}
@@ -182,7 +184,8 @@ namespace Gendarme.Rules.Smells {
 
 			int fcount = GetNonConstantFieldsCount (type);
 			if (fcount > MaxFields) {
-				string msg = String.Format ("This type contains a lot of fields ({0} versus maximum of {1}).",
+				string msg = String.Format (CultureInfo.InvariantCulture,
+					"This type contains a lot of fields ({0} versus maximum of {1}).",
 					fcount, MaxFields);
 				Runner.Report (type, Severity.High, Confidence.High, msg);
 			}

@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 
 using Mono.Cecil;
@@ -222,13 +223,15 @@ namespace Gendarme.Rules.Performance {
 				MethodDefinition md = kvp.Value.Key;
 				if (md.IsVirtual && !md.IsFinal) {
 					// virtual calls are expensive, so the code better cache the value
-					string msg = String.Format ("Multiple ({0}) calls to virtual property '{1}'.", count, md.ToString ());
+					string msg = String.Format (CultureInfo.InvariantCulture, 
+						"Multiple ({0}) calls to virtual property '{1}'.", count, md.ToString ());
 					Runner.Report (method, GetSeverity (count, true), Confidence.Normal, msg);
 				} else if (!IsInliningCandidate (md)) {
 					// non-virtual calls might be inlined
 					// otherwise caching the value is again a good idea
 					int size = md.HasBody ? md.Body.CodeSize : 0;
-					string msg = String.Format ("Multiple ({0}) calls to non-virtual property '{1}', likely non-inlined due to size ({2} >= {3}).",
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"Multiple ({0}) calls to non-virtual property '{1}', likely non-inlined due to size ({2} >= {3}).",
 						count, md.ToString (), size, InlineLimit);
 					Runner.Report (method, GetSeverity (count, false), Confidence.Normal, msg);
 				}

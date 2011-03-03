@@ -31,6 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -88,7 +89,8 @@ namespace Gendarme.Rules.Maintainability {
 			//how's severity?
 			Severity sev = GetCohesivenessSeverity(coh);
 
-			Runner.Report (type, sev, Confidence.Normal, String.Format ("Type cohesiveness : {0}%", (int) (coh * 100)));
+			string msg = String.Format (CultureInfo.CurrentCulture, "Type cohesiveness : {0}%", (int) (coh * 100));
+			Runner.Report (type, sev, Confidence.Normal, msg);
 			return RuleResult.Failure;
 		}
 

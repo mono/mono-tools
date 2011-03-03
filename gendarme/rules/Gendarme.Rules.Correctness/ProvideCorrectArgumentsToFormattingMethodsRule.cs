@@ -28,10 +28,11 @@
 //
 
 using System;
-using System.IO;
-using System.Resources;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Resources;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -266,12 +267,19 @@ namespace Gendarme.Rules.Correctness {
 			}
 
 			if (expectedParameters < elementsPushed) {
-				Runner.Report (method, call, Severity.Medium, Confidence.Normal, String.Format ("Extra parameters are provided to String.Format, {0} provided but only {1} expected", elementsPushed, expectedParameters));
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"Extra parameters are provided to String.Format, {0} provided but only {1} expected", 
+					elementsPushed, expectedParameters);
+				Runner.Report (method, call, Severity.Medium, Confidence.Normal, msg);
 				return;
 			}
 
-			if (elementsPushed < expectedParameters)
-				Runner.Report (method, call, Severity.Critical, Confidence.Normal, String.Format ("The String.Format method is expecting {0} parameters, but only {1} are found.", expectedParameters, elementsPushed));
+			if (elementsPushed < expectedParameters) {
+				string msg = String.Format (CultureInfo.InvariantCulture, 
+					"The String.Format method is expecting {0} parameters, but only {1} are found.", 
+					expectedParameters, elementsPushed);
+				Runner.Report (method, call, Severity.Critical, Confidence.Normal, msg);
+			}
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)

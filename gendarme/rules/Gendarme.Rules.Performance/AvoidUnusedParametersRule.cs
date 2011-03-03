@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -160,7 +161,8 @@ namespace Gendarme.Rules.Performance {
 			for (int i = 0; i < pcount; i++) {
 				if ((mask & ((ulong) 1 << i)) == 0) {
 					ParameterDefinition parameter = pdc [i];
-					string text = String.Format ("Parameter '{0}' of type '{1}' is never used in the method.",
+					string text = String.Format (CultureInfo.InvariantCulture,
+						"Parameter '{0}' of type '{1}' is never used in the method.",
 						parameter.Name, parameter.ParameterType);
 					Runner.Report (parameter, Severity.Medium, Confidence.Normal, text);
 				}

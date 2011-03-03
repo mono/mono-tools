@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -110,11 +111,11 @@ namespace Gendarme {
 				TearDown ();
 			}
 			catch (Exception e) {
-				if (CurrentRule != null)
-					unexpected.AppendFormat ("Rule:\t{0}{1}{1}", CurrentRule, Environment.NewLine);
+				if (CurrentRule != null) 
+					unexpected.Append ("Rule:\t").Append (CurrentRule).AppendLine ().AppendLine ();
 				if (CurrentTarget != null)
-					unexpected.AppendFormat ("Target:\t{0}{1}{1}", CurrentTarget, Environment.NewLine);
-				unexpected.AppendFormat ("Stack trace: {0}", e);
+					unexpected.Append ("Target:\t").Append (CurrentTarget).AppendLine ().AppendLine ();
+				unexpected.Append ("Stack trace: ").Append (e);
 			}
 		}
 

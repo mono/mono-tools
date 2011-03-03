@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 
@@ -216,7 +217,7 @@ namespace Gendarme.Rules.Performance {
 			else if (size > medium_severity_limit)
 				severity = Severity.Medium;
 
-			string text = String.Format ("Structure size is {0} bytes.", size);
+			string text = String.Format (CultureInfo.CurrentCulture, "Structure size is {0} bytes.", size);
 			Runner.Report (type, severity, Confidence.High, text);
 			return RuleResult.Failure;
 		}

@@ -28,6 +28,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -78,7 +79,8 @@ namespace Gendarme.Rules.Performance {
 			if (num <= MaximumVariables)
 				return RuleResult.Success;
 
-			string msg = String.Format ("Found {0} local variables (maximum {1}).", num, MaximumVariables);
+			string msg = String.Format (CultureInfo.InvariantCulture, 
+				"Found {0} local variables (maximum {1}).", num, MaximumVariables);
 			Runner.Report (method, Severity.High, Confidence.High, msg);
 			return RuleResult.Failure;
 		}

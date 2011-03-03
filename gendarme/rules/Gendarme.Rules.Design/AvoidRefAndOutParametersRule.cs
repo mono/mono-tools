@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Globalization;
 using Mono.Cecil;
 
 using Gendarme.Framework;
@@ -153,7 +154,8 @@ namespace Gendarme.Rules.Design {
 				if ((how != null) && !IsSignatureDictatedByInterface (method)) {
 					// goal is to keep the API as simple as possible so this is more severe for public than protected methods
 					Severity severity = method.IsPublic ? Severity.Medium : Severity.Low;
-					string msg = String.Format ("Parameter '{0}' passed by reference ({1}).", parameter.Name, how);
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"Parameter '{0}' passed by reference ({1}).", parameter.Name, how);
 					Runner.Report (parameter, severity, Confidence.Total, msg);
 				}
 			}

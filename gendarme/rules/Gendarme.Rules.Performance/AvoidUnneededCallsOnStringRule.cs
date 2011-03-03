@@ -29,6 +29,7 @@
 //
 
 using System;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -129,7 +130,7 @@ namespace Gendarme.Rules.Performance {
 			if (!ins.Previous.GetOperandType (method).IsNamed ("System", "String"))
 				return  String.Empty;
 
-			return String.Format (MessageString, call.Name, String.Empty);
+			return String.Format (CultureInfo.InvariantCulture, MessageString, call.Name, String.Empty);
 		}
 
 		private static string CheckSubstring (MethodReference call, Instruction ins)
@@ -143,14 +144,14 @@ namespace Gendarme.Rules.Performance {
 			if (!ins.Previous.IsOperandZero ())
 				return String.Empty;
 
-			return String.Format (MessageString, call.Name, "0");
+			return String.Format (CultureInfo.InvariantCulture, MessageString, call.Name, "0");
 		}
 
 		private static string CheckToString (MethodReference call, Instruction ins, MethodDefinition method)
 		{
 			if (call.DeclaringType.IsNamed ("System", "String")) {
 				// most probably ToString(IFormatProvider), possibly ToString()
-				return String.Format (MessageString, call.Name, 
+				return String.Format (CultureInfo.InvariantCulture, MessageString, call.Name, 
 					(call.HasParameters && (call.Parameters.Count > 1)) ? "IFormatProvider" : String.Empty);
 			} else {
 				// signature for Clone is identical (well close enough) to share code

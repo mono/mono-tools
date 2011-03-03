@@ -27,8 +27,9 @@
 //
 
 using System;
-using System.Reflection;
+using System.Globalization;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -166,7 +167,8 @@ namespace Gendarme.Rules.BadPractice {
 
 				Severity? severity = IsProblematicCall (instruction);
 				if (severity.HasValue) {
-					string msg = String.Format ("You are calling to {0}, which is a potentially problematic method", 
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"You are calling to {0}, which is a potentially problematic method", 
 						instruction.Operand);
 					Runner.Report (method, instruction, severity.Value, Confidence.High, msg);
 				}

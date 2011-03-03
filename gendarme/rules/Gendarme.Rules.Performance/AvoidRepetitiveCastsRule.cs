@@ -29,6 +29,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -296,7 +297,8 @@ namespace Gendarme.Rules.Performance {
 
 					// rare, but it's possible to cast a null value (ldnull)
 					object name = origin.GetOperand (method) ?? "Null";
-					string msg = String.Format ("'{0}' is casted {1} times for type '{2}'.", name, count, type.GetFullName ());
+					string msg = String.Format (CultureInfo.InvariantCulture, 
+						"'{0}' is casted {1} times for type '{2}'.", name, count, type.GetFullName ());
 					Runner.Report (method, ins, Severity.Medium, Confidence.Normal, msg);
 				}
 				casts.RemoveAt (0);
