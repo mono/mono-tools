@@ -27,6 +27,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -120,6 +121,18 @@ namespace Gendarme.Rules.Globalization {
 			return null;
 		}
 
+		Dictionary<MethodReference, MethodReference> prefered_overloads = new Dictionary<MethodReference, MethodReference> ();
+
+		MethodReference GetPreferedOverride (MethodReference method)
+		{
+			MethodReference prefered = null;
+			if (!prefered_overloads.TryGetValue (method, out prefered)) {
+				prefered = LookForPreferredOverride (method);
+				prefered_overloads.Add (method, prefered);
+			}
+			return prefered;
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
@@ -145,7 +158,7 @@ namespace Gendarme.Rules.Globalization {
 				}
 
 				// if not check if such a 'prefered' override exists to replace the called method
-				MethodReference prefered = LookForPreferredOverride (mr);
+				MethodReference prefered = GetPreferedOverride (mr);
 				if (prefered != null)
 					Report (method, ins, prefered);
 			}
