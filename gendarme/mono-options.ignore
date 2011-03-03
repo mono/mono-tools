@@ -70,3 +70,12 @@ T: NDesk.Options.OptionSet
 R: Gendarme.Rules.Globalization.PreferStringComparisonOverrideRule
 M: System.String NDesk.Options.OptionSet::GetArgumentName(System.Int32,System.Int32,System.String)
 
+R: Gendarme.Rules.Globalization.PreferIFormatProviderOverrideRule
+M: System.Void NDesk.Options.Option::AddSeparators(System.String,System.Int32,System.Collections.Generic.ICollection`1<System.String>)
+M: System.Boolean NDesk.Options.OptionSet::ParseBundledValue(System.String,System.String,NDesk.Options.OptionContext)
+M: System.Void NDesk.Options.OptionValueCollection::AssertValid(System.Int32)
+M: System.Void NDesk.Options.Option::.ctor(System.String,System.String,System.Int32)
+M: NDesk.Options.OptionValueType NDesk.Options.Option::ParsePrototype()
+M: T NDesk.Options.Option::Parse(System.String,NDesk.Options.OptionContext)
+M: System.Void NDesk.Options.OptionSet::ParseValue(System.String,NDesk.Options.OptionContext)
+

@@ -13,10 +13,7 @@ CA1300	Specify MessageBoxOptions                                                
 CA1301	Avoid duplicate accelerators                                                                 http://msdn.microsoft.com/en-us/library/ms182185.aspx
 CA1302	Do not hardcode locale specific strings                                                      http://msdn.microsoft.com/en-us/library/ms182186.aspx
 CA1303	Do not pass literals as localized parameters                                                 http://msdn.microsoft.com/en-us/library/ms182187.aspx
-CA1304	Specify CultureInfo                                                                          http://msdn.microsoft.com/en-us/library/ms182189.aspx
-CA1305	Specify IFormatProvider                                                                      http://msdn.microsoft.com/en-us/library/ms182190.aspx
 CA1306	Set locale for data types                                                                    http://msdn.microsoft.com/en-us/library/ms182188.aspx
-CA1307	Specify StringComparison                                                                     http://msdn.microsoft.com/en-us/library/bb386080.aspx
 CA1308	Normalize strings to uppercase                                                               http://msdn.microsoft.com/en-us/library/bb386042.aspx
 CA1309	Use ordinal StringComparison                                                                 http://msdn.microsoft.com/en-us/library/bb385972.aspx
 
