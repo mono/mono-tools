@@ -39,13 +39,13 @@ rules_doc = $(rules_doc_zip) $(rules_doc_source) $(rules_doc_tree)
 generated_doc = doc/generated/index.xml
 
 $(rules_dll): $(rules_build_sources) $(framework)
-	$(GMCS) -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
+	$(MCS) -target:library $(EXTRA_RULES_OPTIONS) -nowarn:1591 -doc:$(rules_dll).doc \
 		-r:$(CECIL_ASM) -r:$(framework) -out:$@ $(rules_build_sources)
 
 tests_build_sources = $(addprefix $(srcdir)/Test/, $(tests_sources))
 
 $(tests_dll): $(tests_build_sources) $(rules_dll) $(EXTRA_TESTS_DEPS)
-	$(GMCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
+	$(MCS) -target:library $(EXTRA_TESTS_OPTIONS) -r:$(CECIL_ASM) -r:$(framework) \
 		-r:$(rules_dll) -r:$(common_tests) -pkg:mono-nunit -out:$@ $(tests_build_sources)
 
 rule: $(rules_dll)

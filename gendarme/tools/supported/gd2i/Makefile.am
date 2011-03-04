@@ -12,7 +12,7 @@ gd2i_sources =  \
 	gd2i.cs
 
 $(gd2i_SCRIPTS):  $(gd2i_sources)
-	$(GMCS) -d:CODE_ANALYSIS -debug $^ -out:$@
+	$(MCS) -d:CODE_ANALYSIS -debug $^ -out:$@
 
 update: $(gd2i_SCRIPTS)
 	mono --debug $(gd2i_SCRIPTS) ../../../bin/self-test.xml ../../../self-test.ignore

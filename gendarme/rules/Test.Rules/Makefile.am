@@ -25,7 +25,7 @@ test_sources =  \
 test_build_sources = $(addprefix $(srcdir)/, $(test_sources))
 
 $(common_tests): $(test_build_sources) $(framework)
-	$(GMCS) -target:library $(TESTS_OPTIONS) -pkg:mono-nunit -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(test_build_sources)
+	$(MCS) -target:library $(TESTS_OPTIONS) -pkg:mono-nunit -r:$(CECIL_ASM) -r:$(framework) -out:$@ $(test_build_sources)
 
 all: $(common_tests)
 

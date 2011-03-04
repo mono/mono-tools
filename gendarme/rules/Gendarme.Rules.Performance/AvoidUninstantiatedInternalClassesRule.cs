@@ -101,7 +101,7 @@ namespace Gendarme.Rules.Performance {
 			cache.Add (assembly, typeset);
 		}
 
-		static void AddType (HashSet<TypeReference> typeset, TypeReference type)
+		static void AddType (ISet<TypeReference> typeset, TypeReference type)
 		{
 			// we're interested in the array element type, not the array itself
 			if (type.IsArray)

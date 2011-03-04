@@ -30,7 +30,7 @@ gendarme_prefix_resources = $(addprefix $(srcdir)/, $(gendarme_resources))
 gendarme_build_resources = $(foreach res,$(gendarme_prefix_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 ../bin/gendarme.exe: $(gendarme_build_sources) $(gendarme_prefix_resources)
-	$(GMCS) $(GENDARME_OPTIONS) -r:$(CECIL_ASM) -r:System.Xml.Linq -r:../bin/Gendarme.Framework.dll \
+	$(MCS) $(GENDARME_OPTIONS) -r:$(CECIL_ASM) -r:System.Xml.Linq -r:../bin/Gendarme.Framework.dll \
 		-out:$@ $(gendarme_build_sources) $(gendarme_build_resources)
 
 self-test: ../bin/gendarme.exe

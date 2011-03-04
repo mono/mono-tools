@@ -7,7 +7,7 @@ mapper_sources =  \
 	FxCopRule.cs
 
 mapper.exe: $(mapper_sources)
-	$(GMCS) -debug $^ -out:$@ -r:System.Xml.Linq.dll -r:$(CECIL_ASM)
+	$(MCS) -debug $^ -out:$@ -r:System.Xml.Linq.dll -r:$(CECIL_ASM)
 
 clean:
 	rm -f mapper.exe*

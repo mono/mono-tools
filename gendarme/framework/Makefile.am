@@ -86,7 +86,7 @@ framework_build_sources += $(framework_generated_sources)
 
 ../bin/Gendarme.Framework.dll: $(framework_build_sources) $(CECIL_ASM)
 	test -d ../bin || mkdir ../bin
-	$(GMCS) $(GENDARME_OPTIONS) -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
+	$(MCS) $(GENDARME_OPTIONS) -target:library -doc:$(framework_SCRIPTS).doc -r:$(CECIL_ASM) \
 		-out:$@ $(framework_build_sources)
 
 framework_test_sources = \
@@ -108,7 +108,7 @@ framework_test_sources = \
 framework_test_build_sources = $(addprefix $(srcdir)/Test/, $(framework_test_sources))
 
 Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) ../bin/Gendarme.Framework.dll $(CECIL_ASM)
-	$(GMCS) $(TESTS_OPTIONS) -target:library -d:CODE_ANALYSIS -pkg:mono-nunit \
+	$(MCS) $(TESTS_OPTIONS) -target:library -d:CODE_ANALYSIS -pkg:mono-nunit \
 		-r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll -r:../rules/Test.Rules/Test.Rules.dll \
 		-out:$@ $(framework_test_build_sources)
 

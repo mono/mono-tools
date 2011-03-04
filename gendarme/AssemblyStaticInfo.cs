@@ -18,7 +18,6 @@ using System.Security.Permissions;
 [assembly: AssemblyCopyright ("Copyright (C) 2005-2011 Novell, Inc. and contributors")]
 [assembly: AssemblyCompany ("Novell, Inc.")]
 
-[assembly: PermissionSet (SecurityAction.RequestMinimum, Unrestricted = true)]
 [assembly: CLSCompliant (false)]
 [assembly: ComVisible (false)]
 

@@ -465,11 +465,6 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Interoperability.DelegatesPassed
 # FIXME the last one needs validation
 M: System.Boolean Gendarme.Wizard::CouldCopyReport(System.String&,System.String)
 
-# OK - Version and Guid sadly do not provide a TryParse method (at least they did not before FX4.0 - FIXME once we update)
-R: Gendarme.Rules.Performance.DoNotIgnoreMethodResultRule
-M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseVersion(System.String)
-M: System.Boolean Gendarme.Rules.Correctness.AttributeStringLiteralsShouldParseCorrectlyRule::TryParseGuid(System.String)
-
 # OK - MethodSignatures use the CLR names for operators that starts with "op_"
 R: Gendarme.Rules.Naming.AvoidNonAlphanumericIdentifierRule
 T: Gendarme.Framework.Helpers.MethodSignatures
@@ -534,12 +529,6 @@ R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSameClassRule
 # OK - (CSC only) GetLoadSlot and GetStoreSlot are identical except for the switch/case (load versus store instructions) - delegating calls won't change defect
 T: Gendarme.Framework.Helpers.StackEntryAnalysis
 
-# FX4 related - will be fixed once we move to FX4 (likely for Gendarme 3.0)
-R: Gendarme.Rules.Maintainability.AvoidUnnecessarySpecializationRule
-# use ISet<H>
-M: System.Void Gendarme.Rules.Performance.AvoidUninstantiatedInternalClassesRule::AddType(System.Collections.Generic.HashSet`1<Mono.Cecil.TypeReference>,Mono.Cecil.TypeReference)
-M: System.Void Gendarme.Rules.Performance.AvoidUncalledPrivateCodeRule::BuildMethodUsage(System.Collections.Generic.HashSet`1<System.UInt32>,Mono.Cecil.MethodDefinition)
-
 # OK
 R: Gendarme.Rules.Naming.AvoidRedundancyInTypeNameRule
 # ComRocks is not directly used
@@ -573,3 +562,12 @@ T: Gendarme.Rules.UI.GtkSharpExecutableTargetRule
 # OK - Gendarme.Framework.Rule may throw exceptions as it is not a real rule
 R: Gendarme.Rules.Gendarme.DoNotThrowExceptionRule
 T: Gendarme.Framework.Rule
+
+# Type::op_[Ine|e]quality is new and marked as MonoTODO but it does (at least) the same job as the earlier FX provided
+R: Gendarme.Rules.Portability.MonoCompatibilityReviewRule
+M: System.Void Gendarme.Framework.Rocks.ModuleRocks::LoadDebuggingSymbols(Mono.Cecil.ModuleDefinition)
+M: System.Void Gendarme.Framework.Rocks.ModuleRocks::.cctor()
+M: System.Void Gendarme.Framework.EngineDependencyAttribute::.ctor(System.Type)
+M: System.Type Gendarme.Framework.Rule::get_Type()
+M: System.Security.IPermission Gendarme.Rules.Security.Cas.SecurityDeclarationRocks::CreatePermission(Mono.Cecil.SecurityDeclaration,Mono.Cecil.SecurityAttribute)
+

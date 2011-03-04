@@ -6,7 +6,7 @@ xmldoc2wiki_sources =  \
 	xmldoc2wiki.cs
 
 xmldoc2wiki.exe: $(xmldoc2wiki_sources)
-	$(GMCS) -debug $^ -out:$@ -r:System.Xml.Linq.dll
+	$(MCS) -debug $^ -out:$@ -r:System.Xml.Linq.dll
 
 clean:
 	rm -f xmldoc2wiki.exe*

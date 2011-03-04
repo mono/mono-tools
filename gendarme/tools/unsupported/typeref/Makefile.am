@@ -6,7 +6,7 @@ typeref_sources =  \
 	typeref.cs
 
 typeref.exe:  $(typeref_sources)
-	$(GMCS) -debug $^ -out:$@ -r:$(CECIL_ASM)
+	$(MCS) -debug $^ -out:$@ -r:$(CECIL_ASM)
 
 clean:
 	rm -f typeref.exe*

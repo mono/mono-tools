@@ -309,7 +309,7 @@ namespace Gendarme.Rules.Performance {
 			return methods;
 		}
 
-		private static void BuildMethodUsage (HashSet<ulong> methods, MethodDefinition method)
+		private static void BuildMethodUsage (ISet<ulong> methods, MethodDefinition method)
 		{
 			foreach (Instruction ins in method.Body.Instructions) {
 				MethodReference mr = (ins.Operand as MethodReference);
