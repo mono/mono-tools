@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2007 Andreas Noever
-// Copyright (C) 2009 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2009, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -177,7 +177,7 @@ namespace Gendarme.Rules.Portability {
 
 			using (FileStream fs = File.OpenRead (filename)) 
 			using (ZipInputStream zs = new ZipInputStream (fs))
-			using (StreamReader sr = new StreamReader (zs)) {
+			using (StreamLineReader sr = new StreamLineReader (zs)) {
 				ZipEntry ze;
 				while ((ze = zs.GetNextEntry ()) != null) {
 					switch (ze.Name) {
@@ -293,29 +293,28 @@ namespace Gendarme.Rules.Portability {
 			return v;
 		}
 
-		private static Dictionary<string, string> ReadWithComments (TextReader reader)
+		static char [] buffer = new char [4096];
+
+		private static Dictionary<string, string> ReadWithComments (StreamLineReader reader)
 		{
 			Dictionary<string, string> dict = new Dictionary<string, string> ();
-			string line;
-			while ((line = reader.ReadLine ()) != null) {
-				int split = line.IndexOf ('-');
-				string target = line.Substring (0, split);
-				// are there comments ? (many entries don't have any)
-				if (split == line.Length - 1) {
-					dict.Add (target, null);
-				} else {
-					dict.Add (target, line.Substring (split + 1));
-				}
+			while (!reader.EndOfStream) {
+				int length = reader.ReadLine (buffer, 0, buffer.Length);
+				int pos = Array.IndexOf (buffer, '-');
+				string key = new string (buffer, 0, pos);
+				string comment = (buffer [length - 1] == '-') ? null :
+					new string (buffer, pos + 1, length - pos - 1);
+				dict.Add (key, comment);
 			}
 			return dict;
 		}
 
-		private static HashSet<string> Read (TextReader reader)
+		private static HashSet<string> Read (StreamLineReader reader)
 		{
 			HashSet<string> set = new HashSet<string> ();
-			string line;
-			while ((line = reader.ReadLine ()) != null) {
-				set.Add (line);
+			while (!reader.EndOfStream) {
+				int length = reader.ReadLine (buffer, 0, buffer.Length);
+				set.Add (new string (buffer, 0, length));
 			}
 			return set;
 		}
