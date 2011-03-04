@@ -61,13 +61,13 @@ namespace Gendarme {
 
 		private void Parse ()
 		{
+			char [] buffer = new char [4096];
 			while (files.Count > 0) {
 				string fileName = files.Pop ();
-				using (StreamReader sr = new StreamReader (fileName)) {
-					string s = sr.ReadLine ();
-					while (s != null) {
-						ProcessLine (s);
-						s = sr.ReadLine ();
+				using (StreamLineReader sr = new StreamLineReader (fileName)) {
+					while (!sr.EndOfStream) {
+						int length = sr.ReadLine (buffer, 0, buffer.Length);
+						ProcessLine (buffer, length);
 					}
 				}
 			}
@@ -87,19 +87,33 @@ namespace Gendarme {
 			rules.Add (rule);
 		}
 
-		private void ProcessLine (string line)
+		static string GetString (char [] buffer, int length)
 		{
-			if (line.Length < 1)
+			// skip the 'type' + ':' characters when looking for whitespace separator(s)
+			int start = 2;
+			while (Char.IsWhiteSpace (buffer [start]) && (start < buffer.Length))
+				start++;
+
+			int end = length;
+			while (Char.IsWhiteSpace (buffer [end]) && (end >= start))
+				end--;
+
+			return new string (buffer, start, end - start);
+		}
+
+		private void ProcessLine (char [] buffer, int length)
+		{
+			if (length < 1)
 				return;
 
-			switch (line [0]) {
+			switch (buffer [0]) {
 			case '#': // comment
 				break;
 			case 'R': // rule
-				current_rule = line.Substring (line.LastIndexOf (' ') + 1);
+				current_rule = GetString (buffer, length);
 				break;
 			case 'A': // assembly - we support Name, FullName and *
-				string target = line.Substring (2).Trim ();
+				string target = GetString (buffer, length);
 				if (target == "*") {
 					foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 						Add (assemblies, current_rule, assembly.Name.FullName);
@@ -109,19 +123,19 @@ namespace Gendarme {
 				}
 				break;
 			case 'T': // type (no space allowed)
-				Add (types, current_rule, line.Substring (line.LastIndexOf (' ') + 1));
+				Add (types, current_rule, GetString (buffer, length));
 				break;
 			case 'M': // method
-				Add (methods, current_rule, line.Substring (2).Trim ());
+				Add (methods, current_rule, GetString (buffer, length));
 				break;
 			case 'N': // namespace - special case (no need to resolve)
-				base.Add (current_rule, NamespaceDefinition.GetDefinition (line.Substring (2).Trim ()));
+				base.Add (current_rule, NamespaceDefinition.GetDefinition (GetString (buffer, length)));
 				break;
 			case '@': // include file
-				files.Push (line.Substring (2).Trim ());
+				files.Push (GetString (buffer, length));
 				break;
 			default:
-				Console.Error.WriteLine ("Bad ignore entry : '{0}'", line);
+				Console.Error.WriteLine ("Bad ignore entry : '{0}'", new string (buffer));
 				break;
 			}
 		}

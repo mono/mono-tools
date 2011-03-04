@@ -40,6 +40,7 @@ framework_sources =  \
 	Gendarme.Framework.Helpers/PrimitiveReferences.cs \
 	Gendarme.Framework.Helpers/StackEntryAnalysis.cs \
 	Gendarme.Framework.Helpers/StackEntryUsageResult.cs \
+	Gendarme.Framework.Helpers/StreamLineReader.cs \
 	Gendarme.Framework.Rocks/AssemblyRocks.cs \
 	Gendarme.Framework.Rocks/CecilRocks.cs \
 	Gendarme.Framework.Rocks/CommonRocks.cs \
