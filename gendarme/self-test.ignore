@@ -31,6 +31,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CheckNewThreadWithou
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.CloneMethodShouldNotReturnNullRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.ConstructorShouldNotCallVirtualMethodsRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.DisableDebuggingCodeRule::CheckMethod(Mono.Cecil.MethodDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.DoNotDecreaseVisibilityRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.DoNotForgetNotImplementedMethodsRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.DoNotUseEnumIsAssignableFromRule::CheckMethod(Mono.Cecil.MethodDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.BadPractice.DoNotUseGetInterfaceToCheckAssignabilityRule::CheckMethod(Mono.Cecil.MethodDefinition)

@@ -10,6 +10,7 @@ rules_sources =  \
 	CloneMethodShouldNotReturnNullRule.cs \
 	ConstructorShouldNotCallVirtualMethodsRule.cs \
 	DisableDebuggingCodeRule.cs \
+	DoNotDecreaseVisibilityRule.cs \
 	DoNotForgetNotImplementedMethodsRule.cs \
 	DoNotUseEnumIsAssignableFromRule.cs \
 	DoNotUseGetInterfaceToCheckAssignabilityRule.cs \
@@ -35,6 +36,7 @@ tests_sources = \
 	CheckNewThreadWithoutStartTest.cs \
 	CloneMethodShouldNotReturnNullTest.cs \
 	ConstructorShouldNotCallVirtualMethodsTest.cs \
+	DoNotDecreaseVisibilityTest.cs \
 	DoNotForgetNotImplementedMethodsTest.cs \
 	DoNotUseEnumIsAssignableFromTest.cs \
 	DoNotUseGetInterfaceToCheckAssignabilityTest.cs \
