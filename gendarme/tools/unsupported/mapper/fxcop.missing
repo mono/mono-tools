@@ -36,7 +36,6 @@ CA1717	Only FlagsAttribute enums should have plural names                       
 CA1719	Parameter names should not match member names                                                http://msdn.microsoft.com/en-us/library/ms182252.aspx
 CA1720	Identifiers should not contain type names                                                    http://msdn.microsoft.com/en-us/library/bb531486.aspx
 CA1721	Property names should not match get methods                                                  http://msdn.microsoft.com/en-us/library/ms182253.aspx
-CA1724	Type Names Should Not Match Namespaces                                                       http://msdn.microsoft.com/en-us/library/ms182257.aspx
 
 Microsoft.Performance
 CA1810	Initialize reference type static fields inline                                               http://msdn.microsoft.com/en-us/library/ms182275.aspx
@@ -93,7 +92,6 @@ CA2207	Initialize value type static fields inline                               
 CA2212	Do not mark serviced components with WebMethod                                               http://msdn.microsoft.com/en-us/library/ms182336.aspx
 CA2215	Dispose methods should call base class dispose                                               http://msdn.microsoft.com/en-us/library/ms182330.aspx
 CA2217	Do not mark enums with FlagsAttribute                                                        http://msdn.microsoft.com/en-us/library/ms182335.aspx
-CA2222	Do not decrease inherited member visibility                                                  http://msdn.microsoft.com/en-us/library/ms182332.aspx
 CA2223	Members should differ by more than return type                                               http://msdn.microsoft.com/en-us/library/ms182352.aspx
 CA2227	Collection properties should be read only                                                    http://msdn.microsoft.com/en-us/library/ms182327.aspx
 CA2228	Do not ship unreleased resource formats                                                      http://msdn.microsoft.com/en-us/library/ms182339.aspx

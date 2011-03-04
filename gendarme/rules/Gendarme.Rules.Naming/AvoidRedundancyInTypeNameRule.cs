@@ -95,6 +95,7 @@ namespace Gendarme.Rules.Naming {
 	[Problem ("This type name is prefixed with the last component of its enclosing namespace. This usually makes an API more verbose and less autocompletion-friendly than necessary.")]
 	[Solution ("Remove the prefix from the type or replace it with a more meaningful term in the context of the namespace.")]
 	[EngineDependency (typeof (NamespaceEngine))]
+	[FxCopCompatibility ("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces")]
 	public class AvoidRedundancyInTypeNameRule : Rule, ITypeRule {
 
 		public RuleResult CheckType (TypeDefinition type)
