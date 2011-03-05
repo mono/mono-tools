@@ -17,6 +17,7 @@ rules_sources =  \
 	DeclareEventHandlersCorrectlyRule.cs \
 	DefineAZeroValueRule.cs \
 	DisposableTypesShouldHaveFinalizerRule.cs \
+	DoNotDeclareSettersOnCollectionPropertiesRule.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeRule.cs \
 	DontDeclareProtectedFieldsInSealedClassRule.cs \
 	EnsureSymmetryForOverloadedOperatorsRule.cs \
@@ -70,6 +71,7 @@ tests_sources = \
 	ConsiderUsingStaticTypeTest.cs \
 	DeclareEventHandlersCorrectlyTest.cs \
 	DisposableTypesShouldHaveFinalizerTest.cs \
+	DoNotDeclareSettersOnCollectionPropertiesTest.cs \
 	DoNotDeclareVirtualMethodsInSealedTypeTest.cs \
 	DontDeclareProtectedFieldsInSealedClassTest.cs \
 	EnsureSymmetryForOverloadedOperatorsTest.cs \

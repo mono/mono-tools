@@ -94,6 +94,7 @@ M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ConsiderConvertingMethodT
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.ConsiderUsingStaticTypeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DeclareEventHandlersCorrectlyRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DisposableTypesShouldHaveFinalizerRule::CheckType(Mono.Cecil.TypeDefinition)
+M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DoNotDeclareSettersOnCollectionPropertiesRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DoNotDeclareVirtualMethodsInSealedTypeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.DoNotDeclareProtectedMembersInSealedTypeRule::CheckType(Mono.Cecil.TypeDefinition)
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Design.EnsureSymmetryForOverloadedOperatorsRule::CheckType(Mono.Cecil.TypeDefinition)

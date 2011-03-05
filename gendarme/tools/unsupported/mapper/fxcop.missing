@@ -93,6 +93,5 @@ CA2212	Do not mark serviced components with WebMethod                           
 CA2215	Dispose methods should call base class dispose                                               http://msdn.microsoft.com/en-us/library/ms182330.aspx
 CA2217	Do not mark enums with FlagsAttribute                                                        http://msdn.microsoft.com/en-us/library/ms182335.aspx
 CA2223	Members should differ by more than return type                                               http://msdn.microsoft.com/en-us/library/ms182352.aspx
-CA2227	Collection properties should be read only                                                    http://msdn.microsoft.com/en-us/library/ms182327.aspx
 CA2228	Do not ship unreleased resource formats                                                      http://msdn.microsoft.com/en-us/library/ms182339.aspx
 CA2233	Operations should not overflow                                                               http://msdn.microsoft.com/en-us/library/ms182354.aspx
