@@ -40,7 +40,9 @@ namespace GuiCompare
 			this.GtkAlignment2.Name = "GtkAlignment2";
 			this.GtkAlignment2.LeftPadding = ((uint)(12));
 			// Container child GtkAlignment2.Gtk.Container+ContainerChild
-			this.reference = null;
+			this.reference = new guicompare.ProviderSelector();
+			this.reference.Events = ((Gdk.EventMask)(256));
+			this.reference.Name = "reference";
 			this.GtkAlignment2.Add (this.reference);
 			this.frame1.Add (this.GtkAlignment2);
 			this.GtkLabel4 = new global::Gtk.Label ();
@@ -61,7 +63,9 @@ namespace GuiCompare
 			this.GtkAlignment3.Name = "GtkAlignment3";
 			this.GtkAlignment3.LeftPadding = ((uint)(12));
 			// Container child GtkAlignment3.Gtk.Container+ContainerChild
-			this.target = null;
+			this.target = new guicompare.ProviderSelector();
+			this.target.Events = ((Gdk.EventMask)(256));
+			this.target.Name = "target";
 			this.GtkAlignment3.Add (this.target);
 			this.frame2.Add (this.GtkAlignment3);
 			this.GtkLabel9 = new global::Gtk.Label ();
