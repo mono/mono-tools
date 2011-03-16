@@ -116,7 +116,7 @@ Test.Framework.dll: $(framework_test_build_sources) $(framework_rules_SCRIPTS) .
 test: Test.Framework.dll
 
 run-test: test
-	MONO_PATH=../bin/:../rules/Test.Rules/:$(MONO_PATH) nunit-console2 -noshadow Test.Framework.dll
+	MONO_PATH=../bin/:../rules/Test.Rules/:$(MONO_PATH) $(prefix)/bin/mono $(prefix)/lib/mono/4.0/nunit-console.exe Test.Framework.dll
 
 self-test: $(framework_SCRIPTS)
 	mono --debug ../bin/gendarme.exe $(framework_SCRIPTS)

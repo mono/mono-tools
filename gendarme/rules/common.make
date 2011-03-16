@@ -54,7 +54,7 @@ test: $(tests_dll)
 
 run-test: test
 	cp ../../bin/gendarme.exe.config $(tests_dll).config
-	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) nunit-console $(tests_dll)
+	MONO_PATH=../../bin/:../Test.Rules/:$(MONO_PATH) $(prefix)/bin/mono $(prefix)/lib/mono/4.0/nunit-console.exe $(tests_dll)
 
 self-test: $(rules_dll)
 	mono --debug $(console_runner) $(rules_dll)
