@@ -100,7 +100,8 @@ namespace Gendarme.Rules.Concurrency {
 	///		Monitor.Enter (mutex);
 	/// 		try {
 	///			producer++;
-	/// 		} finally {
+	/// 		}
+	///		finally {
 	///			Monitor.Exit (mutex);
 	/// 		}
 	///	}
