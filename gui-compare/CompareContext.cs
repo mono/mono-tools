@@ -427,9 +427,9 @@ namespace GuiCompare {
 							// Try to give some hints to the developer, best we can do with
 							// strings.
 							string extra_msg = "";
-							if (reference_access.IndexOf ("Public, Final, Virtual, HideBySig") != -1 &&
+							if (reference_access.IndexOf ("Private, Final, Virtual, HideBySig") != -1 &&
 							    target_access.IndexOf ("Public, HideBySig") != -1){
-								extra_msg = "\n\t\t<b>Hint:</b> reference uses an implicit interface implementation, target doesn't";
+								extra_msg = "\n\t\t<b>Hint:</b> reference uses an explicit interface implementation, target doesn't";
 							}
 
 							comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
