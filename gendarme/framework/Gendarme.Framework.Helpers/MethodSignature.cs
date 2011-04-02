@@ -50,7 +50,7 @@ namespace Gendarme.Framework.Helpers {
 	/// }
 	/// </code>
 	/// </example>
-	// <seealso cref="Gendarme.Framework.Helpers.MethodSignatures"/>
+	/// <seealso cref="Gendarme.Framework.Helpers.MethodSignatures"/>
 	public class MethodSignature {
 
 		/// <summary>
