@@ -351,6 +351,9 @@ T: Gendarme.Rules.Performance.ReviewLinqMethodRule
 T: Gendarme.Rules.Design.StronglyTypedRule
 # 2.8+
 M: System.String Gendarme.Rules.Maintainability.PreferStringIsNullOrEmptyRule::GetName(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.Instruction)
+# ParseSeverity(System.String) and ParseConfidence(System.String) are very similar
+T: Gendarme.ConsoleRunner
+
 R: Gendarme.Rules.Smells.AvoidCodeDuplicatedInSiblingClassesRule
 M: Gendarme.Framework.RuleResult Gendarme.Rules.Correctness.AvoidFloatingPointEqualityRule::CheckMethod(Mono.Cecil.MethodDefinition)
 # CheckType and GetEngineDependencyValue

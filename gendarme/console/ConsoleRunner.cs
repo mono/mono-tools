@@ -55,8 +55,6 @@ namespace Gendarme {
 		private string xml_file;
 		private string ignore_file;
 		private string limit;
-		private string severity_filter;
-		private string confidence_filter;
 		private bool help;
 		private bool quiet;
 		private bool version;
@@ -64,10 +62,10 @@ namespace Gendarme {
 
 		// parse severity filter
 		// e.g. Audit,High+ == Audit, High and Critical
-		void ParseSeverity ()
+		bool ParseSeverity (string filter)
 		{
 			SeverityBitmask.ClearAll ();
-			string [] options = severity_filter.ToUpperInvariant ().Split (',');
+			string [] options = filter.ToUpperInvariant ().Split (',', StringSplitOptions.RemoveEmptyEntries);
 			foreach (string option in options) {
 				Severity severity;
 
@@ -102,27 +100,26 @@ namespace Gendarme {
 					SeverityBitmask.SetAll ();
 					continue;
 				default:
-					continue;
+					string msg = String.Format (CultureInfo.CurrentCulture, "Unknown severity level '{0}'", option);
+					throw new OptionException (msg, "severity");
 				}
 
 				char end = option [option.Length - 1];
 				if (end == '+') {
 					SeverityBitmask.SetDown (severity);
-					Console.WriteLine ("SetDown {0} -> {1}", severity, SeverityBitmask);
 				} else if (end == '-') {
 					SeverityBitmask.SetUp (severity);
-					Console.WriteLine ("SetUp {0} -> {1}", severity, SeverityBitmask);
 				} else {
 					SeverityBitmask.Set (severity);
-					Console.WriteLine ("Set {0} -> {1}", severity, SeverityBitmask);
 				}
 			}
+			return true;
 		}
 
-		void ParseConfidence ()
+		bool ParseConfidence (string filter)
 		{
 			ConfidenceBitmask.ClearAll ();
-			string [] options = confidence_filter.ToUpperInvariant ().Split (',');
+			string [] options = filter.ToUpperInvariant ().Split (',', StringSplitOptions.RemoveEmptyEntries);
 			foreach (string option in options) {
 				Confidence confidence;
 
@@ -152,7 +149,8 @@ namespace Gendarme {
 					ConfidenceBitmask.SetAll ();
 					continue;
 				default:
-					continue;
+					string msg = String.Format (CultureInfo.CurrentCulture, "Unknown confidence level '{0}'", option);
+					throw new OptionException (msg, "confidence");
 				}
 
 				char end = option [option.Length - 1];
@@ -164,6 +162,7 @@ namespace Gendarme {
 					ConfidenceBitmask.Set (confidence);
 				}
 			}
+			return true;
 		}
 
 		static string ValidateInputFile (string option, string file)
@@ -199,6 +198,9 @@ namespace Gendarme {
 
 		byte Parse (string [] args)
 		{
+			bool severity = false;
+			bool confidence = false;
+
 			var p = new OptionSet () {
 				{ "config=",	v => config_file = ValidateInputFile ("config", v) },
 				{ "set=",	v => rule_set = v },
@@ -207,8 +209,8 @@ namespace Gendarme {
 				{ "html=",	v => html_file = ValidateOutputFile ("html", v) },
 				{ "ignore=",	v => ignore_file = ValidateInputFile ("ignore", v) },
 				{ "limit=",	v => limit = v },
-				{ "severity=",	v => severity_filter = v },
-				{ "confidence=",v => confidence_filter = v },
+				{ "severity=",	v => severity = ParseSeverity (v) },
+				{ "confidence=",v => confidence = ParseConfidence (v) },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "quiet",	v => quiet = v != null },
 				{ "version",	v => version = v != null },
@@ -231,20 +233,16 @@ namespace Gendarme {
 			DefectsLimit = defects_limit;
 
 			// by default the runner will ignore Audit and Low severity defects
-			if (String.IsNullOrEmpty (severity_filter)) {
+			if (!severity) {
 				SeverityBitmask.SetAll ();
 				SeverityBitmask.Clear (Severity.Audit);
 				SeverityBitmask.Clear (Severity.Low);
-			} else {
-				ParseSeverity ();
 			}
 
 			// by default the runner will ignore Low confidence defects
-			if (String.IsNullOrEmpty (confidence_filter)) {
+			if (!confidence) {
 				ConfidenceBitmask.SetAll ();
 				ConfidenceBitmask.Clear (Confidence.Low);
-			} else {
-				ParseConfidence ();
 			}
 
 			return (byte) ((assembly_names.Count > 0) ? 0 : 1);
