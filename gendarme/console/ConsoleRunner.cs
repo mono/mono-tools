@@ -166,15 +166,46 @@ namespace Gendarme {
 			}
 		}
 
+		static string ValidateInputFile (string option, string file)
+		{
+			if (!File.Exists (file)) {
+				string msg = String.Format (CultureInfo.CurrentCulture, "File '{0}' could not be found", file);
+				throw new OptionException (msg, option);
+			}
+			return file;
+		}
+
+		static string ValidateOutputFile (string option, string file)
+		{
+			string msg = String.Empty;
+			if (file.Length > 0) {
+				string path = Path.GetDirectoryName (file);
+				if (path.IndexOfAny (Path.GetInvalidPathChars ()) != -1)
+					msg = String.Format (CultureInfo.CurrentCulture, "Invalid path '{0}'", file);
+				else if (!Directory.Exists (path))
+					msg = String.Format (CultureInfo.CurrentCulture, "Path '{0}' does not exists", file);
+			}
+
+			string fname = Path.GetFileName (file);
+			if ((fname.Length == 0) || (fname.IndexOfAny (Path.GetInvalidFileNameChars ()) != -1)) {
+				msg = String.Format (CultureInfo.CurrentCulture, "Filename '{0}' is not valid", fname);
+			}
+
+			if (msg.Length > 0)
+				throw new OptionException (msg, option);
+
+			return file;
+		}
+
 		byte Parse (string [] args)
 		{
 			var p = new OptionSet () {
-				{ "config=",	v => config_file = v },
+				{ "config=",	v => config_file = ValidateInputFile ("config", v) },
 				{ "set=",	v => rule_set = v },
-				{ "log=",	v => log_file = v },
-				{ "xml=",	v => xml_file = v },
-				{ "html=",	v => html_file = v },
-				{ "ignore=",	v => ignore_file = v },
+				{ "log=",	v => log_file = ValidateOutputFile ("log", v) },
+				{ "xml=",	v => xml_file = ValidateOutputFile ("xml", v) },
+				{ "html=",	v => html_file = ValidateOutputFile ("html", v) },
+				{ "ignore=",	v => ignore_file = ValidateInputFile ("ignore", v) },
 				{ "limit=",	v => limit = v },
 				{ "severity=",	v => severity_filter = v },
 				{ "confidence=",v => confidence_filter = v },
@@ -183,7 +214,15 @@ namespace Gendarme {
 				{ "version",	v => version = v != null },
 				{ "h|?|help",	v => help = v != null },
 			};
-			assembly_names = p.Parse (args);
+
+			try {
+				assembly_names = p.Parse (args);
+			}
+			catch (OptionException e) {
+				Console.WriteLine ("Error parsing option '{0}' : {1}", e.OptionName, e.Message);
+				Console.WriteLine ();
+				return 1;
+			}
 
 			// if supplied, use the user limit on defects (otherwise 2^31 is used)
 			int defects_limit;
