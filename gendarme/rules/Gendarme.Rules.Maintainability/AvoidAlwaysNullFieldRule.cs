@@ -166,6 +166,16 @@ namespace Gendarme.Rules.Maintainability {
 				}
 			};
 		}
+
+		void CheckMethods (TypeDefinition type)
+		{
+			if (!type.HasMethods)
+				return;
+
+			IList<MethodDefinition> mc = type.Methods;
+			for (int i = 0; i < mc.Count && nullFields.Count > 0; ++i)
+				CheckMethod (mc [i]);
+		}
 		
 		public RuleResult CheckType (TypeDefinition type)
 		{
@@ -184,10 +194,10 @@ namespace Gendarme.Rules.Maintainability {
 						nullFields.Add (field);
 			}
 
-			if (type.HasMethods) {
-				IList<MethodDefinition> mc = type.Methods;
-				for (int i = 0; i < mc.Count && nullFields.Count > 0; ++i)
-					CheckMethod (mc [i]);
+			CheckMethods (type);
+			if (type.HasNestedTypes) {
+				foreach (TypeDefinition nested in type.NestedTypes)
+					CheckMethods (nested);
 			}
 				
 			// Report a defect if:

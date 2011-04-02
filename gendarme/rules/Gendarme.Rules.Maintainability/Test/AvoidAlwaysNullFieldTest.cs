@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Jesse Jones <jesjones@mindspring.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Jesse Jones
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -29,8 +31,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Threading;
 
 using Gendarme.Rules.Maintainability;
 
@@ -230,6 +231,52 @@ namespace Test.Rules.Maintainability {
 			AssertRuleSuccess<TernaryIf> ();
 			AssertRuleSuccess<Bug667692a> ();
 			AssertRuleSuccess<Bug667692b> ();
+		}
+
+		// this will create an anonymous method
+		class AnonymousDelegatesAllFields {
+
+			string file;
+
+			void Parse ()
+			{
+				ThreadPool.QueueUserWorkItem (delegate {
+					file = ""; 
+				});
+			}
+
+			void Show ()
+			{
+				Console.WriteLine (file);
+			}
+		}
+
+		// this will create a nested type with the anonymous method
+		class AnonymousDelegatesFieldsAndLocals {
+
+			string file;
+
+			void Parse ()
+			{
+				string local;
+
+				ThreadPool.QueueUserWorkItem (delegate {
+					file = "";
+					local = file;
+				});
+			}
+
+			void Show ()
+			{
+				Console.WriteLine (file);
+			}
+		}
+
+		[Test]
+		public void AnonymousDelegates ()
+		{
+			AssertRuleSuccess<AnonymousDelegatesAllFields> ();
+			AssertRuleSuccess<AnonymousDelegatesFieldsAndLocals> ();
 		}
 	}
 }
