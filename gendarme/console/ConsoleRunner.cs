@@ -54,19 +54,22 @@ namespace Gendarme {
 		private string log_file;
 		private string xml_file;
 		private string ignore_file;
-		private string limit;
 		private bool help;
 		private bool quiet;
 		private bool version;
 		private List<string> assembly_names;
+
+		static string [] SplitOptions (string value)
+		{
+			return value.ToUpperInvariant ().Split (new char [] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		}
 
 		// parse severity filter
 		// e.g. Audit,High+ == Audit, High and Critical
 		bool ParseSeverity (string filter)
 		{
 			SeverityBitmask.ClearAll ();
-			string [] options = filter.ToUpperInvariant ().Split (',', StringSplitOptions.RemoveEmptyEntries);
-			foreach (string option in options) {
+			foreach (string option in SplitOptions (filter)) {
 				Severity severity;
 
 				switch (option) {
@@ -119,8 +122,7 @@ namespace Gendarme {
 		bool ParseConfidence (string filter)
 		{
 			ConfidenceBitmask.ClearAll ();
-			string [] options = filter.ToUpperInvariant ().Split (',', StringSplitOptions.RemoveEmptyEntries);
-			foreach (string option in options) {
+			foreach (string option in SplitOptions (filter)) {
 				Confidence confidence;
 
 				switch (option) {
@@ -196,19 +198,39 @@ namespace Gendarme {
 			return file;
 		}
 
+		static string ValidateRuleSet (string ruleSet)
+		{
+			if (String.IsNullOrEmpty (ruleSet)) {
+				throw new OptionException ("Missing rule set name", "set");
+			}
+			return ruleSet;
+		}
+
+		static int ValidateLimit (string limit)
+		{
+			int defects_limit;
+			if (String.IsNullOrEmpty (limit) || !Int32.TryParse (limit, out defects_limit)) {
+				string msg = String.Format (CultureInfo.CurrentCulture, "Invalid value '{0}' to limit defects", limit);
+				throw new OptionException (msg, "limit");
+			}
+			return defects_limit;
+		}
+
 		byte Parse (string [] args)
 		{
 			bool severity = false;
 			bool confidence = false;
+			// if supplied, use the user limit on defects (otherwise 2^31 is used)
+			DefectsLimit = Int32.MaxValue;
 
 			var p = new OptionSet () {
 				{ "config=",	v => config_file = ValidateInputFile ("config", v) },
-				{ "set=",	v => rule_set = v },
+				{ "set=",	v => rule_set = ValidateRuleSet (v) },
 				{ "log=",	v => log_file = ValidateOutputFile ("log", v) },
 				{ "xml=",	v => xml_file = ValidateOutputFile ("xml", v) },
 				{ "html=",	v => html_file = ValidateOutputFile ("html", v) },
 				{ "ignore=",	v => ignore_file = ValidateInputFile ("ignore", v) },
-				{ "limit=",	v => limit = v },
+				{ "limit=",	v => DefectsLimit = ValidateLimit (v) },
 				{ "severity=",	v => severity = ParseSeverity (v) },
 				{ "confidence=",v => confidence = ParseConfidence (v) },
 				{ "v|verbose",  v => ++VerbosityLevel },
@@ -225,12 +247,6 @@ namespace Gendarme {
 				Console.WriteLine ();
 				return 1;
 			}
-
-			// if supplied, use the user limit on defects (otherwise 2^31 is used)
-			int defects_limit;
-			if (String.IsNullOrEmpty (limit) || !Int32.TryParse (limit, out defects_limit))
-				defects_limit = Int32.MaxValue;
-			DefectsLimit = defects_limit;
 
 			// by default the runner will ignore Audit and Low severity defects
 			if (!severity) {
