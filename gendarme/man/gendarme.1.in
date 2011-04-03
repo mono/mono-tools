@@ -33,14 +33,18 @@ Specify the rule sets and rule settings. Default is 'rules.xml'.
 Specify a rule set from configfile. Defaults to 'default'.
 .TP
 .I "--log file"
-Save the report to the specified file. If none of --log, --xml, or --html are used
-then the report is written to stdout.
+Save the report, as a text file, to the specified file.
 .TP
 .I "--xml file"
 Save the report, formatted as XML, to the specified file.
 .TP
 .I "--html file"
 Save the report, formatted as HTML, to the specified file.
+.TP
+.I "--console"
+Write the defects on stdout. This is the default (implicit) behavior if none of
+--log, --xml, or --html options are specified. If (explicitely) specified then 
+the defects will be shown on both stdout and inside text/xml/html report(s).
 .TP
 .I "--ignore ignore-file"
 Do not report defects listed in the specified file.
