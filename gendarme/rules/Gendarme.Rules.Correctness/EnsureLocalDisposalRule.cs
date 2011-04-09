@@ -3,8 +3,10 @@
 //
 // Authors:
 //	Cedric Vivier <cedricv@neonux.com>
+//	Sebastien Pouliot <sebastien@ximian.com>
 //
 // Copyright (C) 2008 Cedric Vivier
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -116,7 +118,7 @@ namespace Gendarme.Rules.Correctness {
 	public sealed class EnsureLocalDisposalRule : Rule, IMethodRule {
 
 		OpCodeBitmask callsAndNewobjBitmask = BuildCallsAndNewobjOpCodeBitmask ();
-		HashSet<Instruction> suspectLocals = new HashSet<Instruction> ();
+		Bitmask<ulong> locals = new Bitmask<ulong> ();
 
 		static bool IsDispose (MethodReference call)
 		{
@@ -141,43 +143,6 @@ namespace Gendarme.Rules.Correctness {
 			return method.ReturnType.Implements ("System", "IDisposable");
 		}
 
-		static bool AreBothInstructionsInSameTryFinallyBlock (MethodBody body, Instruction a, Instruction b)
-		{
-			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
-				if (eh.HandlerType != ExceptionHandlerType.Finally)
-					continue;
-				if (eh.TryStart.Offset <= a.Next.Offset && eh.TryEnd.Offset >= a.Offset
-					&& eh.HandlerStart.Offset <= b.Offset && eh.HandlerEnd.Offset >= b.Offset)
-					return true;
-			}
-			return false;
-		}
-
-		static Instruction LocalTraceBack (IMethodSignature method, Instruction ins)
-		{
-			ins = ins.TraceBack (method);
-			while (ins != null) {
-				if (ins.IsLoadLocal () || ins.IsStoreLocal ())
-					return ins;
-				ins = ins.TraceBack (method);
-			}
-			return null;
-		}
-
-		Instruction FindRelatedSuspectLocal (MethodDefinition method, Instruction ins)
-		{
-			ins = LocalTraceBack (method, ins);
-			if (null == ins)
-				return null;
-
-			int index = ins.GetVariable (method).Index;
-			foreach (var local in suspectLocals) {
-				if (local.GetVariable (method).Index == index)
-					return local;
-			}
-			return null;
-		}
-
 		static bool IsSetter (MethodReference m)
 		{
 			if (m == null)
@@ -188,42 +153,135 @@ namespace Gendarme.Rules.Correctness {
 			return md.IsSetter;
 		}
 
+		static bool IsInsideFinallyBlock (MethodDefinition method, Instruction ins)
+		{
+			MethodBody body = method.Body;
+			if (!body.HasExceptionHandlers)
+				return false;
+
+			foreach (ExceptionHandler eh in body.ExceptionHandlers) {
+				if (eh.HandlerType != ExceptionHandlerType.Finally)
+					continue;
+				if (ins.Offset >= eh.HandlerStart.Offset || ins.Offset < eh.HandlerEnd.Offset)
+					return true;
+			}
+			return false;
+		}
+
+		void Clear (MethodDefinition method, Instruction ins)
+		{
+			VariableDefinition v = ins.GetVariable (method);
+			if (v != null)
+				locals.Clear ((ulong) v.Index);
+		}
+
+		void CheckForReturn (MethodDefinition method, Instruction ins)
+		{
+			if (ins.IsLoadLocal ())
+				Clear (method, ins);
+		}
+
+		void CheckForOutParameters (MethodDefinition method, Instruction ins)
+		{
+			Instruction iref = ins.TraceBack (method);
+			if (iref == null)
+				return;
+			ParameterDefinition p = iref.GetParameter (method);
+			if ((p != null) && p.IsOut) {
+				ins = ins.Previous;
+				if (ins.IsLoadLocal ())
+					Clear (method, ins);
+			}
+		}
+
+		void CheckDisposeCalls (MethodDefinition method, Instruction ins)
+		{
+			Instruction instance = ins.TraceBack (method);
+			if (instance == null)
+				return;
+
+			VariableDefinition v = instance.GetVariable (method);
+			ulong index = v == null ? UInt64.MaxValue : (ulong) v.Index;
+			if (v != null && locals.Get (index)) {
+				if (!IsInsideFinallyBlock (method, ins)) {
+					string msg = String.Format (CultureInfo.InvariantCulture,
+						"Local {0}is not guaranteed to be disposed of.",
+						GetFriendlyNameOrEmpty (v));
+					Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
+				}
+				locals.Clear (index);
+			}
+		}
+
+		bool CheckCallsToOtherInstances (MethodDefinition method, Instruction ins, MethodReference call)
+		{
+			Instruction p = ins.TraceBack (method, 0);
+			if (p.Is (Code.Ldarg_0))
+				return false;
+
+			if (call.HasParameters) {
+				for (int i = 1; i <= call.Parameters.Count; i++) {
+					p = ins.TraceBack (method, -i);
+					Clear (method, p);
+				}
+			}
+			return true;
+		}
+
+		void CheckReassignment (MethodDefinition method, Instruction ins)
+		{
+			VariableDefinition v = ins.GetVariable (method);
+			ulong index = (ulong) v.Index;
+			if (locals.Get (index)) {
+				string msg = String.Format (CultureInfo.InvariantCulture,
+					"Local {0}is not disposed before being re-assigned.",
+					GetFriendlyNameOrEmpty (v));
+				Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
+			} else {
+				locals.Set (index);
+			}
+		}
+
 		public RuleResult CheckMethod (MethodDefinition method)
 		{
 			if (!method.HasBody)
 				return RuleResult.DoesNotApply;
 
 			//is there any potential IDisposable-getting opcode in the method?
-			OpCodeBitmask methodBitmask = OpCodeEngine.GetBitmask (method);
-			if (!callsAndNewobjBitmask.Intersect (methodBitmask))
+			if (!callsAndNewobjBitmask.Intersect (OpCodeEngine.GetBitmask (method)))
 				return RuleResult.DoesNotApply;
 
-			//we ignore methods/constructors that returns IDisposable themselves
-			//where local(s) are most likely used for disposable object construction
-			if (DoesReturnDisposable (method))
-				return RuleResult.DoesNotApply;
+			// we will not report IDiposable locals that are returned from a method
+			bool return_idisposable = DoesReturnDisposable (method);
 
-			suspectLocals.Clear ();
+			locals.ClearAll ();
 
-			MethodBody body = method.Body;
-			foreach (Instruction ins in body.Instructions) {
-				if (!callsAndNewobjBitmask.Get (ins.OpCode.Code))
+			foreach (Instruction ins in method.Body.Instructions) {
+				Code code = ins.OpCode.Code;
+				switch (code) {
+				case Code.Ret:
+					if (return_idisposable)
+						CheckForReturn (method, ins.Previous);
 					continue;
+				case Code.Stind_Ref:
+					CheckForOutParameters (method, ins);
+					continue;
+				default:
+					if (!callsAndNewobjBitmask.Get (code))
+						continue;
+					break;
+				}
 
 				MethodReference call = (MethodReference) ins.Operand;
 
 				if (IsDispose (call)) {
-					Instruction local = FindRelatedSuspectLocal (method, ins);
-					if (local != null) {
-						if (!AreBothInstructionsInSameTryFinallyBlock (body, local, ins)) {
-							string msg = String.Format (CultureInfo.InvariantCulture, 
-								"Local {0}is not guaranteed to be disposed of.", 
-								GetFriendlyNameOrEmpty (local.GetVariable (method)));
-							Runner.Report (method, local, Severity.Medium, Confidence.Normal, msg);
-						}
-						suspectLocals.Remove (local);
-					}
+					CheckDisposeCalls (method, ins);
 					continue;
+				}
+
+				if (call.HasThis && (code != Code.Newobj)) {
+					if (!CheckCallsToOtherInstances (method, ins, call))
+						continue;
 				}
 
 				if (!DoesReturnDisposable (call))
@@ -236,26 +294,29 @@ namespace Gendarme.Rules.Correctness {
 				Code nextCode = nextInstruction.OpCode.Code;
 				if (nextCode == Code.Pop || OpCodeBitmask.Calls.Get (nextCode)) {
 					// We ignore setter because it is an obvious share of the IDisposable
-					if (IsSetter (nextInstruction.Operand as MethodReference))
-						continue;
-
-					ReportCall (method, ins, call);
-					continue;
+					if (!IsSetter (nextInstruction.Operand as MethodReference))
+						ReportCall (method, ins, call);
+				} else if (nextInstruction.IsStoreLocal ()) {
+					// make sure we're not re-assigning over a non-disposed IDisposable
+					CheckReassignment (method, nextInstruction);
 				}
-				
-				//even if an IDisposable, it isn't stored in a local
-				if (nextInstruction.IsStoreLocal ())
-					suspectLocals.Add (nextInstruction);
 			}
 
-			foreach (var local in suspectLocals) {
-				string msg = String.Format (CultureInfo.InvariantCulture, 
-					"Local {0}is not disposed of (at least not locally).", 
-					GetFriendlyNameOrEmpty (local.GetVariable (method)));
-				Runner.Report (method, local, Severity.High, Confidence.Normal, msg);
-			}
+			ReportNonDisposedLocals (method);
 
 			return Runner.CurrentRuleResult;
+		}
+
+		void ReportNonDisposedLocals (MethodDefinition method)
+		{
+			for (ulong i = 0; i < 64; i++) {
+				if (!locals.Get (i))
+					continue;
+				string msg = String.Format (CultureInfo.InvariantCulture,
+					"Local {0}is not disposed of (at least not locally).",
+					GetFriendlyNameOrEmpty (method.Body.Variables [(int) i]));
+				Runner.Report (method, Severity.High, Confidence.Normal, msg);
+			}
 		}
 
 		static bool IsFluentLike (MethodReference method)

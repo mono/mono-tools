@@ -45,13 +45,10 @@ namespace Test.Rules.Correctness {
 
 		StreamReader StreamReader { get; set; }
 
-		string DoesNotApply1 () { //no call/newobj/stloc
+		string DoesNotApply1 ()
+		{
+			//no call/newobj/stloc
 			return foo;
-		}
-
-		StreamReader DoesNotApply2 () { //returns IDisposable
-			var sr = new StreamReader ("bar.xml");
-			return sr;
 		}
 
 		string Success0 () {
@@ -214,12 +211,6 @@ namespace Test.Rules.Correctness {
 		}
 
 		[Test]
-		public void DoesNotApply2 ()
-		{
-			AssertRuleDoesNotApply<DisposalCases> ("DoesNotApply2");
-		}
-
-		[Test]
 		public void Success0 ()
 		{
 			AssertRuleSuccess<DisposalCases> ("Success0");
@@ -300,7 +291,7 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void Failure3 ()
 		{
-			AssertRuleFailure<DisposalCases> ("Failure3", 2);
+			AssertRuleFailure<DisposalCases> ("Failure3", 1);
 		}
 
 		[Test]
@@ -382,11 +373,71 @@ namespace Test.Rules.Correctness {
 		[Test]
 		public void FluentApi ()
 		{
-			AssertRuleFailure<EnsureLocalDisposalTest> ("FluentTestCase", 3);
-			// confidence is lower (normal instead of high) for fluent-like API
-			Assert.AreEqual (Confidence.Normal, Runner.Defects [0].Confidence, "0");
-			Assert.AreEqual (Confidence.Normal, Runner.Defects [1].Confidence, "1");
-			Assert.AreEqual (Confidence.Normal, Runner.Defects [2].Confidence, "2");
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("FluentTestCase");
+		}
+
+		// adapted (without locals variants) from https://bugzilla.novell.com/show_bug.cgi?id=666403
+
+		void OutParameter1 (out StreamReader stream)
+		{
+			var new_stream = new StreamReader ("baz.xml"); //out param
+			stream = new_stream;
+		}
+
+		bool OutParameter2 (out StreamReader stream)
+		{
+			stream = new StreamReader ("baz.xml"); //out param, no locals
+			return true;
+		}
+
+		[Test]
+		public void OutParameters ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("OutParameter1");
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("OutParameter2");
+		}
+
+		class SomeClassThatContainsADisposableProperty {
+			public StreamReader Reader { get; set; }
+		}
+
+		void OtherInstanceProperty1 (SomeClassThatContainsADisposableProperty someObj)
+		{
+			var reader = new StreamReader ("foobaz.xml");
+			someObj.Reader = reader; //property in param
+		}
+
+		void OtherInstanceProperty2 (SomeClassThatContainsADisposableProperty someObj)
+		{
+			someObj.Reader = new StreamReader ("foobaz.xml"); //property in param, no locals
+		}
+
+		[Test]
+		public void OtherInstance ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("OtherInstanceProperty1");
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("OtherInstanceProperty2");
+		}
+
+		StreamReader ReturnIDisposable1 ()
+		{
+			var ret = new StreamReader ("baz.xml"); //return value
+			return ret;
+		}
+
+		StreamReader ReturnIDisposable2 ()
+		{
+			return new StreamReader ("baz.xml"); //return value, no locals
+		}
+
+		[Test]
+		public void ReturnValue ()
+		{
+			// csc 10 (without /o optimize) will fail this as it introduce extra compiler generated locals
+#if __MonoCS__
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnIDisposable1");
+#endif
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnIDisposable2");
 		}
 	}
 }
