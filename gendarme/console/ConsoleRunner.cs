@@ -182,10 +182,12 @@ namespace Gendarme {
 			string msg = String.Empty;
 			if (file.Length > 0) {
 				string path = Path.GetDirectoryName (file);
-				if (path.IndexOfAny (Path.GetInvalidPathChars ()) != -1)
-					msg = String.Format (CultureInfo.CurrentCulture, "Invalid path '{0}'", file);
-				else if (!Directory.Exists (path))
-					msg = String.Format (CultureInfo.CurrentCulture, "Path '{0}' does not exists", file);
+				if (path.Length > 0) {
+					if (path.IndexOfAny (Path.GetInvalidPathChars ()) != -1)
+						msg = String.Format (CultureInfo.CurrentCulture, "Invalid path '{0}'", file);
+					else if (!Directory.Exists (path))
+						msg = String.Format (CultureInfo.CurrentCulture, "Path '{0}' does not exists", file);
+				}
 			}
 
 			string fname = Path.GetFileName (file);
