@@ -1,10 +1,12 @@
 //
-// Gendarme.Rules.Design.TypesWithNativeFieldsShouldBeDisposableRule
+// Gendarme.Rules.Correctness.TypesWithNativeFieldsShouldBeDisposableRule
 //
 // Authors:
 //	Andreas Noever <andreas.noever@gmail.com>
+//	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
+// Copyright (C) 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -26,13 +28,15 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
+
 using Gendarme.Framework;
+using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
 using Gendarme.Framework.Rocks;
 
-namespace Gendarme.Rules.Design {
+namespace Gendarme.Rules.Correctness {
 
 	/// <summary>
 	/// This rule will fire if a type contains <c>IntPtr</c>, <c>UIntPtr</c>, or 
@@ -70,54 +74,61 @@ namespace Gendarme.Rules.Design {
 	[Problem ("This type contains native field(s) but doesn't implement IDisposable.")]
 	[Solution ("Implement IDisposable and free the native field(s) in the Dispose method.")]
 	[FxCopCompatibility ("Microsoft.Design", "CA1049:TypesThatOwnNativeResourcesShouldBeDisposable")]
-	public class TypesWithNativeFieldsShouldBeDisposableRule : Rule, ITypeRule {
+	[EngineDependency (typeof (OpCodeEngine))]
+	public class TypesWithNativeFieldsShouldBeDisposableRule : TypesShouldBeDisposableBaseRule {
 
-		private const string AbstractTypeMessage = "Field is native. Type should implement a non-abstract Dispose() method";
-		private const string TypeMessage = "Field is native. Type should implement a Dispose() method";
-		private const string AbstractDisposeMessage = "Some fields are native pointers. Making this method abstract shifts the reponsability of disposing those fields to the inheritors of this class.";
+		static OpCodeBitmask StoreFieldBitmask = new OpCodeBitmask (0x0, 0x400000000000000, 0x80000000, 0x0);
 
-		static bool IsAbstract (MethodDefinition method)
-		{
-			return ((method != null) && (method.IsAbstract));
+		protected override string AbstractTypeMessage { 
+			get { return "Field is native. Type should implement a non-abstract Dispose() method"; }
 		}
 
-		public RuleResult CheckType (TypeDefinition type)
+		protected override string TypeMessage { 
+			get { return "Field is native. Type should implement a Dispose() method";  }
+		}
+
+		protected override string AbstractDisposeMessage { 
+			get { return "Some fields are native pointers. Making this method abstract shifts the reponsability of disposing those fields to the inheritors of this class."; }
+		}
+
+		protected override void CheckMethod (MethodDefinition method, bool abstractWarning)
 		{
-			// rule doesn't apply to enums, interfaces, structs, delegates or generated code
-			if (type.IsEnum || type.IsInterface || type.IsValueType || type.IsDelegate () || type.IsGeneratedCode ())
-				return RuleResult.DoesNotApply;
+			if ((method == null) || !method.HasBody)
+				return;
 
-			MethodDefinition explicitDisposeMethod = null;
-			MethodDefinition implicitDisposeMethod = null;
+			OpCodeBitmask bitmask = OpCodeEngine.GetBitmask (method);
+			// method must have a CALL[VIRT] and either STFLD or STELEM_REF
+			if (!bitmask.Intersect (OpCodeBitmask.Calls) || !bitmask.Intersect (StoreFieldBitmask))
+				return;
 
-			bool abstractWarning = false;
-
-			if (type.Implements ("System", "IDisposable")) {
-				implicitDisposeMethod = type.GetMethod (MethodSignatures.Dispose);
-				explicitDisposeMethod = type.GetMethod (MethodSignatures.DisposeExplicit);
-
-				if (IsAbstract (implicitDisposeMethod) || IsAbstract (explicitDisposeMethod)) {
-					abstractWarning = true;
-				} else {
-					return RuleResult.Success;
-				}
-			}
-
-			foreach (FieldDefinition field in type.Fields) {
-				// we can't dispose static fields in IDisposable
-				if (field.IsStatic)
+			foreach (Instruction ins in method.Body.Instructions) {
+				MethodReference mr = (ins.Operand as MethodReference);
+				if (mr == null || mr.DeclaringType.IsNative ())
 					continue;
-				if (field.FieldType.GetElementType ().IsNative ()) {
-					Runner.Report (field, Severity.High, Confidence.High, 
+
+				FieldDefinition field = null;
+				Instruction next = ins.Next;
+				if (next.Is (Code.Stfld)) {
+					field = next.Operand as FieldDefinition;
+				} else if (next.Is (Code.Stobj) || next.Is (Code.Stind_I)) {
+					Instruction origin = next.TraceBack (method);
+					if (origin.Is (Code.Ldelema)) {
+						origin = origin.TraceBack (method);
+						if (origin != null)
+							field = origin.Operand as FieldDefinition;
+					}
+				}
+
+				if (field != null && FieldCandidates.Contains (field)) {
+					Runner.Report (field, Severity.High, Confidence.High,
 						abstractWarning ? AbstractTypeMessage : TypeMessage);
 				}
 			}
+		}
 
-			// Warn about possible confusion if the Dispose methods are abstract
-			if (IsAbstract (implicitDisposeMethod))
-				Runner.Report (implicitDisposeMethod, Severity.Medium, Confidence.High, AbstractDisposeMessage);
-
-			return Runner.CurrentRuleResult;
+		protected override bool FieldTypeIsCandidate (TypeDefinition type)
+		{
+			return ((type != null) && type.IsNative ());
 		}
 	}
 }

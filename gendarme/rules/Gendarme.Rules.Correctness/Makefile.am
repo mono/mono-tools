@@ -30,6 +30,9 @@ rules_sources =  \
 	ReviewUselessControlFlowRule.cs \
 	ReviewUseOfInt64BitsToDoubleRule.cs \
 	ReviewUseOfModuloOneOnIntegersRule.cs \
+	TypesShouldBeDisposableBaseRule.cs \
+	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
+	TypesWithNativeFieldsShouldBeDisposableRule.cs \
 	UseNoInliningWithGetCallingAssemblyRule.cs \
 	UseValueInPropertySetterRule.cs
 
@@ -75,5 +78,7 @@ tests_sources = \
 	ReviewUselessControlFlowTest.cs \
 	ReviewUseOfInt64BitsToDoubleTest.cs \
 	ReviewUseOfModuloOneOnIntegersTest.cs \
+	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
+	TypesWithNativeFieldsShouldBeDisposableTest.cs \
 	UseNoInliningWithGetCallingAssemblyTest.cs \
 	UseValueInPropertySetterTest.cs

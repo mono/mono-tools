@@ -31,7 +31,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-using Gendarme.Rules.Design;
+using Gendarme.Rules.Correctness;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
@@ -75,6 +75,36 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	class NativeFieldsIntPtrAssigned : ICloneable {
+		object A;
+		IntPtr B;
+
+		public NativeFieldsIntPtrAssigned ()
+		{
+			B = IntPtr.Zero;
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	class NativeFieldsIntPtrAllocated : ICloneable {
+		object A;
+		IntPtr B;
+
+		public NativeFieldsIntPtrAllocated ()
+		{
+			B = Marshal.AllocCoTaskMem (1);
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
 	class NativeFieldsUIntPtr : ICloneable {
 		object A;
 		UIntPtr B;
@@ -85,9 +115,79 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	class NativeFieldsUIntPtrAssigned : ICloneable {
+		object A;
+		UIntPtr B;
+
+		public NativeFieldsUIntPtrAssigned ()
+		{
+			B = (UIntPtr) 0x1f00;
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	class NativeFieldsUIntPtrAllocated : ICloneable {
+		object A;
+		UIntPtr B;
+
+		[DllImport ("liberty")]
+		extern static UIntPtr Alloc (int x);
+
+		public NativeFieldsUIntPtrAllocated ()
+		{
+			B = Alloc (1);
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
 	class NativeFieldsHandleRef : ICloneable {
 		object A;
-		System.Runtime.InteropServices.HandleRef B;
+		HandleRef B;
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	class NativeFieldsHandleRefAssigned : ICloneable {
+		object A;
+		HandleRef B;
+
+		public NativeFieldsHandleRefAssigned ()
+		{
+			GCHandle handle = GCHandle.Alloc (A, GCHandleType.Pinned);
+			B = new HandleRef (handle, handle.AddrOfPinnedObject ());
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	class NativeFieldsHandleRefAllocatedElsewhere: ICloneable {
+		object A;
+		HandleRef B;
+
+		HandleRef GetHandleReference ()
+		{
+			return new HandleRef (A, IntPtr.Zero);
+		}
+
+		public NativeFieldsHandleRefAllocatedElsewhere ()
+		{
+			// fxcop does not trigger on this (or similar cases)
+			B = GetHandleReference ();
+		}
 
 		public object Clone ()
 		{
@@ -97,14 +197,14 @@ namespace Test.Rules.Design {
 
 	abstract class AbstractNativeFields : IDisposable {
 		object A;
-		System.Runtime.InteropServices.HandleRef B;
+		HandleRef B;
 
 		public abstract void Dispose ();
 	}
 
 	abstract class AbstractNativeFields2 : IDisposable {
 		object A;
-		System.Runtime.InteropServices.HandleRef B;
+		HandleRef B;
 
 		public abstract void Dispose ();
 
@@ -117,18 +217,23 @@ namespace Test.Rules.Design {
 
 	class NativeFieldsArray : ICloneable {
 		object A;
-		UIntPtr [] B;
+		IntPtr [] B;
 
 		public object Clone ()
 		{
-			throw new NotImplementedException ();
+			B = new IntPtr [1];
+			// assignation (newobj+stfld) does not need to to be inside ctor
+			// note: fxcop does not catch this one
+			B [0] = Marshal.AllocCoTaskMem (1);
+			A = B;
+			return A;
 		}
 	}
 
 	struct StructWithNativeFields {
-		IntPtr a;
-		UIntPtr b;
-		HandleRef c;
+		public IntPtr a;
+		public UIntPtr b;
+		public HandleRef c;
 	}
 
 	class NativeStaticFieldsArray {
@@ -169,31 +274,32 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestNativeFieldsIntPtr ()
 		{
-			AssertRuleFailure<NativeFieldsIntPtr> (1);
+			AssertRuleSuccess<NativeFieldsIntPtr> ();
+			AssertRuleSuccess<NativeFieldsIntPtrAssigned> ();
+			AssertRuleFailure<NativeFieldsIntPtrAllocated> (1);
 		}
 
 		[Test]
 		public void TestNativeFieldsUIntPtr ()
 		{
-			AssertRuleFailure<NativeFieldsUIntPtr> (1);
+			AssertRuleSuccess<NativeFieldsUIntPtr> ();
+			AssertRuleSuccess<NativeFieldsUIntPtrAssigned> ();
+			AssertRuleFailure<NativeFieldsUIntPtrAllocated> (1);
 		}
 
 		[Test]
 		public void TestNativeFieldsHandleRef ()
 		{
-			AssertRuleFailure<NativeFieldsHandleRef> (1);
+			AssertRuleSuccess<NativeFieldsHandleRef> ();
+			AssertRuleSuccess<NativeFieldsHandleRefAssigned> ();
+			AssertRuleFailure<NativeFieldsHandleRefAllocatedElsewhere> (1);
 		}
 
 		[Test]
 		public void TestAbstractNativeFields ()
 		{
-			AssertRuleFailure<AbstractNativeFields> (2);
-		}
-
-		[Test]
-		public void TestAbstractNativeFields2 ()
-		{
-			AssertRuleFailure<AbstractNativeFields2> (2);
+			AssertRuleFailure<AbstractNativeFields> (1);
+			AssertRuleFailure<AbstractNativeFields2> (1);
 		}
 
 		[Test]
@@ -215,3 +321,4 @@ namespace Test.Rules.Design {
 		}
 	}
 }
+

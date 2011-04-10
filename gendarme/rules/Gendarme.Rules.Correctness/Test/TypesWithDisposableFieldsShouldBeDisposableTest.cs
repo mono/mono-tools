@@ -6,7 +6,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 //  (C) 2008 Andreas Noever
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
+// Copyright (C) 2008, 2011 Novell, Inc (http://www.novell.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -30,13 +30,13 @@
 
 using System;
 
-using Gendarme.Rules.Design;
+using Gendarme.Rules.Correctness;
 
 using NUnit.Framework;
 using Test.Rules.Definitions;
 using Test.Rules.Fixtures;
 
-namespace Test.Rules.Design {
+namespace Test.Rules.Correctness {
 
 	class Disposable : IDisposable {
 		public void Dispose ()
@@ -54,9 +54,29 @@ namespace Test.Rules.Design {
 		object A;
 		Disposable B;
 
+		public DisposeableFieldsImplementsIDisposeable ()
+		{
+			B = new Disposable ();
+		}
+
 		public void Dispose ()
 		{
 			throw new NotImplementedException ();
+		}
+	}
+
+	class DisposeableFieldsImplementsIDisposeableCorrectly : IDisposable {
+		object A;
+		Disposable B;
+
+		public DisposeableFieldsImplementsIDisposeableCorrectly ()
+		{
+			B = new Disposable ();
+		}
+
+		public void Dispose ()
+		{
+			B.Dispose (); // not really correct but Dispose is called :)
 		}
 	}
 
@@ -77,9 +97,69 @@ namespace Test.Rules.Design {
 		public abstract void Dispose ();
 	}
 
-	class DisposeableFields : ICloneable {
+	abstract class DisposeableFieldsImplementsIDisposeableAbstractAssigned : IDisposable {
 		object A;
 		Disposable B;
+
+		protected DisposeableFieldsImplementsIDisposeableAbstractAssigned ()
+		{
+			B = new Disposable ();
+		}
+
+		public abstract void Dispose ();
+	}
+
+	public class DisposeableFieldsNeverAssigned : ICloneable {
+		object A;
+		Disposable B;
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	public class DisposeableFieldsNullAssigned : ICloneable {
+		object A;
+		Disposable B;
+
+		public DisposeableFieldsNullAssigned ()
+		{
+			A = null;
+			B = null;
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	public class DisposeableFieldsAssigned : ICloneable {
+		object A;
+		Disposable B;
+
+		public DisposeableFieldsAssigned ()
+		{
+			A = null;
+			B = new Disposable ();
+		}
+
+		public object Clone ()
+		{
+			throw new NotImplementedException ();
+		}
+	}
+
+	class DisposeableFieldsReferenced : ICloneable {
+		object A;
+		Disposable B;
+
+		public DisposeableFieldsReferenced (Disposable instance)
+		{
+			A = null;
+			B = instance;
+		}
 
 		public object Clone ()
 		{
@@ -97,15 +177,74 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	class DisposeableFieldsArrayAssigned : ICloneable {
+		object A;
+		Disposable [] B;
+
+		public object Clone ()
+		{
+			// the array itself is not not IDisposable
+			B = new Disposable [10];
+			A = B;
+			return A;
+		}
+	}
+
+	class DisposeableFieldsArrayMembers : ICloneable {
+		object A;
+		Disposable [] B;
+
+		public object Clone ()
+		{
+			B = new Disposable [1];
+			// assignation (newobj+stfld) does not need to to be inside ctor
+			// note: fxcop does not catch this one
+			B [0] = new Disposable ();
+			A = B;
+			return A;
+		}
+	}
+
 	struct StructWithDisposeableFields {
 		Disposable a;
 		object b;
+
+		public StructWithDisposeableFields (object obj)
+		{
+			b = obj;
+			a = new Disposable ();
+		}
 	}
 
 	class DisposeableStaticFieldsArray {
 		object A;
 		static Disposable [] B;
+
+		static DisposeableStaticFieldsArray ()
+		{
+			B = new Disposable [1];
+			B [0] = new Disposable ();
+		}
 	}
+
+	// test case from https://bugzilla.novell.com/show_bug.cgi?id=671029
+
+	interface ISession : IDisposable {
+		void Query (string s);
+	}
+
+	class SomeRepository {
+		ISession session;
+		public SomeRepository (ISession session)
+		{
+			this.session = session;
+		}
+		public void DoSomeQuery ()
+		{
+			session.Query ("whatever");
+		}
+	}
+
 
 	[TestFixture]
 	public class TypesWithDisposableFieldsShouldBeDisposableTest : TypeRuleTestFixture<TypesWithDisposableFieldsShouldBeDisposableRule> {
@@ -129,6 +268,7 @@ namespace Test.Rules.Design {
 		public void TestDisposeableFieldsImplementsIDisposeable ()
 		{
 			AssertRuleSuccess<DisposeableFieldsImplementsIDisposeable> ();
+			AssertRuleSuccess<DisposeableFieldsImplementsIDisposeableCorrectly> ();
 		}
 
 		[Test]
@@ -140,19 +280,25 @@ namespace Test.Rules.Design {
 		[Test]
 		public void TestDisposeableFieldsImplementsIDisposeableAbstract ()
 		{
-			AssertRuleFailure<DisposeableFieldsImplementsIDisposeableAbstract> (2);
+			AssertRuleFailure<DisposeableFieldsImplementsIDisposeableAbstract> (1);
+			AssertRuleFailure<DisposeableFieldsImplementsIDisposeableAbstractAssigned> (2);
 		}
 
 		[Test]
 		public void TestDisposeableFields ()
 		{
-			AssertRuleFailure<DisposeableFields> (1);
+			AssertRuleSuccess<DisposeableFieldsNeverAssigned> ();
+			AssertRuleSuccess<DisposeableFieldsNullAssigned> ();
+			AssertRuleSuccess<DisposeableFieldsReferenced> ();
+			AssertRuleFailure<DisposeableFieldsAssigned> (1);
 		}
 
 		[Test]
 		public void TestDisposeableFieldsArray ()
 		{
-			AssertRuleFailure<DisposeableFieldsArray> (1);
+			AssertRuleSuccess<DisposeableFieldsArray> ();
+			AssertRuleSuccess<DisposeableFieldsArrayAssigned> ();
+			AssertRuleFailure<DisposeableFieldsArrayMembers> (1);
 		}
 
 		[Test]
@@ -165,6 +311,12 @@ namespace Test.Rules.Design {
 		public void TestDisposeableStaticFieldsArray ()
 		{
 			AssertRuleSuccess<DisposeableStaticFieldsArray> ();
+		}
+
+		[Test]
+		public void Bug671029 ()
+		{
+			AssertRuleSuccess<SomeRepository> ();
 		}
 	}
 }

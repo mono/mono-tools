@@ -47,8 +47,6 @@ rules_sources =  \
 	StronglyTypedRule.cs \
 	StronglyTypeICollectionMembersRule.cs \
 	TypesShouldBeInsideNamespacesRule.cs \
-	TypesWithDisposableFieldsShouldBeDisposableRule.cs \
-	TypesWithNativeFieldsShouldBeDisposableRule.cs \
 	UseFlagsAttributeRule.cs \
 	UseCorrectDisposeSignaturesRule.cs \
 	UsingCloneWithoutImplementingICloneableRule.cs
@@ -100,8 +98,6 @@ tests_sources = \
 	ProvideAlternativeNamesForOperatorOverloadsTest.cs \
 	StronglyTypeICollectionMembersTest.cs \
 	TypesShouldBeInsideNamespacesTest.cs \
-	TypesWithDisposableFieldsShouldBeDisposableTest.cs \
-	TypesWithNativeFieldsShouldBeDisposableTest.cs \
 	UseFlagsAttributeTest.cs \
 	UseCorrectDisposeSignaturesTest.cs \
 	UsingCloneWithoutImplementingICloneableTest.cs
