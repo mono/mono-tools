@@ -112,8 +112,6 @@
     <Compile Include="ProvideTryParseAlternativeRule.cs" />
     <Compile Include="StronglyTypedRule.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesRule.cs" />
-    <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />
-    <Compile Include="TypesWithNativeFieldsShouldBeDisposableRule.cs" />
     <Compile Include="UseCorrectDisposeSignaturesRule.cs" />
     <Compile Include="UseFlagsAttributeRule.cs" />
     <Compile Include="UsingCloneWithoutImplementingICloneableRule.cs" />

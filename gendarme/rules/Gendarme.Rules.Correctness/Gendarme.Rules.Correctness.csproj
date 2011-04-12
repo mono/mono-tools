@@ -110,6 +110,9 @@
     <Compile Include="ReviewUseOfInt64BitsToDoubleRule.cs" />
     <Compile Include="ReviewUselessControlFlowRule.cs" />
     <Compile Include="ReviewUseOfModuloOneOnIntegersRule.cs" />
+    <Compile Include="TypesShouldBeDisposableBaseRule.cs" />
+    <Compile Include="TypesWithDisposableFieldsShouldBeDisposableRule.cs" />
+    <Compile Include="TypesWithNativeFieldsShouldBeDisposableRule.cs" />
     <Compile Include="UseNoInliningWithGetCallingAssemblyRule.cs" />
     <Compile Include="UseValueInPropertySetterRule.cs" />
     <None Include="ChangeLog" />

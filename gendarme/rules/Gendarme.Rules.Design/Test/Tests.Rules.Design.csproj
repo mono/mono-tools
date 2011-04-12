@@ -42,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,8 +108,6 @@
     <Compile Include="ProvideAlternativeNamesForOperatorOverloadsTest.cs" />
     <Compile Include="ProvideTryParseAlternativeTest.cs" />
     <Compile Include="TypesShouldBeInsideNamespacesTest.cs" />
-    <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
-    <Compile Include="TypesWithNativeFieldsShouldBeDisposableTest.cs" />
     <Compile Include="UseCorrectDisposeSignaturesTest.cs" />
     <Compile Include="UseFlagsAttributeTest.cs" />
     <Compile Include="UsingCloneWithoutImplementingICloneableTest.cs" />

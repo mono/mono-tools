@@ -100,6 +100,8 @@
     <Compile Include="ReviewUselessControlFlowTest.cs" />
     <Compile Include="ReviewUseOfInt64BitsToDoubleTest.cs" />
     <Compile Include="ReviewUseOfModuloOneOnIntegersTest.cs" />
+    <Compile Include="TypesWithDisposableFieldsShouldBeDisposableTest.cs" />
+    <Compile Include="TypesWithNativeFieldsShouldBeDisposableTest.cs" />
     <Compile Include="UseNoInliningWithGetCallingAssemblyTest.cs" />
     <Compile Include="UseValueInPropertySetterTest.cs" />
   </ItemGroup>
