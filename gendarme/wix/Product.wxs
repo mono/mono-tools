@@ -92,10 +92,10 @@
       <RemoveExistingProducts After="InstallValidate" />
     </InstallExecuteSequence>
 
-    <!-- Ensure .Net Framework 3.5 is installed -->
-    <PropertyRef Id="NETFRAMEWORK35" />
-    <Condition Message="This setup requires the .NET Framework 3.5 to be installed.">
-      <![CDATA[Installed OR NETFRAMEWORK35]]>
+    <!-- Ensure .Net Framework 4.0 is installed -->
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+    <Condition Message="This setup requires the .NET Framework 4.0 (full) to be installed.">
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
     </Condition>
 
     <!-- This enables the license screen and where to install screen -->
