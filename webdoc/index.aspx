@@ -30,6 +30,18 @@
                 }
         </script>
 
+<%
+   bool redirect = false;
+   
+   string link = Request.QueryString ["link"];
+   if (link != null)
+         redirect = Global.should_redirect_to_kipunji (link);
+	 
+   if (redirect) 
+      	 Global.redirect_to_kipunji (Context, link);
+   else {
+%>
+
 <frameset rows="40,*" frameborder="0" border="1">
  <frame src="header.aspx" name="Header" id='header' scrolling="no" noresize="true" />
   <frameset cols="20%,80%" frameborder="1" border="1">
@@ -38,3 +50,6 @@
   </frameset>
 </frameset>
 </html>
+
+<% } %>
+
