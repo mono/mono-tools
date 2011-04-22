@@ -76,6 +76,7 @@ namespace Mono.Website.Handlers
 			}
 
 			s = (string) context.Request.Params["tree"];
+			Console.WriteLine ("tree request:  '{0}'", s);
 			if (s != null){
 				if (s == "boot")
 					HandleBoot (context);
@@ -426,9 +427,17 @@ function makeLink (link)
 
 		for (int i = 0; i < Global.help_tree.Nodes.Count; i++){
 			Node n = (Node)Global.help_tree.Nodes [i];
+
+			string url = n.PublicUrl;
+			string target = "content";
+
+			if (n.Caption == "Base Class Library" || n.Caption == "Mono Libraries") {
+			       url = Global.kipunji_root_url + (n.Caption == "Base Class Library" ? "?display_all=true" : String.Empty);
+			       target = "_top";
+			}
+
 			context.Response.Write (
-				"tree.CreateItem (root, '" + n.Caption + "', '" +
-				n.PublicUrl + "', ");
+				"tree.CreateItem (root, '" + n.Caption + "', '" + url + "', ");
 	
 			if (n.Nodes.Count != 0)
 				context.Response.Write ("'" + i + "'");
@@ -437,7 +446,11 @@ function makeLink (link)
 	
 			if (i == Global.help_tree.Nodes.Count-1)
 				context.Response.Write (", true");
+			else
+				context.Response.Write (", false");
 
+			context.Response.Write (", '" + target + "'");
+				
 			context.Response.Write (@");
 			");
 		}

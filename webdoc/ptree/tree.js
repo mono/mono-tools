@@ -95,7 +95,10 @@ function PTree ()
 		if (strAction)
 		{
 			eltDescription = document.createElement ("a");
-			eltDescription.href = this.strActionBase + strAction;
+		        if (strAction.indexOf ('http://') === 0)
+			    eltDescription.href = strAction;
+		        else
+			    eltDescription.href = this.strActionBase + strAction;
 			eltDescription.title = strText;
 			if (strTarget)
 				eltDescription.target = strTarget;

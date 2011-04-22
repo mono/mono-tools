@@ -14,7 +14,7 @@ void Application_Start ()
 	SettingsHandler.Settings.EnableEditing = false;
 }
 
-private static readonly	string root = "http://docs.go-mono.com/";
+public static readonly string kipunji_root_url = "http://docs.go-mono.com/";
 private static readonly string prefixes = "TNCFEMP";
 
 public static bool should_redirect_to_kipunji (string link)
@@ -25,7 +25,7 @@ public static bool should_redirect_to_kipunji (string link)
 public static void redirect_to_kipunji (HttpContext context, string link)
 {
 	StringBuilder res = new StringBuilder ();
-        res.Append (root);
+        res.Append (kipunji_root_url);
 
 	if (link.StartsWith ("T:")) {
 
