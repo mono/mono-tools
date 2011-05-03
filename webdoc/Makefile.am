@@ -3,6 +3,7 @@ webdir=$(prefix)/lib/monodoc/web
 web_DATA = \
 	common.css \
 	edit.aspx \
+	Global.asax \
 	header.aspx \
 	header.html \
 	index.aspx \
