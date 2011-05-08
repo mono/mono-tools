@@ -25,9 +25,10 @@
 // THE SOFTWARE.
 
 using System;
-using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using Mono.Cecil;
 
@@ -630,6 +631,35 @@ namespace Test.Rules.Maintainability {
 		{
 			AssertRuleSuccess<GeneralizedClass> ("OverloadNotSupportedByInterface");
 			AssertRuleFailure<SpecializedClass> ("OverloadNotSupportedByInterface", 1);
+		}
+
+		class TestCase690057 {
+			public class nauczyciel {
+				public Guid Oid;
+				public List<object> NoweGrupies = new List<object> ();
+			}
+			public List<nauczyciel> nauczyciele = new List<nauczyciel> ();
+			public void WyslijMaile (List<Guid> ListIdJ, Guid idRok)
+			{
+
+				var cmd = from c in nauczyciele
+					  where ListIdJ.Contains (c.Oid)
+					  select c;
+				foreach (var s in cmd) {
+					try {
+						foreach (var grp in s.NoweGrupies)
+							;
+					}
+					catch (Exception ex) {
+					}
+				}
+			}
+		}
+		
+		[Test]
+		public void Bug690057 ()
+		{
+			AssertRuleSuccess<TestCase690057> ("WyslijMaile");
 		}
 	}
 }

@@ -184,38 +184,12 @@ namespace Gendarme.Framework.Helpers {
 
 			public bool Equals (InstructionWithLeave other)
 			{
-				if (Instruction != other.Instruction)
-					return false;
-
-				if (LeaveStack == null)
-					return (other.LeaveStack == null);
-
-				if (other.LeaveStack == null)
-					return false;
-
-				if (LeaveStack.Length != other.LeaveStack.Length)
-					return false;
-
-				for (int i = 0; i < LeaveStack.Length; i++) {
-					if (LeaveStack [i] != other.LeaveStack [i])
-						return false;
-				}
-				return true;
+				return (Instruction == other.Instruction);
 			}
 
 			public override int GetHashCode ()
 			{
-				int hc = 0;
-				
-				unchecked {
-					hc ^= Instruction.GetHashCode ();
-					if (LeaveStack != null) {
-						foreach (Instruction ins in LeaveStack)
-							hc ^= ins.GetHashCode ();
-					}
-				}
-				
-				return hc;
+				return Instruction.GetHashCode ();
 			}
 
 			public static bool operator == (InstructionWithLeave left, InstructionWithLeave right)
