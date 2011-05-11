@@ -1,6 +1,6 @@
 README for VisualStudio.NET users
 
-Gendarme now includes a two VS.NET solutions.
+Gendarme includes a two VS.NET solutions.
 
 1. gendarme.sln
 
@@ -9,7 +9,7 @@ needed to build/test Gendarme on Linux.
 
 2. gendarme-win.sln
 
-This solution include projects to compile Mono.Cecil.Pdb (instead of 
+This solution include projects to compile Mono.Cecil.Pdb (along with 
 Mono.Cecil.Mdb) and to build the win32 (wix) installer. Otherwise it's
 identical to gendarme.sln. USE THIS FILE FOR VS.NET
 
@@ -29,14 +29,13 @@ Requirements
 
 The minimal requirements are:
 
-* Microsoft Visual Studio.NET 2008 [2];
+* Microsoft Visual Studio.NET 2010 [2];
 * Some modules from github
-	* 'jbevain/cecil' to get both Mono.Cecil and Mono.Cecil.Pdb
+	* 'jbevain/cecil' to get both Mono.Cecil and Mono.Cecil.[M|P]db
 	* 'mono/mono-tools' for Gendarme latest sources
-* NUnit 2.4.x to run the unit tests
 
 
-How To (for VS 2008)
+How To
 
 * Check out the source code from GIT. This is:
 
@@ -45,24 +44,13 @@ How To (for VS 2008)
 	(Please clone both modules at the same level in the folder
 	hierarchy because mono-tools references cecil as a relative path.)
 
-* Optionally, install WIX [4] if you want to build the setup. If not 
+* Optionally, install WIX [3] if you want to build the setup. If not 
 installed you will get some errors when opening the solution or doing a
 "Rebuild Solution" operation - but everything else will be fine.
 
-* Open the gendarme-win.sln solution inside VS.NET 2008
-
-* In both the Mono.Cecil.csproj and Mono.Cecil.Pdb.csproj properties:
-	* change "Target Framework" to ".NET Framework 3.5"; and
-	* define the symbol NET_3_5 
-so extension methods inside Gendarme can be compiled by CSC
+* Open the gendarme-win.sln solution inside VS.NET 2010
 
 * Build, execute, enjoy!
-
-
-How To (for VS 2010)
-
-Follow the same instructions as above (VS 2008) and let the convertion
-wizard do its job when it opens gendarm-win.sln for the first time.
 
 
 Self-test
@@ -73,7 +61,7 @@ and would be) contributors. On Linux this is done by executing
 find no (zero) defect - i.e. all known defects should have (documented)
 ignore entries.
 
-The same "self-test" can be done using Visual Studio [5] by adding the 
+The same "self-test" can be done using Visual Studio [4] by adding the 
 following lines in the 'gendarme's project Properties, Debug tab as the
 "Command line arguments"
 
@@ -97,14 +85,11 @@ Notes
 someone gets to work with VS.NET. Remember this is not the primary 
 development platform for Gendarme.
 
-[2] Older version won't work since Gendarme uses C# 3 features.
+[2] Older version won't work since Gendarme uses C# 4 features.
 
-[3] You can download nunit 2.4.8 binaries for FX2.0 from:
-http://sourceforge.net/projects/nunit/files/NUnit%20Version%202/NUnit-2.4.8-net-2.0.zip/download
+[3] Windows Installer XML Toolset 3.5
+http://wix.codeplex.com/releases/view/60102
 
-[4] Windows Installer XML Toolset 3.0
-http://wix.codeplex.com/releases/view/44406
-
-[5] This cannot be committed in SVN since this setting is kept in the
+[4] This cannot be committed in GIT since this setting is kept in the
 gendarme.csproj.user file
 

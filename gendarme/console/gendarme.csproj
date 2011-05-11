@@ -93,7 +93,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="ChangeLog" />
     <EmbeddedResource Include="gendarme.xsd" />
     <EmbeddedResource Include="gendarme.xsl" />

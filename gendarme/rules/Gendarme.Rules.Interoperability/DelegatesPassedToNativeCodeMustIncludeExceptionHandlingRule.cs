@@ -278,8 +278,8 @@ namespace Gendarme.Rules.Interoperability {
 			MethodBody body = method.Body;
 #if DEBUG
 			foreach (ExceptionHandler e in body.ExceptionHandlers)
-				Log.WriteLine (this, " HandlerType: {7}, TryStart: {4:X}, TryEnd: {5:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, FilterEnd: {3:X}, CatchType: {6}", 
-				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
+				Log.WriteLine (this, " HandlerType: {6}, TryStart: {3:X}, TryEnd: {4:X}, HandlerStart: {0:X}, HandlerEnd: {1:X}, FilterStart: {2:X}, CatchType: {5}", 
+				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (),  
 				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.HandlerType);
 #endif
 			
@@ -494,7 +494,7 @@ namespace Gendarme.Rules.Interoperability {
 						continue;
 					
 					// no 'Catch ... When <condition>' clause. C# doesn't support it, VB does
-					if (eh.FilterStart != null || eh.FilterEnd != null)
+					if (eh.FilterStart != null)
 						continue;
 					
 					// check for catch all clauses
@@ -522,8 +522,8 @@ namespace Gendarme.Rules.Interoperability {
 				// Console.ResetColor ();
 			}
 			foreach (ExceptionHandler e in body.ExceptionHandlers)
-				Log.WriteLine (this, " HandlerType: {7}, TryStart: {4}, TryEnd: {5}, HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, FilterEnd: {3}, CatchType: {6}", 
-				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (), e.FilterEnd.GetOffset (), 
+				Log.WriteLine (this, " HandlerType: {6}, TryStart: {3}, TryEnd: {4}, HandlerStart: {0}, HandlerEnd: {1}, FilterStart: {2}, CatchType: {5}", 
+				                   e.HandlerStart.GetOffset (), e.HandlerEnd.GetOffset (), e.FilterStart.GetOffset (),
 				                   e.TryStart.GetOffset (), e.TryEnd.GetOffset (), e.CatchType, e.HandlerType);
 #endif
 			
