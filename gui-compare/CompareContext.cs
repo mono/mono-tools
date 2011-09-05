@@ -447,6 +447,12 @@ namespace GuiCompare {
 
 						CompareTypeParameters (comparison, r_method, t_method);
 						CompareParameters (comparison, r_method, t_method);
+					} else if (reference_list[m] is CompProperty) {
+						var m1 = ((CompProperty) reference_list[m]).GetMethods ();
+						var m2 = ((CompProperty) target_list[a]).GetMethods ();
+
+						// Compare indexer parameters
+						CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
 					}
 
 					if (reference_list[m] is CompField) {
