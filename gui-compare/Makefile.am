@@ -56,4 +56,4 @@ assemblies = -r:System -r:System.Core -r:Mono.Posix -r:System.Xml
 ress= $(foreach res,$(gui_compare_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 gui-compare.exe: $(gui_compare_sources) $(gui_compare_resources)
-	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gui-compare.exe $(gui_compare_sources) $(ress) $(packages) $(assemblies)
+	$(DMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:gui-compare.exe $(gui_compare_sources) $(ress) $(packages) $(assemblies)
