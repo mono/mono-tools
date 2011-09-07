@@ -125,6 +125,21 @@ namespace Test.Rules.BadPractice {
 			Assert.AreEqual (0, runner.Defects.Count, "Count");
 		}
 
+		public void LocalArray()
+		{
+			var threads = new Thread[1];
+			threads[0] = new Thread(ThreadStart);
+			threads[0].Start();
+		}
+
+		[Test]
+		public void TestLocalArray()
+		{
+			MethodDefinition method = GetTest("LocalArray");
+			Assert.AreEqual(RuleResult.Success, runner.CheckMethod(method), "RuleResult");
+			Assert.AreEqual(0, runner.Defects.Count, "Count");
+		}
+
 		public object Return ()
 		{
 			Thread a = new Thread (ThreadStart);
