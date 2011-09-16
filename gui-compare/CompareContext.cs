@@ -153,7 +153,7 @@ namespace GuiCompare {
 		void CompareBaseTypes (ComparisonNode parent, ICompHasBaseType reference_type, ICompHasBaseType target_type)
 		{
 			if (reference_type.GetBaseType() != target_type.GetBaseType()) {
-				parent.AddError (String.Format ("reference has base class of {0}, target has base class of {1}",
+				parent.AddError (String.Format ("Expected base class of {0} but found {1}",
 								reference_type.GetBaseType(),
 								target_type.GetBaseType()));
 			}
@@ -162,7 +162,7 @@ namespace GuiCompare {
 				string ref_mod = (reference_type.IsAbstract && reference_type.IsSealed) ? "static" : "abstract";
 				string tar_mod = (target_type.IsAbstract && target_type.IsSealed) ? "static" : "abstract";
 
-				parent.AddError (String.Format ("reference is {0} {2}, target is {1} {3}",
+				parent.AddError (String.Format ("reference is {0} {2}, is {1} {3}",
 								reference_type.IsAbstract ? null : "not", target_type.IsAbstract ? null : "not",
 								ref_mod, tar_mod));
 			} else if (reference_type.IsSealed != target_type.IsSealed) {
@@ -223,7 +223,7 @@ namespace GuiCompare {
 				var t_i = t [i];
 				
 				if (r_i.GenericAttributes != t_i.GenericAttributes) {
-					parent.AddError (string.Format ("reference type parameter {2} has {0} generic attributes, target type parameter {3} has {1} generic attributes",
+					parent.AddError (string.Format ("Expected type parameter {2} with {0} generic attributes but found type parameter {3} with {1} generic attributes",
 						CompGenericParameter.GetGenericAttributeDesc (r_i.GenericAttributes),
 						CompGenericParameter.GetGenericAttributeDesc (t_i.GenericAttributes),
 						r_i.Name,
@@ -459,7 +459,7 @@ namespace GuiCompare {
 						var v_ref = ((CompField)reference_list[m]).GetLiteralValue();
 						var v_tar = ((CompField)target_list[a]).GetLiteralValue();
 						if (v_ref != v_tar) {
-							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}", v_ref, v_tar));
+							comparison.AddError (String.Format ("Expected field value {0} but found value {1}", v_ref, v_tar));
 							comparison.Status = ComparisonStatus.Error;
 						}
 					}
