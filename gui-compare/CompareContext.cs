@@ -326,7 +326,13 @@ namespace GuiCompare {
 			
 			while (m < reference_attrs.Count || a < target_attrs.Count) {
 				if (m == reference_attrs.Count) {
-					AddExtra (parent, target_attrs[a]);
+					
+					if (target_attrs[a].Name == "System.Diagnostics.DebuggerDisplayAttribute") {
+						// Ignore additional debugging attributes in Mono source code
+					} else {
+						AddExtra (parent, target_attrs[a]);
+					}
+					
 					a++;
 					continue;
 				}
