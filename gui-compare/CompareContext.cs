@@ -211,12 +211,8 @@ namespace GuiCompare {
 		{
 			var r = reference.GetTypeParameters ();
 			var t = target.GetTypeParameters ();
-			if (r == null && t == null)
+			if (r == null && t == null || (r == null && t != null) || (r != null && t == null))
 				return;
-
-			if (r.Count != t.Count) {
-				throw new NotImplementedException (string.Format ("Should never happen with valid data ({0} != {1})", r.Count, t.Count));
-			}
 
 			for (int i = 0; i < r.Count; ++i) {
 				var r_i = r [i];
@@ -368,23 +364,26 @@ namespace GuiCompare {
 		void CompareMembers (ComparisonNode parent,
 		                     ICompMemberContainer reference_container, ICompMemberContainer target_container)
 		{
+			bool is_sealed = reference_container.IsSealed;
+			
 			CompareMemberLists (parent,
-			                    reference_container.GetInterfaces(), target_container.GetInterfaces());
+			                    reference_container.GetInterfaces(), target_container.GetInterfaces(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetConstructors(), target_container.GetConstructors());
+			                    reference_container.GetConstructors(), target_container.GetConstructors(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetMethods(), target_container.GetMethods());
+			                    reference_container.GetMethods(), target_container.GetMethods(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetProperties(), target_container.GetProperties());
+			                    reference_container.GetProperties(), target_container.GetProperties(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetFields(), target_container.GetFields());
+			                    reference_container.GetFields(), target_container.GetFields(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetEvents(), target_container.GetEvents());
+			                    reference_container.GetEvents(), target_container.GetEvents(), is_sealed);
 		}
 
 		void CompareMemberLists (ComparisonNode parent,
 		                         List<CompNamed> reference_list,
-		                         List<CompNamed> target_list)
+		                         List<CompNamed> target_list,
+		                         bool isSealed)
 		{
 			int m = 0, a = 0;
 
@@ -482,13 +481,23 @@ namespace GuiCompare {
 					a++;
 				}
 				else if (c < 0) {
-					/* reference name is before target name, reference name is missing from target */
-					AddMissing (parent, reference_list[m]);
+					if (isSealed && reference_list[m].Name.Contains ("~")) {
+						// Ignore finalizer differences in sealed classes
+					} else {
+						/* reference name is before target name, reference name is missing from target */
+						AddMissing (parent, reference_list[m]);
+					}
+					
 					m++;
 				}
 				else {
-					/* reference name is after target name, target name is extra */
-					AddExtra (parent, target_list[a]);
+					if (isSealed && target_list[a].Name.Contains ("~")) {
+						// Ignore finalizer differences in sealed classes
+					} else {
+						/* reference name is after target name, target name is extra */
+						AddExtra (parent, target_list[a]);
+					}
+					
 					a++;
 				}
 			}
