@@ -67,4 +67,35 @@ public static void redirect_to_kipunji (HttpContext context, string link)
 	context.Response.RedirectPermanent (res.ToString ());
 }
 
+public static string CreateTreeBootFragment ()
+{
+	var fragment = new System.Text.StringBuilder ();
+
+	for (int i = 0; i < help_tree.Nodes.Count; i++){
+		Node n = (Node)help_tree.Nodes [i];
+
+		string url = n.PublicUrl;
+
+		if (n.Caption == "Base Class Library" || n.Caption == "Mono Libraries")
+			url = kipunji_root_url + (n.Caption == "Base Class Library" ? "?display_all=true" : String.Empty);
+
+		fragment.Append ("tree.CreateItem (root, '" + n.Caption + "', '" + url + "', ");
+	
+		if (n.Nodes.Count != 0)
+			fragment.Append ("'" + i + "'");
+		else
+			fragment.Append ("null");
+	
+		if (i == help_tree.Nodes.Count-1)
+			fragment.Append (", true");
+		else
+			fragment.Append (", false");
+
+		fragment.Append (@");
+			");
+	}
+
+	return fragment.ToString ();
+}
+
 </script>
