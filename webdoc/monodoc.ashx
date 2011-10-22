@@ -195,7 +195,7 @@ namespace Mono.Website.Handlers
 				if (context.Response.StatusCode == 304)
 					return;
 
-				Copy (s, context.Response.OutputStream);
+				s.CopyTo (context.Response.OutputStream);
 				return;
 			}
 
@@ -240,18 +240,6 @@ namespace Mono.Website.Handlers
 				hs = GetHelpSource (n);
 			}
 			PrintDocs (content, n, context, hs);
-		}
-
-		void Copy (Stream input, Stream output)
-		{
-			const int BUFFER_SIZE=8192; // 8k buf
-			byte [] buffer = new byte [BUFFER_SIZE];
-
-			int len;
-			while ( (len = input.Read (buffer, 0, BUFFER_SIZE)) > 0)
-				output.Write (buffer, 0, len);
-
-			output.Flush();
 		}
 
 		string requestPath;
