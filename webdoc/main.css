@@ -1,0 +1,118 @@
+#fsearch_window {
+	display: none;
+	position: absolute;
+	z-index: 60;
+	text-align: left;
+	width: 220px;
+	right: 50px;
+	top: 40px;
+	border: 1px solid black;
+	background: white;
+	padding: 5px;
+	overflow: hidden;
+	-webkit-transition: height 500ms ease-in 0;
+	-moz-transition: height 500ms ease-in 0;
+	-o-transition: height 500ms ease-in 0;
+}
+
+#fsearch_window a {
+	color: blue;
+	text-decoration: none;
+	font-family: monospace;
+}
+
+#fsearch_window .threedots {
+	color: #333;
+	font-size: x-small;
+	font-family: sans-serif;
+}
+
+iframe {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+body,div {
+    margin: 0;
+    padding: 0;
+}
+img.toolbarsep {
+    border: 0px;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    vertical-align: middle;
+}
+
+img.toolbar {
+    border: 0px;
+    margin: 1px;
+    padding: 3px;
+    vertical-align: middle;
+}
+
+img.toolbar:hover {
+    border-left: 1px solid white;
+    border-right: 1px solid #B1A598;
+    border-top: 1px solid white;
+    border-bottom: 1px solid #B1A598;
+    margin: 0px;
+}
+
+img.toolbar:active {
+    border-right: 1px solid white;
+    border-left: 1px solid #B1A598;
+    border-bottom: 1px solid white;
+    border-top: 1px solid #B1A598;
+}
+
+
+#login {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    float: right;
+    padding: 5px;
+}
+
+#rightSide {
+    position: fixed;
+    top: 2px;
+    right: 0px;
+    float: right;
+    padding: 5px;
+}
+
+#header {
+	background: #679EF1 url(mdocimages/headerbg.png) no-repeat 100% 50%;
+	background-color: #679EF1;
+	background-position: 100% 50%;
+	background-repeat: no-repeat;
+	border-bottom: 1px dotted #3363BD;
+	color: black;
+	height: 40px;
+	margin-bottom: 0px;
+	padding: 0px 0px 0px 15px;
+	position: relative;
+}
+#header h1 {
+	color: white;
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 22px;
+	font-weight: bold;
+	line-height: 1.8em;
+	margin: 0;
+}
+body,div {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
