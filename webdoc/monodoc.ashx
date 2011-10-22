@@ -22,6 +22,7 @@ using System.Web;
 using System.Web.UI;
 using System.Xml;
 using System.Xml.Xsl;
+using System.Linq;
 using Monodoc;
 using System.Text.RegularExpressions;
 
@@ -212,6 +213,27 @@ namespace Mono.Website.Handlers
 			}
 
 			PrintDocs (content, n, context, GetHelpSource (n));
+		}
+
+		void HandleFastSearchRequest (HttpContext context, string request)
+		{
+			if (string.IsNullOrWhiteSpace (request) || request.Length < 3) {
+				// Unprocessable entity
+				context.Response.StatusCode = 422;
+				return;
+			}
+			var searchIndex = Global.help_tree.GetSearchIndex ();
+			var result = searchIndex.Search (request);
+			// return Json corresponding to the results
+			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
+				Enumerable.Range (0, System.Math.Min (result.Count, 10))
+                      .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\" }}", result.GetTitle (i), result.GetUrl (i)))
+                      .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
+
+			Console.WriteLine ("answer is {0}", answer);
+
+			context.Response.ContentType = "application/json";
+			context.Response.Write (answer);
 		}
 
 		HelpSource GetHelpSource (Node n)
