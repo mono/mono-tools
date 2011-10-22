@@ -195,6 +195,53 @@ function PTree ()
 		eltIcon.onclick = function () { _this.onClickMinus (this); }
 	}
 
+	this.ExpandFromPath = function (path)
+	{
+		var root = $('.tree-node').first ();
+		var elements = path.split('@');
+
+		var thisSave = this;
+		var finish = function (node, i) {
+			node = $(node);
+			node.attr('class', 'tree-node');
+			var icon = node.children('span').children('img:nth-child(' + (i + 1) + ')');
+			icon[0].onclick = function () { thisSave.onClickMinus (this); };
+			icon.attr('src', thisSave.GetIconSrc (node[0], false));
+			root = node;
+			if (i == elements.length - 1) {
+				thisSave.SelectNode (node[0]);
+				var container = $('#contents').parent ();
+				container.scrollTop (node[0].offsetTop - 100);
+			}
+		};
+		var recurse = function (i) {
+			if (i >= elements.length)
+				return;
+			var node = root.find ('div')[elements[i]];
+			// Tree already loaded
+			if ($(node).find ('div').first ().length == 0) {
+				var url = thisSave.strSrcBase + elements.slice(0, i + 1).join('@');
+				$.get (url, function (data) {
+					var doc = data.documentElement;
+
+					var children = doc.childNodes;
+					var cChildren = children.length;
+
+					for (var iNode = 0; iNode < cChildren; iNode ++)
+						thisSave.CreateItemFromXML (children[iNode], iNode == cChildren - 1, node)
+
+					// We finish node creation by opening up its tree like clicking would normally do
+					finish (node, i);
+					recurse (i + 1);
+				});
+			} else {
+				finish (node, i);
+				recurse (i + 1);
+			}
+		};
+		recurse (0);
+	}
+
 	this.onClickPlus = function (eltIcon)
 	{
 		var eltDiv = this.GetDivFromIcon (eltIcon);
