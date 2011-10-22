@@ -79,11 +79,14 @@ namespace Mono.Website.Handlers
 			s = (string) context.Request.Params["tree"];
 			Console.WriteLine ("tree request:  '{0}'", s);
 			if (s != null){
-				if (s == "boot")
-					HandleBoot (context);
-				else {
-					HandleTree (context, s);
-				}
+				HandleTree (context, s);
+				return;
+			}
+
+			s = (string) context.Request.Params["fsearch"];
+			Console.WriteLine ("Fast search requested for query {0}", s);
+			if (s != null) {
+				HandleFastSearchRequest (context, s);
 				return;
 			}
 			context.Response.Write ("<html><body>Unknown request</body></html>");
@@ -267,12 +270,25 @@ namespace Mono.Website.Handlers
 		string requestPath;
 		void PrintDocs (string content, Node node, HttpContext ctx, HelpSource hs)
 		{
+			string tree_path = string.Empty;
+			Node current = node;
+			while (current != null && current.Parent != null) {
+				int index = current.Parent.Nodes.IndexOf (current);
+				tree_path = '@' + (index + tree_path);
+				current = current.Parent;
+			}
+			tree_path = tree_path.Length > 0 ? tree_path.Substring (1) : tree_path;
+			Console.WriteLine ("Tree path is:" + tree_path);
+
 			string title = (node == null || node.Caption == null) ? "Mono XDocumentation" : node.Caption;
 
 			ctx.Response.Write (@"
 <html>
 <head>
 		<link type='text/css' rel='stylesheet' href='common.css' media='all' title='Default style' />
+        <meta name='TreePath' value='");
+			ctx.Response.Write (tree_path);
+			ctx.Response.Write (@"' />
 <script>
 <!--
 function login (rurl)
@@ -287,8 +303,6 @@ function load ()
 	{
 		top.location.href = 'index.aspx'+document.location.search;
 	}
-
-	parent.Header.document.getElementById ('pageLink').href = parent.content.window.location;
 	objs = document.getElementsByTagName('img');
 	for (i = 0; i < objs.length; i++)
 	{
