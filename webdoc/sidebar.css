@@ -12,7 +12,7 @@ body {
 }
 
 .activeTab {
-	padding-top: 35px;
+	padding-top: 15px;
 	padding-left: 10px;
 	padding-right: 10px;
 	display: block !important;
@@ -126,4 +126,9 @@ a.selected {
 
 #errorText {
 	margin-top: 10px;
+}
+
+#contentList > div.tree-node:first-child > span {
+	font-size: 130%;
+	line-height: 200%;
 }

@@ -21,6 +21,7 @@ function PTree ()
 	this.eltSelected = null;
 	this.nImageWidth = 18;
 	this.nImageHeight = 18;
+	this.onClickCallback = null;
 
 	this.CreateItemFromXML = function (oNode, fLast, eltParent)
 	{
@@ -95,17 +96,31 @@ function PTree ()
 		if (strAction)
 		{
 			eltDescription = document.createElement ("a");
-		        if (strAction.indexOf ('http://') === 0)
-			    eltDescription.href = strAction;
-		        else
-			    eltDescription.href = this.strActionBase + strAction;
+			if (strAction.indexOf ('http://') === 0)
+				eltDescription.href = strAction;
+			else
+				eltDescription.href = this.strActionBase + strAction;
 			eltDescription.title = strText;
 			if (strTarget)
 				eltDescription.target = strTarget;
 			else if (this.strTargetDefault)
 				eltDescription.target = this.strTargetDefault;
 			eltDescription.appendChild (eltText);
-			eltDescription.onclick = function () { _this.SelectNode (eltDiv); }
+			var parent = this;
+			eltDescription.onclick = function (e) {
+				_this.SelectNode (eltDiv);
+				if (parent.onClickCallback) {
+					if (!e)
+						e = window.event;
+					e.cancelBubble = true;
+					e.returnValue = false;
+					if (e.stopPropagation) {
+						e.stopPropagation ();
+						e.preventDefault ();
+					}
+					parent.onClickCallback(strAction);
+				}
+			}
 			eltDescription.onmouseover = function () { this.blur (); }
 			eltDescription.onmouseup = function () { this.blur (); }
 		}
