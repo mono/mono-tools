@@ -216,12 +216,14 @@ function PTree ()
 		var elements = path.split('@');
 
 		var thisSave = this;
-		var finish = function (node, i) {
+		var finish = function (node, i, opened) {
 			node = $(node);
-			node.attr('class', 'tree-node');
-			var icon = node.children('span').children('img:nth-child(' + (i + 1) + ')');
-			icon[0].onclick = function () { thisSave.onClickMinus (this); };
-			icon.attr('src', thisSave.GetIconSrc (node[0], false));
+			if (!opened) {
+				node.attr('class', 'tree-node');
+				var icon = node.children('span').children('img:nth-child(' + (i + 1) + ')');
+				icon[0].onclick = function () { thisSave.onClickMinus (this); };
+				icon.attr('src', thisSave.GetIconSrc (node[0], false));
+			}
 			root = node;
 			if (i == elements.length - 1) {
 				thisSave.SelectNode (node[0]);
@@ -232,7 +234,7 @@ function PTree ()
 		var recurse = function (i) {
 			if (i >= elements.length)
 				return;
-			var node = root.find ('div')[elements[i]];
+			var node = root.children ('div')[elements[i]];
 			// Tree already loaded
 			if ($(node).find ('div').first ().length == 0) {
 				var url = thisSave.strSrcBase + elements.slice(0, i + 1).join('@');
@@ -246,11 +248,11 @@ function PTree ()
 						thisSave.CreateItemFromXML (children[iNode], iNode == cChildren - 1, node)
 
 					// We finish node creation by opening up its tree like clicking would normally do
-					finish (node, i);
+					finish (node, i, false);
 					recurse (i + 1);
 				});
 			} else {
-				finish (node, i);
+				finish (node, i, true);
 				recurse (i + 1);
 			}
 		};
