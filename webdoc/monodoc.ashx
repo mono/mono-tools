@@ -340,7 +340,8 @@ function makeLink (link)
 			ctx.Response.Write (@"?link=' + link.replace(/\+/g, '%2B');
 		}
 }
--->");
+-->
+");
 			ctx.Response.Write ("</script><title>");
 			ctx.Response.Write (title);
 			ctx.Response.Write ("</title>\n");
@@ -407,7 +408,7 @@ function makeLink (link)
  						theMatch.Groups[4].ToString());
 			
 			} else {
-				updated_link = String.Format ("{0}{1}?link={2}{3} target=\"content\"{4}",
+				updated_link = String.Format ("{0}{1}?link={2}{3} onclick=\"window.parent.change_page('{2}')\" {4}",
 					theMatch.Groups[1].ToString(),
                                         requestPath,
                                         HttpUtility.UrlEncode (link.Replace ("file://","")),
