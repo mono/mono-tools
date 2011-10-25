@@ -455,6 +455,29 @@ namespace GuiCompare {
 					} else if (reference_list[m] is CompProperty) {
 						var m1 = ((CompProperty) reference_list[m]).GetMethods ();
 						var m2 = ((CompProperty) target_list[a]).GetMethods ();
+						if (m1.Count != m2.Count) {
+							comparison.AddError (String.Format ("Expected {0} accessors but found {1}", m1.Count, m2.Count));
+							comparison.Status = ComparisonStatus.Error;
+						} else {
+							for (int i = 0; i < m1.Count; ++i) {
+								string reference_access = ((CompMember) m1[i]).GetMemberAccess();
+								string target_access = ((CompMember) m2[i]).GetMemberAccess();
+								if (reference_access != target_access) {
+									// Try to give some hints to the developer, best we can do with
+									// strings.
+									string extra_msg = "";
+									if (reference_access.IndexOf ("Private, Final, Virtual, HideBySig") != -1 &&
+										target_access.IndexOf ("Public, HideBySig") != -1){
+										extra_msg = "\n\t\t<b>Hint:</b> reference uses an explicit interface implementation, target doesn't";
+									}
+
+									comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
+																		reference_access, target_access, extra_msg));
+									comparison.Status = ComparisonStatus.Error;
+									break;
+								}
+							}
+						}
 
 						// Compare indexer parameters
 						CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
