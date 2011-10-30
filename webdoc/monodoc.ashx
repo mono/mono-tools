@@ -245,27 +245,6 @@ namespace Mono.Website.Handlers
 				return n.tree.HelpSource;
 			return null;
 		}
-		
-		void HandleTreeLink (HttpContext context, string link)
-		{
-			string [] lnk = link.Split (new char [] {'@'});
-			
-			if (lnk.Length == 1) {
-				HandleMonodocUrl (context, link);
-				return;
-			}
-				
-			int hsId = int.Parse (lnk [0]);
-			
-			Node n;
-			HelpSource hs = Global.help_tree.GetHelpSourceFromId (hsId);
-			string content = hs.GetText (lnk [1], out n);
-			if (content == null) {
-				content = Global.help_tree.RenderUrl (lnk [1], out n);
-				hs = GetHelpSource (n);
-			}
-			PrintDocs (content, n, context, hs);
-		}
 
 		string requestPath;
 		void PrintDocs (string content, Node node, HttpContext ctx, HelpSource hs)
