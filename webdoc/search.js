@@ -16,7 +16,7 @@ var show = function () {
     search_window.css ('height', '0px')
     search_window.css ({'display': 'block', 'height' : height}); };
 
-search_input.blur (function () { window.setTimeout (hide, 10); });
+search_input.blur (function () { window.setTimeout (hide, 200); });
 search_input.focus (function () { if (search_window.text().length > 0 && search_input.val().length > 0) show (); });
 search_input.keyup (function (event) {
      hide();
