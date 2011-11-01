@@ -107,7 +107,7 @@ namespace Mono.Website.Handlers
 				try {
 				current_node = (Node)current_node.Nodes [int.Parse (nodes [i])];
 				} catch (Exception e){
-					Console.WriteLine ("Failure with: {0} {i}", tree, i);
+					Console.WriteLine ("Failure with: {0} {1}", tree, i);
 				}
 			}
 
