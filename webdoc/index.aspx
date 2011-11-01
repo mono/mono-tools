@@ -1,6 +1,8 @@
 <%@ Page Language="C#" ClassName="Mono.Website.Index" %>
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
+<%@ Assembly name="monodoc" %>
+
 <html>
   <head>
     <title><%=GetTitle ()%></title>
