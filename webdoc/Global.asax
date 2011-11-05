@@ -6,6 +6,8 @@
 <script runat="server" language="c#" >
 
 public static RootTree help_tree;
+[ThreadStatic]
+static SearchableIndex search_index;
 
 void Application_Start ()
 {
@@ -102,6 +104,13 @@ public static string CreateTreeBootFragment ()
 	}
 
 	return fragment.ToString ();
+}
+
+public static SearchableIndex GetSearchIndex ()
+{
+	if (search_index != null)
+		return search_index;
+	return (search_index = help_tree.GetSearchIndex ());
 }
 
 </script>

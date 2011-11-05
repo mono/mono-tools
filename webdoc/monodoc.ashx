@@ -225,11 +225,11 @@ namespace Mono.Website.Handlers
 				context.Response.StatusCode = 422;
 				return;
 			}
-			var searchIndex = Global.help_tree.GetSearchIndex ();
-			var result = searchIndex.Search (request);
+			var searchIndex = Global.GetSearchIndex ();
+			var result = searchIndex.FastSearch (request, 15);
 			// return Json corresponding to the results
 			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
-				Enumerable.Range (0, System.Math.Min (result.Count, 10))
+				Enumerable.Range (0, result.Count)
                       .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\" }}", result.GetTitle (i), result.GetUrl (i)))
                       .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
 
