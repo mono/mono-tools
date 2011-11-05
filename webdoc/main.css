@@ -1,18 +1,19 @@
 #fsearch_window {
 	display: none;
+	opacity: 0;
 	position: absolute;
 	z-index: 60;
 	text-align: left;
-	width: 220px;
-	right: 50px;
+	width: 320px;
+	right: 36px;
 	top: 40px;
 	border: 1px solid black;
 	background: white;
 	padding: 5px;
 	overflow: hidden;
-	-webkit-transition: height 500ms ease-in 0;
-	-moz-transition: height 500ms ease-in 0;
-	-o-transition: height 500ms ease-in 0;
+	-webkit-transition: opacity 200ms linear 0;
+	-moz-transition: opacity 200ms linear 0;
+	-o-transition: opacity 200ms linear 0;
 }
 
 #fsearch_window a {
