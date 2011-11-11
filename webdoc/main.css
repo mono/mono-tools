@@ -28,6 +28,11 @@
 	font-family: sans-serif;
 }
 
+#fsearch_window .selected {
+	background-color: 679ef1;
+	color: white;
+}
+
 iframe {
 	margin: 0;
 	padding: 0;
