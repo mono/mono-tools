@@ -44,10 +44,6 @@ search_input.keyup (function (event) {
 
 		$.each (data, function(key, val) {
 			var item = val.name;
-			if (item.length > 41) {
-				item = item.substring (0, 41);
-				item += '<span class="threedots">...</span>';
-			}
 			items.push('<li><a href="#" onclick="change_page(\''+val.url+'\')" title="'+val.name+'">' + item + '</a></li>');
 		});
 
