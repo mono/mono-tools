@@ -20,7 +20,7 @@ var hide = function () {
 var show = function () {
 	if (is_shown)
 		return;
-    search_window.css ({'display' : 'block', 'height' : 'auto', 'opacity' : 1.0});
+    search_window.css ({'display' : 'block', 'height' : 'auto', 'opacity' : 1.0, 'width': search_input.width() + 'px'});
 	is_shown = true;
 };
 
