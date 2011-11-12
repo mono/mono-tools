@@ -24,8 +24,20 @@ var show = function () {
 	is_shown = true;
 };
 
-search_input.blur (function () { window.setTimeout (hide, 200); if (search_input.val ().length == 0) search_input.css ('width', '19em'); });
-search_input.focus (function () { search_input.css ('width', '29em'); if (search_window.text().length > 0 && search_input.val().length > 0) show (); });
+search_input.blur (function () {
+	window.setTimeout (hide, 200);
+	if (search_input.val ().length == 0)
+		search_input.css ('width', '19em');
+});
+search_input.focus (function () {
+	search_input.css ('width', '29em');
+	if (search_window.text().length > 0 && search_input.val().length > 0)
+		show ();
+	window.setTimeout (function () {
+		search_input[0].select ();
+	}, 10);
+});
+
 search_input.keyup (function (event) {
 	if ($(this).val () == "")
 		hide();
