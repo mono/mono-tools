@@ -8,6 +8,7 @@
 public static RootTree help_tree;
 [ThreadStatic]
 static SearchableIndex search_index;
+public static string ua = null;
 
 void Application_Start ()
 {
@@ -19,6 +20,7 @@ void Application_Start ()
 		help_tree = RootTree.LoadTree (rootDir);
 	else
 		help_tree = RootTree.LoadTree ();
+	ua = WebConfigurationManager.AppSettings["GoogleAnalytics"];
 	SettingsHandler.Settings.EnableEditing = false;
 }
 

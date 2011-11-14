@@ -268,7 +268,7 @@ namespace Mono.Website.Handlers
         <meta name='TreePath' value='");
 			ctx.Response.Write (tree_path);
 			ctx.Response.Write (@"' />
-<script>
+<script type='text/javascript'>
 <!--
 function login (rurl)
 {
@@ -321,6 +321,22 @@ function makeLink (link)
 }
 -->
 ");
+			if (!string.IsNullOrEmpty (Global.ua)) {
+				ctx.Response.Write (@"var _gaq = _gaq || [];
+ _gaq.push(['_setAccount', '");
+				ctx.Response.Write (Global.ua);
+				ctx.Response.Write (@"']);
+ _gaq.push(['_trackPageview']);
+
+ (function() {
+   var ga = document.createElement('script'); ga.type =
+'text/javascript'; ga.async = true;
+   ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+'http://www') + '.google-analytics.com/ga.js';
+   var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(ga, s);
+ })();");
+			}
 			ctx.Response.Write ("</script><title>");
 			ctx.Response.Write (title);
 			ctx.Response.Write ("</title>\n");
