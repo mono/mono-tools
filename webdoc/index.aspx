@@ -47,7 +47,7 @@ void Page_Load (object sender, EventArgs e)
 	}
 }
     </script>
-    <div style="color: rgb(255, 255, 255); background-color: #c0dda2;">
+    <div id="banner" style="color: rgb(255, 255, 255); background-color: #c0dda2;">
      <div id="header">
         <h1>Mono Documentation</h1>
      </div>
@@ -57,7 +57,8 @@ void Page_Load (object sender, EventArgs e)
 
      <div id="rightSide">
        <label for="search">Search: </label>
-       <input id="fsearch" type="search" placeholder="Enter search request" style="width:19em"/>
+       <input id="fsearch" type="search" placeholder="Enter search request" style="width:19em; margin-right: 10px"/>
+	   <a href="#" onclick="document.getElementById ('content_frame').contentWindow.print ()"><img class="toolbar" src="images/print.png" width="24" height="24" alt="Print" title="Print this document"/></a>
        <a id="pageLink" href="/">
           <img class="toolbar" src="images/link.png" width="24" height="24" alt="Link to this document" title="Link to this document"/>
        </a>
@@ -65,13 +66,13 @@ void Page_Load (object sender, EventArgs e)
      <div id="fsearch_window"></div>
     </div>
     <div>
-     <div style="width:20%; height: 95%; float: left; border-right: 1px solid black; overflow-x: hidden; overflow-y: auto">
-	   <div id='contents' class='activeTab'>
-	    <div id='contentList'></div>
+     <div id="side">
+	   <div id="contents" class="activeTab">
+	     <div id="contentList"></div>
+       </div>
      </div>
-    </div>
-    <div><iframe id="content_frame" style="width:79.9%; height: 95%;" src="<% =getContentFrame() %>"></iframe></div>
-   </div>
+     <div><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>
+	</div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script src="search.js"></script>
