@@ -129,7 +129,7 @@ body,div {
 	height: 93%;
 	float: left;
 	border-right: 1px solid black;
-	overflow-x: hidden;
+	overflow-x: auto;
 	overflow-y: auto;
 }
 
