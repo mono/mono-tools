@@ -201,6 +201,9 @@ namespace Mono.Website.Handlers
 
 				s.CopyTo (context.Response.OutputStream);
 				return;
+			} else if (link.Equals ("root:", StringComparison.Ordinal) && File.Exists ("home.html")) {
+				context.Response.WriteFile ("home.html");
+				return;
 			}
 
 			if (Global.help_tree == null)
