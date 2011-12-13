@@ -111,7 +111,7 @@ namespace Gendarme {
 			switch (buffer [0]) {
 			case '#': // comment
 				break;
-			case 'R': // rule
+			case 'R': // rule, a "*" in the rule will match any series of charaters
 				string current_rule_glob = GetString (buffer, length);
 
 				foreach (IRule rule in Runner.Rules) {
@@ -120,23 +120,23 @@ namespace Gendarme {
 					}
 				}
 				break;
-			case 'A': // assembly - we support Name, FullName and *
+			case 'A': // assembly - we support Name, FullName and "*" anywhere in the name
 				string target = GetString (buffer, length);
 				foreach (string current_rule in current_rules) {
 						Add(assemblies, current_rule, target);
 				}
 				break;
-			case 'T': // type (no space allowed)
+			case 'T': // type (no space allowed), "*" will match any string of characters
 				foreach (string current_rule in current_rules) {
 					Add(types, current_rule, GetString(buffer, length));
 				}
 				break;
-			case 'M': // method
+			case 'M': // method, "*" will match any string of characters
 				foreach (string current_rule in current_rules) {
 					Add(methods, current_rule, GetString(buffer, length));
 				}
 				break;
-			case 'N': // namespace - special case (no need to resolve)
+			case 'N': // namespace - special case (no need to resolve), "*" is NOT supported, exact matches only
 				foreach (string current_rule in current_rules) {
 					base.Add(current_rule, NamespaceDefinition.GetDefinition(GetString(buffer, length)));
 				}
@@ -207,7 +207,7 @@ namespace Gendarme {
 
 	public static class StringExtensions
 	{
-		// Returns true if the globPattern matches the given string, where any "*" characters in the glob pattern are expanded to a reges .*
+		// Returns true if the globPattern matches the given string, where any "*" characters in the glob pattern are expanded to a regex .*
 		public static bool GlobMatch(this string str, string globPattern)
 		{
 			if (globPattern.IndexOf('*') < 0)
