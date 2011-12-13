@@ -210,6 +210,8 @@ namespace Gendarme {
 		// Returns true if the globPattern matches the given string, where any "*" characters in the glob pattern are expanded to a reges .*
 		public static bool GlobMatch(this string str, string globPattern)
 		{
+			if (globPattern.IndexOf('*') < 0)
+				return str.Equals(globPattern, StringComparison.InvariantCulture);
 			return Regex.IsMatch(str, "^" + Regex.Escape(globPattern).Replace(@"\*", @".*") + "$");
 		}
 	}
