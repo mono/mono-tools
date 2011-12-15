@@ -58,6 +58,7 @@ namespace Gendarme {
 		private bool quiet;
 		private bool version;
 		private bool console;
+		private bool ide_formatting;
 		private List<string> assembly_names;
 
 		static string [] SplitOptions (string value)
@@ -238,6 +239,7 @@ namespace Gendarme {
 				{ "confidence=",v => confidence = ParseConfidence (v) },
 				{ "v|verbose",  v => ++VerbosityLevel },
 				{ "console",	v => console = v != null },
+				{ "ide",	v => ide_formatting = v != null },
 				{ "quiet",	v => quiet = v != null },
 				{ "version",	v => version = v != null },
 				{ "h|?|help",	v => help = v != null },
@@ -340,7 +342,7 @@ namespace Gendarme {
 
 			// generate text report (default, to console, if xml and html aren't specified)
 			if (console || (log_file != null) || ((xml_file == null) && (html_file == null))) {
-				using (TextResultWriter writer = new TextResultWriter (this, log_file)) {
+				using (TextResultWriter writer = new TextResultWriter (this, log_file, ide_formatting)) {
 					writer.Report ();
 				}
 			}
@@ -579,6 +581,7 @@ namespace Gendarme {
 			Console.WriteLine ("\t\t\tFilter defects for the specified confidence levels.");
 			Console.WriteLine ("\t\t\tDefault is 'normal+'");
 			Console.WriteLine ("  --console\t\tShow defects on the console even if --log, --xml or --html are specified.");
+			Console.WriteLine ("  --ide\t\tAdd a line to the console output in a format that IDEs will handle as a build error and link to the item");
 			Console.WriteLine ("  --quiet\t\tUsed to disable progress and other information which is normally written to stdout.");
 			Console.WriteLine ("  --v\t\t\tWhen present additional progress information is written to stdout (can be used multiple times).");
 			Console.WriteLine ("  assemblies\t\tSpecify the assemblies to verify.");

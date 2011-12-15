@@ -50,10 +50,12 @@ namespace Gendarme {
 
 		private TextWriter writer;
 		private ColorScheme color_scheme;
+		private bool ide; //True if the output should be ide friendly
 
-		public TextResultWriter (IRunner runner, string fileName)
+		public TextResultWriter (IRunner runner, string fileName, bool ide_formatting)
 			: base (runner, fileName)
 		{
+			ide = ide_formatting;
 			if (String.IsNullOrEmpty (fileName)) {
 				writer = System.Console.Out;
 
@@ -78,8 +80,8 @@ namespace Gendarme {
 		{
 			// casting to Severity int saves a ton of memory since IComparable<T> can be used instead of IComparable
 			var query = from n in Runner.Defects
-				    orderby (int) n.Severity, n.Rule.Name
-				    select n;
+					orderby (int) n.Severity, n.Rule.Name
+					select n;
 			
 			WriteHeader ();
 			int num = 0;
@@ -111,6 +113,12 @@ namespace Gendarme {
 		{
 			IRule rule = defect.Rule;
 
+			string source = defect.Source;
+
+			// Writes an output line in a format that IDEs should recognise
+			if (ide && !String.IsNullOrEmpty(source))   
+				writer.WriteLine("{0}: error: {1}: See the output window for futher information", source.Replace(Symbols.AlmostEqualTo, ""), rule.Name);
+
 			BeginColor (
 				(Severity.Critical == defect.Severity || Severity.High == defect.Severity)
 				? ConsoleColor.DarkRed : ConsoleColor.DarkYellow);
@@ -130,7 +138,6 @@ namespace Gendarme {
 			if (defect.Location != defect.Target)
 				writer.WriteLine ("* Location: {0}", defect.Location);	
 
-			string source = defect.Source;
 			if (!String.IsNullOrEmpty (source))
 				writer.WriteLine ("* Source:   {0}", source);
 

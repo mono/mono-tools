@@ -708,7 +708,7 @@ namespace Gendarme {
 				if (CouldCopyReport (ref text_report_filename, filename))
 					return null;
 
-				return new TextResultWriter (Runner, filename);
+				return new TextResultWriter (Runner, filename, false);
 			default:
 				return null;
 			}

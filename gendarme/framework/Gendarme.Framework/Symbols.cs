@@ -39,7 +39,7 @@ namespace Gendarme.Framework {
 		// http://blogs.msdn.com/jmstall/archive/2005/06/19/FeeFee_SequencePoints.aspx
 		private const int PdbHiddenLine = 0xFEEFEE;
 
-		private static string AlmostEqualTo = new string (new char [] { '\u2248' });
+		public static readonly string AlmostEqualTo = new string (new char [] { '\u2248' });
 
 		private static Instruction ExtractFirst (TypeDefinition type)
 		{
