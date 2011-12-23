@@ -7,6 +7,8 @@ var lis = null;
 change_page = function (pagename) {
     content_frame.attr ('src', 'monodoc.ashx?link=' + pagename);
     page_link.attr ('href', '?link=' + pagename);
+    if (window.history && window.history.pushState)
+        window.history.pushState (null, '', '/?link=' + pagename);
 };
 page_link.attr ('href', document.location.search);
 
