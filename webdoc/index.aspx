@@ -63,6 +63,7 @@ void Page_Load (object sender, EventArgs e)
           <img class="toolbar" src="images/link.png" width="24" height="24" alt="Link to this document" title="Link to this document"/>
        </a>
      </div>
+	 <div id="fsearch_companion"></div>
      <div id="fsearch_window"></div>
     </div>
     <div>

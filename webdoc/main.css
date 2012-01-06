@@ -33,6 +33,16 @@
 	color: white;
 }
 
+#fsearch_companion {
+	display:none;
+	position: absolute;
+	z-index: 60;
+	top: 40px;
+	right:410px;
+	color: grey;
+	background-color: white;
+}
+
 iframe {
 	margin: 0;
 	padding: 0;

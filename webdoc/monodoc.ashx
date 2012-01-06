@@ -233,7 +233,8 @@ namespace Mono.Website.Handlers
 			// return Json corresponding to the results
 			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
 				Enumerable.Range (0, result.Count)
-                      .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\" }}", result.GetTitle (i), result.GetUrl (i)))
+                      .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\", \"fulltitle\" : \"{2}\" }}",
+                                                   result.GetTitle (i), result.GetUrl (i), result.GetFullTitle (i)))
                       .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
 
 			Console.WriteLine ("answer is {0}", answer);

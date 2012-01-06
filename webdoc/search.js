@@ -58,11 +58,19 @@ search_input.keyup (function (event) {
 
 		$.each (data, function(key, val) {
 			var item = val.name;
-			items.push('<li><a href="#" onclick="change_page(\''+val.url+'\')" title="'+val.name+'">' + item + '</a></li>');
+			items.push('<li><a href="#" onclick="change_page(\''+val.url+'\')" title="'+(val.fulltitle == '' ? val.name : val.fulltitle)+'">' + item + '</a></li>');
 		});
 
 		var uls = $('<ul/>', { html: items.join (''), 'style': 'list-style-type:none; margin: 0; padding:0' });
 		lis = uls.children ('li');
+		var companion = $('#fsearch_companion');
+		lis.hover (function () {
+			var childA = $(this).children('a');
+			companion.css ({ 'top': childA.offset().top + 'px', 'display': 'block'});
+			companion.text(childA.attr ('title'));
+		}, function () {
+			companion.css ('display', 'none');
+		});
 		search_window.empty();
 		uls.appendTo ('#fsearch_window');
 		show ();
@@ -82,6 +90,7 @@ search_input.keydown (function (event) {
 		return;
 	var selected = lis.filter('.selected');
 	var newSelection = null;
+	$('#fsearch_companion').css ('display', 'none');
 
 	switch (event.which)
 	{
@@ -115,8 +124,11 @@ search_input.keydown (function (event) {
 
 	if (newSelection != null) {
 		newSelection.addClass ('selected');
-		if (selected != null)
+		if (selected != null) {
 			selected.removeClass ('selected');
+			selected.mouseleave();
+		}
+		newSelection.mouseenter();
 		selected = newSelection;
 	}
 });
