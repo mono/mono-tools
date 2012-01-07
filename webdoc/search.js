@@ -66,7 +66,8 @@ search_input.keyup (function (event) {
 		var companion = $('#fsearch_companion');
 		lis.hover (function () {
 			var childA = $(this).children('a');
-			companion.css ({ 'top': childA.offset().top + 'px', 'display': 'block'});
+			var offset = childA.offset ();
+			companion.css ({ 'top': offset.top + 'px', 'right': $('html').outerWidth () - offset.left + 10, 'display': 'block'});
 			companion.text(childA.attr ('title'));
 		}, function () {
 			companion.css ('display', 'none');
