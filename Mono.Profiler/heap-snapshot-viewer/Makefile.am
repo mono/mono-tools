@@ -8,7 +8,8 @@ CSFLAGS =  -noconfig -codepage:utf8 -warn:4 -optimize+
 ASSEMBLY_MDB = 
 endif
 
-pkglib_DATA = $(ASSEMBLY) $(ASSEMBLY_MDB)
+programfilesdir = $(pkglibdir)
+programfiles_DATA = $(ASSEMBLY) $(ASSEMBLY_MDB)
 bin_SCRIPTS = mprof-heap-viewer
 man_MANS=man/man1/mprof-heap-viewer.1
 
