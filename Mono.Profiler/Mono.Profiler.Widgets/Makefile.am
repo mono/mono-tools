@@ -9,7 +9,8 @@ CSFLAGS =  -noconfig -codepage:utf8 -warn:4
 ASSEMBLY_MDB = 
 endif
 
-pkglib_DATA = $(ASSEMBLY) $(ASSEMBLY_MDB)
+programfilesdir = $(pkglibdir)
+programfiles_DATA = $(ASSEMBLY) $(ASSEMBLY_MDB)
 
 CLEANFILES = $(ASSEMBLY) $(ASSEMBLY_MDB)
 
