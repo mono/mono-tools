@@ -58,7 +58,8 @@ search_input.keyup (function (event) {
 
 		$.each (data, function(key, val) {
 			var item = val.name;
-			items.push('<li><a href="#" onclick="change_page(\''+val.url+'\')" title="'+(val.fulltitle == '' ? val.name : val.fulltitle)+'">' + item + '</a></li>');
+			var url = val.url.replace (/[<>]/g, function (c) { return c == '<' ? '{' : '}'; });
+			items.push('<li><a href="#" onclick="change_page(\''+url+'\')" title="'+(val.fulltitle == '' ? val.name : val.fulltitle)+'">' + item + '</a></li>');
 		});
 
 		var uls = $('<ul/>', { html: items.join (''), 'style': 'list-style-type:none; margin: 0; padding:0' });
