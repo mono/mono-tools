@@ -177,3 +177,8 @@ div.Content {
 	margin-right: 1em;
 }
 
+div.related ul {
+	list-type: none;
+	padding-left: 1em;
+}
+
