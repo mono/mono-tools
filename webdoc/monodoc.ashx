@@ -89,6 +89,14 @@ namespace Mono.Website.Handlers
 				HandleFastSearchRequest (context, s);
 				return;
 			}
+
+			s = (string) context.Request.Params["search"];
+			Console.WriteLine ("Full search requested for query {0}", s);
+			if (s != null) {
+				HandleFullSearchRequest (context, s);
+				return;
+			}
+
 			context.Response.Write ("<html><body>Unknown request</body></html>");
 			context.Response.ContentType = "text/html";
 		}
@@ -236,6 +244,39 @@ namespace Mono.Website.Handlers
                       .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\", \"fulltitle\" : \"{2}\" }}",
                                                    result.GetTitle (i), result.GetUrl (i), result.GetFullTitle (i)))
                       .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
+
+			Console.WriteLine ("answer is {0}", answer);
+
+			context.Response.ContentType = "application/json";
+			context.Response.Write (answer);
+		}
+
+		void HandleFullSearchRequest (HttpContext context, string request)
+		{
+			if (string.IsNullOrWhiteSpace (request)) {
+				// Unprocessable entity
+				context.Response.StatusCode = 422;
+				return;
+			}
+			int start = 0, count = 0;
+			var searchIndex = Global.GetSearchIndex ();
+			Result result = null;
+			if (int.TryParse (context.Request.Params["count"], out count)) {
+				if (int.TryParse (context.Request.Params["start"], out start))
+					result = searchIndex.Search (request, count, start);
+				else
+					result = searchIndex.Search (request, count);
+			} else {
+				count = 20;
+				result = searchIndex.Search (request, count);
+			}
+			// return Json corresponding to the results
+			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
+				Enumerable.Range (0, result.Count)
+                      .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\", \"fulltitle\" : \"{2}\" }}",
+                                                   result.GetTitle (i), result.GetUrl (i), result.GetFullTitle (i)))
+                      .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
+			answer = string.Format ("{{ \"count\": {0}, \"start\": {1}, \"result\": {2} }}", count, start, answer);
 
 			Console.WriteLine ("answer is {0}", answer);
 

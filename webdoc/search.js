@@ -44,7 +44,7 @@ search_input.keyup (function (event) {
 	if ($(this).val () == "")
 		hide();
 
-    // Only process if we receive an alnum or return or del
+    // Only process if we receive an alnum or backspace or del
     if (event.which != 8 && event.which != 46
         && (event.which < 'A'.charCodeAt(0) || event.which > 'Z'.charCodeAt(0))
         && (event.which < '0'.charCodeAt(0) || event.which > '9'.charCodeAt(0)))
@@ -99,16 +99,17 @@ search_input.keydown (function (event) {
 	case 13: // return
 		if (selected.length != 0) {
 			selected.children ('a').click ();
-			hide ();
-			search_input.blur ();
+		} else {
+			// Show full search page
+			content_frame.attr('src', 'search.html#' + encodeURI(search_input.val ()));
 		}
+		hide ();
+		search_input.blur ();
 		return false;
-
 	case 38: // up
 		if (selected.length != 0) {
 			var prev = selected.prev ();
-			if (prev.length != 0)
-				newSelection = prev;
+			newSelection = prev;
 		} else {
 			newSelection = lis.last ();
 		}
