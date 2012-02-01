@@ -1,9 +1,12 @@
 var spinner = $('#s_spinner');
 
-(function ($) {
+function process_hash () {
 	var query = window.location.hash;
 	if (query == null || query.length < 2)
 		return;
+
+	var ul = $('#s_results ul');
+	ul.empty ();
 
 	var currentNumber = 0;
 	var count = 0;
@@ -27,7 +30,7 @@ var spinner = $('#s_spinner');
 						+ element.name + '</span> '
 						+ (element.fulltitle.length > 0 ? '<span class="fulltitle">(' + element.fulltitle + ')</span>' : '') + '</a></li>';
 				});
-				$('#s_results ul').append (lis.join (''));
+				ul.append (lis.join (''));
 			}
 		});
 	};
@@ -37,4 +40,9 @@ var spinner = $('#s_spinner');
 	$('#s_morebtn input').click (function () {
 		fetch_and_add_results ('/monodoc.ashx?search=' + query + '&start=' + currentNumber + '&count=' + count);
 	});
-})(window.jQuery);
+}
+
+process_hash ();
+
+window.addEventListener("hashchange", process_hash, false);
+
