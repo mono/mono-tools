@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="main.css" media="all" />
     <link type="text/css" rel="stylesheet" href="ptree/tree.css"/>
 	<link type="text/css" rel="stylesheet" href="sidebar.css"/>
+    <% = Global.IncludeExternalHeader (Global.ExternalResourceType.Css) %>
+    <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Css) %>
   </head>
   <body>
     <script language="c#" runat="server">
@@ -47,14 +49,8 @@ void Page_Load (object sender, EventArgs e)
 	}
 }
     </script>
-    <div id="banner" style="color: rgb(255, 255, 255); background-color: #c0dda2;">
-     <div id="header">
-        <h1>Mono Documentation</h1>
-     </div>
-     <div id="dlogin">
-       <asp:HyperLink id="login" runat="server"/>
-     </div>
-
+    <% = Global.IncludeExternalHeader (Global.ExternalResourceType.Html) %>
+    <div id="banner" style="color: rgb(255, 255, 255);">
      <div id="rightSide">
        <label for="search">Search: </label>
        <input id="fsearch" type="search" placeholder="Enter search request" style="width:19em; margin-right: 10px"/>
@@ -63,10 +59,18 @@ void Page_Load (object sender, EventArgs e)
           <img class="toolbar" src="images/link.png" width="24" height="24" alt="Link to this document" title="Link to this document"/>
        </a>
      </div>
+
+     <div id="header">
+        <h1>Mono Documentation</h1>
+     </div>
+     <div id="dlogin">
+       <asp:HyperLink id="login" runat="server"/>
+     </div>
+
 	 <div id="fsearch_companion"></div>
      <div id="fsearch_window"></div>
     </div>
-    <div>
+    <div id="main_part">
      <div id="side">
 	   <div id="contents" class="activeTab">
 	     <div id="contentList"></div>
@@ -74,6 +78,7 @@ void Page_Load (object sender, EventArgs e)
      </div>
      <div><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>
 	</div>
+    <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Html) %>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script src="search.js"></script>
@@ -102,5 +107,7 @@ update_tree = function () {
 update_tree ();
 content_frame.load (update_tree);
 </script>
+<% = Global.IncludeExternalHeader (Global.ExternalResourceType.Javascript) %>
+<% = Global.IncludeExternalFooter (Global.ExternalResourceType.Javascript) %>
 </body>
 </html>

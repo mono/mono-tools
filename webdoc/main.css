@@ -98,24 +98,28 @@ img.toolbar:active {
 }
 
 #rightSide {
-    position: fixed;
+    position: relative;
     top: 2px;
     right: 0px;
     float: right;
     padding: 5px;
 }
 
-#header {
+#banner {
 	background: #679EF1 url(mdocimages/headerbg.png) no-repeat 100% 50%;
 	background-color: #679EF1;
 	background-position: 100% 50%;
 	background-repeat: no-repeat;
 	border-bottom: 1px dotted #3363BD;
+}
+
+#header {
 	color: black;
 	height: 40px;
 	margin-bottom: 0px;
 	padding: 0px 0px 0px 15px;
 	position: relative;
+	width: 50%;
 }
 #header h1 {
 	color: white;
@@ -132,6 +136,10 @@ body,div {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+}
+
+html,body {
+	height: 100%;
 }
 
 #side {

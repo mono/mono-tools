@@ -3,6 +3,8 @@ var search_window = $('#fsearch_window');
 var content_frame = $('#content_frame');
 var page_link = $('#pageLink');
 var lis = null;
+var page_top_offset = $('#main_part').offset().top;
+console.log (page_top_offset);
 
 change_page = function (pagename) {
     content_frame.attr ('src', 'monodoc.ashx?link=' + pagename);
@@ -22,7 +24,7 @@ var hide = function () {
 var show = function () {
 	if (is_shown)
 		return;
-    search_window.css ({'display' : 'block', 'height' : 'auto', 'opacity' : 1.0, 'width': search_input.width() + 'px'});
+    search_window.css ({'display' : 'block', 'height' : 'auto', 'opacity' : 1.0, 'width': search_input.width() + 'px', 'top': page_top_offset + 'px' });
 	is_shown = true;
 };
 
