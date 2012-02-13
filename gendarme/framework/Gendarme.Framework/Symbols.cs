@@ -69,11 +69,11 @@ namespace Gendarme.Framework {
 		{
 			MethodDefinition method = (location as MethodDefinition);
 			if (method != null)
-				return (method.DeclaringType as TypeDefinition);
+				return method.DeclaringType;
 
 			FieldDefinition field = (location as FieldDefinition);
 			if (field != null)
-				return (field.DeclaringType as TypeDefinition);
+				return field.DeclaringType;
 
 			ParameterDefinition parameter = (location as ParameterDefinition);
 			if (parameter != null)
@@ -177,7 +177,7 @@ namespace Gendarme.Framework {
 					return FormatSource (candidate);
 
 				// we may still be lucky to find the (a) source file for the type itself
-				type = (method.DeclaringType as TypeDefinition);
+				type = method.DeclaringType;
 			}
 
 			// TypeDefinition, FieldDefinition
