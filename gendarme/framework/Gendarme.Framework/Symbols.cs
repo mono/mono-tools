@@ -55,7 +55,7 @@ namespace Gendarme.Framework {
 
 		private static Instruction ExtractFirst (MethodDefinition method)
 		{
-			if ((method == null) || !method.HasBody)
+			if ((method == null) || !method.HasBody || method.Body.Instructions.Count == 0)
 				return null;
 			Instruction ins = method.Body.Instructions [0];
 			// note that the first instruction often does not have a sequence point
