@@ -159,10 +159,10 @@ namespace Gendarme.Rules.Exceptions {
 			// CHECK	public ArgumentNullException (string paramName)
 			// CHECK	public ArgumentNullException (string paramName, string message)
 			Instruction call = ins.TraceBack (method, 0);
-            
-            // call will be null if there is branching logic in the selection of a message - just fon't check in this case
-            if (call == null)
-                return;
+			
+			// call will be null if there is branching logic in the selection of a message - just fon't check in this case
+			if (call == null)
+				return;
 
 			string name = call.Operand as string;
 			if (MatchesAnyParameter (method, name))
