@@ -283,7 +283,7 @@ namespace Test.Rules.Design {
 		}
 
 		[Test]
-		public void TestInheirtedPropertiesAttribute()
+		public void TestInheritedPropertiesAttribute()
 		{
 			AssertRuleSuccess<FooBarAttribute>();
 		}
