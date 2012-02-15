@@ -777,5 +777,49 @@ namespace Test.Rules.Exceptions {
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("get_Item");
 			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest> ("set_Item");
 		}
+
+		public void ArgumentNullExceptionWithBranchInMessageSelectionAndIncorrectParameterName(int parameter)
+		{
+			throw new ArgumentNullException("asdf", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		public void ArgumentOutOfRangeExceptionWithBranchInMessageSelectionAndIncorrectParameterName(int parameter)
+		{
+			throw new ArgumentOutOfRangeException("asdf", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		public void DuplicateWaitObjectExceptionWithBranchInMessageSelectionAndIncorrectParameterName(int parameter)
+		{
+			throw new DuplicateWaitObjectException("asdf", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		public void ArgumentNullExceptionWithBranchInMessageSelectionAndCorrectParameterName(int parameter)
+		{
+			throw new ArgumentNullException("parameter", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		public void ArgumentOutOfRangeExceptionWithBranchInMessageSelectionAndCorrectParameterName(int parameter)
+		{
+			throw new ArgumentOutOfRangeException("parameter", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		public void DuplicateWaitObjectExceptionWithBranchInMessageSelectionAndCorrectParameterName(int parameter)
+		{
+			throw new DuplicateWaitObjectException("parameter", parameter > 0 ? "little parameter " : "big parameter");
+		}
+
+		[Test]
+		public void ArgumentExceptionsWithBranchInMessageSelectionDoesNotThrow()
+		{
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("ArgumentNullExceptionWithBranchInMessageSelectionAndCorrectParameterName");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("ArgumentOutOfRangeExceptionWithBranchInMessageSelectionAndCorrectParameterName");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("DuplicateWaitObjectExceptionWithBranchInMessageSelectionAndCorrectParameterName");
+
+			//Ideally the rules below would be AssertRuleFailure - but better to incorrectly pass than to throw an unhandled exception
+			// If the handling code is changed a better resolution here may be possible
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("ArgumentNullExceptionWithBranchInMessageSelectionAndIncorrectParameterName");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("ArgumentOutOfRangeExceptionWithBranchInMessageSelectionAndIncorrectParameterName");
+			AssertRuleSuccess<InstantiateArgumentExceptionCorrectlyTest>("DuplicateWaitObjectExceptionWithBranchInMessageSelectionAndIncorrectParameterName");
+		}
 	}
 }
