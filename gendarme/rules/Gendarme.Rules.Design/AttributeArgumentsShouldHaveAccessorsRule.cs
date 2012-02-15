@@ -107,11 +107,18 @@ namespace Gendarme.Rules.Design {
 
 			// look through getters
 			allProperties.Clear ();
-			foreach (PropertyDefinition property in type.Properties) {
-				if (property.GetMethod != null) {
-					allProperties.Add (property.Name);
+
+			TypeDefinition t = type;
+			// Walk up the inheritance tree so that inherited properties are counted
+			do
+			{
+				foreach (PropertyDefinition property in t.Properties) {
+					if (property.GetMethod != null) {
+						allProperties.Add (property.Name);
+					}
 				}
-			}
+				t = t.BaseType != null ? t.BaseType.Resolve () : null;
+			} while (t != null  && !t.IsNamed ("System", "Attribute"));
 
 			// look through parameters
 			foreach (MethodDefinition constructor in type.Methods) {
