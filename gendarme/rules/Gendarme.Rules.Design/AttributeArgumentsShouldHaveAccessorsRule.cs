@@ -117,7 +117,8 @@ namespace Gendarme.Rules.Design {
 						allProperties.Add (property.Name);
 					}
 				}
-			} while (t.BaseType != null && (t = t.BaseType.Resolve()) != null);
+				t = t.BaseType != null ? t.BaseType.Resolve() : null;
+			} while (t != null  && !t.IsNamed("System", "Attribute"));
 
 			// look through parameters
 			foreach (MethodDefinition constructor in type.Methods) {
