@@ -198,7 +198,7 @@ namespace Test.Rules.Design {
 
 	internal abstract class FooAttribute : Attribute
 	{
-		protected FooAttribute(string foo)
+		protected FooAttribute (string foo)
 		{
 			this.Foo = foo;
 		}
@@ -212,7 +212,7 @@ namespace Test.Rules.Design {
 
 	internal class FooBarAttribute : FooAttribute
 	{
-		protected FooBarAttribute(string foo, string bar) : base (foo)
+		protected FooBarAttribute (string foo, string bar) : base (foo)
 		{
 			this.Bar = bar;
 		}
@@ -283,9 +283,9 @@ namespace Test.Rules.Design {
 		}
 
 		[Test]
-		public void TestInheritedPropertiesAttribute()
+		public void TestInheritedPropertiesAttribute ()
 		{
-			AssertRuleSuccess<FooBarAttribute>();
+			AssertRuleSuccess<FooBarAttribute> ();
 		}
 	}
 }

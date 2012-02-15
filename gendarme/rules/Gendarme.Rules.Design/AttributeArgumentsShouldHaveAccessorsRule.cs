@@ -118,7 +118,7 @@ namespace Gendarme.Rules.Design {
 					}
 				}
 				t = t.BaseType != null ? t.BaseType.Resolve() : null;
-			} while (t != null  && !t.IsNamed("System", "Attribute"));
+			} while (t != null  && !t.IsNamed ("System", "Attribute"));
 
 			// look through parameters
 			foreach (MethodDefinition constructor in type.Methods) {
