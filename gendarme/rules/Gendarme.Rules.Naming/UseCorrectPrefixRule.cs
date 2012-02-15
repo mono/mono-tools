@@ -90,9 +90,9 @@ namespace Gendarme.Rules.Naming {
 				return true;
 
 			switch (name [0]) {
-			case 'C':	// MFC like CMyClass - but works for CLSCompliant
-			case 'I':	// interface-like
-				return Char.IsLower (name [1]) == Char.IsLower (name [2]);
+			case 'C':	// MFC like CMyClass should fail - but works for CLSCompliant
+			case 'I':	// interface-like - Classes beginning with In or Is etc should pass, e.g. InMemoryDoohicky
+				return Char.IsLower (name [1]) ? true : Char.IsUpper (name [2]);
 			default:
 				return true;
 			}

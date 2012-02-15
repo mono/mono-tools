@@ -54,6 +54,10 @@ namespace Test.Rules.Naming {
 	public class ILRange {
 	}
 
+	public class InMemoryDoohicky
+	{
+	}
+
 	public interface I {
 	}
 
@@ -102,6 +106,7 @@ namespace Test.Rules.Naming {
 			AssertRuleFailure<CIncorrectClass> (1);
 			AssertRuleFailure<INcorrectClass> (1);
 			AssertRuleSuccess<ILRange> ();
+			AssertRuleSuccess<InMemoryDoohicky> ();
 		}
 
 		[Test]
