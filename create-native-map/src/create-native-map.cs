@@ -348,6 +348,7 @@ static class MapUtils {
 				? new MapAttribute () 
 				: new MapAttribute (nativeType);
 			map.SuppressFlags   = GetPropertyValueAsString (o, "SuppressFlags");
+			map.Ignore          = GetPropertyValueAsBool   (o, "Ignore");
 			return map;
 		}
 		return null;
@@ -372,6 +373,12 @@ static class MapUtils {
 		if (s != null)
 			return s.Length == 0 ? null : s;
 		return null;
+	}
+
+	private static bool GetPropertyValueAsBool (object o, string property)
+	{
+		object v = GetPropertyValue (o, property);
+		return v == null ? false : (bool) v;
 	}
 
 	private static object GetPropertyValue (object o, string property)
@@ -482,6 +489,14 @@ static class MapUtils {
 		if (map != null)
 			return map.NativeType;
 		return null;
+	}
+
+	public static bool IsIgnored (FieldInfo field)
+	{
+		MapAttribute map = GetMapAttribute (field);
+		if (map != null)
+			return map.Ignore;
+		return false;
 	}
 
 	public static string GetFunctionDeclaration (string name, MethodInfo method)
@@ -663,10 +678,11 @@ abstract class FileGenerator {
 class HeaderFileGenerator : FileGenerator {
 	StreamWriter sh;
 	string assembly_file;
-	Dictionary<string, MethodInfo>  methods   = new Dictionary <string, MethodInfo> ();
-	Dictionary<string, Type>        structs   = new Dictionary <string, Type> ();
-	Dictionary<string, MethodInfo>  delegates = new Dictionary <string, MethodInfo> ();
-	List<string>                    decls     = new List <string> ();
+	Dictionary<string, MethodInfo>  methods        = new Dictionary <string, MethodInfo> ();
+	Dictionary<string, Type>        structs        = new Dictionary <string, Type> ();
+	Dictionary<string, MethodInfo>  delegates      = new Dictionary <string, MethodInfo> ();
+	List<string>                    decls          = new List <string> ();
+	Dictionary<string, object>      writtenStructs = new Dictionary <string, object> ();
 
 	public override void CreateFile (string assembly_name, string file_prefix)
 	{
@@ -894,17 +910,31 @@ class HeaderFileGenerator : FileGenerator {
 
 	private void WriteStructDeclarations (string s)
 	{
+		if (writtenStructs.ContainsKey (s)) {
+			return;
+		}
+		writtenStructs.Add (s, null);
 		Type t = structs [s];
 #if false
 		if (!t.Assembly.CodeBase.EndsWith (this.assembly_file)) {
 			return;
 		}
 #endif
-		sh.WriteLine ("struct {0} {{", MapUtils.GetManagedType (t));
 		FieldInfo[] fields = t.GetFields (BindingFlags.Instance | 
 				BindingFlags.Public | BindingFlags.NonPublic);
+		// make sure all structures used as fields are written before this structure
+		foreach (FieldInfo field in fields) {
+			if (MapUtils.IsIgnored (field))
+				continue;
+			string managed_type = field.FieldType.FullName;
+			if (structs.ContainsKey (managed_type))
+				WriteStructDeclarations (managed_type);
+		}
+		sh.WriteLine ("struct {0} {{", MapUtils.GetManagedType (t));
 		int max_type_len = 0, max_name_len = 0, max_native_len = 0;
 		Array.ForEach (fields, delegate (FieldInfo f) {
+				if (MapUtils.IsIgnored (f))
+					return;
 				max_type_len    = Math.Max (max_type_len, HeaderFileGenerator.GetType (f.FieldType).Length);
 				max_name_len    = Math.Max (max_name_len, GetNativeMemberName (f).Length);
 				string native_type = MapUtils.GetNativeType (f);
@@ -913,6 +943,8 @@ class HeaderFileGenerator : FileGenerator {
 		});
 		SortFieldsInOffsetOrder (t, fields);
 		foreach (FieldInfo field in fields) {
+			if (MapUtils.IsIgnored (field))
+				continue;
 			string fname = GetNativeMemberName (field);
 			sh.Write ("\t{0,-" + max_type_len + "} {1};", 
 					GetType (field.FieldType), fname);
@@ -1410,11 +1442,11 @@ class SourceFileGenerator : FileGenerator {
 				BindingFlags.Public | BindingFlags.NonPublic);
 		int count = 0;
 		for (int i = 0; i < fields.Length; ++i)
-			if (MapUtils.GetCustomAttribute <NonSerializedAttribute> (fields [i]) == null)
+			if (MapUtils.GetCustomAttribute <NonSerializedAttribute> (fields [i]) == null && !MapUtils.IsIgnored (fields [i]))
 				++count;
 		FieldInfo[] rf = new FieldInfo [count];
 		for (int i = 0, j = 0; i < fields.Length; ++i) {
-			if (MapUtils.GetCustomAttribute <NonSerializedAttribute> (fields [i]) == null)
+			if (MapUtils.GetCustomAttribute <NonSerializedAttribute> (fields [i]) == null && !MapUtils.IsIgnored (fields [i]))
 				rf [j++] = fields [i];
 		}
 		return rf;
