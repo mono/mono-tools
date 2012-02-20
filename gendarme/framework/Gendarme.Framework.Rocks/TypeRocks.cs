@@ -257,7 +257,7 @@ namespace Gendarme.Framework.Rocks {
 				return false;	// not enough information available
 
 			// special case, check if we implement ourselves
-			if (type.IsInterface && Match (type, nameSpace, name))
+			if (type.IsInterface && type.IsNamed (nameSpace, name))
 				return true;
 
 			return Implements (type, nameSpace, name);
@@ -269,7 +269,7 @@ namespace Gendarme.Framework.Rocks {
 				// does the type implements it itself
 				if (type.HasInterfaces) {
 					foreach (TypeReference iface in type.Interfaces) {
-						if (Match (iface, nameSpace, iname))
+						if (iface.IsNamed (nameSpace, iname))
 							return true;
 						//if not, then maybe one of its parent interfaces does
 						if (Implements (iface.Resolve (), nameSpace, iname))
@@ -278,23 +278,6 @@ namespace Gendarme.Framework.Rocks {
 				}
 
 				type = type.BaseType != null ? type.BaseType.Resolve () : null;
-			}
-			return false;
-		}
-
-		private static bool Match (TypeReference type, string nameSpace, string name)
-		{
-			int np = name.IndexOf ('/');
-			if (np == -1) {
-				if (type.IsNamed (nameSpace, name))
-					return true;
-			} else if (type.IsNested) {
-				string tname = type.Name;
-				TypeReference dt = type.DeclaringType;
-				if ((nameSpace == dt.Namespace) &&
-					(String.CompareOrdinal (name, 0, dt.Name, 0, np) == 0) &&
-					(String.CompareOrdinal (name, np + 1, tname, 0, tname.Length) == 0))
-					return true;
 			}
 			return false;
 		}
@@ -348,6 +331,15 @@ namespace Gendarme.Framework.Rocks {
 				throw new ArgumentNullException ("name");
 			if (self == null)
 				return false;
+
+			if (self.IsNested) {
+				int spos = name.LastIndexOf ('/');
+				if (spos == -1)
+					return false;
+				// GetFullName could be optimized away but it's a fairly uncommon case
+				return (nameSpace + "." + name == self.GetFullName ());
+			}
+
 			return ((self.Namespace == nameSpace) && (self.Name == name));
 		}
 
