@@ -382,6 +382,8 @@ namespace Gendarme.Framework.Rocks {
 				return false;
 
 			string name = self.Name;
+			if (fullName.Length - dpos - 1 != name.Length)
+				return false;
 			return (String.CompareOrdinal (name, 0, fullName, dpos + 1, fullName.Length - dpos - 1) == 0);
 		}
 
