@@ -1011,15 +1011,18 @@ namespace GuiCompare {
 			sb.Append ('(');
 			bool first_p = true;
 			foreach (ParameterDefinition p in method_def.Parameters) {
+				TypeReference paramType = p.ParameterType;
 				if (!first_p)
 					sb.Append (", ");
 				first_p = false;
 				if (p.IsIn)
 					sb.Append ("in ");
-				else if (p.IsOut)
-					sb.Append ("out ");
+				else if (paramType.IsByReference) {
+					sb.Append (p.IsOut ? "out " : "ref ");
+					paramType = paramType.GetElementType ();
+				}
 				sb.Append (beautify
-				           ? CecilUtils.PrettyType (p.ParameterType)
+				           ? CecilUtils.PrettyType (paramType)
 				           : CecilUtils.FormatTypeLikeCorCompare (p.ParameterType));
 				if (beautify) {
 					sb.Append (" ");
