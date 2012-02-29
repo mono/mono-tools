@@ -406,6 +406,7 @@ namespace GuiCompare
 			"System.IdentityModel.Selectors",
 			"System.IO.Log",
 			"System.IO.Compression",
+			"System.IO.Compression.FileSystem",
 			"System.Management",
 		//	"System.Management.Instrumentation",
 			"System.Messaging",
@@ -488,7 +489,7 @@ namespace GuiCompare
 
 		static Uri GetMasterInfoUri (string file)
 		{
-			return new Uri (string.Format ("http://mono.ximian.com/masterinfos/{0}/{1}", masterinfos_version, file));
+			return new Uri (string.Format ("http://go-mono.com/masterinfos/{0}/{1}", masterinfos_version, file));
 		}
 		
 		public static void Init ()
