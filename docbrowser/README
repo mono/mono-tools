@@ -1,0 +1,16 @@
+docbrowser:
+----------
+
+docbrowser is a tool for looking up various APIs of the mono project.
+
+
+Building:
+--------
+
+    git clone https://github.com/mono/mono-tools.git
+    ./autogen.sh [typical configure flags, such as --prefix=PREFIX]
+    cd docbrowser/
+    make
+    make install
+
+If you intend to build docbrowser from within monodevelop, make sure to run autogen.sh first.
