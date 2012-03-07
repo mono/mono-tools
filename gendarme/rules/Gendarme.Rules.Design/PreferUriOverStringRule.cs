@@ -111,10 +111,11 @@ namespace Gendarme.Rules.Design {
 		private static bool IsUri (string memberName)
 		{
 			int index = 0;
-			while ((index = FindTokenStart (memberName, "ur", index)) != -1) {
-				if (memberName.Length < index + 2)
+			while ((index = FindTokenStart(memberName, "ur", index)) != -1)
+			{
+				if (memberName.Length <= index + 2)
 					break;
-				if (url_enders.Contains (Char.ToLower (memberName [index + 2], CultureInfo.InvariantCulture)))
+				if (url_enders.Contains(Char.ToLower(memberName[index + 2], CultureInfo.InvariantCulture)))
 					return true;
 				index += 2;
 			}
