@@ -1018,8 +1018,14 @@ namespace GuiCompare {
 				if (p.IsIn)
 					sb.Append ("in ");
 				else if (paramType.IsByReference) {
-					sb.Append (p.IsOut ? "out " : "ref ");
-					paramType = paramType.GetElementType ();
+					if (beautify) {
+						sb.Append (p.IsOut ? "out " : "ref ");
+						paramType = paramType.GetElementType ();
+					} else if (p.IsOut) {
+						sb.Append ("out ");
+					}
+				} else if (p.IsOut) {
+					sb.Append ("out ");
 				}
 				sb.Append (beautify
 				           ? CecilUtils.PrettyType (paramType)
