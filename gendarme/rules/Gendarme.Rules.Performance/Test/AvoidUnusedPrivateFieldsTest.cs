@@ -162,5 +162,25 @@ namespace Test.Rules.Performance {
 			AssertRuleFailure<GenericUnused<int>> (1);
 			AssertRuleSuccess<GenericUsed<int>> ();
 		}
+
+        class FieldsUsedInNested {
+            private bool field;
+
+            private static string staticField;
+
+            class Nested {
+                public void Foo (FieldsUsedInNested parent)
+                {
+                    FieldsUsedInNested.staticField = "bar";
+                    parent.field = true;
+                }
+            }
+        }
+
+        [Test]
+        public void FieldsUsedInNestedType ()
+        {
+            AssertRuleSuccess<FieldsUsedInNested> ();
+        }
 	}
 }
