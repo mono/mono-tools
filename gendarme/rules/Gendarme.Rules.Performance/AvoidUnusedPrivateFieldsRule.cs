@@ -114,7 +114,7 @@ namespace Gendarme.Rules.Performance {
 			// scan all methods, including constructors, to find if the field is used
 			CheckFieldsUsageInType (type);
 
-			// scan nested types becuase they also have access to private types of their parent
+			// scan nested types becuase they also have access to private fields of their parent
 			foreach (TypeDefinition nested in type.NestedTypes) {
 					CheckFieldsUsageInType (nested);
 			}
