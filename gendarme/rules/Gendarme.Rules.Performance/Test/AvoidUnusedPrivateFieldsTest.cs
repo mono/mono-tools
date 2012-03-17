@@ -163,24 +163,24 @@ namespace Test.Rules.Performance {
 			AssertRuleSuccess<GenericUsed<int>> ();
 		}
 
-        class FieldsUsedInNested {
-            private bool field;
+		class FieldsUsedInNested {
+				private bool field;
 
-            private static string staticField;
+				private static string staticField;
 
-            class Nested {
-                public void Foo (FieldsUsedInNested parent)
-                {
-                    FieldsUsedInNested.staticField = "bar";
-                    parent.field = true;
-                }
-            }
-        }
+				class Nested {
+						public void Foo (FieldsUsedInNested parent)
+						{
+								FieldsUsedInNested.staticField = "bar";
+								parent.field = true;
+						}
+				}
+		}
 
-        [Test]
-        public void FieldsUsedInNestedType ()
-        {
-            AssertRuleSuccess<FieldsUsedInNested> ();
-        }
+		[Test]
+		public void FieldsUsedInNestedType ()
+		{
+				AssertRuleSuccess<FieldsUsedInNested> ();
+		}
 	}
 }

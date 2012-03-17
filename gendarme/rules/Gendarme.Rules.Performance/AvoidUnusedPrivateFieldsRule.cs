@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -111,12 +112,12 @@ namespace Gendarme.Rules.Performance {
 			}
 
 			// scan all methods, including constructors, to find if the field is used
-			CheckFieldsUsageInType(type);
+			CheckFieldsUsageInType (type);
 
-            // scan nested types becuase they also have access to private types of their parent
-            foreach (TypeDefinition nested in type.NestedTypes) {
-                CheckFieldsUsageInType(nested);
-            }
+			// scan nested types becuase they also have access to private types of their parent
+			foreach (TypeDefinition nested in type.NestedTypes) {
+					CheckFieldsUsageInType (nested);
+			}
 
 			// check remaining (private) fields in the set
 			foreach (FieldDefinition field in fields) {
@@ -125,25 +126,25 @@ namespace Gendarme.Rules.Performance {
 			return Runner.CurrentRuleResult;
 		}
 
-	    private void CheckFieldsUsageInType (TypeDefinition type)
-	    {
-	        foreach (MethodDefinition method in type.Methods) {
-	            if (!method.HasBody)
-	                continue;
+		private void CheckFieldsUsageInType (TypeDefinition type)
+		{
+			foreach (MethodDefinition method in type.Methods) {
+				if (!method.HasBody)
+					continue;
 
-	            // don't check the method if it does not access any field
-	            if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
-	                continue;
+						// don't check the method if it does not access any field
+						if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
+								continue;
 
-	            foreach (Instruction ins in method.Body.Instructions) {
-	                FieldDefinition fd = ins.GetField ();
-	                if (fd == null)
-	                    continue;
+						foreach (Instruction ins in method.Body.Instructions) {
+								FieldDefinition fd = ins.GetField ();
+								if (fd == null)
+										continue;
 
-	                fields.Remove (fd);
-	            }
-	        }
-	    }
+								fields.Remove (fd);
+						}
+				}
+		}
 
 #if false
 		public void Bitmask ()
