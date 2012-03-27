@@ -350,6 +350,7 @@ function makeLink (link)
 		case 'ftp':
 		case 'mailto':
 		case 'javascript':
+		case 'https':
 			return link;
 			
 		default:
