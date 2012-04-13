@@ -54,7 +54,7 @@ namespace Mono.WebCompareDB {
 			Console.WriteLine ();
 			Console.WriteLine ("    When invoked with no arguments it is equivalent to:");
 			Console.WriteLine ();
-			Console.WriteLine ("       webcompare-db.exe '3.5 2.0' 'SL2 2.1' '2.0 2.0' '1.1 1.0'");
+			Console.WriteLine ("       webcompare-db.exe '4.5 4.5' '4.0 4.0'
 			Console.WriteLine ();
 			Console.WriteLine ("    The first argument of each pair is a directory in ../masterinfos.");
 			Console.WriteLine ("    The second argument of each pair is a directory in ../binary.");
@@ -66,7 +66,7 @@ namespace Mono.WebCompareDB {
 			Console.WriteLine ();
 		}
 
-		static string [] default_compares = new string [] { "3.5 2.0", "SL2 2.1", "2.0 2.0", "1.1 1.0" };
+		static string [] default_compares = new string [] { "4.5 4.5", "4.0 4.0" };
 
 		static int Main (string [] args)
 		{
@@ -187,7 +187,8 @@ namespace Mono.WebCompareDB {
 				string reference = s [0];
 				string profile = s [1];
 				string mpath = "../masterinfos/" + reference;
-				string bpath = "../binary/" + profile;
+				string bpath = "../masterinfos/" + profile;
+				//string bpath = "../binary/" + profile;
 				if (!Directory.Exists (mpath))
 					continue;
 
@@ -204,7 +205,8 @@ namespace Mono.WebCompareDB {
 					if (include_list.Count > 0 && include_list.IndexOf (assembly) == -1)
 						continue;
 					string info_file = Path.Combine (mpath, assembly + ".xml");
-					string dll_file = Path.Combine (bpath, assembly + ".dll");
+					//string dll_file = Path.Combine (bpath, assembly + ".dll");
+					string dll_file = Path.Combine (bpath, assembly + ".xml");
 					State state = new State (reference, profile, assembly, info_file, dll_file);
 					work_items.Add (state);
 				}
@@ -224,7 +226,8 @@ namespace Mono.WebCompareDB {
 		
 			CompareContext cc = new CompareContext (
 				() => new MasterAssembly (info_file),
-				() => new CecilAssembly (dll_file));
+				() => new MasterAssembly (dll_file));
+				//() => new CecilAssembly (dll_file));
 
 			cc.ProgressChanged += delegate (object sender, CompareProgressChangedEventArgs a){
 				//Console.Error.WriteLine (a.Message);
