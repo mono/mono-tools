@@ -66,7 +66,7 @@ namespace Mono.WebCompareDB {
 			Console.WriteLine ();
 		}
 
-		static string [] default_compares = new string [] { "3.5 2.0", "SL2 2.1", "2.0 2.0", "1.1 1.0" };
+		static string [] default_compares = new string [] { "4.5 4.5", "4.0 4.0" };
 
 		static int Main (string [] args)
 		{
