@@ -1,7 +1,7 @@
 base = ../../gui-compare
 
 LIB_SOURCES =  \
-	$(base)/AssemblyResolver.cs	\
+	AssemblyResolver.cs	\
 	$(base)/CompareContext.cs	\
 	$(base)/Comparison.cs		\
 	$(base)/CecilMetadata.cs	\
