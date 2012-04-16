@@ -205,7 +205,13 @@ namespace GuiCompare {
 				string name = n.Attributes ["name"].Value;
 				if (CheckIfAdd (name, n)) {
 					string key = GetNodeKey (name, n);
-					keys.Add (key, name);
+					if (keys.Contains (key)) {
+						if ((string) keys[key] != name)
+							throw new NotImplementedException ("Attribute with same name but diffent value");
+					} else {
+						keys.Add (key, name);
+					}
+					
 					LoadExtraData (key, n);
 				}
 			}

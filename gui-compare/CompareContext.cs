@@ -480,7 +480,8 @@ namespace GuiCompare {
 						}
 
 						// Compare indexer parameters
-						CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
+						if (m1.Count == m2.Count)
+							CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
 					}
 
 					if (reference_list[m] is CompField) {
