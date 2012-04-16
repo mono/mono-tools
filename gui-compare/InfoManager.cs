@@ -698,7 +698,7 @@ namespace GuiCompare
 			string MONO_GAC_PREFIX = Environment.GetEnvironmentVariable ("MONO_GAC_PREFIX");
 			string[] gac_prefixes = null;
 
-			if (MONO_GAC_PREFIX != null)
+			if (!string.IsNullOrEmpty (MONO_GAC_PREFIX))
 				gac_prefixes = MONO_GAC_PREFIX.Split (':');
 
 			MenuItem item = new MenuItem (caption);
