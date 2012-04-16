@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CB1CD99D-21A1-4C8B-BC71-C5B384EB50E7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>guicompare</RootNamespace>
+    <AssemblyName>gui-compare</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\d.gif">
+      <LogicalName>d.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\e.gif">
+      <LogicalName>e.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\en.gif">
+      <LogicalName>en.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\f.gif">
+      <LogicalName>f.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\i.gif">
+      <LogicalName>i.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\m.gif">
+      <LogicalName>m.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\mn.png">
+      <LogicalName>mn.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\n.gif">
+      <LogicalName>n.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\p.gif">
+      <LogicalName>p.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\r.gif">
+      <LogicalName>r.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\s.gif">
+      <LogicalName>s.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\sc.gif">
+      <LogicalName>sc.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\se.gif">
+      <LogicalName>se.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\sm.gif">
+      <LogicalName>sm.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\st.gif">
+      <LogicalName>st.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\sx.gif">
+      <LogicalName>sx.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\tb.gif">
+      <LogicalName>tb.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\tm.gif">
+      <LogicalName>tm.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\tp.gif">
+      <LogicalName>tp.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\w.gif">
+      <LogicalName>w.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\y.gif">
+      <LogicalName>y.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cm\c.gif">
+      <LogicalName>c.gif</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="gtk-gui\MainWindow.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\guicompare.ProviderSelector.cs" />
+    <Compile Include="gtk-gui\GuiCompare.CustomCompare.cs" />
+    <Compile Include="CecilMetadata.cs" />
+    <Compile Include="CompareContext.cs" />
+    <Compile Include="Comparison.cs" />
+    <Compile Include="CustomCompare.cs" />
+    <Compile Include="InfoManager.cs" />
+    <Compile Include="Masterinfo.cs" />
+    <Compile Include="MasterMetadata.cs" />
+    <Compile Include="Metadata.cs" />
+    <Compile Include="ProviderSelector.cs" />
+    <Compile Include="Config.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="cm\" />
+  </ItemGroup>
+</Project>

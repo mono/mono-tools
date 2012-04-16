@@ -5,17 +5,27 @@ namespace GuiCompare
 	public partial class CustomCompare
 	{
 		private global::Gtk.HBox hbox1;
+		
 		private global::Gtk.Frame frame1;
+		
 		private global::Gtk.Alignment GtkAlignment2;
+		
 		private global::guicompare.ProviderSelector reference;
+		
 		private global::Gtk.Label GtkLabel4;
+		
 		private global::Gtk.Frame frame2;
+		
 		private global::Gtk.Alignment GtkAlignment3;
+		
 		private global::guicompare.ProviderSelector target;
+		
 		private global::Gtk.Label GtkLabel9;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
-
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
