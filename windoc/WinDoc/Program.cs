@@ -36,6 +36,7 @@ namespace WinDoc
 			SettingsHandler.Settings.preferred_font_size = 200;
 			HelpSource.use_css = true;
 
+			Application.ApplicationExit += (s, e) => BookmarkManager.SaveBookmarks ();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault (false);
 			Application.Run(new MainWindow ());

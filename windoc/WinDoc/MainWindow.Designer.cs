@@ -30,6 +30,7 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
+			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Loading");
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.backButton = new System.Windows.Forms.ToolStripButton();
 			this.forwardButton = new System.Windows.Forms.ToolStripButton();
@@ -47,14 +48,16 @@
 			this.tabContainer = new System.Windows.Forms.TabControl();
 			this.treeTab = new System.Windows.Forms.TabPage();
 			this.docTree = new System.Windows.Forms.TreeView();
-			this.indexTab = new System.Windows.Forms.TabPage();
-			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-			this.indexResultList = new System.Windows.Forms.ListView();
-			this.multipleMatchList = new System.Windows.Forms.ListView();
-			this.searchTab = new System.Windows.Forms.TabPage();
-			this.listView3 = new System.Windows.Forms.ListView();
-			this.docBrowser = new System.Windows.Forms.WebBrowser();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+			this.indexTab = new System.Windows.Forms.TabPage();
+			this.indexSplitContainer = new System.Windows.Forms.SplitContainer();
+			this.indexListResults = new System.Windows.Forms.TreeView();
+			this.imageList2 = new System.Windows.Forms.ImageList(this.components);
+			this.searchTab = new System.Windows.Forms.TabPage();
+			this.searchListResults = new System.Windows.Forms.TreeView();
+			this.docBrowser = new System.Windows.Forms.WebBrowser();
+			this.multipleMatchList = new System.Windows.Forms.TreeView();
+			this.indexSearchBox = new WinDoc.SearchTextBox();
 			this.toolStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -64,10 +67,10 @@
 			this.tabContainer.SuspendLayout();
 			this.treeTab.SuspendLayout();
 			this.indexTab.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-			this.splitContainer2.Panel1.SuspendLayout();
-			this.splitContainer2.Panel2.SuspendLayout();
-			this.splitContainer2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.indexSplitContainer)).BeginInit();
+			this.indexSplitContainer.Panel1.SuspendLayout();
+			this.indexSplitContainer.Panel2.SuspendLayout();
+			this.indexSplitContainer.SuspendLayout();
 			this.searchTab.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -85,7 +88,9 @@
             this.toolStripLabel1});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(827, 27);
+			this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 1, 1, 2);
+			this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.toolStrip1.Size = new System.Drawing.Size(1339, 30);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -96,7 +101,7 @@
 			this.backButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.backButton.Name = "backButton";
 			this.backButton.Size = new System.Drawing.Size(23, 24);
-			this.backButton.Text = "toolStripButton1";
+			this.backButton.ToolTipText = "Back";
 			// 
 			// forwardButton
 			// 
@@ -105,7 +110,7 @@
 			this.forwardButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.forwardButton.Name = "forwardButton";
 			this.forwardButton.Size = new System.Drawing.Size(23, 24);
-			this.forwardButton.Text = "toolStripButton2";
+			this.forwardButton.ToolTipText = "Forward";
 			// 
 			// toolStripSeparator1
 			// 
@@ -126,7 +131,7 @@
 			this.bkAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.bkAdd.Name = "bkAdd";
 			this.bkAdd.Size = new System.Drawing.Size(23, 24);
-			this.bkAdd.Text = "toolStripButton3";
+			this.bkAdd.ToolTipText = "Add bookmark";
 			this.bkAdd.Click += new System.EventHandler(this.bkAdd_Click);
 			// 
 			// bkRemove
@@ -136,19 +141,19 @@
 			this.bkRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.bkRemove.Name = "bkRemove";
 			this.bkRemove.Size = new System.Drawing.Size(23, 24);
-			this.bkRemove.Text = "toolStripButton4";
+			this.bkRemove.ToolTipText = "Remove bookmark";
 			this.bkRemove.Click += new System.EventHandler(this.bkRemove_Click);
 			// 
 			// searchBox
 			// 
 			this.searchBox.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.searchBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
-			this.searchBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
-			this.searchBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.searchBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+			this.searchBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.searchBox.Margin = new System.Windows.Forms.Padding(5, 2, 10, 2);
 			this.searchBox.Name = "searchBox";
 			this.searchBox.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-			this.searchBox.Size = new System.Drawing.Size(100, 23);
+			this.searchBox.Size = new System.Drawing.Size(170, 23);
 			// 
 			// bkModify
 			// 
@@ -157,7 +162,7 @@
 			this.bkModify.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.bkModify.Name = "bkModify";
 			this.bkModify.Size = new System.Drawing.Size(23, 24);
-			this.bkModify.Text = "toolStripButton5";
+			this.bkModify.ToolTipText = "Edit bookmark";
 			// 
 			// toolStripLabel1
 			// 
@@ -167,16 +172,15 @@
 			this.toolStripLabel1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
 			this.toolStripLabel1.Name = "toolStripLabel1";
 			this.toolStripLabel1.Size = new System.Drawing.Size(16, 23);
-			this.toolStripLabel1.Text = "toolStripLabel1";
 			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.indexesProgressBar,
             this.indexesLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 450);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 555);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(827, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(1339, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -199,7 +203,8 @@
 			// splitContainer1
 			// 
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 27);
+			this.splitContainer1.Location = new System.Drawing.Point(0, 30);
+			this.splitContainer1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
@@ -209,8 +214,8 @@
 			// splitContainer1.Panel2
 			// 
 			this.splitContainer1.Panel2.Controls.Add(this.docBrowser);
-			this.splitContainer1.Size = new System.Drawing.Size(827, 423);
-			this.splitContainer1.SplitterDistance = 200;
+			this.splitContainer1.Size = new System.Drawing.Size(1339, 525);
+			this.splitContainer1.SplitterDistance = 323;
 			this.splitContainer1.TabIndex = 2;
 			// 
 			// tabContainer
@@ -224,7 +229,7 @@
 			this.tabContainer.Location = new System.Drawing.Point(3, 3);
 			this.tabContainer.Name = "tabContainer";
 			this.tabContainer.SelectedIndex = 0;
-			this.tabContainer.Size = new System.Drawing.Size(194, 417);
+			this.tabContainer.Size = new System.Drawing.Size(317, 518);
 			this.tabContainer.TabIndex = 0;
 			// 
 			// treeTab
@@ -233,7 +238,7 @@
 			this.treeTab.Location = new System.Drawing.Point(4, 22);
 			this.treeTab.Name = "treeTab";
 			this.treeTab.Padding = new System.Windows.Forms.Padding(3);
-			this.treeTab.Size = new System.Drawing.Size(186, 391);
+			this.treeTab.Size = new System.Drawing.Size(309, 492);
 			this.treeTab.TabIndex = 0;
 			this.treeTab.Text = "Tree";
 			this.treeTab.UseVisualStyleBackColor = true;
@@ -243,97 +248,15 @@
 			this.docTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.docTree.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+			this.docTree.HideSelection = false;
 			this.docTree.ImageIndex = 0;
 			this.docTree.ImageList = this.imageList1;
 			this.docTree.Location = new System.Drawing.Point(0, 0);
 			this.docTree.Name = "docTree";
 			this.docTree.SelectedImageIndex = 0;
-			this.docTree.Size = new System.Drawing.Size(186, 391);
+			this.docTree.Size = new System.Drawing.Size(309, 493);
 			this.docTree.TabIndex = 0;
-			// 
-			// indexTab
-			// 
-			this.indexTab.Controls.Add(this.splitContainer2);
-			this.indexTab.Location = new System.Drawing.Point(4, 22);
-			this.indexTab.Name = "indexTab";
-			this.indexTab.Padding = new System.Windows.Forms.Padding(3);
-			this.indexTab.Size = new System.Drawing.Size(186, 391);
-			this.indexTab.TabIndex = 1;
-			this.indexTab.Text = "Index";
-			this.indexTab.UseVisualStyleBackColor = true;
-			// 
-			// splitContainer2
-			// 
-			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer2.Location = new System.Drawing.Point(3, 3);
-			this.splitContainer2.Name = "splitContainer2";
-			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitContainer2.Panel1
-			// 
-			this.splitContainer2.Panel1.Controls.Add(this.indexResultList);
-			// 
-			// splitContainer2.Panel2
-			// 
-			this.splitContainer2.Panel2.Controls.Add(this.multipleMatchList);
-			this.splitContainer2.Size = new System.Drawing.Size(180, 385);
-			this.splitContainer2.SplitterDistance = 240;
-			this.splitContainer2.TabIndex = 0;
-			// 
-			// indexResultList
-			// 
-			this.indexResultList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.indexResultList.Location = new System.Drawing.Point(3, 3);
-			this.indexResultList.Name = "indexResultList";
-			this.indexResultList.Size = new System.Drawing.Size(174, 234);
-			this.indexResultList.TabIndex = 0;
-			this.indexResultList.UseCompatibleStateImageBehavior = false;
-			// 
-			// multipleMatchList
-			// 
-			this.multipleMatchList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.multipleMatchList.Location = new System.Drawing.Point(3, 3);
-			this.multipleMatchList.Name = "multipleMatchList";
-			this.multipleMatchList.Size = new System.Drawing.Size(174, 135);
-			this.multipleMatchList.TabIndex = 0;
-			this.multipleMatchList.UseCompatibleStateImageBehavior = false;
-			// 
-			// searchTab
-			// 
-			this.searchTab.Controls.Add(this.listView3);
-			this.searchTab.Location = new System.Drawing.Point(4, 22);
-			this.searchTab.Name = "searchTab";
-			this.searchTab.Size = new System.Drawing.Size(261, 391);
-			this.searchTab.TabIndex = 2;
-			this.searchTab.Text = "Search";
-			this.searchTab.UseVisualStyleBackColor = true;
-			// 
-			// listView3
-			// 
-			this.listView3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.listView3.Location = new System.Drawing.Point(3, 3);
-			this.listView3.Name = "listView3";
-			this.listView3.Size = new System.Drawing.Size(255, 385);
-			this.listView3.TabIndex = 0;
-			this.listView3.UseCompatibleStateImageBehavior = false;
-			// 
-			// docBrowser
-			// 
-			this.docBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.docBrowser.IsWebBrowserContextMenuEnabled = false;
-			this.docBrowser.Location = new System.Drawing.Point(3, 3);
-			this.docBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-			this.docBrowser.Name = "docBrowser";
-			this.docBrowser.Size = new System.Drawing.Size(617, 417);
-			this.docBrowser.TabIndex = 0;
 			// 
 			// imageList1
 			// 
@@ -353,12 +276,148 @@
 			this.imageList1.Images.SetKeyName(11, "property.png");
 			this.imageList1.Images.SetKeyName(12, "structure.png");
 			// 
+			// indexTab
+			// 
+			this.indexTab.Controls.Add(this.indexSearchBox);
+			this.indexTab.Controls.Add(this.indexSplitContainer);
+			this.indexTab.Location = new System.Drawing.Point(4, 22);
+			this.indexTab.Name = "indexTab";
+			this.indexTab.Padding = new System.Windows.Forms.Padding(3);
+			this.indexTab.Size = new System.Drawing.Size(309, 492);
+			this.indexTab.TabIndex = 1;
+			this.indexTab.Text = "Index";
+			this.indexTab.UseVisualStyleBackColor = true;
+			// 
+			// indexSplitContainer
+			// 
+			this.indexSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.indexSplitContainer.Location = new System.Drawing.Point(3, 30);
+			this.indexSplitContainer.Name = "indexSplitContainer";
+			this.indexSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// indexSplitContainer.Panel1
+			// 
+			this.indexSplitContainer.Panel1.Controls.Add(this.indexListResults);
+			// 
+			// indexSplitContainer.Panel2
+			// 
+			this.indexSplitContainer.Panel2.Controls.Add(this.multipleMatchList);
+			this.indexSplitContainer.Panel2Collapsed = true;
+			this.indexSplitContainer.Size = new System.Drawing.Size(303, 449);
+			this.indexSplitContainer.SplitterDistance = 214;
+			this.indexSplitContainer.TabIndex = 0;
+			// 
+			// indexListResults
+			// 
+			this.indexListResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.indexListResults.FullRowSelect = true;
+			this.indexListResults.HideSelection = false;
+			this.indexListResults.ImageIndex = 0;
+			this.indexListResults.ImageList = this.imageList2;
+			this.indexListResults.Location = new System.Drawing.Point(0, 0);
+			this.indexListResults.Name = "indexListResults";
+			treeNode1.Name = "Loading";
+			treeNode1.Text = "Loading";
+			this.indexListResults.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+			this.indexListResults.SelectedImageIndex = 0;
+			this.indexListResults.ShowLines = false;
+			this.indexListResults.ShowPlusMinus = false;
+			this.indexListResults.ShowRootLines = false;
+			this.indexListResults.Size = new System.Drawing.Size(303, 449);
+			this.indexListResults.TabIndex = 0;
+			// 
+			// imageList2
+			// 
+			this.imageList2.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList2.ImageStream")));
+			this.imageList2.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageList2.Images.SetKeyName(0, "Frame0.png");
+			this.imageList2.Images.SetKeyName(1, "Frame1.png");
+			this.imageList2.Images.SetKeyName(2, "Frame2.png");
+			this.imageList2.Images.SetKeyName(3, "Frame3.png");
+			this.imageList2.Images.SetKeyName(4, "Frame4.png");
+			this.imageList2.Images.SetKeyName(5, "Frame5.png");
+			this.imageList2.Images.SetKeyName(6, "Frame6.png");
+			this.imageList2.Images.SetKeyName(7, "Frame7.png");
+			this.imageList2.Images.SetKeyName(8, "Frame8.png");
+			this.imageList2.Images.SetKeyName(9, "Frame9.png");
+			this.imageList2.Images.SetKeyName(10, "Frame10.png");
+			this.imageList2.Images.SetKeyName(11, "Frame11.png");
+			// 
+			// searchTab
+			// 
+			this.searchTab.Controls.Add(this.searchListResults);
+			this.searchTab.Location = new System.Drawing.Point(4, 22);
+			this.searchTab.Name = "searchTab";
+			this.searchTab.Size = new System.Drawing.Size(309, 492);
+			this.searchTab.TabIndex = 2;
+			this.searchTab.Text = "Search";
+			this.searchTab.UseVisualStyleBackColor = true;
+			// 
+			// searchListResults
+			// 
+			this.searchListResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.searchListResults.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+			this.searchListResults.FullRowSelect = true;
+			this.searchListResults.HideSelection = false;
+			this.searchListResults.ItemHeight = 18;
+			this.searchListResults.Location = new System.Drawing.Point(3, 3);
+			this.searchListResults.Name = "searchListResults";
+			this.searchListResults.ShowLines = false;
+			this.searchListResults.ShowPlusMinus = false;
+			this.searchListResults.ShowRootLines = false;
+			this.searchListResults.Size = new System.Drawing.Size(306, 486);
+			this.searchListResults.TabIndex = 0;
+			// 
+			// docBrowser
+			// 
+			this.docBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.docBrowser.IsWebBrowserContextMenuEnabled = false;
+			this.docBrowser.Location = new System.Drawing.Point(3, 3);
+			this.docBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+			this.docBrowser.Name = "docBrowser";
+			this.docBrowser.Size = new System.Drawing.Size(1006, 518);
+			this.docBrowser.TabIndex = 0;
+			// 
+			// multipleMatchList
+			// 
+			this.multipleMatchList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.multipleMatchList.FullRowSelect = true;
+			this.multipleMatchList.HideSelection = false;
+			this.multipleMatchList.Location = new System.Drawing.Point(3, 2);
+			this.multipleMatchList.Name = "multipleMatchList";
+			this.multipleMatchList.ShowLines = false;
+			this.multipleMatchList.ShowPlusMinus = false;
+			this.multipleMatchList.ShowRootLines = false;
+			this.multipleMatchList.Size = new System.Drawing.Size(300, 229);
+			this.multipleMatchList.TabIndex = 0;
+			// 
+			// indexSearchBox
+			// 
+			this.indexSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.indexSearchBox.Enabled = false;
+			this.indexSearchBox.Location = new System.Drawing.Point(6, 6);
+			this.indexSearchBox.Name = "indexSearchBox";
+			this.indexSearchBox.Size = new System.Drawing.Size(297, 22);
+			this.indexSearchBox.TabIndex = 1;
+			// 
 			// MainWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
-			this.ClientSize = new System.Drawing.Size(827, 472);
+			this.ClientSize = new System.Drawing.Size(1339, 577);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.toolStrip1);
@@ -377,10 +436,10 @@
 			this.tabContainer.ResumeLayout(false);
 			this.treeTab.ResumeLayout(false);
 			this.indexTab.ResumeLayout(false);
-			this.splitContainer2.Panel1.ResumeLayout(false);
-			this.splitContainer2.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-			this.splitContainer2.ResumeLayout(false);
+			this.indexSplitContainer.Panel1.ResumeLayout(false);
+			this.indexSplitContainer.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.indexSplitContainer)).EndInit();
+			this.indexSplitContainer.ResumeLayout(false);
 			this.searchTab.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -407,13 +466,15 @@
 		private System.Windows.Forms.ToolStripButton bkModify;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 		private System.Windows.Forms.TreeView docTree;
-		private System.Windows.Forms.SplitContainer splitContainer2;
-		private System.Windows.Forms.ListView indexResultList;
-		private System.Windows.Forms.ListView multipleMatchList;
-		private System.Windows.Forms.ListView listView3;
+		private System.Windows.Forms.SplitContainer indexSplitContainer;
 		private System.Windows.Forms.ToolStripProgressBar indexesProgressBar;
 		private System.Windows.Forms.ToolStripStatusLabel indexesLabel;
 		private System.Windows.Forms.ImageList imageList1;
+		private SearchTextBox indexSearchBox;
+		private System.Windows.Forms.TreeView indexListResults;
+		private System.Windows.Forms.ImageList imageList2;
+		private System.Windows.Forms.TreeView searchListResults;
+		private System.Windows.Forms.TreeView multipleMatchList;
 
 	}
 }

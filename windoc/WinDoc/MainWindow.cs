@@ -19,7 +19,7 @@ namespace WinDoc
 
 		History history;
 		SearchableIndex searchIndex;
-		IndexSearcher mdocSearch;
+		IndexSearcher indexSearch;
 
 		Node match;
 		string currentUrl;
@@ -28,9 +28,16 @@ namespace WinDoc
 		object placeholderTreeNode = new Object ();
 		bool loadedFromString;
 
+		bool indexPageLoaded;
+		AnimatedTreeNode indexLoadingNode;
+		SearchTextBox searchInput;
+		ResultDataSet dataSource = new ResultDataSet ();
+		Dictionary<Node, TreeNode> nodeToTreeNodeMap = new Dictionary<Node,TreeNode> ();
+
 		public MainWindow ()
 		{
 			InitializeComponent();
+			SetStyle (ControlStyles.OptimizedDoubleBuffer, true);
 		}
 
 		void MainWindow_Load(object sender, EventArgs e)
@@ -63,7 +70,44 @@ namespace WinDoc
 		void SetupSearch ()
 		{
 			searchIndex = Program.Root.GetSearchIndex ();
-			mdocSearch = new IndexSearcher (Program.IndexUpdateManager.IsFresh ? Program.Root.GetIndex () : null);
+			indexSearch = new IndexSearcher (Program.IndexUpdateManager.IsFresh ? Program.Root.GetIndex () : null);
+
+			searchInput = new SearchTextBox (searchBox.TextBox);
+			searchInput.SearchTextChanged += SearchCallback;
+			indexSearchBox.SearchTextChanged += IndexSearchCallback;
+			indexLoadingNode = new AnimatedTreeNode (indexListResults.Nodes [0]);
+			indexLoadingNode.StartAnimation ();
+			tabContainer.Selected += (s, e) => {
+				if (tabContainer.SelectedIndex == 1 && !indexPageLoaded) {
+					FillUpIndex ();
+					indexPageLoaded = true;
+				}
+				if (match != null && ShowNodeInTree (match)) {
+					docTree.SelectedNode = nodeToTreeNodeMap[match];
+					match = null;
+				}
+			};
+			indexListResults.AfterSelect += (s, e) => {
+				var entry = e.Node.Tag as IndexEntry;
+				if (entry.Count == 1) {
+					LoadUrl (entry[0].Url);
+				} else {
+					LoadMultipleMatchData (entry);
+					indexSplitContainer.Panel2Collapsed = false;
+					e.Node.EnsureVisible ();
+				}
+			};
+			multipleMatchList.AfterSelect += (s, e) => {
+				var topic = e.Node.Tag as Topic;
+				LoadUrl (topic.Url);
+				multipleMatchList.SelectedNode = e.Node;
+			};
+			searchListResults.DrawNode += CustomDrawing.DrawSearchResultNodeText;
+			searchListResults.BeforeSelect += (s, e) => e.Cancel = e.Node.Tag == null;
+			searchListResults.AfterSelect += (s, e) => {
+				var entry = e.Node.Tag as ResultDataEntry;
+				LoadUrl (entry.ResultSet.GetUrl (entry.Index));
+			};
 		}
 
 		void SetupDocTree ()
@@ -78,26 +122,27 @@ namespace WinDoc
 			// Our hack to allow lazy loading is to setup a dummy node as a child of a node we just added
 			// if it supposed to have children. Then when we are about to expand, we remove that node and
 			// correctly populate the subtree
-			docTree.BeforeExpand += (s, e) => {
-				var tn = e.Node;
-				if (tn.Nodes.Count != 1 || tn.Nodes[0].Tag != placeholderTreeNode)
-					return;
-				var mn = e.Node.Tag as Node;
-				if (mn == null)
-					return;
-				docTree.BeginUpdate ();
-				tn.Nodes.Clear ();
-				foreach (Node child in mn.Nodes)
-					AppendDocTreeNode (child, tn, GetParentImageKeyFromNode (mn));
-				docTree.EndUpdate ();
-			};
+			docTree.BeforeExpand += (s, e) => InflateTreeNode (e.Node);
 			docTree.AfterSelect += (s, e) => {
 				var treeNode = e.Node;
 				var n = treeNode.Tag as Node;
 				LoadUrl (n.PublicUrl, true, n.tree.HelpSource);
 			};
-			docTree.DrawNode += DrawNodeText;
-			docTree.DrawMode = TreeViewDrawMode.OwnerDrawText;
+			docTree.DrawNode += CustomDrawing.DrawDocTreeNodeText;
+		}
+
+		void InflateTreeNode (TreeNode tn)
+		{
+			if (tn.Nodes.Count != 1 || tn.Nodes[0].Tag != placeholderTreeNode)
+				return;
+			var mn = tn.Tag as Node;
+			if (mn == null)
+				return;
+			docTree.BeginUpdate ();
+			tn.Nodes.Clear ();
+			foreach (Node child in mn.Nodes)
+				AppendDocTreeNode (child, tn, UIUtils.GetParentImageKeyFromNode (mn));
+			docTree.EndUpdate ();
 		}
 
 		void SetupBookmarks ()
@@ -139,7 +184,6 @@ namespace WinDoc
 				UrlLauncher.Launch (url);
 				return;
 			}
-			Console.WriteLine ("Loading {0}", url);
 			var ts = Interlocked.Increment (ref loadUrlTimestamp);
 			Task.Factory.StartNew (() => {
 				Node node;
@@ -158,7 +202,12 @@ namespace WinDoc
 						LoadHtml (res);
 						this.match = node;
 						if (syncTreeView) {
-							tabContainer.SelectedIndex = 0;
+							if (tabContainer.SelectedIndex == 0) {
+								if (ShowNodeInTree (match))
+									docTree.SelectedNode = nodeToTreeNodeMap[match];
+							} else {
+								tabContainer.SelectedIndex = 0;
+							}
 						}
 						// Bookmark spinner management
 						var bookmarkIndex = Program.BookmarkManager.FindIndexOfBookmarkFromUrl (url);
@@ -175,51 +224,32 @@ namespace WinDoc
 			docBrowser.DocumentText = html;
 		}
 
+		bool ShowNodeInTree (Node node)
+		{
+			TreeNode treeNode;
+
+			if (!nodeToTreeNodeMap.TryGetValue (node, out treeNode)) {
+				ShowNodeInTree (node.Parent);
+				if (!nodeToTreeNodeMap.TryGetValue (node.Parent, out treeNode))
+					return false;
+				InflateTreeNode (treeNode);
+				if (!nodeToTreeNodeMap.TryGetValue (node, out treeNode))
+					return false;
+			}
+
+			treeNode.EnsureVisible ();
+			return true;
+		}
+
 		void AppendDocTreeNode (Node node, TreeNode treeNode, string imageKey = null)
 		{
 			var root = new TreeNode (node.Caption, 20, 20);
 			root.Tag = node;
-			root.ImageKey = root.SelectedImageKey = imageKey ?? GetImageKeyFromNode (node);
+			root.ImageKey = root.SelectedImageKey = imageKey ?? UIUtils.GetImageKeyFromNode (node);
 			if (!node.IsLeaf)
 				root.Nodes.Add (new TreeNode () { Tag = placeholderTreeNode });
 			treeNode.Nodes.Add (root);
-		}
-
-		string GetImageKeyFromNode (Node node)
-		{
-			if (node.Caption.EndsWith (" Class"))
-				return "class.png";
-			if (node.Caption.EndsWith (" Interface"))
-				return "interface.png";
-			if (node.Caption.EndsWith (" Structure"))
-				return "structure.png";
-			if (node.Caption.EndsWith (" Enumeration"))
-				return "enumeration.png";
-			if (node.Caption.EndsWith (" Delegate"))
-				return "delegate.png";
-			var url = node.PublicUrl;
-			if (!string.IsNullOrEmpty (url) && url.StartsWith ("N:"))
-				return "namespace.png";
-			return null;
-		}
-
-		string GetParentImageKeyFromNode (Node node)
-		{
-			switch (node.Caption) {
-				case "Methods":
-				case "Constructors":
-					return "method.png";
-				case "Properties":
-					return "property.png";
-				case "Events":
-					return "event.png";
-				case "Members":
-					return "members.png";
-				case "Fields":
-					return "field.png";
-			}
-
-			return null;
+			nodeToTreeNodeMap[node] = root;
 		}
 
 		void IndexUpdaterCallback (object sender, EventArgs e)
@@ -231,63 +261,36 @@ namespace WinDoc
 					indexesLabel.Visible = false;
 					indexesProgressBar.Visible = false;
 					searchIndex = Program.Root.GetSearchIndex ();
-					searchBox.Enabled = false;
-					mdocSearch.Index = Program.Root.GetIndex ();
+					searchBox.Enabled = true;
+					indexSearch.Index = Program.Root.GetIndex ();
+					if (tabContainer.SelectedIndex == 1)
+						FillUpIndex ();
+					else
+						indexPageLoaded = false;
 				}));
 			} else {
 				Invoke (new Action (delegate {
 					indexesLabel.Visible = true;
 					indexesProgressBar.Visible = true;
 					searchBox.Enabled = false;
+					indexSearchBox.Enabled = false;
 				}));
 			}
 		}
 
-		// This method is here because by default TreeView try to display icon in every case
-		// i.e. even when we have no icon to show it's going to put a blank space. So here we 
-		// detect when that happen and "shift" the text back in the right position 16px to the left
-		void DrawNodeText (object sender, DrawTreeNodeEventArgs e)
+		void FillUpIndex ()
 		{
-			if (!string.IsNullOrEmpty (e.Node.ImageKey)) {
-				e.DrawDefault = true;
+			if (indexSearch.Index == null || indexSearch.Index.Rows == 0)
 				return;
-			}
-			// Retrieve the node font. If the node font has not been set,
-            // use the TreeView font.
-            Font nodeFont = e.Node.NodeFont;
-            if (nodeFont == null)
-				nodeFont = ((TreeView)sender).Font;
 
-            // Draw the node text.
-			var clip = new Rectangle (e.Bounds.X - 16, e.Bounds.Y, e.Bounds.Width + 16, e.Bounds.Height);
-			e.Graphics.SetClip (clip);
-			if ((e.State & TreeNodeStates.Selected) != 0) {
-				e.Graphics.Clear (SystemColors.Highlight);
-				using (var pen = new Pen (Color.Black)) {
-					pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
-					e.Graphics.DrawRectangle (pen, new Rectangle (clip.Location, new Size (clip.Width - 1, clip.Height - 1)));
-				}
-				e.Graphics.DrawString (e.Node.Text, nodeFont, SystemBrushes.HighlightText, clip);
-			} else {
-				e.Graphics.Clear (Color.White);
-				e.Graphics.DrawString (e.Node.Text, nodeFont, Brushes.Black, clip);
-			}
-		}
-
-		class LinkPageVisit : PageVisit {
-			MainWindow document;
-			string url;
-		
-			public LinkPageVisit (MainWindow document, string url)
-			{
-				this.document = document;
-				this.url = url;
-			}
-		
-			public override void Go ()
-			{
-				document.LoadUrl (url, true, null, false);
-			}
+			Task.Factory.StartNew (() => Enumerable.Range (0, indexSearch.Index.Rows).Select (i => new TreeNode (indexSearch.Index.GetValue (i)) { Tag = indexSearch.GetIndexEntry (i) }).ToArray ())
+				.ContinueWith (t => {
+					indexLoadingNode.StopAnimation ();
+					indexListResults.Nodes.Clear ();
+					indexListResults.ImageList = null;
+					indexListResults.Nodes.AddRange (t.Result);
+					indexSearchBox.Enabled = true;
+				}, TaskScheduler.FromCurrentSynchronizationContext ());
 		}
 
 		void bkAdd_Click(object sender, EventArgs e)
@@ -302,6 +305,100 @@ namespace WinDoc
 			var bks = manager.GetAllBookmarks ();
 			if (idx > -1 && idx < bks.Count)
 				manager.DeleteBookmark (bks[idx]);
+		}
+
+		void SearchCallback (object sender, EventArgs e)
+		{
+			var input = sender as SearchTextBox;
+			if (searchIndex == null) {
+				searchIndex = Program.Root.GetSearchIndex ();
+				if (searchIndex == null)
+					return;
+			}
+			var text = input.Text;
+			if (string.IsNullOrEmpty (text))
+				return;
+			tabContainer.SelectedIndex = 2;
+			searchListResults.Tag = text; // Last searched term
+			Result results = searchIndex.FastSearch (text, 5);
+			dataSource.ClearResultSet ();
+			dataSource.AddResultSet (results);
+			Task.Factory.StartNew (() => searchIndex.Search (text, 20)).ContinueWith (t => Invoke (new Action (() => {
+				var rs = t.Result;
+				if (rs == null || rs.Count == 0 || text != ((string)searchListResults.Tag))
+					return;
+				dataSource.AddResultSet (rs);
+				ReloadSearchData ();
+			})), TaskScheduler.FromCurrentSynchronizationContext ());
+			ReloadSearchData ();
+			if (results.Count > 0) {
+				var firstNode = searchListResults.Nodes[1];
+				Console.Write ("Selecting {0} after search", firstNode.Text);
+				searchListResults.SelectedNode = firstNode;
+				firstNode.EnsureVisible ();
+			}
+		}
+
+		void ReloadSearchData ()
+		{
+			searchListResults.Nodes.Clear ();
+			var nodes = Enumerable.Range (0, dataSource.Count)
+				.Select (i => dataSource[i])
+				.Select (e => dataSource.IsSection (e) ? new TreeNode (e.SectionName) : new TreeNode (e.ResultSet.GetTitle (e.Index)) { Tag = e })
+				.ToArray ();
+			searchListResults.Nodes.AddRange (nodes);
+		}
+
+		void LoadMultipleMatchData (IndexEntry entry)
+		{
+			multipleMatchList.Nodes.Clear ();
+			for (int i = 0; i < entry.Count; i++)
+				multipleMatchList.Nodes.Add (new TreeNode (RenderTopicMatch (entry[i])) { Tag = entry[i] });
+		}
+
+		// Names from the ECMA provider are somewhat
+		// ambigious (you have like a million ToString
+		// methods), so lets give the user the full name
+		string RenderTopicMatch (Topic t)
+		{
+			// Filter out non-ecma
+			if (t.Url [1] != ':')
+				return t.Caption;
+
+			switch (t.Url [0]) {
+			case 'C': return t.Url.Substring (2) + " constructor";
+			case 'M': return t.Url.Substring (2) + " method";
+			case 'P': return t.Url.Substring (2) + " property";
+			case 'F': return t.Url.Substring (2) + " field";
+			case 'E': return t.Url.Substring (2) + " event";
+			}
+			return t.Caption;
+		}
+
+		void IndexSearchCallback (object sender, EventArgs e)
+		{
+			var input = sender as SearchTextBox;
+			if (string.IsNullOrEmpty (input.Text))
+				return;
+			var index = indexSearch.FindClosest (input.Text);
+			indexListResults.Nodes[index].EnsureVisible ();
+			indexListResults.SelectedNode = indexListResults.Nodes[index];
+		}
+		
+		class LinkPageVisit : PageVisit {
+			MainWindow document;
+			string url;
+		
+			public LinkPageVisit (MainWindow document, string url)
+			{
+				this.document = document;
+				this.url = url;
+			}
+			
+			public override void Go ()
+			{
+				document.LoadUrl (url, true, null, false);
+			}
 		}
 	}
 }
