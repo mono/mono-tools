@@ -204,7 +204,7 @@ namespace WinDoc
 						LoadHtml (res);
 						this.match = node;
 						if (syncTreeView) {
-							if (tabContainer.SelectedIndex == 0) {
+							if (tabContainer.SelectedIndex == 0 && match != null) {
 								if (ShowNodeInTree (match))
 									docTree.SelectedNode = nodeToTreeNodeMap[match];
 							} else {
