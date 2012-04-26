@@ -21,15 +21,15 @@ namespace WinDoc
 			// Load documentation
 			Root = RootTree.LoadTree (null);
 			
-			var macDocPath = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc");
-			if (!Directory.Exists (macDocPath))
-				Directory.CreateDirectory (macDocPath);
+			var winDocPath = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc");
+			if (!Directory.Exists (winDocPath))
+				Directory.CreateDirectory (winDocPath);
 			IndexUpdateManager = new IndexUpdateManager (Root.HelpSources
 															.Cast<HelpSource> ()
 															.Select (hs => Path.Combine (hs.BaseFilePath, hs.Name + ".zip"))
 															.Where (File.Exists),
-			                                             macDocPath);
-			BookmarkManager = new BookmarkManager (macDocPath);
+			                                             winDocPath);
+			BookmarkManager = new BookmarkManager (winDocPath);
 			
 			// Configure the documentation rendering.
 			SettingsHandler.Settings.EnableEditing = false;

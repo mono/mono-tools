@@ -56,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatedTreeNode.cs" />
+    <Compile Include="BookmarkEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BookmarkEditor.Designer.cs">
+      <DependentUpon>BookmarkEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="BookmarkManager.cs" />
     <Compile Include="CustomDrawing.cs" />
     <Compile Include="DocTools.cs" />
@@ -79,6 +85,9 @@
     </Compile>
     <Compile Include="UIUtils.cs" />
     <Compile Include="UrlLauncher.cs" />
+    <EmbeddedResource Include="BookmarkEditor.resx">
+      <DependentUpon>BookmarkEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>

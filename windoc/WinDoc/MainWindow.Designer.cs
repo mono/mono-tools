@@ -163,6 +163,7 @@
 			this.bkModify.Name = "bkModify";
 			this.bkModify.Size = new System.Drawing.Size(23, 24);
 			this.bkModify.ToolTipText = "Edit bookmark";
+			this.bkModify.Click += new System.EventHandler(this.bkModify_Click);
 			// 
 			// toolStripLabel1
 			// 

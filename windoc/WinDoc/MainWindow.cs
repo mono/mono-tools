@@ -300,13 +300,19 @@ namespace WinDoc
 			Program.BookmarkManager.AddBookmark (new BookmarkManager.Entry { Name = currentTitle, Url = currentTitle, Notes = string.Empty });
 		}
 
-		private void bkRemove_Click (object sender, EventArgs e)
+		void bkRemove_Click (object sender, EventArgs e)
 		{
 			var manager = Program.BookmarkManager;
 			var idx = manager.FindIndexOfBookmarkFromUrl (currentUrl);
 			var bks = manager.GetAllBookmarks ();
 			if (idx > -1 && idx < bks.Count)
 				manager.DeleteBookmark (bks[idx]);
+		}
+
+		
+		void bkModify_Click(object sender, EventArgs e)
+		{
+			new BookmarkEditor (Program.BookmarkManager).ShowDialog (this);
 		}
 
 		void SearchCallback (object sender, EventArgs e)
@@ -335,7 +341,6 @@ namespace WinDoc
 			ReloadSearchData ();
 			if (results.Count > 0) {
 				var firstNode = searchListResults.Nodes[1];
-				Console.Write ("Selecting {0} after search", firstNode.Text);
 				searchListResults.SelectedNode = firstNode;
 				firstNode.EnsureVisible ();
 			}
@@ -402,5 +407,6 @@ namespace WinDoc
 				document.LoadUrl (url, true, null, false);
 			}
 		}
+
 	}
 }
