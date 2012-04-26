@@ -14,6 +14,7 @@ namespace WinDoc
 {
 	public partial class MainWindow : Form
 	{
+		readonly string initialUrl;
 		// This is used if the user click on different urls while some are still loading so that only the most recent content is displayed
 		long loadUrlTimestamp = long.MinValue;
 
@@ -34,10 +35,11 @@ namespace WinDoc
 		ResultDataSet dataSource = new ResultDataSet ();
 		Dictionary<Node, TreeNode> nodeToTreeNodeMap = new Dictionary<Node,TreeNode> ();
 
-		public MainWindow ()
+		public MainWindow (string initialUrl)
 		{
 			InitializeComponent();
 			SetStyle (ControlStyles.OptimizedDoubleBuffer, true);
+			this.initialUrl = initialUrl;
 		}
 
 		void MainWindow_Load(object sender, EventArgs e)
@@ -65,6 +67,8 @@ namespace WinDoc
 				LoadUrl (nav.Url.IsFile ? nav.Url.Segments.LastOrDefault () : nav.Url.OriginalString, true);
 				nav.Cancel = true;
 			};
+			if (!string.IsNullOrEmpty (initialUrl))
+				LoadUrl (initialUrl, true);
 		}
 
 		void SetupSearch ()

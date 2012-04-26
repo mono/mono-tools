@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Monodoc;
+using Mono.Options;
 
 namespace WinDoc
 {
@@ -13,13 +14,22 @@ namespace WinDoc
 		static string MonodocDir;
 
 		[STAThread]
-		static void Main()
+		static void Main(string[] args)
 		{
+			var initialUrl = string.Empty;
+			var docSources = new List<string> ();
+			new OptionSet {
+				{ "url=|u=", u => initialUrl = u },
+				{ "docdir=", dir => docSources.Add (dir) },
+			}.Parse (args);
+
 			PrepareCache ();
 			ExtractImages ();
 			
 			// Load documentation
 			Root = RootTree.LoadTree (null);
+			foreach (var dir in docSources)
+				Root.AddSource (dir);
 			
 			var winDocPath = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc");
 			if (!Directory.Exists (winDocPath))
@@ -39,7 +49,7 @@ namespace WinDoc
 			Application.ApplicationExit += (s, e) => BookmarkManager.SaveBookmarks ();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault (false);
-			Application.Run(new MainWindow ());
+			Application.Run(new MainWindow (initialUrl));
 		}
 		
 		static void PrepareCache ()
