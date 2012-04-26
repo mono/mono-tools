@@ -175,6 +175,8 @@ namespace WinDoc
 
 		void LoadUrl (string url, bool syncTreeView = false, HelpSource source = null, bool addToHistory = true)
 		{
+			if (url == currentUrl)
+				return;
 			if (url.StartsWith ("#")) {
 				Console.WriteLine ("FIXME: Anchor jump");
 				return;
