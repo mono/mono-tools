@@ -1,0 +1,43 @@
+#s_spinner, #s_header, #s_morebtn, .s_message {
+	text-align: center;
+}
+
+#s_header {
+	margin-bottom: 1em;
+}
+
+div.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+#s_results a {
+	color: #777;
+}
+
+#s_results a:hover {
+	color: black;
+}
+
+#s_results span.fulltitle {
+	font-style: italic;
+	font-size: 80%;
+}
+
+#s_results li {
+	margin-bottom: 0.5em;
+}
+
+#s_morebtn input {
+	font-size: x-large;
+	padding: 5px 14px 6px;
+}
+
+#s_morebtn {
+	margin-bottom: 1em;
+}
+
+.s_message {
+	font-size: xx-large;
+}
+

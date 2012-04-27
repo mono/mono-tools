@@ -44,8 +44,13 @@
 
 void GenerateList (string reference, string profile)
 {
-	string mpath = Server.MapPath ("masterinfos/" + reference);
-	string bpath = Server.MapPath ("binary/" + profile);
+	GenerateList (reference, "masterinfos/", profile, "binary/", ".dll");
+}
+
+void GenerateList (string reference, string ref_dir, string profile, string prof_dir, string dll_extension)
+{
+	string mpath = Server.MapPath (ref_dir + reference);
+	string bpath = Server.MapPath (prof_dir + profile);
 
 	if (!Directory.Exists (mpath)){
 		Response.Write ("Directory does not exist for masterinfo: " + reference);
@@ -61,7 +66,7 @@ void GenerateList (string reference, string profile)
 		select System.IO.Path.GetFileNameWithoutExtension (p);
 
 	var dlls  = from p in Directory.GetFiles (bpath)
-		where p.EndsWith (".dll")
+		where p.EndsWith (dll_extension)
 	    	select System.IO.Path.GetFileNameWithoutExtension (p);
 
 	foreach (var assembly in (from p in infos.Intersect (dlls) orderby p select p))
@@ -71,66 +76,44 @@ void GenerateList (string reference, string profile)
 </script>
 </head>
 <body>
-    <div id="header">
-    	<h1>Mono Class Status Pages</h1>
-    </div>
-    <div id="content">
-<div id="col1">
-<h2>Mono 4.0 vs .NET 4.0 RC</h2>
-
-	<p>This shows the work-in-progress of Mono towards completing
-	the 4.0 RC APIs.
-
-	<ul class="assemblies">
-		<% GenerateList ("4.0", "4.0"); %>
-	</ul>
+<div id="header">
+<h1>Mono Class Status Pages</h1>
 </div>
+<div id="content">
+	<div id="col1">
 
-<div id="col2">
-<h2>Mono 3.5 vs .NET 3.5</h2>
+	<h2>.NET 4.0 vs .NET 4.5</h2>
 
-	<p>This shows the work-in-progress of Mono towards completing
-	the 3.5 SP1 APIs.
+		<p>This shows the API added between 4.0 and 4.5.
 
-	<ul class="assemblies">
-		<% GenerateList ("3.5", "2.0"); %>
-	</ul>
-</div>
+		<ul class="assemblies">
+			<% GenerateList ("4.0", "masterinfos/", "4.5", "masterinfos/", ".xml"); %>
+		</ul>
+	</div>
 
-<div id="col3">
-<h2>Moonlight vs Silverlight 3.0</h2>
+	<div id="col2">
+	<h2>Mono 4.5 vs .NET 4.5</h2>
 
-	<p>This is used to compare Mono + Moonlight assemblies against
-	the published API of Silverlight 3.0.
+		<p>This shows the work-in-progress of Mono towards completing
+		the 4.5 APIs.
 
-	<ul class="assemblies">
-		<% GenerateList ("SL3", "2.1"); %>
-	</ul>
-<h2>Moonlight vs Silverlight 2.0</h2>
+		<ul class="assemblies">
+			<% GenerateList ("4.5", "4.5"); %>
+		</ul>
+	</div>
 
-	<p>This is used to compare Mono + Moonlight assemblies against
-	the published API of Silverlight 2.0.
+	<div id="col3">
+	<h2>Mono 4.0 vs .NET 4.0</h2>
 
-	<ul class="assemblies">
-		<% GenerateList ("SL2", "2.1"); %>
-	</ul>
-</div>
+		<p>This shows the work-in-progress of Mono towards completing
+		the 4.0 APIs.
 
-<div id="col4">
-<h2>Mono 3.5 vs .NET 2.0</h2>
-
-	<p>This is comparing Mono's latest API which is typically
-	installed in the lib/mono/2.0/ directory, but contains the 3.5 API.   
-
-	<p>This list is only useful to determine if there are some
-	major missing features, but not for detecting if there are
-	extra APIs (we will have them, as we are now tracking 3.5)
-
-	<ul class="assemblies">
-		<% GenerateList ("2.0", "2.0"); %>
-	</ul>
-</div>
+		<ul class="assemblies">
+			<% GenerateList ("4.0", "4.0"); %>
+		</ul>
+	</div>
 </div>
 <div id="footer">&nbsp;</div>
+
 </body>
 </html>

@@ -93,7 +93,7 @@ namespace Mono.CSharp.Gui
 			InteractiveGraphicsBase.Attached = true;
 			Gtk.Application.Invoke (delegate {
 				try {
-					evaluator = new Evaluator (new CompilerSettings (), new Report (new ConsoleReportPrinter ()));
+					evaluator = new Evaluator (new CompilerContext (new CompilerSettings (), new ConsoleReportPrinter ()));
 				} catch {
 					return;
 				}

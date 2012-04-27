@@ -52,7 +52,7 @@ namespace Mono.CSharp.Gui
 		TextMark end_of_last_processing;
 		string expr;
 		Evaluator evaluator;
-		Report report;
+		CompilerContext context;
 
 		List<string> history = new List<string> ();
 		int history_cursor;
@@ -74,8 +74,9 @@ namespace Mono.CSharp.Gui
 			Buffer.InsertWithTagsByName (ref end, "Mono C# Shell, type 'help;' for help\n\nEnter statements or expressions below.\n", "Comment");
 			ShowPrompt (false);
 			
-			report = new Report (new ConsoleReportPrinter ());
-			evaluator = new Evaluator (new CompilerSettings (), report);
+			
+			context = new CompilerContext (new CompilerSettings (), new ConsoleReportPrinter ());
+			evaluator = new Evaluator (context);
 			evaluator.DescribeTypeExpressions = true;
 			
 			evaluator.InteractiveBaseClass = typeof (InteractiveGraphicsBase);
@@ -145,7 +146,7 @@ namespace Mono.CSharp.Gui
 			bool result_set;
 			StringWriter errorwriter = new StringWriter ();
 			
-			var old_printer = report.SetPrinter (new StreamReportPrinter (errorwriter));
+			var old_printer = context.Report.SetPrinter (new StreamReportPrinter (errorwriter));
 			
 			try {
 				res = evaluator.Evaluate (s, out result, out result_set);
@@ -155,7 +156,7 @@ namespace Mono.CSharp.Gui
 				ShowPrompt (true, false);
 				return true;
 			} finally {
-				report.SetPrinter (old_printer);
+				context.Report.SetPrinter (old_printer);
 			}
 
 			// Partial input

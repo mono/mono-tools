@@ -21,6 +21,7 @@ function PTree ()
 	this.eltSelected = null;
 	this.nImageWidth = 18;
 	this.nImageHeight = 18;
+	this.onClickCallback = null;
 
 	this.CreateItemFromXML = function (oNode, fLast, eltParent)
 	{
@@ -95,17 +96,31 @@ function PTree ()
 		if (strAction)
 		{
 			eltDescription = document.createElement ("a");
-		        if (strAction.indexOf ('http://') === 0)
-			    eltDescription.href = strAction;
-		        else
-			    eltDescription.href = this.strActionBase + strAction;
+			if (strAction.indexOf ('http://') === 0)
+				eltDescription.href = strAction;
+			else
+				eltDescription.href = this.strActionBase + strAction;
 			eltDescription.title = strText;
 			if (strTarget)
 				eltDescription.target = strTarget;
 			else if (this.strTargetDefault)
 				eltDescription.target = this.strTargetDefault;
 			eltDescription.appendChild (eltText);
-			eltDescription.onclick = function () { _this.SelectNode (eltDiv); }
+			var parent = this;
+			eltDescription.onclick = function (e) {
+				_this.SelectNode (eltDiv);
+				if (parent.onClickCallback) {
+					if (!e)
+						e = window.event;
+					e.cancelBubble = true;
+					e.returnValue = false;
+					if (e.stopPropagation) {
+						e.stopPropagation ();
+						e.preventDefault ();
+					}
+					parent.onClickCallback(strAction);
+				}
+			}
 			eltDescription.onmouseover = function () { this.blur (); }
 			eltDescription.onmouseup = function () { this.blur (); }
 		}
@@ -193,6 +208,55 @@ function PTree ()
 		eltDiv.className = "tree-node";
 		var _this = this;
 		eltIcon.onclick = function () { _this.onClickMinus (this); }
+	}
+
+	this.ExpandFromPath = function (path)
+	{
+		var root = $('.tree-node').first ();
+		var elements = path.split('@');
+
+		var thisSave = this;
+		var finish = function (node, i, opened) {
+			node = $(node);
+			if (!opened) {
+				node.attr('class', 'tree-node');
+				var icon = node.children('span').children('img:nth-child(' + (i + 1) + ')');
+				icon[0].onclick = function () { thisSave.onClickMinus (this); };
+				icon.attr('src', thisSave.GetIconSrc (node[0], false));
+			}
+			root = node;
+			if (i == elements.length - 1) {
+				thisSave.SelectNode (node[0]);
+				var container = $('#contents').parent ();
+				container.scrollTop (node[0].offsetTop - 100);
+			}
+		};
+		var recurse = function (i) {
+			if (i >= elements.length)
+				return;
+			var node = root.children ('div')[elements[i]];
+			// Tree already loaded
+			if ($(node).find ('div').first ().length == 0) {
+				var url = thisSave.strSrcBase + elements.slice(0, i + 1).join('@');
+				$.get (url, function (data) {
+					var doc = data.documentElement;
+
+					var children = doc.childNodes;
+					var cChildren = children.length;
+
+					for (var iNode = 0; iNode < cChildren; iNode ++)
+						thisSave.CreateItemFromXML (children[iNode], iNode == cChildren - 1, node)
+
+					// We finish node creation by opening up its tree like clicking would normally do
+					finish (node, i, false);
+					recurse (i + 1);
+				});
+			} else {
+				finish (node, i, true);
+				recurse (i + 1);
+			}
+		};
+		recurse (0);
 	}
 
 	this.onClickPlus = function (eltIcon)

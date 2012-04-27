@@ -54,7 +54,7 @@ namespace Mono.WebCompareDB {
 			Console.WriteLine ();
 			Console.WriteLine ("    When invoked with no arguments it is equivalent to:");
 			Console.WriteLine ();
-			Console.WriteLine ("       webcompare-db.exe '3.5 2.0' 'SL2 2.1' '2.0 2.0' '1.1 1.0'");
+			Console.WriteLine ("       webcompare-db.exe '4.5 4.5' '4.0 4.0'");
 			Console.WriteLine ();
 			Console.WriteLine ("    The first argument of each pair is a directory in ../masterinfos.");
 			Console.WriteLine ("    The second argument of each pair is a directory in ../binary.");
@@ -66,7 +66,7 @@ namespace Mono.WebCompareDB {
 			Console.WriteLine ();
 		}
 
-		static string [] default_compares = new string [] { "3.5 2.0", "SL2 2.1", "2.0 2.0", "1.1 1.0" };
+		static string [] default_compares = new string [] { "4.5 4.5", "4.0 4.0" };
 
 		static int Main (string [] args)
 		{

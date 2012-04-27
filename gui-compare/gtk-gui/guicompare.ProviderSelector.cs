@@ -5,12 +5,17 @@ namespace guicompare
 	public partial class ProviderSelector
 	{
 		private global::Gtk.Table table2;
+		
 		private global::Gtk.FileChooserButton filechooserbutton1;
+		
 		private global::Gtk.FileChooserButton filechooserbutton2;
+		
 		private global::Gtk.Label label2;
+		
 		private global::Gtk.RadioButton radiobutton1;
+		
 		private global::Gtk.RadioButton radiobutton2;
-
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

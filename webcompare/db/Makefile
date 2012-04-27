@@ -1,7 +1,7 @@
 base = ../../gui-compare
 
 LIB_SOURCES =  \
-	$(base)/AssemblyResolver.cs	\
+	AssemblyResolver.cs	\
 	$(base)/CompareContext.cs	\
 	$(base)/Comparison.cs		\
 	$(base)/CecilMetadata.cs	\
@@ -23,10 +23,10 @@ REFS = \
 all: webcompare-db.exe
 
 webcompare-db.exe: $(SOURCES) Mono.Cecil.dll Mono.Api.CompareFull.dll
-	gmcs -debug $(REFS) -r:Mono.Api.CompareFull.dll -r:Mono.Cecil.dll $(SOURCES)
+	mcs -debug $(REFS) -r:Mono.Api.CompareFull.dll -r:Mono.Cecil.dll $(SOURCES)
 
 Mono.Api.CompareFull.dll: $(LIB_SOURCES) Mono.Cecil.dll Makefile
-	gmcs -nowarn:169,414 -debug -target:library -r:Mono.Cecil.dll -out:Mono.Api.CompareFull.dll $(LIB_SOURCES)
+	mcs -nowarn:169,414 -debug -target:library -r:Mono.Cecil.dll -out:Mono.Api.CompareFull.dll $(LIB_SOURCES)
 
 Mono.Cecil.dll:
 	cp `pkg-config --variable Libraries cecil` .

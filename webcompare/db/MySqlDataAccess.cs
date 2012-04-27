@@ -60,7 +60,7 @@ namespace Mono.WebCompareDB {
 		{
 			IDbCommand cmd = cnc.CreateCommand ();	
 			cmd.CommandType = CommandType.Text;
-			cmd.CommandText = String.Format ("LOAD DATA INFILE '{0}' INTO TABLE {1}", file_name, table);
+			cmd.CommandText = String.Format ("LOAD DATA LOCAL INFILE '{0}' INTO TABLE {1}", file_name, table);
 			cmd.ExecuteNonQuery ();
 		}
 

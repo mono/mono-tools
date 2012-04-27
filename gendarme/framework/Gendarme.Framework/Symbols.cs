@@ -39,7 +39,7 @@ namespace Gendarme.Framework {
 		// http://blogs.msdn.com/jmstall/archive/2005/06/19/FeeFee_SequencePoints.aspx
 		private const int PdbHiddenLine = 0xFEEFEE;
 
-		private static string AlmostEqualTo = new string (new char [] { '\u2248' });
+		private const string AlmostEqualTo = "\u2248";
 
 		private static Instruction ExtractFirst (TypeDefinition type)
 		{
@@ -55,7 +55,7 @@ namespace Gendarme.Framework {
 
 		private static Instruction ExtractFirst (MethodDefinition method)
 		{
-			if ((method == null) || !method.HasBody)
+			if ((method == null) || !method.HasBody || method.Body.Instructions.Count == 0)
 				return null;
 			Instruction ins = method.Body.Instructions [0];
 			// note that the first instruction often does not have a sequence point
@@ -69,11 +69,11 @@ namespace Gendarme.Framework {
 		{
 			MethodDefinition method = (location as MethodDefinition);
 			if (method != null)
-				return (method.DeclaringType as TypeDefinition);
+				return method.DeclaringType;
 
 			FieldDefinition field = (location as FieldDefinition);
 			if (field != null)
-				return (field.DeclaringType as TypeDefinition);
+				return field.DeclaringType;
 
 			ParameterDefinition parameter = (location as ParameterDefinition);
 			if (parameter != null)
@@ -177,7 +177,7 @@ namespace Gendarme.Framework {
 					return FormatSource (candidate);
 
 				// we may still be lucky to find the (a) source file for the type itself
-				type = (method.DeclaringType as TypeDefinition);
+				type = method.DeclaringType;
 			}
 
 			// TypeDefinition, FieldDefinition

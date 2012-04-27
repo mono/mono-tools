@@ -4,53 +4,99 @@
 public partial class MainWindow
 {
 	private global::Gtk.UIManager UIManager;
+	
 	private global::Gtk.Action File;
+	
 	private global::Gtk.Action quit;
+	
 	private global::Gtk.Action Compare;
+	
 	private global::Gtk.Action Custom;
+	
 	private global::Gtk.Action a;
+	
 	private global::Gtk.Action b;
+	
 	private global::Gtk.Action View;
+	
 	private global::Gtk.ToggleAction ShowMissing;
+	
 	private global::Gtk.ToggleAction ShowExtra;
+	
 	private global::Gtk.ToggleAction ShowPresent;
+	
 	private global::Gtk.ToggleAction ShowErrors;
+	
 	private global::Gtk.Action Refresh;
+	
 	private global::Gtk.ToggleAction ShowTodo;
+	
 	private global::Gtk.Action RecentComparisonsAction;
+	
 	private global::Gtk.ToggleAction ShowNotImplemented;
+	
 	private global::Gtk.Action ToggleRowExpansionAction;
+	
 	private global::Gtk.VBox vbox1;
+	
 	private global::Gtk.MenuBar menubar1;
+	
 	private global::Gtk.Notebook notebook1;
+	
 	private global::Gtk.ScrolledWindow GtkScrolledWindow;
+	
 	private global::Gtk.TreeView tree;
+	
 	private global::Gtk.Label label1;
+	
 	private global::Gtk.Label label3;
+	
 	private global::Gtk.Label label2;
+	
 	private global::Gtk.ScrolledWindow AdditionalInfoWindow;
+	
 	private global::Gtk.TextView AdditionalInfoText;
+	
 	private global::Gtk.Expander expander1;
+	
 	private global::Gtk.Table table1;
+	
 	private global::Gtk.Label label4;
+	
 	private global::Gtk.Label label5;
+	
 	private global::Gtk.Label label6;
+	
 	private global::Gtk.Label label7;
+	
 	private global::Gtk.Label label8;
+	
 	private global::Gtk.Label label9;
+	
 	private global::Gtk.Image legendImageError;
+	
 	private global::Gtk.Image legendImageExtra;
+	
 	private global::Gtk.Image legendImageMissing;
+	
 	private global::Gtk.Image legendImageNIEX;
+	
 	private global::Gtk.Image legendImageOK;
+	
 	private global::Gtk.Image legendImageTODO;
+	
 	private global::Gtk.VSeparator vseparator1;
+	
 	private global::Gtk.VSeparator vseparator2;
+	
 	private global::Gtk.VSeparator vseparator3;
+	
 	private global::Gtk.Label GtkLabel4;
+	
 	private global::Gtk.Statusbar statusbar1;
+	
 	private global::Gtk.ProgressBar progressbar1;
-
+	
 	protected virtual void Build ()
 	{
 		global::Stetic.Gui.Initialize (this);

@@ -69,6 +69,8 @@ namespace GuiCompare {
 
 	public interface ICompMemberContainer
 	{
+		bool IsSealed { get; }
+
 		List<CompNamed> GetInterfaces ();
 		List<CompNamed> GetConstructors();
 		List<CompNamed> GetMethods();
@@ -130,27 +132,33 @@ namespace GuiCompare {
 
 		public static int Compare (CompNamed x, CompNamed y)
 		{
-			int res = string.Compare (x.Name, y.Name);
-			if (res != 0)
-				return res;
-
 			var x_g = x as CompMethod;
 			var y_g = y as CompMethod;
+			
 			if (x_g == null || y_g == null)
-				return res;
+				return string.Compare (x.Name, y.Name);
 
 			var x_tp = x_g.GetTypeParameters ();
+			if (x_tp != null && x_tp.Count == 0)
+				x_tp = null;
+			
 			var y_tp = y_g.GetTypeParameters ();
+			if (y_tp != null && y_tp.Count == 0)
+				y_tp = null;
+			
 			if (x_tp == null && y_tp != null)
 				return -1;
 
 			if (x_tp != null && y_tp == null)
 				return 1;
 
-			if (x_tp == null && y_tp == null)
-				return res;
-
-			return x_tp.Count.CompareTo (y_tp.Count);
+			if (x_tp != null && y_tp != null) {
+				var res = x_tp.Count.CompareTo (y_tp.Count);
+				if (res != 0)
+					return res;
+			}
+			
+			return string.Compare (x.Name, y.Name);
 		}
 
 		string displayName;

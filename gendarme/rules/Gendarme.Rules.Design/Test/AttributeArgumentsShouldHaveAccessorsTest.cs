@@ -196,6 +196,35 @@ namespace Test.Rules.Design {
 		}
 	}
 
+	internal abstract class FooAttribute : Attribute
+	{
+		protected FooAttribute (string foo)
+		{
+			this.Foo = foo;
+		}
+
+		public string Foo
+		{
+			get;
+			private set;
+		}
+	}
+
+	internal class FooBarAttribute : FooAttribute
+	{
+		protected FooBarAttribute (string foo, string bar) : base (foo)
+		{
+			this.Bar = bar;
+		}
+
+		public string Bar
+		{
+			get;
+			private set;
+		}
+	}
+
+
 	[TestFixture]
 	public class AttributeArgumentsShouldHaveAccessorsTest : TypeRuleTestFixture<AttributeArgumentsShouldHaveAccessorsRule> {
 
@@ -251,6 +280,12 @@ namespace Test.Rules.Design {
 		public void TestTwoAccessorsMissingAttribute ()
 		{
 			AssertRuleFailure<TwoAccessorsMissingAttribute> (2);
+		}
+
+		[Test]
+		public void TestInheritedPropertiesAttribute ()
+		{
+			AssertRuleSuccess<FooBarAttribute> ();
 		}
 	}
 }

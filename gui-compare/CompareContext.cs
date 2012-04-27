@@ -153,7 +153,7 @@ namespace GuiCompare {
 		void CompareBaseTypes (ComparisonNode parent, ICompHasBaseType reference_type, ICompHasBaseType target_type)
 		{
 			if (reference_type.GetBaseType() != target_type.GetBaseType()) {
-				parent.AddError (String.Format ("reference has base class of {0}, target has base class of {1}",
+				parent.AddError (String.Format ("Expected base class of {0} but found {1}",
 								reference_type.GetBaseType(),
 								target_type.GetBaseType()));
 			}
@@ -162,7 +162,7 @@ namespace GuiCompare {
 				string ref_mod = (reference_type.IsAbstract && reference_type.IsSealed) ? "static" : "abstract";
 				string tar_mod = (target_type.IsAbstract && target_type.IsSealed) ? "static" : "abstract";
 
-				parent.AddError (String.Format ("reference is {0} {2}, target is {1} {3}",
+				parent.AddError (String.Format ("reference is {0} {2}, is {1} {3}",
 								reference_type.IsAbstract ? null : "not", target_type.IsAbstract ? null : "not",
 								ref_mod, tar_mod));
 			} else if (reference_type.IsSealed != target_type.IsSealed) {
@@ -211,19 +211,15 @@ namespace GuiCompare {
 		{
 			var r = reference.GetTypeParameters ();
 			var t = target.GetTypeParameters ();
-			if (r == null && t == null)
+			if (r == null && t == null || (r == null && t != null) || (r != null && t == null))
 				return;
-
-			if (r.Count != t.Count) {
-				throw new NotImplementedException (string.Format ("Should never happen with valid data ({0} != {1})", r.Count, t.Count));
-			}
 
 			for (int i = 0; i < r.Count; ++i) {
 				var r_i = r [i];
 				var t_i = t [i];
 				
 				if (r_i.GenericAttributes != t_i.GenericAttributes) {
-					parent.AddError (string.Format ("reference type parameter {2} has {0} generic attributes, target type parameter {3} has {1} generic attributes",
+					parent.AddError (string.Format ("Expected type parameter {2} with {0} generic attributes but found type parameter {3} with {1} generic attributes",
 						CompGenericParameter.GetGenericAttributeDesc (r_i.GenericAttributes),
 						CompGenericParameter.GetGenericAttributeDesc (t_i.GenericAttributes),
 						r_i.Name,
@@ -330,7 +326,13 @@ namespace GuiCompare {
 			
 			while (m < reference_attrs.Count || a < target_attrs.Count) {
 				if (m == reference_attrs.Count) {
-					AddExtra (parent, target_attrs[a]);
+					
+					if (target_attrs[a].Name == "System.Diagnostics.DebuggerDisplayAttribute") {
+						// Ignore additional debugging attributes in Mono source code
+					} else {
+						AddExtra (parent, target_attrs[a]);
+					}
+					
 					a++;
 					continue;
 				}
@@ -368,23 +370,26 @@ namespace GuiCompare {
 		void CompareMembers (ComparisonNode parent,
 		                     ICompMemberContainer reference_container, ICompMemberContainer target_container)
 		{
+			bool is_sealed = reference_container.IsSealed;
+			
 			CompareMemberLists (parent,
-			                    reference_container.GetInterfaces(), target_container.GetInterfaces());
+			                    reference_container.GetInterfaces(), target_container.GetInterfaces(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetConstructors(), target_container.GetConstructors());
+			                    reference_container.GetConstructors(), target_container.GetConstructors(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetMethods(), target_container.GetMethods());
+			                    reference_container.GetMethods(), target_container.GetMethods(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetProperties(), target_container.GetProperties());
+			                    reference_container.GetProperties(), target_container.GetProperties(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetFields(), target_container.GetFields());
+			                    reference_container.GetFields(), target_container.GetFields(), is_sealed);
 			CompareMemberLists (parent,
-			                    reference_container.GetEvents(), target_container.GetEvents());
+			                    reference_container.GetEvents(), target_container.GetEvents(), is_sealed);
 		}
 
 		void CompareMemberLists (ComparisonNode parent,
 		                         List<CompNamed> reference_list,
-		                         List<CompNamed> target_list)
+		                         List<CompNamed> target_list,
+		                         bool isSealed)
 		{
 			int m = 0, a = 0;
 
@@ -450,16 +455,40 @@ namespace GuiCompare {
 					} else if (reference_list[m] is CompProperty) {
 						var m1 = ((CompProperty) reference_list[m]).GetMethods ();
 						var m2 = ((CompProperty) target_list[a]).GetMethods ();
+						if (m1.Count != m2.Count) {
+							comparison.AddError (String.Format ("Expected {0} accessors but found {1}", m1.Count, m2.Count));
+							comparison.Status = ComparisonStatus.Error;
+						} else {
+							for (int i = 0; i < m1.Count; ++i) {
+								string reference_access = ((CompMember) m1[i]).GetMemberAccess();
+								string target_access = ((CompMember) m2[i]).GetMemberAccess();
+								if (reference_access != target_access) {
+									// Try to give some hints to the developer, best we can do with
+									// strings.
+									string extra_msg = "";
+									if (reference_access.IndexOf ("Private, Final, Virtual, HideBySig") != -1 &&
+										target_access.IndexOf ("Public, HideBySig") != -1){
+										extra_msg = "\n\t\t<b>Hint:</b> reference uses an explicit interface implementation, target doesn't";
+									}
+
+									comparison.AddError (String.Format ("reference access is '<i>{0}</i>', target access is '<i>{1}</i>'{2}",
+																		reference_access, target_access, extra_msg));
+									comparison.Status = ComparisonStatus.Error;
+									break;
+								}
+							}
+						}
 
 						// Compare indexer parameters
-						CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
+						if (m1.Count == m2.Count)
+							CompareParameters (comparison, (ICompParameters) m1[0], (ICompParameters) m2[0]);
 					}
 
 					if (reference_list[m] is CompField) {
 						var v_ref = ((CompField)reference_list[m]).GetLiteralValue();
 						var v_tar = ((CompField)target_list[a]).GetLiteralValue();
 						if (v_ref != v_tar) {
-							comparison.AddError (String.Format ("reference field has value {0}, target field has value {1}", v_ref, v_tar));
+							comparison.AddError (String.Format ("Expected field value {0} but found value {1}", v_ref, v_tar));
 							comparison.Status = ComparisonStatus.Error;
 						}
 					}
@@ -482,13 +511,23 @@ namespace GuiCompare {
 					a++;
 				}
 				else if (c < 0) {
-					/* reference name is before target name, reference name is missing from target */
-					AddMissing (parent, reference_list[m]);
+					if (isSealed && reference_list[m].Name.Contains ("~")) {
+						// Ignore finalizer differences in sealed classes
+					} else {
+						/* reference name is before target name, reference name is missing from target */
+						AddMissing (parent, reference_list[m]);
+					}
+					
 					m++;
 				}
 				else {
-					/* reference name is after target name, target name is extra */
-					AddExtra (parent, target_list[a]);
+					if (isSealed && target_list[a].Name.Contains ("~")) {
+						// Ignore finalizer differences in sealed classes
+					} else {
+						/* reference name is after target name, target name is extra */
+						AddExtra (parent, target_list[a]);
+					}
+					
 					a++;
 				}
 			}
