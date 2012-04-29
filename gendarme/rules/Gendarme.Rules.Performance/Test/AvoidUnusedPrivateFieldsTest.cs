@@ -182,5 +182,26 @@ namespace Test.Rules.Performance {
 		{
 				AssertRuleSuccess<FieldsUsedInNested> ();
 		}
+		
+		class CompilerGenerated {
+			public string Name { get; set; }
+		}
+		
+		[Test]
+		public void ClassWithCompilerGeneratedFields ()
+		{
+			AssertRuleSuccess<CompilerGenerated> ();
+		}
+		
+		class CompilerGeneratedAndUnused {
+			private int number;
+			public string Name { get; set; }
+		}
+		
+		[Test]
+		public void ClassWithCompilerGeneratedFieldsAndUnusedPrivate ()
+		{
+			AssertRuleFailure<CompilerGeneratedAndUnused> (1);
+		}
 	}
 }

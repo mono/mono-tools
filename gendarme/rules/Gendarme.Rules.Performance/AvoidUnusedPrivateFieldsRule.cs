@@ -105,19 +105,21 @@ namespace Gendarme.Rules.Performance {
 			// copy all fields into an hashset
 			fields.Clear ();
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsPrivate || field.IsLiteral)
+				if (!field.IsPrivate || field.IsLiteral || field.IsGeneratedCode ())
 					continue;
 
 				fields.Add (field);
 			}
 
 			// scan all methods, including constructors, to find if the field is used
-			CheckFieldsUsageInType (type);
+			if (fields.Count > 0) {
+				CheckFieldsUsageInType (type);
+			}
 
 			// scan nested types becuase they also have access to private fields of their parent
-			if (type.HasNestedTypes) {
+			if (type.HasNestedTypes && fields.Count > 0) {
 				foreach (TypeDefinition nested in type.NestedTypes) {
-					CheckFieldsUsageInType(nested);
+					CheckFieldsUsageInType (nested);
 				}
 			}
 
@@ -134,18 +136,21 @@ namespace Gendarme.Rules.Performance {
 				if (!method.HasBody)
 					continue;
 
-						// don't check the method if it does not access any field
-						if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
+				// don't check the method if it does not access any field
+				if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
+						continue;
+
+				foreach (Instruction ins in method.Body.Instructions) {
+						FieldDefinition fd = ins.GetField ();
+						if (fd == null)
 								continue;
 
-						foreach (Instruction ins in method.Body.Instructions) {
-								FieldDefinition fd = ins.GetField ();
-								if (fd == null)
-										continue;
-
-								fields.Remove (fd);
-						}
+						fields.Remove (fd);
 				}
+				
+				if (fields.Count == 0)
+					break;				
+			}
 		}
 
 #if false
