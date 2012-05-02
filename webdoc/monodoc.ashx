@@ -314,7 +314,6 @@ namespace Mono.Website.Handlers
 			ctx.Response.Write (tree_path);
 			ctx.Response.Write (@"' />
 <script type='text/javascript'>
-<!--
 function login (rurl)
 {
 	document.location.href = 'login.aspx?ReturnUrl=' + rurl;
@@ -355,18 +354,11 @@ function makeLink (link)
 			
 		default:
 			if(document.all) {
-				return '");
-			ctx.Response.Write (ctx.Request.Path);
-			ctx.Response.Write (@"?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
+				return '/monodoc.ashx?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
 			}
-			return '");
-
-			ctx.Response.Write (ctx.Request.Path);
-			ctx.Response.Write (@"?link=' + link.replace(/\+/g, '%2B');
+			return '/monodoc.ashx?link=' + link.replace(/\+/g, '%2B');
 		}
-}
--->
-");
+}");
 			if (!string.IsNullOrEmpty (Global.ua)) {
 				ctx.Response.Write (@"var _gaq = _gaq || [];
  _gaq.push(['_setAccount', '");
