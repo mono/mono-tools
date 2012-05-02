@@ -77,7 +77,7 @@ void Page_Load (object sender, EventArgs e)
 	     <div id="contentList"></div>
        </div>
      </div>
-     <div><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>
+     <div id="content_frame_wrapper"><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>
 	</div>
     <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Html) %>
 

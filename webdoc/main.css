@@ -155,3 +155,11 @@ html,body {
 	width:79.9%;
 	height: 94%;
 }
+
+#content_frame_wrapper {
+	height: 100%;
+}
+
+#main_part {
+	height: 94%;
+}
