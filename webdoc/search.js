@@ -4,7 +4,6 @@ var content_frame = $('#content_frame');
 var page_link = $('#pageLink');
 var lis = null;
 var page_top_offset = $('#main_part').offset().top;
-console.log (page_top_offset);
 
 change_page = function (pagename) {
     content_frame.attr ('src', 'monodoc.ashx?link=' + pagename);
