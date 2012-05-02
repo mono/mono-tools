@@ -23,9 +23,10 @@ namespace WinDoc
 				{ "docdir=", dir => docSources.Add (dir) },
 			}.Parse (args);
 
+			SetupLogging ();
 			PrepareCache ();
 			ExtractImages ();
-			
+
 			// Load documentation
 			Root = RootTree.LoadTree (null);
 			foreach (var dir in docSources)
@@ -78,6 +79,12 @@ namespace WinDoc
 				using (var output = File.Create (image))
 					mdocAssembly.GetManifestResourceStream (res).CopyTo (output);
 			}
+		}
+
+		static void SetupLogging ()
+		{
+			var log = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc", "windoc.log");
+			Console.SetOut (new StreamWriter (log, true));
 		}
 
 		public static RootTree Root {

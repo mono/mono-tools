@@ -17,6 +17,8 @@ namespace WinDoc
 		
 		public static string GetHtml (string url, HelpSource helpSource, out Node match)
 		{
+			Console.WriteLine ("Calling URL {0} with HelpSource {1}", url, helpSource == null ? "(null)" : helpSource.Name);
+
 			string htmlContent = null;
 			match = null;
 			
