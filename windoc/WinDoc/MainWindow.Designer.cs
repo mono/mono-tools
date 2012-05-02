@@ -50,14 +50,14 @@
 			this.docTree = new System.Windows.Forms.TreeView();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.indexTab = new System.Windows.Forms.TabPage();
+			this.indexSearchBox = new WinDoc.SearchTextBox();
 			this.indexSplitContainer = new System.Windows.Forms.SplitContainer();
 			this.indexListResults = new System.Windows.Forms.TreeView();
 			this.imageList2 = new System.Windows.Forms.ImageList(this.components);
+			this.multipleMatchList = new System.Windows.Forms.TreeView();
 			this.searchTab = new System.Windows.Forms.TabPage();
 			this.searchListResults = new System.Windows.Forms.TreeView();
 			this.docBrowser = new System.Windows.Forms.WebBrowser();
-			this.multipleMatchList = new System.Windows.Forms.TreeView();
-			this.indexSearchBox = new WinDoc.SearchTextBox();
 			this.toolStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -289,6 +289,16 @@
 			this.indexTab.Text = "Index";
 			this.indexTab.UseVisualStyleBackColor = true;
 			// 
+			// indexSearchBox
+			// 
+			this.indexSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.indexSearchBox.Enabled = false;
+			this.indexSearchBox.Location = new System.Drawing.Point(6, 6);
+			this.indexSearchBox.Name = "indexSearchBox";
+			this.indexSearchBox.Size = new System.Drawing.Size(297, 22);
+			this.indexSearchBox.TabIndex = 1;
+			// 
 			// indexSplitContainer
 			// 
 			this.indexSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -349,6 +359,21 @@
 			this.imageList2.Images.SetKeyName(10, "Frame10.png");
 			this.imageList2.Images.SetKeyName(11, "Frame11.png");
 			// 
+			// multipleMatchList
+			// 
+			this.multipleMatchList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.multipleMatchList.FullRowSelect = true;
+			this.multipleMatchList.HideSelection = false;
+			this.multipleMatchList.Location = new System.Drawing.Point(3, 2);
+			this.multipleMatchList.Name = "multipleMatchList";
+			this.multipleMatchList.ShowLines = false;
+			this.multipleMatchList.ShowPlusMinus = false;
+			this.multipleMatchList.ShowRootLines = false;
+			this.multipleMatchList.Size = new System.Drawing.Size(300, 229);
+			this.multipleMatchList.TabIndex = 0;
+			// 
 			// searchTab
 			// 
 			this.searchTab.Controls.Add(this.searchListResults);
@@ -378,6 +403,7 @@
 			// 
 			// docBrowser
 			// 
+			this.docBrowser.AllowWebBrowserDrop = false;
 			this.docBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -387,31 +413,6 @@
 			this.docBrowser.Name = "docBrowser";
 			this.docBrowser.Size = new System.Drawing.Size(1006, 518);
 			this.docBrowser.TabIndex = 0;
-			// 
-			// multipleMatchList
-			// 
-			this.multipleMatchList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.multipleMatchList.FullRowSelect = true;
-			this.multipleMatchList.HideSelection = false;
-			this.multipleMatchList.Location = new System.Drawing.Point(3, 2);
-			this.multipleMatchList.Name = "multipleMatchList";
-			this.multipleMatchList.ShowLines = false;
-			this.multipleMatchList.ShowPlusMinus = false;
-			this.multipleMatchList.ShowRootLines = false;
-			this.multipleMatchList.Size = new System.Drawing.Size(300, 229);
-			this.multipleMatchList.TabIndex = 0;
-			// 
-			// indexSearchBox
-			// 
-			this.indexSearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.indexSearchBox.Enabled = false;
-			this.indexSearchBox.Location = new System.Drawing.Point(6, 6);
-			this.indexSearchBox.Name = "indexSearchBox";
-			this.indexSearchBox.Size = new System.Drawing.Size(297, 22);
-			this.indexSearchBox.TabIndex = 1;
 			// 
 			// MainWindow
 			// 
