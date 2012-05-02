@@ -102,6 +102,7 @@
     <Compile Include="MissingAttributeUsageOnCustomAttributeTest.cs" />
     <Compile Include="OperatorEqualsShouldBeOverloadedTest.cs" />
     <Compile Include="OverrideEqualsMethodTest.cs" />
+    <Compile Include="OverrideToStringMethodTest.cs" />
     <Compile Include="PreferEventsOverMethodsTest.cs" />
     <Compile Include="PreferIntegerOrStringForIndexersTest.cs" />
     <Compile Include="PreferXmlAbstractionsTest.cs" />
