@@ -84,7 +84,9 @@ namespace WinDoc
 		static void SetupLogging ()
 		{
 			var log = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc", "windoc.log");
-			Console.SetOut (new StreamWriter (log, true));
+			var writer = new StreamWriter (log, true);
+			writer.AutoFlush = true;
+			Console.SetOut (writer);
 		}
 
 		public static RootTree Root {

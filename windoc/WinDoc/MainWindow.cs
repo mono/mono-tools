@@ -64,7 +64,13 @@ namespace WinDoc
 			docBrowser.Navigating += (s, nav) => {
 				if (loadedFromString)
 					return;
-				LoadUrl (nav.Url.IsFile ? nav.Url.Segments.LastOrDefault () : nav.Url.OriginalString, true);
+				string url = nav.Url.OriginalString;
+				if (nav.Url.IsFile) {
+					var segs = nav.Url.Segments;
+					url = segs.LastOrDefault () == "*" ? segs.Skip (segs.Length - 2).Aggregate (string.Concat) : segs.LastOrDefault ();
+				}
+
+				LoadUrl (url, true);
 				nav.Cancel = true;
 			};
 			if (!string.IsNullOrEmpty (initialUrl))

@@ -51,7 +51,7 @@ namespace WinDoc
             html.Write ("</head><body>");
             html.Write (htmlContent);
             html.Write ("</body></html>\n");
-            return html.ToString ();
+			return html.ToString ();
 		}
 	}
 }
