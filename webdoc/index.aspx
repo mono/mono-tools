@@ -5,12 +5,12 @@
 
 <html>
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
     <title><%=GetTitle ()%></title>
     <link rel="stylesheet" type="text/css" href="common.css" media="all" title="Default Style"/>
     <link rel="stylesheet" type="text/css" href="main.css" media="all" />
     <link type="text/css" rel="stylesheet" href="ptree/tree.css"/>
 	<link type="text/css" rel="stylesheet" href="sidebar.css"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
     <% = Global.IncludeExternalHeader (Global.ExternalResourceType.Css) %>
     <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Css) %>
   </head>
