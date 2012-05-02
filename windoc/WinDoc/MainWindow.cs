@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -233,7 +234,9 @@ namespace WinDoc
 		void LoadHtml (string html)
 		{
 			loadedFromString = true;
-			docBrowser.DocumentText = html;
+			var documentUri = Path.Combine (Program.MonoDocDir, "doc.html");
+			File.WriteAllText (documentUri, html);
+			docBrowser.Navigate ("file://" + Path.GetFullPath (documentUri));
 		}
 
 		bool ShowNodeInTree (Node node)

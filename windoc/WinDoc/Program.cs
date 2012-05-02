@@ -11,7 +11,7 @@ namespace WinDoc
 {
 	static class Program
 	{
-		static string MonodocDir;
+		static string monodocDir;
 
 		[STAThread]
 		static void Main(string[] args)
@@ -55,8 +55,8 @@ namespace WinDoc
 		
 		static void PrepareCache ()
 		{
-			MonodocDir = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc", "Caches");
-			var mdocimages = Path.Combine (MonodocDir, "mdocimages");
+			monodocDir = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc", "Caches");
+			var mdocimages = Path.Combine (monodocDir, "mdocimages");
 			if (!Directory.Exists (mdocimages)){
 				try {
 					Directory.CreateDirectory (mdocimages);
@@ -72,7 +72,7 @@ namespace WinDoc
 				if (!res.EndsWith (".png") || res.EndsWith (".jpg"))
 					continue;
 				
-				var image = Path.Combine (MonodocDir, "mdocimages", res);
+				var image = Path.Combine (monodocDir, "mdocimages", res);
 				if (File.Exists (image))
 					continue;
 				
@@ -102,6 +102,12 @@ namespace WinDoc
 		public static BookmarkManager BookmarkManager {
 			get;
 			private set;
+		}
+
+		public static string MonoDocDir {
+			get {
+				return monodocDir;
+			}
 		}
 	}
 }
