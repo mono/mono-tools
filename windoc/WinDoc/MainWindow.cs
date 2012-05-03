@@ -241,6 +241,9 @@ namespace WinDoc
 
 		bool ShowNodeInTree (Node node)
 		{
+			if (node == null)
+				return false;
+
 			TreeNode treeNode;
 
 			if (!nodeToTreeNodeMap.TryGetValue (node, out treeNode)) {
