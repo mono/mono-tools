@@ -247,6 +247,8 @@ namespace WinDoc
 			TreeNode treeNode;
 
 			if (!nodeToTreeNodeMap.TryGetValue (node, out treeNode)) {
+				if (node.Parent == null)
+					return false;
 				ShowNodeInTree (node.Parent);
 				if (!nodeToTreeNodeMap.TryGetValue (node.Parent, out treeNode))
 					return false;
