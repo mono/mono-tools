@@ -151,7 +151,11 @@ namespace Gendarme.Rules.BadPractice {
 					continue;
 
 				// ... to System.Console ...
-				MethodReference mr = (ins.Operand as MethodReference);
+				MethodReference mr = ins.Operand as MethodReference;
+                
+                if (mr == null)
+                    continue;
+
 				if (!mr.DeclaringType.IsNamed ("System", "Console"))
 					continue;
 
