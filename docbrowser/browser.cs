@@ -733,6 +733,15 @@ public class Browser {
 		
 		Node node;
 		
+		/*
+		 * The webkit library converts the url titles (N:, T:, etc.) to lower case (n:, t:, etc.)
+		 * when clicking on a link. Therefore we need to convert them to upper case, since the
+		 * monodoc backend only understands upper case titles (except for root:, afaik).
+		 */
+		string[] urlParts = url.Split (':');
+		if (urlParts [0].Length == 1)
+			url = urlParts [0].ToUpper () + url.Substring (1);
+			
 		Console.Error.WriteLine ("Trying: {0}", url);
 		try {
 			string res = Browser.GetHtml (url, null, help_tree, out node);
