@@ -85,11 +85,13 @@ namespace Gendarme.Rules.Maintainability {
 				return RuleResult.DoesNotApply;
 
 			int depth = 0;
-			while (type.BaseType != null) {
-				type = type.BaseType.Resolve ();
-				if (type == null)
+			TypeDefinition temp = type;
+			while (temp.BaseType != null)
+			{
+				temp = temp.BaseType.Resolve();
+				if (temp == null)
 					break;
-				if (countExternalDepth || Runner.Assemblies.Contains (type.Module.Assembly))
+				if (countExternalDepth || Runner.Assemblies.Contains(temp.Module.Assembly))
 					depth++;
 			}
 

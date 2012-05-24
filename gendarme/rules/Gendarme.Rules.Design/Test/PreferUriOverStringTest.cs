@@ -52,6 +52,11 @@ namespace Test.Rules.Design {
 			get;
 			set;
 		}
+		public string CUR
+		{
+			get; 
+			set;
+		}
 
 		public Uri GetUri ()
 		{
@@ -117,6 +122,7 @@ namespace Test.Rules.Design {
 		{
 			AssertRuleSuccess (SimpleMethods.EmptyMethod);
 			AssertRuleSuccess<GoodUris> ("GetUri");
+			AssertRuleSuccess<GoodUris>("get_CUR");
 			AssertRuleSuccess<GoodUris> ("GetNewLink");
 			AssertRuleSuccess<GoodUris> ("OverloadedMethod", new Type [] { typeof (string) });
 		}

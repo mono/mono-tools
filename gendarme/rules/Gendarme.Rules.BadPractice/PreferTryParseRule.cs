@@ -118,6 +118,7 @@ namespace Gendarme.Rules.BadPractice {
 		static bool HasTryParseMethod (TypeDefinition type)
 		{
 			bool present = false;
+
 			if (!has_try_parse.TryGetValue (type, out present)) {
 				foreach (MethodReference method in type.Methods) {
 					if (MethodSignatures.TryParse.Matches (method)) {
@@ -162,7 +163,8 @@ namespace Gendarme.Rules.BadPractice {
 				if (!MethodSignatures.Parse.Matches (mr))
 					continue;
 
-				if (!HasTryParseMethod (mr.DeclaringType.Resolve ()))
+				TypeDefinition declaringType = mr.DeclaringType.Resolve();
+				if (declaringType != null && !HasTryParseMethod(declaringType))
 					continue;
 				
 				// if inside a try (catch/finally) block then...
