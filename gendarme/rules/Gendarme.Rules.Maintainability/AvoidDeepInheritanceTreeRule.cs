@@ -86,8 +86,7 @@ namespace Gendarme.Rules.Maintainability {
 
 			int depth = 0;
 			TypeDefinition temp = type;
-			while (temp.BaseType != null)
-			{
+			while (temp.BaseType != null) {
 				temp = temp.BaseType.Resolve();
 				if (temp == null)
 					break;

@@ -96,8 +96,7 @@ namespace Gendarme.Rules.Naming {
 		[DefaultValue (DefaultMaxDepth)]
 		[Description ("The depth at which namespaces may be nested without triggering a defect.")]
 		public int MaxDepth {
-			get
-			{
+			get {
 				return max_depth;
 			}
 			set {
@@ -153,12 +152,9 @@ namespace Gendarme.Rules.Naming {
 			return Runner.CurrentRuleResult;
 		}
 
-		public override string Solution
-		{
-			get
-			{
-				return string.Format("Try to keep the depth below {0}, with an additional one for specialization (e.g. Design, Interop, Permissions).",
-					MaxDepth);
+		public override string Solution {
+			get {
+				return string.Format("Try to keep the depth below {0}, with an additional one for specialization (e.g. Design, Interop, Permissions).", MaxDepth);
 			}
 		}
 	}
