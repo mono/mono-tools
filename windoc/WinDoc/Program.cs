@@ -11,6 +11,7 @@ namespace WinDoc
 {
 	static class Program
 	{
+		static readonly string externalMonodocPath = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.CommonApplicationData), "Monodoc");
 		static string monodocDir;
 
 		[STAThread]
@@ -31,6 +32,8 @@ namespace WinDoc
 			Root = RootTree.LoadTree (null);
 			foreach (var dir in docSources)
 				Root.AddSource (dir);
+			if (Directory.Exists (externalMonodocPath))
+				Root.AddSource (externalMonodocPath);
 			
 			var winDocPath = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc");
 			if (!Directory.Exists (winDocPath))
