@@ -182,3 +182,24 @@ div.related ul {
 	padding-left: 1em;
 }
 
+.native-browser {
+	display: inline-block;
+	color: #333 !important;
+	text-decoration:none !important;
+	font-size: 88%;
+	padding: 4px 10px 4px 10px;
+	border: 1px solid silver;
+	border-bottom-color: #bcbcbc;
+	border-radius: 3px;
+	background: #f2f2f2;
+}
+
+.native-browser:hover {
+	background: #ddd;
+	color: black;
+}
+
+.native-browser img {
+	vertical-align: center;
+	margin-right: 3px;
+}

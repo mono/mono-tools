@@ -106,7 +106,19 @@ update_tree = function () {
   }
 };
 update_tree ();
+add_native_browser_link = function () {
+	var contentDiv = $('#content_frame').contents ().find ('div[class=Content]').first ();
+	if (contentDiv.length > 0) {
+		var id = contentDiv.attr ('id').replace (':Summary', '');
+		var h2 = contentDiv.children ('h2').first ();
+		if (h2.prev ().attr ('class') != 'native-browser')
+		h2.before ('<a class="native-browser" href="mdoc://' + encodeURIComponent (id) + '"><span class="native-icon"><img src="images/native-browser-icon.png" /></span>Open in Native Browser</a>');
+	}
+};
+add_native_browser_link ();
+
 content_frame.load (update_tree);
+content_frame.load (add_native_browser_link);
 </script>
 <% = Global.IncludeExternalHeader (Global.ExternalResourceType.Javascript) %>
 <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Javascript) %>
