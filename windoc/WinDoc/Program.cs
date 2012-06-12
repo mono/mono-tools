@@ -24,11 +24,18 @@ namespace WinDoc
 				{ "docdir=", dir => docSources.Add (dir) },
 			}.Parse (args);
 
+			if (initialUrl.StartsWith ("mdoc://")) {
+				initialUrl = initialUrl.Substring ("mdoc://".Length); // Remove leading scheme
+				initialUrl = initialUrl.Substring (0, initialUrl.Length - 1); // Remove trailing '/'
+				initialUrl = Uri.UnescapeDataString (initialUrl); // Unescape URL
+			}
+
 			SetupLogging ();
 			PrepareCache ();
 			ExtractImages ();
 
 			// Load documentation
+			Directory.SetCurrentDirectory (Path.GetDirectoryName (typeof (Program).Assembly.Location));
 			Root = RootTree.LoadTree (null);
 			foreach (var dir in docSources)
 				Root.AddSource (dir);
