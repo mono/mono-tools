@@ -482,6 +482,16 @@ namespace GuiCompare {
 									break;
 								}
 							}
+							
+							if (m1[0].Name[0] == m2[0].Name[0]) {
+								CompareAttributes (comparison, (ICompAttributeContainer)m1[0], (ICompAttributeContainer)m2[0]);
+								if (m1.Count > 1)
+									CompareAttributes (comparison, (ICompAttributeContainer)m1[1], (ICompAttributeContainer)m2[1]);
+							} else {
+								CompareAttributes (comparison, (ICompAttributeContainer)m1[0], (ICompAttributeContainer)m2[1]);
+								if (m1.Count > 1)
+									CompareAttributes (comparison, (ICompAttributeContainer)m1[1], (ICompAttributeContainer)m2[0]);
+							}
 						}
 
 						// Compare indexer parameters
