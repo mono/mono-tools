@@ -104,7 +104,7 @@ public partial class MainWindow: Gtk.Window
 		Gdk.Color.Parse ("#000000", ref black);		
 	}
 
-	public MainWindow () : base(Gtk.WindowType.Toplevel)
+	public MainWindow (string profilePath) : base(Gtk.WindowType.Toplevel)
 	{
 		Build ();
 		notebook1.Page = 1;
@@ -114,7 +114,7 @@ public partial class MainWindow: Gtk.Window
 		//
 		// Configure the GUI
 		//
-		info_manager = new InfoManager (this);
+		info_manager = new InfoManager (this, profilePath);
 		
 		treeStore = new Gtk.TreeStore (typeof (string), // Name
 		                               typeof (Gdk.Pixbuf), typeof (Gdk.Pixbuf), // TypeIcon, StatusIcon

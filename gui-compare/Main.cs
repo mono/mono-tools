@@ -36,7 +36,7 @@ namespace GuiCompare
 		{
 			Application.Init ();
 			
- 			try { 
+ 			try {
 				InfoManager.Init ();
 			} catch (Exception e) {
 				Dialog d = new Dialog ("Error", null, DialogFlags.Modal, new object [] {
@@ -46,7 +46,12 @@ namespace GuiCompare
 				d.Run ();
 				return;
 			}
-			MainWindow win = new MainWindow ();
+			
+			string profile_path = null;
+			if (args.Length != 0 && args[0].StartsWith ("--profile-path="))
+				profile_path = args[0].Substring (15);
+			
+			MainWindow win = new MainWindow (profile_path);
 			win.Show ();
 			if (args.Length == 2 && File.Exists (args [0]) && File.Exists (args [1])){
 				win.ComparePaths (args [0], args [1]);
