@@ -205,6 +205,7 @@ namespace GuiCompare
 			"System.AddIn",
 			"System.AddIn.Contract",
 			"System.Configuration",
+			"System.ComponentModel.DataAnnotations",
 			"System.Core", 
 			// "System.Configuration.Install",
 			"System.Data",
