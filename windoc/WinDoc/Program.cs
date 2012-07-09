@@ -30,9 +30,14 @@ namespace WinDoc
 				initialUrl = Uri.UnescapeDataString (initialUrl); // Unescape URL
 			}
 
-			SetupLogging ();
-			PrepareCache ();
-			ExtractImages ();
+			// Don't crash if any of these steps fails
+			try {
+				PrepareCache ();
+				SetupLogging ();
+				ExtractImages ();
+			} catch (Exception e) {
+				Console.WriteLine ("Non-fatal exception during initialization: {0}", e);
+			}
 
 			// Load documentation
 			Directory.SetCurrentDirectory (Path.GetDirectoryName (typeof (Program).Assembly.Location));
@@ -67,11 +72,8 @@ namespace WinDoc
 		{
 			monodocDir = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData), "WinDoc", "Caches");
 			var mdocimages = Path.Combine (monodocDir, "mdocimages");
-			if (!Directory.Exists (mdocimages)){
-				try {
-					Directory.CreateDirectory (mdocimages);
-				} catch {}
-			}
+			if (!Directory.Exists (mdocimages))
+				Directory.CreateDirectory (mdocimages);
 		}
 		
 		static void ExtractImages ()
