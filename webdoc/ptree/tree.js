@@ -108,10 +108,12 @@ function PTree ()
 			eltDescription.appendChild (eltText);
 			var parent = this;
 			eltDescription.onclick = function (e) {
+				if (!e)
+					e = window.event;
+				if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.modifiers > 0)
+					return;
 				_this.SelectNode (eltDiv);
 				if (parent.onClickCallback) {
-					if (!e)
-						e = window.event;
 					e.cancelBubble = true;
 					e.returnValue = false;
 					if (e.stopPropagation) {

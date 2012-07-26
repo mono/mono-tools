@@ -314,6 +314,16 @@ namespace Mono.Website.Handlers
 			ctx.Response.Write (tree_path);
 			ctx.Response.Write (@"' />
 <script type='text/javascript'>
+
+function try_change_page (link, e)
+{
+	if (!e)
+		e = window.event;
+	if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.modifiers > 0)
+		return;
+	window.parent.change_page (link)
+}
+
 function login (rurl)
 {
 	document.location.href = 'login.aspx?ReturnUrl=' + rurl;
@@ -441,7 +451,7 @@ s.parentNode.insertBefore(ga, s);
  						theMatch.Groups[4].ToString());
 			
 			} else {
-				updated_link = String.Format ("{0}{1}?link={2}{3} onclick=\"window.parent.change_page('{2}')\" {4}",
+				updated_link = String.Format ("{0}{1}?link={2}{3} onclick=\"try_change_page('{2}')\" {4}",
 					theMatch.Groups[1].ToString(),
                                         requestPath,
                                         HttpUtility.UrlEncode (link.Replace ("file://","")),
