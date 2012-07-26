@@ -346,7 +346,10 @@ namespace GuiCompare {
 		public CompAttribute (string typename)
 			: base (typename, CompType.Attribute)
 		{
+			Properties = new SortedDictionary<string, string> ();
 		}
+
+		public IDictionary<string, string> Properties { get; private set;  }
 	}
 	
 	public abstract class CompGenericParameter : CompNamed, ICompAttributeContainer {

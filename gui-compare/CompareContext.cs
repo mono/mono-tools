@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace GuiCompare {
 
@@ -320,9 +321,26 @@ namespace GuiCompare {
 			
 			List<CompNamed> reference_attrs = reference_container.GetAttributes ();
 			List<CompNamed> target_attrs = target_container.GetAttributes ();
-			
-			reference_attrs.Sort (CompNamed.Compare);
-			target_attrs.Sort (CompNamed.Compare);
+
+			Comparison<CompNamed> comp = (x, y) => {
+				var r = CompNamed.Compare (x, y);
+				if (r != 0)
+					return r;
+
+				var xa = ((CompAttribute)x).Properties.Values.ToList ();
+				var ya = ((CompAttribute)y).Properties.Values.ToList ();
+
+				for (int i = 0; i < Math.Min (xa.Count, ya.Count); ++i) {
+					r = xa[i].CompareTo (ya[i]);
+					if (r != 0)
+						return r;
+				}
+
+				return 0;
+			};
+
+			reference_attrs.Sort (comp);
+			target_attrs.Sort (comp);
 			
 			while (m < reference_attrs.Count || a < target_attrs.Count) {
 				if (m == reference_attrs.Count) {
@@ -331,6 +349,7 @@ namespace GuiCompare {
 						case "System.Diagnostics.DebuggerDisplayAttribute":
 						case "System.Runtime.CompilerServices.AsyncStateMachineAttribute":
 						case "System.Runtime.CompilerServices.IteratorStateMachineAttribute":
+						case "System.Diagnostics.DebuggerBrowsableAttribute":
 							// Ignore extra attributes in Mono source code
 						break;
 					default:
@@ -352,10 +371,9 @@ namespace GuiCompare {
 
 				if (c == 0) {
 					/* the names match, further investigation is required */
-// 					Console.WriteLine ("method {0} is in both, doing more comparisons", reference_list[m].Name);
 					ComparisonNode comparison = target_attrs[a].GetComparisonNode();
 					parent.AddChild (comparison);
-					//CompareParameters (comparison, reference_list[m], target_namespace [target_list[a]]);
+					CompareAttributeArguments (comparison, (CompAttribute)reference_attrs[m], (CompAttribute)target_attrs[a]);
 					m++;
 					a++;
 				}
@@ -370,6 +388,92 @@ namespace GuiCompare {
 					a++;
 				}
 			}
+		}
+
+		void CompareAttributeArguments (ComparisonNode parent, CompAttribute referenceAttribute, CompAttribute actualAttribute)
+		{
+			// Ignore all parameter differences for some attributes
+			switch (referenceAttribute.Name) {
+			case "System.Diagnostics.DebuggerDisplayAttribute":
+			case "System.Diagnostics.DebuggerTypeProxyAttribute":
+			case "System.Runtime.CompilerServices.CompilationRelaxationsAttribute":
+			case "System.Reflection.AssemblyFileVersionAttribute":
+			case "System.Reflection.AssemblyCompanyAttribute":
+			case "System.Reflection.AssemblyCopyrightAttribute":
+			case "System.Reflection.AssemblyProductAttribute":
+			case "System.Reflection.AssemblyTrademarkAttribute":
+			case "System.Reflection.AssemblyInformationalVersionAttribute":
+			case "System.Reflection.AssemblyKeyFileAttribute":
+				return;
+			}
+
+			foreach (var entry in referenceAttribute.Properties) {
+				if (!actualAttribute.Properties.ContainsKey (entry.Key)) {
+
+					//
+					// Ignore missing value difference for default values
+					//
+					switch (referenceAttribute.Name) {
+					case "System.AttributeUsageAttribute":
+						// AllowMultiple defaults to false
+						if (entry.Key == "AllowMultiple" && entry.Value == "False")
+							continue;
+						// Inherited defaults to true
+						if (entry.Key == "Inherited" && entry.Value == "True")
+							continue;
+						break;
+					case "System.ObsoleteAttribute":
+						if (entry.Key == "IsError" && entry.Value == "False")
+							continue;
+
+						if (entry.Key == "Message")
+							continue;
+
+						break;
+					}
+
+					parent.AddError (String.Format ("Property `{0}' value is not set. Expected value: {1}", entry.Key, entry.Value));
+					parent.Status = ComparisonStatus.Error;
+					continue;
+				}
+
+				var target_value = actualAttribute.Properties[entry.Key];
+
+				switch (referenceAttribute.Name) {
+				case "System.Runtime.CompilerServices.TypeForwardedFromAttribute":
+					if (entry.Key == "AssemblyFullName")
+						target_value = target_value.Replace ("neutral", "Neutral");
+					break;
+				case "System.Runtime.InteropServices.GuidAttribute":
+					if (entry.Key == "Value")
+						target_value = target_value.ToUpperInvariant ();
+					break;
+				case "System.ObsoleteAttribute":
+					if (entry.Key == "Message")
+						continue;
+
+					break;
+				}
+
+				if (target_value != entry.Value) {
+					parent.AddError (String.Format ("Expected value `{0}' for attribute property `{1}' but found `{2}'", entry.Value, entry.Key, target_value));
+					parent.Status = ComparisonStatus.Error;
+				}
+			}
+
+			
+			if (referenceAttribute.Properties.Count != actualAttribute.Properties.Count) {
+				foreach (var entry in actualAttribute.Properties) {
+					if (!referenceAttribute.Properties.ContainsKey (entry.Key)) {
+						parent.AddError (String.Format ("Property `{0}' should not be set", entry.Key));
+						parent.Status = ComparisonStatus.Error;
+						break;
+					}
+				}
+			}
+			
+
+			return;
 		}
 		
 		void CompareMembers (ComparisonNode parent,

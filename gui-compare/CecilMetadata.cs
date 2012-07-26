@@ -1188,55 +1188,213 @@ namespace GuiCompare {
 		public CecilAttribute (CustomAttribute ca)
 			: base (ca.Constructor.DeclaringType.FullName)
 		{
-			var sb = new StringBuilder ("[" + ca.Constructor.DeclaringType.FullName);
-			bool first = true;
-			
-			var cargs = ca.ConstructorArguments;
-			if (cargs != null && cargs.Count > 0) {
-				foreach (var argument in cargs) {
-					if (first) {
-						sb.Append (" (");
-						first = false;
-					} else
-						sb.Append (", ");
+			Dictionary<string, object> attribute_mapping = CreateAttributeMapping (ca);
 
-					sb.Append (FormatValue (argument.Value));
-				}
-				
-			}
+			foreach (string name in attribute_mapping.Keys) {
+				if (name == "TypeId")
+					continue;
 
-			var properties = ca.Properties;
-			if (properties != null && properties.Count > 0) {
-				foreach (var namedArg in properties) {
-					if (first) {
-						sb.Append (" (");
-						first = false;
-					} else
-						sb.Append (", ");
-					
-					sb.AppendFormat ("{0}={1}", namedArg.Name, FormatValue (namedArg.Argument.Value));
-				}
+				object o = attribute_mapping[name];
+				Properties.Add (name, o == null ? "null" : o.ToString ());
 			}
-			
-			if (!first)
-				sb.Append (')');
-			sb.Append ("]");
-			
-			ExtraInfo = sb.ToString ();
 		}
 
-		string FormatValue (object o)
+		static Dictionary<string, object> CreateAttributeMapping (CustomAttribute attribute)
 		{
-			if (o == null)
-				return "null";
+			var mapping = new Dictionary<string, object> ();
 
-			if (o is string)
-				return "\"" + o + "\"";
+			PopulateMapping (mapping, attribute);
 
-			if (o is bool)
-				return o.ToString ().ToLowerInvariant ();
-			
-			return o.ToString ();
+			var constructor = attribute.Constructor.Resolve ();
+			if (constructor == null || constructor.Parameters.Count == 0)
+				return mapping;
+
+			PopulateMapping (mapping, constructor, attribute);
+
+			return mapping;
+		}
+
+		static void PopulateMapping (Dictionary<string, object> mapping, CustomAttribute attribute)
+		{
+			foreach (var named_argument in attribute.Properties) {
+				var name = named_argument.Name;
+				var arg = named_argument.Argument;
+
+				if (arg.Value is CustomAttributeArgument)
+					arg = (CustomAttributeArgument) arg.Value;
+
+				mapping.Add (name, GetArgumentValue (arg.Type, arg.Value));
+			}
+		}
+
+		static Dictionary<FieldReference, int> CreateArgumentFieldMapping (MethodDefinition constructor)
+		{
+			Dictionary<FieldReference, int> field_mapping = new Dictionary<FieldReference, int> ();
+
+			int? argument = null;
+
+			foreach (Instruction instruction in constructor.Body.Instructions) {
+				switch (instruction.OpCode.Code) {
+				case Code.Ldarg_1:
+					argument = 1;
+					break;
+				case Code.Ldarg_2:
+					argument = 2;
+					break;
+				case Code.Ldarg_3:
+					argument = 3;
+					break;
+				case Code.Ldarg:
+				case Code.Ldarg_S:
+					argument = ((ParameterDefinition) instruction.Operand).Index + 1;
+					break;
+
+				case Code.Stfld:
+					FieldReference field = (FieldReference) instruction.Operand;
+					if (field.DeclaringType.FullName != constructor.DeclaringType.FullName)
+						continue;
+
+					if (!argument.HasValue)
+						break;
+
+					if (!field_mapping.ContainsKey (field))
+						field_mapping.Add (field, (int) argument - 1);
+
+					argument = null;
+					break;
+				}
+			}
+
+			return field_mapping;
+		}
+
+		static Dictionary<PropertyDefinition, FieldReference> CreatePropertyFieldMapping (TypeDefinition type)
+		{
+			Dictionary<PropertyDefinition, FieldReference> property_mapping = new Dictionary<PropertyDefinition, FieldReference> ();
+
+			foreach (PropertyDefinition property in type.Properties) {
+				if (property.GetMethod == null)
+					continue;
+				if (!property.GetMethod.HasBody)
+					continue;
+
+				foreach (Instruction instruction in property.GetMethod.Body.Instructions) {
+					if (instruction.OpCode.Code != Code.Ldfld)
+						continue;
+
+					FieldReference field = (FieldReference) instruction.Operand;
+					if (field.DeclaringType.FullName != type.FullName)
+						continue;
+
+					property_mapping.Add (property, field);
+					break;
+				}
+			}
+
+			return property_mapping;
+		}
+
+		static void PopulateMapping (Dictionary<string, object> mapping, MethodDefinition constructor, CustomAttribute attribute)
+		{
+			if (!constructor.HasBody)
+				return;
+
+			if (constructor.DeclaringType.FullName == "System.Runtime.CompilerServices.DecimalConstantAttribute") {
+				var ca = attribute.ConstructorArguments;
+				var dca = constructor.Parameters[2].ParameterType == constructor.Module.TypeSystem.Int32 ?
+					new DecimalConstantAttribute ((byte) ca[0].Value, (byte) ca[1].Value, (int) ca[2].Value, (int) ca[3].Value, (int) ca[4].Value) :
+					new DecimalConstantAttribute ((byte) ca[0].Value, (byte) ca[1].Value, (uint) ca[2].Value, (uint) ca[3].Value, (uint) ca[4].Value);
+
+				mapping.Add ("Value", dca.Value);
+				return;
+			}
+
+			var field_mapping = CreateArgumentFieldMapping (constructor);
+			var property_mapping = CreatePropertyFieldMapping ((TypeDefinition) constructor.DeclaringType);
+
+			foreach (var pair in property_mapping) {
+				int argument;
+				if (!field_mapping.TryGetValue (pair.Value, out argument))
+					continue;
+
+				var ca_arg = attribute.ConstructorArguments[argument];
+				if (ca_arg.Value is CustomAttributeArgument)
+					ca_arg = (CustomAttributeArgument) ca_arg.Value;
+				
+				mapping[pair.Key.Name] = GetArgumentValue (ca_arg.Type, ca_arg.Value);
+			}
+		}
+
+		static object GetArgumentValue (TypeReference reference, object value)
+		{
+			var type = reference.Resolve ();
+			if (type == null)
+				return value;
+
+			if (type.IsEnum) {
+				if (IsFlaggedEnum (type))
+					return GetFlaggedEnumValue (type, value);
+
+				return GetEnumValue (type, value);
+			}
+
+			return value;
+		}
+
+		static bool IsFlaggedEnum (TypeDefinition type)
+		{
+			if (!type.IsEnum)
+				return false;
+
+			if (type.CustomAttributes.Count == 0)
+				return false;
+
+			foreach (CustomAttribute attribute in type.CustomAttributes)
+				if (attribute.Constructor.DeclaringType.FullName == "System.FlagsAttribute")
+					return true;
+
+			return false;
+		}
+
+		static object GetFlaggedEnumValue (TypeDefinition type, object value)
+		{
+			long flags = Convert.ToInt64 (value);
+			var signature = new StringBuilder ();
+
+			for (int i = type.Fields.Count - 1; i >= 0; i--) {
+				FieldDefinition field = type.Fields[i];
+
+				if (!field.HasConstant)
+					continue;
+
+				long flag = Convert.ToInt64 (field.Constant);
+
+				if (flag == 0)
+					continue;
+
+				if ((flags & flag) == flag) {
+					if (signature.Length != 0)
+						signature.Append (", ");
+
+					signature.Append (field.Name);
+					flags -= flag;
+				}
+			}
+
+			return signature.ToString ();
+		}
+
+		static object GetEnumValue (TypeDefinition type, object value)
+		{
+			foreach (FieldDefinition field in type.Fields) {
+				if (!field.HasConstant)
+					continue;
+
+				if (Comparer.Default.Compare (field.Constant, value) == 0)
+					return field.Name;
+			}
+
+			return value;
 		}
 	}
 

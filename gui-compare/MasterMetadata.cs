@@ -841,6 +841,9 @@ namespace GuiCompare {
 			if (props.Count == 0)
 				return;
 
+			foreach (var entry in props)
+				Properties.Add (entry.Key, entry.Value);
+
 			if (name == "System.Runtime.CompilerServices.TypeForwardedToAttribute") {
 				string dest;
 				if (props.TryGetValue ("Destination", out dest) && !String.IsNullOrEmpty (dest))
