@@ -404,6 +404,10 @@ namespace GuiCompare {
 			case "System.Reflection.AssemblyTrademarkAttribute":
 			case "System.Reflection.AssemblyInformationalVersionAttribute":
 			case "System.Reflection.AssemblyKeyFileAttribute":
+
+			// Don't care about these for now
+			case "System.ComponentModel.EditorAttribute":
+			case "System.ComponentModel.DesignerAttribute":
 				return;
 			}
 

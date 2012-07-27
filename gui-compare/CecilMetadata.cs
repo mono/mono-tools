@@ -923,6 +923,7 @@ namespace GuiCompare {
 		                                               MethodAttributes.Static |
 		                                               MethodAttributes.Abstract |
 		                                               MethodAttributes.HideBySig |
+//		                                               MethodAttributes.HasSecurity |
 		                                               MethodAttributes.SpecialName);
 		public override string GetMemberAccess ()
 		{
