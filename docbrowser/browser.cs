@@ -946,6 +946,7 @@ ExtLoop:
 	void delete_event_cb (object o, DeleteEventArgs args)
 	{
 		Application.Quit ();
+		args.RetVal = true;
 	}
 	void on_print_activate (object sender, EventArgs e) 
 	{
