@@ -183,6 +183,7 @@ div.related ul {
 }
 
 .native-browser {
+	font-family: "Lucida Grande", Geneva, Helvetica, Arial, Verdana, Sans-Serif;
 	display: inline-block;
 	color: #333 !important;
 	text-decoration:none !important;
