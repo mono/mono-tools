@@ -108,7 +108,7 @@ update_tree = function () {
 update_tree ();
 add_native_browser_link = function () {
 	var contentDiv = $('#content_frame').contents ().find ('div[class=Content]').first ();
-	if (contentDiv.length > 0) {
+	if (contentDiv.length > 0 && contentDiv.attr ('id')) {
 		var id = contentDiv.attr ('id').replace (':Summary', '');
 		var h2 = contentDiv.children ('h2').first ();
 		if (h2.prev ().attr ('class') != 'native-browser')
