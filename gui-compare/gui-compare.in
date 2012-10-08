@@ -1,3 +1,5 @@
 #!/bin/sh
 
+export DYLD_FALLBACK_LIBRARY_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib:/usr/lib 
+
 exec mono $MONO_OPTIONS "@prefix@/lib/gui-compare/gui-compare.exe" "$@"
