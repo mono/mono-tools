@@ -18,7 +18,8 @@
     <script language="c#" runat="server">
 public string GetTitle ()
 {
-	return Global.help_tree.GetTitle (Request.QueryString ["link"]);
+	return "Monodoc";
+//	return Global.help_tree.GetTitle (Request.QueryString ["link"]);
 }
 
 // Get the path to be shown in the content fram
@@ -116,9 +117,16 @@ add_native_browser_link = function () {
 	}
 };
 add_native_browser_link ();
+change_window_title = function () {
+    var contentTitle = $('#content_frame').contents ().find ('title').text ();
+    var title = contentTitle + "- Monodoc";
+    $('title').text (title);
+};
+change_window_title ();
 
 content_frame.load (update_tree);
 content_frame.load (add_native_browser_link);
+content_frame.load (change_window_title);
 </script>
 <% = Global.IncludeExternalHeader (Global.ExternalResourceType.Javascript) %>
 <% = Global.IncludeExternalFooter (Global.ExternalResourceType.Javascript) %>
