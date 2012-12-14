@@ -27,7 +27,6 @@
 .tree-label-selected a:hover
 {
 	text-decoration: none;
-	background-color: #f2f2f2;
 	color: #2a2c2f;
 }
 
@@ -35,13 +34,11 @@
 {
 	text-decoration: none;
 	color: #2a2c2f;
-	background: none repeat scroll 0 0 #f2f2f2;;
 }
 
 .tree-label a:hover
 {
 	text-decoration: none;
-	background: none repeat scroll 0 0 #F7F7F7;
 	color: #2a2c2f;
 }
 

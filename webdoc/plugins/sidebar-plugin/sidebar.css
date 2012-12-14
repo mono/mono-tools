@@ -1,3 +1,6 @@
+#side {
+	float: left;
+}
 .tab {
 	display: none !important;
 }

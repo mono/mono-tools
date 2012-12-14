@@ -1,6 +1,6 @@
 $(function () {
 //a hack for sizing our iframe correctly
-	var getHeight = function () {
+/*	var getHeight = function () {
 	<!--
 	var viewportwidth;
 	var viewportheight;
@@ -31,8 +31,8 @@ $(function () {
 	var main_part = $('#main_part');
 	var content_frame = main_part.find('#content_frame');
 	var resize_mainpart = function () {
-		main_part.height (getHeight() - 75);
-		main_part.children('#side').css ('height', '100%');
+//		main_part.height (getHeight() - 75);
+//		main_part.children('#side').css ('height', '100%');
 		content_frame.css ('height', '97.5%');
 	}
 	
@@ -42,5 +42,5 @@ $(function () {
 		resizeTimer = setTimeout(resize_mainpart, 100);
 	});
 	
-	resize_mainpart ();
+	resize_mainpart ();*/
 });
