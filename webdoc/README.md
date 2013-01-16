@@ -1,21 +1,41 @@
-Configuration options
-=====================
+Webdoc
+======
 
-Webdoc can be configured with the following variables in the web.config file:
+Webdoc is the web container for monodoc. It normally includes:
 
- - `MonodocRootDir`: point where you monodoc source root is
- - `GoogleAnalytics`: if you want to register your webdoc instance for analytics, enter your API key in that variable
- - `ExternalHeader`/`ExternalFooter`: path to an external asset definition file for custom header/footer, definition of the file given below
+ - a header
+ - a footer
+ - a navigation tree
+ - the monodoc iframe
 
-External asset file syntax
---------------------------
+Structure
+---------
 
-Three types of ressources can be declared: `html`, `css` and `javascript`. You usually wants at least `html` but none of the fields are mandatory. You declare one resource per line in a key-value pair separated by an equal ('=') sign with the right hand-side being the path to the asset.
+Each webdoc instance consists of a skin (theme, chrome) and several plugins. 
 
-An example of such file follows:
+Plugins are located in the plugins directory. The plugins currently available are:
 
-      # Comments begin with a hash
-      html=external/header.html
-      css=external/header.css
-      javascript=external/header.js
+ - iframe: helps size the iframe correctly in your webdoc instance. Recommended unless you want to 
+use your own code for that
+ - sidebar: left navigation tree. Again, recommended unless you feel like writign and wiring up your own (good luck!)
+ - fast search: searches while you type
+ - full search: returns a page of search results (`search.html`). Can be styled however you like.
 
+Skins are located in the skins directory. Each skin consists of:
+
+ - `header.html` (required)
+ - `footer.html` (required)
+ - additional css and js (usually placed in the `common-extension.css`/`common-extension.js` file)
+ - images folder (optional)
+
+How to Use
+----------
+
+Making a new instance of webdoc is easy. First, you need to edit web.config to point 
+to the location of your monodoc source root.
+
+`MonodocRootDir` -> monodoc source root
+
+Next, throw your skin into the skins directory (or use one that's already there).
+
+Edit the `plugins.def` file, uncommenting the plugins you want to use, and setting the location of your skin.
