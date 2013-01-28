@@ -49,12 +49,12 @@ namespace WinDoc
 			indexManager.UpdaterChange += IndexUpdaterCallback;
 			indexManager.CheckIndexIsFresh ().ContinueWith (t => {
 				if (t.IsFaulted)
-					Console.WriteLine ("Error while checking indexes: {0}", t.Exception);
+					Logger.LogError ("Error while checking indexes", t.Exception);
 				else if (!t.Result)
 					indexManager.PerformSearchIndexCreation ();
 				else
 					indexManager.AdvertiseFreshIndex ();
-			}).ContinueWith (t => Console.WriteLine ("Error while creating indexes: {0}", t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+			}).ContinueWith (t => Logger.LogError ("Error while creating indexes", t.Exception), TaskContinuationOptions.OnlyOnFaulted);
 
 			SetupSearch ();
 			SetupDocTree ();
@@ -123,7 +123,7 @@ namespace WinDoc
 
 		void SetupDocTree ()
 		{
-			var node = (Node)Program.Root;
+			var node = Program.Root.RootNode;
 			var rootTreeNode = new TreeNode ();
 
 			foreach (Node child in node.Nodes)
@@ -137,7 +137,7 @@ namespace WinDoc
 			docTree.AfterSelect += (s, e) => {
 				var treeNode = e.Node;
 				var n = treeNode.Tag as Node;
-				LoadUrl (n.PublicUrl, true, n.tree.HelpSource);
+				LoadUrl (n.PublicUrl, true, n.Tree.HelpSource);
 			};
 			docTree.DrawNode += CustomDrawing.DrawDocTreeNodeText;
 		}

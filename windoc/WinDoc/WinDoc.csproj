@@ -69,6 +69,7 @@
     <Compile Include="history.cs" />
     <Compile Include="IndexSearcher.cs" />
     <Compile Include="IndexUpdateManager.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -41,7 +41,7 @@ namespace WinDoc
 
 			// Load documentation
 			Directory.SetCurrentDirectory (Path.GetDirectoryName (typeof (Program).Assembly.Location));
-			Root = RootTree.LoadTree (null);
+			Root = RootTree.LoadTree ();
 			foreach (var dir in docSources)
 				Root.AddSource (dir);
 			if (Directory.Exists (externalMonodocPath))
@@ -56,11 +56,6 @@ namespace WinDoc
 															.Where (File.Exists),
 			                                             winDocPath);
 			BookmarkManager = new BookmarkManager (winDocPath);
-			
-			// Configure the documentation rendering.
-			SettingsHandler.Settings.EnableEditing = false;
-			SettingsHandler.Settings.preferred_font_size = 200;
-			HelpSource.use_css = true;
 
 			Application.ApplicationExit += (s, e) => BookmarkManager.SaveBookmarks ();
 			Application.EnableVisualStyles();

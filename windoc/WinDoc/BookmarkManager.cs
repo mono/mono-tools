@@ -96,8 +96,10 @@ namespace WinDoc
 			if (!Directory.Exists (storagePath))
 				Directory.CreateDirectory (storagePath);
 			var path = Path.Combine (storagePath, "bookmarks.xml");
-			using (var file = File.Create (path))
-				serializer.Serialize (file, bookmarks);
+			try {
+				using (var file = File.Create (path))
+					serializer.Serialize (file, bookmarks);
+			} catch (UnauthorizedAccessException) {}
 		}
 		
 		public void CommitBookmarkChange (Entry entry)
