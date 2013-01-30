@@ -91,6 +91,10 @@
       <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
       <Name>Gendarme.Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\cecil\symbols\mdb\Mono.Cecil.Mdb.csproj">
+      <Project>{8559DD7F-A16F-46D0-A05A-9139FAEBA8FD}</Project>
+      <Name>Mono.Cecil.Mdb</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="ChangeLog" />
@@ -132,15 +136,19 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild">
+    <Copy
+      SourceFiles="$(TargetDir)..\..\..\rules\rules.xml"
+      DestinationFolder="$(TargetDir)"
+      SkipUnchangedFiles="True"
+    />
+  </Target>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(TargetDir)..\..\..\rules\rules.xml" "$(TargetDir)"
-copy "$(TargetDir)..\..\..\..\..\cecil\bin\net_4_0_Release\Mono.Cecil.Pdb.*" "$(TargetDir)"
-copy "$(TargetDir)..\..\..\..\..\cecil\bin\net_4_0_Release\Mono.Cecil.Mdb.*" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <MonoDevelop>
