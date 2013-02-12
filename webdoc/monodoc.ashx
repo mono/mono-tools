@@ -24,6 +24,7 @@ using System.Xml;
 using System.Xml.Xsl;
 using System.Linq;
 using Monodoc;
+using Monodoc.Generators;
 using System.Text.RegularExpressions;
 
 namespace Mono.Website.Handlers
@@ -31,6 +32,7 @@ namespace Mono.Website.Handlers
 	public class MonodocHandler : IHttpHandler
 	{
 		static DateTime monodoc_timestamp, handler_timestamp;
+		HtmlGenerator generator = new HtmlGenerator (null);
 
 		static MonodocHandler ()
 		{
@@ -110,7 +112,7 @@ namespace Mono.Website.Handlers
 			// Walk the url, found what we are supposed to render.
 			//
 			string [] nodes = tree.Split (new char [] {'@'});
-			Node current_node = Global.help_tree;
+			Node current_node = Global.help_tree.RootNode;
 			for (int i = 0; i < nodes.Length; i++){
 				try {
 				current_node = (Node)current_node.Nodes [int.Parse (nodes [i])];
@@ -129,7 +131,7 @@ namespace Mono.Website.Handlers
 				w.WriteStartElement ("tree");
 				w.WriteAttributeString ("text", n.Caption);
 
-				if (n.tree != null && n.tree.HelpSource != null)
+				if (n.Tree != null && n.Tree.HelpSource != null)
 					w.WriteAttributeString ("action", HttpUtility.UrlEncode (n.PublicUrl));
 
 				if (n.Nodes != null){
@@ -218,13 +220,13 @@ namespace Mono.Website.Handlers
 				return;
 			Node n;
 			//Console.WriteLine ("Considering {0}", link);
-			string content = Global.help_tree.RenderUrl (link, out n);
 			CheckLastModified (context);
 			if (context.Response.StatusCode == 304){
 	   			//Console.WriteLine ("Keeping", link);
 
 				return;
 			}
+			string content = Global.help_tree.RenderUrl (link, generator, out n);
 
 			PrintDocs (content, n, context, GetHelpSource (n));
 		}
@@ -287,7 +289,7 @@ namespace Mono.Website.Handlers
 		HelpSource GetHelpSource (Node n)
 		{
 			if (n != null)
-				return n.tree.HelpSource;
+				return n.Tree.HelpSource;
 			return null;
 		}
 
@@ -389,16 +391,16 @@ s.parentNode.insertBefore(ga, s);
 			ctx.Response.Write (title);
 			ctx.Response.Write ("</title>\n");
 	
-			if (hs != null && hs.InlineCss != null) {
+			if (hs != null && HtmlGenerator.InlineCss != null) {
 				ctx.Response.Write ("<style type=\"text/css\">\n");
-				ctx.Response.Write (hs.InlineCss);
+				ctx.Response.Write (HtmlGenerator.InlineCss);
 				ctx.Response.Write ("</style>\n");
 			}
-			if (hs != null && hs.InlineJavaScript != null) {
+			/*if (hs != null && hs.InlineJavaScript != null) {
 				ctx.Response.Write ("<script type=\"text/JavaScript\">\n");
 				ctx.Response.Write (hs.InlineJavaScript);
 				ctx.Response.Write ("</script>\n");
-			}
+			}*/
 			ctx.Response.Write (@"</head><body onLoad='load()'>");
 
 			// Set up object variable, as it's required by the MakeLink delegate
