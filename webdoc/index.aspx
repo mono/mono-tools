@@ -2,6 +2,7 @@
 <%@ Import Namespace="System.Web" %>
 <%@ Import Namespace="System.Collections.Specialized" %>
 <%@ Import Namespace="System.Web.Configuration" %>
+<%@ Import Namespace="Mono.Website" %>
 <%@ Assembly name="monodoc" %>
 
 <html>
@@ -10,11 +11,11 @@
     <link href="favicon.ico" type="image/png" rel="icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" >
     <link type="text/css" rel="stylesheet" href="reset.css"/>
-    <% = Global.Plugin (Global.PluginContent.Css) %>    
+    <% = Plugin.GetPluginContent (Plugin.PluginContent.Css) %>    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   </head>
   <body>
-  <% = Global.Plugin (Global.PluginContent.Header) %>
+  <% = Plugin.GetPluginContent (Plugin.PluginContent.Header) %>
     <!--Do our c# scripts here to generate iframe/monodoc magic-->
     <script language="c#" runat="server">
 	public string GetTitle ()
@@ -71,9 +72,9 @@ void Page_Load (object sender, EventArgs e)
      </div>
      <div id="content_frame_wrapper"><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>
 	</div>
-     <% = Global.Plugin (Global.PluginContent.Footer) %>
+     <% = Plugin.GetPluginContent (Plugin.PluginContent.Footer) %>
 <!--include external javascript-->
 <% = Global.CreateTreeBootFragment () %>
-<% = Global.Plugin (Global.PluginContent.Javascript) %>
+<% = Plugin.GetPluginContent (Plugin.PluginContent.Javascript) %>
 </body>
 </html>

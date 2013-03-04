@@ -323,7 +323,6 @@ namespace Mono.Website.Handlers
 <html>
 <head>
 		<link type='text/css' rel='stylesheet' href='common.css' media='all' title='Default style' />
-		<link type='text/css' rel='stylesheet' href='xamarin-external/MyFontsWebfontsKit.css' media='all' />	
 		<meta name='TreePath' value='");
 			ctx.Response.Write (tree_path);
 			ctx.Response.Write (@"' />
@@ -340,7 +339,7 @@ namespace Mono.Website.Handlers
   body, table, pre { line-height: 1.8 !important; color: #55753 !important; } 
  .breadcrumb { font-size: 12px !important; }
 </style>
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'></script>
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
 <script type='text/javascript'>
 
 function printFrame() {
