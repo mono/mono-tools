@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	var content_frame = $('#content_frame');
 	var page_link = $('#pageLink');
 
@@ -8,16 +8,6 @@ $(document).ready(function() {
     	if (window.history && window.history.pushState)
        		 window.history.pushState (null, '', '/?link=' + pagename);
 	};
-
-	var tree = new PTree ();
-	tree.strSrcBase = 'monodoc.ashx?tree=';
-	tree.strActionBase = '?link=';
-	tree.strImagesBase = 'plugins/sidebar-plugin/xtree/images/msdn2/';
-	tree.strImageExt = '.gif';
-	tree.onClickCallback = function (url) { change_page (url); };
-	var content = document.getElementById ('contentList');
-	var root = tree.CreateItem (null, 'Documentation List', 'root:', '', true);
-	content.appendChild (root);
 
 	update_tree = function () {
   		var tree_path = $('#content_frame').contents ().find ('meta[name=TreePath]');
@@ -41,4 +31,4 @@ $(document).ready(function() {
 
 	content_frame.load (update_tree);
 	content_frame.load (add_native_browser_link);
-}
+})

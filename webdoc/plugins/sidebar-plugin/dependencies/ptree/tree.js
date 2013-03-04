@@ -168,7 +168,7 @@ function PTree ()
 		var eltDiv = this.GetDivFromIcon (eltIcon);
 		eltIcon.onclick = null;
 
-		var eltLoading = this.CreateItem (eltDiv, "<img src=\"plugins/sidebar-plugin/ptree/searching.gif\"/>Loading...", null, null, true);
+		var eltLoading = this.CreateItem (eltDiv, "<img src=\"plugins/sidebar-plugin/dependencies/ptree/searching.gif\"/>Loading...", null, null, true);
 		eltLoading.className = '';
 
 		var xmlHttp = XmlHttp.create();
