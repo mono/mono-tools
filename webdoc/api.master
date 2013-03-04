@@ -1,0 +1,41 @@
+<%@ Master Language="C#" %>
+<%@ Import Namespace="System.Web" %>
+<%@ Import Namespace="System.Collections.Specialized" %>
+<%@ Import Namespace="System.Web.Configuration" %>
+<%@ Import Namespace="Mono.Website" %>
+<%@ Assembly name="monodoc" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 
+    1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head runat="server" >
+    <title><% = WebConfigurationManager.AppSettings["Title"] %></title>
+    <link href="favicon.ico" type="image/png" rel="icon">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+    <link type="text/css" rel="stylesheet" href="reset.css"/>
+    <link type="text/css" rel="stylesheet" href="common.css"/>
+    <% = Plugin.GetPluginContent (Plugin.PluginContent.Css) %>    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+</head>
+
+<body>
+<form id="application_content" runat="server">
+	<% = Plugin.GetPluginContent (Plugin.PluginContent.Header) %>
+	<asp:contentplaceholder id="Main" runat="server" />
+	
+	<!--uncomment if you want to use the contrib plugin
+	<asp:contentplaceholder id="Login" runat="server" />-->
+
+	<!--uncomment if you want to use the fastsearch plugin
+	<asp:contentplaceholder id="FastSearch" runat="server" />-->
+        <% = Plugin.GetPluginContent (Plugin.PluginContent.Footer) %>
+	<% = Plugin.GetPluginContent (Plugin.PluginContent.Javascript) %>
+
+	<!--uncomment if you want to use the sidebar plugin-->
+	<asp:contentplaceholder id="TreeGenerator" runat="server" />
+</form>
+</body>
+
+</html>
+

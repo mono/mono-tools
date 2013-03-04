@@ -1,8 +1,8 @@
-#####DISTRIBUTION####
+#####SKIN####
 skins/xamarin-external
 
 ######PLUGINS######
 # plugins/search-plugin/fastsearch
-# plugins/search-plugin/fullsearch
+plugins/search-plugin/fullsearch
 plugins/sidebar-plugin
 # plugins/contributior-plugin
