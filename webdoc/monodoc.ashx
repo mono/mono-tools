@@ -322,29 +322,31 @@ namespace Mono.Website.Handlers
 			ctx.Response.Write (@"
 <html>
 <head>
-		<link type='text/css' rel='stylesheet' href='common.css' media='all' title='Default style' />
-		<meta name='TreePath' value='");
-			ctx.Response.Write (tree_path);
-			ctx.Response.Write (@"' />
-<style type='text/css'>
-  body, h1, h2, h3, h4, h5, h6, .named-header {
-    font-family: 'Myriad Pro', 'myriad pro', Helvetica, Verdana, Arial !important; 
-  }
-  p, li, span, table, pre, .Content {
-   font-family: Helvetica, Verdana, Arial !important;
-  }
-  .named-header { padding: 8px 0 20px 10px !important; font-weight: 600 !important; font-size: 2.3em !important; margin: 0.3em 0 0.6em 0 !important; margin-top: 0 !important; font-size: 2.3em !important; }
-  h2 { padding-top: 1em !important; margin-top: 0 !important;  font-weight: 600 !important; font-size: 1.8em !important; color: #333 !important; }
-  p { margin: 0 0 1.3em !important; color: #555753 !important; line-height: 1.8 !important; }
-  body, table, pre { line-height: 1.8 !important; color: #55753 !important; } 
- .breadcrumb { font-size: 12px !important; }
-</style>
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
+	<link type='text/css' rel='stylesheet' href='monodoc.css' media='all' title='Default style' />
+	<meta name='TreePath' value='");
+		ctx.Response.Write (tree_path);
+		ctx.Response.Write (@"' />
+	<style type='text/css'>
+  		body, h1, h2, h3, h4, h5, h6, .named-header {
+    			font-family: 'Myriad Pro', 'myriad pro', Helvetica, Verdana, Arial !important; 
+  		}
+  		p, li, span, table, pre, .Content {
+   			font-family: Helvetica, Verdana, Arial !important;
+  		}
+  		.named-header { padding: 8px 0 20px 10px !important; font-weight: 600 !important; font-size: 2.3em !important; margin: 0.3em 0 0.6em 0 !important; margin-top: 0 !important; font-size: 2.3em !important; }
+  		h2 { padding-top: 1em !important; margin-top: 0 !important;  font-weight: 600 !important; font-size: 1.8em !important; color: #333 !important; }
+  		p { margin: 0 0 1.3em !important; color: #555753 !important; line-height: 1.8 !important; }
+  		body, table, pre { line-height: 1.8 !important; color: #55753 !important; } 
+ 		.breadcrumb { font-size: 12px !important; }
+	</style>
+	
+	<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
 <script type='text/javascript'>
 
 function printFrame() {
 	window.print();
 	return false;
+
 }
 //pass the function object to parent
 parent.printFrame = printFrame;

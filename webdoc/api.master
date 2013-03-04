@@ -17,11 +17,12 @@
     <link type="text/css" rel="stylesheet" href="common.css"/>
     <% = Plugin.GetPluginContent (Plugin.PluginContent.Css) %>    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="common.js"></script>
 </head>
 
 <body>
+<% = Plugin.GetPluginContent (Plugin.PluginContent.Header) %>
 <form id="application_content" runat="server">
-	<% = Plugin.GetPluginContent (Plugin.PluginContent.Header) %>
 	<asp:contentplaceholder id="Main" runat="server" />
 	
 	<!--uncomment if you want to use the contrib plugin

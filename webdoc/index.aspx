@@ -27,6 +27,7 @@ string nQueryString=monodocUrl+"?";
 </script>
 
 <div id="main_part">
+	<!--TODO: wrap this as an option for the sidebar plugin...-->
 	<div id="side">
 		<a class="doc-sidebar-toggle shrink" href="#"></a>
 		<a class="doc-sidebar-toggle expand" href="#"></a>
