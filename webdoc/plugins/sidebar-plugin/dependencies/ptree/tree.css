@@ -13,8 +13,6 @@
 	margin: 0px;
 	padding: 0px;
 	border: 0px;
-	height: 33px;
-	line-height: 21px;
 }
 
 .tree-node-collapsed .tree-node,
@@ -27,19 +25,16 @@
 .tree-label-selected a:hover
 {
 	text-decoration: none;
-	color: #2a2c2f;
 }
 
 .tree-label a
 {
 	text-decoration: none;
-	color: #2a2c2f;
 }
 
 .tree-label a:hover
 {
 	text-decoration: none;
-	color: #2a2c2f;
 }
 
 .tree-node img

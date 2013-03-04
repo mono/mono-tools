@@ -95,19 +95,21 @@ function PTree ()
 
 		if (strAction)
 		{
-			eltDescription = document.createElement ("a");
+			eltDescription = document.createElement ("span");
+			eltDescription.className = "link";
+			eltD = document.createElement ("a");
 			if (strAction.indexOf ('http://') === 0)
-				eltDescription.href = strAction;
+				eltD.href = strAction;
 			else
-				eltDescription.href = this.strActionBase + strAction;
-			eltDescription.title = strText;
+				eltD.href = this.strActionBase + strAction;
+			eltD.title = strText;
 			if (strTarget)
-				eltDescription.target = strTarget;
+				eltD.target = strTarget;
 			else if (this.strTargetDefault)
-				eltDescription.target = this.strTargetDefault;
-			eltDescription.appendChild (eltText);
+				eltD.target = this.strTargetDefault;
+			eltD.appendChild (eltText);
 			var parent = this;
-			eltDescription.onclick = function (e) {
+			eltD.onclick = function (e) {
 				if (!e)
 					e = window.event;
 				if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.modifiers > 0)
@@ -123,8 +125,9 @@ function PTree ()
 					parent.onClickCallback(strAction);
 				}
 			}
-			eltDescription.onmouseover = function () { this.blur (); }
-			eltDescription.onmouseup = function () { this.blur (); }
+			eltD.onmouseover = function () { this.blur (); }
+			eltD.onmouseup = function () { this.blur (); }
+			eltDescription.appendChild(eltD);
 		}
 		else
 		{
