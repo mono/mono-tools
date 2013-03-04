@@ -245,7 +245,7 @@ function PTree ()
 			root = node;
 			if (i == elements.length - 1) {
 				thisSave.SelectNode (node[0]);
-				var container = $('#contents').parent ();
+				var container = $('#contents').parent().parent();
 				container.scrollTop (node[0].offsetTop - 100);
 			}
 		};
