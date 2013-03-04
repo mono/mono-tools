@@ -11,7 +11,6 @@ public static RootTree help_tree;
 [ThreadStatic]
 static SearchableIndex search_index;
 public static string ua = null;
-static string  Plugins = null;
 
 void Application_Start ()
 {
@@ -27,9 +26,6 @@ void Application_Start ()
 	//Google analytics if we want em
 	ua = WebConfigurationManager.AppSettings["GoogleAnalytics"];
 
-	//grab the Plugins def value from web.config
-	Plugins = WebConfigurationManager.AppSettings["Plugins"]; 
-	
 	SettingsHandler.Settings.EnableEditing = false;
 }
 

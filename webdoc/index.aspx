@@ -74,7 +74,18 @@ void Page_Load (object sender, EventArgs e)
 	</div>
      <% = Plugin.GetPluginContent (Plugin.PluginContent.Footer) %>
 <!--include external javascript-->
-<% = Global.CreateTreeBootFragment () %>
 <% = Plugin.GetPluginContent (Plugin.PluginContent.Javascript) %>
+<script type="text/javascript">
+        var tree = new PTree ();
+        tree.strSrcBase = 'monodoc.ashx?tree=';
+        tree.strActionBase = '?link=';
+        tree.strImagesBase = 'plugins/sidebar-plugin/dependencies/xtree/images/msdn2/';
+        tree.strImageExt = '.gif';
+        tree.onClickCallback = function (url) { change_page (url); };
+        var content = document.getElementById ('contentList');
+        var root = tree.CreateItem (null, 'Documentation List', 'root:', '', true);
+        content.appendChild (root);
+	<% = Global.CreateTreeBootFragment () %>
+</script>
 </body>
 </html>
