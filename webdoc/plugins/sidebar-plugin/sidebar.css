@@ -10,14 +10,14 @@
 	overflow-x: hidden;
 	overflow-y: visible;
 }
-
+/*
 input[type=text] {
 	border: 1px solid #B1A598;
 	padding: 2px;
 }
 
 input[type=text]:focus {
-}
+}*/
 
 .error {
 	color: red;
