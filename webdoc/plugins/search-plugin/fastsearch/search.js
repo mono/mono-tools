@@ -1,17 +1,7 @@
 var search_input = $('#fsearch');
 var search_window = $('#fsearch_window');
-var content_frame = $('#content_frame');
-var page_link = $('#pageLink');
 var lis = null;
 var page_top_offset = $('#main_part').offset().top;
-
-change_page = function (pagename) {
-    content_frame.attr ('src', 'monodoc.ashx?link=' + pagename);
-    page_link.attr ('href', '?link=' + pagename);
-    if (window.history && window.history.pushState)
-        window.history.pushState (null, '', '/?link=' + pagename);
-};
-page_link.attr ('href', document.location.search);
 
 var is_shown = false;
 var hide = function () {
@@ -29,7 +19,7 @@ var show = function () {
 
 var param = document.URL.split('#')[1];
 if(param) {
-    $('#content_frame').attr('src', 'search.html#' + param);
+    $('#content_frame').attr('src', '/plugins/search-plugin/fullsearch/search.html#' + param);
 }
 
 search_input.blur (function () {
@@ -107,7 +97,7 @@ search_input.keydown (function (event) {
 			selected.children ('a').click ();
 		} else {
 			// Show full search page
-			content_frame.attr('src', 'search.html#' + encodeURI(search_input.val ()));
+			$("#content_frame").attr('src', '/plugins/search-plugin/fullsearch/search.html#' + encodeURI(search_input.val ()));
 		}
 		hide ();
 		search_input.blur ();
