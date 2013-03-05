@@ -23,6 +23,14 @@ function PTree ()
 	this.nImageHeight = 23;
 	this.onClickCallback = null;
 
+
+	this.Tooltip = function() {
+                $('.tree-label').tooltip({
+                        selector: 'a[rel=tooltip]',
+                        placement: 'right'
+                });
+        }
+
 	this.CreateItemFromXML = function (oNode, fLast, eltParent)
 	{
 		var strText = oNode.getAttribute ("text");
@@ -103,6 +111,8 @@ function PTree ()
 			else
 				eltD.href = this.strActionBase + strAction;
 			eltD.title = strText;
+			eltD.rel = "tooltip";
+			//eltD.data-placement = "left";
 			if (strTarget)
 				eltD.target = strTarget;
 			else if (this.strTargetDefault)
@@ -144,7 +154,8 @@ function PTree ()
 			eltParent.appendChild (eltDiv);
 		else
 			this.SelectNode (eltDiv);
-
+		
+		_this.Tooltip();
 		return eltDiv;
 	}
 
