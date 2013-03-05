@@ -31,8 +31,7 @@ namespace Mono.Website {
 		{
     	    if (type == PluginContent.Javascript) {
     	        paths_to_files = Array.ConvertAll(paths_to_files, path => 
-    	            								string.Format("{1}script type='text/javascript' 
-        	        								src='{0}'{2}{1}/script{2}", path, '<', '>'));
+    	            								string.Format("{1}script type='text/javascript' src='{0}'{2}{1}/script{2}", path, '<', '>'));
        			//reverse the array so we get all our js dependencies correct :)
 				Array.Reverse(paths_to_files);
 			} else if (type == PluginContent.Css) {
