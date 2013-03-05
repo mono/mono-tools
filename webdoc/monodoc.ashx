@@ -69,40 +69,43 @@ namespace Mono.Website.Handlers
 		}
 
 		void IHttpHandler.ProcessRequest (HttpContext context)
-		{
-			string s;
+                {
+                        string s;
+			string callback;
 
-			s = (string) context.Request.Params["link"];
-			if (s != null){
-				HandleMonodocUrl (context, s);
-				return;
-			}
+                        s = (string) context.Request.Params["link"];
+                        if (s != null){
+                                HandleMonodocUrl (context, s);
+                                return;
+                        }
 
-			s = (string) context.Request.Params["tree"];
-			Console.WriteLine ("tree request:  '{0}'", s);
-			if (s != null){
-				HandleTree (context, s);
-				return;
-			}
+                        s = (string) context.Request.Params["tree"];
+                        Console.WriteLine ("tree request:  '{0}'", s);
+                        if (s != null){
+                                HandleTree (context, s);
+                                return;
+                        }
 
-			s = (string) context.Request.Params["fsearch"];
-			Console.WriteLine ("Fast search requested for query {0}", s);
-			if (s != null) {
-				HandleFastSearchRequest (context, s);
-				return;
-			}
+                        s = (string) context.Request.Params["fsearch"];
+						callback = (string) context.Request.Params["callback"];
+						Console.WriteLine ("Fast search requested for query {0}", s);
+                        if (s != null) {
+                                HandleFastSearchRequest (context, s, callback);
+                                return;
+                        }
 
-			s = (string) context.Request.Params["search"];
-			Console.WriteLine ("Full search requested for query {0}", s);
-			if (s != null) {
-				HandleFullSearchRequest (context, s);
-				return;
-			}
+                        s = (string) context.Request.Params["search"];
+                        	callback = (string) context.Request.Params["callback"];
+				Console.WriteLine ("Full search requested for query {0}", s);
+                        if (s != null) {
+                                HandleFullSearchRequest (context, s, callback);
+                                return;
+                        }
 
-			context.Response.Write ("<html><body>Unknown request</body></html>");
-			context.Response.ContentType = "text/html";
-		}
-		
+                        context.Response.Write ("<html><body>Unknown request</body></html>");
+                        context.Response.ContentType = "text/html";
+                }
+  
 		void HandleTree (HttpContext context, string tree)
 		{
 		    context.Response.ContentType = "text/xml";
@@ -231,61 +234,69 @@ namespace Mono.Website.Handlers
 			PrintDocs (content, n, context, GetHelpSource (n));
 		}
 
-		void HandleFastSearchRequest (HttpContext context, string request)
-		{
-			if (string.IsNullOrWhiteSpace (request) || request.Length < 3) {
-				// Unprocessable entity
-				context.Response.StatusCode = 422;
-				return;
-			}
-			var searchIndex = Global.GetSearchIndex ();
-			var result = searchIndex.FastSearch (request, 15);
-			// return Json corresponding to the results
-			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
-				Enumerable.Range (0, result.Count)
+		void HandleFastSearchRequest (HttpContext context, string request, string callback)
+                {
+                        if (string.IsNullOrWhiteSpace (request) || request.Length < 3) {
+                                // Unprocessable entity
+                                context.Response.StatusCode = 422;
+                                return;
+                        }
+
+
+                        var searchIndex = Global.GetSearchIndex ();
+                        var result = searchIndex.FastSearch (request, 15);
+                        // return Json corresponding to the results
+                        var answer = result == null || result.Count == 0 ? "[]" : "[" + 
+                                Enumerable.Range (0, result.Count)
                       .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\", \"fulltitle\" : \"{2}\" }}",
                                                    result.GetTitle (i), result.GetUrl (i), result.GetFullTitle (i)))
                       .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
 
-			Console.WriteLine ("answer is {0}", answer);
+						if (!string.IsNullOrWhiteSpace (callback))
+							answer = callback + "(" + answer + ")";
 
-			context.Response.ContentType = "application/json";
-			context.Response.Write (answer);
-		}
+                        Console.WriteLine ("answer is {0}", answer);
 
-		void HandleFullSearchRequest (HttpContext context, string request)
-		{
-			if (string.IsNullOrWhiteSpace (request)) {
-				// Unprocessable entity
-				context.Response.StatusCode = 422;
-				return;
-			}
-			int start = 0, count = 0;
-			var searchIndex = Global.GetSearchIndex ();
-			Result result = null;
-			if (int.TryParse (context.Request.Params["count"], out count)) {
-				if (int.TryParse (context.Request.Params["start"], out start))
-					result = searchIndex.Search (request, count, start);
-				else
-					result = searchIndex.Search (request, count);
-			} else {
-				count = 20;
-				result = searchIndex.Search (request, count);
-			}
-			// return Json corresponding to the results
-			var answer = result == null || result.Count == 0 ? "[]" : "[" + 
-				Enumerable.Range (0, result.Count)
+                        context.Response.ContentType = "application/json";
+                        context.Response.Write (answer);
+                }
+
+                void HandleFullSearchRequest (HttpContext context, string request, string callback)
+                {
+                        if (string.IsNullOrWhiteSpace (request)) {
+                                // Unprocessable entity
+                                context.Response.StatusCode = 422;
+                                return;
+                        }
+                        int start = 0, count = 0;
+                        var searchIndex = Global.GetSearchIndex ();
+                        Result result = null;
+                        if (int.TryParse (context.Request.Params["count"], out count)) {
+                                if (int.TryParse (context.Request.Params["start"], out start))
+                                        result = searchIndex.Search (request, count, start);
+                                else
+                                        result = searchIndex.Search (request, count);
+                        } else {
+                                count = 20;
+                                result = searchIndex.Search (request, count);
+                        }
+                        // return Json corresponding to the results
+                        var answer = result == null || result.Count == 0 ? "[]" : "[" +
+                                Enumerable.Range (0, result.Count)
                       .Select (i => string.Format ("{{ \"name\" : \"{0}\", \"url\" : \"{1}\", \"fulltitle\" : \"{2}\" }}",
                                                    result.GetTitle (i), result.GetUrl (i), result.GetFullTitle (i)))
                       .Aggregate ((e1, e2) => e1 + ", " + e2) + "]";
-			answer = string.Format ("{{ \"count\": {0}, \"start\": {1}, \"result\": {2} }}", count, start, answer);
 
+			if(!string.IsNullOrWhiteSpace (callback)) {
+                        	answer = string.Format ("{0}({{ \"count\": {1}, \"start\": {2}, \"result\": {3} }})", callback, count, start, answer);
+			}
+                        
 			Console.WriteLine ("answer is {0}", answer);
 
-			context.Response.ContentType = "application/json";
-			context.Response.Write (answer);
-		}
-
+                        context.Response.ContentType = "application/json";
+                        context.Response.Write (answer);
+                }
+		
 		HelpSource GetHelpSource (Node n)
 		{
 			if (n != null)
@@ -312,10 +323,32 @@ namespace Mono.Website.Handlers
 <html>
 <head>
 		<link type='text/css' rel='stylesheet' href='common.css' media='all' title='Default style' />
-        <meta name='TreePath' value='");
+		<link type='text/css' rel='stylesheet' href='xamarin-external/MyFontsWebfontsKit.css' media='all' />	
+		<meta name='TreePath' value='");
 			ctx.Response.Write (tree_path);
 			ctx.Response.Write (@"' />
+<style type='text/css'>
+  body, h1, h2, h3, h4, h5, h6, .named-header {
+    font-family: 'Myriad Pro', 'myriad pro', Helvetica, Verdana, Arial !important; 
+  }
+  p, li, span, table, pre, .Content {
+   font-family: Helvetica, Verdana, Arial !important;
+  }
+  .named-header { padding: 8px 0 20px 10px !important; font-weight: 600 !important; font-size: 2.3em !important; margin: 0.3em 0 0.6em 0 !important; margin-top: 0 !important; font-size: 2.3em !important; }
+  h2 { padding-top: 1em !important; margin-top: 0 !important;  font-weight: 600 !important; font-size: 1.8em !important; color: #333 !important; }
+  p { margin: 0 0 1.3em !important; color: #555753 !important; line-height: 1.8 !important; }
+  body, table, pre { line-height: 1.8 !important; color: #55753 !important; } 
+ .breadcrumb { font-size: 12px !important; }
+</style>
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js'></script>
 <script type='text/javascript'>
+
+function printFrame() {
+	window.print();
+	return false;
+}
+//pass the function object to parent
+parent.printFrame = printFrame;
 
 function try_change_page (link, e)
 {
@@ -366,9 +399,9 @@ function makeLink (link)
 			
 		default:
 			if(document.all) {
-				return '/monodoc.ashx?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
+				return 'monodoc.ashx?link=' + link.replace(/\+/g, '%2B').replace(/file:\/\/\//, '');
 			}
-			return '/monodoc.ashx?link=' + link.replace(/\+/g, '%2B');
+			return 'monodoc.ashx?link=' + link.replace(/\+/g, '%2B');
 		}
 }");
 			if (!string.IsNullOrEmpty (Global.ua)) {
