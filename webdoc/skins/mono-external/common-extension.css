@@ -2,6 +2,8 @@ body {
 	background-color: #ffffff;
 	margin: 0px;
 	padding: 0px;
+	font-family: Verdana, sans-serif !important;
+	overflow-x: hidden;
 }
 
 .HeaderTable {
@@ -250,7 +252,6 @@ img.toolbar:active {
     padding: 5px;
     position: relative;
     right: 0;
-    top: 2px;
 }
 #banner {
     background: url("/mdocimages/headerbg.png") no-repeat scroll 100% 50% #679EF1;
@@ -298,5 +299,35 @@ html, body {
     width: 99.8%;
 }
 #content_frame_wrapper {
-	height: 100%;
+    float: right;
+    height: 100%;
+    margin-right: 5px;
+    margin-top: 10px;
+    width: 79%;
+}
+#sidebar_container {
+    margin-top: 10px;
+    font-size: 8pt !important;
+}
+.tree-label a {
+    color: black !important;
+}
+.tree-label a:hover {
+    background: none repeat scroll 0 0 #DFDFDF !important;
+    border: 1px solid grey !important;
+    color: black !important;
+    padding: 1px !important;
+}
+.tree-label-selected a, .tree-label-selected a:hover {
+    background: none repeat scroll 0 0 highlight !important;
+    color: highlighttext !important;
+}
+#rightSide {
+    font-size: 8pt;
+}
+#fsearch_companion {
+    font-size: 8pt;
+}
+#fsearch_window {
+    font-size: 8pt;
 }
