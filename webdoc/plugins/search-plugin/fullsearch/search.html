@@ -1,0 +1,24 @@
+<html>
+  <head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="search.css" />
+  </head>
+  <script type="text/javascript">
+	function printFrame() {
+        	window.print();
+        	return false;
+	}
+	//pass the function object to parent
+	parent.printFrame = printFrame;
+  </script>
+  <body>
+	<div id="search_wrapper">
+	  <div id="s_header"><h1>Search result(s) for '<span id="s_term"></span>'</h1></div>
+	  <div id="s_results"><ul></ul></div>
+	  <div id="s_morebtn"><input type="button" value="Show more results"></div>
+	  <div id="s_spinner" class="hidden"><img src="/plugins/search-plugin/images/spinner.gif" alt="spinner" /></div>
+	</div>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="fullsearch.js"></script>
+  </body>
+</html>
