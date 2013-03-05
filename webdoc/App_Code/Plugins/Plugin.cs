@@ -75,7 +75,20 @@ namespace Mono.Website {
                 var files_arr = GetFilesTypeX(directory, criteria);
                 List<string> files = new List<string>(files_arr);
 
-                return files;
+				var external = Directory.GetFiles(directory, "external.def");
+				if (external.Any()) {
+					try  {
+			    		if (type == PluginContent.Css) {
+							files.AddRange(ParseExternalDefinition(external[0], ".css"));
+			    		} else if (type == PluginContent.Javascript) {
+							files.AddRange(ParseExternalDefinition(external[0], ".js"));
+			    		} else {    
+			    		}
+					} catch (Exception ex) {
+			    		throw ex;
+					}    
+				}
+            	return files;
         	} catch (Exception ex) {
                 throw ex;
         	}
@@ -98,20 +111,19 @@ namespace Mono.Website {
         	}
 		}	
 
-		//eats whatever .def file you feed it
-		static List<string> ParseExternalDefinition (string definitionPath)
+		static List<string> ParseExternalDefinition (string definitionPath, string criteria)
 		{
-	        //if definitionPath is undefined, or def file does not exist, don't bother
-	        if (string.IsNullOrEmpty (definitionPath) || !File.Exists (definitionPath))
-                return null;
-    	    // read out the file
-        	var lines = File.ReadAllLines (definitionPath);
-        	//build our list
-        	var directories = lines.Where (line => !string.IsNullOrEmpty (line) && line[0] != '#') // Take non-empty, non-comment lines
-            	.Where (file_path => file_path != null && file_path.Length > 2)
+    		//if definitionPath is undefined, or def file does not exist, don't bother
+    		if (string.IsNullOrEmpty (definitionPath) || !File.Exists (definitionPath))
+        	   return null;
+    		// read out the file
+    		var lines = File.ReadAllLines (definitionPath);
+    		//build our list
+    		var files = lines.Where (line => !string.IsNullOrEmpty (line) && line[0] != '#') // Take non-empty, non-comment lines
+                .Where (file_path => file_path != null && file_path.Length > 2 && file_path.EndsWith(criteria)) 
                 .ToList ();
-        	//returns a list of directories in which to look for plugin resources
-        	return directories;
+    		//returns a list of directories in which to look for plugin resources
+    		return files;
 		}
 	}
 }
