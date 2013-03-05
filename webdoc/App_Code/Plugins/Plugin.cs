@@ -124,5 +124,21 @@ namespace Mono.Website {
     		//returns a list of directories in which to look for plugin resources
     		return files;
 		}
+
+		//eats whatever .def file you feed it
+		static List<string> ParseExternalDefinition (string definitionPath)
+		{
+			//if definitionPath is undefined, or def file does not exist, don't bother
+			if (string.IsNullOrEmpty (definitionPath) || !File.Exists (definitionPath))
+				return null;
+			// read out the file
+			var lines = File.ReadAllLines (definitionPath);
+			//build our list
+			var directories = lines.Where (line => !string.IsNullOrEmpty (line) && line[0] != '#') // Take non-empty, non-comment lines
+				.Where (file_path => file_path != null && file_path.Length > 2)
+					.ToList ();
+			//returns a list of directories in which to look for plugin resources
+			return directories;
+		}
 	}
 }
