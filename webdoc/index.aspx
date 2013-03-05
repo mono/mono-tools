@@ -26,35 +26,7 @@ string nQueryString=monodocUrl+"?";
 }
 </script>
 
-<div id="main_part">
-	<!--TODO: wrap this as an option for the sidebar plugin...-->
-	<div id="side">
-		<a class="doc-sidebar-toggle shrink" href="#"></a>
-		<a class="doc-sidebar-toggle expand" href="#"></a>
-        	<div id="contents" class="activeTab">
-             		<div id="contentList"></div>
-       		</div>
-     	</div>
-	<div id="content_frame_wrapper"><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>        
-</div>
-</asp:Content>
-
-<asp:Content ID="Login" ContentPlaceHolderID="Login" Runat="Server">
-<script language="C#" runat="server">
-void Page_Load (object sender, EventArgs e)
-{
-	if (User.Identity.IsAuthenticated){
-		login.NavigateUrl = "plugins/contributor-plugin/logout.aspx";
-		login.Text = "Logged in as " + User.Identity.Name;
-	} else {
-		login.NavigateUrl = "javascript:parent.content.login (parent.content.window.location)";
-		//login.Text = "Sign in / create account";
-	}
-}
-</script>
-<div id="dlogin">
-       <asp:HyperLink id="login" runat="server"/>
-</div>
+<div id="content_frame_wrapper"><iframe id="content_frame" src="<% =getContentFrame() %>"></iframe></div>        
 </asp:Content>
 
 <asp:Content ID="fsearch" ContentPlaceHolderID="FastSearch" Runat="Server">
@@ -62,8 +34,13 @@ void Page_Load (object sender, EventArgs e)
 <div id="fsearch_window"></div>
 </asp:Content>
     
-<asp:Content ID="Tree" ContentPlaceHolderID="TreeGenerator" Runat="Server">
+<asp:Content ID="CustomTree" ContentPlaceHolderID="CustomTreeGenerator" Runat="Server">
 <script type="text/javascript">
+        //create a container for the sidebar to sit in
+        var container = $("#sidebar_container");
+        container.append("<div id=\"side\"><div id=\"contents\" class=\"activeTab\"><div id=\"contentList\"></div></div></div>");
+
+        //populate the sidebar with our data
         var tree = new PTree ();
         tree.strSrcBase = 'monodoc.ashx?tree=';
         tree.strActionBase = '?link=';
@@ -71,8 +48,9 @@ void Page_Load (object sender, EventArgs e)
         tree.strImageExt = '.gif';
         tree.onClickCallback = function (url) { change_page (url); };
         var content = document.getElementById ('contentList');
-        var root = tree.CreateItem (null, 'Documentation List', 'root:', '', true);
+        var root = tree.CreateItem (null, '', 'root:', '', true);
         content.appendChild (root);
 <% = Global.CreateTreeBootFragment () %>
 </script>
 </asp:Content>
+

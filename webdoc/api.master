@@ -13,28 +13,25 @@
     <title><% = WebConfigurationManager.AppSettings["Title"] %></title>
     <link href="favicon.ico" type="image/png" rel="icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-    <link type="text/css" rel="stylesheet" href="reset.css"/>
-    <link type="text/css" rel="stylesheet" href="common.css"/>
+    <link type="text/css" rel="stylesheet" href="/views/reset.css"/>
+    <link type="text/css" rel="stylesheet" href="/views/common.css"/>
     <% = Plugin.GetPluginContent (Plugin.PluginContent.Css) %>    
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="common.js"></script>
+    <script type="text/javascript" src="http://new.xamarin.com/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/views/common.js"></script>
 </head>
 
 <body>
 <% = Plugin.GetPluginContent (Plugin.PluginContent.Header) %>
 <form id="application_content" runat="server">
 	<asp:contentplaceholder id="Main" runat="server" />
+	<asp:contentplaceholder id="FastSearch" runat="server" />
 	
-	<!--uncomment if you want to use the contrib plugin
-	<asp:contentplaceholder id="Login" runat="server" />-->
-
-	<!--uncomment if you want to use the fastsearch plugin
-	<asp:contentplaceholder id="FastSearch" runat="server" />-->
-        <% = Plugin.GetPluginContent (Plugin.PluginContent.Footer) %>
+	<% = Plugin.GetPluginContent (Plugin.PluginContent.Footer) %>
 	<% = Plugin.GetPluginContent (Plugin.PluginContent.Javascript) %>
 
 	<!--uncomment if you want to use the sidebar plugin-->
-	<asp:contentplaceholder id="TreeGenerator" runat="server" />
+	<asp:contentplaceholder id="CustomTreeGenerator" runat="server" />
 </form>
 </body>
 

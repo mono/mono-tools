@@ -24,7 +24,6 @@ using System.Xml;
 using System.Xml.Xsl;
 using System.Linq;
 using Monodoc;
-using Monodoc.Generators;
 using System.Text.RegularExpressions;
 
 namespace Mono.Website.Handlers
@@ -32,7 +31,6 @@ namespace Mono.Website.Handlers
 	public class MonodocHandler : IHttpHandler
 	{
 		static DateTime monodoc_timestamp, handler_timestamp;
-		HtmlGenerator generator = new HtmlGenerator (null);
 
 		static MonodocHandler ()
 		{
@@ -115,7 +113,7 @@ namespace Mono.Website.Handlers
 			// Walk the url, found what we are supposed to render.
 			//
 			string [] nodes = tree.Split (new char [] {'@'});
-			Node current_node = Global.help_tree.RootNode;
+			Node current_node = Global.help_tree;
 			for (int i = 0; i < nodes.Length; i++){
 				try {
 				current_node = (Node)current_node.Nodes [int.Parse (nodes [i])];
@@ -134,7 +132,7 @@ namespace Mono.Website.Handlers
 				w.WriteStartElement ("tree");
 				w.WriteAttributeString ("text", n.Caption);
 
-				if (n.Tree != null && n.Tree.HelpSource != null)
+				if (n.tree != null && n.tree.HelpSource != null)
 					w.WriteAttributeString ("action", HttpUtility.UrlEncode (n.PublicUrl));
 
 				if (n.Nodes != null){
@@ -223,13 +221,13 @@ namespace Mono.Website.Handlers
 				return;
 			Node n;
 			//Console.WriteLine ("Considering {0}", link);
+			string content = Global.help_tree.RenderUrl (link, out n);
 			CheckLastModified (context);
 			if (context.Response.StatusCode == 304){
 	   			//Console.WriteLine ("Keeping", link);
 
 				return;
 			}
-			string content = Global.help_tree.RenderUrl (link, generator, out n);
 
 			PrintDocs (content, n, context, GetHelpSource (n));
 		}
@@ -300,7 +298,7 @@ namespace Mono.Website.Handlers
 		HelpSource GetHelpSource (Node n)
 		{
 			if (n != null)
-				return n.Tree.HelpSource;
+				return n.tree.HelpSource;
 			return null;
 		}
 
@@ -333,7 +331,7 @@ namespace Mono.Website.Handlers
   		p, li, span, table, pre, .Content {
    			font-family: Helvetica, Verdana, Arial !important;
   		}
-  		.named-header { padding: 8px 0 20px 10px !important; font-weight: 600 !important; font-size: 2.3em !important; margin: 0.3em 0 0.6em 0 !important; margin-top: 0 !important; font-size: 2.3em !important; }
+  		.named-header { height: auto !important; padding: 8px 0 20px 10px !important; font-weight: 600 !important; font-size: 2.3em !important; margin: 0.3em 0 0.6em 0 !important; margin-top: 0 !important; font-size: 2.3em !important; }
   		h2 { padding-top: 1em !important; margin-top: 0 !important;  font-weight: 600 !important; font-size: 1.8em !important; color: #333 !important; }
   		p { margin: 0 0 1.3em !important; color: #555753 !important; line-height: 1.8 !important; }
   		body, table, pre { line-height: 1.8 !important; color: #55753 !important; } 
@@ -341,24 +339,25 @@ namespace Mono.Website.Handlers
 	</style>
 	
 	<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
-<script type='text/javascript'>
 
-function printFrame() {
-	window.print();
-	return false;
+	<script type='text/javascript'>
 
-}
-//pass the function object to parent
-parent.printFrame = printFrame;
+	function printFrame() {
+		window.print();
+		return false;
+	}
+	
+	//pass the function object to parent
+	parent.printFrame = printFrame;
 
-function try_change_page (link, e)
-{
-	if (!e)
-		e = window.event;
-	if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.modifiers > 0)
-		return;
-	window.parent.change_page (link)
-}
+	function try_change_page (link, e)
+	{
+		if (!e)
+			e = window.event;
+		if (e.ctrlKey || e.shiftKey || e.altKey || e.metaKey || e.modifiers > 0)
+			return;
+		window.parent.change_page (link)
+	}
 
 function login (rurl)
 {
@@ -425,17 +424,18 @@ s.parentNode.insertBefore(ga, s);
 			ctx.Response.Write (title);
 			ctx.Response.Write ("</title>\n");
 	
-			if (hs != null && HtmlGenerator.InlineCss != null) {
+			if (hs != null && hs.InlineCss != null) {
 				ctx.Response.Write ("<style type=\"text/css\">\n");
-				ctx.Response.Write (HtmlGenerator.InlineCss);
+				ctx.Response.Write (hs.InlineCss);
 				ctx.Response.Write ("</style>\n");
 			}
-			/*if (hs != null && hs.InlineJavaScript != null) {
+			if (hs != null && hs.InlineJavaScript != null) {
 				ctx.Response.Write ("<script type=\"text/JavaScript\">\n");
 				ctx.Response.Write (hs.InlineJavaScript);
 				ctx.Response.Write ("</script>\n");
-			}*/
-			ctx.Response.Write (@"</head><body onLoad='load()'>");
+			}
+			ctx.Response.Write (@"</head><body onload='load()'>");
+			ctx.Response.Write (@"<iframe id='helpframe' src='' height='0' width='0' frameborder='0'></iframe>");
 
 			// Set up object variable, as it's required by the MakeLink delegate
 			requestPath=ctx.Request.Path;

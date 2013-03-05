@@ -1,9 +1,10 @@
 #####SKIN (pick ONE)#####
-#skins/xamarin-external
-skins/mono-external
+skins/xamarin-external
+#skins/mono-external
+#skins/xamarin-new
 
 ######PLUGINS######
-#plugins/search-plugin/fastsearch
-#plugins/search-plugin/fullsearch
+plugins/search-plugin/fastsearch
+plugins/search-plugin/fullsearch
+plugins/iframe-plugin
 plugins/sidebar-plugin
-# plugins/contributior-plugin
