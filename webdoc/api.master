@@ -11,7 +11,7 @@
 
 <head runat="server" >
     <title><% = WebConfigurationManager.AppSettings["Title"] %></title>
-    <link href="favicon.ico" type="image/png" rel="icon">
+    <link href="views/images/favicon.ico" type="image/png" rel="icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" >
     <link type="text/css" rel="stylesheet" href="/views/reset.css"/>
     <link type="text/css" rel="stylesheet" href="/views/common.css"/>

@@ -320,13 +320,14 @@ namespace Mono.Website.Handlers
 			ctx.Response.Write (@"
 <html>
 <head>
-	<link type='text/css' rel='stylesheet' href='monodoc.css' media='all' title='Default style' />
+	<link type='text/css' rel='stylesheet' href='views/monodoc.css' media='all' title='Default style' />
 	<meta name='TreePath' value='");
 		ctx.Response.Write (tree_path);
 		ctx.Response.Write (@"' />
 	<style type='text/css'>
   		body, h1, h2, h3, h4, h5, h6, .named-header {
-    			font-family: 'Myriad Pro', 'myriad pro', Helvetica, Verdana, Arial !important; 
+    			word-wrap: break-word !important;
+			font-family: 'Myriad Pro', 'myriad pro', Helvetica, Verdana, Arial !important; 
   		}
   		p, li, span, table, pre, .Content {
    			font-family: Helvetica, Verdana, Arial !important;
