@@ -25,10 +25,12 @@ function PTree ()
 
 
 	this.Tooltip = function() {
-                $('.tree-label').tooltip({
-                        selector: 'a[rel=tooltip]',
-                        placement: 'right'
-                });
+		if($.isFunction(window.tooltip)) {
+			$('.tree-label').tooltip({
+                        	selector: 'a[rel=tooltip]',
+                        	placement: 'right'
+                	});
+		}
         }
 
 	this.CreateItemFromXML = function (oNode, fLast, eltParent)

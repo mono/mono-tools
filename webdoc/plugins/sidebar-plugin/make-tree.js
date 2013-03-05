@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
 	var content_frame = $('#content_frame');
 	var page_link = $('#pageLink');
 
@@ -32,4 +32,4 @@ $(function() {
 
 	content_frame.load (update_tree);
 	content_frame.load (add_native_browser_link);
-})
+});

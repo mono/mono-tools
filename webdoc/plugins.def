@@ -1,10 +1,13 @@
 #####SKIN (pick ONE)#####
-skins/xamarin-external
+<<<<<<< HEAD
+#skins/xamarin-external
 #skins/mono-external
 #skins/xamarin-new
+skins/mono-external
 
 ######PLUGINS######
 plugins/search-plugin/fastsearch
 plugins/search-plugin/fullsearch
 plugins/iframe-plugin
 plugins/sidebar-plugin
+#plugins/tooltip-plugin

@@ -36,21 +36,21 @@ string nQueryString=monodocUrl+"?";
     
 <asp:Content ID="CustomTree" ContentPlaceHolderID="CustomTreeGenerator" Runat="Server">
 <script type="text/javascript">
-        //create a container for the sidebar to sit in
-        var container = $("#sidebar_container");
-        container.append("<div id=\"side\"><div id=\"contents\" class=\"activeTab\"><div id=\"contentList\"></div></div></div>");
+		//create a container for the sidebar to sit in
+        	var container = $("#sidebar_container");
+        	container.append("<div id=\"side\"><div id=\"contents\" class=\"activeTab\"><div id=\"contentList\"></div></div></div>");
 
-        //populate the sidebar with our data
-        var tree = new PTree ();
-        tree.strSrcBase = 'monodoc.ashx?tree=';
-        tree.strActionBase = '?link=';
-        tree.strImagesBase = 'plugins/sidebar-plugin/dependencies/xtree/images/msdn2/';
-        tree.strImageExt = '.gif';
-        tree.onClickCallback = function (url) { change_page (url); };
-        var content = document.getElementById ('contentList');
-        var root = tree.CreateItem (null, '', 'root:', '', true);
-        content.appendChild (root);
-<% = Global.CreateTreeBootFragment () %>
+        	//populate the sidebar with our data
+        	var tree = new PTree ();
+        	tree.strSrcBase = 'monodoc.ashx?tree=';
+        	tree.strActionBase = '?link=';
+        	tree.strImagesBase = 'plugins/sidebar-plugin/dependencies/xtree/images/msdn2/';
+        	tree.strImageExt = '.gif';
+        	tree.onClickCallback = function (url) { change_page (url); };
+        	var content = document.getElementById ('contentList');
+        	var root = tree.CreateItem (null, '', 'root:', '', true);
+        	content.appendChild (root);
+		<% = Global.CreateTreeBootFragment () %>
 </script>
 </asp:Content>
 

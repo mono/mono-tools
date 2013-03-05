@@ -34,6 +34,7 @@ EXTRA_DIST = \
 	$(wildcard plugins/iframe-plugin/*.js) \
         $(wildcard plugins/iframe-plugin/*.css) \
         $(wildcard plugins/iframe-plugin/*.html) \
+	$(wildcard plugins/tooltip-plugin/*.js) \
 	$(wildcard plugins/sidebar-plugin/*.js) \
         $(wildcard plugins/sidebar-plugin/*.css) \
 	$(wildcard plugins/sidebar-plugin/dependencies/ptree/*.css) \
@@ -59,6 +60,7 @@ dist-hook:
 	mkdir -p $(distdir)/views/images
 	mkdir -p $(distdir)/skins/mono-external/images
 	mkdir -p $(distdir)/plugins/iframe-plugin
+        mkdir -p $(distdir)/plugins/tooltip-plugin
 	mkdir -p $(distdir)/plugins/sidebar-plugin/dependencies/ptree
 	mkdir -p $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn
 	mkdir -p $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2
@@ -83,6 +85,7 @@ dist-hook:
         cp $(srcdir)/plugins/iframe-plugins/*css                                  $(distdir)/plugins/iframe-plugin
         cp $(srcdir)/plugins/iframe-plugin/*js                                    $(distdir)/plugins/iframe-plugin
         cp $(srcdir)/plugins/iframe-plugin/*html                                  $(distdir)/plugins/iframe-plugin
+        cp $(srcdir)/plugins/tooltip-plugin/*js                                    $(distdir)/plugins/tooltip-plugin
 	cp $(srcdir)/plugins/sidebar-plugin/*css                                  $(distdir)/plugins/sidebar-plugin
         cp $(srcdir)/plugins/sidebar-plugin/*js                                   $(distdir)/plugins/sidebar-plugin	
         cp $(srcdir)/plugins/sidebar-plugin/dependencies/ptree/*css               $(distdir)/plugins/sidebar-plugin/dependencies/ptree	
@@ -108,6 +111,7 @@ install-data-hook:
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/views/images
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/skins/mono-external/images
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/plugins/iframe-plugin
+        -$(mkinstalldirs) $(DESTDIR)$(webdir)/plugins/tooltip-plugin
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/ptree
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2
@@ -131,6 +135,7 @@ install-data-hook:
          $(INSTALL_DATA) $(srcdir)/plugins/iframe-plugins/*css                                  $(DESTDIR)$(webdir)/plugins/iframe-plugin
          $(INSTALL_DATA) $(srcdir)/plugins/iframe-plugin/*js                                    $(DESTDIR)$(webdir)/plugins/iframe-plugin
          $(INSTALL_DATA) $(srcdir)/plugins/iframe-plugin/*html                                  $(DESTDIR)$(webdir)/plugins/iframe-plugin
+         $(INSTALL_DATA) $(srcdir)/plugins/tooltip-plugin/*js                                    $(DESTDIR)$(webdir)/plugins/tooltip-plugin
          $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/*css                                  $(DESTDIR)$(webdir)/plugins/sidebar-plugin
          $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/*js                                   $(DESTDIR)$(webdir)/plugins/sidebar-plugin
          $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/ptree/*css               $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/ptree
