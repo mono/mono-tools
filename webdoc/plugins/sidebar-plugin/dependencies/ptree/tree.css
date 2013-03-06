@@ -1,0 +1,45 @@
+.tree-node,
+.tree-node-collapsed
+{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	white-space: nowrap;
+}
+
+.tree-label,
+.tree-label-selected
+{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+.tree-node-collapsed .tree-node,
+.tree-node-collapsed .tree-node-collapsed
+{
+	display: none;
+}
+
+.tree-label-selected a,
+.tree-label-selected a:hover
+{
+	text-decoration: none;
+}
+
+.tree-label a
+{
+	text-decoration: none;
+}
+
+.tree-label a:hover
+{
+	text-decoration: none;
+}
+
+.tree-node img
+{
+	vertical-align: middle;
+	border: 0px;
+}
+

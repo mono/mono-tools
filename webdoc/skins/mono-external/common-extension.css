@@ -1,0 +1,333 @@
+body {
+	background-color: #ffffff;
+	margin: 0px;
+	padding: 0px;
+	font-family: Verdana, sans-serif !important;
+	overflow-x: hidden;
+}
+
+.HeaderTable {
+	border: 2px solid #99aadd;
+}
+
+body, td, th {
+	font-family: Verdana, sans-serif; font-size: 12px;
+	color: black;
+}
+
+.SignatureTable, .MemberSignatureTable {
+	border: 1px solid #DDDDDD;
+}
+
+.Footer {
+	border-top: 2px solid #E5E5E5;
+	padding-left: 1em;
+}
+
+.Footer hr {
+	display: none;	
+}
+
+h1, h2, h3, h4 {
+	font-family: Verdana,sans-serif;
+	font-weight: bold;
+}
+
+h1 {
+}
+
+h3 {
+}
+
+h4 {
+}
+
+.MasterNamespaceLink a {
+	font-weight: bold;
+	text-decoration: none;
+}
+.MasterNamespaceDescription {
+	margin-left: 2em;
+}
+
+img {
+	border: 0;
+	vertical-align: top;
+}
+
+.copyright {
+	border:1px solid black;
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:5px;
+	padding-bottom:5px;
+	background-color:#BEBAA8;
+	font-size:9px;
+	margin-top: 10pt;
+	margin-left: -15pt;
+	margin-right: -15pt;
+}
+
+.important {
+	padding-left:2px;
+	padding-right:2px;
+	padding-top:2px;
+	padding-bottom:2px;
+	background-color:#000000;
+	color:#ffffff;
+}
+
+.menu {
+	font-family:Arial, Verdana;
+	font-size:12px;
+	font-weight:bold;
+}
+
+.navbar{
+	color:black;
+	font-family:Arial, Verdana;
+	font-size:10px;
+	border-bottom:1px solid #000000;
+	border-left:1px solid black;
+	border-right:1px solid black;
+	background-color:#efefef;
+	padding-left:2px;
+	padding-right:2px;
+	padding-top:2px;
+	padding-bottom:2px;
+	margin-left: -15pt;
+	margin-right: -15pt;
+}
+	
+.topframe {
+	background-image:url(images/backbig.png);
+	border:1px solid #000000;
+	background-color:#BEBAA8;
+	margin-left: -15pt;
+	margin-right: -15pt;
+}
+
+.chapter {
+	font-size:14px;
+	font-weight:bold;
+	color:#444444;
+	padding-left:0px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+
+.table {
+	padding-left:2px;
+	padding-right:2px;
+	padding-top:0px;
+	padding-bottom:0px;
+	background-color:#efefef;
+	border:1px solid #c0c0c0;
+}
+
+.elementOn {
+	color:#a40000;
+}
+
+.element {
+	color:#0000a4;
+}
+
+.code {
+	font-size: small;
+	font-family: "Courier New", Courier;
+	line-height:110%;
+}
+
+.box {
+	padding:15px;
+	font-size: small;
+	background:whitesmoke;
+	border: solid 1px silver;
+}
+
+.console {
+	border-style: solid; 
+	background: whitesmoke; 
+	border-width: 1px; 
+	padding: 2pt; 
+	margin:15px;
+}
+
+.headerlink {
+	vertical-align:bottom;
+}
+
+a {
+	color: blue;
+}
+a:visited {
+	color: blue; 
+}
+
+td a {
+	text-decoration: none;
+}
+
+.HeaderTable a {
+	color: black;
+	text-decoration: underline;
+}
+
+div.Content {
+	margin-right: 1em;
+}
+
+div.related ul {
+	list-type: none;
+	padding-left: 1em;
+}
+
+.native-browser {
+	font-family: "Lucida Grande", Geneva, Helvetica, Arial, Verdana, Sans-Serif;
+	display: inline-block;
+	color: #333 !important;
+	text-decoration:none !important;
+	font-size: 88%;
+	padding: 4px 10px 4px 10px;
+	border: 1px solid silver;
+	border-bottom-color: #bcbcbc;
+	border-radius: 3px;
+	background: #f2f2f2;
+}
+
+.native-browser:hover {
+	background: #ddd;
+	color: black;
+}
+
+.native-browser img {
+	vertical-align: center;
+	margin-right: 3px;
+}
+
+body, div {
+    margin: 0;
+    padding: 0;
+}
+img.toolbarsep {
+    border: 0 none;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    vertical-align: middle;
+}
+img.toolbar {
+    border: 0 none;
+    margin: 1px;
+    padding: 3px;
+    vertical-align: middle;
+}
+img.toolbar:hover {
+    border-color: white #B1A598 #B1A598 white;
+    border-left: 1px solid white;
+    border-right: 1px solid #B1A598;
+    border-style: solid;
+    border-width: 1px;
+    margin: 0;
+}
+img.toolbar:active {
+    border-color: #B1A598 white white #B1A598;
+    border-left: 1px solid #B1A598;
+    border-right: 1px solid white;
+    border-style: solid;
+    border-width: 1px;
+}
+#login {
+    float: right;
+    padding: 5px;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+#rightSide {
+    float: right;
+    padding: 5px;
+    position: relative;
+    right: 0;
+}
+#banner {
+    background: url("/mdocimages/headerbg.png") no-repeat scroll 100% 50% #679EF1;
+    border-bottom: 1px dotted #3363BD;
+    height: 40px;
+}
+#header {
+    color: black;
+    height: 40px;
+    margin-bottom: 0;
+    padding: 0 0 0 15px;
+    position: relative;
+    width: 50%;
+}
+#header h1 {
+    color: white;
+    font-family: arial,helvetica,verdana,sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1.8em;
+    margin: 0;
+}
+body, div {
+    border: 0 none;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+html, body {
+    height: 100%;
+}
+#side {
+    border-right: 1px solid black;
+    float: left;
+    height: 93%;
+    overflow: auto;
+    width: 20%;
+}
+#main_part {
+    height: 100%;
+}
+#content_frame {
+    height: 94%;
+    width: 99.8%;
+}
+#content_frame_wrapper {
+    float: right;
+    height: 100%;
+    margin-right: 5px;
+    margin-top: 10px;
+    width: 79%;
+}
+#sidebar_container {
+    margin-top: 10px;
+    font-size: 8pt !important;
+}
+.tree-label a {
+    color: black !important;
+}
+.tree-label a:hover {
+    background: none repeat scroll 0 0 #DFDFDF !important;
+    border: 1px solid grey !important;
+    color: black !important;
+    padding: 1px !important;
+}
+.tree-label-selected a, .tree-label-selected a:hover {
+    background: none repeat scroll 0 0 highlight !important;
+    color: highlighttext !important;
+}
+#rightSide {
+    font-size: 8pt;
+}
+#fsearch_companion {
+    font-size: 8pt;
+}
+#fsearch_window {
+    font-size: 8pt;
+}

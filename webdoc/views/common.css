@@ -1,0 +1,38 @@
+/*****Common.css*****/
+/*bare-bones css for most layouts*/
+body {
+  padding: 0;
+  height: 100%;
+}
+html {
+  padding: 0;
+  margin: 0 auto;
+  height: 100%;
+}
+.code {
+  font-family: "Courier New", Courier;
+}
+.table {
+        padding-left:2px;
+        padding-right:2px;
+        padding-top:0px;
+        padding-bottom:0px;
+}
+div.Content {
+        margin-right: 1em;
+}
+iframe {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        font-size: 100%;
+        font: inherit;
+        vertical-align: baseline;
+}
+#content_frame {
+    width: 100%;
+    height: 100%;
+}
+#main_part {
+    height: 100%;
+}
