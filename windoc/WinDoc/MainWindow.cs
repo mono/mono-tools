@@ -126,7 +126,7 @@ namespace WinDoc
 			var node = Program.Root.RootNode;
 			var rootTreeNode = new TreeNode ();
 
-			foreach (Node child in node.Nodes)
+			foreach (Node child in node.ChildNodes)
 				AppendDocTreeNode (child, rootTreeNode);
 
 			docTree.Nodes.AddRange (rootTreeNode.Nodes.Cast<TreeNode> ().ToArray ());
@@ -151,7 +151,7 @@ namespace WinDoc
 				return;
 			docTree.BeginUpdate ();
 			tn.Nodes.Clear ();
-			foreach (Node child in mn.Nodes)
+			foreach (Node child in mn.ChildNodes)
 				AppendDocTreeNode (child, tn, UIUtils.GetParentImageKeyFromNode (mn));
 			docTree.EndUpdate ();
 		}
