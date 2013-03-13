@@ -74,8 +74,7 @@ namespace WinDoc
 				LoadUrl (url, true);
 				nav.Cancel = true;
 			};
-			if (!string.IsNullOrEmpty (initialUrl))
-				LoadUrl (initialUrl, true);
+			LoadUrl (string.IsNullOrEmpty (initialUrl) ? "root:" : initialUrl, syncTreeView: true);
 		}
 
 		void SetupSearch ()
