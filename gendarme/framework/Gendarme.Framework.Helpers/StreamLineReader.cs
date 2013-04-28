@@ -59,7 +59,7 @@ namespace Gendarme.Framework.Helpers {
 		}
 
 		public bool EndOfStream {
-			get { return (n == max) && sr.EndOfStream; }
+			get { return (n == max || max == 0) && sr.EndOfStream; }
 		}
 
 		public int ReadLine (char [] buffer, int index, int count)
@@ -80,6 +80,7 @@ namespace Gendarme.Framework.Helpers {
 			while (len < count) {
 				if (n == max) {
 					max = sr.ReadBlock (buff, 0, buff.Length);
+					if (max == 0) break;
 					n = 0;
 				}
 				char c = buff [n++];
