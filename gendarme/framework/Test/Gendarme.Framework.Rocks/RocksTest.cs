@@ -49,6 +49,9 @@ namespace Test.Framework.Rocks {
 			public abstract void PublicMethod ();
 			protected abstract void ProtectedMethod ();
 			private void PrivateMethod () { }
+
+			public abstract class NestedNestedPublicType {
+			}
 		}
 
 		protected abstract class NestedProtectedType {
