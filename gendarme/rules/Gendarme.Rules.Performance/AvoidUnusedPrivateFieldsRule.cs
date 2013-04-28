@@ -105,27 +105,21 @@ namespace Gendarme.Rules.Performance {
 			// copy all fields into an hashset
 			fields.Clear ();
 			foreach (FieldDefinition field in type.Fields) {
-				if (!field.IsPrivate || field.IsLiteral)
+				if (!field.IsPrivate || field.IsLiteral || field.IsGeneratedCode ())
 					continue;
 
 				fields.Add (field);
 			}
 
 			// scan all methods, including constructors, to find if the field is used
-			foreach (MethodDefinition method in type.Methods) {
-				if (!method.HasBody)
-					continue;
+			if (fields.Count > 0) {
+				CheckFieldsUsageInType (type);
+			}
 
-				// don't check the method if it does not access any field
-				if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
-					continue;
-
-				foreach (Instruction ins in method.Body.Instructions) {
-					FieldDefinition fd = ins.GetField ();
-					if (fd == null)
-						continue;
-
-					fields.Remove (fd);
+			// scan nested types becuase they also have access to private fields of their parent
+			if (type.HasNestedTypes && fields.Count > 0) {
+				foreach (TypeDefinition nested in type.NestedTypes) {
+					CheckFieldsUsageInType (nested);
 				}
 			}
 
@@ -135,6 +129,30 @@ namespace Gendarme.Rules.Performance {
 			}
 			return Runner.CurrentRuleResult;
 		}
+
+		private void CheckFieldsUsageInType (TypeDefinition type)
+		{
+			foreach (MethodDefinition method in type.Methods) {
+				if (!method.HasBody)
+					continue;
+
+				// don't check the method if it does not access any field
+				if (!OpCodeEngine.GetBitmask (method).Intersect (LoadStoreFields))
+						continue;
+
+				foreach (Instruction ins in method.Body.Instructions) {
+						FieldDefinition fd = ins.GetField ();
+						if (fd == null)
+								continue;
+
+						fields.Remove (fd);
+				}
+				
+				if (fields.Count == 0)
+					break;				
+			}
+		}
+
 #if false
 		public void Bitmask ()
 		{
