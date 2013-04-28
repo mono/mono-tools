@@ -343,6 +343,50 @@ namespace Test.Framework.Rocks {
 		}
 
 		[Test]
+		public void IsNamed ()
+		{
+			string name = "Test.Framework.Rocks.PublicType";
+			TypeDefinition type = assembly.MainModule.GetType (name);
+
+			Assert.IsTrue (type.IsNamed ( "Test.Framework.Rocks.PublicType"));
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks.P"));//Missing Text
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks.PublicTypeExtraText"));
+
+			Assert.IsTrue (type.IsNamed ("Test.Framework.Rocks", "PublicType"));
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks", "P"));//Missing Text
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks", "PublicTypeExtraText"));
+		}
+
+		[Test]
+		public void IsNamedNestedType ()
+		{
+			string name = "Test.Framework.Rocks.PublicType/NestedPublicType";
+			TypeDefinition type = assembly.MainModule.GetType (name);
+
+			Assert.IsTrue (type.IsNamed ("Test.Framework.Rocks.PublicType/NestedPublicType"));
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks.PublicType/N"));//Missing Text
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks.PublicType/NestedPublicTypeExtaStuff"));
+
+			Assert.IsTrue (type.IsNamed ("Test.Framework.Rocks", "PublicType/NestedPublicType"));
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks", "PublicType/N"));//Missing Text
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks", "PublicType/NestedPublicTypeExtraText"));
+
+			Assert.IsFalse (type.IsNamed ("Test.Framework.Rocks", "NestedPublicType"));
+			Assert.IsFalse (type.IsNamed ("", "NestedPublicType"));
+		}
+
+		[Test]
+		public void IsNamedDoubleNestedType ()
+		{
+			string name = "Test.Framework.Rocks.PublicType/NestedPublicType/NestedNestedPublicType";
+			TypeDefinition type = assembly.MainModule.GetType (name);
+
+			Assert.IsTrue (type.IsNamed ("Test.Framework.Rocks.PublicType/NestedPublicType/NestedNestedPublicType"));
+			
+			Assert.IsTrue (type.IsNamed ("Test.Framework.Rocks", "PublicType/NestedPublicType/NestedNestedPublicType"));
+		}
+
+		[Test]
 		public void IsVisible ()
 		{
 			string name = "Test.Framework.Rocks.PublicType";
