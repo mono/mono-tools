@@ -132,20 +132,20 @@ namespace Test.Rules.Security {
 			}
 		}
 
-		[TestCase ("CallsSqlCommandCtorWithVariableString")]
-		[TestCase ("CallsSqlCommandCtorWithVariableStringAndAConn")]
-		[TestCase ("CallsSqlCommandPropertyWithVariableString")]
+		[Test]
 		public void CheckFailures (string method)
 		{
-			AssertRuleFailure<SqlExecutor> (method);
+			AssertRuleFailure<SqlExecutor> ("CallsSqlCommandCtorWithVariableString");
+			AssertRuleFailure<SqlExecutor> ("CallsSqlCommandCtorWithVariableStringAndAConn");
+			AssertRuleFailure<SqlExecutor> ("CallsSqlCommandPropertyWithVariableString");
 		}
 
-		[TestCase ("CallsSqlCommandCtorWithConstantString")]
-		[TestCase ("CallsSqlCommandEmptyCtor")]
-		[TestCase ("CallsSqlCommandPropertyWithConstantString")]
+		[Test]
 		public void CheckSuccesses (string method)
 		{
-			AssertRuleSuccess<SqlExecutor> (method);
+			AssertRuleSuccess<SqlExecutor> ("CallsSqlCommandCtorWithConstantString");
+			AssertRuleSuccess<SqlExecutor> ("CallsSqlCommandEmptyCtor");
+			AssertRuleSuccess<SqlExecutor> ("CallsSqlCommandPropertyWithConstantString");
 		}
 	}
 }
