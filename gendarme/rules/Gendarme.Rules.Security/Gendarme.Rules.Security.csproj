@@ -71,6 +71,7 @@
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyRule.cs" />
     <Compile Include="DoNotShortCircuitCertificateCheckRule.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleRule.cs" />
+    <Compile Include="SqlCommandShouldUseNamedParameters.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateRule.cs" />
   </ItemGroup>
   <ItemGroup>
