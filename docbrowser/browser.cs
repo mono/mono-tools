@@ -60,7 +60,7 @@ class Driver {
 				v => sources.Add (v) },
 			{ "edit=",
 				"Edit mdoc(5) XML documentation found within {PATH}.",
-				v => RootTree.UncompiledHelpSources.Add (v) },
+				v => RootTree.AddUncompiledSource (v) },
 			{ "engine=",
 				"Specify which HTML rendering {ENGINE} to use:\n" + 
 					"  " + string.Join ("\n  ", engines) + "\n" +
@@ -132,7 +132,7 @@ class Driver {
 			return r;
 		}
 
-		if (mergeConfigFile != null) {
+		/*if (mergeConfigFile != null) {
 			ArrayList targetDirs = new ArrayList ();
 			
 			for (int i = 0; i < topics.Count; i++)
@@ -145,7 +145,7 @@ class Driver {
 
 			e.Merge ();
 			return 0;
-		}
+		}*/
 		
 		if (r != 0 || !show_gui)
 			return r;
@@ -257,6 +257,7 @@ public class Browser {
 	TreeView search_tree;
 	TreeStore search_store;
 	SearchableIndex search_index;
+	ArrayList searchResults = new ArrayList (20);
 	string highlight_text;
 	[Glade.Widget] VBox search_vbox;
 	ProgressPanel ppanel;
@@ -578,6 +579,7 @@ public class Browser {
 		Result r = search_index.Search (term);
 		if (r == null)
 			return; //There was a problem with the index
+		searchResults.Add (r);
 		//insert the results in the tree
 		TreeIter iter;
 					
@@ -622,7 +624,7 @@ public class Browser {
 			return;
 		int i_0 = p.Indices [0];
 		int i_1 = p.Indices [1];
-		Result res = (Result) search_index.Results [i_0];
+		Result res = (Result) searchResults [i_0];
 		TreeIter parent;
 		model.IterParent (out parent, iter);
 		string term = (string) search_store.GetValue (parent, 0);
@@ -648,21 +650,21 @@ public class Browser {
 	void TextLarger (object obj, EventArgs args)
 	{
 		SettingsHandler.Settings.preferred_font_size += 10;
-		HelpSource.CssCode = null;
+		//HelpSource.CssCode = null;
 		Reload ();
 		SettingsHandler.Save ();
 	}
 	void TextSmaller (object obj, EventArgs args)
 	{
 		SettingsHandler.Settings.preferred_font_size -= 10;
-		HelpSource.CssCode = null;
+		//HelpSource.CssCode = null;
 		Reload ();
 		SettingsHandler.Save ();
 	}
 	void TextNormal (object obj, EventArgs args)
 	{
 		SettingsHandler.Settings.preferred_font_size = 100;
-		HelpSource.CssCode = null;
+		//HelpSource.CssCode = null;
 		Reload ();
 		SettingsHandler.Save ();
 	}
@@ -794,8 +796,8 @@ public class Browser {
 			//
 			string tabTitle;
 			tabTitle = matched_node.Caption; //Normal title
-			string[] parts = matched_node.URL.Split('/', '#');
-			if(matched_node.URL != null && matched_node.URL.StartsWith("ecma:")) {
+			string[] parts = matched_node.PublicUrl.Split('/', '#');
+			if(matched_node.PublicUrl != null && matched_node.PublicUrl.StartsWith("ecma:")) {
 				if(parts.Length == 3 && parts[2] != String.Empty) { //List of Members, properties, events, ...
 					tabTitle = parts[1] + ": " + matched_node.Caption;
 				} else if(parts.Length >= 4) { //Showing a concrete Member, property, ...					
@@ -1701,7 +1703,7 @@ ExtLoop:
 
 		void OnOkClicked (object sender, EventArgs a)
 		{
-			CommentService service = new CommentService();
+			//CommentService service = new CommentService();
 			// todo
 			newcomment.Hide ();
 		}
@@ -2020,7 +2022,7 @@ public class TreeBrowser {
 		if (tree_view.Selection.GetSelected (out model, out iter)){
 			Node n = (Node) iter_to_node [iter];
 			
-			string url = n.URL;
+			string url = n.PublicUrl;
 			Node match;
 			string s;
 
@@ -2048,7 +2050,7 @@ public class TreeBrowser {
 				return;
 			}
 
-			((Browser)browser).Render ("<h1>Unhandled URL</h1>" + "<p>Functionality to view the resource <i>" + n.URL + "</i> is not available on your system or has not yet been implemented.</p>", null, url);
+			((Browser)browser).Render ("<h1>Unhandled URL</h1>" + "<p>Functionality to view the resource <i>" + n.PublicUrl + "</i> is not available on your system or has not yet been implemented.</p>", null, url);
 		}
 	}
 }
@@ -2712,13 +2714,56 @@ public class Tab : Notebook {
 		string [] uSplit = EditingUtils.ParseEditUrl (edit_url);
 		
 		if (uSplit[0].StartsWith ("monodoc:"))
-			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, EcmaHelpSource.GetNiceUrl (browser.CurrentTab.CurrentNode));
+			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, GetNiceUrl (browser.CurrentTab.CurrentNode));
 		else if (uSplit[0].StartsWith ("file:"))
 			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, String.Empty);
 		else
 			Console.WriteLine ("Edit url wrong: {0}", edit_url);
 		SetMode (Mode.Viewer);
 		history.ActivateCurrent ();
+	}
+
+	public static string GetNiceUrl (Node node) {
+		if (node.Element.StartsWith("N:"))
+			return node.Element;
+		string name, full;
+		int bk_pos = node.Caption.IndexOf (' ');
+		// node from an overview
+		if (bk_pos != -1) {
+			name = node.Caption.Substring (0, bk_pos);
+			full = node.Parent.Caption + "." + name.Replace ('.', '+');
+			return "T:" + full;
+		}
+		// node that lists constructors, methods, fields, ...
+		if ((node.Caption == "Constructors") || (node.Caption == "Fields") || (node.Caption == "Events") 
+			|| (node.Caption == "Members") || (node.Caption == "Properties") || (node.Caption == "Methods")
+			|| (node.Caption == "Operators")) {
+			bk_pos = node.Parent.Caption.IndexOf (' ');
+			name = node.Parent.Caption.Substring (0, bk_pos);
+			full = node.Parent.Parent.Caption + "." + name.Replace ('.', '+');
+			return "T:" + full + "/" + node.Element; 
+		}
+		int pr_pos = node.Caption.IndexOf ('(');
+		// node from a constructor
+		if (node.Parent.Element == "C") {
+			name = node.Parent.Parent.Parent.Caption;
+			int idx = node.PublicUrl.IndexOf ('/');
+			return node.PublicUrl[idx+1] + ":" + name + "." + node.Caption.Replace ('.', '+');
+		// node from a method with one signature, field, property, operator
+		} else if (pr_pos == -1) {
+			bk_pos = node.Parent.Parent.Caption.IndexOf (' ');
+			name = node.Parent.Parent.Caption.Substring (0, bk_pos);
+			full = node.Parent.Parent.Parent.Caption + "." + name.Replace ('.', '+');
+			int idx = node.PublicUrl.IndexOf ('/');
+			return node.PublicUrl[idx+1] + ":" + full + "." + node.Caption;
+		// node from a method with several signatures
+		} else {
+			bk_pos = node.Parent.Parent.Parent.Caption.IndexOf (' ');
+			name = node.Parent.Parent.Parent.Caption.Substring (0, bk_pos);
+			full = node.Parent.Parent.Parent.Parent.Caption + "." + name.Replace ('.', '+');
+			int idx = node.PublicUrl.IndexOf ('/');
+			return node.PublicUrl[idx+1] + ":" + full + "." + node.Caption;
+		}
 	}
 
 	void OnCancelEdits (object sender, EventArgs a)
@@ -2747,6 +2792,7 @@ public class Tab : Notebook {
 			
 			StringWriter sw = new StringWriter ();
 			XmlWriter w = new XmlTextWriter (sw);
+			var converter = new Monodoc.Generators.Html.Ecma2Html ();
 			
 			try {
 				edit_node.InnerXml = text_editor.Buffer.Text;
@@ -2760,7 +2806,7 @@ public class Tab : Notebook {
 			}
 			browser.statusbar.Pop (browser.context_id);
 			browser.statusbar.Push (browser.context_id, "XML OK");
-			string s = HelpSource.BuildHtml (EcmaHelpSource.css_ecma_code, sw.ToString ());
+			string s = converter.Export (sw.ToString (), new Dictionary<string, string> ());
 			html_preview.Render(s);
 
 			return false;

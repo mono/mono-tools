@@ -40,6 +40,7 @@ browser_sources   = \
 	$(srcdir)/list.cs 		\
 	$(srcdir)/elabel.cs 		\
 	$(srcdir)/history.cs 		\
+	$(srcdir)/editing.cs            \
 	$(srcdir)/Contributions.cs	\
 	$(srcdir)/XmlNodeWriter.cs	\
 	$(srcdir)/IHtmlRender.cs	\
@@ -67,7 +68,7 @@ admin_sources = \
 	$(srcdir)/admin.cs		\
 	$(srcdir)/Contributions.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services
+browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services -r:System.Web
 # we insert gtkhtml libs if we have them for printing 
 geckorender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GECKO_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 gtkhtmlrender_assemblies = $(GTK_SHARP_LIBS) $(GTKHTML_SHARP_LIBS) $(GNOME_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
