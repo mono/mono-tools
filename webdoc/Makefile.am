@@ -43,12 +43,11 @@ EXTRA_DIST = \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/*.css) \
         $(wildcard plugins/sidebar-plugin/dependencies/xtree/*.js) \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/*.png) \
-	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/*.gif) \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/clean/*.gif) \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/msdn/*.gif) \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/msdn2/*.gif) \
 	$(wildcard plugins/sidebar-plugin/dependencies/xtree/images/xp/*.png) \
-        $(wildcard plugins/search_plugin/images/*.gif) \
+        $(wildcard plugins/search-plugin/images/*.gif) \
         $(wildcard plugins/search-plugin/fullsearch/*.css) \
         $(wildcard plugins/search-plugin/fullsearch/*.js) \
         $(wildcard plugins/search-plugin/fullsearch/*.html) \
@@ -73,18 +72,14 @@ dist-hook:
 	cp $(srcdir)/App_Code/Plugins/*cs          				  $(distdir)/App_Code/Plugins
 	cp $(srcdir)/views/*css                                                   $(distdir)/views
 	cp $(srcdir)/views/*js                                                    $(distdir)/views
-	cp $(srcdir)/views/*html                                                  $(distdir)/views
 	cp $(srcdir)/views/images/*png                                            $(distdir)/views/images	
-	cp $(srcdir)/views/images/*gif                                            $(distdir)/views/images
+	cp $(srcdir)/views/images/*ico                                            $(distdir)/views/images
 	cp $(srcdir)/skins/mono-external/header*                                  $(distdir)/skins/mono-external
 	cp $(srcdir)/skins/mono-external/footer*                                  $(distdir)/skins/mono-external
 	cp $(srcdir)/skins/mono-external/*css                                     $(distdir)/skins/mono-external
-	cp $(srcdir)/skins/mono-external/*js                                      $(distdir)/skins/mono-external
 	cp $(srcdir)/skins/mono-external/images/*png                              $(distdir)/skins/mono-external/images
 	cp $(srcdir)/skins/mono-external/images/*gif                              $(distdir)/skins/mono-external/images	
-	cp $(srcdir)/plugins/iframe-plugins/*css                                  $(distdir)/plugins/iframe-plugin
 	cp $(srcdir)/plugins/iframe-plugin/*js                                    $(distdir)/plugins/iframe-plugin
-	cp $(srcdir)/plugins/iframe-plugin/*html                                  $(distdir)/plugins/iframe-plugin
 	cp $(srcdir)/plugins/tooltip-plugin/*js                                    $(distdir)/plugins/tooltip-plugin
 	cp $(srcdir)/plugins/sidebar-plugin/*css                                  $(distdir)/plugins/sidebar-plugin
 	cp $(srcdir)/plugins/sidebar-plugin/*js                                   $(distdir)/plugins/sidebar-plugin	
@@ -94,17 +89,16 @@ dist-hook:
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/*css               $(distdir)/plugins/sidebar-plugin/dependencies/xtree	
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/*js   	          $(distdir)/plugins/sidebar-plugin/dependencies/xtree 
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/*png        $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images
-	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/*gif        $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images 
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/clean/*gif  $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/clean
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn/*gif   $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2/*gif  $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2
 	cp $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/xp/*png     $(distdir)/plugins/sidebar-plugin/dependencies/xtree/images/xp
-	cp $(srcdir)/plugins/search_plugin/images/*gif                            $(distdir)/plugins/search_plugin/images
-	cp $(srcdir)/plugins/search_plugin/fullsearch/*css                        $(distdir)/plugins/search_plugin/fullsearch
-	cp $(srcdir)/plugins/search_plugin/fullsearch/*js                         $(distdir)/plugins/search_plugin/fullsearch
-	cp $(srcdir)/plugins/search_plugin/fullsearch/*html                       $(distdir)/plugins/search_plugin/fullsearch
-	cp $(srcdir)/plugins/search_plugin/fastsearch/*css                        $(distdir)/plugins/search_plugin/fastsearch
-	cp $(srcdir)/plugins/search_plugin/fastsearch/*js                         $(distdir)/plugins/search_plugin/fastsearch
+	cp $(srcdir)/plugins/search-plugin/images/*gif                            $(distdir)/plugins/search-plugin/images
+	cp $(srcdir)/plugins/search-plugin/fullsearch/*css                        $(distdir)/plugins/search-plugin/fullsearch
+	cp $(srcdir)/plugins/search-plugin/fullsearch/*js                         $(distdir)/plugins/search-plugin/fullsearch
+	cp $(srcdir)/plugins/search-plugin/fullsearch/*html                       $(distdir)/plugins/search-plugin/fullsearch
+	cp $(srcdir)/plugins/search-plugin/fastsearch/*css                        $(distdir)/plugins/search-plugin/fastsearch
+	cp $(srcdir)/plugins/search-plugin/fastsearch/*js                         $(distdir)/plugins/search-plugin/fastsearch
 
 install-data-hook:
 	-$(mkinstalldirs) $(DESTDIR)$(webdir)/App_Code/Plugins
@@ -144,17 +138,16 @@ install-data-hook:
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/*css               $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/*js                $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/*png        $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images
-	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/*gif        $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/clean/*gif  $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/clean
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn/*gif   $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2/*gif  $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/msdn2
 	 $(INSTALL_DATA) $(srcdir)/plugins/sidebar-plugin/dependencies/xtree/images/xp/*png     $(DESTDIR)$(webdir)/plugins/sidebar-plugin/dependencies/xtree/images/xp
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/images/*gif                            $(DESTDIR)$(webdir)/plugins/search_plugin/images
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/fullsearch/*css                        $(DESTDIR)$(webdir)/plugins/search_plugin/fullsearch
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/fullsearch/*js                         $(DESTDIR)$(webdir)/plugins/search_plugin/fullsearch
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/fullsearch/*html                       $(DESTDIR)$(webdir)/plugins/search_plugin/fullsearch
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/fastsearch/*css                        $(DESTDIR)$(webdir)/plugins/search_plugin/fastsearch
-	 $(INSTALL_DATA) $(srcdir)/plugins/search_plugin/fastsearch/*js                         $(DESTDIR)$(webdir)/plugins/search_plugin/fastsearch
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/images/*gif                            $(DESTDIR)$(webdir)/plugins/search-plugin/images
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/fullsearch/*css                        $(DESTDIR)$(webdir)/plugins/search-plugin/fullsearch
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/fullsearch/*js                         $(DESTDIR)$(webdir)/plugins/search-plugin/fullsearch
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/fullsearch/*html                       $(DESTDIR)$(webdir)/plugins/search-plugin/fullsearch
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/fastsearch/*css                        $(DESTDIR)$(webdir)/plugins/search-plugin/fastsearch
+	 $(INSTALL_DATA) $(srcdir)/plugins/search-plugin/fastsearch/*js                         $(DESTDIR)$(webdir)/plugins/search-plugin/fastsearch
 	
 Monodoc.Contributions.dll: server.cs Makefile.am
 	mcs -debug+ $< -target:library -out:$@ -r:System.Web -r:System.Web.Services -pkg:monodoc -r:System.Data -r:ByteFX.Data
