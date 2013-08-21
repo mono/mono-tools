@@ -23,3 +23,12 @@ automatically executed):
     make
     make install
 
+Building on OSX with homebrew:
+------------------------------
+
+Have the following packages installed:
+autoconf pkg-config	readline automake gettext glib intltool libtool
+
+Run autogen like this:
+PKG_CONFIG_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib/pkgconfig/ ./autogen.sh 
+
