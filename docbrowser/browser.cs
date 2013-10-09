@@ -119,6 +119,9 @@ class Driver {
 
 		List<string> topics = p.Parse (args);
 
+		if (basedir == null)
+			basedir = Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly ().Location).FullName;
+
 		if (show_version) {
 			Console.WriteLine ("Mono Documentation Browser");
 			Version ver = Assembly.GetExecutingAssembly ().GetName ().Version;
