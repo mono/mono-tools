@@ -17,7 +17,7 @@ REFS = -r:Mono.Posix.dll
 all: $(EXE)
 
 $(EXE) : $(cnm_build_sources)
-	$(GMCS) $(MCS_FLAGS) -d:TRACE -debug+ -out:$@ -target:exe $(REFS) $(cnm_build_sources)
+	$(MCS) $(MCS_FLAGS) -d:TRACE -debug+ -out:$@ -target:exe $(REFS) $(cnm_build_sources)
 
 assemblydir = $(prefix)/lib/create-native-map
 assembly_DATA = $(EXE) MapAttribute.cs

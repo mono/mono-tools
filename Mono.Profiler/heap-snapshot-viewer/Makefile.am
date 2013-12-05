@@ -48,7 +48,7 @@ build_references = $(addprefix -r:, $(PROJECT_REFERENCES)) $(REFERENCES)
 
 $(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) $(build_resources) $(PROJECT_REFERENCES)
 	mkdir -p $(shell dirname $(ASSEMBLY))
-	$(GMCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:exe $(build_sources) $(build_resources_args) $(build_references)
+	$(MCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:exe $(build_sources) $(build_resources_args) $(build_references)
 
 EXTRA_DIST = heap-snapshot-viewer.csproj $(FILES) $(RESOURCES) $(man_MANS)
 

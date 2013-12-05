@@ -56,7 +56,7 @@ build_references = $(addprefix /r:, $(PROJECT_REFERENCES)) $(REFERENCES)
 
 $(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) $(build_resources)
 	mkdir -p $(BUILDDIR)
-	$(GMCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:library $(build_sources) $(build_resources_args) $(build_references)
+	$(MCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:library $(build_sources) $(build_resources_args) $(build_references)
 
 EXTRA_DIST = Mono.Profiler.Widgets.csproj $(FILES) $(RESOURCES)
 

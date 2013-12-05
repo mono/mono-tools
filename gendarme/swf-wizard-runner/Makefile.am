@@ -55,7 +55,7 @@ wizard_icon = Resources/gendarme.ico
 wizard_build_icon = $(addprefix $(srcdir)/, $(wizard_icon))
 
 ../bin/gendarme-wizard.exe: $(wizard_build_sources) $(wizard_resources) Wizard.resources Properties/Resources.resources $(wizard_build_xsl) $(wizard_build_icon)
-	$(GMCS) -debug -target:winexe -r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll \
+	$(MCS) -debug -target:winexe -r:$(CECIL_ASM) -r:../bin/Gendarme.Framework.dll \
 		-r:System.Core.dll -r:System.Xml.Linq.dll -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Xml.dll \
 		-resource:$(wizard_build_xsl) -resource:Wizard.resources,Gendarme.Wizard.resources \
 		-resource:Properties/Resources.resources,Gendarme.Properties.Resources.resources \

@@ -29,5 +29,5 @@ assemblies = -r:System -r:System.Xml -r:Mono.Cairo -r:Mono.Posix
 ress= $(foreach res,$(mperfmon_resources), $(addprefix -resource:,$(res)),$(notdir $(res)))
 
 mperfmon.exe: $(mperfmon_sources) $(mperfmon_resources)
-	$(GMCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:mperfmon.exe $(mperfmon_sources) $(ress) $(packages) $(assemblies)
+	$(MCS) -noconfig -codepage:utf8 -warn:4 -optimize+ -debug -define:DEBUG -target:exe -out:mperfmon.exe $(mperfmon_sources) $(ress) $(packages) $(assemblies)
 

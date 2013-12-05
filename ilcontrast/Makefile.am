@@ -47,7 +47,7 @@ sources =				\
 build_sources = Global.cs $(addprefix $(srcdir)/, $(sources))
 
 ilcontrast.exe: $(build_sources)
-	$(GMCS) -out:ilcontrast.exe $(references) $(resources) $(build_sources)
+	$(MCS) -out:ilcontrast.exe $(references) $(resources) $(build_sources)
 
 Global.cs: Global.cs.in
 	sed -e "s|\@VERSION\@|$(VERSION)|" $< > $@
