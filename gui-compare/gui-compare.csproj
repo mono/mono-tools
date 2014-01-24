@@ -50,70 +50,70 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\d.gif">
-      <LogicalName>d.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>d.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\e.gif">
-      <LogicalName>e.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>e.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\en.gif">
-      <LogicalName>en.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>en.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\f.gif">
-      <LogicalName>f.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>f.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\i.gif">
-      <LogicalName>i.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>i.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\m.gif">
-      <LogicalName>m.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>m.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\mn.png">
-      <LogicalName>mn.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>mn.png</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\n.gif">
-      <LogicalName>n.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>n.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\p.gif">
-      <LogicalName>p.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>p.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\r.gif">
-      <LogicalName>r.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>r.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\s.gif">
-      <LogicalName>s.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>s.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\sc.gif">
-      <LogicalName>sc.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>sc.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\se.gif">
-      <LogicalName>se.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>se.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\sm.gif">
-      <LogicalName>sm.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>sm.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\st.gif">
-      <LogicalName>st.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>st.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\sx.gif">
-      <LogicalName>sx.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>sx.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\tb.gif">
-      <LogicalName>tb.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>tb.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\tm.gif">
-      <LogicalName>tm.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>tm.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\tp.gif">
-      <LogicalName>tp.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>tp.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\w.gif">
-      <LogicalName>w.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>w.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\y.gif">
-      <LogicalName>y.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>y.gif</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="cm\c.gif">
-      <LogicalName>c.gif</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>c.gif</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

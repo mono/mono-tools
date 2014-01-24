@@ -55,7 +55,7 @@
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="close.png">
-      <LogicalName>close.png</LogicalName><!-- TODO: VV: New icon -->
+      <LogicalName>close.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
