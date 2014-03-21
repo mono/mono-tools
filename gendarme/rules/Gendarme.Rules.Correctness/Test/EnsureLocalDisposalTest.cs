@@ -508,5 +508,21 @@ namespace Test.Rules.Correctness {
 			AssertRuleFailure<EnsureLocalDisposalTest> ("AlsoMissesDispose");
 		}
 		#endregion
+
+		Image PropertyReturningObj {
+			get {
+				using (var bmp = new Bitmap ()) {
+					var img = new Bitmap ();
+					return img;
+				}
+			}
+		}
+
+		[Test]
+		public void PropertyReturningReference ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("get_PropertyReturningObj");
+		}
+
 	}
 }

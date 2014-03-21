@@ -131,9 +131,8 @@ namespace Gendarme.Rules.Correctness {
 
 		static bool DoesReturnDisposable (MethodReference call)
 		{
-			//ignore properties (likely not the place where the IDisposable is *created*)
 			MethodDefinition method = call.Resolve ();
-			if ((method == null) || call.IsProperty ())
+			if ((method == null) || (call.IsProperty () && !method.IsGetter))
 				return false;
 
 			if (method.IsConstructor) {
@@ -347,8 +346,9 @@ namespace Gendarme.Rules.Correctness {
 
 				Code nextCode = nextInstruction.OpCode.Code;
 				if (nextCode == Code.Pop || OpCodeBitmask.Calls.Get (nextCode)) {
+					// We ignore properties (likely not the place where the IDisposable is *created*)
 					// We ignore setter because it is an obvious share of the IDisposable
-					if (!IsSetter (nextInstruction.Operand as MethodReference))
+					if (!call.IsProperty () && !IsSetter (nextInstruction.Operand as MethodReference))
 						ReportCall (method, ins, call);
 				} else if (nextInstruction.IsStoreLocal ()) {
 					// make sure we're not re-assigning over a non-disposed IDisposable
