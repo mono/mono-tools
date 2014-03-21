@@ -439,5 +439,74 @@ namespace Test.Rules.Correctness {
 #endif
 			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnIDisposable2");
 		}
+
+		#region Bug #18498
+		abstract class Image : IDisposable
+		{
+			public void Dispose ()
+			{
+			}
+		}
+
+		class Bitmap : Image
+		{
+		}
+
+		Image ReturnsReference ()
+		{
+			Bitmap bmp = new Bitmap ();
+			Image img = (Image)bmp;
+			return img;
+		}
+
+		Image AlsoReturnsReference ()
+		{
+			var bmp = new Bitmap ();
+			var img = (Image)bmp;
+			var img2 = img;
+			return img2;
+		}
+
+		Image MissesDispose ()
+		{
+			var bmp = new Bitmap ();
+			var img = (Image)bmp;
+			img = new Bitmap ();
+			return img;
+		}
+
+		Image AlsoMissesDispose ()
+		{
+			var bmp = new Bitmap ();
+			var img = new Bitmap ();
+			bmp = img;
+			return bmp;
+		}
+
+
+		[Test]
+		public void ReturnsReference_Bug18498 ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnsReference");
+		}
+
+		[Test]
+		public void ReturnReference2_Bug18498 ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("AlsoReturnsReference");
+		}
+
+		[Test]
+		public void MissingDispose_Bug18498 ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("MissesDispose");
+		}
+
+		[Test]
+		public void MissingDispose2_Bug18498 ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("AlsoMissesDispose");
+		}
+		#endregion
 	}
 }
