@@ -37,6 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using System.Diagnostics;
 
 
 namespace Gendarme.Rules.Correctness {
@@ -119,6 +120,7 @@ namespace Gendarme.Rules.Correctness {
 
 		OpCodeBitmask callsAndNewobjBitmask = BuildCallsAndNewobjOpCodeBitmask ();
 		Bitmask<ulong> locals = new Bitmask<ulong> ();
+		Dictionary<int, int> localsReferencingOtherLocals = null;
 
 		static bool IsDispose (MethodReference call)
 		{
@@ -168,11 +170,23 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
+		void ClearVariable (int index)
+		{
+			if (locals.Get ((ulong)index)) {
+				locals.Clear ((ulong)index);
+				Debug.Assert (localsReferencingOtherLocals == null || !localsReferencingOtherLocals.ContainsKey (index));
+			} else {
+				int referencedIndex;
+				if (localsReferencingOtherLocals != null && localsReferencingOtherLocals.TryGetValue (index, out referencedIndex))
+					ClearVariable (referencedIndex);
+			}
+		}
+
 		void Clear (MethodDefinition method, Instruction ins)
 		{
 			VariableDefinition v = ins.GetVariable (method);
 			if (v != null)
-				locals.Clear ((ulong) v.Index);
+				ClearVariable (v.Index);
 		}
 
 		void CheckForReturn (MethodDefinition method, Instruction ins)
@@ -239,7 +253,44 @@ namespace Gendarme.Rules.Correctness {
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 			} else {
 				locals.Set (index);
+				if (localsReferencingOtherLocals != null && localsReferencingOtherLocals.ContainsKey ((int)index))
+					localsReferencingOtherLocals.Remove ((int)index);
 			}
+		}
+
+		int GetFirstVariableHoldingObject (int index)
+		{
+			int referencedVar;
+			if (localsReferencingOtherLocals.TryGetValue (index, out referencedVar))
+				return GetFirstVariableHoldingObject (referencedVar);
+
+			Debug.Assert (locals.Get ((ulong)index));
+			return index;
+		}
+
+		void CheckForAssignmentReferencingOtherVariable (MethodDefinition method, Instruction ins)
+		{
+			if (!ins.IsStoreLocal ())
+				return;
+
+			var prevIns = ins.Previous;
+			if (prevIns == null || !prevIns.IsLoadLocal ())
+				return;
+
+			var vStore = ins.GetVariable (method);
+			if (vStore == null)
+				return;
+
+			if (locals.Get ((ulong)vStore.Index))
+				return;
+
+			var vLoad = prevIns.GetVariable (method);
+			if (vLoad == null)
+				return;
+
+			if (localsReferencingOtherLocals == null)
+				localsReferencingOtherLocals = new Dictionary<int, int> ();
+			localsReferencingOtherLocals [vStore.Index] = GetFirstVariableHoldingObject (vLoad.Index);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -255,6 +306,7 @@ namespace Gendarme.Rules.Correctness {
 			bool return_idisposable = DoesReturnDisposable (method);
 
 			locals.ClearAll ();
+			localsReferencingOtherLocals = null;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				Code code = ins.OpCode.Code;
@@ -267,8 +319,10 @@ namespace Gendarme.Rules.Correctness {
 					CheckForOutParameters (method, ins);
 					continue;
 				default:
-					if (!callsAndNewobjBitmask.Get (code))
+					if (!callsAndNewobjBitmask.Get (code)) {
+						CheckForAssignmentReferencingOtherVariable (method, ins);
 						continue;
+					}
 					break;
 				}
 
