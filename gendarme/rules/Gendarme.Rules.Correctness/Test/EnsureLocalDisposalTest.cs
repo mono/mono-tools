@@ -524,5 +524,48 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<EnsureLocalDisposalTest> ("get_PropertyReturningObj");
 		}
 
+		Image ReturnObjectWithIfs ()
+		{
+			Bitmap obj = null;
+			int a = new Random ().Next (10);
+			if (a == 1)
+				obj = new Bitmap ();
+			else if (a == 2)
+				obj = new Bitmap ();
+			else if (a == 3)
+				obj = new Bitmap ();
+			return obj;
+		}
+
+		[Test]
+		public void MethodThatConditionallyReturnsObjects ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectWithIfs");
+		}
+
+		Bitmap ReturnObjectWithSwitch ()
+		{
+			Bitmap obj = null;
+			switch (new Random ().Next (10))
+			{
+				case 1:
+					obj = new Bitmap();
+					break;
+				case 2:
+					obj = new Bitmap();
+					break;
+				default:
+					obj = new Bitmap();
+					break;
+			}
+			return obj;
+		}
+
+		[Test]
+		public void MethodThatConditionallyReturnsObjectsThroughSwitch ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectWithSwitch");
+		}
+
 	}
 }
