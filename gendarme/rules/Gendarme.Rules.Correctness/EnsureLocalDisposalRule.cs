@@ -241,6 +241,18 @@ namespace Gendarme.Rules.Correctness {
 			return true;
 		}
 
+		bool AssignedToLocalVarAndReturn (MethodDefinition method, Instruction ins)
+		{
+			var nextIns = ins.Next;
+			if (nextIns.OpCode.Code != Code.Br && nextIns.OpCode.Code != Code.Br_S)
+				return false;
+
+			var targetIns = nextIns.Operand as Instruction;
+
+			return (targetIns != null && targetIns.IsLoadLocal () &&
+				targetIns.Next != null && targetIns.Next.OpCode.Code == Code.Ret);
+		}
+
 		void CheckReassignment (MethodDefinition method, Instruction ins)
 		{
 			VariableDefinition v = ins.GetVariable (method);
@@ -251,6 +263,9 @@ namespace Gendarme.Rules.Correctness {
 					GetFriendlyNameOrEmpty (v));
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 			} else {
+				if (AssignedToLocalVarAndReturn (method, ins))
+					return;
+
 				locals.Set (index);
 				if (localsReferencingOtherLocals != null && localsReferencingOtherLocals.ContainsKey ((int)index))
 					localsReferencingOtherLocals.Remove ((int)index);
@@ -290,6 +305,8 @@ namespace Gendarme.Rules.Correctness {
 			if (localsReferencingOtherLocals == null)
 				localsReferencingOtherLocals = new Dictionary<int, int> ();
 			localsReferencingOtherLocals [vStore.Index] = GetFirstVariableHoldingObject (vLoad.Index);
+			if (localsReferencingOtherLocals [vStore.Index] == vStore.Index)
+				localsReferencingOtherLocals.Remove (vStore.Index);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
