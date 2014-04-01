@@ -287,22 +287,27 @@ namespace Gendarme.Rules.Correctness {
 
 		void CheckForAssignmentReferencingOtherVariable (MethodDefinition method, Instruction ins)
 		{
-			if (!ins.IsStoreLocal ())
+			if (!ins.IsStoreLocal () && !ins.IsStoreField ())
 				return;
 
 			var prevIns = ins.Previous;
 			if (prevIns == null || !prevIns.IsLoadLocal ())
 				return;
 
+			var vLoad = prevIns.GetVariable (method);
+			if (vLoad == null)
+				return;
+
+			if (ins.IsStoreField ()) {
+				ClearVariable (vLoad.Index);
+				return;
+			}
+
 			var vStore = ins.GetVariable (method);
 			if (vStore == null)
 				return;
 
 			if (locals.Get ((ulong)vStore.Index))
-				return;
-
-			var vLoad = prevIns.GetVariable (method);
-			if (vLoad == null)
 				return;
 
 			if (localsReferencingOtherLocals == null)

@@ -604,5 +604,47 @@ namespace Test.Rules.Correctness {
 		{
 			AssertRuleFailure<EnsureLocalDisposalTest> ("CallsDisposeInTryCatchBlock");
 		}
+
+		class TestableClass: IDisposable
+		{
+			Stream stream;
+
+			public void AssignFieldFromLocalVariableWithInitializer ()
+			{
+				var s = new MemoryStream {
+					ReadTimeout = 10
+				};
+
+				stream = s;
+			}
+
+			public void AssignFieldWithInitializer ()
+			{
+				stream = new MemoryStream {
+					ReadTimeout = 10
+				};
+			}
+
+			#region IDisposable implementation
+
+			public void Dispose ()
+			{
+				stream.Dispose ();
+			}
+
+			#endregion
+		}
+
+		[Test]
+		public void FieldAssignedFromLocalVariableWithInitializer ()
+		{
+			AssertRuleSuccess<TestableClass> ("AssignFieldFromLocalVariableWithInitializer");
+		}
+
+		[Test]
+		public void FieldAssignedWithInitializer ()
+		{
+			AssertRuleSuccess<TestableClass> ("AssignFieldWithInitializer");
+		}
 	}
 }
