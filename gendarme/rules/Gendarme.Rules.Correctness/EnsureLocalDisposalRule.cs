@@ -217,10 +217,13 @@ namespace Gendarme.Rules.Correctness {
 			ulong index = v == null ? UInt64.MaxValue : (ulong) v.Index;
 			if (v != null && locals.Get (index)) {
 				if (!IsInsideFinallyBlock (method, ins)) {
-					string msg = String.Format (CultureInfo.InvariantCulture,
-						"Local {0}is not guaranteed to be disposed of.",
-						GetFriendlyNameOrEmpty (v));
-					Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
+					if (!v.VariableType.Equals (method.ReturnType) &&
+						!v.VariableType.Inherits (method.ReturnType.Namespace, method.ReturnType.Name)) {
+						string msg = String.Format (CultureInfo.InvariantCulture,
+							"Local {0}is not guaranteed to be disposed of.",
+							GetFriendlyNameOrEmpty (v));
+						Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
+					}
 				}
 				locals.Clear (index);
 			}

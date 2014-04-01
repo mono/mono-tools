@@ -567,5 +567,42 @@ namespace Test.Rules.Correctness {
 			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectWithSwitch");
 		}
 
+		Bitmap ReturnObjectAndCallsDisposeInTryCatchBlock ()
+		{
+			Bitmap obj = null;
+			try {
+				obj = new Bitmap ();
+			} catch (Exception) {
+				if (obj != null)
+					obj.Dispose ();
+				throw;
+			}
+
+			return obj;
+		}
+
+		void CallsDisposeInTryCatchBlock ()
+		{
+			Bitmap obj = null;
+			try {
+				obj = new Bitmap ();
+			} catch (Exception) {
+				if (obj != null)
+					obj.Dispose ();
+				throw;
+			}
+		}
+
+		[Test]
+		public void MethodReturnsObjectAndCallsDisposeInTryCatchBlock ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectAndCallsDisposeInTryCatchBlock");
+		}
+
+		[Test]
+		public void MethodCallsDisposeInTryCatchBlock ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("CallsDisposeInTryCatchBlock");
+		}
 	}
 }
