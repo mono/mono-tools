@@ -138,11 +138,7 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Copy
-      SourceFiles="$(TargetDir)..\..\..\rules\rules.xml"
-      DestinationFolder="$(TargetDir)"
-      SkipUnchangedFiles="True"
-    />
+    <Copy SourceFiles="$(TargetDir)..\..\..\rules\rules.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="True" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
