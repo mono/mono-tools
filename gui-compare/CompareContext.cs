@@ -442,15 +442,17 @@ namespace GuiCompare {
 				}
 
 				var target_value = actualAttribute.Properties[entry.Key];
-
+				var entry_value = entry.Value;
 				switch (referenceAttribute.Name) {
 				case "System.Runtime.CompilerServices.TypeForwardedFromAttribute":
 					if (entry.Key == "AssemblyFullName")
 						target_value = target_value.Replace ("neutral", "Neutral");
 					break;
 				case "System.Runtime.InteropServices.GuidAttribute":
-					if (entry.Key == "Value")
+					if (entry.Key == "Value") {
 						target_value = target_value.ToUpperInvariant ();
+						entry_value = entry_value.ToUpperInvariant ();
+					}
 					break;
 				case "System.ObsoleteAttribute":
 					if (entry.Key == "Message")
@@ -459,8 +461,8 @@ namespace GuiCompare {
 					break;
 				}
 
-				if (target_value != entry.Value) {
-					parent.AddError (String.Format ("Expected value `{0}' for attribute property `{1}' but found `{2}'", entry.Value, entry.Key, target_value));
+				if (target_value != entry_value) {
+					parent.AddError (String.Format ("Expected value `{0}' for attribute property `{1}' but found `{2}'", entry_value, entry.Key, target_value));
 					parent.Status = ComparisonStatus.Error;
 				}
 			}
