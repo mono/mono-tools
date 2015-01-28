@@ -75,7 +75,7 @@ namespace Gendarme.Framework {
 			if (assembly == null)
 				throw new ArgumentNullException ("assembly");
 
-			assemblies.Add (assembly.Name.Name, assembly);
+			assemblies[assembly.Name.Name] = assembly;
 			string location = Path.GetDirectoryName (assembly.MainModule.FullyQualifiedName);
 			AddSearchDirectory (location);
 		}
