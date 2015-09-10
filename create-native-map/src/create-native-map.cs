@@ -551,7 +551,7 @@ static class MapUtils {
 			if (s2 == null)
 				return -1;
 			return CultureInfo.InvariantCulture.CompareInfo.Compare (s1, s2, 
-					CompareOptions.Ordinal | CompareOptions.IgnoreCase);
+					CompareOptions.OrdinalIgnoreCase);
 		}
 	}
 
@@ -742,8 +742,8 @@ class HeaderFileGenerator : FileGenerator {
 			if (!fi.IsLiteral)
 				continue;
 			string e = n + "_" + fi.Name;
-			sh.WriteLine ("\t{0,-" + max_field_length + "}       = 0x{1:x},", 
-					e, fi.GetValue (inst));
+			sh.WriteLine ("\t{0,-" + max_field_length + "}       = 0x{1},",
+					e, string.Format ("{0:x}", fi.GetValue (inst)).ToLower ());
 			sh.WriteLine ("\t#define {0,-" + max_field_length + "} {0}", e);
 		}
 		sh.WriteLine ("};");
@@ -1407,7 +1407,8 @@ class SourceFileGenerator : FileGenerator {
 	private static FieldInfo[] GetFieldsToCopy (Type t)
 	{
 		FieldInfo[] fields = t.GetFields (BindingFlags.Instance | 
-				BindingFlags.Public | BindingFlags.NonPublic);
+				BindingFlags.Public | BindingFlags.NonPublic |
+				BindingFlags.DeclaredOnly);
 		int count = 0;
 		for (int i = 0; i < fields.Length; ++i)
 			if (MapUtils.GetCustomAttribute <NonSerializedAttribute> (fields [i]) == null)
@@ -1472,6 +1473,7 @@ class ConvertFileGenerator : FileGenerator {
 	{
 		string mtype = Enum.GetUnderlyingType(t).Name;
 		ObsoleteAttribute oa = MapUtils.GetCustomAttribute <ObsoleteAttribute> (t);
+		string visibility = (t.Attributes & TypeAttributes.Public) != 0 ? "public" : "internal";
 		string obsolete = "";
 		if (oa != null) {
 			obsolete = string.Format ("[Obsolete (\"{0}\", {1})]\n\t\t",
@@ -1481,12 +1483,12 @@ class ConvertFileGenerator : FileGenerator {
 				"\t\t{0}[DllImport (LIB, EntryPoint=\"{1}_From{2}\")]\n" +
 				"\t\tprivate static extern int From{2} ({2} value, out {3} rval);\n" +
 				"\n" +
-				"\t\t{0}public static bool TryFrom{2} ({2} value, out {3} rval)\n" +
+				"\t\t{0}{4} static bool TryFrom{2} ({2} value, out {3} rval)\n" +
 				"\t\t{{\n" +
 				"\t\t\treturn From{2} (value, out rval) == 0;\n" +
 				"\t\t}}\n" +
 				"\n" +
-				"\t\t{0}public static {3} From{2} ({2} value)\n" +
+				"\t\t{0}{4} static {3} From{2} ({2} value)\n" +
 				"\t\t{{\n" +
 				"\t\t\t{3} rval;\n" +
 				"\t\t\tif (From{2} (value, out rval) == -1)\n" + 
@@ -1497,19 +1499,19 @@ class ConvertFileGenerator : FileGenerator {
 				"\t\t{0}[DllImport (LIB, EntryPoint=\"{1}_To{2}\")]\n" +
 				"\t\tprivate static extern int To{2} ({3} value, out {2} rval);\n" +
 				"\n" +
-				"\t\t{0}public static bool TryTo{2} ({3} value, out {2} rval)\n" +
+				"\t\t{0}{4} static bool TryTo{2} ({3} value, out {2} rval)\n" +
 				"\t\t{{\n" +
 				"\t\t\treturn To{2} (value, out rval) == 0;\n" +
 				"\t\t}}\n" +
 				"\n" +
-				"\t\t{0}public static {2} To{2} ({3} value)\n" +
+				"\t\t{0}{4} static {2} To{2} ({3} value)\n" +
 				"\t\t{{\n" +
 				"\t\t\t{2} rval;\n" +
 				"\t\t\tif (To{2} (value, out rval) == -1)\n" + 
 				"\t\t\t\tThrowArgumentException (value);\n" +
 				"\t\t\treturn rval;\n" +
 				"\t\t}}\n",
-			obsolete, ns, t.Name, mtype
+			obsolete, ns, t.Name, mtype, visibility
 		);
 	}
 
@@ -1570,6 +1572,8 @@ class ConvertDocFileGenerator : FileGenerator {
 	public override void WriteType (Type t, string ns, string fn)
 	{
 		if (!CanMapType (t) || !t.IsEnum)
+			return;
+		if ((t.Attributes & TypeAttributes.Public) == 0)
 			return;
 
 		bool bits = IsFlagsEnum (t);
@@ -1745,3 +1749,8 @@ class ConvertDocFileGenerator : FileGenerator {
 }
 
 // vim: noexpandtab
+// Local Variables: 
+// tab-width: 4
+// c-basic-offset: 4
+// indent-tabs-mode: t
+// End: 

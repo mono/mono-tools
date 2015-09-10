@@ -60,6 +60,13 @@ enum MakeMap_Test_FlagsEnum {
 int MakeMap_Test_FromFlagsEnum (int x, int *r);
 int MakeMap_Test_ToFlagsEnum (int x, int *r);
 
+enum MakeMap_Test_InternalEnum {
+	MakeMap_Test_InternalEnum_Foo           = 0x0000000000000000,
+	#define MakeMap_Test_InternalEnum_Foo     MakeMap_Test_InternalEnum_Foo
+};
+int MakeMap_Test_FromInternalEnum (gint64 x, gint64 *r);
+int MakeMap_Test_ToInternalEnum (gint64 x, gint64 *r);
+
 enum MakeMap_Test_SimpleFlagsEnum {
 	MakeMap_Test_SimpleFlagsEnum_A             = 0x00000001,
 	#define MakeMap_Test_SimpleFlagsEnum_A       MakeMap_Test_SimpleFlagsEnum_A
@@ -105,9 +112,11 @@ int MakeMap_Rename_ToColors (int x, int *r);
  */
 
 struct MakeMap_Test_Baz;
+struct MakeMap_Test_Child;
 struct MakeMap_Test_Foo;
 struct MakeMap_Test_FooHolder;
 struct MakeMap_Test_ForDelegate;
+struct MakeMap_Test_Parent;
 struct MakeMap_Test_Qux;
 struct MakeMap_Rename_Stat;
 
@@ -115,8 +124,10 @@ struct MakeMap_Rename_Stat;
  * Inferred Structure Declarations
  */
 
+struct child;
 struct foo;
 struct foo_holder;
+struct parent;
 
 /*
  * Delegate Declarations
@@ -147,6 +158,17 @@ struct MakeMap_Test_Baz {
 	DelRefArrayBaz b8;
 };
 
+struct MakeMap_Test_Child {
+	int i;
+	int j;
+};
+
+int
+MakeMap_Test_FromChild (struct MakeMap_Test_Child* from, struct child *to);
+int
+MakeMap_Test_ToChild (struct child *from, struct MakeMap_Test_Child* to);
+
+
 struct MakeMap_Test_Foo {
 	int    foo;
 	void*  p;
@@ -173,6 +195,16 @@ MakeMap_Test_ToFooHolder (struct foo_holder *from, struct MakeMap_Test_FooHolder
 struct MakeMap_Test_ForDelegate {
 	int i;
 };
+
+struct MakeMap_Test_Parent {
+	int i;
+};
+
+int
+MakeMap_Test_FromParent (struct MakeMap_Test_Parent* from, struct parent *to);
+int
+MakeMap_Test_ToParent (struct parent *from, struct MakeMap_Test_Parent* to);
+
 
 struct MakeMap_Test_Qux {
 	int                      i;
