@@ -435,6 +435,9 @@ becomes
 	}
 
 .fi
+For classes, the conversion functions will only copy fields declared in the class itself. Fields declared in parent classes will not be copied. (This is because
+.I create-native-map
+does not know how the inheritance is implemented in C. Therefore copying fields from parent classes is left to the caller of the conversion functions.)
 .TP
 Fields
 If a field (1) has the

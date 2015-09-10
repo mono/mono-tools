@@ -16,7 +16,7 @@ namespace MakeMap.Test {
 			HandleRef h, ForDelegate fd);
 
 	[Map]
-	enum TestEnum : long {
+	public enum TestEnum : long {
 		Foo,
 		Bar,
 		Baz,
@@ -24,7 +24,7 @@ namespace MakeMap.Test {
 	}
 
 	[Map, Flags]
-	enum SimpleFlagsEnum {
+	public enum SimpleFlagsEnum {
 		None  = 0,
 		A     = 1,
 		B     = 2,
@@ -33,7 +33,7 @@ namespace MakeMap.Test {
 	}
 
 	[Map, Flags]
-	enum FlagsEnum {
+	public enum FlagsEnum {
 		None  = 0,
 		A     = 1,
 		B     = 2,
@@ -110,6 +110,23 @@ namespace MakeMap.Test {
 		[DllImport ("NativeLib")]
 		private static extern void exclude_native_symbol ();
 	}
+
+	[Map]
+	enum InternalEnum : long {
+		Foo,
+	}
+
+	[Map ("struct parent")]
+	[StructLayout (LayoutKind.Sequential)]
+	public class Parent {
+		public int i;
+	}
+
+	[Map ("struct child")]
+	[StructLayout (LayoutKind.Sequential)]
+	public class Child : Parent {
+		public int j;
+	}
 }
 
 // Testing namespace renaming; this should be NSTo within test.h
@@ -121,8 +138,7 @@ namespace MakeMap.ToBeRenamed {
 	}
 
 	[Map]
-	enum Colors {
+	public enum Colors {
 		Red, Blue, Green
 	}
 }
-

@@ -22,6 +22,22 @@ namespace Mono.Unix.Native {
 				Locale.GetText ("Current platform doesn't support this value."));
 		}
 
+		[DllImport (LIB, EntryPoint="MakeMap_Test_FromChild")]
+		private static extern int FromChild (Child source, IntPtr destination);
+
+		public static bool TryCopy (Child source, IntPtr destination)
+		{
+			return FromChild (source, destination) == 0;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_ToChild")]
+		private static extern int ToChild (IntPtr source, Child destination);
+
+		public static bool TryCopy (IntPtr source, Child destination)
+		{
+			return ToChild (source, destination) == 0;
+		}
+
 		[DllImport (LIB, EntryPoint="MakeMap_Test_FromFlagsEnum")]
 		private static extern int FromFlagsEnum (FlagsEnum value, out Int32 rval);
 
@@ -84,6 +100,54 @@ namespace Mono.Unix.Native {
 		public static bool TryCopy (IntPtr source, out FooHolder destination)
 		{
 			return ToFooHolder (source, out destination) == 0;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_FromInternalEnum")]
+		private static extern int FromInternalEnum (InternalEnum value, out Int64 rval);
+
+		internal static bool TryFromInternalEnum (InternalEnum value, out Int64 rval)
+		{
+			return FromInternalEnum (value, out rval) == 0;
+		}
+
+		internal static Int64 FromInternalEnum (InternalEnum value)
+		{
+			Int64 rval;
+			if (FromInternalEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_ToInternalEnum")]
+		private static extern int ToInternalEnum (Int64 value, out InternalEnum rval);
+
+		internal static bool TryToInternalEnum (Int64 value, out InternalEnum rval)
+		{
+			return ToInternalEnum (value, out rval) == 0;
+		}
+
+		internal static InternalEnum ToInternalEnum (Int64 value)
+		{
+			InternalEnum rval;
+			if (ToInternalEnum (value, out rval) == -1)
+				ThrowArgumentException (value);
+			return rval;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_FromParent")]
+		private static extern int FromParent (Parent source, IntPtr destination);
+
+		public static bool TryCopy (Parent source, IntPtr destination)
+		{
+			return FromParent (source, destination) == 0;
+		}
+
+		[DllImport (LIB, EntryPoint="MakeMap_Test_ToParent")]
+		private static extern int ToParent (IntPtr source, Parent destination);
+
+		public static bool TryCopy (IntPtr source, Parent destination)
+		{
+			return ToParent (source, destination) == 0;
 		}
 
 		[DllImport (LIB, EntryPoint="MakeMap_Test_FromSimpleFlagsEnum")]
