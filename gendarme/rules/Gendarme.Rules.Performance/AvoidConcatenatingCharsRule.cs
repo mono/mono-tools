@@ -70,7 +70,7 @@ namespace Gendarme.Rules.Performance {
 	/// </code>
 	/// </example>
 	/// <remarks>This rule is available since Gendarme 2.8</remarks>
-	[Problem ("Unneeded boxing was found for concatening a string.")]
+	[Problem ("Unneeded boxing was found for concatenating a string.")]
 	[Solution ("Change your code to avoid the boxing when creating your string.")]
 	[EngineDependency (typeof (OpCodeEngine))]
 	public class AvoidConcatenatingCharsRule : Rule, IMethodRule {
