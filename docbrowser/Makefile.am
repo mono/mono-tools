@@ -1,9 +1,9 @@
 monodocdir=$(prefix)/lib/monodoc
 
 if DMCS_PRESENT
-COMPILER=$(DMCS)
+COMPILER=$(MCS)
 else
-COMPILER=$(GMCS)
+COMPILER=$(MCS)
 endif
 
 SUBDIRS=theme-icons

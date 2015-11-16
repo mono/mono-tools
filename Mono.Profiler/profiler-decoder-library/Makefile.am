@@ -33,7 +33,7 @@ build_references = $(addprefix /r:, $(REFERENCES))
 
 $(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) 
 	mkdir -p $(BUILDDIR)
-	$(GMCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:library $(build_sources) $(build_references)
+	$(MCS) $(CSFLAGS) -out:$(ASSEMBLY) -target:library $(build_sources) $(build_references)
 
 EXTRA_DIST = profiler-decoder-library.csproj $(FILES) $(RESOURCES)
 
