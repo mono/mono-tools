@@ -161,6 +161,7 @@ namespace GuiCompare {
 				case "System.Runtime.InteropServices.ComVisibleAttribute":
 				case "System.Runtime.AssemblyTargetedPatchBandAttribute":
 				case "System.Diagnostics.DebuggableAttribute":
+				case "System.Runtime.CompilerServices.IteratorStateMachineAttribute":
 				return true;
 			}
 				
@@ -778,7 +779,7 @@ namespace GuiCompare {
 			this.parameters = parameters;
 			this.genericParameters = genericParameters;
 			// we don't care about the Assembly (internal) part
-			this.methodAccess = methodAccess.Replace ("FamORAssem", "Family");
+			this.methodAccess = methodAccess.Replace ("FamORAssem", "Family"). Replace ("ReuseSlot", "CompilerControlled");
 			this.attributes = attributes;
 		}
 
