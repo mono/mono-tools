@@ -58,6 +58,7 @@
 			this.searchTab = new System.Windows.Forms.TabPage();
 			this.searchListResults = new System.Windows.Forms.TreeView();
 			this.docBrowser = new System.Windows.Forms.WebBrowser();
+			this.docBrowserStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -178,7 +179,8 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.indexesProgressBar,
-            this.indexesLabel});
+            this.indexesLabel,
+            this.docBrowserStatusLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 555);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(1339, 22);
@@ -414,6 +416,11 @@
 			this.docBrowser.Size = new System.Drawing.Size(1006, 518);
 			this.docBrowser.TabIndex = 0;
 			// 
+			// docBrowserStatusLabel
+			// 
+			this.docBrowserStatusLabel.Name = "docBrowserStatusLabel";
+			this.docBrowserStatusLabel.Size = new System.Drawing.Size(0, 17);
+			// 
 			// MainWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -477,7 +484,7 @@
 		private System.Windows.Forms.ImageList imageList2;
 		private System.Windows.Forms.TreeView searchListResults;
 		private System.Windows.Forms.TreeView multipleMatchList;
-
+		private System.Windows.Forms.ToolStripStatusLabel docBrowserStatusLabel;
 	}
 }
 
