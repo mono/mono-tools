@@ -54,7 +54,15 @@ namespace WinDoc
 				// We use a TabRenderer to get the nice system gradient
 				e.Graphics.Clear (Color.White);
 				clip = new Rectangle (1, e.Bounds.Y + 1, e.Node.TreeView.ClientRectangle.Width - 3, e.Bounds.Height - 3);
-				TabRenderer.DrawTabItem (e.Graphics, clip, e.Node.Text, nodeFont, System.Windows.Forms.VisualStyles.TabItemState.Normal);
+				// If we're using the classic theme, then we can't use TabRender. Fall back to a simpler view.
+				if (TabRenderer.IsSupported) {
+					TabRenderer.DrawTabItem(e.Graphics, clip, e.Node.Text, nodeFont, System.Windows.Forms.VisualStyles.TabItemState.Normal);
+				} else {
+					e.Graphics.FillRectangle(SystemBrushes.ActiveCaption, clip);
+					// The fallback rendering has more empty space than the tab rendering. Take advantage of it.
+					var fallbackNodeFont = new Font(nodeFont.FontFamily, nodeFont.Size + 2);
+					e.Graphics.DrawString(e.Node.Text, fallbackNodeFont, SystemBrushes.ActiveCaptionText, clip.X, clip.Y);
+				}
 				using (var pen = new Pen (Color.Black, 1.0f))
 					e.Graphics.DrawLine (pen, new Point (clip.Left, clip.Bottom), new Point (clip.Right - 1, clip.Bottom));
 			} else {
