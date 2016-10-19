@@ -74,6 +74,12 @@ namespace WinDoc
 				LoadUrl (url, true);
 				nav.Cancel = true;
 			};
+			docBrowser.StatusTextChanged += (s, _) => {
+				var t = docBrowser.StatusText;
+				if (t.StartsWith("file:///"))
+					t = t.Remove(0, "file:///".Length);
+				docBrowserStatusLabel.Text = t;
+			};
 			LoadUrl (string.IsNullOrEmpty (initialUrl) ? "root:" : initialUrl, syncTreeView: true);
 		}
 
