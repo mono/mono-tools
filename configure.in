@@ -62,50 +62,80 @@ fi
 AC_SUBST(GNOME_SHARP_LIBS)
 AM_CONDITIONAL(ENABLE_GNOME, test "x$enable_gnome" = "xyes")
 
-PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-3.14, enable_gtkhtml=yes, enable_gtkhtml=no)
-if test "x$enable_gtkhtml" = "xyes"; then
-	CSHARP_FLAGS="-d:GTKHTML_SHARP_3_14 $CSHARP_FLAGS"
-else
-	PKG_CHECK_MODULES(GTKHTML_SHARP, gtkhtml-sharp-2.0, enable_gtkhtml=yes, enable_gtkhtml=no)
+AC_ARG_ENABLE(gtkhtml,
+	      AC_HELP_STRING([--enable-gtkhtml], [Use GTKHTML Browser]),,
+	      enable_gtkhtml=yes)
+
+if test "x$enable_gtkhtml" = "xyes" ; then
+	PKG_CHECK_MODULES([GTKHTML_SHARP],
+			[gtkhtml-sharp-3.14],
+			[CSHARP_FLAGS="-d:GTKHTML_SHARP_3_14"],
+				[
+					PKG_CHECK_MODULES([GTKHTML_SHARP],
+						[gtkhtml-sharp-2.0],
+						[CSHARP_FLAGS=""],
+						[])
+				]
+			)
+       AC_SUBST(GTKHTML_SHARP_LIBS)
+       AC_SUBST(CSHARP_FLAGS)
 fi
-AC_SUBST(GTKHTML_SHARP_LIBS)
+
 AM_CONDITIONAL(ENABLE_GTKHTML, test "x$enable_gtkhtml" = "xyes")
 
-AC_SUBST(CSHARP_FLAGS)
+AC_ARG_ENABLE(gecko,
+             AC_HELP_STRING([--enable-gecko], [Use Gecko / Xulrunner-1.8 browser libs]),,
+             enable_gecko=yes)
 
-PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp-2.0, enable_gecko=yes, enable_gecko=no)
-AC_SUBST(GECKO_SHARP_LIBS)
-AM_CONDITIONAL(ENABLE_GECKO, test "x$enable_gecko" = "xyes")
+if test "x$enable_gecko" = "xyes" ; then
+       PKG_CHECK_MODULES(GECKO_SHARP, gecko-sharp-2.0)
 
-if test "x$enable_gecko" = "xyes"; then
-   # get the mozilla home directory
-   MOZILLA_HOME="`$PKG_CONFIG --variable=libdir mozilla-gtkmozembed`"
-   AC_SUBST(MOZILLA_HOME)
+       AC_SUBST(GECKO_SHARP_LIBS)
+
+       # get the mozilla home directory
+       MOZILLA_HOME="`$PKG_CONFIG --variable=libdir mozilla-gtkmozembed`"
+       AC_SUBST(MOZILLA_HOME)
 fi
 
-PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0, enable_webkit=yes, enable_webkit=no)
-AC_SUBST(WEBKIT_SHARP_LIBS)
+AM_CONDITIONAL(ENABLE_GECKO, test "x$enable_gecko" = "xyes")
+
+AC_ARG_ENABLE(webkit,
+             AC_HELP_STRING([--enable-webkit], [Use Webkit browser]),,
+             enable_webkit=yes)
+
+if test "x$enable_webkit" = "xyes" ; then
+	PKG_CHECK_MODULES(WEBKIT_SHARP, webkit-sharp-1.0)
+	AC_SUBST(WEBKIT_SHARP_LIBS)
+fi
+
 AM_CONDITIONAL(ENABLE_WEBKIT, test "x$enable_webkit" = "xyes")
 
 # PKG_CHECK_MODULES(MONOWEBBROWSER, mono-webbrowser, enable_monowebbrowser=yes, enable_monowebbrowser=no)
 # AC_SUBST(MONOWEBBROWSER_LIBS)
 
-AC_MSG_CHECKING([for Mono.WebBrowser])
-if test "x$GACUTIL" = "xno"
-then
-   	AC_MSG_RESULT([no])
-	if test "x$enable_monowebbrowser" = "x" ; then enable_monowebbrowser=no ; fi
-else
-	if $GACUTIL -l Mono.WebBrowser | grep -q "Mono.WebBrowser" 
+AC_ARG_ENABLE(monowebbrowser,
+             AC_HELP_STRING([--enable-monowebbrowser], [Use Mono.Webbrowser]),,
+             enable_monowebbrowser=yes)
+
+if test "x$enable_monowebbrowser" = "xyes" ; then
+	AC_MSG_CHECKING([for Mono.WebBrowser])
+	if test "x$GACUTIL" = "xno"
 	then
-		AC_MSG_RESULT([yes])
-		enable_monowebbrowser=yes
-	else
 		AC_MSG_RESULT([no])
-		enable_monowebbrowser=no
-	fi  
+		if test "x$enable_monowebbrowser" = "x" ; then enable_monowebbrowser=no ; fi
+	else
+		if $GACUTIL -l Mono.WebBrowser | grep -q "Mono.WebBrowser"
+		then
+			AC_MSG_RESULT([yes])
+			enable_monowebbrowser=yes
+			MONOWEBBROWSER_LIBS=-r:Mono.WebBrowser
+		else
+			AC_MSG_RESULT([no])
+			enable_monowebbrowser=no
+		fi
+	fi
 fi
-MONOWEBBROWSER_LIBS=-r:Mono.WebBrowser
+
 AM_CONDITIONAL(ENABLE_MONOWEBBROWSER, test "x$enable_monowebbrowser" = "xyes")
 
 if test "x$enable_gtkhtml$enable_gecko$enable_monowebbrowser$enable_webkit" = "xnononono" ; then
