@@ -1,18 +1,26 @@
-The Mono Tools code is licensed under various different licenses.
+Copyright (c) 2001, 2002, 2003 Ximian, Inc and the individuals listed
+on the ChangeLog entries.
 
-  GNU GPL: details available in the file LICENSE.GPL
-  GNU LGPL: details available in the file LICENSE.LGPL
-  MIT X11: details available in the file MIT.X11
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
 
-  * Type Refector:
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-    This app is licensed under the terms of the MIT X11 license.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-  * Debugger:
+====
 
-    This app is licensed under the terms of the GNU GPL.
-
-  * ASN.1 Viewer
-
-    This application is licensed under the terms of the MIT X11 license.
-
+Note: older versions and branches of this module contained
+GPL code in the past, the code moved to other repositories
