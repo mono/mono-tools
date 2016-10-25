@@ -1,0 +1,444 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mono-tools\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-12 07:22+0900\n"
+"PO-Revision-Date: 2015-01-12 07:28+0900\n"
+"Last-Translator: Akira Nakagawa <matyapiro31@gmail.com>\n"
+"Language-Team: Akira Nakagawa <matyapiro31@gmail.com>\n"
+"Language: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../docbrowser/browser.glade.h:1
+msgid "Mono Documentation Library"
+msgstr "Mono ドキュメンテーションライブラリ"
+
+#: ../docbrowser/browser.glade.h:2
+msgid "_File"
+msgstr "ファイル (_F)"
+
+#: ../docbrowser/browser.glade.h:3
+msgid "New _Tab"
+msgstr "新しいタブ (_T)"
+
+#: ../docbrowser/browser.glade.h:4
+msgid "_Lookup URL..."
+msgstr "URLを参照 (_L)"
+
+#: ../docbrowser/browser.glade.h:5
+msgid "_Print..."
+msgstr "印刷 (_P)"
+
+#: ../docbrowser/browser.glade.h:6
+msgid "_Close Tab"
+msgstr "タブを閉じる (_C)"
+
+#: ../docbrowser/browser.glade.h:7
+msgid "Quit"
+msgstr "終了"
+
+#: ../docbrowser/browser.glade.h:8
+msgid "_Edit"
+msgstr "編集 (_E)"
+
+#: ../docbrowser/browser.glade.h:9
+msgid "_Cut"
+msgstr "切り取り (_C)"
+
+#: ../docbrowser/browser.glade.h:10
+msgid "_Copy"
+msgstr "コピー (_C)"
+
+#: ../docbrowser/browser.glade.h:11
+msgid "_Paste"
+msgstr "貼り付け (_P)"
+
+#: ../docbrowser/browser.glade.h:12
+msgid "Select All"
+msgstr "すべて選択"
+
+#: ../docbrowser/browser.glade.h:13
+msgid "_View"
+msgstr "表示 (_V)"
+
+#: ../docbrowser/browser.glade.h:14
+msgid "Collapse All"
+msgstr "すべて畳む"
+
+#: ../docbrowser/browser.glade.h:15
+msgid "Show Inherited Members"
+msgstr "継承したメンバを表示"
+
+#: ../docbrowser/browser.glade.h:16
+msgid "Show Comments"
+msgstr "コメントを表示"
+
+#: ../docbrowser/browser.glade.h:17
+msgid "_Bookmarks"
+msgstr "ブックマーク (_B)"
+
+#: ../docbrowser/browser.glade.h:18
+msgid "_Contributing"
+msgstr "貢献 (_C)"
+
+#: ../docbrowser/browser.glade.h:19
+msgid "_Upload Contributions..."
+msgstr "貢献する (_U)"
+
+#: ../docbrowser/browser.glade.h:20
+msgid "_View Contribution Statistics..."
+msgstr "貢献の統計を見る (_V)"
+
+#: ../docbrowser/browser.glade.h:21
+msgid "Edit Mode"
+msgstr "編集モード"
+
+#: ../docbrowser/browser.glade.h:22
+msgid "_Help"
+msgstr "ヘルプ (_H)"
+
+#: ../docbrowser/browser.glade.h:23
+msgid "About..."
+msgstr "このソフトについて"
+
+#: ../docbrowser/browser.glade.h:24
+msgid "n/a"
+msgstr "ありません"
+
+#: ../docbrowser/browser.glade.h:25
+msgid "_Contents"
+msgstr "項目 (_C)"
+
+#: ../docbrowser/browser.glade.h:26
+msgid "_Index"
+msgstr "索引 (_I)"
+
+#: ../docbrowser/browser.glade.h:27
+msgid "_Search"
+msgstr "検索 (_S)"
+
+#: ../docbrowser/browser.glade.h:28
+msgid "About monodoc"
+msgstr "Monodocについて"
+
+#: ../docbrowser/browser.glade.h:29
+msgid ""
+"<span size=\"larger\"><b>monodoc:</b> The Mono Documentation Library viewer</"
+"span>"
+msgstr ""
+"<span size=\"larger\"><b>monodoc:</b> Monoドキュメンテーションライブラリビューア</"
+"span>"
+
+#: ../docbrowser/browser.glade.h:30
+msgid "<b>Version</b> "
+msgstr "<b>バージョン</b>"
+
+#: ../docbrowser/browser.glade.h:31
+msgid ""
+"<b>Authors:</b>\n"
+"   Miguel de Icaza (miguel@ximian.com)\n"
+"   Duncan Mak (duncan@ximian.com)\n"
+"   Joshua Tauberer (tauberer@for.net)\n"
+"   Lee Malabone\n"
+"   Philip Van Hoof\n"
+"   Johannes Roith (johannes@jroith.de)\n"
+"   Alp Toker (alp@atoker.com)\n"
+"   Piers Haken\n"
+"   John Luke (jluke@cfl.rr.com)\n"
+"   Ben Maurer\n"
+"   Mario Sopena Novales (mario.sopena@gmail.com)\n"
+"   Rafael Ferreira (raf@ophion.org)\n"
+"\t      "
+msgstr ""
+"<b>製作者:</b>\n"
+"   Miguel de Icaza (miguel@ximian.com)\n"
+"   Duncan Mak (duncan@ximian.com)\n"
+"   Joshua Tauberer (tauberer@for.net)\n"
+"   Lee Malabone\n"
+"   Philip Van Hoof\n"
+"   Johannes Roith (johannes@jroith.de)\n"
+"   Alp Toker (alp@atoker.com)\n"
+"   Piers Haken\n"
+"   John Luke (jluke@cfl.rr.com)\n"
+"   Ben Maurer\n"
+"   Mario Sopena Novales (mario.sopena@gmail.com)\n"
+"   Rafael Ferreira (raf@ophion.org)\n"
+"\t      "
+
+#: ../docbrowser/browser.glade.h:45
+msgid ""
+"<b>Plugins:</b>\n"
+"  ECMA Documentation.\n"
+"  Mono XML Documentation.\n"
+"  Mono Handbook.\n"
+"  Manual Pages.\n"
+"  Compiler Errors.\n"
+"  ECMA C# Specification."
+msgstr ""
+"<b>プラグイン:</b>\n"
+"  ECMA Documentation.\n"
+"  Mono XML Documentation.\n"
+"  Mono Handbook.\n"
+"  Manual Pages.\n"
+"  Compiler Errors.\n"
+"  ECMA C# Specification."
+
+#: ../docbrowser/browser.glade.h:52
+msgid "Lookup URL"
+msgstr "URLを参照"
+
+#: ../docbrowser/browser.glade.h:53
+msgid "_URL to lookup:"
+msgstr "参照するURL (_U):"
+
+#: ../docbrowser/browser.glade.h:54
+msgid "*"
+msgstr "*"
+
+#: ../docbrowser/browser.glade.h:55
+msgid "lookup_entry"
+msgstr "参照の入力 (_E)"
+
+#: ../docbrowser/browser.glade.h:56
+msgid "Login configuration"
+msgstr "ログインの構成"
+
+#: ../docbrowser/browser.glade.h:57
+msgid ""
+"You can edit the contents of the API documentation in MonoDoc and "
+"contribute\n"
+"those back.  To do this you must agree to relicense your updates under the "
+"terms\n"
+"of the MIT X11 Open Source License and register your email address with the\n"
+"documentation service.\n"
+"\n"
+"If you agree, click Continue"
+msgstr ""
+"貴方はMonoDocのAPIドキュメンテーションの内容を編集でき、それらに貢献できます。"
+"\n"
+"これを行うためには貴方は自分の更新がMIT X11オープンソースライセンスの下に再契約され、"
+"電子メールアドレスをドキュメンテーションサービスに\n"
+"登録されることに同意しなければなりません。\n"
+"\n"
+"\n"
+"同意するならば、続行をクリックしてください。"
+
+#: ../docbrowser/browser.glade.h:63
+msgid "Continue"
+msgstr "続行"
+
+#: ../docbrowser/browser.glade.h:64
+msgid "0"
+msgstr "0"
+
+#: ../docbrowser/browser.glade.h:65
+msgid "_Email:"
+msgstr "電子メール (_E):"
+
+#: ../docbrowser/browser.glade.h:66
+msgid "xx"
+msgstr "xx"
+
+#: ../docbrowser/browser.glade.h:67
+msgid "1"
+msgstr "1"
+
+#: ../docbrowser/browser.glade.h:68
+msgid "Monodoc is requesting an account for you."
+msgstr "Monodocが貴方のアカウントを要求しています。"
+
+#: ../docbrowser/browser.glade.h:69
+msgid "Cancel"
+msgstr "破棄"
+
+#: ../docbrowser/browser.glade.h:70
+msgid "2"
+msgstr "2"
+
+#: ../docbrowser/browser.glade.h:71
+msgid ""
+"<b>Error:</b> Monodoc encountered a failure when requesting\n"
+"a password for your e-mail address.  Try again later."
+msgstr ""
+"<b>エラー:</b> Monodocは貴方の電子メールアドレスのパスワードを要求した時に\n"
+"パスワードの取得に失敗しました。再度実行してください。"
+
+#: ../docbrowser/browser.glade.h:73
+msgid "Ok"
+msgstr "OK"
+
+#: ../docbrowser/browser.glade.h:74
+msgid "3"
+msgstr "3"
+
+#: ../docbrowser/browser.glade.h:75
+msgid ""
+"Once you receive your password on the mail, please enter it\n"
+"here:\n"
+msgstr ""
+"メールからパスワードを受け取ったら、ここに入力してください\n"
+":\n"
+
+#: ../docbrowser/browser.glade.h:78
+msgid "Password:"
+msgstr "パスワード:"
+
+#: ../docbrowser/browser.glade.h:79
+msgid "4"
+msgstr "4"
+
+#: ../docbrowser/browser.glade.h:80
+msgid "MonoDoc is logging into the server."
+msgstr "MonoDocはサーバにログインしています。"
+
+#: ../docbrowser/browser.glade.h:81
+msgid "5"
+msgstr "5"
+
+#: ../docbrowser/browser.glade.h:82
+msgid ""
+"<b>Congratulations!</b> \n"
+"\n"
+"You can now contribute your changes to MonoDoc by using \n"
+"the File/Upload menu option."
+msgstr ""
+"<b>Congratulations!</b> \n"
+"\n"
+"貴方はこれでもうMonoDocに貢献することができます。\n"
+"メニューのファイル/アップロード オプションを選択してください。"
+
+#: ../docbrowser/browser.glade.h:86
+msgid "6"
+msgstr "6"
+
+#: ../docbrowser/browser.glade.h:87
+msgid ""
+"<b>Terminated</b> \n"
+"\n"
+"The request to the Monodoc server has been cancelled."
+msgstr ""
+"<b>強制終了しました</b> \n"
+"\n"
+"Monodocのサーバへのリクエストは中断されました。"
+
+#: ../docbrowser/browser.glade.h:90
+msgid "7"
+msgstr "7"
+
+#: ../docbrowser/browser.glade.h:91
+msgid ""
+"<b>Please wait</b>\n"
+"\n"
+"MonoDoc is checking the server version."
+msgstr ""
+"<b>お待ちください。<b>\n"
+"\n"
+"MonoDocは新しいサーバでのバージョンを検証中です。"
+
+#: ../docbrowser/browser.glade.h:94
+msgid "8"
+msgstr "8"
+
+#: ../docbrowser/browser.glade.h:95
+msgid ""
+"<b>Communications Problem</b> \n"
+"\n"
+"There was a communications problem when communicating\n"
+"with the Mono Documentation Server."
+msgstr ""
+"<b>通信の障害</b> \n"
+"\n"
+"Monoドキュメンテーションのサーバに接続する際に\n"
+"通信の障害が発生しました。"
+
+#: ../docbrowser/browser.glade.h:99
+msgid "9"
+msgstr "9"
+
+#: ../docbrowser/browser.glade.h:100
+msgid ""
+"<b>Version missmatch</b> \n"
+"\n"
+"This version of MonoDoc is not compatible with the current Monodoc\n"
+"server, please upgrade your MonoDoc installation."
+msgstr ""
+
+#: ../docbrowser/browser.glade.h:104
+msgid "10"
+msgstr "10"
+
+#: ../docbrowser/browser.glade.h:105
+msgid ""
+"<b>Password Problem</b> \n"
+"\n"
+"The passkey entered is incorrect. \n"
+"Please try again."
+msgstr ""
+"<b>パスワードの問題</b> \n"
+"\n"
+"入力されたパスワードは不正です。\n"
+"もう一度お試しください。"
+
+#: ../docbrowser/browser.glade.h:109
+msgid "11"
+msgstr "11"
+
+#: ../docbrowser/browser.glade.h:110
+msgid "Uploading Documentation Updates - MonoDoc"
+msgstr "ドキュメンテーションの更新をアップロードしています - MonoDoc"
+
+#: ../docbrowser/browser.glade.h:111
+msgid "Monodoc Documentation Updates Uploader. "
+msgstr "MonoDoc ドキュメンテーションの更新のアップローダです。"
+
+#: ../docbrowser/browser.glade.h:112
+msgid "<b>Status:</b> "
+msgstr "<b>状態:</b>"
+
+#: ../docbrowser/browser.glade.h:113
+msgid "New Comment"
+msgstr "新しいコメント"
+
+#: ../docbrowser/browser.glade.h:114
+msgid "TODO: Some advise on posting here."
+msgstr "TODO:同じアドバイスがここに投稿されています。"
+
+#: ../docbrowser/browser.glade.h:115
+msgid "Title:"
+msgstr "タイトル:"
+
+#: ../docbrowser/browser.glade.h:116
+msgid "Comment"
+msgstr "コメント"
+
+#: ../docbrowser/browser.glade.h:117
+msgid "E-Mail:"
+msgstr "電子メール:"
+
+#: ../docbrowser/browser.glade.h:118
+msgid "Name:"
+msgstr "名前"
+
+#: ../docbrowser/browser.glade.h:119
+msgid "Manage Bookmarks"
+msgstr "ブックマークを管理"
+
+#: ../docbrowser/browser.glade.h:120
+msgid "New Folder"
+msgstr "新しいフォルダ"
+
+#: ../docbrowser/browser.glade.h:121
+msgid "Add Bookmark"
+msgstr "ブックマークを追加"
+
+#: ../docbrowser/browser.glade.h:122
+msgid "Create in:"
+msgstr "ここに作成:"
