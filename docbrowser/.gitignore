@@ -1,3 +1,8 @@
 monodoc
 monodoc.desktop
 AssemblyInfo.cs
+*.pidb
+*~
+*.userprefs
+*.suo
+Options.cs
