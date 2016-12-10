@@ -38,6 +38,7 @@ using System;
 internal class MapAttribute : Attribute {
 	private string nativeType;
 	private string suppressFlags;
+	private bool ignore;
 
 	public MapAttribute ()
 	{
@@ -55,6 +56,11 @@ internal class MapAttribute : Attribute {
 	public string SuppressFlags {
 		get {return suppressFlags;}
 		set {suppressFlags = value;}
+	}
+
+	public bool Ignore {
+		get {return ignore;}
+		set {ignore = value;}
 	}
 }
 
