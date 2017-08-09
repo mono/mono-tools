@@ -31,16 +31,18 @@ The minimal requirements are:
 
 * Microsoft Visual Studio.NET 2010 [2];
 * Some modules from github
-	* 'jbevain/cecil' to get both Mono.Cecil and Mono.Cecil.[M|P]db
-	* 'mono/mono-tools' for Gendarme latest sources
+	* 'jbevain/cecil/0.9.6-nuget' to get both Mono.Cecil and Mono.Cecil.[M|P]db
+	* 'secdec/mono-tools' for Gendarme latest sources
 
 
 How To
 
 * Check out the source code from GIT. This is:
 
-	git clone git://github.com/mono/mono-tools.git
+	git clone git://github.com/secdec/mono-tools.git
 	git clone git://github.com/jbevain/cecil.git
+	cd cecil
+	git checkout 0.9.6-nuget
 	(Please clone both modules at the same level in the folder
 	hierarchy because mono-tools references cecil as a relative path.)
 
