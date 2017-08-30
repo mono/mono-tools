@@ -461,12 +461,12 @@ public partial class MainWindow: Gtk.Window
 						tags.RemoveAt (idx);
 					break;
 
-				case "<small>":
+				case "<span font='11'>":
 					if (!tags.Contains ("small"))
 						tags.Add ("small");
 					break;
 
-				case "</small>":
+				case "<span>":
 					idx = tags.IndexOf ("small");
 					if (idx > -1)
 						tags.RemoveAt (idx);

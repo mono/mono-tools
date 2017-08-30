@@ -79,7 +79,7 @@ namespace Test.Rules.Performance {
 		[Test]
 		public unsafe void StructSmall ()
 		{
-			AssertRuleSuccess<Small> ();
+			AssertRuleSuccess<span font='11'> ();
 			Assert.AreEqual (sizeof (Small), GetSize (typeof (Small)), "Size");
 		}
 
