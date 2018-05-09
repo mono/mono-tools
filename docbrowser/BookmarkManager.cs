@@ -9,7 +9,6 @@
 
 using System;
 using Gtk;
-using Glade;
 using System.Collections;
 using System.Xml.Serialization;
 using System.Xml;
@@ -56,8 +55,8 @@ namespace Monodoc {
 			public Bookmark () {}
 		}
 		internal class ManageBookmarkDialog {
-			[Glade.Widget] Gtk.TreeView bookmarks_treeview;
-			[Glade.Widget] Gtk.Window manage_bookmarks_dialog;
+			Gtk.TreeView bookmarks_treeview;
+			Gtk.Window manage_bookmarks_dialog;
 			BookmarkGroup root_group;
 			Hashtable iter_to_id; 
 			string selected_id = string.Empty;
@@ -65,8 +64,13 @@ namespace Monodoc {
 			const string UNTITLED = "Untitled";
 		
 			public ManageBookmarkDialog (BookmarkGroup bookmarks) {
-				Glade.XML xml = new Glade.XML ("browser.glade","manage_bookmarks_dialog");
-				xml.Autoconnect (this);
+				var ui = new Builder();
+				ui.AddFromFile("BookmarksManager.glade");
+				ui.Autoconnect (this);
+
+				manage_bookmarks_dialog = (Window) ui.GetObject ("manage_bookmarks_dialog");
+				bookmarks_treeview = (TreeView) ui.GetObject ("bookmarks_treeview");
+
 				iter_to_id = new Hashtable ();
 				root_group = bookmarks;
 				bookmarks_treeview.RulesHint = true;
@@ -203,9 +207,9 @@ namespace Monodoc {
 		}
 	    
 		internal class AddBookmarkDialog {
-			[Glade.Widget] Gtk.Entry name_entry;
-			[Glade.Widget] HBox hbox37;
-			[Glade.Widget] Gtk.Window add_bookmark_dialog;
+			Gtk.Entry name_entry;
+			HBox hbox37;
+			Gtk.Window add_bookmark_dialog;
 			
 			string text, url;
 			BookmarkGroup root;
@@ -214,8 +218,13 @@ namespace Monodoc {
 			
 			public AddBookmarkDialog (BookmarkGroup root_group)
 			{
-				Glade.XML xml = new Glade.XML ("browser.glade","add_bookmark_dialog");
-				xml.Autoconnect (this);
+				var ui = new Builder();
+				ui.AddFromFile("AddBookmarkDialog.glade");
+				ui.Autoconnect (this);
+
+				add_bookmark_dialog = (Window) ui.GetObject ("add_bookmark_dialog");
+				hbox37 = (HBox) ui.GetObject ("hbox37");
+				name_entry = (Entry) ui.GetObject ("name_entry");
 				
 				combo = new Combo ();
 

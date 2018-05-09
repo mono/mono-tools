@@ -9,7 +9,6 @@
 // TODO:
 //
 using Gtk;
-using Glade;
 using System;
 using System.IO;
 using System.Reflection;
@@ -27,38 +26,36 @@ using OSXIntegration.Framework;
 
 namespace Monodoc {
 public class Browser {
-	Glade.XML ui;
+	Builder ui;
 	public Gtk.Window MainWindow;
 	Style bar_style;
 
-	[Glade.Widget] public Window window1;
-	[Glade.Widget] TreeView reference_tree;
-	[Glade.Widget] TreeView bookmark_tree;
-	[Glade.Widget] public Statusbar statusbar;
-	[Glade.Widget] public Button back_button, forward_button;
+	public Window window1;
+	TreeView reference_tree;
+	public Statusbar statusbar;
+	public Button back_button, forward_button;
 	public Entry index_entry;
-	[Glade.Widget] CheckMenuItem editing1;
-	[Glade.Widget] CheckMenuItem showinheritedmembers;
-	[Glade.Widget] public MenuItem print;
-	[Glade.Widget] public MenuItem close_tab;
+	CheckMenuItem showinheritedmembers;
+	public MenuItem print;
+	public MenuItem close_tab;
 	public Notebook tabs_nb;
 	public Tab CurrentTab;
 	bool HoldCtrl;
 	public string engine;
 
-	[Glade.Widget] public MenuItem bookmarksMenu;
-	[Glade.Widget] MenuItem view1;
+	public MenuItem bookmarksMenu;
+	MenuItem view1;
 	MenuItem textLarger;
 	MenuItem textSmaller;
 	MenuItem textNormal;
 
-	[Glade.Widget] VBox help_container;
+	VBox help_container;
 	
-	[Glade.Widget] EventBox bar_eb, index_eb;
-	[Glade.Widget] Label subtitle_label;
+	EventBox bar_eb, index_eb;
+	Label subtitle_label;
 	[Glade.Widget] Notebook nb;
 
-	[Glade.Widget] Box title_label_box;
+	Box title_label_box;
 	ELabel title_label;
 
 	// Bookmark Manager
@@ -69,7 +66,7 @@ public class Browser {
 	//
 	internal VBox search_box;
 	internal Frame matches;
-	[Glade.Widget] internal VBox index_vbox;
+	internal VBox index_vbox;
 	
 	Gdk.Pixbuf monodoc_pixbuf;
 
@@ -82,7 +79,7 @@ public class Browser {
 	SearchableIndex search_index;
 	ArrayList searchResults = new ArrayList (20);
 	string highlight_text;
-	[Glade.Widget] VBox search_vbox;
+	VBox search_vbox;
 	ProgressPanel ppanel;
 	
         //
@@ -124,10 +121,33 @@ public class Browser {
 #endif
 	
 		this.engine = engine;		
-		ui = new Glade.XML (null, "browser.glade", "window1", null);
+		ui = new Builder();
+		ui.AddFromFile("Browser.glade");
 		ui.Autoconnect (this);
 
-		MainWindow = (Gtk.Window) ui["window1"];
+		MainWindow = (Gtk.Window) ui.GetObject("window1");
+		window1 = MainWindow;
+
+		// Glade did this via attribs, Builder doesn't; we need to initialize everything
+		help_container = (Gtk.VBox) ui.GetObject("help_container");
+		search_vbox = (Gtk.VBox) ui.GetObject("search_vbox");
+		index_vbox = (Gtk.VBox) ui.GetObject("index_vbox");
+		title_label_box = (Gtk.Box) ui.GetObject("title_label_box");
+		bar_eb = (Gtk.EventBox) ui.GetObject("bar_eb");
+		index_eb = (Gtk.EventBox) ui.GetObject("index_eb");
+		back_button = (Button) ui.GetObject("back_button");
+		forward_button = (Button) ui.GetObject("forward_button");
+		reference_tree = (TreeView) ui.GetObject("reference_tree");
+		subtitle_label = (Label) ui.GetObject("subtitle_label");
+		nb = (Notebook) ui.GetObject("nb");
+		statusbar = (Statusbar) ui.GetObject("statusbar");
+		showinheritedmembers = (CheckMenuItem) ui.GetObject("showinheritedmembers");
+		print = (MenuItem) ui.GetObject("print");
+		view1 = (MenuItem) ui.GetObject("view1");
+		close_tab = (MenuItem) ui.GetObject("close_tab");
+		bookmarksMenu = (MenuItem) ui.GetObject("bookmarksMenu");
+		bookmarksMenu.Submenu = new Menu(); // sigh; null now...
+
 		MainWindow.DeleteEvent += new DeleteEventHandler (delete_event_cb);
                 
 		MainWindow.KeyPressEvent += new KeyPressEventHandler (keypress_event_cb);
@@ -962,8 +982,13 @@ ExtLoop:
 		
 		Lookup (Browser browser)
 		{
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "lookup", null);
+			var ui = new Builder();
+			ui.AddFromFile("Lookup.glade");
 			ui.Autoconnect (this);
+
+			lookup = (Window) ui.GetObject ("lookup");
+			entry = (Entry) ui.GetObject ("entry");
+
 			parent = browser;
 			lookup.TransientFor = browser.window1;
 		}
