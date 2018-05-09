@@ -93,7 +93,7 @@ namespace Monodoc {
 			}
 			void on_row_selected (object sender, EventArgs args) {
 				Gtk.TreeIter iter;
-				Gtk.TreeModel model;
+				Gtk.ITreeModel model;
 				
 				if (bookmarks_treeview.Selection.GetSelected (out model, out iter)) {
 					selected_id = iter_to_id[iter] as string;
@@ -213,7 +213,7 @@ namespace Monodoc {
 			
 			string text, url;
 			BookmarkGroup root;
-			Combo combo;
+			Entry combo;
 			Hashtable combo_to_id = new Hashtable ();
 			
 			public AddBookmarkDialog (BookmarkGroup root_group)
@@ -226,18 +226,19 @@ namespace Monodoc {
 				hbox37 = (HBox) ui.GetObject ("hbox37");
 				name_entry = (Entry) ui.GetObject ("name_entry");
 				
-				combo = new Combo ();
+				combo = new Entry ();
 
 				ArrayList list = new ArrayList ();
 				
 				BuildComboList (root_group,list);
-				combo.PopdownStrings =  list.ToArray (typeof (string)) as string[];
-				combo.AllowEmpty = false;
-				combo.Entry.Editable = false;
-				combo.DisableActivate ();
+				// TODO: This needs to be a combo box again, but it can't be a Gtk.Combo anymore
+				//combo.PopdownStrings =  list.ToArray (typeof (string)) as string[];
+				//combo.AllowEmpty = false;
+				//combo.Entry.Editable = false;
+				//combo.DisableActivate ();
 				
 				// pusihing widget into hbox
-				hbox37.PackEnd (combo);
+				hbox37.PackEnd (combo, true, true, 0);
 				
 				//combo.Entry.Activated += new EventHandler (on_combo_entry_activated);
 
@@ -268,7 +269,8 @@ namespace Monodoc {
 
 			public void on_AddButton_clicked (object o, EventArgs args)
 			{
-				BookmarkManager.AddBookmark (root,combo_to_id [combo.Entry.Text] as string,name_entry.Text,url);
+//				BookmarkManager.AddBookmark (root,combo_to_id [combo.Entry.Text] as string,name_entry.Text,url);
+				BookmarkManager.AddBookmark (root,combo_to_id [combo.Text] as string,name_entry.Text,url);
 				add_bookmark_dialog.Hide ();
 				BookmarkManager.Refresh ();
 			}

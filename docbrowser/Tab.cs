@@ -94,8 +94,8 @@ public class Tab : Notebook {
 		CurrentNode = br.help_tree;
 		ShowTabs = false;
 		ShowBorder = false;
-		TabBorder = 0;
-		TabHborder = 0;
+		//TabBorder = 0;
+		//TabHborder = 0;
 		history = new History (browser.back_button, browser.forward_button);
 		
 		//

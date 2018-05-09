@@ -46,7 +46,7 @@ class BigList : Gtk.DrawingArea {
 
 		layout = new Pango.Layout (PangoContext);
 
-		ExposeEvent += new ExposeEventHandler (ExposeHandler);
+		Drawn += new DrawnHandler (DrawnHandler);
 		ButtonPressEvent += new ButtonPressEventHandler (ButtonPressEventHandler);
 		ButtonReleaseEvent += new ButtonReleaseEventHandler (ButtonReleaseEventHandler);
 		KeyPressEvent += new KeyPressEventHandler (KeyHandler);
@@ -113,7 +113,7 @@ class BigList : Gtk.DrawingArea {
 
 		my_style = style_widget.Style.Copy ();
 		Style = my_style;
-		my_style.SetBackgroundGC (StateType.Normal, Style.BaseGC (StateType.Normal));
+		// my_style.SetBackgroundGC (StateType.Normal, Style.BaseGC (StateType.Normal));
 		Refresh ();
 	}
 
@@ -298,8 +298,10 @@ class BigList : Gtk.DrawingArea {
 	
 	public event ItemActivated ItemActivated;
 	
-        void ExposeHandler (object obj, ExposeEventArgs args)
+        void DrawnHandler (object obj, DrawnArgs args)
         {
+		// TODO: Fix everything
+/*
                 Gdk.Window win = args.Event.Window;
                 Gdk.Rectangle area = args.Event.Area;
 
@@ -340,6 +342,7 @@ class BigList : Gtk.DrawingArea {
 		}
 
 		args.RetVal = true;
+*/
 	}
 
 	public Gtk.Adjustment Adjustment {

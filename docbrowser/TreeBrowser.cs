@@ -94,7 +94,7 @@ public class TreeBrowser {
 
 	void RowClicked (object o, Gtk.RowActivatedArgs args)
 	{
-		Gtk.TreeModel model;
+		ITreeModel model;
 		Gtk.TreeIter iter;	
 		Gtk.TreePath path = args.Path;	
 
@@ -155,7 +155,7 @@ public class TreeBrowser {
 	{
 		get {
 	                Gtk.TreeIter iter;
-	                Gtk.TreeModel model;
+	                ITreeModel model;
 
 	                if (tree_view.Selection.GetSelected (out model, out iter))
 	                        return (Node) iter_to_node [iter];
@@ -224,7 +224,7 @@ public class TreeBrowser {
 			return;
 		
 		Gtk.TreeIter iter;
-		Gtk.TreeModel model;
+		ITreeModel model;
 
 		if (tree_view.Selection.GetSelected (out model, out iter)){
 			Node n = (Node) iter_to_node [iter];

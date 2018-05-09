@@ -1,5 +1,8 @@
 monodocdir=$(prefix)/lib/monodoc
 
+# HACK: Temporarily bypass build system requiring older GTK and WK
+# -pkg:gtk-sharp-3.0
+
 if DMCS_PRESENT
 COMPILER=$(MCS)
 else
@@ -8,9 +11,9 @@ endif
 
 SUBDIRS=theme-icons
 
-if ENABLE_WEBKIT
+#if ENABLE_WEBKIT
 WEBKIT_TARGET=WebKitHtmlRender.dll
-endif
+#endif
 
 DUMMY_TARGET=DummyHtmlRender.dll
 
@@ -42,15 +45,21 @@ webkitrender_sources = 			\
 dummyrender_sources = 			\
 	$(srcdir)/DummyHtmlRender.cs
 
-browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services -r:System.Web
-webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
-dummyrender_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+#browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services -r:System.Web
+browser_assemblies = -pkg:gtk-sharp-3.0 $(MONODOC_LIBS) -r:System.Web.Services -r:System.Web
+# webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+webkitrender_assemblies = -pkg:gtk-sharp-3.0 -pkg:webkit2-sharp-4.0 $(MONODOC_LIBS) -r:browser.exe
+# dummyrender_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
+dummyrender_assemblies = -pkg:gtk-sharp-3.0 $(MONODOC_LIBS) -r:browser.exe
 
 EXTRA_DIST = \
 	$(browser_sources) 		\
 	$(webkitrender_sources)		\
 	monodoc.desktop.in		\
-	browser.glade 			\
+	AddBookmarkDialog.glade		\
+	BookmarksManager.glade 		\
+	Browser.glade 			\
+	Lookup.glade 			\
 	monodoc.png			\
 	AssemblyInfo.cs.in		\
 	README.ADMIN

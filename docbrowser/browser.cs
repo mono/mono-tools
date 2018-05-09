@@ -28,7 +28,6 @@ namespace Monodoc {
 public class Browser {
 	Builder ui;
 	public Gtk.Window MainWindow;
-	Style bar_style;
 
 	public Window window1;
 	TreeView reference_tree;
@@ -53,7 +52,7 @@ public class Browser {
 	
 	EventBox bar_eb, index_eb;
 	Label subtitle_label;
-	[Glade.Widget] Notebook nb;
+	Notebook nb;
 
 	Box title_label_box;
 	ELabel title_label;
@@ -169,12 +168,6 @@ public class Browser {
 		title_label.Layout.FontDescription = fd;
 		title_label_box.Add (title_label);
 		title_label.Show ();
-		
-		//colour the bar according to the current style
-		bar_style = bar_eb.Style.Copy ();
-		bar_eb.Style = bar_style;
-		MainWindow.StyleSet += new StyleSetHandler (BarStyleSet);
-		BarStyleSet (null, null);
 
 		help_tree = Driver.LoadTree (basedir, sources);
 		tree_browser = new TreeBrowser (help_tree, reference_tree, this);
@@ -307,7 +300,7 @@ public class Browser {
 		// Create the search panel
 		//
 		VBox vbox1 = new VBox (false, 0);
-		search_vbox.PackStart (vbox1);
+		search_vbox.PackStart (vbox1, true, true, 0);
 		
 		// title
 		HBox hbox1 = new HBox (false, 3);
@@ -439,7 +432,7 @@ public class Browser {
 	void ShowSearchResult (object sender, EventArgs a)
 	{
 		Gtk.TreeIter iter;
-		Gtk.TreeModel model;
+		Gtk.ITreeModel model;
 
 		bool selected = search_tree.Selection.GetSelected (out model, out iter);
 		if (!selected)
@@ -493,11 +486,6 @@ public class Browser {
 		//HelpSource.CssCode = null;
 		Reload ();
 		SettingsHandler.Save ();
-	}
-
-	void BarStyleSet (object obj, StyleSetArgs args)
-	{
-		bar_style.SetBackgroundGC (StateType.Normal, MainWindow.Style.BackgroundGCs[1]);
 	}
 
 	public Stream GetResourceImage (string name)
@@ -927,8 +915,8 @@ ExtLoop:
 	}
 
 	class Lookup {
-		[Glade.Widget] Window lookup;
-		[Glade.Widget] Entry entry;
+		Window lookup;
+		Entry entry;
 		static Lookup LookupBox;
 		Browser parent;
 		

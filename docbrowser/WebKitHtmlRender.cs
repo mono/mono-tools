@@ -7,7 +7,7 @@
 using System;
 using System.IO;
 using Gtk;
-using WebKit;
+using WebKit2;
 
 namespace Monodoc {
 public class WebKitHtmlRender : IHtmlRender {
@@ -30,16 +30,19 @@ public class WebKitHtmlRender : IHtmlRender {
 	{
 		web_view = new WebView ();
 		web_view.Show (); 
-		web_view.NavigationRequested += delegate (object sender, NavigationRequestedArgs e) {
+		web_view.ResourceLoadStarted += delegate (object sender, ResourceLoadStartedArgs e) {
 			if (e.Request.Uri == "about:blank")
 				return;
 			url = e.Request.Uri;
+			// TODO: I don't see a way to stop the request from the event;
+			// so we try this; sometimes it doesn't happen though, and we have a race
+			web_view.StopLoading ();
 			if (UrlClicked != null)
 				UrlClicked (this, new EventArgs());
-			e.RetVal = NavigationResponse.Ignore;
+			//e.RetVal = NavigationResponse.Ignore;
 		};
-		web_view.HoveringOverLink += delegate (object sender, HoveringOverLinkArgs e) {
-			url = e.Link;
+		web_view.MouseTargetChanged += delegate (object sender, MouseTargetChangedArgs e) {
+			url = e?.HitTestResult?.LinkUri;
 			if (OnUrl != null)
 			  OnUrl (this, new EventArgs ());
 		};
@@ -48,27 +51,29 @@ public class WebKitHtmlRender : IHtmlRender {
 
 	public void JumpToAnchor (string anchor)
 	{
-		web_view.Open ("#" + anchor);
+		web_view.LoadUri ("#" + anchor);
 	}
+
+	// TODO: Reimplement for WebKit2
 
 	public void Copy () 
 	{
-		web_view.CopyClipboard ();
+		//web_view.CopyClipboard ();
 	}
 
 	public void SelectAll () 
 	{
-		web_view.SelectAll ();	
+		//web_view.SelectAll ();	
 	}
 
 	public void Render (string html) 
 	{
-		web_view.LoadHtmlString (html, null);
+		web_view.LoadHtml (html);
 	}
 
 	public void Print (string html)
 	{
-		web_view.ExecuteScript ("print();");
+		//web_view.ExecuteScript ("print();");
 	}
 
 	public bool Initialize ()

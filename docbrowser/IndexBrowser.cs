@@ -131,8 +131,8 @@ class IndexBrowser {
 		browser.matches.Add (box2);
 		index_list.SetSizeRequest (100, 200);
 
-		browser.index_vbox.PackStart (frame1);
-		browser.index_vbox.PackEnd (browser.matches);
+		browser.index_vbox.PackStart (frame1, true, true, 0);
+		browser.index_vbox.PackEnd (browser.matches, true, true, 0);
 	}
 
 	//
