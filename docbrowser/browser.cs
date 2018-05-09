@@ -28,7 +28,7 @@ using OSXIntegration.Framework;
 namespace Monodoc {
 class Driver {
 	  
-	public static string[] engines = {"WebKit", "MonoWebBrowser", "Gecko", "GtkHtml"};
+	public static string[] engines = {"WebKit", "Dummy"};
 	  
 	static int Main (string [] args)
 	{
@@ -2443,15 +2443,6 @@ public class Tab : Notebook {
 		return null;
 	}
 	
-#if MACOS
-	public static IHtmlRender GetRenderer (string engine, Browser browser)
-	{
-		var renderer = new GtkHtmlHtmlRender (browser.help_tree);
-		renderer.Initialize ();
-
-		return renderer;
-	}
-#else
 	public static IHtmlRender GetRenderer (string engine, Browser browser)
 	{
 		IHtmlRender renderer = LoadRenderer (System.IO.Path.Combine (AppDomain.CurrentDomain.BaseDirectory, engine + "HtmlRender.dll"), browser);
@@ -2484,7 +2475,6 @@ public class Tab : Notebook {
 		
 		return null;		
 	}
-#endif
 
 	public Tab(Browser br) 
 	{
