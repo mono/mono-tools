@@ -26,12 +26,13 @@ browser_sources   = \
 	$(srcdir)/list.cs 		\
 	$(srcdir)/elabel.cs 		\
 	$(srcdir)/history.cs 		\
-	$(srcdir)/editing.cs            \
-	$(srcdir)/Contributions.cs	\
-	$(srcdir)/XmlNodeWriter.cs	\
 	$(srcdir)/IHtmlRender.cs	\
 	$(srcdir)/BookmarkManager.cs	\
-	$(srcdir)/ProgressPanel.cs
+	$(srcdir)/ProgressPanel.cs	\
+	$(srcdir)/Driver.cs		\
+	$(srcdir)/Tab.cs		\
+	$(srcdir)/IndexBrowser.cs	\
+	$(srcdir)/TreeBrowser.cs
 
 browser_built_sources = AssemblyInfo.cs Options.cs
 
