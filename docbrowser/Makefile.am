@@ -8,17 +8,13 @@ endif
 
 SUBDIRS=theme-icons
 
-#if ENABLE_GTKHTML
-#noinst_DATA = admin.exe
-#endif
-
 if ENABLE_WEBKIT
 WEBKIT_TARGET=WebKitHtmlRender.dll
 endif
 
 DUMMY_TARGET=DummyHtmlRender.dll
 
-CLEANFILES = browser.exe browser.exe.mdb admin.exe admin.exe.mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb $(DUMMY_TARGET) $(DUMMY_TARGET).mdb monodoc.desktop Options.cs
+CLEANFILES = browser.exe browser.exe.mdb $(WEBKIT_TARGET) $(WEBKIT_TARGET).mdb $(DUMMY_TARGET) $(DUMMY_TARGET).mdb monodoc.desktop Options.cs
 monodoc_DATA = browser.exe $(WEBKIT_TARGET) $(DUMMY_TARGET)
 
 DISTCLEANFILES = AssemblyInfo.cs monodoc.desktop monodoc
@@ -45,10 +41,6 @@ webkitrender_sources = 			\
 dummyrender_sources = 			\
 	$(srcdir)/DummyHtmlRender.cs
 
-admin_sources = \
-	$(srcdir)/admin.cs		\
-	$(srcdir)/Contributions.cs
-
 browser_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) $(GNOME_SHARP_LIBS) -r:System.Web.Services -r:System.Web
 webkitrender_assemblies = $(GTK_SHARP_LIBS) $(WEBKIT_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
 dummyrender_assemblies = $(GTK_SHARP_LIBS) $(MONODOC_LIBS) -r:browser.exe
@@ -57,18 +49,10 @@ EXTRA_DIST = \
 	$(browser_sources) 		\
 	$(webkitrender_sources)		\
 	monodoc.desktop.in		\
-	admin.cs			\
-	admin.glade 			\
 	browser.glade 			\
 	monodoc.png			\
 	AssemblyInfo.cs.in		\
 	README.ADMIN
-
-# admin hardcodes GTKHTML for now.
-#if ENABLE_GTKHTML
-#admin.exe: $(admin_sources) $(srcdir)/admin.glade
-#	$(COMPILER) -debug -out:admin.exe $(admin_sources) -resource:$(srcdir)/admin.glade,admin.glade $(browser_assemblies) $(GTKHTML_SHARP_LIBS) -r:System.Drawing
-#endif
 
 browser.exe: $(browser_sources) $(browser_built_sources) $(srcdir)/browser.glade $(srcdir)/monodoc.png 
 	$(COMPILER) -debug -out:browser.exe $(browser_sources) $(browser_built_sources) -resource:$(srcdir)/monodoc.png,monodoc.png -resource:$(srcdir)/browser.glade,browser.glade  $(browser_assemblies) $(CSHARP_FLAGS)
@@ -84,9 +68,6 @@ Options.cs:
 
 b: browser.exe
 	MONO_PATH=. $(RUNTIME) --debug browser.exe
-
-c: admin.exe
-	MONO_PATH=. $(RUNTIME) --debug admin.exe
 
 desktopdir = $(datadir)/applications
 desktop_DATA = monodoc.desktop

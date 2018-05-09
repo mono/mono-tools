@@ -58,9 +58,6 @@ class Driver {
 			{ "docdir=",
 				"Load documentation from {DIR}.",
 				v => sources.Add (v) },
-			{ "edit=",
-				"Edit mdoc(5) XML documentation found within {PATH}.",
-				v => RootTree.AddUncompiledSource (v) },
 			{ "engine=",
 				"Specify which HTML rendering {ENGINE} to use:\n" + 
 					"  " + string.Join ("\n  ", engines) + "\n" +
@@ -130,7 +127,7 @@ class Driver {
 			return r;
 		}
 		if (show_help) {
-			Console.WriteLine ("usage: monodoc [--html TOPIC] [--make-index] [--make-search-index] [--merge-changes CHANGE_FILE TARGET_DIR+] [--about] [--edit path] [--remote-mode] [--engine engine] [TOPIC]");
+			Console.WriteLine ("usage: monodoc [--html TOPIC] [--make-index] [--make-search-index] [--merge-changes CHANGE_FILE TARGET_DIR+] [--about]  [--remote-mode] [--engine engine] [TOPIC]");
 			p.WriteOptionDescriptions (Console.Out);
 			return r;
 		}
@@ -215,10 +212,6 @@ public class Browser {
 	public Entry index_entry;
 	[Glade.Widget] CheckMenuItem editing1;
 	[Glade.Widget] CheckMenuItem showinheritedmembers;
-	[Glade.Widget] CheckMenuItem comments1;
-	[Glade.Widget] MenuItem postcomment;
-	[Glade.Widget] public MenuItem cut1;
-	[Glade.Widget] public MenuItem paste1;
 	[Glade.Widget] public MenuItem print;
 	[Glade.Widget] public MenuItem close_tab;
 	public Notebook tabs_nb;
@@ -384,14 +377,6 @@ public class Browser {
 			textNormal.AddAccelerator ("activate", accel, ak);
 		}
 
-		// restore the editing setting
-		editing1.Active = SettingsHandler.Settings.EnableEditing;
-
-		comments1.Active = SettingsHandler.Settings.ShowComments;
-
-		cut1.Sensitive = false;
-		paste1.Sensitive = false;
-
 		//
 		// Other bits
 		//
@@ -555,14 +540,7 @@ public class Browser {
 		//Activate the new history
 		CurrentTab.history.Active = true;
 		
-		if (CurrentTab.Tab_mode == Mode.Viewer) {
-			CurrentTab.history.ActivateCurrent();
-			paste1.Sensitive = false;
-			print.Sensitive = true;
-		} else {
-			paste1.Sensitive = true;
-			print.Sensitive = false;
-		}
+		CurrentTab.history.ActivateCurrent();
 		
 		if (tree_browser.SelectedNode != CurrentTab.CurrentNode)
 			tree_browser.ShowNode (CurrentTab.CurrentNode);
@@ -613,8 +591,6 @@ public class Browser {
 	//
 	void ShowSearchResult (object sender, EventArgs a)
 	{
-		CurrentTab.SetMode (Mode.Viewer);
-		
 		Gtk.TreeIter iter;
 		Gtk.TreeModel model;
 
@@ -714,25 +690,12 @@ public class Browser {
 		LoadUrl (url);
 	}
 
-	private System.Xml.XmlNode edit_node;
-	private string edit_url;
-
 	public void LoadUrl (string url)
 	{
 		if (url.StartsWith("#"))
 		{
 			// FIXME: This doesn't deal with whether anchor jumps should go in the history
 			CurrentTab.html.JumpToAnchor(url.Substring(1));
-			return;
-		}
-
-		if (url.StartsWith ("edit:"))
-		{
-			Console.WriteLine ("Node is: " + url);
-			CurrentTab.edit_node = EditingUtils.GetNodeFromUrl (url, help_tree);
-			CurrentTab.edit_url = url;
-			CurrentTab.SetMode (Mode.Editor);
-			CurrentTab.text_editor.Buffer.Text = CurrentTab.edit_node.InnerXml;
 			return;
 		}
 		
@@ -1015,17 +978,6 @@ ExtLoop:
 		html.Write ("</html>");
 		return html.ToString ();
 	}
-
-	void OnCommentsActivate (object o, EventArgs args)
-	{
-		SettingsHandler.Settings.ShowComments = comments1.Active;
-
-		// postcomment.Sensitive = comments1.Active;
-
-		// refresh, so we can see the comments
-		if (CurrentTab != null && CurrentTab.history != null) // catch the case when we are currently loading
-			CurrentTab.history.ActivateCurrent ();
-	}
 	
 	void OnInheritedMembersActivate (object o, EventArgs args)
 	{
@@ -1034,15 +986,6 @@ ExtLoop:
 			CurrentTab.history.ActivateCurrent ();
 	}
 
-	void OnEditingActivate (object o, EventArgs args)
-	{
-		SettingsHandler.Settings.EnableEditing = editing1.Active;
-
-		// refresh, so we can see the [edit] things
-		if (CurrentTab != null && CurrentTab.history != null) // catch the case when we are currently loading
-			CurrentTab.history.ActivateCurrent ();
-	}
-	
 	void OnCollapseActivate (object o, EventArgs args)
 	{
 		reference_tree.CollapseAll ();
@@ -1121,44 +1064,11 @@ ExtLoop:
 	}
 
 	//
-	// Invoked by Edit/Cut menu entry.
-	//
-	void OnCutActivate (object sender, EventArgs a)
-	{
-		if (CurrentTab.Tab_mode == Mode.Editor) {
-			Clipboard cb = Clipboard.Get (Gdk.Selection.Clipboard);
-			CurrentTab.text_editor.Buffer.CutClipboard (cb, true);
-		}
-	}
-
-	//
 	// Invoked by Edit/Copy menu entry.
 	//
 	void OnCopyActivate (object sender, EventArgs a)
 	{
-		if (CurrentTab.Tab_mode == Mode.Viewer)
-			CurrentTab.html.Copy ();
-		else {
-			Clipboard cb = Clipboard.Get (Gdk.Selection.Clipboard);
-			CurrentTab.text_editor.Buffer.CopyClipboard (cb);
-		}
-	}
-
-	//
-	// Invoked by Edit/Paste menu entry.
-	//
-	void OnPasteActivate (object sender, EventArgs a)
-	{
-		Clipboard cb = Clipboard.Get (Gdk.Selection.Clipboard);
-		
-		if (!cb.WaitIsTextAvailable ())
-			return;
-
-		//string text = cb.WaitForText ();
-
-		//CurrentTab.text_editor.Buffer.InsertAtCursor (text);
-
-		CurrentTab.text_editor.Buffer.PasteClipboard (cb);
+		CurrentTab.html.Copy ();
 	}
 
 	class About {
@@ -1216,528 +1126,6 @@ ExtLoop:
 	{
 		About.Show (this);
 	}
-
-	void OnUpload (object sender, EventArgs a)
-	{
-		string key = SettingsHandler.Settings.Key;
-		if (key == null || key == "")
-			ConfigWizard.Run (this);
-		else
-			DoUpload ();
-	}
-
-	void DoUpload ()
-	{
-		Upload.Run (this);
-	}
-
-	class Upload {
-		enum State {
-			GetSerial,
-			PrepareUpload,
-			SerialError,
-			VersionError,
-			SubmitError,
-			NetworkError,
-			Done
-		}
-		
-		[Glade.Widget] Dialog upload_dialog;
-		[Glade.Widget] Label status;
-		[Glade.Widget] Button cancel;
-		State state;
-		ThreadNotify tn;
-		WebClientAsyncResult war;
-		Contributions d;
-		int serial;
-		
-		public static void Run (Browser browser)
-		{
-			new Upload (browser);
-		}
-
-		Upload (Browser browser)
-		{
-			tn = new ThreadNotify (new ReadyEvent (Update));
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "upload_dialog", null);
-			ui.Autoconnect (this);
-			d = new Contributions ();
-			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
-				d.Url = "http://www.go-mono.com/docs/server.asmx";
-			
-			status.Text = "Checking Server version";
-			war = (WebClientAsyncResult) d.BeginCheckVersion (1, new AsyncCallback (VersionChecked), null);
-		}
-
-		void Update ()
-		{
-			Console.WriteLine ("In Update: " + state);
-			switch (state){
-			case State.NetworkError:
-				status.Text = "A network error ocurred";
-				cancel.Label = "Close";
-				return;
-			case State.VersionError:
-				status.Text = "Server has a different version, upgrade your MonoDoc";
-				cancel.Label = "Close";
-				return;
-			case State.GetSerial:
-				war = (WebClientAsyncResult) d.BeginGetSerial (
-					SettingsHandler.Settings.Email, SettingsHandler.Settings.Key,
-					new AsyncCallback (GetSerialDone), null);
-				return;
-			case State.SerialError:
-				status.Text = "Error obtaining serial number from server for this account";
-				cancel.Label = "Close";
-				return;
-			case State.SubmitError:
-				status.Text = "There was a problem with the documentation uploaded";
-				cancel.Label = "Close";
-				return;
-				
-			case State.PrepareUpload:
-				GlobalChangeset cs = EditingUtils.GetChangesFrom (serial);
-				if (cs == null){
-					status.Text = "No new contributions";
-					cancel.Label = "Close";
-					return;
-				}
-				
-				CopyXmlNodeWriter w = new CopyXmlNodeWriter ();
-				GlobalChangeset.serializer.Serialize (w, cs);
-				Console.WriteLine ("Uploading...");
-				status.Text = String.Format ("Uploading {0} contributions", cs.Count);
-				XmlDocument dd = (XmlDocument) w.Document;
-				war = (WebClientAsyncResult) d.BeginSubmit (
-					SettingsHandler.Settings.Email, SettingsHandler.Settings.Key,
-					((XmlDocument) w.Document).DocumentElement,
-					new AsyncCallback (UploadDone), null);
-				return;
-			case State.Done:
-				status.Text = "All contributions uploaded";
-				cancel.Label = "Close";
-				SettingsHandler.Settings.SerialNumber = serial;
-				SettingsHandler.Save ();
-				return;
-			}
-		}
-
-		void UploadDone (IAsyncResult iar)
-		{
-			try {
-				int result = d.EndSubmit (iar);
-				war = null;
-				if (result < 0)
-					state = State.SubmitError;
-				else {
-					state = State.Done;
-					serial = result;
-				}
-			} catch (Exception e) {
-				state = State.NetworkError;
-				Console.WriteLine ("Upload: " + e);
-			}
-			if (tn != null)
-				tn.WakeupMain ();
-		}
-		
-		void GetSerialDone (IAsyncResult iar)
-		{
-			try {
-				serial = d.EndGetSerial (iar);
-				war = null;
-				if (serial < 0)
-					state = State.SerialError;
-				else
-					state = State.PrepareUpload;
-			} catch (Exception e) {
-				Console.WriteLine ("Serial: " + e);
-				state = State.NetworkError;
-			}
-			if (tn != null)
-				tn.WakeupMain ();
-		}
-		
-		void VersionChecked (IAsyncResult iar)
-		{
-			try {
-				int ver = d.EndCheckVersion (iar);
-				war = null;
-				if (ver != 0)
-					state = State.VersionError;
-				else
-					state = State.GetSerial;
-			} catch (Exception e) {
-				Console.WriteLine ("Version: " + e);
-				state = State.NetworkError;
-			}
-			if (tn != null)
-				tn.WakeupMain ();
-		}
-
-		void Cancel_Clicked (object sender, EventArgs a)
-		{
-			if (war != null)
-				war.Abort ();
-			war = null;
-			state = State.Done;
-
-			upload_dialog.Destroy ();
-			upload_dialog = null;
-			tn = null;
-		}
-	}
-	
-	class ConfigWizard {
-		static ConfigWizard config_wizard;
-		
-		[Glade.Widget] Window window_config_wizard;
-		[Glade.Widget] Notebook notebook;
-		[Glade.Widget] Button button_email_ok;
-		[Glade.Widget] Entry entry_email;
-		[Glade.Widget] Entry entry_password;
-		
-		Browser parent;
-		Contributions d;
-		WebClientAsyncResult war;
-		ThreadNotify tn;
-		int new_page;
-		
-		public static void Run (Browser browser)
-		{
-			if (config_wizard == null)
-				config_wizard = new ConfigWizard (browser);
-			return;
-		}
-			
-		ConfigWizard (Browser browser)
-		{
-			tn = new ThreadNotify (new ReadyEvent (UpdateNotebookPage));
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "window_config_wizard", null);
-			ui.Autoconnect (this);
-			//notebook.ShowTabs = false;
-			parent = browser;
-			window_config_wizard.TransientFor = browser.window1;
-
-			d = new Contributions ();
-			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
-				d.Url = "http://www.go-mono.com/docs/server.asmx";
-			notebook.Page = 8;
-			
-			war = (WebClientAsyncResult) d.BeginCheckVersion (1, new AsyncCallback (VersionChecked), null);
-		}
-
-		void NetworkError ()
-		{
-			new_page = 9;
-			tn.WakeupMain ();
-		}
-		
-		void VersionChecked (IAsyncResult iar)
-		{
-			int ver = -1;
-			
-			try {
-				if (notebook.Page != 8)
-					return;
-
-				ver = d.EndCheckVersion (iar);
-				if (ver != 0)
-					new_page = 10;
-				else 
-					new_page = 0;
-				tn.WakeupMain ();
-			} catch (Exception e){
-				Console.WriteLine ("Error" + e);
-				NetworkError ();
-			}
-		}
-		
-		//
-		// Called on the Window delete icon clicked
-		//
-		void OnDelete (object sender, DeleteEventArgs a)
-		{
-			config_wizard = null;
-		}
-
-		//
-		// called when the license is approved
-		//
-		void OnPage1_Clicked (object sender, EventArgs a)
-		{
-			button_email_ok.Sensitive = false;
-			notebook.Page = 1;
-		}
-
-		//
-		// Request the user registration.
-		//
-		void OnPage2_Clicked (object sender, EventArgs a)
-		{
-			notebook.Page = 2;
-			SettingsHandler.Settings.Email = entry_email.Text;
-			war = (WebClientAsyncResult) d.BeginRegister (entry_email.Text, new AsyncCallback (RegisterDone), null);
-		}
-
-		void UpdateNotebookPage ()
-		{
-			notebook.Page = new_page;
-		}
-		
-		void RegisterDone (IAsyncResult iar)
-		{
-			int code;
-			
-			try {
-				Console.WriteLine ("Registration done");
-				code = d.EndRegister (iar);
-				if (code != 0 && code != -2){
-					NetworkError ();
-					return;
-				}
-				new_page = 4;
-			} catch {
-				new_page = 3;
-			}
-			tn.WakeupMain ();
-		}
-
-		void PasswordContinue_Clicked (object sender, EventArgs a)
-		{
-			notebook.Page = 5;
-			SettingsHandler.Settings.Key = entry_password.Text;
-			war = (WebClientAsyncResult) d.BeginGetSerial (entry_email.Text, entry_password.Text, new AsyncCallback (GetSerialDone), null); 
-		}
-
-		void GetSerialDone (IAsyncResult iar)
-		{
-			try {
-				int last = d.EndGetSerial (iar);
-				if (last == -1){
-					SettingsHandler.Settings.Key = "";
-					new_page = 11;
-					tn.WakeupMain ();
-					return;
-				}
-				
-				SettingsHandler.Settings.SerialNumber = last;
-				new_page = 6;
-				tn.WakeupMain ();
-			} catch {
-				NetworkError ();
-			}
-		}
-		
-		void AccountRequestCancel_Clicked (object sender, EventArgs a)
-		{
-			war.Abort ();
-			notebook.Page = 7;
-		}
-
-		void SerialRequestCancel_Clicked (object sender, EventArgs a)
-		{
-			war.Abort ();
-			notebook.Page = 7;
-		}
-
-		void LoginRequestCancel_Clicked (object sender, EventArgs a)
-		{
-			war.Abort ();
-			notebook.Page = 7;
-		}
-
-		//
-		// Called when the user clicks `ok' on a terminate page
-		//
-		void Terminate_Clicked (object sender, EventArgs a)
-		{
-			window_config_wizard.Destroy ();
-			config_wizard = null;
-		}
-
-		// Called when the registration process has been successful
-		void Completed_Clicked (object sender, EventArgs a)
-		{
-			window_config_wizard.Destroy ();
-			config_wizard = null;
-			try {
-				Console.WriteLine ("Saving");
-				SettingsHandler.Save ();
-				parent.DoUpload ();
-			} catch (Exception e) {
-				MessageDialog md = new MessageDialog (null, 
-								      DialogFlags.DestroyWithParent,
-								      MessageType.Error, 
-								      ButtonsType.Close, "Error Saving settings\n" +
-								      e.ToString ());
-			}
-		}
-		
-		void OnEmail_Changed (object sender, EventArgs a)
-		{
-			string text = entry_email.Text;
-			
-			if (text.IndexOf ("@") != -1 && text.Length > 3)
-				button_email_ok.Sensitive = true;
-		}
-	}
-
-	void OnContributionStatistics (object sender, EventArgs a)
-	{
-		string email = SettingsHandler.Settings.Email;
-		string key = SettingsHandler.Settings.Key;
-		
-		if (key == null || key == "") {
-			MessageDialog md = new MessageDialog (null, 
-							      DialogFlags.DestroyWithParent,
-							      MessageType.Info, 
-							      ButtonsType.Close, 
-				                  "You have not obtained or used a contribution key yet.");
-			md.Title = "No contribution key";
-			
-			md.Run();
-			md.Destroy();
-		}
-		else
-			ContributionStatus.GetStatus (email, key);
-	}
-	
-	class ContributionStatus {
-		enum State {
-			GetStatusError,
-			NetworkError,
-			Done
-		}
-
-		State state;
-		Status status;
-		string contributoremail;
-		
-		ThreadNotify tn;
-		WebClientAsyncResult war;
-		Contributions d;
-		
-		public static void GetStatus (string email, string key)
-		{
-			new ContributionStatus(email, key);
-		}
-		
-		ContributionStatus (string email, string key)
-		{
-			tn = new ThreadNotify (new ReadyEvent (Update));
-			
-			d = new Contributions ();
-			if (Environment.GetEnvironmentVariable ("MONODOCTESTING") == null)
-				d.Url = "http://www.go-mono.com/docs/server.asmx";
-				
-			war = (WebClientAsyncResult) d.BeginGetStatus (email, key, new AsyncCallback (GetStatusDone), null);
-			contributoremail = email;
-		}
-		
-		void Update ()
-		{
-			MessageDialog md = null;
-			
-			switch (state) {
-			case State.GetStatusError:
-				md = new MessageDialog (null, 
-					              DialogFlags.DestroyWithParent,
-							      MessageType.Error, ButtonsType.Close, 
-				                  "Server returned error while requesting contributor statistics");
-				md.Title = "Contribution Statistics Error Occurred";
-				break;
-			case State.NetworkError:
-				md = new MessageDialog (null, 
-					              DialogFlags.DestroyWithParent,
-							      MessageType.Error, ButtonsType.Close, 
-				                  "Network error occurred while requesting contributor statistics");
-				md.Title = "Contribution Statistics Error Occurred";
-				break;
-			case State.Done:
-				md = new MessageDialog (null, 
-					              DialogFlags.DestroyWithParent,
-							      MessageType.Info, ButtonsType.Close, 
-				                  "Contribution statistics for " + contributoremail +
-					              "\n\nTotal contributions: " + status.Contributions +
-					              "\nContributions committed: " + status.Commited +
-					              "\nContributions pending: " + status.Pending);
-				md.Title = "Contribution Statistics";
-				break;
-			}
-
-			md.Run();
-			md.Destroy();
-		}
-				
-		void GetStatusDone (IAsyncResult iar)
-		{
-			try {
-				status = d.EndGetStatus (iar);
-				war = null;
-
-				if (status == null)
-					state = State.GetStatusError;
-				else
-					state = State.Done;
-
-			} catch (Exception e) {
-				state = State.NetworkError;
-				Console.WriteLine ("Error getting status: " + e);
-			}
-			if (tn != null)
-				tn.WakeupMain ();
-		}	
-	}
-
-	class NewComment {
-		[Glade.Widget] Window newcomment;
-		[Glade.Widget] Entry entry;
-		static NewComment NewCommentBox;
-		Browser parent;
-		
-		NewComment (Browser browser)
-		{
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "newcomment", null);
-			ui.Autoconnect (this);
-			parent = browser;
-			newcomment.TransientFor = browser.window1;
-		}
-
-		void OnOkClicked (object sender, EventArgs a)
-		{
-			//CommentService service = new CommentService();
-			// todo
-			newcomment.Hide ();
-		}
-
-		void OnCancelClicked (object sender, EventArgs a)
-		{
-			newcomment.Hide ();
-		}
-
-                //
-		// Called on the Window delete icon clicked
-		//
-		void OnDelete (object sender, DeleteEventArgs a)
-		{
-                        NewCommentBox = null;
-		}
-
-		static public void Show (Browser browser)
-		{
-			if (NewCommentBox == null)
-				NewCommentBox = new NewComment (browser);
-			NewCommentBox.newcomment.Show ();
-		}
-	}
-
-	void OnNewComment (object sender, EventArgs a)
-	{
-		NewComment.Show (this);
-	}
-
-
 
 	class Lookup {
 		[Glade.Widget] Window lookup;
@@ -2396,19 +1784,12 @@ public enum Mode {
 // A Tab is a Notebok with two pages, one for editing and one for visualizing
 //
 public class Tab : Notebook {
-	
-	// Our HTML preview during editing.
-	public IHtmlRender html_preview;
-	
 	// Where we render the contents
 	public IHtmlRender html;
 	
-	public TextView text_editor;
-	public Mode Tab_mode;
 	public History history;
 	private Browser browser;
 	private Label titleLabel;
-	private Image EditImg;
 	public HBox TabLabel;
 	
 	public string Title {
@@ -2417,13 +1798,9 @@ public class Tab : Notebook {
 	}
 	
 	public Node CurrentNode;
-	public System.Xml.XmlNode edit_node;
-	public string edit_url;
 	
 	void FocusOut (object sender, FocusOutEventArgs args)
-	{
-		if (TabMode == Mode.Editor)
-			text_editor.GrabFocus ();	
+	{	
 	}
 
 
@@ -2478,7 +1855,6 @@ public class Tab : Notebook {
 
 	public Tab(Browser br) 
 	{
-
 		browser = br;
 		CurrentNode = br.help_tree;
 		ShowTabs = false;
@@ -2498,8 +1874,7 @@ public class Tab : Notebook {
 		//
 
 		html = GetRenderer (browser.engine, browser);
-		html_preview = GetRenderer (browser.engine, browser);
-		if (html == null || html_preview == null)
+		if (html == null)
 			throw new Exception ("Couldn't find html renderer!");
 
 		browser.capabilities = html.Capabilities;
@@ -2524,82 +1899,6 @@ public class Tab : Notebook {
 		AppendPage(html_container, new Label("Html"));
 		
 		//
-		// Second Page: editing
-		//
-		VBox vbox1 = new VBox(false, 0);
-		
-		VBox MainPart = new VBox(false, 0);
-		
-		//
-		// TextView for XML code
-		//
-		ScrolledWindow sw = new ScrolledWindow();
-		text_editor = new TextView();
-		text_editor.Buffer.Changed += new EventHandler (EditedTextChanged);
-		text_editor.WrapMode = WrapMode.Word;
-		sw.Add(text_editor);
-		text_editor.FocusOutEvent += new FocusOutEventHandler (FocusOut);
-		
-		//
-		// XML editing buttons
-		//
-		HBox EdBots = new HBox(false, 2);
-		Button button1 = new Button("<e_xample>");
-		EdBots.PackStart(button1);
-		Button button2 = new Button("<list>");
-		EdBots.PackStart(button2);
-		Button button3 = new Button("<_table>");
-		EdBots.PackStart(button3);
-		Button button4 = new Button("<_see...>");
-		EdBots.PackStart(button4);
-		Button button5 = new Button("<_para>");
-		EdBots.PackStart(button5);
-		Button button6 = new Button("Add Note");
-		EdBots.PackStart(button6);
-		
-		button1.Clicked += new EventHandler (OnInsertExampleClicked);
-		button2.Clicked += new EventHandler (OnInsertListClicked);
-		button3.Clicked += new EventHandler (OnInsertTableClicked);
-		button4.Clicked += new EventHandler (OnInsertType);
-		button5.Clicked += new EventHandler (OnInsertParaClicked);
-		button6.Clicked += new EventHandler (OnInsertNoteClicked);
-		
-		Frame html_preview_frame = new Frame("Preview");
-		ScrolledWindow html_preview_container = new ScrolledWindow();
-		//
-		// code preview panel
-		//
-		html_preview_container.Add (html_preview.HtmlPanel);
-		html_preview_frame.Add(html_preview_container);
-		
-		MainPart.PackStart(sw);
-		MainPart.PackStart(EdBots, false, false, 0);
-		MainPart.PackStart(html_preview_frame);
-		
-		//
-		// Close and Save buttons
-		//
-		HBox MainBots = new HBox(false, 3);
-		HBox Filling = new HBox(false, 0);
-		Button close = new Button("C_lose");
-		Button save = new Button("S_ave");
-		Button restore = new Button("_Restore");
-		
-		close.Clicked += new EventHandler (OnCancelEdits);
-		save.Clicked += new EventHandler (OnSaveEdits);
-		restore.Clicked += new EventHandler (OnRestoreEdits);
-		
-		MainBots.PackStart(Filling);
-		MainBots.PackStart(close, false, false, 0);
-		MainBots.PackStart(save, false, false, 0);
-		MainBots.PackStart(restore, false, false, 0);
-		
-		vbox1.PackStart(MainPart);
-		vbox1.PackStart(MainBots, false, false, 0);
-		
-		AppendPage(vbox1, new Label("Edit XML"));
-		
-		//
 		//Create the Label for the Tab
 		//
 		TabLabel = new HBox(false, 2);
@@ -2613,107 +1912,14 @@ public class Tab : Notebook {
 		tabClose.Relief = Gtk.ReliefStyle.None;
 		tabClose.SetSizeRequest (18, 18);
 		tabClose.Clicked += new EventHandler (browser.OnCloseTab);
-		
-		//Icon showed when the Tab is in Edit Mode
-		EditImg = new Image (Stock.Convert, IconSize.SmallToolbar);
-		
-		TabLabel.PackStart (EditImg, false, true, 2);
+
 		TabLabel.PackStart (titleLabel, true, true, 0);
 		TabLabel.PackStart (tabClose, false, false, 2);
 		
 		// needed, otherwise even calling show_all on the notebook won't
 		// make the hbox contents appear.
 		TabLabel.ShowAll();
-		EditImg.Visible = false;
 	
-	}
-	
-	public Mode TabMode {
-		get { return Tab_mode; }
-		set { Tab_mode = value; }
-	}
-
-	
-	public void SetMode (Mode m)
-	{
-		if (Tab_mode == m)
-			return;
-		
-		if (m == Mode.Viewer) {
-			this.Page = 0;
-			browser.cut1.Sensitive = false;
-			browser.paste1.Sensitive = false;
-			browser.print.Sensitive = true;
-			EditImg.Visible = false;
-		} else {
-			this.Page = 1;
-			browser.cut1.Sensitive = true;
-			browser.paste1.Sensitive = true;
-			browser.print.Sensitive = false;
-			EditImg.Visible = true;
-		}
-
-		Tab_mode = m;
-	}
-	
-	// Events for the Editor
-	
-	void OnInsertParaClicked (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("\n<para>\n</para>");
-	}
-
-	void OnInsertNoteClicked (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("\n<block subset=\"none\" type=\"note\">\n  <para>\n  </para>\n</block>");
-	}
-
-	void OnInsertExampleClicked (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("\n<example>\n  <code lang=\"C#\">\n  </code>\n</example>");
-	}
-
-	void OnInsertListClicked  (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("\n<list type=\"bullet\">\n  <item>\n    <term>First Item</term>\n  </item>\n</list>");
-
-	}
-
-	void OnInsertTableClicked (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("\n<list type=\"table\">\n  <listheader>\n    <term>Column</term>\n" +
-						   "    <description>Description</description>\n" +
-						   "  </listheader>\n" +
-						   "  <item>\n" +
-						   "    <term>Term</term>\n" +
-						   "    <description>Description</description>\n" +
-						   "  </item>\n" +
-						   "</list>");
-	 }
-
-	void OnInsertType (object sender, EventArgs a)
-	{
-		text_editor.Buffer.InsertAtCursor ("<see cref=\"T:System.Object\"/>");
-	}
-	void OnSaveEdits (object sender, EventArgs a)
-	{
-		try {
-			edit_node.InnerXml = text_editor.Buffer.Text;
-		} catch (Exception e) {
-			browser.statusbar.Pop (browser.context_id);
-			browser.statusbar.Push (browser.context_id, e.Message);
-			return;
-		}
-		string [] uSplit = EditingUtils.ParseEditUrl (edit_url);
-		
-		if (uSplit[0].StartsWith ("monodoc:"))
-			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, GetNiceUrl (browser.CurrentTab.CurrentNode));
-		else if (uSplit[0].StartsWith ("file:"))
-			EditingUtils.SaveChange (edit_url, browser.help_tree, edit_node, String.Empty);
-		else
-			Console.WriteLine ("Edit url wrong: {0}", edit_url);
-		SetMode (Mode.Viewer);
-		history.ActivateCurrent ();
 	}
 
 	public static string GetNiceUrl (Node node) {
@@ -2758,53 +1964,5 @@ public class Tab : Notebook {
 			return node.PublicUrl[idx+1] + ":" + full + "." + node.Caption;
 		}
 	}
-
-	void OnCancelEdits (object sender, EventArgs a)
-	{
-		SetMode (Mode.Viewer);
-		history.ActivateCurrent ();
-	}
-
-	void OnRestoreEdits (object sender, EventArgs a)
-	{
-		EditingUtils.RemoveChange (edit_url, browser.help_tree);
-		SetMode (Mode.Viewer);
-		history.ActivateCurrent ();
-	}
-	
-	bool queued = false;
-
-	void EditedTextChanged (object sender, EventArgs args)
-	{
-		if (queued)
-			return;
-
-		queued = true;
-		GLib.Timeout.Add (500, delegate {
-			queued = false;
-			
-			StringWriter sw = new StringWriter ();
-			XmlWriter w = new XmlTextWriter (sw);
-			var converter = new Monodoc.Generators.Html.Ecma2Html ();
-			
-			try {
-				edit_node.InnerXml = text_editor.Buffer.Text;
-				EditingUtils.RenderEditPreview (edit_url, browser.help_tree, edit_node, w);
-				w.Flush ();
-			} catch (Exception e) {
-				browser.statusbar.Pop (browser.context_id);
-				browser.statusbar.Push (browser.context_id, e.Message);
-
-				return false;
-			}
-			browser.statusbar.Pop (browser.context_id);
-			browser.statusbar.Push (browser.context_id, "XML OK");
-			string s = converter.Export (sw.ToString (), new Dictionary<string, string> ());
-			html_preview.Render(s);
-
-			return false;
-		});
-	}
-	
 }
 }
