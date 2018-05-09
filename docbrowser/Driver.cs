@@ -1,5 +1,4 @@
 using Gtk;
-using Glade;
 using System;
 using System.IO;
 using System.Reflection;

@@ -918,60 +918,12 @@ ExtLoop:
 		CurrentTab.html.Copy ();
 	}
 
-	class About {
-		[Glade.Widget] Window about;
-		[Glade.Widget] Image logo_image;
-		[Glade.Widget] Label label_version;
-
-		static About AboutBox;
-		Browser parent;
-
-		About (Browser parent)
-		{
-			Glade.XML ui = new Glade.XML (null, "browser.glade", "about", null);
-			ui.Autoconnect (this);
-			this.parent = parent;
-
-			about.TransientFor = parent.window1;
-
-			Gdk.Pixbuf icon = new Gdk.Pixbuf (null, "monodoc.png");
-
-			if (icon != null) {
-				about.Icon = icon;
-				logo_image.Pixbuf = icon;
-			}
-
-			Assembly assembly = Assembly.GetExecutingAssembly ();
-			label_version.Markup = String.Format ("<b>Version:</b> {0}", assembly.GetName ().Version.ToString ());
-		}
-
-		void OnOkClicked (object sender, EventArgs a)
-		{
-			about.Hide ();
-		}
-
-                //
-		// Called on the Window delete icon clicked
-		//
-		void OnDelete (object sender, DeleteEventArgs a)
-		{
-                        AboutBox = null;
-		}
-
-		static public void Show (Browser parent)
-		{
-			if (AboutBox == null)
-				AboutBox = new About (parent);
-			AboutBox.about.Show ();
-		}
-	}
-
 	//
 	// Hooked up from Glade
 	//
 	void OnAboutActivate (object sender, EventArgs a)
 	{
-		About.Show (this);
+		// TODO: Use a standard Gtk about dialog instead (copy data from old glade file)
 	}
 
 	class Lookup {
