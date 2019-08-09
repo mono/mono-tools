@@ -148,8 +148,8 @@ namespace Gendarme.Rules.Naming {
 			if (!type.HasInterfaces)
 				return null;
 
-			foreach (TypeReference interfaceReference in type.Interfaces) {
-				TypeDefinition interfaceCandidate = interfaceReference.Resolve ();
+			foreach (InterfaceImplementation interfaceReference in type.Interfaces) {
+				TypeDefinition interfaceCandidate = interfaceReference.InterfaceType.Resolve ();
 				if ((interfaceCandidate == null) || !interfaceCandidate.HasMethods)
 					continue;
 

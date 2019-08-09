@@ -239,8 +239,8 @@ namespace GuiCompare {
 			var cache = new Dictionary<string, TypeReference> ();
 
 			foreach (var definition in WalkHierarchy (type))
-				foreach (TypeReference iface in definition.Interfaces)
-					cache [iface.FullName] = iface;
+				foreach (InterfaceImplementation iface in definition.Interfaces)
+					cache [iface.InterfaceType.FullName] = iface.InterfaceType;
 
 			return cache.Values;
 		}

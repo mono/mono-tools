@@ -73,8 +73,8 @@ namespace Gendarme.Framework.Rocks {
 				if (type != null) {
 					yield return type;
 					
-					foreach (TypeReference super in type.Interfaces) {
-						types.AddIfNew (super);
+					foreach (InterfaceImplementation super in type.Interfaces) {
+						types.AddIfNew (super.InterfaceType);
 					}
 					
 					if (type.BaseType != null)
@@ -268,11 +268,11 @@ namespace Gendarme.Framework.Rocks {
 			while (type != null) {
 				// does the type implements it itself
 				if (type.HasInterfaces) {
-					foreach (TypeReference iface in type.Interfaces) {
-						if (iface.IsNamed (nameSpace, iname))
+					foreach (InterfaceImplementation iface in type.Interfaces) {
+						if (iface.InterfaceType.IsNamed (nameSpace, iname))
 							return true;
 						//if not, then maybe one of its parent interfaces does
-						if (Implements (iface.Resolve (), nameSpace, iname))
+						if (Implements (iface.InterfaceType.Resolve (), nameSpace, iname))
 							return true;
 					}
 				}
