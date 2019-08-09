@@ -524,7 +524,7 @@ namespace Gendarme {
 				}
 			
 				// next assembly
-				Console.Write (Path.GetFileName (e.CurrentAssembly.MainModule.FullyQualifiedName));
+				Console.Write (Path.GetFileName (e.CurrentAssembly.MainModule.FileName));
 				local.Start ();
 			}
 			
