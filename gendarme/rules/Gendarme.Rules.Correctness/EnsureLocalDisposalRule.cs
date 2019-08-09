@@ -344,7 +344,8 @@ namespace Gendarme.Rules.Correctness {
 			string tname = variable.VariableType.Name;
 			if (variable.IsGeneratedName ())
 				return String.Format (CultureInfo.InvariantCulture, "of type '{0}' ", tname);
-			return String.Format (CultureInfo.InvariantCulture, "'{0}' of type '{1}' ", variable.Name, tname);
+			string variableName = String.Empty; // variable.Name is not valid anymore since Cecil 0.10
+			return String.Format (CultureInfo.InvariantCulture, "'{0}' of type '{1}' ", variableName, tname);
 		}
 
 		static OpCodeBitmask BuildCallsAndNewobjOpCodeBitmask ()

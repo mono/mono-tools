@@ -145,8 +145,10 @@ namespace Gendarme.Rules.Correctness {
 					
 					} else if (ins.IsStoreLocal ()) {
 						VariableDefinition vd = ins.GetVariable (method);
-						if (!vd.IsGeneratedName ())
-							name = "local " + vd.Name;
+						if (!vd.IsGeneratedName ()) {
+							string variableName = String.Empty; // vd.Name is not valid since Cecil 0.10
+							name = "local " + variableName;
+						}
 					
 					} else if (ins.OpCode.Code == Code.Stfld || ins.OpCode.Code == Code.Stsfld) {
 						FieldReference fr = ins.Operand as FieldReference;

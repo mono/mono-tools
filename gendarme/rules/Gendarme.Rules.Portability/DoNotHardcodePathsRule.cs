@@ -337,8 +337,12 @@ namespace Gendarme.Rules.Portability {
 				CheckIdentifier ((afterLdstr.Operand as FieldReference).Name);
 				break;
 			default:
-				if (afterLdstr.IsStoreLocal ())
-					CheckIdentifier (afterLdstr.GetVariable (method_body.Method).Name);
+				if (afterLdstr.IsStoreLocal ()) {
+					string name;
+					if (method_body.Method.DebugInformation.TryGetName(afterLdstr.GetVariable (method_body.Method), out name)) {
+						CheckIdentifier (name);
+					}
+				}
 				else
 					return false;
 				break;
