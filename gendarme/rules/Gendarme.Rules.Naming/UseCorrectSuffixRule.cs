@@ -210,8 +210,8 @@ namespace Gendarme.Rules.Naming {
 						currentTypeSuffix = true;
 				} else {
 					// if no suffix for base type is found, we start looking through interfaces
-					foreach (TypeReference iface in current.Interfaces) {
-						if (TryGetCandidates (iface, out candidates)) {
+					foreach (InterfaceImplementation iface in current.Interfaces) {
+						if (TryGetCandidates (iface.InterfaceType, out candidates)) {
 							suffixes.AddRangeIfNew (candidates);
 							if (current == type)
 								currentTypeSuffix = true;
