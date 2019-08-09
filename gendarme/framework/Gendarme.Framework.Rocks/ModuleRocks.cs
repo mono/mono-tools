@@ -77,7 +77,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self.HasSymbols)
 				return;
 
-			string image_name = self.FullyQualifiedName;
+			string image_name = self.FileName;
 			string symbol_name = image_name + ".mdb";
 			Type reader_type = null;
 

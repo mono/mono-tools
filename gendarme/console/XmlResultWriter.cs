@@ -87,7 +87,7 @@ namespace Gendarme {
 			foreach (AssemblyDefinition assembly in Runner.Assemblies) {
 				writer.WriteStartElement ("file");
 				writer.WriteAttributeString ("Name", assembly.FullName);
-				writer.WriteString (assembly.MainModule.FullyQualifiedName);
+				writer.WriteString (assembly.MainModule.FileName);
 				writer.WriteEndElement ();
 			}
 			writer.WriteEndElement ();
