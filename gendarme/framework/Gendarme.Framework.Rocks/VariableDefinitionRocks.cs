@@ -43,7 +43,7 @@ namespace Gendarme.Framework.Rocks {
 			if (self == null)
 				return false;
 
-			string name = self.Name;
+			string name = String.Empty; // self.Name is not valid anymore since Mono.Cecil 0.10
 			if (String.IsNullOrEmpty (name))
 				return true;
 
@@ -54,7 +54,8 @@ namespace Gendarme.Framework.Rocks {
 		{
 			if (self == null)
 				return String.Empty;
-			return !string.IsNullOrEmpty (self.Name) ? self.Name : "V_" + self.Index.ToString (CultureInfo.InvariantCulture);
+			string name = String.Empty; // self.Name is not valid anymore since Mono.Cecil 0.10
+			return !string.IsNullOrEmpty (name) ? name : "V_" + self.Index.ToString (CultureInfo.InvariantCulture);
 		}
 	}
 }

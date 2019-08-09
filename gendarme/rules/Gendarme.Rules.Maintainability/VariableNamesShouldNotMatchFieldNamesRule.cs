@@ -113,8 +113,9 @@ namespace Gendarme.Rules.Maintainability {
 						// if the name is compiler generated or if we do not have debugging symbols...
 						if (var.IsGeneratedName ())
 							continue;
-						if (fields.Contains (var.Name))
-							Runner.Report (method, Severity.Medium, Confidence.Normal, var.Name);
+						// var.Name is not valid anymore since Cecil 0.10
+						//if (fields.Contains (var.Name))
+						//	Runner.Report (method, Severity.Medium, Confidence.Normal, var.Name);
 					}
 				}
 			}

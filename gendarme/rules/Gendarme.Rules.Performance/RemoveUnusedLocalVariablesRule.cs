@@ -133,8 +133,9 @@ namespace Gendarme.Rules.Performance {
 					if (variable.IsGeneratedName ())
 						continue;
 
+					string variableName = String.Empty; // variable.Name is not valid anymore since Cecil 0.10
 					string s = String.Format (CultureInfo.InvariantCulture, "Variable '{0}' of type '{1}'", 
-						variable.Name, variable.VariableType.GetFullName ());
+						variableName, variable.VariableType.GetFullName ());
 					Runner.Report (method, Severity.Low, Confidence.Normal, s);
 				}
 			}
