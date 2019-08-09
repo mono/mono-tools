@@ -50,7 +50,7 @@ namespace Gendarme.Framework.Helpers {
 			ModuleDefinition module = metadata.GetAssembly ().MainModule;
 			TypeReference tr;
 			if (!module.TryGetTypeReference (type.FullName, out tr))
-				tr = module.Import (type);
+				tr = module.ImportReference (type);
 			return tr;
 		}
 
