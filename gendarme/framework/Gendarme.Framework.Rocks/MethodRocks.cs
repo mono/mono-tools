@@ -240,7 +240,7 @@ namespace Gendarme.Framework.Rocks {
 				return type.Inherits ("System", "EventArgs");
 
 			if (gp.HasConstraints) {
-				IList<TypeReference> cc = gp.Constraints;
+				IList<TypeReference> cc = (IList < TypeReference > )gp.Constraints;
 				return ((cc.Count == 1) && cc [0].IsNamed ("System", "EventArgs"));
 			}
 

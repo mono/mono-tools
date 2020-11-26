@@ -93,7 +93,7 @@ namespace Gendarme.Rules.Maintainability {
 		{
 			GenericParameter gp = (type as GenericParameter);
 			if (gp != null) {
-				IList<TypeReference> cc = gp.Constraints;
+				IList<TypeReference> cc = (IList < TypeReference > )gp.Constraints;
 				if (cc.Count == 1)
 					type = cc [0];
 			}
