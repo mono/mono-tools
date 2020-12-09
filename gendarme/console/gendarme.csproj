@@ -55,6 +55,18 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.11.3\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -65,6 +77,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\framework\Gendarme.Framework.csproj">
+      <Project>{cd6818d5-b398-486c-b180-92a07b143afd}</Project>
+      <Name>Gendarme.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyStaticInfo.cs" />
@@ -79,27 +95,10 @@
     <Compile Include="XmlResultWriter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\cecil\Mono.Cecil.csproj">
-      <Project>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</Project>
-      <Name>Mono.Cecil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\cecil\symbols\pdb\Mono.Cecil.Pdb.csproj">
-      <Project>{63E6915C-7EA4-4D76-AB28-0D7191EEA626}</Project>
-      <Name>Mono.Cecil.Pdb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\framework\Gendarme.Framework.csproj">
-      <Project>{CD6818D5-B398-486C-B180-92A07B143AFD}</Project>
-      <Name>Gendarme.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\cecil\symbols\mdb\Mono.Cecil.Mdb.csproj">
-      <Project>{8559DD7F-A16F-46D0-A05A-9139FAEBA8FD}</Project>
-      <Name>Mono.Cecil.Mdb</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ChangeLog" />
     <EmbeddedResource Include="gendarme.xsd" />
     <EmbeddedResource Include="gendarme.xsl" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -138,11 +137,7 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Copy
-      SourceFiles="$(TargetDir)..\..\..\rules\rules.xml"
-      DestinationFolder="$(TargetDir)"
-      SkipUnchangedFiles="True"
-    />
+    <Copy SourceFiles="$(TargetDir)..\..\..\rules\rules.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="True" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
