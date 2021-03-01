@@ -68,6 +68,7 @@
     <Compile Include="ArrayFieldsShouldNotBeReadOnlyTest.cs" />
     <Compile Include="DoNotShortCircuitCertificateCheckTest.cs" />
     <Compile Include="NativeFieldsShouldNotBeVisibleTest.cs" />
+    <Compile Include="SqlCommandShouldUseNamedParametersTest.cs" />
     <Compile Include="StaticConstructorsShouldBePrivateTest.cs" />
   </ItemGroup>
   <ItemGroup>
