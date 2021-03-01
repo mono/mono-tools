@@ -85,7 +85,7 @@ namespace Gendarme.Framework.Rocks {
 			// so we start by looking for it's debugging symbol file
 			if (File.Exists (symbol_name)) {
 				// "always" if we can find Mono.Cecil.Mdb
-				reader_type = Type.GetType ("Mono.Cecil.Mdb.MdbReaderProvider, Mono.Cecil.Mdb, Version=0.9.4.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756");
+				reader_type = Type.GetType ("Mono.Cecil.Mdb.MdbReaderProvider, Mono.Cecil.Mdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756");
 				// load the assembly from the current folder if
 				// it is here, or fallback to the gac
 			}

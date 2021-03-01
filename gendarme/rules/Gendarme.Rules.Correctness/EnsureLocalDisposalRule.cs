@@ -37,6 +37,7 @@ using Gendarme.Framework;
 using Gendarme.Framework.Rocks;
 using Gendarme.Framework.Engines;
 using Gendarme.Framework.Helpers;
+using System.Diagnostics;
 
 
 namespace Gendarme.Rules.Correctness {
@@ -119,6 +120,7 @@ namespace Gendarme.Rules.Correctness {
 
 		OpCodeBitmask callsAndNewobjBitmask = BuildCallsAndNewobjOpCodeBitmask ();
 		Bitmask<ulong> locals = new Bitmask<ulong> ();
+		Dictionary<int, int> localsReferencingOtherLocals = null;
 
 		static bool IsDispose (MethodReference call)
 		{
@@ -129,9 +131,8 @@ namespace Gendarme.Rules.Correctness {
 
 		static bool DoesReturnDisposable (MethodReference call)
 		{
-			//ignore properties (likely not the place where the IDisposable is *created*)
 			MethodDefinition method = call.Resolve ();
-			if ((method == null) || call.IsProperty ())
+			if ((method == null) || (call.IsProperty () && !method.IsGetter))
 				return false;
 
 			if (method.IsConstructor) {
@@ -168,11 +169,23 @@ namespace Gendarme.Rules.Correctness {
 			return false;
 		}
 
+		void ClearVariable (int index)
+		{
+			if (locals.Get ((ulong)index)) {
+				locals.Clear ((ulong)index);
+				Debug.Assert (localsReferencingOtherLocals == null || !localsReferencingOtherLocals.ContainsKey (index));
+			} else {
+				int referencedIndex;
+				if (localsReferencingOtherLocals != null && localsReferencingOtherLocals.TryGetValue (index, out referencedIndex))
+					ClearVariable (referencedIndex);
+			}
+		}
+
 		void Clear (MethodDefinition method, Instruction ins)
 		{
 			VariableDefinition v = ins.GetVariable (method);
 			if (v != null)
-				locals.Clear ((ulong) v.Index);
+				ClearVariable (v.Index);
 		}
 
 		void CheckForReturn (MethodDefinition method, Instruction ins)
@@ -204,10 +217,13 @@ namespace Gendarme.Rules.Correctness {
 			ulong index = v == null ? UInt64.MaxValue : (ulong) v.Index;
 			if (v != null && locals.Get (index)) {
 				if (!IsInsideFinallyBlock (method, ins)) {
-					string msg = String.Format (CultureInfo.InvariantCulture,
-						"Local {0}is not guaranteed to be disposed of.",
-						GetFriendlyNameOrEmpty (v));
-					Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
+					if (!v.VariableType.Equals (method.ReturnType) &&
+						!v.VariableType.Inherits (method.ReturnType.Namespace, method.ReturnType.Name)) {
+						string msg = String.Format (CultureInfo.InvariantCulture,
+							"Local {0}is not guaranteed to be disposed of.",
+							GetFriendlyNameOrEmpty (v));
+						Runner.Report (method, Severity.Medium, Confidence.Normal, msg);
+					}
 				}
 				locals.Clear (index);
 			}
@@ -228,6 +244,18 @@ namespace Gendarme.Rules.Correctness {
 			return true;
 		}
 
+		bool AssignedToLocalVarAndReturn (MethodDefinition method, Instruction ins)
+		{
+			var nextIns = ins.Next;
+			if (nextIns.OpCode.Code != Code.Br && nextIns.OpCode.Code != Code.Br_S)
+				return false;
+
+			var targetIns = nextIns.Operand as Instruction;
+
+			return (targetIns != null && targetIns.IsLoadLocal () &&
+				targetIns.Next != null && targetIns.Next.OpCode.Code == Code.Ret);
+		}
+
 		void CheckReassignment (MethodDefinition method, Instruction ins)
 		{
 			VariableDefinition v = ins.GetVariable (method);
@@ -238,8 +266,55 @@ namespace Gendarme.Rules.Correctness {
 					GetFriendlyNameOrEmpty (v));
 				Runner.Report (method, ins, Severity.High, Confidence.Normal, msg);
 			} else {
+				if (AssignedToLocalVarAndReturn (method, ins))
+					return;
+
 				locals.Set (index);
+				if (localsReferencingOtherLocals != null && localsReferencingOtherLocals.ContainsKey ((int)index))
+					localsReferencingOtherLocals.Remove ((int)index);
 			}
+		}
+
+		int GetFirstVariableHoldingObject (int index)
+		{
+			int referencedVar;
+			if (localsReferencingOtherLocals.TryGetValue (index, out referencedVar))
+				return GetFirstVariableHoldingObject (referencedVar);
+
+			Debug.Assert (locals.Get ((ulong)index));
+			return index;
+		}
+
+		void CheckForAssignmentReferencingOtherVariable (MethodDefinition method, Instruction ins)
+		{
+			if (!ins.IsStoreLocal () && !ins.IsStoreField ())
+				return;
+
+			var prevIns = ins.Previous;
+			if (prevIns == null || !prevIns.IsLoadLocal ())
+				return;
+
+			var vLoad = prevIns.GetVariable (method);
+			if (vLoad == null)
+				return;
+
+			if (ins.IsStoreField ()) {
+				ClearVariable (vLoad.Index);
+				return;
+			}
+
+			var vStore = ins.GetVariable (method);
+			if (vStore == null)
+				return;
+
+			if (locals.Get ((ulong)vStore.Index))
+				return;
+
+			if (localsReferencingOtherLocals == null)
+				localsReferencingOtherLocals = new Dictionary<int, int> ();
+			localsReferencingOtherLocals [vStore.Index] = GetFirstVariableHoldingObject (vLoad.Index);
+			if (localsReferencingOtherLocals [vStore.Index] == vStore.Index)
+				localsReferencingOtherLocals.Remove (vStore.Index);
 		}
 
 		public RuleResult CheckMethod (MethodDefinition method)
@@ -255,6 +330,7 @@ namespace Gendarme.Rules.Correctness {
 			bool return_idisposable = DoesReturnDisposable (method);
 
 			locals.ClearAll ();
+			localsReferencingOtherLocals = null;
 
 			foreach (Instruction ins in method.Body.Instructions) {
 				Code code = ins.OpCode.Code;
@@ -267,8 +343,10 @@ namespace Gendarme.Rules.Correctness {
 					CheckForOutParameters (method, ins);
 					continue;
 				default:
-					if (!callsAndNewobjBitmask.Get (code))
+					if (!callsAndNewobjBitmask.Get (code)) {
+						CheckForAssignmentReferencingOtherVariable (method, ins);
 						continue;
+					}
 					break;
 				}
 
@@ -293,8 +371,9 @@ namespace Gendarme.Rules.Correctness {
 
 				Code nextCode = nextInstruction.OpCode.Code;
 				if (nextCode == Code.Pop || OpCodeBitmask.Calls.Get (nextCode)) {
+					// We ignore properties (likely not the place where the IDisposable is *created*)
 					// We ignore setter because it is an obvious share of the IDisposable
-					if (!IsSetter (nextInstruction.Operand as MethodReference))
+					if (!call.IsProperty () && !IsSetter (nextInstruction.Operand as MethodReference))
 						ReportCall (method, ins, call);
 				} else if (nextInstruction.IsStoreLocal ()) {
 					// make sure we're not re-assigning over a non-disposed IDisposable

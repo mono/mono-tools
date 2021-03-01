@@ -439,5 +439,212 @@ namespace Test.Rules.Correctness {
 #endif
 			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnIDisposable2");
 		}
+
+		#region Bug #18498
+		abstract class Image : IDisposable
+		{
+			public void Dispose ()
+			{
+			}
+		}
+
+		class Bitmap : Image
+		{
+		}
+
+		Image ReturnsReference ()
+		{
+			Bitmap bmp = new Bitmap ();
+			Image img = (Image)bmp;
+			return img;
+		}
+
+		Image AlsoReturnsReference ()
+		{
+			var bmp = new Bitmap ();
+			var img = (Image)bmp;
+			var img2 = img;
+			return img2;
+		}
+
+		Image MissesDispose ()
+		{
+			var bmp = new Bitmap ();
+			var img = (Image)bmp;
+			img = new Bitmap ();
+			return img;
+		}
+
+		Image AlsoMissesDispose ()
+		{
+			var bmp = new Bitmap ();
+			var img = new Bitmap ();
+			bmp = img;
+			return bmp;
+		}
+
+
+		[Test]
+		public void ReturnsReference_Bug18498 ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnsReference");
+		}
+
+		[Test]
+		public void ReturnReference2_Bug18498 ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("AlsoReturnsReference");
+		}
+
+		[Test]
+		public void MissingDispose_Bug18498 ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("MissesDispose");
+		}
+
+		[Test]
+		public void MissingDispose2_Bug18498 ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("AlsoMissesDispose");
+		}
+		#endregion
+
+		Image PropertyReturningObj {
+			get {
+				using (var bmp = new Bitmap ()) {
+					var img = new Bitmap ();
+					return img;
+				}
+			}
+		}
+
+		[Test]
+		public void PropertyReturningReference ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("get_PropertyReturningObj");
+		}
+
+		Image ReturnObjectWithIfs ()
+		{
+			Bitmap obj = null;
+			int a = new Random ().Next (10);
+			if (a == 1)
+				obj = new Bitmap ();
+			else if (a == 2)
+				obj = new Bitmap ();
+			else if (a == 3)
+				obj = new Bitmap ();
+			return obj;
+		}
+
+		[Test]
+		public void MethodThatConditionallyReturnsObjects ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectWithIfs");
+		}
+
+		Bitmap ReturnObjectWithSwitch ()
+		{
+			Bitmap obj = null;
+			switch (new Random ().Next (10))
+			{
+				case 1:
+					obj = new Bitmap();
+					break;
+				case 2:
+					obj = new Bitmap();
+					break;
+				default:
+					obj = new Bitmap();
+					break;
+			}
+			return obj;
+		}
+
+		[Test]
+		public void MethodThatConditionallyReturnsObjectsThroughSwitch ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectWithSwitch");
+		}
+
+		Bitmap ReturnObjectAndCallsDisposeInTryCatchBlock ()
+		{
+			Bitmap obj = null;
+			try {
+				obj = new Bitmap ();
+			} catch (Exception) {
+				if (obj != null)
+					obj.Dispose ();
+				throw;
+			}
+
+			return obj;
+		}
+
+		void CallsDisposeInTryCatchBlock ()
+		{
+			Bitmap obj = null;
+			try {
+				obj = new Bitmap ();
+			} catch (Exception) {
+				if (obj != null)
+					obj.Dispose ();
+				throw;
+			}
+		}
+
+		[Test]
+		public void MethodReturnsObjectAndCallsDisposeInTryCatchBlock ()
+		{
+			AssertRuleSuccess<EnsureLocalDisposalTest> ("ReturnObjectAndCallsDisposeInTryCatchBlock");
+		}
+
+		[Test]
+		public void MethodCallsDisposeInTryCatchBlock ()
+		{
+			AssertRuleFailure<EnsureLocalDisposalTest> ("CallsDisposeInTryCatchBlock");
+		}
+
+		class TestableClass: IDisposable
+		{
+			Stream stream;
+
+			public void AssignFieldFromLocalVariableWithInitializer ()
+			{
+				var s = new MemoryStream {
+					ReadTimeout = 10
+				};
+
+				stream = s;
+			}
+
+			public void AssignFieldWithInitializer ()
+			{
+				stream = new MemoryStream {
+					ReadTimeout = 10
+				};
+			}
+
+			#region IDisposable implementation
+
+			public void Dispose ()
+			{
+				stream.Dispose ();
+			}
+
+			#endregion
+		}
+
+		[Test]
+		public void FieldAssignedFromLocalVariableWithInitializer ()
+		{
+			AssertRuleSuccess<TestableClass> ("AssignFieldFromLocalVariableWithInitializer");
+		}
+
+		[Test]
+		public void FieldAssignedWithInitializer ()
+		{
+			AssertRuleSuccess<TestableClass> ("AssignFieldWithInitializer");
+		}
 	}
 }

@@ -512,6 +512,20 @@ namespace Gendarme.Framework.Rocks {
 		}
 
 		/// <summary>
+		/// Return true if the Instruction is a store of a field (stfld).
+		/// </summary>
+		/// <param name="self">The Instruction on which the extension method can be called.</param>
+		/// <returns>True if the instruction is a store field, False otherwise</returns>
+		public static bool IsStoreField (this Instruction self)
+		{
+			if (self == null)
+				return false;
+
+			return self.OpCode.Code == Code.Stfld;
+		}
+
+
+		/// <summary>
 		/// Return the instruction that match the current instruction. This is computed by 
 		/// substracting push and adding pop counts until the total becomes zero.
 		/// </summary>
