@@ -40,6 +40,7 @@ namespace Gendarme {
 	public class IgnoreFileList : BasicIgnoreList {
 
 		private string current_rule;
+		private string currentFileName;
 		private Dictionary<string, HashSet<string>> assemblies = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> types = new Dictionary<string, HashSet<string>> ();
 		private Dictionary<string, HashSet<string>> methods = new Dictionary<string, HashSet<string>> ();
@@ -54,8 +55,17 @@ namespace Gendarme {
 
 		private void Push (string fileName)
 		{
-			if (!String.IsNullOrEmpty (fileName) && File.Exists (fileName) && !files.Contains (fileName)) {
+			if (String.IsNullOrEmpty (fileName))
+				return;
+
+			if (File.Exists (fileName) && !files.Contains (fileName)) {
 				files.Push (fileName);
+			}
+			else {
+				var directory = Path.GetDirectoryName (currentFileName);
+				if (!string.IsNullOrEmpty (directory) && !fileName.StartsWith (directory)){
+					Push (Path.Combine (directory, fileName));
+				}
 			}
 		}
 
@@ -63,15 +73,16 @@ namespace Gendarme {
 		{
 			char [] buffer = new char [4096];
 			while (files.Count > 0) {
-				string fileName = files.Pop ();
-				using (StreamLineReader sr = new StreamLineReader (fileName)) {
+				currentFileName = files.Pop ();
+				using (StreamLineReader sr = new StreamLineReader (currentFileName)) {
 					while (!sr.EndOfStream) {
 						int length = sr.ReadLine (buffer, 0, buffer.Length);
 						ProcessLine (buffer, length);
 					}
 				}
 			}
-			Resolve ();
+			currentFileName = null;
+			Resolve();
 			TearDown ();
 		}
 
@@ -132,7 +143,7 @@ namespace Gendarme {
 				base.Add (current_rule, NamespaceDefinition.GetDefinition (GetString (buffer, length)));
 				break;
 			case '@': // include file
-				files.Push (GetString (buffer, length));
+				Push (GetString (buffer, length));
 				break;
 			default:
 				Console.Error.WriteLine ("Bad ignore entry : '{0}'", new string (buffer));
