@@ -20,14 +20,16 @@ class ProgressPanel : VBox {
 
 	ProgressBar pb;
 	ThreadNotify notify;
-	uint timer; 
+	uint timer;
+
+	bool finished;
 
 	public ProgressPanel (string message, string button, StartWorkDelegate StartWork, FinishWorkDelegate FinishWork)
 	{
 			Gtk.Label l = new Gtk.Label (message);
 			l.UseMarkup = true;
 			l.Show ();
-			PackStart (l);
+			PackStart (l, true, true, 0);
 			
 			pb = new ProgressBar ();
 			pb.Show ();
@@ -47,7 +49,7 @@ class ProgressPanel : VBox {
 		Button b = (Button) sender;
 		b.Sensitive = false;
 		// start a timer to update the progress bar
-		timer = Gtk.Timeout.Add ( (uint) 100, new Function (DoUpdateProgressbar));
+		timer = GLib.Timeout.Add ( (uint) 100, new GLib.TimeoutHandler (DoUpdateProgressbar));
 		
 		Thread thr = new Thread (new ThreadStart (Work));
 	    thr.Start ();
@@ -63,14 +65,14 @@ class ProgressPanel : VBox {
 	
 	void Finished ()
 	{
-		Gtk.Timeout.Remove (timer);
 		FinishWork ();
+		finished = true;
 	}
 
 	bool DoUpdateProgressbar ()
 	{
 		pb.Pulse ();
-		return true;
+		return !finished;
 	}
 }
 }
