@@ -61,6 +61,10 @@ namespace Gendarme.Framework {
 
 		public void Add (string rule, IMetadataTokenProvider metadata)
 		{
+			if (rule is null) {
+				Console.Error.WriteLine("Attempted to add null rule");
+				return;
+			}
 			HashSet<IMetadataTokenProvider> list;
 			if (!ignore.TryGetValue (rule, out list)) {
 				list = new HashSet<IMetadataTokenProvider> ();
