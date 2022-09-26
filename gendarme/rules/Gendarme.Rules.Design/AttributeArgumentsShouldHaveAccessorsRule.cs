@@ -129,7 +129,8 @@ namespace Gendarme.Rules.Design {
 					// pascal case it
 					if (param.Name.Length == 0) {
 						Console.Error.WriteLine("Unexpected empty constructor parameter.\n  Type: {0}\n  Method: {1}", type.FullName, constructor);
-						continue; }
+						continue;
+					}
 					string correspondingPropertyName = Char.ToUpper (param.Name [0], CultureInfo.InvariantCulture).ToString (CultureInfo.InvariantCulture) +
 						param.Name.Substring (1);
 					if (!allProperties.Contains (correspondingPropertyName)) {
