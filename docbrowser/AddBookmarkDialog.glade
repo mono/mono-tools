@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<!--*- mode: xml -*-->
+<interface>
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkWindow" id="add_bookmark_dialog">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Add Bookmark</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="default_width">60</property>
+    <property name="default_height">115</property>
+    <property name="type_hint">dialog</property>
+    <signal name="delete-event" handler="on_AddBookmark_delete_event" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkVBox" id="vbox32">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">23</property>
+        <child>
+          <object class="GtkHBox" id="hbox36">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">2</property>
+            <property name="spacing">22</property>
+            <child>
+              <object class="GtkLabel" id="Label67">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xpad">0</property>
+                <property name="ypad">0</property>
+                <property name="label" translatable="yes">Name:</property>
+                <property name="xalign">0.5</property>
+                <property name="yalign">0.5</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="name_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">*</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox37">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">2</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkLabel" id="label68">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xpad">0</property>
+                <property name="ypad">0</property>
+                <property name="label" translatable="yes">Create in:</property>
+                <property name="xalign">0.5</property>
+                <property name="yalign">0.5</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox38">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">5</property>
+            <property name="spacing">199</property>
+            <child>
+              <object class="GtkButton" id="CancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_CancelButton_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="AddButton">
+                <property name="label">gtk-add</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_AddButton_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">4</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

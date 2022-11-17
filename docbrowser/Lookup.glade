@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<!--*- mode: xml -*-->
+<interface>
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkWindow" id="lookup">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Lookup URL</property>
+    <signal name="delete-event" handler="OnDelete" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkVBox" id="vbox3">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">3</property>
+        <child>
+          <object class="GtkLabel" id="label8">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xpad">0</property>
+            <property name="ypad">0</property>
+            <property name="label" translatable="yes">_URL to lookup:</property>
+            <property name="use_markup">True</property>
+            <property name="use_underline">True</property>
+            <property name="xalign">0</property>
+            <property name="yalign">0.5</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="has_default">True</property>
+            <property name="invisible_char">*</property>
+            <property name="activates_default">True</property>
+            <signal name="activate" handler="OnOkClicked" swapped="no"/>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="entry-atkobject">
+                <property name="AtkObject::accessible-name" translatable="yes">lookup_entry</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="padding">2</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox2">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkButton" id="Ok1">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">False</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="OnOkClicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="padding">2</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
